@@ -1,0 +1,11 @@
+  
+.btn {
+    @extend .shadow-none;
+}
+
+@each $color-name, $color-value in $theme-colors {
+    @include list-group-item-variant($color-name, $color-value, color-yiq($color-value));
+  }
+
+
+

@@ -1,0 +1,15 @@
+
+@import '../../../node_modules/@fontsource/roboto/scss/mixins.scss';
+
+
+$weights: (100, 300, 400, 500, 700, 900);
+$styles: (italic, normal);
+
+@each $weight in $weights {
+  @each $style in $styles {
+    @include fontFace($weight: $weight, $style: $style);
+  }
+}
+
+@import "_variables"; // --- Custom  Variables
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss"; // --- Vendors Bootstrap 4

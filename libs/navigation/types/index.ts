@@ -4,6 +4,7 @@ export type MainMenuItem = {
 }
 
 export type BladeMenuItem = {
+  id: string
   title?: string
   icon?: string
 }
@@ -14,5 +15,6 @@ export type BladeInfo = {
   icon?: string
   content?: string
   component?: string
+  route?: string
   menuItems?: BladeMenuItem[]
 }

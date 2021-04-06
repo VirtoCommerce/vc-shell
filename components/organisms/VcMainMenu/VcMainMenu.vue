@@ -7,11 +7,16 @@
       >
         <VcIcon icon="bars" size="lg" />
       </button>
-      <VcMenuItem icon="home" title="Home" />
+      <VcMenuItem
+        v-for="item in items"
+        :key="item.id"
+        :icon="item.icon"
+        :title="item.title"
+      />
     </aside>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { VcIcon } from '../../atoms'
 import { VcMenuItem } from '../../molecules'
 export default {
@@ -20,7 +25,14 @@ export default {
     VcIcon,
     VcMenuItem,
   },
-  props: {},
+  props: {
+    items: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
+  },
   computed: {},
 }
 </script>

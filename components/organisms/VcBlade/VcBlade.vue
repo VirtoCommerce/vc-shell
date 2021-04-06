@@ -5,7 +5,7 @@
         <button class="btn btn-sm btn-maximize btn-maximize">
           <VcIcon icon="window-maximize" class="text-light"> </VcIcon>
         </button>
-        <button class="btn btn-sm btn-close btn-close" @click="onClose">
+        <button class="btn btn-sm btn-close btn-close" @click.prevent="onClose">
           <VcIcon icon="times" class="text-light"> </VcIcon>
         </button>
       </div>
@@ -35,6 +35,7 @@ import Vue from 'vue'
 import { VcIcon } from '../../atoms'
 import VcBladeHeader from './internal/VcBladeHeader'
 import VcBladeToolbar from './internal/VcBladeToolbar'
+
 Vue.component('VcBladeHeader', VcBladeHeader)
 Vue.component('VcBladeToolbar', VcBladeToolbar)
 
@@ -51,8 +52,7 @@ export default {
   },
   computed: {},
   methods: {
-    onClose(event) {
-      event.preventDefault()
+    onClose() {
       this.$emit('click:close')
     },
   },

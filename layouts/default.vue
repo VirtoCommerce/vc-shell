@@ -7,7 +7,7 @@
     </div>
     <div class="row no-gutters align-items-stretch h-100">
       <div class="col-auto">
-        <VcMainMenu></VcMainMenu>
+        <VcMainMenu :items="mainMenuItems"></VcMainMenu>
       </div>
       <div class="col">
         <Nuxt />
@@ -18,11 +18,19 @@
 
 <script lang="ts">
 import { VcHeader, VcMainMenu } from '../components/organisms'
+import { useNavigation } from '../libs/navigation'
 
 export default {
   components: {
     VcHeader,
     VcMainMenu,
+  },
+  setup() {
+    const { mainMenuItems } = useNavigation()
+
+    return {
+      mainMenuItems,
+    }
   },
 }
 </script>

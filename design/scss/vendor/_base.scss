@@ -1,15 +1,119 @@
-
 @import '../../../node_modules/@fontsource/roboto/scss/mixins.scss';
-
-
-$weights: (100, 300, 400, 500, 700, 900);
-$styles: (italic, normal);
-
-@each $weight in $weights {
-  @each $style in $styles {
-    @include fontFace($weight: $weight, $style: $style);
-  }
+// $weights: (100, 300, 400, 500, 700, 900);
+// $styles: (italic, normal);
+// @each $weight in $weights {
+//     @each $style in $styles {
+//         @include fontFace($weight: $weight, $style: $style);
+//     }
+// }
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss"; // --- Vendors Bootstrap 4
+@import "_variables.scss"; // --- Custom  Variables
+// .nav-bar-divider {
+//     height: 70px;
+//     width: 1px;
+//     border-color: $gray-700 !important;
+// }
+.navbar {
+    padding: 0;
+    min-width: 1069px;
 }
 
-@import "_variables"; // --- Custom  Variables
-@import "../../../node_modules/bootstrap/scss/bootstrap.scss"; // --- Vendors Bootstrap 4
+.navbar .border-right {
+    border-right: 1px solid $gray-700 !important;
+}
+
+.navbar .border-left {
+    border-left: 1px solid $gray-700 !important;
+}
+
+.btn-warning {
+    color: $white;
+    background-color: $orange;
+    border-color: $orange;
+}
+
+.btn-primary {
+    color: $white;
+    background-color: $blue;
+    border-color: $blue;
+}
+
+.bg-dark {
+    background: $gray-900 !important;
+}
+
+>.container,
+.navbar>.container-fluid,
+.navbar>.container-lg,
+.navbar>.container-md,
+.navbar>.container-sm,
+.navbar>.container-xl,
+.navbar>.container-xxl {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.text-end {
+    text-align: right!important;
+}
+
+.account-user__name {
+    color: $white;
+    line-height: 1.2;
+}
+
+.account-user__role {
+    color: $gray-500;
+    display: block;
+    line-height: 1.2;
+}
+
+.text-muted {
+    color: $gray-500 !important;
+    display: block;
+}
+
+.navbar .dropdown-toggle::after {
+    display: inline-block;
+    -webkit-font-smoothing: antialiased;
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    content: "\f078";
+    font-family: "Font Awesome 5 Free";
+    font-size: 1.1rem;
+    font-weight: 900;
+    border: 0;
+    color: $gray-500;
+    margin-top: 14px;
+    margin-left: 25px;
+    margin-right: 25px;
+    margin: 14px 25px 0px 25px;
+}
+
+// Left menu bar
+.link-dark {
+    color: $gray-900;
+}
+
+.nav-pills i {
+    font-size: $h5-font-size;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    color: $gray-900;
+    background-color: $active-item-bg;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+}
+
+.navbar-toggler {
+    color: $primary !important;
+}

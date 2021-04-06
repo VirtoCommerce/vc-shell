@@ -5,17 +5,104 @@
     <meta charset="UTF-8">
     <title>Hello World</title>
     <link rel="stylesheet" href="scss/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Hello World</h1>
+    <!-- Top nav bar -->
+
+    <nav class="px-3 text-white navbar navbar-expand navbar-dark bg-dark">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+            <img src="assets/logo.svg" />
+        </a>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+
+            <div class="px-3 py-4 text-muted small border-right">3.2.1</div>
+            <div class="px-3 py-3 small border-right">Running community edition,<br>click to request a commercial license.</div>
+            <button type="button" class="btn m-3 btn-warning btn-sm px-3 mr-auto">Purchase</button>
+
+
+            <div class="px-3 py-4 border-right border-left">
+                <img src="assets/custom-icons/settings.svg" alt="mdo" width="22" height="22" class="mx-1">
+            </div>
+            <div class="px-3 py-4 border-right">
+                <img src="assets/custom-icons/support.svg" alt="mdo" width="22" height="22" class="mx-1">
+            </div>
+            <div class="px-3 py-4 border-right">
+                <img src="assets/custom-icons/notifications.svg" alt="mdo" width="22" height="22" class="mx-1">
+            </div>
+
+
+            <div class="flex-shrink-0 dropdown">
+                <a href="#" class="d-flex link-dark text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle mx-3">
+                    <span class="account-user__info">
+                      <span class="account-user__name">admin</span>
+                    <span class="account-user__role">Administrator new</span>
+                    </span>
+                </a>
+
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-110px, 34px);" data-popper-placement="bottom-end">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
             </div>
         </div>
+    </nav>
+
+    <!-- Left menu bar -->
+
+    <div class="d-flex flex-column py-3 bg-light" style="width: 240px;">
+
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a href="#" class="nav-link py-0 px-4 navbar-toggler">
+                    <i class="fas fa-bars h5"></i>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link link-dark py-2">
+                    <i class="fas fa-home px-1 py-2"></i> Home
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link link-dark active py-2">
+                    <i class="fas fa-folder  px-1 py-2"></i> Catalog
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link link-dark py-2">
+                    <i class="fas fa-flag px-1 py-2"></i> Marketing
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link link-dark py-2">
+                    <i class="far fa-image px-1 py-2"></i> Thumbnails
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link link-dark py-2">
+                    <i class="fas fa-archive px-1 py-2"></i> Stores
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link link-dark py-2">
+                    <i class="fas fa-ellipsis-h px-1 py-2"></i> More
+                </a>
+            </li>
+        </ul>
+
     </div>
+
 
 </body>
 

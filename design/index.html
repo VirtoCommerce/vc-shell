@@ -5,17 +5,64 @@
     <meta charset="UTF-8">
     <title>Hello World</title>
     <link rel="stylesheet" href="scss/main.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Hello World</h1>
+
+    <nav class="px-3 text-white navbar navbar-expand navbar-dark bg-dark">
+        <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+            <img src="assets/logo.svg" />
+        </a>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample02">
+
+            <div class="px-3 text-muted small">3.2.1</div>
+            <div class="mx-2 border-right nav-bar-divider"></div>
+
+            <div class="px-3 small">Running community edition,<br>click to request a commercial license.</div>
+            <div class="mx-2 border-right nav-bar-divider"></div>
+
+            <button type="button" class="btn m-3 btn-warning btn-sm px-3 mr-auto">Purchase</button>
+            <!-- <div class="mx-2 border-right nav-bar-divider mr-auto"></div> -->
+
+            <div class="mx-2 border-right nav-bar-divider"></div>
+            <img src="assets/custom-icons/settings.svg" alt="mdo" width="22" height="22" class="mx-2">
+            <div class="mx-2 border-right nav-bar-divider"></div>
+            <img src="assets/custom-icons/support.svg" alt="mdo" width="22" height="22" class="mx-2">
+            <div class="mx-2 border-right nav-bar-divider"></div>
+            <img src="assets/custom-icons/notifications.svg" alt="mdo" width="22" height="22" class="mx-2">
+            <div class="mx-2 border-right nav-bar-divider"></div>
+
+            <div class="flex-shrink-0 dropdown">
+                <a href="#" class="d-flex link-dark text-decoration-none dropdown-toggle show" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
+                    <img src="https://github.com/mdo.png" alt="mdo" width="48" height="48" class="rounded-circle mx-3
+                    ">
+                    <span class="account-user__info">
+                      <span class="account-user__name">admin</span>
+                    <span class="account-user__role">Administrator new</span>
+                    </span>
+                </a>
+
+                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-110px, 34px);" data-popper-placement="bottom-end">
+                    <li><a class="dropdown-item" href="#">New project...</a></li>
+                    <li><a class="dropdown-item" href="#">Settings</a></li>
+                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                </ul>
             </div>
+
+
         </div>
-    </div>
+    </nav>
+
+
+
 
 </body>
 

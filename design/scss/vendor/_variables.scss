@@ -4,18 +4,17 @@
 // consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 // Color system
 // scss-docs-start gray-color-variables
-
 $gray-500: #838D9A;
 $gray-600: #6c757d;
 $gray-900: #161D25;
-
 // scss-docs-end gray-colors-map
 // fusv-enable
 // scss-docs-start color-variables
 $blue: #43B0E6;
 $orange: #F89406;
-
 // scss-docs-end colors-map
 // scss-docs-start theme-color-variables
 $primary: $blue;
 $active-item-bg: #DFEEF9;
+$link-color: $primary;
+$link-hover-color: #319ED4;

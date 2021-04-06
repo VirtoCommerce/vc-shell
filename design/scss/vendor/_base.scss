@@ -3,24 +3,12 @@
 @import "../../../node_modules/bootstrap/scss/variables";
 //roboto fonts
 @import '../../../node_modules/@fontsource/roboto/scss/mixins.scss';
-
 //Custom styles
 @import "_variables.scss"; // --- Custom  Variables
 @import "../../../node_modules/bootstrap/scss/bootstrap.scss"; // --- Vendors Bootstrap 4
-
-
-// .navbar {
-//     padding: 0;
-//     min-width: 1069px;
-// }
-
-// .navbar .border-right {
-//     border-right: 1px solid $gray-700 !important;
-// }
-
-// .navbar .border-left {
-//     border-left: 1px solid $gray-700 !important;
-// }
+body {
+    font-family: 'Roboto', sans-serif;
+}
 
 .btn-warning {
     color: $white;
@@ -53,17 +41,6 @@
 
 .text-end {
     text-align: right!important;
-}
-
-.account-user__name {
-    color: $white;
-    line-height: 1.2;
-}
-
-.account-user__role {
-    color: $gray-500;
-    display: block;
-    line-height: 1.2;
 }
 
 .text-muted {
@@ -114,11 +91,10 @@
     color: $primary !important;
 }
 
-
 //VC components styles
 .vc-header {
-    @extend .p-0; 
-    @extend .px-3; 
+    @extend .p-0;
+    @extend .px-3;
     @extend .text-white;
     @extend .navbar;
     @extend .navbar-expand;
@@ -137,8 +113,105 @@
     &__version {
         @extend .px-3;
         @extend .py-4;
-        @extend .text-muted; 
-        @extend .small; 
-        border-right: 1px solid $gray-700 !important;
+        @extend .text-muted;
+        @extend .small;
+        border-right: 1px solid $gray-700;
+    }
+    &__license-text {
+        @extend .px-3;
+        @extend .py-3;
+        @extend .small;
+    }
+    &__license-button {
+        @extend .btn;
+        @extend .m-3;
+        @extend .btn-warning;
+        @extend .btn-sm;
+        @extend .px-3;
+        @extend .mr-auto;
+    }
+    &__action-icon {
+        @extend .px-3;
+        @extend .py-4;
+        border-left: 1px solid $gray-700;
+    }
+}
+
+.vc-header__account {
+    @extend .flex-shrink-0;
+    @extend .dropdown;
+    @extend .py-2;
+    border-left: 1px solid $gray-700;
+    &__user-block {
+        @extend .d-flex;
+        @extend .link-dark;
+        @extend .text-decoration-none;
+        @extend .dropdown-toggle;
+        @extend .show;
+    }
+    &__dropdown {
+        @extend .dropdown-menu;
+        @extend .shadow;
+    }
+}
+
+.account-user__name {
+    color: $white;
+    line-height: 1.2;
+}
+
+.account-user__role {
+    color: $gray-500;
+    display: block;
+    line-height: 1.2;
+}
+
+// Left Menu
+.vc-main-menu {
+    @extend .d-flex;
+    @extend .flex-column;
+    @extend .py-3;
+    @extend .bg-light;
+    width: 205px;
+    &__nav-pills {
+        @extend .nav;
+        @extend .nav-pills;
+        @extend .flex-column;
+        @extend .mb-auto;
+    }
+}
+
+.vc-main-menu__nav-pills .vc-nav-link {
+    @extend .nav-link;
+    @extend .link-dark;
+    @extend .py-2;
+    &:hover {
+        color: $link-hover-color;
+    }
+    &__icon {
+        @extend .px-1;
+        @extend .py-2;
+    }
+}
+
+.vc-main-menu__nav-pills .vc-nav-link-active {
+    @extend .nav-link;
+    @extend .link-dark;
+    @extend .py-2;
+    @extend .active;
+    &__icon {
+        @extend .px-1;
+        @extend .py-2;
+    }
+}
+
+.vc-main-menu__nav-pills .vc-nav-link-toggler {
+    @extend .nav-link;
+    @extend .py-0;
+    @extend .px-4;
+    @extend .navbar-toggler;
+    &__icon {
+        @extend .px-1;
+        @extend .py-2;
     }
 }

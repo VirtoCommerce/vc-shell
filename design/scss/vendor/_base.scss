@@ -1,18 +1,29 @@
 @import '../../../node_modules/@fontsource/roboto/scss/mixins.scss';
-$weights: (100, 300, 400, 500, 700, 900);
-$styles: (italic, normal);
-@each $weight in $weights {
-    @each $style in $styles {
-        @include fontFace($weight: $weight, $style: $style);
-    }
-}
-
+// $weights: (100, 300, 400, 500, 700, 900);
+// $styles: (italic, normal);
+// @each $weight in $weights {
+//     @each $style in $styles {
+//         @include fontFace($weight: $weight, $style: $style);
+//     }
+// }
 @import "../../../node_modules/bootstrap/scss/bootstrap.scss"; // --- Vendors Bootstrap 4
 @import "_variables.scss"; // --- Custom  Variables
-.nav-bar-divider {
-    height: 70px;
-    width: 1px;
-    border-color: $gray-700 !important;
+// .nav-bar-divider {
+//     height: 70px;
+//     width: 1px;
+//     border-color: $gray-700 !important;
+// }
+.navbar {
+    padding: 0;
+    min-width: 1069px;
+}
+
+.navbar .border-right {
+    border-right: 1px solid $gray-700 !important;
+}
+
+.navbar .border-left {
+    border-left: 1px solid $gray-700 !important;
 }
 
 .btn-warning {
@@ -42,10 +53,6 @@ $styles: (italic, normal);
     flex-wrap: inherit;
     align-items: center;
     justify-content: space-between;
-}
-
-.navbar {
-    padding: 0;
 }
 
 .text-end {
@@ -86,4 +93,27 @@ $styles: (italic, normal);
     margin-left: 25px;
     margin-right: 25px;
     margin: 14px 25px 0px 25px;
+}
+
+// Left menu bar
+.link-dark {
+    color: $gray-900;
+}
+
+.nav-pills i {
+    font-size: $h5-font-size;
+}
+
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    color: $gray-900;
+    background-color: $active-item-bg;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+}
+
+.navbar-toggler {
+    color: $primary !important;
 }

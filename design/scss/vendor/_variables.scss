@@ -15,6 +15,11 @@ $orange: #F89406;
 // scss-docs-end colors-map
 // scss-docs-start theme-color-variables
 $primary: $blue;
+$warning: $orange;
 $active-item-bg: #DFEEF9;
 $link-color: $primary;
 $link-hover-color: #319ED4;
+// $link-shade-percentage: 20%;
+// $btn-link-hover-color: shift-color($link-color, $link-shade-percentage);
+// New
+$btn-warning-hover: #E17E09;

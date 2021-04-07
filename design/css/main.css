@@ -9080,7 +9080,7 @@ button.vc-header:focus {
   margin-left: 0.5rem !important;
 }
 
-.m-3, .vc-header__license-button {
+.m-3 {
   margin: 1rem !important;
 }
 
@@ -9090,7 +9090,8 @@ button.vc-header:focus {
 }
 
 .mr-3,
-.mx-3 {
+.mx-3,
+.vc-header__license-button {
   margin-right: 1rem !important;
 }
 
@@ -9100,7 +9101,8 @@ button.vc-header:focus {
 }
 
 .ml-3,
-.mx-3 {
+.mx-3,
+.vc-header__license-button {
   margin-left: 1rem !important;
 }
 
@@ -9183,7 +9185,8 @@ button.vc-header:focus {
 }
 
 .pt-1,
-.py-1 {
+.py-1,
+.vc-header__account {
   padding-top: 0.25rem !important;
 }
 
@@ -9196,7 +9199,8 @@ button.vc-header:focus {
 }
 
 .pb-1,
-.py-1 {
+.py-1,
+.vc-header__account {
   padding-bottom: 0.25rem !important;
 }
 
@@ -9214,7 +9218,7 @@ button.vc-header:focus {
 
 .pt-2,
 .py-2,
-.vc-header__account,
+.vc-header__license-text,
 .vc-main-menu__nav-pills .vc-nav-link,
 .vc-main-menu__nav-pills .vc-nav-link__icon,
 .vc-main-menu__nav-pills .vc-nav-link-active,
@@ -9230,7 +9234,7 @@ button.vc-header:focus {
 
 .pb-2,
 .py-2,
-.vc-header__account,
+.vc-header__license-text,
 .vc-main-menu__nav-pills .vc-nav-link,
 .vc-main-menu__nav-pills .vc-nav-link__icon,
 .vc-main-menu__nav-pills .vc-nav-link-active,
@@ -9250,7 +9254,8 @@ button.vc-header:focus {
 
 .pt-3,
 .py-3,
-.vc-header__license-text,
+.vc-header__version,
+.vc-header__action-icon,
 .vc-main-menu {
   padding-top: 1rem !important;
 }
@@ -9267,7 +9272,8 @@ button.vc-header:focus {
 
 .pb-3,
 .py-3,
-.vc-header__license-text,
+.vc-header__version,
+.vc-header__action-icon,
 .vc-main-menu {
   padding-bottom: 1rem !important;
 }
@@ -9287,9 +9293,7 @@ button.vc-header:focus {
 }
 
 .pt-4,
-.py-4,
-.vc-header__version,
-.vc-header__action-icon {
+.py-4 {
   padding-top: 1.5rem !important;
 }
 
@@ -9300,9 +9304,7 @@ button.vc-header:focus {
 }
 
 .pb-4,
-.py-4,
-.vc-header__version,
-.vc-header__action-icon {
+.py-4 {
   padding-bottom: 1.5rem !important;
 }
 
@@ -11193,10 +11195,21 @@ body {
   border-color: #F89406;
 }
 
+.btn-warning:hover, .vc-header__license-button:hover {
+  color: #fff;
+  background: #E17E09;
+  border-color: #E17E09;
+}
+
 .btn-primary {
   color: #fff;
   background-color: #43B0E6;
   border-color: #43B0E6;
+}
+
+.btn-primary:hover {
+  background: #319ED4;
+  border-color: #319ED4;
 }
 
 .bg-dark, .vc-header {
@@ -11246,12 +11259,14 @@ body {
   display: block;
 }
 
+.navbar .dropdown-toggle, .vc-header .dropdown-toggle, .navbar .vc-header__account__user-block, .vc-header .vc-header__account__user-block {
+  font-size: 0.9rem;
+}
+
 .navbar .dropdown-toggle::after, .vc-header .dropdown-toggle::after, .navbar .vc-header__account__user-block::after, .vc-header .vc-header__account__user-block::after {
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
-  font-style: normal;
-  font-variant: normal;
   text-rendering: auto;
   line-height: 1;
   content: "\f078";
@@ -11260,10 +11275,7 @@ body {
   font-weight: 900;
   border: 0;
   color: #838D9A;
-  margin-top: 14px;
-  margin-left: 25px;
-  margin-right: 25px;
-  margin: 14px 25px 0px 25px;
+  margin: 0.7rem 1.2rem 0 1.2rem;
 }
 
 .link-dark, .vc-header__account__user-block, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-active {
@@ -11305,6 +11317,7 @@ body {
 
 .vc-header__version {
   border-right: 1px solid #495057;
+  line-height: 1.5rem;
 }
 
 .vc-header__action-icon {

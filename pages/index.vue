@@ -25,9 +25,9 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { VcBlade } from '../components/organisms'
-import { useNavigation } from '../libs/navigation'
 import VcItemBlade from './catalog/VcItemBlade.vue'
+import { VcBlade } from '~/components/organisms'
+import { useNavigation } from '~/libs/navigation'
 // TODO: find solution hot to register all blades components automaticaly
 Vue.component('VcItemBlade', VcItemBlade)
 

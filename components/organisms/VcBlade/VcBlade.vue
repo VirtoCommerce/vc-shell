@@ -32,9 +32,9 @@
 </template>
 <script>
 import Vue from 'vue'
-import { VcIcon } from '../../atoms'
 import VcBladeHeader from './internal/VcBladeHeader'
 import VcBladeToolbar from './internal/VcBladeToolbar'
+import { VcIcon } from '~/components/atoms'
 
 Vue.component('VcBladeHeader', VcBladeHeader)
 Vue.component('VcBladeToolbar', VcBladeToolbar)
@@ -43,6 +43,7 @@ export default {
   name: 'VcBlade',
   components: { VcBladeHeader, VcIcon, VcBladeToolbar },
   props: {
+    // TODO: replace the blade parameter to set of properties that have basic types
     blade: {
       type: Object,
       default() {

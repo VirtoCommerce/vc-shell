@@ -1,5 +1,5 @@
 <template>
-  <font-awesome-icon :icon="icon" :size="size" />
+  <i :class="['fas', icon]"> </i>
 </template>
 <script>
 export default {
@@ -7,12 +7,7 @@ export default {
   props: {
     icon: {
       type: String,
-      default: 'ban',
-    },
-    size: {
-      type: String,
-      default: 'lg',
-      required: false,
+      default: 'fa-ban',
     },
   },
   computed: {},

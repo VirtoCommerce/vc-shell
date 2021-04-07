@@ -1,0 +1,46 @@
+@import "../../custom.scss";
+
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
+    color: $gray-900;
+    background-color: $active-item-bg;
+}
+
+.nav-pills .nav-link {
+    border-radius: 0;
+}
+
+.navbar-toggler {
+    color: $primary !important;
+}
+
+
+.vc-main-menu {
+    @extend .d-flex, .flex-column, .py-3, .bg-light;
+    width: 205px;
+    &__nav-pills {
+        @extend .nav, .nav-pills, .flex-column, .mb-auto;
+        .vc-nav-link {
+            @extend .nav-link, .link-dark, .py-2;
+            &:hover {
+                color: $link-hover-color;
+            }
+            &__icon {
+                @extend .px-1, .py-2;
+                font-size: $h5-font-size;
+            }
+        }
+        .vc-nav-link-active {
+            @extend .nav-link, .link-dark, .py-2, .active;
+            &__icon {
+                @extend .px-1, .py-2;
+            }
+        }
+        .vc-nav-link-toggler {
+            @extend .nav-link, .py-0, .px-4, .navbar-toggler;
+            &__icon {
+                @extend .px-1, .py-2;
+            }
+        }
+    }
+}

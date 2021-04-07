@@ -1,0 +1,46 @@
+@import "../../custom.scss";
+.vc-header {
+    @extend .p-0, .px-3, .text-white, .navbar, .navbar-expand, .navbar-dark, .bg-dark;
+    // padding: 0;
+    // min-width: 1069px;
+    &__logo {
+        @extend .d-flex, .align-items-center, .mb-2, .mb-lg-0, .text-white, .text-decoration-none;
+    }
+    &__version {
+        @extend .px-3, .py-4, .text-muted, .small;
+        border-right: 1px solid $gray-700;
+    }
+    &__license-text {
+        @extend .px-3, .py-3, .small;
+    }
+    &__license-button {
+        @extend .btn, .m-3, .btn-sm, .px-3, .mr-auto;
+        color: $white;
+        background-color: $orange;
+        border-color: $orange;
+    }
+    &__action-icon {
+        @extend .px-3, .py-4;
+        border-left: 1px solid $gray-700;
+    }
+    &__account {
+        @extend .flex-shrink-0, .dropdown, .py-2;
+        border-left: 1px solid $gray-700;
+        &__user-block {
+            @extend .d-flex, .link-dark, .text-decoration-none, .dropdown-toggle, .show;
+        }
+        &__dropdown {
+            @extend .dropdown-menu, .shadow;
+        }
+        &__user-name {
+            color: $white;
+            line-height: 1.2;
+        }
+        
+        &__user-role {
+            color: $gray-500;
+            display: block;
+            line-height: 1.2;
+        }
+    }    
+}

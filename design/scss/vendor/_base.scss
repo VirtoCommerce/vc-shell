@@ -255,7 +255,7 @@ body {
     @extend .w-100;
     height: calc(100vh - 54px);
     &__blade {
-        border-right: 1px #EAEDF3 solid;
+        border-right: 1px $content-border-color solid;
         @extend .mx-0;
         @extend .px-0;
         @extend .overflow-hidden;
@@ -362,4 +362,56 @@ body {
         display: block;
         font-size: 0.7rem;
     }
+}
+
+// LIST - Divs
+.vc-list {
+    @extend .bg-white;
+    //@extend .px-3;
+}
+
+.vc-list-row {
+    @extend .media;
+    cursor: pointer;
+    border-bottom: 1px solid $content-border-color;
+    @extend .py-3;
+    @extend .px-2;
+    &:hover {
+        background: #EFF7FC;
+    }
+    &__menu {
+        color: $primary;
+        font-size: 1.2rem;
+        vertical-align: middle;
+        @extend .py-1;
+        @extend .px-2;
+    }
+    &__row-icon {
+        font-size: 2rem;
+        line-height: 1.7rem;
+        color: $gray-500;
+        vertical-align: middle;
+        @extend .py-0;
+        @extend .px-2;
+    }
+    &__text-container {
+        vertical-align: middle;
+        @extend .media-body;
+        @extend .py-1;
+        @extend .px-2;
+    }
+    &__end-row {
+        color: $gray-500;
+        @extend .pt-1;
+        @extend .px-2;
+    }
+}
+
+.vc-list-row__text-container .row-text {
+    color: $gray-800;
+    line-height: 1.5rem;
+    @extend .d-flex;
+    @extend .justify-content-between;
+    @extend .align-items-center;
+    @extend .w-100;
 }

@@ -4,8 +4,9 @@
 // consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 // Color system
 // scss-docs-start gray-color-variables
-$gray-500: #838D9A;
+$gray-500: #A5A5A5;
 $gray-600: #6c757d;
+$gray-800: #333333;
 $gray-900: #161D25;
 // scss-docs-end gray-colors-map
 // fusv-enable
@@ -23,3 +24,4 @@ $link-hover-color: #319ED4;
 // $btn-link-hover-color: shift-color($link-color, $link-shade-percentage);
 // New
 $btn-warning-hover: #E17E09;
+$content-border-color: #EAEDF3;

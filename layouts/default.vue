@@ -2,7 +2,10 @@
   <div class="container-fluid d-flex flex-column flex-fill px-0">
     <div class="row no-gutters">
       <div class="col">
-        <VcHeader></VcHeader>
+        <VcHeader
+          version="3.0.0"
+          :logo="require('~/assets/img/logo.svg')"
+        ></VcHeader>
       </div>
     </div>
     <div class="row no-gutters align-items-stretch h-100">
@@ -17,8 +20,8 @@
 </template>
 
 <script lang="ts">
-import { VcHeader, VcMainMenu } from '../components/organisms'
-import { useNavigation } from '../libs/navigation'
+import { VcHeader, VcMainMenu } from '~/components/organisms'
+import { useNavigation } from '~/libs/navigation'
 
 export default {
   components: {

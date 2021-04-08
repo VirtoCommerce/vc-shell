@@ -8,8 +8,8 @@ const blades: Ref<BladeInfo[]> = ref([
     subtitle: 'my cool subtitle',
     component: 'VcBlade',
     menuItems: [
-      { id: 'addBlade', icon: 'check', title: 'add new blade' },
-      { id: 'doUsefull', icon: 'cog', title: 'do some usefull' },
+      { id: 'addBlade', icon: 'fa-check', title: 'add new blade' },
+      { id: 'doUsefull', icon: 'fa-cog', title: 'do some usefull' },
     ],
   },
 ])
@@ -18,12 +18,12 @@ const mainMenuItems: Ref<MainMenuItem[]> = ref([
   {
     id: 'home',
     title: 'Home',
-    icon: 'home',
+    icon: 'fa-home',
   },
   {
     id: 'catalog',
     title: 'Digital catalog',
-    icon: 'cog',
+    icon: 'fa-cog',
   },
 ])
 export default () => {

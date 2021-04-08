@@ -17,7 +17,7 @@ export default {
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
-  css: ['@/assets/scss/custom.scss'],
+  css: ['@/assets/scss/custom.scss', '@/node_modules/@fortawesome/fontawesome-free/css/all.css'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -29,37 +29,11 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/typescript
     '@nuxt/typescript-build',
-    '@nuxtjs/fontawesome',
     '@nuxtjs/composition-api',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [
-    [
-      '@nuxtjs/fontawesome',
-      {
-        imports: [
-          {
-            set: '@fortawesome/free-solid-svg-icons',
-            icons: [
-              'faCog',
-              'faFolder',
-              'faWindowMaximize',
-              'faTimes',
-              'faCalendar',
-              'faHome',
-              'faCircle',
-              'faCheck',
-              'faBars',
-            ],
-          },
-        ],
-        icons: {
-          solid: true,
-        },
-      },
-    ],
-  ],
+  modules: [],
 
   // specify module rules for css and scss
   module: {

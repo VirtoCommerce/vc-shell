@@ -6,7 +6,7 @@
   </a>
 </template>
 <script>
-import { VcLink } from '../../atoms'
+import { VcLink } from '~/components/atoms'
 export default {
   name: 'VcMenuItem',
   components: { VcLink },

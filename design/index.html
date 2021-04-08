@@ -34,7 +34,7 @@
         </div>
 
 
-        <button aria-haspopup="true" aria-expanded="false" type="button" class="btn vc-header__account" id="__BVID__14__BV_toggle_">
+        <!-- <button aria-haspopup="true" aria-expanded="false" type="button" class="btn vc-header__account" id="__BVID__14__BV_toggle_">
 
             <a href="#" data-bs-toggle="dropdown" aria-expanded="true" class="vc-header__account__user-block">
               <img src="assets/userpic.svg" width="40" height="40" class="userpic">
@@ -50,8 +50,30 @@
                 <li role="presentation">
                 <a role="menuitem" href="#" target="_self" class="dropdown-item">Another item</a></li>
               </ul>
-        </button>
+        </button> -->
 
+
+        <!-- NEW -->
+        <div class="dropdown b-dropdown btn-group" id="__BVID__48">
+            <button aria-haspopup="true" aria-expanded="false" type="button" class="btn vc-header__account" id="__BVID__48__BV_toggle_">
+               <a href="#" data-bs-toggle="dropdown" aria-expanded="true" class="vc-header__account__user-block">
+              <img src="assets/userpic.svg" width="40" height="40" class="userpic">
+              <span class="account-user__info">
+                  <span class="account-user__name">admin</span>
+                  <span class="account-user__role">Administrator</span>
+              </span>
+            </a>
+            </button>
+
+
+
+            <ul role="menu" tabindex="-1" class="dropdown-menu vc-header__account__dropdown" aria-labelledby="__BVID__48__BV_toggle_" style="">
+                <li role="presentation"><a role="menuitem" href="#" target="_self" class="dropdown-item">An item</a></li>
+                <li role="presentation"><a role="menuitem" href="#" target="_self" class="dropdown-item">Another item</a></li>
+            </ul>
+        </div>
+
+        <!-- -->
 
 
         </div>
@@ -190,12 +212,28 @@
                                       <i class="menu-btn__ico fa fa-sync-alt"></i>
                                       <span class="menu-btn__text">Refresh</span>
                                 </button></li>
-
                                 <li class="menu-item">
                                     <button class="menu-btn">
                                   <i class="menu-btn__ico fas fa-plus"></i>
                                   <span class="menu-btn__text">Add</span>
-
+                                  </button>
+                                </li>
+                                <li class="menu-item">
+                                    <button class="menu-btn">
+                                  <i class="menu-btn__ico fas fa-trash-alt"></i>
+                                  <span class="menu-btn__text">Delete</span>
+                                  </button>
+                                </li>
+                                <li class="menu-item">
+                                    <button class="menu-btn">
+                                  <i class="menu-btn__ico fas fa-download"></i>
+                                  <span class="menu-btn__text">Import</span>
+                                  </button>
+                                </li>
+                                <li class="menu-item">
+                                    <button class="menu-btn">
+                                  <i class="menu-btn__ico fas fa-upload"></i>
+                                  <span class="menu-btn__text">Export</span>
                                   </button>
                                 </li>
                             </ul>

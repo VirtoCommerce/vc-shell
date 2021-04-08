@@ -219,7 +219,6 @@ body {
     background-color: $active-item-bg;
     @extend .nav-link;
     @extend .py-2;
-    //@extend .mx-2;
     @extend .active;
     &__icon {
         @extend .px-1;
@@ -257,6 +256,12 @@ body {
     }
 }
 
+@mixin button-icon {
+    @extend .border-0;
+    @extend .bg-transparent;
+    color: $white;
+}
+
 .vc-content .blade-head {
     background: #465769;
 }
@@ -289,6 +294,7 @@ body {
     text-align: center !important;
 }
 
+//Blade Title
 .vc-content .blade-t {
     @extend .py-2;
     @extend .px-1;
@@ -316,12 +322,7 @@ body {
     }
 }
 
-@mixin button-icon {
-    @extend .border-0;
-    @extend .bg-transparent;
-    color: $white;
-}
-
+//Toolbar
 .vc-content__blade .blade-head .blade-toolbar {
     border-top: 1px #6B7987 solid;
     @extend .pt-1;
@@ -340,13 +341,12 @@ body {
     @include button-icon;
     @extend .d-block;
     cursor: pointer;
-    //font-weight: 300;
     padding: 0 10px;
     position: relative;
     text-align: center;
     &__ico {
         display: block;
-        font-size: 0.9rem;
+        font-size: 1rem;
         margin: 0 0 3px;
     }
     &__text {

@@ -56,57 +56,94 @@
         </div>
     </nav>
 
-    <!-- Left menu bar -->
+    <div class="container-fluid">
+        <div class="row">
 
-    <div class="vc-main-menu">
 
-        <ul class="vc-main-menu__nav-pills">
-            <li>
-                <a href="#" class="vc-nav-link-toggler">
-                    <i class="fas vc-nav-link-toggler__icon fa-bars"></i>
-                </a>
-            </li>
+            <!-- Left menu bar -->
 
-            <li>
-                <a href="#" class="vc-nav-link">
-                    <i class="fas vc-nav-link__icon fa-home"></i> Home
-                </a>
-            </li>
-            <li>
-                <a href="#" class="vc-nav-link-active">
-                    <i class="fas vc-nav-link__icon fa-folder"></i> Catalog
-                </a>
-            </li>
-            <li>
-                <a href="#" class="vc-nav-link">
-                    <i class="fas vc-nav-link__icon fa-flag"></i> Marketing
-                </a>
-            </li>
-            <li>
-                <a href="#" class="vc-nav-link">
-                    <i class="fas vc-nav-link__icon fa-image"></i> Thumbnails
-                </a>
-            </li>
-            <li>
-                <a href="#" class="vc-nav-link">
-                    <i class="fas vc-nav-link__icon fa-archive"></i> Stores
-                </a>
-            </li>
-            <li>
-                <a href="#" class="vc-nav-link">
-                    <i class="fas vc-nav-link__icon fa-ellipsis-h"></i> More
-                </a>
-            </li>
-        </ul>
+            <div class="vc-main-menu">
 
+                <ul class="vc-main-menu__nav-pills">
+                    <li>
+                        <a href="#" class="vc-nav-link-toggler">
+                            <i class="fas vc-nav-link-toggler__icon fa-bars"></i>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#" class="vc-nav-link">
+                            <i class="fas vc-nav-link__icon fa-home"></i> Home
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="vc-nav-link-active">
+                            <i class="fas vc-nav-link__icon fa-folder"></i> Catalog
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="vc-nav-link">
+                            <i class="fas vc-nav-link__icon fa-flag"></i> Marketing
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="vc-nav-link">
+                            <i class="fas vc-nav-link__icon fa-image"></i> Thumbnails
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="vc-nav-link">
+                            <i class="fas vc-nav-link__icon fa-archive"></i> Stores
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="vc-nav-link">
+                            <i class="fas vc-nav-link__icon fa-ellipsis-h"></i> More
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+
+
+            <!-- MAIN CONTENT -->
+
+            <main role="main" class="vc-content flex-md-equal">
+
+                <div class="vc-content__blade">
+                    <div class="blade-head">
+                        <div class="blade-nav">
+                            <ul class="menu__inline">
+                                <li class="menu-item menu-item__minimize">
+                                    <a href="#"><i class="fas menu-item__icon fa-window-minimize"></i></a>
+                                </li>
+                                <li class="menu-item menu-item__maximize">
+                                    <a href="#"><i class="far menu-item__icon fa-window-maximize"></i></a>
+                                </li>
+                                <li class="menu-item menu-item__close">
+                                    <a href="#"><i class="fas menu-item__icon fa-times"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <p>Примеси хороши уже сами по себе, поскольку оптимизируют стилевой код. Но часто требуется вызывать несколько раз похожий фрагмент кода, который различается лишь одним-двумя значениями. Тогда нам опять помогут примеси, потому что они
+                        могут включать в себя параметры, а их значения подставляются в заданных местах кода. Получается</p>
+                </div>
+
+                <div class="vc-content__blade">
+                    <p> Включать в себя параметры, а их значения подставляются в заданных местах кода. Получается, что написав один раз примесь, мы можем вызывать её неоднократно, лишь меняя значения параметров. В примере ниже мы создаём примесь с именемbox,
+                        у которой три параметра с именами $width, $color и $bg. Для параметра $bg зададим также значение по умолчанию, тогда не придётся указывать его в обязательном порядке. Далее к селектору добавляем примесь через команду @include.
+                        Внутри скобок пишем желаемые значения, их может быть три или два, ведь цвет фона задан по умолчанию.</p>
+                </div>
+            </main>
+
+
+        </div>
+        <!-- End of Row -->
     </div>
+    <!-- End of Container-fluid -->
 
-    <!-- <div style="margin-top: 50px;">
-        <h2>Test elements</h2><br>
-        <button class="btn btn-default" type="submit">Button</button>
-        <button class="btn btn-primary" type="submit">Button</button>
-        <button class="btn btn-warning" type="submit">Button</button>
-    </div> -->
 
 </body>
 

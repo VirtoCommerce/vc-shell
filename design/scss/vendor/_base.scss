@@ -104,6 +104,7 @@ body {
     @extend .dropdown;
     @extend .p-0;
     @extend .my-0;
+    @extend .rounded-0;
     border: 0;
     border-left: 1px solid $gray-700;
     &__user-block {

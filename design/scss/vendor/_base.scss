@@ -280,13 +280,15 @@ body {
 }
 
 .vc-content .blade-nav .menu-item {
-    @extend .px-1;
+    @extend .px-0;
 }
 
-.vc-content .blade-nav .menu-item a {
-    display: block;
-    height: 22px;
-    width: 22px;
+.vc-content .blade-nav .menu-item button {
+    @include button-icon;
+    @extend .d-block;
+    cursor: pointer;
+    position: relative;
+    text-align: center;
 }
 
 .vc-content .blade-nav .menu__inline .menu-item .menu-item__icon {

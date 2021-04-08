@@ -1,26 +1,23 @@
 <template>
-  <div class="container-fluid px-0">
-    <div class="row no-gutters align-items-stretch h-100">
-      <div v-for="blade in blades" :key="blade.id">
-        <component
-          :is="blade.component"
-          :blade="blade"
-          @click:close="closeBlade(blade)"
+  <main role="main" class="vc-content flex-md-equal">
+    <component
+      :is="blade.component"
+      v-for="blade in blades"
+      :key="blade.id"
+      :blade="blade"
+      @click:close="closeBlade(blade)"
+    >
+      <div class="h-100 d-flex align-items-center">
+        <button
+          type="button"
+          class="btn btn-primary mx-auto"
+          @click="createAndOpenNewBlade"
         >
-          <div class="bg-light h-100 d-flex align-items-center">
-            <button
-              type="button"
-              class="btn btn-primary mx-auto"
-              @click="createAndOpenNewBlade"
-            >
-              Click me
-            </button>
-          </div>
-        </component>
+          Click me
+        </button>
       </div>
-      <div class="col"></div>
-    </div>
-  </div>
+    </component>
+  </main>
 </template>
 
 <script lang="ts">

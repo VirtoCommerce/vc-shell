@@ -1,15 +1,16 @@
 <template>
-  <a class="list-group-item list-group-item-action font-weight-bold p-0">
-    <VcLink :icon="icon" size="lg">
-      <span class="ml-2">{{ title }}</span>
-    </VcLink>
-  </a>
+  <li class="menu-item">
+    <button class="menu-btn">
+      <VcIcon :icon="icon" size="lg"></VcIcon>
+      <span class="menu-btn__text">{{ title }}</span>
+    </button>
+  </li>
 </template>
 <script>
-import { VcLink } from '~/components/atoms'
+import { VcIcon } from '~/components/atoms'
 export default {
   name: 'VcMenuItem',
-  components: { VcLink },
+  components: { VcIcon },
   props: {
     icon: {
       type: String,

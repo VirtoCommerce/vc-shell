@@ -1,13 +1,30 @@
 <template>
-  <div :class="['p-1', 'blade', 'bs-sm']">
-    <div class="blade-header">
-      <div class="blade-header-bar d-flex justify-content-end w-100">
-        <button class="btn btn-sm btn-maximize btn-maximize">
-          <VcIcon icon="window-maximize" class="text-light"> </VcIcon>
-        </button>
-        <button class="btn btn-sm btn-close btn-close" @click.prevent="onClose">
-          <VcIcon icon="times" class="text-light"> </VcIcon>
-        </button>
+  <div class="vc-content__blade">
+    <div class="blade-head">
+      <div class="blade-nav">
+        <ul class="menu__inline">
+          <li class="menu-item menu-item__minimize">
+            <button type="button">
+              <VcIcon
+                icon="fa-window-minimize"
+                class="menu-item__icon"
+              ></VcIcon>
+            </button>
+          </li>
+          <li class="menu-item menu-item__maximize">
+            <button type="button">
+              <VcIcon
+                icon="fa-window-maximize"
+                class="menu-item__icon"
+              ></VcIcon>
+            </button>
+          </li>
+          <li class="menu-item menu-item__close">
+            <button type="button" @click.prevent="onClose">
+              <VcIcon icon="fa-times" class="menu-item__icon"></VcIcon>
+            </button>
+          </li>
+        </ul>
       </div>
       <slot name="header">
         <VcBladeHeader
@@ -16,15 +33,13 @@
           :subtitle="blade.subtitle"
         ></VcBladeHeader>
       </slot>
-    </div>
-    <div>
       <slot name="toolbar">
         <VcBladeToolbar :items="blade.menuItems" />
       </slot>
     </div>
-    <div class="card-body border p-1 container-fluid" style="height: 30rem">
-      <slot />
-    </div>
+
+    <slot />
+
     <div class="blade-footer">
       <slot name="footer"></slot>
     </div>
@@ -41,7 +56,7 @@ Vue.component('VcBladeToolbar', VcBladeToolbar)
 
 export default {
   name: 'VcBlade',
-  components: { VcBladeHeader, VcIcon, VcBladeToolbar },
+  components: { VcBladeHeader, VcBladeToolbar, VcIcon },
   props: {
     // TODO: replace the blade parameter to set of properties that have basic types
     blade: {
@@ -59,4 +74,6 @@ export default {
   },
 }
 </script>
-<style lang="scss"></style>
+<style lang="scss">
+@import '~/assets/scss/components/organisms/VcBlade.scss';
+</style>

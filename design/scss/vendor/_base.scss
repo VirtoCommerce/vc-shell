@@ -322,21 +322,35 @@ body {
     color: $white;
 }
 
+.vc-content__blade .blade-head .blade-toolbar {
+    border-top: 1px #6B7987 solid;
+    @extend .pt-1;
+}
+
 .vc-content__blade .blade-head .blade-toolbar .menu__inline {
     list-style-type: none;
     @extend .d-flex;
     @extend .justify-content-start;
     @extend .py-1;
+    @extend .px-2;
     @extend .my-0;
 }
 
 .vc-content__blade .blade-head .blade-toolbar .menu-btn {
     @include button-icon;
+    @extend .d-block;
     cursor: pointer;
-    font-size: 11px;
-    font-weight: 300;
-    display: block;
+    //font-weight: 300;
     padding: 0 10px;
     position: relative;
     text-align: center;
+    &__ico {
+        display: block;
+        font-size: 0.9rem;
+        margin: 0 0 3px;
+    }
+    &__text {
+        display: block;
+        font-size: 0.7rem;
+    }
 }

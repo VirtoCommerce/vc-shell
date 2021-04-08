@@ -100,7 +100,8 @@ body {
 }
 
 .vc-header__account {
-    @extend .flex-shrink-0;
+    @extend .d-flex;
+    //@extend .flex-shrink-0;
     @extend .dropdown;
     @extend .p-0;
     @extend .my-0;
@@ -110,13 +111,19 @@ body {
     &__user-block {
         @extend .d-flex;
         @extend .text-decoration-none;
-        @extend .dropdown-toggle;
+        //@extend .dropdown-toggle;
         @extend .show;
     }
     &__dropdown {
         @extend .dropdown-menu;
         @extend .shadow;
     }
+}
+
+.vc-header__account .btn-secondary {
+    @extend .border-0;
+    @extend .bg-transparent;
+    @extend .d-flex;
 }
 
 .vc-header__account .dropdown-toggle {

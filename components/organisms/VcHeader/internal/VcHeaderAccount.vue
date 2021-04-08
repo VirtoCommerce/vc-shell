@@ -1,23 +1,27 @@
 <template>
-  <div class="vc-header__account">
-    <a
-      href="#"
-      class="vc-header__account__user-block"
-      data-bs-toggle="dropdown"
-      aria-expanded="true"
-    >
-      <VcImage
-        :src="avatar"
-        width="48"
-        height="48"
-        class="rounded-circle mx-3"
-      />
-      <span class="account-user__info">
-        <span class="vc-header__account__user-name">{{ name }}</span>
-        <span class="vc-header__account__user-role">{{ role }}</span>
-      </span>
-    </a>
-  </div>
+  <b-dropdown class="vc-header__account">
+    <template #button-content>
+      <a
+        href="#"
+        class="vc-header__account__user-block"
+        data-bs-toggle="dropdown"
+        aria-expanded="true"
+      >
+        <VcImage
+          :src="avatar"
+          width="48"
+          height="48"
+          class="rounded-circle mx-3"
+        />
+        <span class="account-user__info">
+          <span class="account-user__name">{{ name }}</span>
+          <span class="account-user__role">{{ role }}</span>
+        </span>
+      </a>
+    </template>
+    <b-dropdown-item href="#">User profile</b-dropdown-item>
+    <b-dropdown-item href="#">Logout</b-dropdown-item>
+  </b-dropdown>
 </template>
 <script>
 import { VcImage } from '~/components/atoms'

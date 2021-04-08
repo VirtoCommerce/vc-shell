@@ -1,46 +1,144 @@
 @import "../../custom.scss";
+
+
+>.container,
+.navbar>.container-fluid,
+.navbar>.container-lg,
+.navbar>.container-md,
+.navbar>.container-sm,
+.navbar>.container-xl,
+.navbar>.container-xxl {
+    display: flex;
+    flex-wrap: inherit;
+    align-items: center;
+    justify-content: space-between;
+}
+
+//VC components styles
 .vc-header {
-    @extend .p-0, .px-3, .text-white, .navbar, .navbar-expand, .navbar-dark, .bg-dark;
-    // padding: 0;
-    // min-width: 1069px;
+    @extend .p-0;
+    @extend .px-3;
+    @extend .text-white;
+    @extend .navbar;
+    @extend .navbar-expand;
+    @extend .navbar-dark;
+    @extend .bg-dark;
     &__logo {
-        @extend .d-flex, .align-items-center, .mb-2, .mb-lg-0, .text-white, .text-decoration-none;
+        @extend .d-flex;
+        @extend .align-items-center;
+        @extend .mb-2;
+        @extend .mb-lg-0;
+        @extend .text-white;
+        @extend .text-decoration-none;
     }
     &__version {
-        @extend .px-3, .py-4, .text-muted, .small;
+        color: $gray-500 !important;
+        display: block;
+        @extend .px-3;
+        @extend .py-3;
+        @extend .small;
         border-right: 1px solid $gray-700;
+        line-height: 1.5rem;
     }
     &__license-text {
-        @extend .px-3, .py-3, .small;
+        @extend .px-3;
+        @extend .py-2;
+        @extend .small;
     }
     &__license-button {
-        @extend .btn, .m-3, .btn-sm, .px-3, .mr-auto;
-        color: $white;
-        background-color: $orange;
-        border-color: $orange;
+        @extend .btn;
+        @extend .mx-3;
+        @extend .btn-warning;
+        @extend .btn-sm;
+        @extend .px-3;
+        @extend .mr-auto;
     }
     &__action-icon {
-        @extend .px-3, .py-4;
+        @extend .px-3;
+        @extend .py-3;
         border-left: 1px solid $gray-700;
     }
-    &__account {
-        @extend .flex-shrink-0, .dropdown, .py-2;
-        border-left: 1px solid $gray-700;
-        &__user-block {
-            @extend .d-flex, .link-dark, .text-decoration-none, .dropdown-toggle, .show;
-        }
-        &__dropdown {
-            @extend .dropdown-menu, .shadow;
-        }
-        &__user-name {
-            color: $white;
-            line-height: 1.2;
-        }
-        
-        &__user-role {
-            color: $gray-500;
-            display: block;
-            line-height: 1.2;
-        }
-    }    
+}
+
+.vc-header__account {
+    @extend .d-flex;
+    //@extend .flex-shrink-0;
+    @extend .dropdown;
+    @extend .p-0;
+    @extend .my-0;
+    @extend .rounded-0;
+    border: 0;
+    border-left: 1px solid $gray-700;
+    &__user-block {
+        @extend .d-flex;
+        @extend .text-decoration-none;
+        //@extend .dropdown-toggle;
+        @extend .show;
+    }
+    &__dropdown {
+        @extend .dropdown-menu;
+        @extend .shadow;
+    }
+}
+
+.vc-header__account .btn-secondary {
+    @extend .border-0;
+    @extend .bg-transparent;
+    @extend .d-flex;
+}
+
+.vc-header__account .dropdown-toggle {
+    font-size: 0.9rem;
+    @extend .mt-2;
+    @extend .px-0;
+    &::after {
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        display: inline-block;
+        text-rendering: auto;
+        line-height: 1;
+        content: "\f078";
+        font-family: "Font Awesome 5 Free";
+        font-size: 1.1rem;
+        font-weight: 900;
+        border: 0;
+        color: $gray-500;
+        margin: 0.9rem 0.2rem 0 1rem;
+    }
+}
+
+.vc-header__account__dropdown {
+    position: absolute;
+    transform: translate3d(0px, 62px, 0px);
+    top: 0px;
+    left: 0px;
+    will-change: transform;
+}
+
+.vc-header__account .vc-header__account__user-block {
+    padding-top: 0 !important;
+    margin-top: 0.15rem !important;
+}
+
+.vc-header__account .vc-header__account__user-block img.userpic {
+    @extend .rounded-circle;
+    @extend .mx-3;
+    @extend .my-1;
+}
+
+.vc-header__account .account-user__info {
+    text-align: left;
+    @extend .py-2;
+}
+
+.vc-header__account .vc-header__account__user-block .account-user__name {
+    color: $white;
+    line-height: 1.2;
+    @extend .d-block;
+}
+
+.vc-header__account .vc-header__account__user-block .account-user__role {
+    color: $gray-500;
+    line-height: 1.2;
+    @extend .d-block;
 }

@@ -1,6 +1,9 @@
 <template>
   <li>
-    <a href="#" class="vc-nav-link">
+    <a
+      href="#"
+      :class="{ 'vc-nav-link-toggler': toggler, 'vc-nav-link': !toggler }"
+    >
       <VcIcon :icon="icon" class="vc-nav-link__icon" />{{ title }}
     </a>
   </li>
@@ -18,6 +21,11 @@ export default {
     title: {
       type: String,
       default: '',
+      required: false,
+    },
+    toggler: {
+      type: Boolean,
+      default: false,
       required: false,
     },
   },

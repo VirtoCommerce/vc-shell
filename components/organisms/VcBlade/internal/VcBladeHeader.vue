@@ -1,24 +1,21 @@
 <template>
-  <div class="text-white d-flex align-items-center px-4 py-2">
-    <VcIcon :icon="icon"> </VcIcon>
-    <h1
-      class="d-inline-block ml-5 mb-0"
-      :class="{ h6: subtitle, h4: !subtitle }"
-    >
-      {{ title }}
-      <span class="blade-subtitle">{{ subtitle }}</span>
-    </h1>
+  <div class="blade-t">
+    <VcIcon :icon="icon" class="blade-t__ico"> </VcIcon>
+    <span class="blade-t__h-text">
+      <span class="blade-t__head"> {{ title }}</span>
+      <span class="blade-t__subhead">{{ subtitle }}</span>
+    </span>
   </div>
 </template>
 <script>
-import { VcIcon } from '../../../atoms'
+import { VcIcon } from '~/components/atoms'
 export default {
   name: 'VcBladeHeader',
   components: { VcIcon },
   props: {
     icon: {
       type: String,
-      default: 'ban',
+      default: 'fa-ban',
     },
     title: {
       type: String,

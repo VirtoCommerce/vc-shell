@@ -53,24 +53,6 @@ body {
     justify-content: space-between;
 }
 
-.navbar .dropdown-toggle {
-    font-size: 0.9rem;
-    &::after {
-        display: inline-block;
-        -webkit-font-smoothing: antialiased;
-        display: inline-block;
-        text-rendering: auto;
-        line-height: 1;
-        content: "\f078";
-        font-family: "Font Awesome 5 Free";
-        font-size: 1.1rem;
-        font-weight: 900;
-        border: 0;
-        color: $gray-500;
-        margin: 0.7rem 1.2rem 0 1.2rem;
-    }
-}
-
 //VC components styles
 .vc-header {
     @extend .p-0;
@@ -120,7 +102,9 @@ body {
 .vc-header__account {
     @extend .flex-shrink-0;
     @extend .dropdown;
-    @extend .py-1;
+    @extend .p-0;
+    @extend .my-0;
+    border: 0;
     border-left: 1px solid $gray-700;
     &__user-block {
         @extend .d-flex;
@@ -134,6 +118,39 @@ body {
     }
 }
 
+.vc-header__account .dropdown-toggle {
+    font-size: 0.9rem;
+    @extend .mt-2;
+    @extend .px-0;
+    &::after {
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        display: inline-block;
+        text-rendering: auto;
+        line-height: 1;
+        content: "\f078";
+        font-family: "Font Awesome 5 Free";
+        font-size: 1.1rem;
+        font-weight: 900;
+        border: 0;
+        color: $gray-500;
+        margin: 0.9rem 0.2rem 0 1rem;
+    }
+}
+
+.vc-header__account__dropdown {
+    position: absolute;
+    transform: translate3d(0px, 62px, 0px);
+    top: 0px;
+    left: 0px;
+    will-change: transform;
+}
+
+.vc-header__account .vc-header__account__user-block {
+    padding-top: 0 !important;
+    margin-top: 0.15rem !important;
+}
+
 .vc-header__account .vc-header__account__user-block img.userpic {
     @extend .rounded-circle;
     @extend .mx-3;
@@ -141,19 +158,20 @@ body {
 }
 
 .vc-header__account .account-user__info {
+    text-align: left;
     @extend .py-2;
 }
 
 .vc-header__account .vc-header__account__user-block .account-user__name {
     color: $white;
-    display: block;
     line-height: 1.2;
+    @extend .d-block;
 }
 
 .vc-header__account .vc-header__account__user-block .account-user__role {
     color: $gray-500;
-    display: block;
     line-height: 1.2;
+    @extend .d-block;
 }
 
 // Left Menu
@@ -230,6 +248,7 @@ body {
     @extend .w-100;
     height: calc(100vh - 54px);
     &__blade {
+        border-right: 1px #EAEDF3 solid;
         @extend .mx-0;
         @extend .px-0;
         @extend .overflow-hidden;
@@ -237,30 +256,86 @@ body {
     }
 }
 
-.blade-nav {
+.vc-content .blade-head {
+    background: #465769;
+}
+
+.vc-content .blade-nav {
     background: #34414F;
     @extend .px-1;
 }
 
-.menu__inline {
+.vc-content .blade-nav .menu__inline {
     list-style-type: none;
     @extend .d-flex;
     @extend .justify-content-end;
-    @extend .py-2;
+    @extend .py-1;
+    @extend .my-0;
 }
 
-.menu-item {
-    //display: inline;
+.vc-content .blade-nav .menu-item {
     @extend .px-1;
 }
 
-.menu-item a {
+.vc-content .blade-nav .menu-item a {
     display: block;
     height: 22px;
     width: 22px;
 }
 
-.menu__inline .menu-item .menu-item__icon {
+.vc-content .blade-nav .menu__inline .menu-item .menu-item__icon {
     color: $white;
     text-align: center !important;
+}
+
+.vc-content .blade-t {
+    @extend .py-2;
+    @extend .px-1;
+    @extend .d-flex;
+    @extend .justify-content-start;
+    &__h-text {
+        @extend .pt-1;
+    }
+    &__ico {
+        color: $white;
+        font-size: 2.5rem;
+        line-height: 2.5rem;
+        @extend .px-3;
+    }
+    &__head {
+        color: $white;
+        line-height: 1.2;
+        @extend .d-block;
+    }
+    &__subhead {
+        color: $gray-500;
+        line-height: 1.2;
+        @extend .small;
+        @extend .d-block;
+    }
+}
+
+@mixin button-icon {
+    @extend .border-0;
+    @extend .bg-transparent;
+    color: $white;
+}
+
+.vc-content__blade .blade-head .blade-toolbar .menu__inline {
+    list-style-type: none;
+    @extend .d-flex;
+    @extend .justify-content-start;
+    @extend .py-1;
+    @extend .my-0;
+}
+
+.vc-content__blade .blade-head .blade-toolbar .menu-btn {
+    @include button-icon;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 300;
+    display: block;
+    padding: 0 10px;
+    position: relative;
+    text-align: center;
 }

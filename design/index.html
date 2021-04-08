@@ -34,25 +34,26 @@
         </div>
 
 
-        <div class="vc-header__account">
-            <a href="#" class="vc-header__account__user-block" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="true">
-                <img src="https://github.com/mdo.png" alt="mdo" width="40" height="40" class="userpic">
-                <span class="account-user__info">
+        <button aria-haspopup="true" aria-expanded="false" type="button" class="btn vc-header__account" id="__BVID__14__BV_toggle_">
+
+            <a href="#" data-bs-toggle="dropdown" aria-expanded="true" class="vc-header__account__user-block">
+              <img src="assets/userpic.svg" width="40" height="40" class="userpic">
+              <span class="account-user__info">
                   <span class="account-user__name">admin</span>
-                <span class="account-user__role">Administrator new</span>
-                </span>
+                  <span class="account-user__role">Administrator</span>
+              </span>
             </a>
 
-            <ul class="vc-header__account__dropdown" aria-labelledby="dropdownUser2" style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate(-110px, 34px);" data-popper-placement="bottom-end">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
-                <li>
-                    <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
-            </ul>
-        </div>
+            <ul role="menu" tabindex="-1" class="vc-header__account__dropdown" aria-labelledby="__BVID__14__BV_toggle_"  x-placement="bottom-start">
+              <li role="presentation">
+                <a role="menuitem" href="#" target="_self" class="dropdown-item">An item</a></li>
+                <li role="presentation">
+                <a role="menuitem" href="#" target="_self" class="dropdown-item">Another item</a></li>
+              </ul>
+        </button>
+
+
+
         </div>
     </nav>
 
@@ -125,16 +126,63 @@
                                 </li>
                             </ul>
                         </div>
+                        <div class="blade-t">
+                            <i class="blade-t__ico fa fa-folder"></i>
+                            <span class="blade-t__h-text">
+                              <span class="blade-t__head">Catalog</span>
+                            <span class="blade-t__subhead">Manage catalogs</span>
+                            </span>
+                        </div>
+
+                        <!-- TOOLBAR-->
+
+                        <div class="blade-toolbar">
+                            <ul class="menu__inline">
+                                <li class="menu-item">
+                                    <button class="menu-btn">
+                                  <i class="menu-ico fa fa-sync-alt"></i>
+                                  Refresh
+                                </button></li>
+
+                                <li class="menu-item">
+                                    <button class="menu-btn">
+                                  <i class="menu-ico fas fa-plus"></i>
+                                  Add
+                                  </button>
+                                </li>
+                            </ul>
+                        </div>
+
                     </div>
 
-                    <p>Примеси хороши уже сами по себе, поскольку оптимизируют стилевой код. Но часто требуется вызывать несколько раз похожий фрагмент кода, который различается лишь одним-двумя значениями. Тогда нам опять помогут примеси, потому что они
-                        могут включать в себя параметры, а их значения подставляются в заданных местах кода. Получается</p>
                 </div>
 
                 <div class="vc-content__blade">
-                    <p> Включать в себя параметры, а их значения подставляются в заданных местах кода. Получается, что написав один раз примесь, мы можем вызывать её неоднократно, лишь меняя значения параметров. В примере ниже мы создаём примесь с именемbox,
-                        у которой три параметра с именами $width, $color и $bg. Для параметра $bg зададим также значение по умолчанию, тогда не придётся указывать его в обязательном порядке. Далее к селектору добавляем примесь через команду @include.
-                        Внутри скобок пишем желаемые значения, их может быть три или два, ведь цвет фона задан по умолчанию.</p>
+                    <div class="blade-head">
+                        <div class="blade-nav">
+                            <ul class="menu__inline">
+                                <li class="menu-item menu-item__minimize">
+                                    <a href="#"><i class="fas menu-item__icon fa-window-minimize"></i></a>
+                                </li>
+                                <li class="menu-item menu-item__maximize">
+                                    <a href="#"><i class="far menu-item__icon fa-window-maximize"></i></a>
+                                </li>
+                                <li class="menu-item menu-item__close">
+                                    <a href="#"><i class="fas menu-item__icon fa-times"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="blade-t">
+                            <i class="blade-t__ico fa fa-folder"></i>
+                            <span class="blade-t__h-text">
+                              <span class="blade-t__head">Desktops</span>
+                            <span class="blade-t__subhead">Catalog</span>
+                            </span>
+                        </div>
+
+
+
+                    </div>
                 </div>
             </main>
 

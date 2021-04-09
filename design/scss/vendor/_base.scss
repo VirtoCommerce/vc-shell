@@ -124,12 +124,14 @@ body {
     @extend .border-0;
     @extend .bg-transparent;
     @extend .d-flex;
+    @extend .mt-0;
 }
 
 .vc-header__account .dropdown-toggle {
     font-size: 0.9rem;
-    @extend .mt-2;
+    @extend .mt-0;
     @extend .px-0;
+    @extend .py-0;
     &::after {
         display: inline-block;
         -webkit-font-smoothing: antialiased;
@@ -194,10 +196,13 @@ body {
     @extend .flex-column;
     @extend .py-1;
     @extend .bg-light;
-    @extend .col-md-3;
+    //@extend .col-md-3;
     @extend .col-lg-2;
+    //@extend .col-md-auto;
     @extend .d-md-block;
-    width: 205px;
+    //max-width: 205px;
+    flex: 0 0 205px;
+    border-right: 1px $content-border-color solid;
     &__nav-pills {
         @extend .nav;
         @extend .nav-pills;
@@ -224,6 +229,7 @@ body {
 .vc-main-menu__nav-pills .vc-nav-link-active {
     color: $gray-900;
     background-color: $active-item-bg;
+    //border-radius: 0;
     @extend .nav-link;
     @extend .py-2;
     @extend .active;
@@ -246,14 +252,16 @@ body {
 // Main content
 .vc-content {
     //@extend .px-md-4;
-    @extend .col-md-9;
-    @extend .ml-sm-auto;
-    @extend .col-lg-10;
+    //@extend .col-md-9;
+    //@extend .ml-sm-auto;
+    //@extend .col-lg-10;
+    @extend .col;
     @extend .mx-0;
     @extend .px-0;
     @extend .d-md-flex;
-    @extend .w-100;
+    //@extend .w-100;
     height: calc(100vh - 54px);
+    //margin-left: 205px !important;
     &__blade {
         border-right: 1px $content-border-color solid;
         @extend .mx-0;
@@ -454,6 +462,7 @@ body {
 .table-checkbox {
     @extend .py-2;
     @extend .text-center;
+    border-left: 0;
 }
 
 .table-bordered .product-img {

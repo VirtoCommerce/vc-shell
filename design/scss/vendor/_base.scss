@@ -165,7 +165,6 @@ body {
     @extend .my-1;
 }
 
-
 .vc-header__account .account-user__info {
     text-align: left;
     @extend .py-2;
@@ -264,12 +263,18 @@ body {
     }
 }
 
+// MIXINGS
 @mixin button-icon {
     @extend .border-0;
     @extend .bg-transparent;
     color: $white;
 }
 
+@mixin row-border-bottom {
+    border-bottom: 1px solid $content-border-color;
+}
+
+///////
 .vc-content .blade-head {
     background: #465769;
 }
@@ -365,16 +370,26 @@ body {
     }
 }
 
+// Lists
+.row-title {
+    font-weight: 500;
+}
+
+.row-descr {
+    //@extend .mt-1;
+    color: $gray-500;
+    font-size: 0.9rem;
+}
+
 // LIST - Divs
 .vc-list {
     @extend .bg-white;
-    //@extend .px-3;
 }
 
 .vc-list-row {
+    @include row-border-bottom;
     @extend .media;
     cursor: pointer;
-    border-bottom: 1px solid $content-border-color;
     @extend .py-3;
     @extend .px-2;
     &:hover {
@@ -415,4 +430,61 @@ body {
     @extend .justify-content-between;
     @extend .align-items-center;
     @extend .w-100;
+}
+
+// LIST - Tables
+.vc-list-table {
+    vertical-align: middle;
+    @extend .table-responsive;
+}
+
+.vc-list-table table tr {
+    @include row-border-bottom;
+}
+
+.vc-list-table table tr td {
+    vertical-align: middle;
+}
+
+.vc-list-table-body {
+    @extend .pt-3;
+    @extend .pb-0;
+}
+
+.table-checkbox {
+    @extend .py-2;
+    @extend .text-center;
+}
+
+.table-bordered .product-img {
+    border-right: 0;
+    @extend .py-0;
+    @extend .px-1;
+    @extend .text-center;
+}
+
+.table-bordered .product-title-row {
+    border-left: 0;
+}
+
+.product-img .image {
+    width: 56px;
+    height: 56px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.context-menu {
+    @extend .text-center;
+    @extend .p-0;
+}
+
+.context-menu i {
+    color: $primary;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    @extend .py-1;
+    @extend .px-2;
 }

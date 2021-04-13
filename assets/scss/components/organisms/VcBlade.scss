@@ -128,3 +128,16 @@
         font-size: 0.7rem;
     }
 }
+
+.context-menu {
+    @extend .text-center;
+    @extend .p-0;
+}
+
+.context-menu i {
+    color: $primary;
+    font-size: 1.2rem;
+    vertical-align: middle;
+    @extend .py-1;
+    @extend .px-2;
+}

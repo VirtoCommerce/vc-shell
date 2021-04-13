@@ -31,6 +31,11 @@
             aria-label="..."
           />
         </template>
+
+        <template #cell(ellipsis)>
+          <i class="fas fa-ellipsis-v" />
+        </template>
+
         <!-- A custom formatted header cell for field 'name' -->
         <template #head(checkbox)>
           <input
@@ -43,7 +48,11 @@
         </template>
         <!-- A custom formatted column -->
         <template #cell(pic)="data">
-          <img alt="product pic" :src="data.value" class="image" />
+          <img
+            alt="product pic"
+            :src="require(`~/assets/img/${data.value}`)"
+            class="image"
+          />
         </template>
         <template #table-busy>
           <div class="text-center my-2">
@@ -76,6 +85,12 @@ export default {
         class: 'checkbox_field',
       },
       {
+        key: 'ellipsis',
+        label: '',
+        sortable: false,
+        class: 'context-menu',
+      },
+      {
         key: 'pic',
         label: 'Pic',
         sortable: false,
@@ -93,8 +108,7 @@ export default {
     ]
     const items = [...Array(10).keys()].map(() => {
       const obj = {
-        pic:
-          'https://admin-demo.virtocommerce.com/cms-content/assets/catalog/ASZF216GBSL/1431971520000_1134360_64x64.jpg',
+        pic: 'product1_32x32.jpg',
         name: 'DJI Phantom 3 Professional Quadcopter',
         sku: '188904989',
       }

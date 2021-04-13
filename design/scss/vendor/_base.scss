@@ -267,8 +267,16 @@ body {
         @extend .mx-0;
         @extend .px-0;
         @extend .overflow-hidden;
-        @extend .w-50;
+        //@extend .w-50;
     }
+}
+
+.flex-30 {
+    flex-grow: 1;
+}
+
+.flex-60 {
+    flex-grow: 2;
 }
 
 // MIXINGS

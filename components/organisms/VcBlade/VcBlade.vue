@@ -28,18 +28,14 @@
       </div>
       <slot name="header">
         <VcBladeHeader
-          :title="blade.title"
-          :icon="blade.icon"
-          :subtitle="blade.subtitle"
+          :title="title"
+          :icon="icon"
+          :subtitle="subtitle"
         ></VcBladeHeader>
       </slot>
-      <slot name="toolbar">
-        <VcBladeToolbar :items="blade.menuItems" />
-      </slot>
+      <slot name="toolbar"><VcBladeToolbar /></slot>
     </div>
-
     <slot />
-
     <div class="blade-footer">
       <slot name="footer"></slot>
     </div>
@@ -56,14 +52,22 @@ Vue.component('VcBladeToolbar', VcBladeToolbar)
 
 export default {
   name: 'VcBlade',
-  components: { VcBladeHeader, VcBladeToolbar, VcIcon },
+  components: { VcBladeHeader, VcIcon },
   props: {
-    // TODO: replace the blade parameter to set of properties that have basic types
-    blade: {
-      type: Object,
-      default() {
-        return {}
-      },
+    icon: {
+      type: String,
+      default: undefined,
+      required: false,
+    },
+    title: {
+      type: String,
+      default: '',
+      required: false,
+    },
+    subtitle: {
+      type: String,
+      default: '',
+      required: false,
     },
   },
   computed: {},

@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "../../assets/scss/components/organisms/VcList.scss"
+    ],
+    "names": [],
+    "file": "VcList.css"
+}

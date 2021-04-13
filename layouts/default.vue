@@ -7,8 +7,15 @@
 
     <div class="container-fluid">
       <div class="row">
-        <VcMainMenu :items="mainMenuItems"></VcMainMenu>
-
+        <VcMainMenu>
+          <VcMainMenuItem
+            v-for="item in mainMenuItems"
+            :key="item.id"
+            :icon="item.icon"
+            :title="item.title"
+            @click="item.onClick"
+          />
+        </VcMainMenu>
         <Nuxt />
       </div>
     </div>
@@ -33,31 +40,3 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-@import '~/assets/scss/custom.scss';
-
-.vc-content {
-  //@extend .px-md-4;
-  @extend .col-md-9;
-  @extend .ml-sm-auto;
-  @extend .col-lg-10;
-  @extend .mx-0;
-  @extend .px-0;
-  @extend .d-md-flex;
-  @extend .w-100;
-  height: calc(100vh - 54px);
-  &__blade {
-    border-right: 1px #eaedf3 solid;
-    @extend .mx-0;
-    @extend .px-0;
-    @extend .overflow-hidden;
-    @extend .w-50;
-  }
-}
-
-@mixin button-icon {
-  @extend .border-0;
-  @extend .bg-transparent;
-  color: $white;
-}
-</style>

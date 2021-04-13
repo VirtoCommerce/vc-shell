@@ -1,5 +1,5 @@
 <template>
-  <li class="menu-item">
+  <li class="menu-item" v-on="$listeners">
     <button class="menu-btn">
       <VcIcon :icon="icon" size="lg"></VcIcon>
       <span class="menu-btn__text">{{ title }}</span>

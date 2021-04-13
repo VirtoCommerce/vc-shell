@@ -18,6 +18,46 @@ $styles: (italic, normal);
 @import '~/node_modules/bootstrap-vue/src/index.scss';
 
 
-.link-dark {
-    color: $gray-900;
+
+// Buttons
+.btn-warning {
+  color: $white;
+  background-color: $warning;
+  border-color: $warning;
+  &:hover {
+      color: $white;
+      background: $btn-warning-hover;
+      border-color: $btn-warning-hover;
+  }
+}
+
+.btn-primary {
+  color: $white;
+  background-color: $primary;
+  border-color: $primary;
+  &:hover {
+      background: $link-hover-color;
+      border-color: $link-hover-color;
+  }
+}
+
+.bg-dark {
+  background: $gray-900 !important;
+}
+
+.text-end {
+  text-align: right!important;
+}
+
+>.container,
+.navbar>.container-fluid,
+.navbar>.container-lg,
+.navbar>.container-md,
+.navbar>.container-sm,
+.navbar>.container-xl,
+.navbar>.container-xxl {
+  display: flex;
+  flex-wrap: inherit;
+  align-items: center;
+  justify-content: space-between;
 }

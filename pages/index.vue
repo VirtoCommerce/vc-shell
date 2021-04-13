@@ -4,49 +4,33 @@
       :is="blade.component"
       v-for="blade in blades"
       :key="blade.id"
-      :blade="blade"
+      :icon="blade.icon"
+      :title="blade.title"
+      :subtitle="blade.subtitle"
       @click:close="closeBlade(blade)"
     >
-      <div class="h-100 d-flex align-items-center">
-        <button
-          type="button"
-          class="btn btn-primary mx-auto"
-          @click="createAndOpenNewBlade"
-        >
-          Click me
-        </button>
-      </div>
     </component>
   </main>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import VcItemBlade from './catalog/VcItemBlade.vue'
+import VcCatalogsListBlade from './catalog/VcCatalogsListBlade.vue'
+import VcCatalogDetailBlade from './catalog/VcCatalogDetailBlade.vue'
 import { VcBlade } from '~/components/organisms'
 import { useNavigation } from '~/libs/navigation'
 // TODO: find solution hot to register all blades components automaticaly
-Vue.component('VcItemBlade', VcItemBlade)
+Vue.component('VcCatalogsListBlade', VcCatalogsListBlade)
+Vue.component('VcCatalogDetailBlade', VcCatalogDetailBlade)
 
 export default {
   components: {
     VcBlade,
   },
   setup() {
-    const { blades, openNewBlade, closeBlade } = useNavigation()
-    const createAndOpenNewBlade = () => {
-      const newId = blades.value.length + 1
-      openNewBlade({
-        ...blades.value[0],
-        id: newId,
-        title: `blade #${newId}`,
-        component: 'VcItemBlade',
-      })
-    }
-
+    const { blades, closeBlade } = useNavigation()
     return {
       blades,
-      createAndOpenNewBlade,
       closeBlade,
     }
   },

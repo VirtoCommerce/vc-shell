@@ -425,7 +425,8 @@ hr {
 small,
 .small,
 .vc-header__version,
-.vc-header__license-text {
+.vc-header__license-text,
+.vc-content .blade-t__subhead {
   font-size: 80%;
   font-weight: 400;
 }
@@ -595,16 +596,16 @@ pre code {
   margin-left: 0;
 }
 
-.no-gutters > .col,
+.no-gutters > .col, .no-gutters > .vc-content,
 .no-gutters > [class*="col-"] {
   padding-right: 0;
   padding-left: 0;
 }
 
-.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col,
+.col-1, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-10, .col-11, .col-12, .col, .vc-content,
 .col-auto, .col-sm-1, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm,
 .col-sm-auto, .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12, .col-md,
-.col-md-auto, .col-lg-1, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg,
+.col-md-auto, .col-lg-1, .col-lg-2, .vc-main-menu, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg,
 .col-lg-auto, .col-xl-1, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl,
 .col-xl-auto {
   position: relative;
@@ -613,7 +614,7 @@ pre code {
   padding-left: 15px;
 }
 
-.col {
+.col, .vc-content {
   -ms-flex-preferred-size: 0;
       flex-basis: 0;
   -webkit-box-flex: 1;
@@ -1422,7 +1423,7 @@ pre code {
             flex: 0 0 8.33333%;
     max-width: 8.33333%;
   }
-  .col-lg-2 {
+  .col-lg-2, .vc-main-menu {
     -webkit-box-flex: 0;
         -ms-flex: 0 0 16.66667%;
             flex: 0 0 16.66667%;
@@ -2170,14 +2171,14 @@ pre code {
   }
 }
 
-.table-responsive {
+.table-responsive, .vc-list-table {
   display: block;
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-.table-responsive > .table-bordered {
+.table-responsive > .table-bordered, .vc-list-table > .table-bordered {
   border: 0;
 }
 
@@ -2354,7 +2355,7 @@ textarea.form-control {
   margin-left: -5px;
 }
 
-.form-row > .col,
+.form-row > .col, .form-row > .vc-content,
 .form-row > [class*="col-"] {
   padding-right: 5px;
   padding-left: 5px;
@@ -2423,7 +2424,7 @@ textarea.form-control {
   border-radius: 0.25rem;
 }
 
-.form-row > .col > .valid-tooltip,
+.form-row > .col > .valid-tooltip, .form-row > .vc-content > .valid-tooltip,
 .form-row > [class*="col-"] > .valid-tooltip {
   left: 5px;
 }
@@ -2533,7 +2534,7 @@ textarea.form-control {
   border-radius: 0.25rem;
 }
 
-.form-row > .col > .invalid-tooltip,
+.form-row > .col > .invalid-tooltip, .form-row > .vc-content > .invalid-tooltip,
 .form-row > [class*="col-"] > .invalid-tooltip {
   left: 5px;
 }
@@ -2793,9 +2794,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-primary.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-primary.dropdown-toggle,
-.vc-header__account__user-block > .btn-primary.dropdown-toggle,
-.show > .btn-primary.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-primary.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-primary.dropdown-toggle {
   color: #fff;
   background-color: #0062cc;
   border-color: #005cbf;
@@ -2803,9 +2802,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-primary.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-primary.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-primary.dropdown-toggle:focus,
-.show > .btn-primary.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-primary.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-primary.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
 }
@@ -2838,9 +2835,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-secondary:not(:disabled):not(.disabled):active, .btn-secondary:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-secondary.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-secondary.dropdown-toggle,
-.vc-header__account__user-block > .btn-secondary.dropdown-toggle,
-.show > .btn-secondary.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-secondary.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-secondary.dropdown-toggle {
   color: #fff;
   background-color: #545b62;
   border-color: #4e555b;
@@ -2848,9 +2843,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-secondary:not(:disabled):not(.disabled):active:focus, .btn-secondary:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-secondary.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-secondary.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-secondary.dropdown-toggle:focus,
-.show > .btn-secondary.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-secondary.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-secondary.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
 }
@@ -2883,9 +2876,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-success:not(:disabled):not(.disabled):active, .btn-success:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-success.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-success.dropdown-toggle,
-.vc-header__account__user-block > .btn-success.dropdown-toggle,
-.show > .btn-success.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-success.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-success.dropdown-toggle {
   color: #fff;
   background-color: #1e7e34;
   border-color: #1c7430;
@@ -2893,9 +2884,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-success:not(:disabled):not(.disabled):active:focus, .btn-success:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-success.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-success.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-success.dropdown-toggle:focus,
-.show > .btn-success.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-success.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-success.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(72, 180, 97, 0.5);
 }
@@ -2928,9 +2917,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-info:not(:disabled):not(.disabled):active, .btn-info:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-info.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-info.dropdown-toggle,
-.vc-header__account__user-block > .btn-info.dropdown-toggle,
-.show > .btn-info.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-info.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-info.dropdown-toggle {
   color: #fff;
   background-color: #117a8b;
   border-color: #10707f;
@@ -2938,9 +2925,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-info:not(:disabled):not(.disabled):active:focus, .btn-info:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-info.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-info.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-info.dropdown-toggle:focus,
-.show > .btn-info.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-info.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-info.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(58, 176, 195, 0.5);
 }
@@ -2975,11 +2960,7 @@ fieldset:disabled a.vc-header__license-button {
 .show > .btn-warning.dropdown-toggle,
 .vc-header__account__user-block > .btn-warning.dropdown-toggle,
 .show > .dropdown-toggle.vc-header__license-button,
-.vc-header__account__user-block > .dropdown-toggle.vc-header__license-button,
-.show > .vc-header__license-button.vc-header__account__user-block,
-.vc-header__account__user-block > .vc-header__license-button.vc-header__account__user-block,
-.show > .btn-warning.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-warning.vc-header__account__user-block {
+.vc-header__account__user-block > .dropdown-toggle.vc-header__license-button {
   color: #212529;
   background-color: #d39e00;
   border-color: #c69500;
@@ -2989,11 +2970,7 @@ fieldset:disabled a.vc-header__license-button {
 .show > .btn-warning.dropdown-toggle:focus,
 .vc-header__account__user-block > .btn-warning.dropdown-toggle:focus,
 .show > .dropdown-toggle.vc-header__license-button:focus,
-.vc-header__account__user-block > .dropdown-toggle.vc-header__license-button:focus,
-.show > .vc-header__license-button.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .vc-header__license-button.vc-header__account__user-block:focus,
-.show > .btn-warning.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-warning.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .dropdown-toggle.vc-header__license-button:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(222, 170, 12, 0.5);
 }
@@ -3026,9 +3003,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-danger:not(:disabled):not(.disabled):active, .btn-danger:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-danger.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-danger.dropdown-toggle,
-.vc-header__account__user-block > .btn-danger.dropdown-toggle,
-.show > .btn-danger.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-danger.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-danger.dropdown-toggle {
   color: #fff;
   background-color: #bd2130;
   border-color: #b21f2d;
@@ -3036,9 +3011,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-danger:not(:disabled):not(.disabled):active:focus, .btn-danger:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-danger.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-danger.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-danger.dropdown-toggle:focus,
-.show > .btn-danger.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-danger.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-danger.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(225, 83, 97, 0.5);
 }
@@ -3071,9 +3044,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-light:not(:disabled):not(.disabled):active, .btn-light:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-light.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-light.dropdown-toggle,
-.vc-header__account__user-block > .btn-light.dropdown-toggle,
-.show > .btn-light.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-light.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-light.dropdown-toggle {
   color: #212529;
   background-color: #dae0e5;
   border-color: #d3d9df;
@@ -3081,9 +3052,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-light:not(:disabled):not(.disabled):active:focus, .btn-light:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-light.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-light.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-light.dropdown-toggle:focus,
-.show > .btn-light.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-light.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-light.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(216, 217, 219, 0.5);
 }
@@ -3116,9 +3085,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-dark:not(:disabled):not(.disabled):active, .btn-dark:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-dark.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-dark.dropdown-toggle,
-.vc-header__account__user-block > .btn-dark.dropdown-toggle,
-.show > .btn-dark.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-dark.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-dark.dropdown-toggle {
   color: #fff;
   background-color: #1d2124;
   border-color: #171a1d;
@@ -3126,9 +3093,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-dark:not(:disabled):not(.disabled):active:focus, .btn-dark:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-dark.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-dark.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-dark.dropdown-toggle:focus,
-.show > .btn-dark.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-dark.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-dark.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(82, 88, 93, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(82, 88, 93, 0.5);
 }
@@ -3156,9 +3121,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-primary:not(:disabled):not(.disabled):active, .btn-outline-primary:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-primary.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-primary.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-primary.dropdown-toggle,
-.show > .btn-outline-primary.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-primary.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-primary.dropdown-toggle {
   color: #fff;
   background-color: #007bff;
   border-color: #007bff;
@@ -3166,9 +3129,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-primary:not(:disabled):not(.disabled):active:focus, .btn-outline-primary:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-primary.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-primary.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-primary.dropdown-toggle:focus,
-.show > .btn-outline-primary.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-primary.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-primary.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
 }
@@ -3196,9 +3157,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active, .btn-outline-secondary:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-secondary.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-secondary.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-secondary.dropdown-toggle,
-.show > .btn-outline-secondary.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-secondary.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-secondary.dropdown-toggle {
   color: #fff;
   background-color: #6c757d;
   border-color: #6c757d;
@@ -3206,9 +3165,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-secondary:not(:disabled):not(.disabled):active:focus, .btn-outline-secondary:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-secondary.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-secondary.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-secondary.dropdown-toggle:focus,
-.show > .btn-outline-secondary.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-secondary.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-secondary.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
@@ -3236,9 +3193,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-success:not(:disabled):not(.disabled):active, .btn-outline-success:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-success.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-success.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-success.dropdown-toggle,
-.show > .btn-outline-success.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-success.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-success.dropdown-toggle {
   color: #fff;
   background-color: #28a745;
   border-color: #28a745;
@@ -3246,9 +3201,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-success:not(:disabled):not(.disabled):active:focus, .btn-outline-success:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-success.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-success.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-success.dropdown-toggle:focus,
-.show > .btn-outline-success.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-success.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-success.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5);
 }
@@ -3276,9 +3229,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-info:not(:disabled):not(.disabled):active, .btn-outline-info:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-info.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-info.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-info.dropdown-toggle,
-.show > .btn-outline-info.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-info.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-info.dropdown-toggle {
   color: #fff;
   background-color: #17a2b8;
   border-color: #17a2b8;
@@ -3286,9 +3237,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-info:not(:disabled):not(.disabled):active:focus, .btn-outline-info:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-info.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-info.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-info.dropdown-toggle:focus,
-.show > .btn-outline-info.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-info.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-info.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(23, 162, 184, 0.5);
 }
@@ -3316,9 +3265,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-warning:not(:disabled):not(.disabled):active, .btn-outline-warning:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-warning.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-warning.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-warning.dropdown-toggle,
-.show > .btn-outline-warning.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-warning.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-warning.dropdown-toggle {
   color: #212529;
   background-color: #ffc107;
   border-color: #ffc107;
@@ -3326,9 +3273,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-warning:not(:disabled):not(.disabled):active:focus, .btn-outline-warning:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-warning.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-warning.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-warning.dropdown-toggle:focus,
-.show > .btn-outline-warning.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-warning.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-warning.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.5);
 }
@@ -3356,9 +3301,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-danger:not(:disabled):not(.disabled):active, .btn-outline-danger:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-danger.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-danger.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-danger.dropdown-toggle,
-.show > .btn-outline-danger.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-danger.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-danger.dropdown-toggle {
   color: #fff;
   background-color: #dc3545;
   border-color: #dc3545;
@@ -3366,9 +3309,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-danger:not(:disabled):not(.disabled):active:focus, .btn-outline-danger:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-danger.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-danger.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-danger.dropdown-toggle:focus,
-.show > .btn-outline-danger.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-danger.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-danger.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.5);
 }
@@ -3396,9 +3337,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-light:not(:disabled):not(.disabled):active, .btn-outline-light:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-light.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-light.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-light.dropdown-toggle,
-.show > .btn-outline-light.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-light.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-light.dropdown-toggle {
   color: #212529;
   background-color: #f8f9fa;
   border-color: #f8f9fa;
@@ -3406,9 +3345,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-light:not(:disabled):not(.disabled):active:focus, .btn-outline-light:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-light.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-light.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-light.dropdown-toggle:focus,
-.show > .btn-outline-light.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-light.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-light.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(248, 249, 250, 0.5);
 }
@@ -3436,9 +3373,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-dark:not(:disabled):not(.disabled):active, .btn-outline-dark:not(:disabled):not(.disabled).active, .vc-main-menu__nav-pills .btn-outline-dark.vc-nav-link-active:not(:disabled):not(.disabled),
 .show > .btn-outline-dark.dropdown-toggle,
-.vc-header__account__user-block > .btn-outline-dark.dropdown-toggle,
-.show > .btn-outline-dark.vc-header__account__user-block,
-.vc-header__account__user-block > .btn-outline-dark.vc-header__account__user-block {
+.vc-header__account__user-block > .btn-outline-dark.dropdown-toggle {
   color: #fff;
   background-color: #343a40;
   border-color: #343a40;
@@ -3446,9 +3381,7 @@ fieldset:disabled a.vc-header__license-button {
 
 .btn-outline-dark:not(:disabled):not(.disabled):active:focus, .btn-outline-dark:not(:disabled):not(.disabled).active:focus, .vc-main-menu__nav-pills .btn-outline-dark.vc-nav-link-active:not(:disabled):not(.disabled):focus,
 .show > .btn-outline-dark.dropdown-toggle:focus,
-.vc-header__account__user-block > .btn-outline-dark.dropdown-toggle:focus,
-.show > .btn-outline-dark.vc-header__account__user-block:focus,
-.vc-header__account__user-block > .btn-outline-dark.vc-header__account__user-block:focus {
+.vc-header__account__user-block > .btn-outline-dark.dropdown-toggle:focus {
   -webkit-box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
           box-shadow: 0 0 0 0.2rem rgba(52, 58, 64, 0.5);
 }
@@ -3545,11 +3478,11 @@ input[type="button"].btn-block {
   position: relative;
 }
 
-.dropdown-toggle, .vc-header__account__user-block {
+.dropdown-toggle {
   white-space: nowrap;
 }
 
-.dropdown-toggle::after, .vc-header__account__user-block::after {
+.dropdown-toggle::after {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
@@ -3560,7 +3493,7 @@ input[type="button"].btn-block {
   border-left: 0.3em solid transparent;
 }
 
-.dropdown-toggle:empty::after, .vc-header__account__user-block:empty::after {
+.dropdown-toggle:empty::after {
   margin-left: 0;
 }
 
@@ -3645,7 +3578,7 @@ input[type="button"].btn-block {
   margin-bottom: 0.125rem;
 }
 
-.dropup .dropdown-toggle::after, .dropup .vc-header__account__user-block::after {
+.dropup .dropdown-toggle::after {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
@@ -3656,7 +3589,7 @@ input[type="button"].btn-block {
   border-left: 0.3em solid transparent;
 }
 
-.dropup .dropdown-toggle:empty::after, .dropup .vc-header__account__user-block:empty::after {
+.dropup .dropdown-toggle:empty::after {
   margin-left: 0;
 }
 
@@ -3668,7 +3601,7 @@ input[type="button"].btn-block {
   margin-left: 0.125rem;
 }
 
-.dropright .dropdown-toggle::after, .dropright .vc-header__account__user-block::after {
+.dropright .dropdown-toggle::after {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
@@ -3679,11 +3612,11 @@ input[type="button"].btn-block {
   border-left: 0.3em solid;
 }
 
-.dropright .dropdown-toggle:empty::after, .dropright .vc-header__account__user-block:empty::after {
+.dropright .dropdown-toggle:empty::after {
   margin-left: 0;
 }
 
-.dropright .dropdown-toggle::after, .dropright .vc-header__account__user-block::after {
+.dropright .dropdown-toggle::after {
   vertical-align: 0;
 }
 
@@ -3695,18 +3628,18 @@ input[type="button"].btn-block {
   margin-right: 0.125rem;
 }
 
-.dropleft .dropdown-toggle::after, .dropleft .vc-header__account__user-block::after {
+.dropleft .dropdown-toggle::after {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
   content: "";
 }
 
-.dropleft .dropdown-toggle::after, .dropleft .vc-header__account__user-block::after {
+.dropleft .dropdown-toggle::after {
   display: none;
 }
 
-.dropleft .dropdown-toggle::before, .dropleft .vc-header__account__user-block::before {
+.dropleft .dropdown-toggle::before {
   display: inline-block;
   margin-right: 0.255em;
   vertical-align: 0.255em;
@@ -3716,11 +3649,11 @@ input[type="button"].btn-block {
   border-bottom: 0.3em solid transparent;
 }
 
-.dropleft .dropdown-toggle:empty::after, .dropleft .vc-header__account__user-block:empty::after {
+.dropleft .dropdown-toggle:empty::after {
   margin-left: 0;
 }
 
-.dropleft .dropdown-toggle::before, .dropleft .vc-header__account__user-block::before {
+.dropleft .dropdown-toggle::before {
   vertical-align: 0;
 }
 
@@ -3842,7 +3775,7 @@ input[type="button"].btn-block {
   margin-left: -1px;
 }
 
-.btn-group > .btn:not(:last-child):not(.dropdown-toggle):not(.vc-header__account__user-block), .btn-group > .vc-header__license-button:not(:last-child):not(.dropdown-toggle):not(.vc-header__account__user-block),
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle), .btn-group > .vc-header__license-button:not(:last-child):not(.dropdown-toggle),
 .btn-group > .btn-group:not(:last-child) > .btn,
 .btn-group > .btn-group:not(:last-child) > .vc-header__license-button {
   border-top-right-radius: 0;
@@ -3906,7 +3839,7 @@ input[type="button"].btn-block {
   margin-top: -1px;
 }
 
-.btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle):not(.vc-header__account__user-block), .btn-group-vertical > .vc-header__license-button:not(:last-child):not(.dropdown-toggle):not(.vc-header__account__user-block),
+.btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .vc-header__license-button:not(:last-child):not(.dropdown-toggle),
 .btn-group-vertical > .btn-group:not(:last-child) > .btn,
 .btn-group-vertical > .btn-group:not(:last-child) > .vc-header__license-button {
   border-bottom-right-radius: 0;
@@ -4146,8 +4079,8 @@ input[type="button"].btn-block {
 .input-group.has-validation > .input-group-append:nth-last-child(n + 3) > .btn,
 .input-group.has-validation > .input-group-append:nth-last-child(n + 3) > .vc-header__license-button,
 .input-group.has-validation > .input-group-append:nth-last-child(n + 3) > .input-group-text,
-.input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle):not(.vc-header__account__user-block),
-.input-group > .input-group-append:last-child > .vc-header__license-button:not(:last-child):not(.dropdown-toggle):not(.vc-header__account__user-block),
+.input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+.input-group > .input-group-append:last-child > .vc-header__license-button:not(:last-child):not(.dropdown-toggle),
 .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -4663,16 +4596,16 @@ input[type="button"].btn-block {
   list-style: none;
 }
 
-.nav-link, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-nav-link-toggler {
+.nav-link, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-nav-link-active {
   display: block;
   padding: 0.5rem 1rem;
 }
 
-.nav-link:hover, .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .nav-link:focus, .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .vc-nav-link-toggler:focus {
+.nav-link:hover, .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .vc-nav-link-active:hover, .nav-link:focus, .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .vc-nav-link-active:focus {
   text-decoration: none;
 }
 
-.nav-link.disabled, .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler {
+.nav-link.disabled, .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .disabled.vc-nav-link-active {
   color: #6c757d;
   pointer-events: none;
   cursor: default;
@@ -4682,38 +4615,38 @@ input[type="button"].btn-block {
   border-bottom: 1px solid #dee2e6;
 }
 
-.nav-tabs .nav-link, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-toggler {
+.nav-tabs .nav-link, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-toggler, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active {
   margin-bottom: -1px;
   border: 1px solid transparent;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
 }
 
-.nav-tabs .nav-link:hover, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link:hover, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active:hover, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-toggler:hover, .nav-tabs .nav-link:focus, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link:focus, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active:focus, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-toggler:focus {
+.nav-tabs .nav-link:hover, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link:hover, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-toggler:hover, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active:hover, .nav-tabs .nav-link:focus, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link:focus, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-toggler:focus, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active:focus {
   border-color: #e9ecef #e9ecef #dee2e6;
 }
 
-.nav-tabs .nav-link.disabled, .nav-tabs .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .nav-tabs .disabled.vc-nav-link, .nav-tabs .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .nav-tabs .disabled.vc-nav-link-active, .nav-tabs .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-tabs .disabled.vc-nav-link-toggler {
+.nav-tabs .nav-link.disabled, .nav-tabs .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .nav-tabs .disabled.vc-nav-link, .nav-tabs .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-tabs .disabled.vc-nav-link-toggler, .nav-tabs .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .nav-tabs .disabled.vc-nav-link-active {
   color: #6c757d;
   background-color: transparent;
   border-color: transparent;
 }
 
-.nav-tabs .nav-link.active, .nav-tabs .vc-main-menu__nav-pills .active.vc-nav-link, .vc-main-menu__nav-pills .nav-tabs .active.vc-nav-link, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active, .nav-tabs .vc-main-menu__nav-pills .active.vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-tabs .active.vc-nav-link-toggler,
+.nav-tabs .nav-link.active, .nav-tabs .vc-main-menu__nav-pills .active.vc-nav-link, .vc-main-menu__nav-pills .nav-tabs .active.vc-nav-link, .nav-tabs .vc-main-menu__nav-pills .active.vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-tabs .active.vc-nav-link-toggler, .nav-tabs .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-tabs .vc-nav-link-active,
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-item.vc-header__account__user-block .nav-link,
 .nav-tabs .nav-item.show .vc-main-menu__nav-pills .vc-nav-link,
 .vc-main-menu__nav-pills .nav-tabs .nav-item.show .vc-nav-link,
 .nav-tabs .nav-item.vc-header__account__user-block .vc-main-menu__nav-pills .vc-nav-link,
 .vc-main-menu__nav-pills .nav-tabs .nav-item.vc-header__account__user-block .vc-nav-link,
-.nav-tabs .nav-item.show .vc-main-menu__nav-pills .vc-nav-link-active,
-.vc-main-menu__nav-pills .nav-tabs .nav-item.show .vc-nav-link-active,
-.nav-tabs .nav-item.vc-header__account__user-block .vc-main-menu__nav-pills .vc-nav-link-active,
-.vc-main-menu__nav-pills .nav-tabs .nav-item.vc-header__account__user-block .vc-nav-link-active,
 .nav-tabs .nav-item.show .vc-main-menu__nav-pills .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .nav-tabs .nav-item.show .vc-nav-link-toggler,
 .nav-tabs .nav-item.vc-header__account__user-block .vc-main-menu__nav-pills .vc-nav-link-toggler,
-.vc-main-menu__nav-pills .nav-tabs .nav-item.vc-header__account__user-block .vc-nav-link-toggler {
+.vc-main-menu__nav-pills .nav-tabs .nav-item.vc-header__account__user-block .vc-nav-link-toggler,
+.nav-tabs .nav-item.show .vc-main-menu__nav-pills .vc-nav-link-active,
+.vc-main-menu__nav-pills .nav-tabs .nav-item.show .vc-nav-link-active,
+.nav-tabs .nav-item.vc-header__account__user-block .vc-main-menu__nav-pills .vc-nav-link-active,
+.vc-main-menu__nav-pills .nav-tabs .nav-item.vc-header__account__user-block .vc-nav-link-active {
   color: #495057;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
@@ -4725,11 +4658,11 @@ input[type="button"].btn-block {
   border-top-right-radius: 0;
 }
 
-.nav-pills .nav-link, .vc-main-menu__nav-pills .nav-link, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-nav-link-toggler {
+.nav-pills .nav-link, .vc-main-menu__nav-pills .nav-link, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-nav-link-active {
   border-radius: 0.25rem;
 }
 
-.nav-pills .nav-link.active, .vc-main-menu__nav-pills .nav-link.active, .vc-main-menu__nav-pills .active.vc-nav-link, .nav-pills .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .active.vc-nav-link-toggler,
+.nav-pills .nav-link.active, .vc-main-menu__nav-pills .nav-link.active, .vc-main-menu__nav-pills .active.vc-nav-link, .vc-main-menu__nav-pills .active.vc-nav-link-toggler, .nav-pills .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-nav-link-active,
 .nav-pills .show > .nav-link,
 .vc-main-menu__nav-pills .show > .nav-link,
 .nav-pills .vc-header__account__user-block > .nav-link,
@@ -4738,19 +4671,19 @@ input[type="button"].btn-block {
 .vc-main-menu__nav-pills .show > .vc-nav-link,
 .vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link,
 .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link,
-.vc-main-menu__nav-pills .nav-pills .show > .vc-nav-link-active,
-.vc-main-menu__nav-pills .show > .vc-nav-link-active,
-.vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active,
 .vc-main-menu__nav-pills .nav-pills .show > .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .show > .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link-toggler,
-.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler {
+.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler,
+.vc-main-menu__nav-pills .nav-pills .show > .vc-nav-link-active,
+.vc-main-menu__nav-pills .show > .vc-nav-link-active,
+.vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link-active,
+.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active {
   color: #fff;
   background-color: #007bff;
 }
 
-.nav-fill > .nav-link, .vc-main-menu__nav-pills .nav-fill > .vc-nav-link, .vc-main-menu__nav-pills .nav-fill > .vc-nav-link-active, .vc-main-menu__nav-pills .nav-fill > .vc-nav-link-toggler,
+.nav-fill > .nav-link, .vc-main-menu__nav-pills .nav-fill > .vc-nav-link, .vc-main-menu__nav-pills .nav-fill > .vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-fill > .vc-nav-link-active,
 .nav-fill .nav-item {
   -webkit-box-flex: 1;
       -ms-flex: 1 1 auto;
@@ -4758,7 +4691,7 @@ input[type="button"].btn-block {
   text-align: center;
 }
 
-.nav-justified > .nav-link, .vc-main-menu__nav-pills .nav-justified > .vc-nav-link, .vc-main-menu__nav-pills .nav-justified > .vc-nav-link-active, .vc-main-menu__nav-pills .nav-justified > .vc-nav-link-toggler,
+.nav-justified > .nav-link, .vc-main-menu__nav-pills .nav-justified > .vc-nav-link, .vc-main-menu__nav-pills .nav-justified > .vc-nav-link-toggler, .vc-main-menu__nav-pills .nav-justified > .vc-nav-link-active,
 .nav-justified .nav-item {
   -ms-flex-preferred-size: 0;
       flex-basis: 0;
@@ -4835,7 +4768,7 @@ input[type="button"].btn-block {
   list-style: none;
 }
 
-.navbar-nav .nav-link, .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-nav .vc-nav-link, .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-nav .vc-nav-link-active, .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-nav .vc-nav-link-toggler {
+.navbar-nav .nav-link, .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-nav .vc-nav-link, .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-nav .vc-nav-link-toggler, .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-nav .vc-nav-link-active {
   padding-right: 0;
   padding-left: 0;
 }
@@ -4862,7 +4795,7 @@ input[type="button"].btn-block {
           align-items: center;
 }
 
-.navbar-toggler, .vc-main-menu__nav-pills .vc-nav-link-toggler {
+.navbar-toggler {
   padding: 0.25rem 0.75rem;
   font-size: 1.25rem;
   line-height: 1;
@@ -4871,7 +4804,7 @@ input[type="button"].btn-block {
   border-radius: 0.25rem;
 }
 
-.navbar-toggler:hover, .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .navbar-toggler:focus, .vc-main-menu__nav-pills .vc-nav-link-toggler:focus {
+.navbar-toggler:hover, .navbar-toggler:focus {
   text-decoration: none;
 }
 
@@ -4916,7 +4849,7 @@ input[type="button"].btn-block {
   .navbar-expand-sm .navbar-nav .dropdown-menu, .navbar-expand-sm .navbar-nav .vc-header__account__dropdown {
     position: absolute;
   }
-  .navbar-expand-sm .navbar-nav .nav-link, .navbar-expand-sm .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-sm .navbar-nav .vc-nav-link, .navbar-expand-sm .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-sm .navbar-nav .vc-nav-link-active, .navbar-expand-sm .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-sm .navbar-nav .vc-nav-link-toggler {
+  .navbar-expand-sm .navbar-nav .nav-link, .navbar-expand-sm .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-sm .navbar-nav .vc-nav-link, .navbar-expand-sm .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-sm .navbar-nav .vc-nav-link-toggler, .navbar-expand-sm .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-sm .navbar-nav .vc-nav-link-active {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
   }
@@ -4935,7 +4868,7 @@ input[type="button"].btn-block {
     -ms-flex-preferred-size: auto;
         flex-basis: auto;
   }
-  .navbar-expand-sm .navbar-toggler, .navbar-expand-sm .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-sm .vc-nav-link-toggler {
+  .navbar-expand-sm .navbar-toggler {
     display: none;
   }
 }
@@ -4967,7 +4900,7 @@ input[type="button"].btn-block {
   .navbar-expand-md .navbar-nav .dropdown-menu, .navbar-expand-md .navbar-nav .vc-header__account__dropdown {
     position: absolute;
   }
-  .navbar-expand-md .navbar-nav .nav-link, .navbar-expand-md .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-md .navbar-nav .vc-nav-link, .navbar-expand-md .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-md .navbar-nav .vc-nav-link-active, .navbar-expand-md .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-md .navbar-nav .vc-nav-link-toggler {
+  .navbar-expand-md .navbar-nav .nav-link, .navbar-expand-md .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-md .navbar-nav .vc-nav-link, .navbar-expand-md .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-md .navbar-nav .vc-nav-link-toggler, .navbar-expand-md .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-md .navbar-nav .vc-nav-link-active {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
   }
@@ -4986,7 +4919,7 @@ input[type="button"].btn-block {
     -ms-flex-preferred-size: auto;
         flex-basis: auto;
   }
-  .navbar-expand-md .navbar-toggler, .navbar-expand-md .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-md .vc-nav-link-toggler {
+  .navbar-expand-md .navbar-toggler {
     display: none;
   }
 }
@@ -5018,7 +4951,7 @@ input[type="button"].btn-block {
   .navbar-expand-lg .navbar-nav .dropdown-menu, .navbar-expand-lg .navbar-nav .vc-header__account__dropdown {
     position: absolute;
   }
-  .navbar-expand-lg .navbar-nav .nav-link, .navbar-expand-lg .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-lg .navbar-nav .vc-nav-link, .navbar-expand-lg .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-lg .navbar-nav .vc-nav-link-active, .navbar-expand-lg .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-lg .navbar-nav .vc-nav-link-toggler {
+  .navbar-expand-lg .navbar-nav .nav-link, .navbar-expand-lg .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-lg .navbar-nav .vc-nav-link, .navbar-expand-lg .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-lg .navbar-nav .vc-nav-link-toggler, .navbar-expand-lg .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-lg .navbar-nav .vc-nav-link-active {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
   }
@@ -5037,7 +4970,7 @@ input[type="button"].btn-block {
     -ms-flex-preferred-size: auto;
         flex-basis: auto;
   }
-  .navbar-expand-lg .navbar-toggler, .navbar-expand-lg .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-lg .vc-nav-link-toggler {
+  .navbar-expand-lg .navbar-toggler {
     display: none;
   }
 }
@@ -5069,7 +5002,7 @@ input[type="button"].btn-block {
   .navbar-expand-xl .navbar-nav .dropdown-menu, .navbar-expand-xl .navbar-nav .vc-header__account__dropdown {
     position: absolute;
   }
-  .navbar-expand-xl .navbar-nav .nav-link, .navbar-expand-xl .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-xl .navbar-nav .vc-nav-link, .navbar-expand-xl .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-xl .navbar-nav .vc-nav-link-active, .navbar-expand-xl .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-xl .navbar-nav .vc-nav-link-toggler {
+  .navbar-expand-xl .navbar-nav .nav-link, .navbar-expand-xl .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand-xl .navbar-nav .vc-nav-link, .navbar-expand-xl .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-xl .navbar-nav .vc-nav-link-toggler, .navbar-expand-xl .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand-xl .navbar-nav .vc-nav-link-active {
     padding-right: 0.5rem;
     padding-left: 0.5rem;
   }
@@ -5088,7 +5021,7 @@ input[type="button"].btn-block {
     -ms-flex-preferred-size: auto;
         flex-basis: auto;
   }
-  .navbar-expand-xl .navbar-toggler, .navbar-expand-xl .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand-xl .vc-nav-link-toggler {
+  .navbar-expand-xl .navbar-toggler {
     display: none;
   }
 }
@@ -5123,7 +5056,7 @@ input[type="button"].btn-block {
   position: absolute;
 }
 
-.navbar-expand .navbar-nav .nav-link, .vc-header .navbar-nav .nav-link, .navbar-expand .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand .navbar-nav .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link, .navbar-expand .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand .navbar-nav .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active, .navbar-expand .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand .navbar-nav .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler {
+.navbar-expand .navbar-nav .nav-link, .vc-header .navbar-nav .nav-link, .navbar-expand .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-expand .navbar-nav .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link, .navbar-expand .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand .navbar-nav .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler, .navbar-expand .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-expand .navbar-nav .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active {
   padding-right: 0.5rem;
   padding-left: 0.5rem;
 }
@@ -5149,7 +5082,7 @@ input[type="button"].btn-block {
       flex-basis: auto;
 }
 
-.navbar-expand .navbar-toggler, .vc-header .navbar-toggler, .navbar-expand .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-expand .vc-nav-link-toggler, .vc-header .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .vc-nav-link-toggler {
+.navbar-expand .navbar-toggler, .vc-header .navbar-toggler {
   display: none;
 }
 
@@ -5161,19 +5094,19 @@ input[type="button"].btn-block {
   color: rgba(0, 0, 0, 0.9);
 }
 
-.navbar-light .navbar-nav .nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-toggler {
+.navbar-light .navbar-nav .nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-toggler, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active {
   color: rgba(0, 0, 0, 0.5);
 }
 
-.navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link:hover, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active:hover, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-toggler:hover, .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link:focus, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active:focus, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-toggler:focus {
+.navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link:hover, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-toggler:hover, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active:hover, .navbar-light .navbar-nav .nav-link:focus, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link:focus, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-toggler:focus, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active:focus {
   color: rgba(0, 0, 0, 0.7);
 }
 
-.navbar-light .navbar-nav .nav-link.disabled, .navbar-light .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .disabled.vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .disabled.vc-nav-link-active, .navbar-light .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .disabled.vc-nav-link-toggler {
+.navbar-light .navbar-nav .nav-link.disabled, .navbar-light .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .disabled.vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .disabled.vc-nav-link-toggler, .navbar-light .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .disabled.vc-nav-link-active {
   color: rgba(0, 0, 0, 0.3);
 }
 
-.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .vc-header__account__user-block > .nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .show > .vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block > .vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .show > .vc-nav-link-active, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block > .vc-nav-link-active, .navbar-light .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .show > .vc-nav-link-toggler, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block > .vc-nav-link-toggler,
+.navbar-light .navbar-nav .show > .nav-link, .navbar-light .navbar-nav .vc-header__account__user-block > .nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .show > .vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block > .vc-nav-link, .navbar-light .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .show > .vc-nav-link-toggler, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block > .vc-nav-link-toggler, .navbar-light .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .show > .vc-nav-link-active, .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block > .vc-nav-link-active,
 .navbar-light .navbar-nav .active > .nav-link,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .nav-link,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active > .nav-link,
@@ -5181,39 +5114,39 @@ input[type="button"].btn-block {
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .active > .vc-nav-link,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active > .vc-nav-link,
-.navbar-light .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-light .navbar-nav .active > .vc-nav-link-active,
-.navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active > .vc-nav-link-active,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .active > .vc-nav-link-toggler,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active > .vc-nav-link-toggler,
+.navbar-light .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-light .navbar-nav .active > .vc-nav-link-active,
+.navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active > .vc-nav-link-active,
 .navbar-light .navbar-nav .nav-link.show,
 .navbar-light .navbar-nav .nav-link.vc-header__account__user-block,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block.vc-nav-link,
-.navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block.vc-nav-link-active,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block.vc-nav-link-toggler,
+.navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-header__account__user-block.vc-nav-link-active,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .show.vc-nav-link,
-.navbar-light .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-light .navbar-nav .show.vc-nav-link-active,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .show.vc-nav-link-toggler,
+.navbar-light .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-light .navbar-nav .show.vc-nav-link-active,
 .navbar-light .navbar-nav .nav-link.active,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .active.vc-nav-link,
 .vc-main-menu__nav-pills .navbar-light .navbar-nav .active.vc-nav-link,
-.navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active,
 .navbar-light .navbar-nav .vc-main-menu__nav-pills .active.vc-nav-link-toggler,
-.vc-main-menu__nav-pills .navbar-light .navbar-nav .active.vc-nav-link-toggler {
+.vc-main-menu__nav-pills .navbar-light .navbar-nav .active.vc-nav-link-toggler,
+.navbar-light .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-light .navbar-nav .vc-nav-link-active {
   color: rgba(0, 0, 0, 0.9);
 }
 
-.navbar-light .navbar-toggler, .navbar-light .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-light .vc-nav-link-toggler {
+.navbar-light .navbar-toggler {
   color: rgba(0, 0, 0, 0.5);
   border-color: rgba(0, 0, 0, 0.1);
 }
@@ -5242,19 +5175,19 @@ input[type="button"].btn-block {
   color: #fff;
 }
 
-.navbar-dark .navbar-nav .nav-link, .vc-header .navbar-nav .nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler {
+.navbar-dark .navbar-nav .nav-link, .vc-header .navbar-nav .nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active {
   color: rgba(255, 255, 255, 0.5);
 }
 
-.navbar-dark .navbar-nav .nav-link:hover, .vc-header .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link:hover, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link:hover, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active:hover, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active:hover, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-toggler:hover, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler:hover, .navbar-dark .navbar-nav .nav-link:focus, .vc-header .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link:focus, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link:focus, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active:focus, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active:focus, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-toggler:focus, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler:focus {
+.navbar-dark .navbar-nav .nav-link:hover, .vc-header .navbar-nav .nav-link:hover, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link:hover, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link:hover, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-toggler:hover, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:hover, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler:hover, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active:hover, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:hover, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active:hover, .navbar-dark .navbar-nav .nav-link:focus, .vc-header .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link:focus, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link:focus, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link:focus, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-toggler:focus, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-toggler:focus, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-toggler:focus, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active:focus, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active:focus, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active:focus {
   color: rgba(255, 255, 255, 0.75);
 }
 
-.navbar-dark .navbar-nav .nav-link.disabled, .vc-header .navbar-nav .nav-link.disabled, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .disabled.vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .disabled.vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .disabled.vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .disabled.vc-nav-link-active, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .disabled.vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .disabled.vc-nav-link-toggler {
+.navbar-dark .navbar-nav .nav-link.disabled, .vc-header .navbar-nav .nav-link.disabled, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .disabled.vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .disabled.vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .disabled.vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .disabled.vc-nav-link-toggler, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .disabled.vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .disabled.vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .disabled.vc-nav-link-active {
   color: rgba(255, 255, 255, 0.25);
 }
 
-.navbar-dark .navbar-nav .show > .nav-link, .vc-header .navbar-nav .show > .nav-link, .navbar-dark .navbar-nav .vc-header__account__user-block > .nav-link, .vc-header .navbar-nav .vc-header__account__user-block > .nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show > .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .show > .vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block > .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block > .vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show > .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .show > .vc-nav-link-active, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block > .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block > .vc-nav-link-active, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show > .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .show > .vc-nav-link-toggler, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block > .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block > .vc-nav-link-toggler,
+.navbar-dark .navbar-nav .show > .nav-link, .vc-header .navbar-nav .show > .nav-link, .navbar-dark .navbar-nav .vc-header__account__user-block > .nav-link, .vc-header .navbar-nav .vc-header__account__user-block > .nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show > .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .show > .vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block > .vc-nav-link, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block > .vc-nav-link, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show > .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .show > .vc-nav-link-toggler, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block > .vc-nav-link-toggler, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block > .vc-nav-link-toggler, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show > .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .show > .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .show > .vc-nav-link-active, .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active, .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block > .vc-nav-link-active, .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active, .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block > .vc-nav-link-active,
 .navbar-dark .navbar-nav .active > .nav-link,
 .vc-header .navbar-nav .active > .nav-link,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .nav-link,
@@ -5269,14 +5202,6 @@ input[type="button"].btn-block {
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active > .vc-nav-link,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active > .vc-nav-link,
-.navbar-dark .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-dark .navbar-nav .active > .vc-nav-link-active,
-.vc-header .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header .navbar-nav .active > .vc-nav-link-active,
-.navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active > .vc-nav-link-active,
-.vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active > .vc-nav-link-active,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .active > .vc-nav-link-toggler,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-toggler,
@@ -5285,6 +5210,14 @@ input[type="button"].btn-block {
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active > .vc-nav-link-toggler,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active > .vc-nav-link-toggler,
+.navbar-dark .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-dark .navbar-nav .active > .vc-nav-link-active,
+.vc-header .navbar-nav .vc-main-menu__nav-pills .active > .vc-nav-link-active,
+.vc-main-menu__nav-pills .vc-header .navbar-nav .active > .vc-nav-link-active,
+.navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active > .vc-nav-link-active,
+.vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active > .vc-nav-link-active,
+.vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active > .vc-nav-link-active,
 .navbar-dark .navbar-nav .nav-link.show,
 .vc-header .navbar-nav .nav-link.show,
 .navbar-dark .navbar-nav .nav-link.vc-header__account__user-block,
@@ -5293,44 +5226,44 @@ input[type="button"].btn-block {
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block.vc-nav-link,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block.vc-nav-link,
-.navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block.vc-nav-link-active,
-.vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block.vc-nav-link-active,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block.vc-nav-link-toggler,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block.vc-nav-link-toggler,
+.navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-header__account__user-block.vc-nav-link-active,
+.vc-header .navbar-nav .vc-main-menu__nav-pills .vc-header__account__user-block.vc-nav-link-active,
+.vc-main-menu__nav-pills .vc-header .navbar-nav .vc-header__account__user-block.vc-nav-link-active,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link,
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show.vc-nav-link,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .show.vc-nav-link,
-.navbar-dark .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-dark .navbar-nav .show.vc-nav-link-active,
-.vc-header .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header .navbar-nav .show.vc-nav-link-active,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .show.vc-nav-link-toggler,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .show.vc-nav-link-toggler,
+.navbar-dark .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-dark .navbar-nav .show.vc-nav-link-active,
+.vc-header .navbar-nav .vc-main-menu__nav-pills .show.vc-nav-link-active,
+.vc-main-menu__nav-pills .vc-header .navbar-nav .show.vc-nav-link-active,
 .navbar-dark .navbar-nav .nav-link.active,
 .vc-header .navbar-nav .nav-link.active,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .active.vc-nav-link,
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .active.vc-nav-link,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .active.vc-nav-link,
 .vc-main-menu__nav-pills .vc-header .navbar-nav .active.vc-nav-link,
-.navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active,
-.vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active,
-.vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active,
 .navbar-dark .navbar-nav .vc-main-menu__nav-pills .active.vc-nav-link-toggler,
 .vc-main-menu__nav-pills .navbar-dark .navbar-nav .active.vc-nav-link-toggler,
 .vc-header .navbar-nav .vc-main-menu__nav-pills .active.vc-nav-link-toggler,
-.vc-main-menu__nav-pills .vc-header .navbar-nav .active.vc-nav-link-toggler {
+.vc-main-menu__nav-pills .vc-header .navbar-nav .active.vc-nav-link-toggler,
+.navbar-dark .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active,
+.vc-main-menu__nav-pills .navbar-dark .navbar-nav .vc-nav-link-active,
+.vc-header .navbar-nav .vc-main-menu__nav-pills .vc-nav-link-active,
+.vc-main-menu__nav-pills .vc-header .navbar-nav .vc-nav-link-active {
   color: #fff;
 }
 
-.navbar-dark .navbar-toggler, .vc-header .navbar-toggler, .navbar-dark .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .navbar-dark .vc-nav-link-toggler, .vc-header .vc-main-menu__nav-pills .vc-nav-link-toggler, .vc-main-menu__nav-pills .vc-header .vc-nav-link-toggler {
+.navbar-dark .navbar-toggler, .vc-header .navbar-toggler {
   color: rgba(255, 255, 255, 0.5);
   border-color: rgba(255, 255, 255, 0.1);
 }
@@ -6139,7 +6072,7 @@ a.badge-dark:focus, a.badge-dark.focus {
   }
 }
 
-.media {
+.media, .vc-list-row {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -6148,7 +6081,7 @@ a.badge-dark:focus, a.badge-dark.focus {
           align-items: flex-start;
 }
 
-.media-body {
+.media-body, .vc-list-row__text-container {
   -webkit-box-flex: 1;
       -ms-flex: 1;
           flex: 1;
@@ -7524,11 +7457,11 @@ button.vc-header:focus {
   background-color: #1d2124 !important;
 }
 
-.bg-white {
+.bg-white, .vc-list {
   background-color: #fff !important;
 }
 
-.bg-transparent {
+.bg-transparent, .vc-header__account .btn-secondary, .vc-content .blade-nav .menu-item button, .vc-content__blade .blade-head .blade-toolbar .menu-btn {
   background-color: transparent !important;
 }
 
@@ -7552,7 +7485,7 @@ button.vc-header:focus {
   border-left: 1px solid #dee2e6 !important;
 }
 
-.border-0 {
+.border-0, .vc-header__account .btn-secondary, .vc-content .blade-nav .menu-item button, .vc-content__blade .blade-head .blade-toolbar .menu-btn {
   border: 0 !important;
 }
 
@@ -7640,7 +7573,7 @@ button.vc-header:focus {
   border-radius: 0.3rem !important;
 }
 
-.rounded-circle {
+.rounded-circle, .vc-header__account .vc-header__account__user-block img.userpic {
   border-radius: 50% !important;
 }
 
@@ -7648,7 +7581,7 @@ button.vc-header:focus {
   border-radius: 50rem !important;
 }
 
-.rounded-0 {
+.rounded-0, .vc-header__account {
   border-radius: 0 !important;
 }
 
@@ -7670,7 +7603,7 @@ button.vc-header:focus {
   display: inline-block !important;
 }
 
-.d-block {
+.d-block, .vc-header__account .vc-header__account__user-block .account-user__name, .vc-header__account .vc-header__account__user-block .account-user__role, .vc-content .blade-nav .menu-item button, .vc-content .blade-t__head, .vc-content .blade-t__subhead, .vc-content__blade .blade-head .blade-toolbar .menu-btn {
   display: block !important;
 }
 
@@ -7686,7 +7619,7 @@ button.vc-header:focus {
   display: table-cell !important;
 }
 
-.d-flex, .vc-header__logo, .vc-header__account__user-block, .vc-main-menu {
+.d-flex, .vc-header__logo, .vc-header__account, .vc-header__account__user-block, .vc-header__account .btn-secondary, .vc-main-menu, .vc-content .blade-nav .menu__inline, .vc-content .blade-t, .vc-content__blade .blade-head .blade-toolbar .menu__inline, .vc-list-row__text-container .row-text {
   display: -webkit-box !important;
   display: -ms-flexbox !important;
   display: flex !important;
@@ -7742,7 +7675,7 @@ button.vc-header:focus {
   .d-md-inline-block {
     display: inline-block !important;
   }
-  .d-md-block {
+  .d-md-block, .vc-main-menu {
     display: block !important;
   }
   .d-md-table {
@@ -7754,7 +7687,7 @@ button.vc-header:focus {
   .d-md-table-cell {
     display: table-cell !important;
   }
-  .d-md-flex {
+  .d-md-flex, .vc-content {
     display: -webkit-box !important;
     display: -ms-flexbox !important;
     display: flex !important;
@@ -7988,7 +7921,7 @@ button.vc-header:focus {
           flex-grow: 1 !important;
 }
 
-.flex-shrink-0, .vc-header__account {
+.flex-shrink-0 {
   -ms-flex-negative: 0 !important;
       flex-shrink: 0 !important;
 }
@@ -7998,13 +7931,13 @@ button.vc-header:focus {
       flex-shrink: 1 !important;
 }
 
-.justify-content-start {
+.justify-content-start, .vc-content .blade-t, .vc-content__blade .blade-head .blade-toolbar .menu__inline {
   -webkit-box-pack: start !important;
       -ms-flex-pack: start !important;
           justify-content: flex-start !important;
 }
 
-.justify-content-end {
+.justify-content-end, .vc-content .blade-nav .menu__inline {
   -webkit-box-pack: end !important;
       -ms-flex-pack: end !important;
           justify-content: flex-end !important;
@@ -8016,7 +7949,7 @@ button.vc-header:focus {
           justify-content: center !important;
 }
 
-.justify-content-between {
+.justify-content-between, .vc-list-row__text-container .row-text {
   -webkit-box-pack: justify !important;
       -ms-flex-pack: justify !important;
           justify-content: space-between !important;
@@ -8039,7 +7972,7 @@ button.vc-header:focus {
           align-items: flex-end !important;
 }
 
-.align-items-center, .vc-header__logo {
+.align-items-center, .vc-header__logo, .vc-list-row__text-container .row-text {
   -webkit-box-align: center !important;
       -ms-flex-align: center !important;
           align-items: center !important;
@@ -8853,7 +8786,7 @@ button.vc-header:focus {
   overflow: auto !important;
 }
 
-.overflow-hidden {
+.overflow-hidden, .vc-content__blade {
   overflow: hidden !important;
 }
 
@@ -8948,7 +8881,7 @@ button.vc-header:focus {
   width: 25% !important;
 }
 
-.w-50 {
+.w-50, .vc-content__blade {
   width: 50% !important;
 }
 
@@ -8956,7 +8889,7 @@ button.vc-header:focus {
   width: 75% !important;
 }
 
-.w-100 {
+.w-100, .vc-list-row__text-container .row-text {
   width: 100% !important;
 }
 
@@ -9012,23 +8945,33 @@ button.vc-header:focus {
   margin: 0 !important;
 }
 
-.mt-0,
-.my-0 {
+.mt-0, .vc-header__account .btn-secondary, .vc-header__account .dropdown-toggle,
+.my-0,
+.vc-header__account,
+.vc-content .blade-nav .menu__inline,
+.vc-content__blade .blade-head .blade-toolbar .menu__inline {
   margin-top: 0 !important;
 }
 
 .mr-0,
-.mx-0 {
+.mx-0,
+.vc-content,
+.vc-content__blade {
   margin-right: 0 !important;
 }
 
 .mb-0,
-.my-0 {
+.my-0,
+.vc-header__account,
+.vc-content .blade-nav .menu__inline,
+.vc-content__blade .blade-head .blade-toolbar .menu__inline {
   margin-bottom: 0 !important;
 }
 
 .ml-0,
-.mx-0 {
+.mx-0,
+.vc-content,
+.vc-content__blade {
   margin-left: 0 !important;
 }
 
@@ -9037,7 +8980,8 @@ button.vc-header:focus {
 }
 
 .mt-1,
-.my-1 {
+.my-1,
+.vc-header__account .vc-header__account__user-block img.userpic {
   margin-top: 0.25rem !important;
 }
 
@@ -9047,7 +8991,8 @@ button.vc-header:focus {
 }
 
 .mb-1,
-.my-1 {
+.my-1,
+.vc-header__account .vc-header__account__user-block img.userpic {
   margin-bottom: 0.25rem !important;
 }
 
@@ -9091,7 +9036,8 @@ button.vc-header:focus {
 
 .mr-3,
 .mx-3,
-.vc-header__license-button {
+.vc-header__license-button,
+.vc-header__account .vc-header__account__user-block img.userpic {
   margin-right: 1rem !important;
 }
 
@@ -9102,7 +9048,8 @@ button.vc-header:focus {
 
 .ml-3,
 .mx-3,
-.vc-header__license-button {
+.vc-header__license-button,
+.vc-header__account .vc-header__account__user-block img.userpic {
   margin-left: 1rem !important;
 }
 
@@ -9154,29 +9101,41 @@ button.vc-header:focus {
   margin-left: 3rem !important;
 }
 
-.p-0, .vc-header {
+.p-0, .vc-header, .vc-header__account, .context-menu {
   padding: 0 !important;
 }
 
 .pt-0,
 .py-0,
-.vc-main-menu__nav-pills .vc-nav-link-toggler {
+.vc-header__account .dropdown-toggle,
+.vc-list-row__row-icon,
+.table-bordered .product-img {
   padding-top: 0 !important;
 }
 
 .pr-0,
-.px-0 {
+.px-0,
+.vc-header__account .dropdown-toggle,
+.vc-content,
+.vc-content__blade,
+.vc-content .blade-nav .menu-item {
   padding-right: 0 !important;
 }
 
-.pb-0,
+.pb-0, .vc-list-table-body,
 .py-0,
-.vc-main-menu__nav-pills .vc-nav-link-toggler {
+.vc-header__account .dropdown-toggle,
+.vc-list-row__row-icon,
+.table-bordered .product-img {
   padding-bottom: 0 !important;
 }
 
 .pl-0,
-.px-0 {
+.px-0,
+.vc-header__account .dropdown-toggle,
+.vc-content,
+.vc-content__blade,
+.vc-content .blade-nav .menu-item {
   padding-left: 0 !important;
 }
 
@@ -9184,9 +9143,14 @@ button.vc-header:focus {
   padding: 0.25rem !important;
 }
 
-.pt-1,
+.pt-1, .vc-content .blade-t__h-text, .vc-content__blade .blade-head .blade-toolbar, .vc-list-row__end-row,
 .py-1,
-.vc-header__account {
+.vc-main-menu,
+.vc-content .blade-nav .menu__inline,
+.vc-content__blade .blade-head .blade-toolbar .menu__inline,
+.vc-list-row__menu,
+.vc-list-row__text-container,
+.context-menu i {
   padding-top: 0.25rem !important;
 }
 
@@ -9194,13 +9158,21 @@ button.vc-header:focus {
 .px-1,
 .vc-main-menu__nav-pills .vc-nav-link__icon,
 .vc-main-menu__nav-pills .vc-nav-link-active__icon,
-.vc-main-menu__nav-pills .vc-nav-link-toggler__icon {
+.vc-main-menu__nav-pills .vc-nav-link-toggler__icon,
+.vc-content .blade-nav,
+.vc-content .blade-t,
+.table-bordered .product-img {
   padding-right: 0.25rem !important;
 }
 
 .pb-1,
 .py-1,
-.vc-header__account {
+.vc-main-menu,
+.vc-content .blade-nav .menu__inline,
+.vc-content__blade .blade-head .blade-toolbar .menu__inline,
+.vc-list-row__menu,
+.vc-list-row__text-container,
+.context-menu i {
   padding-bottom: 0.25rem !important;
 }
 
@@ -9208,7 +9180,10 @@ button.vc-header:focus {
 .px-1,
 .vc-main-menu__nav-pills .vc-nav-link__icon,
 .vc-main-menu__nav-pills .vc-nav-link-active__icon,
-.vc-main-menu__nav-pills .vc-nav-link-toggler__icon {
+.vc-main-menu__nav-pills .vc-nav-link-toggler__icon,
+.vc-content .blade-nav,
+.vc-content .blade-t,
+.table-bordered .product-img {
   padding-left: 0.25rem !important;
 }
 
@@ -9219,32 +9194,54 @@ button.vc-header:focus {
 .pt-2,
 .py-2,
 .vc-header__license-text,
+.vc-header__account .account-user__info,
 .vc-main-menu__nav-pills .vc-nav-link,
+.vc-main-menu__nav-pills .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .vc-nav-link__icon,
 .vc-main-menu__nav-pills .vc-nav-link-active,
 .vc-main-menu__nav-pills .vc-nav-link-active__icon,
-.vc-main-menu__nav-pills .vc-nav-link-toggler__icon {
+.vc-main-menu__nav-pills .vc-nav-link-toggler__icon,
+.vc-content .blade-t,
+.table-checkbox {
   padding-top: 0.5rem !important;
 }
 
 .pr-2,
-.px-2 {
+.px-2,
+.vc-content__blade .blade-head .blade-toolbar .menu__inline,
+.vc-list-row,
+.vc-list-row__menu,
+.vc-list-row__row-icon,
+.vc-list-row__text-container,
+.vc-list-row__end-row,
+.context-menu i {
   padding-right: 0.5rem !important;
 }
 
 .pb-2,
 .py-2,
 .vc-header__license-text,
+.vc-header__account .account-user__info,
 .vc-main-menu__nav-pills .vc-nav-link,
+.vc-main-menu__nav-pills .vc-nav-link-toggler,
 .vc-main-menu__nav-pills .vc-nav-link__icon,
 .vc-main-menu__nav-pills .vc-nav-link-active,
 .vc-main-menu__nav-pills .vc-nav-link-active__icon,
-.vc-main-menu__nav-pills .vc-nav-link-toggler__icon {
+.vc-main-menu__nav-pills .vc-nav-link-toggler__icon,
+.vc-content .blade-t,
+.table-checkbox {
   padding-bottom: 0.5rem !important;
 }
 
 .pl-2,
-.px-2 {
+.px-2,
+.vc-content__blade .blade-head .blade-toolbar .menu__inline,
+.vc-list-row,
+.vc-list-row__menu,
+.vc-list-row__row-icon,
+.vc-list-row__text-container,
+.vc-list-row__end-row,
+.context-menu i {
   padding-left: 0.5rem !important;
 }
 
@@ -9252,11 +9249,11 @@ button.vc-header:focus {
   padding: 1rem !important;
 }
 
-.pt-3,
+.pt-3, .vc-list-table-body,
 .py-3,
 .vc-header__version,
 .vc-header__action-icon,
-.vc-main-menu {
+.vc-list-row {
   padding-top: 1rem !important;
 }
 
@@ -9266,7 +9263,8 @@ button.vc-header:focus {
 .vc-header__version,
 .vc-header__license-text,
 .vc-header__license-button,
-.vc-header__action-icon {
+.vc-header__action-icon,
+.vc-content .blade-t__ico {
   padding-right: 1rem !important;
 }
 
@@ -9274,7 +9272,7 @@ button.vc-header:focus {
 .py-3,
 .vc-header__version,
 .vc-header__action-icon,
-.vc-main-menu {
+.vc-list-row {
   padding-bottom: 1rem !important;
 }
 
@@ -9284,7 +9282,8 @@ button.vc-header:focus {
 .vc-header__version,
 .vc-header__license-text,
 .vc-header__license-button,
-.vc-header__action-icon {
+.vc-header__action-icon,
+.vc-content .blade-t__ico {
   padding-left: 1rem !important;
 }
 
@@ -9298,8 +9297,7 @@ button.vc-header:focus {
 }
 
 .pr-4,
-.px-4,
-.vc-main-menu__nav-pills .vc-nav-link-toggler {
+.px-4 {
   padding-right: 1.5rem !important;
 }
 
@@ -9309,8 +9307,7 @@ button.vc-header:focus {
 }
 
 .pl-4,
-.px-4,
-.vc-main-menu__nav-pills .vc-nav-link-toggler {
+.px-4 {
   padding-left: 1.5rem !important;
 }
 
@@ -10904,7 +10901,7 @@ button.vc-header:focus {
   text-align: right !important;
 }
 
-.text-center {
+.text-center, .table-checkbox, .table-bordered .product-img, .context-menu {
   text-align: center !important;
 }
 
@@ -11064,7 +11061,7 @@ a.text-dark:hover, a.text-dark:focus {
   color: #212529 !important;
 }
 
-.text-muted, .vc-header__version {
+.text-muted {
   color: #6c757d !important;
 }
 
@@ -11124,7 +11121,7 @@ a.text-dark:hover, a.text-dark:focus {
   }
   pre,
   blockquote {
-    border: 1px solid #838D9A;
+    border: 1px solid #A5A5A5;
     page-break-inside: avoid;
   }
   thead {
@@ -11216,6 +11213,10 @@ body {
   background: #161D25 !important;
 }
 
+.text-end {
+  text-align: right !important;
+}
+
 > .container,
 .navbar > .container-fluid,
 .vc-header > .container-fluid,
@@ -11250,20 +11251,27 @@ body {
           justify-content: space-between;
 }
 
-.text-end {
-  text-align: right !important;
-}
-
-.text-muted, .vc-header__version {
-  color: #838D9A !important;
+.vc-header__version {
+  color: #A5A5A5 !important;
   display: block;
+  border-right: 1px solid #495057;
+  line-height: 1.5rem;
 }
 
-.navbar .dropdown-toggle, .vc-header .dropdown-toggle, .navbar .vc-header__account__user-block, .vc-header .vc-header__account__user-block {
+.vc-header__action-icon {
+  border-left: 1px solid #495057;
+}
+
+.vc-header__account {
+  border: 0;
+  border-left: 1px solid #495057;
+}
+
+.vc-header__account .dropdown-toggle {
   font-size: 0.9rem;
 }
 
-.navbar .dropdown-toggle::after, .vc-header .dropdown-toggle::after, .navbar .vc-header__account__user-block::after, .vc-header .vc-header__account__user-block::after {
+.vc-header__account .dropdown-toggle::after {
   display: inline-block;
   -webkit-font-smoothing: antialiased;
   display: inline-block;
@@ -11274,76 +11282,232 @@ body {
   font-size: 1.1rem;
   font-weight: 900;
   border: 0;
-  color: #838D9A;
-  margin: 0.7rem 1.2rem 0 1.2rem;
+  color: #A5A5A5;
+  margin: 0.9rem 0.2rem 0 1rem;
 }
 
-.link-dark, .vc-header__account__user-block, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-active {
-  color: #161D25;
+.vc-header__account__dropdown {
+  position: absolute;
+  -webkit-transform: translate3d(0px, 62px, 0px);
+          transform: translate3d(0px, 62px, 0px);
+  top: 0px;
+  left: 0px;
+  will-change: transform;
 }
 
-.nav-pills i, .vc-main-menu__nav-pills i {
-  font-size: 1.25rem;
+.vc-header__account .vc-header__account__user-block {
+  padding-top: 0 !important;
+  margin-top: 0.15rem !important;
 }
 
-.nav-pills .nav-link.active, .vc-main-menu__nav-pills .nav-link.active, .vc-main-menu__nav-pills .active.vc-nav-link, .nav-pills .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .active.vc-nav-link-toggler,
-.nav-pills .show > .nav-link,
-.vc-main-menu__nav-pills .show > .nav-link,
-.nav-pills .vc-header__account__user-block > .nav-link,
-.vc-main-menu__nav-pills .vc-header__account__user-block > .nav-link,
-.vc-main-menu__nav-pills .nav-pills .show > .vc-nav-link,
-.vc-main-menu__nav-pills .show > .vc-nav-link,
-.vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link,
-.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link,
-.vc-main-menu__nav-pills .nav-pills .show > .vc-nav-link-active,
-.vc-main-menu__nav-pills .show > .vc-nav-link-active,
-.vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link-active,
-.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-active,
-.vc-main-menu__nav-pills .nav-pills .show > .vc-nav-link-toggler,
-.vc-main-menu__nav-pills .show > .vc-nav-link-toggler,
-.vc-main-menu__nav-pills .nav-pills .vc-header__account__user-block > .vc-nav-link-toggler,
-.vc-main-menu__nav-pills .vc-header__account__user-block > .vc-nav-link-toggler {
-  color: #161D25;
-  background-color: #DFEEF9;
+.vc-header__account .account-user__info {
+  text-align: left;
 }
 
-.nav-pills .nav-link, .vc-main-menu__nav-pills .nav-link, .vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-active, .vc-main-menu__nav-pills .vc-nav-link-toggler {
-  border-radius: 0;
-}
-
-.navbar-toggler, .vc-main-menu__nav-pills .vc-nav-link-toggler {
-  color: #43B0E6 !important;
-}
-
-.vc-header__version {
-  border-right: 1px solid #495057;
-  line-height: 1.5rem;
-}
-
-.vc-header__action-icon {
-  border-left: 1px solid #495057;
-}
-
-.vc-header__account {
-  border-left: 1px solid #495057;
-}
-
-.account-user__name {
+.vc-header__account .vc-header__account__user-block .account-user__name {
   color: #fff;
   line-height: 1.2;
 }
 
-.account-user__role {
-  color: #838D9A;
-  display: block;
+.vc-header__account .vc-header__account__user-block .account-user__role {
+  color: #A5A5A5;
   line-height: 1.2;
 }
 
 .vc-main-menu {
-  width: 205px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  height: calc(100vh - 54px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 205px;
+          flex: 0 0 205px;
+  border-right: 1px #EAEDF3 solid;
 }
 
-.vc-main-menu__nav-pills .vc-nav-link:hover {
+.vc-main-menu__nav-pills .vc-nav-link, .vc-main-menu__nav-pills .vc-nav-link-toggler {
+  color: #161D25;
+  border-radius: 0;
+}
+
+.vc-main-menu__nav-pills .vc-nav-link:hover, .vc-main-menu__nav-pills .vc-nav-link-toggler:hover {
   color: #319ED4;
+}
+
+.vc-main-menu__nav-pills .vc-nav-link__icon {
+  font-size: 1.25rem;
+}
+
+.vc-main-menu__nav-pills .vc-nav-link-active {
+  color: #161D25;
+  background-color: #DFEEF9;
+}
+
+.vc-main-menu__nav-pills .vc-nav-link-toggler {
+  color: #43B0E6 !important;
+}
+
+.vc-main-menu__nav-pills .vc-nav-link-toggler__icon {
+  font-size: 1.25rem;
+}
+
+.vc-content {
+  height: calc(100vh - 54px);
+}
+
+.vc-content__blade {
+  border-right: 1px #EAEDF3 solid;
+}
+
+.vc-content .blade-head {
+  background: #465769;
+}
+
+.vc-content .blade-nav {
+  background: #34414F;
+}
+
+.vc-content .blade-nav .menu__inline {
+  list-style-type: none;
+}
+
+.vc-content .blade-nav .menu-item button {
+  color: #fff;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+}
+
+.vc-content .blade-nav .menu__inline .menu-item .menu-item__icon {
+  color: #fff;
+  text-align: center !important;
+}
+
+.vc-content .blade-t__ico {
+  color: #fff;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
+}
+
+.vc-content .blade-t__head {
+  color: #fff;
+  line-height: 1.2;
+}
+
+.vc-content .blade-t__subhead {
+  color: #A5A5A5;
+  line-height: 1.2;
+}
+
+.vc-content__blade .blade-head .blade-toolbar {
+  border-top: 1px #6B7987 solid;
+}
+
+.vc-content__blade .blade-head .blade-toolbar .menu__inline {
+  list-style-type: none;
+}
+
+.vc-content__blade .blade-head .blade-toolbar .menu-btn {
+  color: #fff;
+  cursor: pointer;
+  padding: 0 10px;
+  position: relative;
+  text-align: center;
+}
+
+.vc-content__blade .blade-head .blade-toolbar .menu-btn__ico {
+  display: block;
+  font-size: 1rem;
+  margin: 0 0 3px;
+}
+
+.vc-content__blade .blade-head .blade-toolbar .menu-btn__text {
+  display: block;
+  font-size: 0.7rem;
+}
+
+.row-title {
+  font-weight: 500;
+}
+
+.row-descr {
+  color: #A5A5A5;
+  font-size: 0.9rem;
+}
+
+.vc-list-row {
+  border-bottom: 1px solid #EAEDF3;
+  cursor: pointer;
+}
+
+.vc-list-row:hover {
+  background: #EFF7FC;
+}
+
+.vc-list-row__menu {
+  color: #43B0E6;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+
+.vc-list-row__row-icon {
+  font-size: 2rem;
+  line-height: 1.7rem;
+  color: #A5A5A5;
+  vertical-align: middle;
+}
+
+.vc-list-row__text-container {
+  vertical-align: middle;
+}
+
+.vc-list-row__end-row {
+  color: #A5A5A5;
+}
+
+.vc-list-row__text-container .row-text {
+  color: #333333;
+  line-height: 1.5rem;
+}
+
+.vc-list-table {
+  vertical-align: middle;
+}
+
+.vc-list-table table tr {
+  border-bottom: 1px solid #EAEDF3;
+}
+
+.vc-list-table table tr td {
+  vertical-align: middle;
+}
+
+.table-checkbox {
+  border-left: 0;
+}
+
+.table-bordered .product-img {
+  border-right: 0;
+}
+
+.table-bordered .product-title-row {
+  border-left: 0;
+}
+
+.product-img .image {
+  width: 56px;
+  height: 56px;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.context-menu i {
+  color: #43B0E6;
+  font-size: 1.2rem;
+  vertical-align: middle;
 }
 /*# sourceMappingURL=main.css.map */

@@ -1,31 +1,39 @@
 @import "../../custom.scss";
 
+
 // Main content
 .vc-content {
     //@extend .px-md-4;
-    @extend .col-md-9;
-    @extend .ml-sm-auto;
-    @extend .col-lg-10;
+    //@extend .col-md-9;
+    //@extend .ml-sm-auto;
+    //@extend .col-lg-10;
+    @extend .col;
     @extend .mx-0;
     @extend .px-0;
     @extend .d-md-flex;
-    @extend .w-100;
+    //@extend .w-100;
     height: calc(100vh - 54px);
+    //margin-left: 205px !important;
     &__blade {
-        border-right: 1px #EAEDF3 solid;
+        border-right: 1px $content-border-color solid;
         @extend .mx-0;
         @extend .px-0;
         @extend .overflow-hidden;
-        @extend .w-50;
+        @extend .w-25;
     }
 }
-
+// MIXINGS
 @mixin button-icon {
     @extend .border-0;
     @extend .bg-transparent;
     color: $white;
 }
 
+@mixin row-border-bottom {
+    border-bottom: 1px solid $content-border-color;
+}
+
+///////
 .vc-content .blade-head {
     background: #465769;
 }

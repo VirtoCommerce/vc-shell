@@ -1,5 +1,5 @@
 <template>
-  <li>
+  <li v-on="$listeners">
     <a
       href="#"
       :class="{ 'vc-nav-link-toggler': toggler, 'vc-nav-link': !toggler }"

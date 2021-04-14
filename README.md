@@ -10,7 +10,7 @@
 ![image](https://user-images.githubusercontent.com/7566324/114682702-9f713980-9d0f-11eb-9600-d542e020fa43.png)
 
 The entire solution consists from the three main elements:
-- Atomic design system that consists from well designed building blocks that web frameworks agnostic
+- Atomic design system that composed of well-designed building blocks and CSS styles that have web frameworks agnostic nature
 - Set of reusable components (building blocks) that can be used to compose a new changes for existing vc manager application or even build a new own application
 - The new vc-manager application is implemented on new web tech stack and is built on the new vc-design system
 

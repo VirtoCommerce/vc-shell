@@ -2,9 +2,9 @@
 
 ## The main R&D project goals:
 
-- Migrate the current vc-manager application from AngularJS to VueJs, VueJs is choosen as one of the best  fit candidate at this role, in the future we can extend to another popular web frameworks (Angular and ReactJs) . 
-- Simplify and speed the process of customization of existing and development a new specialized Backoffice applications thanks to using the own VC design system `vue-vc-manager-ui-kit` it's a collection of reusable components, guided by clear standards, that can be assembled together to build any number of application.
-- Provide the seamless migration to the new vc manager for existing solutions 
+- Technological shift from AngularJS to VueJs for platform backoffice UI development, VueJs is choosen as one of the best  fit candidate at this role, in the future we can extend to another popular web frameworks (Angular and ReactJs). 
+- Simplify and speed the process of customization of existing and development a new specialized (use case oriented) Backoffice applications thanks to using the own VC design system `vue-vc-manager-ui-kit` it's a collection of reusable components, guided by clear standards, that can be assembled together to build any number of application.
+- Provide the way for seamless migration to the new vc manager for existing solutions 
 
 ## The architecture 
 ![image](https://user-images.githubusercontent.com/7566324/114682702-9f713980-9d0f-11eb-9600-d542e020fa43.png)

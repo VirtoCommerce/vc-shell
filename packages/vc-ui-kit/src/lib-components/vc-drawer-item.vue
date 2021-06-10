@@ -1,7 +1,7 @@
 <template>
   <component
-    v-bind:is="to ? 'nuxt-link' : 'div'"
-    :to="to"
+    v-bind:is="to ? 'a' : 'div'"
+    :href="to"
     class="vc-drawer-item"
     @click="$emit('click')"
   >
@@ -19,7 +19,12 @@
 </template>
 
 <script>
-  export default {
+  import VcIcon from "./vc-icon.vue";
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
+    components: { VcIcon },
+
     props: {
       sticky: {
         type: Boolean,
@@ -38,5 +43,5 @@
         type: String,
       },
     },
-  };
+  });
 </script>

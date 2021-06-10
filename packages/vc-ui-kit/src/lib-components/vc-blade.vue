@@ -33,10 +33,10 @@
           class="vc-blade__header-title"
           :class="{ 'vc-blade__header-title_only': !subtitle }"
         >
-          {{ $t(title) }}
+          {{ title }}
         </div>
         <div class="vc-blade__header-subtitle" v-if="subtitle">
-          {{ $t(subtitle) }}
+          {{ subtitle }}
         </div>
       </div>
     </div>
@@ -49,7 +49,7 @@
           :key="item.id"
         >
           <vc-icon :icon="item.icon" size="ss"></vc-icon>
-          <div class="vc-blade__toolbar-item-title">{{ $t(item.title) }}</div>
+          <div class="vc-blade__toolbar-item-title">{{ item.title }}</div>
         </div>
       </template>
     </div>
@@ -82,9 +82,7 @@
           "
           @click="filterOpened = !filterOpened"
         >
-          <div class="vc-blade__searchbar-filter-label">
-            {{ $t("Select filter") }}
-          </div>
+          <div class="vc-blade__searchbar-filter-label">Select filter</div>
           <vc-icon
             :icon="filterOpened ? 'caret-up' : 'caret-down'"
             size="s"
@@ -114,7 +112,7 @@
       </div>
       <div class="vc-blade__searchbar-search vc-flex-grow_1">
         <vc-input
-          :placeholder="$t('Search keywords')"
+          placeholder="Search keywords"
           clearable="clearable"
         ></vc-input>
       </div>
@@ -122,9 +120,7 @@
         v-if="filterable"
         class="vc-blade__searchbar-counter vc-margin-left_l"
       >
-        <span class="vc-blade__searchbar-counter-label"
-          >{{ $t("Count") }}:</span
-        >
+        <span class="vc-blade__searchbar-counter-label">Count:</span>
         <span class="vc-blade__searchbar-counter-value">5</span>
       </div>
     </div>
@@ -134,7 +130,14 @@
 </template>
 
 <script>
-  export default {
+  import VcIcon from "./vc-icon.vue";
+  import VcInput from "./vc-input.vue";
+  import VcBreadcrumbs from "./vc-breadcrumbs.vue";
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
+    components: { VcIcon, VcInput, VcBreadcrumbs },
+    
     props: {
       icon: {
         type: String,
@@ -175,11 +178,11 @@
       },
     },
 
-    data() {
+    setup() {
       return {
         expanded: false,
         filterOpened: false,
       };
     },
-  };
+  });
 </script>

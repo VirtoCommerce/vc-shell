@@ -9,21 +9,28 @@
     </div>
     <vc-drawer-toggler @click="toggleCollapsed()"></vc-drawer-toggler>
     <vc-container class="vc-drawer__content">
-      <vc-drawer-item icon="home" to="/" sticky="sticky" :title="$t('Home')" />
+      <vc-drawer-item icon="home" to="/" sticky="sticky" title="Home" />
       <vc-drawer-item
         v-for="item in items"
         :key="item.id"
         :icon="item.icon"
         :to="item.to"
-        :title="$t(item.title)"
+        :title="item.title"
       />
-      <vc-drawer-item icon="ellipsis-h" sticky="sticky" :title="$t('More')" />
+      <vc-drawer-item icon="ellipsis-h" sticky="sticky" title="More" />
     </vc-container>
   </div>
 </template>
 
 <script>
-  export default {
+  import VcDrawerItem from "./vc-drawer-item.vue";
+  import VcDrawerToggler from "./vc-drawer-toggler.vue";
+  import VcContainer from "./vc-container.vue";
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
+    components: { VcDrawerItem, VcDrawerToggler, VcContainer },
+
     props: {
       logo: {
         type: String,
@@ -39,17 +46,15 @@
       },
     },
 
-    data() {
+    setup() {
       return {
         collapsed: false,
+
+        toggleCollapsed() {
+          this.collapsed = !this.collapsed;
+          this.$emit(this.collapsed ? "collapse" : "expand");
+        },
       };
     },
-
-    methods: {
-      toggleCollapsed() {
-        this.collapsed = !this.collapsed;
-        this.$emit(this.collapsed ? "collapse" : "expand");
-      },
-    },
-  };
+  });
 </script>

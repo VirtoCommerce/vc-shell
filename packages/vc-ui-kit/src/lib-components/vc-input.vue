@@ -24,7 +24,12 @@
 </template>
 
 <script>
-  export default {
+  import VcIcon from "./vc-icon.vue";
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
+    components: { VcIcon },
+    
     props: {
       placeholder: {
         type: String,
@@ -40,10 +45,10 @@
       },
     },
 
-    data() {
+    setup() {
       return {
         internalValue: this.value,
       };
     },
-  };
+  });
 </script>

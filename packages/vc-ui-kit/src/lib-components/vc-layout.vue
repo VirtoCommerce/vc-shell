@@ -38,7 +38,7 @@
               vc-flex-justify_center
             "
             :class="{ 'vc-layout__topbar-toolbar-item_accent': item.accent }"
-            :title="$t(item.title)"
+            :title="item.title"
             @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
           >
             <vc-icon
@@ -75,12 +75,8 @@
             v-if="accountMenuVisible"
             @click.stop
           >
-            <div class="vc-layout__topbar-account-menu-item">
-              {{ $t("Profile") }}
-            </div>
-            <div class="vc-layout__topbar-account-menu-item">
-              {{ $t("Log Out") }}
-            </div>
+            <div class="vc-layout__topbar-account-menu-item">Profile</div>
+            <div class="vc-layout__topbar-account-menu-item">Log Out</div>
           </div>
         </div>
       </div>
@@ -93,7 +89,13 @@
 </template>
 
 <script>
-  export default {
+  import VcIcon from "./vc-icon.vue";
+  import VcSpacer from "./vc-spacer.vue";
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
+    components: { VcIcon, VcSpacer },
+
     props: {
       toolbarItems: {
         type: Array,
@@ -104,10 +106,10 @@
       },
     },
 
-    data() {
+    setup() {
       return {
         accountMenuVisible: false,
       };
     },
-  };
+  });
 </script>

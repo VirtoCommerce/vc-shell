@@ -18,18 +18,23 @@
           :icon="item.icon"
           size="s"
         ></vc-icon>
-        <div class="vc-breadcrumbs__item-title">{{ $t(item.title) }}</div>
+        <div class="vc-breadcrumbs__item-title">{{ item.title }}</div>
       </div>
     </template>
   </div>
 </template>
 
 <script>
-  export default {
+  import VcIcon from "./vc-icon.vue";
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
+    components: { VcIcon },
+    
     props: {
       items: {
         type: Array,
       },
     },
-  };
+  });
 </script>

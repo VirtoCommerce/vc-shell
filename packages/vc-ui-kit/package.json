@@ -22,6 +22,7 @@
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
   "devDependencies": {
+    "@vue/composition-api": "^1.0.0-rc.11",
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
     "@rollup/plugin-alias": "^3.1.1",

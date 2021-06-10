@@ -7,7 +7,9 @@
 </template>
 
 <script>
-  export default {
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
     props: {
       icon: {
         type: String,
@@ -24,5 +26,5 @@
         default: "m",
       },
     },
-  };
+  });
 </script>

@@ -1,11 +1,13 @@
 <template>
-  <nuxt-link class="vc-link" :class="{ 'vc-link_disabled': disabled }" :to="to">
+  <a class="vc-link" :class="{ 'vc-link_disabled': disabled }" :href="to">
     <slot></slot>
-  </nuxt-link>
+  </a>
 </template>
 
 <script>
-  export default {
+  import { defineComponent } from "@vue/composition-api";
+
+  export default defineComponent({
     props: {
       to: {
         type: String,
@@ -16,5 +18,5 @@
         default: false,
       },
     },
-  };
+  });
 </script>

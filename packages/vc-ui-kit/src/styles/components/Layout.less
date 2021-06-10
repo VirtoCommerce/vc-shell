@@ -1,0 +1,116 @@
+.vc-layout {
+  background-color: var(--background-color);
+  overflow: hidden;
+
+  &__topbar {
+    height: var(--app-bar-height);
+    background: var(--app-bar-background-color);
+    color: white;
+
+    &-banner {
+      border-right: 1px solid var(--app-bar-divider-color);
+      padding-left: 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-sizing: border-box;
+      max-width: 407px;
+      flex-wrap: nowrap;
+      font-size: var(--font-size-s);
+
+      .vc-button {
+        margin: 0 20px;
+      }
+    }
+
+    &-toolbar {
+      &-item {
+        position: relative;
+        width: var(--app-bar-toolbar-item-width);
+        border-left: 1px solid var(--app-bar-divider-color);
+        cursor: pointer;
+        color: var(--app-bar-toolbar-icon-color);
+
+        &:hover {
+          background: var(--app-bar-toolbar-icon-background-hover);
+        }
+
+        &_accent:before {
+          content: "";
+          display: block;
+          position: absolute;
+          right: 12px;
+          top: 18px;
+          width: 7px;
+          height: 7px;
+          background: #ff4a4a;
+          border-radius: 50%;
+          z-index: 1;
+        }
+      }
+    }
+
+    &-account {
+      width: 325px;
+      border-left: 1px solid var(--app-bar-divider-color);
+      padding: 0 20px;
+      box-sizing: border-box;
+      cursor: pointer;
+      position: relative;
+
+      &:hover,
+      &_active {
+        background: var(--app-bar-toolbar-icon-background-hover);
+      }
+
+      &-avatar {
+        border-radius: 50%;
+        overflow: hidden;
+        width: 34px;
+        height: 34px;
+        background-color: var(--app-bar-account-info-role-color);
+        background-size: cover;
+        background-position: center;
+      }
+
+      &-name {
+        font-size: var(--font-size-m);
+      }
+
+      &-role {
+        font-size: var(--font-size-m);
+        color: var(--app-bar-account-info-role-color);
+      }
+
+      &-chevron {
+        color: #747474;
+      }
+
+      &_active &-chevron {
+        transform: rotate(180deg);
+      }
+
+      &-menu {
+        position: absolute;
+        left: -1px;
+        right: 0;
+        top: var(--app-bar-height);
+        background: white;
+
+        &-item {
+          padding: var(--padding-m);
+          font-size: var(--font-size-l);
+          color: #000000;
+          border-left: 1px solid #e7ebf1;
+          border-bottom: 1px solid #e7ebf1;
+          background-color: white;
+
+          &:hover {
+            background-color: #eff7fc;
+          }
+        }
+      }
+    }
+  }
+}

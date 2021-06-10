@@ -1,0 +1,109 @@
+/**
+ * Global Fonts declaration
+ */
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("../../fonts/Roboto/Roboto-Thin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("../../fonts/Roboto/Roboto-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../../fonts/Roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../../fonts/Roboto/Roboto-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../../fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("../../fonts/Roboto/Roboto-Black.ttf") format("truetype");
+}
+
+.vc-font-size {
+  &_xs {
+    font-size: var(--font-size-xs);
+    line-height: var(--line-height-xs);
+  }
+
+  &_s {
+    font-size: var(--font-size-s);
+    line-height: var(--line-height-s);
+  }
+
+  &_m {
+    font-size: var(--font-size-m);
+    line-height: var(--line-height-m);
+  }
+
+  &_l {
+    font-size: var(--font-size-l);
+    line-height: var(--line-height-l);
+  }
+
+  &_xl {
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-xl);
+  }
+}
+
+.vc-font-weight {
+  &_thin {
+    font-weight: var(--font-weight-thin);
+  }
+
+  &_light {
+    font-weight: var(--font-weight-light);
+  }
+
+  &_normal {
+    font-weight: var(--font-weight-normal);
+  }
+
+  &_medium {
+    font-weight: var(--font-weight-medium);
+  }
+
+  &_bold {
+    font-weight: var(--font-weight-bold);
+  }
+
+  &_black {
+    font-weight: var(--font-weight-black);
+  }
+}
+
+.vc-ellipsis {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}

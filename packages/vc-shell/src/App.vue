@@ -74,7 +74,7 @@
       ]);
 
       const account = ref({
-        avatar: "/images/avatar.jpg",
+        avatar: "/src/assets/avatar.jpg",
         name: "Iurii A Taranov",
         role: "Administrator",
       });

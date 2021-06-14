@@ -1,6 +1,7 @@
 {
   "packages": [
-    "packages/*"
+    "packages/*",
+    "packages/vc-extensions/*"
   ],
   "version": "0.0.2",
   "command": {

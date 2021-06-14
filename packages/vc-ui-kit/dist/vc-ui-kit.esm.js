@@ -904,7 +904,11 @@ var script$3 = {
     },
     items: {
       type: Array,
-      default: []
+
+      default() {
+        return [];
+      }
+
     }
   },
 
@@ -972,7 +976,7 @@ var __vue_render__$4 = function () {
       },
       on: {
         "click": function ($event) {
-          return _vm.$emit('click', item);
+          return _vm.$emit('itemClick', item);
         }
       }
     });

@@ -775,7 +775,9 @@ var script$3 = {
     },
     items: {
       type: Array,
-      default: []
+      default: function _default() {
+        return [];
+      }
     }
   },
   data: function data() {
@@ -831,7 +833,7 @@ var __vue_render__$4 = function __vue_render__() {
       },
       on: {
         "click": function click($event) {
-          return _vm.$emit('click', item);
+          return _vm.$emit('itemClick', item);
         }
       }
     });
@@ -853,7 +855,7 @@ var __vue_inject_styles__$4 = undefined;
 var __vue_scope_id__$4 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$4 = "data-v-15550305";
+var __vue_module_identifier__$4 = "data-v-4e26477c";
 /* functional template */
 
 var __vue_is_functional_template__$4 = false;

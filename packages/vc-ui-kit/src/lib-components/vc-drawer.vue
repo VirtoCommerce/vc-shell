@@ -14,7 +14,7 @@
         v-for="item in items"
         :key="item.id"
         :icon="item.icon"
-        @click="$emit('click', item)"
+        @click="$emit('itemClick', item)"
         :title="item.title"
       />
       <vc-drawer-item icon="ellipsis-h" sticky="sticky" title="More" />
@@ -41,7 +41,9 @@
 
       items: {
         type: Array,
-        default: [],
+        default() {
+          return [];
+        },
       },
     },
 

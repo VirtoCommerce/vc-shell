@@ -8,13 +8,31 @@
     </template>
 
     <template #left>
-      <vc-drawer :items="menuItems" logo="/src/assets/logo.svg"></vc-drawer>
+      <vc-drawer
+        :items="menuItems"
+        logo="/src/assets/logo.svg"
+        @itemClick="openBlade($event.blade)"
+      ></vc-drawer>
     </template>
+
+    <div class="vc-flex vc-flex-grow_1">
+      <component
+        v-for="blade in openedBlades"
+        :key="blade.id"
+        :is="blade.component"
+      ></component>
+    </div>
   </vc-layout>
 </template>
 
 <script>
-  import { VcLayout, VcButton, VcDrawer } from "@virtocommerce/vc-ui-kit";
+  import {
+    VcLayout,
+    VcButton,
+    VcDrawer,
+    openBlade,
+    openedBlades,
+  } from "@virtocommerce/vc-ui-kit";
   import { defineComponent, ref } from "@vue/composition-api";
 
   export default defineComponent({
@@ -51,6 +69,7 @@
           title: "Stores",
           icon: "archive",
           to: "/stores",
+          blade: "store",
         },
       ]);
 
@@ -83,6 +102,8 @@
         menuItems,
         toolbarItems,
         account,
+        openedBlades,
+        openBlade,
       };
     },
   });

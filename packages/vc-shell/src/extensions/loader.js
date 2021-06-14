@@ -1,0 +1,2 @@
+require("@virtocommerce/ext-store");
+;

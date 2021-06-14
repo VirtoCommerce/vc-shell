@@ -26,15 +26,14 @@
 
 <script>
   import VcIcon from "./vc-icon.vue";
-  import { defineComponent } from "@vue/composition-api";
 
-  export default defineComponent({
+  export default {
     components: { VcIcon },
-    
+
     props: {
       items: {
         type: Array,
       },
     },
-  });
+  };
 </script>

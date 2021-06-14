@@ -133,11 +133,10 @@
   import VcIcon from "./vc-icon.vue";
   import VcInput from "./vc-input.vue";
   import VcBreadcrumbs from "./vc-breadcrumbs.vue";
-  import { defineComponent } from "@vue/composition-api";
 
-  export default defineComponent({
+  export default {
     components: { VcIcon, VcInput, VcBreadcrumbs },
-    
+
     props: {
       icon: {
         type: String,
@@ -178,11 +177,11 @@
       },
     },
 
-    setup() {
+    data() {
       return {
         expanded: false,
         filterOpened: false,
       };
     },
-  });
+  };
 </script>

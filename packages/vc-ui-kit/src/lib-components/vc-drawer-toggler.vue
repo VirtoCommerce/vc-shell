@@ -5,10 +5,9 @@
 </template>
 
 <script>
-  import { defineComponent } from "@vue/composition-api";
   import VcDrawerItem from "./vc-drawer-item.vue";
 
-  export default defineComponent({
+  export default {
     components: { VcDrawerItem },
-  });
+  };
 </script>

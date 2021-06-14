@@ -13,3 +13,16 @@ export { default as VcLayout } from "./vc-layout.vue";
 export { default as VcLink } from "./vc-link.vue";
 export { default as VcSpacer } from "./vc-spacer.vue";
 export { default as VcTable } from "./vc-table.vue";
+
+export {
+    openBlade,
+    registerBlade,
+    openedBlades,
+    addDrawerItem,
+    closeBlade,
+    getDrawer,
+    listBlades,
+    loadDrawer,
+    removeDrawerItem,
+    saveDrawer
+} from './router';

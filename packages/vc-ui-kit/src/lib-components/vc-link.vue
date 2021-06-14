@@ -5,9 +5,7 @@
 </template>
 
 <script>
-  import { defineComponent } from "@vue/composition-api";
-
-  export default defineComponent({
+  export default {
     props: {
       to: {
         type: String,
@@ -18,5 +16,5 @@
         default: false,
       },
     },
-  });
+  };
 </script>

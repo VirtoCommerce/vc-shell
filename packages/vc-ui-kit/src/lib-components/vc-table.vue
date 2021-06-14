@@ -76,11 +76,10 @@
 <script>
   import VcIcon from "./vc-icon.vue";
   import VcCheckbox from "./vc-checkbox.vue";
-  import { defineComponent } from "@vue/composition-api";
 
-  export default defineComponent({
+  export default {
     components: { VcIcon, VcCheckbox },
-    
+
     props: {
       headers: {
         type: Array,
@@ -98,5 +97,5 @@
         type: Boolean,
       },
     },
-  });
+  };
 </script>

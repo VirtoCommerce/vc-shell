@@ -8,13 +8,11 @@
 </template>
 
 <script>
-  import { defineComponent } from "@vue/composition-api";
-
-  export default defineComponent({
+  export default {
     props: {
       checked: {
         type: Boolean,
       },
     },
-  });
+  };
 </script>

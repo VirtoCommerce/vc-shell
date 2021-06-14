@@ -14,7 +14,7 @@
         v-for="item in items"
         :key="item.id"
         :icon="item.icon"
-        :to="item.to"
+        @click="$emit('click', item)"
         :title="item.title"
       />
       <vc-drawer-item icon="ellipsis-h" sticky="sticky" title="More" />
@@ -26,9 +26,8 @@
   import VcDrawerItem from "./vc-drawer-item.vue";
   import VcDrawerToggler from "./vc-drawer-toggler.vue";
   import VcContainer from "./vc-container.vue";
-  import { defineComponent } from "@vue/composition-api";
 
-  export default defineComponent({
+  export default {
     components: { VcDrawerItem, VcDrawerToggler, VcContainer },
 
     props: {
@@ -46,15 +45,17 @@
       },
     },
 
-    setup() {
+    data() {
       return {
         collapsed: false,
-
-        toggleCollapsed() {
-          this.collapsed = !this.collapsed;
-          this.$emit(this.collapsed ? "collapse" : "expand");
-        },
       };
     },
-  });
+
+    methods: {
+      toggleCollapsed() {
+        this.collapsed = !this.collapsed;
+        this.$emit(this.collapsed ? "collapse" : "expand");
+      },
+    },
+  };
 </script>

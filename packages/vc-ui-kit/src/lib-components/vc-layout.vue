@@ -91,9 +91,8 @@
 <script>
   import VcIcon from "./vc-icon.vue";
   import VcSpacer from "./vc-spacer.vue";
-  import { defineComponent } from "@vue/composition-api";
 
-  export default defineComponent({
+  export default {
     components: { VcIcon, VcSpacer },
 
     props: {
@@ -106,10 +105,10 @@
       },
     },
 
-    setup() {
+    data() {
       return {
         accountMenuVisible: false,
       };
     },
-  });
+  };
 </script>

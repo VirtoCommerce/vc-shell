@@ -549,207 +549,6 @@ const __vue_component__$a = /*#__PURE__*/normalizeComponent$1({
   render: __vue_render__$a,
   staticRenderFns: __vue_staticRenderFns__$a
 }, __vue_inject_styles__$a, __vue_script__$8, __vue_scope_id__$a, __vue_is_functional_template__$a, __vue_module_identifier__$a, false, undefined, undefined, undefined); //
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-var script$6 = {
-  props: {
-    checked: {
-      type: Boolean
-    }
-  }
-};
-/* script */
-
-const __vue_script__$6 = script$6;
-/* template */
-
-var __vue_render__$8 = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-  _vm._self._c || _h;
-  return _vm._m(0);
-};
-
-var __vue_staticRenderFns__$8 = [function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _c('div', {
-    staticClass: "vc-checkbox"
-  }, [_c('label', {
-    staticClass: "vc-checkbox__label"
-  }, [_c('input', {
-    staticClass: "vc-checkbox__input",
-    attrs: {
-      "type": "checkbox"
-    }
-  }), _vm._v(" "), _c('span', {
-    staticClass: "vc-checkbox__checkmark"
-  })])]);
-}];
-/* style */
-
-const __vue_inject_styles__$8 = undefined;
-/* scoped */
-
-const __vue_scope_id__$8 = undefined;
-/* module identifier */
-
-const __vue_module_identifier__$8 = undefined;
-/* functional template */
-
-const __vue_is_functional_template__$8 = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__$8 = /*#__PURE__*/normalizeComponent$1({
-  render: __vue_render__$8,
-  staticRenderFns: __vue_staticRenderFns__$8
-}, __vue_inject_styles__$8, __vue_script__$6, __vue_scope_id__$8, __vue_is_functional_template__$8, __vue_module_identifier__$8, false, undefined, undefined, undefined);
-
-
-var script$1 = {
-  components: {
-    VcIcon: __vue_component__$d,
-    VcCheckbox: __vue_component__$8
-  },
-  props: {
-    headers: {
-      type: Array
-    },
-    items: {
-      type: Array
-    },
-    sortable: {
-      type: Array
-    },
-    multiselect: {
-      type: Boolean
-    }
-  }
-};
-/* script */
-
-const __vue_script__$1 = script$1;
-/* template */
-
-var __vue_render__$1 = function () {
-  var _vm = this;
-
-  var _h = _vm.$createElement;
-
-  var _c = _vm._self._c || _h;
-
-  return _c('div', {
-    staticClass: "vc-table-wrapper"
-  }, [_c('table', {
-    staticClass: "vc-table vc-fill_width",
-    class: {
-      'vc-table_empty': !_vm.items || !_vm.items.length,
-      'vc-table_multiselect': _vm.multiselect
-    }
-  }, [_vm.headers ? _c('thead', {
-    staticClass: "vc-table__header"
-  }, [_c('tr', {
-    staticClass: "vc-table__header-row"
-  }, [_vm.multiselect ? _c('td', {
-    staticClass: "vc-table__header-cell",
-    attrs: {
-      "width": "32"
-    }
-  }, [_c('div', {
-    staticClass: "vc-flex vc-flex-justify_center vc-flex-align_center"
-  }, [_c('vc-checkbox')], 1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.headers, function (item) {
-    return _c('td', {
-      key: item.id,
-      staticClass: "vc-table__header-cell vc-padding-horizontal_m",
-      attrs: {
-        "width": item.width
-      }
-    }, [_c('div', {
-      staticClass: "vc-flex vc-flex-align_center vc-flex-nowrap",
-      class: "vc-flex-justify_" + (item.align || 'start')
-    }, [_c('div', [_vm._t("header_" + item.id, [_vm._v(_vm._s(item.title))])], 2), _vm._v(" "), item.sortable ? _c('div', {
-      staticClass: "vc-table__header-cell_sort vc-margin-left_xs"
-    }, [_c('vc-icon', {
-      attrs: {
-        "size": "xs",
-        "icon": "caret-up"
-      }
-    })], 1) : _vm._e()])]);
-  })], 2)]) : _vm._e(), _vm._v(" "), _vm.items ? _c('tbody', {
-    staticClass: "vc-table__body"
-  }, _vm._l(_vm.items, function (item) {
-    return _c('tr', {
-      key: item.id,
-      staticClass: "vc-table__body-row",
-      on: {
-        "click": function ($event) {
-          return _vm.$emit('itemClick', item);
-        }
-      }
-    }, [_vm.multiselect ? _c('td', {
-      staticClass: "vc-table__body-cell vc-table__body-cell_bordered",
-      attrs: {
-        "width": "20"
-      }
-    }, [_c('div', {
-      staticClass: "vc-flex vc-flex-justify_center vc-flex-align_center"
-    }, [_c('vc-checkbox')], 1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.headers, function (cell) {
-      return _c('td', {
-        key: item.id + "_" + cell.id,
-        staticClass: "vc-table__body-cell vc-padding-horizontal_m",
-        class: cell.class,
-        attrs: {
-          "width": cell.width
-        }
-      }, [_c('div', {
-        staticClass: "vc-flex vc-flex-align_center"
-      }, [_vm._t("item_" + cell.id, [_vm._v(_vm._s(item[cell.id]))], {
-        "item": item
-      })], 2)]);
-    })], 2);
-  }), 0) : _vm._e()])]);
-};
-
-var __vue_staticRenderFns__$1 = [];
-/* style */
-
-const __vue_inject_styles__$1 = undefined;
-/* scoped */
-
-const __vue_scope_id__$1 = undefined;
-/* module identifier */
-
-const __vue_module_identifier__$1 = undefined;
-/* functional template */
-
-const __vue_is_functional_template__$1 = false;
-/* style inject */
-
-/* style inject SSR */
-
-/* style inject shadow dom */
-
-const __vue_component__$1 = /*#__PURE__*/normalizeComponent$1({
-  render: __vue_render__$1,
-  staticRenderFns: __vue_staticRenderFns__$1
-}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
 
 var toString$1 = function (x) {
   return Object.prototype.toString.call(x);
@@ -2287,9 +2086,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 //
 var script = defineComponent({
   components: {
-    VcBlade: __vue_component__$a,
-    VcTable: __vue_component__$1,
-    VcIcon: __vue_component__$d
+    VcBlade: __vue_component__$a
   },
 
   setup() {
@@ -2300,98 +2097,17 @@ var script = defineComponent({
         title: "Refresh"
       }, {
         id: 2,
-        icon: "plus",
-        title: "Add"
+        icon: "Folder",
+        title: "New Folder"
       }, {
         id: 3,
+        icon: "upload",
+        title: "Upload"
+      }, {
+        id: 4,
         icon: "trash",
         title: "Delete",
         disabled: true
-      }, {
-        id: 4,
-        icon: "download",
-        title: "Import"
-      }, {
-        id: 5,
-        icon: "upload",
-        title: "Export"
-      }, {
-        id: 6,
-        icon: "cut",
-        title: "Cut",
-        disabled: true
-      }, {
-        id: 7,
-        icon: "paste",
-        title: "Paste",
-        disabled: true
-      }, {
-        id: 8,
-        icon: "cubes",
-        title: "Bulk export",
-        disabled: true
-      }],
-      breadcrumbs: [{
-        id: 0,
-        title: "Back",
-        icon: "arrow-left"
-      }, {
-        id: 1,
-        title: "Electronics"
-      }, {
-        id: 2,
-        title: "Desktop"
-      }],
-      headers: [{
-        id: "actions",
-        title: "",
-        width: 30,
-        class: "vc-table__body-cell_bordered"
-      }, {
-        id: "img",
-        title: "Pic",
-        width: 60,
-        class: "vc-padding-right_none"
-      }, {
-        id: "name",
-        title: "Name",
-        sortable: true
-      }, {
-        id: "sku",
-        title: "SKU",
-        sortable: true,
-        width: 100
-      }],
-      items: [{
-        id: 1,
-        img: "/images/1.jpg",
-        name: "Lenovo IdeaCentre 310S-08",
-        description: "Physical",
-        sku: "990555005"
-      }, {
-        id: 2,
-        img: "/images/2.jpg",
-        name: "BLU Win HD LTE X150Q 8GB",
-        description: "Physical",
-        sku: "003578948"
-      }, {
-        id: 3,
-        img: "/images/3.jpg",
-        name: "Samsung Galaxy S6 SM-G920F 32GB",
-        description: "Physical",
-        sku: "334590-095"
-      }, {
-        id: 4,
-        img: "/images/4.jpg",
-        name: "DJI Phantom 3 Professional Quadcopter",
-        description: "Physical",
-        sku: "000545432"
-      }, {
-        id: 5,
-        img: "/images/5.jpg",
-        name: "3DR X8-M Octocopter for Visual-Spectr",
-        description: "Physical",
-        sku: "435344443"
       }]
     };
   }
@@ -2486,58 +2202,13 @@ var __vue_render__ = function () {
 
   return _c('vc-blade', {
     attrs: {
-      "icon": "folder",
-      "title": "Catalog",
-      "subtitle": "Manage catalogs",
-      "width": "600",
+      "icon": "image",
+      "title": "Assets",
+      "width": "500",
       "closable": false,
-      "toolbarItems": _vm.toolbarItems,
-      "breadcrumbs": _vm.breadcrumbs,
-      "searchable": true,
-      "filterable": true
+      "toolbarItems": _vm.toolbarItems
     }
-  }, [_c('vc-table', {
-    attrs: {
-      "headers": _vm.headers,
-      "items": _vm.items,
-      "multiselect": true
-    },
-    scopedSlots: _vm._u([{
-      key: "item_actions",
-      fn: function () {
-        return [_c('vc-icon', {
-          staticStyle: {
-            "color": "#43b0e6"
-          },
-          attrs: {
-            "icon": "ellipsis-v"
-          }
-        })];
-      },
-      proxy: true
-    }, {
-      key: "item_img",
-      fn: function (itemData) {
-        return [_c('img', {
-          staticClass: "vc-fill_width",
-          attrs: {
-            "src": itemData.item.img
-          }
-        })];
-      }
-    }, {
-      key: "item_name",
-      fn: function (itemData) {
-        return [_c('div', {
-          staticClass: "vc-flex vc-flex-column"
-        }, [_c('div', {
-          staticClass: "vc-font-size_m vc-ellipsis"
-        }, [_vm._v(_vm._s(itemData.item.name))]), _vm._v(" "), _c('div', {
-          staticClass: "vc-font-size_s vc-ellipsis"
-        }, [_vm._v("\n          " + _vm._s(itemData.item.description) + "\n        ")])])];
-      }
-    }])
-  })], 1);
+  });
 };
 
 var __vue_staticRenderFns__ = [];
@@ -2568,16 +2239,16 @@ const __vue_component__ = /*#__PURE__*/normalizeComponent({
 
 var components = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  CatalogBlade: __vue_component__
+  AssetsBlade: __vue_component__
 });
 
 // Import vue components
 
-const install = function installExtProductCatalog(Vue) {
+const install = function installExtAssetsManagement(Vue) {
   Object.entries(components).forEach(([componentName, component]) => {
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
 
 export default install;
-export { __vue_component__ as CatalogBlade };
+export { __vue_component__ as AssetsBlade };

@@ -1,1 +1,0 @@
-module.exports = ["@virtocommerce/ext-store"];

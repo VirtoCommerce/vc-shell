@@ -14,7 +14,6 @@
     "ext-install": "node ./scripts/ext-install.js"
   },
   "dependencies": {
-    "@virtocommerce/ext-store": "^0.0.2",
     "vue": "^2.5.11"
   },
   "browserslist": [
@@ -23,6 +22,9 @@
     "not ie <= 8"
   ],
   "devDependencies": {
+    "@virtocommerce/ext-assets-management": "^0.0.2",
+    "@virtocommerce/ext-product-catalog": "^0.0.2",
+    "@virtocommerce/ext-store": "*",
     "@virtocommerce/vc-ui-kit": "*",
     "@vue/composition-api": "^1.0.0-rc.11",
     "babel-core": "^6.26.0",

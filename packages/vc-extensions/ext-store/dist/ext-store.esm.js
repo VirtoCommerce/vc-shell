@@ -1567,20 +1567,25 @@ if (typeof window !== 'undefined' && window.Vue) {
 /** All registered blades */
 
 
-const blades = ref$1([]);
+ref$1([]);
 /** All pinnned blades */
 
 ref$1([]);
 /** All opened blades */
 
-ref$1([]);
+const opened = ref$1([]);
 /**
- * Put Blade options into registry.
+ * Open blade by name.
  */
 
-function registerBlade(options) {
-  blades.value.push(options);
-  console.log('Registered blades: ', blades.value);
+
+function openBlade(component, componentOptions) {
+  opened.value.push({
+    id: Math.random(),
+    component,
+    componentOptions
+  });
+  console.log("Opened blades: ", opened.value);
 }
 
 var toString = function (x) { return Object.prototype.toString.call(x); };
@@ -2300,18 +2305,7 @@ var script$1 = defineComponent({
     VcIcon: __vue_component__$d
   },
 
-  vcExtension() {
-    registerBlade({
-      name: "product",
-      component: this
-    });
-  },
-
   setup() {
-    registerBlade({
-      name: "product2",
-      component: this
-    });
     const toolbarItems = ref([{
       id: 1,
       icon: "sync-alt",
@@ -2484,8 +2478,8 @@ var __vue_render__$1 = function () {
       "icon": "cloud",
       "title": "B2B-mixed (virtual)",
       "width": "600",
-      "toolbarItems": _vm.toolbarItems,
-      "breadcrumbs": _vm.breadcrumbs,
+      "toolbarItems": _vm.toolbarItems.value,
+      "breadcrumbs": _vm.breadcrumbs.value,
       "searchable": true,
       "filterable": true
     },
@@ -2496,8 +2490,8 @@ var __vue_render__$1 = function () {
     }
   }, [_c('vc-table', {
     attrs: {
-      "headers": _vm.headers,
-      "items": _vm.items,
+      "headers": _vm.headers.value,
+      "items": _vm.items.value,
       "multiselect": true
     },
     scopedSlots: _vm._u([{
@@ -2570,20 +2564,7 @@ var script = defineComponent({
     VcIcon: __vue_component__$d
   },
 
-  vcExtension() {
-    registerBlade({
-      name: "store",
-      workspace: true,
-      component: this
-    });
-  },
-
   setup() {
-    registerBlade({
-      name: "store2",
-      workspace: true,
-      component: this
-    });
     const toolbarItems = ref([{
       id: 1,
       icon: "sync-alt",
@@ -2621,8 +2602,8 @@ var script = defineComponent({
       headers,
       items,
 
-      openDetails(blade) {
-        console.log("Open blade");
+      openDetails(options) {
+        openBlade(__vue_component__$1, options);
       }
 
     };
@@ -2648,13 +2629,13 @@ var __vue_render__ = function () {
       "subtitle": "Manage stores",
       "width": "400",
       "closable": false,
-      "toolbarItems": _vm.toolbarItems,
+      "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
   }, [_c('vc-table', {
     attrs: {
-      "headers": _vm.headers,
-      "items": _vm.items,
+      "headers": _vm.headers.value,
+      "items": _vm.items.value,
       "multiselect": true
     },
     on: {
@@ -2741,12 +2722,7 @@ const install = function installExtStore(Vue) {
   Object.entries(components).forEach(([componentName, component]) => {
     Vue.component(componentName, component);
   });
-}; // Register VC Extensions
-
-
-Object.entries(components).forEach(([componentName, component]) => {
-  component.vcExtension();
-}); // Create module definition for Vue.use()
+}; // Create module definition for Vue.use()
 
 export default install;
 export { __vue_component__$1 as StoreDetailsBlade, __vue_component__ as StoreListBlade };

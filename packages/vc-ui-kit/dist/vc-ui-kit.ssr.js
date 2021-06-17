@@ -1991,7 +1991,7 @@ var opened = ref([]);
 
 function registerBlade(options) {
   blades.value.push(options);
-  console.log('Registered blades: ', blades.value);
+  console.log("Registered blades: ", blades.value);
 }
 /**
  * Return readonly list of all registered blades.
@@ -2008,21 +2008,20 @@ function listBlades() {
 
 function openedBlades() {
   return computed(function () {
-    return opened.values;
+    return opened.value;
   });
 }
 /**
  * Open blade by name.
  */
 
-function openBlade(name) {
-  console.log('Open blade', name);
-  blades.value.forEach(function (item) {
-    if (item.name === name) {
-      opened.value.push(item);
-      console.log('Opened blades: ', opened.value);
-    }
+function openBlade(component, componentOptions) {
+  opened.value.push({
+    id: Math.random(),
+    component: component,
+    componentOptions: componentOptions
   });
+  console.log("Opened blades: ", opened.value);
 }
 /**
  * Close blade by name and all its descendants.
@@ -2037,22 +2036,22 @@ function closeBlade(name) {
     opened.value.splice(bladeIndex);
   }
 }
-/** 
- * Save drawer items into local storage. 
+/**
+ * Save drawer items into local storage.
  */
 
 function saveDrawer() {
-  localStorage.setItem('vc-platform-drawer', JSON.stringify(drawer.value));
+  localStorage.setItem("vc-platform-drawer", JSON.stringify(drawer.value));
 }
 /**
  * Load drawer items from local storage.
  */
 
 function loadDrawer() {
-  var savedData = localStorage.getItem('vc-platform-drawer');
+  var savedData = localStorage.getItem("vc-platform-drawer");
 
   try {
-    return JSON.parse(savedData || '[]');
+    return JSON.parse(savedData || "[]");
   } catch (err) {
     return [];
   }
@@ -2079,7 +2078,7 @@ function getDrawer() {
   return computed(function () {
     return drawer.value;
   });
-}/* eslint-disable import/prefer-default-export */var components$1=/*#__PURE__*/Object.freeze({__proto__:null,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__,openBlade: openBlade,registerBlade: registerBlade,openedBlades: openedBlades,addDrawerItem: addDrawerItem,closeBlade: closeBlade,getDrawer: getDrawer,listBlades: listBlades,loadDrawer: loadDrawer,removeDrawerItem: removeDrawerItem,saveDrawer: saveDrawer});var install = function installVcUiKit(Vue) {
+}/* eslint-disable import/prefer-default-export */var components$1=/*#__PURE__*/Object.freeze({__proto__:null,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__,openBlade: openBlade,registerBlade: registerBlade,openedBlades: openedBlades,addDrawerItem: addDrawerItem,closeBlade: closeBlade,getDrawer: getDrawer,listBlades: listBlades,loadDrawer: loadDrawer,removeDrawerItem: removeDrawerItem,saveDrawer: saveDrawer,opened: opened});var install = function installVcUiKit(Vue) {
   Object.entries(components$1).forEach(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
         componentName = _ref2[0],
@@ -2088,7 +2087,7 @@ function getDrawer() {
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
-var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__,openBlade: openBlade,registerBlade: registerBlade,openedBlades: openedBlades,addDrawerItem: addDrawerItem,closeBlade: closeBlade,getDrawer: getDrawer,listBlades: listBlades,loadDrawer: loadDrawer,removeDrawerItem: removeDrawerItem,saveDrawer: saveDrawer});// only expose one global var, with component exports exposed as properties of
+var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__,openBlade: openBlade,registerBlade: registerBlade,openedBlades: openedBlades,addDrawerItem: addDrawerItem,closeBlade: closeBlade,getDrawer: getDrawer,listBlades: listBlades,loadDrawer: loadDrawer,removeDrawerItem: removeDrawerItem,saveDrawer: saveDrawer,opened: opened});// only expose one global var, with component exports exposed as properties of
 // that global var (eg. plugin.component)
 
 Object.entries(components).forEach(function (_ref) {

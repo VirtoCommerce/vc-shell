@@ -6,25 +6,21 @@
     "type": "git",
     "url": "git+https://github.com/VirtoCommerce/platform-manager-sdk.git"
   },
-
   "main": "dist/ext-assets-management.ssr.js",
   "browser": "dist/ext-assets-management.esm.js",
   "module": "dist/ext-assets-management.esm.js",
   "unpkg": "dist/ext-assets-management.min.js",
-
   "files": [
     "dist/*",
     "src/**/*.vue"
   ],
   "sideEffects": false,
-
   "scripts": {
     "build": "cross-env NODE_ENV=production rollup --config build/rollup.config.js",
     "build:ssr": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format cjs",
     "build:es": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format es",
     "build:unpkg": "cross-env NODE_ENV=production rollup --config build/rollup.config.js --format iife"
   },
-
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@babel/preset-env": "^7.12.11",
@@ -42,6 +38,7 @@
     "rollup-plugin-vue": "^5.1.9",
     "vue": "^2.6.12",
     "vue-template-compiler": "^2.6.12",
+    "@vue/composition-api": "^1.0.0-rc.11",
     "@virtocommerce/vc-ui-kit": "^0.0.2"
   },
   "peerDependencies": {

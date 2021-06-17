@@ -5,12 +5,12 @@
     subtitle="Manage stores"
     width="400"
     :closable="false"
-    :toolbarItems="toolbarItems"
+    :toolbarItems="toolbarItems.value"
     :searchable="true"
   >
     <vc-table
-      :headers="headers"
-      :items="items"
+      :headers="headers.value"
+      :items="items.value"
       :multiselect="true"
       @itemClick="openDetails($event)"
     >
@@ -43,32 +43,14 @@
 </template>
 
 <script>
-  import {
-    VcBlade,
-    VcTable,
-    VcIcon,
-    registerBlade,
-  } from "@virtocommerce/vc-ui-kit";
+  import { VcBlade, VcTable, VcIcon, openBlade } from "@virtocommerce/vc-ui-kit";
+  import DetailsBlade from "./StoreDetails.vue";
   import { defineComponent, ref } from "@vue/composition-api";
 
   export default defineComponent({
     components: { VcBlade, VcTable, VcIcon },
 
-    vcExtension() {
-      registerBlade({
-        name: "store",
-        workspace: true,
-        component: this,
-      });
-    },
-
     setup() {
-      registerBlade({
-        name: "store2",
-        workspace: true,
-        component: this,
-      });
-
       const toolbarItems = ref([
         { id: 1, icon: "sync-alt", title: "Refresh" },
         { id: 2, icon: "plus", title: "Add" },
@@ -111,8 +93,8 @@
         headers,
         items,
 
-        openDetails(blade) {
-          console.log("Open blade");
+        openDetails(options) {
+          openBlade(DetailsBlade, options);
         },
       };
     },

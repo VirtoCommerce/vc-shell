@@ -2261,7 +2261,7 @@ const opened = ref([]);
 
 function registerBlade(options) {
   blades.value.push(options);
-  console.log('Registered blades: ', blades.value);
+  console.log("Registered blades: ", blades.value);
 }
 /**
  * Return readonly list of all registered blades.
@@ -2275,20 +2275,19 @@ function listBlades() {
  */
 
 function openedBlades() {
-  return computed(() => opened.values);
+  return computed(() => opened.value);
 }
 /**
  * Open blade by name.
  */
 
-function openBlade(name) {
-  console.log('Open blade', name);
-  blades.value.forEach(item => {
-    if (item.name === name) {
-      opened.value.push(item);
-      console.log('Opened blades: ', opened.value);
-    }
+function openBlade(component, componentOptions) {
+  opened.value.push({
+    id: Math.random(),
+    component,
+    componentOptions
   });
+  console.log("Opened blades: ", opened.value);
 }
 /**
  * Close blade by name and all its descendants.
@@ -2301,22 +2300,22 @@ function closeBlade(name) {
     opened.value.splice(bladeIndex);
   }
 }
-/** 
- * Save drawer items into local storage. 
+/**
+ * Save drawer items into local storage.
  */
 
 function saveDrawer() {
-  localStorage.setItem('vc-platform-drawer', JSON.stringify(drawer.value));
+  localStorage.setItem("vc-platform-drawer", JSON.stringify(drawer.value));
 }
 /**
  * Load drawer items from local storage.
  */
 
 function loadDrawer() {
-  const savedData = localStorage.getItem('vc-platform-drawer');
+  const savedData = localStorage.getItem("vc-platform-drawer");
 
   try {
-    return JSON.parse(savedData || '[]');
+    return JSON.parse(savedData || "[]");
   } catch (err) {
     return [];
   }
@@ -2370,7 +2369,8 @@ var components = /*#__PURE__*/Object.freeze({
   listBlades: listBlades,
   loadDrawer: loadDrawer,
   removeDrawerItem: removeDrawerItem,
-  saveDrawer: saveDrawer
+  saveDrawer: saveDrawer,
+  opened: opened
 });
 
 // Import vue components
@@ -2382,4 +2382,4 @@ const install = function installVcUiKit(Vue) {
 }; // Create module definition for Vue.use()
 
 export default install;
-export { __vue_component__$a as VcBlade, __vue_component__$b as VcBreadcrumbs, __vue_component__$9 as VcButton, __vue_component__$8 as VcCheckbox, __vue_component__$7 as VcContainer, __vue_component__$4 as VcDrawer, __vue_component__$6 as VcDrawerItem, __vue_component__$5 as VcDrawerToggler, __vue_component__$d as VcIcon, __vue_component__$c as VcInput, __vue_component__$2 as VcLayout, __vue_component__$1 as VcLink, __vue_component__$3 as VcSpacer, __vue_component__ as VcTable, addDrawerItem, closeBlade, getDrawer, listBlades, loadDrawer, openBlade, openedBlades, registerBlade, removeDrawerItem, saveDrawer };
+export { __vue_component__$a as VcBlade, __vue_component__$b as VcBreadcrumbs, __vue_component__$9 as VcButton, __vue_component__$8 as VcCheckbox, __vue_component__$7 as VcContainer, __vue_component__$4 as VcDrawer, __vue_component__$6 as VcDrawerItem, __vue_component__$5 as VcDrawerToggler, __vue_component__$d as VcIcon, __vue_component__$c as VcInput, __vue_component__$2 as VcLayout, __vue_component__$1 as VcLink, __vue_component__$3 as VcSpacer, __vue_component__ as VcTable, addDrawerItem, closeBlade, getDrawer, listBlades, loadDrawer, openBlade, opened, openedBlades, registerBlade, removeDrawerItem, saveDrawer };

@@ -1,4 +1,20 @@
-'use strict';var Vue=require('vue');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var Vue__default=/*#__PURE__*/_interopDefaultLegacy(Vue);function _slicedToArray(arr, i) {
+'use strict';var Vue=require('vue');function _interopDefaultLegacy(e){return e&&typeof e==='object'&&'default'in e?e:{'default':e}}var Vue__default=/*#__PURE__*/_interopDefaultLegacy(Vue);function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
+    };
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
+
+  return _typeof(obj);
+}
+
+function _slicedToArray(arr, i) {
   return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest();
 }
 
@@ -62,171 +78,21 @@ function _nonIterableRest() {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-var script$a = {
+
+var script$b = {
   props: {
     icon: {
-      type: String
+      type: String,
+      default: "square-full"
     },
-    title: {
-      type: String
+    family: {
+      type: String,
+      default: "solid"
     },
-    subtitle: {
-      type: String
-    },
-    width: {
-      type: Number | String,
-      default: 300
-    },
-    closable: {
-      type: Boolean,
-      default: true
-    },
-    toolbarItems: {
-      type: Array
-    },
-    breadcrumbs: {
-      type: Array
-    },
-    searchable: {
-      type: Boolean
-    },
-    filterable: {
-      type: Boolean
+    size: {
+      type: String,
+      default: "m"
     }
-  },
-  data: function data() {
-    return {
-      expanded: false,
-      filterOpened: false
-    };
   }
 };
 
@@ -315,10 +181,266 @@ function normalizeComponent$1(template, style, script, scopeId, isFunctionalTemp
 /* script */
 
 
-var __vue_script__$a = script$a;
+var __vue_script__$b = script$b;
 /* template */
 
 var __vue_render__$d = function __vue_render__$d() {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('i', {
+    class: "vc-icon vc-icon_" + _vm.size + " fa" + _vm.family.toLowerCase()[0] + " fa-" + _vm.icon.toLowerCase()
+  });
+};
+
+var __vue_staticRenderFns__$d = [];
+/* style */
+
+var __vue_inject_styles__$d = undefined;
+/* scoped */
+
+var __vue_scope_id__$d = undefined;
+/* module identifier */
+
+var __vue_module_identifier__$d = undefined;
+/* functional template */
+
+var __vue_is_functional_template__$d = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+var __vue_component__$d = /*#__PURE__*/normalizeComponent$1({
+  render: __vue_render__$d,
+  staticRenderFns: __vue_staticRenderFns__$d
+}, __vue_inject_styles__$d, __vue_script__$b, __vue_scope_id__$d, __vue_is_functional_template__$d, __vue_module_identifier__$d, false, undefined, undefined, undefined); //
+
+
+var script$a = {
+  components: {
+    VcIcon: __vue_component__$d
+  },
+  props: {
+    placeholder: {
+      type: String
+    },
+    value: {
+      type: String
+    },
+    clearable: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data: function data() {
+    return {
+      internalValue: this.value
+    };
+  }
+};
+/* script */
+
+var __vue_script__$a = script$a;
+/* template */
+
+var __vue_render__$c = function __vue_render__$c() {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', {
+    staticClass: "vc-input vc-flex vc-flex-align_stretch",
+    class: {
+      'vc-input_clearable': _vm.clearable
+    }
+  }, [_c('input', {
+    directives: [{
+      name: "model",
+      rawName: "v-model",
+      value: _vm.internalValue,
+      expression: "internalValue"
+    }],
+    staticClass: "vc-input__field vc-flex-grow_1 vc-padding-left_m",
+    attrs: {
+      "placeholder": _vm.placeholder
+    },
+    domProps: {
+      "value": _vm.internalValue
+    },
+    on: {
+      "input": function input($event) {
+        if ($event.target.composing) {
+          return;
+        }
+
+        _vm.internalValue = $event.target.value;
+      }
+    }
+  }), _vm._v(" "), _vm.clearable ? _c('div', {
+    staticClass: "\n      vc-input__clear\n      vc-padding-horizontal_m\n      vc-flex\n      vc-flex-align_center\n    ",
+    on: {
+      "click": function click($event) {
+        _vm.internalValue = '';
+      }
+    }
+  }, [_c('vc-icon', {
+    attrs: {
+      "icon": "times"
+    }
+  })], 1) : _vm._e()]);
+};
+
+var __vue_staticRenderFns__$c = [];
+/* style */
+
+var __vue_inject_styles__$c = undefined;
+/* scoped */
+
+var __vue_scope_id__$c = undefined;
+/* module identifier */
+
+var __vue_module_identifier__$c = undefined;
+/* functional template */
+
+var __vue_is_functional_template__$c = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+var __vue_component__$c = /*#__PURE__*/normalizeComponent$1({
+  render: __vue_render__$c,
+  staticRenderFns: __vue_staticRenderFns__$c
+}, __vue_inject_styles__$c, __vue_script__$a, __vue_scope_id__$c, __vue_is_functional_template__$c, __vue_module_identifier__$c, false, undefined, undefined, undefined); //
+
+
+var script$9 = {
+  components: {
+    VcIcon: __vue_component__$d
+  },
+  props: {
+    items: {
+      type: Array
+    }
+  }
+};
+/* script */
+
+var __vue_script__$9 = script$9;
+/* template */
+
+var __vue_render__$b = function __vue_render__$b() {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _vm.items ? _c('div', {
+    staticClass: "vc-breadcrumbs vc-flex vc-flex-align_center vc-flex-nowrap"
+  }, [_vm._l(_vm.items, function (item, i) {
+    return [_c('div', {
+      key: item.id,
+      staticClass: "vc-breadcrumbs__item vc-flex vc-flex-align_center",
+      class: {
+        'vc-breadcrumbs__item_disabled': item.disabled,
+        'vc-breadcrumbs__item_current': i === _vm.items.length - 1
+      }
+    }, [item.icon ? _c('vc-icon', {
+      staticClass: "vc-breadcrumbs__item-icon",
+      attrs: {
+        "icon": item.icon,
+        "size": "s"
+      }
+    }) : _vm._e(), _vm._v(" "), _c('div', {
+      staticClass: "vc-breadcrumbs__item-title"
+    }, [_vm._v(_vm._s(item.title))])], 1)];
+  })], 2) : _vm._e();
+};
+
+var __vue_staticRenderFns__$b = [];
+/* style */
+
+var __vue_inject_styles__$b = undefined;
+/* scoped */
+
+var __vue_scope_id__$b = undefined;
+/* module identifier */
+
+var __vue_module_identifier__$b = undefined;
+/* functional template */
+
+var __vue_is_functional_template__$b = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+var __vue_component__$b = /*#__PURE__*/normalizeComponent$1({
+  render: __vue_render__$b,
+  staticRenderFns: __vue_staticRenderFns__$b
+}, __vue_inject_styles__$b, __vue_script__$9, __vue_scope_id__$b, __vue_is_functional_template__$b, __vue_module_identifier__$b, false, undefined, undefined, undefined); //
+
+
+var script$8 = {
+  components: {
+    VcIcon: __vue_component__$d,
+    VcInput: __vue_component__$c,
+    VcBreadcrumbs: __vue_component__$b
+  },
+  props: {
+    icon: {
+      type: String
+    },
+    title: {
+      type: String
+    },
+    subtitle: {
+      type: String
+    },
+    width: {
+      type: Number | String,
+      default: 300
+    },
+    closable: {
+      type: Boolean,
+      default: true
+    },
+    toolbarItems: {
+      type: Array
+    },
+    breadcrumbs: {
+      type: Array
+    },
+    searchable: {
+      type: Boolean
+    },
+    filterable: {
+      type: Boolean
+    }
+  },
+  data: function data() {
+    return {
+      expanded: false,
+      filterOpened: false
+    };
+  }
+};
+/* script */
+
+var __vue_script__$8 = script$8;
+/* template */
+
+var __vue_render__$a = function __vue_render__$a() {
   var _vm = this;
 
   var _h = _vm.$createElement;
@@ -389,9 +511,9 @@ var __vue_render__$d = function __vue_render__$d() {
     class: {
       'vc-blade__header-title_only': !_vm.subtitle
     }
-  }, [_vm._v("\n        " + _vm._s(_vm.$t(_vm.title)) + "\n      ")]), _vm._v(" "), _vm.subtitle ? _c('div', {
+  }, [_vm._v("\n        " + _vm._s(_vm.title) + "\n      ")]), _vm._v(" "), _vm.subtitle ? _c('div', {
     staticClass: "vc-blade__header-subtitle"
-  }, [_vm._v("\n        " + _vm._s(_vm.$t(_vm.subtitle)) + "\n      ")]) : _vm._e()])]), _vm._v(" "), _vm.toolbarItems ? _c('div', {
+  }, [_vm._v("\n        " + _vm._s(_vm.subtitle) + "\n      ")]) : _vm._e()])]), _vm._v(" "), _vm.toolbarItems ? _c('div', {
     staticClass: "vc-blade__toolbar vc-flex-shrink_0"
   }, [_vm._l(_vm.toolbarItems, function (item) {
     return [_c('div', {
@@ -407,7 +529,7 @@ var __vue_render__$d = function __vue_render__$d() {
       }
     }), _vm._v(" "), _c('div', {
       staticClass: "vc-blade__toolbar-item-title"
-    }, [_vm._v(_vm._s(_vm.$t(item.title)))])], 1)];
+    }, [_vm._v(_vm._s(item.title))])], 1)];
   })], 2) : _vm._e(), _vm._v(" "), _vm.breadcrumbs ? _c('vc-breadcrumbs', {
     staticClass: "vc-padding_l vc-padding-bottom_none vc-flex-shrink_0",
     attrs: {
@@ -426,7 +548,7 @@ var __vue_render__$d = function __vue_render__$d() {
     }
   }, [_c('div', {
     staticClass: "vc-blade__searchbar-filter-label"
-  }, [_vm._v("\n          " + _vm._s(_vm.$t("Select filter")) + "\n        ")]), _vm._v(" "), _c('vc-icon', {
+  }, [_vm._v("Select filter")]), _vm._v(" "), _c('vc-icon', {
     staticClass: "vc-blade__searchbar-filter-chevron vc-margin-left_s",
     attrs: {
       "icon": _vm.filterOpened ? 'caret-up' : 'caret-down',
@@ -459,42 +581,1066 @@ var __vue_render__$d = function __vue_render__$d() {
     staticClass: "vc-blade__searchbar-search vc-flex-grow_1"
   }, [_c('vc-input', {
     attrs: {
-      "placeholder": _vm.$t('Search keywords'),
+      "placeholder": "Search keywords",
       "clearable": "clearable"
     }
   })], 1), _vm._v(" "), _vm.filterable ? _c('div', {
     staticClass: "vc-blade__searchbar-counter vc-margin-left_l"
   }, [_c('span', {
     staticClass: "vc-blade__searchbar-counter-label"
-  }, [_vm._v(_vm._s(_vm.$t("Count")) + ":")]), _vm._v(" "), _c('span', {
+  }, [_vm._v("Count:")]), _vm._v(" "), _c('span', {
     staticClass: "vc-blade__searchbar-counter-value"
   }, [_vm._v("5")])]) : _vm._e()]) : _vm._e(), _vm._v(" "), _vm._t("default")], 2);
 };
 
-var __vue_staticRenderFns__$d = [];
+var __vue_staticRenderFns__$a = [];
 /* style */
 
-var __vue_inject_styles__$d = undefined;
+var __vue_inject_styles__$a = undefined;
 /* scoped */
 
-var __vue_scope_id__$d = undefined;
+var __vue_scope_id__$a = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$d = undefined;
+var __vue_module_identifier__$a = undefined;
 /* functional template */
 
-var __vue_is_functional_template__$d = false;
+var __vue_is_functional_template__$a = false;
 /* style inject */
 
 /* style inject SSR */
 
 /* style inject shadow dom */
 
-var __vue_component__$d = /*#__PURE__*/normalizeComponent$1({
-  render: __vue_render__$d,
-  staticRenderFns: __vue_staticRenderFns__$d
-}, __vue_inject_styles__$d, __vue_script__$a, __vue_scope_id__$d, __vue_is_functional_template__$d, __vue_module_identifier__$d, false, undefined, undefined, undefined); //
-var toString = function (x) { return Object.prototype.toString.call(x); };
+var __vue_component__$a = /*#__PURE__*/normalizeComponent$1({
+  render: __vue_render__$a,
+  staticRenderFns: __vue_staticRenderFns__$a
+}, __vue_inject_styles__$a, __vue_script__$8, __vue_scope_id__$a, __vue_is_functional_template__$a, __vue_module_identifier__$a, false, undefined, undefined, undefined); //
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var script$6 = {
+  props: {
+    checked: {
+      type: Boolean
+    }
+  }
+};
+/* script */
+
+var __vue_script__$6 = script$6;
+/* template */
+
+var __vue_render__$8 = function __vue_render__$8() {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+  _vm._self._c || _h;
+  return _vm._m(0);
+};
+
+var __vue_staticRenderFns__$8 = [function () {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', {
+    staticClass: "vc-checkbox"
+  }, [_c('label', {
+    staticClass: "vc-checkbox__label"
+  }, [_c('input', {
+    staticClass: "vc-checkbox__input",
+    attrs: {
+      "type": "checkbox"
+    }
+  }), _vm._v(" "), _c('span', {
+    staticClass: "vc-checkbox__checkmark"
+  })])]);
+}];
+/* style */
+
+var __vue_inject_styles__$8 = undefined;
+/* scoped */
+
+var __vue_scope_id__$8 = undefined;
+/* module identifier */
+
+var __vue_module_identifier__$8 = undefined;
+/* functional template */
+
+var __vue_is_functional_template__$8 = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+var __vue_component__$8 = /*#__PURE__*/normalizeComponent$1({
+  render: __vue_render__$8,
+  staticRenderFns: __vue_staticRenderFns__$8
+}, __vue_inject_styles__$8, __vue_script__$6, __vue_scope_id__$8, __vue_is_functional_template__$8, __vue_module_identifier__$8, false, undefined, undefined, undefined);
+
+
+var script$1 = {
+  components: {
+    VcIcon: __vue_component__$d,
+    VcCheckbox: __vue_component__$8
+  },
+  props: {
+    headers: {
+      type: Array
+    },
+    items: {
+      type: Array
+    },
+    sortable: {
+      type: Array
+    },
+    multiselect: {
+      type: Boolean
+    }
+  }
+};
+/* script */
+
+var __vue_script__$1 = script$1;
+/* template */
+
+var __vue_render__$1 = function __vue_render__() {
+  var _vm = this;
+
+  var _h = _vm.$createElement;
+
+  var _c = _vm._self._c || _h;
+
+  return _c('div', {
+    staticClass: "vc-table-wrapper"
+  }, [_c('table', {
+    staticClass: "vc-table vc-fill_width",
+    class: {
+      'vc-table_empty': !_vm.items || !_vm.items.length,
+      'vc-table_multiselect': _vm.multiselect
+    }
+  }, [_vm.headers ? _c('thead', {
+    staticClass: "vc-table__header"
+  }, [_c('tr', {
+    staticClass: "vc-table__header-row"
+  }, [_vm.multiselect ? _c('td', {
+    staticClass: "vc-table__header-cell",
+    attrs: {
+      "width": "32"
+    }
+  }, [_c('div', {
+    staticClass: "vc-flex vc-flex-justify_center vc-flex-align_center"
+  }, [_c('vc-checkbox')], 1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.headers, function (item) {
+    return _c('td', {
+      key: item.id,
+      staticClass: "vc-table__header-cell vc-padding-horizontal_m",
+      attrs: {
+        "width": item.width
+      }
+    }, [_c('div', {
+      staticClass: "vc-flex vc-flex-align_center vc-flex-nowrap",
+      class: "vc-flex-justify_" + (item.align || 'start')
+    }, [_c('div', [_vm._t("header_" + item.id, [_vm._v(_vm._s(item.title))])], 2), _vm._v(" "), item.sortable ? _c('div', {
+      staticClass: "vc-table__header-cell_sort vc-margin-left_xs"
+    }, [_c('vc-icon', {
+      attrs: {
+        "size": "xs",
+        "icon": "caret-up"
+      }
+    })], 1) : _vm._e()])]);
+  })], 2)]) : _vm._e(), _vm._v(" "), _vm.items ? _c('tbody', {
+    staticClass: "vc-table__body"
+  }, _vm._l(_vm.items, function (item) {
+    return _c('tr', {
+      key: item.id,
+      staticClass: "vc-table__body-row",
+      on: {
+        "click": function click($event) {
+          return _vm.$emit('itemClick', item);
+        }
+      }
+    }, [_vm.multiselect ? _c('td', {
+      staticClass: "vc-table__body-cell vc-table__body-cell_bordered",
+      attrs: {
+        "width": "20"
+      }
+    }, [_c('div', {
+      staticClass: "vc-flex vc-flex-justify_center vc-flex-align_center"
+    }, [_c('vc-checkbox')], 1)]) : _vm._e(), _vm._v(" "), _vm._l(_vm.headers, function (cell) {
+      return _c('td', {
+        key: item.id + "_" + cell.id,
+        staticClass: "vc-table__body-cell vc-padding-horizontal_m",
+        class: cell.class,
+        attrs: {
+          "width": cell.width
+        }
+      }, [_c('div', {
+        staticClass: "vc-flex vc-flex-align_center"
+      }, [_vm._t("item_" + cell.id, [_vm._v(_vm._s(item[cell.id]))], {
+        "item": item
+      })], 2)]);
+    })], 2);
+  }), 0) : _vm._e()])]);
+};
+
+var __vue_staticRenderFns__$1 = [];
+/* style */
+
+var __vue_inject_styles__$1 = undefined;
+/* scoped */
+
+var __vue_scope_id__$1 = undefined;
+/* module identifier */
+
+var __vue_module_identifier__$1 = undefined;
+/* functional template */
+
+var __vue_is_functional_template__$1 = false;
+/* style inject */
+
+/* style inject SSR */
+
+/* style inject shadow dom */
+
+var __vue_component__$1 = /*#__PURE__*/normalizeComponent$1({
+  render: __vue_render__$1,
+  staticRenderFns: __vue_staticRenderFns__$1
+}, __vue_inject_styles__$1, __vue_script__$1, __vue_scope_id__$1, __vue_is_functional_template__$1, __vue_module_identifier__$1, false, undefined, undefined, undefined);
+
+var toString$1 = function toString(x) {
+  return Object.prototype.toString.call(x);
+};
+
+function isNative$1(Ctor) {
+  return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
+}
+
+var hasSymbol$1 = typeof Symbol !== 'undefined' && isNative$1(Symbol) && typeof Reflect !== 'undefined' && isNative$1(Reflect.ownKeys);
+
+var noopFn$1 = function noopFn(_) {
+  return _;
+};
+
+function proxy$1(target, key, _a) {
+  var get = _a.get,
+      set = _a.set;
+  Object.defineProperty(target, key, {
+    enumerable: true,
+    configurable: true,
+    get: get || noopFn$1,
+    set: set || noopFn$1
+  });
+}
+
+function def$1(obj, key, val, enumerable) {
+  Object.defineProperty(obj, key, {
+    value: val,
+    enumerable: !!enumerable,
+    writable: true,
+    configurable: true
+  });
+}
+
+function hasOwn$1(obj, key) {
+  return Object.hasOwnProperty.call(obj, key);
+}
+
+function isArray$1(x) {
+  return Array.isArray(x);
+}
+
+function isObject$1(val) {
+  return val !== null && _typeof(val) === 'object';
+}
+
+function isPlainObject$1(x) {
+  return toString$1(x) === '[object Object]';
+}
+
+function isFunction$1(x) {
+  return typeof x === 'function';
+}
+
+function warn$1$1(msg, vm) {
+  Vue__default['default'].util.warn(msg, vm);
+}
+
+var vueDependency$1 = undefined;
+
+try {
+  var requiredVue$1 = require('vue');
+
+  if (requiredVue$1 && isVue$1(requiredVue$1)) {
+    vueDependency$1 = requiredVue$1;
+  } else if (requiredVue$1 && 'default' in requiredVue$1 && isVue$1(requiredVue$1.default)) {
+    vueDependency$1 = requiredVue$1.default;
+  }
+} catch (_a) {// not available
+}
+
+var vueConstructor$1 = null;
+var PluginInstalledFlag$1 = '__composition_api_installed__';
+
+function isVue$1(obj) {
+  return obj && typeof obj === 'function' && obj.name === 'Vue';
+}
+
+function isVueRegistered$1(Vue) {
+  return hasOwn$1(Vue, PluginInstalledFlag$1);
+}
+
+function getVueConstructor$1() {
+  return vueConstructor$1;
+} // returns registered vue or `vue` dependency
+
+
+function getRegisteredVueOrDefault$1() {
+  var constructor = vueConstructor$1 || vueDependency$1;
+  return constructor;
+}
+
+function setVueConstructor$1(Vue) {
+  vueConstructor$1 = Vue;
+  Object.defineProperty(Vue, PluginInstalledFlag$1, {
+    configurable: true,
+    writable: true,
+    value: true
+  });
+}
+
+function defineComponentInstance$1(Ctor, options) {
+  if (options === void 0) {
+    options = {};
+  }
+
+  var silent = Ctor.config.silent;
+  Ctor.config.silent = true;
+  var vm = new Ctor(options);
+  Ctor.config.silent = silent;
+  return vm;
+}
+
+function isComponentInstance$1(obj) {
+  var Vue = getVueConstructor$1();
+  return Vue && obj instanceof Vue;
+}
+
+function createSlotProxy$1(vm, slotName) {
+  return function () {
+    var args = [];
+
+    for (var _i = 0; _i < arguments.length; _i++) {
+      args[_i] = arguments[_i];
+    }
+
+    if (!vm.$scopedSlots[slotName]) {
+      return warn$1$1("slots." + slotName + "() got called outside of the \"render()\" scope", vm);
+    }
+
+    return vm.$scopedSlots[slotName].apply(vm, args);
+  };
+}
+
+function resolveSlots$1(slots, normalSlots) {
+  var res;
+
+  if (!slots) {
+    res = {};
+  } else if (slots._normalized) {
+    // fast path 1: child component re-render only, parent did not change
+    return slots._normalized;
+  } else {
+    res = {};
+
+    for (var key in slots) {
+      if (slots[key] && key[0] !== '$') {
+        res[key] = true;
+      }
+    }
+  } // expose normal slots on scopedSlots
+
+
+  for (var key in normalSlots) {
+    if (!(key in res)) {
+      res[key] = true;
+    }
+  }
+
+  return res;
+}
+
+function __values$1(o) {
+  var s = typeof Symbol === "function" && Symbol.iterator,
+      m = s && o[s],
+      i = 0;
+  if (m) return m.call(o);
+  if (o && typeof o.length === "number") return {
+    next: function next() {
+      if (o && i >= o.length) o = void 0;
+      return {
+        value: o && o[i++],
+        done: !o
+      };
+    }
+  };
+  throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+} // must be a string, symbol key is ignored in reactive
+
+
+var RefKey$1 = 'composition-api.refKey';
+var accessModifiedSet$1 = new WeakMap();
+var readonlySet$1 = new WeakMap();
+
+var RefImpl$1 =
+/** @class */
+function () {
+  function RefImpl(_a) {
+    var get = _a.get,
+        set = _a.set;
+    proxy$1(this, 'value', {
+      get: get,
+      set: set
+    });
+  }
+
+  return RefImpl;
+}();
+
+function createRef$1(options, readonly) {
+  var r = new RefImpl$1(options); // seal the ref, this could prevent ref from being observed
+  // It's safe to seal the ref, since we really shouldn't extend it.
+  // related issues: #79
+
+  var sealed = Object.seal(r);
+  readonlySet$1.set(sealed, true);
+  return sealed;
+}
+
+function ref$1(raw) {
+  var _a;
+
+  if (isRef$1(raw)) {
+    return raw;
+  }
+
+  var value = reactive$1((_a = {}, _a[RefKey$1] = raw, _a));
+  return createRef$1({
+    get: function get() {
+      return value[RefKey$1];
+    },
+    set: function set(v) {
+      return value[RefKey$1] = v;
+    }
+  });
+}
+
+function isRef$1(value) {
+  return value instanceof RefImpl$1;
+}
+
+function toRefs$1(obj) {
+  if (!isPlainObject$1(obj)) return obj;
+  var ret = {};
+
+  for (var key in obj) {
+    ret[key] = toRef$1(obj, key);
+  }
+
+  return ret;
+}
+
+function toRef$1(object, key) {
+  var v = object[key];
+  if (isRef$1(v)) return v;
+  return createRef$1({
+    get: function get() {
+      return object[key];
+    },
+    set: function set(v) {
+      return object[key] = v;
+    }
+  });
+}
+
+function isRaw$1(obj) {
+  var _a;
+
+  return Boolean((obj === null || obj === void 0 ? void 0 : obj.__ob__) && ((_a = obj.__ob__) === null || _a === void 0 ? void 0 : _a.__raw__));
+}
+
+function isReactive$1(obj) {
+  var _a;
+
+  return Boolean((obj === null || obj === void 0 ? void 0 : obj.__ob__) && !((_a = obj.__ob__) === null || _a === void 0 ? void 0 : _a.__raw__));
+}
+/**
+ * Proxing property access of target.
+ * We can do unwrapping and other things here.
+ */
+
+
+function setupAccessControl$1(target) {
+  if (!isPlainObject$1(target) || isRaw$1(target) || Array.isArray(target) || isRef$1(target) || isComponentInstance$1(target) || accessModifiedSet$1.has(target)) return;
+  accessModifiedSet$1.set(target, true);
+  var keys = Object.keys(target);
+
+  for (var i = 0; i < keys.length; i++) {
+    defineAccessControl$1(target, keys[i]);
+  }
+}
+/**
+ * Auto unwrapping when access property
+ */
+
+
+function defineAccessControl$1(target, key, val) {
+  if (key === '__ob__') return;
+  if (isRaw$1(target[key])) return;
+  var getter;
+  var setter;
+  var property = Object.getOwnPropertyDescriptor(target, key);
+
+  if (property) {
+    if (property.configurable === false) {
+      return;
+    }
+
+    getter = property.get;
+    setter = property.set;
+
+    if ((!getter || setter) &&
+    /* not only have getter */
+    arguments.length === 2) {
+      val = target[key];
+    }
+  }
+
+  setupAccessControl$1(val);
+  Object.defineProperty(target, key, {
+    enumerable: true,
+    configurable: true,
+    get: function getterHandler() {
+      var value = getter ? getter.call(target) : val; // if the key is equal to RefKey, skip the unwrap logic
+
+      if (key !== RefKey$1 && isRef$1(value)) {
+        return value.value;
+      } else {
+        return value;
+      }
+    },
+    set: function setterHandler(newVal) {
+      if (getter && !setter) return;
+      var value = getter ? getter.call(target) : val; // If the key is equal to RefKey, skip the unwrap logic
+      // If and only if "value" is ref and "newVal" is not a ref,
+      // the assignment should be proxied to "value" ref.
+
+      if (key !== RefKey$1 && isRef$1(value) && !isRef$1(newVal)) {
+        value.value = newVal;
+      } else if (setter) {
+        setter.call(target, newVal);
+      } else {
+        val = newVal;
+      }
+
+      setupAccessControl$1(newVal);
+    }
+  });
+}
+
+function observe$1(obj) {
+  var Vue = getRegisteredVueOrDefault$1();
+  var observed;
+
+  if (Vue.observable) {
+    observed = Vue.observable(obj);
+  } else {
+    var vm = defineComponentInstance$1(Vue, {
+      data: {
+        $$state: obj
+      }
+    });
+    observed = vm._data.$$state;
+  } // in SSR, there is no __ob__. Mock for reactivity check
+
+
+  if (!hasOwn$1(observed, '__ob__')) {
+    def$1(observed, '__ob__', mockObserver$1(observed));
+  }
+
+  return observed;
+}
+
+function createObserver$1() {
+  return observe$1({}).__ob__;
+}
+
+function mockObserver$1(value) {
+  if (value === void 0) {
+    value = {};
+  }
+
+  return {
+    value: value,
+    dep: {
+      notify: noopFn$1,
+      depend: noopFn$1,
+      addSub: noopFn$1,
+      removeSub: noopFn$1
+    }
+  };
+}
+/**
+ * Make obj reactivity
+ */
+
+
+function reactive$1(obj) {
+  if (!isObject$1(obj)) {
+    return obj;
+  }
+
+  if (!(isPlainObject$1(obj) || isArray$1(obj)) || isRaw$1(obj) || !Object.isExtensible(obj)) {
+    return obj;
+  }
+
+  var observed = observe$1(obj);
+  setupAccessControl$1(observed);
+  return observed;
+} // implement
+
+function set$1(vm, key, value) {
+  var state = vm.__composition_api_state__ = vm.__composition_api_state__ || {};
+  state[key] = value;
+}
+
+function get$1(vm, key) {
+  return (vm.__composition_api_state__ || {})[key];
+}
+
+var vmStateManager$1 = {
+  set: set$1,
+  get: get$1
+};
+
+function asVmProperty$1(vm, propName, propValue) {
+  var props = vm.$options.props;
+
+  if (!(propName in vm) && !(props && hasOwn$1(props, propName))) {
+    if (isRef$1(propValue)) {
+      proxy$1(vm, propName, {
+        get: function get() {
+          return propValue.value;
+        },
+        set: function set(val) {
+          propValue.value = val;
+        }
+      });
+    } else {
+      Object.defineProperty(vm, propName, {
+        enumerable: true,
+        configurable: true,
+        get: function get() {
+          if (isReactive$1(propValue)) {
+            propValue.__ob__.dep.depend();
+          }
+
+          return propValue;
+        },
+        set: function set(val) {
+          propValue = val;
+        }
+      });
+    }
+  }
+}
+
+function updateTemplateRef$1(vm) {
+  var rawBindings = vmStateManager$1.get(vm, 'rawBindings') || {};
+  if (!rawBindings || !Object.keys(rawBindings).length) return;
+  var refs = vm.$refs;
+  var oldRefKeys = vmStateManager$1.get(vm, 'refs') || [];
+
+  for (var index = 0; index < oldRefKeys.length; index++) {
+    var key = oldRefKeys[index];
+    var setupValue = rawBindings[key];
+
+    if (!refs[key] && setupValue && isRef$1(setupValue)) {
+      setupValue.value = null;
+    }
+  }
+
+  var newKeys = Object.keys(refs);
+  var validNewKeys = [];
+
+  for (var index = 0; index < newKeys.length; index++) {
+    var key = newKeys[index];
+    var setupValue = rawBindings[key];
+
+    if (refs[key] && setupValue && isRef$1(setupValue)) {
+      setupValue.value = refs[key];
+      validNewKeys.push(key);
+    }
+  }
+
+  vmStateManager$1.set(vm, 'refs', validNewKeys);
+}
+
+function resolveScopedSlots$1(vm, slotsProxy) {
+  var parentVNode = vm.$options._parentVnode;
+  if (!parentVNode) return;
+  var prevSlots = vmStateManager$1.get(vm, 'slots') || [];
+  var curSlots = resolveSlots$1(parentVNode.data.scopedSlots, vm.$slots); // remove staled slots
+
+  for (var index = 0; index < prevSlots.length; index++) {
+    var key = prevSlots[index];
+
+    if (!curSlots[key]) {
+      delete slotsProxy[key];
+    }
+  } // proxy fresh slots
+
+
+  var slotNames = Object.keys(curSlots);
+
+  for (var index = 0; index < slotNames.length; index++) {
+    var key = slotNames[index];
+
+    if (!slotsProxy[key]) {
+      slotsProxy[key] = createSlotProxy$1(vm, key);
+    }
+  }
+
+  vmStateManager$1.set(vm, 'slots', slotNames);
+}
+
+function activateCurrentInstance$1(vm, fn, onError) {
+
+  try {
+    return fn(vm);
+  } catch (err) {
+    if (onError) {
+      onError(err);
+    } else {
+      throw err;
+    }
+  } finally {
+  }
+}
+
+function mixin$1(Vue) {
+  Vue.mixin({
+    beforeCreate: functionApiInit,
+    mounted: function mounted() {
+      updateTemplateRef$1(this);
+    },
+    updated: function updated() {
+      updateTemplateRef$1(this);
+    }
+  });
+  /**
+   * Vuex init hook, injected into each instances init hooks list.
+   */
+
+  function functionApiInit() {
+    var vm = this;
+    var $options = vm.$options;
+    var setup = $options.setup,
+        render = $options.render;
+
+    if (render) {
+      // keep currentInstance accessible for createElement
+      $options.render = function () {
+        var _this = this;
+
+        var args = [];
+
+        for (var _i = 0; _i < arguments.length; _i++) {
+          args[_i] = arguments[_i];
+        }
+
+        return activateCurrentInstance$1(vm, function () {
+          return render.apply(_this, args);
+        });
+      };
+    }
+
+    if (!setup) {
+      return;
+    }
+
+    if (typeof setup !== 'function') {
+      return;
+    }
+
+    var data = $options.data; // wrapper the data option, so we can invoke setup before data get resolved
+
+    $options.data = function wrappedData() {
+      initSetup(vm, vm.$props);
+      return typeof data === 'function' ? data.call(vm, vm) : data || {};
+    };
+  }
+
+  function initSetup(vm, props) {
+    if (props === void 0) {
+      props = {};
+    }
+
+    var setup = vm.$options.setup;
+    var ctx = createSetupContext(vm); // fake reactive for `toRefs(props)`
+
+    def$1(props, '__ob__', createObserver$1()); // resolve scopedSlots and slots to functions
+    // @ts-expect-error
+
+    resolveScopedSlots$1(vm, ctx.slots);
+    var binding;
+    activateCurrentInstance$1(vm, function () {
+      // make props to be fake reactive, this is for `toRefs(props)`
+      binding = setup(props, ctx);
+    });
+    if (!binding) return;
+
+    if (isFunction$1(binding)) {
+      // keep typescript happy with the binding type.
+      var bindingFunc_1 = binding; // keep currentInstance accessible for createElement
+
+      vm.$options.render = function () {
+        // @ts-expect-error
+        resolveScopedSlots$1(vm, ctx.slots);
+        return activateCurrentInstance$1(vm, function () {
+          return bindingFunc_1();
+        });
+      };
+
+      return;
+    } else if (isPlainObject$1(binding)) {
+      if (isReactive$1(binding)) {
+        binding = toRefs$1(binding);
+      }
+
+      vmStateManager$1.set(vm, 'rawBindings', binding);
+      var bindingObj_1 = binding;
+      Object.keys(bindingObj_1).forEach(function (name) {
+        var bindingValue = bindingObj_1[name];
+
+        if (!isRef$1(bindingValue)) {
+          if (!isReactive$1(bindingValue)) {
+            if (isFunction$1(bindingValue)) {
+              bindingValue = bindingValue.bind(vm);
+            } else if (!isObject$1(bindingValue)) {
+              bindingValue = ref$1(bindingValue);
+            } else if (hasReactiveArrayChild(bindingValue)) {
+              // creates a custom reactive properties without make the object explicitly reactive
+              // NOTE we should try to avoid this, better implementation needed
+              customReactive(bindingValue);
+            }
+          } else if (isArray$1(bindingValue)) {
+            bindingValue = ref$1(bindingValue);
+          }
+        }
+
+        asVmProperty$1(vm, name, bindingValue);
+      });
+      return;
+    }
+  }
+
+  function customReactive(target) {
+    if (!isPlainObject$1(target) || isRef$1(target) || isReactive$1(target) || isRaw$1(target)) return;
+    var Vue = getVueConstructor$1();
+    var defineReactive = Vue.util.defineReactive;
+    Object.keys(target).forEach(function (k) {
+      var val = target[k];
+      defineReactive(target, k, val);
+
+      if (val) {
+        customReactive(val);
+      }
+
+      return;
+    });
+  }
+
+  function hasReactiveArrayChild(target, visited) {
+    if (visited === void 0) {
+      visited = new Map();
+    }
+
+    if (visited.has(target)) {
+      return visited.get(target);
+    }
+
+    visited.set(target, false);
+
+    if (Array.isArray(target) && isReactive$1(target)) {
+      visited.set(target, true);
+      return true;
+    }
+
+    if (!isPlainObject$1(target) || isRaw$1(target)) {
+      return false;
+    }
+
+    return Object.keys(target).some(function (x) {
+      return hasReactiveArrayChild(target[x], visited);
+    });
+  }
+
+  function createSetupContext(vm) {
+    var ctx = {
+      slots: {}
+    };
+    var propsPlain = ['root', 'parent', 'refs', 'listeners', 'isServer', 'ssrContext'];
+    var propsReactiveProxy = ['attrs'];
+    var methodReturnVoid = ['emit'];
+    propsPlain.forEach(function (key) {
+      var srcKey = "$" + key;
+      proxy$1(ctx, key, {
+        get: function get() {
+          return vm[srcKey];
+        },
+        set: function set() {
+          warn$1$1("Cannot assign to '" + key + "' because it is a read-only property", vm);
+        }
+      });
+    });
+    propsReactiveProxy.forEach(function (key) {
+      var srcKey = "$" + key;
+      proxy$1(ctx, key, {
+        get: function get() {
+          var e_1, _a;
+
+          var data = reactive$1({});
+          var source = vm[srcKey];
+
+          var _loop_1 = function _loop_1(attr) {
+            proxy$1(data, attr, {
+              get: function get() {
+                // to ensure it always return the latest value
+                return vm[srcKey][attr];
+              }
+            });
+          };
+
+          try {
+            for (var _b = __values$1(Object.keys(source)), _c = _b.next(); !_c.done; _c = _b.next()) {
+              var attr = _c.value;
+
+              _loop_1(attr);
+            }
+          } catch (e_1_1) {
+            e_1 = {
+              error: e_1_1
+            };
+          } finally {
+            try {
+              if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+            } finally {
+              if (e_1) throw e_1.error;
+            }
+          }
+
+          return data;
+        },
+        set: function set() {
+          warn$1$1("Cannot assign to '" + key + "' because it is a read-only property", vm);
+        }
+      });
+    });
+    methodReturnVoid.forEach(function (key) {
+      var srcKey = "$" + key;
+      proxy$1(ctx, key, {
+        get: function get() {
+          return function () {
+            var args = [];
+
+            for (var _i = 0; _i < arguments.length; _i++) {
+              args[_i] = arguments[_i];
+            }
+
+            var fn = vm[srcKey];
+            fn.apply(vm, args);
+          };
+        }
+      });
+    });
+    return ctx;
+  }
+}
+/**
+ * Helper that recursively merges two data objects together.
+ */
+
+
+function mergeData$1(from, to) {
+  if (!from) return to;
+  if (!to) return from;
+  var key;
+  var toVal;
+  var fromVal;
+  var keys = hasSymbol$1 ? Reflect.ownKeys(from) : Object.keys(from);
+
+  for (var i = 0; i < keys.length; i++) {
+    key = keys[i]; // in case the object is already observed...
+
+    if (key === '__ob__') continue;
+    toVal = to[key];
+    fromVal = from[key];
+
+    if (!hasOwn$1(to, key)) {
+      to[key] = fromVal;
+    } else if (toVal !== fromVal && isPlainObject$1(toVal) && !isRef$1(toVal) && isPlainObject$1(fromVal) && !isRef$1(fromVal)) {
+      mergeData$1(fromVal, toVal);
+    }
+  }
+
+  return to;
+}
+
+function install$1$1(Vue) {
+  if (isVueRegistered$1(Vue)) {
+    return;
+  }
+
+  Vue.config.optionMergeStrategies.setup = function (parent, child) {
+    return function mergedSetupFn(props, context) {
+      return mergeData$1(typeof parent === 'function' ? parent(props, context) || {} : undefined, typeof child === 'function' ? child(props, context) || {} : undefined);
+    };
+  };
+
+  setVueConstructor$1(Vue);
+  mixin$1(Vue);
+}
+
+var Plugin$1 = {
+  install: function install(Vue) {
+    return install$1$1(Vue);
+  }
+}; // auto install when using CDN
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(Plugin$1);
+}
+/** All registered blades */
+
+
+ref$1([]);
+/** All pinnned blades */
+
+ref$1([]);
+/** All opened blades */
+
+ref$1([]);var toString = function (x) { return Object.prototype.toString.call(x); };
 function isNative(Ctor) {
     return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
 }
@@ -1204,9 +2350,113 @@ if (typeof window !== 'undefined' && window.Vue) {
 }//
 var script = defineComponent({
   components: {
-    VcBlade: __vue_component__$d
+    VcBlade: __vue_component__$a,
+    VcTable: __vue_component__$1,
+    VcIcon: __vue_component__$d
   },
-  setup: function setup() {}
+  setup: function setup() {
+    return {
+      toolbarItems: [{
+        id: 1,
+        icon: "sync-alt",
+        title: "Refresh"
+      }, {
+        id: 2,
+        icon: "plus",
+        title: "Add"
+      }, {
+        id: 3,
+        icon: "trash",
+        title: "Delete",
+        disabled: true
+      }, {
+        id: 4,
+        icon: "download",
+        title: "Import"
+      }, {
+        id: 5,
+        icon: "upload",
+        title: "Export"
+      }, {
+        id: 6,
+        icon: "cut",
+        title: "Cut",
+        disabled: true
+      }, {
+        id: 7,
+        icon: "paste",
+        title: "Paste",
+        disabled: true
+      }, {
+        id: 8,
+        icon: "cubes",
+        title: "Bulk export",
+        disabled: true
+      }],
+      breadcrumbs: [{
+        id: 0,
+        title: "Back",
+        icon: "arrow-left"
+      }, {
+        id: 1,
+        title: "Electronics"
+      }, {
+        id: 2,
+        title: "Desktop"
+      }],
+      headers: [{
+        id: "actions",
+        title: "",
+        width: 30,
+        class: "vc-table__body-cell_bordered"
+      }, {
+        id: "img",
+        title: "Pic",
+        width: 60,
+        class: "vc-padding-right_none"
+      }, {
+        id: "name",
+        title: "Name",
+        sortable: true
+      }, {
+        id: "sku",
+        title: "SKU",
+        sortable: true,
+        width: 100
+      }],
+      items: [{
+        id: 1,
+        img: "/images/1.jpg",
+        name: "Lenovo IdeaCentre 310S-08",
+        description: "Physical",
+        sku: "990555005"
+      }, {
+        id: 2,
+        img: "/images/2.jpg",
+        name: "BLU Win HD LTE X150Q 8GB",
+        description: "Physical",
+        sku: "003578948"
+      }, {
+        id: 3,
+        img: "/images/3.jpg",
+        name: "Samsung Galaxy S6 SM-G920F 32GB",
+        description: "Physical",
+        sku: "334590-095"
+      }, {
+        id: 4,
+        img: "/images/4.jpg",
+        name: "DJI Phantom 3 Professional Quadcopter",
+        description: "Physical",
+        sku: "000545432"
+      }, {
+        id: 5,
+        img: "/images/5.jpg",
+        name: "3DR X8-M Octocopter for Visual-Spectr",
+        description: "Physical",
+        sku: "435344443"
+      }]
+    };
+  }
 });function normalizeComponent(template, style, script, scopeId, isFunctionalTemplate, moduleIdentifier /* server only */, shadowMode, createInjector, createInjectorSSR, createInjectorShadow) {
     if (typeof shadowMode !== 'boolean') {
         createInjectorSSR = createInjector;
@@ -1293,9 +2543,58 @@ var __vue_render__ = function __vue_render__() {
 
   return _c('vc-blade', {
     attrs: {
-      "title": "Products"
+      "icon": "folder",
+      "title": "Catalog",
+      "subtitle": "Manage catalogs",
+      "width": "600",
+      "closable": false,
+      "toolbarItems": _vm.toolbarItems,
+      "breadcrumbs": _vm.breadcrumbs,
+      "searchable": true,
+      "filterable": true
     }
-  });
+  }, [_c('vc-table', {
+    attrs: {
+      "headers": _vm.headers,
+      "items": _vm.items,
+      "multiselect": true
+    },
+    scopedSlots: _vm._u([{
+      key: "item_actions",
+      fn: function fn() {
+        return [_c('vc-icon', {
+          staticStyle: {
+            "color": "#43b0e6"
+          },
+          attrs: {
+            "icon": "ellipsis-v"
+          }
+        })];
+      },
+      proxy: true
+    }, {
+      key: "item_img",
+      fn: function fn(itemData) {
+        return [_c('img', {
+          staticClass: "vc-fill_width",
+          attrs: {
+            "src": itemData.item.img
+          }
+        })];
+      }
+    }, {
+      key: "item_name",
+      fn: function fn(itemData) {
+        return [_c('div', {
+          staticClass: "vc-flex vc-flex-column"
+        }, [_c('div', {
+          staticClass: "vc-font-size_m vc-ellipsis"
+        }, [_vm._v(_vm._s(itemData.item.name))]), _vm._v(" "), _c('div', {
+          staticClass: "vc-font-size_s vc-ellipsis"
+        }, [_vm._v("\n          " + _vm._s(itemData.item.description) + "\n        ")])])];
+      }
+    }])
+  })], 1);
 };
 
 var __vue_staticRenderFns__ = [];
@@ -1307,7 +2606,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-52b2ac35";
+var __vue_module_identifier__ = "data-v-a1ad8a3a";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

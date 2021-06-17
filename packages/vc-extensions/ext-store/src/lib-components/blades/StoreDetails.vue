@@ -3,13 +3,13 @@
     icon="cloud"
     title="B2B-mixed (virtual)"
     width="600"
-    :toolbarItems="toolbarItems"
-    :breadcrumbs="breadcrumbs"
+    :toolbarItems="toolbarItems.value"
+    :breadcrumbs="breadcrumbs.value"
     :searchable="true"
     :filterable="true"
     @close="$store.commit('closeBlade')"
   >
-    <vc-table :headers="headers" :items="items" :multiselect="true">
+    <vc-table :headers="headers.value" :items="items.value" :multiselect="true">
       <template v-slot:item_actions>
         <vc-icon icon="ellipsis-v" style="color: #43b0e6"></vc-icon>
       </template>
@@ -31,29 +31,13 @@
 </template>
 
 <script>
-  import {
-    VcBlade,
-    VcTable,
-    VcIcon,
-    registerBlade,
-  } from "@virtocommerce/vc-ui-kit";
+  import { VcBlade, VcTable, VcIcon } from "@virtocommerce/vc-ui-kit";
   import { defineComponent, ref } from "@vue/composition-api";
 
   export default defineComponent({
     components: { VcBlade, VcTable, VcIcon },
 
-    vcExtension() {
-      registerBlade({
-        name: "product",
-        component: this,
-      });
-    },
-
     setup() {
-      registerBlade({
-        name: "product2",
-        component: this,
-      });
       const toolbarItems = ref([
         { id: 1, icon: "sync-alt", title: "Refresh" },
         { id: 2, icon: "plus", title: "Add" },

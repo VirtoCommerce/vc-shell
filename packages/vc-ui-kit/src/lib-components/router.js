@@ -7,89 +7,84 @@ const blades = ref([]);
 const drawer = ref([]);
 
 /** All opened blades */
-const opened = ref([]);
+export const opened = ref([]);
 
 /**
  * Put Blade options into registry.
  */
 export function registerBlade(options) {
-    blades.value.push(options);
-    console.log('Registered blades: ', blades.value);
+  blades.value.push(options);
+  console.log("Registered blades: ", blades.value);
 }
 
 /**
  * Return readonly list of all registered blades.
  */
 export function listBlades() {
-    return computed(() => blades.value);
+  return computed(() => blades.value);
 }
 
 /**
  * Return readonly list of all opened blades.
  */
 export function openedBlades() {
-    return computed(() => opened.values);
+  return computed(() => opened.value);
 }
 
 /**
  * Open blade by name.
  */
-export function openBlade(name) {
-    console.log('Open blade', name);
-    blades.value.forEach((item) => {
-        if (item.name === name) {
-            opened.value.push(item);
-            console.log('Opened blades: ', opened.value);
-        }
-    });
+export function openBlade(component, componentOptions) {
+  opened.value.push({ id: Math.random(), component, componentOptions });
+  console.log("Opened blades: ", opened.value);
 }
 
 /**
  * Close blade by name and all its descendants.
  */
 export function closeBlade(name) {
-    const bladeIndex = opened.value.findIndex((item) => item.name === name);
-    if (bladeIndex > -1) {
-        opened.value.splice(bladeIndex);
-    }
+  const bladeIndex = opened.value.findIndex((item) => item.name === name);
+  if (bladeIndex > -1) {
+    opened.value.splice(bladeIndex);
+  }
 }
 
-/** 
- * Save drawer items into local storage. 
+/**
+ * Save drawer items into local storage.
  */
 export function saveDrawer() {
-    localStorage.setItem('vc-platform-drawer', JSON.stringify(drawer.value));
+  localStorage.setItem("vc-platform-drawer", JSON.stringify(drawer.value));
 }
 
 /**
  * Load drawer items from local storage.
  */
 export function loadDrawer() {
-    const savedData = localStorage.getItem('vc-platform-drawer');
-    try {
-        return JSON.parse(savedData || '[]');
-    } catch (err) {
-        return [];
-    }
+  const savedData = localStorage.getItem("vc-platform-drawer");
+  try {
+    return JSON.parse(savedData || "[]");
+  } catch (err) {
+    return [];
+  }
 }
 
 /**
  * Add item into drawer.
  */
 export function addDrawerItem(item) {
-    drawer.value.add(item);
+  drawer.value.add(item);
 }
 
 /**
  * Remove item from drawer.
  */
 export function removeDrawerItem(item) {
-    drawer.value.delete(item);
+  drawer.value.delete(item);
 }
 
 /**
  * Return readonly list of all drawer items.
  */
 export function getDrawer() {
-    return computed(() => drawer.value);
+  return computed(() => drawer.value);
 }

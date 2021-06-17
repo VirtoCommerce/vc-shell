@@ -11,7 +11,7 @@
       <vc-drawer
         :items="menuItems"
         logo="/src/assets/logo.svg"
-        @itemClick="openBlade($event.blade)"
+        @itemClick="openBlade($event.component, $event.componentOptions)"
       ></vc-drawer>
     </template>
 
@@ -20,6 +20,7 @@
         v-for="blade in openedBlades"
         :key="blade.id"
         :is="blade.component"
+        v-bind="blade.componentOptions"
       ></component>
     </div>
   </vc-layout>
@@ -31,9 +32,12 @@
     VcButton,
     VcDrawer,
     openBlade,
-    openedBlades,
+    opened,
   } from "@virtocommerce/vc-ui-kit";
   import { defineComponent, ref } from "@vue/composition-api";
+  import { StoreListBlade } from "@virtocommerce/ext-store";
+  import { CatalogBlade } from "@virtocommerce/ext-product-catalog";
+  import { AssetsBlade } from "@virtocommerce/ext-assets-management";
 
   export default defineComponent({
     components: { VcLayout, VcButton, VcDrawer },
@@ -45,31 +49,24 @@
           title: "Catalog",
           icon: "folder",
           to: "/catalog",
+          component: CatalogBlade,
+          componentOptions: {},
         },
         {
           id: 2,
-          title: "Contacts",
-          icon: "address-card",
-          to: "/contacts",
+          title: "Assets",
+          icon: "image",
+          to: "/assets",
+          component: AssetsBlade,
+          componentOptions: {},
         },
         {
           id: 3,
-          title: "Marketing",
-          icon: "flag",
-          to: "/marketing",
-        },
-        {
-          id: 4,
-          title: "Thumbnails",
-          icon: "image",
-          to: "/thumbnails",
-        },
-        {
-          id: 5,
           title: "Stores",
           icon: "archive",
           to: "/stores",
-          blade: "store",
+          component: StoreListBlade,
+          componentOptions: {},
         },
       ]);
 
@@ -102,7 +99,7 @@
         menuItems,
         toolbarItems,
         account,
-        openedBlades,
+        openedBlades: opened.value,
         openBlade,
       };
     },

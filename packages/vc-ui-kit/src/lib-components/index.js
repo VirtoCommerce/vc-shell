@@ -15,14 +15,15 @@ export { default as VcSpacer } from "./vc-spacer.vue";
 export { default as VcTable } from "./vc-table.vue";
 
 export {
-    openBlade,
-    registerBlade,
-    openedBlades,
-    addDrawerItem,
-    closeBlade,
-    getDrawer,
-    listBlades,
-    loadDrawer,
-    removeDrawerItem,
-    saveDrawer
-} from './router';
+  openBlade,
+  registerBlade,
+  openedBlades,
+  addDrawerItem,
+  closeBlade,
+  getDrawer,
+  listBlades,
+  loadDrawer,
+  removeDrawerItem,
+  saveDrawer,
+  opened
+} from "./router";

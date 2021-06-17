@@ -1634,20 +1634,25 @@ if (typeof window !== 'undefined' && window.Vue) {
 /** All registered blades */
 
 
-var blades = ref$1([]);
+ref$1([]);
 /** All pinnned blades */
 
 ref$1([]);
 /** All opened blades */
 
-ref$1([]);
+var opened = ref$1([]);
 /**
- * Put Blade options into registry.
+ * Open blade by name.
  */
 
-function registerBlade(options) {
-  blades.value.push(options);
-  console.log('Registered blades: ', blades.value);
+
+function openBlade(component, componentOptions) {
+  opened.value.push({
+    id: Math.random(),
+    component: component,
+    componentOptions: componentOptions
+  });
+  console.log("Opened blades: ", opened.value);
 }var toString = function (x) { return Object.prototype.toString.call(x); };
 function isNative(Ctor) {
     return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
@@ -2362,17 +2367,7 @@ var script$1 = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
-  vcExtension: function vcExtension() {
-    registerBlade({
-      name: "product",
-      component: this
-    });
-  },
   setup: function setup() {
-    registerBlade({
-      name: "product2",
-      component: this
-    });
     var toolbarItems = ref([{
       id: 1,
       icon: "sync-alt",
@@ -2540,8 +2535,8 @@ var __vue_render__$1 = function __vue_render__() {
       "icon": "cloud",
       "title": "B2B-mixed (virtual)",
       "width": "600",
-      "toolbarItems": _vm.toolbarItems,
-      "breadcrumbs": _vm.breadcrumbs,
+      "toolbarItems": _vm.toolbarItems.value,
+      "breadcrumbs": _vm.breadcrumbs.value,
       "searchable": true,
       "filterable": true
     },
@@ -2552,8 +2547,8 @@ var __vue_render__$1 = function __vue_render__() {
     }
   }, [_c('vc-table', {
     attrs: {
-      "headers": _vm.headers,
-      "items": _vm.items,
+      "headers": _vm.headers.value,
+      "items": _vm.items.value,
       "multiselect": true
     },
     scopedSlots: _vm._u([{
@@ -2603,7 +2598,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-f394c5a8";
+var __vue_module_identifier__$1 = "data-v-33d30b6e";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
@@ -2623,19 +2618,7 @@ var script = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
-  vcExtension: function vcExtension() {
-    registerBlade({
-      name: "store",
-      workspace: true,
-      component: this
-    });
-  },
   setup: function setup() {
-    registerBlade({
-      name: "store2",
-      workspace: true,
-      component: this
-    });
     var toolbarItems = ref([{
       id: 1,
       icon: "sync-alt",
@@ -2672,8 +2655,8 @@ var script = defineComponent({
       toolbarItems: toolbarItems,
       headers: headers,
       items: items,
-      openDetails: function openDetails(blade) {
-        console.log("Open blade");
+      openDetails: function openDetails(options) {
+        openBlade(__vue_component__$1, options);
       }
     };
   }
@@ -2695,13 +2678,13 @@ var __vue_render__ = function __vue_render__() {
       "subtitle": "Manage stores",
       "width": "400",
       "closable": false,
-      "toolbarItems": _vm.toolbarItems,
+      "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
   }, [_c('vc-table', {
     attrs: {
-      "headers": _vm.headers,
-      "items": _vm.items,
+      "headers": _vm.headers.value,
+      "items": _vm.items.value,
       "multiselect": true
     },
     on: {
@@ -2759,7 +2742,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-68b18c7e";
+var __vue_module_identifier__ = "data-v-667b1d6e";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
@@ -2780,16 +2763,7 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
 
     Vue.component(componentName, component);
   });
-}; // Register VC Extensions
-
-
-Object.entries(components$1).forEach(function (_ref3) {
-  var _ref4 = _slicedToArray(_ref3, 2);
-      _ref4[0];
-      var component = _ref4[1];
-
-  component.vcExtension();
-}); // Create module definition for Vue.use()
+}; // Create module definition for Vue.use()
 var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,StoreDetailsBlade: __vue_component__$1,StoreListBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
 // that global var (eg. plugin.component)
 

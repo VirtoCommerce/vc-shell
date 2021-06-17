@@ -20,6 +20,9 @@ The R&D project originated to create a replacement of the current vc-platform ma
 # install lerna globally
 $ npm install -g lerna
 
+# link local dependencies
+$ lerna link
+
 # install and relocate dependencies
 $ lerna bootstrap
 

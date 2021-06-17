@@ -7,6 +7,7 @@
     :closable="false"
     :toolbarItems="toolbarItems.value"
     :searchable="true"
+    v-bind="$props"
   >
     <vc-table
       :headers="headers.value"
@@ -43,12 +44,13 @@
 </template>
 
 <script>
-  import { VcBlade, VcTable, VcIcon, openBlade } from "@virtocommerce/vc-ui-kit";
+  import { VcBlade, VcTable, VcIcon } from "@virtocommerce/vc-ui-kit";
   import DetailsBlade from "./StoreDetails.vue";
   import { defineComponent, ref } from "@vue/composition-api";
 
   export default defineComponent({
     components: { VcBlade, VcTable, VcIcon },
+    props: ["icon", "title", "subtitle", "width", "closable"],
 
     setup() {
       const toolbarItems = ref([
@@ -94,7 +96,10 @@
         items,
 
         openDetails(options) {
-          openBlade(DetailsBlade, options);
+          this.$emit("navigate", {
+            component: DetailsBlade,
+            componentOptions: options,
+          });
         },
       };
     },

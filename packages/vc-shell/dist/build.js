@@ -50458,6 +50458,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 //
 //
 //
+//
 
 
 
@@ -50469,25 +50470,26 @@ if (typeof window !== 'undefined' && window.Vue) {
   components: { VcLayout: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["c" /* VcLayout */], VcButton: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["a" /* VcButton */], VcDrawer: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["b" /* VcDrawer */] },
 
   setup: function setup() {
+    var route = window.location.pathname;
     var menuItems = Object(__WEBPACK_IMPORTED_MODULE_1__vue_composition_api__["c" /* ref */])([{
       id: 1,
       title: "Catalog",
       icon: "folder",
-      to: "/catalog",
+      href: "/catalog",
       component: __WEBPACK_IMPORTED_MODULE_3__virtocommerce_ext_product_catalog__["a" /* CatalogBlade */],
       componentOptions: {}
     }, {
       id: 2,
       title: "Assets",
       icon: "image",
-      to: "/assets",
+      href: "/assets",
       component: __WEBPACK_IMPORTED_MODULE_4__virtocommerce_ext_assets_management__["a" /* AssetsBlade */],
       componentOptions: {}
     }, {
       id: 3,
       title: "Stores",
       icon: "archive",
-      to: "/stores",
+      href: "/stores",
       component: __WEBPACK_IMPORTED_MODULE_2__virtocommerce_ext_store__["a" /* StoreListBlade */],
       componentOptions: {}
     }]);
@@ -50517,8 +50519,13 @@ if (typeof window !== 'undefined' && window.Vue) {
       menuItems: menuItems,
       toolbarItems: toolbarItems,
       account: account,
-      openedBlades: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["e" /* opened */].value,
-      openBlade: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* openBlade */]
+      openedBlades: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].opened.value,
+      openBlade: __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].openBlade,
+      openWorkspace: function openWorkspace(data) {
+        __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].closeBlades();
+        __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].openBlade(data.component, data.componentOptions);
+        history.pushState({}, data.title, data.href);
+      }
     };
   }
 }));
@@ -62979,7 +62986,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(8);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_31233bcb_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_566d5a7e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(23);
 var normalizeComponent = __webpack_require__(18)
 /* script */
 
@@ -62996,7 +63003,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_31233bcb_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_566d5a7e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -63134,17 +63141,7 @@ module.exports = function normalizeComponent (
 /* unused harmony export VcLink */
 /* unused harmony export VcSpacer */
 /* unused harmony export VcTable */
-/* unused harmony export addDrawerItem */
-/* unused harmony export closeBlade */
-/* unused harmony export getDrawer */
-/* unused harmony export listBlades */
-/* unused harmony export loadDrawer */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return openBlade; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return opened; });
-/* unused harmony export openedBlades */
-/* unused harmony export registerBlade */
-/* unused harmony export removeDrawerItem */
-/* unused harmony export saveDrawer */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return router; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(9);
 
 
@@ -64525,6 +64522,26 @@ const __vue_component__ = /*#__PURE__*/normalizeComponent({
   staticRenderFns: __vue_staticRenderFns__
 }, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
 
+/* eslint-disable import/prefer-default-export */
+
+var components = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  VcBlade: __vue_component__$a,
+  VcBreadcrumbs: __vue_component__$b,
+  VcButton: __vue_component__$9,
+  VcCheckbox: __vue_component__$8,
+  VcContainer: __vue_component__$7,
+  VcDrawerItem: __vue_component__$6,
+  VcDrawerToggler: __vue_component__$5,
+  VcDrawer: __vue_component__$4,
+  VcIcon: __vue_component__$d,
+  VcInput: __vue_component__$c,
+  VcLayout: __vue_component__$2,
+  VcLink: __vue_component__$1,
+  VcSpacer: __vue_component__$3,
+  VcTable: __vue_component__
+});
+
 var toString = function (x) {
   return Object.prototype.toString.call(x);
 };
@@ -65417,6 +65434,13 @@ function closeBlade(name) {
   }
 }
 /**
+ * Close all blades.
+ */
+
+function closeBlades() {
+  opened.value.splice(0);
+}
+/**
  * Save drawer items into local storage.
  */
 
@@ -65458,35 +65482,20 @@ function getDrawer() {
   return computed(() => drawer.value);
 }
 
-/* eslint-disable import/prefer-default-export */
-
-var components = /*#__PURE__*/Object.freeze({
+var router = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  VcBlade: __vue_component__$a,
-  VcBreadcrumbs: __vue_component__$b,
-  VcButton: __vue_component__$9,
-  VcCheckbox: __vue_component__$8,
-  VcContainer: __vue_component__$7,
-  VcDrawerItem: __vue_component__$6,
-  VcDrawerToggler: __vue_component__$5,
-  VcDrawer: __vue_component__$4,
-  VcIcon: __vue_component__$d,
-  VcInput: __vue_component__$c,
-  VcLayout: __vue_component__$2,
-  VcLink: __vue_component__$1,
-  VcSpacer: __vue_component__$3,
-  VcTable: __vue_component__,
-  openBlade: openBlade,
+  opened: opened,
   registerBlade: registerBlade,
-  openedBlades: openedBlades,
-  addDrawerItem: addDrawerItem,
-  closeBlade: closeBlade,
-  getDrawer: getDrawer,
   listBlades: listBlades,
-  loadDrawer: loadDrawer,
-  removeDrawerItem: removeDrawerItem,
+  openedBlades: openedBlades,
+  openBlade: openBlade,
+  closeBlade: closeBlade,
+  closeBlades: closeBlades,
   saveDrawer: saveDrawer,
-  opened: opened
+  loadDrawer: loadDrawer,
+  addDrawerItem: addDrawerItem,
+  removeDrawerItem: removeDrawerItem,
+  getDrawer: getDrawer
 });
 
 // Import vue components
@@ -67075,19 +67084,7 @@ ref$1([]);
 ref$1([]);
 /** All opened blades */
 
-const opened = ref$1([]);
-/**
- * Open blade by name.
- */
-
-function openBlade(component, componentOptions) {
-  opened.value.push({
-    id: Math.random(),
-    component,
-    componentOptions
-  });
-  console.log("Opened blades: ", opened.value);
-}
+ref$1([]);
 
 var toString = function (x) {
   return Object.prototype.toString.call(x);
@@ -68034,6 +68031,7 @@ var script = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
+  props: ["icon", "title", "subtitle", "width", "closable"],
 
   setup() {
     const toolbarItems = ref([{
@@ -68074,7 +68072,10 @@ var script = defineComponent({
       items,
 
       openDetails(options) {
-        openBlade(__vue_component__$1, options);
+        this.$emit("navigate", {
+          component: __vue_component__$1,
+          componentOptions: options
+        });
       }
 
     };
@@ -68093,7 +68094,7 @@ var __vue_render__ = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('vc-blade', {
+  return _c('vc-blade', _vm._b({
     attrs: {
       "icon": "archive",
       "title": "Stores",
@@ -68103,7 +68104,7 @@ var __vue_render__ = function () {
       "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
-  }, [_c('vc-table', {
+  }, 'vc-blade', _vm.$props, false), [_c('vc-table', {
     attrs: {
       "headers": _vm.headers.value,
       "items": _vm.items.value,
@@ -72981,7 +72982,7 @@ const install = function installExtAssetsManagement(Vue) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('vc-layout',{attrs:{"toolbarItems":_vm.toolbarItems,"account":_vm.account},scopedSlots:_vm._u([{key:"banner",fn:function(){return [_c('div',[_vm._v("\n      Running community edition, click to request a commercial license.\n    ")]),_vm._v(" "),_c('vc-button',{attrs:{"variant":"special","title":"Purchase"}})]},proxy:true},{key:"left",fn:function(){return [_c('vc-drawer',{attrs:{"items":_vm.menuItems,"logo":"/src/assets/logo.svg"},on:{"itemClick":function($event){return _vm.openBlade($event.component, $event.componentOptions)}}})]},proxy:true}])},[_vm._v(" "),_vm._v(" "),_c('div',{staticClass:"vc-flex vc-flex-grow_1"},_vm._l((_vm.openedBlades),function(blade){return _c(blade.component,_vm._b({key:blade.id,tag:"component"},'component',blade.componentOptions,false))}),1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('vc-layout',{attrs:{"toolbarItems":_vm.toolbarItems,"account":_vm.account},scopedSlots:_vm._u([{key:"banner",fn:function(){return [_c('div',[_vm._v("\n      Running community edition, click to request a commercial license.\n    ")]),_vm._v(" "),_c('vc-button',{attrs:{"variant":"special","title":"Purchase"}})]},proxy:true},{key:"left",fn:function(){return [_c('vc-drawer',{attrs:{"items":_vm.menuItems,"logo":"/src/assets/logo.svg"},on:{"itemClick":function($event){return _vm.openWorkspace($event)}}})]},proxy:true}])},[_vm._v(" "),_vm._v(" "),_c('div',{staticClass:"vc-flex vc-flex-grow_1"},_vm._l((_vm.openedBlades),function(blade){return _c(blade.component,_vm._b({key:blade.id,tag:"component",on:{"navigate":function($event){return _vm.openBlade($event.component, $event.componentOptions)}}},'component',blade.componentOptions,false))}),1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);

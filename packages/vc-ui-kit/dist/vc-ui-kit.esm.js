@@ -1382,6 +1382,26 @@ const __vue_component__ = /*#__PURE__*/normalizeComponent({
   staticRenderFns: __vue_staticRenderFns__
 }, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);
 
+/* eslint-disable import/prefer-default-export */
+
+var components = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  VcBlade: __vue_component__$a,
+  VcBreadcrumbs: __vue_component__$b,
+  VcButton: __vue_component__$9,
+  VcCheckbox: __vue_component__$8,
+  VcContainer: __vue_component__$7,
+  VcDrawerItem: __vue_component__$6,
+  VcDrawerToggler: __vue_component__$5,
+  VcDrawer: __vue_component__$4,
+  VcIcon: __vue_component__$d,
+  VcInput: __vue_component__$c,
+  VcLayout: __vue_component__$2,
+  VcLink: __vue_component__$1,
+  VcSpacer: __vue_component__$3,
+  VcTable: __vue_component__
+});
+
 var toString = function (x) { return Object.prototype.toString.call(x); };
 function isNative(Ctor) {
     return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
@@ -2301,6 +2321,13 @@ function closeBlade(name) {
   }
 }
 /**
+ * Close all blades.
+ */
+
+function closeBlades() {
+  opened.value.splice(0);
+}
+/**
  * Save drawer items into local storage.
  */
 
@@ -2342,35 +2369,20 @@ function getDrawer() {
   return computed(() => drawer.value);
 }
 
-/* eslint-disable import/prefer-default-export */
-
-var components = /*#__PURE__*/Object.freeze({
+var router = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  VcBlade: __vue_component__$a,
-  VcBreadcrumbs: __vue_component__$b,
-  VcButton: __vue_component__$9,
-  VcCheckbox: __vue_component__$8,
-  VcContainer: __vue_component__$7,
-  VcDrawerItem: __vue_component__$6,
-  VcDrawerToggler: __vue_component__$5,
-  VcDrawer: __vue_component__$4,
-  VcIcon: __vue_component__$d,
-  VcInput: __vue_component__$c,
-  VcLayout: __vue_component__$2,
-  VcLink: __vue_component__$1,
-  VcSpacer: __vue_component__$3,
-  VcTable: __vue_component__,
-  openBlade: openBlade,
+  opened: opened,
   registerBlade: registerBlade,
-  openedBlades: openedBlades,
-  addDrawerItem: addDrawerItem,
-  closeBlade: closeBlade,
-  getDrawer: getDrawer,
   listBlades: listBlades,
-  loadDrawer: loadDrawer,
-  removeDrawerItem: removeDrawerItem,
+  openedBlades: openedBlades,
+  openBlade: openBlade,
+  closeBlade: closeBlade,
+  closeBlades: closeBlades,
   saveDrawer: saveDrawer,
-  opened: opened
+  loadDrawer: loadDrawer,
+  addDrawerItem: addDrawerItem,
+  removeDrawerItem: removeDrawerItem,
+  getDrawer: getDrawer
 });
 
 // Import vue components
@@ -2382,4 +2394,4 @@ const install = function installVcUiKit(Vue) {
 }; // Create module definition for Vue.use()
 
 export default install;
-export { __vue_component__$a as VcBlade, __vue_component__$b as VcBreadcrumbs, __vue_component__$9 as VcButton, __vue_component__$8 as VcCheckbox, __vue_component__$7 as VcContainer, __vue_component__$4 as VcDrawer, __vue_component__$6 as VcDrawerItem, __vue_component__$5 as VcDrawerToggler, __vue_component__$d as VcIcon, __vue_component__$c as VcInput, __vue_component__$2 as VcLayout, __vue_component__$1 as VcLink, __vue_component__$3 as VcSpacer, __vue_component__ as VcTable, addDrawerItem, closeBlade, getDrawer, listBlades, loadDrawer, openBlade, opened, openedBlades, registerBlade, removeDrawerItem, saveDrawer };
+export { __vue_component__$a as VcBlade, __vue_component__$b as VcBreadcrumbs, __vue_component__$9 as VcButton, __vue_component__$8 as VcCheckbox, __vue_component__$7 as VcContainer, __vue_component__$4 as VcDrawer, __vue_component__$6 as VcDrawerItem, __vue_component__$5 as VcDrawerToggler, __vue_component__$d as VcIcon, __vue_component__$c as VcInput, __vue_component__$2 as VcLayout, __vue_component__$1 as VcLink, __vue_component__$3 as VcSpacer, __vue_component__ as VcTable, router };

@@ -50,6 +50,13 @@ export function closeBlade(name) {
 }
 
 /**
+ * Close all blades.
+ */
+export function closeBlades() {
+  opened.value.splice(0);
+}
+
+/**
  * Save drawer items into local storage.
  */
 export function saveDrawer() {

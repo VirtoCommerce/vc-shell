@@ -1114,7 +1114,7 @@ var __vue_is_functional_template__ = false;
 var __vue_component__ = /*#__PURE__*/normalizeComponent({
   render: __vue_render__,
   staticRenderFns: __vue_staticRenderFns__
-}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);var toString = function (x) { return Object.prototype.toString.call(x); };
+}, __vue_inject_styles__, __vue_script__, __vue_scope_id__, __vue_is_functional_template__, __vue_module_identifier__, false, undefined, undefined, undefined);/* eslint-disable import/prefer-default-export */var components$1=/*#__PURE__*/Object.freeze({__proto__:null,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__});var toString = function (x) { return Object.prototype.toString.call(x); };
 function isNative(Ctor) {
     return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
 }
@@ -2037,6 +2037,13 @@ function closeBlade(name) {
   }
 }
 /**
+ * Close all blades.
+ */
+
+function closeBlades() {
+  opened.value.splice(0);
+}
+/**
  * Save drawer items into local storage.
  */
 
@@ -2078,7 +2085,7 @@ function getDrawer() {
   return computed(function () {
     return drawer.value;
   });
-}/* eslint-disable import/prefer-default-export */var components$1=/*#__PURE__*/Object.freeze({__proto__:null,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__,openBlade: openBlade,registerBlade: registerBlade,openedBlades: openedBlades,addDrawerItem: addDrawerItem,closeBlade: closeBlade,getDrawer: getDrawer,listBlades: listBlades,loadDrawer: loadDrawer,removeDrawerItem: removeDrawerItem,saveDrawer: saveDrawer,opened: opened});var install = function installVcUiKit(Vue) {
+}var router=/*#__PURE__*/Object.freeze({__proto__:null,opened: opened,registerBlade: registerBlade,listBlades: listBlades,openedBlades: openedBlades,openBlade: openBlade,closeBlade: closeBlade,closeBlades: closeBlades,saveDrawer: saveDrawer,loadDrawer: loadDrawer,addDrawerItem: addDrawerItem,removeDrawerItem: removeDrawerItem,getDrawer: getDrawer});var install = function installVcUiKit(Vue) {
   Object.entries(components$1).forEach(function (_ref) {
     var _ref2 = _slicedToArray(_ref, 2),
         componentName = _ref2[0],
@@ -2087,7 +2094,7 @@ function getDrawer() {
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
-var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__,openBlade: openBlade,registerBlade: registerBlade,openedBlades: openedBlades,addDrawerItem: addDrawerItem,closeBlade: closeBlade,getDrawer: getDrawer,listBlades: listBlades,loadDrawer: loadDrawer,removeDrawerItem: removeDrawerItem,saveDrawer: saveDrawer,opened: opened});// only expose one global var, with component exports exposed as properties of
+var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,router: router,VcBlade: __vue_component__$a,VcBreadcrumbs: __vue_component__$b,VcButton: __vue_component__$9,VcCheckbox: __vue_component__$8,VcContainer: __vue_component__$7,VcDrawerItem: __vue_component__$6,VcDrawerToggler: __vue_component__$5,VcDrawer: __vue_component__$4,VcIcon: __vue_component__$d,VcInput: __vue_component__$c,VcLayout: __vue_component__$2,VcLink: __vue_component__$1,VcSpacer: __vue_component__$3,VcTable: __vue_component__});// only expose one global var, with component exports exposed as properties of
 // that global var (eg. plugin.component)
 
 Object.entries(components).forEach(function (_ref) {

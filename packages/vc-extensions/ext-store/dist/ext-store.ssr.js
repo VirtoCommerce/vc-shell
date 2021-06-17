@@ -1640,20 +1640,7 @@ ref$1([]);
 ref$1([]);
 /** All opened blades */
 
-var opened = ref$1([]);
-/**
- * Open blade by name.
- */
-
-
-function openBlade(component, componentOptions) {
-  opened.value.push({
-    id: Math.random(),
-    component: component,
-    componentOptions: componentOptions
-  });
-  console.log("Opened blades: ", opened.value);
-}var toString = function (x) { return Object.prototype.toString.call(x); };
+ref$1([]);var toString = function (x) { return Object.prototype.toString.call(x); };
 function isNative(Ctor) {
     return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
 }
@@ -2618,6 +2605,7 @@ var script = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
+  props: ["icon", "title", "subtitle", "width", "closable"],
   setup: function setup() {
     var toolbarItems = ref([{
       id: 1,
@@ -2656,7 +2644,10 @@ var script = defineComponent({
       headers: headers,
       items: items,
       openDetails: function openDetails(options) {
-        openBlade(__vue_component__$1, options);
+        this.$emit("navigate", {
+          component: __vue_component__$1,
+          componentOptions: options
+        });
       }
     };
   }
@@ -2671,7 +2662,7 @@ var __vue_render__ = function __vue_render__() {
 
   var _c = _vm._self._c || _h;
 
-  return _c('vc-blade', {
+  return _c('vc-blade', _vm._b({
     attrs: {
       "icon": "archive",
       "title": "Stores",
@@ -2681,7 +2672,7 @@ var __vue_render__ = function __vue_render__() {
       "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
-  }, [_c('vc-table', {
+  }, 'vc-blade', _vm.$props, false), [_c('vc-table', {
     attrs: {
       "headers": _vm.headers.value,
       "items": _vm.items.value,
@@ -2742,7 +2733,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-667b1d6e";
+var __vue_module_identifier__ = "data-v-73f71230";
 /* functional template */
 
 var __vue_is_functional_template__ = false;

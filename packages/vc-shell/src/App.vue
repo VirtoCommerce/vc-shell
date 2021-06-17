@@ -11,7 +11,7 @@
       <vc-drawer
         :items="menuItems"
         logo="/src/assets/logo.svg"
-        @itemClick="openBlade($event.component, $event.componentOptions)"
+        @itemClick="openWorkspace($event)"
       ></vc-drawer>
     </template>
 
@@ -21,19 +21,14 @@
         :key="blade.id"
         :is="blade.component"
         v-bind="blade.componentOptions"
+        @navigate="openBlade($event.component, $event.componentOptions)"
       ></component>
     </div>
   </vc-layout>
 </template>
 
 <script>
-  import {
-    VcLayout,
-    VcButton,
-    VcDrawer,
-    openBlade,
-    opened,
-  } from "@virtocommerce/vc-ui-kit";
+  import { VcLayout, VcButton, VcDrawer, router } from "@virtocommerce/vc-ui-kit";
   import { defineComponent, ref } from "@vue/composition-api";
   import { StoreListBlade } from "@virtocommerce/ext-store";
   import { CatalogBlade } from "@virtocommerce/ext-product-catalog";
@@ -43,12 +38,13 @@
     components: { VcLayout, VcButton, VcDrawer },
 
     setup() {
+      const route = window.location.pathname;
       const menuItems = ref([
         {
           id: 1,
           title: "Catalog",
           icon: "folder",
-          to: "/catalog",
+          href: "/catalog",
           component: CatalogBlade,
           componentOptions: {},
         },
@@ -56,7 +52,7 @@
           id: 2,
           title: "Assets",
           icon: "image",
-          to: "/assets",
+          href: "/assets",
           component: AssetsBlade,
           componentOptions: {},
         },
@@ -64,7 +60,7 @@
           id: 3,
           title: "Stores",
           icon: "archive",
-          to: "/stores",
+          href: "/stores",
           component: StoreListBlade,
           componentOptions: {},
         },
@@ -99,8 +95,13 @@
         menuItems,
         toolbarItems,
         account,
-        openedBlades: opened.value,
-        openBlade,
+        openedBlades: router.opened.value,
+        openBlade: router.openBlade,
+        openWorkspace(data) {
+          router.closeBlades();
+          router.openBlade(data.component, data.componentOptions);
+          history.pushState({}, data.title, data.href);
+        },
       };
     },
   });

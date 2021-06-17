@@ -1573,20 +1573,7 @@ ref$1([]);
 ref$1([]);
 /** All opened blades */
 
-const opened = ref$1([]);
-/**
- * Open blade by name.
- */
-
-
-function openBlade(component, componentOptions) {
-  opened.value.push({
-    id: Math.random(),
-    component,
-    componentOptions
-  });
-  console.log("Opened blades: ", opened.value);
-}
+ref$1([]);
 
 var toString = function (x) { return Object.prototype.toString.call(x); };
 function isNative(Ctor) {
@@ -2563,6 +2550,7 @@ var script = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
+  props: ["icon", "title", "subtitle", "width", "closable"],
 
   setup() {
     const toolbarItems = ref([{
@@ -2603,7 +2591,10 @@ var script = defineComponent({
       items,
 
       openDetails(options) {
-        openBlade(__vue_component__$1, options);
+        this.$emit("navigate", {
+          component: __vue_component__$1,
+          componentOptions: options
+        });
       }
 
     };
@@ -2622,7 +2613,7 @@ var __vue_render__ = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('vc-blade', {
+  return _c('vc-blade', _vm._b({
     attrs: {
       "icon": "archive",
       "title": "Stores",
@@ -2632,7 +2623,7 @@ var __vue_render__ = function () {
       "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
-  }, [_c('vc-table', {
+  }, 'vc-blade', _vm.$props, false), [_c('vc-table', {
     attrs: {
       "headers": _vm.headers.value,
       "items": _vm.items.value,

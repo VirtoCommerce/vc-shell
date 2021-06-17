@@ -17,13 +17,16 @@ The R&D project originated to create a replacement of the current vc-platform ma
 ## Getting started
 
 ```bash
+# install lerna globally
+$ npm install -g lerna
+
 # install and relocate dependencies
 $ lerna bootstrap
 
 # rebuild packages (optional) or prepare release
 $ lerna run build
 
-# serve with hot reload at localhost:8080
-$ npm run dev
+# serve shell with hot reload at localhost:8080
+$ cd packages/vc-shell && npm run dev
 
 ```

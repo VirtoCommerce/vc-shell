@@ -1,8 +1,8 @@
 <template>
   <vc-blade
-    icon="cloud"
-    title="B2B-mixed (virtual)"
-    width="600"
+    :icon="icon"
+    :title="title"
+    :width="width"
     :toolbarItems="toolbarItems.value"
     :breadcrumbs="breadcrumbs.value"
     :searchable="true"
@@ -36,6 +36,20 @@
 
   export default defineComponent({
     components: { VcBlade, VcTable, VcIcon },
+    props: {
+      icon: {
+        type: String,
+        default: "cloud",
+      },
+      title: {
+        type: String,
+        default: "Unnamed",
+      },
+      width: {
+        type: String,
+        default: "600",
+      },
+    },
 
     setup() {
       const toolbarItems = ref([

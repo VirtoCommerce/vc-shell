@@ -2249,6 +2249,12 @@ const install = function installExtAssetsManagement(Vue) {
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
+const routes = {
+  extAssets: {
+    url: '/assets',
+    component: __vue_component__
+  }
+};
 
 export default install;
-export { __vue_component__ as AssetsBlade };
+export { __vue_component__ as AssetsBlade, routes };

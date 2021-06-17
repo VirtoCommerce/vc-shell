@@ -1,13 +1,12 @@
 <template>
   <vc-blade
-    icon="archive"
-    title="Stores"
-    subtitle="Manage stores"
-    width="400"
+    :icon="icon"
+    :title="title"
+    :subtitle="subtitle"
+    :width="width"
     :closable="false"
     :toolbarItems="toolbarItems.value"
     :searchable="true"
-    v-bind="$props"
   >
     <vc-table
       :headers="headers.value"
@@ -19,7 +18,7 @@
         <vc-icon icon="ellipsis-v" style="color: #43b0e6"></vc-icon>
       </template>
 
-      <template v-slot:item_name="itemData">
+      <template v-slot:item_title="itemData">
         <div class="vc-flex vc-flex vc-flex-align_center vc-fill_width">
           <vc-icon
             :icon="itemData.item.icon"
@@ -34,7 +33,7 @@
               vc-margin-horizontal_m
             "
           >
-            {{ itemData.item.name }}
+            {{ itemData.item.title }}
           </div>
           <vc-icon icon="chevron-right" style="color: #a5a5a5"></vc-icon>
         </div>
@@ -45,12 +44,28 @@
 
 <script>
   import { VcBlade, VcTable, VcIcon } from "@virtocommerce/vc-ui-kit";
-  import DetailsBlade from "./StoreDetails.vue";
   import { defineComponent, ref } from "@vue/composition-api";
 
   export default defineComponent({
     components: { VcBlade, VcTable, VcIcon },
-    props: ["icon", "title", "subtitle", "width", "closable"],
+    props: {
+      icon: {
+        type: String,
+        default: "archive",
+      },
+      title: {
+        type: String,
+        default: "Stores",
+      },
+      subtitle: {
+        type: String,
+        default: "Manage stores",
+      },
+      width: {
+        type: String,
+        default: "400",
+      },
+    },
 
     setup() {
       const toolbarItems = ref([
@@ -66,7 +81,7 @@
           class: "vc-table__body-cell_bordered",
         },
         {
-          id: "name",
+          id: "title",
           title: "Name",
           sortable: true,
         },
@@ -76,17 +91,17 @@
         {
           id: 1,
           icon: "cloud",
-          name: "B2B-mixed (virtual)",
+          title: "B2B-mixed (virtual)",
         },
         {
           id: 2,
           icon: "folder",
-          name: "Clothing",
+          title: "Clothing",
         },
         {
           id: 3,
           icon: "folder",
-          name: "Desktops",
+          title: "Desktops",
         },
       ]);
 
@@ -97,7 +112,7 @@
 
         openDetails(options) {
           this.$emit("navigate", {
-            component: DetailsBlade,
+            routeName: "extStoreDetails",
             componentOptions: options,
           });
         },

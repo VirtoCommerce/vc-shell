@@ -2628,7 +2628,12 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
-var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,CatalogBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
+var routes = {
+  extCatalog: {
+    url: '/catalog',
+    component: __vue_component__
+  }
+};var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,routes: routes,CatalogBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
 // that global var (eg. plugin.component)
 
 Object.entries(components).forEach(function (_ref) {

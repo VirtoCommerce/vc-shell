@@ -2354,6 +2354,20 @@ var script$1 = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
+  props: {
+    icon: {
+      type: String,
+      default: "cloud"
+    },
+    title: {
+      type: String,
+      default: "Unnamed"
+    },
+    width: {
+      type: String,
+      default: "600"
+    }
+  },
   setup: function setup() {
     var toolbarItems = ref([{
       id: 1,
@@ -2519,9 +2533,9 @@ var __vue_render__$1 = function __vue_render__() {
 
   return _c('vc-blade', {
     attrs: {
-      "icon": "cloud",
-      "title": "B2B-mixed (virtual)",
-      "width": "600",
+      "icon": _vm.icon,
+      "title": _vm.title,
+      "width": _vm.width,
       "toolbarItems": _vm.toolbarItems.value,
       "breadcrumbs": _vm.breadcrumbs.value,
       "searchable": true,
@@ -2585,7 +2599,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-6402f7cd";
+var __vue_module_identifier__$1 = "data-v-7bfdafef";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;
@@ -2605,7 +2619,24 @@ var script = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
-  props: ["icon", "title", "subtitle", "width", "closable"],
+  props: {
+    icon: {
+      type: String,
+      default: "archive"
+    },
+    title: {
+      type: String,
+      default: "Stores"
+    },
+    subtitle: {
+      type: String,
+      default: "Manage stores"
+    },
+    width: {
+      type: String,
+      default: "400"
+    }
+  },
   setup: function setup() {
     var toolbarItems = ref([{
       id: 1,
@@ -2622,22 +2653,22 @@ var script = defineComponent({
       width: 30,
       class: "vc-table__body-cell_bordered"
     }, {
-      id: "name",
+      id: "title",
       title: "Name",
       sortable: true
     }]);
     var items = ref([{
       id: 1,
       icon: "cloud",
-      name: "B2B-mixed (virtual)"
+      title: "B2B-mixed (virtual)"
     }, {
       id: 2,
       icon: "folder",
-      name: "Clothing"
+      title: "Clothing"
     }, {
       id: 3,
       icon: "folder",
-      name: "Desktops"
+      title: "Desktops"
     }]);
     return {
       toolbarItems: toolbarItems,
@@ -2645,7 +2676,7 @@ var script = defineComponent({
       items: items,
       openDetails: function openDetails(options) {
         this.$emit("navigate", {
-          component: __vue_component__$1,
+          routeName: "extStoreDetails",
           componentOptions: options
         });
       }
@@ -2662,17 +2693,17 @@ var __vue_render__ = function __vue_render__() {
 
   var _c = _vm._self._c || _h;
 
-  return _c('vc-blade', _vm._b({
+  return _c('vc-blade', {
     attrs: {
-      "icon": "archive",
-      "title": "Stores",
-      "subtitle": "Manage stores",
-      "width": "400",
+      "icon": _vm.icon,
+      "title": _vm.title,
+      "subtitle": _vm.subtitle,
+      "width": _vm.width,
       "closable": false,
       "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
-  }, 'vc-blade', _vm.$props, false), [_c('vc-table', {
+  }, [_c('vc-table', {
     attrs: {
       "headers": _vm.headers.value,
       "items": _vm.items.value,
@@ -2697,7 +2728,7 @@ var __vue_render__ = function __vue_render__() {
       },
       proxy: true
     }, {
-      key: "item_name",
+      key: "item_title",
       fn: function fn(itemData) {
         return [_c('div', {
           staticClass: "vc-flex vc-flex vc-flex-align_center vc-fill_width"
@@ -2711,7 +2742,7 @@ var __vue_render__ = function __vue_render__() {
           }
         }), _vm._v(" "), _c('div', {
           staticClass: "\n            vc-font-size_m\n            vc-font-weight_bold\n            vc-flex-grow_1\n            vc-margin-horizontal_m\n          "
-        }, [_vm._v("\n          " + _vm._s(itemData.item.name) + "\n        ")]), _vm._v(" "), _c('vc-icon', {
+        }, [_vm._v("\n          " + _vm._s(itemData.item.title) + "\n        ")]), _vm._v(" "), _c('vc-icon', {
           staticStyle: {
             "color": "#a5a5a5"
           },
@@ -2733,7 +2764,7 @@ var __vue_inject_styles__ = undefined;
 var __vue_scope_id__ = undefined;
 /* module identifier */
 
-var __vue_module_identifier__ = "data-v-73f71230";
+var __vue_module_identifier__ = "data-v-0ac3a138";
 /* functional template */
 
 var __vue_is_functional_template__ = false;
@@ -2755,7 +2786,16 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
-var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,StoreDetailsBlade: __vue_component__$1,StoreListBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
+var routes = {
+  extStoreList: {
+    url: '/store',
+    component: __vue_component__
+  },
+  extStoreDetails: {
+    url: '/store/:id',
+    component: __vue_component__$1
+  }
+};var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,routes: routes,StoreDetailsBlade: __vue_component__$1,StoreListBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
 // that global var (eg. plugin.component)
 
 Object.entries(components).forEach(function (_ref) {

@@ -2299,7 +2299,12 @@ var __vue_component__ = /*#__PURE__*/normalizeComponent({
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
-var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,AssetsBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
+var routes = {
+  extAssets: {
+    url: '/assets',
+    component: __vue_component__
+  }
+};var components=/*#__PURE__*/Object.freeze({__proto__:null,'default': install,routes: routes,AssetsBlade: __vue_component__});// only expose one global var, with component exports exposed as properties of
 // that global var (eg. plugin.component)
 
 Object.entries(components).forEach(function (_ref) {

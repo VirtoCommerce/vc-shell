@@ -2291,6 +2291,20 @@ var script$1 = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
+  props: {
+    icon: {
+      type: String,
+      default: "cloud"
+    },
+    title: {
+      type: String,
+      default: "Unnamed"
+    },
+    width: {
+      type: String,
+      default: "600"
+    }
+  },
 
   setup() {
     const toolbarItems = ref([{
@@ -2462,9 +2476,9 @@ var __vue_render__$1 = function () {
 
   return _c('vc-blade', {
     attrs: {
-      "icon": "cloud",
-      "title": "B2B-mixed (virtual)",
-      "width": "600",
+      "icon": _vm.icon,
+      "title": _vm.title,
+      "width": _vm.width,
       "toolbarItems": _vm.toolbarItems.value,
       "breadcrumbs": _vm.breadcrumbs.value,
       "searchable": true,
@@ -2550,7 +2564,24 @@ var script = defineComponent({
     VcTable: __vue_component__$2,
     VcIcon: __vue_component__$d
   },
-  props: ["icon", "title", "subtitle", "width", "closable"],
+  props: {
+    icon: {
+      type: String,
+      default: "archive"
+    },
+    title: {
+      type: String,
+      default: "Stores"
+    },
+    subtitle: {
+      type: String,
+      default: "Manage stores"
+    },
+    width: {
+      type: String,
+      default: "400"
+    }
+  },
 
   setup() {
     const toolbarItems = ref([{
@@ -2568,22 +2599,22 @@ var script = defineComponent({
       width: 30,
       class: "vc-table__body-cell_bordered"
     }, {
-      id: "name",
+      id: "title",
       title: "Name",
       sortable: true
     }]);
     const items = ref([{
       id: 1,
       icon: "cloud",
-      name: "B2B-mixed (virtual)"
+      title: "B2B-mixed (virtual)"
     }, {
       id: 2,
       icon: "folder",
-      name: "Clothing"
+      title: "Clothing"
     }, {
       id: 3,
       icon: "folder",
-      name: "Desktops"
+      title: "Desktops"
     }]);
     return {
       toolbarItems,
@@ -2592,7 +2623,7 @@ var script = defineComponent({
 
       openDetails(options) {
         this.$emit("navigate", {
-          component: __vue_component__$1,
+          routeName: "extStoreDetails",
           componentOptions: options
         });
       }
@@ -2613,17 +2644,17 @@ var __vue_render__ = function () {
 
   var _c = _vm._self._c || _h;
 
-  return _c('vc-blade', _vm._b({
+  return _c('vc-blade', {
     attrs: {
-      "icon": "archive",
-      "title": "Stores",
-      "subtitle": "Manage stores",
-      "width": "400",
+      "icon": _vm.icon,
+      "title": _vm.title,
+      "subtitle": _vm.subtitle,
+      "width": _vm.width,
       "closable": false,
       "toolbarItems": _vm.toolbarItems.value,
       "searchable": true
     }
-  }, 'vc-blade', _vm.$props, false), [_c('vc-table', {
+  }, [_c('vc-table', {
     attrs: {
       "headers": _vm.headers.value,
       "items": _vm.items.value,
@@ -2648,7 +2679,7 @@ var __vue_render__ = function () {
       },
       proxy: true
     }, {
-      key: "item_name",
+      key: "item_title",
       fn: function (itemData) {
         return [_c('div', {
           staticClass: "vc-flex vc-flex vc-flex-align_center vc-fill_width"
@@ -2662,7 +2693,7 @@ var __vue_render__ = function () {
           }
         }), _vm._v(" "), _c('div', {
           staticClass: "\n            vc-font-size_m\n            vc-font-weight_bold\n            vc-flex-grow_1\n            vc-margin-horizontal_m\n          "
-        }, [_vm._v("\n          " + _vm._s(itemData.item.name) + "\n        ")]), _vm._v(" "), _c('vc-icon', {
+        }, [_vm._v("\n          " + _vm._s(itemData.item.title) + "\n        ")]), _vm._v(" "), _c('vc-icon', {
           staticStyle: {
             "color": "#a5a5a5"
           },
@@ -2714,6 +2745,16 @@ const install = function installExtStore(Vue) {
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
+const routes = {
+  extStoreList: {
+    url: '/store',
+    component: __vue_component__
+  },
+  extStoreDetails: {
+    url: '/store/:id',
+    component: __vue_component__$1
+  }
+};
 
 export default install;
-export { __vue_component__$1 as StoreDetailsBlade, __vue_component__ as StoreListBlade };
+export { __vue_component__$1 as StoreDetailsBlade, __vue_component__ as StoreListBlade, routes };

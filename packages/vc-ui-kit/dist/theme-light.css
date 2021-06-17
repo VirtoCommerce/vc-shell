@@ -5584,3 +5584,687 @@
   --icon-size-xl: 22px;
   --icon-size-xxl: 30px;
 }
+/**
+ * Light theme
+ */
+/**
+ * Light theme
+ */
+.vc-theme_light {
+  /* Colors */
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
+  /* Font Settings */
+  --font-size-xs: 11px;
+  --font-size-s: 12px;
+  --font-size-m: 13px;
+  --font-size-l: 14px;
+  --font-size-xl: 16px;
+  --font-size-header: 23px;
+  --line-height-xs: 14px;
+  --line-height-s: 16px;
+  --line-height-m: 18px;
+  --line-height-l: 19px;
+  --line-height-xl: 22px;
+  --line-height-header: 28px;
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+  /* Spacing */
+  --padding-xs: 4px;
+  --padding-s: 8px;
+  --padding-m: 12px;
+  --padding-l: 16px;
+  --padding-xl: 20px;
+  --margin-xs: 4px;
+  --margin-s: 8px;
+  --margin-m: 12px;
+  --margin-l: 16px;
+  --margin-xl: 20px;
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+  /* Blade variables */
+  --vc-blade-border-color: #e7ebf1;
+  --vc-blade-topbar-height: 30px;
+  --vc-blade-topbar-background-color: #34414f;
+  --vc-blade-topbar-button-color: #ffffff;
+  --vc-blade-topbar-button-disabled-color: #727c87;
+  --vc-blade-header-height: 48px;
+  --vc-blade-header-background-color: #465769;
+  --vc-blade-header-icon-color: #ffffff;
+  --vc-blade-header-title-color: #ffffff;
+  --vc-blade-header-subtitle-color: #bbbbbb;
+  --vc-blade-toolbar-height: 48px;
+  --vc-blade-toolbar-background-color: #465769;
+  --vc-blade-toolbar-item-color: #ffffff;
+  --vc-blade-toolbar-item-hover-background-color: #2e3d4e;
+  --vc-blade-toolbar-item-disabled-color: #727c87;
+  /* Button variables */
+  --vc-button-primary-color: #43b0e6;
+  --vc-button-primary-color-hover: #319ed4;
+  --vc-button-special-color: #f89406;
+  --vc-button-special-color-hover: #eb8b03;
+  --vc-button-height: 28px;
+  --vc-button-small-height: 22px;
+  /* Drawer variables */
+  --drawer-width: 240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-background-color: var(--background-color);
+  --drawer-top-height: var(--app-bar-height);
+  --drawer-top-background-color: var(--app-bar-background-color);
+  --drawer-top-border-right-color: #2e3d4e;
+  --drawer-border-right-color: #e7ebf1;
+  --drawer-top-image-height: 30px;
+  --drawer-top-version-color: #838d9a;
+  --drawer-item-height: 40px;
+  --drawer-item-icon-width: 20px;
+  --drawer-item-icon-color: #000000;
+  --drawer-item-handler-width: 20px;
+  --drawer-item-background-color: var(--drawer-background-color);
+  --drawer-item-background-color-hover: #eff7fc;
+  --drawer-item-border-bottom-color: #e7ebf1;
+  --drawer-item-title-font-weight: var(--font-weight-medium);
+  --drawer-item-title-font-size: var(--font-size-l);
+  --drawer-item-title-padding-right: 5px;
+  --drawer-item-title-padding-left: 9px;
+  --drawer-item-title-color: #161d25;
+  --drawer-item-handler-color: #bdd1df;
+  /* Icon variables */
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}
+/**
+ * Light theme
+ */
+/**
+ * Light theme
+ */
+.vc-theme_light {
+  /* Colors */
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
+  /* Font Settings */
+  --font-size-xs: 11px;
+  --font-size-s: 12px;
+  --font-size-m: 13px;
+  --font-size-l: 14px;
+  --font-size-xl: 16px;
+  --font-size-header: 23px;
+  --line-height-xs: 14px;
+  --line-height-s: 16px;
+  --line-height-m: 18px;
+  --line-height-l: 19px;
+  --line-height-xl: 22px;
+  --line-height-header: 28px;
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+  /* Spacing */
+  --padding-xs: 4px;
+  --padding-s: 8px;
+  --padding-m: 12px;
+  --padding-l: 16px;
+  --padding-xl: 20px;
+  --margin-xs: 4px;
+  --margin-s: 8px;
+  --margin-m: 12px;
+  --margin-l: 16px;
+  --margin-xl: 20px;
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+  /* Blade variables */
+  --vc-blade-border-color: #e7ebf1;
+  --vc-blade-topbar-height: 30px;
+  --vc-blade-topbar-background-color: #34414f;
+  --vc-blade-topbar-button-color: #ffffff;
+  --vc-blade-topbar-button-disabled-color: #727c87;
+  --vc-blade-header-height: 48px;
+  --vc-blade-header-background-color: #465769;
+  --vc-blade-header-icon-color: #ffffff;
+  --vc-blade-header-title-color: #ffffff;
+  --vc-blade-header-subtitle-color: #bbbbbb;
+  --vc-blade-toolbar-height: 48px;
+  --vc-blade-toolbar-background-color: #465769;
+  --vc-blade-toolbar-item-color: #ffffff;
+  --vc-blade-toolbar-item-hover-background-color: #2e3d4e;
+  --vc-blade-toolbar-item-disabled-color: #727c87;
+  /* Button variables */
+  --vc-button-primary-color: #43b0e6;
+  --vc-button-primary-color-hover: #319ed4;
+  --vc-button-special-color: #f89406;
+  --vc-button-special-color-hover: #eb8b03;
+  --vc-button-height: 28px;
+  --vc-button-small-height: 22px;
+  /* Drawer variables */
+  --drawer-width: 240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-background-color: var(--background-color);
+  --drawer-top-height: var(--app-bar-height);
+  --drawer-top-background-color: var(--app-bar-background-color);
+  --drawer-top-border-right-color: #2e3d4e;
+  --drawer-border-right-color: #e7ebf1;
+  --drawer-top-image-height: 30px;
+  --drawer-top-version-color: #838d9a;
+  --drawer-item-height: 40px;
+  --drawer-item-icon-width: 20px;
+  --drawer-item-icon-color: #000000;
+  --drawer-item-handler-width: 20px;
+  --drawer-item-background-color: var(--drawer-background-color);
+  --drawer-item-background-color-hover: #eff7fc;
+  --drawer-item-border-bottom-color: #e7ebf1;
+  --drawer-item-title-font-weight: var(--font-weight-medium);
+  --drawer-item-title-font-size: var(--font-size-l);
+  --drawer-item-title-padding-right: 5px;
+  --drawer-item-title-padding-left: 9px;
+  --drawer-item-title-color: #161d25;
+  --drawer-item-handler-color: #bdd1df;
+  /* Icon variables */
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}
+/**
+ * Light theme
+ */
+/**
+ * Light theme
+ */
+.vc-theme_light {
+  /* Colors */
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
+  /* Font Settings */
+  --font-size-xs: 11px;
+  --font-size-s: 12px;
+  --font-size-m: 13px;
+  --font-size-l: 14px;
+  --font-size-xl: 16px;
+  --font-size-header: 23px;
+  --line-height-xs: 14px;
+  --line-height-s: 16px;
+  --line-height-m: 18px;
+  --line-height-l: 19px;
+  --line-height-xl: 22px;
+  --line-height-header: 28px;
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+  /* Spacing */
+  --padding-xs: 4px;
+  --padding-s: 8px;
+  --padding-m: 12px;
+  --padding-l: 16px;
+  --padding-xl: 20px;
+  --margin-xs: 4px;
+  --margin-s: 8px;
+  --margin-m: 12px;
+  --margin-l: 16px;
+  --margin-xl: 20px;
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+  /* Blade variables */
+  --vc-blade-border-color: #e7ebf1;
+  --vc-blade-topbar-height: 30px;
+  --vc-blade-topbar-background-color: #34414f;
+  --vc-blade-topbar-button-color: #ffffff;
+  --vc-blade-topbar-button-disabled-color: #727c87;
+  --vc-blade-header-height: 48px;
+  --vc-blade-header-background-color: #465769;
+  --vc-blade-header-icon-color: #ffffff;
+  --vc-blade-header-title-color: #ffffff;
+  --vc-blade-header-subtitle-color: #bbbbbb;
+  --vc-blade-toolbar-height: 48px;
+  --vc-blade-toolbar-background-color: #465769;
+  --vc-blade-toolbar-item-color: #ffffff;
+  --vc-blade-toolbar-item-hover-background-color: #2e3d4e;
+  --vc-blade-toolbar-item-disabled-color: #727c87;
+  /* Button variables */
+  --vc-button-primary-color: #43b0e6;
+  --vc-button-primary-color-hover: #319ed4;
+  --vc-button-special-color: #f89406;
+  --vc-button-special-color-hover: #eb8b03;
+  --vc-button-height: 28px;
+  --vc-button-small-height: 22px;
+  /* Drawer variables */
+  --drawer-width: 240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-background-color: var(--background-color);
+  --drawer-top-height: var(--app-bar-height);
+  --drawer-top-background-color: var(--app-bar-background-color);
+  --drawer-top-border-right-color: #2e3d4e;
+  --drawer-border-right-color: #e7ebf1;
+  --drawer-top-image-height: 30px;
+  --drawer-top-version-color: #838d9a;
+  --drawer-item-height: 40px;
+  --drawer-item-icon-width: 20px;
+  --drawer-item-icon-color: #000000;
+  --drawer-item-handler-width: 20px;
+  --drawer-item-background-color: var(--drawer-background-color);
+  --drawer-item-background-color-hover: #eff7fc;
+  --drawer-item-border-bottom-color: #e7ebf1;
+  --drawer-item-title-font-weight: var(--font-weight-medium);
+  --drawer-item-title-font-size: var(--font-size-l);
+  --drawer-item-title-padding-right: 5px;
+  --drawer-item-title-padding-left: 9px;
+  --drawer-item-title-color: #161d25;
+  --drawer-item-handler-color: #bdd1df;
+  /* Icon variables */
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}
+/**
+ * Light theme
+ */
+/**
+ * Light theme
+ */
+.vc-theme_light {
+  /* Colors */
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
+  /* Font Settings */
+  --font-size-xs: 11px;
+  --font-size-s: 12px;
+  --font-size-m: 13px;
+  --font-size-l: 14px;
+  --font-size-xl: 16px;
+  --font-size-header: 23px;
+  --line-height-xs: 14px;
+  --line-height-s: 16px;
+  --line-height-m: 18px;
+  --line-height-l: 19px;
+  --line-height-xl: 22px;
+  --line-height-header: 28px;
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+  /* Spacing */
+  --padding-xs: 4px;
+  --padding-s: 8px;
+  --padding-m: 12px;
+  --padding-l: 16px;
+  --padding-xl: 20px;
+  --margin-xs: 4px;
+  --margin-s: 8px;
+  --margin-m: 12px;
+  --margin-l: 16px;
+  --margin-xl: 20px;
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+  /* Blade variables */
+  --vc-blade-border-color: #e7ebf1;
+  --vc-blade-topbar-height: 30px;
+  --vc-blade-topbar-background-color: #34414f;
+  --vc-blade-topbar-button-color: #ffffff;
+  --vc-blade-topbar-button-disabled-color: #727c87;
+  --vc-blade-header-height: 48px;
+  --vc-blade-header-background-color: #465769;
+  --vc-blade-header-icon-color: #ffffff;
+  --vc-blade-header-title-color: #ffffff;
+  --vc-blade-header-subtitle-color: #bbbbbb;
+  --vc-blade-toolbar-height: 48px;
+  --vc-blade-toolbar-background-color: #465769;
+  --vc-blade-toolbar-item-color: #ffffff;
+  --vc-blade-toolbar-item-hover-background-color: #2e3d4e;
+  --vc-blade-toolbar-item-disabled-color: #727c87;
+  /* Button variables */
+  --vc-button-primary-color: #43b0e6;
+  --vc-button-primary-color-hover: #319ed4;
+  --vc-button-special-color: #f89406;
+  --vc-button-special-color-hover: #eb8b03;
+  --vc-button-height: 28px;
+  --vc-button-small-height: 22px;
+  /* Drawer variables */
+  --drawer-width: 240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-background-color: var(--background-color);
+  --drawer-top-height: var(--app-bar-height);
+  --drawer-top-background-color: var(--app-bar-background-color);
+  --drawer-top-border-right-color: #2e3d4e;
+  --drawer-border-right-color: #e7ebf1;
+  --drawer-top-image-height: 30px;
+  --drawer-top-version-color: #838d9a;
+  --drawer-item-height: 40px;
+  --drawer-item-icon-width: 20px;
+  --drawer-item-icon-color: #000000;
+  --drawer-item-handler-width: 20px;
+  --drawer-item-background-color: var(--drawer-background-color);
+  --drawer-item-background-color-hover: #eff7fc;
+  --drawer-item-border-bottom-color: #e7ebf1;
+  --drawer-item-title-font-weight: var(--font-weight-medium);
+  --drawer-item-title-font-size: var(--font-size-l);
+  --drawer-item-title-padding-right: 5px;
+  --drawer-item-title-padding-left: 9px;
+  --drawer-item-title-color: #161d25;
+  --drawer-item-handler-color: #bdd1df;
+  /* Icon variables */
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}
+/**
+ * Light theme
+ */
+/**
+ * Light theme
+ */
+.vc-theme_light {
+  /* Colors */
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
+  /* Font Settings */
+  --font-size-xs: 11px;
+  --font-size-s: 12px;
+  --font-size-m: 13px;
+  --font-size-l: 14px;
+  --font-size-xl: 16px;
+  --font-size-header: 23px;
+  --line-height-xs: 14px;
+  --line-height-s: 16px;
+  --line-height-m: 18px;
+  --line-height-l: 19px;
+  --line-height-xl: 22px;
+  --line-height-header: 28px;
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+  /* Spacing */
+  --padding-xs: 4px;
+  --padding-s: 8px;
+  --padding-m: 12px;
+  --padding-l: 16px;
+  --padding-xl: 20px;
+  --margin-xs: 4px;
+  --margin-s: 8px;
+  --margin-m: 12px;
+  --margin-l: 16px;
+  --margin-xl: 20px;
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+  /* Blade variables */
+  --vc-blade-border-color: #e7ebf1;
+  --vc-blade-topbar-height: 30px;
+  --vc-blade-topbar-background-color: #34414f;
+  --vc-blade-topbar-button-color: #ffffff;
+  --vc-blade-topbar-button-disabled-color: #727c87;
+  --vc-blade-header-height: 48px;
+  --vc-blade-header-background-color: #465769;
+  --vc-blade-header-icon-color: #ffffff;
+  --vc-blade-header-title-color: #ffffff;
+  --vc-blade-header-subtitle-color: #bbbbbb;
+  --vc-blade-toolbar-height: 48px;
+  --vc-blade-toolbar-background-color: #465769;
+  --vc-blade-toolbar-item-color: #ffffff;
+  --vc-blade-toolbar-item-hover-background-color: #2e3d4e;
+  --vc-blade-toolbar-item-disabled-color: #727c87;
+  /* Button variables */
+  --vc-button-primary-color: #43b0e6;
+  --vc-button-primary-color-hover: #319ed4;
+  --vc-button-special-color: #f89406;
+  --vc-button-special-color-hover: #eb8b03;
+  --vc-button-height: 28px;
+  --vc-button-small-height: 22px;
+  /* Drawer variables */
+  --drawer-width: 240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-background-color: var(--background-color);
+  --drawer-top-height: var(--app-bar-height);
+  --drawer-top-background-color: var(--app-bar-background-color);
+  --drawer-top-border-right-color: #2e3d4e;
+  --drawer-border-right-color: #e7ebf1;
+  --drawer-top-image-height: 30px;
+  --drawer-top-version-color: #838d9a;
+  --drawer-item-height: 40px;
+  --drawer-item-icon-width: 20px;
+  --drawer-item-icon-color: #000000;
+  --drawer-item-handler-width: 20px;
+  --drawer-item-background-color: var(--drawer-background-color);
+  --drawer-item-background-color-hover: #eff7fc;
+  --drawer-item-border-bottom-color: #e7ebf1;
+  --drawer-item-title-font-weight: var(--font-weight-medium);
+  --drawer-item-title-font-size: var(--font-size-l);
+  --drawer-item-title-padding-right: 5px;
+  --drawer-item-title-padding-left: 9px;
+  --drawer-item-title-color: #161d25;
+  --drawer-item-handler-color: #bdd1df;
+  /* Icon variables */
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}
+/**
+ * Light theme
+ */
+/**
+ * Light theme
+ */
+.vc-theme_light {
+  /* Colors */
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
+  /* Font Settings */
+  --font-size-xs: 11px;
+  --font-size-s: 12px;
+  --font-size-m: 13px;
+  --font-size-l: 14px;
+  --font-size-xl: 16px;
+  --font-size-header: 23px;
+  --line-height-xs: 14px;
+  --line-height-s: 16px;
+  --line-height-m: 18px;
+  --line-height-l: 19px;
+  --line-height-xl: 22px;
+  --line-height-header: 28px;
+  --font-weight-thin: 100;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-weight-black: 900;
+  /* Spacing */
+  --padding-xs: 4px;
+  --padding-s: 8px;
+  --padding-m: 12px;
+  --padding-l: 16px;
+  --padding-xl: 20px;
+  --margin-xs: 4px;
+  --margin-s: 8px;
+  --margin-m: 12px;
+  --margin-l: 16px;
+  --margin-xl: 20px;
+  /* Layout variables */
+  --app-bar-height: 60px;
+  --app-bar-background-color: var(--top-bar-color);
+  --app-bar-toolbar-icon-background-hover: #2e3d4e;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-divider-color: #2e3d4e;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-account-info-role-color: #838d9a;
+  /* Blade variables */
+  --vc-blade-border-color: #e7ebf1;
+  --vc-blade-topbar-height: 30px;
+  --vc-blade-topbar-background-color: #34414f;
+  --vc-blade-topbar-button-color: #ffffff;
+  --vc-blade-topbar-button-disabled-color: #727c87;
+  --vc-blade-header-height: 48px;
+  --vc-blade-header-background-color: #465769;
+  --vc-blade-header-icon-color: #ffffff;
+  --vc-blade-header-title-color: #ffffff;
+  --vc-blade-header-subtitle-color: #bbbbbb;
+  --vc-blade-toolbar-height: 48px;
+  --vc-blade-toolbar-background-color: #465769;
+  --vc-blade-toolbar-item-color: #ffffff;
+  --vc-blade-toolbar-item-hover-background-color: #2e3d4e;
+  --vc-blade-toolbar-item-disabled-color: #727c87;
+  /* Button variables */
+  --vc-button-primary-color: #43b0e6;
+  --vc-button-primary-color-hover: #319ed4;
+  --vc-button-special-color: #f89406;
+  --vc-button-special-color-hover: #eb8b03;
+  --vc-button-height: 28px;
+  --vc-button-small-height: 22px;
+  /* Drawer variables */
+  --drawer-width: 240px;
+  --drawer-width-collapsed: 60px;
+  --drawer-background-color: var(--background-color);
+  --drawer-top-height: var(--app-bar-height);
+  --drawer-top-background-color: var(--app-bar-background-color);
+  --drawer-top-border-right-color: #2e3d4e;
+  --drawer-border-right-color: #e7ebf1;
+  --drawer-top-image-height: 30px;
+  --drawer-top-version-color: #838d9a;
+  --drawer-item-height: 40px;
+  --drawer-item-icon-width: 20px;
+  --drawer-item-icon-color: #000000;
+  --drawer-item-handler-width: 20px;
+  --drawer-item-background-color: var(--drawer-background-color);
+  --drawer-item-background-color-hover: #eff7fc;
+  --drawer-item-border-bottom-color: #e7ebf1;
+  --drawer-item-title-font-weight: var(--font-weight-medium);
+  --drawer-item-title-font-size: var(--font-size-l);
+  --drawer-item-title-padding-right: 5px;
+  --drawer-item-title-padding-left: 9px;
+  --drawer-item-title-color: #161d25;
+  --drawer-item-handler-color: #bdd1df;
+  /* Icon variables */
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}

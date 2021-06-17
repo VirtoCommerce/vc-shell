@@ -21,7 +21,7 @@
         :key="blade.id"
         :is="blade.component"
         v-bind="blade.componentOptions"
-        @navigate="openBlade($event.component, $event.componentOptions)"
+        @navigate="openBlade($event)"
         @close="closeBlade(blade.id)"
       ></component>
     </div>
@@ -31,41 +31,26 @@
 <script>
   import { VcLayout, VcButton, VcDrawer, router } from "@virtocommerce/vc-ui-kit";
   import { defineComponent, ref } from "@vue/composition-api";
-  import { StoreListBlade } from "@virtocommerce/ext-store";
-  import { CatalogBlade } from "@virtocommerce/ext-product-catalog";
-  import { AssetsBlade } from "@virtocommerce/ext-assets-management";
+  import { drawer, routes } from "./addons";
 
   export default defineComponent({
     components: { VcLayout, VcButton, VcDrawer },
 
     setup() {
       const route = window.location.pathname;
-      const menuItems = ref([
-        {
-          id: 1,
-          title: "Catalog",
-          icon: "folder",
-          href: "/catalog",
-          component: CatalogBlade,
-          componentOptions: {},
-        },
-        {
-          id: 2,
-          title: "Assets",
-          icon: "image",
-          href: "/assets",
-          component: AssetsBlade,
-          componentOptions: {},
-        },
-        {
-          id: 3,
-          title: "Stores",
-          icon: "archive",
-          href: "/stores",
-          component: StoreListBlade,
-          componentOptions: {},
-        },
-      ]);
+
+      if (route) {
+        let blade = null;
+        for (var item in routes) {
+          if (routes[item].url === route) {
+            blade = routes[item];
+            break;
+          }
+        }
+        if (blade) {
+          router.openBlade(blade.component, {});
+        }
+      }
 
       const toolbarItems = ref([
         {
@@ -93,15 +78,18 @@
       });
 
       return {
-        menuItems,
+        menuItems: drawer,
         toolbarItems,
         account,
         openedBlades: router.opened.value,
-        openBlade: router.openBlade,
+        openBlade(data) {
+          const blade = routes[data.routeName];
+          router.openBlade(blade.component, data.componentOptions);
+        },
         openWorkspace(data) {
           router.closeBlades();
           router.openBlade(data.component, data.componentOptions);
-          history.pushState({}, data.title, data.href);
+          history.pushState({}, data.title, data.url);
         },
         closeBlade(id) {
           router.closeBlade(id);

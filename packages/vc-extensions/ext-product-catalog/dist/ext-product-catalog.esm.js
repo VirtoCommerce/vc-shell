@@ -2578,6 +2578,12 @@ const install = function installExtProductCatalog(Vue) {
     Vue.component(componentName, component);
   });
 }; // Create module definition for Vue.use()
+const routes = {
+  extCatalog: {
+    url: '/catalog',
+    component: __vue_component__
+  }
+};
 
 export default install;
-export { __vue_component__ as CatalogBlade };
+export { __vue_component__ as CatalogBlade, routes };

@@ -2298,7 +2298,7 @@ function openedBlades() {
   return computed(() => opened.value);
 }
 /**
- * Open blade by name.
+ * Open blade.
  */
 
 function openBlade(component, componentOptions) {
@@ -2310,11 +2310,11 @@ function openBlade(component, componentOptions) {
   console.log("Opened blades: ", opened.value);
 }
 /**
- * Close blade by name and all its descendants.
+ * Close blade by id and all its descendants.
  */
 
-function closeBlade(name) {
-  const bladeIndex = opened.value.findIndex(item => item.name === name);
+function closeBlade(id) {
+  const bladeIndex = opened.value.findIndex(item => item.id === id);
 
   if (bladeIndex > -1) {
     opened.value.splice(bladeIndex);

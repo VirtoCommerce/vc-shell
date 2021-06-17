@@ -7,7 +7,7 @@
     :breadcrumbs="breadcrumbs.value"
     :searchable="true"
     :filterable="true"
-    @close="$store.commit('closeBlade')"
+    @close="$emit('close')"
   >
     <vc-table :headers="headers.value" :items="items.value" :multiselect="true">
       <template v-slot:item_actions>

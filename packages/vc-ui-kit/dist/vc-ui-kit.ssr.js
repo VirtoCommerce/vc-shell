@@ -2012,7 +2012,7 @@ function openedBlades() {
   });
 }
 /**
- * Open blade by name.
+ * Open blade.
  */
 
 function openBlade(component, componentOptions) {
@@ -2024,12 +2024,12 @@ function openBlade(component, componentOptions) {
   console.log("Opened blades: ", opened.value);
 }
 /**
- * Close blade by name and all its descendants.
+ * Close blade by id and all its descendants.
  */
 
-function closeBlade(name) {
+function closeBlade(id) {
   var bladeIndex = opened.value.findIndex(function (item) {
-    return item.name === name;
+    return item.id === id;
   });
 
   if (bladeIndex > -1) {

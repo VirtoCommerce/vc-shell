@@ -50459,6 +50459,7 @@ if (typeof window !== 'undefined' && window.Vue) {
 //
 //
 //
+//
 
 
 
@@ -50525,6 +50526,9 @@ if (typeof window !== 'undefined' && window.Vue) {
         __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].closeBlades();
         __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].openBlade(data.component, data.componentOptions);
         history.pushState({}, data.title, data.href);
+      },
+      closeBlade: function closeBlade(id) {
+        __WEBPACK_IMPORTED_MODULE_0__virtocommerce_vc_ui_kit__["d" /* router */].closeBlade(id);
       }
     };
   }
@@ -62986,7 +62990,7 @@ process.umask = function() { return 0; };
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__ = __webpack_require__(8);
 /* unused harmony namespace reexport */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_566d5a7e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0f488b06_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__ = __webpack_require__(23);
 var normalizeComponent = __webpack_require__(18)
 /* script */
 
@@ -63003,7 +63007,7 @@ var __vue_scopeId__ = null
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
   __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_App_vue__["a" /* default */],
-  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_566d5a7e_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_0f488b06_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_App_vue__["a" /* default */],
   __vue_template_functional__,
   __vue_styles__,
   __vue_scopeId__,
@@ -65411,7 +65415,7 @@ function openedBlades() {
   return computed(() => opened.value);
 }
 /**
- * Open blade by name.
+ * Open blade.
  */
 
 function openBlade(component, componentOptions) {
@@ -65423,11 +65427,11 @@ function openBlade(component, componentOptions) {
   console.log("Opened blades: ", opened.value);
 }
 /**
- * Close blade by name and all its descendants.
+ * Close blade by id and all its descendants.
  */
 
-function closeBlade(name) {
-  const bladeIndex = opened.value.findIndex(item => item.name === name);
+function closeBlade(id) {
+  const bladeIndex = opened.value.findIndex(item => item.id === id);
 
   if (bladeIndex > -1) {
     opened.value.splice(bladeIndex);
@@ -67953,7 +67957,7 @@ var __vue_render__$1 = function () {
     },
     on: {
       "close": function ($event) {
-        return _vm.$store.commit('closeBlade');
+        return _vm.$emit('close');
       }
     }
   }, [_c('vc-table', {
@@ -72982,7 +72986,7 @@ const install = function installExtAssetsManagement(Vue) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('vc-layout',{attrs:{"toolbarItems":_vm.toolbarItems,"account":_vm.account},scopedSlots:_vm._u([{key:"banner",fn:function(){return [_c('div',[_vm._v("\n      Running community edition, click to request a commercial license.\n    ")]),_vm._v(" "),_c('vc-button',{attrs:{"variant":"special","title":"Purchase"}})]},proxy:true},{key:"left",fn:function(){return [_c('vc-drawer',{attrs:{"items":_vm.menuItems,"logo":"/src/assets/logo.svg"},on:{"itemClick":function($event){return _vm.openWorkspace($event)}}})]},proxy:true}])},[_vm._v(" "),_vm._v(" "),_c('div',{staticClass:"vc-flex vc-flex-grow_1"},_vm._l((_vm.openedBlades),function(blade){return _c(blade.component,_vm._b({key:blade.id,tag:"component",on:{"navigate":function($event){return _vm.openBlade($event.component, $event.componentOptions)}}},'component',blade.componentOptions,false))}),1)])}
+var render = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('vc-layout',{attrs:{"toolbarItems":_vm.toolbarItems,"account":_vm.account},scopedSlots:_vm._u([{key:"banner",fn:function(){return [_c('div',[_vm._v("\n      Running community edition, click to request a commercial license.\n    ")]),_vm._v(" "),_c('vc-button',{attrs:{"variant":"special","title":"Purchase"}})]},proxy:true},{key:"left",fn:function(){return [_c('vc-drawer',{attrs:{"items":_vm.menuItems,"logo":"/src/assets/logo.svg"},on:{"itemClick":function($event){return _vm.openWorkspace($event)}}})]},proxy:true}])},[_vm._v(" "),_vm._v(" "),_c('div',{staticClass:"vc-flex vc-flex-grow_1"},_vm._l((_vm.openedBlades),function(blade){return _c(blade.component,_vm._b({key:blade.id,tag:"component",on:{"navigate":function($event){return _vm.openBlade($event.component, $event.componentOptions)},"close":function($event){return _vm.closeBlade(blade.id)}}},'component',blade.componentOptions,false))}),1)])}
 var staticRenderFns = []
 var esExports = { render: render, staticRenderFns: staticRenderFns }
 /* harmony default export */ __webpack_exports__["a"] = (esExports);

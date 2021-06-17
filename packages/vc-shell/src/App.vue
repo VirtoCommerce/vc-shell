@@ -22,6 +22,7 @@
         :is="blade.component"
         v-bind="blade.componentOptions"
         @navigate="openBlade($event.component, $event.componentOptions)"
+        @close="closeBlade(blade.id)"
       ></component>
     </div>
   </vc-layout>
@@ -101,6 +102,9 @@
           router.closeBlades();
           router.openBlade(data.component, data.componentOptions);
           history.pushState({}, data.title, data.href);
+        },
+        closeBlade(id) {
+          router.closeBlade(id);
         },
       };
     },

@@ -2472,7 +2472,7 @@ var __vue_render__$1 = function () {
     },
     on: {
       "close": function ($event) {
-        return _vm.$store.commit('closeBlade');
+        return _vm.$emit('close');
       }
     }
   }, [_c('vc-table', {

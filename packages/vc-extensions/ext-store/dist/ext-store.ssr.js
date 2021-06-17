@@ -2529,7 +2529,7 @@ var __vue_render__$1 = function __vue_render__() {
     },
     on: {
       "close": function close($event) {
-        return _vm.$store.commit('closeBlade');
+        return _vm.$emit('close');
       }
     }
   }, [_c('vc-table', {
@@ -2585,7 +2585,7 @@ var __vue_inject_styles__$1 = undefined;
 var __vue_scope_id__$1 = undefined;
 /* module identifier */
 
-var __vue_module_identifier__$1 = "data-v-33d30b6e";
+var __vue_module_identifier__$1 = "data-v-6402f7cd";
 /* functional template */
 
 var __vue_is_functional_template__$1 = false;

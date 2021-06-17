@@ -32,7 +32,7 @@ export function openedBlades() {
 }
 
 /**
- * Open blade by name.
+ * Open blade.
  */
 export function openBlade(component, componentOptions) {
   opened.value.push({ id: Math.random(), component, componentOptions });
@@ -40,10 +40,10 @@ export function openBlade(component, componentOptions) {
 }
 
 /**
- * Close blade by name and all its descendants.
+ * Close blade by id and all its descendants.
  */
-export function closeBlade(name) {
-  const bladeIndex = opened.value.findIndex((item) => item.name === name);
+export function closeBlade(id) {
+  const bladeIndex = opened.value.findIndex((item) => item.id === id);
   if (bladeIndex > -1) {
     opened.value.splice(bladeIndex);
   }

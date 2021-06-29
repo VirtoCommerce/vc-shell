@@ -6,13 +6,13 @@
   >
     <div class="vc-blade__topbar vc-flex-shrink_0">
       <div
-        class="vc-blade__topbar-button"
         v-if="expanded"
+        class="vc-blade__topbar-button"
         @click="expanded = false"
       >
         <vc-icon icon="window-minimize" size="s"></vc-icon>
       </div>
-      <div class="vc-blade__topbar-button" v-else @click="expanded = true">
+      <div v-else class="vc-blade__topbar-button" @click="expanded = true">
         <vc-icon icon="window-maximize" size="s"></vc-icon>
       </div>
       <div
@@ -35,7 +35,7 @@
         >
           {{ title }}
         </div>
-        <div class="vc-blade__header-subtitle" v-if="subtitle">
+        <div v-if="subtitle" class="vc-blade__header-subtitle">
           {{ subtitle }}
         </div>
       </div>
@@ -88,7 +88,7 @@
             class="vc-blade__searchbar-filter-chevron vc-margin-left_s"
           ></vc-icon>
         </div>
-        <div class="vc-blade__searchbar-filter-menu" v-if="filterOpened">
+        <div v-if="filterOpened" class="vc-blade__searchbar-filter-menu">
           <div
             class="vc-blade__searchbar-filter-menu-item"
             @click="filterOpened = false"

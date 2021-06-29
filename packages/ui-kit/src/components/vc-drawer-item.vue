@@ -1,6 +1,6 @@
 <template>
   <component
-    v-bind:is="to ? 'a' : 'div'"
+    :is="to ? 'a' : 'div'"
     :href="to"
     class="vc-drawer-item"
     @click="$emit('click')"
@@ -11,7 +11,7 @@
     >
       <vc-icon icon="ellipsis-v" size="m" />
     </div>
-    <div class="vc-drawer-item__icon" v-if="icon">
+    <div v-if="icon" class="vc-drawer-item__icon">
       <vc-icon :icon="icon" size="m" />
     </div>
     <div class="vc-drawer-item__title" :title="title">{{ title }}</div>

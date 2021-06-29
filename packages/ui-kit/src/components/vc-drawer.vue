@@ -14,8 +14,8 @@
         v-for="item in items"
         :key="item.id"
         :icon="item.icon"
-        @click="$emit('itemClick', item)"
         :title="item.title"
+        @click="$emit('itemClick', item)"
       />
       <vc-drawer-item icon="ellipsis-h" sticky="sticky" title="More" />
     </vc-container>

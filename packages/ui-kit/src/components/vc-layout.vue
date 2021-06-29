@@ -49,6 +49,7 @@
         </div>
 
         <div
+          v-if="account"
           class="
             vc-layout__topbar-account
             vc-flex
@@ -57,7 +58,6 @@
           "
           :class="{ 'vc-layout__topbar-account_active': accountMenuVisible }"
           @click="accountMenuVisible = !accountMenuVisible"
-          v-if="account"
         >
           <div
             class="vc-layout__topbar-account-avatar"
@@ -71,8 +71,8 @@
             <vc-icon icon="chevron-down" size="xl"></vc-icon>
           </div>
           <div
-            class="vc-layout__topbar-account-menu"
             v-if="accountMenuVisible"
+            class="vc-layout__topbar-account-menu"
             @click.stop
           >
             <div class="vc-layout__topbar-account-menu-item">Profile</div>

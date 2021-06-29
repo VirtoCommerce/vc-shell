@@ -18,3 +18,10 @@ export { default as VcLayout } from "./components/vc-layout.vue";
 export { default as VcLink } from "./components/vc-link.vue";
 export { default as VcSpacer } from "./components/vc-spacer.vue";
 export { default as VcTable } from "./components/vc-table.vue";
+
+export {
+  openBlade,
+  openedBlades,
+  closeBlade,
+  closeBlades,
+} from "./composables/routing";

@@ -4,18 +4,18 @@
     :class="{ 'vc-input_clearable': clearable }"
   >
     <input
+      v-model="internalValue"
       class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
       :placeholder="placeholder"
-      v-model="internalValue"
     />
     <div
+      v-if="clearable"
       class="
         vc-input__clear
         vc-padding-horizontal_m
         vc-flex
         vc-flex-align_center
       "
-      v-if="clearable"
       @click="internalValue = ''"
     >
       <vc-icon icon="times"></vc-icon>

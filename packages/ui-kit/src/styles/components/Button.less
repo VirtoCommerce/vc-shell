@@ -1,0 +1,25 @@
+.vc-button {
+  border-radius: 2px;
+  padding: 0 28px;
+  height: var(--vc-button-height);
+  display: inline-flex;
+  align-items: center;
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-s);
+  cursor: pointer;
+
+  &_special {
+    background: var(--vc-button-special-color);
+    color: #ffffff;
+
+    &:hover {
+      background: var(--vc-button-special-color-hover);
+    }
+  }
+
+  &_small {
+    height: var(--vc-button-small-height);
+    font-weight: var(--font-weight-normal);
+    font-size: var(--font-size-xs);
+  }
+}

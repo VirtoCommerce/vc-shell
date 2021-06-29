@@ -1,0 +1,54 @@
+.vc-drawer-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--drawer-item-height);
+  background-color: var(--drawer-item-background-color);
+  border-bottom: 1px solid var(--drawer-item-border-bottom-color);
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-decoration: none;
+
+  &__handler {
+    width: var(--drawer-item-handler-width);
+    color: var(--drawer-item-handler-color);
+    text-align: center;
+    visibility: hidden;
+    flex-shrink: 0;
+
+    &_enabled {
+      cursor: move;
+    }
+  }
+
+  &__icon {
+    width: var(--drawer-item-icon-width);
+    color: var(--drawer-item-icon-color);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: var(--drawer-item-title-font-size);
+    font-weight: var(--drawer-item-title-font-weight);
+    padding-right: var(--drawer-item-title-padding-right);
+    padding-left: var(--drawer-item-title-padding-left);
+    color: var(--drawer-item-title-color);
+  }
+
+  &:hover {
+    background-color: var(--drawer-item-background-color-hover);
+  }
+
+  &:hover &__handler {
+    &_enabled {
+      visibility: visible;
+    }
+  }
+}

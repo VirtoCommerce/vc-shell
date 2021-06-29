@@ -1,0 +1,37 @@
+.vc-breadcrumbs {
+  &__item {
+    height: 28px;
+    box-sizing: border-box;
+    border-radius: 14px;
+    border: 1px solid #a1c0d4;
+    color: #43b0e6;
+    white-space: nowrap;
+    padding: 0 14px;
+    margin-right: 6px;
+    font-size: var(--font-size-s);
+    cursor: pointer;
+
+    &:hover {
+      border: 1px solid #8fb0c6;
+    }
+
+    &-icon {
+      margin-right: 6px;
+      color: #a1c0d4;
+    }
+
+    &_disabled {
+      opacity: 0.4;
+    }
+
+    &_current {
+      color: #465769;
+      border: 1px solid #838d9a;
+      cursor: default;
+
+      &:hover {
+        border: 1px solid #838d9a;
+      }
+    }
+  }
+}

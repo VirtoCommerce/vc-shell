@@ -1,6 +1,6 @@
 import { ref, computed, Component, ComputedRef } from "vue";
 
-export interface IBladeData {
+interface IBladeData {
   id: number;
   component: Component;
   componentOptions: Record<string, unknown>;

@@ -10,5 +10,7 @@ import VcDrawerItem from "./vc-drawer-item.vue";
 
 export default defineComponent({
   components: { VcDrawerItem },
+
+  emits: ["click"],
 });
 </script>

@@ -1,24 +1,28 @@
-# ui-kit
+# @virtocommerce/ui-kit
 
-## Project setup
-```
-npm install
-```
+Here you can get anything you need to blazingly fast build specialized [VirtoCommerce](https://virtocommerce.com/) back-office applications.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Design System
 
-### Compiles and minifies for production
-```
-npm run build
-```
+* Design inspired from [Google Retail UX Playbook](https://services.google.com/fh/files/events/pdf_retail_ux_playbook.pdf)
+* [Atomic Design pattern](http://bradfrost.com/blog/post/atomic-web-design/) for components
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Core Concepts
+
+*ToDo*
+
+
+### Atoms
+
+*ToDo*
+
+
+### Molecules
+
+*ToDo*
+
+
+### Organisms
+
+*ToDo*

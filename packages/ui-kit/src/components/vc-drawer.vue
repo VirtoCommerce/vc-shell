@@ -48,6 +48,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["itemClick", "collapse", "expand"],
+
   setup(_props, { emit }) {
     const collapsed = ref(false);
 

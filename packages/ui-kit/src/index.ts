@@ -20,6 +20,7 @@ export { default as VcSpacer } from "./components/vc-spacer.vue";
 export { default as VcTable } from "./components/vc-table.vue";
 
 export {
+  opened,
   openBlade,
   openedBlades,
   closeBlade,

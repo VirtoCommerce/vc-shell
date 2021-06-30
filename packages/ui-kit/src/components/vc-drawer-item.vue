@@ -43,5 +43,7 @@ export default defineComponent({
       type: String,
     },
   },
+
+  emits: ["click"],
 });
 </script>

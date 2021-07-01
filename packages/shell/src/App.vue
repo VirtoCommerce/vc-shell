@@ -10,7 +10,7 @@
     <template #left>
       <vc-drawer
         :items="menuItems"
-        logo="/src/assets/logo.svg"
+        logo="/assets/logo.svg"
         @itemClick="openWorkspace($event)"
       ></vc-drawer>
     </template>
@@ -25,10 +25,7 @@ import {
   VcLayout,
   VcButton,
   VcDrawer,
-  opened,
-  openBlade,
-  closeBlade,
-  closeBlades,
+  routing,
 } from "@virtocommerce/ui-kit";
 import { defineComponent, ref } from "vue";
 import { drawer, routes } from "./addons";
@@ -48,7 +45,7 @@ export default defineComponent({
         }
       }
       if (blade) {
-        openBlade(blade.component, {});
+        routing.openBlade(blade.component, {});
       }
     }
 
@@ -72,7 +69,7 @@ export default defineComponent({
     ]);
 
     const account = ref({
-      avatar: "/src/assets/avatar.jpg",
+      avatar: "/assets/avatar.jpg",
       name: "Iurii A Taranov",
       role: "Administrator",
     });
@@ -81,23 +78,86 @@ export default defineComponent({
       menuItems: drawer,
       toolbarItems,
       account,
-      openedBlades: opened.value,
+      openedBlades: routing.opened.value,
 
       openBlade(data) {
         const blade = routes[data.routeName];
-        openBlade(blade.component, data.componentOptions);
+        routing.openBlade(blade.component, data.componentOptions);
       },
 
       openWorkspace(data) {
-        closeBlades();
-        openBlade(data.component, data.componentOptions);
+        routing.closeBlades();
+        routing.openBlade(data.component, data.componentOptions);
         history.pushState({}, data.title, data.url);
       },
 
       closeBlade(id) {
-        closeBlade(id);
+        routing.closeBlade(id);
       },
     };
   },
 });
 </script>
+
+<style lang="less">
+@import "~@virtocommerce/ui-kit/dist/ui-kit.css";
+
+@import "./assets/fonts/FontAwesome/css/all.css";
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 100;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/Roboto-Thin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/Roboto-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/Roboto-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Roboto";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/Roboto-Black.ttf") format("truetype");
+}
+
+html,
+body,
+#app {
+  margin: 0;
+  height: 100%;
+  font-family: "Roboto";
+  font-size: var(--font-size-m);
+}
+</style>

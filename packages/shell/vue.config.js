@@ -1,7 +1,14 @@
+/* eslint-disable */
+const path = require("path");
+
 module.exports = {
   productionSourceMap: false,
-
-  chainWebpack: (config) => {
-    config.resolve.symlinks(false)
-  }
+  configureWebpack: {
+    resolve: {
+      symlinks: false,
+      alias: {
+        vue: path.resolve("./node_modules/vue"),
+      },
+    },
+  },
 };

@@ -1,0 +1,14 @@
+{
+  "test": "OK",
+  "SHELL": {
+    "TOOLBAR": {
+      "SETTINGS": "Settings",
+      "HELP": "Help",
+      "NOTIFICATIONS": "Notifications"
+    },
+    "ACCOUNT": {
+      "PROFILE": "Profile",
+      "LOGOUT": "Log out"
+    }
+  }
+}

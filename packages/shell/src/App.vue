@@ -15,25 +15,22 @@
       ></vc-drawer>
     </template>
 
-    <div class="vc-flex vc-flex-grow_1">
-    </div>
+    <div class="vc-flex vc-flex-grow_1"></div>
   </vc-layout>
 </template>
 
 <script>
-import {
-  VcLayout,
-  VcButton,
-  VcDrawer,
-  routing,
-} from "@virtocommerce/ui-kit";
+import { VcLayout, VcButton, VcDrawer, routing } from "@virtocommerce/ui-kit";
 import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { drawer, routes } from "./addons";
 
 export default defineComponent({
   components: { VcLayout, VcButton, VcDrawer },
 
   setup() {
+    const { t, messages } = useI18n({ useScope: "global" });
+    console.dir(messages);
     const route = window.location.pathname;
 
     if (route) {
@@ -53,18 +50,18 @@ export default defineComponent({
       {
         id: "settings",
         icon: "cog",
-        title: "Settings",
+        title: t("SHELL.TOOLBAR.SETTINGS"),
       },
       {
         id: "help",
         icon: "life-ring",
-        title: "Help",
+        title: t("SHELL.TOOLBAR.HELP"),
       },
       {
         id: "bell",
         icon: "bell",
         accent: true,
-        title: "Notifications",
+        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
       },
     ]);
 
@@ -72,6 +69,16 @@ export default defineComponent({
       avatar: "/assets/avatar.jpg",
       name: "Iurii A Taranov",
       role: "Administrator",
+      dropdown: [
+        {
+          id: 1,
+          title: t("SHELL.ACCOUNT.PROFILE"),
+        },
+        {
+          id: 2,
+          title: t("SHELL.ACCOUNT.LOGOUT"),
+        },
+      ],
     });
 
     return {
@@ -101,56 +108,6 @@ export default defineComponent({
 
 <style lang="less">
 @import "~@virtocommerce/ui-kit/dist/ui-kit.css";
-
-@import "./assets/fonts/FontAwesome/css/all.css";
-
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 100;
-  font-display: swap;
-  src: url("./assets/fonts/Roboto/Roboto-Thin.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("./assets/fonts/Roboto/Roboto-Light.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("./assets/fonts/Roboto/Roboto-Regular.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("./assets/fonts/Roboto/Roboto-Medium.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("./assets/fonts/Roboto/Roboto-Bold.ttf") format("truetype");
-}
-
-@font-face {
-  font-family: "Roboto";
-  font-style: normal;
-  font-weight: 900;
-  font-display: swap;
-  src: url("./assets/fonts/Roboto/Roboto-Black.ttf") format("truetype");
-}
 
 html,
 body,

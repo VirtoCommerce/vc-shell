@@ -1,6 +1,6 @@
 import { ref, computed, Component, ComputedRef } from "vue";
 
-interface IBladeData {
+export interface IBladeData {
   id: number;
   component: Component;
   componentOptions: Record<string, unknown>;
@@ -12,7 +12,7 @@ export const opened = ref<IBladeData[]>([]);
 /**
  * Return readonly list of all opened blades.
  */
-export function openedBlades(): ComputedRef<IBladeData[]> {
+export function openedBlades(): ComputedRef<unknown> {
   return computed(() => opened.value);
 }
 

@@ -67,16 +67,24 @@
             <div class="vc-layout__topbar-account-name">{{ account.name }}</div>
             <div class="vc-layout__topbar-account-role">{{ account.role }}</div>
           </div>
-          <div class="vc-layout__topbar-account-chevron">
+          <div
+            v-if="account.dropdown"
+            class="vc-layout__topbar-account-chevron"
+          >
             <vc-icon icon="chevron-down" size="xl"></vc-icon>
           </div>
           <div
-            v-if="accountMenuVisible"
+            v-if="account.dropdown && accountMenuVisible"
             class="vc-layout__topbar-account-menu"
             @click.stop
           >
-            <div class="vc-layout__topbar-account-menu-item">Profile</div>
-            <div class="vc-layout__topbar-account-menu-item">Log Out</div>
+            <div
+              v-for="item in account.dropdown"
+              :key="item.id"
+              class="vc-layout__topbar-account-menu-item"
+            >
+              {{ item.title }}
+            </div>
           </div>
         </div>
       </div>
@@ -89,7 +97,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import VcIcon from "./vc-icon.vue";
 import VcSpacer from "./vc-spacer.vue";
 
@@ -107,8 +115,9 @@ export default defineComponent({
   },
 
   setup() {
+    const accountMenuVisible = ref(false);
     return {
-      accountMenuVisible: false,
+      accountMenuVisible,
     };
   },
 });

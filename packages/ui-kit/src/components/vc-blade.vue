@@ -129,7 +129,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import VcIcon from "./vc-icon.vue";
 import VcInput from "./vc-input.vue";
 import VcBreadcrumbs from "./vc-breadcrumbs.vue";
@@ -179,9 +179,12 @@ export default defineComponent({
   },
 
   setup() {
+    const expanded = ref(false);
+    const filterOpened = ref(false);
+
     return {
-      expanded: false,
-      filterOpened: false,
+      expanded,
+      filterOpened,
     };
   },
 });

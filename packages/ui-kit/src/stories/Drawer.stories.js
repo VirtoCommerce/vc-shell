@@ -9,14 +9,14 @@ export default {
   component: VcDrawer,
   argTypes: {
     collapse: { action: "collapse", name: "collapse" },
-    expand: { action: "expand", name: "expand" }
-  }
+    expand: { action: "expand", name: "expand" },
+  },
 };
 
 const Template = (args, { argTypes }) => ({
   components: { VcDrawer },
   props: Object.keys(argTypes),
-  template: '<vc-drawer v-bind="$props" v-on="$props"></vc-drawer>'
+  template: '<vc-drawer v-bind="$props" v-on="$props"></vc-drawer>',
 });
 
 export const Drawer = Template.bind({});
@@ -27,7 +27,7 @@ Drawer.args = {
     {
       id: 1,
       title: "Another Item",
-      icon: "star"
-    }
-  ]
+      icon: "star",
+    },
+  ],
 };

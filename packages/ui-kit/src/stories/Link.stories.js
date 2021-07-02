@@ -8,18 +8,18 @@ export default {
   title: "Link",
   component: VcLink,
   argTypes: {
-    click: { action: "click", name: "click" }
-  }
+    click: { action: "click", name: "click" },
+  },
 };
 
 const Template = (args, { argTypes }) => ({
   components: { VcLink },
   props: Object.keys(argTypes),
-  template: '<vc-link v-bind="$props" v-on="$props">This is link</vc-link>'
+  template: '<vc-link v-bind="$props" v-on="$props">This is link</vc-link>',
 });
 
 export const Link = Template.bind({});
 Link.args = {
   to: "/",
-  disabled: false
+  disabled: false,
 };

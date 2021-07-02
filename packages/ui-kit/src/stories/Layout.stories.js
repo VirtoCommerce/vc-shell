@@ -6,7 +6,7 @@ import VcLayout from "../components/vc-layout";
 
 export default {
   title: "Layout",
-  component: VcLayout
+  component: VcLayout,
 };
 
 const Template = (args, { argTypes }) => ({
@@ -23,7 +23,7 @@ const Template = (args, { argTypes }) => ({
             <vc-drawer :items="menuItems"></vc-drawer>
          </template>
       </vc-layout>
-   `
+   `,
 });
 
 export const Layout = Template.bind({});
@@ -33,56 +33,56 @@ Layout.args = {
       id: 1,
       title: "Catalog",
       icon: "folder",
-      to: "/catalog"
+      to: "/catalog",
     },
     {
       id: 2,
       title: "Contacts",
       icon: "address-card",
-      to: "/contacts"
+      to: "/contacts",
     },
     {
       id: 3,
       title: "Marketing",
       icon: "flag",
-      to: "/marketing"
+      to: "/marketing",
     },
     {
       id: 4,
       title: "Thumbnails",
       icon: "image",
-      to: "/thumbnails"
+      to: "/thumbnails",
     },
     {
       id: 5,
       title: "Stores",
       icon: "archive",
-      to: "/stores"
-    }
+      to: "/stores",
+    },
   ],
 
   toolbarItems: [
     {
       id: "settings",
       icon: "cog",
-      title: "Settings"
+      title: "Settings",
     },
     {
       id: "help",
       icon: "life-ring",
-      title: "Help"
+      title: "Help",
     },
     {
       id: "bell",
       icon: "bell",
       accent: true,
-      title: "Notifications"
-    }
+      title: "Notifications",
+    },
   ],
 
   account: {
     avatar: "/images/avatar.jpg",
     name: "Iurii A Taranov",
-    role: "Administrator"
-  }
+    role: "Administrator",
+  },
 };

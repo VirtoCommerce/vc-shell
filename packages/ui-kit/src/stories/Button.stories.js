@@ -10,15 +10,15 @@ export default {
   argTypes: {
     variant: {
       options: ["primary", "secondary", "special"],
-      control: { type: "radio" }
-    }
-  }
+      control: { type: "radio" },
+    },
+  },
 };
 
 const Template = (args, { argTypes }) => ({
   components: { VcButton },
   props: Object.keys(argTypes),
-  template: '<vc-button v-bind="$props" v-on="$props"></vc-button>'
+  template: '<vc-button v-bind="$props" v-on="$props"></vc-button>',
 });
 
 export const Button = Template.bind({});
@@ -27,5 +27,5 @@ Button.args = {
   title: "I am a button",
   variant: "special",
   disabled: false,
-  small: false
+  small: false,
 };

@@ -8,19 +8,19 @@ export default {
   title: "Drawer Item",
   component: VcDrawerItem,
   argTypes: {
-    click: { action: "click", name: "click" }
-  }
+    click: { action: "click", name: "click" },
+  },
 };
 
 const Template = (args, { argTypes }) => ({
   components: { VcDrawerItem },
   props: Object.keys(argTypes),
-  template: '<vc-drawer-item v-bind="$props"></vc-drawer-item>'
+  template: '<vc-drawer-item v-bind="$props"></vc-drawer-item>',
 });
 
 export const DrawerItem = Template.bind({});
 DrawerItem.args = {
   icon: "folder",
   sticky: false,
-  title: "Drawer Item"
+  title: "Drawer Item",
 };

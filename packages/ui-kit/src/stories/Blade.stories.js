@@ -9,14 +9,15 @@ export default {
   component: VcBlade,
   argTypes: {
     collapse: { action: "collapse", name: "collapse" },
-    expand: { action: "expand", name: "expand" }
-  }
+    expand: { action: "expand", name: "expand" },
+  },
 };
 
 const Template = (args, { argTypes }) => ({
   components: { VcBlade },
   props: Object.keys(argTypes),
-  template: '<vc-blade v-bind="$props" v-on="$props"><div class="vc-padding_l">Blade Contents</div></vc-blade>'
+  template:
+    '<vc-blade v-bind="$props" v-on="$props"><div class="vc-padding_l">Blade Contents</div></vc-blade>',
 });
 
 export const Blade = Template.bind({});
@@ -36,22 +37,22 @@ Blade.args = {
     { id: 5, icon: "upload", title: "Export" },
     { id: 6, icon: "cut", title: "Cut", disabled: true },
     { id: 7, icon: "paste", title: "Paste", disabled: true },
-    { id: 8, icon: "cubes", title: "Bulk export", disabled: true }
+    { id: 8, icon: "cubes", title: "Bulk export", disabled: true },
   ],
 
   breadcrumbs: [
     {
       id: 0,
       title: "Back",
-      icon: "arrow-left"
+      icon: "arrow-left",
     },
     {
       id: 1,
-      title: "Electronics"
+      title: "Electronics",
     },
     {
       id: 2,
-      title: "Desktop"
-    }
-  ]
+      title: "Desktop",
+    },
+  ],
 };

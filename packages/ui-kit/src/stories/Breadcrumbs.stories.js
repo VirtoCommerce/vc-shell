@@ -6,13 +6,13 @@ import VcBreadcrumbs from "../components/vc-breadcrumbs";
 
 export default {
   title: "Breadcrumbs",
-  component: VcBreadcrumbs
+  component: VcBreadcrumbs,
 };
 
 const Template = (args, { argTypes }) => ({
   components: { VcBreadcrumbs },
   props: Object.keys(argTypes),
-  template: '<vc-breadcrumbs v-bind="$props" v-on="$props"></vc-breadcrumbs>'
+  template: '<vc-breadcrumbs v-bind="$props" v-on="$props"></vc-breadcrumbs>',
 });
 
 export const Breadcrumbs = Template.bind({});
@@ -21,15 +21,15 @@ Breadcrumbs.args = {
     {
       id: 0,
       title: "Back",
-      icon: "arrow-left"
+      icon: "arrow-left",
     },
     {
       id: 1,
-      title: "Electronics"
+      title: "Electronics",
     },
     {
       id: 2,
-      title: "Desktop"
-    }
-  ]
+      title: "Desktop",
+    },
+  ],
 };

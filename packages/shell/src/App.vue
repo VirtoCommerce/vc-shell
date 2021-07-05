@@ -29,8 +29,7 @@ export default defineComponent({
   components: { VcLayout, VcButton, VcDrawer },
 
   setup() {
-    const { t, messages } = useI18n({ useScope: "global" });
-    console.dir(messages);
+    const { t } = useI18n({ useScope: "global" });
     const route = window.location.pathname;
 
     if (route) {

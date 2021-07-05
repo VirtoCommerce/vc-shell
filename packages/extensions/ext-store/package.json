@@ -1,23 +1,25 @@
 {
-  "name": "@virtocommerce/shell",
+  "name": "@virtocommerce/ext-store",
   "version": "0.0.2",
-  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(ts|js|vue)\" --locales \"./src/locales/**/*.json\""
+    "build": "vue-cli-service build --target lib --name ext-store ./src/main.ts",
+    "lint": "vue-cli-service lint"
   },
+  "types": "./src/ext-store.d.ts",
+  "main": "./dist/ext-store.common.js",
+  "files": [
+    "dist/*",
+    "src/ext-store.d.ts",
+    "src/**/*.vue"
+  ],
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^3.0.0",
-    "vue-i18n": "^9.1.0"
+    "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@intlify/vue-i18n-loader": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
-    "@virtocommerce/ext-store": "^0.0.2",
     "@virtocommerce/ui-kit": "^0.0.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
@@ -33,15 +35,14 @@
     "less-loader": "^5.0.0",
     "lint-staged": "^9.5.0",
     "prettier": "^2.2.1",
-    "typescript": "~4.1.5",
-    "vue-cli-plugin-i18n": "~2.1.1"
+    "typescript": "~4.1.5"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.{js,jsx,vue,ts,tsx}": [
-      "vue-cli-service lint --fix",
+      "vue-cli-service lint",
       "git add"
     ]
   }

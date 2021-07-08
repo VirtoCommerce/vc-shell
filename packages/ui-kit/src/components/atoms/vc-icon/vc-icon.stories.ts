@@ -1,8 +1,9 @@
 /**
- * Icon story (for demo).
- * @author Yuri A Taranov <me@flanker72.ru>
+ * Icon component.
+ * @author Iurii A Taranov <me@flanker72.ru>
  */
-import VcIcon from "./vc-icon";
+import { Story } from '@storybook/vue3';
+import VcIcon from "./vc-icon.vue";
 
 export default {
   title: "atoms/vc-icon",
@@ -19,13 +20,14 @@ export default {
   },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcIcon },
-  props: Object.keys(argTypes),
-  template: '<vc-icon v-bind="$props" v-on="$props"></vc-icon>',
+  setup() { return { args } },
+  template: '<vc-icon v-bind="args"></vc-icon>',
 });
 
 export const Icon = Template.bind({});
+Icon.storyName = "vc-icon";
 Icon.args = {
   icon: "star",
   family: "solid",

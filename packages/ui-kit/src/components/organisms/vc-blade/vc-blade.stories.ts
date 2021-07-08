@@ -1,8 +1,9 @@
 /**
- * Blade story (for demo).
- * @author Yuri A Taranov <me@flanker72.ru>
+ * Blade component.
+ * @author Iurii A Taranov <me@flanker72.ru>
  */
-import VcBlade from "./vc-blade";
+import { Story } from '@storybook/vue3';
+import VcBlade from "./vc-blade.vue";
 
 export default {
   title: "organisms/vc-blade",
@@ -13,14 +14,15 @@ export default {
   },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcBlade },
-  props: Object.keys(argTypes),
+  setup() { return { args } },
   template:
-    '<vc-blade v-bind="$props" v-on="$props"><div class="vc-padding_l">Blade Contents</div></vc-blade>',
+    '<vc-blade v-bind="args"><div class="vc-padding_l">Blade Contents</div></vc-blade>',
 });
 
 export const Blade = Template.bind({});
+Blade.storyName = "vc-blade";
 Blade.args = {
   icon: "star",
   title: "My Awesome Blade",

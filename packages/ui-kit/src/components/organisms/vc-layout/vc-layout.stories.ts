@@ -1,19 +1,20 @@
 /**
- * Layout story (for demo).
- * @author Yuri A Taranov <me@flanker72.ru>
+ * Layout component.
+ * @author Iurii A Taranov <me@flanker72.ru>
  */
-import VcLayout from "./vc-layout";
+import { Story } from '@storybook/vue3';
+import VcLayout from "./vc-layout.vue";
 
 export default {
   title: "organisms/vc-layout",
   component: VcLayout,
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcLayout },
-  props: Object.keys(argTypes),
+  setup() { return { args } },
   template: `
-      <vc-layout v-bind="$props" v-on="$props">
+      <vc-layout v-bind="args">
          <template #banner>
             <div>This is banner</div>
             <vc-button variant="special" title="Button"></vc-button>
@@ -27,6 +28,7 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const Layout = Template.bind({});
+Layout.storyName = "vc-layout";
 Layout.args = {
   menuItems: [
     {

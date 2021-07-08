@@ -1,21 +1,23 @@
 /**
- * Breadcrumbs story (for demo).
- * @author Yuri A Taranov <me@flanker72.ru>
+ * Breadcrumbs component.
+ * @author Iurii A Taranov <me@flanker72.ru>
  */
-import VcBreadcrumbs from "./vc-breadcrumbs";
+import { Story } from '@storybook/vue3';
+import VcBreadcrumbs from "./vc-breadcrumbs.vue";
 
 export default {
   title: "atoms/vc-breadcrumbs",
   component: VcBreadcrumbs,
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcBreadcrumbs },
-  props: Object.keys(argTypes),
-  template: '<vc-breadcrumbs v-bind="$props" v-on="$props"></vc-breadcrumbs>',
+  setup() { return { args } },
+  template: '<vc-breadcrumbs v-bind="args"></vc-breadcrumbs>',
 });
 
 export const Breadcrumbs = Template.bind({});
+Breadcrumbs.storyName = "vc-breadcrumbs";
 Breadcrumbs.args = {
   items: [
     {

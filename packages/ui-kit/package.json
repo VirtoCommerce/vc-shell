@@ -19,10 +19,10 @@
     "vue": "^3.0.0"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^6.0.26",
-    "@storybook/addon-links": "^6.0.26",
-    "@storybook/core": "^6.3.2",
-    "@storybook/vue3": "^6.0.26",
+    "@storybook/addon-controls": "^6.3.4",
+    "@storybook/addon-docs": "^6.3.4",
+    "@storybook/core": "^6.3.4",
+    "@storybook/vue3": "^6.3.4",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -33,14 +33,14 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "css-loader": "^5.0.0",
-    "eslint": "^7.29.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-vue": "^7.0.0",
+    "eslint": "^6.0.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-vue": "^7.13.0",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "prettier": "^2.2.1",
     "style-loader": "^2.0.0",
-    "typescript": "~4.1.5",
+    "typescript": "^4.3.5",
     "vue-cli-plugin-storybook": "~2.1.0"
   },
   "gitHooks": {

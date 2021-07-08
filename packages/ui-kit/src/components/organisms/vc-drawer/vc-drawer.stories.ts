@@ -1,8 +1,9 @@
 /**
- * Drawer story (for demo).
+ * Drawer component.
  * @author Yuri A Taranov <me@flanker72.ru>
  */
-import VcDrawer from "./vc-drawer";
+import { Story } from '@storybook/vue3';
+import VcDrawer from "./vc-drawer.vue";
 
 export default {
   title: "organisms/vc-drawer",
@@ -13,13 +14,14 @@ export default {
   },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcDrawer },
-  props: Object.keys(argTypes),
-  template: '<vc-drawer v-bind="$props" v-on="$props"></vc-drawer>',
+  setup() { return { args } },
+  template: '<vc-drawer v-bind="args"></vc-drawer>',
 });
 
 export const Drawer = Template.bind({});
+Drawer.storyName = "vc-drawer";
 Drawer.args = {
   version: "0.0.1",
   logo: "/images/logo.svg",

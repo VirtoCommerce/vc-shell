@@ -1,8 +1,9 @@
 /**
- * Button story (for demo).
- * @author Yuri A Taranov <me@flanker72.ru>
+ * Button component.
+ * @author Iurii A Taranov <me@flanker72.ru>
  */
-import VcButton from "./vc-button";
+import { Story } from '@storybook/vue3';
+import VcButton from "./vc-button.vue";
 
 export default {
   title: "atoms/vc-button",
@@ -15,13 +16,14 @@ export default {
   },
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcButton },
-  props: Object.keys(argTypes),
-  template: '<vc-button v-bind="$props" v-on="$props"></vc-button>',
+  setup() { return { args } },
+  template: '<vc-button v-bind="args"></vc-button>',
 });
 
 export const Button = Template.bind({});
+Button.storyName = "vc-button";
 Button.args = {
   icon: "star",
   title: "I am a button",

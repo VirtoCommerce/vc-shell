@@ -1,19 +1,20 @@
 /**
- * Table story (for demo).
- * @author Yuri A Taranov <me@flanker72.ru>
+ * Table component.
+ * @author Iurii A Taranov <me@flanker72.ru>
  */
-import VcTable from "./vc-table";
+import { Story } from '@storybook/vue3';
+import VcTable from "./vc-table.vue";
 
 export default {
   title: "organisms/vc-table",
   component: VcTable,
 };
 
-const Template = (args, { argTypes }) => ({
+const Template: Story = (args) => ({
   components: { VcTable },
-  props: Object.keys(argTypes),
+  setup() { return { args } },
   template: `
-      <vc-Table v-bind="$props" v-on="$props">
+      <vc-Table v-bind="args">
          <template v-slot:item_img="itemData">
             <img :src="itemData.item.img" class="vc-fill_width" />
          </template>
@@ -28,6 +29,7 @@ const Template = (args, { argTypes }) => ({
 });
 
 export const Table = Template.bind({});
+Table.storyName = "vc-table";
 Table.args = {
   multiselect: true,
 

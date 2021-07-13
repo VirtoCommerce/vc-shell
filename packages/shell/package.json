@@ -3,11 +3,17 @@
   "version": "0.0.2",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "build": "vue-cli-service build --target lib --name shell ./src/index.ts",
+    "lint": "vue-cli-service lint --fix",
     "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(ts|js|vue)\" --locales \"./src/locales/**/*.json\""
   },
+  "main": "./dist/shell.common.js",
+  "files": [
+    "dist/*",
+    "src/shell.d.ts",
+    "src/**/*.vue"
+  ],
+  "types": "./src/shell.d.ts",
   "dependencies": {
     "core-js": "^3.6.5",
     "vue": "^3.0.0",

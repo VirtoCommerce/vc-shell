@@ -1,15 +1,8 @@
 <template>
   <vc-layout :toolbar-items="toolbarItems" :account="account">
-    <template #banner>
-      <div>
-        Running community edition, click to request a commercial license.
-      </div>
-      <vc-button variant="special" title="Purchase"></vc-button>
-    </template>
-
     <template #left>
       <vc-drawer
-        :items="menuItems"
+        :items="[]"
         logo="/assets/logo.svg"
         @itemClick="openWorkspace($event)"
       ></vc-drawer>
@@ -19,31 +12,24 @@
   </vc-layout>
 </template>
 
-<script>
-import { VcLayout, VcButton, VcDrawer, routing } from "@virtocommerce/ui-kit";
+<script lang="ts">
+import { VcLayout, VcDrawer } from "@virtocommerce/ui-kit";
 import { defineComponent, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { drawer, routes } from "./addons";
 
 export default defineComponent({
-  components: { VcLayout, VcButton, VcDrawer },
+  name: "VcApp",
+  components: { VcLayout, VcDrawer },
+
+  props: ["menuItems"],
 
   setup() {
-    const { t } = useI18n({ useScope: "global" });
-    const route = window.location.pathname;
-
-    if (route) {
-      let blade = null;
-      for (var item in routes) {
-        if (routes[item].url === route) {
-          blade = routes[item];
-          break;
-        }
-      }
-      if (blade) {
-        routing.openBlade(blade.component, {});
-      }
+    //const { t } = useI18n({ useScope: "global" });
+    function t(val: string): string {
+      return val;
     }
+
+    const route = window.location.pathname;
 
     const toolbarItems = ref([
       {
@@ -81,24 +67,23 @@ export default defineComponent({
     });
 
     return {
-      menuItems: drawer,
       toolbarItems,
       account,
-      openedBlades: routing.opened.value,
+      openedBlades: [],
 
-      openBlade(data) {
-        const blade = routes[data.routeName];
-        routing.openBlade(blade.component, data.componentOptions);
+      openBlade(data: unknown): void {
+        // const blade = routes[data.routeName];
+        // routing.openBlade(blade.component, data.componentOptions);
       },
 
-      openWorkspace(data) {
-        routing.closeBlades();
-        routing.openBlade(data.component, data.componentOptions);
-        history.pushState({}, data.title, data.url);
+      openWorkspace(data: unknown): void {
+        // routing.closeBlades();
+        // routing.openBlade(data.component, data.componentOptions);
+        // history.pushState({}, data.title, data.url);
       },
 
-      closeBlade(id) {
-        routing.closeBlade(id);
+      closeBlade(id: number): void {
+        // routing.closeBlade(id);
       },
     };
   },
@@ -106,14 +91,10 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-@import "~@virtocommerce/ui-kit/dist/ui-kit.css";
-
 html,
 body,
 #app {
   margin: 0;
   height: 100%;
-  font-family: "Roboto";
-  font-size: var(--font-size-m);
 }
 </style>

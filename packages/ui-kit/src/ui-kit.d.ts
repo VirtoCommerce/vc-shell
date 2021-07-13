@@ -1,17 +1,19 @@
 /* eslint-disable */
-import { DefineComponent } from "vue";
+declare module "@virtocommerce/ui-kit" {
+  export const install: import("vue").PluginInstallFunction;
 
-export const VcBlade: DefineComponent<{}, {}, any>;
-export const VcBreadcrumbs: DefineComponent<{}, {}, any>;
-export const VcButton: DefineComponent<{}, {}, any>;
-export const VcCheckbox: DefineComponent<{}, {}, any>;
-export const VcContainer: DefineComponent<{}, {}, any>;
-export const VcDrawerItem: DefineComponent<{}, {}, any>;
-export const VcDrawerToggler: DefineComponent<{}, {}, any>;
-export const VcDrawer: DefineComponent<{}, {}, any>;
-export const VcIcon: DefineComponent<{}, {}, any>;
-export const VcInput: DefineComponent<{}, {}, any>;
-export const VcLayout: DefineComponent<{}, {}, any>;
-export const VcLink: DefineComponent<{}, {}, any>;
-export const VcSpacer: DefineComponent<{}, {}, any>;
-export const VcTable: DefineComponent<{}, {}, any>;
+  export const VcBlade: import("vue").DefineComponent<{}, {}, any>;
+  export const VcBreadcrumbs: import("vue").DefineComponent<{}, {}, any>;
+  export const VcButton: import("vue").DefineComponent<{}, {}, any>;
+  export const VcCheckbox: import("vue").DefineComponent<{}, {}, any>;
+  export const VcContainer: import("vue").DefineComponent<{}, {}, any>;
+  export const VcDrawerItem: import("vue").DefineComponent<{}, {}, any>;
+  export const VcDrawerToggler: import("vue").DefineComponent<{}, {}, any>;
+  export const VcDrawer: import("vue").DefineComponent<{}, {}, any>;
+  export const VcIcon: import("vue").DefineComponent<{}, {}, any>;
+  export const VcInput: import("vue").DefineComponent<{}, {}, any>;
+  export const VcLayout: import("vue").DefineComponent<{}, {}, any>;
+  export const VcLink: import("vue").DefineComponent<{}, {}, any>;
+  export const VcSpacer: import("vue").DefineComponent<{}, {}, any>;
+  export const VcTable: import("vue").DefineComponent<{}, {}, any>;
+};

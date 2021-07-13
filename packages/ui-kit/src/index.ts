@@ -9,6 +9,10 @@ export default {
     Object.entries(components).forEach(([componentName, component]) => {
       app.component(componentName, component);
     });
+
+    app.config.globalProperties.$VcLoading = components.VcLoading;
+
+    app.provide('VcLoading', components.VcLoading);
   }
 }
 

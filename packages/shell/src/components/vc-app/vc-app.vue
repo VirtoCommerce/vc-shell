@@ -3,7 +3,9 @@
     <template #left>
       <vc-drawer
         :items="[]"
-        logo="/assets/logo.svg"
+        :logo="branding.logo"
+        :logo-mini="branding.logoMini"
+        :version="branding.version"
         @itemClick="openWorkspace($event)"
       ></vc-drawer>
     </template>
@@ -14,20 +16,57 @@
 
 <script lang="ts">
 import { VcLayout, VcDrawer } from "@virtocommerce/ui-kit";
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, inject } from "vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "VcApp",
   components: { VcLayout, VcDrawer },
 
-  props: ["menuItems"],
+  props: {
+    branding: {
+      type: Object,
+      default() {
+        return {
+          title: undefined,
+          logo: undefined,
+          logoMini: undefined,
+          background: undefined
+        };
+      }
+    },
+    extensions: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+    locale: {
+      type: String,
+      default: "en"
+    },
+    rtl: {
+      type: Boolean,
+      default: false
+    },
+    theme: {
+      type: String,
+      default: "light"
+    },
+    version: {
+      type: String,
+      default: undefined
+    }
+  },
+
+  emits: ["init", "resize"],
 
   setup() {
-    //const { t } = useI18n({ useScope: "global" });
-    function t(val: string): string {
-      return val;
-    }
+    const { t } = useI18n({ useScope: "global" });
+    const VcLoading: any = inject('VcLoading');
+    // function t(val: string): string {
+    //   return val;
+    // }
 
     const route = window.location.pathname;
 
@@ -36,6 +75,13 @@ export default defineComponent({
         id: "settings",
         icon: "cog",
         title: t("SHELL.TOOLBAR.SETTINGS"),
+        onClick() {
+          if (VcLoading.isVisible()) {
+            VcLoading.hide();
+          } else {
+            VcLoading.show();
+          }
+        }
       },
       {
         id: "help",

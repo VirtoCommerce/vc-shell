@@ -107,15 +107,26 @@ export default defineComponent({
   props: {
     toolbarItems: {
       type: Array,
+      default() {
+        return [];
+      },
     },
 
     account: {
       type: Object,
+      default() {
+        return {
+          name: "Unknown",
+          role: undefined,
+          avatar: undefined,
+        };
+      },
     },
   },
 
   setup() {
     const accountMenuVisible = ref(false);
+
     return {
       accountMenuVisible,
     };

@@ -12,3 +12,4 @@ export { default as VcLayout } from "./organisms/vc-layout/vc-layout.vue";
 export { default as VcLink } from "./atoms/vc-link/vc-link.vue";
 export { default as VcSpacer } from "./atoms/vc-spacer/vc-spacer.vue";
 export { default as VcTable } from "./organisms/vc-table/vc-table.vue";
+export { default as VcLoading } from "./atoms/vc-loading";

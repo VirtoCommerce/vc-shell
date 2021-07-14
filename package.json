@@ -1,6 +1,12 @@
 {
   "name": "root",
   "private": true,
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "demo": "lerna run serve --stream --scope demo-manager",
+    "build": "lerna run build",
+    "publish": "lerna publish"
+  },
   "devDependencies": {
     "lerna": "^4.0.0"
   }

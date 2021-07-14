@@ -3,8 +3,8 @@
   "version": "0.0.2",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name ext-store ./src/main.ts",
-    "lint": "vue-cli-service lint"
+    "build": "vue-cli-service build --target lib --name ext-store ./src/index.ts",
+    "lint": "vue-cli-service lint --fix"
   },
   "types": "./src/ext-store.d.ts",
   "main": "./dist/ext-store.common.js",
@@ -27,6 +27,7 @@
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
+    "babel-loader": "^8.2.2",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
     "eslint": "^6.7.2",

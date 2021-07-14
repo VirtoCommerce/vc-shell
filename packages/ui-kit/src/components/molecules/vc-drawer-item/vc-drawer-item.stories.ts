@@ -2,7 +2,7 @@
  * DrawerItem component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcDrawerItem from "./vc-drawer-item.vue";
 
 export default {
@@ -15,7 +15,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcDrawerItem },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template: '<vc-drawer-item v-bind="args"></vc-drawer-item>',
 });
 

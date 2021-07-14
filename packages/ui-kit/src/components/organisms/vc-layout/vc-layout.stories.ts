@@ -2,7 +2,7 @@
  * Layout component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcLayout from "./vc-layout.vue";
 
 export default {
@@ -12,7 +12,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcLayout },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template: `
       <vc-layout v-bind="args">
          <template #banner>

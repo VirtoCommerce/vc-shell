@@ -2,7 +2,7 @@
  * Icon component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcIcon from "./vc-icon.vue";
 
 export default {
@@ -22,7 +22,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcIcon },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template: '<vc-icon v-bind="args"></vc-icon>',
 });
 

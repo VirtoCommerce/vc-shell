@@ -1,8 +1,6 @@
 <template>
   <vc-app :branding="branding">
-    <template #menu>
-
-    </template>
+    <template #menu> </template>
   </vc-app>
 </template>
 

@@ -8,7 +8,7 @@ interface IRouteData {
 
 export const current: Ref<IRouteData[]> = ref([]);
 
-export function clear(app: App): void {
+export function clear(): void {
   current.value.slice();
 }
 
@@ -16,6 +16,6 @@ export function push(app: App, route: IRouteData): void {
   current.value.push(route);
 }
 
-export function pop(app: App): IRouteData | undefined {
+export function pop(): IRouteData | undefined {
   return current.value.pop();
 }

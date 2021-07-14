@@ -1,5 +1,5 @@
-import VcLoading from './vc-loading.vue';
-import { createApp, App, ComponentPublicInstance } from 'vue';
+import VcLoading from "./vc-loading.vue";
+import { createApp, App, ComponentPublicInstance } from "vue";
 
 interface ILoading {
   loadingInstance: App;
@@ -18,9 +18,9 @@ class Loading implements ILoading {
   loadEl: ComponentPublicInstance;
 
   constructor() {
-    const el = this.loadingInstance.mount(document.createElement('div'))
-    document.body.appendChild(el.$el)
-    this.loadEl = el
+    const el = this.loadingInstance.mount(document.createElement("div"));
+    document.body.appendChild(el.$el);
+    this.loadEl = el;
   }
 
   show() {

@@ -2,7 +2,7 @@
  * Breadcrumbs component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcBreadcrumbs from "./vc-breadcrumbs.vue";
 
 export default {
@@ -12,7 +12,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcBreadcrumbs },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template: '<vc-breadcrumbs v-bind="args"></vc-breadcrumbs>',
 });
 

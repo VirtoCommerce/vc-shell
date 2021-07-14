@@ -2,7 +2,7 @@
  * Checkbox component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcCheckbox from "./vc-checkbox.vue";
 
 export default {
@@ -12,7 +12,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcCheckbox },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template: '<vc-checkbox v-bind="args"></vc-checkbox>',
 });
 

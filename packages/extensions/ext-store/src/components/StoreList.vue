@@ -45,7 +45,7 @@
 <script lang="ts">
 import { VcBlade, VcTable, VcIcon } from "@virtocommerce/ui-kit";
 import { defineComponent, ref, onMounted } from "vue";
-import { useStores } from '../composables';
+import { useStores } from "../composables";
 
 export default defineComponent({
   components: { VcBlade, VcTable, VcIcon },
@@ -69,12 +69,11 @@ export default defineComponent({
   },
 
   setup(_props, { emit }) {
-
     const { loadStores, stores } = useStores();
 
     onMounted(async () => {
       await loadStores();
-    })
+    });
 
     const toolbarItems = ref([
       { id: 1, icon: "sync-alt", title: "Refresh" },

@@ -2,7 +2,7 @@
  * Blade component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcBlade from "./vc-blade.vue";
 
 export default {
@@ -16,7 +16,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcBlade },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template:
     '<vc-blade v-bind="args"><div class="vc-padding_l">Blade Contents</div></vc-blade>',
 });

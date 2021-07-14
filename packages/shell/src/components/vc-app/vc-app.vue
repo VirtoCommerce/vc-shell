@@ -31,9 +31,9 @@ export default defineComponent({
           title: undefined,
           logo: undefined,
           logoMini: undefined,
-          background: undefined
+          background: undefined,
         };
-      }
+      },
     },
     extensions: {
       type: Array,
@@ -43,32 +43,32 @@ export default defineComponent({
     },
     locale: {
       type: String,
-      default: "en"
+      default: "en",
     },
     rtl: {
       type: Boolean,
-      default: false
+      default: false,
     },
     theme: {
       type: String,
-      default: "light"
+      default: "light",
     },
     version: {
       type: String,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
 
   emits: ["init", "resize"],
 
   setup() {
     const { t } = useI18n({ useScope: "global" });
-    const VcLoading: any = inject('VcLoading');
+    const VcLoading: any = inject("VcLoading");
     // function t(val: string): string {
     //   return val;
     // }
 
-    const route = window.location.pathname;
+    //const route = window.location.pathname;
 
     const toolbarItems = ref([
       {
@@ -82,7 +82,7 @@ export default defineComponent({
               VcLoading.hide();
             }, 2000);
           }
-        }
+        },
       },
       {
         id: "help",
@@ -118,18 +118,18 @@ export default defineComponent({
       account,
       openedBlades: [],
 
-      openBlade(data: unknown): void {
+      openBlade(): void {
         // const blade = routes[data.routeName];
         // routing.openBlade(blade.component, data.componentOptions);
       },
 
-      openWorkspace(data: unknown): void {
+      openWorkspace(): void {
         // routing.closeBlades();
         // routing.openBlade(data.component, data.componentOptions);
         // history.pushState({}, data.title, data.url);
       },
 
-      closeBlade(id: number): void {
+      closeBlade(): void {
         // routing.closeBlade(id);
       },
     };

@@ -1,3 +1,1 @@
-import useStores from './useStores';
-
-export { useStores };
+export { default as useStores } from "./useStores";

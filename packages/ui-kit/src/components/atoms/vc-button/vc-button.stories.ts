@@ -2,7 +2,7 @@
  * Button component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcButton from "./vc-button.vue";
 
 export default {
@@ -18,7 +18,9 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcButton },
-  setup() { return { args } },
+  setup() {
+    return { args };
+  },
   template: '<vc-button v-bind="args"></vc-button>',
 });
 

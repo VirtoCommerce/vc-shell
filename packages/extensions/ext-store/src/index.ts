@@ -1,19 +1,22 @@
 import { App } from "vue";
 import * as components from "./components";
 
-import "./styles/index.less";
+export const routes = {
+  extStoreList: {
+    url: "/store",
+    component: components.StoreList,
+  },
+};
+
 
 export default {
   install(app: App): void {
-    // Register exported components
+    // Globally register exported modules
     Object.entries(components).forEach(([componentName, component]) => {
       app.component(componentName, component);
     });
-
-    app.config.globalProperties.$VcLoading = components.VcLoading;
-
-    app.provide("VcLoading", components.VcLoading);
   },
 };
 
 export * from "./components";
+export * from "./composables";

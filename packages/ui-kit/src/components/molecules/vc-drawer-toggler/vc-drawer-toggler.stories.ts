@@ -2,7 +2,7 @@
  * DrawerToggler component.
  * @author Iurii A Taranov <me@flanker72.ru>
  */
-import { Story } from '@storybook/vue3';
+import { Story } from "@storybook/vue3";
 import VcDrawerToggler from "./vc-drawer-toggler.vue";
 
 export default {
@@ -15,9 +15,10 @@ export default {
 
 const Template: Story = (args) => ({
   components: { VcDrawerToggler },
-  setup() { return { args } },
-  template:
-    '<vc-drawer-toggler v-bind="args"></vc-drawer-toggler>',
+  setup() {
+    return { args };
+  },
+  template: '<vc-drawer-toggler v-bind="args"></vc-drawer-toggler>',
 });
 
 export const DrawerToggler = Template.bind({});

@@ -76,10 +76,11 @@ export default defineComponent({
         icon: "cog",
         title: t("SHELL.TOOLBAR.SETTINGS"),
         onClick() {
-          if (VcLoading.isVisible()) {
-            VcLoading.hide();
-          } else {
+          if (!VcLoading.isVisible()) {
             VcLoading.show();
+            setTimeout(() => {
+              VcLoading.hide();
+            }, 2000);
           }
         }
       },

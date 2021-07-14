@@ -10,26 +10,22 @@ The R&D project originated to create a replacement of the current vc-platform ma
 
 ## Tech stack
 - **lerna** (managing monorepo and its packages dependencies).
-- **VueJS 2.6** as background for our solution.
-- **@vue/composition-api** for reactive state management and preparation to VueJS 3 migration.
-- **rollup & webpack** for easy build and deployment.
+- **Vue 3** as background for our solution.
+- **webpack** for easy build and deployment.
 
 ## Getting started
 
 ```bash
-# install lerna globally
-$ npm install -g lerna
-
-# link local dependencies
-$ lerna link
+# install dependencies
+$ npm install
 
 # install and relocate dependencies
-$ lerna bootstrap
+$ npm run bootstrap
 
 # rebuild packages (optional) or prepare release
-$ lerna run build
+$ npm run build
 
-# serve shell with hot reload at localhost:8080
-$ cd packages/vc-shell && npm run dev
+# start demo shell with hot reload at localhost:8080
+$ npm run demo
 
 ```

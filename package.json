@@ -4,6 +4,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap",
     "demo": "lerna run serve --stream --scope demo-manager",
+    "storybook:ui": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
     "build": "lerna run build",
     "publish": "lerna publish"
   },

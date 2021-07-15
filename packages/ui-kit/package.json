@@ -3,8 +3,8 @@
   "version": "0.0.2",
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib --name ui-kit ./src/index.ts",
-    "lint": "vue-cli-service lint",
+    "build": "vue-cli-service build --stream --formats commonjs --target lib --name ui-kit ./src/index.ts",
+    "lint": "vue-cli-service lint --fix",
     "storybook:build": "vue-cli-service storybook:build -c config/storybook",
     "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook"
   },

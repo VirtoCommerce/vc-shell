@@ -62,7 +62,9 @@ export default defineComponent({
   emits: ["init", "resize"],
 
   setup() {
-    const { t } = useI18n({ useScope: "global" });
+    const { t } = useI18n();
+
+    // eslint-disable-next-line
     const VcLoading: any = inject("VcLoading");
     // function t(val: string): string {
     //   return val;

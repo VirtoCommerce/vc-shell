@@ -1,5 +1,6 @@
 interface IShellOptions {
   extensions: import("vue").Plugin[];
+  locale?: string;
 }
 
 declare module "@virtocommerce/shell" {

@@ -14,6 +14,8 @@ module.exports = {
     "no-debugger": "off",
   },
 
+  ignorePatterns: ["**/*.common.js"],
+
   extends: [
     "eslint:recommended"
   ],

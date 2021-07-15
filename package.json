@@ -2,7 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap --hoist",
     "demo": "lerna run serve --stream --scope demo-manager",
     "storybook:ui": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
     "build": "lerna run build",

@@ -8,7 +8,6 @@ export const routes = {
   },
 };
 
-
 export default {
   install(app: App): void {
     // Globally register exported modules

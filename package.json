@@ -3,9 +3,14 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
-    "demo": "lerna run serve --stream --scope demo-manager",
-    "storybook:ui": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
+    "serve:demo-manager": "lerna run serve --stream --scope demo-manager",
     "build": "lerna run build",
+    "build:ui-kit": "lerna run build --scope @virtocommerce/ui-kit",
+    "build:shell": "lerna run build --scope @virtocommerce/shell",
+    "build:api-client": "lerna run build --scope @virtocommerce/api-client",
+    "build:demo-manager": "lerna run build --scope @virtocommerce/demo-manager",
+    "storybook-serve:ui-kit": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
+    "storybook-build:ui-kit": "lerna run storybook:build --stream --scope @virtocommerce/ui-kit",
     "publish": "lerna publish"
   },
   "devDependencies": {

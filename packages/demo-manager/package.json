@@ -1,6 +1,6 @@
 {
-  "name": "demo-manager",
-  "version": "0.1.0",
+  "name": "@virtocommerce/demo-manager",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

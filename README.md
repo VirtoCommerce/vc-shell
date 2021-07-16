@@ -16,16 +16,28 @@ The R&D project originated to create a replacement of the current vc-platform ma
 ## Getting started
 
 ```bash
-# install dependencies
+# install root dependencies
 $ npm install
 
-# install and relocate dependencies
+# install and relocate packages dependencies
 $ npm run bootstrap
 
-# rebuild packages (optional) or prepare release
+# build all packages
 $ npm run build
 
+# or one by one
+$ npm run build:ui-kit
+$ npm run build:shell
+$ npm run build:api-client
+$ npm run build:demo-manager
+
 # start demo shell with hot reload at localhost:8080
-$ npm run demo
+$ npm run serve:demo-manager
+
+# run interactive documentation for ui-kit
+$ npm run storybook-serve:ui-kit
+
+# or build it
+$ npm run storybook-build:ui-kit
 
 ```

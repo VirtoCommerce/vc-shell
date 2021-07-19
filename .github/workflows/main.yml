@@ -1,0 +1,89 @@
+# v0.0.1
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - 'README.md'
+      - 'LICENSE'
+    branches: [ main ]
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    env: 
+      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
+      VERSION_SUFFIX: ""
+      ARTIFACT_URL: ""
+
+    steps:
+    - uses: actions/checkout@v2    
+      with:
+        fetch-depth: 0
+
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+    
+    - name: Install dependencies
+      run: |
+        npm install
+        
+    - name: Get Image Version
+      uses: VirtoCommerce/vc-github-actions/get-image-version@master
+      id: image
+      with:
+        projectType: theme
+
+    - name: Set release variables
+      if: ${{ github.ref == 'refs/heads/master' }}
+      run: |
+        echo "VERSION_SUFFIX=${{ steps.image.outputs.prefix }}" >> $GITHUB_ENV
+
+    - name: Set release-alpha variables
+      if: ${{ github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/dev' }}
+      run: |
+        echo "VERSION_SUFFIX=${{ steps.image.outputs.fullVersion }}" >> $GITHUB_ENV
+
+    - name: Set PR variables
+      if: ${{ github.event_name == 'pull_request' }}
+      run: |
+        echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
+        
+    - name: Set ARTIFACT_URL
+      run: |
+        echo "ARTIFACT_URL=ghcr.io/virtocommerce/demo-xapi-app:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+
+    - name: Build
+      id: build
+      run: |
+        npm run build
+        
+    - name: Docker Login
+      uses: azure/docker-login@v1
+      with:
+        login-server: ghcr.io
+        username: $GITHUB_ACTOR
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Publish Docker Image
+      run: |
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL }}
+          docker push ${{ env.ARTIFACT_URL }}
+          
+    - name: CI results
+      run: |
+          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
+          
+    - name: Invoke VC deployment workflow
+      if: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        workflow: VC deployment
+        token: ${{ secrets.REPO_TOKEN }}
+        inputs: '{ "artifactUrl": "${{ env.ARTIFACT_URL }}" }'

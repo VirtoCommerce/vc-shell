@@ -1,7 +1,8 @@
 # vue-vc-platform-manager
+
 The R&D project originated to create a replacement of the current vc-platform manager concept.
 
-## The main R&D project goals:
+## The main R&D project goals
 
 - Technological shift from AngularJS to VueJS for platform backoffice UI development. VueJS is choosen as one of the best fit candidate at this role, in the future we can extend to another popular web frameworks (Angular, ReactJS, Svelte).
 - Split core components into separate packages with own release cycle.
@@ -9,6 +10,7 @@ The R&D project originated to create a replacement of the current vc-platform ma
 - Provide the way for seamless migration to the new vc manager for existing solutions.
 
 ## Tech stack
+
 - **lerna** (managing monorepo and its packages dependencies).
 - **Vue 3** as background for our solution.
 - **webpack** for easy build and deployment.
@@ -16,10 +18,10 @@ The R&D project originated to create a replacement of the current vc-platform ma
 ## Getting started
 
 ```bash
-# install root dependencies
+# install and relocate root and packages dependencies
 $ npm install
 
-# install and relocate packages dependencies
+# reinstall or refresh packages dependencies
 $ npm run bootstrap
 
 # build all packages

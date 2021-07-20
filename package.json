@@ -1,10 +1,11 @@
 {
   "name": "root",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "prepare": "npm run bootstrap",
-    "serve:demo-manager": "lerna run serve --stream --scope demo-manager",
+    "serve:demo-manager": "lerna run serve --stream --scope @virtocommerce/demo-manager",
     "build": "lerna run build",
     "build:ui-kit": "lerna run build --scope @virtocommerce/ui-kit",
     "build:shell": "lerna run build --scope @virtocommerce/shell",

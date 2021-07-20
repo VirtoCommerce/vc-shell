@@ -55,14 +55,21 @@ jobs:
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
         
-    - name: Set ARTIFACT_URL
+    - name: Set ARTIFACT_URL_DM
       run: |
-        echo "ARTIFACT_URL=ghcr.io/virtocommerce/platform-manager-sdk:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-
-    - name: Build
-      id: build
+        echo "ARTIFACT_URL_DM=ghcr.io/virtocommerce/platform-demo-manager:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+    
+    - name: Set ARTIFACT_URL_UK
+      run: |
+        echo "ARTIFACT_URL_UK=ghcr.io/virtocommerce/platform-ui-kit:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+    
+    - name: Build demo manager
       run: |
         npm run build
+
+    - name: Build ui kit
+      run: |
+        npm run storybook-build:ui-kit
         
     - name: Docker Login
       uses: azure/docker-login@v1
@@ -71,19 +78,17 @@ jobs:
         username: $GITHUB_ACTOR
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and Publish Docker Image
+    - name: Build and Publish Docker Image For Demo Manager
       run: |
-          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL }}
-          docker push ${{ env.ARTIFACT_URL }}
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_DM }} -f dockerfiles/demo-manager/Dockerfile.demo
+          docker push ${{ env.ARTIFACT_URL_DM }}
+          
+    - name: Build and Publish Docker Image For UI Kit
+      run: |
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_UK }} -f dockerfiles/ui-kit/Dockerfile.demo
+          docker push ${{ env.ARTIFACT_URL_UK }}
           
     - name: CI results
       run: |
-          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
+          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM and $ARTIFACT_URL_UK"
           
-    - name: Invoke VC deployment workflow
-      if: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' }}
-      uses: benc-uk/workflow-dispatch@v1
-      with:
-        workflow: VC deployment
-        token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.ARTIFACT_URL }}" }'

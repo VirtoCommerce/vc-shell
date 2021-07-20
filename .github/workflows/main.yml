@@ -94,4 +94,3 @@ jobs:
     - name: CI results
       run: |
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM and $ARTIFACT_URL_UK"
-          

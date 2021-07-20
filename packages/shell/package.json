@@ -1,6 +1,6 @@
 {
   "name": "@virtocommerce/shell",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "scripts": {
     "build": "vue-cli-service build --formats commonjs --target lib --name shell ./src/index.ts",
     "lint": "vue-cli-service lint --fix",
@@ -22,7 +22,7 @@
     "@intlify/vue-i18n-loader": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^4.18.0",
     "@typescript-eslint/parser": "^4.18.0",
-    "@virtocommerce/ui-kit": "^0.0.2",
+    "@virtocommerce/ui-kit": "^0.0.3",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",

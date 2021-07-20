@@ -14,7 +14,9 @@
     "storybook-serve:ui-kit": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
     "storybook-build:ui-kit": "lerna run storybook:build --stream --scope @virtocommerce/ui-kit",
     "publish": "lerna publish",
-    "lint": "eslint --fix packages/**/*.{ts,vue}"
+    "lint": "eslint --fix packages/**/*.{ts,vue}",
+    "commitmsg": "node scripts/verifyCommitMsg.js",
+    "precommit": "lint-staged"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.4",

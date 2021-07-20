@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
-    "prepare": "npm run bootstrap && husky install",
+    "prepare": "npm run bootstrap",
+    "postinstall": "husky install",
     "serve:demo-manager": "lerna run serve --stream --scope @virtocommerce/demo-manager",
     "build": "lerna run build",
     "build:ui-kit": "lerna run build --scope @virtocommerce/ui-kit",
@@ -14,7 +15,8 @@
     "storybook-serve:ui-kit": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
     "storybook-build:ui-kit": "lerna run storybook:build --stream --scope @virtocommerce/ui-kit",
     "publish": "lerna publish",
-    "lint": "eslint --fix packages/**/*.{ts,vue}"
+    "lint": "eslint --fix packages/**/*.{ts,vue}",
+    "lint-staged": "lint-staged"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",

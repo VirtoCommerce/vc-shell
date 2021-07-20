@@ -5,6 +5,7 @@
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
     "husky-install": "husky install",
+    "yorkie-install": "yorkie install",
     "prepare": "npm run bootstrap",
     "serve:demo-manager": "lerna run serve --stream --scope @virtocommerce/demo-manager",
     "build": "lerna run build",

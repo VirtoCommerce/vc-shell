@@ -17,8 +17,8 @@
 <script lang="ts">
 import { VcLayout, VcDrawer } from "@virtocommerce/ui-kit";
 import { defineComponent, ref, inject } from "vue";
-import { useI18n } from "vue-i18n"
-import { useLogger } from 'vue-logger-plugin'
+import { useI18n } from "vue-i18n";
+import { useLogger } from "vue-logger-plugin";
 
 export default defineComponent({
   name: "VcApp",

@@ -1,7 +1,5 @@
 ## Git Commit Message Convention
 
-> This is adapted from [Angular's commit convention](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular).
-
 #### TL;DR:
 
 Messages must be matched by the following regex:
@@ -12,16 +10,16 @@ Messages must be matched by the following regex:
 
 #### Examples
 
-Appears under "Features" header, `compiler` subheader:
+Appears under "Features" header, `ui-kit` subheader:
 
 ```
-feat(compiler): add 'comments' option
+feat(ui-kit): add 'comments' option
 ```
 
-Appears under "Bug Fixes" header, `v-model` subheader, with a link to issue #28:
+Appears under "Bug Fixes" header, `shell` subheader, with a link to issue #28:
 
 ```
-fix(v-model): handle events on blur
+fix(shell): handle events on blur
 
 close #28
 ```
@@ -29,7 +27,7 @@ close #28
 Appears under "Performance Improvements" header, and under "Breaking Changes" with the breaking change explanation:
 
 ```
-perf(core): improve vdom diffing by removing 'foo' option
+perf(api-client): improve vdom diffing by removing 'foo' option
 
 BREAKING CHANGE: The 'foo' option has been removed.
 ```
@@ -37,7 +35,7 @@ BREAKING CHANGE: The 'foo' option has been removed.
 The following commit and commit `667ecc1` do not appear in the changelog if they are under the same release. If not, the revert commit appears under the "Reverts" header.
 
 ```
-revert: feat(compiler): add 'comments' option
+revert: feat(ui-kit): add 'comments' option
 
 This reverts commit 667ecc1654a317a13331b17617d973392f415f02.
 ```
@@ -70,7 +68,7 @@ Other prefixes are up to your discretion. Suggested prefixes are `docs`, `chore`
 
 ### Scope
 
-The scope could be anything specifying place of the commit change. For example `core`, `compiler`, `ssr`, `v-model`, `transition` etc...
+The scope could be any valid lerna package name (located inside `packages` folder). For example `shell`, `ui-kit`, `api-client`, etc...
 
 ### Subject
 

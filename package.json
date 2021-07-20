@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/config-lerna-scopes": "^12.1.4",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@vue/eslint-config-prettier": "^6.0.0",

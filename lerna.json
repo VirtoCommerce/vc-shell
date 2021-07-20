@@ -5,8 +5,14 @@
   ],
   "version": "0.0.3",
   "command": {
-    "publish": {
-      "message": "Publish version %s"
+    "create": {
+      "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk",
+      "license": "https://virtocommerce.com/open-source-license"
+    },
+    "version": {
+      "allowBranch": "main",
+      "conventionalCommits": true,
+      "message": "chore(release): %s"
     }
   }
 }

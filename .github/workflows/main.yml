@@ -41,12 +41,12 @@ jobs:
         projectType: theme
 
     - name: Set release variables
-      if: ${{ github.ref == 'refs/heads/master' }}
+      if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.prefix }}" >> $GITHUB_ENV
 
     - name: Set release-alpha variables
-      if: ${{ github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/dev' }}
+      if: ${{ github.event_name == 'workflow_dispatch' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.fullVersion }}" >> $GITHUB_ENV
 
@@ -57,7 +57,7 @@ jobs:
         
     - name: Set ARTIFACT_URL
       run: |
-        echo "ARTIFACT_URL=ghcr.io/virtocommerce/demo-xapi-app:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+        echo "ARTIFACT_URL=ghcr.io/virtocommerce/platform-manager-sdk:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
 
     - name: Build
       id: build

@@ -1,13 +1,12 @@
-# vue-vc-platform-manager
+# VC Platform Manager SDK
 
-The R&D project originated to create a replacement of the current vc-platform manager concept.
+The project is originated to create a replacement of the current vc-platform manager concept.
 
-## The main R&D project goals
+## Main project goals
 
-- Technological shift from AngularJS to VueJS for platform backoffice UI development. VueJS is choosen as one of the best fit candidate at this role, in the future we can extend to another popular web frameworks (Angular, ReactJS, Svelte).
+- Technological shift from AngularJS to Vue3 for platform backoffice UI development.
 - Split core components into separate packages with own release cycle.
-- Simplify and speed up customization of any existing or brand new specialized (use case oriented) Backoffice applications with the help of unique VC design system `vue-vc-manager-ui-kit`. It's a collection of reusable components, guided by clear standards, that can be assembled together to build a number of application.
-- Provide the way for seamless migration to the new vc manager for existing solutions.
+- Simplify and speed up customization of any existing or brand new specialized (use case oriented) Backoffice applications with the help of unique VC design system. It's a collection of reusable components, guided by clear standards, that can be assembled together to build a number of applications.
 
 ## Tech stack
 

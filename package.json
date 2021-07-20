@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",
-    "prepare": "npm run bootstrap",
+    "prepare": "npm run bootstrap && husky install",
     "serve:demo-manager": "lerna run serve --stream --scope @virtocommerce/demo-manager",
     "build": "lerna run build",
     "build:ui-kit": "lerna run build --scope @virtocommerce/ui-kit",
@@ -14,9 +14,7 @@
     "storybook-serve:ui-kit": "lerna run storybook:serve --stream --scope @virtocommerce/ui-kit",
     "storybook-build:ui-kit": "lerna run storybook:build --stream --scope @virtocommerce/ui-kit",
     "publish": "lerna publish",
-    "lint": "eslint --fix packages/**/*.{ts,vue}",
-    "commitmsg": "node scripts/verifyCommitMsg.js",
-    "precommit": "lint-staged"
+    "lint": "eslint --fix packages/**/*.{ts,vue}"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.28.4",
@@ -32,6 +30,10 @@
     "prettier": "^2.3.2",
     "typescript": "^4.3.5",
     "yorkie": "^2.0.0"
+  },
+  "gitHooks": {
+    "commit-msg": "node scripts/verifyCommitMsg.js",
+    "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.{ts,vue}": "eslint --fix"

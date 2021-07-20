@@ -16,7 +16,8 @@
   ],
   "dependencies": {
     "core-js": "^3.6.5",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-logger-plugin": "^2.1.2"
   },
   "devDependencies": {
     "@storybook/addon-controls": "^6.3.4",

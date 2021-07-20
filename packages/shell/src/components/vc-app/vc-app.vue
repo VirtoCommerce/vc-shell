@@ -18,6 +18,7 @@
 import { VcLayout, VcDrawer } from "@virtocommerce/ui-kit";
 import { defineComponent, ref, inject } from "vue";
 import { useI18n } from "vue-i18n";
+import { useLogger } from "vue-logger-plugin";
 
 export default defineComponent({
   name: "VcApp",
@@ -63,6 +64,8 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n();
+    const log = useLogger();
+    log.info(`Initializing vc-app`);
 
     // eslint-disable-next-line
     const VcLoading: any = inject("VcLoading");
@@ -116,22 +119,26 @@ export default defineComponent({
     });
 
     return {
+      log,
       toolbarItems,
       account,
       openedBlades: [],
 
       openBlade(): void {
+        log.info(`shell/vc-app#openBlade: Start`);
         // const blade = routes[data.routeName];
         // routing.openBlade(blade.component, data.componentOptions);
       },
 
       openWorkspace(): void {
+        log.info(`shell/vc-app#openWorkspace: Start`);
         // routing.closeBlades();
         // routing.openBlade(data.component, data.componentOptions);
         // history.pushState({}, data.title, data.url);
       },
 
       closeBlade(): void {
+        log.info(`shell/vc-app#closeBlade: Start`);
         // routing.closeBlade(id);
       },
     };

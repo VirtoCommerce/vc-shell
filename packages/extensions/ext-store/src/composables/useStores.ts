@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { computed, Ref, ref } from "vue";
-import { StoreModuleClient, Store } from "@virtocommerce/api-client";
+import { StoreModuleClient, Store } from "@virtocommerce/platform-manager-rest-client";
 
 const stores: Ref<Store[]> = ref([]);
 

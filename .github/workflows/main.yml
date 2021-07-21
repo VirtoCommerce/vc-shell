@@ -14,7 +14,7 @@ on:
 jobs:
   CI:
     runs-on: ubuntu-latest
-    env: 
+    env:
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
       VERSION_SUFFIX: ""
@@ -24,7 +24,7 @@ jobs:
       UI_KIT_CONTAINER: "platform-ui-kit"
 
     steps:
-    - uses: actions/checkout@v2    
+    - uses: actions/checkout@v2
       with:
         fetch-depth: 0
 
@@ -32,11 +32,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
-    
+
     - name: Install dependencies
       run: |
         npm install
-        
+
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master
       id: image
@@ -57,23 +57,23 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
-        
+
     - name: Set ARTIFACT_URL_DM
       run: |
         echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-    
+
     - name: Set ARTIFACT_URL_UK
       run: |
         echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-    
-    - name: Build demo manager
+
+    - name: Build platform-manager-demo
       run: |
         npm run build
 
-    - name: Build ui kit
+    - name: Build platform-manager-ui docs
       run: |
-        npm run storybook-build:ui-kit
-        
+        npm run storybook-build:ui
+
     - name: Docker Login
       uses: azure/docker-login@v1
       with:
@@ -81,16 +81,16 @@ jobs:
         username: $GITHUB_ACTOR
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and Publish Docker Image For Demo Manager
+    - name: Build and Publish Docker Image For Platform Manager Demo
       run: |
-          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_DM }} -f dockerfiles/demo-manager/Dockerfile.demo
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_DM }} -f .dockerfiles/platform-manager-demo/Dockerfile.demo
           docker push ${{ env.ARTIFACT_URL_DM }}
-          
-    - name: Build and Publish Docker Image For UI Kit
+
+    - name: Build and Publish Docker Image For Platform Manager UI Docs
       run: |
-          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_UK }} -f dockerfiles/ui-kit/Dockerfile.demo
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_UK }} -f .dockerfiles/platform-manager-ui/Dockerfile.demo
           docker push ${{ env.ARTIFACT_URL_UK }}
-          
+
     - name: CI results
       run: |
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM and $ARTIFACT_URL_UK"

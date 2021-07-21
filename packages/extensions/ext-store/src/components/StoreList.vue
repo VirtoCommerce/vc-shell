@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { VcBlade, VcTable, VcIcon } from "@virtocommerce/ui-kit";
+import { VcBlade, VcTable, VcIcon } from "@virtocommerce/platform-manager-ui";
 import { defineComponent, ref, onMounted } from "vue";
 import { useStores } from "../composables";
 

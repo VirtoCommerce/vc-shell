@@ -8,6 +8,7 @@ module.exports = {
     config.plugins.delete('html');
     config.plugins.delete('preload');
     config.plugins.delete('prefetch');
+    config.externals(["vue-i18n", "vue-logger-plugin"]);
   },
 
   productionSourceMap: false,

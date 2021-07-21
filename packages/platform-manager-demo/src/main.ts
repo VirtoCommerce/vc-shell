@@ -7,6 +7,7 @@ import { createLogger } from "vue-logger-plugin";
 // Load required CSS
 import "@fortawesome/fontawesome-free/css/all.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
+import "@virtocommerce/platform-manager-ui/dist/ui.css";
 import "@virtocommerce/platform-manager-theme-light/dist/theme.css";
 
 const app = createApp(App);

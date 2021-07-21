@@ -3,10 +3,15 @@
     "packages/*",
     "packages/extensions/*"
   ],
-  "version": "0.0.3",
+  "version": "0.0.4",
   "command": {
-    "publish": {
-      "message": "Publish version %s"
+    "create": {
+      "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk",
+      "license": "https://virtocommerce.com/open-source-license"
+    },
+    "version": {
+      "conventionalCommits": true,
+      "message": "chore(release): %s"
     }
   }
 }

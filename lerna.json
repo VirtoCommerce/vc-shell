@@ -3,7 +3,7 @@
     "packages/*",
     "packages/extensions/*"
   ],
-  "version": "0.0.3",
+  "version": "0.0.4",
   "command": {
     "create": {
       "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk",

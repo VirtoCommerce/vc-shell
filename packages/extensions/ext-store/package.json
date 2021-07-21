@@ -1,6 +1,6 @@
 {
   "name": "@virtocommerce/ext-store",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib --name ext-store ./src/index.ts"
@@ -13,17 +13,17 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "core-js": "^3.6.5",
-    "vue": "^3.0.0",
-    "@virtocommerce/api-client": "^0.0.3",
-    "@virtocommerce/ui-kit": "^0.0.3",
+    "@virtocommerce/api-client": "^0.0.4",
+    "@virtocommerce/ui-kit": "^0.0.4",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
     "babel-loader": "^8.2.2",
+    "core-js": "^3.6.5",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "vue": "^3.0.0"
   }
 }

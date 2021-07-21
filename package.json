@@ -1,6 +1,6 @@
 {
   "name": "@virtocommerce/platform-manager-sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --hoist",

@@ -3,7 +3,7 @@ FROM nginx:alpine
 RUN rm /usr/share/nginx/html/index.html \
     && apk update && apk add -u gettext
 
-COPY ./packages/demo-manager/dist /usr/share/nginx/html
+COPY ./packages/platform-manager-ui/storybook-static /usr/share/nginx/html
 
 EXPOSE 80
 

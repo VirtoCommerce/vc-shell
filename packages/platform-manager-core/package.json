@@ -1,29 +1,30 @@
 {
-  "name": "@virtocommerce/platform-manager-ext-store",
+  "name": "@virtocommerce/platform-manager-core",
   "version": "0.0.4",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --target lib ./src/index.ts"
+    "build": "vue-cli-service build --formats commonjs --target lib --name core ./src/index.ts"
   },
-  "types": "./src/ext-store.d.ts",
-  "main": "./dist/ext-store.common.js",
+  "main": "./dist/core.common.js",
   "files": [
     "dist/*",
-    "src/ext-store.d.ts",
+    "src/core.d.ts",
     "src/**/*.vue"
   ],
+  "types": "./src/shell.d.ts",
   "devDependencies": {
-    "@virtocommerce/platform-manager-rest-client": "^0.0.4",
+    "@intlify/vue-i18n-loader": "^2.1.0",
     "@virtocommerce/platform-manager-ui": "^0.0.4",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
-    "babel-loader": "^8.2.2",
     "core-js": "^3.6.5",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "typescript": "^4.3.5",
-    "vue": "^3.0.0"
+    "vue": "^3.0.0",
+    "vue-i18n": "^9.1.0",
+    "vue-logger-plugin": "^2.1.2",
+    "vue-router": "4"
   }
 }

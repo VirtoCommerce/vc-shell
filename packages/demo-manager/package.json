@@ -23,7 +23,7 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "roboto-fontface": "^0.10.0",
-    "typescript": "~4.1.5",
+    "typescript": "^4.3.5",
     "vue-cli-plugin-i18n": "~2.1.1"
   }
 }

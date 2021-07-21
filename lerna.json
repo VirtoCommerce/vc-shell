@@ -10,7 +10,6 @@
       "license": "https://virtocommerce.com/open-source-license"
     },
     "version": {
-      "allowBranch": "main",
       "conventionalCommits": true,
       "message": "chore(release): %s"
     }

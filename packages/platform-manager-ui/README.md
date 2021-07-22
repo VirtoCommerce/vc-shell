@@ -1,4 +1,6 @@
-# @virtocommerce/platform-manager-ui
+# Platform Manager UI
+
+Vue3 components library also shipped as Vue plugin.
 
 Here you can get anything you need to blazingly fast build specialized [VirtoCommerce](https://virtocommerce.com/) back-office applications.
 
@@ -26,3 +28,30 @@ Here you can get anything you need to blazingly fast build specialized [VirtoCom
 ### Organisms
 
 *ToDo*
+
+
+## Code Usage
+
+Connect as Vue plugin to whole App to auto register all UI components:
+
+```typescript
+import { createApp } from "vue";
+import App from "./App.vue";
+import UI from "@virtocommerce/platform-manager-ui";
+
+createApp(App)
+  .use(UI)
+  .mount("#app");
+```
+
+or use components individually:
+
+```typescript
+import { defineComponent } from "vue";
+import { VcButton } from "@virtocommerce/platform-manager-ui";
+
+export default defineComponent({
+  name: "MyAwesomeComponent",
+  components: { VcButton },
+});
+```

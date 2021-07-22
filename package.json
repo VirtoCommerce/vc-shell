@@ -17,7 +17,7 @@
     "publish": "lerna publish",
     "lint": "eslint --fix packages/**/*.{ts,vue}",
     "lint-staged": "lint-staged",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "init-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "version": "lerna version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .",
     "postversion": "git push origin --tags"
   },

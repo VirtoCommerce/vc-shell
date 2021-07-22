@@ -1,24 +1,6 @@
-# shell
+# Platform Manager Core
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
+Shared set of composables written in TypeScript to use with Vue Composition API.
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).

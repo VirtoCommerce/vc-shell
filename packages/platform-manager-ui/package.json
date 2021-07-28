@@ -1,6 +1,6 @@
 {
   "name": "@virtocommerce/platform-manager-ui",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --stream --formats commonjs --target lib --name ui ./src/index.ts",
@@ -19,7 +19,7 @@
     "@storybook/addon-docs": "^6.3.4",
     "@storybook/core": "^6.3.4",
     "@storybook/vue3": "^6.3.4",
-    "@virtocommerce/platform-manager-theme-light": "^0.0.6",
+    "@virtocommerce/platform-manager-theme-light": "^0.0.7",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

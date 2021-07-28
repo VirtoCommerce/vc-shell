@@ -1,6 +1,6 @@
 {
   "name": "@virtocommerce/platform-manager-ext-store",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib ./src/index.ts"
@@ -13,8 +13,8 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@virtocommerce/platform-manager-rest-client": "^0.0.6",
-    "@virtocommerce/platform-manager-ui": "^0.0.6",
+    "@virtocommerce/platform-manager-rest-client": "^0.0.7",
+    "@virtocommerce/platform-manager-ui": "^0.0.7",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

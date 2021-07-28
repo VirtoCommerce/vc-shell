@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.6](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.5...v0.0.6) (2021-07-28)
+
+
+### Features
+
+* eslint import validation ([50d7a9b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/50d7a9b5a2972b5d5466374e08a1927343154ee0))
+* route handling (WIP) ([528db0e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/528db0e5613b4b88705ad323f692c8bae6022a25))
+* route handling (WIP) ([fefdb3c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fefdb3ccba79e95ffdf007133549d38dd35207f0))
+* vetur config with monorepo support ([850a8e7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/850a8e73d207c2508ddebfdf2fe30db437a9ef19))
+
+
+
+
+
 ## [0.0.5](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.4...v0.0.5) (2021-07-21)
 
 

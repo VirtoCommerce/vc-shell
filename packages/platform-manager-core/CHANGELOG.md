@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.6](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.5...v0.0.6) (2021-07-28)
+
+
+### Features
+
+* route handling (WIP) ([528db0e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/528db0e5613b4b88705ad323f692c8bae6022a25))
+* route handling (WIP) ([fefdb3c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fefdb3ccba79e95ffdf007133549d38dd35207f0))
+
+
+
+
+
 ## [0.0.5](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.4...v0.0.5) (2021-07-21)
 
 

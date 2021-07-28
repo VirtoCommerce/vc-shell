@@ -91,7 +91,7 @@ jobs:
       with:
         workflow: VC deployment
         token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ steps.image.outputs.taggedVersion }}", "deployConfigPath":".github/deploy/argoDeployUIKit.json" }'
+        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployUIKit.json" }'
 
     - name: Invoke VC image deployment workflow for Demo manager
       if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
@@ -99,4 +99,4 @@ jobs:
       with:
         workflow: VC deployment
         token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ steps.image.outputs.taggedVersion }}", "deployConfigPath":".github/deploy/argoDeployDemoManager.json" }'
+        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployDemoManager.json" }'

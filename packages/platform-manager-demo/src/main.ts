@@ -5,7 +5,7 @@ import VcUiKit, {
   VcLoginPage,
 } from "@virtocommerce/platform-manager-ui";
 import i18n from "./i18n";
-
+import { createLogger } from "vue-logger-plugin";
 import { createRouter, createWebHashHistory } from "vue-router";
 
 // Load required CSS
@@ -22,4 +22,14 @@ const router = createRouter({
   ],
 });
 
-createApp(App).use(router).use(i18n).use(VcUiKit).mount("#app");
+createApp(App)
+  .use(
+    createLogger({
+      enabled: process.env.VUE_APP_LOG_ENABLED ?? true,
+      level: process.env.VUE_APP_LOG_LEVEL ?? "debug",
+    })
+  )
+  .use(router)
+  .use(i18n)
+  .use(VcUiKit)
+  .mount("#app");

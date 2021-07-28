@@ -1,20 +1,115 @@
 <template>
-  <vc-app :branding="branding">
-    <template #menu> </template>
-  </vc-app>
+  <vc-layout :toolbar-items="toolbarItems" :account="account">
+    <template #left>
+      <vc-drawer
+        :items="[]"
+        :logo="branding.logo"
+        :logo-mini="branding.logoMini"
+        :version="branding.version"
+        @itemClick="openWorkspace($event)"
+      ></vc-drawer>
+    </template>
+
+    <div class="vc-flex vc-flex-grow_1">
+      <router-view></router-view>
+    </div>
+  </vc-layout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { useLogger } from "vue-logger-plugin";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "App",
 
   setup() {
+    const { t } = useI18n();
+    const log = useLogger();
+    const router = useRouter();
+
+    log.info(`Initializing App`);
+
+    const toolbarItems = ref([
+      {
+        id: "login",
+        icon: "user",
+        title: t("SHELL.TOOLBAR.LOGIN"),
+        onClick() {
+          router.push("/login");
+        },
+      },
+      {
+        id: "settings",
+        icon: "cog",
+        title: t("SHELL.TOOLBAR.SETTINGS"),
+        onClick() {
+          router.push("/settings");
+        },
+      },
+      {
+        id: "help",
+        icon: "life-ring",
+        title: t("SHELL.TOOLBAR.HELP"),
+        onClick() {
+          router.push("/help");
+        },
+      },
+      {
+        id: "bell",
+        icon: "bell",
+        accent: true,
+        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+      },
+    ]);
+
+    const account = ref({
+      avatar: "/assets/avatar.jpg",
+      name: "Iurii A Taranov",
+      role: "Administrator",
+      dropdown: [
+        {
+          id: 1,
+          title: t("SHELL.ACCOUNT.PROFILE"),
+          onClick() {
+            router.push("/profile");
+          },
+        },
+        {
+          id: 2,
+          title: t("SHELL.ACCOUNT.LOGOUT"),
+        },
+      ],
+    });
+
     return {
       branding: {
         logo: "/assets/logo.svg",
         version: "0.0.1b",
+      },
+      log,
+      toolbarItems,
+      account,
+      openedBlades: [],
+
+      openBlade(): void {
+        log.info(`shell/vc-app#openBlade: Start`);
+        // const blade = routes[data.routeName];
+        // routing.openBlade(blade.component, data.componentOptions);
+      },
+
+      openWorkspace(): void {
+        log.info(`shell/vc-app#openWorkspace: Start`);
+        // routing.closeBlades();
+        // routing.openBlade(data.component, data.componentOptions);
+        // history.pushState({}, data.title, data.url);
+      },
+
+      closeBlade(): void {
+        log.info(`shell/vc-app#closeBlade: Start`);
+        // routing.closeBlade(id);
       },
     };
   },
@@ -27,5 +122,7 @@ body,
 #app {
   font-family: "Roboto";
   font-size: var(--font-size-m);
+  height: 100%;
+  margin: 0;
 }
 </style>

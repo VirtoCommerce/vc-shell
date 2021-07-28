@@ -1,4 +1,4 @@
-# v0.0.1
+# v1.0.0
 name: CI
 
 on:
@@ -19,7 +19,7 @@ jobs:
       BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
       VERSION_SUFFIX: ""
       ARTIFACT_URL: ""
-      PACKAGE_SERVER: "ghcr.io/virtocommerce/"
+      PACKAGE_SERVER: "ghcr.io"
       DEMO_MANAGER_CONTAINER: "platform-demo-manager"
       UI_KIT_CONTAINER: "platform-ui-kit"
 
@@ -36,7 +36,6 @@ jobs:
     - name: Install dependencies
       run: |
         npm install
-
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master
       id: image
@@ -47,37 +46,30 @@ jobs:
       if: ${{ github.ref == 'refs/heads/main' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.prefix }}" >> $GITHUB_ENV
-
     - name: Set release-alpha variables
       if: ${{ github.event_name == 'workflow_dispatch' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.fullVersion }}" >> $GITHUB_ENV
-
     - name: Set PR variables
       if: ${{ github.event_name == 'pull_request' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
-
     - name: Set ARTIFACT_URL_DM
       run: |
-        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-
+        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}/virtocommerce/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
     - name: Set ARTIFACT_URL_UK
       run: |
-        echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-
+        echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}/virtocommerce/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
     - name: Build platform-manager-demo
       run: |
         npm run build
-
     - name: Build platform-manager-ui docs
       run: |
         npm run storybook-build:ui
-
     - name: Docker Login
       uses: azure/docker-login@v1
       with:
-        login-server: ghcr.io
+        login-server: ${{ env.PACKAGE_SERVER }}
         username: $GITHUB_ACTOR
         password: ${{ secrets.GITHUB_TOKEN }}
 
@@ -85,12 +77,26 @@ jobs:
       run: |
           docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_DM }} -f .dockerfiles/platform-manager-demo/Dockerfile.demo
           docker push ${{ env.ARTIFACT_URL_DM }}
-
     - name: Build and Publish Docker Image For Platform Manager UI Docs
       run: |
           docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_UK }} -f .dockerfiles/platform-manager-ui/Dockerfile.demo
           docker push ${{ env.ARTIFACT_URL_UK }}
-
     - name: CI results
       run: |
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM and $ARTIFACT_URL_UK"
+
+    - name: Invoke VC image deployment workflow for UI Kit
+      if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        workflow: VC deployment
+        token: ${{ secrets.REPO_TOKEN }}
+        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ steps.image.outputs.taggedVersion }}", "deployConfigPath":".github/deploy/argoDeployUIKit.json" }'
+
+    - name: Invoke VC image deployment workflow for Demo manager
+      if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+      uses: benc-uk/workflow-dispatch@v1
+      with:
+        workflow: VC deployment
+        token: ${{ secrets.REPO_TOKEN }}
+        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ steps.image.outputs.taggedVersion }}", "deployConfigPath":".github/deploy/argoDeployDemoManager.json" }'

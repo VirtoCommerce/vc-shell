@@ -1,3 +1,5 @@
-import * as navigation from "./navigation";
+import * as useNavigation from "./navigation";
+import useLogger, { init as initLogger } from "./logger";
 
-export { navigation };
+export const init = [initLogger];
+export const composables = [useLogger, useNavigation];

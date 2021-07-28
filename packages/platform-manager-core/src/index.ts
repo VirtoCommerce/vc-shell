@@ -1,9 +1,12 @@
 import { App } from "vue";
 
-export * from "./composables";
+import { init } from "./composables";
 
 export default {
   install(app: App): void {
-    // Register globals
+    // Init all children
+    init.forEach((fn) => fn(app));
   },
 };
+
+export { composables } from "./composables";

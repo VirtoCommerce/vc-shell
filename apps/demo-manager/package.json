@@ -10,6 +10,7 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@intlify/vue-i18n-loader": "^2.1.0",
+    "@virtoshell/core": "^0.0.8",
     "@virtoshell/ui": "^0.0.8",
     "@virtoshell/ui-theme-light": "^0.0.8",
     "@vue/cli-plugin-babel": "~4.5.0",

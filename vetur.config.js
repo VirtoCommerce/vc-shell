@@ -1,11 +1,11 @@
 module.exports = {
   // support monorepos
   projects: [
-    './packages/platform-manager-core',
-    './packages/platform-manager-demo',
-    './packages/platform-manager-rest-client',
-    './packages/platform-manager-ui',
-    './packages/themes/platform-manager-theme-light',
-    './packages/themes/platform-manager-theme-dark',
+    './framework/core',
+    './framework/ui',
+    './framework/ui-theme-light',
+    './framework/ui-theme-dark',
+    './framework/api-client',
+    './apps/demo-manager',
   ]
 }

@@ -1,0 +1,28 @@
+{
+  "name": "@virtoshell/core",
+  "version": "0.0.8",
+  "scripts": {
+    "build": "vue-cli-service build --formats commonjs --target lib --name core ./src/index.ts"
+  },
+  "main": "./dist/core.common.js",
+  "files": [
+    "dist/*",
+    "src/core.d.ts",
+    "src/**/*.vue"
+  ],
+  "types": "./src/shell.d.ts",
+  "devDependencies": {
+    "@intlify/vue-i18n-loader": "^2.1.0",
+    "@virtoshell/ui": "^0.0.8",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "core-js": "^3.6.5",
+    "typescript": "^4.3.5",
+    "vue": "^3.0.0",
+    "vue-i18n": "^9.1.7",
+    "vue-logger-plugin": "^2.1.2",
+    "vue-router": "4"
+  }
+}

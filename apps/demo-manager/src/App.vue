@@ -18,8 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useI18n } from "vue-i18n";
-import { useLogger } from "@virtoshell/core";
+import { useLogger, useI18n } from "@virtoshell/core";
 import { useRouter } from "vue-router";
 
 export default defineComponent({

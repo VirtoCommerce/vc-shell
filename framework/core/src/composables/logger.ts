@@ -5,8 +5,6 @@ import {
   VueLogger,
 } from "vue-logger-plugin";
 
-let logger: VueLogger = null;
-
 export function init(app: App): App {
   app.use(
     createLogger({
@@ -15,11 +13,9 @@ export function init(app: App): App {
     })
   );
 
-  logger = useVueLogger();
-
   return app;
 }
 
 export default function useLogger(): VueLogger {
-  return logger;
+  return useVueLogger();
 }

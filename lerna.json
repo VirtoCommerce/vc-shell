@@ -1,8 +1,8 @@
 {
   "packages": [
-    "packages/*",
-    "packages/extensions/*",
-    "packages/themes/*"
+    "framework/*",
+    "modules/*",
+    "apps/*"
   ],
   "version": "0.0.7",
   "command": {

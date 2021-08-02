@@ -1,6 +1,7 @@
 import { App } from "vue";
+import { init as initLogger } from "./composables/logger";
 
-import { init } from "./composables";
+const init = [initLogger];
 
 export default {
   install(app: App): void {
@@ -9,4 +10,4 @@ export default {
   },
 };
 
-export { composables } from "./composables";
+export * from "./composables";

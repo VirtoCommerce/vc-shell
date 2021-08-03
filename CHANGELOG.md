@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.8...v0.0.9) (2021-08-03)
+
+
+### Features
+
+* core composables ([57d84af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
+* core composables ([7713230](https://github.com/VirtoCommerce/platform-manager-sdk/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+* route handling (WIP) ([9c2c218](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9c2c21874a1ab8fc5d506ac3642d6ea3d766373f))
+
+
+
+
+
 ## [0.0.8](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.7...v0.0.8) (2021-08-02)
 
 

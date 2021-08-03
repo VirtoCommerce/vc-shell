@@ -6,6 +6,7 @@ import {
 } from "vue-logger-plugin";
 
 export function init(app: App): App {
+  console.debug("Init logger");
   app.use(
     createLogger({
       enabled: process.env.VUE_APP_LOG_ENABLED ?? true,
@@ -17,5 +18,6 @@ export function init(app: App): App {
 }
 
 export default function useLogger(): VueLogger {
+  console.debug("useLogger entry point");
   return useVueLogger();
 }

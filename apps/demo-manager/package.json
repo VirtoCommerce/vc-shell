@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "i18n:report": "vue-cli-service i18n:report --src \"./src/**/*.?(js|vue)\" --locales \"./src/locales/**/*.json\""
+    "build": "vue-cli-service build"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
@@ -22,10 +21,6 @@
     "less-loader": "^5.0.0",
     "roboto-fontface": "^0.10.0",
     "typescript": "^4.3.5",
-    "vue": "^3.0.0",
-    "vue-cli-plugin-i18n": "~2.1.1",
-    "vue-i18n": "^9.1.7",
-    "vue-logger-plugin": "^2.1.2",
-    "vue-router": "4"
+    "vue": "^3.0.0"
   }
 }

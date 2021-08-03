@@ -18,8 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useLogger, useI18n } from "@virtoshell/core";
-import { useRouter } from "vue-router";
+import { useLogger, useI18n, useRouter } from "@virtoshell/core";
 
 export default defineComponent({
   name: "App",
@@ -86,7 +85,7 @@ export default defineComponent({
     return {
       branding: {
         logo: "/assets/logo.svg",
-        version: "0.0.1b",
+        version: process.env.PACKAGE_VERSION,
       },
       log,
       toolbarItems,

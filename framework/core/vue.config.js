@@ -23,11 +23,9 @@ module.exports = {
         return options;
       })
     config.externals([
-      "vue-i18n",
       "@virtoshell/ui",
-      "vue-logger-plugin",
-      "vue-router",
     ]);
+    //config.resolve.alias.set('vue-i18n', 'vue-i18n/dist/vue-i18n.runtime.esm-bundler.js');
   },
 
   productionSourceMap: false,

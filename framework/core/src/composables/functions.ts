@@ -11,6 +11,7 @@ interface IUseFunctions {
 }
 
 export default function useFunctions(): IUseFunctions {
+  console.debug("useFunctions entry point");
   return {
     debounce,
     delay,

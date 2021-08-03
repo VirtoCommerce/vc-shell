@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.9](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.8...v0.0.9) (2021-08-03)
+
+
+### Features
+
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+
+
 ## [0.0.8](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.7...v0.0.8) (2021-08-02)
 
 

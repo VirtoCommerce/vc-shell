@@ -110,10 +110,10 @@
         </div>
       </div>
       <div class="vc-blade__searchbar-search vc-flex-grow_1">
-        <vc-input
+        <vc-form-input
           placeholder="Search keywords"
           clearable="clearable"
-        ></vc-input>
+        ></vc-form-input>
       </div>
       <div
         v-if="filterable"
@@ -131,12 +131,12 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
-import VcInput from "../../atoms/vc-input/vc-input.vue";
-import VcBreadcrumbs from "../../atoms/vc-breadcrumbs/vc-breadcrumbs.vue";
+import VcFormInput from "../../molecules/vc-form-input/vc-form-input.vue";
+import VcBreadcrumbs from "../../organisms/vc-breadcrumbs/vc-breadcrumbs.vue";
 
 export default defineComponent({
   name: "VcBlade",
-  components: { VcIcon, VcInput, VcBreadcrumbs },
+  components: { VcIcon, VcFormInput, VcBreadcrumbs },
 
   props: {
     icon: {

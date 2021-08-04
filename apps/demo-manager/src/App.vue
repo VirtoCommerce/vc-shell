@@ -1,19 +1,19 @@
 <template>
-  <vc-layout :toolbar-items="toolbarItems" :account="account">
+  <vc-layout-workspace :toolbar-items="toolbarItems" :account="account">
     <template #left>
-      <vc-drawer
+      <vc-nav
         :items="[]"
         :logo="branding.logo"
         :logo-mini="branding.logoMini"
         :version="branding.version"
         @itemClick="openWorkspace($event)"
-      ></vc-drawer>
+      ></vc-nav>
     </template>
 
     <div class="vc-flex vc-flex-grow_1">
       <router-view></router-view>
     </div>
-  </vc-layout>
+  </vc-layout-workspace>
 </template>
 
 <script lang="ts">

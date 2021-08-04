@@ -10,9 +10,9 @@ export default {
       app.component(componentName, component);
     });
 
-    app.config.globalProperties.$VcLoading = components.VcLoading;
+    app.config.globalProperties.$VcLoader = components.VcLoader;
 
-    app.provide("VcLoading", components.VcLoading);
+    app.provide("VcLoader", components.VcLoader);
   },
 };
 

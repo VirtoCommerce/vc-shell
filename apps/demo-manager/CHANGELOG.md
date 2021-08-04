@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.10](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.9...v0.0.10) (2021-08-04)
+
+**Note:** Version bump only for package @virtoshell/app-demo-manager
+
+
+
+
+
 ## [0.0.9](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.8...v0.0.9) (2021-08-03)
 
 

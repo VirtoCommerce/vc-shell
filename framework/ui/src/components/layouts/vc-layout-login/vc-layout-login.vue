@@ -7,21 +7,21 @@
       vc-flex-justify_center
     "
     :style="{
-      background: `url(${options.branding.background}) center / cover no-repeat`,
+      background: `url(${branding.background}) center / cover no-repeat`,
     }"
   >
     <div
       class="vc-layout-login__logo"
       :style="{
-        background: `url(${options.branding.logo}) center / contain no-repeat`,
+        background: `url(${branding.logo}) center / contain no-repeat`,
       }"
     ></div>
     <div class="vc-layout-login__wrapper">
       <div class="vc-layout-login__header vc-flex vc-flex-align_center">
-        {{ options.branding.title || "Login" }}
+        {{ branding.title || "Login" }}
       </div>
       <div class="vc-layout-login__body">
-        <slot><vc-form></vc-form></slot>
+        <slot></slot>
       </div>
     </div>
   </div>
@@ -29,15 +29,12 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import VcForm from "../../organisms/vc-form/vc-form.vue";
 
 export default defineComponent({
   name: "VcLayoutLogin",
 
-  components: { VcForm },
-
   props: {
-    options: {
+    branding: {
       type: Object,
       default: () => ({}),
     },
@@ -55,12 +52,13 @@ export default defineComponent({
     height: 60px;
     width: 516px;
     margin-bottom: 50px;
+    margin-top: -90px;
   }
 
   &__wrapper {
     width: 516px;
     background: white;
-    border-radius: 6px 2px;
+    border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 0 0 rgba(0, 0, 0, 0.05);
   }
@@ -75,7 +73,7 @@ export default defineComponent({
   }
 
   &__body {
-    padding: 14px 28px 28px 28px;
+    padding: 16px 28px 24px 28px;
   }
 }
 </style>

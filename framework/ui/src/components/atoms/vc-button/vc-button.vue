@@ -7,7 +7,9 @@
     ]"
   >
     <i v-if="icon" class="vc-button__icon"></i>
-    <div v-if="title" class="vc-button__title">{{ title }}</div>
+    <div class="vc-button__title">
+      <slot></slot>
+    </div>
   </div>
 </template>
 
@@ -17,10 +19,6 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     icon: {
-      type: String,
-    },
-
-    title: {
       type: String,
     },
 

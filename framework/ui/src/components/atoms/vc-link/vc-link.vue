@@ -25,6 +25,7 @@ export default defineComponent({
 .vc-link {
   color: var(--basic-black-color);
   text-decoration: none;
+  cursor: pointer;
 
   &:hover {
     text-decoration: underline;

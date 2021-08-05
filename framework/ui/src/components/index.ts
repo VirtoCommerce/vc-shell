@@ -21,6 +21,7 @@ export { default as VcBreadcrumbsBack } from "./molecules/vc-breadcrumbs-back/vc
 export { default as VcBreadcrumbsItem } from "./molecules/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 export { default as VcFormAutocomplete } from "./molecules/vc-form-autocomplete/vc-form-autocomplete.vue";
 export { default as VcFormCheckbox } from "./molecules/vc-form-checkbox/vc-form-checkbox.vue";
+export { default as VcFormField } from "./molecules/vc-form-field/vc-form-field.vue";
 export { default as VcFormInput } from "./molecules/vc-form-input/vc-form-input.vue";
 export { default as VcFormLabel } from "./molecules/vc-form-label/vc-form-label.vue";
 export { default as VcFormSelect } from "./molecules/vc-form-select/vc-form-select.vue";

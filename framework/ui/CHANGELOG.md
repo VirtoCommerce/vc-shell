@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.14](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.13...v0.0.14) (2021-08-05)
+
+
+### Features
+
+* workspace layout WIP ([1edc014](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1edc014b320c1f57b7a83d2bc7150f3a834d7724))
+
+
+
+
+
 ## [0.0.13](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.12...v0.0.13) (2021-08-05)
 
 

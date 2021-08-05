@@ -31,9 +31,6 @@ const app = createApp(App)
         {
           path: "/:pathMatch(.*)*",
           component: VcLayoutWorkspace,
-          beforeEnter: () => {
-            return "/login";
-          },
         },
       ],
     },

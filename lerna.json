@@ -4,7 +4,7 @@
     "modules/*",
     "apps/*"
   ],
-  "version": "0.0.13",
+  "version": "0.0.14",
   "command": {
     "create": {
       "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk"

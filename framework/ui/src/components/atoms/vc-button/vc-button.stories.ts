@@ -21,14 +21,13 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-button v-bind="args"></vc-button>',
+  template: '<vc-button v-bind="args">I am a button</vc-button>',
 });
 
 export const Button = Template.bind({});
 Button.storyName = "vc-button";
 Button.args = {
   icon: "star",
-  title: "I am a button",
   variant: "special",
   disabled: false,
   small: false,

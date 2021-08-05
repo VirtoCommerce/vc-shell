@@ -7,6 +7,7 @@
       v-model="internalValue"
       class="vc-form-input__field vc-flex-grow_1 vc-padding-left_m"
       :placeholder="placeholder"
+      :type="type"
     />
     <div
       v-if="clearable"
@@ -46,6 +47,11 @@ export default defineComponent({
     clearable: {
       type: Boolean,
       default: false,
+    },
+
+    type: {
+      type: String,
+      default: "text,",
     },
   },
 

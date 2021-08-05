@@ -1,6 +1,6 @@
 <template>
   <div class="vc-app vc-fill_all" :class="`vc-theme_${theme}`">
-    <slot :options="options"></slot>
+    <slot v-bind="options"></slot>
   </div>
 </template>
 
@@ -22,9 +22,8 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
-    console.log("vc-app");
-    console.dir(props);
+  setup() {
+    console.debug("Init vc-app");
   },
 });
 </script>

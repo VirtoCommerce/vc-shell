@@ -20,7 +20,7 @@
       </div>
       <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">
         <vc-link>Sign in with Azure Active Directory</vc-link>
-        <vc-button variant="special">Log in</vc-button>
+        <vc-button variant="special" @click="tryLogin">Log in</vc-button>
       </div>
     </vc-form>
   </vc-layout-login>
@@ -28,6 +28,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import { useRouter } from "@virtoshell/core";
+
 export default defineComponent({
   props: {
     branding: {
@@ -38,6 +40,15 @@ export default defineComponent({
 
   setup() {
     console.debug("Init login-page");
+    const router = useRouter();
+
+    function tryLogin() {
+      router.push("/orders");
+    }
+
+    return {
+      tryLogin,
+    };
   },
 });
 </script>

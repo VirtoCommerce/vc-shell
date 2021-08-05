@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { useLogger, useI18n, useRouter } from "@virtoshell/core";
 
 export default defineComponent({
@@ -20,7 +20,7 @@ export default defineComponent({
 
     log.info(`Initializing App`);
 
-    const toolbarItems = ref([
+    const toolbarItems = [
       {
         id: "login",
         icon: "user",
@@ -51,9 +51,9 @@ export default defineComponent({
         accent: true,
         title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
       },
-    ]);
+    ];
 
-    const account = ref({
+    const account = {
       avatar: "/assets/avatar.jpg",
       name: "Iurii A Taranov",
       role: "Administrator",
@@ -70,7 +70,7 @@ export default defineComponent({
           title: t("SHELL.ACCOUNT.LOGOUT"),
         },
       ],
-    });
+    };
 
     return {
       options: {
@@ -113,7 +113,6 @@ html,
 body,
 #app {
   font-family: "Roboto";
-  font-size: var(--font-size-m);
   height: 100%;
   margin: 0;
 }

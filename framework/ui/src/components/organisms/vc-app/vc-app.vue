@@ -29,10 +29,9 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-html,
-body,
-#app {
+.vc-app {
   margin: 0;
   height: 100%;
+  font-size: var(--font-size-m);
 }
 </style>

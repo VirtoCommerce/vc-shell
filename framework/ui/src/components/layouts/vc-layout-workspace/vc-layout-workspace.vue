@@ -1,7 +1,14 @@
 <template>
   <div class="vc-layout-workspace vc-flex vc-fill_all">
     <div class="vc-fill_height">
-      <slot name="left"></slot>
+      <slot name="left">
+        <vc-nav
+          :items="[]"
+          :logo="branding.logo"
+          :logo-mini="branding.logoMini"
+          :version="branding.version"
+        ></vc-nav>
+      </slot>
     </div>
 
     <div class="vc-flex vc-flex-grow_1 vc-flex-column">
@@ -18,13 +25,7 @@
           <slot name="banner"></slot>
         </div>
 
-        <div
-          v-if="$slots['notification']"
-          class="vc-layout-workspace__topbar-notification"
-        >
-          <slot name="notification"></slot>
-        </div>
-        <vc-spacer v-else />
+        <vc-spacer />
 
         <div
           v-if="toolbarItems"
@@ -116,6 +117,11 @@ export default defineComponent({
   components: { VcIcon, VcSpacer },
 
   props: {
+    branding: {
+      type: Object,
+      default: () => ({}),
+    },
+
     toolbarItems: {
       type: Array,
       default() {

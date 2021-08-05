@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.13](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.12...v0.0.13) (2021-08-05)
+
+
+### Features
+
+* login form ([8acb2c6](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8acb2c6bc58c1c9355293a1c514a0a777e7fc65c))
+
+
+
+
+
 ## [0.0.12](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.11...v0.0.12) (2021-08-05)
 
 **Note:** Version bump only for package @virtoshell/app-demo-manager

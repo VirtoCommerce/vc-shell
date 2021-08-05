@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.11](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.11) (2021-08-05)
+
+
+### Features
+
+* core composables ([be9df90](https://github.com/VirtoCommerce/platform-manager-sdk/commit/be9df90a3b4aa7aa453d55588d547a8c9892c6fb))
+* core composables ([10f8fa6](https://github.com/VirtoCommerce/platform-manager-sdk/commit/10f8fa67a8e0247cbd5568924e3d69692bb282cf))
+* demo manager version display and locale ([b90b934](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b90b934f62133866ba28507eaf70a8408711a6d2))
+* login form and route guarding ([78813af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/78813afc10753f4972d2e120c3ea48295131b2ed))
+* ui component structure aligned with docs ([2001f40](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2001f404583a385531d1395591f16a251ee41f95))
+
+
+
+
+
 ## [0.0.10](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.9...v0.0.10) (2021-08-04)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/ui-theme-dark",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Dark theme for VirtoCommerce Platform Manager SDK",
   "author": "Iurii A Taranov <me@flanker72.ru>",
   "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk/tree/main/packages/themes/platform-manager-theme-dark#readme",

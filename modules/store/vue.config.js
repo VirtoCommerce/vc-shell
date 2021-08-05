@@ -8,6 +8,11 @@ module.exports = {
     config.plugins.delete('html');
     config.plugins.delete('preload');
     config.plugins.delete('prefetch');
+    config.externals([
+      "@virtoshell/api-client",
+      "@virtoshell/ui",
+      "@virtoshell/core",
+    ]);
   },
 
   productionSourceMap: false

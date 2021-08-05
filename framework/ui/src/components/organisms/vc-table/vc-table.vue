@@ -11,7 +11,7 @@
         <tr class="vc-table__header-row">
           <td v-if="multiselect" class="vc-table__header-cell" width="32">
             <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
-              <vc-checkbox></vc-checkbox>
+              <vc-form-checkbox></vc-form-checkbox>
             </div>
           </td>
           <td
@@ -51,7 +51,7 @@
             width="20"
           >
             <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
-              <vc-checkbox></vc-checkbox>
+              <vc-form-checkbox></vc-form-checkbox>
             </div>
           </td>
           <td
@@ -76,10 +76,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
-import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
+import VcFormCheckbox from "../../molecules/vc-form-checkbox/vc-form-checkbox.vue";
 
 export default defineComponent({
-  components: { VcIcon, VcCheckbox },
+  components: { VcIcon, VcFormCheckbox },
 
   props: {
     headers: {

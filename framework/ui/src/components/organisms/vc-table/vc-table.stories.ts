@@ -16,7 +16,7 @@ const Template: Story = (args) => ({
     return { args };
   },
   template: `
-      <vc-Table v-bind="args">
+      <vc-table v-bind="args">
          <template v-slot:item_img="itemData">
             <img :src="itemData.item.img" class="vc-fill_width" />
          </template>
@@ -26,7 +26,7 @@ const Template: Story = (args) => ({
                <div class="vc-font-size_s vc-ellipsis">{{ itemData.item.description }}</div>
             </div>
          </template>
-      </vc-Table>
+      </vc-table>
    `,
 });
 

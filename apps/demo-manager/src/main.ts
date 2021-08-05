@@ -20,9 +20,21 @@ const app = createApp(App)
   .use(VirtoShellCore, {
     router: {
       routes: [
-        { path: "/", component: VcLayoutDashboard },
         { path: "/login", component: VcLayoutLogin },
-        { path: "/:pathMatch(.*)*", component: VcLayoutWorkspace },
+        {
+          path: "/",
+          component: VcLayoutDashboard,
+          beforeEnter: () => {
+            return "/login";
+          },
+        },
+        {
+          path: "/:pathMatch(.*)*",
+          component: VcLayoutWorkspace,
+          beforeEnter: () => {
+            return "/login";
+          },
+        },
       ],
     },
   });

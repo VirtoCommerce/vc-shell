@@ -1,19 +1,9 @@
 <template>
-  <vc-layout-workspace :toolbar-items="toolbarItems" :account="account">
-    <template #left>
-      <vc-nav
-        :items="[]"
-        :logo="branding.logo"
-        :logo-mini="branding.logoMini"
-        :version="branding.version"
-        @itemClick="openWorkspace($event)"
-      ></vc-nav>
+  <vc-app :options="options">
+    <template v-slot:default="options">
+      <router-view v-bind="options"></router-view>
     </template>
-
-    <div class="vc-flex vc-flex-grow_1">
-      <router-view></router-view>
-    </div>
-  </vc-layout-workspace>
+  </vc-app>
 </template>
 
 <script lang="ts">
@@ -83,13 +73,17 @@ export default defineComponent({
     });
 
     return {
-      branding: {
-        logo: "/assets/logo.svg",
-        version: process.env.PACKAGE_VERSION,
+      options: {
+        branding: {
+          logo: "/assets/logo.svg",
+          background: "/assets/background.jpg",
+          title: "Vendor Portal",
+          version: process.env.PACKAGE_VERSION,
+        },
+        toolbarItems,
+        account,
       },
       log,
-      toolbarItems,
-      account,
       openedBlades: [],
 
       openBlade(): void {

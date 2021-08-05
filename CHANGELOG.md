@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.12](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.11...v0.0.12) (2021-08-05)
+
+
+### Bug Fixes
+
+* storybook build pipeline ([c27dba0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c27dba0e054e85a8a7f5539d2e09f864cd3dfd50))
+
+
+
+
+
 ## [0.0.11](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.11) (2021-08-05)
 
 

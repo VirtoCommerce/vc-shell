@@ -11,7 +11,8 @@ module.exports = {
         let _base = args[0]["process.env"];
         args[0]["process.env"] = {
           ..._base,
-          "PACKAGE_VERSION": '"' + version + '"'
+          "PACKAGE_VERSION": `"${version}"`,
+          "PLATFORM_URL": `${process.env.PLATFORM_URL}`
         };
         return args;
        });

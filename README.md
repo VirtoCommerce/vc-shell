@@ -1,4 +1,4 @@
-# VC Platform Manager SDK
+# VirtoShell: VirtoCommerce Vue3 Frontend for specialized back-office applications
 
 The project is originated to create a replacement of the current vc-platform manager concept.
 
@@ -29,17 +29,17 @@ $ npm run bootstrap
 $ npm run build
 
 # or one by one
-$ npm run build:ui
-$ npm run build:core
-$ npm run build:rest-client
-$ npm run build:demo
+$ npm run build-framework:ui
+$ npm run build-framework:core
+$ npm run build-framework:api-client
+$ npm run build-apps:demo-manager
 
-# start  Platform Manager Demo with hot reload at localhost:8080
-$ npm run serve:demo
+# start Platform Manager Demo with hot reload at localhost:8080
+$ npm run serve-apps:demo-manager
 
-# run interactive documentation for Platform Manager UI
-$ npm run storybook-serve:ui
+# run interactive documentation
+$ npm run storybook-serve
 
 # or build it
-$ npm run storybook-build:ui
+$ npm run storybook-build
 ```

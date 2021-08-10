@@ -1,12 +1,24 @@
 <template>
-  <router-link
-    class="vc-link"
-    :class="{ 'vc-link_active': active, 'vc-link_disabled': disabled }"
-    :href="disabled ? null : to"
-    @click="onClick"
-  >
-    <slot></slot>
-  </router-link>
+  <template v-if="to">
+    <router-link
+      class="vc-link"
+      :class="{ 'vc-link_active': active, 'vc-link_disabled': disabled }"
+      :to="disabled ? null : to"
+      @click="onClick"
+    >
+      <slot></slot>
+    </router-link>
+  </template>
+  <template v-else>
+    <a
+      class="vc-link"
+      :class="{ 'vc-link_active': active, 'vc-link_disabled': disabled }"
+      :href="disabled ? null : to"
+      @click="onClick"
+    >
+      <slot></slot>
+    </a>
+  </template>
 </template>
 
 <script lang="ts">

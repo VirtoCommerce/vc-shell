@@ -56,23 +56,23 @@ export default defineComponent({
   --badge-font-size: var(--font-size-m);
   --badge-font-weight: var(--font-weight-normal);
 
-  --badge-background-color: hsl(0, 0%, 100%);
-  --badge-background-color-hover: hsl(0, 0%, 98%);
-  --badge-background-color-active: hsl(0, 0%, 98%);
-  --badge-background-color-disabled: hsl(0, 0%, 95%);
+  --badge-background-color: #ffffff;
+  --badge-background-color-hover: #fafafa;
+  --badge-background-color-active: #fafafa;
+  --badge-background-color-disabled: #f2f2f2;
 
-  --badge-text-color: hsl(211, 20%, 34%);
-  --badge-text-color-hover: hsl(211, 20%, 29%);
-  --badge-text-color-active: hsl(211, 20%, 29%);
-  --badge-text-color-disabled: hsl(211, 20%, 59%);
+  --badge-text-color: #455668;
+  --badge-text-color-hover: #3b4959;
+  --badge-text-color-active: #3b4959;
+  --badge-text-color-disabled: #8296ab;
 
   --badge-border-radius: 35px;
   --badge-border-width: 1px;
 
-  --badge-border-color: hsl(204, 37%, 73%);
-  --badge-border-color-hover: hsl(204, 37%, 68%);
-  --badge-border-color-active: hsl(204, 37%, 68%);
-  --badge-border-color-disabled: hsl(204, 37%, 78%);
+  --badge-border-color: #a1bfd4;
+  --badge-border-color-hover: #8fb3cc;
+  --badge-border-color-active: #8fb3cc;
+  --badge-border-color-disabled: #b2cbdc;
 }
 
 .vc-badge {

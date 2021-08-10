@@ -15,9 +15,12 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-bubble v-bind="args"></vc-bubble>',
+  template: '<vc-bubble v-bind="args">Status text</vc-bubble>',
 });
 
 export const Bubble = Template.bind({});
 Bubble.storyName = "vc-bubble";
-Bubble.args = {};
+Bubble.args = {
+  disabled: false,
+  clickable: true,
+};

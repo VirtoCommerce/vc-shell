@@ -15,9 +15,13 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-badge v-bind="args"></vc-badge>',
+  template: '<vc-badge v-bind="args">42</vc-badge>',
 });
 
 export const Badge = Template.bind({});
 Badge.storyName = "vc-badge";
-Badge.args = {};
+Badge.args = {
+  active: false,
+  disabled: false,
+  clickable: true,
+};

@@ -28,7 +28,7 @@ export const Button = Template.bind({});
 Button.storyName = "vc-button";
 Button.args = {
   icon: "star",
-  variant: "special",
+  variant: "primary",
   disabled: false,
   small: false,
 };

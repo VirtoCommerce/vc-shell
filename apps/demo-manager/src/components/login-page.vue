@@ -2,10 +2,10 @@
   <vc-layout-login :branding="branding">
     <vc-form>
       <vc-form-field class="vc-margin-bottom_l" label="Login">
-        <vc-form-input></vc-form-input>
+        <vc-form-input v-model="form.username"></vc-form-input>
       </vc-form-field>
       <vc-form-field class="vc-margin-bottom_l" label="Password">
-        <vc-form-input type="password"></vc-form-input>
+        <vc-form-input v-model="form.password" type="password"></vc-form-input>
       </vc-form-field>
       <div
         class="
@@ -42,10 +42,27 @@ export default defineComponent({
     const log = useLogger();
     const router = useRouter();
 
+    const form = {
+      username: undefined,
+      password: undefined,
+    };
+
     log.debug("Init login-page");
 
     return {
-      tryLogin() {
+      form,
+
+      async tryLogin() {
+        const requestOptions = {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        };
+        const response = await fetch(
+          "https://localhost:5001/connect/token", // FIXME: Rewrite to ENV variable PLATFORM_URL
+          requestOptions
+        );
+        console.dir(response);
         router.push("/orders");
       },
     };

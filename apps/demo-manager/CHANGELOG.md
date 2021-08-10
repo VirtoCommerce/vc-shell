@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.17](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.17) (2021-08-10)
+
+
+### Features
+
+* **app-demo-manager:** platform url env bundle ([8516bae](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8516baea67e76365df03b1adf7792d1151d17a06))
+* login component API connect (WIP) ([e248057](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e24805756acc7fe5a9d01fbf2cbab0e4c3dc8392))
+* login component style minor update ([f465fec](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f465fecf534223377e04cf1dc6b078fe7fc8cef7))
+* profile menu item clickable ([be1b93a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/be1b93a24edb4b5575367ac1e49271f6d1d4d615))
+
+
+
+
+
 ## [0.0.16](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.16) (2021-08-10)
 
 

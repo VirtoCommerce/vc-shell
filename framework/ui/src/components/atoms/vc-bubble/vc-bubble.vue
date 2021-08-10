@@ -50,20 +50,20 @@ export default defineComponent({
   --bubble-font-size: var(--font-size-m);
   --bubble-font-weight: var(--font-weight-normal);
 
-  --bubble-background-color: hsl(0, 0%, 100%);
-  --bubble-background-color-hover: hsl(0, 0%, 98%);
-  --bubble-background-color-disabled: hsl(0, 0%, 95%);
+  --bubble-background-color: #ffffff;
+  --bubble-background-color-hover: #fafafa;
+  --bubble-background-color-disabled: #f2f2f2;
 
-  --bubble-text-color: hsl(204, 37%, 73%);
-  --bubble-text-color-hover: hsl(204, 37%, 68%);
-  --bubble-text-color-disabled: hsl(204, 37%, 78%);
+  --bubble-text-color: #a1bfd4;
+  --bubble-text-color-hover: #8fb3cc;
+  --bubble-text-color-disabled: #b2cbdc;
 
   --bubble-border-radius: 2px;
   --bubble-border-width: 1px;
 
-  --bubble-border-color: hsl(205, 68%, 93%);
-  --bubble-border-color-hover: hsl(205, 68%, 88%);
-  --bubble-border-color-disabled: hsl(205, 68%, 98%);
+  --bubble-border-color: #e1eff9;
+  --bubble-border-color-hover: #cce4f5;
+  --bubble-border-color-disabled: #f6fafd;
 }
 
 .vc-bubble {

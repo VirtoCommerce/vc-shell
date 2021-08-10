@@ -25,55 +25,19 @@
   }
 
   &-grow {
-    &_0 {
-      flex-grow: 0;
-    }
-
-    &_1 {
-      flex-grow: 1;
-    }
-
-    &_2 {
-      flex-grow: 2;
-    }
-
-    &_3 {
-      flex-grow: 3;
-    }
-
-    &_4 {
-      flex-grow: 4;
-    }
-
-    &_5 {
-      flex-grow: 5;
-    }
+    each(range(0, 5), {
+      &_@{value} {
+        flex-grow: @value;
+      }
+    });
   }
 
   &-shrink {
-    &_0 {
-      flex-shrink: 0;
-    }
-
-    &_1 {
-      flex-shrink: 1;
-    }
-
-    &_2 {
-      flex-shrink: 2;
-    }
-
-    &_3 {
-      flex-shrink: 3;
-    }
-
-    &_4 {
-      flex-shrink: 4;
-    }
-
-    &_5 {
-      flex-shrink: 5;
-    }
+    each(range(0, 5), {
+      &_@{value} {
+        flex-shrink: @value;
+      }
+    });
   }
 
   &-row {

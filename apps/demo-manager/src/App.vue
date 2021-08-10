@@ -18,17 +18,9 @@ export default defineComponent({
     const log = useLogger();
     const router = useRouter();
 
-    log.info(`Initializing App`);
+    log.debug(`Initializing App`);
 
     const toolbarItems = [
-      {
-        id: "login",
-        icon: "user",
-        title: t("SHELL.TOOLBAR.LOGIN"),
-        onClick() {
-          router.push("/login");
-        },
-      },
       {
         id: "settings",
         icon: "cog",
@@ -68,6 +60,9 @@ export default defineComponent({
         {
           id: 2,
           title: t("SHELL.ACCOUNT.LOGOUT"),
+          onClick() {
+            router.push("/login");
+          },
         },
       ],
     };
@@ -82,26 +77,6 @@ export default defineComponent({
         },
         toolbarItems,
         account,
-      },
-      log,
-      openedBlades: [],
-
-      openBlade(): void {
-        log.info(`shell/vc-app#openBlade: Start`);
-        // const blade = routes[data.routeName];
-        // routing.openBlade(blade.component, data.componentOptions);
-      },
-
-      openWorkspace(): void {
-        log.info(`shell/vc-app#openWorkspace: Start`);
-        // routing.closeBlades();
-        // routing.openBlade(data.component, data.componentOptions);
-        // history.pushState({}, data.title, data.url);
-      },
-
-      closeBlade(): void {
-        log.info(`shell/vc-app#closeBlade: Start`);
-        // routing.closeBlade(id);
       },
     };
   },

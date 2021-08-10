@@ -88,12 +88,13 @@
           <div
             v-if="account.dropdown && accountMenuVisible"
             class="vc-layout-workspace__topbar-account-menu"
-            @click.stop
+            @click.stop="accountMenuVisible = false"
           >
             <div
               v-for="item in account.dropdown"
               :key="item.id"
               class="vc-layout-workspace__topbar-account-menu-item"
+              @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
             >
               {{ item.title }}
             </div>

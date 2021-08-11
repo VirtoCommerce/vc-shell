@@ -30,6 +30,15 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+:root {
+  --icon-size-xs: 12px;
+  --icon-size-s: 14px;
+  --icon-size-m: 18px;
+  --icon-size-l: 20px;
+  --icon-size-xl: 22px;
+  --icon-size-xxl: 30px;
+}
+
 .vc-icon {
   &_xs {
     font-size: var(--icon-size-xs);

@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.23](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.23) (2021-08-11)
+
+
+### Features
+
+* **ui:** vc-icon component update ([295e3fd](https://github.com/VirtoCommerce/platform-manager-sdk/commit/295e3fd13e2e50372464e81af7b14fef13115445))
+
+
+
+
+
 ## [0.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.22) (2021-08-11)
 
 **Note:** Version bump only for package @virtoshell/mod-store

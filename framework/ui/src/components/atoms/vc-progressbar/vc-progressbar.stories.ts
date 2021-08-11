@@ -20,4 +20,6 @@ const Template: Story = (args) => ({
 
 export const Progressbar = Template.bind({});
 Progressbar.storyName = "vc-progressbar";
-Progressbar.args = {};
+Progressbar.args = {
+  value: 30,
+};

@@ -20,4 +20,10 @@ const Template: Story = (args) => ({
 
 export const BladeHeader = Template.bind({});
 BladeHeader.storyName = "vc-blade-header";
-BladeHeader.args = {};
+BladeHeader.args = {
+  expanded: false,
+  closable: false,
+  title: "Catalog",
+  subtitle: "Manage your product catalog",
+  icon: "folder",
+};

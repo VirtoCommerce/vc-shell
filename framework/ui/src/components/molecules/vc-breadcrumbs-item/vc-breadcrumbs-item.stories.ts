@@ -20,4 +20,9 @@ const Template: Story = (args) => ({
 
 export const BreadcrumbsItem = Template.bind({});
 BreadcrumbsItem.storyName = "vc-breadcrumbs-item";
-BreadcrumbsItem.args = {};
+BreadcrumbsItem.args = {
+  disabled: false,
+  current: false,
+  icon: "star",
+  title: "Electronics",
+};

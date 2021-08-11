@@ -15,9 +15,12 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-image v-bind="args"></vc-image>',
+  template:
+    '<div style="width: 400px"><vc-image v-bind="args"></vc-image></div>',
 });
 
 export const Image = Template.bind({});
 Image.storyName = "vc-image";
-Image.args = {};
+Image.args = {
+  src: "https://placekitten.com/800/600",
+};

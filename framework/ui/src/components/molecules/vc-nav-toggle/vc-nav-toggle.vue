@@ -1,6 +1,6 @@
 <template>
   <div class="vc-nav-toggle" @click="$emit('click')">
-    <vc-nav-item sticky="sticky" icon="bars"></vc-nav-item>
+    <vc-nav-item sticky="sticky" icon="fas fa-bars"></vc-nav-item>
   </div>
 </template>
 

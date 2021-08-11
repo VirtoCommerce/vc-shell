@@ -15,7 +15,7 @@
       @itemClick="openDetails($event)"
     >
       <template v-slot:item_actions>
-        <vc-icon icon="ellipsis-v" style="color: #43b0e6"></vc-icon>
+        <vc-icon icon="fas fa-ellipsis-v" style="color: #43b0e6"></vc-icon>
       </template>
 
       <template v-slot:item_title="itemData">
@@ -35,7 +35,7 @@
           >
             {{ itemData.item.title }}
           </div>
-          <vc-icon icon="chevron-right" style="color: #a5a5a5"></vc-icon>
+          <vc-icon icon="fas fa-chevron-right" style="color: #a5a5a5"></vc-icon>
         </div>
       </template>
     </vc-table>
@@ -76,8 +76,8 @@ export default defineComponent({
     });
 
     const toolbarItems = ref([
-      { id: 1, icon: "sync-alt", title: "Refresh" },
-      { id: 2, icon: "plus", title: "Add" },
+      { id: 1, icon: "fas fa-sync-alt", title: "Refresh" },
+      { id: 2, icon: "fas fa-plus", title: "Add" },
     ]);
 
     const headers = ref([
@@ -97,17 +97,17 @@ export default defineComponent({
     const items = ref([
       {
         id: 1,
-        icon: "cloud",
+        icon: "fas fa-cloud",
         title: "B2B-mixed (virtual)",
       },
       {
         id: 2,
-        icon: "folder",
+        icon: "fas fa-folder",
         title: "Clothing",
       },
       {
         id: 3,
-        icon: "folder",
+        icon: "fas fa-folder",
         title: "Desktops",
       },
     ]);

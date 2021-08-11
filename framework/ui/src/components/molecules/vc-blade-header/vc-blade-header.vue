@@ -22,17 +22,17 @@
 
     <div class="vc-blade-header__buttons vc-flex vc-flex-align_center">
       <div v-if="expanded" class="vc-blade-header__button" @click="onCollapse">
-        <vc-icon icon="window-minimize" size="s"></vc-icon>
+        <vc-icon icon="fas fa-window-minimize" size="s"></vc-icon>
       </div>
       <div v-else class="vc-blade-header__button" @click="onExpand">
-        <vc-icon icon="window-maximize" size="s"></vc-icon>
+        <vc-icon icon="fas fa-window-maximize" size="s"></vc-icon>
       </div>
       <div
         class="vc-blade-header__button"
         :class="{ 'vc-blade-header__button_disabled': !closable }"
         @click="onClose"
       >
-        <vc-icon icon="times"></vc-icon>
+        <vc-icon icon="fas fa-times"></vc-icon>
       </div>
     </div>
   </div>

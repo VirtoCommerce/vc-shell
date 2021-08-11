@@ -25,5 +25,5 @@ BladeHeader.args = {
   closable: false,
   title: "Catalog",
   subtitle: "Manage your product catalog",
-  icon: "folder",
+  icon: "fas fa-folder",
 };

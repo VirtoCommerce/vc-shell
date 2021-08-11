@@ -9,7 +9,7 @@
       class="vc-nav-item__handler"
       :class="{ 'vc-nav-item__handler_enabled': !sticky }"
     >
-      <vc-icon icon="ellipsis-v" size="m" />
+      <vc-icon icon="fas fa-ellipsis-v" size="m" />
     </div>
     <div v-if="icon" class="vc-nav-item__icon">
       <vc-icon :icon="icon" size="m" />

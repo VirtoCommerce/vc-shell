@@ -41,7 +41,7 @@
         >
           <div class="vc-blade__searchbar-filter-label">Select filter</div>
           <vc-icon
-            :icon="filterOpened ? 'caret-up' : 'caret-down'"
+            :icon="filterOpened ? 'fas fa-caret-up' : 'fas fa-caret-down'"
             size="s"
             class="vc-blade__searchbar-filter-chevron vc-margin-left_s"
           ></vc-icon>

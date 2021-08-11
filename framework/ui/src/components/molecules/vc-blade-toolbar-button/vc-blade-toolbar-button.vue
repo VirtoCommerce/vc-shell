@@ -47,7 +47,7 @@ export default defineComponent({
   setup(props, { emit }) {
     return {
       onClick(): void {
-        if (props.clickHandler) {
+        if (props.clickHandler && typeof props.clickHandler === "function") {
           props.clickHandler();
         } else {
           emit("click");

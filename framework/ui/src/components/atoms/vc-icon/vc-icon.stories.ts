@@ -9,10 +9,6 @@ export default {
   title: "atoms/vc-icon",
   component: VcIcon,
   argTypes: {
-    family: {
-      options: ["solid", "regular"],
-      control: { type: "radio" },
-    },
     size: {
       options: ["xs", "s", "m", "l", "xl"],
       control: { type: "radio" },
@@ -31,7 +27,6 @@ const Template: Story = (args) => ({
 export const Icon = Template.bind({});
 Icon.storyName = "vc-icon";
 Icon.args = {
-  icon: "star",
-  family: "solid",
+  icon: "fas fa-star",
   size: "m",
 };

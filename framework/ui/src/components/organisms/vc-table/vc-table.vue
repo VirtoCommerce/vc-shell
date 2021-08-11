@@ -31,7 +31,7 @@
                 v-if="item.sortable"
                 class="vc-table__header-cell_sort vc-margin-left_xs"
               >
-                <vc-icon size="xs" icon="caret-up"></vc-icon>
+                <vc-icon size="xs" icon="fas fa-caret-up"></vc-icon>
               </div>
             </div>
           </td>

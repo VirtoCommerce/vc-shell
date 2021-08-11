@@ -19,7 +19,7 @@
       "
       @click="internalValue = ''"
     >
-      <vc-icon icon="times"></vc-icon>
+      <vc-icon icon="fas fa-times"></vc-icon>
     </div>
   </div>
 </template>

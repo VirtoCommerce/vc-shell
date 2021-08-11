@@ -23,7 +23,7 @@ export default defineComponent({
     const toolbarItems = [
       {
         id: "settings",
-        icon: "cog",
+        icon: "fas fa-cog",
         title: t("SHELL.TOOLBAR.SETTINGS"),
         onClick() {
           router.push("/settings");
@@ -31,7 +31,7 @@ export default defineComponent({
       },
       {
         id: "help",
-        icon: "life-ring",
+        icon: "fas fa-life-ring",
         title: t("SHELL.TOOLBAR.HELP"),
         onClick() {
           router.push("/help");
@@ -39,7 +39,7 @@ export default defineComponent({
       },
       {
         id: "bell",
-        icon: "bell",
+        icon: "fas fa-bell",
         accent: true,
         title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
       },

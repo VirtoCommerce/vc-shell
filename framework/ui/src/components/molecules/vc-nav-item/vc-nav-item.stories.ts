@@ -24,7 +24,7 @@ const Template: Story = (args) => ({
 export const NavItem = Template.bind({});
 NavItem.storyName = "vc-nav-item";
 NavItem.args = {
-  icon: "folder",
+  icon: "fas fa-folder",
   sticky: false,
   title: "Nav Item",
 };

@@ -83,7 +83,7 @@
             v-if="account.dropdown"
             class="vc-layout-workspace__topbar-account-chevron"
           >
-            <vc-icon icon="chevron-down" size="xl"></vc-icon>
+            <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
           </div>
           <div
             v-if="account.dropdown && accountMenuVisible"

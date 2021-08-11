@@ -9,7 +9,7 @@
     </div>
     <vc-nav-toggle @click="toggleCollapsed()"></vc-nav-toggle>
     <vc-container class="vc-nav__content">
-      <vc-nav-item icon="home" to="/" sticky="sticky" title="Home" />
+      <vc-nav-item icon="fas fa-home" to="/" sticky="sticky" title="Home" />
       <vc-nav-item
         v-for="item in items"
         :key="item.id"
@@ -17,7 +17,7 @@
         :title="item.title"
         @click="$emit('itemClick', item)"
       />
-      <vc-nav-item icon="ellipsis-h" sticky="sticky" title="More" />
+      <vc-nav-item icon="fas fa-ellipsis-h" sticky="sticky" title="More" />
     </vc-container>
   </div>
 </template>

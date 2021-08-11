@@ -31,7 +31,7 @@ Nav.args = {
     {
       id: 1,
       title: "Another Item",
-      icon: "star",
+      icon: "fas fa-star",
     },
   ],
 };

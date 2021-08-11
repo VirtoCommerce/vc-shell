@@ -25,7 +25,7 @@ Breadcrumbs.args = {
     {
       id: 0,
       title: "Back",
-      icon: "arrow-left",
+      icon: "fas fa-arrow-left",
     },
     {
       id: 1,

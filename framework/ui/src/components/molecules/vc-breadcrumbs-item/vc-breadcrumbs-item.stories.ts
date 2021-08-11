@@ -23,6 +23,6 @@ BreadcrumbsItem.storyName = "vc-breadcrumbs-item";
 BreadcrumbsItem.args = {
   disabled: false,
   current: false,
-  icon: "star",
+  icon: "fas fa-star",
   title: "Electronics",
 };

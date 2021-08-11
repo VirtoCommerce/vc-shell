@@ -25,31 +25,31 @@ LayoutLogin.args = {
     {
       id: 1,
       title: "Catalog",
-      icon: "folder",
+      icon: "fas fa-folder",
       to: "/catalog",
     },
     {
       id: 2,
       title: "Contacts",
-      icon: "address-card",
+      icon: "fas fa-address-card",
       to: "/contacts",
     },
     {
       id: 3,
       title: "Marketing",
-      icon: "flag",
+      icon: "fas fa-flag",
       to: "/marketing",
     },
     {
       id: 4,
       title: "Thumbnails",
-      icon: "image",
+      icon: "fas fa-image",
       to: "/thumbnails",
     },
     {
       id: 5,
       title: "Stores",
-      icon: "archive",
+      icon: "fas fa-archive",
       to: "/stores",
     },
   ],
@@ -57,17 +57,17 @@ LayoutLogin.args = {
   toolbarItems: [
     {
       id: "settings",
-      icon: "cog",
+      icon: "fas fa-cog",
       title: "Settings",
     },
     {
       id: "help",
-      icon: "life-ring",
+      icon: "fas fa-life-ring",
       title: "Help",
     },
     {
       id: "bell",
-      icon: "bell",
+      icon: "fas fa-bell",
       accent: true,
       title: "Notifications",
     },

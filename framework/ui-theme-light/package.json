@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/ui-theme-light",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Light theme for VirtoCommerce Platform Manager SDK",
   "author": "Iurii A Taranov <me@flanker72.ru>",
   "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk/tree/main/packages/themes/platform-manager-theme-light#readme",

@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.18](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.18) (2021-08-11)
+
+
+### Features
+
+* login component style minor update ([244e147](https://github.com/VirtoCommerce/platform-manager-sdk/commit/244e1476f610dc28ceb5d7582573a33491fbb2c5))
+* minor style improvements ([b588956](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b58895667a89085647d728d77f835bc62d866273))
+* profile menu item clickable ([bcfbd15](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bcfbd15aa410a2e5c739ec5a7da3ea7b0a5aba96))
+* **ui:** storybook icons and fonts ([7685968](https://github.com/VirtoCommerce/platform-manager-sdk/commit/76859687c28053a77129872d009b5d7a59f5a773))
+* **ui:** vc-badge component ([7d02109](https://github.com/VirtoCommerce/platform-manager-sdk/commit/7d021095f32ecf3be49fdaf5e08bf7d2f85f41f7))
+* **ui:** vc-bubble component ([1f242ba](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1f242ba76511c7e7678a3712d07a1a5cdd5c29ac))
+* **ui:** vc-button component ([98fa9c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/98fa9c35309ff80a8c8f190bba1e73b7edd22e85))
+* **ui:** vc-icon component ([ae06601](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ae06601c1798601a73cafaf7d4355e5542df7ad5))
+* **ui:** vc-link component ([83e62c5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/83e62c578d6b36ba1b4b649998e2f750e0c1f7d6))
+* **ui:** vc-thumbnail component ([7a0d47f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/7a0d47fd38535456b8072b679b1a79c7861fed69))
+* **ui:** vc-thumbnail component ([a3959b9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a3959b932cb7acbd9d5739d67299750a054715e6))
+
+
+
+
+
 ## [0.0.17](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.17) (2021-08-10)
 
 

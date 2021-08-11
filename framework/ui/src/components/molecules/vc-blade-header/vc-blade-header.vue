@@ -117,11 +117,11 @@ export default defineComponent({
   background-color: var(--blade-header-background-color);
   display: flex;
   align-items: center;
-  padding: 0 var(--padding-s);
+  padding: 0 var(--padding-l);
 
   &__button {
     color: var(--blade-header-button-color);
-    margin-right: var(--margin-l);
+    margin-left: var(--margin-l);
     cursor: pointer;
 
     &:hover {

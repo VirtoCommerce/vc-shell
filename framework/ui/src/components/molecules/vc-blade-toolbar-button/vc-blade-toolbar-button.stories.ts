@@ -20,4 +20,8 @@ const Template: Story = (args) => ({
 
 export const BladeToolbarButton = Template.bind({});
 BladeToolbarButton.storyName = "vc-blade-toolbar-button";
-BladeToolbarButton.args = {};
+BladeToolbarButton.args = {
+  icon: "trash",
+  title: "Delete",
+  disabled: false,
+};

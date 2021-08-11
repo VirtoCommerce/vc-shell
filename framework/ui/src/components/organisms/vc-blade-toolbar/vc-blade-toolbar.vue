@@ -38,6 +38,5 @@ export default defineComponent({
   display: flex;
   justify-content: flex-start;
   align-items: stretch;
-  padding: 0 var(--padding-s);
 }
 </style>

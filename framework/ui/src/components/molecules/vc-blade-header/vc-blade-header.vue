@@ -117,6 +117,7 @@ export default defineComponent({
   background-color: var(--blade-header-background-color);
   display: flex;
   align-items: center;
+  padding: 0 var(--padding-s);
 
   &__button {
     color: var(--blade-header-button-color);
@@ -144,7 +145,7 @@ export default defineComponent({
     font-size: var(--font-size-l);
 
     &_only {
-      font-size: var(--font-size-xxl);
+      font-size: var(--font-size-xl);
     }
   }
 

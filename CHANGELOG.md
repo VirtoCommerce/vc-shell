@@ -3,6 +3,44 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.20](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.20) (2021-08-11)
+
+
+### Features
+
+* **app-demo-manager:** platform url env bundle ([8516bae](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8516baea67e76365df03b1adf7792d1151d17a06))
+* core composables ([be9df90](https://github.com/VirtoCommerce/platform-manager-sdk/commit/be9df90a3b4aa7aa453d55588d547a8c9892c6fb))
+* core composables ([10f8fa6](https://github.com/VirtoCommerce/platform-manager-sdk/commit/10f8fa67a8e0247cbd5568924e3d69692bb282cf))
+* cross-env for correct scripts usage on windows ([97452ef](https://github.com/VirtoCommerce/platform-manager-sdk/commit/97452efb35c64e7a6a6acbc1a21b9d65bf67889d))
+* demo manager version display and locale ([b90b934](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b90b934f62133866ba28507eaf70a8408711a6d2))
+* login component API connect (WIP) ([fbb385f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fbb385feae4d58ae61351be9f6db85a8705c003d))
+* login component style minor update ([244e147](https://github.com/VirtoCommerce/platform-manager-sdk/commit/244e1476f610dc28ceb5d7582573a33491fbb2c5))
+* minor style improvements ([b588956](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b58895667a89085647d728d77f835bc62d866273))
+* profile menu item clickable ([bcfbd15](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bcfbd15aa410a2e5c739ec5a7da3ea7b0a5aba96))
+* readme update ([e1fe485](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e1fe485a7cb8dafa7d04bd0ab113c9d83c907c2e))
+* **ui:** storybook icons and fonts ([7685968](https://github.com/VirtoCommerce/platform-manager-sdk/commit/76859687c28053a77129872d009b5d7a59f5a773))
+* **ui:** vc-badge component ([7d02109](https://github.com/VirtoCommerce/platform-manager-sdk/commit/7d021095f32ecf3be49fdaf5e08bf7d2f85f41f7))
+* **ui:** vc-blade component update ([1b2f45f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1b2f45f3b7c5f662120175bd91c3edfe9037cd88))
+* **ui:** vc-blade component update ([72f303b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/72f303b5ae1d79bebd310e6a2e8819e07042b6b2))
+* **ui:** vc-blade-header component ([80207b2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/80207b2a2f7c417cbf572230f4eaf36513ec7f40))
+* **ui:** vc-blade-header component update ([6c3c17d](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6c3c17df152c9773c193debe1c5c220c22f460ba))
+* **ui:** vc-blade-toolbar component ([c41ccd4](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c41ccd4f693d109e1599d559cd518d713d3dcffb))
+* **ui:** vc-blade-toolbar component update ([830450c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/830450cef8686a85ca2b5caade5341badb57b25c))
+* **ui:** vc-blade-toolbar-button component ([cc42a9a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/cc42a9ac449010873246ca3b15a76f12713030be))
+* **ui:** vc-blade-toolbar-button component update ([c4a23ba](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c4a23ba9dcd7fbe366cf6d436082d93c053944e0))
+* **ui:** vc-breadcrumbs component update ([c02984e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c02984e0c4a0f283343b1f9b1f9c0fca28e7cae8))
+* **ui:** vc-breadcrumbs-item component ([6b2eb1f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6b2eb1f91939918482e64cfd08f7c72621637c5a))
+* **ui:** vc-bubble component ([1f242ba](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1f242ba76511c7e7678a3712d07a1a5cdd5c29ac))
+* **ui:** vc-button component ([98fa9c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/98fa9c35309ff80a8c8f190bba1e73b7edd22e85))
+* **ui:** vc-icon component ([ae06601](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ae06601c1798601a73cafaf7d4355e5542df7ad5))
+* **ui:** vc-link component ([83e62c5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/83e62c578d6b36ba1b4b649998e2f750e0c1f7d6))
+* **ui:** vc-thumbnail component ([fa00029](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fa00029729c20ec4c5e73862f13df6200e7cfb02))
+* **ui:** vc-thumbnail component ([f83e401](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f83e40195ec401a0eaf31ae527f9cd0b8dd9b3a6))
+
+
+
+
+
 ## [0.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.19) (2021-08-11)
 
 

@@ -9,5 +9,5 @@
         "deployAppName": "vcplatform-qa",
         "deployBranch": "qa"
     },
-    "cmPath": "platform-dev/resources/kustomization.yaml"
+    "cmPath": "platform-dev/overlays/dev/kustomization.yaml"
 }

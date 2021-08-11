@@ -20,4 +20,15 @@ const Template: Story = (args) => ({
 
 export const BladeToolbar = Template.bind({});
 BladeToolbar.storyName = "vc-blade-toolbar";
-BladeToolbar.args = {};
+BladeToolbar.args = {
+  items: [
+    { id: 1, icon: "sync-alt", title: "Refresh" },
+    { id: 2, icon: "plus", title: "Add" },
+    { id: 3, icon: "trash", title: "Delete", disabled: true },
+    { id: 4, icon: "download", title: "Import" },
+    { id: 5, icon: "upload", title: "Export" },
+    { id: 6, icon: "cut", title: "Cut", disabled: true },
+    { id: 7, icon: "paste", title: "Paste", disabled: true },
+    { id: 8, icon: "cubes", title: "Bulk export", disabled: true },
+  ],
+};

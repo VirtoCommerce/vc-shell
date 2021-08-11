@@ -26,4 +26,6 @@ const Template: Story = (args) => ({
 
 export const Container = Template.bind({});
 Container.storyName = "vc-container";
-Container.args = {};
+Container.args = {
+  shadow: false,
+};

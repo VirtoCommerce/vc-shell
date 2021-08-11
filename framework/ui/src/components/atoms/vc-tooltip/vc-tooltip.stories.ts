@@ -15,7 +15,7 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-tooltip v-bind="args"></vc-tooltip>',
+  template: '<vc-tooltip v-bind="args">This is a tooltip</vc-tooltip>',
 });
 
 export const Tooltip = Template.bind({});

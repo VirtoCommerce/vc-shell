@@ -43,20 +43,4 @@ Blade.args = {
     { id: 7, icon: "paste", title: "Paste", disabled: true },
     { id: 8, icon: "cubes", title: "Bulk export", disabled: true },
   ],
-
-  breadcrumbs: [
-    {
-      id: 0,
-      title: "Back",
-      icon: "arrow-left",
-    },
-    {
-      id: 1,
-      title: "Electronics",
-    },
-    {
-      id: 2,
-      title: "Desktop",
-    },
-  ],
 };

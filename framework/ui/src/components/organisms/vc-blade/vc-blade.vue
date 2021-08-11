@@ -15,13 +15,7 @@
       @close="$emit('close')"
     />
 
-    <vc-blade-toolbar :items="toolbarItems" />
-
-    <vc-breadcrumbs
-      v-if="breadcrumbs"
-      class="vc-padding_l vc-padding-bottom_none vc-flex-shrink_0"
-      :items="breadcrumbs"
-    ></vc-breadcrumbs>
+    <slot name="toolbar"><vc-blade-toolbar :items="toolbarItems" /></slot>
 
     <div
       v-if="searchable || filterable"
@@ -98,7 +92,6 @@ import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcFormInput from "../../molecules/vc-form-input/vc-form-input.vue";
 import VcBladeHeader from "../../molecules/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "../../organisms/vc-blade-toolbar/vc-blade-toolbar.vue";
-import VcBreadcrumbs from "../../organisms/vc-breadcrumbs/vc-breadcrumbs.vue";
 
 export default defineComponent({
   name: "VcBlade",
@@ -107,7 +100,6 @@ export default defineComponent({
     VcFormInput,
     VcBladeHeader,
     VcBladeToolbar,
-    VcBreadcrumbs,
   },
 
   props: {
@@ -137,10 +129,6 @@ export default defineComponent({
       type: Array,
     },
 
-    breadcrumbs: {
-      type: Array,
-    },
-
     searchable: {
       type: Boolean,
     },
@@ -163,11 +151,20 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+:root {
+  --blade-background-color: #ffffff;
+  --blade-border-radius: 6px;
+  --blade-shadow: 2px 2px 8px rgba(126, 142, 157, 0.14);
+  --blade-margin: var(--margin-s);
+}
+
 .vc-blade {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--blade-border-color);
   background: var(--blade-background-color);
+  border-radius: var(--blade-border-radius);
+  box-shadow: var(--blade-shadow);
+  margin: var(--blade-margin);
 
   &_expanded {
     width: 100% !important;

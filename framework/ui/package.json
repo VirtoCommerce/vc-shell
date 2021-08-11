@@ -5,7 +5,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --formats commonjs --target lib --name ui ./src/index.ts",
     "storybook:build": "vue-cli-service storybook:build -c config/storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook"
+    "storybook:serve": "vue-cli-service storybook:serve -s src/assets -p 6006 -c config/storybook"
   },
   "main": "./dist/ui.common.js",
   "types": "./dist/index.d.ts",

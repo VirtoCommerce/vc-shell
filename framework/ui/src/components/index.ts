@@ -8,7 +8,6 @@ export { default as VcImage } from "./atoms/vc-image/vc-image.vue";
 export { default as VcLink } from "./atoms/vc-link/vc-link.vue";
 export { default as VcLoader } from "./atoms/vc-loader";
 export { default as VcProgressbar } from "./atoms/vc-progressbar/vc-progressbar.vue";
-export { default as VcSpacer } from "./atoms/vc-spacer/vc-spacer.vue";
 export { default as VcThumbnail } from "./atoms/vc-thumbnail/vc-thumbnail.vue";
 export { default as VcTooltip } from "./atoms/vc-tooltip/vc-tooltip.vue";
 

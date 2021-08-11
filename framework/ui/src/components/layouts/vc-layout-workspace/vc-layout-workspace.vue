@@ -25,7 +25,7 @@
           <slot name="banner"></slot>
         </div>
 
-        <vc-spacer />
+        <div class="vc-flex-grow_1"></div>
 
         <div
           v-if="toolbarItems"
@@ -112,10 +112,9 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
-import VcSpacer from "../../atoms/vc-spacer/vc-spacer.vue";
 
 export default defineComponent({
-  components: { VcIcon, VcSpacer },
+  components: { VcIcon },
 
   props: {
     branding: {

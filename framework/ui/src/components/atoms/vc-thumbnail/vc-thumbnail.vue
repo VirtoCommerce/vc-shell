@@ -61,11 +61,6 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --thumbnail-padding-bottom-1x1: 100%;
-  --thumbnail-padding-bottom-16x9: 56.25%;
-  --thumbnail-padding-bottom-4x3: 75%;
-  --thumbnail-padding-bottom-3x2: 66.66%;
-
   --thumbnail-size-xs: 32px;
   --thumbnail-size-s: 48px;
   --thumbnail-size-m: 64px;
@@ -77,19 +72,19 @@ export default defineComponent({
   display: inline-block;
 
   &_1x1 {
-    padding-bottom: var(--thumbnail-padding-bottom-1x1);
+    padding-bottom: 100%;
   }
 
   &_16x9 {
-    padding-bottom: var(--thumbnail-padding-bottom-16x9);
+    padding-bottom: 56.25%;
   }
 
   &_4x3 {
-    padding-bottom: var(--thumbnail-padding-bottom-4x3);
+    padding-bottom: 75%;
   }
 
   &_3x2 {
-    padding-bottom: var(--thumbnail-padding-bottom-3x2);
+    padding-bottom: 66.66%;
   }
 
   &_auto {

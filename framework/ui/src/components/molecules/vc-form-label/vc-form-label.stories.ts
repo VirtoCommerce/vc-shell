@@ -15,7 +15,7 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-form-label v-bind="args"></vc-form-label>',
+  template: '<vc-form-label v-bind="args">This is a label</vc-form-label>',
 });
 
 export const FormLabel = Template.bind({});

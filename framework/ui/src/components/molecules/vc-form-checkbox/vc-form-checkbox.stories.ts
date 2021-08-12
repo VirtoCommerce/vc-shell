@@ -20,4 +20,6 @@ const Template: Story = (args) => ({
 
 export const FormCheckbox = Template.bind({});
 FormCheckbox.storyName = "vc-form-checkbox";
-FormCheckbox.args = {};
+FormCheckbox.args = {
+  checked: false,
+};

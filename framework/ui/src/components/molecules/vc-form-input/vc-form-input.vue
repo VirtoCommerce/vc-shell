@@ -51,7 +51,7 @@ export default defineComponent({
 
     type: {
       type: String,
-      default: "text,",
+      default: "text",
     },
   },
 
@@ -64,24 +64,33 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+:root {
+  --form-input-height: 36px;
+  --form-input-border-color: #eaedf3;
+  --form-input-background-color: #ffffff;
+  --form-input-placeholder-color: #b8b8b8;
+  --form-input-clear-color: #43b0e6;
+  --form-input-clear-color-hover: #319ed4;
+}
+
 .vc-form-input {
-  border: 1px solid #eaedf3;
-  height: 36px;
+  border: 1px solid var(--form-input-border-color);
+  height: var(--form-input-height);
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: var(--form-input-background-color);
 
   &__field {
     border: none;
     outline: none;
-    -webkit-placeholder-color: #b8b8b8;
+    -webkit-placeholder-color: var(--form-input-placeholder-color);
   }
 
   &__clear {
     cursor: pointer;
-    color: #43b0e6;
+    color: var(--form-input-clear-color);
 
     &:hover {
-      color: #319ed4;
+      color: var(--form-input-clear-color-hover);
     }
   }
 }

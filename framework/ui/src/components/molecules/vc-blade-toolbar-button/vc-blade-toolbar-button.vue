@@ -18,6 +18,8 @@ import { defineComponent } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
 export default defineComponent({
+  name: "VcBladeToolbarButton",
+
   components: {
     VcIcon,
   },
@@ -30,7 +32,7 @@ export default defineComponent({
 
     icon: {
       type: String,
-      default: "question-circle",
+      default: "fas fa-question-circle",
     },
 
     title: {
@@ -44,13 +46,17 @@ export default defineComponent({
     },
   },
 
+  emits: ["click"],
+
   setup(props, { emit }) {
     return {
       onClick(): void {
-        if (props.clickHandler && typeof props.clickHandler === "function") {
-          props.clickHandler();
-        } else {
-          emit("click");
+        if (!props.disabled) {
+          if (props.clickHandler && typeof props.clickHandler === "function") {
+            props.clickHandler();
+          } else {
+            emit("click");
+          }
         }
       },
     };

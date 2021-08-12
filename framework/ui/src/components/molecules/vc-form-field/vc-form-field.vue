@@ -1,7 +1,7 @@
 <template>
   <div class="vc-form-field">
     <vc-form-label class="vc-margin-bottom_s">{{ label }}</vc-form-label>
-    <slot>vc-form-field</slot>
+    <slot></slot>
   </div>
 </template>
 
@@ -15,10 +15,6 @@ export default defineComponent({
       type: String,
       default: "",
     },
-  },
-
-  setup() {
-    console.debug("Init vc-form-field");
   },
 });
 </script>

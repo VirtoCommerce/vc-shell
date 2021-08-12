@@ -2,7 +2,6 @@
   <div
     class="vc-breadcrumbs-item"
     :class="{
-      'vc-breadcrumbs-item_disabled': disabled,
       'vc-breadcrumbs-item_current': current,
     }"
     @click="onClick"
@@ -29,11 +28,6 @@ export default defineComponent({
   },
 
   props: {
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
     current: {
       type: Boolean,
       default: false,
@@ -58,10 +52,12 @@ export default defineComponent({
   setup(props, { emit }) {
     return {
       onClick(): void {
-        if (props.clickHandler && typeof props.clickHandler === "function") {
-          props.clickHandler();
-        } else {
-          emit("click");
+        if (!props.current) {
+          if (props.clickHandler && typeof props.clickHandler === "function") {
+            props.clickHandler();
+          } else {
+            emit("click");
+          }
         }
       },
     };

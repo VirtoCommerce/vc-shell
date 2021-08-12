@@ -58,11 +58,15 @@ export default defineComponent({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(form),
         };
-        const response = await fetch(
-          "https://localhost:5001/connect/token", // FIXME: Rewrite to ENV variable PLATFORM_URL
-          requestOptions
-        );
-        console.dir(response);
+        try {
+          const response = await fetch(
+            "https://localhost:5001/connect/token", // FIXME: Rewrite to ENV variable PLATFORM_URL
+            requestOptions
+          );
+          console.dir(response);
+        } catch (err) {
+          console.dir(err);
+        }
         router.push("/orders");
       },
     };

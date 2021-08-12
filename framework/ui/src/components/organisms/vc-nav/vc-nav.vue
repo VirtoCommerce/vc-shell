@@ -72,6 +72,10 @@ export default defineComponent({
   border-right: 1px solid var(--nav-border-right-color);
   background: var(--nav-background-color);
 
+  &__content {
+    --container-scroll-padding: 0;
+  }
+
   &__top {
     height: var(--nav-top-height);
     background: var(--nav-top-background-color);

@@ -1,7 +1,7 @@
 <template>
   <vc-app :options="options">
     <template v-slot:default="options">
-      <router-view v-bind="options"></router-view>
+      <router-view v-bind="options" @navClick="onNavClick"></router-view>
     </template>
   </vc-app>
 </template>
@@ -45,6 +45,10 @@ export default defineComponent({
       },
     ];
 
+    const navItems = [
+      { id: 1, title: "Orders", icon: "fas fa-layer-group", href: "/orders" },
+    ];
+
     const account = {
       avatar: "/assets/avatar.jpg",
       name: "Iurii A Taranov",
@@ -67,6 +71,10 @@ export default defineComponent({
       ],
     };
 
+    function onNavClick(item: { href: string }): void {
+      router.push(item.href);
+    }
+
     return {
       options: {
         branding: {
@@ -76,8 +84,10 @@ export default defineComponent({
           version: process.env.PACKAGE_VERSION,
         },
         toolbarItems,
+        navItems,
         account,
       },
+      onNavClick,
     };
   },
 });
@@ -90,5 +100,24 @@ body,
   font-family: "Roboto";
   height: 100%;
   margin: 0;
+}
+
+.vc-app.vc-theme_light {
+  --background-color: #f2f2f2;
+  --top-bar-color: #ffffff;
+  --app-bar-background-color: #ffffff;
+  --app-bar-divider-color: #ffffff;
+  --app-bar-toolbar-item-width: 50px;
+  --app-bar-toolbar-icon-color: #7e8e9d;
+  --app-bar-toolbar-icon-color-hover: #465769;
+  --app-bar-toolbar-icon-background-hover: #ffffff;
+  --app-bar-account-info-name-color: #161d25;
+  --app-bar-account-info-role-color: #7e8e9d;
+  --nav-background-color: #ffffff;
+  --nav-border-right-color: #ffffff;
+  --nav-top-border-right-color: #ffffff;
+  --nav-top-version-color: #838d9a;
+  --nav-item-icon-color: #a1c0d4;
+  --nav-item-title-color: #465769;
 }
 </style>

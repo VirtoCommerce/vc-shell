@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-blade"
-    :style="{ width: `${width}px` }"
+    :style="{ width: typeof width === 'number' ? `${width}px` : width }"
     :class="{ 'vc-blade_expanded': expanded }"
   >
     <vc-blade-header
@@ -10,8 +10,8 @@
       :icon="icon"
       :title="title"
       :subtitle="subtitle"
-      @expand="expanded = true"
-      @collapse="expanded = false"
+      @expand="$emit('expand')"
+      @collapse="$emit('collapse')"
       @close="$emit('close')"
     />
 
@@ -120,6 +120,11 @@ export default defineComponent({
       default: 300,
     },
 
+    expanded: {
+      type: Boolean,
+      default: false,
+    },
+
     closable: {
       type: Boolean,
       default: true,
@@ -139,11 +144,9 @@ export default defineComponent({
   },
 
   setup() {
-    const expanded = ref(false);
     const filterOpened = ref(false);
 
     return {
-      expanded,
       filterOpened,
     };
   },
@@ -155,7 +158,7 @@ export default defineComponent({
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
   --blade-shadow: 2px 2px 8px rgba(126, 142, 157, 0.14);
-  --blade-margin: var(--margin-s);
+  --blade-margin: 16px;
 }
 
 .vc-blade {
@@ -165,6 +168,7 @@ export default defineComponent({
   border-radius: var(--blade-border-radius);
   box-shadow: var(--blade-shadow);
   margin: var(--blade-margin);
+  overflow: hidden;
 
   &_expanded {
     width: 100% !important;

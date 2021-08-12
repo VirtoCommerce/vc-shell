@@ -6,6 +6,7 @@ import VirtoShellUi, {
 } from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import LoginPage from "./components/login-page.vue";
+import OrdersPage from "./components/orders-page.vue";
 
 import * as locales from "./locales";
 
@@ -20,13 +21,20 @@ const app = createApp(App)
   .use(VirtoShellCore, {
     router: {
       routes: [
-        { path: "/login", component: LoginPage },
+        {
+          path: "/login",
+          component: LoginPage,
+        },
         {
           path: "/",
           component: VcLayoutDashboard,
           beforeEnter: () => {
             return "/login";
           },
+        },
+        {
+          path: "/orders",
+          component: OrdersPage,
         },
         {
           path: "/:pathMatch(.*)*",

@@ -3,10 +3,11 @@
     <div class="vc-fill_height">
       <slot name="left">
         <vc-nav
-          :items="[]"
+          :items="navItems"
           :logo="branding.logo"
           :logo-mini="branding.logoMini"
           :version="branding.version"
+          @itemClick="$emit('navClick', $event)"
         ></vc-nav>
       </slot>
     </div>
@@ -129,6 +130,13 @@ export default defineComponent({
       },
     },
 
+    navItems: {
+      type: Array,
+      default() {
+        return [];
+      },
+    },
+
     account: {
       type: Object,
       default() {
@@ -188,6 +196,7 @@ export default defineComponent({
 
         &:hover {
           background: var(--app-bar-toolbar-icon-background-hover);
+          color: var(--app-bar-toolbar-icon-color-hover);
         }
 
         &_accent:before {
@@ -230,6 +239,7 @@ export default defineComponent({
 
       &-name {
         font-size: var(--font-size-m);
+        color: var(--app-bar-account-info-name-color);
       }
 
       &-role {

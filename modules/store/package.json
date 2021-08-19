@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/mod-store",
-  "version": "0.0.25",
+  "version": "0.0.26",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --target lib ./src/index.ts"
@@ -13,8 +13,8 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@virtoshell/api-client": "^0.0.25",
-    "@virtoshell/ui": "^0.0.25",
+    "@virtoshell/api-client": "^0.0.26",
+    "@virtoshell/ui": "^0.0.26",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

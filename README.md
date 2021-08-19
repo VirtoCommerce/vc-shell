@@ -15,6 +15,11 @@ The project is originated to create a replacement of the current vc-platform man
 - **webpack** based on `vue-cli-service` for easy build and deployment.
 - **storybook** for interactive documentation.
 
+## Demo
+
+- [Demo Manager](https://demo-manager.govirto.com/)
+- [UI Kit Storybook](https://ui-kit.govirto.com/)
+
 ## Getting started
 
 ```bash

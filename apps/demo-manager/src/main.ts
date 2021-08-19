@@ -1,11 +1,9 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import VirtoShellUi, {
-  VcLayoutWorkspace,
-  VcLayoutDashboard,
-} from "@virtoshell/ui";
+import VirtoShellUi from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import LoginPage from "./components/login-page.vue";
+import Workspace from "./components/workspace.vue";
 import ModOrders from "./modules/orders";
 
 import * as locales from "./locales";
@@ -22,19 +20,14 @@ const app = createApp(App)
     router: {
       routes: [
         {
+          name: "login",
           path: "/login",
           component: LoginPage,
         },
         {
+          name: "root",
           path: "/",
-          component: VcLayoutDashboard,
-          beforeEnter: () => {
-            return "/login";
-          },
-        },
-        {
-          path: "/:pathMatch(.*)*",
-          component: VcLayoutWorkspace,
+          component: Workspace,
         },
       ],
     },

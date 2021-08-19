@@ -4,6 +4,13 @@ const packageJson = fs.readFileSync('./package.json')
 const version = JSON.parse(packageJson).version || 0
 
 module.exports = {
+  devServer: {
+    proxy: {
+        '/api': {
+            target: `${process.env.PLATFORM_URL}`
+        }
+    }
+  },
   chainWebpack: (config) => {
     config
       .plugin('define')
@@ -16,5 +23,5 @@ module.exports = {
         };
         return args;
        });
-  },
+  }
 };

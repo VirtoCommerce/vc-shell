@@ -4,10 +4,11 @@
     :class="{ 'vc-form-input_clearable': clearable }"
   >
     <input
-      v-model="internalValue"
       class="vc-form-input__field vc-flex-grow_1 vc-padding-left_m"
       :placeholder="placeholder"
       :type="type"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
     />
     <div
       v-if="clearable"
@@ -17,7 +18,7 @@
         vc-flex
         vc-flex-align_center
       "
-      @click="internalValue = ''"
+      @click="$emit('update:modelValue', '')"
     >
       <vc-icon icon="fas fa-times"></vc-icon>
     </div>
@@ -39,7 +40,7 @@ export default defineComponent({
       default: "",
     },
 
-    value: {
+    modelValue: {
       type: String,
       default: "",
     },
@@ -55,11 +56,7 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
-    return {
-      internalValue: props.value,
-    };
-  },
+  emits: ["update:modelValue"],
 });
 </script>
 

@@ -67,7 +67,7 @@ export default defineComponent({
         } catch (err) {
           console.dir(err);
         }
-        router.push("/orders");
+        router.push({ name: "root" });
       },
     };
   },

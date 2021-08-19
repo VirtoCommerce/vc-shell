@@ -6,7 +6,7 @@ import VirtoShellUi, {
 } from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import LoginPage from "./components/login-page.vue";
-import OrdersPage from "./components/orders-page.vue";
+import ModOrders from "./modules/orders";
 
 import * as locales from "./locales";
 
@@ -33,16 +33,13 @@ const app = createApp(App)
           },
         },
         {
-          path: "/orders",
-          component: OrdersPage,
-        },
-        {
           path: "/:pathMatch(.*)*",
           component: VcLayoutWorkspace,
         },
       ],
     },
-  });
+  })
+  .use(ModOrders);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

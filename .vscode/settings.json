@@ -1,7 +1,8 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  },
+  },  
+  "files.eol": "\r\n",
   "eslint.validate": [
     "vue",
     "javascript"

@@ -1,8 +1,12 @@
 import { App } from "vue";
 import * as components from "./components";
 
+interface IModuleOptions {
+  router?: [Record<string, unknown>];
+}
+
 export default {
-  install(app: App): void {
+  install(app: App, options: IModuleOptions): void {
     const router = app.config.globalProperties.$router;
 
     // Register exported components
@@ -16,6 +20,10 @@ export default {
       component: components.Orders,
       children: [{ path: "order/:id", component: components.Order }],
     });
+
+    if (options?.router) {
+      options?.router.forEach((item) => router.addRoute(item));
+    }
   },
 };
 

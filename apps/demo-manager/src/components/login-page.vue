@@ -60,7 +60,7 @@ export default defineComponent({
         };
         try {
           const response = await fetch(
-            "https://localhost:5001/connect/token", // FIXME: Rewrite to ENV variable PLATFORM_URL
+            "/api/connect/token", // FIXME: Rewrite to ENV variable PLATFORM_URL
             requestOptions
           );
           console.dir(response);

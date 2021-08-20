@@ -23,6 +23,7 @@ module.exports = {
     config.externals([
       "@virtoshell/ui",
     ]);
+    config.resolve.alias.set("@vueuse/integrations/useCookies", "@vueuse/integrations/useCookies.esm.js");
   },
 
   productionSourceMap: false,

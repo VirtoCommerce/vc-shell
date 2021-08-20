@@ -8,6 +8,9 @@ module.exports = {
     proxy: {
         '/api': {
             target: `${process.env.PLATFORM_URL}`
+        },
+        '/connect/token': {
+          target: `${process.env.PLATFORM_URL}`          
         }
     }
   },

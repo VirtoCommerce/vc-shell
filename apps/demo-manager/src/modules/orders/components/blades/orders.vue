@@ -14,7 +14,7 @@
       @collapse="expanded = false"
       :toolbarItems="bladeToolbar"
     >
-      <vc-table :multiselect="true" :headers="headers" :items="items">
+      <vc-table :multiselect="true" :headers="headers" :items="orders.results">
         <template v-slot:item_created="itemData">
           <div class="vc-orders-page__created">{{ itemData.item.created }}</div>
         </template>
@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useRouter } from "@virtoshell/core";
+import { defineComponent, ref, onMounted } from "vue";
+import { useOrders } from "../../composables";
 
 export default defineComponent({
   props: {
@@ -54,8 +54,13 @@ export default defineComponent({
   },
 
   setup() {
-    const router = useRouter();
+    const { orders, loadOrders } = useOrders();
     const expanded = ref(true);
+
+    onMounted(async () => {
+      await loadOrders();
+    });
+
     const bladeToolbar = [
       { id: 1, title: "Refresh", icon: "fas fa-sync-alt" },
       { id: 1, title: "Confirm", icon: "fas fa-check", disabled: true },
@@ -69,7 +74,7 @@ export default defineComponent({
         width: 160,
       },
       {
-        id: "customer",
+        id: "customerName",
         title: "Customer",
       },
       {
@@ -88,66 +93,17 @@ export default defineComponent({
         width: 120,
       },
       {
-        id: "created",
+        id: "createdDate",
         title: "Created",
         sortable: true,
         width: 180,
       },
     ];
-
-    const items = [
-      {
-        id: 1,
-        number: "LL201228-00001",
-        customer: "nevaeh.simmons@example.com",
-        total: "1,157.90",
-        currency: "USD",
-        status: "Waiting",
-        created: "12 days ago",
-      },
-      {
-        id: 2,
-        number: "LL792146382LU",
-        customer: "alma.lawson@example.com",
-        total: "23,200.90",
-        currency: "USD",
-        status: "Waiting",
-        created: "12 days ago",
-      },
-      {
-        id: 3,
-        number: "LL314687942LU",
-        customer: "tanya.hill@example.com",
-        total: "1,157.90",
-        currency: "USD",
-        status: "Waiting",
-        created: "12 days ago",
-      },
-      {
-        id: 4,
-        number: "LL967413495LU",
-        customer: "bill.sanders@example.com",
-        total: "23,200.90",
-        currency: "USD",
-        status: "Waiting",
-        created: "12 days ago",
-      },
-      {
-        id: 5,
-        number: "LL646204341LU",
-        customer: "deanna.curtis@example.com",
-        total: "23,200.90",
-        currency: "USD",
-        status: "Waiting",
-        created: "12 days ago",
-      },
-    ];
-
     return {
       expanded,
       bladeToolbar,
       headers,
-      items,
+      orders,
     };
   },
 });

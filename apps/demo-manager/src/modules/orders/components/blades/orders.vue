@@ -1,60 +1,35 @@
 <template>
-  <vc-layout-workspace
-    :branding="branding"
-    :toolbarItems="toolbarItems"
-    :account="account"
-    @navClick="$emit('navClick', $event)"
+  <vc-blade
+    title="Orders"
+    :width="900"
+    :expanded="expanded"
+    :closable="false"
+    @expand="expanded = true"
+    @collapse="expanded = false"
+    :toolbarItems="bladeToolbar"
   >
-    <vc-blade
-      title="Orders"
-      :width="900"
-      :expanded="expanded"
-      :closable="false"
-      @expand="expanded = true"
-      @collapse="expanded = false"
-      :toolbarItems="bladeToolbar"
+    <vc-table
+      :multiselect="true"
+      :headers="headers"
+      :items="orders.results"
+      @itemClick="onItemClick"
     >
-      <vc-table :multiselect="true" :headers="headers" :items="orders.results">
-        <template v-slot:item_created="itemData">
-          <div class="vc-orders-page__created">{{ itemData.item.created }}</div>
-        </template>
-      </vc-table>
-    </vc-blade>
-  </vc-layout-workspace>
+      <template v-slot:item_created="itemData">
+        <div class="vc-orders-page__created">{{ itemData.item.created }}</div>
+      </template>
+    </vc-table>
+  </vc-blade>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useOrders } from "../../composables";
+import { useRouter } from "@virtoshell/core";
 
 export default defineComponent({
-  props: {
-    branding: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    toolbarItems: {
-      type: Array,
-      default() {
-        return [];
-      },
-    },
-
-    account: {
-      type: Object,
-      default() {
-        return {
-          name: "Unknown",
-          role: undefined,
-          avatar: undefined,
-        };
-      },
-    },
-  },
-
   setup() {
     const { orders, loadOrders } = useOrders();
+    const router = useRouter();
     const expanded = ref(true);
 
     onMounted(async () => {
@@ -99,6 +74,11 @@ export default defineComponent({
         width: 180,
       },
     ];
+
+    function onItemClick(item: { id: string }): void {
+      router.push({ name: "order", params: { id: item.id } });
+    }
+
     return {
       expanded,
       bladeToolbar,

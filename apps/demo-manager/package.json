@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-demo-manager",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,10 +9,10 @@
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@intlify/vue-i18n-loader": "^2.1.0",
-    "@virtoshell/core": "^0.0.27",
-    "@virtoshell/ui": "^0.0.27",
-    "@virtoshell/ui-theme-light": "^0.0.27",
-    "@virtoshell/api-client": "^0.0.27",
+    "@virtoshell/core": "^0.0.28",
+    "@virtoshell/ui": "^0.0.28",
+    "@virtoshell/ui-theme-light": "^0.0.28",
+    "@virtoshell/api-client": "^0.0.28",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

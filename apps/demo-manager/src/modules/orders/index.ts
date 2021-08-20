@@ -14,16 +14,20 @@ export default {
       app.component(componentName, component);
     });
 
-    router.addRoute({
+    router.addRoute("root", {
       name: "orders",
-      path: "/orders",
+      path: "orders",
       component: components.Orders,
-      children: [{ path: "order/:id", component: components.Order }],
+      children: [
+        { name: "order", path: "order/:id", component: components.Order },
+      ],
     });
 
     if (options?.router) {
       options?.router.forEach((item) => router.addRoute(item));
     }
+
+    //router.replace(router.currentRoute.value.fullPath);
   },
 };
 

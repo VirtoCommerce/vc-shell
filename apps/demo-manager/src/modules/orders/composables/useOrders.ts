@@ -13,10 +13,10 @@ const orders: Ref<CustomerOrderSearchResult> = ref(
 
 export default () => {
   async function loadOrders() {
-    var { accessToken } = useUser();
+    var { getAccessToken } = useUser();
     const client = new OrderModuleClient();
 
-    client.setAuthToken(accessToken.value);
+    client.setAuthToken(getAccessToken());
     orders.value = await client.searchCustomerOrder({
       take: 20,
     } as CustomerOrderSearchCriteria);

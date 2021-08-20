@@ -15,6 +15,7 @@ export default () => {
   async function loadOrders() {
     var { accessToken } = useUser();
     const client = new OrderModuleClient();
+
     client.setAuthToken(accessToken.value);
     orders.value = await client.searchCustomerOrder({
       take: 20,

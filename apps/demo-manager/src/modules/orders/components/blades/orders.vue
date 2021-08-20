@@ -75,15 +75,16 @@ export default defineComponent({
       },
     ];
 
-    function onItemClick(item: { id: string }): void {
+    const onItemClick = (item: { id: string }) => {
       router.push({ name: "order", params: { id: item.id } });
-    }
+    };
 
     return {
       expanded,
       bladeToolbar,
       headers,
       orders,
+      onItemClick,
     };
   },
 });

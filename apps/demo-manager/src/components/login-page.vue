@@ -20,7 +20,7 @@
       </div>
       <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">
         <vc-link>Sign in with Azure Active Directory</vc-link>
-        <vc-button variant="primary" @click="tryLogin">Log in</vc-button>
+        <vc-button variant="primary" @click="login">Log in</vc-button>
       </div>
     </vc-form>
   </vc-layout-login>
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { useRouter, useLogger } from "@virtoshell/core";
+import { useRouter, useLogger, useUser } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -42,33 +42,24 @@ export default defineComponent({
     const log = useLogger();
     const router = useRouter();
 
+    const { signIn, accessToken } = useUser();
     const form = {
-      username: undefined,
-      password: undefined,
+      username: "",
+      password: "",
+    };
+
+    const login = async () => {
+      await signIn(form.username, form.password);
+      if (accessToken.value) {
+        router.push("/orders");
+      }
     };
 
     log.debug("Init login-page");
 
     return {
       form,
-
-      async tryLogin() {
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        };
-        try {
-          const response = await fetch(
-            "/api/connect/token", // FIXME: Rewrite to ENV variable PLATFORM_URL
-            requestOptions
-          );
-          console.dir(response);
-        } catch (err) {
-          console.dir(err);
-        }
-        router.push({ name: "root" });
-      },
+      login,
     };
   },
 });

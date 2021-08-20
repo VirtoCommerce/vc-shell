@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
+
+
+### Features
+
+* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
+* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
+* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
+
+
+
+
+
 ## [0.0.28](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.28) (2021-08-19)
 
 **Note:** Version bump only for package @virtoshell/api-client

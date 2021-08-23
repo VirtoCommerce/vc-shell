@@ -51,7 +51,7 @@ export default defineComponent({
     const login = async () => {
       await signIn(form.username, form.password);
       if (accessToken.value) {
-        router.push("/orders");
+        router.replace({ name: "orders" });
       }
     };
 

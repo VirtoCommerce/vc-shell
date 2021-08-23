@@ -18,16 +18,17 @@ const app = createApp(App)
   .use(VirtoShellUi)
   .use(VirtoShellCore, {
     router: {
+      historyAPI: true,
       routes: [
-        {
-          name: "login",
-          path: "/login",
-          component: LoginPage,
-        },
         {
           name: "root",
           path: "/",
           component: Workspace,
+        },
+        {
+          name: "login",
+          path: "/login",
+          component: LoginPage,
         },
       ],
     },

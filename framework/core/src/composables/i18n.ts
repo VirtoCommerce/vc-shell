@@ -1,5 +1,10 @@
 import { App } from "vue";
-import { Composer, createI18n, useI18n as VueUseI18n } from "vue-i18n";
+import {
+  Composer,
+  createI18n,
+  useI18n as VueUseI18n,
+  VueMessageType,
+} from "vue-i18n";
 
 export function init(app: App): App {
   console.debug("Init i18n");
@@ -17,7 +22,12 @@ export function init(app: App): App {
   return app;
 }
 
-export default function useI18n(): Composer {
+export default function useI18n(): Composer<
+  unknown,
+  unknown,
+  unknown,
+  VueMessageType
+> {
   console.debug("useI18n entry point");
   return VueUseI18n();
 }

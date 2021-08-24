@@ -2,6 +2,7 @@
   "estyends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": ".",
+    "composite": true,
     "paths": {
       "@virtoshell/api-client": [
         "framework/api-client/src"

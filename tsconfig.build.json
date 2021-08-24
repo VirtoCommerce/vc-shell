@@ -4,7 +4,6 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "composite": true,
     "strict": true,
     "importHelpers": true,
     "allowSyntheticDefaultImports": true,
@@ -13,9 +12,6 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "esnext",
-    "jsx": "preserve",
-    "types": [
-      "webpack-env"
-    ]
+    "jsx": "preserve"
   }
 }

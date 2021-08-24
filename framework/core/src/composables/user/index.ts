@@ -1,12 +1,20 @@
 import { computed, Ref, ref } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import { UserDetail } from "@virtoshell/api-client";
-const user: Ref<UserDetail> = ref();
-const accessToken: Ref<string> = ref();
-const refreshToken: Ref<string> = ref();
+const user: Ref<UserDetail | undefined> = ref();
+const accessToken: Ref<string | undefined> = ref();
+const refreshToken: Ref<string | undefined> = ref();
 
-export default () => {
-  async function signIn(username: string, password: string) {
+interface IUseUser {
+  user: typeof user;
+  accessToken: typeof accessToken;
+  refreshToken: typeof refreshToken;
+  signIn: (username: string, password: string) => Promise<void>;
+  signOut: () => Promise<void>;
+}
+
+export default (): IUseUser => {
+  async function signIn(username: string, password: string): Promise<void> {
     const authClient = new ClientOAuth2({
       accessTokenUri: `/connect/token`,
       scopes: [""],
@@ -19,7 +27,7 @@ export default () => {
       refreshToken.value = response.refreshToken;
     }
   }
-  async function signOut() {
+  async function signOut(): Promise<void> {
     //todo
   }
 

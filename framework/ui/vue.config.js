@@ -1,10 +1,14 @@
 /* eslint-disable */
+const path = require('path');
+
 module.exports = {
   // Disable hashes in filenames
   filenameHashing: false,
 
   // Tune webpack configuration
   chainWebpack: config => {
+    const tsconfigFile = path.resolve(__dirname, './tsconfig.build.json');
+
     // Do not create entry points since we are building a library
     config.entryPoints.clear();
 
@@ -37,5 +41,21 @@ module.exports = {
         options.happyPackMode = false;
         return options;
       });
+
+      // Define tsconfig settings for bundling
+      config.module
+        .rule('ts')
+        .use('ts-loader')
+        .merge({
+          options: {
+            configFile: tsconfigFile,
+          },
+        });
+      config
+        .plugin('fork-ts-checker')
+        .tap(args => {
+          args[0].typescript.configFile = tsconfigFile;
+          return args;
+        });
   },
 };

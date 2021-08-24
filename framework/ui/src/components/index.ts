@@ -2,13 +2,15 @@
 export { default as VcBadge } from "./atoms/vc-badge/vc-badge.vue";
 export { default as VcBubble } from "./atoms/vc-bubble/vc-bubble.vue";
 export { default as VcButton } from "./atoms/vc-button/vc-button.vue";
+export { default as VcCheckbox } from "./atoms/vc-checkbox/vc-checkbox.vue";
 export { default as VcContainer } from "./atoms/vc-container/vc-container.vue";
 export { default as VcIcon } from "./atoms/vc-icon/vc-icon.vue";
 export { default as VcImage } from "./atoms/vc-image/vc-image.vue";
+export { default as VcLabel } from "./atoms/vc-label/vc-label.vue";
 export { default as VcLink } from "./atoms/vc-link/vc-link.vue";
-export { default as VcLoader } from "./atoms/vc-loader";
 export { default as VcProgressbar } from "./atoms/vc-progressbar/vc-progressbar.vue";
-export { default as VcThumbnail } from "./atoms/vc-thumbnail/vc-thumbnail.vue";
+export { default as VcSwitch } from "./atoms/vc-switch/vc-switch.vue";
+export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
 export { default as VcTooltip } from "./atoms/vc-tooltip/vc-tooltip.vue";
 
 /* Molecules */
@@ -19,14 +21,11 @@ export { default as VcBladeToolbarDivider } from "./molecules/vc-blade-toolbar-d
 export { default as VcBreadcrumbsBack } from "./molecules/vc-breadcrumbs-back/vc-breadcrumbs-back.vue";
 export { default as VcBreadcrumbsItem } from "./molecules/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 export { default as VcFormAutocomplete } from "./molecules/vc-form-autocomplete/vc-form-autocomplete.vue";
-export { default as VcFormCheckbox } from "./molecules/vc-form-checkbox/vc-form-checkbox.vue";
 export { default as VcFormField } from "./molecules/vc-form-field/vc-form-field.vue";
 export { default as VcFormInput } from "./molecules/vc-form-input/vc-form-input.vue";
-export { default as VcFormLabel } from "./molecules/vc-form-label/vc-form-label.vue";
 export { default as VcFormSelect } from "./molecules/vc-form-select/vc-form-select.vue";
-export { default as VcFormSwitch } from "./molecules/vc-form-switch/vc-form-switch.vue";
-export { default as VcFormTextarea } from "./molecules/vc-form-textarea/vc-form-textarea.vue";
 export { default as VcFormUpload } from "./molecules/vc-form-upload/vc-form-upload.vue";
+export { default as VcLoader } from "./molecules/vc-loader";
 export { default as VcNavDivider } from "./molecules/vc-nav-divider/vc-nav-divider.vue";
 export { default as VcNavGroup } from "./molecules/vc-nav-group/vc-nav-group.vue";
 export { default as VcNavItem } from "./molecules/vc-nav-item/vc-nav-item.vue";

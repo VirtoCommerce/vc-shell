@@ -15,7 +15,7 @@
           vc-flex-align_center
         "
       >
-        <vc-form-checkbox>Remember me</vc-form-checkbox>
+        <vc-checkbox>Remember me</vc-checkbox>
         <vc-link>Forgot your password?</vc-link>
       </div>
       <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">

@@ -19,8 +19,8 @@ export function init(app: App, { router }: IAppOptions): App {
   console.debug("Init router");
   app.use(
     createRouter({
-      history: router.historyAPI ? createWebHistory() : createWebHashHistory(),
-      routes: [...router.routes],
+      history: router?.historyAPI ? createWebHistory() : createWebHashHistory(),
+      routes: [...(router?.routes || [])],
     })
   );
 

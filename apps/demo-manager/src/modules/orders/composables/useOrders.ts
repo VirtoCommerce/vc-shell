@@ -16,7 +16,7 @@ export default () => {
     var { getAccessToken } = useUser();
     const client = new OrderModuleClient();
 
-    client.setAuthToken(getAccessToken());
+    client.setAuthToken(await getAccessToken());
     orders.value = await client.searchCustomerOrder({
       take: 20,
     } as CustomerOrderSearchCriteria);

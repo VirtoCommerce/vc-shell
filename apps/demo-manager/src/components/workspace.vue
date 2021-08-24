@@ -5,6 +5,7 @@
     :account="account"
     @navClick="$emit('navClick', $event)"
   >
+    <h1 v-if="loading">Loading...</h1>
     <component
       v-for="blade in blades"
       :key="blade.name"
@@ -15,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, watch, ref } from "vue";
-import { useRouter } from "@virtoshell/core";
+import { useRouter, useUser } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -30,21 +31,12 @@ export default defineComponent({
         return [];
       },
     },
-
-    account: {
-      type: Object,
-      default() {
-        return {
-          name: "Unknown",
-          role: undefined,
-          avatar: undefined,
-        };
-      },
-    },
   },
 
   setup() {
     const router = useRouter();
+    const { loading } = useUser();
+
     let blades = ref<typeof router.currentRoute.value.matched>([]);
     watch(router.currentRoute, (value) => {
       blades.value = value.matched.filter((item) => item.name !== "root");
@@ -53,6 +45,7 @@ export default defineComponent({
 
     return {
       blades,
+      loading,
     };
   },
 });

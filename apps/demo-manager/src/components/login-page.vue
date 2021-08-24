@@ -20,15 +20,21 @@
       </div>
       <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">
         <vc-link>Sign in with Azure Active Directory</vc-link>
-        <vc-button variant="primary" @click="login">Log in</vc-button>
+        <vc-button variant="primary" :disabled="loading" @click="login"
+          >Log in</vc-button
+        >
+      </div>
+      <div v-if="!signInResult.succeeded" style="color: red">
+        <!-- TODO: stylizing-->
+        {{ signInResult.error }}
       </div>
     </vc-form>
   </vc-layout-login>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useRouter, useLogger, useUser } from "@virtoshell/core";
+import { computed, defineComponent, Ref, ref } from "vue";
+import { useRouter, useLogger, useUser, SignInResult } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -41,25 +47,26 @@ export default defineComponent({
   setup() {
     const log = useLogger();
     const router = useRouter();
-
-    const { signIn, accessToken } = useUser();
+    const signInResult: Ref<SignInResult> = ref({ succeeded: true });
+    const { signIn, user, loading } = useUser();
     const form = {
       username: "",
       password: "",
     };
 
     const login = async () => {
-      await signIn(form.username, form.password);
-      if (accessToken.value) {
+      signInResult.value = await signIn(form.username, form.password);
+      if (signInResult.value.succeeded) {
         router.push("/orders");
       }
     };
 
     log.debug("Init login-page");
-
     return {
       form,
       login,
+      loading,
+      signInResult,
     };
   },
 });

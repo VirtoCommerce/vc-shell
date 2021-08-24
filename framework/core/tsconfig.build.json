@@ -1,16 +1,21 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": false,
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
     "lib": [
       "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
+      "dom"
     ]
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.vue"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",

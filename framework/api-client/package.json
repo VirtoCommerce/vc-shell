@@ -8,13 +8,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc"
+    "build": "tsc -p tsconfig.build.json",
+    "watch": "tsc -w -p tsconfig.build.json"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "ts-loader": "^8.0.0",
-    "typescript": "^4.3.5",
-    "webpack": "^4.0.0"
+    "typescript": "^4.3.5"
   }
 }

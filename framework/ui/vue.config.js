@@ -1,11 +1,33 @@
 /* eslint-disable */
 module.exports = {
-  // disable hashes in filenames
+  // Disable hashes in filenames
   filenameHashing: false,
 
-  // delete HTML related webpack plugins
+  // Tune webpack configuration
   chainWebpack: config => {
+    // Do not create entry points since we are building a library
+    config.entryPoints.clear();
+
+    // Remove unused webpack plugins to speed up bundling
     config.plugins.delete('html');
+    config.plugins.delete('friendly-errors');
+    config.plugins.delete('preload');
+    config.plugins.delete('prefetch');
+    config.plugins.delete('feature-flags');
+
+    // Remove unused webpack rules to speed up bundling
+    config.module.rules.delete('postcss');
+    config.module.rules.delete('pug');
+    config.module.rules.delete('scss');
+    config.module.rules.delete('sass');
+    config.module.rules.delete('stylus');
+    config.module.rules.delete('tsx');
+    config.module.rule('css').oneOfs.delete('normal-modules')
+    config.module.rule('css').oneOfs.delete('vue-modules')
+    config.module.rule('less').oneOfs.delete('normal-modules')
+    config.module.rule('less').oneOfs.delete('vue-modules')
+
+    // Override typescript rules to bundle declaration files in package
     config.module.rule('ts').uses.delete('thread-loader');
     config.module
       .rule('ts')
@@ -13,12 +35,7 @@ module.exports = {
       .tap(options => {
         options.transpileOnly = false;
         options.happyPackMode = false;
-        options.compilerOptions = {
-          declaration: true,
-          noEmit: false,
-          outDir: 'dist',
-        };
         return options;
-      })
+      });
   },
 };

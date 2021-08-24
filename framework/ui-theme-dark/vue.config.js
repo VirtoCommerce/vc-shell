@@ -23,13 +23,15 @@ module.exports = {
     config.module.rules.delete('sass');
     config.module.rules.delete('stylus');
     config.module.rules.delete('tsx');
-    config.module.rules.delete('css');
-    config.module.rules.delete('less');
     config.module.rules.delete('vue');
     config.module.rules.delete('images');
     config.module.rules.delete('svg');
     config.module.rules.delete('media');
     config.module.rules.delete('fonts');
+    config.module.rule('css').oneOfs.delete('normal-modules')
+    config.module.rule('css').oneOfs.delete('vue-modules')
+    config.module.rule('less').oneOfs.delete('normal-modules')
+    config.module.rule('less').oneOfs.delete('vue-modules')
 
     // Override typescript rules to bundle declaration files in package
     config.module.rule('ts').uses.delete('thread-loader');
@@ -41,10 +43,5 @@ module.exports = {
         options.happyPackMode = false;
         return options;
       });
-
-    // Remove external packages from bundle
-    config.externals([
-      "@virtoshell/api-client",
-    ]);
   },
 };

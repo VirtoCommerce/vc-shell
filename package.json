@@ -3,8 +3,8 @@
   "version": "0.0.29",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap --hoist",
-    "prepare": "npm run bootstrap",
+    "bootstrap": "lerna bootstrap",
+    "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",
     "lint": "eslint --fix packages/**/*.{js,ts,vue}",
@@ -13,17 +13,21 @@
     "version": "cross-env-shell \"lerna version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .\"",
     "postversion": "git push origin --tags",
     "build": "lerna run build",
-    "build-framework": "lerna run build --scope @virtoshell/{ui,ui-theme-dark,ui-theme-light,core,api-client}",
+    "build-framework": "lerna run build --scope @virtoshell/{ui,ui-theme-dark,core,api-client}",
     "build-framework:ui": "lerna run build --scope @virtoshell/ui",
     "build-framework:ui-theme-dark": "lerna run build --scope @virtoshell/ui-theme-dark",
-    "build-framework:ui-theme-light": "lerna run build --scope @virtoshell/ui-theme-light",
     "build-framework:core": "lerna run build --scope @virtoshell/core",
     "build-framework:api-client": "lerna run build --scope @virtoshell/api-client",
     "build-apps:demo-manager": "lerna run build --scope @virtoshell/app-demo-manager",
-    "serve-apps:demo-manager": "lerna run serve --stream --scope @virtoshell/app-demo-manager",
+    "serve-apps:demo-manager": "cd apps/demo-manager && yarn serve",
     "storybook-build": "lerna run storybook:build --stream --scope @virtoshell/ui",
     "storybook-serve": "lerna run storybook:serve --stream --scope @virtoshell/ui"
   },
+  "workspaces": [
+    "apps/*",
+    "framework/*",
+    "modules/*"
+  ],
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",

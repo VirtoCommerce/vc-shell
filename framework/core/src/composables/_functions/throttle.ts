@@ -6,7 +6,7 @@ export default function throttle(
 
   return function (...args: unknown[]): void {
     if (!wasThrottled) {
-      func.apply(this, args);
+      func(...args);
       wasThrottled = true;
       setTimeout(() => {
         wasThrottled = false;

@@ -2,7 +2,7 @@ export default function debounce(
   func: (...args: unknown[]) => void,
   delay: number
 ): (...args: unknown[]) => void {
-  let timer = null;
+  let timer: number | null = null;
   let wasDebounced = false;
 
   return function (...args: unknown[]): void {
@@ -11,11 +11,11 @@ export default function debounce(
       clearTimeout(timer);
     }
 
-    timer = setTimeout(() => {
+    timer = window.setTimeout(() => {
       timer = null;
 
       if (wasDebounced) {
-        func.apply(this, args);
+        func(...args);
       }
 
       wasDebounced = false;

@@ -48,7 +48,6 @@ export default defineComponent({
     let blades = ref<typeof router.currentRoute.value.matched>([]);
     watch(router.currentRoute, (value) => {
       blades.value = value.matched.filter((item) => item.name !== "root");
-      console.dir(blades);
     });
 
     return {

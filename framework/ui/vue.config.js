@@ -1,5 +1,6 @@
 /* eslint-disable */
 const path = require('path');
+const tsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
   // Disable hashes in filenames
@@ -8,6 +9,9 @@ module.exports = {
   // Tune webpack configuration
   chainWebpack: config => {
     const tsconfigFile = path.resolve(__dirname, './tsconfig.build.json');
+    config.resolve.plugin('paths').use(tsconfigPathsPlugin, [{
+      configFile: tsconfigFile
+    }]);
 
     // Do not create entry points since we are building a library
     config.entryPoints.clear();

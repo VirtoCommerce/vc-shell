@@ -6,7 +6,7 @@ import { Story } from "@storybook/vue3";
 import VcTextarea from "./vc-textarea.vue";
 
 export default {
-  title: "molecules/vc-textarea",
+  title: "atoms/vc-textarea",
   component: VcTextarea,
 };
 

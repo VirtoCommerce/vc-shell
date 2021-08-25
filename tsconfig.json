@@ -1,8 +1,8 @@
 {
-  "estyends": "./tsconfig.build.json",
+  "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "composite": true,
+    "rootDir": ".",
     "paths": {
       "@virtoshell/api-client": [
         "framework/api-client/src"

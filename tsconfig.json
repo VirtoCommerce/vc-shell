@@ -14,5 +14,16 @@
         "framework/ui/src"
       ]
     }
-  }
+  },
+  "references": [
+    {
+      "path": "framework/api-client/"
+    },
+    {
+      "path": "framework/core/"
+    },
+    {
+      "path": "framework/ui/"
+    },
+  ]
 }

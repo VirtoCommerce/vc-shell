@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
+
+**Note:** Version bump only for package @virtoshell/ui-theme-light
+
+
+
+
+
 ## [0.0.28](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.28) (2021-08-19)
 
 **Note:** Version bump only for package @virtoshell/ui-theme-light

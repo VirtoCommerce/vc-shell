@@ -1,17 +1,22 @@
 {
+  "npmClient": "yarn",
   "packages": [
+    "apps/*",
     "framework/*",
-    "modules/*",
-    "apps/*"
+    "modules/*"
   ],
-  "version": "0.0.28",
+  "useWorkspaces": true,
+  "version": "independent",
   "command": {
     "create": {
       "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk"
     },
+    "publish": {
+      "conventionalCommits": true
+    },
     "version": {
       "conventionalCommits": true,
-      "message": "chore(release): %s"
+      "message": "chore(release): %s publish"
     }
   }
 }

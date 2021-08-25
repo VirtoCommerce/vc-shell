@@ -29,6 +29,8 @@ export default defineComponent({
     });
 
     log.debug(`Initializing App`);
+    console.dir(router.currentRoute.value);
+    router.replace(router.currentRoute.value.fullPath);
 
     const toolbarItems = [
       {

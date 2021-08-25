@@ -6,7 +6,7 @@ import { init as initRouter } from "./composables/router";
 const init = [initLogger, initI18n, initRouter];
 
 export default {
-  install(app: App, options: unknown): void {
+  install(app: App, options: Record<string, unknown>): void {
     // Init all children
     init.forEach((fn) => fn(app, options));
   },

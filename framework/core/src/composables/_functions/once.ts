@@ -5,7 +5,7 @@ export default function once(
 ): (...args: unknown[]) => unknown {
   return function (...args: unknown[]): unknown {
     if (!resultsMap.has(func)) {
-      const result = func.apply(this, args);
+      const result = func(...args);
       resultsMap.set(func, result);
     }
     return resultsMap.get(func);

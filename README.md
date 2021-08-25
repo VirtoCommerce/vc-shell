@@ -25,26 +25,26 @@ The project is originated to create a replacement of the current vc-platform man
 ```bash
 # install and relocate root and packages dependencies
 # this will also install and configure package dependencies and git hooks
-$ npm install
+$ yarn
 
 # reinstall or refresh packages dependencies
-$ npm run bootstrap
+$ yarn bootstrap
 
 # build all packages
-$ npm run build
+$ yarn build
 
 # or one by one
-$ npm run build-framework:ui
-$ npm run build-framework:core
-$ npm run build-framework:api-client
-$ npm run build-apps:demo-manager
+$ yarn build-framework:ui
+$ yarn build-framework:core
+$ yarn build-framework:api-client
+$ yarn build-apps:demo-manager
 
 # start Platform Manager Demo with hot reload at localhost:8080
-$ npm run serve-apps:demo-manager
+$ yarn serve-apps:demo-manager
 
 # run interactive documentation
-$ npm run storybook-serve
+$ yarn storybook-serve
 
 # or build it
-$ npm run storybook-build
+$ yarn storybook-build
 ```

@@ -1,11 +1,40 @@
 /* eslint-disable */
+const path = require('path');
+
 module.exports = {
-  // disable hashes in filenames
+  // Disable hashes in filenames
   filenameHashing: false,
 
-  // delete HTML related webpack plugins
+  // Tune webpack configuration
   chainWebpack: config => {
+    const tsconfigFile = path.resolve(__dirname, './tsconfig.build.json');
+
+    // Do not create entry points since we are building a library
+    config.entryPoints.clear();
+
+    // Remove unused webpack plugins to speed up bundling
     config.plugins.delete('html');
+    config.plugins.delete('preload');
+    config.plugins.delete('prefetch');
+    config.plugins.delete('feature-flags');
+    config.plugins.delete('vue-loader');
+
+    // Remove unused webpack rules to speed up bundling
+    config.module.rules.delete('postcss');
+    config.module.rules.delete('pug');
+    config.module.rules.delete('scss');
+    config.module.rules.delete('sass');
+    config.module.rules.delete('stylus');
+    config.module.rules.delete('tsx');
+    config.module.rules.delete('css');
+    config.module.rules.delete('less');
+    config.module.rules.delete('vue');
+    config.module.rules.delete('images');
+    config.module.rules.delete('svg');
+    config.module.rules.delete('media');
+    config.module.rules.delete('fonts');
+
+    // Override typescript rules to bundle declaration files in package
     config.module.rule('ts').uses.delete('thread-loader');
     config.module
       .rule('ts')
@@ -13,18 +42,28 @@ module.exports = {
       .tap(options => {
         options.transpileOnly = false;
         options.happyPackMode = false;
-        options.compilerOptions = {
-          declaration: true,
-          noEmit: false,
-          outDir: 'dist',
-        };
         return options;
-      })
-    config.externals([
-      "@virtoshell/ui",
-    ]);
-    config.resolve.alias.set("@vueuse/integrations/useCookies", "@vueuse/integrations/useCookies.esm.js");
-  },
+      });
 
-  productionSourceMap: false,
+    // Remove external packages from bundle
+    config.externals([
+      "@virtoshell/api-client",
+    ]);
+
+    // Define tsconfig settings for bundling
+    config.module
+      .rule('ts')
+      .use('ts-loader')
+      .merge({
+        options: {
+          configFile: tsconfigFile,
+        },
+      });
+    config
+      .plugin('fork-ts-checker')
+      .tap(args => {
+        args[0].typescript.configFile = tsconfigFile;
+        return args;
+      });
+  },
 };

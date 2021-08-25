@@ -26,8 +26,6 @@ export default {
     if (options?.router) {
       options?.router.forEach((item) => router.addRoute(item));
     }
-
-    //router.replace(router.currentRoute.value.fullPath);
   },
 };
 

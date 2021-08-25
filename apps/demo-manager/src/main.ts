@@ -12,22 +12,22 @@ import * as locales from "./locales";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@virtoshell/ui/dist/ui.css";
-import "@virtoshell/ui-theme-light/dist/theme.css";
 
 const app = createApp(App)
   .use(VirtoShellUi)
   .use(VirtoShellCore, {
     router: {
+      historyAPI: true,
       routes: [
-        {
-          name: "login",
-          path: "/login",
-          component: LoginPage,
-        },
         {
           name: "root",
           path: "/",
           component: Workspace,
+        },
+        {
+          name: "login",
+          path: "/login",
+          component: LoginPage,
         },
       ],
     },

@@ -9,7 +9,7 @@ export function init(app: App): App {
   console.debug("Init logger");
   app.use(
     createLogger({
-      enabled: process.env.VUE_APP_LOG_ENABLED ?? true,
+      enabled: process.env.VUE_APP_LOG_ENABLED === "true" ? true : false,
       level: process.env.VUE_APP_LOG_LEVEL ?? "debug",
     })
   );

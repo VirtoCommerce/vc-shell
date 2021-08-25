@@ -4,7 +4,7 @@
   "scripts": {
     "build": "vue-cli-service build --formats commonjs --target lib --name ui ./src/index.ts",
     "watch": "vue-cli-service build --formats commonjs --target lib --name ui ./src/index.ts --watch",
-    "storybook:build": "vue-cli-service storybook:build -s src/assets -c config/storybook",
+    "storybook:build": "vue-cli-service storybook:build -s src/assets -c config/storybook --debug-webpack",
     "storybook:serve": "vue-cli-service storybook:serve -s src/assets -p 6006 -c config/storybook"
   },
   "main": "./dist/ui.common.js",

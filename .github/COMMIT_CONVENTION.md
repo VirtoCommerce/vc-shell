@@ -1,6 +1,6 @@
-## Git Commit Message Convention
+# Git Commit Message Convention
 
-#### TL;DR:
+## TL;DR
 
 Messages must be matched by the following regex:
 
@@ -8,17 +8,17 @@ Messages must be matched by the following regex:
 /^(revert: )?(feat|fix|docs|style|refactor|perf|test|workflow|ci|chore|types)(\(.+\))?: .{1,50}/
 ```
 
-#### Examples
+## Examples
 
 Appears under "Features" header, `ui-kit` subheader:
 
-```
+``` text
 feat(ui-kit): add 'comments' option
 ```
 
 Appears under "Bug Fixes" header, `shell` subheader, with a link to issue #28:
 
-```
+``` text
 fix(shell): handle events on blur
 
 close #28
@@ -26,7 +26,7 @@ close #28
 
 Appears under "Performance Improvements" header, and under "Breaking Changes" with the breaking change explanation:
 
-```
+``` text
 perf(api-client): improve vdom diffing by removing 'foo' option
 
 BREAKING CHANGE: The 'foo' option has been removed.
@@ -34,17 +34,17 @@ BREAKING CHANGE: The 'foo' option has been removed.
 
 The following commit and commit `667ecc1` do not appear in the changelog if they are under the same release. If not, the revert commit appears under the "Reverts" header.
 
-```
+``` text
 revert: feat(ui-kit): add 'comments' option
 
 This reverts commit 667ecc1654a317a13331b17617d973392f415f02.
 ```
 
-### Full Message Format
+## Full Message Format
 
 A commit message consists of a **header**, **body** and **footer**.  The header has a **type**, **scope** and **subject**:
 
-```
+``` text
 <type>(<scope>): <subject>
 <BLANK LINE>
 <body>
@@ -58,7 +58,7 @@ A `!` MAY be appended prior to the `:` in the type/scope prefix, to further draw
 
 ### Revert
 
-If the commit reverts a previous commit, it should begin with `revert: `, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
+If the commit reverts a previous commit, it should begin with `revert:`, followed by the header of the reverted commit. In the body it should say: `This reverts commit <hash>.`, where the hash is the SHA of the commit being reverted.
 
 ### Type
 

@@ -6,7 +6,7 @@ import { Story } from "@storybook/vue3";
 import VcSwitch from "./vc-switch.vue";
 
 export default {
-  title: "molecules/vc-switch",
+  title: "atoms/vc-switch",
   component: VcSwitch,
 };
 

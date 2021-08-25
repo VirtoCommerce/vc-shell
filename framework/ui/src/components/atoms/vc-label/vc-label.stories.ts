@@ -6,7 +6,7 @@ import { Story } from "@storybook/vue3";
 import VcLabel from "./vc-label.vue";
 
 export default {
-  title: "molecules/vc-label",
+  title: "atoms/vc-label",
   component: VcLabel,
 };
 

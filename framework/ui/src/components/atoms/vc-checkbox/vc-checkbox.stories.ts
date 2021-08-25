@@ -6,7 +6,7 @@ import { Story } from "@storybook/vue3";
 import VcCheckbox from "./vc-checkbox.vue";
 
 export default {
-  title: "molecules/vc-checkbox",
+  title: "atoms/vc-checkbox",
   component: VcCheckbox,
 };
 

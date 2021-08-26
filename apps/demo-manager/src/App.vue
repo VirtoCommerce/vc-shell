@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useLogger, useI18n, useRouter } from "@virtoshell/core";
+import { defineComponent, computed, onMounted } from "vue";
+import { useLogger, useI18n, useRouter, useUser } from "@virtoshell/core";
 
 export default defineComponent({
   name: "App",
@@ -17,6 +17,16 @@ export default defineComponent({
     const { t } = useI18n();
     const log = useLogger();
     const router = useRouter();
+    const { user, loadUser, signOut, loading } = useUser();
+
+    onMounted(async () => {
+      //TODO: Add load indicator to entire workspace
+      const user = await loadUser();
+      console.log("user:", user);
+      if (!user.userName) {
+        router.push("/login");
+      }
+    });
 
     log.debug(`Initializing App`);
     console.dir(router.currentRoute.value);
@@ -53,8 +63,10 @@ export default defineComponent({
 
     const account = {
       avatar: "/assets/avatar.jpg",
-      name: "Iurii A Taranov",
-      role: "Administrator",
+      name: computed(() => user.value?.userName),
+      role: computed(() =>
+        user.value?.isAdministrator ? "Administrator" : "Operator"
+      ),
       dropdown: [
         {
           id: 1,
@@ -67,6 +79,7 @@ export default defineComponent({
           id: 2,
           title: t("SHELL.ACCOUNT.LOGOUT"),
           onClick() {
+            signOut();
             router.push("/login");
           },
         },
@@ -90,6 +103,7 @@ export default defineComponent({
         account,
       },
       onNavClick,
+      loading,
     };
   },
 });

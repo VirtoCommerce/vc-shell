@@ -3,6 +3,92 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.29 (2021-08-26)
+
+
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
+
+
+### Features
+
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
+## 0.0.30 (2021-08-26)
+
+
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
+
+
+### Features
+
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
 ## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
 
 **Note:** Version bump only for package @virtoshell/ui-theme-dark

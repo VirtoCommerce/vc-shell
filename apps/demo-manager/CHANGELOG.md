@@ -3,6 +3,150 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.29 (2021-08-26)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** typescript strict disable (temporary) ([e296c9b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e296c9b611f7fee408c8d67946e5659069b1ae29))
+* watching fix ([fe4dfa5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fe4dfa59eda95fc080efb1463f33399e3ac4b5ac))
+
+
+### Features
+
+* **app-demo-manager:** routing update (WIP) ([4f6c795](https://github.com/VirtoCommerce/platform-manager-sdk/commit/4f6c7958c5246ec4c12b8e9b18064c0aa9d6711e))
+* signIn/signOut ([3493066](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3493066c28b34359c1c89c695c33c6a264d10398))
+* store access toke in cookies (does not compile) ([fd75285](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fd75285c62f9b9136f77ac4f79d2ae388682ae54))
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* **ui:** component relocation ([54caaea](https://github.com/VirtoCommerce/platform-manager-sdk/commit/54caaeaf105a6582917db29fa5d8bb34a0f16f62))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
+
+
+### Features
+
+* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
+* **app-demo-manager:** add proxy for all requests to platform api ([a8c71f8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a8c71f84645507f34221fec93f26880956d35236))
+* **app-demo-manager:** add proxy for all requests to platform api ([3c724ff](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3c724ffa961ce8b57b08c45eca05b9188d3970f8))
+* **app-demo-manager:** module example ([65bfe91](https://github.com/VirtoCommerce/platform-manager-sdk/commit/65bfe91667f4854f94b46f5e1e4645bef98326b5))
+* **app-demo-manager:** order blade ([72e2efe](https://github.com/VirtoCommerce/platform-manager-sdk/commit/72e2efe64aea0fdecf7ddfcd9cfc6766eafa89c0))
+* **app-demo-manager:** platform url env bundle ([8516bae](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8516baea67e76365df03b1adf7792d1151d17a06))
+* **app-demo-manager:** testing api redirect ([04f3d7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/04f3d7e2068ad82eff327fb53ccbe6d6edcb96f7))
+* login component API connect (WIP) ([fbb385f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fbb385feae4d58ae61351be9f6db85a8705c003d))
+* login component style minor update ([244e147](https://github.com/VirtoCommerce/platform-manager-sdk/commit/244e1476f610dc28ceb5d7582573a33491fbb2c5))
+* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
+* profile menu item clickable ([bcfbd15](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bcfbd15aa410a2e5c739ec5a7da3ea7b0a5aba96))
+* sample workspace with blade ([1c772fc](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1c772fcfa09311f38dfb68c4c16345caf2372d38))
+* **ui:** vc-icon component update ([1c7d84f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1c7d84f01dbe782d7709779becb9bd3ae646ef31))
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* core composables ([57d84af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
+* core composables ([7713230](https://github.com/VirtoCommerce/platform-manager-sdk/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
+## 0.0.30 (2021-08-26)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** typescript strict disable (temporary) ([e296c9b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e296c9b611f7fee408c8d67946e5659069b1ae29))
+* watching fix ([fe4dfa5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fe4dfa59eda95fc080efb1463f33399e3ac4b5ac))
+
+
+### Features
+
+* **app-demo-manager:** routing update (WIP) ([4f6c795](https://github.com/VirtoCommerce/platform-manager-sdk/commit/4f6c7958c5246ec4c12b8e9b18064c0aa9d6711e))
+* signIn/signOut ([3493066](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3493066c28b34359c1c89c695c33c6a264d10398))
+* store access toke in cookies (does not compile) ([fd75285](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fd75285c62f9b9136f77ac4f79d2ae388682ae54))
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* **ui:** component relocation ([54caaea](https://github.com/VirtoCommerce/platform-manager-sdk/commit/54caaeaf105a6582917db29fa5d8bb34a0f16f62))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
+
+
+### Features
+
+* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
+* **app-demo-manager:** add proxy for all requests to platform api ([a8c71f8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a8c71f84645507f34221fec93f26880956d35236))
+* **app-demo-manager:** add proxy for all requests to platform api ([3c724ff](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3c724ffa961ce8b57b08c45eca05b9188d3970f8))
+* **app-demo-manager:** module example ([65bfe91](https://github.com/VirtoCommerce/platform-manager-sdk/commit/65bfe91667f4854f94b46f5e1e4645bef98326b5))
+* **app-demo-manager:** order blade ([72e2efe](https://github.com/VirtoCommerce/platform-manager-sdk/commit/72e2efe64aea0fdecf7ddfcd9cfc6766eafa89c0))
+* **app-demo-manager:** platform url env bundle ([8516bae](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8516baea67e76365df03b1adf7792d1151d17a06))
+* **app-demo-manager:** testing api redirect ([04f3d7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/04f3d7e2068ad82eff327fb53ccbe6d6edcb96f7))
+* login component API connect (WIP) ([fbb385f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fbb385feae4d58ae61351be9f6db85a8705c003d))
+* login component style minor update ([244e147](https://github.com/VirtoCommerce/platform-manager-sdk/commit/244e1476f610dc28ceb5d7582573a33491fbb2c5))
+* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
+* profile menu item clickable ([bcfbd15](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bcfbd15aa410a2e5c739ec5a7da3ea7b0a5aba96))
+* sample workspace with blade ([1c772fc](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1c772fcfa09311f38dfb68c4c16345caf2372d38))
+* **ui:** vc-icon component update ([1c7d84f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1c7d84f01dbe782d7709779becb9bd3ae646ef31))
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* core composables ([57d84af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
+* core composables ([7713230](https://github.com/VirtoCommerce/platform-manager-sdk/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
 ## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
 
 

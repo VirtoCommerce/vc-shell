@@ -3,6 +3,128 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.29 (2021-08-26)
+
+
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
+
+
+### Features
+
+* **core:** routing update (WIP) ([47a8ab2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/47a8ab274f610820a1e91f63d99995601e898961))
+* **core:** webpack config for [@vueuse](https://github.com/vueuse) submodules ([79aeef7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/79aeef71c838bbe46eacdeaf37a079756a2e2c41))
+* signIn/signOut ([3493066](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3493066c28b34359c1c89c695c33c6a264d10398))
+* store access toke in cookies (does not compile) ([fd75285](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fd75285c62f9b9136f77ac4f79d2ae388682ae54))
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
+
+
+### Features
+
+* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
+* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
+* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* core composables ([57d84af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
+* core composables ([7713230](https://github.com/VirtoCommerce/platform-manager-sdk/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
+## 0.0.30 (2021-08-26)
+
+
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
+
+
+### Features
+
+* **core:** routing update (WIP) ([47a8ab2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/47a8ab274f610820a1e91f63d99995601e898961))
+* **core:** webpack config for [@vueuse](https://github.com/vueuse) submodules ([79aeef7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/79aeef71c838bbe46eacdeaf37a079756a2e2c41))
+* signIn/signOut ([3493066](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3493066c28b34359c1c89c695c33c6a264d10398))
+* store access toke in cookies (does not compile) ([fd75285](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fd75285c62f9b9136f77ac4f79d2ae388682ae54))
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
+
+
+### Features
+
+* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
+* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
+* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* core composables ([57d84af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
+* core composables ([7713230](https://github.com/VirtoCommerce/platform-manager-sdk/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
 ## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
 
 

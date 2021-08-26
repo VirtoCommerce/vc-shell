@@ -5,9 +5,9 @@ import { AuthData, SignInResult } from "../../types";
 import sleep from "../_functions/sleep";
 const VC_AUTH_DATA_KEY = "vc-auth-data";
 
-const user: Ref<UserDetail> = ref();
+const user: Ref<UserDetail | null> = ref(null);
 const loading: Ref<boolean> = ref(false);
-const authData: Ref<AuthData> = ref();
+const authData: Ref<AuthData | null> = ref(null);
 const authClient = new ClientOAuth2({
   accessTokenUri: `/connect/token`,
   scopes: ["offline_access"],
@@ -23,7 +23,7 @@ export default () => {
     try {
       loading.value = true;
       //TODO: remove after demo
-      await sleep(3000);
+      await sleep(1000);
       token = await authClient.owner.getToken(username, password);
     } catch (e) {
       //TODO: log error
@@ -64,7 +64,7 @@ export default () => {
       try {
         loading.value = true;
         //TODO: remove after demo
-        await sleep(3000);
+        await sleep(1000);
         user.value = await securityClient.getCurrentUser();
         console.log("[userUsers]: an user details has been loaded", user.value);
       } catch (e) {
@@ -76,34 +76,37 @@ export default () => {
     return { ...user.value } as UserDetail;
   }
 
-  async function getAccessToken(): Promise<string> {
+  async function getAccessToken(): Promise<string | null> {
     if (!authData.value) {
       authData.value = readAuthData();
     }
 
-    const result = authData.value?.accessToken || undefined;
+    const result = authData.value?.accessToken || null;
 
-    if (authData.value && Date.now() >= authData.value.expiresAt) {
+    if (authData.value && Date.now() >= (authData.value.expiresAt ?? 0)) {
       const token = authClient.createToken(
-        authData.value.accessToken,
-        authData.value.refreshToken,
+        authData.value.accessToken ?? "",
+        authData.value.refreshToken ?? "",
         {}
       );
       console.log(
         "[userUsers]: an access token is expired, using refresh token to recieve a new"
       );
-      const newToken = await token.refresh();
-
-      if (newToken) {
-        authData.value = {
-          ...authData.value,
-          accessToken: newToken.accessToken,
-          refreshToken: newToken.refreshToken,
-          expiresAt: addOffsetToCurrentDate(
-            Number(newToken.data["expires_in"])
-          ),
-        };
-        storeAuthData(authData.value);
+      try {
+        const newToken = await token.refresh();
+        if (newToken) {
+          authData.value = {
+            ...authData.value,
+            accessToken: newToken.accessToken,
+            refreshToken: newToken.refreshToken,
+            expiresAt: addOffsetToCurrentDate(
+              Number(newToken.data["expires_in"])
+            ),
+          };
+          storeAuthData(authData.value);
+        }
+      } catch (e) {
+        console.log("[userUsers]: getAccessToken() returns error", e);
       }
     }
     return result;
@@ -113,7 +116,7 @@ export default () => {
     localStorage.setItem(VC_AUTH_DATA_KEY, JSON.stringify({ ...authData }));
   }
   function readAuthData(): AuthData {
-    return JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY)) as AuthData;
+    return JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) ?? "") as AuthData;
   }
 
   function addOffsetToCurrentDate(offsetInSeconds: number): number {

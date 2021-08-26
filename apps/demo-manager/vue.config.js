@@ -52,7 +52,7 @@ module.exports = {
         args[0]["process.env"] = {
           ...env,
           "PACKAGE_VERSION": `"${version}"`,
-          "PLATFORM_URL": `${process.env.PLATFORM_URL}`,
+          "PLATFORM_URL": `"${process.env.PLATFORM_URL}"`,
         };
         return args;
        });

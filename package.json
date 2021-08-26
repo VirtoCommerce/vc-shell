@@ -21,7 +21,7 @@
     "build-apps:demo-manager": "lerna run build --scope @virtoshell/app-demo-manager",
     "serve-apps:demo-manager": "cd apps/demo-manager && yarn serve",
     "storybook-build": "lerna run storybook:build --stream --scope @virtoshell/ui",
-    "storybook-serve": "lerna run storybook:serve --stream --scope @virtoshell/ui"
+    "storybook-serve": "cd framework/ui && yarn storybook:serve"
   },
   "workspaces": [
     "apps/*",

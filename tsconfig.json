@@ -1,8 +1,8 @@
 {
-  "estyends": "./tsconfig.build.json",
+  "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "composite": true,
+    "rootDir": ".",
     "paths": {
       "@virtoshell/api-client": [
         "framework/api-client/src"
@@ -14,5 +14,16 @@
         "framework/ui/src"
       ]
     }
-  }
+  },
+  "references": [
+    {
+      "path": "framework/api-client/"
+    },
+    {
+      "path": "framework/core/"
+    },
+    {
+      "path": "framework/ui/"
+    },
+  ]
 }

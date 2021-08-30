@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.31](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui@0.0.30...@virtoshell/ui@0.0.31) (2021-08-30)
+
+
+### Features
+
+* vm-31 table display ([993f7a8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/993f7a82416beb3a9cbe0dfb7d20a5b32ce803df))
+
+
+
+
+
 ## 0.0.29 (2021-08-26)
 
 

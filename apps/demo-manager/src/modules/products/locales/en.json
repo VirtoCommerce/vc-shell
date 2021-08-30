@@ -1,0 +1,25 @@
+{
+  "PRODUCTS": {
+    "MENU": {
+      "TITLE": "Products"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Products",
+        "SUBTITLE": "Manage your own products",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "ADD": "Add new",
+          "BULK_DELETE": "Delete selected"
+        },
+        "TABLE": {
+          "NAME": "Name",
+          "CATEGORY": "Category",
+          "CREATED_DATE": "Created Date",
+          "STATUS": "Status",
+          "GTIN": "EAN/GTIN"
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,13 @@
 <template>
-  <div :class="['vc-container', { 'vc-container_shadow': shadow && scroll }]">
+  <div
+    :class="[
+      'vc-container',
+      {
+        'vc-container_shadow': shadow && scroll,
+        'vc-container_nopadding': noPadding,
+      },
+    ]"
+  >
     <div ref="component" class="vc-container__inner">
       <slot></slot>
     </div>
@@ -14,6 +22,11 @@ export default defineComponent({
 
   props: {
     shadow: {
+      type: Boolean,
+      default: false,
+    },
+
+    noPadding: {
       type: Boolean,
       default: false,
     },
@@ -71,6 +84,7 @@ export default defineComponent({
 
   &__inner {
     overflow-y: auto;
+    overflow-x: hidden;
     flex: 1;
     padding: var(--container-scroll-padding);
     scrollbar-color: var(--container-scroll-color);
@@ -94,6 +108,10 @@ export default defineComponent({
     &::-webkit-scrollbar-thumb:hover {
       background: var(--container-scroll-color-hover);
     }
+  }
+
+  &_nopadding &__inner {
+    padding: 0;
   }
 }
 </style>

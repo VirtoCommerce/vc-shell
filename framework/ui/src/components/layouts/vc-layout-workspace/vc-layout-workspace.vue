@@ -277,5 +277,10 @@ export default defineComponent({
       }
     }
   }
+
+  &__content {
+    overflow-y: hidden;
+    overflow-x: auto;
+  }
 }
 </style>

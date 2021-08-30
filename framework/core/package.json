@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/core",
-  "version": "0.0.29",
+  "version": "0.0.31",
   "scripts": {
     "build": "vue-cli-service build --formats commonjs --target lib --name core ./src/index.ts",
     "watch": "vue-cli-service build --formats commonjs --target lib --name core ./src/index.ts --watch"
@@ -13,7 +13,7 @@
   ],
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^2.1.0",
-    "@virtoshell/api-client": "^0.0.29",
+    "@virtoshell/api-client": "^0.0.31",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.31](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.31) (2021-08-30)
+
+
+### Features
+
+* vm-28 - module "products" ([23dc9fe](https://github.com/VirtoCommerce/platform-manager-sdk/commit/23dc9fe98597849463fe3f9369350f60459e6be6))
+* vm-31 table display ([993f7a8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/993f7a82416beb3a9cbe0dfb7d20a5b32ce803df))
+
+
+
+
+
 ## 0.0.29 (2021-08-26)
 
 

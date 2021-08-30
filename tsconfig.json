@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": ".",
+    "resolveJsonModule": true,
     "paths": {
       "@virtoshell/api-client": [
         "framework/api-client/src"
@@ -16,6 +17,9 @@
     }
   },
   "references": [
+    {
+      "path": "apps/demo-manager/"
+    },
     {
       "path": "framework/api-client/"
     },

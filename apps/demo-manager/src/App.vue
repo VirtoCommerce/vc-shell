@@ -61,8 +61,8 @@ export default defineComponent({
       { id: 1, title: "Orders", icon: "fas fa-layer-group", href: "/orders" },
       {
         id: 2,
-        title: "Products",
-        icon: "fas fa-layer-group",
+        title: t("PRODUCTS.MENU.TITLE"),
+        icon: "fas fa-cash-register",
         href: "/products",
       },
     ];

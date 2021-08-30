@@ -15,7 +15,9 @@
       @close="$emit('close')"
     />
 
-    <slot name="toolbar"><vc-blade-toolbar :items="toolbarItems" /></slot>
+    <slot name="toolbar">
+      <vc-blade-toolbar :items="toolbarItems"></vc-blade-toolbar>
+    </slot>
 
     <div
       v-if="searchable || filterable"

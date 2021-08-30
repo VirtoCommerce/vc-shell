@@ -59,6 +59,12 @@ export default defineComponent({
 
     const navItems = [
       { id: 1, title: "Orders", icon: "fas fa-layer-group", href: "/orders" },
+      {
+        id: 2,
+        title: "Products",
+        icon: "fas fa-layer-group",
+        href: "/products",
+      },
     ];
 
     const account = {

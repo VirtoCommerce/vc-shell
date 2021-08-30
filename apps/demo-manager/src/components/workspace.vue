@@ -37,7 +37,7 @@ export default defineComponent({
     const router = useRouter();
     const { loading } = useUser();
 
-    let blades = ref<typeof router.currentRoute.value.matched>([]);
+    let blades = ref([]);
     watch(router.currentRoute, (value) => {
       blades.value = value.matched.filter((item) => item.name !== "root");
     });

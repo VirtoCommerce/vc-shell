@@ -5,6 +5,7 @@ import VirtoShellCore from "@virtoshell/core";
 import LoginPage from "./components/login-page.vue";
 import Workspace from "./components/workspace.vue";
 import ModOrders from "./modules/orders";
+import ModProducts from "./modules/products";
 
 import * as locales from "./locales";
 
@@ -32,7 +33,8 @@ const app = createApp(App)
       ],
     },
   })
-  .use(ModOrders);
+  .use(ModOrders)
+  .use(ModProducts);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

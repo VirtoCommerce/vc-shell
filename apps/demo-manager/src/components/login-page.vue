@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, Ref, ref } from "vue";
+import { defineComponent, Ref, ref } from "vue";
 import { useRouter, useLogger, useUser, SignInResult } from "@virtoshell/core";
 
 export default defineComponent({
@@ -48,7 +48,7 @@ export default defineComponent({
     const log = useLogger();
     const router = useRouter();
     const signInResult: Ref<SignInResult> = ref({ succeeded: true });
-    const { signIn, user, loading } = useUser();
+    const { signIn, loading } = useUser();
     const form = {
       username: "",
       password: "",

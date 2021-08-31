@@ -67,12 +67,13 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { useRouter, useI18n } from "@virtoshell/core";
+import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const logger = useLogger();
     const { t } = useI18n();
     const expanded = ref(true);
     const { products, totalCount, pages, currentPage, loadProducts } =
@@ -96,12 +97,18 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus-square",
         disabled: true,
+        onClick: () => {
+          router.push({ name: "product-details" });
+        },
       },
       {
         id: "batchDelete",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE"),
         icon: "fas fa-times-circle",
         disabled: true,
+        onClick: () => {
+          logger.debug("Delete selected products");
+        },
       },
     ];
 

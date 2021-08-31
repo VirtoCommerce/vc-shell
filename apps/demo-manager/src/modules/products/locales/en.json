@@ -6,7 +6,6 @@
     "PAGES": {
       "LIST": {
         "TITLE": "Products",
-        "SUBTITLE": "Manage your own products",
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add new",

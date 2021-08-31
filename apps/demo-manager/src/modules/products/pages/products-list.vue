@@ -17,7 +17,13 @@
       @itemClick="onItemClick"
     >
       <template v-slot:footer>
-        <div class="products-list__footer vc-padding_l">Footer</div>
+        <div class="products-list__footer vc-padding_l">
+          <vc-pagination
+            :pages="pages"
+            :currentPage="currentPage"
+            @itemClick="onPaginationClick"
+          ></vc-pagination>
+        </div>
       </template>
       <template v-slot:item_image="itemData">
         <vc-image size="s" aspect="1x1" :src="itemData.item.image"></vc-image>
@@ -31,15 +37,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { useRouter, useI18n } from "@virtoshell/core";
+import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const logger = useLogger();
     const { t } = useI18n();
     const expanded = ref(true);
-    const { products, loadProducts } = useProducts();
+    const { products, pages, currentPage, loadProducts } = useProducts();
 
     onMounted(() => {
       loadProducts();
@@ -104,12 +111,20 @@ export default defineComponent({
       router.push({ name: "product-details", params: { id: item.id } });
     };
 
+    const onPaginationClick = (page: number) => {
+      logger.info(`Load page ${page}`);
+      loadProducts({ page });
+    };
+
     return {
       expanded,
       bladeToolbar,
       headers,
       products,
+      pages,
+      currentPage,
       onItemClick,
+      onPaginationClick,
     };
   },
 });
@@ -118,7 +133,8 @@ export default defineComponent({
 <style lang="less">
 .products-list {
   &__footer {
-    background-color: #f9f9f9;
+    background-color: #fbfdfe;
+    border-top: 2px solid #eaedf3;
   }
 }
 </style>

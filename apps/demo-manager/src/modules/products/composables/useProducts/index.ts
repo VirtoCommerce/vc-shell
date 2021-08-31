@@ -7,7 +7,7 @@ interface IUseProducts {
   totalCount: Ref<number>;
   pages: Ref<number>;
   currentPage: Ref<number>;
-  loadProducts: () => void;
+  loadProducts: (args?: { page: number }) => void;
 }
 
 interface IUseProductOptions {
@@ -20,8 +20,11 @@ export default (options?: IUseProductOptions): IUseProducts => {
   const pageSize = options?.pageSize || 20;
   const currentPage = ref<number>(1);
 
-  async function loadProducts() {
-    products.value = await (await mockedProducts())?.results;
+  async function loadProducts(args?: { page: number }) {
+    const data = await mockedProducts();
+    products.value = data?.results;
+    totalCount.value = data?.totalCount;
+    currentPage.value = args?.page || 1;
   }
 
   return {

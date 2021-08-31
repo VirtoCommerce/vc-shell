@@ -16,12 +16,24 @@
       @itemClick="onItemClick"
     >
       <template v-slot:footer>
-        <div class="products-list__footer vc-padding_l">
+        <div
+          class="
+            products-list__footer
+            vc-flex
+            vc-flex-align_center
+            vc-flex-justify_space-between
+            vc-padding_l
+          "
+        >
           <vc-pagination
             :pages="pages"
             :currentPage="currentPage"
             @itemClick="onPaginationClick"
           ></vc-pagination>
+          <vc-table-counter
+            :label="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+            :value="totalCount"
+          ></vc-table-counter>
         </div>
       </template>
       <template v-slot:item_image="itemData">
@@ -44,7 +56,8 @@ export default defineComponent({
     const router = useRouter();
     const { t } = useI18n();
     const expanded = ref(true);
-    const { products, pages, currentPage, loadProducts } = useProducts();
+    const { products, totalCount, pages, currentPage, loadProducts } =
+      useProducts();
 
     onMounted(() => {
       loadProducts();
@@ -81,26 +94,26 @@ export default defineComponent({
       },
       {
         id: "gtin",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.GTIN"),
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
         width: 120,
       },
       {
         id: "sellerName",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.NAME"),
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
       },
       {
         id: "category",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.CATEGORY"),
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CATEGORY"),
         width: 200,
       },
       {
         id: "createdDate",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.CREATED_DATE"),
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
         width: 180,
       },
       {
         id: "status",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.STATUS"),
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS"),
         width: 120,
       },
     ];
@@ -118,6 +131,7 @@ export default defineComponent({
       bladeToolbar,
       headers,
       products,
+      totalCount,
       pages,
       currentPage,
       onItemClick,

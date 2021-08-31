@@ -12,11 +12,14 @@
           "BULK_DELETE": "Delete selected"
         },
         "TABLE": {
-          "NAME": "Name",
-          "CATEGORY": "Category",
-          "CREATED_DATE": "Created Date",
-          "STATUS": "Status",
-          "GTIN": "EAN/GTIN"
+          "TOTALS": "Total:",
+          "HEADER": {
+            "NAME": "Name",
+            "CATEGORY": "Category",
+            "CREATED_DATE": "Created Date",
+            "STATUS": "Status",
+            "GTIN": "EAN/GTIN"
+          }
         }
       }
     }

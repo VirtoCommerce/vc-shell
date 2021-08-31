@@ -1,6 +1,7 @@
 import { Ref, ref, computed } from "vue";
 import { mockedProducts } from "./mock";
 import { IProduct } from "../../types";
+import { useLogger } from "@virtoshell/core";
 
 interface IUseProducts {
   products: Ref<IProduct[]>;
@@ -15,12 +16,14 @@ interface IUseProductOptions {
 }
 
 export default (options?: IUseProductOptions): IUseProducts => {
+  const logger = useLogger();
   const products = ref<IProduct[]>([]);
   const totalCount = ref<number>(0);
   const pageSize = options?.pageSize || 20;
   const currentPage = ref<number>(1);
 
   async function loadProducts(args?: { page: number }) {
+    logger.info(`Load products page ${args?.page || 1}`);
     const data = await mockedProducts();
     products.value = data?.results;
     totalCount.value = data?.totalCount;

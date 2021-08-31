@@ -1,7 +1,6 @@
 <template>
   <vc-blade
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
-    :subtitle="$t('PRODUCTS.PAGES.LIST.SUBTITLE')"
     :width="400"
     :expanded="expanded"
     :closable="false"
@@ -37,13 +36,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
-import { useRouter, useI18n, useLogger } from "@virtoshell/core";
+import { useRouter, useI18n } from "@virtoshell/core";
 import { useProducts } from "../composables";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
-    const logger = useLogger();
     const { t } = useI18n();
     const expanded = ref(true);
     const { products, pages, currentPage, loadProducts } = useProducts();
@@ -58,7 +56,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: () => {
-          loadProducts();
+          loadProducts({ page: currentPage.value });
         },
       },
       {
@@ -112,7 +110,6 @@ export default defineComponent({
     };
 
     const onPaginationClick = (page: number) => {
-      logger.info(`Load page ${page}`);
       loadProducts({ page });
     };
 

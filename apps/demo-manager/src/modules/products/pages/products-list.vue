@@ -108,7 +108,7 @@ export default defineComponent({
     const headers = [
       {
         id: "image",
-        title: "",
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
         width: 60,
       },
       {

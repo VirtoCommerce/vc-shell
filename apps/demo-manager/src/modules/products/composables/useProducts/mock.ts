@@ -2,7 +2,7 @@ import { IProductResponse } from "../../types";
 
 export async function mockedProducts(): Promise<IProductResponse> {
   return Promise.resolve({
-    totalCount: 40,
+    totalCount: 422,
     results: [
       {
         id: 1,

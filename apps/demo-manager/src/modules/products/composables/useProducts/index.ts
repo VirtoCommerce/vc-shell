@@ -8,11 +8,12 @@ interface IUseProducts {
   totalCount: Ref<number>;
   pages: Ref<number>;
   currentPage: Ref<number>;
-  loadProducts: (args?: { page: number }) => void;
+  loadProducts: (args?: { page?: number; sort?: string }) => void;
 }
 
 interface IUseProductOptions {
   pageSize?: number;
+  sort?: string;
 }
 
 export default (options?: IUseProductOptions): IUseProducts => {
@@ -22,9 +23,14 @@ export default (options?: IUseProductOptions): IUseProducts => {
   const pageSize = options?.pageSize || 20;
   const currentPage = ref<number>(1);
 
-  async function loadProducts(args?: { page: number }) {
-    logger.info(`Load products page ${args?.page || 1}`);
-    const data = await mockedProducts();
+  async function loadProducts(args?: { page?: number; sort?: string }) {
+    logger.info(
+      `Load products page ${args?.page || 1} sort by ${args?.sort || "default"}`
+    );
+    const data = await mockedProducts({
+      page: args?.page || 1,
+      sort: args?.sort,
+    });
     products.value = data?.results;
     totalCount.value = data?.totalCount;
     currentPage.value = args?.page || 1;

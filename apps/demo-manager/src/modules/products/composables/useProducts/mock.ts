@@ -1,99 +1,58 @@
-import { IProductResponse } from "../../types";
+import { IProduct, IProductResponse } from "../../types";
 
-export async function mockedProducts(): Promise<IProductResponse> {
+const categories = ["Electronics", "Snacks", "Woman Clothes", "Accessoires"];
+const statuses = [
+  "Draft",
+  "Approved",
+  "Published",
+  "Waiting for approval",
+  "Rejected",
+  "Requires changes",
+];
+
+function generateResults(count: number): IProduct[] {
+  const results = [];
+  for (let i = 0; i < count; i++) {
+    results.push({
+      id: i,
+      image: `/assets/${Math.floor(Math.random() * 5) + 1}.jpg`,
+      gtin: `${Math.floor(Math.random() * 10000000)}`.padStart(10, "0"),
+      sellerName: `Product ${i + 1}`,
+      category: categories[Math.floor(Math.random() * categories.length)],
+      createdDate: new Date(Math.floor(Math.random() * 10000000) * 1000),
+      status: statuses[Math.floor(Math.random() * statuses.length)],
+    });
+  }
+  return results;
+}
+
+const results = generateResults(1000);
+
+export async function mockedProducts(args: {
+  page?: number;
+  sort?: string;
+}): Promise<IProductResponse> {
+  const pageSize = 20;
+  const page = args?.page || 1;
+  const sortDirection = args?.sort?.slice(0, 1) === "-" ? "DESC" : "ASC";
+  const sortField =
+    (args?.sort?.slice(0, 1) === "-" ? args?.sort?.slice(1) : args?.sort) ||
+    "id";
+
+  const data = results
+    .sort((a, b) => {
+      if (a[sortField] < b[sortField]) {
+        return sortDirection === "ASC" ? -1 : 1;
+      } else if (a[sortField] > b[sortField]) {
+        return sortDirection === "ASC" ? 1 : -1;
+      } else {
+        return 0;
+      }
+    })
+    .slice((page - 1) * pageSize, page * pageSize);
+  console.log(page, pageSize, data);
   return Promise.resolve({
-    totalCount: 422,
-    results: [
-      {
-        id: 1,
-        image: "/assets/1.jpg",
-        gtin: "123456",
-        sellerName: "Product 1",
-        category: "Electronics",
-        createdDate: "2021-08-21",
-        status: "Draft",
-      },
-      {
-        id: 2,
-        image: "/assets/2.jpg",
-        gtin: "123456",
-        sellerName: "Product 2",
-        category: "Electronics",
-        createdDate: "2021-08-22",
-        status: "Draft",
-      },
-      {
-        id: 3,
-        image: "/assets/3.jpg",
-        gtin: "123456",
-        sellerName: "Product 3",
-        category: "Electronics",
-        createdDate: "2021-08-23",
-        status: "Draft",
-      },
-      {
-        id: 4,
-        image: "/assets/4.jpg",
-        gtin: "123456",
-        sellerName: "Product 4",
-        category: "Electronics",
-        createdDate: "2021-08-24",
-        status: "Draft",
-      },
-      {
-        id: 5,
-        image: "/assets/5.jpg",
-        gtin: "123456",
-        sellerName: "Product 5",
-        category: "Electronics",
-        createdDate: "2021-08-25",
-        status: "Draft",
-      },
-      {
-        id: 6,
-        image: "/assets/1.jpg",
-        gtin: "123456",
-        sellerName: "Product 6",
-        category: "Electronics",
-        createdDate: "2021-08-21",
-        status: "Draft",
-      },
-      {
-        id: 7,
-        image: "/assets/2.jpg",
-        gtin: "123456",
-        sellerName: "Product 7",
-        category: "Electronics",
-        createdDate: "2021-08-22",
-        status: "Draft",
-      },
-      {
-        id: 8,
-        image: "/assets/3.jpg",
-        gtin: "123456",
-        sellerName: "Product 8",
-        category: "Electronics",
-        createdDate: "2021-08-23",
-        status: "Draft",
-      },
-      {
-        id: 9,
-        image: "/assets/4.jpg",
-        gtin: "123456",
-        sellerName: "Product 9",
-        category: "Electronics",
-        createdDate: "2021-08-24",
-        status: "Draft",
-      },
-      {
-        id: 10,
-        image: "/assets/5.jpg",
-        gtin: "123456",
-        sellerName: "Product 10",
-        category: "Electronics",
-        createdDate: "2021-08-25",
-        status: "Draft",
-      },
-    ],
+    totalCount: results.length,
+    results: data,
   });
 }

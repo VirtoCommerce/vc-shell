@@ -116,25 +116,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.vc-theme_light {
-  --background-color: #f5f6f9;
-  --top-bar-color: #161d25;
-  --basic-black-color: #333333;
-  --tooltips-color: #a5a5a5;
-
-  --primary-color: #43b0e6;
-  --primary-color-hover: #319ed4;
-  --primary-color-disabled: #a9ddf6;
-
-  --special-color: #f89406;
-  --special-color-hover: #eb8b03;
-  --special-color-disabled: #fed498;
-
-  --breadcrumbs-outline-color: #a1c0d4;
-  --breadcrumbs-outline-color-hover: #8fb0c6;
-  --breadcrumbs-outline-color-current: #838d9a;
-  --breadcrumbs-opacity-disabled: 0.4;
-
+:root {
   /* Font Settings */
   --font-size-xs: 11px;
   --font-size-s: 12px;
@@ -169,6 +151,26 @@ export default defineComponent({
   --margin-m: 12px;
   --margin-l: 16px;
   --margin-xl: 20px;
+}
+
+.vc-theme_light {
+  --background-color: #f5f6f9;
+  --top-bar-color: #161d25;
+  --basic-black-color: #333333;
+  --tooltips-color: #a5a5a5;
+
+  --primary-color: #43b0e6;
+  --primary-color-hover: #319ed4;
+  --primary-color-disabled: #a9ddf6;
+
+  --special-color: #f89406;
+  --special-color-hover: #eb8b03;
+  --special-color-disabled: #fed498;
+
+  --breadcrumbs-outline-color: #a1c0d4;
+  --breadcrumbs-outline-color-hover: #8fb0c6;
+  --breadcrumbs-outline-color-current: #838d9a;
+  --breadcrumbs-opacity-disabled: 0.4;
 
   /* Layout variables */
   --app-bar-height: 60px;

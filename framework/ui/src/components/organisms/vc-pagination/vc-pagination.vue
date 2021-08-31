@@ -22,6 +22,15 @@
       <vc-icon size="xs" icon="fas fa-arrow-left"></vc-icon>
     </div>
 
+    <!-- To preprevious page with number -->
+    <div
+      v-if="currentPage > 2"
+      class="vc-pagination__item"
+      @click="$emit('itemClick', currentPage - 2)"
+    >
+      {{ currentPage - 2 }}
+    </div>
+
     <!-- To previous page with number -->
     <div
       v-if="currentPage > 1"
@@ -43,6 +52,15 @@
       @click="$emit('itemClick', currentPage + 1)"
     >
       {{ currentPage + 1 }}
+    </div>
+
+    <!-- To postnext page with number -->
+    <div
+      v-if="currentPage < pages - 1"
+      class="vc-pagination__item"
+      @click="$emit('itemClick', currentPage + 2)"
+    >
+      {{ currentPage + 2 }}
     </div>
 
     <!-- To next page arrow -->

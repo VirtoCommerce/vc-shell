@@ -17,6 +17,7 @@
         "TABLE": {
           "TOTALS": "Total:",
           "HEADER": {
+            "IMAGE": "Pic",
             "NAME": "Name",
             "CATEGORY": "Category",
             "CREATED_DATE": "Created Date",

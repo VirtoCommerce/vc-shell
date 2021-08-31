@@ -14,7 +14,7 @@
       >
         <thead v-if="headers" class="vc-table__header">
           <tr class="vc-table__header-row">
-            <th v-if="multiselect" class="vc-table__header-cell" width="32">
+            <th v-if="multiselect" class="vc-table__header-cell" width="50">
               <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
                 <vc-checkbox></vc-checkbox>
               </div>
@@ -45,16 +45,15 @@
 
         <tbody v-if="items" class="vc-table__body">
           <tr
-            v-for="item in items"
+            v-for="(item, i) in items"
             :key="item.id"
             class="vc-table__body-row"
+            :class="{
+              'vc-table__body-row_even': i % 2 === 1,
+            }"
             @click="$emit('itemClick', item)"
           >
-            <td
-              v-if="multiselect"
-              class="vc-table__body-cell vc-table__body-cell_bordered"
-              width="20"
-            >
+            <td v-if="multiselect" class="vc-table__body-cell" width="50">
               <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
                 <vc-checkbox></vc-checkbox>
               </div>
@@ -120,8 +119,6 @@ export default defineComponent({
   padding-top: 43px;
 
   &-wrapper {
-    margin-left: -1px;
-    margin-right: -1px;
     overflow: hidden;
   }
 
@@ -130,7 +127,7 @@ export default defineComponent({
       height: 42px;
       background-color: #f9f9f9;
       border: 0 !important;
-      box-shadow: inset 1px 1px 0px #eaedf3, inset 0px -1px 0px #eaedf3;
+      box-shadow: inset 0px 1px 0px #eaedf3, inset 0px -1px 0px #eaedf3;
       box-sizing: border-box;
       position: sticky;
       top: 0;
@@ -141,6 +138,11 @@ export default defineComponent({
     &-row {
       height: 60px;
       cursor: pointer;
+      background-color: #ffffff;
+
+      &_even {
+        background-color: #f8f8f8;
+      }
 
       &:hover {
         background-color: #dfeef9;
@@ -149,12 +151,10 @@ export default defineComponent({
 
     &-row:hover &-cell_bordered {
       border-right: 1px solid #bdd1df;
-      border-bottom: 1px solid #eaedf3;
     }
 
     &-cell {
       box-sizing: border-box;
-      border-bottom: 1px solid #eaedf3;
 
       &_bordered {
         border-right: 1px solid #eaedf3;

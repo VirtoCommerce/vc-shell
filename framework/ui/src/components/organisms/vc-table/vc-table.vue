@@ -23,7 +23,11 @@
               v-for="item in headers"
               :key="item.id"
               class="vc-table__header-cell vc-padding-horizontal_m"
+              :class="{
+                'vc-table__header-cell_sortable': item.sortable,
+              }"
               :width="item.width"
+              @click="$emit('headerClick', item)"
             >
               <div
                 class="vc-flex vc-flex-align_center vc-flex-nowrap"
@@ -33,10 +37,15 @@
                   <slot :name="`header_${item.id}`">{{ item.title }}</slot>
                 </div>
                 <div
-                  v-if="item.sortable"
+                  v-if="sortField === item.id"
                   class="vc-table__header-cell_sort vc-margin-left_xs"
                 >
-                  <vc-icon size="xs" icon="fas fa-caret-up"></vc-icon>
+                  <vc-icon
+                    size="xs"
+                    :icon="`fas fa-caret-${
+                      sortDirection === 'DESC' ? 'down' : 'up'
+                    }`"
+                  ></vc-icon>
                 </div>
               </div>
             </th>
@@ -94,18 +103,32 @@ export default defineComponent({
   props: {
     headers: {
       type: Array,
+      default: () => [],
     },
 
     items: {
       type: Array,
+      default: () => [],
     },
 
-    sortable: {
-      type: Array,
+    sort: {
+      type: String,
+      default: undefined,
     },
 
     multiselect: {
       type: Boolean,
+      default: false,
+    },
+  },
+
+  computed: {
+    sortDirection() {
+      return this.sort?.slice(0, 1) === "-" ? "DESC" : "ASC";
+    },
+
+    sortField() {
+      return this.sort?.slice(0, 1) === "-" ? this.sort?.slice(1) : this.sort;
     },
   },
 });
@@ -131,6 +154,11 @@ export default defineComponent({
       box-sizing: border-box;
       position: sticky;
       top: 0;
+      user-select: none;
+
+      &_sortable {
+        cursor: pointer;
+      }
     }
   }
 

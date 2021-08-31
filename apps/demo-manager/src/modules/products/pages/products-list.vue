@@ -13,7 +13,9 @@
       :multiselect="true"
       :headers="headers"
       :items="products"
+      :sort="sort"
       @itemClick="onItemClick"
+      @headerClick="onHeaderClick"
     >
       <template v-slot:header>
         <div
@@ -66,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, watch } from "vue";
 import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 
@@ -79,8 +81,18 @@ export default defineComponent({
     const { products, totalCount, pages, currentPage, loadProducts } =
       useProducts();
 
+    const sort = ref("-createdDate");
+
+    watch(sort, (value) => {
+      loadProducts({
+        sort: value,
+      });
+    });
+
     onMounted(() => {
-      loadProducts();
+      loadProducts({
+        sort: sort.value,
+      });
     });
 
     const bladeToolbar = [
@@ -89,7 +101,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: () => {
-          loadProducts({ page: currentPage.value });
+          loadProducts({ page: currentPage.value, sort: sort.value });
         },
       },
       {
@@ -122,25 +134,30 @@ export default defineComponent({
         id: "gtin",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
         width: 120,
+        sortable: true,
       },
       {
         id: "sellerName",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
+        sortable: true,
       },
       {
         id: "category",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CATEGORY"),
         width: 200,
+        sortable: true,
       },
       {
         id: "createdDate",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
         width: 180,
+        sortable: true,
       },
       {
         id: "status",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS"),
         width: 120,
+        sortable: true,
       },
     ];
 
@@ -148,8 +165,20 @@ export default defineComponent({
       router.push({ name: "product-details", params: { id: item.id } });
     };
 
+    const onHeaderClick = (item: { id: string; sortable: boolean }) => {
+      if (item.sortable) {
+        if (sort.value === `${item.id}`) {
+          sort.value = `-${item.id}`;
+        } else if (sort.value === `-${item.id}`) {
+          sort.value = null;
+        } else {
+          sort.value = item.id;
+        }
+      }
+    };
+
     const onPaginationClick = (page: number) => {
-      loadProducts({ page });
+      loadProducts({ page, sort: sort.value });
     };
 
     return {
@@ -160,7 +189,9 @@ export default defineComponent({
       totalCount,
       pages,
       currentPage,
+      sort,
       onItemClick,
+      onHeaderClick,
       onPaginationClick,
     };
   },

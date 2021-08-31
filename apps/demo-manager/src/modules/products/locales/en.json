@@ -11,6 +11,9 @@
           "ADD": "Add new",
           "BULK_DELETE": "Delete selected"
         },
+        "SEARCH": {
+          "PLACEHOLDER": "Search keywords"
+        },
         "TABLE": {
           "TOTALS": "Total:",
           "HEADER": {

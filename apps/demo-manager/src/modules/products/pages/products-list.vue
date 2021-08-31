@@ -15,6 +15,25 @@
       :items="products"
       @itemClick="onItemClick"
     >
+      <template v-slot:header>
+        <div
+          class="
+            products-list__header
+            vc-flex
+            vc-flex-align_center
+            vc-flex-justify_space-between
+            vc-padding_l
+          "
+        >
+          <vc-form-input
+            class="vc-flex-grow_1 vc-margin-right_m"
+            :placeholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+            :clearable="true"
+          ></vc-form-input>
+          <vc-table-filter></vc-table-filter>
+        </div>
+      </template>
+
       <template v-slot:footer>
         <div
           class="

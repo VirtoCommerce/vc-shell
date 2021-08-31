@@ -30,7 +30,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
   return {
     products: computed(() => products.value),
     totalCount: computed(() => totalCount.value),
-    pages: computed(() => Math.floor(totalCount.value / pageSize)),
+    pages: computed(() => Math.ceil(totalCount.value / pageSize)),
     currentPage: computed(() => currentPage.value),
     loadProducts,
   };

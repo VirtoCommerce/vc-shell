@@ -1,53 +1,68 @@
 <template>
   <div class="vc-pagination vc-flex">
+    <!-- To first page chevron -->
     <div
       class="vc-pagination__item"
       :class="{
         'vc-pagination__item_disabled': currentPage === 1,
       }"
-      @click="$emit('itemClick', 1)"
+      @click="currentPage !== 1 && $emit('itemClick', 1)"
     >
       <vc-icon size="xs" icon="fas fa-angle-double-left"></vc-icon>
     </div>
 
+    <!-- To previous page arrow -->
     <div
       class="vc-pagination__item"
       :class="{
         'vc-pagination__item_disabled': currentPage === 1,
       }"
-      @click="$emit('itemClick', currentPage - 1)"
+      @click="currentPage !== 1 && $emit('itemClick', currentPage - 1)"
     >
       <vc-icon size="xs" icon="fas fa-arrow-left"></vc-icon>
     </div>
 
+    <!-- To previous page with number -->
     <div
-      v-for="page in pages"
-      :key="page"
+      v-if="currentPage > 1"
       class="vc-pagination__item"
-      :class="{
-        'vc-pagination__item_current': page === currentPage,
-      }"
-      @click="$emit('itemClick', page)"
+      @click="$emit('itemClick', currentPage - 1)"
     >
-      {{ page }}
+      {{ currentPage - 1 }}
     </div>
 
+    <!-- Current page -->
+    <div class="vc-pagination__item vc-pagination__item_current">
+      {{ currentPage }}
+    </div>
+
+    <!-- To next page with number -->
+    <div
+      v-if="currentPage < pages"
+      class="vc-pagination__item"
+      @click="$emit('itemClick', currentPage + 1)"
+    >
+      {{ currentPage + 1 }}
+    </div>
+
+    <!-- To next page arrow -->
     <div
       class="vc-pagination__item"
       :class="{
         'vc-pagination__item_disabled': currentPage === pages,
       }"
-      @click="$emit('itemClick', currentPage + 1)"
+      @click="currentPage !== pages && $emit('itemClick', currentPage + 1)"
     >
       <vc-icon size="xs" icon="fas fa-arrow-right"></vc-icon>
     </div>
 
+    <!-- To last page chevron -->
     <div
       class="vc-pagination__item"
       :class="{
         'vc-pagination__item_disabled': currentPage === pages,
       }"
-      @click="$emit('itemClick', pages)"
+      @click="currentPage !== pages && $emit('itemClick', pages)"
     >
       <vc-icon size="xs" icon="fas fa-angle-double-right"></vc-icon>
     </div>
@@ -114,6 +129,7 @@ export default defineComponent({
     cursor: pointer;
     transition: all 0.2s ease;
     margin-right: var(--pagination-item-margin);
+    user-select: none;
 
     &:last-child {
       margin-right: 0;
@@ -130,6 +146,7 @@ export default defineComponent({
       background-color: var(--pagination-item-background-color-current);
       color: var(--pagination-item-color-current);
       border: 1px solid var(--pagination-item-border-color-current);
+      cursor: auto;
     }
 
     &_disabled,

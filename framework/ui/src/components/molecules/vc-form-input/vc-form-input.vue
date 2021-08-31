@@ -20,7 +20,7 @@
       "
       @click="$emit('update:modelValue', '')"
     >
-      <vc-icon icon="fas fa-times"></vc-icon>
+      <vc-icon size="s" icon="fas fa-times"></vc-icon>
     </div>
   </div>
 </template>

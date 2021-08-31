@@ -1,3 +1,32 @@
 <template>
-  <div>vc-table-search</div>
+  <div class="vc-table-search">
+    <vc-form-input
+      :modelValue="modelValue"
+      @update:modelValue="$emit('update:modelValue', $event)"
+      :placeholder="placeholder"
+      :clearable="true"
+    ></vc-form-input>
+  </div>
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "VcTableSearch",
+
+  props: {
+    placeholder: {
+      type: String,
+      default: "Search...",
+    },
+
+    modelValue: {
+      type: String,
+      default: "",
+    },
+  },
+
+  emits: ["update:modelValue"],
+});
+</script>

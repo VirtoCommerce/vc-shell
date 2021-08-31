@@ -6,18 +6,24 @@
     "PAGES": {
       "LIST": {
         "TITLE": "Products",
-        "SUBTITLE": "Manage your own products",
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add new",
           "BULK_DELETE": "Delete selected"
         },
+        "SEARCH": {
+          "PLACEHOLDER": "Search keywords"
+        },
         "TABLE": {
-          "NAME": "Name",
-          "CATEGORY": "Category",
-          "CREATED_DATE": "Created Date",
-          "STATUS": "Status",
-          "GTIN": "EAN/GTIN"
+          "TOTALS": "Total:",
+          "HEADER": {
+            "IMAGE": "Pic",
+            "NAME": "Name",
+            "CATEGORY": "Category",
+            "CREATED_DATE": "Created Date",
+            "STATUS": "Status",
+            "GTIN": "EAN/GTIN"
+          }
         }
       }
     }

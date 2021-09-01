@@ -19,14 +19,16 @@ function generateResults(count: number): IProduct[] {
       gtin: `${Math.floor(Math.random() * 10000000)}`.padStart(10, "0"),
       sellerName: `Product ${i + 1}`,
       category: categories[Math.floor(Math.random() * categories.length)],
-      createdDate: new Date(Math.floor(Math.random() * 10000000) * 1000),
+      createdDate: new Date(
+        Date.now() - Math.floor(Math.random() * 10000000000)
+      ),
       status: statuses[Math.floor(Math.random() * statuses.length)],
     });
   }
   return results;
 }
 
-const results = generateResults(1000);
+const results = generateResults(112);
 
 export async function mockedProducts(args: {
   page?: number;

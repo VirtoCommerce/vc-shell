@@ -53,9 +53,16 @@ export default defineComponent({
       }
     });
 
+    const scrollTop = () => {
+      if (component.value) {
+        component.value.scroll(0, 0);
+      }
+    };
+
     return {
       scroll,
       component,
+      scrollTop,
     };
   },
 });

@@ -1,7 +1,12 @@
 <template>
   <div class="vc-checkbox">
     <label class="vc-checkbox__label">
-      <input type="checkbox" class="vc-checkbox__input" />
+      <input
+        type="checkbox"
+        class="vc-checkbox__input"
+        :checked="modelValue"
+        @change="$emit('update:modelValue', $event.target.checked)"
+      />
       <span class="vc-checkbox__checkmark"></span>
       <div v-if="$slots['default']" class="vc-margin-left_s">
         <slot></slot>
@@ -17,11 +22,13 @@ export default defineComponent({
   name: "VcCheckbox",
 
   props: {
-    checked: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
   },
+
+  emits: ["update:modelValue"],
 });
 </script>
 

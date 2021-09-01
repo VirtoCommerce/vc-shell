@@ -8,7 +8,7 @@
       <div class="vc-nav__top-version">{{ version }}</div>
     </div>
     <vc-nav-toggle @click="toggleCollapsed()"></vc-nav-toggle>
-    <vc-container class="vc-nav__content">
+    <vc-container :noPadding="true" class="vc-nav__content">
       <vc-nav-item icon="fas fa-home" to="/" sticky="sticky" title="Home" />
       <vc-nav-item
         v-for="item in items"
@@ -66,15 +66,23 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+:root {
+  --nav-width: 240px;
+  --nav-width-collapsed: 60px;
+  --nav-top-height: var(--app-bar-height);
+  --nav-top-background-color: #ffffff;
+  --nav-top-image-height: 30px;
+  --nav-background-color: #ffffff;
+  --nav-border-right-color: #ffffff;
+  --nav-top-border-right-color: #ffffff;
+  --nav-top-version-color: #838d9a;
+}
+
 .vc-nav {
   width: var(--nav-width);
   height: 100%;
   border-right: 1px solid var(--nav-border-right-color);
   background: var(--nav-background-color);
-
-  &__content {
-    --container-scroll-padding: 0;
-  }
 
   &__top {
     height: var(--nav-top-height);

@@ -57,6 +57,12 @@
           ></vc-table-counter>
         </div>
       </template>
+      <template v-slot:item_sellerName="itemData">
+        <div class="vc-flex vc-flex-column">
+          <div>{{ itemData.item.sellerName }}</div>
+          <vc-tooltip>{{ itemData.item.category }}</vc-tooltip>
+        </div>
+      </template>
       <template v-slot:item_image="itemData">
         <vc-image size="s" aspect="1x1" :src="itemData.item.image"></vc-image>
       </template>
@@ -136,32 +142,26 @@ export default defineComponent({
         width: 60,
       },
       {
-        id: "gtin",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
-        width: 120,
-        sortable: true,
-      },
-      {
         id: "sellerName",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
         sortable: true,
       },
       {
-        id: "category",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CATEGORY"),
-        width: 200,
-        sortable: true,
-      },
-      {
         id: "createdDate",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
-        width: 180,
+        width: 140,
         sortable: true,
       },
       {
         id: "status",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS"),
-        width: 120,
+        width: 180,
+        sortable: true,
+      },
+      {
+        id: "gtin",
+        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
+        width: 180,
         sortable: true,
       },
     ];

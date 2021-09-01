@@ -1,6 +1,11 @@
 import { IProduct, IProductResponse } from "../../types";
 
-const categories = ["Electronics", "Snacks", "Woman Clothes", "Accessoires"];
+const categories = [
+  "Electronics / Audio & Video",
+  "Food / Snacks / Chips & Crisps",
+  "Women Clothes",
+  "Accessoires",
+];
 const statuses = [
   "Draft",
   "Approved",

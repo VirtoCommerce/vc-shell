@@ -107,6 +107,7 @@ export default defineComponent({
 
   --blade-header-icon-color: #a1c0d4;
 
+  --blade-header-title-font-size: 19px;
   --blade-header-title-color: #2e3d4e;
 
   --blade-header-subtitle-color: #a1c0d4;
@@ -145,7 +146,8 @@ export default defineComponent({
     font-size: var(--font-size-l);
 
     &_only {
-      font-size: var(--font-size-xl);
+      font-size: var(--blade-header-title-font-size);
+      font-weight: var(--font-weight-medium);
     }
   }
 

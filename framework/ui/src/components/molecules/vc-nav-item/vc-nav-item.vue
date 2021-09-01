@@ -52,6 +52,22 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+:root {
+  --nav-item-height: 40px;
+  --nav-item-icon-width: 20px;
+  --nav-item-icon-color: #319ed4;
+  --nav-item-handler-width: 20px;
+  --nav-item-background-color: var(--nav-background-color);
+  --nav-item-background-color-hover: #eff7fc;
+  --nav-item-border-bottom-color: #e7ebf1;
+  --nav-item-title-font-weight: var(--font-weight-medium);
+  --nav-item-title-font-size: var(--font-size-l);
+  --nav-item-title-padding-right: 5px;
+  --nav-item-title-padding-left: 9px;
+  --nav-item-title-color: #465769;
+  --nav-item-handler-color: #bdd1df;
+}
+
 .vc-nav-item {
   display: flex;
   align-items: center;

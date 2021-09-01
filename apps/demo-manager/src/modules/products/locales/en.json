@@ -8,8 +8,8 @@
         "TITLE": "Products",
         "TOOLBAR": {
           "REFRESH": "Refresh",
-          "ADD": "Add new",
-          "BULK_DELETE": "Delete selected"
+          "ADD": "Add",
+          "BULK_DELETE": "Delete"
         },
         "SEARCH": {
           "PLACEHOLDER": "Search keywords"

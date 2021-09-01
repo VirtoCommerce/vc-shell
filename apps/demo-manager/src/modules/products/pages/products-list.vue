@@ -61,7 +61,12 @@
         <vc-image size="s" aspect="1x1" :src="itemData.item.image"></vc-image>
       </template>
       <template v-slot:item_status="itemData">
-        <vc-bubble :clickable="false">{{ itemData.item.status }}</vc-bubble>
+        <vc-bubble v-bind="statusStyle(itemData.item.status)">{{
+          itemData.item.status
+        }}</vc-bubble>
+      </template>
+      <template v-slot:item_createdDate="itemData">
+        {{ moment(itemData.item.createdDate).fromNow() }}
       </template>
     </vc-table>
   </vc-blade>
@@ -71,6 +76,7 @@
 import { defineComponent, ref, onMounted, watch } from "vue";
 import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
+import moment from "moment";
 
 export default defineComponent({
   setup() {
@@ -107,8 +113,7 @@ export default defineComponent({
       {
         id: "add",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
-        icon: "fas fa-plus-square",
-        disabled: true,
+        icon: "fas fa-plus",
         onClick: () => {
           router.push({ name: "product-details" });
         },
@@ -116,7 +121,7 @@ export default defineComponent({
       {
         id: "batchDelete",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE"),
-        icon: "fas fa-times-circle",
+        icon: "fas fa-trash",
         disabled: true,
         onClick: () => {
           logger.debug("Delete selected products");
@@ -181,6 +186,37 @@ export default defineComponent({
       loadProducts({ page, sort: sort.value });
     };
 
+    const statusStyle = (status: string) => {
+      const result = {
+        outline: true,
+        variant: "info",
+      };
+
+      switch (status) {
+        case "Published":
+          result.outline = false;
+          result.variant = "success";
+          break;
+        case "Requires changes":
+          result.outline = true;
+          result.variant = "danger";
+          break;
+        case "Approved":
+          result.outline = true;
+          result.variant = "success";
+          break;
+        case "Waiting for approval":
+          result.outline = true;
+          result.variant = "warning";
+          break;
+        case "Rejected":
+          result.outline = false;
+          result.variant = "danger";
+          break;
+      }
+      return result;
+    };
+
     return {
       expanded,
       bladeToolbar,
@@ -190,9 +226,11 @@ export default defineComponent({
       pages,
       currentPage,
       sort,
+      moment,
       onItemClick,
       onHeaderClick,
       onPaginationClick,
+      statusStyle,
     };
   },
 });

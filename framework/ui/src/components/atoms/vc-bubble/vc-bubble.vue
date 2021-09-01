@@ -1,11 +1,7 @@
 <template>
   <div
     class="vc-bubble"
-    :class="{
-      'vc-bubble_clickable': clickable,
-      'vc-bubble_disabled': disabled,
-    }"
-    @click="onClick"
+    :class="[`vc-bubble_${variant}`, { 'vc-bubble_outline': outline }]"
   >
     <slot></slot>
   </div>
@@ -18,27 +14,16 @@ export default defineComponent({
   name: "VcBubble",
 
   props: {
-    disabled: {
-      type: Boolean,
-      default: false,
+    variant: {
+      type: String,
+      default: "info",
+      enum: ["info", "warning", "danger", "success"],
     },
 
-    clickable: {
+    outline: {
       type: Boolean,
       default: true,
     },
-  },
-
-  emits: ["click"],
-
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (props.clickable && !props.disabled) {
-          emit("click");
-        }
-      },
-    };
   },
 });
 </script>
@@ -50,20 +35,8 @@ export default defineComponent({
   --bubble-font-size: var(--font-size-m);
   --bubble-font-weight: var(--font-weight-normal);
 
-  --bubble-background-color: #ffffff;
-  --bubble-background-color-hover: #fafafa;
-  --bubble-background-color-disabled: #f2f2f2;
-
-  --bubble-text-color: #a1bfd4;
-  --bubble-text-color-hover: #8fb3cc;
-  --bubble-text-color-disabled: #b2cbdc;
-
   --bubble-border-radius: 2px;
   --bubble-border-width: 1px;
-
-  --bubble-border-color: #e1eff9;
-  --bubble-border-color-hover: #cce4f5;
-  --bubble-border-color-disabled: #f6fafd;
 }
 
 .vc-bubble {
@@ -72,27 +45,54 @@ export default defineComponent({
   padding: var(--bubble-padding);
   font-size: var(--bubble-font-size);
   font-weight: var(--bubble-font-weight);
-  background-color: var(--bubble-background-color);
-  color: var(--bubble-text-color);
-  border: var(--bubble-border-width) solid var(--bubble-border-color);
-  transition: all 0.2s ease;
+  white-space: nowrap;
 
-  &_clickable {
-    cursor: pointer;
+  &_info {
+    color: white;
+    border: 1px solid #bdd1df;
+    background-color: #bdd1df;
 
-    &:hover {
-      background-color: var(--bubble-background-color-hover);
-      color: var(--bubble-text-color-hover);
-      border: var(--bubble-border-width) solid var(--bubble-border-color-hover);
+    &.vc-bubble_outline {
+      color: #bdd1df;
+      border: 1px solid #bdd1df;
+      background-color: white;
     }
   }
 
-  &_disabled,
-  &_disabled:hover {
-    cursor: not-allowed;
-    background-color: var(--bubble-background-color-disabled);
-    color: var(--bubble-text-color-disabled);
-    border: var(--bubble-border-width) solid var(--bubble-border-color-disabled);
+  &_warning {
+    color: white;
+    border: 1px solid #f89406;
+    background-color: #f89406;
+
+    &.vc-bubble_outline {
+      color: #f89406;
+      border: 1px solid #f89406;
+      background-color: white;
+    }
+  }
+
+  &_danger {
+    color: white;
+    border: 1px solid #ef796f;
+    background-color: #ef796f;
+
+    &.vc-bubble_outline {
+      color: #ef796f;
+      border: 1px solid #ef796f;
+      background-color: white;
+    }
+  }
+
+  &_success {
+    color: white;
+    border: 1px solid #87b563;
+    background-color: #87b563;
+
+    &.vc-bubble_outline {
+      color: #87b563;
+      border: 1px solid #87b563;
+      background-color: white;
+    }
   }
 }
 </style>

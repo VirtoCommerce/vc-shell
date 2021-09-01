@@ -4,7 +4,11 @@
       <slot name="header"></slot>
     </div>
 
-    <vc-container :noPadding="true" class="vc-flex-grow_1">
+    <vc-container
+      ref="scrollContainer"
+      :noPadding="true"
+      class="vc-flex-grow_1"
+    >
       <table
         class="vc-table vc-fill_width"
         :class="{
@@ -16,7 +20,7 @@
           <tr class="vc-table__header-row">
             <th v-if="multiselect" class="vc-table__header-cell" width="50">
               <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
-                <vc-checkbox></vc-checkbox>
+                <vc-checkbox v-model="headerCheckbox" @click.stop></vc-checkbox>
               </div>
             </th>
             <th
@@ -64,7 +68,10 @@
           >
             <td v-if="multiselect" class="vc-table__body-cell" width="50">
               <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
-                <vc-checkbox></vc-checkbox>
+                <vc-checkbox
+                  v-model="checkboxes[item.id]"
+                  @click.stop
+                ></vc-checkbox>
               </div>
             </td>
             <td
@@ -100,6 +107,14 @@ import VcContainer from "../../atoms/vc-container/vc-container.vue";
 export default defineComponent({
   components: { VcIcon, VcCheckbox, VcContainer },
 
+  data() {
+    const checkboxes: Record<string, boolean> = {};
+
+    return {
+      checkboxes,
+    };
+  },
+
   props: {
     headers: {
       type: Array,
@@ -122,6 +137,15 @@ export default defineComponent({
     },
   },
 
+  watch: {
+    items(value: { id: string }[]) {
+      this.checkboxes = {};
+      value.forEach((item) => (this.checkboxes[item.id] = false));
+      const scrollContainer = this.$refs.scrollContainer as typeof VcContainer;
+      scrollContainer.scrollTop();
+    },
+  },
+
   computed: {
     sortDirection() {
       return this.sort?.slice(0, 1) === "-" ? "DESC" : "ASC";
@@ -129,6 +153,20 @@ export default defineComponent({
 
     sortField() {
       return this.sort?.slice(0, 1) === "-" ? this.sort?.slice(1) : this.sort;
+    },
+
+    headerCheckbox: {
+      get() {
+        return Object.values(this.checkboxes).every((value) => value);
+      },
+      set() {
+        const currentState = Object.values(this.checkboxes).every(
+          (value) => value
+        );
+        Object.keys(this.checkboxes).forEach(
+          (key) => (this.checkboxes[key] = !currentState)
+        );
+      },
     },
   },
 });

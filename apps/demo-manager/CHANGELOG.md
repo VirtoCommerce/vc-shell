@@ -3,6 +3,29 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.33](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.33) (2021-09-02)
+
+
+### Features
+
+* vm-14 - multiple components improved ([0231c1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0231c1b1fad75884b5ddde101bac7f6b6218797b))
+* vm-14 - product total count ([b51e2c0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b51e2c00ac1f3d6d2aa05f580378deff0fc2cd7a))
+* vm-14 - remove products blade subtitle ([0d3125a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0d3125a4e02bea00b0471e3c552be0c77de24828))
+* vm-14 - table improvements ([d0c35c5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d0c35c577749cab8cda43062aa528a522072285c))
+* vm-14 - table improvements ([5055fe6](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5055fe66cc3c99a06a5b3caaa205a6ca9e7a5e8d))
+* vm-28 - module "products" ([ae2ddb2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ae2ddb2e3d355a7665cd9de0f9e717e8879c289a))
+* vm-31 - table styling ([8cf26a1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8cf26a1cc76c881ffb9b9f1ee74be578d009ee26))
+* vm-31 table display ([ebb2924](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ebb292476ddf010d69fac361eef9ffb8045fdc0a))
+* vm-32 - pagination component ([91d2463](https://github.com/VirtoCommerce/platform-manager-sdk/commit/91d246385083597fbaaed9c1ce02ec287830309d))
+* vm-32 - pagination component ([e6691cf](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e6691cff79e9b93c9788eff78291e84c46711e90))
+* vm-35 table sorting ([e26abf5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e26abf5eb21fe928d379282c1df5269c82b9b877))
+* vm-55 - toolbar actions ([638a9ab](https://github.com/VirtoCommerce/platform-manager-sdk/commit/638a9abbba4063dcbfb56833d42b37d61857171b))
+* vm-66 - product list search component ([8abc12d](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8abc12d66ba3c56f9bc426af3efc1564218f51c0))
+
+
+
+
+
 ## [0.0.32](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.32) (2021-08-31)
 
 

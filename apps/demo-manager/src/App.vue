@@ -148,6 +148,31 @@ body,
   margin: 0;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+input,
+select,
+textarea {
+  font-family: "Roboto";
+}
+::-webkit-input-placeholder {
+  font-family: "Roboto";
+}
+:-moz-placeholder {
+  font-family: "Roboto";
+}
+::-moz-placeholder {
+  font-family: "Roboto";
+}
+:-ms-input-placeholder {
+  font-family: "Roboto";
+}
+
 .vc-app.vc-theme_light {
   --background-color: #f2f2f2;
   --top-bar-color: #ffffff;

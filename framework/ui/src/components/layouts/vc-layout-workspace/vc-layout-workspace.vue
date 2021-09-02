@@ -103,7 +103,14 @@
         </div>
       </div>
 
-      <div class="vc-layout-workspace__content vc-flex vc-flex-grow_1">
+      <div
+        class="
+          vc-layout-workspace__content
+          vc-flex
+          vc-flex-grow_1
+          vc-padding-horizontal_s
+        "
+      >
         <slot></slot>
       </div>
     </div>

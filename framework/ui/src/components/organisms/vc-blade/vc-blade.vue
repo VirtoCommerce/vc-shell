@@ -75,7 +75,7 @@ export default defineComponent({
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
   --blade-shadow: 2px 2px 8px rgba(126, 142, 157, 0.14);
-  --blade-margin: 16px;
+  --blade-margin: var(--margin-l) var(--margin-s);
 }
 
 .vc-blade {

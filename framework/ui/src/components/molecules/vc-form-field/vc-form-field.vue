@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-form-field">
+  <div class="vc-form-field vc-margin-bottom_l">
     <vc-label class="vc-margin-bottom_s">{{ label }}</vc-label>
     <slot></slot>
   </div>

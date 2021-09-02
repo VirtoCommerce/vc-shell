@@ -17,6 +17,11 @@ export default {
       path: "products",
       component: pages.ProductsList,
     });
+    router.addRoute("products-list", {
+      name: "products-details",
+      path: "product/:id",
+      component: pages.ProductsDetails,
+    });
 
     // Load locales
     Object.entries(locales).forEach(([key, message]) => {

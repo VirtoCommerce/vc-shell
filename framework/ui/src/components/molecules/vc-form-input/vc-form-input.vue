@@ -62,23 +62,25 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --form-input-height: 36px;
-  --form-input-border-color: #eaedf3;
+  --form-input-height: 38px;
+  --form-input-border-radius: 3px;
+  --form-input-border-color: #d3dbe9;
   --form-input-background-color: #ffffff;
-  --form-input-placeholder-color: #b8b8b8;
+  --form-input-placeholder-color: #a5a5a5;
   --form-input-clear-color: #43b0e6;
   --form-input-clear-color-hover: #319ed4;
 }
 
 .vc-form-input {
   border: 1px solid var(--form-input-border-color);
-  height: var(--form-input-height);
-  box-sizing: border-box;
+  border-radius: var(--form-input-border-radius);
   background-color: var(--form-input-background-color);
 
   &__field {
     border: none;
     outline: none;
+    height: var(--form-input-height);
+    box-sizing: border-box;
     -webkit-placeholder-color: var(--form-input-placeholder-color);
   }
 

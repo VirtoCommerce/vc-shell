@@ -64,7 +64,12 @@
         </div>
       </template>
       <template v-slot:item_image="itemData">
-        <vc-image size="s" aspect="1x1" :src="itemData.item.image"></vc-image>
+        <vc-image
+          :bordered="true"
+          size="s"
+          aspect="1x1"
+          :src="itemData.item.image"
+        ></vc-image>
       </template>
       <template v-slot:item_status="itemData">
         <vc-bubble v-bind="statusStyle(itemData.item.status)">{{
@@ -121,7 +126,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          router.push({ name: "product-details" });
+          router.push({ name: "products-details" });
         },
       },
       {
@@ -167,7 +172,7 @@ export default defineComponent({
     ];
 
     const onItemClick = (item: { id: string }) => {
-      router.push({ name: "product-details", params: { id: item.id } });
+      router.push({ name: "products-details", params: { id: item.id } });
     };
 
     const onHeaderClick = (item: { id: string; sortable: boolean }) => {

@@ -5,6 +5,7 @@
         `vc-image_${aspect}`,
         {
           'vc-image_rounded': rounded,
+          'vc-image_bordered': bordered,
           'vc-image_clickable': clickable,
         },
       ]"
@@ -25,6 +26,11 @@ export default defineComponent({
     },
 
     rounded: {
+      type: Boolean,
+      default: false,
+    },
+
+    bordered: {
       type: Boolean,
       default: false,
     },
@@ -114,6 +120,11 @@ export default defineComponent({
   &_rounded {
     padding-bottom: var(--image-padding-bottom-1x1);
     border-radius: 50%;
+  }
+
+  &_bordered {
+    border-radius: 3px;
+    border: 1px solid #efefef;
   }
 
   &_clickable {

@@ -25,6 +25,31 @@
             "GTIN": "EAN/GTIN"
           }
         }
+      },
+      "DETAILS": {
+        "TITLE": "Add product",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "SAVEANDAPPROVE": "Save & send to approve"
+        },
+        "FIELDS": {
+          "NAME": {
+            "TITLE": "Product name",
+            "PLACEHOLDER": "Enter product name"
+          },
+          "CATEGORY": {
+            "TITLE": "Select category",
+            "PLACEHOLDER": "Start typing and choose one"
+          },
+          "GTIN": {
+            "TITLE": "EAN/GTIN#",
+            "PLACEHOLDER": "Enter product EAN or GTIN"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Description",
+            "PLACEHOLDER": "Enter product description"
+          }
+        }
       }
     }
   }

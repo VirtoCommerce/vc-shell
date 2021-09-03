@@ -126,7 +126,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          router.push({ name: "products-details" });
+          router.push({ name: "products-details", params: { id: "new" } });
         },
       },
       {

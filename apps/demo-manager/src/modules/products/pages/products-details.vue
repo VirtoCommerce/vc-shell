@@ -7,16 +7,18 @@
     @expand="expanded = true"
     @collapse="expanded = false"
     :toolbarItems="bladeToolbar"
+    @close="$router.go(-1)"
   >
-    <div class="product-details__inner vc-flex">
+    <div class="product-details__inner vc-flex vc-flex-grow_1">
       <div class="product-details__content vc-flex-grow_1">
-        <vc-container :shadow="true">
-          <div class="vc-padding_s">
+        <vc-container :no-padding="true">
+          <div class="vc-padding_l">
             <vc-form>
               <vc-form-field
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
               >
                 <vc-form-input
+                  :clearable="true"
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                   "
@@ -35,6 +37,7 @@
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
               >
                 <vc-form-input
+                  :clearable="true"
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                   "
@@ -53,7 +56,28 @@
           </div>
         </vc-container>
       </div>
-      <div class="product-details__widgets">Widgets</div>
+      <div class="product-details__widgets">
+        <vc-container :no-padding="true">
+          <div class="vc-widget">
+            <vc-icon
+              class="vc-widget__icon"
+              icon="fas fa-file-alt"
+              size="xxl"
+            ></vc-icon>
+            <div class="vc-widget__title">Offers</div>
+            <div class="vc-widget__value">3</div>
+          </div>
+          <div class="vc-widget">
+            <vc-icon
+              class="vc-widget__icon"
+              icon="fas fa-comment"
+              size="xxl"
+            ></vc-icon>
+            <div class="vc-widget__title">Comments</div>
+            <div class="vc-widget__value">22</div>
+          </div>
+        </vc-container>
+      </div>
     </div>
   </vc-blade>
 </template>
@@ -92,14 +116,46 @@ export default defineComponent({
 .product-details {
   &__inner {
     border-top: 1px solid #eaedf3;
+    overflow: hidden;
   }
 
   &__content {
     border-right: 1px solid #eaedf3;
   }
+}
 
-  &__widgets {
-    padding: var(--padding-l);
+.vc-widget {
+  display: flex;
+  width: 100px;
+  overflow: hidden;
+  padding: var(--padding-xl);
+  box-sizing: border-box;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #eaedf3;
+  cursor: pointer;
+  background-color: #ffffff;
+
+  &:hover {
+    background-color: #dfeef9;
+  }
+
+  &__icon {
+    color: #a9bfd2;
+  }
+
+  &__title {
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-s);
+    color: #333333;
+    margin: var(--margin-m) 0 var(--margin-xs);
+  }
+
+  &__value {
+    font-weight: var(--font-weight-medium);
+    font-size: 22px;
+    color: #43b0e6;
   }
 }
 </style>

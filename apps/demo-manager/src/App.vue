@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from "vue";
+import { defineComponent, computed, onMounted, reactive } from "vue";
 import { useLogger, useI18n, useRouter, useUser } from "@virtoshell/core";
 
 export default defineComponent({
@@ -67,7 +67,7 @@ export default defineComponent({
       },
     ];
 
-    const account = {
+    const account = reactive({
       avatar: "/assets/avatar.jpg",
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -90,7 +90,7 @@ export default defineComponent({
           },
         },
       ],
-    };
+    });
 
     function onNavClick(item: { href: string }): void {
       router.push(item.href);

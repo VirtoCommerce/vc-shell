@@ -255,7 +255,7 @@ export default defineComponent({
       }
 
       &-chevron {
-        color: #747474;
+        color: #7e8e9d;
       }
 
       &_active &-chevron {

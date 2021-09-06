@@ -1,11 +1,15 @@
 <template>
-  <vc-layout-login :branding="branding">
+  <vc-layout-login :logo="logo" :background="background" :title="title">
     <vc-form>
       <vc-form-field class="vc-margin-bottom_l" label="Login">
         <vc-form-input v-model="form.username"></vc-form-input>
       </vc-form-field>
       <vc-form-field class="vc-margin-bottom_l" label="Password">
-        <vc-form-input v-model="form.password" type="password"></vc-form-input>
+        <vc-form-input
+          v-model="form.password"
+          type="password"
+          @keyup.enter="login"
+        ></vc-form-input>
       </vc-form-field>
       <div
         class="
@@ -33,21 +37,30 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Ref, ref } from "vue";
-import { useRouter, useLogger, useUser, SignInResult } from "@virtoshell/core";
+import { defineComponent, ref } from "vue";
+import { useLogger, useUser, SignInResult } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
-    branding: {
-      type: Object,
-      default: () => ({}),
+    logo: {
+      type: String,
+      default: undefined,
+    },
+
+    background: {
+      type: String,
+      default: undefined,
+    },
+
+    title: {
+      type: String,
+      default: undefined,
     },
   },
 
   setup() {
     const log = useLogger();
-    const router = useRouter();
-    const signInResult: Ref<SignInResult> = ref({ succeeded: true });
+    const signInResult = ref<SignInResult>({ succeeded: true });
     const { signIn, loading } = useUser();
     const form = {
       username: "",
@@ -56,12 +69,10 @@ export default defineComponent({
 
     const login = async () => {
       signInResult.value = await signIn(form.username, form.password);
-      if (signInResult.value.succeeded) {
-        router.replace({ name: "orders" });
-      }
     };
 
     log.debug("Init login-page");
+
     return {
       form,
       login,

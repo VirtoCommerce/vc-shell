@@ -2,10 +2,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import VirtoShellUi from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
-import LoginPage from "./components/login-page.vue";
-import Workspace from "./components/workspace.vue";
 import ModOrders from "./modules/orders";
 import ModProducts from "./modules/products";
+import ModOffers from "./modules/offers";
 
 import * as locales from "./locales";
 
@@ -16,25 +15,10 @@ import "@virtoshell/ui/dist/ui.css";
 
 const app = createApp(App)
   .use(VirtoShellUi)
-  .use(VirtoShellCore, {
-    router: {
-      historyAPI: true,
-      routes: [
-        {
-          name: "root",
-          path: "/",
-          component: Workspace,
-        },
-        {
-          name: "login",
-          path: "/login",
-          component: LoginPage,
-        },
-      ],
-    },
-  })
+  .use(VirtoShellCore)
   .use(ModOrders)
-  .use(ModProducts);
+  .use(ModProducts)
+  .use(ModOffers);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

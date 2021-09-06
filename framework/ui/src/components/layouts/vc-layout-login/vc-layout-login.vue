@@ -7,18 +7,18 @@
       vc-flex-justify_center
     "
     :style="{
-      background: `url(${branding.background}) center / cover no-repeat`,
+      background: `url(${background}) center / cover no-repeat`,
     }"
   >
     <div
       class="vc-layout-login__logo"
       :style="{
-        background: `url(${branding.logo}) center / contain no-repeat`,
+        background: `url(${logo}) center / contain no-repeat`,
       }"
     ></div>
     <div class="vc-layout-login__wrapper">
       <div class="vc-layout-login__header vc-flex vc-flex-align_center">
-        {{ branding.title || "Login" }}
+        {{ title || "Login" }}
       </div>
       <div class="vc-layout-login__body">
         <slot></slot>
@@ -34,9 +34,19 @@ export default defineComponent({
   name: "VcLayoutLogin",
 
   props: {
-    branding: {
-      type: Object,
-      default: () => ({}),
+    logo: {
+      type: String,
+      default: undefined,
+    },
+
+    background: {
+      type: String,
+      default: undefined,
+    },
+
+    title: {
+      type: String,
+      default: undefined,
     },
   },
 

@@ -1,0 +1,17 @@
+{
+  "OFFERS": {
+    "MENU": {
+      "TITLE": "Offers"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Offers",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "ADD": "Add",
+          "BULK_DELETE": "Delete"
+        }
+      }
+    }
+  }
+}

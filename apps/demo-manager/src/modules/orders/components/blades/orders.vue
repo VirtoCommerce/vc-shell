@@ -24,12 +24,12 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useOrders } from "../../composables";
-import { useRouter } from "@virtoshell/core";
+import { useBlade } from "@virtoshell/core";
 
 export default defineComponent({
   setup() {
     const { orders, loadOrders } = useOrders();
-    const router = useRouter();
+    const { openBlade } = useBlade();
     const expanded = ref(true);
 
     onMounted(async () => {
@@ -76,7 +76,7 @@ export default defineComponent({
     ];
 
     const onItemClick = (item: { id: string }) => {
-      router.push({ name: "order", params: { id: item.id } });
+      openBlade("orders-details", { componentOptions: { id: item.id } });
     };
 
     return {

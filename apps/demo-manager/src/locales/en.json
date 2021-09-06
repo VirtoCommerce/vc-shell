@@ -1,5 +1,8 @@
 {
   "SHELL": {
+    "MENU": {
+      "DASHBOARD": "Home"
+    },
     "TOOLBAR": {
       "LOGIN": "Log In",
       "SETTINGS": "Settings",

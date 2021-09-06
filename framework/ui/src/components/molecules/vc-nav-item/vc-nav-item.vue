@@ -1,10 +1,5 @@
 <template>
-  <component
-    :is="to ? 'a' : 'div'"
-    :href="to"
-    class="vc-nav-item"
-    @click="$emit('click')"
-  >
+  <div class="vc-nav-item" @click="onClick">
     <div
       class="vc-nav-item__handler"
       :class="{ 'vc-nav-item__handler_enabled': !sticky }"
@@ -15,10 +10,10 @@
       <vc-icon :icon="icon" size="m" />
     </div>
     <div class="vc-nav-item__title" :title="title">{{ title }}</div>
-  </component>
+  </div>
 </template>
 
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
@@ -41,13 +36,25 @@ export default defineComponent({
       default: "",
     },
 
-    to: {
-      type: String,
-      default: "",
+    clickHandler: {
+      type: Function,
+      default: undefined,
     },
   },
 
   emits: ["click"],
+
+  setup(props, { emit }) {
+    return {
+      onClick(): void {
+        if (props.clickHandler && typeof props.clickHandler === "function") {
+          props.clickHandler();
+        } else {
+          emit("click");
+        }
+      },
+    };
+  },
 });
 </script>
 
@@ -78,7 +85,6 @@ export default defineComponent({
   flex-wrap: nowrap;
   box-sizing: border-box;
   cursor: pointer;
-  text-decoration: none;
 
   &__handler {
     width: var(--nav-item-handler-width);

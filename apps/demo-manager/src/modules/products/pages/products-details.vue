@@ -1,13 +1,14 @@
 <template>
   <vc-blade
+    :uid="uid"
     :title="$t('PRODUCTS.PAGES.DETAILS.TITLE')"
     :width="400"
     :expanded="expanded"
-    :closable="true"
-    @expand="expanded = true"
-    @collapse="expanded = false"
+    :closable="closable"
+    @expand="$expandBlade(uid)"
+    @collapse="$collapseBlade(uid)"
     :toolbarItems="bladeToolbar"
-    @close="$router.go(-1)"
+    @close="$closeBlade(uid)"
   >
     <div class="product-details__inner vc-flex vc-flex-grow_1">
       <div class="product-details__content vc-flex-grow_1">
@@ -58,7 +59,7 @@
       </div>
       <div class="product-details__widgets">
         <vc-container :no-padding="true">
-          <div class="vc-widget">
+          <div class="vc-widget" @click="$openBlade('offers-list')">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -67,7 +68,7 @@
             <div class="vc-widget__title">Offers</div>
             <div class="vc-widget__value">3</div>
           </div>
-          <div class="vc-widget">
+          <div class="vc-widget" @click="$openBlade('comments-list')">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-comment"
@@ -84,13 +85,29 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useI18n, useRouter } from "@virtoshell/core";
+import { useI18n, useBlade } from "@virtoshell/core";
 
 export default defineComponent({
-  setup() {
+  props: {
+    uid: {
+      type: String,
+      default: undefined,
+    },
+
+    expanded: {
+      type: Boolean,
+      default: true,
+    },
+
+    closable: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
+  setup(props) {
     const { t } = useI18n();
-    const router = useRouter();
-    const expanded = ref(true);
+    const { closeBlade } = useBlade();
 
     const bladeToolbar = [
       {
@@ -106,15 +123,14 @@ export default defineComponent({
       {
         id: "close",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
-        icon: "fas fa-times-circle",
+        icon: "fas fa-times",
         onClick: () => {
-          router.go(-1);
+          closeBlade(props.uid);
         },
       },
     ];
 
     return {
-      expanded,
       bladeToolbar,
     };
   },

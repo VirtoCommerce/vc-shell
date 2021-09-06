@@ -1,11 +1,13 @@
 <template>
   <vc-blade
+    :uid="uid"
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
     :width="600"
     :expanded="expanded"
-    :closable="false"
-    @expand="expanded = true"
-    @collapse="expanded = false"
+    :closable="closable"
+    @close="$closeBlade(uid)"
+    @expand="$expandBlade(uid)"
+    @collapse="$collapseBlade(uid)"
     :toolbarItems="bladeToolbar"
   >
     <vc-table
@@ -51,17 +53,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from "vue";
-import { useRouter, useI18n, useLogger } from "@virtoshell/core";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
+import { useBlade, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import moment from "moment";
 
 export default defineComponent({
-  setup() {
-    const router = useRouter();
+  props: {
+    uid: {
+      type: String,
+      default: undefined,
+    },
+
+    expanded: {
+      type: Boolean,
+      default: true,
+    },
+
+    closable: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
+  setup(props) {
+    const { openBlade } = useBlade();
     const logger = useLogger();
     const { t } = useI18n();
-    const expanded = ref(true);
     const loading = ref(false);
     const { products, totalCount, pages, currentPage, loadProducts } =
       useProducts();
@@ -96,7 +114,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          router.push({ name: "products-details", params: { id: "new" } });
+          openBlade("products-details", { componentOptions: { id: "new" } });
         },
       },
       {
@@ -110,16 +128,18 @@ export default defineComponent({
       },
     ];
 
-    const headers = [
+    const headers = ref([
       {
         id: "image",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
         width: 60,
+        alwaysVisible: true,
       },
       {
         id: "sellerName",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
         sortable: true,
+        alwaysVisible: true,
       },
       {
         id: "createdDate",
@@ -138,12 +158,12 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
         width: 180,
         sortable: true,
+        alwaysVisible: true,
       },
-    ];
+    ]);
 
     const onItemClick = (item: { id: string }) => {
-      expanded.value = false;
-      router.push({ name: "products-details", params: { id: item.id } });
+      openBlade("products-details", { componentOptions: { id: item.id } });
     };
 
     const onHeaderClick = (item: { id: string; sortable: boolean }) => {
@@ -196,10 +216,15 @@ export default defineComponent({
     };
 
     return {
-      expanded,
       loading,
       bladeToolbar,
-      headers,
+      headers: computed(() => {
+        if (props.expanded) {
+          return headers.value;
+        } else {
+          return headers.value.filter((item) => item.alwaysVisible === true);
+        }
+      }),
       products,
       totalCount,
       pages,

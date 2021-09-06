@@ -26,8 +26,6 @@ export { default as VcFormField } from "./molecules/vc-form-field/vc-form-field.
 export { default as VcFormInput } from "./molecules/vc-form-input/vc-form-input.vue";
 export { default as VcFormSelect } from "./molecules/vc-form-select/vc-form-select.vue";
 export { default as VcFormUpload } from "./molecules/vc-form-upload/vc-form-upload.vue";
-export { default as VcNavDivider } from "./molecules/vc-nav-divider/vc-nav-divider.vue";
-export { default as VcNavGroup } from "./molecules/vc-nav-group/vc-nav-group.vue";
 export { default as VcNavItem } from "./molecules/vc-nav-item/vc-nav-item.vue";
 export { default as VcNavToggle } from "./molecules/vc-nav-toggle/vc-nav-toggle.vue";
 export { default as VcTableActions } from "./molecules/vc-table-actions/vc-table-actions.vue";
@@ -38,9 +36,6 @@ export { default as VcTableSearch } from "./molecules/vc-table-search/vc-table-s
 export { default as VcTagsAction } from "./molecules/vc-tags-action/vc-tags-action.vue";
 export { default as VcTagsAdd } from "./molecules/vc-tags-add/vc-tags-add.vue";
 export { default as VcTagsItem } from "./molecules/vc-tags-item/vc-tags-item.vue";
-export { default as VcTopBarAccount } from "./molecules/vc-top-bar-account/vc-top-bar-account.vue";
-export { default as VcTopBarButton } from "./molecules/vc-top-bar-button/vc-top-bar-button.vue";
-export { default as VcTopBarLogo } from "./molecules/vc-top-bar-logo/vc-top-bar-logo.vue";
 
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";
@@ -55,7 +50,7 @@ export { default as VcPagination } from "./organisms/vc-pagination/vc-pagination
 export { default as VcPopup } from "./organisms/vc-popup/vc-popup.vue";
 export { default as VcTable } from "./organisms/vc-table/vc-table.vue";
 export { default as VcTags } from "./organisms/vc-tags/vc-tags.vue";
-export { default as VcTopBar } from "./organisms/vc-top-bar/vc-top-bar.vue";
+export { default as VcTopbar } from "./organisms/vc-topbar/vc-topbar.vue";
 
 /* Layouts */
 export { default as VcLayoutLogin } from "./layouts/vc-layout-login/vc-layout-login.vue";

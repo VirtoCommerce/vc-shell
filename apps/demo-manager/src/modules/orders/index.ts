@@ -1,31 +1,34 @@
 import { App } from "vue";
 import * as components from "./components";
+import { useBlade } from "@virtoshell/core";
 
 interface IModuleOptions {
-  router?: [Record<string, unknown>];
+  ordersList?: Record<string, unknown>;
+  ordersDetails?: Record<string, unknown>;
 }
 
 export default {
   install(app: App, options: IModuleOptions): void {
-    const router = app.config.globalProperties.$router;
+    const { registerBlade } = useBlade();
 
     // Register exported components
     Object.entries(components).forEach(([componentName, component]) => {
       app.component(componentName, component);
     });
 
-    router.addRoute("root", {
-      name: "orders",
-      path: "orders",
+    registerBlade({
+      name: "orders-list",
+      url: "/orders",
       component: components.Orders,
-      children: [
-        { name: "order", path: "order/:id", component: components.Order },
-      ],
+      componentOptions: options?.ordersList,
     });
 
-    if (options?.router) {
-      options?.router.forEach((item) => router.addRoute(item));
-    }
+    registerBlade({
+      name: "orders-details",
+      url: "order/:id",
+      component: components.Order,
+      componentOptions: options?.ordersDetails,
+    });
   },
 };
 

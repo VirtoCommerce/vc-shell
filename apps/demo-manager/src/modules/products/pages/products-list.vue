@@ -1,7 +1,7 @@
 <template>
   <vc-blade
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
-    :width="400"
+    :width="600"
     :expanded="expanded"
     :closable="false"
     @expand="expanded = true"
@@ -9,54 +9,21 @@
     :toolbarItems="bladeToolbar"
   >
     <vc-table
+      :loading="loading"
       class="vc-flex-grow_1"
       :multiselect="true"
       :headers="headers"
       :items="products"
       :sort="sort"
+      :pages="pages"
+      :currentPage="currentPage"
+      :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :totalCount="totalCount"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
+      @paginationClick="onPaginationClick"
     >
-      <template v-slot:header>
-        <div
-          class="
-            products-list__header
-            vc-flex
-            vc-flex-align_center
-            vc-flex-justify_space-between
-            vc-padding_l
-          "
-        >
-          <vc-form-input
-            class="vc-flex-grow_1 vc-margin-right_m"
-            :placeholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-            :clearable="true"
-          ></vc-form-input>
-          <vc-table-filter></vc-table-filter>
-        </div>
-      </template>
-
-      <template v-slot:footer>
-        <div
-          class="
-            products-list__footer
-            vc-flex
-            vc-flex-align_center
-            vc-flex-justify_space-between
-            vc-padding_l
-          "
-        >
-          <vc-pagination
-            :pages="pages"
-            :currentPage="currentPage"
-            @itemClick="onPaginationClick"
-          ></vc-pagination>
-          <vc-table-counter
-            :label="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
-            :value="totalCount"
-          ></vc-table-counter>
-        </div>
-      </template>
       <template v-slot:item_sellerName="itemData">
         <div class="vc-flex vc-flex-column">
           <div>{{ itemData.item.sellerName }}</div>
@@ -95,21 +62,22 @@ export default defineComponent({
     const logger = useLogger();
     const { t } = useI18n();
     const expanded = ref(true);
+    const loading = ref(false);
     const { products, totalCount, pages, currentPage, loadProducts } =
       useProducts();
 
     const sort = ref("-createdDate");
 
-    watch(sort, (value) => {
-      loadProducts({
-        sort: value,
-      });
+    watch(sort, async (value) => {
+      loading.value = true;
+      await loadProducts({ sort: value });
+      loading.value = false;
     });
 
-    onMounted(() => {
-      loadProducts({
-        sort: sort.value,
-      });
+    onMounted(async () => {
+      loading.value = true;
+      await loadProducts({ sort: sort.value });
+      loading.value = false;
     });
 
     const bladeToolbar = [
@@ -117,8 +85,10 @@ export default defineComponent({
         id: "refresh",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
-        onClick: () => {
-          loadProducts({ page: currentPage.value, sort: sort.value });
+        onClick: async () => {
+          loading.value = true;
+          await loadProducts({ page: currentPage.value, sort: sort.value });
+          loading.value = false;
         },
       },
       {
@@ -172,6 +142,7 @@ export default defineComponent({
     ];
 
     const onItemClick = (item: { id: string }) => {
+      expanded.value = false;
       router.push({ name: "products-details", params: { id: item.id } });
     };
 
@@ -187,8 +158,10 @@ export default defineComponent({
       }
     };
 
-    const onPaginationClick = (page: number) => {
-      loadProducts({ page, sort: sort.value });
+    const onPaginationClick = async (page: number) => {
+      loading.value = true;
+      await loadProducts({ page, sort: sort.value });
+      loading.value = false;
     };
 
     const statusStyle = (status: string) => {
@@ -224,6 +197,7 @@ export default defineComponent({
 
     return {
       expanded,
+      loading,
       bladeToolbar,
       headers,
       products,
@@ -240,12 +214,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="less">
-.products-list {
-  &__footer {
-    background-color: #fbfdfe;
-    border-top: 2px solid #eaedf3;
-  }
-}
-</style>

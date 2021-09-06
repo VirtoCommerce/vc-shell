@@ -57,9 +57,13 @@ export async function mockedProducts(args: {
       }
     })
     .slice((page - 1) * pageSize, page * pageSize);
-  console.log(page, pageSize, data);
-  return Promise.resolve({
-    totalCount: results.length,
-    results: data,
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        totalCount: results.length,
+        results: data,
+      });
+    }, 1000);
   });
 }

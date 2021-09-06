@@ -88,6 +88,7 @@
           </div>
           <div
             v-if="account.dropdown && accountMenuVisible"
+            v-click-outside="toggleAccountMenuVisible"
             class="vc-layout-workspace__topbar-account-menu"
             @click.stop="accountMenuVisible = false"
           >
@@ -120,9 +121,13 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import { clickOutside } from "../../../directives";
 
 export default defineComponent({
   components: { VcIcon },
+  directives: {
+    clickOutside,
+  },
 
   props: {
     branding: {
@@ -158,9 +163,13 @@ export default defineComponent({
 
   setup() {
     const accountMenuVisible = ref(false);
+    const toggleAccountMenuVisible = () => {
+      accountMenuVisible.value = !accountMenuVisible.value;
+    };
 
     return {
       accountMenuVisible,
+      toggleAccountMenuVisible,
     };
   },
 });

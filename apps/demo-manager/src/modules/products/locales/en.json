@@ -30,7 +30,8 @@
         "TITLE": "Add product",
         "TOOLBAR": {
           "SAVE": "Save",
-          "SAVEANDAPPROVE": "Save & send to approve"
+          "SAVEANDAPPROVE": "Save & send to approve",
+          "CLOSE": "Close"
         },
         "FIELDS": {
           "NAME": {

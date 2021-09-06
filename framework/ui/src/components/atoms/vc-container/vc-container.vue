@@ -84,12 +84,14 @@ export default defineComponent({
   overflow-y: hidden;
   box-sizing: border-box;
   display: flex;
+  position: relative;
 
   &_shadow {
     box-shadow: var(--container-scroll-shadow);
   }
 
   &__inner {
+    position: relative;
     overflow-y: auto;
     overflow-x: hidden;
     flex: 1;

@@ -4,7 +4,7 @@ const className = "vc-loader";
 
 export default {
   mounted: function (el: HTMLElement, binding: DirectiveBinding): void {
-    console.dir(binding);
+    console.log("v-loading mount");
     const loader = document.createElement("div");
     loader.className = className;
     loader.innerHTML = "Loading...";
@@ -18,9 +18,9 @@ export default {
     loader.style.height = "100%";
     el.appendChild(loader);
   },
-  update: function (el: HTMLElement, binding: DirectiveBinding): void {
-    console.dir(binding);
-    const loader = document.querySelector(`.${className}`) as HTMLElement;
+  updated: function (el: HTMLElement, binding: DirectiveBinding): void {
+    console.log("v-loading updated");
+    const loader = el.querySelector(`.${className}`) as HTMLElement;
     if (loader) {
       loader.style.display = binding.value ? "flex" : "none";
     }

@@ -114,7 +114,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          openBlade("products-details", { componentOptions: { id: "new" } });
+          openBlade("products-add");
         },
       },
       {
@@ -163,7 +163,7 @@ export default defineComponent({
     ]);
 
     const onItemClick = (item: { id: string }) => {
-      openBlade("products-details", { componentOptions: { id: item.id } });
+      openBlade("products-edit", { id: item.id });
     };
 
     const onHeaderClick = (item: { id: string; sortable: boolean }) => {

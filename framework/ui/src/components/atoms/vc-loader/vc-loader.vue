@@ -1,11 +1,6 @@
 <template>
   <div
-    class="
-      vc-loader vc-flex-column
-      vc-flex-align_center
-      vc-flex-justify_center
-      vc-fill_all
-    "
+    class="vc-loader vc-fill_all"
     :class="{
       'vc-loader_active': active,
     }"
@@ -27,36 +22,29 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcLoader",
-  data() {
-    return {
-      active: false,
-    };
+
+  props: {
+    active: {
+      type: Boolean,
+      default: false,
+    },
   },
 });
 </script>
 
 <style lang="less">
 .vc-loader {
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   display: none;
-  z-index: 999999;
+  z-index: 99999;
 
   &_active {
     display: flex;
     backdrop-filter: blur(3px);
-
-    &:before {
-      content: "";
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: var(--background-color);
-      opacity: 0.5;
-      position: absolute;
-    }
+    background-color: rgba(255, 255, 255, 0.5);
   }
 
   &__animation {
@@ -73,7 +61,7 @@ export default defineComponent({
     top: 12px;
     left: 15px;
     filter: blur(1px);
-    background: var(--basic-black-color);
+    background: #319ed4;
     border-radius: 50%;
     transform: translateX(0);
     animation: "vc-loader__marker" 3s infinite;
@@ -92,7 +80,7 @@ export default defineComponent({
       height: 16px;
       margin-left: 16px;
       filter: blur(1px);
-      background: var(--basic-black-color);
+      background: #319ed4;
       border-radius: 50%;
     }
   }

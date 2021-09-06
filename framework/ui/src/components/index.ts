@@ -8,6 +8,7 @@ export { default as VcIcon } from "./atoms/vc-icon/vc-icon.vue";
 export { default as VcImage } from "./atoms/vc-image/vc-image.vue";
 export { default as VcLabel } from "./atoms/vc-label/vc-label.vue";
 export { default as VcLink } from "./atoms/vc-link/vc-link.vue";
+export { default as VcLoader } from "./atoms/vc-loader/vc-loader.vue";
 export { default as VcProgressbar } from "./atoms/vc-progressbar/vc-progressbar.vue";
 export { default as VcSwitch } from "./atoms/vc-switch/vc-switch.vue";
 export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
@@ -25,7 +26,6 @@ export { default as VcFormField } from "./molecules/vc-form-field/vc-form-field.
 export { default as VcFormInput } from "./molecules/vc-form-input/vc-form-input.vue";
 export { default as VcFormSelect } from "./molecules/vc-form-select/vc-form-select.vue";
 export { default as VcFormUpload } from "./molecules/vc-form-upload/vc-form-upload.vue";
-export { default as VcLoader } from "./molecules/vc-loader";
 export { default as VcNavDivider } from "./molecules/vc-nav-divider/vc-nav-divider.vue";
 export { default as VcNavGroup } from "./molecules/vc-nav-group/vc-nav-group.vue";
 export { default as VcNavItem } from "./molecules/vc-nav-item/vc-nav-item.vue";

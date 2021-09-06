@@ -80,6 +80,7 @@ export default defineComponent({
 
 .vc-blade {
   display: flex;
+  flex-shrink: 0;
   flex-direction: column;
   background: var(--blade-background-color);
   border-radius: var(--blade-border-radius);
@@ -89,6 +90,7 @@ export default defineComponent({
 
   &_expanded {
     width: 100% !important;
+    flex-shrink: 1;
   }
 }
 </style>

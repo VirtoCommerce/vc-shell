@@ -1,5 +1,6 @@
 import { App } from "vue";
 import * as components from "./components";
+import * as directives from "./directives";
 
 import "./styles/index.less";
 
@@ -10,9 +11,10 @@ export default {
       app.component(componentName, component);
     });
 
-    app.config.globalProperties.$VcLoader = components.VcLoader;
-
-    app.provide("VcLoader", components.VcLoader);
+    // Register exported directives
+    Object.entries(directives).forEach(([directiveName, directive]) => {
+      app.directive(directiveName, directive);
+    });
   },
 };
 

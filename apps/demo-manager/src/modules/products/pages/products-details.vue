@@ -84,11 +84,12 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useRouter } from "@virtoshell/core";
 
 export default defineComponent({
   setup() {
     const { t } = useI18n();
+    const router = useRouter();
     const expanded = ref(true);
 
     const bladeToolbar = [
@@ -101,6 +102,14 @@ export default defineComponent({
         id: "saveAndApprove",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
         icon: "fas fa-share-square",
+      },
+      {
+        id: "close",
+        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
+        icon: "fas fa-times-circle",
+        onClick: () => {
+          router.go(-1);
+        },
       },
     ];
 

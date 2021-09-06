@@ -1,100 +1,146 @@
 <template>
   <div class="vc-table-wrapper vc-flex vc-flex-column">
-    <div v-if="$slots['header']" class="vc-flex-shrink_0">
-      <slot name="header"></slot>
-    </div>
-
-    <vc-container
-      ref="scrollContainer"
-      :noPadding="true"
-      class="vc-flex-grow_1"
-    >
-      <table
-        class="vc-table vc-fill_width"
-        :class="{
-          'vc-table_empty': !items || !items.length,
-          'vc-table_multiselect': multiselect,
-        }"
+    <slot name="header">
+      <div
+        class="
+          vc-table__header
+          vc-flex-shrink_0
+          vc-flex
+          vc-flex-align_center
+          vc-flex-justify_space-between
+          vc-padding_l
+        "
       >
-        <thead v-if="headers" class="vc-table__header">
-          <tr class="vc-table__header-row">
-            <th v-if="multiselect" class="vc-table__header-cell" width="50">
-              <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
-                <vc-checkbox v-model="headerCheckbox" @click.stop></vc-checkbox>
-              </div>
-            </th>
-            <th
-              v-for="item in headers"
-              :key="item.id"
-              class="vc-table__header-cell vc-padding-horizontal_m"
-              :class="{
-                'vc-table__header-cell_sortable': item.sortable,
-              }"
-              :width="item.width"
-              @click="$emit('headerClick', item)"
-            >
-              <div
-                class="vc-flex vc-flex-align_center vc-flex-nowrap"
-                :class="`vc-flex-justify_${item.align || 'start'}`"
-              >
-                <div>
-                  <slot :name="`header_${item.id}`">{{ item.title }}</slot>
-                </div>
+        <vc-form-input
+          class="vc-flex-grow_1 vc-margin-right_m"
+          :placeholder="searchPlaceholder"
+          :clearable="true"
+          @change="$emit('searchValueChanged', $event)"
+        ></vc-form-input>
+        <vc-table-filter></vc-table-filter>
+      </div>
+    </slot>
+
+    <div class="vc-table-wrapper__inner">
+      <vc-loader :active="loading"></vc-loader>
+      <vc-container
+        ref="scrollContainer"
+        :noPadding="true"
+        class="vc-flex-grow_1"
+      >
+        <table
+          class="vc-table vc-fill_width"
+          :class="{
+            'vc-table_empty': !items || !items.length,
+            'vc-table_multiselect': multiselect,
+          }"
+        >
+          <thead v-if="headers" class="vc-table__header">
+            <tr class="vc-table__header-row">
+              <th v-if="multiselect" class="vc-table__header-cell" width="50">
                 <div
-                  v-if="sortField === item.id"
-                  class="vc-table__header-cell_sort vc-margin-left_xs"
+                  class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
-                  <vc-icon
-                    size="xs"
-                    :icon="`fas fa-caret-${
-                      sortDirection === 'DESC' ? 'down' : 'up'
-                    }`"
-                  ></vc-icon>
+                  <vc-checkbox
+                    v-model="headerCheckbox"
+                    @click.stop
+                  ></vc-checkbox>
                 </div>
-              </div>
-            </th>
-          </tr>
-        </thead>
+              </th>
+              <th
+                v-for="item in headers"
+                :key="item.id"
+                class="vc-table__header-cell vc-padding-horizontal_m"
+                :class="{
+                  'vc-table__header-cell_sortable': item.sortable,
+                }"
+                :width="item.width"
+                @click="$emit('headerClick', item)"
+              >
+                <div
+                  class="vc-flex vc-flex-align_center vc-flex-nowrap"
+                  :class="`vc-flex-justify_${item.align || 'start'}`"
+                >
+                  <div>
+                    <slot :name="`header_${item.id}`">{{ item.title }}</slot>
+                  </div>
+                  <div
+                    v-if="sortField === item.id"
+                    class="vc-table__header-cell_sort vc-margin-left_xs"
+                  >
+                    <vc-icon
+                      size="xs"
+                      :icon="`fas fa-caret-${
+                        sortDirection === 'DESC' ? 'down' : 'up'
+                      }`"
+                    ></vc-icon>
+                  </div>
+                </div>
+              </th>
+            </tr>
+          </thead>
 
-        <tbody v-if="items" class="vc-table__body">
-          <tr
-            v-for="(item, i) in items"
-            :key="item.id"
-            class="vc-table__body-row"
-            :class="{
-              'vc-table__body-row_even': i % 2 === 1,
-            }"
-            @click="$emit('itemClick', item)"
-          >
-            <td v-if="multiselect" class="vc-table__body-cell" width="50">
-              <div class="vc-flex vc-flex-justify_center vc-flex-align_center">
-                <vc-checkbox
-                  v-model="checkboxes[item.id]"
-                  @click.stop
-                ></vc-checkbox>
-              </div>
-            </td>
-            <td
-              v-for="cell in headers"
-              :key="`${item.id}_${cell.id}`"
-              class="vc-table__body-cell vc-padding-horizontal_m"
-              :class="cell.class"
-              :width="cell.width"
+          <tbody v-if="items" class="vc-table__body">
+            <tr
+              v-for="(item, i) in items"
+              :key="item.id"
+              class="vc-table__body-row"
+              :class="{
+                'vc-table__body-row_even': i % 2 === 1,
+              }"
+              @click="$emit('itemClick', item)"
             >
-              <div class="vc-flex vc-flex-align_center">
-                <slot :name="`item_${cell.id}`" :item="item">{{
-                  item[cell.id]
-                }}</slot>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </vc-container>
-
-    <div v-if="$slots['footer']" class="vc-flex-shrink_0">
-      <slot name="footer"></slot>
+              <td v-if="multiselect" class="vc-table__body-cell" width="50">
+                <div
+                  class="vc-flex vc-flex-justify_center vc-flex-align_center"
+                >
+                  <vc-checkbox
+                    v-model="checkboxes[item.id]"
+                    @click.stop
+                  ></vc-checkbox>
+                </div>
+              </td>
+              <td
+                v-for="cell in headers"
+                :key="`${item.id}_${cell.id}`"
+                class="vc-table__body-cell vc-padding-horizontal_m"
+                :class="cell.class"
+                :width="cell.width"
+              >
+                <div class="vc-flex vc-flex-align_center">
+                  <slot :name="`item_${cell.id}`" :item="item">{{
+                    item[cell.id]
+                  }}</slot>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </vc-container>
     </div>
+
+    <slot name="footer">
+      <div
+        class="
+          vc-table__footer
+          vc-flex-shrink_0
+          vc-flex
+          vc-flex-align_center
+          vc-flex-justify_space-between
+          vc-padding_l
+        "
+      >
+        <vc-pagination
+          :pages="pages"
+          :currentPage="currentPage"
+          @itemClick="$emit('paginationClick', $event)"
+        ></vc-pagination>
+        <vc-table-counter
+          :label="totalLabel"
+          :value="totalCount"
+        ></vc-table-counter>
+      </div>
+    </slot>
   </div>
 </template>
 
@@ -103,9 +149,23 @@ import { defineComponent } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
+import VcFormInput from "../../molecules/vc-form-input/vc-form-input.vue";
+import VcTableFilter from "../../molecules/vc-table-filter/vc-table-filter.vue";
+import VcPagination from "../vc-pagination/vc-pagination.vue";
+import VcTableCounter from "../../molecules/vc-table-counter/vc-table-counter.vue";
+import VcLoader from "../../atoms/vc-loader/vc-loader.vue";
 
 export default defineComponent({
-  components: { VcIcon, VcCheckbox, VcContainer },
+  components: {
+    VcIcon,
+    VcCheckbox,
+    VcContainer,
+    VcFormInput,
+    VcTableFilter,
+    VcPagination,
+    VcTableCounter,
+    VcLoader,
+  },
 
   data() {
     const checkboxes: Record<string, boolean> = {};
@@ -135,7 +195,39 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    totalLabel: {
+      type: String,
+      default: "Totals:",
+    },
+
+    totalCount: {
+      type: Number,
+      default: 0,
+    },
+
+    pages: {
+      type: Number,
+      default: 0,
+    },
+
+    currentPage: {
+      type: Number,
+      default: 0,
+    },
+
+    searchPlaceholder: {
+      type: String,
+      default: "Search...",
+    },
+
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
+
+  emits: ["paginationClick"],
 
   watch: {
     items(value: { id: string }[]) {
@@ -180,7 +272,15 @@ export default defineComponent({
   padding-top: 43px;
 
   &-wrapper {
+    position: relative;
     overflow: hidden;
+
+    &__inner {
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      flex-grow: 1;
+    }
   }
 
   &__header {
@@ -226,6 +326,11 @@ export default defineComponent({
         border-right: 1px solid #eaedf3;
       }
     }
+  }
+
+  &__footer {
+    background-color: #fbfdfe;
+    border-top: 2px solid #eaedf3;
   }
 }
 </style>

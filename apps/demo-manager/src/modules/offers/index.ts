@@ -14,14 +14,14 @@ export default {
 
     // Setup routing
     registerBlade({
-      name: "products-list",
-      url: "products",
-      component: pages.ProductsList,
+      name: "offers-list",
+      url: "offers",
+      component: pages.OffersList,
     });
     registerBlade({
-      name: "products-details",
-      url: "product/:id",
-      component: pages.ProductsDetails,
+      name: "offers-details",
+      url: "offer/:id",
+      component: pages.OffersDetails,
     });
 
     // Load locales
@@ -32,4 +32,3 @@ export default {
 };
 
 export * from "./pages";
-export * from "./composables";

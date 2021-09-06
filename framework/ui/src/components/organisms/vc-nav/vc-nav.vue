@@ -1,23 +1,8 @@
 <template>
   <div class="vc-nav" :class="{ 'vc-nav_collapsed': collapsed }">
-    <div class="vc-nav__top">
-      <div
-        class="vc-nav__top-image"
-        :style="{ 'background-image': `url(${logo})` }"
-      ></div>
-      <div class="vc-nav__top-version">{{ version }}</div>
-    </div>
     <vc-nav-toggle @click="toggleCollapsed()"></vc-nav-toggle>
     <vc-container :noPadding="true" class="vc-nav__content">
-      <vc-nav-item icon="fas fa-home" to="/" sticky="sticky" title="Home" />
-      <vc-nav-item
-        v-for="item in items"
-        :key="item.id"
-        :icon="item.icon"
-        :title="item.title"
-        @click="$emit('itemClick', item)"
-      />
-      <vc-nav-item icon="fas fa-ellipsis-h" sticky="sticky" title="More" />
+      <vc-nav-item v-for="item in items" :key="item.id" v-bind="item" />
     </vc-container>
   </div>
 </template>
@@ -32,14 +17,6 @@ export default defineComponent({
   components: { VcNavItem, VcNavToggle, VcContainer },
 
   props: {
-    logo: {
-      type: String,
-    },
-
-    version: {
-      type: String,
-    },
-
     items: {
       type: Array,
       default() {
@@ -48,7 +25,7 @@ export default defineComponent({
     },
   },
 
-  emits: ["itemClick", "collapse", "expand"],
+  emits: ["collapse", "expand"],
 
   setup(_props, { emit }) {
     const collapsed = ref(false);
@@ -69,44 +46,16 @@ export default defineComponent({
 :root {
   --nav-width: 240px;
   --nav-width-collapsed: 60px;
-  --nav-top-height: var(--app-bar-height);
-  --nav-top-background-color: #ffffff;
-  --nav-top-image-height: 30px;
   --nav-background-color: #ffffff;
   --nav-border-right-color: #ffffff;
-  --nav-top-border-right-color: #ffffff;
-  --nav-top-version-color: #838d9a;
 }
 
 .vc-nav {
   width: var(--nav-width);
-  height: 100%;
   border-right: 1px solid var(--nav-border-right-color);
   background: var(--nav-background-color);
-
-  &__top {
-    height: var(--nav-top-height);
-    background: var(--nav-top-background-color);
-    align-items: center;
-    color: white;
-    display: flex;
-    border-right: 1px solid var(--nav-top-border-right-color);
-    margin-right: -1px;
-    padding: 15px;
-    box-sizing: border-box;
-
-    &-image {
-      height: var(--nav-top-image-height);
-      background-repeat: no-repeat;
-      background-size: auto 100%;
-      width: 178px;
-    }
-
-    &-version {
-      color: var(--nav-top-version-color);
-      font-size: var(--font-size-xs);
-    }
-  }
+  display: flex;
+  flex-direction: column;
 
   &_collapsed {
     width: var(--nav-width-collapsed);
@@ -114,14 +63,10 @@ export default defineComponent({
     .vc-nav-item__title {
       display: none;
     }
+  }
 
-    .vc-nav__top-image {
-      width: var(--nav-top-image-height);
-    }
-
-    .vc-nav__top-version {
-      display: none;
-    }
+  &__content {
+    flex-grow: 1;
   }
 }
 </style>

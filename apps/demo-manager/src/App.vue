@@ -1,44 +1,70 @@
 <template>
-  <vc-app :options="options">
-    <template v-slot:default="options">
-      <router-view v-bind="options" @navClick="onNavClick"></router-view>
+  <vc-app
+    :authorized="authorized"
+    :account="account"
+    :logo="logo"
+    :background="background"
+    :title="title"
+    :version="version"
+    :workspace="workspace"
+    :toolbar="toolbar"
+    :menu="menu"
+  >
+    <template v-slot:login>
+      <login-page
+        :logo="logo"
+        :background="background"
+        :title="title"
+      ></login-page>
     </template>
   </vc-app>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, reactive } from "vue";
-import { useLogger, useI18n, useRouter, useUser } from "@virtoshell/core";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
+import LoginPage from "./components/login-page.vue";
+import { useLogger, useI18n, useUser, useBlade } from "@virtoshell/core";
 
 export default defineComponent({
   name: "App",
 
+  components: {
+    LoginPage,
+  },
+
   setup() {
     const { t } = useI18n();
     const log = useLogger();
-    const router = useRouter();
+    const { workspace } = useBlade();
+    const { openWorkspace, openDashboard } = useBlade();
     const { user, loadUser, signOut, loading } = useUser();
+    const authorized = ref(false);
 
     onMounted(async () => {
       //TODO: Add load indicator to entire workspace
-      const user = await loadUser();
-      console.log("user:", user);
-      if (!user.userName) {
-        router.push("/login");
-      }
+      await loadUser();
+    });
+
+    watch(user, (value) => {
+      authorized.value = !!value?.userName;
     });
 
     log.debug(`Initializing App`);
-    console.dir(router.currentRoute.value);
-    router.replace(router.currentRoute.value.fullPath);
 
-    const toolbarItems = [
+    const toolbar = [
       {
         id: "settings",
         icon: "fas fa-cog",
         title: t("SHELL.TOOLBAR.SETTINGS"),
         onClick() {
-          router.push("/settings");
+          openWorkspace("settings");
         },
       },
       {
@@ -46,7 +72,7 @@ export default defineComponent({
         icon: "fas fa-life-ring",
         title: t("SHELL.TOOLBAR.HELP"),
         onClick() {
-          router.push("/help");
+          openWorkspace("help");
         },
       },
       {
@@ -57,13 +83,38 @@ export default defineComponent({
       },
     ];
 
-    const navItems = [
-      { id: 1, title: "Orders", icon: "fas fa-layer-group", href: "/orders" },
+    const menu = [
+      {
+        id: 0,
+        title: t("SHELL.MENU.DASHBOARD"),
+        icon: "fas fa-home",
+        clickHandler() {
+          openDashboard();
+        },
+      },
+      {
+        id: 1,
+        title: t("ORDERS.MENU.TITLE"),
+        icon: "fas fa-layer-group",
+        clickHandler() {
+          openWorkspace("orders-list");
+        },
+      },
       {
         id: 2,
         title: t("PRODUCTS.MENU.TITLE"),
         icon: "fas fa-cash-register",
-        href: "/products",
+        clickHandler() {
+          openWorkspace("products-list");
+        },
+      },
+      {
+        id: 3,
+        title: t("OFFERS.MENU.TITLE"),
+        icon: "fas fa-cash-register",
+        clickHandler() {
+          openWorkspace("offers-list");
+        },
       },
     ];
 
@@ -78,7 +129,7 @@ export default defineComponent({
           id: 1,
           title: t("SHELL.ACCOUNT.PROFILE"),
           onClick() {
-            router.push("/profile");
+            openWorkspace("profile");
           },
         },
         {
@@ -86,29 +137,21 @@ export default defineComponent({
           title: t("SHELL.ACCOUNT.LOGOUT"),
           onClick() {
             signOut();
-            router.push("/login");
           },
         },
       ],
     });
 
-    function onNavClick(item: { href: string }): void {
-      router.push(item.href);
-    }
-
     return {
-      options: {
-        branding: {
-          logo: "/assets/logo.svg",
-          background: "/assets/background.jpg",
-          title: "Vendor Portal",
-          version: process.env.PACKAGE_VERSION,
-        },
-        toolbarItems,
-        navItems,
-        account,
-      },
-      onNavClick,
+      authorized,
+      workspace,
+      logo: "/assets/logo.svg",
+      background: "/assets/background.jpg",
+      title: "Vendor Portal",
+      version: process.env.PACKAGE_VERSION,
+      toolbar,
+      menu,
+      account,
       loading,
     };
   },

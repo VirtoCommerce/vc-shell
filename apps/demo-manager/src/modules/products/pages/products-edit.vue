@@ -1,7 +1,8 @@
 <template>
   <vc-blade
+    v-loading="loading"
     :uid="uid"
-    :title="$t('PRODUCTS.PAGES.DETAILS.TITLE')"
+    :title="product?.sellerName"
     :width="400"
     :expanded="expanded"
     :closable="closable"
@@ -10,7 +11,7 @@
     :toolbarItems="bladeToolbar"
     @close="$closeBlade(uid)"
   >
-    <div class="product-details__inner vc-flex vc-flex-grow_1">
+    <div v-if="product" class="product-details__inner vc-flex vc-flex-grow_1">
       <div class="product-details__content vc-flex-grow_1">
         <vc-container :no-padding="true">
           <div class="vc-padding_l">
@@ -19,6 +20,7 @@
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
               >
                 <vc-form-input
+                  v-model="product.sellerName"
                   :clearable="true"
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
@@ -38,6 +40,7 @@
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
               >
                 <vc-form-input
+                  v-model="product.gtin"
                   :clearable="true"
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
@@ -84,8 +87,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, onBeforeMount } from "vue";
 import { useI18n, useBlade } from "@virtoshell/core";
+import { useProduct } from "../composables";
 
 export default defineComponent({
   props: {
@@ -103,11 +107,21 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   setup(props) {
     const { t } = useI18n();
     const { closeBlade } = useBlade();
+    const { product, loading, loadProduct } = useProduct();
+
+    onBeforeMount(async () => {
+      await loadProduct({ id: props.options.id });
+    });
 
     const bladeToolbar = [
       {
@@ -132,6 +146,8 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      product: computed(() => product.value),
+      loading: computed(() => loading.value),
     };
   },
 });

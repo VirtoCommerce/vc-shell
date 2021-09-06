@@ -45,7 +45,7 @@ const registerBlade = (blade: IBladeData) => {
  * @param name Blade name.
  * @param options Custom object with overriden blade componentOptions.
  */
-const openBlade = (name: string, options?: Partial<IBladeData>) => {
+const openBlade = (name: string, options?: Record<string, unknown>) => {
   console.debug(`[@virtoshell/core#useBlade:openBlade] - "${name}"`);
   const blade = registry.value.find((item) => item.name === name);
   if (!blade) {
@@ -124,7 +124,7 @@ const openDashboard = () => {
  * @param name Blade name.
  * @param options Custom object with overriden blade componentOptions.
  */
-const openWorkspace = (name: string, options?: Partial<IBladeData>) => {
+const openWorkspace = (name: string, options?: Record<string, unknown>) => {
   console.debug(`[@virtoshell/core#useBlade:openWorkspace] - "${name}"`);
   const blade = registry.value.find((item) => item.name === name);
   if (!blade) {

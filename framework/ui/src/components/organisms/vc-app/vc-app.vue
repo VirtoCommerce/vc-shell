@@ -22,7 +22,7 @@
             :uid="blade.uid"
             :expanded="blade.expanded"
             :closable="blade.closable"
-            v-bind="blade.componentOptions"
+            :options="blade.componentOptions"
           ></component>
         </div>
       </div>

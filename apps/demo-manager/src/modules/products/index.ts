@@ -19,9 +19,14 @@ export default {
       component: pages.ProductsList,
     });
     registerBlade({
-      name: "products-details",
+      name: "products-add",
+      url: "product",
+      component: pages.ProductsAdd,
+    });
+    registerBlade({
+      name: "products-edit",
       url: "product/:id",
-      component: pages.ProductsDetails,
+      component: pages.ProductsEdit,
     });
 
     // Load locales

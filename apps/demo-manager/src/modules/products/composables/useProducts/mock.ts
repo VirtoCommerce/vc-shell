@@ -19,7 +19,7 @@ function generateResults(count: number): IProduct[] {
   const results = [];
   for (let i = 0; i < count; i++) {
     results.push({
-      id: i,
+      id: `${i}`,
       image: `/assets/${Math.floor(Math.random() * 5) + 1}.jpg`,
       gtin: `${Math.floor(Math.random() * 10000000)}`.padStart(10, "0"),
       sellerName: `Product ${i + 1}`,
@@ -34,6 +34,15 @@ function generateResults(count: number): IProduct[] {
 }
 
 const results = generateResults(112);
+
+export async function mockedProduct(args: { id: string }): Promise<IProduct> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const product = results.find((item) => item.id === args.id);
+      resolve(product);
+    }, 1000);
+  });
+}
 
 export async function mockedProducts(args: {
   page?: number;

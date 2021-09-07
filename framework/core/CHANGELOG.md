@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.34](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/core@0.0.30...@virtoshell/core@0.0.34) (2021-09-07)
+
+
+### Features
+
+* vm-97 extended products ([2b995b6](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2b995b605ce7143ed010405614a2a4f4c0614605))
+* vm-97 extended products ([c9497da](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c9497da9d8d5adceca1123be1e8da9c1907dd252))
+
+
+
+
+
 ## [0.0.33](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/core@0.0.30...@virtoshell/core@0.0.33) (2021-09-02)
 
 **Note:** Version bump only for package @virtoshell/core

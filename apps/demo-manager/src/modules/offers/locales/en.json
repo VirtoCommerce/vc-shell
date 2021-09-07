@@ -10,6 +10,36 @@
           "REFRESH": "Refresh",
           "ADD": "Add",
           "BULK_ARCHIVE": "Archive"
+        },
+        "SEARCH": {
+          "PLACEHOLDER": "Search keywords"
+        },
+        "TABLE": {
+          "TOTALS": "Total:",
+          "HEADER": {
+            "PRODUCT_IMAGE": "Pic",
+            "PRODUCT_NAME": "Product",
+            "CREATED_DATE": "Created Date",
+            "STATUS": "Status",
+            "SKU": "SKU",
+            "SALE_PRICE": "Sale price",
+            "LIST_PRICE": "List price",
+            "MIN_QTY": "Min.qty",
+            "QTY": "Qty"
+          }
+        }
+      },
+      "DETAILS": {
+        "TITLE": "Add offer",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "CLOSE": "Close"
+        },
+        "FIELDS": {
+          "SKU": {
+            "TITLE": "SKU",
+            "PLACEHOLDER": "Enter product SKU"
+          }
         }
       }
     }

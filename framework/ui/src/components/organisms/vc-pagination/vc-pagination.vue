@@ -22,46 +22,50 @@
       <vc-icon size="xs" icon="fas fa-arrow-left"></vc-icon>
     </div>
 
-    <!-- To preprevious page with number -->
-    <div
-      v-if="currentPage > 2"
-      class="vc-pagination__item"
-      @click="$emit('itemClick', currentPage - 2)"
-    >
-      {{ currentPage - 2 }}
-    </div>
+    <template v-if="expanded">
+      <!-- To preprevious page with number -->
+      <div
+        v-if="currentPage > 2"
+        class="vc-pagination__item"
+        @click="$emit('itemClick', currentPage - 2)"
+      >
+        {{ currentPage - 2 }}
+      </div>
 
-    <!-- To previous page with number -->
-    <div
-      v-if="currentPage > 1"
-      class="vc-pagination__item"
-      @click="$emit('itemClick', currentPage - 1)"
-    >
-      {{ currentPage - 1 }}
-    </div>
+      <!-- To previous page with number -->
+      <div
+        v-if="currentPage > 1"
+        class="vc-pagination__item"
+        @click="$emit('itemClick', currentPage - 1)"
+      >
+        {{ currentPage - 1 }}
+      </div>
+    </template>
 
     <!-- Current page -->
     <div class="vc-pagination__item vc-pagination__item_current">
       {{ currentPage }}
     </div>
 
-    <!-- To next page with number -->
-    <div
-      v-if="currentPage < pages"
-      class="vc-pagination__item"
-      @click="$emit('itemClick', currentPage + 1)"
-    >
-      {{ currentPage + 1 }}
-    </div>
+    <template v-if="expanded">
+      <!-- To next page with number -->
+      <div
+        v-if="currentPage < pages"
+        class="vc-pagination__item"
+        @click="$emit('itemClick', currentPage + 1)"
+      >
+        {{ currentPage + 1 }}
+      </div>
 
-    <!-- To postnext page with number -->
-    <div
-      v-if="currentPage < pages - 1"
-      class="vc-pagination__item"
-      @click="$emit('itemClick', currentPage + 2)"
-    >
-      {{ currentPage + 2 }}
-    </div>
+      <!-- To postnext page with number -->
+      <div
+        v-if="currentPage < pages - 1"
+        class="vc-pagination__item"
+        @click="$emit('itemClick', currentPage + 2)"
+      >
+        {{ currentPage + 2 }}
+      </div>
+    </template>
 
     <!-- To next page arrow -->
     <div
@@ -97,6 +101,11 @@ export default defineComponent({
   components: { VcIcon },
 
   props: {
+    expanded: {
+      type: Boolean,
+      default: false,
+    },
+
     pages: {
       type: Number,
       default: 1,

@@ -12,10 +12,11 @@
     <!-- Blade contents -->
     <vc-table
       :loading="loading"
+      :expanded="expanded"
       :empty="empty"
       class="vc-flex-grow_1"
       :multiselect="true"
-      :headers="headers"
+      :columns="columns"
       :items="products"
       :sort="sort"
       :pages="pages"
@@ -136,7 +137,7 @@ export default defineComponent({
       },
     ];
 
-    const headers = ref([
+    const columns = ref([
       {
         id: "image",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
@@ -235,11 +236,11 @@ export default defineComponent({
     return {
       loading,
       bladeToolbar,
-      headers: computed(() => {
+      columns: computed(() => {
         if (props.expanded) {
-          return headers.value;
+          return columns.value;
         } else {
-          return headers.value.filter((item) => item.alwaysVisible === true);
+          return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
       products,

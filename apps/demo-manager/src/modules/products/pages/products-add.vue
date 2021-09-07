@@ -2,14 +2,14 @@
   <vc-blade
     :uid="uid"
     :title="$t('PRODUCTS.PAGES.DETAILS.TITLE')"
-    :width="400"
     :expanded="expanded"
     :closable="closable"
-    @expand="$expandBlade(uid)"
-    @collapse="$collapseBlade(uid)"
-    :toolbarItems="bladeToolbar"
     @close="$closeBlade(uid)"
   >
+    <!-- Set up blade toolbar -->
+    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
+
+    <!-- Blade contents -->
     <div class="product-details__inner vc-flex vc-flex-grow_1">
       <div class="product-details__content vc-flex-grow_1">
         <vc-container :no-padding="true">

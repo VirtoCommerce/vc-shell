@@ -150,6 +150,7 @@ const openBlade = (
         ...(blade.componentOptions || {}),
         ...(options || {}),
       },
+      url: options?.url === undefined ? blade.url : (options?.url as string),
       closable: true,
       uid,
       param: options?.param as string,

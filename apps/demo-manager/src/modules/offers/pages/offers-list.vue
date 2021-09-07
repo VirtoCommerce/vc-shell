@@ -10,13 +10,76 @@
     @collapse="$collapseBlade(uid)"
     :toolbarItems="bladeToolbar"
   >
-    <vc-table :empty="empty"> </vc-table>
+    <!-- Set up blade toolbar -->
+    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
+
+    <!-- Blade contents -->
+    <vc-table
+      :loading="loading"
+      :expanded="expanded"
+      :empty="empty"
+      class="vc-flex-grow_1"
+      :multiselect="true"
+      :columns="columns"
+      :items="offers"
+      :sort="sort"
+      :pages="pages"
+      :currentPage="currentPage"
+      :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
+      :totalCount="totalCount"
+      @itemClick="onItemClick"
+      @headerClick="onHeaderClick"
+      @paginationClick="onPaginationClick"
+    >
+      <!-- Override sellerName column template -->
+      <template v-slot:item_productSellerName="itemData">
+        <div class="vc-flex vc-flex-column">
+          <div>{{ itemData.item.product.sellerName }}</div>
+          <vc-tooltip>{{ itemData.item.product.category }}</vc-tooltip>
+        </div>
+      </template>
+
+      <!-- Override image column template -->
+      <template v-slot:item_productImage="itemData">
+        <vc-image
+          :bordered="true"
+          size="s"
+          aspect="1x1"
+          :src="itemData.item.product.image"
+        ></vc-image>
+      </template>
+
+      <!-- Override status column template -->
+      <template v-slot:item_status="itemData">
+        <vc-bubble v-bind="statusStyle(itemData.item.status)">
+          {{ itemData.item.status }}
+        </vc-bubble>
+      </template>
+
+      <!-- Override createdDate column template -->
+      <template v-slot:item_createdDate="itemData">
+        {{ moment(itemData.item.createdDate).fromNow() }}
+      </template>
+
+      <!-- Override listPrice column template -->
+      <template v-slot:item_listPrice="itemData">
+        {{ itemData.item.listPrice.toFixed(2) }}
+      </template>
+
+      <!-- Override salePrice column template -->
+      <template v-slot:item_salePrice="itemData">
+        {{ itemData.item.salePrice.toFixed(2) }}
+      </template>
+    </vc-table>
   </vc-blade>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, watch, onMounted, ref, computed } from "vue";
 import { useI18n, useBlade } from "@virtoshell/core";
+import { useOffers } from "../composables";
+import moment from "moment";
 
 export default defineComponent({
   props: {
@@ -40,11 +103,33 @@ export default defineComponent({
     const { t } = useI18n();
     const { openBlade } = useBlade();
 
+    const loading = ref(false);
+    const { offers, totalCount, pages, currentPage, loadOffers } = useOffers();
+
+    const sort = ref("-createdDate");
+
+    watch(sort, async (value) => {
+      loading.value = true;
+      await loadOffers({ sort: value });
+      loading.value = false;
+    });
+
+    onMounted(async () => {
+      loading.value = true;
+      await loadOffers({ sort: sort.value });
+      loading.value = false;
+    });
+
     const bladeToolbar = [
       {
         id: "refresh",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
+        onClick: async () => {
+          loading.value = true;
+          await loadOffers({ page: currentPage.value, sort: sort.value });
+          loading.value = false;
+        },
       },
       {
         id: "add",
@@ -59,18 +144,141 @@ export default defineComponent({
       },
     ];
 
+    const columns = ref([
+      {
+        id: "productImage",
+        field: "product.image",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
+        width: 60,
+        alwaysVisible: true,
+      },
+      {
+        id: "productSellerName",
+        field: "product.sellerName",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME"),
+        sortable: true,
+        alwaysVisible: true,
+      },
+      {
+        id: "createdDate",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
+        width: 140,
+        sortable: true,
+      },
+      {
+        id: "status",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.STATUS"),
+        width: 180,
+        sortable: true,
+      },
+      {
+        id: "sku",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU"),
+        width: 120,
+        sortable: true,
+        alwaysVisible: true,
+      },
+      {
+        id: "salePrice",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE"),
+        width: 100,
+        sortable: true,
+      },
+      {
+        id: "listPrice",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
+        width: 100,
+        sortable: true,
+      },
+      {
+        id: "minQty",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY"),
+        width: 80,
+        sortable: true,
+      },
+      {
+        id: "qty",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
+        width: 80,
+        sortable: true,
+      },
+    ]);
+
     const empty = {
       image: "/assets/empty-product.png",
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        openBlade(props.uid, "offers-add");
+        openBlade(props.uid, "offers-details");
       },
+    };
+
+    const onItemClick = (item: { id: string }) => {
+      openBlade(props.uid, "offers-details", { param: item.id });
+    };
+
+    const onHeaderClick = (item: { id: string; sortable: boolean }) => {
+      if (item.sortable) {
+        if (sort.value === `${item.id}`) {
+          sort.value = `-${item.id}`;
+        } else if (sort.value === `-${item.id}`) {
+          sort.value = null;
+        } else {
+          sort.value = item.id;
+        }
+      }
+    };
+
+    const onPaginationClick = async (page: number) => {
+      loading.value = true;
+      await loadOffers({ page, sort: sort.value });
+      loading.value = false;
+    };
+
+    const statusStyle = (status: string) => {
+      const result = {
+        outline: true,
+        variant: "info",
+      };
+
+      switch (status) {
+        case "Active":
+          result.outline = false;
+          result.variant = "success";
+          break;
+        case "Saved":
+          result.outline = true;
+          result.variant = "success";
+          break;
+        case "Future":
+          result.outline = true;
+          result.variant = "warning";
+          break;
+      }
+      return result;
     };
 
     return {
       bladeToolbar,
       empty,
+      columns: computed(() => {
+        if (props.expanded) {
+          return columns.value;
+        } else {
+          return columns.value.filter((item) => item.alwaysVisible === true);
+        }
+      }),
+      loading,
+      offers,
+      totalCount,
+      pages,
+      currentPage,
+      sort,
+      moment,
+      onItemClick,
+      onHeaderClick,
+      onPaginationClick,
+      statusStyle,
     };
   },
 });

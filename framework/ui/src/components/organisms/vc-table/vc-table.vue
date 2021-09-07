@@ -36,7 +36,7 @@
             'vc-table_multiselect': multiselect,
           }"
         >
-          <thead v-if="headers" class="vc-table__header">
+          <thead v-if="columns" class="vc-table__header">
             <tr class="vc-table__header-row">
               <th v-if="multiselect" class="vc-table__header-cell" width="50">
                 <div
@@ -49,7 +49,7 @@
                 </div>
               </th>
               <th
-                v-for="item in headers"
+                v-for="item in columns"
                 :key="item.id"
                 class="vc-table__header-cell vc-padding-horizontal_m"
                 :class="{
@@ -102,7 +102,7 @@
                 </div>
               </td>
               <td
-                v-for="cell in headers"
+                v-for="cell in columns"
                 :key="`${item.id}_${cell.id}`"
                 class="vc-table__body-cell vc-padding-horizontal_m"
                 :class="cell.class"
@@ -110,7 +110,9 @@
               >
                 <div class="vc-flex vc-flex-align_center">
                   <slot :name="`item_${cell.id}`" :item="item">{{
-                    item[cell.id]
+                    (cell.field || cell.id)
+                      .split(".")
+                      .reduce((p, c) => (p && p[c]) || null, item)
                   }}</slot>
                 </div>
               </td>
@@ -149,6 +151,7 @@
         "
       >
         <vc-pagination
+          :expanded="expanded"
           :pages="pages"
           :currentPage="currentPage"
           @itemClick="$emit('paginationClick', $event)"
@@ -194,7 +197,7 @@ export default defineComponent({
   },
 
   props: {
-    headers: {
+    columns: {
       type: Array,
       default: () => [],
     },
@@ -210,6 +213,11 @@ export default defineComponent({
     },
 
     multiselect: {
+      type: Boolean,
+      default: false,
+    },
+
+    expanded: {
       type: Boolean,
       default: false,
     },

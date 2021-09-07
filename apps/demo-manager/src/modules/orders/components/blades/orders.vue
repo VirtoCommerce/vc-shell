@@ -1,16 +1,18 @@
 <template>
   <vc-blade
+    :uid="uid"
     title="Orders"
-    :width="900"
     :expanded="expanded"
-    :closable="false"
-    @expand="expanded = true"
-    @collapse="expanded = false"
-    :toolbarItems="bladeToolbar"
+    :closable="closable"
+    @close="$closeBlade(uid)"
   >
+    <!-- Set up blade toolbar -->
+    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
+
+    <!-- Blade contents -->
     <vc-table
       :multiselect="true"
-      :headers="headers"
+      :columns="columns"
       :items="orders.results"
       @itemClick="onItemClick"
     >
@@ -32,12 +34,21 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    expanded: {
+      type: Boolean,
+      default: true,
+    },
+
+    closable: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   setup(props) {
     const { orders, loadOrders } = useOrders();
     const { openBlade } = useBlade();
-    const expanded = ref(true);
 
     onMounted(async () => {
       await loadOrders();
@@ -49,7 +60,7 @@ export default defineComponent({
       { id: 1, title: "Cancel", icon: "fas fa-times-circle", disabled: true },
     ];
 
-    const headers = [
+    const columns = [
       {
         id: "number",
         title: "Order number",
@@ -83,15 +94,12 @@ export default defineComponent({
     ];
 
     const onItemClick = (item: { id: string }) => {
-      openBlade(props.uid, "orders-details", {
-        componentOptions: { id: item.id },
-      });
+      openBlade(props.uid, "orders-details", { param: item.id });
     };
 
     return {
-      expanded,
       bladeToolbar,
-      headers,
+      columns,
       orders,
       onItemClick,
     };

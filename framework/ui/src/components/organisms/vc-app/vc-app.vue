@@ -19,7 +19,13 @@
 
       <div class="vc-app__inner vc-flex vc-flex-grow_1">
         <!-- Init main menu -->
-        <vc-nav :items="menu" @itemClick="$emit('menuClick', $event)"></vc-nav>
+        <vc-nav
+          :items="menu"
+          :collapsed="menuCollapsed"
+          @itemClick="$emit('menuClick', $event)"
+          @collapse="$emit('menuCollapse')"
+          @expand="$emit('menuExpand')"
+        ></vc-nav>
 
         <!-- If no workspace active then show dashboard -->
         <slot v-if="showDashboard" name="dashboard">
@@ -74,6 +80,11 @@ export default defineComponent({
       default: () => [],
     },
 
+    menuCollapsed: {
+      type: Boolean,
+      default: false,
+    },
+
     toolbar: {
       type: Array,
       default: () => [],
@@ -109,6 +120,8 @@ export default defineComponent({
       default: () => ({}),
     },
   },
+
+  emits: ["menuCollapse", "menuExpand", "menuClick"],
 
   setup(props) {
     console.debug("Init vc-app");

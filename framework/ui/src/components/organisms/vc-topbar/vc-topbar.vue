@@ -227,6 +227,7 @@ export default defineComponent({
       right: 0;
       top: var(--app-bar-height);
       background: white;
+      z-index: 9999;
 
       &-item {
         padding: var(--padding-m);

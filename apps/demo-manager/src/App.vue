@@ -9,6 +9,9 @@
     :workspace="workspace"
     :toolbar="toolbar"
     :menu="menu"
+    :menuCollapsed="menuCollapsed"
+    @menuCollapse="menuCollapsed = true"
+    @menuExpand="menuCollapsed = false"
   >
     <template v-slot:login>
       <login-page
@@ -46,6 +49,12 @@ export default defineComponent({
     const { openWorkspace, openDashboard } = useBlade();
     const { user, loadUser, signOut, loading } = useUser();
     const authorized = ref(false);
+    const menuCollapsedInitial = localStorage.getItem("menuCollapsed");
+    const menuCollapsed = ref(JSON.parse(menuCollapsedInitial || "false"));
+
+    watch(menuCollapsed, (value) => {
+      localStorage.setItem("menuCollapsed", `${value}`);
+    });
 
     onMounted(async () => {
       //TODO: Add load indicator to entire workspace
@@ -112,7 +121,7 @@ export default defineComponent({
       {
         id: 3,
         title: t("OFFERS.MENU.TITLE"),
-        icon: "fas fa-cash-register",
+        icon: "fas fa-hand-holding-usd",
         clickHandler() {
           openWorkspace("offers-list");
         },
@@ -137,6 +146,7 @@ export default defineComponent({
           id: 2,
           title: t("SHELL.ACCOUNT.LOGOUT"),
           onClick() {
+            openDashboard();
             signOut();
           },
         },
@@ -154,6 +164,7 @@ export default defineComponent({
       menu,
       account,
       loading,
+      menuCollapsed,
     };
   },
 });

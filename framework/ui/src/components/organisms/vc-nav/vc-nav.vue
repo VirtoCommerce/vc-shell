@@ -1,6 +1,6 @@
 <template>
   <div class="vc-nav" :class="{ 'vc-nav_collapsed': collapsed }">
-    <vc-nav-toggle @click="toggleCollapsed()"></vc-nav-toggle>
+    <vc-nav-toggle @click="toggleCollapsed"></vc-nav-toggle>
     <vc-container :noPadding="true" class="vc-nav__content">
       <vc-nav-item v-for="item in items" :key="item.id" v-bind="item" />
     </vc-container>
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import VcNavItem from "../../molecules/vc-nav-item/vc-nav-item.vue";
 import VcNavToggle from "../../molecules/vc-nav-toggle/vc-nav-toggle.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -17,25 +17,23 @@ export default defineComponent({
   components: { VcNavItem, VcNavToggle, VcContainer },
 
   props: {
+    collapsed: {
+      type: Boolean,
+      default: false,
+    },
+
     items: {
       type: Array,
-      default() {
-        return [];
-      },
+      default: () => [],
     },
   },
 
   emits: ["collapse", "expand"],
 
-  setup(_props, { emit }) {
-    const collapsed = ref(false);
-
+  setup(props, { emit }) {
     return {
-      collapsed,
-
       toggleCollapsed() {
-        collapsed.value = !collapsed.value;
-        emit(collapsed.value ? "collapse" : "expand");
+        emit(props.collapsed ? "expand" : "collapse");
       },
     };
   },

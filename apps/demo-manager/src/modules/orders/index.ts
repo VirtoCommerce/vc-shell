@@ -18,14 +18,14 @@ export default {
 
     registerBlade({
       name: "orders-list",
-      url: "/orders",
+      url: "orders",
       component: components.Orders,
       componentOptions: options?.ordersList,
     });
 
     registerBlade({
       name: "orders-details",
-      url: "order/:id",
+      url: "order-edit",
       component: components.Order,
       componentOptions: options?.ordersDetails,
     });

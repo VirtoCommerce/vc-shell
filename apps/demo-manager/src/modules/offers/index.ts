@@ -20,7 +20,7 @@ export default {
     });
     registerBlade({
       name: "offers-details",
-      url: "offer/:id",
+      url: "offer-edit",
       component: pages.OffersDetails,
     });
 

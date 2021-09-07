@@ -1,5 +1,6 @@
-import { App, ref, computed } from "vue";
+import { App, ref, computed, ComputedRef, watch, reactive } from "vue";
 import { v1 as uuid } from "uuid";
+import pattern from "url-pattern";
 
 interface IAppOptions {
   blades?: IBladeData[];
@@ -7,13 +8,32 @@ interface IAppOptions {
 
 interface IBladeData {
   name: string;
-  component?: any;
+  component?: unknown;
   uid?: string;
   url?: string;
+  param?: string;
   componentOptions?: Record<string, unknown>;
   expanded?: boolean;
   closable?: boolean;
 }
+
+interface IUseBlade {
+  registerBlade: (blade: IBladeData) => void;
+  openBlade: (
+    parent: string | null,
+    name: string,
+    options?: Record<string, unknown>
+  ) => void;
+  closeBlade: (uid: string) => void;
+  closeChildren: (uid: string) => void;
+  parseUrl: (url: string) => void;
+  openDashboard: () => void;
+  openWorkspace: (name: string, options?: Record<string, unknown>) => void;
+  registry: ComputedRef<IBladeData[]>;
+  workspace: IBladeData[];
+}
+
+const urlPattern = new pattern("(/:workspace(/:blade(/:param)))");
 
 /**
  * Application blade registry.
@@ -23,7 +43,54 @@ const registry = ref<IBladeData[]>([]);
 /**
  * Current workspace blade list.
  */
-const workspace = ref<IBladeData[]>([]);
+const workspace = reactive<IBladeData[]>([]);
+
+/**
+ * Watch workspace changes to update URL.
+ */
+watch(
+  () => [...workspace],
+  (value) => {
+    console.log("Workspace changed");
+    setTimeout(() => {
+      if (value && value.length) {
+        const ws = value[0].url;
+        let lastBladeWithUrlIndex = -1;
+        value.forEach((item, i) => {
+          if (item.url) {
+            lastBladeWithUrlIndex = i;
+          }
+        });
+        const lastBladeWithUrl = value[lastBladeWithUrlIndex];
+        const blade =
+          (lastBladeWithUrl &&
+            lastBladeWithUrl.url !== ws &&
+            lastBladeWithUrl.url) ||
+          undefined;
+        const param =
+          (lastBladeWithUrl &&
+            lastBladeWithUrl.url !== ws &&
+            lastBladeWithUrl.param) ||
+          undefined;
+
+        const url = urlPattern.stringify({
+          workspace: ws,
+          blade,
+          param,
+        });
+        window?.history?.pushState(null, "", url);
+
+        value[0].closable = false;
+        value[value.length - 1].expanded = true;
+        if (value.length > 1) {
+          value[value.length - 2].expanded = false;
+        }
+      } else {
+        window?.history?.pushState(null, "", "/");
+      }
+    }, 0);
+  }
+);
 
 /**
  * Insert blade data into registry.
@@ -34,10 +101,25 @@ const registerBlade = (blade: IBladeData) => {
   if (registry.value.some((item) => item.name === blade.name)) {
     console.warn(`Blade "${blade.name}" already registered, overriding...`);
   }
-  registry.value.push({
-    ...blade,
-    uid: uuid(),
-  });
+  registry.value.push(blade);
+};
+
+const parseUrl = (url: string) => {
+  console.debug(`[@virtoshell/core#useBlade:parseUrl] - "${url}"`);
+  const data = urlPattern.match(url);
+  if (data.workspace) {
+    const ws = registry.value.find((item) => item.url === data.workspace);
+    if (ws) {
+      openWorkspace(ws.name);
+
+      if (data.blade) {
+        const blade = registry.value.find((item) => item.url === data.blade);
+        if (blade) {
+          openBlade(null, blade.name, { param: data.param });
+        }
+      }
+    }
+  }
 };
 
 /**
@@ -45,30 +127,33 @@ const registerBlade = (blade: IBladeData) => {
  * @param name Blade name.
  * @param options Custom object with overriden blade componentOptions.
  */
-const openBlade = (name: string, options?: Record<string, unknown>) => {
+const openBlade = (
+  parent: string | null,
+  name: string,
+  options?: Record<string, unknown>
+) => {
   console.debug(`[@virtoshell/core#useBlade:openBlade] - "${name}"`);
   const blade = registry.value.find((item) => item.name === name);
   if (!blade) {
     console.error(`Blade "${name}" is not registered.`);
   } else {
-    // Collapse previous blade.
-    workspace.value[workspace.value.length - 1].expanded = false;
+    if (parent) {
+      closeChildren(parent);
+    }
+
+    const uid = uuid();
 
     // Open new blade.
-    workspace.value.push({
+    workspace.splice(workspace.length, 0, {
       ...blade,
       componentOptions: {
         ...(blade.componentOptions || {}),
         ...(options || {}),
       },
-      expanded: true,
       closable: true,
+      uid,
+      param: options?.param as string,
     });
-
-    // Change URL if needed.
-    if (blade.url) {
-      window?.history?.pushState(null, "", blade.url);
-    }
   }
 };
 
@@ -78,35 +163,25 @@ const openBlade = (name: string, options?: Record<string, unknown>) => {
  */
 const closeBlade = (uid: string) => {
   console.debug(`[@virtoshell/core#useBlade:closeBlade] - "${uid}"`);
-  const bladeIndex = workspace.value.findIndex((item) => item.uid === uid);
+  const bladeIndex = workspace.findIndex((item) => item.uid === uid);
+
+  // We don't allow closing first blade
   if (bladeIndex > 0) {
-    // We don't allow closing first blade
-    workspace.value.splice(bladeIndex);
-    workspace.value[workspace.value.length - 1].expanded = true;
+    workspace.splice(bladeIndex);
   }
 };
 
 /**
- * Expand blade by uid.
+ * Close blade children by uid.
  * @param uid Blade uid.
  */
-const expandBlade = (uid: string) => {
-  console.debug(`[@virtoshell/core#useBlade:expandBlade] - "${uid}"`);
-  const blade = workspace.value.find((item) => item.uid === uid);
-  if (blade) {
-    blade.expanded = true;
-  }
-};
+const closeChildren = (uid: string) => {
+  console.debug(`[@virtoshell/core#useBlade:closeChildren] - "${uid}"`);
+  const bladeIndex = workspace.findIndex((item) => item.uid === uid);
 
-/**
- * Collapse blade by uid.
- * @param uid  Blade uid.
- */
-const collapseBlade = (uid: string) => {
-  console.debug(`[@virtoshell/core#useBlade:collapseBlade] - "${uid}"`);
-  const blade = workspace.value.find((item) => item.uid === uid);
-  if (blade) {
-    blade.expanded = false;
+  // We have no children of last blade
+  if (bladeIndex < workspace.length - 1) {
+    workspace.splice(bladeIndex + 1);
   }
 };
 
@@ -115,8 +190,7 @@ const collapseBlade = (uid: string) => {
  */
 const openDashboard = () => {
   console.debug(`[@virtoshell/core#useBlade:openDashboard] - Entry point`);
-  workspace.value = [];
-  window?.history?.pushState(null, "", "/");
+  workspace.splice(0);
 };
 
 /**
@@ -130,21 +204,15 @@ const openWorkspace = (name: string, options?: Record<string, unknown>) => {
   if (!blade) {
     console.error(`Blade "${name}" is not registered.`);
   } else {
-    workspace.value = [
-      {
-        ...blade,
-        componentOptions: {
-          ...(blade.componentOptions || {}),
-          ...(options || {}),
-        },
-        expanded: true,
-        closable: false,
+    const uid = uuid();
+    workspace.splice(0, workspace.length, {
+      ...blade,
+      componentOptions: {
+        ...(blade.componentOptions || {}),
+        ...(options || {}),
       },
-    ];
-
-    if (blade.url) {
-      window?.history?.pushState(null, "", `/${blade.url}`);
-    }
+      uid,
+    });
   }
 };
 
@@ -162,8 +230,6 @@ export function init(app: App, options?: IAppOptions): App {
   app.config.globalProperties.$openWorkspace = openWorkspace;
   app.config.globalProperties.$openBlade = openBlade;
   app.config.globalProperties.$closeBlade = closeBlade;
-  app.config.globalProperties.$expandBlade = expandBlade;
-  app.config.globalProperties.$collapseBlade = collapseBlade;
 
   return app;
 }
@@ -171,18 +237,18 @@ export function init(app: App, options?: IAppOptions): App {
 /**
  * Composable export.
  */
-export default function useBlade() {
+export default function useBlade(): IUseBlade {
   console.debug("[@virtoshell/core#useBlade] - Entry point");
 
   return {
     registerBlade,
     openBlade,
     closeBlade,
+    closeChildren,
     openWorkspace,
     openDashboard,
-    expandBlade,
-    collapseBlade,
+    parseUrl,
     registry: computed(() => registry.value),
-    workspace: computed(() => workspace.value),
+    workspace,
   };
 }

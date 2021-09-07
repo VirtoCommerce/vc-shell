@@ -6,11 +6,12 @@
     :width="400"
     :expanded="expanded"
     :closable="closable"
-    @expand="$expandBlade(uid)"
-    @collapse="$collapseBlade(uid)"
-    :toolbarItems="bladeToolbar"
     @close="$closeBlade(uid)"
   >
+    <!-- Set up blade toolbar -->
+    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
+
+    <!-- Blade contents -->
     <div v-if="product" class="product-details__inner vc-flex vc-flex-grow_1">
       <div class="product-details__content vc-flex-grow_1">
         <vc-container :no-padding="true">
@@ -62,7 +63,7 @@
       </div>
       <div class="product-details__widgets">
         <vc-container :no-padding="true">
-          <div class="vc-widget" @click="$openBlade('offers-list')">
+          <div class="vc-widget" @click="$openBlade(uid, 'offers-list')">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -71,7 +72,7 @@
             <div class="vc-widget__title">Offers</div>
             <div class="vc-widget__value">3</div>
           </div>
-          <div class="vc-widget" @click="$openBlade('comments-list')">
+          <div class="vc-widget" @click="$openBlade(uid, 'comments-list')">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-comment"
@@ -108,6 +109,11 @@ export default defineComponent({
       default: true,
     },
 
+    param: {
+      type: String,
+      default: undefined,
+    },
+
     options: {
       type: Object,
       default: () => ({}),
@@ -120,7 +126,7 @@ export default defineComponent({
     const { product, loading, loadProduct } = useProduct();
 
     onBeforeMount(async () => {
-      await loadProduct({ id: props.options.id });
+      await loadProduct({ id: props.param });
     });
 
     const bladeToolbar = [

@@ -1,7 +1,14 @@
 <template>
-  <div class="vc-app vc-fill_all" :class="`vc-theme_${theme}`">
+  <div
+    class="vc-app vc-fill_all vc-flex vc-flex-column vc-margin_none"
+    :class="`vc-theme_${theme}`"
+  >
+    <!-- Show login form for unauthorized users -->
     <slot v-if="!authorized" name="login">Login form not defined</slot>
+
+    <!-- Show main app layout for authorized users -->
     <template v-else>
+      <!-- Init application top bar -->
       <vc-topbar
         class="vc-flex-shrink_0"
         :logo="logo"
@@ -9,11 +16,17 @@
         :buttons="toolbar"
         :account="account"
       ></vc-topbar>
-      <div class="vc-app__inner">
+
+      <div class="vc-app__inner vc-flex vc-flex-grow_1">
+        <!-- Init main menu -->
         <vc-nav :items="menu" @itemClick="$emit('menuClick', $event)"></vc-nav>
+
+        <!-- If no workspace active then show dashboard -->
         <slot v-if="showDashboard" name="dashboard">
           Dashboard component not defined
         </slot>
+
+        <!-- Else show workspace blades -->
         <div v-else class="vc-flex vc-flex-grow_1 vc-padding-horizontal_s">
           <component
             v-for="(blade, i) in workspace"
@@ -21,6 +34,7 @@
             v-show="i >= workspace.length - 2"
             :is="blade.component"
             :uid="blade.uid"
+            :param="blade.param"
             :expanded="blade.expanded"
             :closable="blade.closable"
             :options="blade.componentOptions"
@@ -109,18 +123,12 @@ export default defineComponent({
 
 <style lang="less">
 .vc-app {
-  margin: 0;
-  height: 100%;
   font-size: var(--font-size-m);
   background-color: var(--background-color);
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
 
   &__inner {
     overflow: hidden;
-    display: flex;
-    flex-grow: 1;
   }
 }
 </style>

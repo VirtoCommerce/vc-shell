@@ -13,7 +13,6 @@
         <span></span>
       </div>
     </div>
-    <div class="vc-margin-top_m vc-loader__label">Loading...</div>
   </div>
 </template>
 
@@ -60,7 +59,6 @@ export default defineComponent({
     height: 16px;
     top: 12px;
     left: 15px;
-    filter: blur(1px);
     background: #319ed4;
     border-radius: 50%;
     transform: translateX(0);
@@ -79,15 +77,9 @@ export default defineComponent({
       width: 16px;
       height: 16px;
       margin-left: 16px;
-      filter: blur(1px);
       background: #319ed4;
       border-radius: 50%;
     }
-  }
-
-  &__label {
-    font-size: var(--font-size-xl);
-    z-index: 1;
   }
 }
 

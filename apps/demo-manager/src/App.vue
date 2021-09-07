@@ -42,7 +42,7 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const log = useLogger();
-    const { workspace } = useBlade();
+    const { workspace, parseUrl } = useBlade();
     const { openWorkspace, openDashboard } = useBlade();
     const { user, loadUser, signOut, loading } = useUser();
     const authorized = ref(false);
@@ -50,6 +50,7 @@ export default defineComponent({
     onMounted(async () => {
       //TODO: Add load indicator to entire workspace
       await loadUser();
+      parseUrl(window.location.pathname);
     });
 
     watch(user, (value) => {

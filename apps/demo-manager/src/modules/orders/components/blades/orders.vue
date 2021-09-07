@@ -27,7 +27,14 @@ import { useOrders } from "../../composables";
 import { useBlade } from "@virtoshell/core";
 
 export default defineComponent({
-  setup() {
+  props: {
+    uid: {
+      type: String,
+      default: undefined,
+    },
+  },
+
+  setup(props) {
     const { orders, loadOrders } = useOrders();
     const { openBlade } = useBlade();
     const expanded = ref(true);
@@ -76,7 +83,9 @@ export default defineComponent({
     ];
 
     const onItemClick = (item: { id: string }) => {
-      openBlade("orders-details", { componentOptions: { id: item.id } });
+      openBlade(props.uid, "orders-details", {
+        componentOptions: { id: item.id },
+      });
     };
 
     return {

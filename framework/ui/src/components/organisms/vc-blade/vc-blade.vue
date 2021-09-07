@@ -4,7 +4,9 @@
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
     :class="{ 'vc-blade_expanded': expanded }"
   >
+    <!-- Init blade header -->
     <vc-blade-header
+      :expandable="expandable"
       :expanded="expanded"
       :closable="closable"
       :icon="icon"
@@ -13,11 +15,7 @@
       @expand="$emit('expand')"
       @collapse="$emit('collapse')"
       @close="$emit('close')"
-    />
-
-    <slot name="toolbar">
-      <vc-blade-toolbar :items="toolbarItems"></vc-blade-toolbar>
-    </slot>
+    ></vc-blade-header>
 
     <slot></slot>
   </div>
@@ -26,13 +24,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VcBladeHeader from "../../molecules/vc-blade-header/vc-blade-header.vue";
-import VcBladeToolbar from "../../organisms/vc-blade-toolbar/vc-blade-toolbar.vue";
 
 export default defineComponent({
   name: "VcBlade",
   components: {
     VcBladeHeader,
-    VcBladeToolbar,
   },
 
   props: {
@@ -50,7 +46,7 @@ export default defineComponent({
 
     width: {
       type: [Number, String],
-      default: 300,
+      default: "30%",
     },
 
     expanded: {
@@ -63,8 +59,9 @@ export default defineComponent({
       default: true,
     },
 
-    toolbarItems: {
-      type: Array,
+    expandable: {
+      type: Boolean,
+      default: false,
     },
   },
 });

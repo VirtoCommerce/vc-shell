@@ -21,17 +21,19 @@
     </div>
 
     <div class="vc-blade-header__buttons vc-flex vc-flex-align_center">
-      <div v-if="expanded" class="vc-blade-header__button" @click="onCollapse">
-        <vc-icon icon="fas fa-window-minimize" size="s"></vc-icon>
-      </div>
-      <div v-else class="vc-blade-header__button" @click="onExpand">
-        <vc-icon icon="fas fa-window-maximize" size="s"></vc-icon>
-      </div>
-      <div
-        class="vc-blade-header__button"
-        :class="{ 'vc-blade-header__button_disabled': !closable }"
-        @click="onClose"
-      >
+      <template v-if="expandable">
+        <div
+          v-if="expanded"
+          class="vc-blade-header__button"
+          @click="onCollapse"
+        >
+          <vc-icon icon="fas fa-window-minimize" size="s"></vc-icon>
+        </div>
+        <div v-else class="vc-blade-header__button" @click="onExpand">
+          <vc-icon icon="fas fa-window-maximize" size="s"></vc-icon>
+        </div>
+      </template>
+      <div v-if="closable" class="vc-blade-header__button" @click="onClose">
         <vc-icon icon="fas fa-times"></vc-icon>
       </div>
     </div>
@@ -48,6 +50,11 @@ export default defineComponent({
   },
 
   props: {
+    expandable: {
+      type: Boolean,
+      default: false,
+    },
+
     expanded: {
       type: Boolean,
       default: false,
@@ -79,11 +86,15 @@ export default defineComponent({
   setup(props, { emit }) {
     return {
       onExpand(): void {
-        emit("expand");
+        if (props.expandable) {
+          emit("expand");
+        }
       },
 
       onCollapse(): void {
-        emit("collapse");
+        if (props.expandable) {
+          emit("collapse");
+        }
       },
 
       onClose(): void {

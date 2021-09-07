@@ -36,7 +36,7 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const { t } = useI18n();
     const { openBlade } = useBlade();
 
@@ -64,7 +64,7 @@ export default defineComponent({
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        openBlade("offers-add");
+        openBlade(props.uid, "offers-add");
       },
     };
 

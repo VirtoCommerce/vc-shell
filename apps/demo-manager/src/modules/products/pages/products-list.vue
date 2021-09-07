@@ -2,14 +2,14 @@
   <vc-blade
     :uid="uid"
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
-    :width="600"
     :expanded="expanded"
     :closable="closable"
     @close="$closeBlade(uid)"
-    @expand="$expandBlade(uid)"
-    @collapse="$collapseBlade(uid)"
-    :toolbarItems="bladeToolbar"
   >
+    <!-- Set up blade toolbar -->
+    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
+
+    <!-- Blade contents -->
     <vc-table
       :loading="loading"
       :empty="empty"
@@ -27,12 +27,15 @@
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
     >
+      <!-- Override sellerName column template -->
       <template v-slot:item_sellerName="itemData">
         <div class="vc-flex vc-flex-column">
           <div>{{ itemData.item.sellerName }}</div>
           <vc-tooltip>{{ itemData.item.category }}</vc-tooltip>
         </div>
       </template>
+
+      <!-- Override image column template -->
       <template v-slot:item_image="itemData">
         <vc-image
           :bordered="true"
@@ -41,11 +44,15 @@
           :src="itemData.item.image"
         ></vc-image>
       </template>
+
+      <!-- Override status column template -->
       <template v-slot:item_status="itemData">
         <vc-bubble v-bind="statusStyle(itemData.item.status)">{{
           itemData.item.status
         }}</vc-bubble>
       </template>
+
+      <!-- Override createdDate column template -->
       <template v-slot:item_createdDate="itemData">
         {{ moment(itemData.item.createdDate).fromNow() }}
       </template>
@@ -115,7 +122,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          openBlade("products-add");
+          openBlade(props.uid, "products-add");
         },
       },
       {
@@ -168,12 +175,12 @@ export default defineComponent({
       text: "There are no products yet",
       action: "Add product",
       clickHandler: () => {
-        openBlade("products-add");
+        openBlade(props.uid, "products-add");
       },
     };
 
     const onItemClick = (item: { id: string }) => {
-      openBlade("products-edit", { id: item.id });
+      openBlade(props.uid, "products-edit", { param: item.id });
     };
 
     const onHeaderClick = (item: { id: string; sortable: boolean }) => {

@@ -20,12 +20,12 @@ export default {
     });
     registerBlade({
       name: "products-add",
-      url: "product",
+      url: "product-add",
       component: pages.ProductsAdd,
     });
     registerBlade({
       name: "products-edit",
-      url: "product/:id",
+      url: "product-edit",
       component: pages.ProductsEdit,
     });
 

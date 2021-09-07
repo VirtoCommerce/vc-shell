@@ -59,7 +59,7 @@
       </div>
       <div class="product-details__widgets">
         <vc-container :no-padding="true">
-          <div class="vc-widget" @click="$openBlade('offers-list')">
+          <div class="vc-widget" @click="$openBlade(uid, 'offers-list')">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -68,7 +68,7 @@
             <div class="vc-widget__title">Offers</div>
             <div class="vc-widget__value">3</div>
           </div>
-          <div class="vc-widget" @click="$openBlade('comments-list')">
+          <div class="vc-widget" @click="$openBlade(uid, 'comments-list')">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-comment"

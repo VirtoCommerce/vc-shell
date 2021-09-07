@@ -24,9 +24,9 @@
       </div>
       <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">
         <vc-link>Sign in with Azure Active Directory</vc-link>
-        <vc-button variant="primary" :disabled="loading" @click="login"
-          >Log in</vc-button
-        >
+        <vc-button variant="primary" :disabled="loading" @click="login">
+          Log in
+        </vc-button>
       </div>
       <div v-if="!signInResult.succeeded" style="color: red">
         <!-- TODO: stylizing-->

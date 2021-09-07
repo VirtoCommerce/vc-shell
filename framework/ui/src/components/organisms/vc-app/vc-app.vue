@@ -16,8 +16,9 @@
         </slot>
         <div v-else class="vc-flex vc-flex-grow_1 vc-padding-horizontal_s">
           <component
-            v-for="blade in workspace"
+            v-for="(blade, i) in workspace"
             :key="blade.uid"
+            v-show="i >= workspace.length - 2"
             :is="blade.component"
             :uid="blade.uid"
             :expanded="blade.expanded"

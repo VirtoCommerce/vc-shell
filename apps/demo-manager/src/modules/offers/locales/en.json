@@ -9,7 +9,7 @@
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
-          "BULK_DELETE": "Delete"
+          "BULK_ARCHIVE": "Archive"
         }
       }
     }

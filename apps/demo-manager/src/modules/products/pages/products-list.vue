@@ -12,6 +12,7 @@
   >
     <vc-table
       :loading="loading"
+      :empty="empty"
       class="vc-flex-grow_1"
       :multiselect="true"
       :headers="headers"
@@ -162,6 +163,15 @@ export default defineComponent({
       },
     ]);
 
+    const empty = {
+      image: "/assets/empty-product.png",
+      text: "There are no products yet",
+      action: "Add product",
+      clickHandler: () => {
+        openBlade("products-add");
+      },
+    };
+
     const onItemClick = (item: { id: string }) => {
       openBlade("products-edit", { id: item.id });
     };
@@ -230,6 +240,7 @@ export default defineComponent({
       pages,
       currentPage,
       sort,
+      empty,
       moment,
       onItemClick,
       onHeaderClick,

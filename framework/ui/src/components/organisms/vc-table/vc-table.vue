@@ -1,6 +1,6 @@
 <template>
-  <div class="vc-table-wrapper vc-flex vc-flex-column">
-    <slot name="header">
+  <div class="vc-table-wrapper vc-flex vc-flex-column vc-flex-grow_1">
+    <slot name="header" v-if="items && items.length">
       <div
         class="
           vc-table__header
@@ -24,6 +24,7 @@
     <div class="vc-table-wrapper__inner">
       <vc-loader :active="loading"></vc-loader>
       <vc-container
+        v-if="items && items.length"
         ref="scrollContainer"
         :noPadding="true"
         class="vc-flex-grow_1"
@@ -117,9 +118,26 @@
           </tbody>
         </table>
       </vc-container>
+      <slot v-else name="empty">
+        <div
+          v-if="empty"
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
+        >
+          <img v-if="empty.image" :src="empty.image" />
+          <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
+          <vc-button v-if="empty.action" @click="empty.clickHandler">
+            {{ empty.action }}
+          </vc-button>
+        </div>
+      </slot>
     </div>
 
-    <slot name="footer">
+    <slot name="footer" v-if="items && items.length">
       <div
         class="
           vc-table__footer
@@ -225,6 +243,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    empty: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   emits: ["paginationClick"],
@@ -234,7 +257,7 @@ export default defineComponent({
       this.checkboxes = {};
       value.forEach((item) => (this.checkboxes[item.id] = false));
       const scrollContainer = this.$refs.scrollContainer as typeof VcContainer;
-      scrollContainer.scrollTop();
+      scrollContainer?.scrollTop();
     },
   },
 
@@ -331,6 +354,13 @@ export default defineComponent({
   &__footer {
     background-color: #fbfdfe;
     border-top: 2px solid #eaedf3;
+  }
+
+  &__empty {
+    &-text {
+      font-size: var(--font-size-xl);
+      font-weight: var(--font-weight-medium);
+    }
   }
 }
 </style>

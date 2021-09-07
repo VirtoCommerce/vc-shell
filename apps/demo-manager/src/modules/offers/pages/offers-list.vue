@@ -10,12 +10,13 @@
     @collapse="$collapseBlade(uid)"
     :toolbarItems="bladeToolbar"
   >
+    <vc-table :empty="empty"> </vc-table>
   </vc-blade>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { defineComponent } from "vue";
+import { useI18n, useBlade } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -37,7 +38,7 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n();
-    const expanded = ref(true);
+    const { openBlade } = useBlade();
 
     const bladeToolbar = [
       {
@@ -51,15 +52,25 @@ export default defineComponent({
         icon: "fas fa-plus",
       },
       {
-        id: "batchDelete",
-        title: t("OFFERS.PAGES.LIST.TOOLBAR.BULK_DELETE"),
-        icon: "fas fa-trash",
+        id: "batchArchive",
+        title: t("OFFERS.PAGES.LIST.TOOLBAR.BULK_ARCHIVE"),
+        icon: "fas fa-archive",
         disabled: true,
       },
     ];
 
+    const empty = {
+      image: "/assets/empty-product.png",
+      text: "There are no offers yet",
+      action: "Add offer",
+      clickHandler: () => {
+        openBlade("offers-add");
+      },
+    };
+
     return {
       bladeToolbar,
+      empty,
     };
   },
 });

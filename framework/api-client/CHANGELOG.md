@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.36](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.36) (2021-09-07)
+
+
+
+## 0.0.35 (2021-09-07)
+
+**Note:** Version bump only for package @virtoshell/api-client
+
+
+
+
+
 ## [0.0.35](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.35) (2021-09-07)
 
 **Note:** Version bump only for package @virtoshell/api-client

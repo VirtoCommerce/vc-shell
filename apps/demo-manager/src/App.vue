@@ -33,7 +33,7 @@ import {
   watch,
 } from "vue";
 import LoginPage from "./components/login-page.vue";
-import { useLogger, useI18n, useUser, useBlade } from "@virtoshell/core";
+import { useLogger, useI18n, useUser, useRouter } from "@virtoshell/core";
 
 export default defineComponent({
   name: "App",
@@ -45,8 +45,8 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const log = useLogger();
-    const { workspace, parseUrl } = useBlade();
-    const { openWorkspace, openDashboard } = useBlade();
+    const { workspace, parseUrl } = useRouter();
+    const { openWorkspace, openDashboard } = useRouter();
     const { user, loadUser, signOut, loading } = useUser();
     const authorized = ref(false);
     const menuCollapsedInitial = localStorage.getItem("menuCollapsed");

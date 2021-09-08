@@ -4,11 +4,9 @@
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
+    :toolbarItems="bladeToolbar"
     @close="$closeBlade(uid)"
   >
-    <!-- Set up blade toolbar -->
-    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
-
     <!-- Blade contents -->
     <vc-table
       :loading="loading"
@@ -32,7 +30,7 @@
       <template v-slot:item_sellerName="itemData">
         <div class="vc-flex vc-flex-column">
           <div>{{ itemData.item.sellerName }}</div>
-          <vc-tooltip>{{ itemData.item.category }}</vc-tooltip>
+          <vc-hint>{{ itemData.item.category }}</vc-hint>
         </div>
       </template>
 
@@ -48,9 +46,9 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <vc-bubble v-bind="statusStyle(itemData.item.status)">{{
+        <vc-status v-bind="statusStyle(itemData.item.status)">{{
           itemData.item.status
-        }}</vc-bubble>
+        }}</vc-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -63,7 +61,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
-import { useBlade, useI18n, useLogger } from "@virtoshell/core";
+import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import moment from "moment";
 
@@ -86,7 +84,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { openBlade } = useBlade();
+    const { openBlade } = useRouter();
     const logger = useLogger();
     const { t } = useI18n();
     const loading = ref(false);

@@ -4,11 +4,9 @@
     :title="$t('PRODUCTS.PAGES.DETAILS.TITLE')"
     :expanded="expanded"
     :closable="closable"
+    :toolbarItems="bladeToolbar"
     @close="$closeBlade(uid)"
   >
-    <!-- Set up blade toolbar -->
-    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
-
     <!-- Blade contents -->
     <div class="product-details__inner vc-flex vc-flex-grow_1">
       <div class="product-details__content vc-flex-grow_1">
@@ -18,31 +16,31 @@
               <vc-form-field
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
               >
-                <vc-form-input
+                <vc-input
                   :clearable="true"
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                   "
-                ></vc-form-input>
+                ></vc-input>
               </vc-form-field>
               <vc-form-field
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
               >
-                <vc-form-select
+                <vc-select
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                   "
-                ></vc-form-select>
+                ></vc-select>
               </vc-form-field>
               <vc-form-field
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
               >
-                <vc-form-input
+                <vc-input
                   :clearable="true"
                   :placeholder="
                     $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                   "
-                ></vc-form-input>
+                ></vc-input>
               </vc-form-field>
               <vc-form-field
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
@@ -85,7 +83,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import { useI18n, useBlade } from "@virtoshell/core";
+import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
 
 export default defineComponent({
@@ -113,7 +111,7 @@ export default defineComponent({
 
   setup(props) {
     const { t } = useI18n();
-    const { closeBlade } = useBlade();
+    const { closeBlade } = useRouter();
     const { product } = useProduct();
 
     const bladeToolbar = [

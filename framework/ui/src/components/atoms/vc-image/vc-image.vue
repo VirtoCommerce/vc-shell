@@ -19,6 +19,8 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  name: "VcImage",
+
   props: {
     aspect: {
       type: String,

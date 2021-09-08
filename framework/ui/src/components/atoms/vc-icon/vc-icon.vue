@@ -6,6 +6,8 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  name: "VcIcon",
+
   props: {
     icon: {
       type: String,

@@ -1,11 +1,11 @@
 import { App } from "vue";
 import * as pages from "./pages";
 import * as locales from "./locales";
-import { useBlade } from "@virtoshell/core";
+import { useRouter } from "@virtoshell/core";
 
 export default {
   install(app: App): void {
-    const { registerBlade } = useBlade();
+    const { registerBlade } = useRouter();
 
     // Register exported pages
     Object.entries(pages).forEach(([componentName, component]) => {

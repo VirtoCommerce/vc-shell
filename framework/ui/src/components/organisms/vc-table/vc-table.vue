@@ -11,18 +11,17 @@
           vc-padding_l
         "
       >
-        <vc-form-input
-          class="vc-flex-grow_1 vc-margin-right_m"
+        <vc-input
+          class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
           :clearable="true"
           @change="$emit('searchValueChanged', $event)"
-        ></vc-form-input>
-        <vc-table-filter></vc-table-filter>
+        ></vc-input>
       </div>
     </slot>
 
     <div class="vc-table-wrapper__inner">
-      <vc-loader :active="loading"></vc-loader>
+      <vc-loading :active="loading"></vc-loading>
       <vc-container
         v-if="items && items.length"
         ref="scrollContainer"
@@ -170,22 +169,22 @@ import { defineComponent } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
-import VcFormInput from "../../molecules/vc-form-input/vc-form-input.vue";
-import VcTableFilter from "../../molecules/vc-table-filter/vc-table-filter.vue";
-import VcPagination from "../vc-pagination/vc-pagination.vue";
-import VcTableCounter from "../../molecules/vc-table-counter/vc-table-counter.vue";
-import VcLoader from "../../atoms/vc-loader/vc-loader.vue";
+import VcInput from "../../molecules/vc-input/vc-input.vue";
+import VcPagination from "../../molecules/vc-pagination/vc-pagination.vue";
+import VcLoading from "../../atoms/vc-loading/vc-loading.vue";
+import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 
 export default defineComponent({
+  name: "VcTable",
+
   components: {
     VcIcon,
     VcCheckbox,
     VcContainer,
-    VcFormInput,
-    VcTableFilter,
+    VcInput,
     VcPagination,
     VcTableCounter,
-    VcLoader,
+    VcLoading,
   },
 
   data() {

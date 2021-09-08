@@ -5,14 +5,9 @@
     :width="600"
     :expanded="expanded"
     :closable="closable"
-    @close="$closeBlade(uid)"
-    @expand="$expandBlade(uid)"
-    @collapse="$collapseBlade(uid)"
     :toolbarItems="bladeToolbar"
+    @close="$closeBlade(uid)"
   >
-    <!-- Set up blade toolbar -->
-    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
-
     <!-- Blade contents -->
     <vc-table
       :loading="loading"
@@ -36,7 +31,7 @@
       <template v-slot:item_productSellerName="itemData">
         <div class="vc-flex vc-flex-column">
           <div>{{ itemData.item.product.sellerName }}</div>
-          <vc-tooltip>{{ itemData.item.product.category }}</vc-tooltip>
+          <vc-hint>{{ itemData.item.product.category }}</vc-hint>
         </div>
       </template>
 
@@ -52,9 +47,9 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <vc-bubble v-bind="statusStyle(itemData.item.status)">
+        <vc-status v-bind="statusStyle(itemData.item.status)">
           {{ itemData.item.status }}
-        </vc-bubble>
+        </vc-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -77,7 +72,7 @@
 
 <script lang="ts">
 import { defineComponent, watch, onMounted, ref, computed } from "vue";
-import { useI18n, useBlade } from "@virtoshell/core";
+import { useI18n, useRouter } from "@virtoshell/core";
 import { useOffers } from "../composables";
 import moment from "moment";
 
@@ -101,7 +96,7 @@ export default defineComponent({
 
   setup(props) {
     const { t } = useI18n();
-    const { openBlade } = useBlade();
+    const { openBlade } = useRouter();
 
     const loading = ref(false);
     const { offers, totalCount, pages, currentPage, loadOffers } = useOffers();
@@ -135,6 +130,9 @@ export default defineComponent({
         id: "add",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
+        onClick: () => {
+          openBlade(props.uid, "products-list", { url: null });
+        },
       },
       {
         id: "batchArchive",
@@ -209,7 +207,7 @@ export default defineComponent({
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        openBlade(props.uid, "offers-details");
+        openBlade(props.uid, "products-list", { url: null });
       },
     };
 

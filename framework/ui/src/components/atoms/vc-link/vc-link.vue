@@ -1,36 +1,20 @@
 <template>
-  <template v-if="to">
-    <router-link
-      class="vc-link"
-      :class="{ 'vc-link_active': active, 'vc-link_disabled': disabled }"
-      :to="disabled ? null : to"
-      @click="onClick"
-    >
-      <slot></slot>
-    </router-link>
-  </template>
-  <template v-else>
-    <a
-      class="vc-link"
-      :class="{ 'vc-link_active': active, 'vc-link_disabled': disabled }"
-      :href="disabled ? null : to"
-      @click="onClick"
-    >
-      <slot></slot>
-    </a>
-  </template>
+  <div
+    class="vc-link"
+    :class="{ 'vc-link_active': active, 'vc-link_disabled': disabled }"
+    @click="onClick"
+  >
+    <slot></slot>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  props: {
-    to: {
-      type: String,
-      default: undefined,
-    },
+  name: "VcLink",
 
+  props: {
     active: {
       type: Boolean,
       default: false,
@@ -69,6 +53,7 @@ export default defineComponent({
   text-decoration: none;
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-block;
 
   &:hover {
     color: var(--link-text-color-hover);

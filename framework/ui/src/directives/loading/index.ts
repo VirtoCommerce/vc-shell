@@ -1,6 +1,6 @@
 import { Directive, DirectiveBinding } from "vue";
 
-const className = "vc-loader";
+const className = "v-loading";
 
 export default {
   mounted: function (el: HTMLElement, binding: DirectiveBinding): void {

@@ -4,11 +4,9 @@
     :title="$t('OFFERS.PAGES.DETAILS.TITLE')"
     :expanded="expanded"
     :closable="closable"
+    :toolbarItems="bladeToolbar"
     @close="$closeBlade(uid)"
   >
-    <!-- Set up blade toolbar -->
-    <vc-blade-toolbar :items="bladeToolbar"></vc-blade-toolbar>
-
     <!-- Blade contents -->
     <div class="offer-details__inner vc-flex vc-flex-grow_1">
       <div class="offer-details__content vc-flex-grow_1">
@@ -18,12 +16,12 @@
               <vc-form-field
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
               >
-                <vc-form-input
+                <vc-input
                   :clearable="true"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')
                   "
-                ></vc-form-input>
+                ></vc-input>
               </vc-form-field>
             </vc-form>
           </div>
@@ -46,8 +44,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import { useI18n, useBlade } from "@virtoshell/core";
+import { defineComponent } from "vue";
+import { useI18n, useRouter } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -74,7 +72,7 @@ export default defineComponent({
 
   setup(props) {
     const { t } = useI18n();
-    const { closeBlade } = useBlade();
+    const { closeBlade } = useRouter();
 
     const bladeToolbar = [
       {

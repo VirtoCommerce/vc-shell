@@ -24,6 +24,8 @@ import { defineComponent } from "vue";
 import VcIcon from "../vc-icon/vc-icon.vue";
 
 export default defineComponent({
+  name: "VcButton",
+
   components: {
     VcIcon,
   },

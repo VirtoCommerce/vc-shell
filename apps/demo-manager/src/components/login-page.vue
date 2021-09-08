@@ -1,15 +1,15 @@
 <template>
-  <vc-layout-login :logo="logo" :background="background" :title="title">
+  <vc-login-form :logo="logo" :background="background" :title="title">
     <vc-form>
       <vc-form-field class="vc-margin-bottom_l" label="Login">
-        <vc-form-input v-model="form.username"></vc-form-input>
+        <vc-input v-model="form.username"></vc-input>
       </vc-form-field>
       <vc-form-field class="vc-margin-bottom_l" label="Password">
-        <vc-form-input
+        <vc-input
           v-model="form.password"
           type="password"
           @keyup.enter="login"
-        ></vc-form-input>
+        ></vc-input>
       </vc-form-field>
       <div
         class="
@@ -33,7 +33,7 @@
         {{ signInResult.error }}
       </div>
     </vc-form>
-  </vc-layout-login>
+  </vc-login-form>
 </template>
 
 <script lang="ts">

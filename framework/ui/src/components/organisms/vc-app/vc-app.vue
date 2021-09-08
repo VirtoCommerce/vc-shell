@@ -53,8 +53,8 @@
 
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import VcTopbar from "../vc-topbar/vc-topbar.vue";
-import VcNav from "../vc-nav/vc-nav.vue";
+import VcTopbar from "./_internal/vc-topbar/vc-topbar.vue";
+import VcNav from "./_internal/vc-nav/vc-nav.vue";
 
 export default defineComponent({
   name: "VcApp",

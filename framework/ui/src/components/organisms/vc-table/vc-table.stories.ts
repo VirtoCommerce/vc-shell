@@ -4,6 +4,8 @@
  */
 import { Story } from "@storybook/vue3";
 import VcTable from "./vc-table.vue";
+import VcHint from "../../atoms/vc-hint/vc-hint.vue";
+import VcImage from "../../atoms/vc-image/vc-image.vue";
 
 export default {
   title: "organisms/vc-table",
@@ -11,22 +13,24 @@ export default {
 };
 
 const Template: Story = (args) => ({
-  components: { VcTable },
+  components: { VcTable, VcHint, VcImage },
   setup() {
     return { args };
   },
   template: `
+    <div class="vc-flex" style="height: 400px; overflow: hidden">
       <vc-table v-bind="args">
          <template v-slot:item_img="itemData">
-            <img :src="itemData.item.img" class="vc-fill_width" />
+            <vc-image aspect="1x1" size="auto" :bordered="true" :src="itemData.item.img"></vc-image>
          </template>
          <template v-slot:item_name="itemData">
             <div class="vc-flex vc-flex-column">
-               <div class="vc-font-size_m vc-ellipsis">{{ itemData.item.name }}</div>
-               <div class="vc-font-size_s vc-ellipsis">{{ itemData.item.description }}</div>
+               <div>{{ itemData.item.name }}</div>
+               <vc-hint>{{ itemData.item.description }}</vc-hint>
             </div>
          </template>
       </vc-table>
+    </div>
    `,
 });
 
@@ -35,7 +39,7 @@ Table.storyName = "vc-table";
 Table.args = {
   multiselect: true,
 
-  headers: [
+  columns: [
     {
       id: "img",
       title: "Pic",

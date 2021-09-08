@@ -1,6 +1,6 @@
 import { App } from "vue";
-import * as components from "./components";
-import { useBlade } from "@virtoshell/core";
+import * as pages from "./pages";
+import { useRouter } from "@virtoshell/core";
 
 interface IModuleOptions {
   ordersList?: Record<string, unknown>;
@@ -9,28 +9,28 @@ interface IModuleOptions {
 
 export default {
   install(app: App, options: IModuleOptions): void {
-    const { registerBlade } = useBlade();
+    const { registerBlade } = useRouter();
 
-    // Register exported components
-    Object.entries(components).forEach(([componentName, component]) => {
+    // Register exported pages
+    Object.entries(pages).forEach(([componentName, component]) => {
       app.component(componentName, component);
     });
 
     registerBlade({
       name: "orders-list",
       url: "orders",
-      component: components.Orders,
+      component: pages.OrdersList,
       componentOptions: options?.ordersList,
     });
 
     registerBlade({
       name: "orders-details",
       url: "order-edit",
-      component: components.Order,
+      component: pages.OrdersEdit,
       componentOptions: options?.ordersDetails,
     });
   },
 };
 
-export * from "./components";
+export * from "./pages";
 export * from "./composables";

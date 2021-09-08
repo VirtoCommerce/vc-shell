@@ -17,18 +17,24 @@
       @close="$emit('close')"
     ></vc-blade-header>
 
+    <!-- Set up blade toolbar -->
+    <vc-blade-toolbar :items="toolbarItems"></vc-blade-toolbar>
+
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import VcBladeHeader from "../../molecules/vc-blade-header/vc-blade-header.vue";
+import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
+import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 
 export default defineComponent({
   name: "VcBlade",
+
   components: {
     VcBladeHeader,
+    VcBladeToolbar,
   },
 
   props: {
@@ -62,6 +68,11 @@ export default defineComponent({
     expandable: {
       type: Boolean,
       default: false,
+    },
+
+    toolbarItems: {
+      type: Array,
+      default: () => [],
     },
   },
 });

@@ -29,6 +29,7 @@
     "css-loader": "^5.0.0",
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
+    "normalize.css": "^8.0.1",
     "roboto-fontface": "^0.10.0",
     "style-loader": "^2.0.0",
     "tsconfig-paths-webpack-plugin": "^3.5.1",

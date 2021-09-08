@@ -3,7 +3,7 @@ const path = require('path');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  stories: ['../../src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  stories: ['../framework/ui/src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
   addons: ['@storybook/addon-docs', '@storybook/addon-controls'],
 
   typescript: {
@@ -11,7 +11,7 @@ module.exports = {
   },
 
   webpackFinal(config) {
-    const tsconfigFile = path.resolve(__dirname, '../../tsconfig.build.json');
+    const tsconfigFile = path.resolve(__dirname, '../tsconfig.build.json');
 
     config.resolve.plugins = [
       ...(config.resolve.plugins || []),
@@ -20,6 +20,21 @@ module.exports = {
         extensions: config.resolve.extensions,
       }),
     ];
+
+    config.module.rules.push({
+      test: /\.less$/,
+      use: [
+        require.resolve('style-loader'),
+        {
+          loader: require.resolve('css-loader'),
+          options: {
+            modules: true,
+            importLoaders: 1
+          },
+        },
+        require.resolve('less-loader')
+      ]
+    });
 
     return config;
   },

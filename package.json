@@ -20,8 +20,8 @@
     "build-framework:api-client": "lerna run build --scope @virtoshell/api-client",
     "build-apps:demo-manager": "lerna run build --scope @virtoshell/app-demo-manager",
     "serve-apps:demo-manager": "cd apps/demo-manager && yarn serve",
-    "storybook-build": "lerna run storybook:build --stream --scope @virtoshell/ui",
-    "storybook-serve": "cd framework/ui && yarn storybook:serve"
+    "storybook-build": "build-storybook -s .storybook/assets",
+    "storybook-serve": "start-storybook -s .storybook/assets -p 6006"
   },
   "workspaces": [
     "apps/*",
@@ -29,16 +29,23 @@
     "modules/*"
   ],
   "devDependencies": {
+    "@babel/core": "^7.15.5",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/config-lerna-scopes": "^12.1.4",
+    "@storybook/addon-actions": "^6.3.8",
+    "@storybook/addon-essentials": "^6.3.8",
+    "@storybook/addon-links": "^6.3.8",
+    "@storybook/vue3": "^6.3.8",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
     "@vue/eslint-config-prettier": "^6.0.0",
     "@vue/eslint-config-typescript": "^7.0.0",
+    "babel-loader": "^8.2.2",
     "chalk": "^2.4.2",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",
+    "css-loader": "^5.0.0",
     "eslint": "^7.31.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
@@ -46,12 +53,19 @@
     "husky": "^7.0.1",
     "lerna": "^4.0.0",
     "lerna-changelog": "^1.0.1",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
     "lint-staged": "^11.0.1",
+    "path": "^0.12.7",
     "prettier": "^2.3.2",
+    "style-loader": "^2.0.0",
+    "tsconfig-paths-webpack-plugin": "^3.5.1",
     "typescript": "^4.3.5",
+    "vue-loader": "^16.5.0",
     "yarn": "^1.22.11"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
-  }
+  },
+  "dependencies": {}
 }

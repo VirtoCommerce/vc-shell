@@ -1,7 +1,5 @@
 /* eslint-disable */
-import "@fortawesome/fontawesome-free/css/all.css";
-import "roboto-fontface/css/roboto/roboto-fontface.css";
-import "!style-loader!css-loader!less-loader!../../src/styles/index.less";
+import "@virtoshell/ui/dist/ui.css";
 
 export const decorators = [
   () => ({

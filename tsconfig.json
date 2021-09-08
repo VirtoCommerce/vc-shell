@@ -29,5 +29,8 @@
     {
       "path": "framework/ui/"
     },
+    {
+      "path": "framework/ui-theme-dark/"
+    }
   ]
 }

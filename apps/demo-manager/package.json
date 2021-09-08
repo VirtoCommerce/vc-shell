@@ -7,8 +7,6 @@
     "build": "vue-cli-service build"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3",
-    "@intlify/vue-i18n-loader": "^2.1.0",
     "@virtoshell/api-client": "^0.0.37",
     "@virtoshell/core": "^0.0.37",
     "@virtoshell/ui": "^0.0.37",
@@ -20,7 +18,6 @@
     "less": "^3.0.4",
     "less-loader": "^5.0.0",
     "moment": "^2.29.1",
-    "roboto-fontface": "^0.10.0",
     "tsconfig-paths-webpack-plugin": "^3.5.1",
     "typescript": "^4.3.5",
     "vue": "^3.0.0"

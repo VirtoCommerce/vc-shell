@@ -9,8 +9,6 @@ import ModOffers from "./modules/offers";
 import * as locales from "./locales";
 
 // Load required CSS
-import "@fortawesome/fontawesome-free/css/all.css";
-import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@virtoshell/ui/dist/ui.css";
 
 const app = createApp(App)

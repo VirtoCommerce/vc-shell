@@ -3,6 +3,8 @@ import * as components from "./components";
 import * as directives from "./directives";
 
 import "normalize.css";
+import "@fortawesome/fontawesome-free/css/all.min.css";
+import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "./styles/index.less";
 
 export default {

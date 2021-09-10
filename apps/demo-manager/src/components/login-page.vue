@@ -1,16 +1,20 @@
 <template>
   <vc-login-form :logo="logo" :background="background" :title="title">
     <vc-form>
-      <vc-form-field class="vc-margin-bottom_l" label="Login">
-        <vc-input v-model="form.username"></vc-input>
-      </vc-form-field>
-      <vc-form-field class="vc-margin-bottom_l" label="Password">
-        <vc-input
-          v-model="form.password"
-          type="password"
-          @keyup.enter="login"
-        ></vc-input>
-      </vc-form-field>
+      <vc-input
+        class="vc-margin-bottom_l"
+        label="Login"
+        :required="true"
+        v-model="form.username"
+      ></vc-input>
+      <vc-input
+        class="vc-margin-bottom_l"
+        label="Password"
+        :required="true"
+        v-model="form.password"
+        type="password"
+        @keyup.enter="login"
+      ></vc-input>
       <div
         class="
           vc-margin-bottom_l

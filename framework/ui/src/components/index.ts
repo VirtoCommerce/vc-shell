@@ -18,7 +18,6 @@ export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
 export { default as VcAutocomplete } from "./molecules/vc-autocomplete/vc-autocomplete.vue";
 export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
-export { default as VcFormField } from "./molecules/vc-form-field/vc-form-field.vue";
 export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";

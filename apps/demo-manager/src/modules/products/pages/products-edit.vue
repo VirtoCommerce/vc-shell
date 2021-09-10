@@ -14,46 +14,44 @@
         <vc-container :no-padding="true">
           <div class="vc-padding_l">
             <vc-form>
-              <vc-form-field
+              <vc-input
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-              >
-                <vc-input
-                  v-model="product.sellerName"
-                  :clearable="true"
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                  "
-                ></vc-input>
-              </vc-form-field>
-              <vc-form-field
+                v-model="product.sellerName"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-select
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-              >
-                <vc-select
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                  "
-                ></vc-select>
-              </vc-form-field>
-              <vc-form-field
+                v-model="product.categoryId"
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                "
+                :options="categories"
+              ></vc-select>
+              <vc-input
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-              >
-                <vc-input
-                  v-model="product.gtin"
-                  :clearable="true"
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                  "
-                ></vc-input>
-              </vc-form-field>
-              <vc-form-field
+                v-model="product.gtin"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-textarea
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-              >
-                <vc-textarea
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
-                  "
-                ></vc-textarea>
-              </vc-form-field>
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
+                "
+              ></vc-textarea>
             </vc-form>
           </div>
         </vc-container>
@@ -124,6 +122,20 @@ export default defineComponent({
     const { t } = useI18n();
     const { closeBlade } = useRouter();
     const { product, loading, loadProduct } = useProduct();
+    const categories = [
+      {
+        title: "Category 1",
+        value: "1",
+      },
+      {
+        title: "Category 2",
+        value: "2",
+      },
+      {
+        title: "Category 3",
+        value: "3",
+      },
+    ];
 
     onBeforeMount(async () => {
       await loadProduct({ id: props.param });
@@ -152,6 +164,7 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      categories,
       product: computed(() => product.value),
       loading: computed(() => loading.value),
     };

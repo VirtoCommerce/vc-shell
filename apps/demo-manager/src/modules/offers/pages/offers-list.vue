@@ -2,7 +2,7 @@
   <vc-blade
     :uid="uid"
     :title="$t('OFFERS.PAGES.LIST.TITLE')"
-    :width="600"
+    width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
@@ -28,7 +28,7 @@
       @paginationClick="onPaginationClick"
     >
       <!-- Override sellerName column template -->
-      <template v-slot:item_productSellerName="itemData">
+      <template v-slot:item_productName="itemData">
         <div class="vc-flex vc-flex-column">
           <div>{{ itemData.item.product.sellerName }}</div>
           <vc-hint>{{ itemData.item.product.category }}</vc-hint>
@@ -151,7 +151,7 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
-        id: "productSellerName",
+        id: "productName",
         field: "product.sellerName",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME"),
         sortable: true,
@@ -164,15 +164,16 @@ export default defineComponent({
         sortable: true,
       },
       {
-        id: "status",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.STATUS"),
-        width: 180,
-        sortable: true,
-      },
-      {
         id: "sku",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU"),
         width: 120,
+        sortable: true,
+        alwaysVisible: true,
+      },
+      {
+        id: "status",
+        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.STATUS"),
+        width: 180,
         sortable: true,
         alwaysVisible: true,
       },
@@ -187,6 +188,7 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
         width: 100,
         sortable: true,
+        alwaysVisible: true,
       },
       {
         id: "minQty",
@@ -199,6 +201,7 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
         width: 80,
         sortable: true,
+        alwaysVisible: true,
       },
     ]);
 

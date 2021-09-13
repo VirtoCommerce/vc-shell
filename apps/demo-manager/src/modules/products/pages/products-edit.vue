@@ -24,7 +24,7 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
               ></vc-input>
-              <vc-select
+              <vc-autocomplete
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 v-model="product.categoryId"
@@ -33,7 +33,7 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
-              ></vc-select>
+              ></vc-autocomplete>
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
@@ -135,6 +135,34 @@ export default defineComponent({
       {
         title: "Category 3",
         value: "3",
+      },
+      {
+        title: "Category 4",
+        value: "4",
+      },
+      {
+        title: "Category 5",
+        value: "5",
+      },
+      {
+        title: "Category 6",
+        value: "6",
+      },
+      {
+        title: "Category 7",
+        value: "7",
+      },
+      {
+        title: "Category 8",
+        value: "8",
+      },
+      {
+        title: "Category 9",
+        value: "9",
+      },
+      {
+        title: "Category 10",
+        value: "10",
       },
     ];
 

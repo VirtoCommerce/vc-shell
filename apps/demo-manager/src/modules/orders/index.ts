@@ -1,5 +1,6 @@
 import { App } from "vue";
 import * as pages from "./pages";
+import * as locales from "./locales";
 import { useRouter } from "@virtoshell/core";
 
 interface IModuleOptions {
@@ -28,6 +29,11 @@ export default {
       url: "order-edit",
       component: pages.OrdersEdit,
       componentOptions: options?.ordersDetails,
+    });
+
+    // Load locales
+    Object.entries(locales).forEach(([key, message]) => {
+      app.config.globalProperties.$mergeLocaleMessage(key, message);
     });
   },
 };

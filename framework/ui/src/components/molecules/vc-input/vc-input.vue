@@ -1,26 +1,34 @@
 <template>
-  <div
-    class="vc-input vc-flex vc-flex-align_stretch"
-    :class="{ 'vc-input_clearable': clearable }"
-  >
-    <input
-      class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
-      :placeholder="placeholder"
-      :type="type"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-    />
-    <div
-      v-if="clearable"
-      class="
-        vc-input__clear
-        vc-padding-horizontal_m
-        vc-flex
-        vc-flex-align_center
-      "
-      @click="$emit('update:modelValue', '')"
-    >
-      <vc-icon size="s" icon="fas fa-times"></vc-icon>
+  <div class="vc-input" :class="{ 'vc-input_clearable': clearable }">
+    <!-- Input label -->
+    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
+      {{ label }}
+      <span v-if="required" class="vc-input__required">*</span>
+    </div>
+
+    <!-- Input field -->
+    <div class="vc-input__field-wrapper vc-flex vc-flex-align_stretch">
+      <input
+        class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
+        :placeholder="placeholder"
+        :type="type"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+      />
+
+      <!-- Input clear button -->
+      <div
+        v-if="clearable"
+        class="
+          vc-input__clear
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
+        @click="$emit('update:modelValue', '')"
+      >
+        <vc-icon size="s" icon="fas fa-times"></vc-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -50,9 +58,19 @@ export default defineComponent({
       default: false,
     },
 
+    required: {
+      type: Boolean,
+      default: false,
+    },
+
     type: {
       type: String,
       default: "text",
+    },
+
+    label: {
+      type: String,
+      default: undefined,
     },
   },
 
@@ -69,12 +87,19 @@ export default defineComponent({
   --input-placeholder-color: #a5a5a5;
   --input-clear-color: #43b0e6;
   --input-clear-color-hover: #319ed4;
+  --input-required-color: #f14e4e;
 }
 
 .vc-input {
-  border: 1px solid var(--input-border-color);
-  border-radius: var(--input-border-radius);
-  background-color: var(--input-background-color);
+  &__required {
+    color: var(--input-required-color);
+  }
+
+  &__field-wrapper {
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    background-color: var(--input-background-color);
+  }
 
   &__field {
     border: none;

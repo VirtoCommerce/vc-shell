@@ -15,6 +15,7 @@
       :multiselect="true"
       :columns="columns"
       :items="orders.results"
+      :totalCount="orders.totalCount"
       @itemClick="onItemClick"
     >
       <template v-slot:item_created="itemData">
@@ -65,7 +66,16 @@ export default defineComponent({
     });
 
     const bladeToolbar = [
-      { id: 1, title: "Refresh", icon: "fas fa-sync-alt" },
+      {
+        id: 1,
+        title: "Refresh",
+        icon: "fas fa-sync-alt",
+        onClick: async () => {
+          loading.value = true;
+          await loadOrders();
+          loading.value = false;
+        },
+      },
       { id: 1, title: "Confirm", icon: "fas fa-check", disabled: true },
       { id: 1, title: "Cancel", icon: "fas fa-times-circle", disabled: true },
     ];

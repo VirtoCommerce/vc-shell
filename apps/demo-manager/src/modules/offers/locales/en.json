@@ -5,7 +5,7 @@
     },
     "PAGES": {
       "LIST": {
-        "TITLE": "Offers",
+        "TITLE": "My Offers",
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
@@ -15,17 +15,17 @@
           "PLACEHOLDER": "Search keywords"
         },
         "TABLE": {
-          "TOTALS": "Total:",
+          "TOTALS": "Count:",
           "HEADER": {
             "PRODUCT_IMAGE": "Pic",
-            "PRODUCT_NAME": "Product",
-            "CREATED_DATE": "Created Date",
+            "PRODUCT_NAME": "Product name",
+            "CREATED_DATE": "Created",
             "STATUS": "Status",
-            "SKU": "SKU",
+            "SKU": "SKU#",
             "SALE_PRICE": "Sale price",
             "LIST_PRICE": "List price",
-            "MIN_QTY": "Min.qty",
-            "QTY": "Qty"
+            "MIN_QTY": "Min. Quantity",
+            "QTY": "Quantity in Stock"
           }
         }
       },
@@ -36,9 +36,41 @@
           "CLOSE": "Close"
         },
         "FIELDS": {
+          "PRODUCT": {
+            "TITLE": "Product",
+            "PLACEHOLDER": "Select product for offer"
+          },
           "SKU": {
             "TITLE": "SKU",
             "PLACEHOLDER": "Enter product SKU"
+          },
+          "LIST_PRICE": {
+            "TITLE": "List price",
+            "PLACEHOLDER": "Set list price"
+          },
+          "SALE_PRICE": {
+            "TITLE": "Sales price",
+            "PLACEHOLDER": "Set product sales price"
+          },
+          "CURRENCY": {
+            "TITLE": "Currency",
+            "PLACEHOLDER": "Select price currency"
+          },
+          "MIN_QTY": {
+            "TITLE": "Minimum quantity",
+            "PLACEHOLDER": "Enter product minimal quantity in order"
+          },
+          "QTY": {
+            "TITLE": "Quantity in Stock",
+            "PLACEHOLDER": "Enter product available quantity"
+          },
+          "CONDITION": {
+            "TITLE": "Condition",
+            "PLACEHOLDER": "Select product condition"
+          },
+          "SHIPPING_TIME": {
+            "TITLE": "Shipping time",
+            "PLACEHOLDER": "Set shipping time"
           }
         }
       }

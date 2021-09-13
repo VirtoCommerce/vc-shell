@@ -1,11 +1,20 @@
 <template>
   <div class="vc-textarea">
-    <textarea
-      class="vc-textarea__field vc-padding-horizontal_m vc-padding-vertical_s"
-      :placeholder="placeholder"
-      :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-    ></textarea>
+    <!-- Textarea label -->
+    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
+      {{ label }}
+      <span v-if="required" class="vc-textarea__required">*</span>
+    </div>
+
+    <!-- Textarea field -->
+    <div class="vc-textarea__field-wrapper vc-flex vc-flex-align_stretch">
+      <textarea
+        class="vc-textarea__field vc-padding-horizontal_m vc-padding-vertical_s"
+        :placeholder="placeholder"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+      ></textarea>
+    </div>
   </div>
 </template>
 
@@ -25,6 +34,16 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    required: {
+      type: Boolean,
+      default: false,
+    },
+
+    label: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
@@ -38,14 +57,20 @@ export default defineComponent({
   --textarea-border-radius: 3px;
   --textarea-background-color: #ffffff;
   --textarea-placeholder-color: #a5a5a5;
+  --textarea-required-color: #f14e4e;
 }
 
 .vc-textarea {
-  display: flex;
-  border: 1px solid var(--textarea-border-color);
-  border-radius: var(--textarea-border-radius);
-  box-sizing: border-box;
-  background-color: var(--textarea-background-color);
+  &__required {
+    color: var(--input-required-color);
+  }
+
+  &__field-wrapper {
+    border: 1px solid var(--textarea-border-color);
+    border-radius: var(--textarea-border-radius);
+    box-sizing: border-box;
+    background-color: var(--textarea-background-color);
+  }
 
   &__field {
     width: 100%;

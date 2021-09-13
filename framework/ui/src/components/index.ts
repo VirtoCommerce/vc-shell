@@ -18,7 +18,6 @@ export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
 export { default as VcAutocomplete } from "./molecules/vc-autocomplete/vc-autocomplete.vue";
 export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
-export { default as VcFormField } from "./molecules/vc-form-field/vc-form-field.vue";
 export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
@@ -28,6 +27,7 @@ export { default as VcUploader } from "./molecules/vc-uploader/vc-uploader.vue";
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";
 export { default as VcBlade } from "./organisms/vc-blade/vc-blade.vue";
+export { default as VcGallery } from "./organisms/vc-gallery/vc-gallery.vue";
 export { default as VcLoginForm } from "./organisms/vc-login-form/vc-login-form.vue";
 export { default as VcNotification } from "./organisms/vc-notification/vc-notification.vue";
 export { default as VcPopup } from "./organisms/vc-popup/vc-popup.vue";

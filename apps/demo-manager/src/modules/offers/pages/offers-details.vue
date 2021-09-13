@@ -13,16 +13,81 @@
         <vc-container :no-padding="true">
           <div class="vc-padding_l">
             <vc-form>
-              <vc-form-field
+              <vc-select
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
+                :required="true"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
+                "
+              ></vc-select>
+              <vc-input
+                class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
-              >
-                <vc-input
-                  :clearable="true"
-                  :placeholder="
-                    $t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')
-                  "
-                ></vc-input>
-              </vc-form-field>
+                :clearable="true"
+                :required="true"
+                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
+              ></vc-input>
+              <vc-input
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-input
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
+                :clearable="true"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-select
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
+                :required="true"
+                :options="currencies"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')
+                "
+              ></vc-select>
+              <vc-input
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-input
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE')"
+                :clearable="true"
+                :required="true"
+                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')"
+              ></vc-input>
+              <vc-select
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CONDITION.TITLE')"
+                :required="true"
+                :options="conditions"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.CONDITION.PLACEHOLDER')
+                "
+              ></vc-select>
+              <vc-input
+                class="vc-margin-bottom_l"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SHIPPING_TIME.TITLE')"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('OFFERS.PAGES.DETAILS.FIELDS.SHIPPING_TIME.PLACEHOLDER')
+                "
+              ></vc-input>
             </vc-form>
           </div>
         </vc-container>
@@ -92,6 +157,16 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      currencies: [
+        { title: "CAD", value: "CAD" },
+        { title: "RUB", value: "RUB" },
+        { title: "USD", value: "USD" },
+      ],
+      conditions: [
+        { title: "New", value: "New" },
+        { title: "Refurbrished", value: "Refurbrished" },
+        { title: "Used", value: "Used" },
+      ],
     };
   },
 });

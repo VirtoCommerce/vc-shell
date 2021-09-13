@@ -14,46 +14,45 @@
         <vc-container :no-padding="true">
           <div class="vc-padding_l">
             <vc-form>
-              <vc-form-field
+              <vc-input
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-              >
-                <vc-input
-                  v-model="product.sellerName"
-                  :clearable="true"
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                  "
-                ></vc-input>
-              </vc-form-field>
-              <vc-form-field
+                v-model="product.sellerName"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-autocomplete
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-              >
-                <vc-select
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                  "
-                ></vc-select>
-              </vc-form-field>
-              <vc-form-field
+                v-model="product.categoryId"
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                "
+                :options="categories"
+              ></vc-autocomplete>
+              <vc-input
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-              >
-                <vc-input
-                  v-model="product.gtin"
-                  :clearable="true"
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                  "
-                ></vc-input>
-              </vc-form-field>
-              <vc-form-field
+                v-model="product.gtin"
+                :clearable="true"
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                "
+              ></vc-input>
+              <vc-textarea
+                class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-              >
-                <vc-textarea
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
-                  "
-                ></vc-textarea>
-              </vc-form-field>
+                :required="true"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
+                "
+              ></vc-textarea>
+              <vc-gallery label="Gallery" :images="images"></vc-gallery>
             </vc-form>
           </div>
         </vc-container>
@@ -88,7 +87,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount } from "vue";
+import { computed, defineComponent, onBeforeMount, reactive } from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
 
@@ -124,6 +123,48 @@ export default defineComponent({
     const { t } = useI18n();
     const { closeBlade } = useRouter();
     const { product, loading, loadProduct } = useProduct();
+    const categories = [
+      {
+        title: "Category 1",
+        value: "1",
+      },
+      {
+        title: "Category 2",
+        value: "2",
+      },
+      {
+        title: "Category 3",
+        value: "3",
+      },
+      {
+        title: "Category 4",
+        value: "4",
+      },
+      {
+        title: "Category 5",
+        value: "5",
+      },
+      {
+        title: "Category 6",
+        value: "6",
+      },
+      {
+        title: "Category 7",
+        value: "7",
+      },
+      {
+        title: "Category 8",
+        value: "8",
+      },
+      {
+        title: "Category 9",
+        value: "9",
+      },
+      {
+        title: "Category 10",
+        value: "10",
+      },
+    ];
 
     onBeforeMount(async () => {
       await loadProduct({ id: props.param });
@@ -152,8 +193,15 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      categories,
       product: computed(() => product.value),
       loading: computed(() => loading.value),
+      images: reactive([
+        { title: "Image 1", src: "/assets/1.jpg" },
+        { title: "Image 2", src: "/assets/2.jpg" },
+        { title: "Image 3", src: "/assets/3.jpg" },
+        { title: "Image 4", src: "/assets/4.jpg" },
+      ]),
     };
   },
 });

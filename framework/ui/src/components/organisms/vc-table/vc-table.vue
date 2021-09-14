@@ -107,13 +107,11 @@
                 :class="cell.class"
                 :width="cell.width"
               >
-                <div class="vc-flex vc-flex-align_center">
-                  <slot :name="`item_${cell.id}`" :item="item">{{
-                    (cell.field || cell.id)
-                      .split(".")
-                      .reduce((p, c) => (p && p[c]) || null, item)
-                  }}</slot>
-                </div>
+                <slot :name="`item_${cell.id}`" :item="item">{{
+                  (cell.field || cell.id)
+                    .split(".")
+                    .reduce((p, c) => (p && p[c]) || null, item)
+                }}</slot>
               </td>
             </tr>
           </tbody>
@@ -300,6 +298,7 @@ export default defineComponent({
   border-collapse: collapse;
   position: relative;
   padding-top: 43px;
+  table-layout: fixed;
 
   &-wrapper {
     position: relative;

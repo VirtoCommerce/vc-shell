@@ -13,38 +13,15 @@
         <vc-container :no-padding="true">
           <div class="vc-padding_l">
             <vc-form>
-              <vc-select
+              <vc-autocomplete
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
                 :required="true"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
-              ></vc-select>
-              <vc-input
-                class="vc-margin-bottom_l"
-                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
-                :clearable="true"
-                :required="true"
-                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
-              ></vc-input>
-              <vc-input
-                class="vc-margin-bottom_l"
-                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
-                :clearable="true"
-                :required="true"
-                :placeholder="
-                  $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
-                "
-              ></vc-input>
-              <vc-input
-                class="vc-margin-bottom_l"
-                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
-                :clearable="true"
-                :placeholder="
-                  $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
-                "
-              ></vc-input>
+                :options="products"
+              ></vc-autocomplete>
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
@@ -56,20 +33,72 @@
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
-                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
+                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
                 :clearable="true"
                 :required="true"
-                :placeholder="
-                  $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
-                "
+                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
               ></vc-input>
-              <vc-input
-                class="vc-margin-bottom_l"
-                :label="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE')"
-                :clearable="true"
-                :required="true"
-                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')"
-              ></vc-input>
+              <div class="vc-flex">
+                <vc-input
+                  class="vc-fill_width vc-margin-bottom_l vc-margin-right_s"
+                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
+                  :clearable="true"
+                  :required="true"
+                  :placeholder="
+                    $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
+                  "
+                ></vc-input>
+                <vc-input
+                  class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
+                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
+                  :clearable="true"
+                  :placeholder="
+                    $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
+                  "
+                ></vc-input>
+              </div>
+              <div class="vc-flex">
+                <vc-input
+                  class="vc-fill_width vc-margin-bottom_l vc-margin-right_s"
+                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
+                  :clearable="true"
+                  :required="true"
+                  :placeholder="
+                    $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
+                  "
+                ></vc-input>
+                <vc-input
+                  class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
+                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE')"
+                  :clearable="true"
+                  :required="true"
+                  :placeholder="
+                    $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
+                  "
+                ></vc-input>
+              </div>
+              <div class="vc-flex">
+                <vc-input
+                  class="vc-fill_width vc-margin-bottom_l vc-margin-right_s"
+                  type="date"
+                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.START_DATE.TITLE')"
+                  :clearable="true"
+                  :required="true"
+                  :placeholder="
+                    $t('OFFERS.PAGES.DETAILS.FIELDS.START_DATE.PLACEHOLDER')
+                  "
+                ></vc-input>
+                <vc-input
+                  class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
+                  type="date"
+                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.END_DATE.TITLE')"
+                  :clearable="true"
+                  :required="true"
+                  :placeholder="
+                    $t('OFFERS.PAGES.DETAILS.FIELDS.END_DATE.PLACEHOLDER')
+                  "
+                ></vc-input>
+              </div>
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CONDITION.TITLE')"
@@ -154,6 +183,48 @@ export default defineComponent({
         },
       },
     ];
+    const products = [
+      {
+        title: "Product 1",
+        value: "1",
+      },
+      {
+        title: "Product 2",
+        value: "2",
+      },
+      {
+        title: "Product 3",
+        value: "3",
+      },
+      {
+        title: "Product 4",
+        value: "4",
+      },
+      {
+        title: "Product 5",
+        value: "5",
+      },
+      {
+        title: "Product 6",
+        value: "6",
+      },
+      {
+        title: "Product 7",
+        value: "7",
+      },
+      {
+        title: "Product 8",
+        value: "8",
+      },
+      {
+        title: "Product 9",
+        value: "9",
+      },
+      {
+        title: "Product 10",
+        value: "10",
+      },
+    ];
 
     return {
       bladeToolbar,
@@ -167,6 +238,7 @@ export default defineComponent({
         { title: "Refurbrished", value: "Refurbrished" },
         { title: "Used", value: "Used" },
       ],
+      products,
     };
   },
 });

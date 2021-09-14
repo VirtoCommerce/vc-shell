@@ -30,8 +30,10 @@
       <!-- Override sellerName column template -->
       <template v-slot:item_productName="itemData">
         <div class="vc-flex vc-flex-column">
-          <div>{{ itemData.item.product.sellerName }}</div>
-          <vc-hint>{{ itemData.item.product.category }}</vc-hint>
+          <div class="vc-ellipsis">{{ itemData.item.product.sellerName }}</div>
+          <vc-hint class="vc-ellipsis">{{
+            itemData.item.product.category
+          }}</vc-hint>
         </div>
       </template>
 

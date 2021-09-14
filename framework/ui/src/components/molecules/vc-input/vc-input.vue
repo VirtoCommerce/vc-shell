@@ -1,10 +1,10 @@
 <template>
   <div class="vc-input" :class="{ 'vc-input_clearable': clearable }">
     <!-- Input label -->
-    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
-      {{ label }}
-      <span v-if="required" class="vc-input__required">*</span>
-    </div>
+    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+      <span>{{ label }}</span>
+      <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
+    </vc-label>
 
     <!-- Input field -->
     <div class="vc-input__field-wrapper vc-flex vc-flex-align_stretch">
@@ -36,11 +36,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import VcLabel from "../../atoms/vc-label/vc-label.vue";
 
 export default defineComponent({
   name: "VcInput",
 
-  components: { VcIcon },
+  components: {
+    VcIcon,
+    VcLabel,
+  },
 
   props: {
     placeholder: {
@@ -72,6 +76,11 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    tooltip: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
@@ -87,14 +96,9 @@ export default defineComponent({
   --input-placeholder-color: #a5a5a5;
   --input-clear-color: #43b0e6;
   --input-clear-color-hover: #319ed4;
-  --input-required-color: #f14e4e;
 }
 
 .vc-input {
-  &__required {
-    color: var(--input-required-color);
-  }
-
   &__field-wrapper {
     border: 1px solid var(--input-border-color);
     border-radius: var(--input-border-radius);

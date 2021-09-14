@@ -33,6 +33,7 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
+                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
               ></vc-autocomplete>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -43,6 +44,7 @@
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                 "
+                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
               ></vc-input>
               <vc-textarea
                 class="vc-margin-bottom_l"
@@ -52,7 +54,11 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
               ></vc-textarea>
-              <vc-gallery label="Gallery" :images="images"></vc-gallery>
+              <vc-gallery
+                label="Gallery"
+                :images="images"
+                @upload="onUpload"
+              ></vc-gallery>
             </vc-form>
           </div>
         </vc-container>
@@ -191,17 +197,40 @@ export default defineComponent({
       },
     ];
 
+    const images = reactive([
+      { title: "Image 1", src: "/assets/1.jpg" },
+      { title: "Image 2", src: "/assets/2.jpg" },
+      { title: "Image 3", src: "/assets/3.jpg" },
+      { title: "Image 4", src: "/assets/4.jpg" },
+    ]);
+
+    const onUpload = async (files: FileList) => {
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      const result = await fetch(
+        `/api/platform/assets?folderUrl=/marketplace`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        images.push({
+          title: response[0].name,
+          src: response[0].url,
+        });
+      }
+      files = null;
+    };
+
     return {
       bladeToolbar,
       categories,
       product: computed(() => product.value),
       loading: computed(() => loading.value),
-      images: reactive([
-        { title: "Image 1", src: "/assets/1.jpg" },
-        { title: "Image 2", src: "/assets/2.jpg" },
-        { title: "Image 3", src: "/assets/3.jpg" },
-        { title: "Image 4", src: "/assets/4.jpg" },
-      ]),
+      images,
+      onUpload,
     };
   },
 });

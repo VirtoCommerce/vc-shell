@@ -1,10 +1,10 @@
 <template>
   <div class="vc-select">
     <!-- Select label -->
-    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
-      {{ label }}
-      <span v-if="required" class="vc-select__required">*</span>
-    </div>
+    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+      <span>{{ label }}</span>
+      <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
+    </vc-label>
 
     <!-- Select field -->
     <div class="vc-select__field-wrapper vc-flex vc-flex-align_stretch">
@@ -66,6 +66,11 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    tooltip: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
@@ -81,14 +86,9 @@ export default defineComponent({
   --select-placeholder-color: #a5a5a5;
   --select-chevron-color: #43b0e6;
   --select-chevron-color-hover: #319ed4;
-  --select-required-color: #f14e4e;
 }
 
 .vc-select {
-  &__required {
-    color: var(--input-required-color);
-  }
-
   &__field-wrapper {
     position: relative;
     border: 1px solid var(--select-border-color);

@@ -1,10 +1,12 @@
 <template>
   <div class="vc-textarea">
     <!-- Textarea label -->
-    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
-      {{ label }}
-      <span v-if="required" class="vc-textarea__required">*</span>
-    </div>
+    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+      <span>{{ label }}</span>
+      <template v-if="tooltip" v-slot:tooltip>
+        <span v-html="tooltip"></span>
+      </template>
+    </vc-label>
 
     <!-- Textarea field -->
     <div class="vc-textarea__field-wrapper vc-flex vc-flex-align_stretch">
@@ -20,9 +22,14 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import VcLabel from "..//vc-label/vc-label.vue";
 
 export default defineComponent({
   name: "VcTextarea",
+
+  components: {
+    VcLabel,
+  },
 
   props: {
     placeholder: {
@@ -44,6 +51,11 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    tooltip: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
@@ -57,14 +69,9 @@ export default defineComponent({
   --textarea-border-radius: 3px;
   --textarea-background-color: #ffffff;
   --textarea-placeholder-color: #a5a5a5;
-  --textarea-required-color: #f14e4e;
 }
 
 .vc-textarea {
-  &__required {
-    color: var(--input-required-color);
-  }
-
   &__field-wrapper {
     border: 1px solid var(--textarea-border-color);
     border-radius: var(--textarea-border-radius);

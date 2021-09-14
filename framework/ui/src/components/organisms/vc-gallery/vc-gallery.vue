@@ -28,8 +28,7 @@
         v-if="!readonly"
         class="vc-margin_s"
         :icon="uploadIcon"
-        @success="onUploadSuccess"
-        @error="onUploadError"
+        @upload="onUpload"
       ></vc-gallery-upload>
     </div>
   </div>
@@ -71,6 +70,11 @@ export default defineComponent({
       default: undefined,
     },
 
+    tooltip: {
+      type: String,
+      default: undefined,
+    },
+
     tooltipIcon: {
       type: String,
       default: "fas fa-info",
@@ -82,14 +86,19 @@ export default defineComponent({
     },
   },
 
-  emits: [
-    "upload:success",
-    "upload:error",
-    "item:preview",
-    "item:edit",
-    "item:click",
-    "item:move",
-  ],
+  emits: ["upload", "item:preview", "item:edit", "item:click", "item:move"],
+
+  setup(_props, { emit }) {
+    const onUpload = (files: FileList) => {
+      if (files && files.length) {
+        emit("upload", files);
+      }
+    };
+
+    return {
+      onUpload,
+    };
+  },
 });
 </script>
 
@@ -97,6 +106,7 @@ export default defineComponent({
 .vc-gallery {
   &__items {
     display: flex;
+    flex-wrap: wrap;
     margin: 0 calc(-1 * var(--padding-s));
   }
 }

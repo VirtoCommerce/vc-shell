@@ -20,6 +20,7 @@
       <div class="vc-app__inner vc-flex vc-flex-grow_1">
         <!-- Init main menu -->
         <vc-nav
+          class="vc-flex-shrink_0"
           :items="menu"
           :collapsed="menuCollapsed"
           @itemClick="$emit('menuClick', $event)"

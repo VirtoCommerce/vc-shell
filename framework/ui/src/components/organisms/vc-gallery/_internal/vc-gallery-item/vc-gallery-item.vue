@@ -94,6 +94,8 @@ export default defineComponent({
 .vc-gallery-item {
   position: relative;
   width: 155px;
+  height: 155px;
+  box-sizing: border-box;
   border: 1px solid #d3dae9;
   border-radius: 6px;
   padding: var(--padding-s);

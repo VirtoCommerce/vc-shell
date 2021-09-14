@@ -1,20 +1,20 @@
 <template>
   <div class="vc-autocomplete" :class="{ 'vc-autocomplete_opened': opened }">
     <!-- Autocomplete label -->
-    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
-      {{ label }}
-      <span v-if="required" class="vc-autocomplete__required">*</span>
-    </div>
+    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+      <span>{{ label }}</span>
+      <template v-if="tooltip" v-slot:tooltip>
+        <span v-html="tooltip"></span>
+      </template>
+    </vc-label>
 
     <!-- Autocomplete field -->
-    <div
-      class="vc-autocomplete__field-wrapper vc-flex vc-flex-align_stretch"
-      v-click-outside="toggleDropdown"
-    >
+    <div class="vc-autocomplete__field-wrapper vc-flex vc-flex-align_stretch">
       <input
         class="vc-autocomplete__field vc-padding-horizontal_m"
+        :placeholder="placeholder"
         :value="modelValue"
-        @click="opened = !opened"
+        @click="openDropdown"
         readonly
       />
 
@@ -30,8 +30,12 @@
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
 
-      <div class="vc-autocomplete__dropdown">
-        <input class="vc-autocomplete__search" />
+      <div
+        v-if="opened"
+        class="vc-autocomplete__dropdown"
+        v-click-outside="closeDropdown"
+      >
+        <input ref="search" class="vc-autocomplete__search" />
 
         <vc-container :no-padding="true">
           <div
@@ -48,8 +52,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, nextTick } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
 import { clickOutside } from "../../../directives";
 
@@ -58,6 +63,7 @@ export default defineComponent({
 
   components: {
     VcIcon,
+    VcLabel,
     VcContainer,
   },
 
@@ -73,7 +79,7 @@ export default defineComponent({
 
     placeholder: {
       type: String,
-      default: "Autocomplete...",
+      default: "Click to select...",
     },
 
     options: {
@@ -90,16 +96,30 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    tooltip: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
 
   setup() {
     const opened = ref(false);
+    const search = ref();
+
     return {
       opened,
-      toggleDropdown: () => {
+      search,
+      closeDropdown: () => {
         opened.value = false;
+      },
+      openDropdown: () => {
+        opened.value = true;
+        nextTick(() => {
+          search.value.focus();
+        });
       },
     };
   },
@@ -115,15 +135,10 @@ export default defineComponent({
   --autocomplete-placeholder-color: #a5a5a5;
   --autocomplete-chevron-color: #43b0e6;
   --autocomplete-chevron-color-hover: #319ed4;
-  --autocomplete-required-color: #f14e4e;
 }
 
 .vc-autocomplete {
   box-sizing: border-box;
-
-  &__required {
-    color: var(--input-required-color);
-  }
 
   &__field-wrapper {
     position: relative;
@@ -159,8 +174,17 @@ export default defineComponent({
     }
   }
 
+  &_opened &__chevron {
+    transform: rotate(180deg);
+  }
+
   &__dropdown {
     display: none;
+  }
+
+  &_opened &__field-wrapper {
+    border-radius: var(--autocomplete-border-radius)
+      var(--autocomplete-border-radius) 0 0;
   }
 
   &_opened &__dropdown {

@@ -19,7 +19,7 @@
       <vc-link @click="$refs.uploader.click()">browse your files</vc-link>
     </div>
 
-    <input ref="uploader" type="file" hidden />
+    <input ref="uploader" type="file" hidden @change="upload" />
   </div>
 </template>
 
@@ -28,6 +28,23 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcGalleryUpload",
+
+  emits: ["upload"],
+
+  setup(_props, { emit }) {
+    const upload = (event: InputEvent) => {
+      const target = event.target as HTMLInputElement;
+      const fileList = target.files;
+
+      if (fileList && fileList.length) {
+        emit("upload", fileList);
+      }
+    };
+
+    return {
+      upload,
+    };
+  },
 });
 </script>
 
@@ -36,6 +53,7 @@ export default defineComponent({
   position: relative;
   width: 155px;
   height: 155px;
+  box-sizing: border-box;
   border: 1px dashed #c8dbea;
   border-radius: 6px;
   padding: var(--padding-s);

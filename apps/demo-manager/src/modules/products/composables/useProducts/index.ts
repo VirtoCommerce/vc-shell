@@ -1,14 +1,24 @@
-import { Ref, ref, computed } from "vue";
+import { Ref, ref, computed, reactive } from "vue";
 import { mockedProducts } from "./mock";
 import { IProduct } from "../../types";
-import { useLogger } from "@virtoshell/core";
+import { useLogger, useUser } from "@virtoshell/core";
+
+import {
+  VcmpSellerCatalogClient,
+  ISellerProduct,
+  ISearchProductsQuery,
+  SearchProductsQuery,
+  SearchProductsResult,
+} from "../../../../api_client";
 
 interface IUseProducts {
-  products: Ref<IProduct[]>;
+  searchQuery: Ref<ISearchProductsQuery>;
+  products: Ref<ISellerProduct[]>;
   totalCount: Ref<number>;
   pages: Ref<number>;
+  loading: Ref<boolean>;
   currentPage: Ref<number>;
-  loadProducts: (args?: { page?: number; sort?: string }) => void;
+  loadProducts: (query: ISearchProductsQuery) => void;
 }
 
 interface IUseProductOptions {
@@ -18,29 +28,51 @@ interface IUseProductOptions {
 
 export default (options?: IUseProductOptions): IUseProducts => {
   const logger = useLogger();
-  const products = ref<IProduct[]>([]);
-  const totalCount = ref<number>(0);
-  const pageSize = options?.pageSize || 20;
-  const currentPage = ref<number>(1);
 
-  async function loadProducts(args?: { page?: number; sort?: string }) {
+  const pageSize = options?.pageSize || 20;
+  const searchQuery = ref<ISearchProductsQuery>({
+    take: pageSize,
+    sort: options?.sort,
+  });
+  const searchResult = ref<SearchProductsResult>();
+  const loading = ref<boolean>(false);
+
+  async function loadProducts(query: ISearchProductsQuery) {
     logger.info(
-      `Load products page ${args?.page || 1} sort by ${args?.sort || "default"}`
+      `Load products page ${query?.skip || 1} sort by ${
+        query?.sort || "default"
+      }`
     );
-    const data = await mockedProducts({
-      page: args?.page || 1,
-      sort: args?.sort,
-    });
-    products.value = data?.results;
-    totalCount.value = data?.totalCount;
-    currentPage.value = args?.page || 1;
+
+    searchQuery.value = { ...searchQuery.value, ...query };
+    const { getAccessToken } = useUser();
+    const client = new VcmpSellerCatalogClient();
+
+    client.setAuthToken(await getAccessToken());
+
+    try {
+      loading.value = true;
+      searchResult.value = await client.searchProducts({
+        ...searchQuery.value,
+      } as SearchProductsQuery);
+      // currentPage.value = (searchQuery.value.skip / Math.max(1, pageSize)) || 1;
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
   }
 
   return {
-    products: computed(() => products.value),
-    totalCount: computed(() => totalCount.value),
-    pages: computed(() => Math.ceil(totalCount.value / pageSize)),
-    currentPage: computed(() => currentPage.value),
+    products: computed(() => searchResult.value?.results),
+    totalCount: computed(() => searchResult.value?.totalCount),
+    pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
+    currentPage: computed(
+      () => searchQuery.value.skip / Math.max(1, pageSize) || 1
+    ),
+    loading,
+    searchQuery,
     loadProducts,
   };
 };

@@ -116,6 +116,7 @@ export default defineComponent({
           await loadProducts({
             ...searchQuery.value,
             skip: (currentPage.value - 1) * searchQuery.value.take,
+            sort: sort.value,
           });
         },
       },

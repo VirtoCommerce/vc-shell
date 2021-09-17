@@ -1,6 +1,4 @@
 import { Ref, ref, computed, reactive } from "vue";
-import { mockedProducts } from "./mock";
-import { IProduct } from "../../types";
 import { useLogger, useUser } from "@virtoshell/core";
 
 import {
@@ -37,6 +35,13 @@ export default (options?: IUseProductOptions): IUseProducts => {
   const searchResult = ref<SearchProductsResult>();
   const loading = ref<boolean>(false);
 
+  async function getApiClient(): Promise<VcmpSellerCatalogClient> {
+    const { getAccessToken } = useUser();
+    const client = new VcmpSellerCatalogClient();
+    client.setAuthToken(await getAccessToken());
+    return client;
+  }
+
   async function loadProducts(query: ISearchProductsQuery) {
     logger.info(
       `Load products page ${query?.skip || 1} sort by ${
@@ -45,11 +50,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     );
 
     searchQuery.value = { ...searchQuery.value, ...query };
-    const { getAccessToken } = useUser();
-    const client = new VcmpSellerCatalogClient();
-
-    client.setAuthToken(await getAccessToken());
-
+    const client = await getApiClient();
     try {
       loading.value = true;
       searchResult.value = await client.searchProducts({
@@ -69,7 +70,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
     currentPage: computed(
-      () => searchQuery.value.skip / Math.max(1, pageSize) || 1
+      () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
     ),
     loading,
     searchQuery,

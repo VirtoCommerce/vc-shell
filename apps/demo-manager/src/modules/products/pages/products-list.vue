@@ -26,11 +26,11 @@
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
     >
-      <!-- Override sellerName column template -->
-      <template v-slot:item_sellerName="itemData">
+      <!-- Override name column template -->
+      <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
-          <div>{{ itemData.item.sellerName }}</div>
-          <vc-hint>{{ itemData.item.category }}</vc-hint>
+          <div>{{ itemData.item.name }}</div>
+          <vc-hint>{{ itemData.item.path }}</vc-hint>
         </div>
       </template>
 
@@ -40,7 +40,7 @@
           :bordered="true"
           size="s"
           aspect="1x1"
-          :src="itemData.item.image"
+          :src="itemData.item.imgSrc"
         ></vc-image>
       </template>
 
@@ -87,22 +87,24 @@ export default defineComponent({
     const { openBlade } = useRouter();
     const logger = useLogger();
     const { t } = useI18n();
-    const loading = ref(false);
-    const { products, totalCount, pages, currentPage, loadProducts } =
-      useProducts();
+    const {
+      products,
+      totalCount,
+      pages,
+      currentPage,
+      loadProducts,
+      loading,
+      searchQuery,
+    } = useProducts();
 
-    const sort = ref("-createdDate");
+    const sort = ref("createdDate");
 
     watch(sort, async (value) => {
-      loading.value = true;
-      await loadProducts({ sort: value });
-      loading.value = false;
+      await loadProducts({ ...searchQuery.value, sort: value });
     });
 
     onMounted(async () => {
-      loading.value = true;
       await loadProducts({ sort: sort.value });
-      loading.value = false;
     });
 
     const bladeToolbar = [
@@ -111,9 +113,11 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: async () => {
-          loading.value = true;
-          await loadProducts({ page: currentPage.value, sort: sort.value });
-          loading.value = false;
+          await loadProducts({
+            ...searchQuery.value,
+            skip: (currentPage.value - 1) * searchQuery.value.take,
+            sort: sort.value,
+          });
         },
       },
       {
@@ -143,7 +147,7 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
-        id: "sellerName",
+        id: "name",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
         sortable: true,
         alwaysVisible: true,
@@ -182,22 +186,19 @@ export default defineComponent({
       openBlade(props.uid, "products-edit", { param: item.id });
     };
 
-    const onHeaderClick = (item: { id: string; sortable: boolean }) => {
+    const onHeaderClick = (item) => {
+      const sortBy = [":ASK", ":DESC", ""];
       if (item.sortable) {
-        if (sort.value === `${item.id}`) {
-          sort.value = `-${item.id}`;
-        } else if (sort.value === `-${item.id}`) {
-          sort.value = null;
-        } else {
-          sort.value = item.id;
-        }
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
       }
     };
 
     const onPaginationClick = async (page: number) => {
-      loading.value = true;
-      await loadProducts({ page, sort: sort.value });
-      loading.value = false;
+      await loadProducts({
+        ...searchQuery.value,
+        skip: (page - 1) * searchQuery.value.take,
+      });
     };
 
     const statusStyle = (status: string) => {
@@ -241,6 +242,7 @@ export default defineComponent({
           return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
+      searchQuery,
       products,
       totalCount,
       pages,

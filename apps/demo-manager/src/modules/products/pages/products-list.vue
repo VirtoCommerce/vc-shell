@@ -30,7 +30,7 @@
       <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
           <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-          <vc-hint class="vc-ellipsis">{{ itemData.item.category }}</vc-hint>
+          <vc-hint class="vc-ellipsis">{{ itemData.item.path }}</vc-hint>
         </div>
       </template>
 
@@ -40,7 +40,7 @@
           :bordered="true"
           size="s"
           aspect="1x1"
-          :src="itemData.item.imageUrl"
+          :src="itemData.item.imgSrc"
         ></vc-image>
       </template>
 
@@ -186,15 +186,11 @@ export default defineComponent({
       openBlade(props.uid, "products-edit", { param: item.id });
     };
 
-    const onHeaderClick = (item: { id: string; sortable: boolean }) => {
+    const onHeaderClick = (item) => {
+      const sortBy = [":ASK", ":DESC", ""];
       if (item.sortable) {
-        if (sort.value === `${item.id}`) {
-          sort.value = `-${item.id}`;
-        } else if (sort.value === `-${item.id}`) {
-          sort.value = null;
-        } else {
-          sort.value = item.id;
-        }
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
       }
     };
 
@@ -246,6 +242,7 @@ export default defineComponent({
           return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
+      searchQuery,
       products,
       totalCount,
       pages,

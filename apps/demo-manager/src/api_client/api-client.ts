@@ -16,8 +16,8 @@ export class AuthApiBase {
     }
   
     protected transformOptions(options: any): Promise<any> {
-        options.headers['authorization'] =  `Bearer ${this.authToken}`;
-        return Promise.resolve(options);
+      options.headers['authorization'] =  `Bearer ${this.authToken}`;
+      return Promise.resolve(options);
     }
   }
   
@@ -30,6 +30,50 @@ export class AuthApiBase {
           super();
           this.http = http ? http : <any>window;
           this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      searchCategories(body: SearchCategoriesQuery | undefined): Promise<CategorySearchResult> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/categories/search";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processSearchCategories(_response);
+          });
+      }
+  
+      protected processSearchCategories(response: Response): Promise<CategorySearchResult> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = CategorySearchResult.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<CategorySearchResult>(<any>null);
       }
   
       /**
@@ -50,7 +94,7 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
- 
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
@@ -74,6 +118,136 @@ export class AuthApiBase {
               });
           }
           return Promise.resolve<SearchProductsResult>(<any>null);
+      }
+  
+      /**
+       * @return Success
+       */
+      getProductById(productId: string | null): Promise<SellerProduct> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/products/{productId}";
+          if (productId === undefined || productId === null)
+              throw new Error("The parameter 'productId' must be defined.");
+          url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "POST",
+              headers: {
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processGetProductById(_response);
+          });
+      }
+  
+      protected processGetProductById(response: Response): Promise<SellerProduct> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = SellerProduct.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<SellerProduct>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      createNewProduct(body: CreateNewProductCommand | undefined): Promise<SellerProduct> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/products";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processCreateNewProduct(_response);
+          });
+      }
+  
+      protected processCreateNewProduct(response: Response): Promise<SellerProduct> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = SellerProduct.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<SellerProduct>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      updateProductDetails(body: UpdateProductDetailsCommand | undefined): Promise<SellerProduct> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/products";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "PUT",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processUpdateProductDetails(_response);
+          });
+      }
+  
+      protected processUpdateProductDetails(response: Response): Promise<SellerProduct> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = SellerProduct.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<SellerProduct>(<any>null);
       }
   }
   
@@ -122,9 +296,8 @@ export class AuthApiBase {
       sortDirection?: SortDirection;
   }
   
-  export class SearchProductsQuery implements ISearchProductsQuery {
-      categoryId?: string | undefined;
-      storesIds?: string[] | undefined;
+  export class SearchCategoriesQuery implements ISearchCategoriesQuery {
+      storeId?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -141,7 +314,7 @@ export class AuthApiBase {
       skip?: number;
       take?: number;
   
-      constructor(data?: ISearchProductsQuery) {
+      constructor(data?: ISearchCategoriesQuery) {
           if (data) {
               for (var property in data) {
                   if (data.hasOwnProperty(property))
@@ -152,12 +325,7 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
-              this.categoryId = _data["categoryId"];
-              if (Array.isArray(_data["storesIds"])) {
-                  this.storesIds = [] as any;
-                  for (let item of _data["storesIds"])
-                      this.storesIds!.push(item);
-              }
+              this.storeId = _data["storeId"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
               if (Array.isArray(_data["objectTypes"])) {
@@ -184,21 +352,16 @@ export class AuthApiBase {
           }
       }
   
-      static fromJS(data: any): SearchProductsQuery {
+      static fromJS(data: any): SearchCategoriesQuery {
           data = typeof data === 'object' ? data : {};
-          let result = new SearchProductsQuery();
+          let result = new SearchCategoriesQuery();
           result.init(data);
           return result;
       }
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          data["categoryId"] = this.categoryId;
-          if (Array.isArray(this.storesIds)) {
-              data["storesIds"] = [];
-              for (let item of this.storesIds)
-                  data["storesIds"].push(item);
-          }
+          data["storeId"] = this.storeId;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -226,9 +389,8 @@ export class AuthApiBase {
       }
   }
   
-  export interface ISearchProductsQuery {
-      categoryId?: string | undefined;
-      storesIds?: string[] | undefined;
+  export interface ISearchCategoriesQuery {
+      storeId?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -244,254 +406,6 @@ export class AuthApiBase {
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
-  }
-  
-  export class Comment implements IComment {
-      text?: string | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  
-      constructor(data?: IComment) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.text = _data["text"];
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-  
-      static fromJS(data: any): Comment {
-          data = typeof data === 'object' ? data : {};
-          let result = new Comment();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["text"] = this.text;
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data; 
-      }
-  }
-  
-  export interface IComment {
-      text?: string | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  }
-  
-  export enum PublicationRequestStatus {
-      New = "New",
-      WaitForApproval = "WaitForApproval",
-      RequestChanges = "RequestChanges",
-      Rejected = "Rejected",
-      Approved = "Approved",
-  }
-  
-  export class ProductPublicationRequest implements IProductPublicationRequest {
-      storeId?: string | undefined;
-      storeName?: string | undefined;
-      sellerId?: string | undefined;
-      sellerName?: string | undefined;
-      operatorId?: string | undefined;
-      operatorName?: string | undefined;
-      sellerProductId?: string | undefined;
-      sellerProduct?: SellerProduct;
-      comments?: Comment[] | undefined;
-      prevStatus?: PublicationRequestStatus;
-      status?: PublicationRequestStatus;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  
-      constructor(data?: IProductPublicationRequest) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.storeId = _data["storeId"];
-              this.storeName = _data["storeName"];
-              this.sellerId = _data["sellerId"];
-              this.sellerName = _data["sellerName"];
-              this.operatorId = _data["operatorId"];
-              this.operatorName = _data["operatorName"];
-              this.sellerProductId = _data["sellerProductId"];
-              this.sellerProduct = _data["sellerProduct"] ? SellerProduct.fromJS(_data["sellerProduct"]) : <any>undefined;
-              if (Array.isArray(_data["comments"])) {
-                  this.comments = [] as any;
-                  for (let item of _data["comments"])
-                      this.comments!.push(Comment.fromJS(item));
-              }
-              this.prevStatus = _data["prevStatus"];
-              this.status = _data["status"];
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-  
-      static fromJS(data: any): ProductPublicationRequest {
-          data = typeof data === 'object' ? data : {};
-          let result = new ProductPublicationRequest();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["storeId"] = this.storeId;
-          data["storeName"] = this.storeName;
-          data["sellerId"] = this.sellerId;
-          data["sellerName"] = this.sellerName;
-          data["operatorId"] = this.operatorId;
-          data["operatorName"] = this.operatorName;
-          data["sellerProductId"] = this.sellerProductId;
-          data["sellerProduct"] = this.sellerProduct ? this.sellerProduct.toJSON() : <any>undefined;
-          if (Array.isArray(this.comments)) {
-              data["comments"] = [];
-              for (let item of this.comments)
-                  data["comments"].push(item.toJSON());
-          }
-          data["prevStatus"] = this.prevStatus;
-          data["status"] = this.status;
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data; 
-      }
-  }
-  
-  export interface IProductPublicationRequest {
-      storeId?: string | undefined;
-      storeName?: string | undefined;
-      sellerId?: string | undefined;
-      sellerName?: string | undefined;
-      operatorId?: string | undefined;
-      operatorName?: string | undefined;
-      sellerProductId?: string | undefined;
-      sellerProduct?: SellerProduct;
-      comments?: Comment[] | undefined;
-      prevStatus?: PublicationRequestStatus;
-      status?: PublicationRequestStatus;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  }
-  
-  export class ProductPublication implements IProductPublication {
-      sellerId?: string | undefined;
-      sellerName?: string | undefined;
-      storeId?: string | undefined;
-      storeName?: string | undefined;
-      publicationRequestId?: string | undefined;
-      publicationRequest?: ProductPublicationRequest;
-      isActive?: boolean;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  
-      constructor(data?: IProductPublication) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.sellerId = _data["sellerId"];
-              this.sellerName = _data["sellerName"];
-              this.storeId = _data["storeId"];
-              this.storeName = _data["storeName"];
-              this.publicationRequestId = _data["publicationRequestId"];
-              this.publicationRequest = _data["publicationRequest"] ? ProductPublicationRequest.fromJS(_data["publicationRequest"]) : <any>undefined;
-              this.isActive = _data["isActive"];
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-  
-      static fromJS(data: any): ProductPublication {
-          data = typeof data === 'object' ? data : {};
-          let result = new ProductPublication();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["sellerId"] = this.sellerId;
-          data["sellerName"] = this.sellerName;
-          data["storeId"] = this.storeId;
-          data["storeName"] = this.storeName;
-          data["publicationRequestId"] = this.publicationRequestId;
-          data["publicationRequest"] = this.publicationRequest ? this.publicationRequest.toJSON() : <any>undefined;
-          data["isActive"] = this.isActive;
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data; 
-      }
-  }
-  
-  export interface IProductPublication {
-      sellerId?: string | undefined;
-      sellerName?: string | undefined;
-      storeId?: string | undefined;
-      storeName?: string | undefined;
-      publicationRequestId?: string | undefined;
-      publicationRequest?: ProductPublicationRequest;
-      isActive?: boolean;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
   }
   
   export enum PropertyValueType {
@@ -993,6 +907,72 @@ export class AuthApiBase {
       isInherited?: boolean;
   }
   
+  export class CategoryLink implements ICategoryLink {
+      /** Entry identifier which this link belongs to */
+      readonly entryId?: string | undefined;
+      listEntryId?: string | undefined;
+      /** Gets or sets the type of the list entry. E.g. "product", "category" */
+      listEntryType?: string | undefined;
+      /** Product order position in virtual catalog */
+      priority?: number;
+      catalogId?: string | undefined;
+      categoryId?: string | undefined;
+      category?: Category;
+  
+      constructor(data?: ICategoryLink) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              (<any>this).entryId = _data["entryId"];
+              this.listEntryId = _data["listEntryId"];
+              this.listEntryType = _data["listEntryType"];
+              this.priority = _data["priority"];
+              this.catalogId = _data["catalogId"];
+              this.categoryId = _data["categoryId"];
+              this.category = _data["category"] ? Category.fromJS(_data["category"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): CategoryLink {
+          data = typeof data === 'object' ? data : {};
+          let result = new CategoryLink();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["entryId"] = this.entryId;
+          data["listEntryId"] = this.listEntryId;
+          data["listEntryType"] = this.listEntryType;
+          data["priority"] = this.priority;
+          data["catalogId"] = this.catalogId;
+          data["categoryId"] = this.categoryId;
+          data["category"] = this.category ? this.category.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface ICategoryLink {
+      /** Entry identifier which this link belongs to */
+      entryId?: string | undefined;
+      listEntryId?: string | undefined;
+      /** Gets or sets the type of the list entry. E.g. "product", "category" */
+      listEntryType?: string | undefined;
+      /** Product order position in virtual catalog */
+      priority?: number;
+      catalogId?: string | undefined;
+      categoryId?: string | undefined;
+      category?: Category;
+  }
+  
   export class SeoInfo implements ISeoInfo {
       name?: string | undefined;
       /** Slug */
@@ -1207,140 +1187,6 @@ export class AuthApiBase {
   export interface IImage {
       binaryData?: string | undefined;
       altText?: string | undefined;
-      relativeUrl?: string | undefined;
-      url?: string | undefined;
-      description?: string | undefined;
-      sortOrder?: number;
-      /** Gets or sets the asset type identifier. */
-      typeId?: string | undefined;
-      /** Gets or sets the asset group name. */
-      group?: string | undefined;
-      /** Gets or sets the asset name. */
-      name?: string | undefined;
-      outerId?: string | undefined;
-      /** Gets or sets the asset language. */
-      languageCode?: string | undefined;
-      /** System flag used to mark that object was inherited from other */
-      isInherited?: boolean;
-      seoObjectType?: string | undefined;
-      seoInfos?: SeoInfo[] | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  }
-  
-  export class Asset implements IAsset {
-      mimeType?: string | undefined;
-      size?: number;
-      readonly readableSize?: string | undefined;
-      binaryData?: string | undefined;
-      relativeUrl?: string | undefined;
-      url?: string | undefined;
-      description?: string | undefined;
-      sortOrder?: number;
-      /** Gets or sets the asset type identifier. */
-      typeId?: string | undefined;
-      /** Gets or sets the asset group name. */
-      group?: string | undefined;
-      /** Gets or sets the asset name. */
-      name?: string | undefined;
-      outerId?: string | undefined;
-      /** Gets or sets the asset language. */
-      languageCode?: string | undefined;
-      /** System flag used to mark that object was inherited from other */
-      readonly isInherited?: boolean;
-      readonly seoObjectType?: string | undefined;
-      seoInfos?: SeoInfo[] | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  
-      constructor(data?: IAsset) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.mimeType = _data["mimeType"];
-              this.size = _data["size"];
-              (<any>this).readableSize = _data["readableSize"];
-              this.binaryData = _data["binaryData"];
-              this.relativeUrl = _data["relativeUrl"];
-              this.url = _data["url"];
-              this.description = _data["description"];
-              this.sortOrder = _data["sortOrder"];
-              this.typeId = _data["typeId"];
-              this.group = _data["group"];
-              this.name = _data["name"];
-              this.outerId = _data["outerId"];
-              this.languageCode = _data["languageCode"];
-              (<any>this).isInherited = _data["isInherited"];
-              (<any>this).seoObjectType = _data["seoObjectType"];
-              if (Array.isArray(_data["seoInfos"])) {
-                  this.seoInfos = [] as any;
-                  for (let item of _data["seoInfos"])
-                      this.seoInfos!.push(SeoInfo.fromJS(item));
-              }
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-  
-      static fromJS(data: any): Asset {
-          data = typeof data === 'object' ? data : {};
-          let result = new Asset();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["mimeType"] = this.mimeType;
-          data["size"] = this.size;
-          data["readableSize"] = this.readableSize;
-          data["binaryData"] = this.binaryData;
-          data["relativeUrl"] = this.relativeUrl;
-          data["url"] = this.url;
-          data["description"] = this.description;
-          data["sortOrder"] = this.sortOrder;
-          data["typeId"] = this.typeId;
-          data["group"] = this.group;
-          data["name"] = this.name;
-          data["outerId"] = this.outerId;
-          data["languageCode"] = this.languageCode;
-          data["isInherited"] = this.isInherited;
-          data["seoObjectType"] = this.seoObjectType;
-          if (Array.isArray(this.seoInfos)) {
-              data["seoInfos"] = [];
-              for (let item of this.seoInfos)
-                  data["seoInfos"].push(item.toJSON());
-          }
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data; 
-      }
-  }
-  
-  export interface IAsset {
-      mimeType?: string | undefined;
-      size?: number;
-      readableSize?: string | undefined;
-      binaryData?: string | undefined;
       relativeUrl?: string | undefined;
       url?: string | undefined;
       description?: string | undefined;
@@ -1681,19 +1527,11 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
-  export class CategoryLink implements ICategoryLink {
-      /** Entry identifier which this link belongs to */
-      readonly entryId?: string | undefined;
-      listEntryId?: string | undefined;
-      /** Gets or sets the type of the list entry. E.g. "product", "category" */
-      listEntryType?: string | undefined;
-      /** Product order position in virtual catalog */
-      priority?: number;
-      catalogId?: string | undefined;
-      categoryId?: string | undefined;
-      category?: Category;
+  export class CategorySearchResult implements ICategorySearchResult {
+      totalCount?: number;
+      results?: Category[] | undefined;
   
-      constructor(data?: ICategoryLink) {
+      constructor(data?: ICategorySearchResult) {
           if (data) {
               for (var property in data) {
                   if (data.hasOwnProperty(property))
@@ -1704,47 +1542,543 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
-              (<any>this).entryId = _data["entryId"];
-              this.listEntryId = _data["listEntryId"];
-              this.listEntryType = _data["listEntryType"];
-              this.priority = _data["priority"];
-              this.catalogId = _data["catalogId"];
-              this.categoryId = _data["categoryId"];
-              this.category = _data["category"] ? Category.fromJS(_data["category"]) : <any>undefined;
+              this.totalCount = _data["totalCount"];
+              if (Array.isArray(_data["results"])) {
+                  this.results = [] as any;
+                  for (let item of _data["results"])
+                      this.results!.push(Category.fromJS(item));
+              }
           }
       }
   
-      static fromJS(data: any): CategoryLink {
+      static fromJS(data: any): CategorySearchResult {
           data = typeof data === 'object' ? data : {};
-          let result = new CategoryLink();
+          let result = new CategorySearchResult();
           result.init(data);
           return result;
       }
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          data["entryId"] = this.entryId;
-          data["listEntryId"] = this.listEntryId;
-          data["listEntryType"] = this.listEntryType;
-          data["priority"] = this.priority;
-          data["catalogId"] = this.catalogId;
-          data["categoryId"] = this.categoryId;
-          data["category"] = this.category ? this.category.toJSON() : <any>undefined;
+          data["totalCount"] = this.totalCount;
+          if (Array.isArray(this.results)) {
+              data["results"] = [];
+              for (let item of this.results)
+                  data["results"].push(item.toJSON());
+          }
           return data; 
       }
   }
   
-  export interface ICategoryLink {
-      /** Entry identifier which this link belongs to */
-      entryId?: string | undefined;
-      listEntryId?: string | undefined;
-      /** Gets or sets the type of the list entry. E.g. "product", "category" */
-      listEntryType?: string | undefined;
-      /** Product order position in virtual catalog */
-      priority?: number;
-      catalogId?: string | undefined;
+  export interface ICategorySearchResult {
+      totalCount?: number;
+      results?: Category[] | undefined;
+  }
+  
+  export class SearchProductsQuery implements ISearchProductsQuery {
       categoryId?: string | undefined;
-      category?: Category;
+      storesIds?: string[] | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      readonly sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  
+      constructor(data?: ISearchProductsQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.categoryId = _data["categoryId"];
+              if (Array.isArray(_data["storesIds"])) {
+                  this.storesIds = [] as any;
+                  for (let item of _data["storesIds"])
+                      this.storesIds!.push(item);
+              }
+              this.responseGroup = _data["responseGroup"];
+              this.objectType = _data["objectType"];
+              if (Array.isArray(_data["objectTypes"])) {
+                  this.objectTypes = [] as any;
+                  for (let item of _data["objectTypes"])
+                      this.objectTypes!.push(item);
+              }
+              if (Array.isArray(_data["objectIds"])) {
+                  this.objectIds = [] as any;
+                  for (let item of _data["objectIds"])
+                      this.objectIds!.push(item);
+              }
+              this.keyword = _data["keyword"];
+              this.searchPhrase = _data["searchPhrase"];
+              this.languageCode = _data["languageCode"];
+              this.sort = _data["sort"];
+              if (Array.isArray(_data["sortInfos"])) {
+                  (<any>this).sortInfos = [] as any;
+                  for (let item of _data["sortInfos"])
+                      (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+              }
+              this.skip = _data["skip"];
+              this.take = _data["take"];
+          }
+      }
+  
+      static fromJS(data: any): SearchProductsQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchProductsQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["categoryId"] = this.categoryId;
+          if (Array.isArray(this.storesIds)) {
+              data["storesIds"] = [];
+              for (let item of this.storesIds)
+                  data["storesIds"].push(item);
+          }
+          data["responseGroup"] = this.responseGroup;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.objectTypes)) {
+              data["objectTypes"] = [];
+              for (let item of this.objectTypes)
+                  data["objectTypes"].push(item);
+          }
+          if (Array.isArray(this.objectIds)) {
+              data["objectIds"] = [];
+              for (let item of this.objectIds)
+                  data["objectIds"].push(item);
+          }
+          data["keyword"] = this.keyword;
+          data["searchPhrase"] = this.searchPhrase;
+          data["languageCode"] = this.languageCode;
+          data["sort"] = this.sort;
+          if (Array.isArray(this.sortInfos)) {
+              data["sortInfos"] = [];
+              for (let item of this.sortInfos)
+                  data["sortInfos"].push(item.toJSON());
+          }
+          data["skip"] = this.skip;
+          data["take"] = this.take;
+          return data; 
+      }
+  }
+  
+  export interface ISearchProductsQuery {
+      categoryId?: string | undefined;
+      storesIds?: string[] | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  }
+  
+  export enum PublicationRequestStatus {
+      New = "New",
+      WaitForApproval = "WaitForApproval",
+      RequestChanges = "RequestChanges",
+      Rejected = "Rejected",
+      Approved = "Approved",
+  }
+  
+  export class Comment implements IComment {
+      text?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IComment) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.text = _data["text"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): Comment {
+          data = typeof data === 'object' ? data : {};
+          let result = new Comment();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["text"] = this.text;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IComment {
+      text?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class ProductPublicationRequest implements IProductPublicationRequest {
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      operatorId?: string | undefined;
+      operatorName?: string | undefined;
+      sellerProductId?: string | undefined;
+      sellerProduct?: SellerProduct;
+      comments?: Comment[] | undefined;
+      prevStatus?: PublicationRequestStatus;
+      status?: PublicationRequestStatus;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IProductPublicationRequest) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.storeId = _data["storeId"];
+              this.storeName = _data["storeName"];
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.operatorId = _data["operatorId"];
+              this.operatorName = _data["operatorName"];
+              this.sellerProductId = _data["sellerProductId"];
+              this.sellerProduct = _data["sellerProduct"] ? SellerProduct.fromJS(_data["sellerProduct"]) : <any>undefined;
+              if (Array.isArray(_data["comments"])) {
+                  this.comments = [] as any;
+                  for (let item of _data["comments"])
+                      this.comments!.push(Comment.fromJS(item));
+              }
+              this.prevStatus = _data["prevStatus"];
+              this.status = _data["status"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): ProductPublicationRequest {
+          data = typeof data === 'object' ? data : {};
+          let result = new ProductPublicationRequest();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["storeId"] = this.storeId;
+          data["storeName"] = this.storeName;
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["operatorId"] = this.operatorId;
+          data["operatorName"] = this.operatorName;
+          data["sellerProductId"] = this.sellerProductId;
+          data["sellerProduct"] = this.sellerProduct ? this.sellerProduct.toJSON() : <any>undefined;
+          if (Array.isArray(this.comments)) {
+              data["comments"] = [];
+              for (let item of this.comments)
+                  data["comments"].push(item.toJSON());
+          }
+          data["prevStatus"] = this.prevStatus;
+          data["status"] = this.status;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IProductPublicationRequest {
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      operatorId?: string | undefined;
+      operatorName?: string | undefined;
+      sellerProductId?: string | undefined;
+      sellerProduct?: SellerProduct;
+      comments?: Comment[] | undefined;
+      prevStatus?: PublicationRequestStatus;
+      status?: PublicationRequestStatus;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class ProductPublication implements IProductPublication {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      publicationRequestId?: string | undefined;
+      publicationRequest?: ProductPublicationRequest;
+      isActive?: boolean;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IProductPublication) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.storeId = _data["storeId"];
+              this.storeName = _data["storeName"];
+              this.publicationRequestId = _data["publicationRequestId"];
+              this.publicationRequest = _data["publicationRequest"] ? ProductPublicationRequest.fromJS(_data["publicationRequest"]) : <any>undefined;
+              this.isActive = _data["isActive"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): ProductPublication {
+          data = typeof data === 'object' ? data : {};
+          let result = new ProductPublication();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["storeId"] = this.storeId;
+          data["storeName"] = this.storeName;
+          data["publicationRequestId"] = this.publicationRequestId;
+          data["publicationRequest"] = this.publicationRequest ? this.publicationRequest.toJSON() : <any>undefined;
+          data["isActive"] = this.isActive;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IProductPublication {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      publicationRequestId?: string | undefined;
+      publicationRequest?: ProductPublicationRequest;
+      isActive?: boolean;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class Asset implements IAsset {
+      mimeType?: string | undefined;
+      size?: number;
+      readonly readableSize?: string | undefined;
+      binaryData?: string | undefined;
+      relativeUrl?: string | undefined;
+      url?: string | undefined;
+      description?: string | undefined;
+      sortOrder?: number;
+      /** Gets or sets the asset type identifier. */
+      typeId?: string | undefined;
+      /** Gets or sets the asset group name. */
+      group?: string | undefined;
+      /** Gets or sets the asset name. */
+      name?: string | undefined;
+      outerId?: string | undefined;
+      /** Gets or sets the asset language. */
+      languageCode?: string | undefined;
+      /** System flag used to mark that object was inherited from other */
+      readonly isInherited?: boolean;
+      readonly seoObjectType?: string | undefined;
+      seoInfos?: SeoInfo[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IAsset) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.mimeType = _data["mimeType"];
+              this.size = _data["size"];
+              (<any>this).readableSize = _data["readableSize"];
+              this.binaryData = _data["binaryData"];
+              this.relativeUrl = _data["relativeUrl"];
+              this.url = _data["url"];
+              this.description = _data["description"];
+              this.sortOrder = _data["sortOrder"];
+              this.typeId = _data["typeId"];
+              this.group = _data["group"];
+              this.name = _data["name"];
+              this.outerId = _data["outerId"];
+              this.languageCode = _data["languageCode"];
+              (<any>this).isInherited = _data["isInherited"];
+              (<any>this).seoObjectType = _data["seoObjectType"];
+              if (Array.isArray(_data["seoInfos"])) {
+                  this.seoInfos = [] as any;
+                  for (let item of _data["seoInfos"])
+                      this.seoInfos!.push(SeoInfo.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): Asset {
+          data = typeof data === 'object' ? data : {};
+          let result = new Asset();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["mimeType"] = this.mimeType;
+          data["size"] = this.size;
+          data["readableSize"] = this.readableSize;
+          data["binaryData"] = this.binaryData;
+          data["relativeUrl"] = this.relativeUrl;
+          data["url"] = this.url;
+          data["description"] = this.description;
+          data["sortOrder"] = this.sortOrder;
+          data["typeId"] = this.typeId;
+          data["group"] = this.group;
+          data["name"] = this.name;
+          data["outerId"] = this.outerId;
+          data["languageCode"] = this.languageCode;
+          data["isInherited"] = this.isInherited;
+          data["seoObjectType"] = this.seoObjectType;
+          if (Array.isArray(this.seoInfos)) {
+              data["seoInfos"] = [];
+              for (let item of this.seoInfos)
+                  data["seoInfos"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IAsset {
+      mimeType?: string | undefined;
+      size?: number;
+      readableSize?: string | undefined;
+      binaryData?: string | undefined;
+      relativeUrl?: string | undefined;
+      url?: string | undefined;
+      description?: string | undefined;
+      sortOrder?: number;
+      /** Gets or sets the asset type identifier. */
+      typeId?: string | undefined;
+      /** Gets or sets the asset group name. */
+      group?: string | undefined;
+      /** Gets or sets the asset name. */
+      name?: string | undefined;
+      outerId?: string | undefined;
+      /** Gets or sets the asset language. */
+      languageCode?: string | undefined;
+      /** System flag used to mark that object was inherited from other */
+      isInherited?: boolean;
+      seoObjectType?: string | undefined;
+      seoInfos?: SeoInfo[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
   }
   
   export class EditorialReview implements IEditorialReview {
@@ -2677,19 +3011,51 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
+  export class INotification implements IINotification {
+  
+      constructor(data?: IINotification) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+      }
+  
+      static fromJS(data: any): INotification {
+          data = typeof data === 'object' ? data : {};
+          let result = new INotification();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          return data; 
+      }
+  }
+  
+  export interface IINotification {
+  }
+  
   export class SellerProduct implements ISellerProduct {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      name?: string | undefined;
-      sku?: string | undefined;
-      imageUrl?: string | undefined;
-      categoryName?: string | undefined;
-      categoryPath?: string | undefined;
+      readonly name?: string | undefined;
+      readonly imgSrc?: string | undefined;
+      readonly categoryId?: string | undefined;
+      readonly path?: string | undefined;
+      readonly outline?: string | undefined;
+      readonly description?: string | undefined;
       hasStagedChanges?: boolean;
       isPublished?: boolean;
+      status?: PublicationRequestStatus;
       publications?: ProductPublication[] | undefined;
-      productId?: string | undefined;
-      product?: CatalogProduct;
+      outerId?: string | undefined;
+      productData?: CatalogProduct;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
       createdBy?: string | undefined;
@@ -2709,20 +3075,22 @@ export class AuthApiBase {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
-              this.name = _data["name"];
-              this.sku = _data["sku"];
-              this.imageUrl = _data["imageUrl"];
-              this.categoryName = _data["categoryName"];
-              this.categoryPath = _data["categoryPath"];
+              (<any>this).name = _data["name"];
+              (<any>this).imgSrc = _data["imgSrc"];
+              (<any>this).categoryId = _data["categoryId"];
+              (<any>this).path = _data["path"];
+              (<any>this).outline = _data["outline"];
+              (<any>this).description = _data["description"];
               this.hasStagedChanges = _data["hasStagedChanges"];
               this.isPublished = _data["isPublished"];
+              this.status = _data["status"];
               if (Array.isArray(_data["publications"])) {
                   this.publications = [] as any;
                   for (let item of _data["publications"])
                       this.publications!.push(ProductPublication.fromJS(item));
               }
-              this.productId = _data["productId"];
-              this.product = _data["product"] ? CatalogProduct.fromJS(_data["product"]) : <any>undefined;
+              this.outerId = _data["outerId"];
+              this.productData = _data["productData"] ? CatalogProduct.fromJS(_data["productData"]) : <any>undefined;
               this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
               this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
               this.createdBy = _data["createdBy"];
@@ -2743,19 +3111,21 @@ export class AuthApiBase {
           data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
           data["name"] = this.name;
-          data["sku"] = this.sku;
-          data["imageUrl"] = this.imageUrl;
-          data["categoryName"] = this.categoryName;
-          data["categoryPath"] = this.categoryPath;
+          data["imgSrc"] = this.imgSrc;
+          data["categoryId"] = this.categoryId;
+          data["path"] = this.path;
+          data["outline"] = this.outline;
+          data["description"] = this.description;
           data["hasStagedChanges"] = this.hasStagedChanges;
           data["isPublished"] = this.isPublished;
+          data["status"] = this.status;
           if (Array.isArray(this.publications)) {
               data["publications"] = [];
               for (let item of this.publications)
                   data["publications"].push(item.toJSON());
           }
-          data["productId"] = this.productId;
-          data["product"] = this.product ? this.product.toJSON() : <any>undefined;
+          data["outerId"] = this.outerId;
+          data["productData"] = this.productData ? this.productData.toJSON() : <any>undefined;
           data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
           data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
           data["createdBy"] = this.createdBy;
@@ -2769,15 +3139,17 @@ export class AuthApiBase {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
       name?: string | undefined;
-      sku?: string | undefined;
-      imageUrl?: string | undefined;
-      categoryName?: string | undefined;
-      categoryPath?: string | undefined;
+      imgSrc?: string | undefined;
+      categoryId?: string | undefined;
+      path?: string | undefined;
+      outline?: string | undefined;
+      description?: string | undefined;
       hasStagedChanges?: boolean;
       isPublished?: boolean;
+      status?: PublicationRequestStatus;
       publications?: ProductPublication[] | undefined;
-      productId?: string | undefined;
-      product?: CatalogProduct;
+      outerId?: string | undefined;
+      productData?: CatalogProduct;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
       createdBy?: string | undefined;
@@ -2831,6 +3203,146 @@ export class AuthApiBase {
   export interface ISearchProductsResult {
       totalCount?: number;
       results?: SellerProduct[] | undefined;
+  }
+  
+  export class CreateNewProductCommand implements ICreateNewProductCommand {
+      sellerName?: string | undefined;
+      productData?: CatalogProduct;
+  
+      constructor(data?: ICreateNewProductCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerName = _data["sellerName"];
+              this.productData = _data["productData"] ? CatalogProduct.fromJS(_data["productData"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): CreateNewProductCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new CreateNewProductCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerName"] = this.sellerName;
+          data["productData"] = this.productData ? this.productData.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface ICreateNewProductCommand {
+      sellerName?: string | undefined;
+      productData?: CatalogProduct;
+  }
+  
+  export class ProductDetails implements IProductDetails {
+      name?: string | undefined;
+      description?: string | undefined;
+      gtin?: string | undefined;
+      categoryId?: string | undefined;
+      images?: Image[] | undefined;
+  
+      constructor(data?: IProductDetails) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.name = _data["name"];
+              this.description = _data["description"];
+              this.gtin = _data["gtin"];
+              this.categoryId = _data["categoryId"];
+              if (Array.isArray(_data["images"])) {
+                  this.images = [] as any;
+                  for (let item of _data["images"])
+                      this.images!.push(Image.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): ProductDetails {
+          data = typeof data === 'object' ? data : {};
+          let result = new ProductDetails();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["name"] = this.name;
+          data["description"] = this.description;
+          data["gtin"] = this.gtin;
+          data["categoryId"] = this.categoryId;
+          if (Array.isArray(this.images)) {
+              data["images"] = [];
+              for (let item of this.images)
+                  data["images"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface IProductDetails {
+      name?: string | undefined;
+      description?: string | undefined;
+      gtin?: string | undefined;
+      categoryId?: string | undefined;
+      images?: Image[] | undefined;
+  }
+  
+  export class UpdateProductDetailsCommand implements IUpdateProductDetailsCommand {
+      sellerProductId?: string | undefined;
+      productDetails?: ProductDetails;
+  
+      constructor(data?: IUpdateProductDetailsCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerProductId = _data["sellerProductId"];
+              this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): UpdateProductDetailsCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new UpdateProductDetailsCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerProductId"] = this.sellerProductId;
+          data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface IUpdateProductDetailsCommand {
+      sellerProductId?: string | undefined;
+      productDetails?: ProductDetails;
   }
   
   export class ApiException extends Error {

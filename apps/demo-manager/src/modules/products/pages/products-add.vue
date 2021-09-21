@@ -18,6 +18,7 @@
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 :clearable="true"
                 :required="true"
+                v-model="product.name"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
@@ -26,6 +27,7 @@
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 :required="true"
+                v-model="product.categoryId"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
@@ -36,6 +38,7 @@
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                 :clearable="true"
                 :required="true"
+                v-model="product.gtin"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                 "
@@ -44,6 +47,7 @@
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 :required="true"
+                v-model="product.description"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
@@ -79,9 +83,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
+import { ICategory } from "@virtoshell/api-client";
 
 export default defineComponent({
   props: {
@@ -109,27 +114,17 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const { closeBlade } = useRouter();
-    const { product } = useProduct();
-    const categories = [
-      {
-        title: "Category 1",
-        value: "1",
-      },
-      {
-        title: "Category 2",
-        value: "2",
-      },
-      {
-        title: "Category 3",
-        value: "3",
-      },
-    ];
+    const { createProduct, productDetails, fetchCategories, loading } =
+      useProduct();
 
     const bladeToolbar = [
       {
         id: "save",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
+        onClick: () => {
+          createProduct({ ...productDetails });
+        },
       },
       {
         id: "saveAndApprove",
@@ -145,10 +140,14 @@ export default defineComponent({
         },
       },
     ];
+    const categories = ref<ICategory[]>();
+    onMounted(async () => {
+      categories.value = await fetchCategories();
+    });
 
     return {
       bladeToolbar,
-      product: computed(() => product.value),
+      product: computed(() => productDetails),
       categories,
     };
   },

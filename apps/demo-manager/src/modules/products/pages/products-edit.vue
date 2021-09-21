@@ -9,7 +9,10 @@
     @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
-    <div v-if="product" class="product-details__inner vc-flex vc-flex-grow_1">
+    <div
+      v-if="productDetails"
+      class="product-details__inner vc-flex vc-flex-grow_1"
+    >
       <div class="product-details__content vc-flex-grow_1">
         <vc-container :no-padding="true">
           <div class="vc-padding_l">
@@ -17,7 +20,7 @@
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="product.sellerName"
+                v-model="productDetails.name"
                 :clearable="true"
                 :required="true"
                 :placeholder="
@@ -27,7 +30,7 @@
               <vc-autocomplete
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="product.categoryId"
+                v-model="productDetails.categoryId"
                 :required="true"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
@@ -38,7 +41,7 @@
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                v-model="product.gtin"
+                v-model="productDetails.gtin"
                 :clearable="true"
                 :required="true"
                 :placeholder="
@@ -49,6 +52,7 @@
               <vc-textarea
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
+                v-model="productDetails.description"
                 :required="true"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
@@ -56,7 +60,7 @@
               ></vc-textarea>
               <vc-gallery
                 label="Gallery"
-                :images="images"
+                :images="productDetails.images"
                 @upload="onUpload"
               ></vc-gallery>
             </vc-form>
@@ -93,10 +97,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onBeforeMount, reactive } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
-
+import { ICategory, Image } from "@virtoshell/api-client";
 export default defineComponent({
   props: {
     uid: {
@@ -128,64 +132,38 @@ export default defineComponent({
   setup(props) {
     const { t } = useI18n();
     const { closeBlade } = useRouter();
-    const { product, loading, loadProduct } = useProduct();
-    const categories = [
-      {
-        title: "Category 1",
-        value: "1",
-      },
-      {
-        title: "Category 2",
-        value: "2",
-      },
-      {
-        title: "Category 3",
-        value: "3",
-      },
-      {
-        title: "Category 4",
-        value: "4",
-      },
-      {
-        title: "Category 5",
-        value: "5",
-      },
-      {
-        title: "Category 6",
-        value: "6",
-      },
-      {
-        title: "Category 7",
-        value: "7",
-      },
-      {
-        title: "Category 8",
-        value: "8",
-      },
-      {
-        title: "Category 9",
-        value: "9",
-      },
-      {
-        title: "Category 10",
-        value: "10",
-      },
-    ];
+    const {
+      modified,
+      product,
+      productDetails,
+      loading,
+      loadProduct,
+      updateProductDetails,
+      fetchCategories,
+    } = useProduct();
 
-    onBeforeMount(async () => {
+    const categories = ref<ICategory[]>();
+
+    onMounted(async () => {
       await loadProduct({ id: props.param });
+      categories.value = await fetchCategories();
     });
 
-    const bladeToolbar = [
+    const bladeToolbar = reactive([
       {
         id: "save",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
+        onClick: async () => {
+          await updateProductDetails({ ...productDetails });
+        },
+        disabled: computed(() => !modified.value),
       },
       {
         id: "saveAndApprove",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
         icon: "fas fa-share-square",
+        disabled: true,
       },
       {
         id: "close",
@@ -195,13 +173,6 @@ export default defineComponent({
           closeBlade(props.uid);
         },
       },
-    ];
-
-    const images = reactive([
-      { title: "Image 1", src: "/assets/1.jpg" },
-      { title: "Image 2", src: "/assets/2.jpg" },
-      { title: "Image 3", src: "/assets/3.jpg" },
-      { title: "Image 4", src: "/assets/4.jpg" },
     ]);
 
     const onUpload = async (files: FileList) => {
@@ -216,20 +187,20 @@ export default defineComponent({
       );
       const response = await result.json();
       if (response?.length) {
-        images.push({
-          title: response[0].name,
-          src: response[0].url,
-        });
+        const image = new Image(response[0]);
+        productDetails.images.push(image);
       }
       files = null;
     };
 
     return {
       bladeToolbar,
-      categories,
+      categories: computed(() =>
+        categories.value?.map((x) => ({ title: x.name, value: x.id }))
+      ),
       product: computed(() => product.value),
+      productDetails,
       loading: computed(() => loading.value),
-      images,
       onUpload,
     };
   },

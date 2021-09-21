@@ -1,12 +1,10 @@
 <template>
   <vc-blade
-    :uid="uid"
     :title="$t('OFFERS.PAGES.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
     <vc-table
@@ -80,11 +78,6 @@ import moment from "moment";
 
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -93,6 +86,16 @@ export default defineComponent({
     closable: {
       type: Boolean,
       default: true,
+    },
+
+    parent: {
+      type: HTMLElement,
+      default: undefined,
+    },
+
+    child: {
+      type: HTMLElement,
+      default: undefined,
     },
   },
 
@@ -133,7 +136,7 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          openBlade(props.uid, "products-list", { url: null });
+          openBlade(props.parent.id, "products-list", { url: null });
         },
       },
       {
@@ -212,12 +215,12 @@ export default defineComponent({
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        openBlade(props.uid, "products-list", { url: null });
+        openBlade(props.parent.id, "products-list", { url: null });
       },
     };
 
     const onItemClick = (item: { id: string }) => {
-      openBlade(props.uid, "offers-details", { param: item.id });
+      openBlade(props.parent.id, "offers-details", { param: item.id });
     };
 
     const onHeaderClick = (item: { id: string; sortable: boolean }) => {
@@ -282,6 +285,9 @@ export default defineComponent({
       onHeaderClick,
       onPaginationClick,
       statusStyle,
+      reload: () => {
+        console.log("Offers list reload");
+      },
     };
   },
 });

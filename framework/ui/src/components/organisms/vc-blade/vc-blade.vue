@@ -74,6 +74,19 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
+
+    onBeforeClose: {
+      type: Function,
+      default: undefined,
+    },
+  },
+
+  methods: {
+    async _onBeforeClose(): Promise<void> {
+      if (this.onBeforeClose && typeof this.onBeforeClose === "function") {
+        await this.onBeforeClose();
+      }
+    },
   },
 });
 </script>

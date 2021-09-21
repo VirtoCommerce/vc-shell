@@ -5,7 +5,6 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
     <vc-table
@@ -16,15 +15,28 @@
       :columns="columns"
       :items="orders.results"
       :totalCount="orders.totalCount"
+      :pages="pages"
+      :currentPage="currentPage"
       @itemClick="onItemClick"
+      @paginationClick="onPaginationClick"
     >
-      <template v-slot:item_created="itemData">
-        <div class="vc-orders-page__created">{{ itemData.item.created }}</div>
-      </template>
-
       <!-- Override createdDate column template -->
       <template v-slot:item_createdDate="itemData">
-        {{ moment(itemData.item.createdDate).fromNow() }}
+        <div class="vc-orders-page__created">
+          {{ moment(itemData.item.createdDate).fromNow() }}
+        </div>
+      </template>
+
+      <!-- Override status column template -->
+      <template v-slot:item_status="itemData">
+        <vc-status v-bind="statusStyle(itemData.item.status)">
+          {{ itemData.item.status }}
+        </vc-status>
+      </template>
+
+      <!-- Override total column template -->
+      <template v-slot:item_total="itemData">
+        {{ itemData.item.total }} {{ itemData.item.currency }}
       </template>
     </vc-table>
   </vc-blade>
@@ -33,7 +45,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useOrders } from "../composables";
-import { useRouter } from "@virtoshell/core";
+import { useRouter, useI18n } from "@virtoshell/core";
 import moment from "moment";
 
 export default defineComponent({
@@ -55,59 +67,67 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { orders, loadOrders } = useOrders();
+    const { orders, loadOrders, loading, pages, currentPage } = useOrders();
     const { openBlade } = useRouter();
-    const loading = ref(false);
+    const { t } = useI18n();
 
     onMounted(async () => {
-      loading.value = true;
       await loadOrders();
-      loading.value = false;
     });
 
     const bladeToolbar = [
       {
         id: 1,
-        title: "Refresh",
+        title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: async () => {
-          loading.value = true;
           await loadOrders();
-          loading.value = false;
         },
       },
-      { id: 1, title: "Confirm", icon: "fas fa-check", disabled: true },
-      { id: 1, title: "Cancel", icon: "fas fa-times-circle", disabled: true },
+      {
+        id: 1,
+        title: t("ORDERS.PAGES.LIST.TOOLBAR.CONFIRM"),
+        icon: "fas fa-check",
+        disabled: true,
+      },
+      {
+        id: 1,
+        title: t("ORDERS.PAGES.LIST.TOOLBAR.CANCEL"),
+        icon: "fas fa-times-circle",
+        disabled: true,
+      },
     ];
 
     const columns = [
       {
         id: "number",
-        title: "Order number",
+        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER"),
         width: 160,
+        alwaysVisible: true,
+        sortable: true,
       },
       {
         id: "customerName",
-        title: "Customer",
+        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CUSTOMER"),
+        alwaysVisible: true,
+        sortable: true,
       },
       {
         id: "total",
-        title: "Total",
+        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL"),
         width: 120,
-      },
-      {
-        id: "currency",
-        title: "Currency",
-        width: 100,
+        alwaysVisible: true,
+        sortable: true,
       },
       {
         id: "status",
-        title: "Status",
+        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS"),
         width: 120,
+        sortable: true,
       },
       {
         id: "createdDate",
-        title: "Created",
+        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED"),
         sortable: true,
         width: 180,
       },
@@ -126,6 +146,31 @@ export default defineComponent({
       openBlade(props.uid, "orders-details", { param: item.id });
     };
 
+    const statusStyle = (status: string) => {
+      const result = {
+        outline: true,
+        variant: "info",
+      };
+
+      switch (status) {
+        case "Published":
+          result.outline = false;
+          result.variant = "success";
+          break;
+        case "New":
+          result.outline = true;
+          result.variant = "success";
+          break;
+      }
+      return result;
+    };
+
+    const onPaginationClick = async (page: number) => {
+      await loadOrders({
+        skip: (page - 1) * 20,
+      });
+    };
+
     return {
       bladeToolbar,
       columns,
@@ -134,6 +179,10 @@ export default defineComponent({
       onItemClick,
       moment,
       empty,
+      pages,
+      currentPage,
+      statusStyle,
+      onPaginationClick,
     };
   },
 });

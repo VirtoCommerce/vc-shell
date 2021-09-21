@@ -9,11 +9,14 @@
     </vc-label>
 
     <!-- Autocomplete field -->
-    <div class="vc-autocomplete__field-wrapper vc-flex vc-flex-align_stretch">
+    <div
+      class="vc-autocomplete__field-wrapper vc-flex vc-flex-align_stretch"
+      v-click-outside="closeDropdown"
+    >
       <input
         class="vc-autocomplete__field vc-padding-horizontal_m"
         :placeholder="placeholder"
-        :value="modelValue"
+        :value="options[modelValue]"
         @click="openDropdown"
         readonly
       />
@@ -26,24 +29,22 @@
           vc-flex
           vc-flex-align_center
         "
+        @click="toggleDropdown"
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
 
-      <div
-        v-if="opened"
-        class="vc-autocomplete__dropdown"
-        v-click-outside="closeDropdown"
-      >
-        <input ref="search" class="vc-autocomplete__search" />
+      <div v-if="opened" class="vc-autocomplete__dropdown">
+        <input ref="search" class="vc-autocomplete__search" @input="onSearch" />
 
         <vc-container :no-padding="true">
           <div
             class="vc-autocomplete__item"
             v-for="(item, i) in options"
             :key="i"
+            @click="onItemSelect"
           >
-            <slot name="item">{{ item.title }}</slot>
+            <slot name="item" :item="item">{{ item.title }}</slot>
           </div>
         </vc-container>
       </div>
@@ -101,11 +102,16 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    searchString: {
+      type: String,
+      default: "",
+    },
   },
 
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "change", "search", "close"],
 
-  setup() {
+  setup(_props, { emit }) {
     const opened = ref(false);
     const search = ref();
 
@@ -114,12 +120,33 @@ export default defineComponent({
       search,
       closeDropdown: () => {
         opened.value = false;
+        emit("close");
       },
       openDropdown: () => {
         opened.value = true;
         nextTick(() => {
           search.value.focus();
         });
+      },
+      toggleDropdown: () => {
+        if (opened.value) {
+          opened.value = false;
+          emit("close");
+        } else {
+          opened.value = true;
+          nextTick(() => {
+            search.value.focus();
+          });
+        }
+      },
+      onItemSelect: (item: unknown) => {
+        emit("update:modelValue", item);
+        emit("change", item);
+        emit("close");
+        opened.value = false;
+      },
+      onSearch: (event: InputEvent) => {
+        emit("search", (event.target as HTMLInputElement).value);
       },
     };
   },
@@ -222,10 +249,11 @@ export default defineComponent({
   &__item {
     display: flex;
     align-items: center;
-    height: 36px;
+    min-height: 36px;
     padding-left: var(--padding-s);
     padding-right: var(--padding-s);
     border-radius: 3px;
+    cursor: pointer;
 
     &:hover {
       background-color: #dfeef9;

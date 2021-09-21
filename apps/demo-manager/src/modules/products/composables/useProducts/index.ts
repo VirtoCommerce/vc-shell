@@ -1,4 +1,4 @@
-import { Ref, ref, computed, reactive } from "vue";
+import { Ref, ref, computed } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 
 import {

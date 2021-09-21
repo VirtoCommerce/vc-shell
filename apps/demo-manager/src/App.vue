@@ -12,6 +12,7 @@
     :menuCollapsed="menuCollapsed"
     @menuCollapse="menuCollapsed = true"
     @menuExpand="menuCollapsed = false"
+    @closeBlade="$closeBlade"
   >
     <template v-slot:login>
       <login-page

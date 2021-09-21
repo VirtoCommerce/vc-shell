@@ -1,11 +1,9 @@
 <template>
   <vc-blade
-    :uid="uid"
     :title="$t('OFFERS.PAGES.DETAILS.TITLE')"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
     <div class="offer-details__inner vc-flex vc-flex-grow_1">
@@ -21,7 +19,27 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
                 :options="products"
-              ></vc-autocomplete>
+                @search="onProductSearch"
+                @close="searchValue = ''"
+              >
+                <template v-slot:item="itemData">
+                  <div
+                    class="vc-flex vc-flex-align_center vc-padding-vertical_s"
+                  >
+                    <vc-image
+                      size="xs"
+                      :src="itemData.item.image"
+                      :bordered="true"
+                    ></vc-image>
+                    <div class="flex-grow_1 vc-margin-left_l">
+                      <div class="vc-ellipsis">{{ itemData.item.title }}</div>
+                      <vc-hint class="vc-ellipsis vc-margin-top_xs">
+                        Code: {{ itemData.item.gtin }}
+                      </vc-hint>
+                    </div>
+                  </div>
+                </template>
+              </vc-autocomplete>
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
@@ -138,16 +156,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref, unref } from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
+
+class BladeElement extends HTMLElement {
+  reload: () => void;
+}
 
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -162,67 +179,97 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
+
+    parent: {
+      type: BladeElement,
+      default: undefined,
+    },
+
+    child: {
+      type: HTMLElement,
+      default: undefined,
+    },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const { closeBlade } = useRouter();
+    const searchValue = ref("");
 
     const bladeToolbar = [
       {
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
+        onClick: () => {
+          console.log("Check parent reload");
+          console.dir(unref(props.parent));
+          unref(props.parent).reload();
+        },
       },
       {
         id: "close",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          closeBlade(props.uid);
+          console.log("Close blade");
+          emit("close");
         },
       },
     ];
     const products = [
       {
-        title: "Product 1",
+        title: "Hyper PC Case with LED light",
         value: "1",
+        image: "/assets/1.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 2",
+        title: "DJI MAVIK AIR2 with GoPro mount accesoires",
         value: "2",
+        image: "/assets/2.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 3",
+        title: "Apple IPhone XR 256Gb",
         value: "3",
+        image: "/assets/3.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 4",
+        title: "SHURE SR215 Headphones",
         value: "4",
+        image: "/assets/4.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 5",
+        title: "Samsung Galaxy Note Ultra 5G",
         value: "5",
+        image: "/assets/5.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 6",
+        title: "Lays Stix Chips with Salt&Peper",
         value: "6",
+        image: "/assets/6.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 7",
+        title: "Lays Stix Chips with Bacon taste",
         value: "7",
+        image: "/assets/7.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 8",
+        title: "Lays Stix Chips with Onion&Sourcream taste",
         value: "8",
+        image: "/assets/8.jpg",
+        gtin: "000123456789",
       },
       {
-        title: "Product 9",
+        title: "Red Hot Chili Peppers (max pack)",
         value: "9",
-      },
-      {
-        title: "Product 10",
-        value: "10",
+        image: "/assets/9.jpg",
+        gtin: "000123456789",
       },
     ];
 
@@ -238,7 +285,25 @@ export default defineComponent({
         { title: "Refurbrished", value: "Refurbrished" },
         { title: "Used", value: "Used" },
       ],
-      products,
+      products: computed(() =>
+        products.filter((item) =>
+          item.title.match(new RegExp(`${searchValue.value}`, "ig"))
+        )
+      ),
+      searchValue,
+      onProductSearch: (value: string) => {
+        searchValue.value = value;
+      },
+
+      onBeforeClose: async () => {
+        console.log("onBeforeClose handler called.");
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            console.log("onBeforeClose handler ended.");
+            resolve(true);
+          }, 1000);
+        });
+      },
     };
   },
 });

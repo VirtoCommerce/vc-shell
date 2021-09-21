@@ -22,7 +22,6 @@ export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
 export { default as VcTags } from "./molecules/vc-tags/vc-tags.vue";
-export { default as VcUploader } from "./molecules/vc-uploader/vc-uploader.vue";
 
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";

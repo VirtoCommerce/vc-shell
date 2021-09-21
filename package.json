@@ -13,6 +13,7 @@
     "version": "cross-env-shell \"lerna version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .\"",
     "postversion": "git push origin --tags",
     "build": "lerna run build",
+    "build-modules": "lerna run build --scope @virtoshell/mod-*",
     "build-framework": "lerna run build --scope @virtoshell/{ui,ui-theme-dark,core,api-client}",
     "build-framework:ui": "lerna run build --scope @virtoshell/ui",
     "build-framework:ui-theme-dark": "lerna run build --scope @virtoshell/ui-theme-dark",

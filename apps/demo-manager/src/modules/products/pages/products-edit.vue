@@ -3,10 +3,10 @@
     v-loading="loading"
     :uid="uid"
     :title="product?.sellerName"
+    width="600"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
     <div
@@ -27,7 +27,7 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
               ></vc-input>
-              <vc-autocomplete
+              <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 v-model="productDetails.categoryId"
@@ -37,7 +37,7 @@
                 "
                 :options="categories"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-              ></vc-autocomplete>
+              ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
@@ -61,7 +61,8 @@
               <vc-gallery
                 label="Gallery"
                 :images="productDetails.images"
-                @upload="onUpload"
+                @upload="onGalleryUpload"
+                @item:edit="onGalleryItemEdit"
               ></vc-gallery>
             </vc-form>
           </div>
@@ -103,11 +104,6 @@ import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -127,11 +123,21 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
+
+    parent: {
+      type: HTMLElement,
+      default: undefined,
+    },
+
+    child: {
+      type: HTMLElement,
+      default: undefined,
+    },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const { closeBlade } = useRouter();
+    const { openBlade } = useRouter();
     const {
       modified,
       product,
@@ -170,12 +176,12 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          closeBlade(props.uid);
+          emit("close");
         },
       },
     ]);
 
-    const onUpload = async (files: FileList) => {
+    const onGalleryUpload = async (files: FileList) => {
       const formData = new FormData();
       formData.append("file", files[0]);
       const result = await fetch(
@@ -193,6 +199,10 @@ export default defineComponent({
       files = null;
     };
 
+    const onGalleryItemEdit = (item: Record<string, unknown>) => {
+      openBlade(props.parent.id, "assets-details", item);
+    };
+
     return {
       bladeToolbar,
       categories: computed(() =>
@@ -201,7 +211,8 @@ export default defineComponent({
       product: computed(() => product.value),
       productDetails,
       loading: computed(() => loading.value),
-      onUpload,
+      onGalleryUpload,
+      onGalleryItemEdit,
     };
   },
 });

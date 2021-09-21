@@ -3,7 +3,7 @@
     class="vc-gallery-item"
     :class="{ 'vc-gallery-item_readonly': readonly }"
   >
-    <vc-image aspect="1x1" :src="src"></vc-image>
+    <vc-image aspect="1x1" :src="image.url"></vc-image>
     <div class="vc-flex-column vc-gallery-item__overlay vc-padding_s">
       <div class="vc-flex">
         <vc-icon
@@ -11,7 +11,12 @@
           icon="fas fa-arrows-alt"
           size="s"
         ></vc-icon>
-        <div class="vc-margin-left_s vc-gallery-item__title">{{ title }}</div>
+        <div
+          class="vc-margin-left_s vc-gallery-item__title vc-ellipsis"
+          :title="image.name"
+        >
+          {{ image.name }}
+        </div>
       </div>
       <div
         class="
@@ -27,6 +32,7 @@
             vc-flex vc-flex-column
             vc-flex-align_center
           "
+          @click="$emit('preview', image)"
         >
           <vc-icon
             class="vc-gallery-item__button-icon"
@@ -40,6 +46,7 @@
             vc-flex vc-flex-column
             vc-flex-align_center
           "
+          @click="$emit('edit', image)"
         >
           <vc-icon
             class="vc-gallery-item__button-icon"
@@ -53,6 +60,7 @@
             vc-flex vc-flex-column
             vc-flex-align_center
           "
+          @click="$emit('remove', image)"
         >
           <vc-icon
             class="vc-gallery-item__button-icon"
@@ -72,14 +80,9 @@ export default defineComponent({
   name: "VcGalleryItem",
 
   props: {
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    src: {
-      type: String,
-      default: undefined,
+    image: {
+      type: Object,
+      default: () => ({}),
     },
 
     readonly: {
@@ -87,6 +90,8 @@ export default defineComponent({
       default: false,
     },
   },
+
+  emits: ["preview", "edit", "remove"],
 });
 </script>
 
@@ -98,7 +103,7 @@ export default defineComponent({
   box-sizing: border-box;
   border: 1px solid #d3dae9;
   border-radius: 6px;
-  padding: var(--padding-s);
+  padding: var(--padding-xs);
 
   &__overlay {
     background: rgba(238, 246, 252, 0.97);

@@ -29,7 +29,7 @@
         ></vc-nav>
 
         <!-- If no workspace active then show dashboard -->
-        <slot v-if="showDashboard" name="dashboard">
+        <slot v-if="!workspace.length" name="dashboard">
           Dashboard component not defined
         </slot>
 
@@ -37,14 +37,17 @@
         <div v-else class="vc-flex vc-flex-grow_1 vc-padding-horizontal_s">
           <component
             v-for="(blade, i) in workspace"
-            :key="blade.uid"
             v-show="i >= workspace.length - 2"
+            :key="i"
             :is="blade.component"
-            :uid="blade.uid"
+            :ref="setItemRef"
+            :parent="setParent(i)"
+            :child="setChild(i)"
             :param="blade.param"
-            :expanded="blade.expanded"
-            :closable="blade.closable"
+            :closable="i > 0"
             :options="blade.componentOptions"
+            @close="onClose(i)"
+            @openChild="onOpenChild(i)"
           ></component>
         </div>
       </div>
@@ -53,9 +56,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, onBeforeUpdate, onUpdated, ref, computed } from "vue";
 import VcTopbar from "./_internal/vc-topbar/vc-topbar.vue";
 import VcNav from "./_internal/vc-nav/vc-nav.vue";
+
+interface BladeElement extends HTMLElement {
+  onBeforeClose: () => Promise<boolean>;
+}
 
 export default defineComponent({
   name: "VcApp",
@@ -122,14 +129,71 @@ export default defineComponent({
     },
   },
 
-  emits: ["menuCollapse", "menuExpand", "menuClick"],
+  emits: [
+    "menuCollapse",
+    "menuExpand",
+    "menuClick",
+    "bladesChanged",
+    "closeBlade",
+  ],
 
-  setup(props) {
+  setup(props, { emit }) {
     console.debug("Init vc-app");
-    const showDashboard = computed(() => props.workspace.length === 0);
+    let itemRefs = ref<BladeElement[]>([]);
+    const setItemRef = (el: BladeElement) => {
+      if (el) {
+        itemRefs.value.push(el);
+      }
+    };
+
+    onBeforeUpdate(() => {
+      itemRefs.value = [];
+    });
+
+    onUpdated(() => {
+      emit("bladesChanged", itemRefs.value);
+    });
+
+    const onClose = async (index: number) => {
+      console.log(`onClose called on blade ${index}`);
+      if (index > 0) {
+        const lastBladeIndex = props.workspace.length - 1;
+        const bladesRefs = itemRefs.value.slice(index).reverse();
+        for (let i = 0; i < bladesRefs.length; i++) {
+          if (
+            bladesRefs[i]?.onBeforeClose &&
+            typeof bladesRefs[i].onBeforeClose === "function"
+          ) {
+            const result = await bladesRefs[i].onBeforeClose();
+            if (result === false) {
+              break;
+            } else {
+              emit("closeBlade", lastBladeIndex - i);
+            }
+          } else {
+            emit("closeBlade", lastBladeIndex - i);
+          }
+        }
+      }
+    };
+
+    const onOpenChild = async (index: number) => {
+      console.log(`onOpenChild called on blade ${index}`);
+    };
 
     return {
-      showDashboard,
+      setItemRef,
+      itemRefs,
+      onClose,
+      onOpenChild,
+      setParent: (i: number) => {
+        return i > 0 ? computed(() => itemRefs.value[i - 1]) : undefined;
+      },
+      setChild: (i: number) => {
+        return i < props.workspace.length - 1
+          ? computed(() => itemRefs.value[i + 1])
+          : undefined;
+      },
     };
   },
 });

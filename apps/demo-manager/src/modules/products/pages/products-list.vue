@@ -49,6 +49,20 @@
         <vc-status v-bind="statusStyle(itemData.item.status)">{{
           itemData.item.status
         }}</vc-status>
+        <vc-status
+          v-if="itemData.item.hasStagedChanges"
+          variant="warning"
+          outline="false"
+        >
+          Changed
+        </vc-status>
+        <vc-status
+          v-if="itemData.item.isPublished"
+          variant="success"
+          outline="false"
+        >
+          Published
+        </vc-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -208,11 +222,11 @@ export default defineComponent({
       };
 
       switch (status) {
-        case "Published":
+        case "New":
           result.outline = false;
           result.variant = "success";
           break;
-        case "Requires changes":
+        case "RequestChanges":
           result.outline = true;
           result.variant = "danger";
           break;
@@ -220,7 +234,7 @@ export default defineComponent({
           result.outline = true;
           result.variant = "success";
           break;
-        case "Waiting for approval":
+        case "WaitForApproval":
           result.outline = true;
           result.variant = "warning";
           break;

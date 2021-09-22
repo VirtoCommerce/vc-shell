@@ -31,7 +31,9 @@
         "TOOLBAR": {
           "SAVE": "Save",
           "SAVEANDAPPROVE": "Save & send to approve",
-          "CLOSE": "Close"
+          "CLOSE": "Close",
+          "REVERT": "Revert staged changes",
+          "APPROVE": "Approve (test only)"
         },
         "FIELDS": {
           "NAME": {

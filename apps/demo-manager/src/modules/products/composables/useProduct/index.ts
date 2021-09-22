@@ -15,6 +15,7 @@ import {
   ProductDetails,
   UpdateProductDetailsCommand,
   CreateNewProductCommand,
+  CreateNewPublicationRequestCommand,
 } from "../../../../api_client";
 
 interface IUseProduct {
@@ -25,7 +26,13 @@ interface IUseProduct {
   fetchCategories: () => Promise<ICategory[]>;
   loadProduct: (args: { id: string }) => void;
   createProduct: (details: IProductDetails) => void;
-  updateProductDetails: (details: IProductDetails) => void;
+  updateProductDetails: (
+    productId: string,
+    details: IProductDetails,
+    sendToAprove?: boolean
+  ) => void;
+  revertStagedChanges: (productId: string) => void;
+  approve: (productId: string) => void;
 }
 
 export default (): IUseProduct => {
@@ -94,19 +101,29 @@ export default (): IUseProduct => {
     }
   }
 
-  async function updateProductDetails(details: IProductDetails) {
+  async function updateProductDetails(
+    productId: string,
+    details: IProductDetails,
+    sendToAprove = false
+  ) {
     logger.info(`Update  product details`, details);
 
     const client = await getApiClient();
 
     const command = new UpdateProductDetailsCommand({
-      sellerProductId: product.value.id,
+      sellerProductId: productId,
       productDetails: new ProductDetails(details),
     });
 
     try {
       loading.value = true;
       await client.updateProductDetails(command);
+      if (sendToAprove) {
+        const newRequestCommand = new CreateNewPublicationRequestCommand({
+          productId,
+        });
+        await client.createNewPublicationRequest(newRequestCommand);
+      }
       await loadProduct({ id: product.value.id });
     } catch (e) {
       logger.error(e);
@@ -137,6 +154,38 @@ export default (): IUseProduct => {
     }
   }
 
+  async function revertStagedChanges(productId: string) {
+    logger.info(`revert staged changes for product`, productId);
+
+    const client = await getApiClient();
+    try {
+      loading.value = true;
+      await client.revertStagedChanges(productId);
+      await loadProduct({ id: productId });
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function approve(productId: string) {
+    logger.info(`approve product`, productId);
+
+    const client = await getApiClient();
+    try {
+      loading.value = true;
+      await client.approveProduct(productId);
+      await loadProduct({ id: productId });
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     product: computed(() => product.value),
     modified: computed(() => modified.value),
@@ -146,5 +195,7 @@ export default (): IUseProduct => {
     updateProductDetails,
     fetchCategories,
     createProduct,
+    revertStagedChanges,
+    approve,
   };
 };

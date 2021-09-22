@@ -21,6 +21,56 @@ export class AuthApiBase {
     }
   }
   
+  export class VcmpOperatorCatalogClient extends AuthApiBase {
+      private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+      private baseUrl: string;
+      protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  
+      constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+          super();
+          this.http = http ? http : <any>window;
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+      }
+  
+      /**
+       * @return Success
+       */
+      approveRequest(id: string | null): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/operator/requests/{id}/aprove";
+          if (id === undefined || id === null)
+              throw new Error("The parameter 'id' must be defined.");
+          url_ = url_.replace("{id}", encodeURIComponent("" + id));
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "POST",
+              headers: {
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processApproveRequest(_response);
+          });
+      }
+  
+      protected processApproveRequest(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
+      }
+  }
+  
   export class VcmpSellerCatalogClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
@@ -248,6 +298,130 @@ export class AuthApiBase {
               });
           }
           return Promise.resolve<SellerProduct>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      createNewPublicationRequest(body: CreateNewPublicationRequestCommand | undefined): Promise<ProductPublicationRequest> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/products/requests/new";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processCreateNewPublicationRequest(_response);
+          });
+      }
+  
+      protected processCreateNewPublicationRequest(response: Response): Promise<ProductPublicationRequest> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = ProductPublicationRequest.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<ProductPublicationRequest>(<any>null);
+      }
+  
+      /**
+       * @return Success
+       */
+      revertStagedChanges(productId: string | null): Promise<ProductPublicationRequest> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/revert";
+          if (productId === undefined || productId === null)
+              throw new Error("The parameter 'productId' must be defined.");
+          url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "POST",
+              headers: {
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processRevertStagedChanges(_response);
+          });
+      }
+  
+      protected processRevertStagedChanges(response: Response): Promise<ProductPublicationRequest> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = ProductPublicationRequest.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<ProductPublicationRequest>(<any>null);
+      }
+  
+      /**
+       * @return Success
+       */
+      approveProduct(productId: string | null): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/approve";
+          if (productId === undefined || productId === null)
+              throw new Error("The parameter 'productId' must be defined.");
+          url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "POST",
+              headers: {
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processApproveProduct(_response);
+          });
+      }
+  
+      protected processApproveProduct(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
       }
   }
   
@@ -1763,6 +1937,36 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
+  export class INotification implements IINotification {
+  
+      constructor(data?: IINotification) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+      }
+  
+      static fromJS(data: any): INotification {
+          data = typeof data === 'object' ? data : {};
+          let result = new INotification();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          return data; 
+      }
+  }
+  
+  export interface IINotification {
+  }
+  
   export class ProductPublicationRequest implements IProductPublicationRequest {
       storeId?: string | undefined;
       storeName?: string | undefined;
@@ -3011,48 +3215,19 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
-  export class INotification implements IINotification {
-  
-      constructor(data?: IINotification) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-      }
-  
-      static fromJS(data: any): INotification {
-          data = typeof data === 'object' ? data : {};
-          let result = new INotification();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          return data; 
-      }
-  }
-  
-  export interface IINotification {
-  }
-  
   export class SellerProduct implements ISellerProduct {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      readonly name?: string | undefined;
-      readonly imgSrc?: string | undefined;
-      readonly categoryId?: string | undefined;
-      readonly path?: string | undefined;
+      name?: string | undefined;
+      imgSrc?: string | undefined;
+      categoryId?: string | undefined;
+      path?: string | undefined;
       readonly outline?: string | undefined;
       readonly description?: string | undefined;
       hasStagedChanges?: boolean;
       isPublished?: boolean;
       status?: PublicationRequestStatus;
+      readonly canBeModified?: boolean;
       publications?: ProductPublication[] | undefined;
       outerId?: string | undefined;
       productData?: CatalogProduct;
@@ -3075,15 +3250,16 @@ export class AuthApiBase {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
-              (<any>this).name = _data["name"];
-              (<any>this).imgSrc = _data["imgSrc"];
-              (<any>this).categoryId = _data["categoryId"];
-              (<any>this).path = _data["path"];
+              this.name = _data["name"];
+              this.imgSrc = _data["imgSrc"];
+              this.categoryId = _data["categoryId"];
+              this.path = _data["path"];
               (<any>this).outline = _data["outline"];
               (<any>this).description = _data["description"];
               this.hasStagedChanges = _data["hasStagedChanges"];
               this.isPublished = _data["isPublished"];
               this.status = _data["status"];
+              (<any>this).canBeModified = _data["canBeModified"];
               if (Array.isArray(_data["publications"])) {
                   this.publications = [] as any;
                   for (let item of _data["publications"])
@@ -3119,6 +3295,7 @@ export class AuthApiBase {
           data["hasStagedChanges"] = this.hasStagedChanges;
           data["isPublished"] = this.isPublished;
           data["status"] = this.status;
+          data["canBeModified"] = this.canBeModified;
           if (Array.isArray(this.publications)) {
               data["publications"] = [];
               for (let item of this.publications)
@@ -3147,6 +3324,7 @@ export class AuthApiBase {
       hasStagedChanges?: boolean;
       isPublished?: boolean;
       status?: PublicationRequestStatus;
+      canBeModified?: boolean;
       publications?: ProductPublication[] | undefined;
       outerId?: string | undefined;
       productData?: CatalogProduct;
@@ -3343,6 +3521,50 @@ export class AuthApiBase {
   export interface IUpdateProductDetailsCommand {
       sellerProductId?: string | undefined;
       productDetails?: ProductDetails;
+  }
+  
+  export class CreateNewPublicationRequestCommand implements ICreateNewPublicationRequestCommand {
+      storeId?: string | undefined;
+      productId!: string;
+      comment?: string | undefined;
+  
+      constructor(data?: ICreateNewPublicationRequestCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.storeId = _data["storeId"];
+              this.productId = _data["productId"];
+              this.comment = _data["comment"];
+          }
+      }
+  
+      static fromJS(data: any): CreateNewPublicationRequestCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new CreateNewPublicationRequestCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["storeId"] = this.storeId;
+          data["productId"] = this.productId;
+          data["comment"] = this.comment;
+          return data; 
+      }
+  }
+  
+  export interface ICreateNewPublicationRequestCommand {
+      storeId?: string | undefined;
+      productId: string;
+      comment?: string | undefined;
   }
   
   export class ApiException extends Error {

@@ -137,6 +137,8 @@ export default defineComponent({
       loadProduct,
       updateProductDetails,
       fetchCategories,
+      revertStagedChanges,
+      approve,
     } = useProduct();
 
     const categories = ref<ICategory[]>();
@@ -152,15 +154,44 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: async () => {
-          await updateProductDetails({ ...productDetails });
+          await updateProductDetails(product.value.id, { ...productDetails });
         },
-        disabled: computed(() => !modified.value),
+        disabled: computed(
+          () => !product.value?.canBeModified || !modified.value
+        ),
       },
       {
-        id: "saveAndApprove",
+        id: "saveAndSendToApprove",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
         icon: "fas fa-share-square",
-        disabled: true,
+        onClick: async () => {
+          await updateProductDetails(
+            product.value.id,
+            { ...productDetails },
+            true
+          );
+        },
+        disabled: computed(
+          () => !product.value?.canBeModified || !modified.value
+        ),
+      },
+      {
+        id: "revertStagedChanges",
+        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT"),
+        icon: "fas fa-undo",
+        onClick: async () => {
+          await revertStagedChanges(product.value.id);
+        },
+        disabled: computed(() => !product.value?.hasStagedChanges),
+      },
+      {
+        id: "approve",
+        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.APPROVE"),
+        icon: "fas fa-check-circle",
+        onClick: async () => {
+          await approve(product.value.id);
+        },
+        disabled: computed(() => !(product.value.status === "WaitForApproval")),
       },
       {
         id: "close",

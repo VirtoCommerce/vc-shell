@@ -210,7 +210,7 @@ export default defineComponent({
       {
         id: "requestChanges",
         title: "Request changes (test only)",
-        icon: "fas fa-check-circle",
+        icon: "fas fa-sticky-note",
         onClick: async () => {
           await changeProductStatus(product.value.id, "requestChanges");
         },
@@ -219,7 +219,7 @@ export default defineComponent({
       {
         id: "reject",
         title: "Reject (test only)",
-        icon: "fas fa-check-circle",
+        icon: "fas fa-ban",
         onClick: async () => {
           await changeProductStatus(product.value.id, "reject");
         },

@@ -1,7 +1,16 @@
 <template>
   <div
     class="vc-gallery-item"
-    :class="{ 'vc-gallery-item_readonly': readonly }"
+    :class="{
+      'vc-gallery-item_readonly': readonly,
+      'vc-gallery-item_hover': hover,
+    }"
+    @tap="hover = !hover"
+    v-click-outside="
+      () => {
+        hover = false;
+      }
+    "
   >
     <vc-image aspect="1x1" :src="image.url"></vc-image>
     <div class="vc-flex-column vc-gallery-item__overlay vc-padding_s">
@@ -74,10 +83,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { clickOutside } from "../../../../../directives";
 
 export default defineComponent({
   name: "VcGalleryItem",
+
+  directives: {
+    clickOutside,
+  },
 
   props: {
     image: {
@@ -92,6 +106,14 @@ export default defineComponent({
   },
 
   emits: ["preview", "edit", "remove"],
+
+  setup() {
+    const hover = ref(false);
+
+    return {
+      hover,
+    };
+  },
 });
 </script>
 
@@ -115,7 +137,8 @@ export default defineComponent({
     bottom: 0;
   }
 
-  &:hover &__overlay {
+  &:hover &__overlay,
+  .vc-app_touch &.hover &__overlay {
     display: flex;
   }
 

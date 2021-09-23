@@ -78,6 +78,11 @@ export default defineComponent({
     background: white;
     border-radius: 5px;
     overflow: hidden;
+
+    .vc-app_phone & {
+      margin: 0;
+      border-radius: 0;
+    }
   }
 
   &__header {

@@ -288,6 +288,7 @@ export default defineComponent({
       reload: () => {
         console.log("Offers list reload");
       },
+      title: t("OFFERS.PAGES.LIST.TITLE"),
     };
   },
 });

@@ -183,6 +183,7 @@ export default defineComponent({
       currentPage,
       statusStyle,
       onPaginationClick,
+      title: t("ORDERS.PAGES.LIST.TITLE"),
     };
   },
 });

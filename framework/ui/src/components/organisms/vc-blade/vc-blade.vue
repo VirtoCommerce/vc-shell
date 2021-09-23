@@ -2,18 +2,16 @@
   <div
     class="vc-blade"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
-    :class="{ 'vc-blade_expanded': expanded }"
+    :class="{ 'vc-blade_expanded': $isPhone.value || expanded }"
   >
     <!-- Init blade header -->
     <vc-blade-header
-      :expandable="expandable"
+      v-if="closable"
       :expanded="expanded"
       :closable="closable"
       :icon="icon"
       :title="title"
       :subtitle="subtitle"
-      @expand="$emit('expand')"
-      @collapse="$emit('collapse')"
       @close="$emit('close')"
     ></vc-blade-header>
 
@@ -65,27 +63,9 @@ export default defineComponent({
       default: true,
     },
 
-    expandable: {
-      type: Boolean,
-      default: false,
-    },
-
     toolbarItems: {
       type: Array,
       default: () => [],
-    },
-
-    onBeforeClose: {
-      type: Function,
-      default: undefined,
-    },
-  },
-
-  methods: {
-    async _onBeforeClose(): Promise<void> {
-      if (this.onBeforeClose && typeof this.onBeforeClose === "function") {
-        await this.onBeforeClose();
-      }
     },
   },
 });
@@ -97,6 +77,11 @@ export default defineComponent({
   --blade-border-radius: 6px;
   --blade-shadow: 2px 2px 8px rgba(126, 142, 157, 0.14);
   --blade-margin: var(--margin-l) var(--margin-s);
+}
+
+.vc-app_phone {
+  --blade-margin: 0;
+  --blade-border-radius: 0;
 }
 
 .vc-blade {

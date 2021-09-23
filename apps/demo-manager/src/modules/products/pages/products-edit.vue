@@ -2,19 +2,19 @@
   <vc-blade
     v-loading="loading"
     :uid="uid"
-    :title="product?.sellerName"
+    :title="productDetails?.name"
     width="600"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
   >
     <!-- Blade contents -->
-    <div
-      v-if="productDetails"
-      class="product-details__inner vc-flex vc-flex-grow_1"
-    >
-      <div class="product-details__content vc-flex-grow_1">
-        <vc-container :no-padding="true">
+    <vc-container :no-padding="true">
+      <div
+        v-if="productDetails"
+        class="product-details__inner vc-flex vc-flex-grow_1"
+      >
+        <div class="product-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
             <vc-form>
               <vc-input
@@ -66,10 +66,8 @@
               ></vc-gallery>
             </vc-form>
           </div>
-        </vc-container>
-      </div>
-      <div class="product-details__widgets">
-        <vc-container :no-padding="true">
+        </div>
+        <div class="product-details__widgets">
           <div
             class="vc-widget"
             @click="$openBlade(uid, 'offers-list', { url: null })"
@@ -91,9 +89,9 @@
             <div class="vc-widget__title">Comments</div>
             <div class="vc-widget__value">22</div>
           </div>
-        </vc-container>
+        </div>
       </div>
-    </div>
+    </vc-container>
   </vc-blade>
 </template>
 
@@ -227,6 +225,20 @@ export default defineComponent({
 
   &__content {
     border-right: 1px solid #eaedf3;
+  }
+
+  .vc-app_phone &__inner {
+    flex-direction: column;
+  }
+
+  .vc-app_phone &__content {
+    border-right: none;
+    border-bottom: 1px solid #eaedf3;
+  }
+
+  .vc-app_phone &__widgets {
+    display: flex;
+    flex-direction: row;
   }
 }
 

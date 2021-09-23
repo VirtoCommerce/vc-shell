@@ -86,12 +86,6 @@ export default defineComponent({
           openWorkspace("help");
         },
       },
-      {
-        id: "bell",
-        icon: "fas fa-bell",
-        accent: true,
-        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
-      },
     ];
 
     const menu = [

@@ -59,7 +59,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  computed,
+  watch,
+  getCurrentInstance,
+} from "vue";
 import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import moment from "moment";
@@ -83,6 +90,7 @@ export default defineComponent({
   },
 
   setup(props) {
+    const instance = getCurrentInstance();
     const { openBlade } = useRouter();
     const logger = useLogger();
     const { t } = useI18n();
@@ -104,6 +112,7 @@ export default defineComponent({
 
     onMounted(async () => {
       await loadProducts({ sort: sort.value });
+      console.dir(instance);
     });
 
     const bladeToolbar = [
@@ -253,6 +262,7 @@ export default defineComponent({
       onHeaderClick,
       onPaginationClick,
       statusStyle,
+      title: t("PRODUCTS.PAGES.LIST.TITLE"),
     };
   },
 });

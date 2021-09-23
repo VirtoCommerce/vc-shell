@@ -9,6 +9,7 @@
     @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
+    <mp-product-status :status="product.status"></mp-product-status>
     <div
       v-if="productDetails"
       class="product-details__inner vc-flex vc-flex-grow_1"
@@ -98,7 +99,13 @@ import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { ICategory } from "@virtoshell/api-client";
+import MpProductStatus from "../components/MpProductStatus.vue";
+
 export default defineComponent({
+  components: {
+    MpProductStatus,
+  },
+
   props: {
     uid: {
       type: String,
@@ -187,7 +194,7 @@ export default defineComponent({
             !(
               product.value?.isPublished &&
               product.value?.hasStagedChanges &&
-              product.value?.status.includes("WaitForApproval")
+              product.value.canBeModified
             )
         ),
       },
@@ -198,9 +205,7 @@ export default defineComponent({
         onClick: async () => {
           await changeProductStatus(product.value.id, "approve");
         },
-        disabled: computed(
-          () => !product.value?.status?.includes("WaitForApproval")
-        ),
+        disabled: computed(() => product.value.canBeModified),
       },
       {
         id: "requestChanges",
@@ -209,9 +214,7 @@ export default defineComponent({
         onClick: async () => {
           await changeProductStatus(product.value.id, "requestChanges");
         },
-        disabled: computed(
-          () => !product.value?.status?.includes("WaitForApproval")
-        ),
+        disabled: computed(() => product.value.canBeModified),
       },
       {
         id: "reject",
@@ -220,9 +223,7 @@ export default defineComponent({
         onClick: async () => {
           await changeProductStatus(product.value.id, "reject");
         },
-        disabled: computed(
-          () => !product.value?.status?.includes("WaitForApproval")
-        ),
+        disabled: computed(() => product.value.canBeModified),
       },
       {
         id: "close",

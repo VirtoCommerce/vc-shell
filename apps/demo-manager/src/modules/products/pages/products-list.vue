@@ -46,14 +46,7 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <vc-status
-          v-bind="statusStyles[status]"
-          v-for="(status, i) in getStatuses(itemData.item.status)"
-          :key="i"
-          >{{
-            $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`)
-          }}</vc-status
-        >
+        <mp-product-status :status="itemData.item.status"></mp-product-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -66,11 +59,16 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
-import { useRouter, useI18n, useLogger, camelToSnake } from "@virtoshell/core";
+import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
+import MpProductStatus from "../components/MpProductStatus.vue";
 import moment from "moment";
 
 export default defineComponent({
+  components: {
+    MpProductStatus,
+  },
+
   props: {
     uid: {
       type: String,
@@ -206,39 +204,6 @@ export default defineComponent({
       });
     };
 
-    const getStatuses = (statusStr: string) => {
-      return statusStr.split(",").map(function (item) {
-        return item.trim();
-      });
-    };
-
-    const statusStyles = {
-      RequestChanges: {
-        outline: true,
-        variant: "danger",
-      },
-      Approved: {
-        outline: true,
-        variant: "success",
-      },
-      WaitForApproval: {
-        outline: true,
-        variant: "warning",
-      },
-      Rejected: {
-        outline: false,
-        variant: "danger",
-      },
-      HasStagedChanges: {
-        outline: true,
-        variant: "warning",
-      },
-      Published: {
-        outline: true,
-        variant: "success",
-      },
-    };
-
     return {
       loading,
       bladeToolbar,
@@ -249,7 +214,6 @@ export default defineComponent({
           return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
-      getStatuses,
       searchQuery,
       products,
       totalCount,
@@ -261,8 +225,6 @@ export default defineComponent({
       onItemClick,
       onHeaderClick,
       onPaginationClick,
-      camelToSnake,
-      statusStyles,
     };
   },
 });

@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.39](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.39) (2021-09-23)
+
+
+### Features
+
+* product list connect to Api ([53bb711](https://github.com/VirtoCommerce/platform-manager-sdk/commit/53bb7119dd0603cb136024a35ff66cb47cfd8248))
+
+
+
+## 0.0.39 (2021-09-13)
+
+
+
+## 0.0.37 (2021-09-07)
+
+
+
+## 0.0.36 (2021-09-07)
+
+
+
+## 0.0.35 (2021-09-07)
+
+
+
+
+
+## [0.0.40](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.40) (2021-09-23)
+
+
+### Features
+
+* product list connect to Api ([53bb711](https://github.com/VirtoCommerce/platform-manager-sdk/commit/53bb7119dd0603cb136024a35ff66cb47cfd8248))
+
+
+
+## 0.0.39 (2021-09-13)
+
+
+
+## 0.0.37 (2021-09-07)
+
+
+
+## 0.0.36 (2021-09-07)
+
+
+
+## 0.0.35 (2021-09-07)
+
+
+
+
+
+
 ## [0.0.39](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.39) (2021-09-13)
 
 

@@ -3,6 +3,26 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.41) (2021-09-23)
+
+
+### Features
+
+* apply new statuses matrix ([31f2ab0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/31f2ab0fa9ee28491cb43d993a56be2a86ff835e))
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.40](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.40) (2021-09-23)
 
 

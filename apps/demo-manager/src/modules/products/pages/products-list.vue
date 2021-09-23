@@ -46,23 +46,14 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <vc-status v-bind="statusStyle(itemData.item.status)">{{
-          itemData.item.status
-        }}</vc-status>
         <vc-status
-          v-if="itemData.item.hasStagedChanges"
-          variant="warning"
-          outline="false"
+          v-bind="statusStyles[status]"
+          v-for="(status, i) in getStatuses(itemData.item.status)"
+          :key="i"
+          >{{
+            $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`)
+          }}</vc-status
         >
-          Changed
-        </vc-status>
-        <vc-status
-          v-if="itemData.item.isPublished"
-          variant="success"
-          outline="false"
-        >
-          Published
-        </vc-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -75,7 +66,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
-import { useRouter, useI18n, useLogger } from "@virtoshell/core";
+import { useRouter, useI18n, useLogger, camelToSnake } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import moment from "moment";
 
@@ -215,35 +206,37 @@ export default defineComponent({
       });
     };
 
-    const statusStyle = (status: string) => {
-      const result = {
-        outline: true,
-        variant: "info",
-      };
+    const getStatuses = (statusStr: string) => {
+      return statusStr.split(",").map(function (item) {
+        return item.trim();
+      });
+    };
 
-      switch (status) {
-        case "New":
-          result.outline = false;
-          result.variant = "success";
-          break;
-        case "RequestChanges":
-          result.outline = true;
-          result.variant = "danger";
-          break;
-        case "Approved":
-          result.outline = true;
-          result.variant = "success";
-          break;
-        case "WaitForApproval":
-          result.outline = true;
-          result.variant = "warning";
-          break;
-        case "Rejected":
-          result.outline = false;
-          result.variant = "danger";
-          break;
-      }
-      return result;
+    const statusStyles = {
+      RequestChanges: {
+        outline: true,
+        variant: "danger",
+      },
+      Approved: {
+        outline: true,
+        variant: "success",
+      },
+      WaitForApproval: {
+        outline: true,
+        variant: "warning",
+      },
+      Rejected: {
+        outline: false,
+        variant: "danger",
+      },
+      HasStagedChanges: {
+        outline: true,
+        variant: "warning",
+      },
+      Published: {
+        outline: true,
+        variant: "success",
+      },
     };
 
     return {
@@ -256,6 +249,7 @@ export default defineComponent({
           return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
+      getStatuses,
       searchQuery,
       products,
       totalCount,
@@ -267,7 +261,8 @@ export default defineComponent({
       onItemClick,
       onHeaderClick,
       onPaginationClick,
-      statusStyle,
+      camelToSnake,
+      statusStyles,
     };
   },
 });

@@ -389,11 +389,14 @@ export class AuthApiBase {
       /**
        * @return Success
        */
-      approveProduct(productId: string | null): Promise<void> {
-          let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/approve";
+      changeProductStatus(productId: string | null, status: string | null): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/status/new/{status}";
           if (productId === undefined || productId === null)
               throw new Error("The parameter 'productId' must be defined.");
           url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
+          if (status === undefined || status === null)
+              throw new Error("The parameter 'status' must be defined.");
+          url_ = url_.replace("{status}", encodeURIComponent("" + status));
           url_ = url_.replace(/[?&]$/, "");
   
           let options_ = <RequestInit>{
@@ -405,11 +408,11 @@ export class AuthApiBase {
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
-              return this.processApproveProduct(_response);
+              return this.processChangeProductStatus(_response);
           });
       }
   
-      protected processApproveProduct(response: Response): Promise<void> {
+      protected processChangeProductStatus(response: Response): Promise<void> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {

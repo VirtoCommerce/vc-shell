@@ -138,7 +138,7 @@ export default defineComponent({
       updateProductDetails,
       fetchCategories,
       revertStagedChanges,
-      approve,
+      changeProductStatus,
     } = useProduct();
 
     const categories = ref<ICategory[]>();
@@ -182,16 +182,47 @@ export default defineComponent({
         onClick: async () => {
           await revertStagedChanges(product.value.id);
         },
-        disabled: computed(() => !product.value?.hasStagedChanges),
+        disabled: computed(
+          () =>
+            !(
+              product.value?.isPublished &&
+              product.value?.hasStagedChanges &&
+              product.value?.status.includes("WaitForApproval")
+            )
+        ),
       },
       {
         id: "approve",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.APPROVE"),
         icon: "fas fa-check-circle",
         onClick: async () => {
-          await approve(product.value.id);
+          await changeProductStatus(product.value.id, "approve");
         },
-        disabled: computed(() => !(product.value.status === "WaitForApproval")),
+        disabled: computed(
+          () => !product.value?.status?.includes("WaitForApproval")
+        ),
+      },
+      {
+        id: "requestChanges",
+        title: "Request changes (test only)",
+        icon: "fas fa-check-circle",
+        onClick: async () => {
+          await changeProductStatus(product.value.id, "requestChanges");
+        },
+        disabled: computed(
+          () => !product.value?.status?.includes("WaitForApproval")
+        ),
+      },
+      {
+        id: "reject",
+        title: "Reject (test only)",
+        icon: "fas fa-check-circle",
+        onClick: async () => {
+          await changeProductStatus(product.value.id, "reject");
+        },
+        disabled: computed(
+          () => !product.value?.status?.includes("WaitForApproval")
+        ),
       },
       {
         id: "close",

@@ -32,7 +32,7 @@ interface IUseProduct {
     sendToAprove?: boolean
   ) => void;
   revertStagedChanges: (productId: string) => void;
-  approve: (productId: string) => void;
+  changeProductStatus: (productId: string, status: string) => void;
 }
 
 export default (): IUseProduct => {
@@ -170,13 +170,13 @@ export default (): IUseProduct => {
     }
   }
 
-  async function approve(productId: string) {
+  async function changeProductStatus(productId: string, status: string) {
     logger.info(`approve product`, productId);
 
     const client = await getApiClient();
     try {
       loading.value = true;
-      await client.approveProduct(productId);
+      await client.changeProductStatus(productId, status);
       await loadProduct({ id: productId });
     } catch (e) {
       logger.error(e);
@@ -196,6 +196,6 @@ export default (): IUseProduct => {
     fetchCategories,
     createProduct,
     revertStagedChanges,
-    approve,
+    changeProductStatus,
   };
 };

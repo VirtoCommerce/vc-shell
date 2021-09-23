@@ -1,5 +1,13 @@
 {
   "PRODUCTS": {
+    "STATUSES": {
+      "REQUIRES_CHANGES": "Requires changes",
+      "WAIT_FOR_APPROVAL": "Wait for approval",
+      "REJECTED": "Rejected",
+      "PUBLISHED": "Published",
+      "HAS_STAGED_CHANGES": "Has staged changes",
+      "NONE": "New"
+    },
     "MENU": {
       "TITLE": "Products"
     },

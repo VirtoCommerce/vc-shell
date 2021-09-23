@@ -3,6 +3,25 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.42) (2021-09-23)
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.41) (2021-09-23)
 
 

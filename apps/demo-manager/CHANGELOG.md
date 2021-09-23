@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.42) (2021-09-23)
+
+
+### Bug Fixes
+
+* fix icons for status actions ([35acf24](https://github.com/VirtoCommerce/platform-manager-sdk/commit/35acf24b76282b397b5f3ecb47229043ef93a7da))
+* minor bug fixes ([637f7c2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/637f7c269688483b8bc8fa7a519c9852c39fd788))
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+### Features
+
+* apply new statuses matrix ([31f2ab0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/31f2ab0fa9ee28491cb43d993a56be2a86ff835e))
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.41) (2021-09-23)
 
 

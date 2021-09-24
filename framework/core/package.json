@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/core",
-  "version": "0.0.42",
+  "version": "0.0.43",
   "scripts": {
     "build": "vue-cli-service build --formats commonjs --target lib --name core ./src/index.ts",
     "watch": "vue-cli-service build --formats commonjs --target lib --name core ./src/index.ts --watch"
@@ -14,13 +14,11 @@
   "devDependencies": {
     "@intlify/vue-i18n-loader": "^2.1.0",
     "@types/uuid": "^8.3.1",
-    "@virtoshell/api-client": "^0.0.42",
+    "@virtoshell/api-client": "^0.0.43",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",
-    "@vueuse/core": "^6.0.0",
-    "@vueuse/integrations": "^6.0.0",
     "client-oauth2": "^4.3.3",
     "core-js": "^3.6.5",
     "tsconfig-paths-webpack-plugin": "^3.5.1",

@@ -6,12 +6,12 @@
 
     <div class="vc-blade-header__info vc-flex-grow_1">
       <div
-        class="vc-blade-header__title"
+        class="vc-blade-header__title vc-ellipsis"
         :class="{ 'vc-blade-header__title_only': !subtitle }"
       >
         {{ title }}
       </div>
-      <div v-if="subtitle" class="vc-blade-header__subtitle">
+      <div v-if="subtitle" class="vc-blade-header__subtitle vc-ellipsis">
         {{ subtitle }}
       </div>
     </div>
@@ -20,7 +20,10 @@
       <slot name="filters"></slot>
     </div>
 
-    <div class="vc-blade-header__buttons vc-flex vc-flex-align_center">
+    <div
+      v-if="!$isPhone.value"
+      class="vc-blade-header__buttons vc-flex vc-flex-align_center"
+    >
       <template v-if="expandable">
         <div
           v-if="expanded"
@@ -152,6 +155,10 @@ export default defineComponent({
   &__icon {
     color: var(--blade-header-icon-color);
     margin-right: var(--margin-m);
+  }
+
+  &__info {
+    overflow: hidden;
   }
 
   &__title {

@@ -1,0 +1,33 @@
+{
+  "name": "@virtoshell/mod-assets",
+  "version": "0.0.43",
+  "scripts": {
+    "build": "vue-cli-service build --formats commonjs --target lib --name assets ./src/index.ts"
+  },
+  "main": "./dist/assets.common.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/*",
+    "src/**/*.vue"
+  ],
+  "devDependencies": {
+    "@virtoshell/core": "^0.0.43",
+    "@virtoshell/ui": "^0.0.43",
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "babel-loader": "^8.2.2",
+    "core-js": "^3.6.5",
+    "less": "^3.0.4",
+    "less-loader": "^5.0.0",
+    "tsconfig-paths-webpack-plugin": "^3.5.1",
+    "typescript": "^4.3.5",
+    "vue": "^3.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@vue/cli-plugin-babel/preset"
+    ]
+  }
+}

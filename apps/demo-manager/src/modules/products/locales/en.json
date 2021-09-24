@@ -30,7 +30,7 @@
             "CATEGORY": "Category",
             "CREATED_DATE": "Created Date",
             "STATUS": "Status",
-            "GTIN": "EAN/GTIN"
+            "GTIN": "Code"
           }
         }
       },
@@ -50,11 +50,13 @@
           },
           "CATEGORY": {
             "TITLE": "Select category",
-            "PLACEHOLDER": "Start typing and choose one"
+            "PLACEHOLDER": "Start typing and choose one",
+            "TOOLTIP": "You can choose one category from suggested list.<br>If there is no suitable category, please, contact your manager."
           },
           "GTIN": {
-            "TITLE": "EAN/GTIN#",
-            "PLACEHOLDER": "Enter product EAN or GTIN"
+            "TITLE": "Code",
+            "PLACEHOLDER": "Enter product identifier",
+            "TOOLTIP": "Set unique product identifier (ex.: EAN or GTIN)"
           },
           "DESCRIPTION": {
             "TITLE": "Description",

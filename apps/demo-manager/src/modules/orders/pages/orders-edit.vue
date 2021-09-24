@@ -5,7 +5,6 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <vc-table :multiselect="false" :columns="columns" :items="items">
       <template v-slot:item_pic="itemData">

@@ -2,14 +2,18 @@
   <vc-login-form :logo="logo" :background="background" :title="title">
     <vc-form>
       <vc-input
+        ref="loginField"
         class="vc-margin-bottom_l"
         label="Login"
+        placeholder="Enter your seller login"
         :required="true"
         v-model="form.username"
       ></vc-input>
       <vc-input
+        ref="passwordField"
         class="vc-margin-bottom_l"
         label="Password"
+        placeholder="Enter ypur password"
         :required="true"
         v-model="form.password"
         type="password"

@@ -5,7 +5,6 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
     <vc-table
@@ -29,8 +28,8 @@
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
-          <div>{{ itemData.item.name }}</div>
-          <vc-hint>{{ itemData.item.path }}</vc-hint>
+          <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+          <vc-hint class="vc-ellipsis">{{ itemData.item.path }}</vc-hint>
         </div>
       </template>
 
@@ -110,17 +109,22 @@ export default defineComponent({
       await loadProducts({ sort: sort.value });
     });
 
+    const reload = async () => {
+      logger.debug("Products list reload");
+      await loadProducts({
+        ...searchQuery.value,
+        skip: (currentPage.value - 1) * searchQuery.value.take,
+        sort: sort.value,
+      });
+    };
+
     const bladeToolbar = [
       {
         id: "refresh",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: async () => {
-          await loadProducts({
-            ...searchQuery.value,
-            skip: (currentPage.value - 1) * searchQuery.value.take,
-            sort: sort.value,
-          });
+          reload();
         },
       },
       {
@@ -222,9 +226,11 @@ export default defineComponent({
       sort,
       empty,
       moment,
+      reload,
       onItemClick,
       onHeaderClick,
       onPaginationClick,
+      title: t("PRODUCTS.PAGES.LIST.TITLE"),
     };
   },
 });

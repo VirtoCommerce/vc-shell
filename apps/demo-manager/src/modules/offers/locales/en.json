@@ -71,6 +71,14 @@
           "SHIPPING_TIME": {
             "TITLE": "Shipping time",
             "PLACEHOLDER": "Set shipping time"
+          },
+          "START_DATE": {
+            "TITLE": "Start date",
+            "PLACEHOLDER": ""
+          },
+          "END_DATE": {
+            "TITLE": "End date",
+            "PLACEHOLDER": ""
           }
         }
       }

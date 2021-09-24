@@ -1,66 +1,105 @@
 <template>
-  <div class="vc-topbar">
-    <img class="vc-topbar__logo" :src="logo" />
-    <div class="vc-topbar__version vc-margin-left_xl">{{ version }}</div>
+  <div class="vc-app-bar">
+    <template v-if="$isPhone.value">
+      <img v-if="blades.length === 0" class="vc-app-bar__logo" :src="logo" />
+      <div
+        v-else-if="blades.length === 1"
+        class="vc-ellipsis vc-font-size_header"
+      >
+        {{ blades[0].title }}
+      </div>
+      <vc-link v-else @click="$emit('backClick')">
+        <vc-icon icon="fas fa-chevron-left" size="s"></vc-icon>
+        <span class="vc-margin-left_s vc-font-size_l">{{ $t("Back") }}</span>
+      </vc-link>
+    </template>
+    <template v-else>
+      <img class="vc-app-bar__logo" :src="logo" />
+      <div class="vc-app-bar__version vc-margin-left_xl">
+        {{ version }}
+      </div>
+    </template>
 
     <div class="vc-flex-grow_1"></div>
 
-    <div v-if="buttons" class="vc-flex vc-fill_height">
+    <div class="vc-flex vc-fill_height">
+      <template v-if="$isDesktop.value">
+        <div
+          v-for="item in buttons"
+          :key="item.id"
+          class="vc-app-bar__button"
+          :title="item.title"
+          @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
+        >
+          <vc-icon
+            :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
+            size="xl"
+          ></vc-icon>
+        </div>
+      </template>
       <div
-        v-for="item in buttons"
-        :key="item.id"
-        class="vc-topbar__button"
+        class="vc-app-bar__button"
         :class="{
-          'vc-topbar__button_accent': item.accent,
+          'vc-app-bar__button_accent': true,
         }"
-        :title="item.title"
-        @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
+        :title="$t('SHELL.TOOLBAR.NOTIFICATIONS')"
       >
-        <vc-icon
-          :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
-          size="xl"
-        ></vc-icon>
+        <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
       </div>
     </div>
 
     <div
-      v-if="account"
-      class="vc-topbar__account"
+      v-if="account && $isDesktop.value"
+      class="vc-app-bar__account"
       :class="{
-        'vc-topbar__account_active': accountMenuVisible,
+        'vc-app-bar__account_active': accountMenuVisible,
       }"
       @click="toggleAccountMenuVisible"
     >
       <div
-        class="vc-topbar__account-avatar"
+        class="vc-app-bar__account-avatar"
         :style="{ 'background-image': `url(${account.avatar})` }"
       ></div>
       <div class="vc-flex-grow_1 vc-margin-left_m">
-        <div class="vc-topbar__account-name">
+        <div class="vc-app-bar__account-name">
           {{ account.name }}
         </div>
-        <div class="vc-topbar__account-role">
+        <div class="vc-app-bar__account-role">
           {{ account.role }}
         </div>
       </div>
-      <div v-if="account.dropdown" class="vc-topbar__account-chevron">
+      <div v-if="account.dropdown" class="vc-app-bar__account-chevron">
         <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
       </div>
       <div
         v-if="account.dropdown && accountMenuVisible"
         v-click-outside="toggleAccountMenuVisible"
-        class="vc-topbar__account-menu"
+        class="vc-app-bar__account-menu"
         @click.stop="accountMenuVisible = false"
       >
         <div
           v-for="item in account.dropdown"
           :key="item.id"
-          class="vc-topbar__account-menu-item"
+          class="vc-app-bar__account-menu-item"
           @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
         >
           {{ item.title }}
         </div>
       </div>
+    </div>
+
+    <div
+      v-if="$isMobile.value"
+      class="
+        vc-app-bar__mobile-toggler
+        vc-flex
+        vc-flex-align_center
+        vc-flex-justify_center
+        vc-fill_height
+      "
+      @click="$emit('toggleMobileMenu')"
+    >
+      <vc-icon icon="fas fa-bars"></vc-icon>
     </div>
   </div>
 </template>
@@ -71,7 +110,7 @@ import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
 import { clickOutside } from "../../../../../directives";
 
 export default defineComponent({
-  name: "VcTopbar",
+  name: "VcAppBar",
 
   components: { VcIcon },
 
@@ -88,6 +127,11 @@ export default defineComponent({
     version: {
       type: String,
       default: "",
+    },
+
+    blades: {
+      type: Array,
+      default: () => [],
     },
 
     buttons: {
@@ -117,24 +161,24 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --topbar-height: 60px;
-  --topbar-background-color: #ffffff;
-  --topbar-button-width: 50px;
-  --topbar-button-border-color: var(--topbar-background-color);
-  --topbar-button-color: #acacac;
-  --topbar-button-background-color: var(--topbar-background-color);
-  --topbar-button-color-hover: #808080;
-  --topbar-button-background-color-hover: var(--topbar-background-color);
-  --topbar-version-color: #838d9a;
+  --app-bar-height: 60px;
+  --app-bar-background-color: #ffffff;
+  --app-bar-button-width: 50px;
+  --app-bar-button-border-color: var(--app-bar-background-color);
+  --app-bar-button-color: #acacac;
+  --app-bar-button-background-color: var(--app-bar-background-color);
+  --app-bar-button-color-hover: #808080;
+  --app-bar-button-background-color-hover: var(--app-bar-background-color);
+  --app-bar-version-color: #838d9a;
 }
 
-.vc-topbar {
+.vc-app-bar {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: var(--topbar-height);
-  background-color: var(--topbar-background-color);
+  height: var(--app-bar-height);
+  background-color: var(--app-bar-background-color);
   padding-left: var(--padding-l);
 
   &__logo {
@@ -142,7 +186,7 @@ export default defineComponent({
   }
 
   &__version {
-    color: var(--topbar-version-color);
+    color: var(--app-bar-version-color);
     font-size: var(--font-size-xs);
   }
 
@@ -151,15 +195,15 @@ export default defineComponent({
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--topbar-button-width);
-    border-left: 1px solid var(--topbar-button-border-color);
+    width: var(--app-bar-button-width);
+    border-left: 1px solid var(--app-bar-button-border-color);
     cursor: pointer;
-    color: var(--topbar-button-color);
-    background-color: var(--topbar-button-background-color);
+    color: var(--app-bar-button-color);
+    background-color: var(--app-bar-button-background-color);
 
     &:hover {
-      color: var(--topbar-button-color-hover);
-      background-color: var(--topbar-button-background-color-hover);
+      color: var(--app-bar-button-color-hover);
+      background-color: var(--app-bar-button-background-color-hover);
     }
 
     &_accent:before {
@@ -242,6 +286,11 @@ export default defineComponent({
         }
       }
     }
+  }
+
+  &__mobile-toggler {
+    color: #319ed4;
+    width: var(--app-bar-button-width);
   }
 }
 </style>

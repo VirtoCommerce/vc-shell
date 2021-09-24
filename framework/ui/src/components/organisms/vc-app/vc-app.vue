@@ -1,7 +1,10 @@
 <template>
   <div
     class="vc-app vc-fill_all vc-flex vc-flex-column vc-margin_none"
-    :class="`vc-theme_${theme}`"
+    :class="[
+      `vc-theme_${theme}`,
+      { 'vc-app_touch': $isTouch, 'vc-app_phone': $isPhone.value },
+    ]"
   >
     <!-- Show login form for unauthorized users -->
     <slot v-if="!authorized" name="login">Login form not defined</slot>
@@ -9,41 +12,49 @@
     <!-- Show main app layout for authorized users -->
     <template v-else>
       <!-- Init application top bar -->
-      <vc-topbar
+      <vc-app-bar
         class="vc-flex-shrink_0"
         :logo="logo"
+        :blades="blades"
         :version="version"
         :buttons="toolbar"
         :account="account"
-      ></vc-topbar>
+        @toggleMobileMenu="$refs.appMenu.mobileVisible = true"
+        @backClick="onClose(blades.length - 1)"
+      ></vc-app-bar>
 
       <div class="vc-app__inner vc-flex vc-flex-grow_1">
         <!-- Init main menu -->
-        <vc-nav
+        <vc-app-menu
+          ref="appMenu"
+          class="vc-flex-shrink_0"
           :items="menu"
           :collapsed="menuCollapsed"
           @itemClick="$emit('menuClick', $event)"
           @collapse="$emit('menuCollapse')"
           @expand="$emit('menuExpand')"
-        ></vc-nav>
+        ></vc-app-menu>
 
         <!-- If no workspace active then show dashboard -->
-        <slot v-if="showDashboard" name="dashboard">
+        <slot v-if="!workspace.length" name="dashboard">
           Dashboard component not defined
         </slot>
 
         <!-- Else show workspace blades -->
-        <div v-else class="vc-flex vc-flex-grow_1 vc-padding-horizontal_s">
+        <div v-else class="vc-app__workspace vc-flex vc-flex-grow_1">
           <component
             v-for="(blade, i) in workspace"
-            :key="blade.uid"
-            v-show="i >= workspace.length - 2"
+            v-show="i >= workspace.length - ($isDesktop.value ? 2 : 1)"
+            :key="i"
             :is="blade.component"
-            :uid="blade.uid"
+            :ref="setItemRef"
+            :parent="setParent(i)"
+            :child="setChild(i)"
             :param="blade.param"
-            :expanded="blade.expanded"
-            :closable="blade.closable"
+            :closable="i > 0"
             :options="blade.componentOptions"
+            @close="onClose(i)"
+            @openChild="onOpenChild(i)"
           ></component>
         </div>
       </div>
@@ -52,16 +63,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import VcTopbar from "./_internal/vc-topbar/vc-topbar.vue";
-import VcNav from "./_internal/vc-nav/vc-nav.vue";
+import { defineComponent, onBeforeUpdate, onUpdated, ref, computed } from "vue";
+import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
+import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
+
+interface BladeElement extends HTMLElement {
+  onBeforeClose: () => Promise<boolean>;
+}
 
 export default defineComponent({
   name: "VcApp",
 
   components: {
-    VcTopbar,
-    VcNav,
+    VcAppBar,
+    VcAppMenu,
   },
 
   props: {
@@ -121,14 +136,71 @@ export default defineComponent({
     },
   },
 
-  emits: ["menuCollapse", "menuExpand", "menuClick"],
+  emits: [
+    "menuCollapse",
+    "menuExpand",
+    "menuClick",
+    "bladesChanged",
+    "closeBlade",
+  ],
 
-  setup(props) {
+  setup(props, { emit }) {
     console.debug("Init vc-app");
-    const showDashboard = computed(() => props.workspace.length === 0);
+    let blades = ref<BladeElement[]>([]);
+    const setItemRef = (el: BladeElement) => {
+      if (el) {
+        blades.value.push(el);
+      }
+    };
+
+    onBeforeUpdate(() => {
+      blades.value = [];
+    });
+
+    onUpdated(() => {
+      emit("bladesChanged", blades.value);
+    });
+
+    const onClose = async (index: number) => {
+      console.log(`onClose called on blade ${index}`);
+      if (index > 0) {
+        const lastBladeIndex = props.workspace.length - 1;
+        const children = blades.value.slice(index).reverse();
+        for (let i = 0; i < children.length; i++) {
+          if (
+            children[i]?.onBeforeClose &&
+            typeof children[i].onBeforeClose === "function"
+          ) {
+            const result = await children[i].onBeforeClose();
+            if (result === false) {
+              break;
+            } else {
+              emit("closeBlade", lastBladeIndex - i);
+            }
+          } else {
+            emit("closeBlade", lastBladeIndex - i);
+          }
+        }
+      }
+    };
+
+    const onOpenChild = async (index: number) => {
+      console.log(`onOpenChild called on blade ${index}`);
+    };
 
     return {
-      showDashboard,
+      setItemRef,
+      blades,
+      onClose,
+      onOpenChild,
+      setParent: (i: number) => {
+        return i > 0 ? computed(() => blades.value[i - 1]) : undefined;
+      },
+      setChild: (i: number) => {
+        return i < props.workspace.length - 1
+          ? computed(() => blades.value[i + 1])
+          : undefined;
+      },
     };
   },
 });
@@ -142,6 +214,16 @@ export default defineComponent({
 
   &__inner {
     overflow: hidden;
+  }
+
+  &__workspace {
+    padding-left: var(--padding-s);
+    padding-right: var(--padding-s);
+
+    .vc-app_phone & {
+      padding: 0;
+      width: 100%;
+    }
   }
 }
 </style>

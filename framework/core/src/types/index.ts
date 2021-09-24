@@ -10,3 +10,14 @@ export interface SignInResult {
   error?: string;
   errorCode?: string;
 }
+
+export interface IBladeData {
+  name: string;
+  component?: unknown;
+  uid?: string;
+  url?: string;
+  param?: string;
+  componentOptions?: Record<string, unknown>;
+  expanded?: boolean;
+  closable?: boolean;
+}

@@ -112,7 +112,6 @@ export default defineComponent({
 
     onMounted(async () => {
       await loadProducts({ sort: sort.value });
-      console.dir(instance);
     });
 
     const bladeToolbar = [

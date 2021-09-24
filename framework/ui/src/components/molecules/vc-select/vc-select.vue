@@ -16,7 +16,7 @@
       <input
         class="vc-select__field vc-padding-horizontal_m"
         :placeholder="placeholder"
-        :value="selectedItem"
+        :value="modelValue?.title"
         @click="openDropdown"
         readonly
       />
@@ -119,12 +119,6 @@ export default defineComponent({
 
     return {
       opened,
-      selectedItem: computed(
-        () =>
-          (props.options as IOptions[]).find(
-            (item) => item.id === props.modelValue
-          )?.title
-      ),
       closeDropdown: () => {
         opened.value = false;
         emit("close");

@@ -16,7 +16,7 @@
       <input
         class="vc-autocomplete__field vc-padding-horizontal_m"
         :placeholder="placeholder"
-        :value="options[modelValue]"
+        :value="modelValue?.title"
         @click="openDropdown"
         readonly
       />

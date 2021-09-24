@@ -23,7 +23,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { emit }) {
+  setup(props) {
     const statusStyles = {
       RequestChanges: {
         outline: true,

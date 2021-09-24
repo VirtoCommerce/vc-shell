@@ -97,11 +97,22 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+} from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
+
+class BladeElement extends HTMLElement {
+  reload: () => Promise<void>;
+}
 
 export default defineComponent({
   components: {
@@ -130,12 +141,12 @@ export default defineComponent({
     },
 
     parent: {
-      type: HTMLElement,
+      type: BladeElement,
       default: undefined,
     },
 
     child: {
-      type: HTMLElement,
+      type: BladeElement,
       default: undefined,
     },
   },
@@ -157,6 +168,8 @@ export default defineComponent({
 
     const categories = ref<ICategory[]>();
 
+    const parent = unref(props.parent);
+
     onMounted(async () => {
       await loadProduct({ id: props.param });
       categories.value = await fetchCategories();
@@ -169,6 +182,9 @@ export default defineComponent({
         icon: "fas fa-save",
         onClick: async () => {
           await updateProductDetails(product.value.id, { ...productDetails });
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(
           () => !product.value?.canBeModified || !modified.value
@@ -184,6 +200,9 @@ export default defineComponent({
             { ...productDetails },
             true
           );
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(
           () => !product.value?.canBeModified || !modified.value
@@ -195,6 +214,9 @@ export default defineComponent({
         icon: "fas fa-undo",
         onClick: async () => {
           await revertStagedChanges(product.value.id);
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(
           () =>
@@ -211,6 +233,9 @@ export default defineComponent({
         icon: "fas fa-check-circle",
         onClick: async () => {
           await changeProductStatus(product.value.id, "approve");
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -220,6 +245,9 @@ export default defineComponent({
         icon: "fas fa-sticky-note",
         onClick: async () => {
           await changeProductStatus(product.value.id, "requestChanges");
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -229,6 +257,9 @@ export default defineComponent({
         icon: "fas fa-ban",
         onClick: async () => {
           await changeProductStatus(product.value.id, "reject");
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(() => product.value.canBeModified),
       },

@@ -109,17 +109,22 @@ export default defineComponent({
       await loadProducts({ sort: sort.value });
     });
 
+    const reload = async () => {
+      logger.debug("Products list reload");
+      await loadProducts({
+        ...searchQuery.value,
+        skip: (currentPage.value - 1) * searchQuery.value.take,
+        sort: sort.value,
+      });
+    };
+
     const bladeToolbar = [
       {
         id: "refresh",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: async () => {
-          await loadProducts({
-            ...searchQuery.value,
-            skip: (currentPage.value - 1) * searchQuery.value.take,
-            sort: sort.value,
-          });
+          reload();
         },
       },
       {
@@ -221,6 +226,7 @@ export default defineComponent({
       sort,
       empty,
       moment,
+      reload,
       onItemClick,
       onHeaderClick,
       onPaginationClick,

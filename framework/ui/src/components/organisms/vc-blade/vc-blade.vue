@@ -6,7 +6,7 @@
   >
     <!-- Init blade header -->
     <vc-blade-header
-      v-if="closable"
+      v-if="!$isMobile.value || closable"
       :expanded="expanded"
       :closable="closable"
       :icon="icon"

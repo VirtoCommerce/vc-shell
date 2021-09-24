@@ -1,5 +1,6 @@
 import { Ref, ref, computed, watch, reactive } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
+import { cloneDeep as _cloneDeep } from "lodash";
 
 import {
   ICategory,
@@ -92,7 +93,7 @@ export default (): IUseProduct => {
         gtin: product.value.productData.gtin,
         description: product.value.productData?.reviews[0]?.content,
       } as ProductDetails);
-      productDetailsCopy = { ...productDetails };
+      productDetailsCopy = _cloneDeep(productDetails);
     } catch (e) {
       logger.error(e);
       throw e;

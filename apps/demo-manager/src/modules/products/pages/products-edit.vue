@@ -281,7 +281,7 @@ export default defineComponent({
       const formData = new FormData();
       formData.append("file", files[0]);
       const result = await fetch(
-        `/api/platform/assets?folderUrl=/marketplace`,
+        `/api/platform/assets?folderUrl=/catalog/${product.value.id}`,
         {
           method: "POST",
           body: formData,
@@ -290,12 +290,13 @@ export default defineComponent({
       const response = await result.json();
       if (response?.length) {
         const image = new Image(response[0]);
+        image.createdDate = new Date();
         productDetails.images.push(image);
       }
       files = null;
     };
 
-    const onGalleryItemEdit = (item: Record<string, unknown>) => {
+    const onGalleryItemEdit = (item: Record<string, Image>) => {
       openBlade(props.parent.id, "assets-details", item);
     };
 

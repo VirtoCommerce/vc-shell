@@ -3,6 +3,57 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.43](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.43) (2021-09-24)
+
+
+### Features
+
+* autocomplete and select v-models ([775c913](https://github.com/VirtoCommerce/platform-manager-sdk/commit/775c91388c7fc05db08b82663310ba3153187245))
+* product list update on changes ([198731f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
+
+
+
+## 0.0.42 (2021-09-23)
+
+
+### Bug Fixes
+
+* fix icons for status actions ([35acf24](https://github.com/VirtoCommerce/platform-manager-sdk/commit/35acf24b76282b397b5f3ecb47229043ef93a7da))
+* minor bug fixes ([637f7c2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/637f7c269688483b8bc8fa7a519c9852c39fd788))
+
+
+### Features
+
+* basic mobile UI/UX ([77be3a4](https://github.com/VirtoCommerce/platform-manager-sdk/commit/77be3a414e842500e6ca9fded1ffadd4eccb68ed))
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+### Features
+
+* apply new statuses matrix ([31f2ab0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/31f2ab0fa9ee28491cb43d993a56be2a86ff835e))
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Features
+
+* gallery upload, table width, label updates ([596ec14](https://github.com/VirtoCommerce/platform-manager-sdk/commit/596ec1451d7f4c57abc5b336737b40d79773000d))
+* routing update ([d7ec6ef](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.42) (2021-09-23)
 
 

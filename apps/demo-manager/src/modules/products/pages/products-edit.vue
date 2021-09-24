@@ -31,12 +31,14 @@
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="category"
+                v-model="productDetails.categoryId"
                 :required="true"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
+                keyProperty="id"
+                displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
               ></vc-select>
               <vc-input
@@ -302,10 +304,8 @@ export default defineComponent({
 
     return {
       bladeToolbar,
-      category,
-      categories: computed(() =>
-        categories.value?.map((x) => ({ title: x.name, value: x.id }))
-      ),
+      category: computed(() => category.value),
+      categories: computed(() => categories.value),
       product: computed(() => product.value),
       productDetails,
       loading: computed(() => loading.value),

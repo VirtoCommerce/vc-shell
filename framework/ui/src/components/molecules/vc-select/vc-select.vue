@@ -16,7 +16,7 @@
       <input
         class="vc-select__field vc-padding-horizontal_m"
         :placeholder="placeholder"
-        :value="modelValue && modelValue.title"
+        :value="modelValue && modelValue[displayProperty]"
         @click="openDropdown"
         readonly
       />
@@ -40,9 +40,9 @@
             class="vc-select__item"
             v-for="(item, i) in options"
             :key="i"
-            @click="onItemSelect"
+            @click="onItemSelect(item)"
           >
-            <slot name="item" :item="item">{{ item.title }}</slot>
+            <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
           </div>
         </vc-container>
       </div>
@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -106,9 +106,14 @@ export default defineComponent({
       default: undefined,
     },
 
-    searchString: {
+    keyProperty: {
       type: String,
-      default: "",
+      default: "id",
+    },
+
+    displayProperty: {
+      type: String,
+      default: "title",
     },
   },
 

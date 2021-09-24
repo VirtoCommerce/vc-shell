@@ -9,9 +9,12 @@
     </template>
     <div class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center">
       <div
-        class="vc-gallery-preview__image vc-flex-grow_1 vc-fill_width"
-        :style="{ backgroundImage: 'url(' + currentImage.url + ')' }"
+        class="vc-gallery-preview__image-container vc-flex-grow_1 vc-fill_width"
       >
+        <div
+          class="vc-gallery-preview__image vc-fill_all"
+          :style="{ backgroundImage: 'url(' + currentImage.url + ')' }"
+        ></div>
         <div
           v-if="localIndex > 0"
           class="vc-gallery-preview__prev"
@@ -95,6 +98,11 @@ export default defineComponent({
 
 <style lang="less">
 .vc-gallery-preview {
+  &__image-container {
+    box-sizing: border-box;
+    padding: var(--padding-xl);
+  }
+
   &__image {
     background-size: contain;
     background-repeat: no-repeat;
@@ -104,6 +112,9 @@ export default defineComponent({
   &__images {
     padding: var(--padding-l);
     padding-bottom: 40px;
+    max-width: 100%;
+    overflow-x: auto;
+    box-sizing: border-box;
 
     &-item {
       margin: 0 var(--margin-xs);

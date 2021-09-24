@@ -16,7 +16,7 @@
       <input
         class="vc-autocomplete__field vc-padding-horizontal_m"
         :placeholder="placeholder"
-        :value="modelValue && modelValue.title"
+        :value="modelValue && modelValue[displayProperty]"
         @click="openDropdown"
         readonly
       />
@@ -42,9 +42,9 @@
             class="vc-autocomplete__item"
             v-for="(item, i) in options"
             :key="i"
-            @click="onItemSelect"
+            @click="onItemSelect(item)"
           >
-            <slot name="item" :item="item">{{ item.title }}</slot>
+            <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
           </div>
         </vc-container>
       </div>
@@ -106,6 +106,16 @@ export default defineComponent({
     searchString: {
       type: String,
       default: "",
+    },
+
+    keyProperty: {
+      type: String,
+      default: "id",
+    },
+
+    displayProperty: {
+      type: String,
+      default: "title",
     },
   },
 

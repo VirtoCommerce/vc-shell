@@ -10,6 +10,7 @@
   >
     <!-- Blade contents -->
     <vc-container :no-padding="true">
+      <mp-product-status :status="product.status"></mp-product-status>
       <div
         v-if="productDetails"
         class="product-details__inner vc-flex vc-flex-grow_1"
@@ -100,7 +101,13 @@ import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
+import MpProductStatus from "../components/MpProductStatus.vue";
+
 export default defineComponent({
+  components: {
+    MpProductStatus,
+  },
+
   props: {
     expanded: {
       type: Boolean,
@@ -144,6 +151,8 @@ export default defineComponent({
       loadProduct,
       updateProductDetails,
       fetchCategories,
+      revertStagedChanges,
+      changeProductStatus,
     } = useProduct();
 
     const categories = ref<ICategory[]>();
@@ -159,15 +168,69 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: async () => {
-          await updateProductDetails({ ...productDetails });
+          await updateProductDetails(product.value.id, { ...productDetails });
         },
-        disabled: computed(() => !modified.value),
+        disabled: computed(
+          () => !product.value?.canBeModified || !modified.value
+        ),
       },
       {
-        id: "saveAndApprove",
+        id: "saveAndSendToApprove",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
         icon: "fas fa-share-square",
-        disabled: true,
+        onClick: async () => {
+          await updateProductDetails(
+            product.value.id,
+            { ...productDetails },
+            true
+          );
+        },
+        disabled: computed(
+          () => !product.value?.canBeModified || !modified.value
+        ),
+      },
+      {
+        id: "revertStagedChanges",
+        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT"),
+        icon: "fas fa-undo",
+        onClick: async () => {
+          await revertStagedChanges(product.value.id);
+        },
+        disabled: computed(
+          () =>
+            !(
+              product.value?.isPublished &&
+              product.value?.hasStagedChanges &&
+              product.value.canBeModified
+            )
+        ),
+      },
+      {
+        id: "approve",
+        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.APPROVE"),
+        icon: "fas fa-check-circle",
+        onClick: async () => {
+          await changeProductStatus(product.value.id, "approve");
+        },
+        disabled: computed(() => product.value.canBeModified),
+      },
+      {
+        id: "requestChanges",
+        title: "Request changes (test only)",
+        icon: "fas fa-sticky-note",
+        onClick: async () => {
+          await changeProductStatus(product.value.id, "requestChanges");
+        },
+        disabled: computed(() => product.value.canBeModified),
+      },
+      {
+        id: "reject",
+        title: "Reject (test only)",
+        icon: "fas fa-ban",
+        onClick: async () => {
+          await changeProductStatus(product.value.id, "reject");
+        },
+        disabled: computed(() => product.value.canBeModified),
       },
       {
         id: "close",

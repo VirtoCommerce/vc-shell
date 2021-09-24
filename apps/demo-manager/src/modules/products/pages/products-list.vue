@@ -45,9 +45,7 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <vc-status v-bind="statusStyle(itemData.item.status)">{{
-          itemData.item.status
-        }}</vc-status>
+        <mp-product-status :status="itemData.item.status"></mp-product-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -59,19 +57,17 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  onMounted,
-  computed,
-  watch,
-  getCurrentInstance,
-} from "vue";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { useRouter, useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
+import MpProductStatus from "../components/MpProductStatus.vue";
 import moment from "moment";
 
 export default defineComponent({
+  components: {
+    MpProductStatus,
+  },
+
   props: {
     uid: {
       type: String,
@@ -90,7 +86,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const instance = getCurrentInstance();
     const { openBlade } = useRouter();
     const logger = useLogger();
     const { t } = useI18n();
@@ -208,37 +203,6 @@ export default defineComponent({
       });
     };
 
-    const statusStyle = (status: string) => {
-      const result = {
-        outline: true,
-        variant: "info",
-      };
-
-      switch (status) {
-        case "Published":
-          result.outline = false;
-          result.variant = "success";
-          break;
-        case "Requires changes":
-          result.outline = true;
-          result.variant = "danger";
-          break;
-        case "Approved":
-          result.outline = true;
-          result.variant = "success";
-          break;
-        case "Waiting for approval":
-          result.outline = true;
-          result.variant = "warning";
-          break;
-        case "Rejected":
-          result.outline = false;
-          result.variant = "danger";
-          break;
-      }
-      return result;
-    };
-
     return {
       loading,
       bladeToolbar,
@@ -260,7 +224,6 @@ export default defineComponent({
       onItemClick,
       onHeaderClick,
       onPaginationClick,
-      statusStyle,
       title: t("PRODUCTS.PAGES.LIST.TITLE"),
     };
   },

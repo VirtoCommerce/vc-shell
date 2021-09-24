@@ -22,7 +22,7 @@
       <vc-icon size="xs" icon="fas fa-arrow-left"></vc-icon>
     </div>
 
-    <template v-if="expanded">
+    <template v-if="expanded && $isDesktop.value">
       <!-- To preprevious page with number -->
       <div
         v-if="currentPage > 2"
@@ -47,7 +47,7 @@
       {{ currentPage }}
     </div>
 
-    <template v-if="expanded">
+    <template v-if="expanded && $isDesktop.value">
       <!-- To next page with number -->
       <div
         v-if="currentPage < pages"

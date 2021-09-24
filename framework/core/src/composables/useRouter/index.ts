@@ -1,20 +1,10 @@
 import { App, ref, computed, ComputedRef, watch, reactive } from "vue";
 import { v1 as uuid } from "uuid";
 import pattern from "url-pattern";
+import { IBladeData } from "../../types";
 
 interface IAppOptions {
   blades?: IBladeData[];
-}
-
-interface IBladeData {
-  name: string;
-  component?: unknown;
-  uid?: string;
-  url?: string;
-  param?: string;
-  componentOptions?: Record<string, unknown>;
-  expanded?: boolean;
-  closable?: boolean;
 }
 
 interface IUseRouter {
@@ -24,7 +14,7 @@ interface IUseRouter {
     name: string,
     options?: Record<string, unknown>
   ) => void;
-  closeBlade: (uid: string) => void;
+  closeBlade: (index: number) => void;
   closeChildren: (uid: string) => void;
   parseUrl: (url: string) => void;
   openDashboard: () => void;
@@ -169,13 +159,12 @@ const openBlade = (
  * Close blade by uid and its children.
  * @param uid Blade uid.
  */
-const closeBlade = (uid: string) => {
-  console.debug(`[@virtoshell/core#useRouter:closeBlade] - "${uid}"`);
-  const bladeIndex = workspace.findIndex((item) => item.uid === uid);
+const closeBlade = async (index: number) => {
+  console.debug(`[@virtoshell/core#useRouter:closeBlade] - "${index}"`);
 
   // We don't allow closing first blade
-  if (bladeIndex > 0) {
-    workspace.splice(bladeIndex);
+  if (index > 0) {
+    workspace.splice(index);
   }
 };
 

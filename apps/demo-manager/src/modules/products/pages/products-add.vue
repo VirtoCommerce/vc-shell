@@ -5,7 +5,6 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
     <div class="product-details__inner vc-flex vc-flex-grow_1">
@@ -111,11 +110,10 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
     const { closeBlade } = useRouter();
-    const { createProduct, productDetails, fetchCategories, loading } =
-      useProduct();
+    const { createProduct, productDetails, fetchCategories } = useProduct();
 
     const bladeToolbar = [
       {
@@ -136,7 +134,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          closeBlade(props.uid);
+          emit("close");
         },
       },
     ];

@@ -1,24 +1,25 @@
 <template>
-  <div class="vc-select">
+  <div class="vc-select" :class="{ 'vc-select_opened': opened }">
     <!-- Select label -->
-    <div v-if="label" class="vc-font-weight_bold vc-margin-bottom_s">
-      {{ label }}
-      <span v-if="required" class="vc-select__required">*</span>
-    </div>
+    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+      <span>{{ label }}</span>
+      <template v-if="tooltip" v-slot:tooltip>
+        <span v-html="tooltip"></span>
+      </template>
+    </vc-label>
 
     <!-- Select field -->
-    <div class="vc-select__field-wrapper vc-flex vc-flex-align_stretch">
-      <select
+    <div
+      class="vc-select__field-wrapper vc-flex vc-flex-align_stretch"
+      v-click-outside="closeDropdown"
+    >
+      <input
         class="vc-select__field vc-padding-horizontal_m"
-        :value="modelValue"
-        @change="$emit('update:modelValue', $event.target.value)"
-        required
-      >
-        <option value="" disabled selected hidden>{{ placeholder }}</option>
-        <option v-for="(item, i) in options" :key="i" :value="item.value">
-          {{ item.title }}
-        </option>
-      </select>
+        :placeholder="placeholder"
+        :value="modelValue?.title"
+        @click="openDropdown"
+        readonly
+      />
 
       <!-- Select chevron -->
       <div
@@ -28,18 +29,51 @@
           vc-flex
           vc-flex-align_center
         "
+        @click="opened = !opened"
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
+      </div>
+
+      <div v-if="opened" class="vc-select__dropdown">
+        <vc-container :no-padding="true">
+          <div
+            class="vc-select__item"
+            v-for="(item, i) in options"
+            :key="i"
+            @click="onItemSelect"
+          >
+            <slot name="item" :item="item">{{ item.title }}</slot>
+          </div>
+        </vc-container>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed } from "vue";
+import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import VcLabel from "../../atoms/vc-label/vc-label.vue";
+import VcContainer from "../../atoms/vc-container/vc-container.vue";
+import { clickOutside } from "../../../directives";
+
+interface IOptions {
+  id: string;
+  title: string;
+}
 
 export default defineComponent({
   name: "VcSelect",
+
+  components: {
+    VcIcon,
+    VcLabel,
+    VcContainer,
+  },
+
+  directives: {
+    clickOutside,
+  },
 
   props: {
     modelValue: {
@@ -49,7 +83,7 @@ export default defineComponent({
 
     placeholder: {
       type: String,
-      default: "Select...",
+      default: "Click to select...",
     },
 
     options: {
@@ -66,9 +100,40 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    tooltip: {
+      type: String,
+      default: undefined,
+    },
+
+    searchString: {
+      type: String,
+      default: "",
+    },
   },
 
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "change", "close"],
+
+  setup(props, { emit }) {
+    const opened = ref(false);
+
+    return {
+      opened,
+      closeDropdown: () => {
+        opened.value = false;
+        emit("close");
+      },
+      openDropdown: () => {
+        opened.value = true;
+      },
+      onItemSelect: (item: unknown) => {
+        emit("update:modelValue", item);
+        emit("change", item);
+        emit("close");
+        opened.value = false;
+      },
+    };
+  },
 });
 </script>
 
@@ -81,16 +146,14 @@ export default defineComponent({
   --select-placeholder-color: #a5a5a5;
   --select-chevron-color: #43b0e6;
   --select-chevron-color-hover: #319ed4;
-  --select-required-color: #f14e4e;
 }
 
 .vc-select {
-  &__required {
-    color: var(--input-required-color);
-  }
+  box-sizing: border-box;
 
   &__field-wrapper {
     position: relative;
+    box-sizing: border-box;
     border: 1px solid var(--select-border-color);
     border-radius: var(--select-border-radius);
     background-color: var(--select-background-color);
@@ -119,6 +182,63 @@ export default defineComponent({
 
     &:hover {
       color: var(--select-chevron-color-hover);
+    }
+  }
+
+  &_opened &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &__dropdown {
+    display: none;
+  }
+
+  &_opened &__field-wrapper {
+    border-radius: var(--select-border-radius) var(--select-border-radius) 0 0;
+  }
+
+  &_opened &__dropdown {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    max-height: 300px;
+    z-index: 10;
+    overflow: hidden;
+    position: absolute;
+    left: -1px;
+    right: -1px;
+    top: var(--select-height);
+    background-color: var(--select-background-color);
+    border: 1px solid var(--select-border-color);
+    border-top: 1px solid var(--select-background-color);
+    border-radius: 0 0 var(--select-border-radius) var(--select-border-radius);
+    padding: var(--padding-s);
+  }
+
+  &__search {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #eaecf2;
+    border-radius: 4px;
+    height: 32px;
+    line-height: 32px;
+    outline: none;
+    margin-bottom: var(--margin-m);
+    padding-left: var(--padding-s);
+    padding-right: var(--padding-s);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    min-height: 36px;
+    padding-left: var(--padding-s);
+    padding-right: var(--padding-s);
+    border-radius: 3px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #dfeef9;
     }
   }
 }

@@ -1,6 +1,7 @@
 import { App } from "vue";
 import * as components from "./components";
 import * as directives from "./directives";
+import { useBreakpoints } from "@vueuse/core";
 
 import "normalize.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -20,6 +21,18 @@ export default {
     Object.entries(directives).forEach(([directiveName, directive]) => {
       app.directive(directiveName, directive);
     });
+
+    const bp = useBreakpoints({
+      phone: 480,
+      desktop: 1024,
+    });
+
+    app.config.globalProperties.$isPhone = bp.smaller("phone");
+    app.config.globalProperties.$isTablet = bp.between("phone", "desktop");
+    app.config.globalProperties.$isMobile = bp.smaller("desktop");
+    app.config.globalProperties.$isDesktop = bp.greater("desktop");
+    app.config.globalProperties.$isTouch =
+      "ontouchstart" in window || navigator.maxTouchPoints > 0;
   },
 };
 

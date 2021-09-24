@@ -13,6 +13,8 @@ module.exports = {
       configFile: tsconfigFile
     }]);
 
+    config.resolve.alias.set("@vueuse/core/useBreakpoints", "@vueuse/core/useBreakpoints.esm.js");
+
     // Do not create entry points since we are building a library
     config.entryPoints.clear();
 

@@ -15,7 +15,8 @@
           class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
           :clearable="true"
-          @change="$emit('searchValueChanged', $event)"
+          v-model="searchValue"
+          @update:modelValue="$emit('searchValueChanged', $event)"
         ></vc-input>
       </div>
     </slot>
@@ -42,7 +43,8 @@
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
                   <vc-checkbox
-                    v-model="headerCheckbox"
+                    :modelValue="headerCheckbox"
+                    @update:modelValue="processHeaderCheckbox"
                     @click.stop
                   ></vc-checkbox>
                 </div>
@@ -95,7 +97,8 @@
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
                   <vc-checkbox
-                    v-model="checkboxes[item.id]"
+                    :modelValue="checkboxes[item.id]"
+                    @update:modelValue="processCheckbox(item.id, $event)"
                     @click.stop
                   ></vc-checkbox>
                 </div>
@@ -107,13 +110,11 @@
                 :class="cell.class"
                 :width="cell.width"
               >
-                <div class="vc-flex vc-flex-align_center">
-                  <slot :name="`item_${cell.id}`" :item="item">{{
-                    (cell.field || cell.id)
-                      .split(".")
-                      .reduce((p, c) => (p && p[c]) || null, item)
-                  }}</slot>
-                </div>
+                <slot :name="`item_${cell.id}`" :item="item">{{
+                  (cell.field || cell.id)
+                    .split(".")
+                    .reduce((p, c) => (p && p[c]) || null, item)
+                }}</slot>
               </td>
             </tr>
           </tbody>
@@ -189,9 +190,11 @@ export default defineComponent({
 
   data() {
     const checkboxes: Record<string, boolean> = {};
+    const searchValue = "";
 
     return {
       checkboxes,
+      searchValue,
     };
   },
 
@@ -257,7 +260,7 @@ export default defineComponent({
     },
   },
 
-  emits: ["paginationClick"],
+  emits: ["paginationClick", "selectionChanged"],
 
   watch: {
     items(value: { id: string }[]) {
@@ -277,18 +280,25 @@ export default defineComponent({
       return this.sort?.slice(0, 1) === "-" ? this.sort?.slice(1) : this.sort;
     },
 
-    headerCheckbox: {
-      get() {
-        return Object.values(this.checkboxes).every((value) => value);
-      },
-      set() {
-        const currentState = Object.values(this.checkboxes).every(
-          (value) => value
-        );
-        Object.keys(this.checkboxes).forEach(
-          (key) => (this.checkboxes[key] = !currentState)
-        );
-      },
+    headerCheckbox() {
+      return Object.values(this.checkboxes).every((value) => value);
+    },
+  },
+
+  methods: {
+    processHeaderCheckbox() {
+      const currentState = Object.values(this.checkboxes).every(
+        (value) => value
+      );
+      Object.keys(this.checkboxes).forEach(
+        (key) => (this.checkboxes[key] = !currentState)
+      );
+      this.$emit("selectionChanged", this.checkboxes);
+    },
+
+    processCheckbox(id: string, state: boolean) {
+      this.checkboxes[id] = state;
+      this.$emit("selectionChanged", this.checkboxes);
     },
   },
 });
@@ -300,6 +310,7 @@ export default defineComponent({
   border-collapse: collapse;
   position: relative;
   padding-top: 43px;
+  table-layout: fixed;
 
   &-wrapper {
     position: relative;

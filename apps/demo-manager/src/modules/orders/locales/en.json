@@ -2,6 +2,29 @@
   "ORDERS": {
     "MENU": {
       "TITLE": "Orders"
+    },
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Orders",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "CONFIRM": "Confirm",
+          "CANCEL": "Cancel"
+        },
+        "SEARCH": {
+          "PLACEHOLDER": "Search keywords"
+        },
+        "TABLE": {
+          "TOTALS": "Total:",
+          "HEADER": {
+            "NUMBER": "Order number",
+            "CUSTOMER": "Customer",
+            "TOTAL": "Total",
+            "STATUS": "Status",
+            "CREATED": "Created"
+          }
+        }
+      }
     }
   }
 }

@@ -12,6 +12,7 @@
     :menuCollapsed="menuCollapsed"
     @menuCollapse="menuCollapsed = true"
     @menuExpand="menuCollapsed = false"
+    @closeBlade="$closeBlade"
   >
     <template v-slot:login>
       <login-page
@@ -84,12 +85,6 @@ export default defineComponent({
         onClick() {
           openWorkspace("help");
         },
-      },
-      {
-        id: "bell",
-        icon: "fas fa-bell",
-        accent: true,
-        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
       },
     ];
 

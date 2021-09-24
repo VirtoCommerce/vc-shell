@@ -2,20 +2,20 @@
   <vc-blade
     v-loading="loading"
     :uid="uid"
-    :title="product?.sellerName"
+    :title="productDetails?.name"
+    width="600"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
   >
     <!-- Blade contents -->
-    <mp-product-status :status="product.status"></mp-product-status>
-    <div
-      v-if="productDetails"
-      class="product-details__inner vc-flex vc-flex-grow_1"
-    >
-      <div class="product-details__content vc-flex-grow_1">
-        <vc-container :no-padding="true">
+    <vc-container :no-padding="true">
+      <mp-product-status :status="product.status"></mp-product-status>
+      <div
+        v-if="productDetails"
+        class="product-details__inner vc-flex vc-flex-grow_1"
+      >
+        <div class="product-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
             <vc-form>
               <vc-input
@@ -28,7 +28,7 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
               ></vc-input>
-              <vc-autocomplete
+              <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 v-model="productDetails.categoryId"
@@ -37,7 +37,8 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
-              ></vc-autocomplete>
+                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
+              ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
@@ -47,6 +48,7 @@
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                 "
+                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
               ></vc-input>
               <vc-textarea
                 class="vc-margin-bottom_l"
@@ -60,13 +62,13 @@
               <vc-gallery
                 label="Gallery"
                 :images="productDetails.images"
+                @upload="onGalleryUpload"
+                @item:edit="onGalleryItemEdit"
               ></vc-gallery>
             </vc-form>
           </div>
-        </vc-container>
-      </div>
-      <div class="product-details__widgets">
-        <vc-container :no-padding="true">
+        </div>
+        <div class="product-details__widgets">
           <div
             class="vc-widget"
             @click="$openBlade(uid, 'offers-list', { url: null })"
@@ -88,18 +90,29 @@
             <div class="vc-widget__title">Comments</div>
             <div class="vc-widget__value">22</div>
           </div>
-        </vc-container>
+        </div>
       </div>
-    </div>
+    </vc-container>
   </vc-blade>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+} from "vue";
 import { useI18n, useRouter } from "@virtoshell/core";
 import { useProduct } from "../composables";
-import { ICategory } from "@virtoshell/api-client";
+import { ICategory, Image } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
+
+class BladeElement extends HTMLElement {
+  reload: () => Promise<void>;
+}
 
 export default defineComponent({
   components: {
@@ -107,11 +120,6 @@ export default defineComponent({
   },
 
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -131,11 +139,21 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
+
+    parent: {
+      type: BladeElement,
+      default: undefined,
+    },
+
+    child: {
+      type: BladeElement,
+      default: undefined,
+    },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const { closeBlade } = useRouter();
+    const { openBlade } = useRouter();
     const {
       modified,
       product,
@@ -150,6 +168,8 @@ export default defineComponent({
 
     const categories = ref<ICategory[]>();
 
+    const parent = unref(props.parent);
+
     onMounted(async () => {
       await loadProduct({ id: props.param });
       categories.value = await fetchCategories();
@@ -162,6 +182,9 @@ export default defineComponent({
         icon: "fas fa-save",
         onClick: async () => {
           await updateProductDetails(product.value.id, { ...productDetails });
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(
           () => !product.value?.canBeModified || !modified.value
@@ -177,6 +200,9 @@ export default defineComponent({
             { ...productDetails },
             true
           );
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(
           () => !product.value?.canBeModified || !modified.value
@@ -188,6 +214,9 @@ export default defineComponent({
         icon: "fas fa-undo",
         onClick: async () => {
           await revertStagedChanges(product.value.id);
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(
           () =>
@@ -204,6 +233,9 @@ export default defineComponent({
         icon: "fas fa-check-circle",
         onClick: async () => {
           await changeProductStatus(product.value.id, "approve");
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -213,6 +245,9 @@ export default defineComponent({
         icon: "fas fa-sticky-note",
         onClick: async () => {
           await changeProductStatus(product.value.id, "requestChanges");
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -222,6 +257,9 @@ export default defineComponent({
         icon: "fas fa-ban",
         onClick: async () => {
           await changeProductStatus(product.value.id, "reject");
+          if (parent?.reload) {
+            parent.reload();
+          }
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -230,10 +268,32 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          closeBlade(props.uid);
+          emit("close");
         },
       },
     ]);
+
+    const onGalleryUpload = async (files: FileList) => {
+      const formData = new FormData();
+      formData.append("file", files[0]);
+      const result = await fetch(
+        `/api/platform/assets?folderUrl=/marketplace`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        productDetails.images.push(image);
+      }
+      files = null;
+    };
+
+    const onGalleryItemEdit = (item: Record<string, unknown>) => {
+      openBlade(props.parent.id, "assets-details", item);
+    };
 
     return {
       bladeToolbar,
@@ -243,6 +303,8 @@ export default defineComponent({
       product: computed(() => product.value),
       productDetails,
       loading: computed(() => loading.value),
+      onGalleryUpload,
+      onGalleryItemEdit,
     };
   },
 });
@@ -257,6 +319,20 @@ export default defineComponent({
 
   &__content {
     border-right: 1px solid #eaedf3;
+  }
+
+  .vc-app_phone &__inner {
+    flex-direction: column;
+  }
+
+  .vc-app_phone &__content {
+    border-right: none;
+    border-bottom: 1px solid #eaedf3;
+  }
+
+  .vc-app_phone &__widgets {
+    display: flex;
+    flex-direction: row;
   }
 }
 

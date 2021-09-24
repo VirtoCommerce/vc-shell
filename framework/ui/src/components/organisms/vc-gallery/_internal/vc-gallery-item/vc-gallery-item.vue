@@ -1,9 +1,18 @@
 <template>
   <div
     class="vc-gallery-item"
-    :class="{ 'vc-gallery-item_readonly': readonly }"
+    :class="{
+      'vc-gallery-item_readonly': readonly,
+      'vc-gallery-item_hover': hover,
+    }"
+    @tap="hover = !hover"
+    v-click-outside="
+      () => {
+        hover = false;
+      }
+    "
   >
-    <vc-image aspect="1x1" :src="src"></vc-image>
+    <vc-image aspect="1x1" :src="image.url"></vc-image>
     <div class="vc-flex-column vc-gallery-item__overlay vc-padding_s">
       <div class="vc-flex">
         <vc-icon
@@ -11,7 +20,12 @@
           icon="fas fa-arrows-alt"
           size="s"
         ></vc-icon>
-        <div class="vc-margin-left_s vc-gallery-item__title">{{ title }}</div>
+        <div
+          class="vc-margin-left_s vc-gallery-item__title vc-ellipsis"
+          :title="image.name"
+        >
+          {{ image.name }}
+        </div>
       </div>
       <div
         class="
@@ -27,6 +41,7 @@
             vc-flex vc-flex-column
             vc-flex-align_center
           "
+          @click="$emit('preview', image)"
         >
           <vc-icon
             class="vc-gallery-item__button-icon"
@@ -40,6 +55,7 @@
             vc-flex vc-flex-column
             vc-flex-align_center
           "
+          @click="$emit('edit', image)"
         >
           <vc-icon
             class="vc-gallery-item__button-icon"
@@ -53,6 +69,7 @@
             vc-flex vc-flex-column
             vc-flex-align_center
           "
+          @click="$emit('remove', image)"
         >
           <vc-icon
             class="vc-gallery-item__button-icon"
@@ -66,26 +83,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
+import { clickOutside } from "../../../../../directives";
 
 export default defineComponent({
   name: "VcGalleryItem",
 
-  props: {
-    title: {
-      type: String,
-      default: undefined,
-    },
+  directives: {
+    clickOutside,
+  },
 
-    src: {
-      type: String,
-      default: undefined,
+  props: {
+    image: {
+      type: Object,
+      default: () => ({}),
     },
 
     readonly: {
       type: Boolean,
       default: false,
     },
+  },
+
+  emits: ["preview", "edit", "remove"],
+
+  setup() {
+    const hover = ref(false);
+
+    return {
+      hover,
+    };
   },
 });
 </script>
@@ -94,9 +121,11 @@ export default defineComponent({
 .vc-gallery-item {
   position: relative;
   width: 155px;
+  height: 155px;
+  box-sizing: border-box;
   border: 1px solid #d3dae9;
   border-radius: 6px;
-  padding: var(--padding-s);
+  padding: var(--padding-xs);
 
   &__overlay {
     background: rgba(238, 246, 252, 0.97);
@@ -108,7 +137,8 @@ export default defineComponent({
     bottom: 0;
   }
 
-  &:hover &__overlay {
+  &:hover &__overlay,
+  .vc-app_touch &.hover &__overlay {
     display: flex;
   }
 

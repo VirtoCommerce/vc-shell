@@ -37,6 +37,8 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
+                keyProperty="id"
+                displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
               ></vc-select>
               <vc-input
@@ -297,9 +299,7 @@ export default defineComponent({
 
     return {
       bladeToolbar,
-      categories: computed(() =>
-        categories.value?.map((x) => ({ title: x.name, value: x.id }))
-      ),
+      categories,
       product: computed(() => product.value),
       productDetails,
       loading: computed(() => loading.value),

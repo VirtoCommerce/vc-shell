@@ -31,7 +31,7 @@
               <vc-autocomplete
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="productDetails.categoryId"
+                v-model="category"
                 :required="true"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
@@ -149,10 +149,14 @@ export default defineComponent({
     } = useProduct();
 
     const categories = ref<ICategory[]>();
+    const category = ref<ICategory>();
 
     onMounted(async () => {
       await loadProduct({ id: props.param });
       categories.value = await fetchCategories();
+      category.value = categories.value.find(
+        (x) => x.id === product.value.categoryId
+      );
     });
 
     const bladeToolbar = reactive([
@@ -237,6 +241,7 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      category,
       categories: computed(() =>
         categories.value?.map((x) => ({ title: x.name, value: x.id }))
       ),

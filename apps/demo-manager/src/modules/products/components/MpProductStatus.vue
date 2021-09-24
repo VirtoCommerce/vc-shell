@@ -46,7 +46,7 @@ export default defineComponent({
         variant: "warning",
       },
       Published: {
-        outline: true,
+        outline: false,
         variant: "success",
       },
     };

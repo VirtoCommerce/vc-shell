@@ -5,6 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <div class="product-details__inner vc-flex vc-flex-grow_1">
@@ -57,7 +58,7 @@
       </div>
       <div class="product-details__widgets">
         <vc-container :no-padding="true">
-          <div class="vc-widget" @click="$openBlade(uid, 'offers-list')">
+          <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -66,7 +67,7 @@
             <div class="vc-widget__title">Offers</div>
             <div class="vc-widget__value">3</div>
           </div>
-          <div class="vc-widget" @click="$openBlade(uid, 'comments-list')">
+          <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-comment"
@@ -83,17 +84,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { useI18n, useRouter } from "@virtoshell/core";
+import { useI18n } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { ICategory } from "@virtoshell/api-client";
 
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -112,7 +108,6 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { closeBlade } = useRouter();
     const { createProduct, productDetails, fetchCategories } = useProduct();
 
     const bladeToolbar = [
@@ -134,7 +129,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          emit("close");
+          emit("page:close");
         },
       },
     ];

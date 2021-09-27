@@ -5,6 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <vc-table :multiselect="false" :columns="columns" :items="items">
       <template v-slot:item_pic="itemData">
@@ -29,11 +30,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -42,6 +38,11 @@ export default defineComponent({
     closable: {
       type: Boolean,
       default: true,
+    },
+
+    options: {
+      type: Object,
+      default: () => ({}),
     },
   },
 

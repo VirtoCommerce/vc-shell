@@ -1,24 +1,24 @@
 <template>
   <vc-app
-    :authorized="authorized"
-    :account="account"
-    :logo="logo"
-    :background="background"
-    :title="title"
+    :menuItems="menuItems"
+    :toolbarItems="toolbarItems"
+    :isReady="isReady"
+    :isAuthorized="isAuthorized"
+    logo="/assets/logo.svg"
     :version="version"
-    :workspace="workspace"
-    :toolbar="toolbar"
-    :menu="menu"
-    :menuCollapsed="menuCollapsed"
-    @menuCollapse="menuCollapsed = true"
-    @menuExpand="menuCollapsed = false"
-    @closeBlade="$closeBlade"
+    :pages="registry"
   >
+    <!-- Set up dashboard page -->
+    <template v-slot:dashboard>
+      <dashboard-page />
+    </template>
+
+    <!-- Set up login form -->
     <template v-slot:login>
       <login-page
-        :logo="logo"
-        :background="background"
-        :title="title"
+        logo="/assets/logo.svg"
+        background="/assets/background.jpg"
+        title="Vendor Portal"
       ></login-page>
     </template>
   </vc-app>
@@ -29,11 +29,16 @@ import {
   defineComponent,
   computed,
   onMounted,
-  reactive,
   ref,
   watch,
+  reactive,
 } from "vue";
 import LoginPage from "./components/login-page.vue";
+import DashboardPage from "./components/dashboard-page.vue";
+import UserDropdownButton from "./components/user-dropdown-button.vue";
+import { OrdersList } from "./modules/orders";
+import { OffersList } from "./modules/offers";
+import { ProductsList } from "./modules/products";
 import { useLogger, useI18n, useUser, useRouter } from "@virtoshell/core";
 
 export default defineComponent({
@@ -41,125 +46,104 @@ export default defineComponent({
 
   components: {
     LoginPage,
+    DashboardPage,
   },
 
   setup() {
     const { t } = useI18n();
     const log = useLogger();
-    const { workspace, parseUrl } = useRouter();
-    const { openWorkspace, openDashboard } = useRouter();
-    const { user, loadUser, signOut, loading } = useUser();
-    const authorized = ref(false);
-    const menuCollapsedInitial = localStorage.getItem("menuCollapsed");
-    const menuCollapsed = ref(JSON.parse(menuCollapsedInitial || "false"));
-
-    watch(menuCollapsed, (value) => {
-      localStorage.setItem("menuCollapsed", `${value}`);
-    });
+    const { user, loadUser, signOut } = useUser();
+    const isAuthorized = ref(false);
+    const isReady = ref(false);
+    const { registry } = useRouter();
 
     onMounted(async () => {
-      //TODO: Add load indicator to entire workspace
       await loadUser();
-      parseUrl(window.location.pathname);
+      isReady.value = true;
     });
 
     watch(user, (value) => {
-      authorized.value = !!value?.userName;
+      isAuthorized.value = !!value?.userName;
     });
 
     log.debug(`Initializing App`);
 
-    const toolbar = [
+    const toolbarItems = reactive([
       {
-        id: "settings",
         icon: "fas fa-cog",
         title: t("SHELL.TOOLBAR.SETTINGS"),
-        onClick() {
-          openWorkspace("settings");
-        },
       },
       {
-        id: "help",
         icon: "fas fa-life-ring",
         title: t("SHELL.TOOLBAR.HELP"),
-        onClick() {
-          openWorkspace("help");
+      },
+      {
+        icon: "fas fa-bell",
+        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+        isAccent: true,
+      },
+      {
+        component: UserDropdownButton,
+        componentOptions: {
+          avatar: "/assets/avatar.jpg",
+          name: computed(() => user.value?.userName),
+          role: computed(() =>
+            user.value?.isAdministrator ? "Administrator" : "Operator"
+          ),
+          menuItems: [
+            {
+              title: t("SHELL.ACCOUNT.PROFILE"),
+            },
+            {
+              title: t("SHELL.ACCOUNT.LOGOUT"),
+              clickHandler() {
+                signOut();
+              },
+            },
+          ],
         },
       },
-    ];
+    ]);
 
-    const menu = [
+    const menuItems = [
       {
-        id: 0,
         title: t("SHELL.MENU.DASHBOARD"),
         icon: "fas fa-home",
-        clickHandler() {
-          openDashboard();
+        clickHandler(app) {
+          app.openDashboard();
         },
       },
       {
-        id: 1,
         title: t("ORDERS.MENU.TITLE"),
         icon: "fas fa-layer-group",
-        clickHandler() {
-          openWorkspace("orders-list");
-        },
+        component: OrdersList,
       },
       {
-        id: 2,
         title: t("PRODUCTS.MENU.TITLE"),
         icon: "fas fa-cash-register",
-        clickHandler() {
-          openWorkspace("products-list");
-        },
+        component: ProductsList,
       },
       {
-        id: 3,
         title: t("OFFERS.MENU.TITLE"),
         icon: "fas fa-hand-holding-usd",
+        component: OffersList,
+      },
+      {
+        title: t("SHELL.ACCOUNT.LOGOUT"),
+        icon: "fas fa-sign-out-alt",
         clickHandler() {
-          openWorkspace("offers-list");
+          signOut();
         },
       },
     ];
 
-    const account = reactive({
-      avatar: "/assets/avatar.jpg",
-      name: computed(() => user.value?.userName),
-      role: computed(() =>
-        user.value?.isAdministrator ? "Administrator" : "Operator"
-      ),
-      dropdown: [
-        {
-          id: 1,
-          title: t("SHELL.ACCOUNT.PROFILE"),
-          onClick() {
-            openWorkspace("profile");
-          },
-        },
-        {
-          id: 2,
-          title: t("SHELL.ACCOUNT.LOGOUT"),
-          onClick() {
-            openDashboard();
-            signOut();
-          },
-        },
-      ],
-    });
-
     return {
-      authorized,
-      workspace,
-      logo: "/assets/logo.svg",
-      background: "/assets/background.jpg",
-      title: "Vendor Portal",
+      isAuthorized,
+      isReady,
+      registry,
       version: process.env.PACKAGE_VERSION,
-      toolbar,
-      menu,
-      account,
-      loading,
-      menuCollapsed,
+      toolbarItems,
+      menuItems,
     };
   },
 });

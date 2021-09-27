@@ -18,7 +18,7 @@
     ></div>
     <div class="vc-login-form__wrapper">
       <div class="vc-login-form__header vc-flex vc-flex-align_center">
-        {{ title || "Login" }}
+        {{ title }}
       </div>
       <div class="vc-login-form__body">
         <slot></slot>
@@ -46,7 +46,7 @@ export default defineComponent({
 
     title: {
       type: String,
-      default: undefined,
+      default: "Login",
     },
   },
 
@@ -61,12 +61,14 @@ export default defineComponent({
   &__logo {
     height: 60px;
     width: 516px;
+    max-width: 90%;
     margin-bottom: 50px;
     margin-top: -90px;
   }
 
   &__wrapper {
     width: 516px;
+    max-width: 90%;
     background: white;
     border-radius: 6px;
     overflow: hidden;

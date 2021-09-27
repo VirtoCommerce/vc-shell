@@ -58,9 +58,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
-import { useRouter, useI18n, useLogger } from "@virtoshell/core";
+import { useI18n, useLogger } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
+import ProductsEdit from "./products-edit.vue";
 import moment from "moment";
 
 export default defineComponent({
@@ -69,11 +70,6 @@ export default defineComponent({
   },
 
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -83,10 +79,14 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
-  setup(props) {
-    const { openBlade } = useRouter();
+  setup(props, { emit }) {
     const logger = useLogger();
     const { t } = useI18n();
     const {
@@ -132,7 +132,9 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          openBlade(props.uid, "products-add");
+          emit("page:open", {
+            component: ProductsEdit,
+          });
         },
       },
       {
@@ -185,12 +187,17 @@ export default defineComponent({
       text: "There are no products yet",
       action: "Add product",
       clickHandler: () => {
-        openBlade(props.uid, "products-add");
+        emit("page:open", {
+          component: ProductsEdit,
+        });
       },
     };
 
     const onItemClick = (item: { id: string }) => {
-      openBlade(props.uid, "products-edit", { param: item.id });
+      emit("page:open", {
+        component: ProductsEdit,
+        param: item.id,
+      });
     };
 
     const onHeaderClick = (item) => {

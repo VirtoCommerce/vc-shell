@@ -72,9 +72,10 @@
 
 <script lang="ts">
 import { defineComponent, watch, onMounted, ref, computed } from "vue";
-import { useI18n, useRouter } from "@virtoshell/core";
+import { useI18n } from "@virtoshell/core";
 import { useOffers } from "../composables";
 import moment from "moment";
+import OffersDetails from "./offers-details.vue";
 
 export default defineComponent({
   props: {
@@ -88,20 +89,14 @@ export default defineComponent({
       default: true,
     },
 
-    parent: {
-      type: HTMLElement,
-      default: undefined,
-    },
-
-    child: {
-      type: HTMLElement,
-      default: undefined,
+    options: {
+      type: Object,
+      default: () => ({}),
     },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const { openBlade } = useRouter();
 
     const loading = ref(false);
     const { offers, totalCount, pages, currentPage, loadOffers } = useOffers();
@@ -136,7 +131,9 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          openBlade(props.parent.id, "products-list", { url: null });
+          emit("page:open", {
+            component: OffersDetails,
+          });
         },
       },
       {
@@ -215,12 +212,17 @@ export default defineComponent({
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        openBlade(props.parent.id, "products-list", { url: null });
+        emit("page:open", {
+          component: OffersDetails,
+        });
       },
     };
 
     const onItemClick = (item: { id: string }) => {
-      openBlade(props.parent.id, "offers-details", { param: item.id });
+      emit("page:open", {
+        component: OffersDetails,
+        param: item.id,
+      });
     };
 
     const onHeaderClick = (item: { id: string; sortable: boolean }) => {
@@ -285,8 +287,10 @@ export default defineComponent({
       onHeaderClick,
       onPaginationClick,
       statusStyle,
-      reload: () => {
-        console.log("Offers list reload");
+      reload: async () => {
+        loading.value = true;
+        await loadOffers({ page: currentPage.value, sort: sort.value });
+        loading.value = false;
       },
       title: t("OFFERS.PAGES.LIST.TITLE"),
     };

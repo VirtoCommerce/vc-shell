@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-app-menu-item" @click="onClick">
+  <div class="vc-app-menu-item" @click="$emit('click')">
     <div
       class="vc-app-menu-item__handler"
       :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
@@ -37,25 +37,9 @@ export default defineComponent({
       type: String,
       default: "",
     },
-
-    clickHandler: {
-      type: Function,
-      default: undefined,
-    },
   },
 
   emits: ["click"],
-
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (props.clickHandler && typeof props.clickHandler === "function") {
-          props.clickHandler();
-        }
-        emit("click");
-      },
-    };
-  },
 });
 </script>
 

@@ -7,6 +7,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <vc-container :no-padding="true">
@@ -71,10 +72,7 @@
           </div>
         </div>
         <div class="product-details__widgets">
-          <div
-            class="vc-widget"
-            @click="$openBlade(uid, 'offers-list', { url: null })"
-          >
+          <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -83,7 +81,7 @@
             <div class="vc-widget__title">Offers</div>
             <div class="vc-widget__value">3</div>
           </div>
-          <div class="vc-widget" @click="$openBlade(uid, 'comments-list')">
+          <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-comment"
@@ -99,22 +97,12 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  unref,
-} from "vue";
-import { useI18n, useRouter } from "@virtoshell/core";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { useI18n } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
-
-class BladeElement extends HTMLElement {
-  reload: () => Promise<void>;
-}
+import { AssetsDetails } from "@virtoshell/mod-assets";
 
 export default defineComponent({
   components: {
@@ -141,21 +129,10 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
-
-    parent: {
-      type: BladeElement,
-      default: undefined,
-    },
-
-    child: {
-      type: BladeElement,
-      default: undefined,
-    },
   },
 
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { openBlade } = useRouter();
     const {
       modified,
       product,
@@ -170,8 +147,6 @@ export default defineComponent({
 
     const categories = ref<ICategory[]>();
     const category = ref<ICategory>();
-
-    const parent = unref(props.parent);
 
     onMounted(async () => {
       await loadProduct({ id: props.param });
@@ -188,9 +163,9 @@ export default defineComponent({
         icon: "fas fa-save",
         onClick: async () => {
           await updateProductDetails(product.value.id, { ...productDetails });
-          if (parent?.reload) {
-            parent.reload();
-          }
+          emit("parent:call", {
+            method: "reload",
+          });
         },
         disabled: computed(
           () => !product.value?.canBeModified || !modified.value
@@ -206,9 +181,9 @@ export default defineComponent({
             { ...productDetails },
             true
           );
-          if (parent?.reload) {
-            parent.reload();
-          }
+          emit("parent:call", {
+            method: "reload",
+          });
         },
         disabled: computed(
           () => !product.value?.canBeModified || !modified.value
@@ -220,9 +195,9 @@ export default defineComponent({
         icon: "fas fa-undo",
         onClick: async () => {
           await revertStagedChanges(product.value.id);
-          if (parent?.reload) {
-            parent.reload();
-          }
+          emit("parent:call", {
+            method: "reload",
+          });
         },
         disabled: computed(
           () =>
@@ -239,9 +214,9 @@ export default defineComponent({
         icon: "fas fa-check-circle",
         onClick: async () => {
           await changeProductStatus(product.value.id, "approve");
-          if (parent?.reload) {
-            parent.reload();
-          }
+          emit("parent:call", {
+            method: "reload",
+          });
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -251,9 +226,9 @@ export default defineComponent({
         icon: "fas fa-sticky-note",
         onClick: async () => {
           await changeProductStatus(product.value.id, "requestChanges");
-          if (parent?.reload) {
-            parent.reload();
-          }
+          emit("parent:call", {
+            method: "reload",
+          });
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -263,9 +238,9 @@ export default defineComponent({
         icon: "fas fa-ban",
         onClick: async () => {
           await changeProductStatus(product.value.id, "reject");
-          if (parent?.reload) {
-            parent.reload();
-          }
+          emit("parent:call", {
+            method: "reload",
+          });
         },
         disabled: computed(() => product.value.canBeModified),
       },
@@ -274,7 +249,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          emit("close");
+          emit("page:close");
         },
       },
     ]);
@@ -299,7 +274,10 @@ export default defineComponent({
     };
 
     const onGalleryItemEdit = (item: Record<string, Image>) => {
-      openBlade(props.parent.id, "assets-details", item);
+      emit("page:open", {
+        component: AssetsDetails,
+        componentOptions: item,
+      });
     };
 
     return {
@@ -311,6 +289,11 @@ export default defineComponent({
       loading: computed(() => loading.value),
       onGalleryUpload,
       onGalleryItemEdit,
+      async onBeforeClose() {
+        if (modified.value) {
+          return confirm("You have unsaved changes\nClose anyway?");
+        }
+      },
     };
   },
 });

@@ -2,17 +2,19 @@
   <div
     class="vc-app-menu"
     :class="{
-      'vc-app-menu_collapsed': $isDesktop.value && collapsed,
+      'vc-app-menu_collapsed': $isDesktop.value && isCollapsed,
       'vc-app-menu_mobile': $isMobile.value,
-      'vc-app-menu_mobile-visible': mobileVisible,
+      'vc-app-menu_mobile-visible': isMobileVisible,
     }"
   >
+    <!-- Show backdrop overlay on mobile devices -->
     <div
       v-if="$isMobile.value"
       class="vc-app-menu__overlay"
-      @click="toggleMobileMenu"
+      @click="isMobileVisible = false"
     ></div>
     <div class="vc-app-menu__inner">
+      <!-- Show menu close handler on mobile devices -->
       <div
         v-if="$isMobile.value"
         class="
@@ -26,19 +28,29 @@
         <vc-icon
           icon="fas fa-times"
           size="xl"
-          @click="toggleMobileMenu"
+          @click="isMobileVisible = false"
         ></vc-icon>
       </div>
-      <vc-app-menu-toggle
+
+      <!-- Show menu collapse toggler on desktop devices -->
+      <div
         v-if="$isDesktop.value"
-        @click="toggleCollapsed"
-      ></vc-app-menu-toggle>
+        class="vc-app-menu__toggle"
+        @click="isCollapsed = !isCollapsed"
+      >
+        <vc-app-menu-item sticky="sticky" icon="fas fa-bars"></vc-app-menu-item>
+      </div>
+
+      <!-- Show scrollable area with menu items -->
       <vc-container :noPadding="true" class="vc-app-menu__content">
         <vc-app-menu-item
-          v-for="item in items"
-          :key="item.id"
+          v-for="(item, index) in items"
+          :key="index"
           v-bind="item"
-          @click="toggleMobileMenu"
+          @click="
+            $emit('item:click', item);
+            isMobileVisible = false;
+          "
         />
       </vc-container>
     </div>
@@ -46,43 +58,51 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
-import VcAppMenuToggle from "./_internal/vc-app-menu-toggle/vc-app-menu-toggle.vue";
 import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
 
 export default defineComponent({
   name: "VcAppMenu",
 
-  components: { VcAppMenuItem, VcAppMenuToggle, VcContainer },
+  components: { VcAppMenuItem, VcContainer },
 
   props: {
-    collapsed: {
-      type: Boolean,
-      default: false,
-    },
-
+    // Array of menu items
     items: {
       type: Array,
       default: () => [],
     },
+
+    // LocalStorage field name for menu collapsed state
+    storageCollapsedProperty: {
+      type: String,
+      default: "menuCollapsed",
+    },
   },
 
-  emits: ["collapse", "expand"],
+  emits: ["item:click"],
 
-  setup(props, { emit }) {
-    const mobileVisible = ref(false);
+  setup(props) {
+    const isMobileVisible = ref(false);
+
+    let isCollapsedInitial = false;
+    try {
+      isCollapsedInitial = JSON.parse(
+        localStorage.getItem(props.storageCollapsedProperty) || "false"
+      );
+    } catch (err) {
+      isCollapsedInitial = false;
+    }
+    const isCollapsed = ref(isCollapsedInitial);
+
+    watch(isCollapsed, (value) => {
+      localStorage.setItem(props.storageCollapsedProperty, `${value}`);
+    });
 
     return {
-      mobileVisible,
-
-      toggleCollapsed() {
-        emit(props.collapsed ? "expand" : "collapse");
-      },
-
-      toggleMobileMenu() {
-        mobileVisible.value = !mobileVisible.value;
-      },
+      isMobileVisible,
+      isCollapsed,
     };
   },
 });
@@ -156,6 +176,10 @@ export default defineComponent({
 
   &__mobile-close {
     color: #319ed4;
+  }
+
+  &__toggle {
+    --app-menu-item-icon-color: #319ed4;
   }
 }
 </style>

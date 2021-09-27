@@ -4,42 +4,35 @@
       <vc-input
         ref="loginField"
         class="vc-margin-bottom_l"
-        label="Login"
-        placeholder="Enter your seller login"
+        :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
+        :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
         :required="true"
         v-model="form.username"
       ></vc-input>
       <vc-input
         ref="passwordField"
         class="vc-margin-bottom_l"
-        label="Password"
-        placeholder="Enter ypur password"
+        :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
+        :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
         :required="true"
         v-model="form.password"
         type="password"
         @keyup.enter="login"
       ></vc-input>
-      <div
-        class="
-          vc-margin-bottom_l
-          vc-flex
-          vc-flex-justify_space-between
-          vc-flex-align_center
-        "
-      >
-        <vc-checkbox>Remember me</vc-checkbox>
-        <vc-link>Forgot your password?</vc-link>
-      </div>
       <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">
-        <vc-link>Sign in with Azure Active Directory</vc-link>
+        <span></span>
         <vc-button variant="primary" :disabled="loading" @click="login">
-          Log in
+          {{ $t("SHELL.LOGIN.BUTTON") }}
         </vc-button>
       </div>
-      <div v-if="!signInResult.succeeded" style="color: red">
+      <vc-hint
+        v-if="!signInResult.succeeded"
+        class="vc-margin-top_m"
+        style="color: #f14e4e"
+      >
         <!-- TODO: stylizing-->
         {{ signInResult.error }}
-      </div>
+      </vc-hint>
     </vc-form>
   </vc-login-form>
 </template>

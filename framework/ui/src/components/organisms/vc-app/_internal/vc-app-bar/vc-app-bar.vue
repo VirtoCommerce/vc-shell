@@ -1,35 +1,61 @@
 <template>
   <div class="vc-app-bar">
+    <!-- Logo container for mobile devices -->
     <template v-if="$isPhone.value">
-      <img v-if="blades.length === 0" class="vc-app-bar__logo" :src="logo" />
+      <!-- Show logo on mobile dashboard -->
+      <img
+        v-if="workspace.length === 0"
+        class="vc-app-bar__logo"
+        :src="logo"
+        @click="$emit('logo:click')"
+      />
+
+      <!-- Show workspace name when at least one blade is opened -->
       <div
-        v-else-if="blades.length === 1"
+        v-else-if="workspace.length === 1"
         class="vc-ellipsis vc-font-size_header"
       >
-        {{ blades[0].title }}
+        {{ workspace[0].title }}
       </div>
-      <vc-link v-else @click="$emit('backClick')">
+
+      <!-- Show back link when more than one blade is opened -->
+      <vc-link v-else @click="$emit('backlink:click')">
         <vc-icon icon="fas fa-chevron-left" size="s"></vc-icon>
         <span class="vc-margin-left_s vc-font-size_l">{{ $t("Back") }}</span>
       </vc-link>
     </template>
+
+    <!-- Logo container for desktop devices -->
     <template v-else>
-      <img class="vc-app-bar__logo" :src="logo" />
-      <div class="vc-app-bar__version vc-margin-left_xl">
+      <img class="vc-app-bar__logo" :src="logo" @click="$emit('logo:click')" />
+      <div
+        class="vc-app-bar__version vc-margin-left_xl"
+        @click="$emit('version:click')"
+      >
         {{ version }}
       </div>
     </template>
 
+    <!-- Additional spacer -->
     <div class="vc-flex-grow_1"></div>
 
+    <!-- Toolbar container -->
     <div class="vc-flex vc-fill_height">
-      <template v-if="$isDesktop.value">
+      <template v-for="(item, index) in buttons" :key="index">
+        <!-- Draw custom component is it is passed -->
+        <component
+          v-if="item.component"
+          :is="item.component"
+          v-bind="item.componentOptions"
+        ></component>
+
+        <!-- Otherwise draw default toolbar button -->
         <div
-          v-for="item in buttons"
-          :key="item.id"
+          v-else
           class="vc-app-bar__button"
+          :class="{ 'vc-app-bar__button_accent': item.isAccent }"
           :title="item.title"
-          @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
+          @click="$emit('button:click', item)"
         >
           <vc-icon
             :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
@@ -37,57 +63,9 @@
           ></vc-icon>
         </div>
       </template>
-      <div
-        class="vc-app-bar__button"
-        :class="{
-          'vc-app-bar__button_accent': true,
-        }"
-        :title="$t('SHELL.TOOLBAR.NOTIFICATIONS')"
-      >
-        <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
-      </div>
     </div>
 
-    <div
-      v-if="account && $isDesktop.value"
-      class="vc-app-bar__account"
-      :class="{
-        'vc-app-bar__account_active': accountMenuVisible,
-      }"
-      @click="toggleAccountMenuVisible"
-    >
-      <div
-        class="vc-app-bar__account-avatar"
-        :style="{ 'background-image': `url(${account.avatar})` }"
-      ></div>
-      <div class="vc-flex-grow_1 vc-margin-left_m">
-        <div class="vc-app-bar__account-name">
-          {{ account.name }}
-        </div>
-        <div class="vc-app-bar__account-role">
-          {{ account.role }}
-        </div>
-      </div>
-      <div v-if="account.dropdown" class="vc-app-bar__account-chevron">
-        <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
-      </div>
-      <div
-        v-if="account.dropdown && accountMenuVisible"
-        v-click-outside="toggleAccountMenuVisible"
-        class="vc-app-bar__account-menu"
-        @click.stop="accountMenuVisible = false"
-      >
-        <div
-          v-for="item in account.dropdown"
-          :key="item.id"
-          class="vc-app-bar__account-menu-item"
-          @click="item.hasOwnProperty('onClick') ? item.onClick() : null"
-        >
-          {{ item.title }}
-        </div>
-      </div>
-    </div>
-
+    <!-- Show menu toggler on mobile devices -->
     <div
       v-if="$isMobile.value"
       class="
@@ -97,7 +75,7 @@
         vc-flex-justify_center
         vc-fill_height
       "
-      @click="$emit('toggleMobileMenu')"
+      @click="$emit('menubutton:click')"
     >
       <vc-icon icon="fas fa-bars"></vc-icon>
     </div>
@@ -105,18 +83,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
-import { clickOutside } from "../../../../../directives";
 
 export default defineComponent({
   name: "VcAppBar",
 
   components: { VcIcon },
-
-  directives: {
-    clickOutside,
-  },
 
   props: {
     logo: {
@@ -129,7 +102,7 @@ export default defineComponent({
       default: "",
     },
 
-    blades: {
+    workspace: {
       type: Array,
       default: () => [],
     },
@@ -138,24 +111,15 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
-
-    account: {
-      type: Object,
-      default: () => ({}),
-    },
   },
 
-  setup() {
-    const accountMenuVisible = ref(false);
-    const toggleAccountMenuVisible = () => {
-      accountMenuVisible.value = !accountMenuVisible.value;
-    };
-
-    return {
-      accountMenuVisible,
-      toggleAccountMenuVisible,
-    };
-  },
+  emits: [
+    "logo:click",
+    "backlink:click",
+    "version:click",
+    "toolbarbutton:click",
+    "menubutton:click",
+  ],
 });
 </script>
 
@@ -217,74 +181,6 @@ export default defineComponent({
       background: #ff4a4a;
       border-radius: 50%;
       z-index: 1;
-    }
-  }
-
-  &__account {
-    width: 325px;
-    border-left: 1px solid var(--app-bar-divider-color);
-    padding: 0 var(--padding-l);
-    box-sizing: border-box;
-    cursor: pointer;
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-
-    &:hover,
-    &_active {
-      background: var(--app-bar-toolbar-icon-background-hover);
-    }
-
-    &-avatar {
-      border-radius: 50%;
-      overflow: hidden;
-      width: 34px;
-      height: 34px;
-      background-color: var(--app-bar-account-info-role-color);
-      background-size: cover;
-      background-position: center;
-    }
-
-    &-name {
-      font-size: var(--font-size-m);
-      color: var(--app-bar-account-info-name-color);
-    }
-
-    &-role {
-      font-size: var(--font-size-m);
-      color: var(--app-bar-account-info-role-color);
-    }
-
-    &-chevron {
-      color: #7e8e9d;
-    }
-
-    &_active &-chevron {
-      transform: rotate(180deg);
-    }
-
-    &-menu {
-      position: absolute;
-      left: -1px;
-      right: 0;
-      top: var(--app-bar-height);
-      background: white;
-      z-index: 9999;
-
-      &-item {
-        padding: var(--padding-m);
-        font-size: var(--font-size-l);
-        color: #000000;
-        border-left: 1px solid #e7ebf1;
-        border-bottom: 1px solid #e7ebf1;
-        background-color: white;
-
-        &:hover {
-          background-color: #eff7fc;
-        }
-      }
     }
   }
 

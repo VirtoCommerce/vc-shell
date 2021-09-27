@@ -30,6 +30,8 @@ import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 export default defineComponent({
   name: "VcBlade",
 
+  inheritAttrs: false,
+
   components: {
     VcBladeHeader,
     VcBladeToolbar,

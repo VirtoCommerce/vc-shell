@@ -4,6 +4,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <div class="offer-details__inner vc-flex vc-flex-grow_1">
@@ -141,7 +142,7 @@
       </div>
       <div class="offer-details__widgets">
         <vc-container :no-padding="true">
-          <div class="vc-widget" @click="$openBlade(uid, 'offers-stat')">
+          <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -156,12 +157,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, unref } from "vue";
-import { useI18n, useRouter } from "@virtoshell/core";
-
-class BladeElement extends HTMLElement {
-  reload: () => void;
-}
+import { computed, defineComponent, ref } from "vue";
+import { useI18n } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -179,16 +176,6 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
-
-    parent: {
-      type: BladeElement,
-      default: undefined,
-    },
-
-    child: {
-      type: HTMLElement,
-      default: undefined,
-    },
   },
 
   setup(props, { emit }) {
@@ -201,9 +188,9 @@ export default defineComponent({
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: () => {
-          console.log("Check parent reload");
-          console.dir(unref(props.parent));
-          unref(props.parent).reload();
+          emit("parent:call", {
+            method: "reload",
+          });
         },
       },
       {
@@ -212,7 +199,7 @@ export default defineComponent({
         icon: "fas fa-times",
         onClick: () => {
           console.log("Close blade");
-          emit("close");
+          emit("page:close");
         },
       },
     ];

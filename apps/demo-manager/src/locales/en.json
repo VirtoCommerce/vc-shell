@@ -1,5 +1,18 @@
 {
   "SHELL": {
+    "LOGIN": {
+      "FIELDS": {
+        "LOGIN": {
+          "LABEL": "Username",
+          "PLACEHOLDER": "Enter your seller login"
+        },
+        "PASSWORD": {
+          "LABEL": "Password",
+          "PLACEHOLDER": "Enter your password"
+        }
+      },
+      "BUTTON": "Log in"
+    },
     "MENU": {
       "DASHBOARD": "Home"
     },

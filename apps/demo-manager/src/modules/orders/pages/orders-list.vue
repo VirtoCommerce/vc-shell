@@ -43,18 +43,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useOrders } from "../composables";
-import { useRouter, useI18n } from "@virtoshell/core";
+import { useI18n } from "@virtoshell/core";
 import moment from "moment";
+import OrdersDetails from "./orders-edit.vue";
 
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,
@@ -64,11 +60,15 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    options: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { orders, loadOrders, loading, pages, currentPage } = useOrders();
-    const { openBlade } = useRouter();
     const { t } = useI18n();
 
     onMounted(async () => {
@@ -138,12 +138,17 @@ export default defineComponent({
       text: "There are no orders yet",
       action: "Add order",
       clickHandler: () => {
-        openBlade(props.uid, "orders-details");
+        emit("page:open", {
+          component: OrdersDetails,
+        });
       },
     };
 
     const onItemClick = (item: { id: string }) => {
-      openBlade(props.uid, "orders-details", { param: item.id });
+      emit("page:open", {
+        component: OrdersDetails,
+        param: item.id,
+      });
     };
 
     const statusStyle = (status: string) => {

@@ -43,15 +43,16 @@
 
       <!-- Show scrollable area with menu items -->
       <vc-container :noPadding="true" class="vc-app-menu__content">
-        <vc-app-menu-item
-          v-for="(item, index) in items"
-          :key="index"
-          v-bind="item"
-          @click="
-            $emit('item:click', item);
-            isMobileVisible = false;
-          "
-        />
+        <template v-for="(item, index) in items" :key="index">
+          <vc-app-menu-item
+            v-if="item.isVisible"
+            v-bind="item"
+            @click="
+              $emit('item:click', item);
+              isMobileVisible = false;
+            "
+          />
+        </template>
       </vc-container>
     </div>
   </div>

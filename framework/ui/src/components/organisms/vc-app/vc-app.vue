@@ -21,7 +21,7 @@
           :logo="logo"
           :workspace="workspaceRefs"
           :version="version"
-          :buttons="visibleToolbarItems"
+          :buttons="toolbarItems"
           @toolbarbutton:click="onToolbarButtonClick"
           @menubutton:click="$refs.menu.isMobileVisible = true"
           @backlink:click="onClosePage(workspace.length - 1)"
@@ -32,7 +32,7 @@
           <vc-app-menu
             ref="menu"
             class="vc-flex-shrink_0"
-            :items="visibleMenuItems"
+            :items="menuItems"
             @item:click="onMenuItemClick"
           ></vc-app-menu>
 
@@ -51,6 +51,7 @@
               :ref="setWorkspaceRef"
               :param="blade.param"
               :closable="index > 0"
+              :expanded="index === workspace.length - 1"
               :options="blade.componentOptions"
               @page:open="onOpenPage(index, $event)"
               @page:close="onClosePage(index, $event)"
@@ -244,36 +245,6 @@ export default defineComponent({
       }
     });
 
-    // Computed property with filtered by visibility toolbar buttons
-    const visibleToolbarItems = computed(() =>
-      (props.toolbarItems as IAppBarButton[]).filter((item) => {
-        if (item.isVisible) {
-          if (typeof item.isVisible === "function") {
-            return item.isVisible();
-          } else {
-            return item.isVisible;
-          }
-        } else {
-          return true;
-        }
-      })
-    );
-
-    // Computed property with filtered by visibility menu items
-    const visibleMenuItems = computed(() =>
-      (props.menuItems as IMenuItem[]).filter((item) => {
-        if (item.isVisible) {
-          if (typeof item.isVisible === "function") {
-            return item.isVisible();
-          } else {
-            return item.isVisible;
-          }
-        } else {
-          return true;
-        }
-      })
-    );
-
     const onMenuItemClick = function (item: Record<string, unknown>) {
       if (item.clickHandler && typeof item.clickHandler === "function") {
         item.clickHandler(instance?.proxy);
@@ -354,8 +325,6 @@ export default defineComponent({
       workspace,
       workspaceRefs,
       setWorkspaceRef,
-      visibleToolbarItems,
-      visibleMenuItems,
       onMenuItemClick,
       onToolbarButtonClick,
       openDashboard,

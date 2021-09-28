@@ -1,12 +1,12 @@
 <template>
   <vc-blade
     :uid="uid"
-    :title="options.title"
+    :title="options.name"
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$closeBlade(uid)"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <div class="assets-details__inner vc-flex vc-flex-grow_1">
@@ -16,14 +16,14 @@
             <vc-form>
               <vc-image
                 class="vc-margin-bottom_l"
-                :src="localImage.src"
+                :src="localImage.url"
                 size="xl"
                 :bordered="true"
               ></vc-image>
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="localImage.title"
+                v-model="localImage.name"
                 :clearable="true"
                 :required="true"
                 :placeholder="

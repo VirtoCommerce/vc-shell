@@ -52,6 +52,45 @@
       <template v-slot:item_createdDate="itemData">
         {{ moment(itemData.item.createdDate).fromNow() }}
       </template>
+
+      <template v-slot:mobile-item="itemData">
+        <div
+          class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
+        >
+          <vc-image
+            class="vc-flex-shrink_0"
+            aspect="1x1"
+            size="m"
+            :bordered="true"
+            :src="itemData.item.imgSrc"
+          ></vc-image>
+          <div class="vc-flex-grow_1 vc-margin-left_m">
+            <div class="vc-font-weight_bold vc-font-size_l">
+              {{ itemData.item.name }}
+            </div>
+            <vc-hint class="vc-margin-top_xs">{{ itemData.item.path }}</vc-hint>
+            <div class="vc-margin-top_s vc-margin-bottom_m">
+              <mp-product-status
+                :status="itemData.item.status"
+              ></mp-product-status>
+            </div>
+            <div class="vc-flex">
+              <div style="width: 50%" class="vc-shrink_0">
+                <vc-hint>EAN/GTIN</vc-hint>
+                <div class="vc-margin-top_xs">
+                  {{ itemData.item.productData.gtin }}
+                </div>
+              </div>
+              <div style="width: 50%" class="vc-shrink_0">
+                <vc-hint>Created</vc-hint>
+                <div class="vc-margin-top_xs">
+                  {{ moment(itemData.item.createdDate).fromNow() }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </vc-table>
   </vc-blade>
 </template>
@@ -175,6 +214,7 @@ export default defineComponent({
       },
       {
         id: "gtin",
+        field: "productData.gtin",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
         width: 180,
         sortable: true,
@@ -242,3 +282,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="less">
+.products-list {
+  &__mobile-item {
+    border-bottom: 1px solid #e3e7ec;
+  }
+}
+</style>

@@ -42,26 +42,28 @@
     <!-- Toolbar container -->
     <div class="vc-flex vc-fill_height">
       <template v-for="(item, index) in buttons" :key="index">
-        <!-- Draw custom component is it is passed -->
-        <component
-          v-if="item.component"
-          :is="item.component"
-          v-bind="item.componentOptions"
-        ></component>
+        <template v-if="item.isVisible">
+          <!-- Draw custom component is it is passed -->
+          <component
+            v-if="item.component"
+            :is="item.component"
+            v-bind="item.componentOptions"
+          ></component>
 
-        <!-- Otherwise draw default toolbar button -->
-        <div
-          v-else
-          class="vc-app-bar__button"
-          :class="{ 'vc-app-bar__button_accent': item.isAccent }"
-          :title="item.title"
-          @click="$emit('button:click', item)"
-        >
-          <vc-icon
-            :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
-            size="xl"
-          ></vc-icon>
-        </div>
+          <!-- Otherwise draw default toolbar button -->
+          <div
+            v-else
+            class="vc-app-bar__button"
+            :class="{ 'vc-app-bar__button_accent': item.isAccent }"
+            :title="item.title"
+            @click="$emit('button:click', item)"
+          >
+            <vc-icon
+              :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
+              size="xl"
+            ></vc-icon>
+          </div>
+        </template>
       </template>
     </div>
 

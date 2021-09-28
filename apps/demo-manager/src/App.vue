@@ -32,6 +32,7 @@ import {
   ref,
   watch,
   reactive,
+  inject,
 } from "vue";
 import LoginPage from "./components/login-page.vue";
 import DashboardPage from "./components/dashboard-page.vue";
@@ -57,6 +58,9 @@ export default defineComponent({
     const isReady = ref(false);
     const { registry } = useRouter();
 
+    const isDesktop = inject("isDesktop");
+    const isMobile = inject("isMobile");
+
     onMounted(async () => {
       await loadUser();
       isReady.value = true;
@@ -72,14 +76,17 @@ export default defineComponent({
       {
         icon: "fas fa-cog",
         title: t("SHELL.TOOLBAR.SETTINGS"),
+        isVisible: isDesktop,
       },
       {
         icon: "fas fa-life-ring",
         title: t("SHELL.TOOLBAR.HELP"),
+        isVisible: isDesktop,
       },
       {
         icon: "fas fa-bell",
         title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+        isVisible: true,
         isAccent: true,
       },
       {
@@ -102,13 +109,15 @@ export default defineComponent({
             },
           ],
         },
+        isVisible: isDesktop,
       },
     ]);
 
-    const menuItems = [
+    const menuItems = reactive([
       {
         title: t("SHELL.MENU.DASHBOARD"),
         icon: "fas fa-home",
+        isVisible: true,
         clickHandler(app) {
           app.openDashboard();
         },
@@ -116,26 +125,30 @@ export default defineComponent({
       {
         title: t("ORDERS.MENU.TITLE"),
         icon: "fas fa-layer-group",
+        isVisible: true,
         component: OrdersList,
       },
       {
         title: t("PRODUCTS.MENU.TITLE"),
         icon: "fas fa-cash-register",
+        isVisible: true,
         component: ProductsList,
       },
       {
         title: t("OFFERS.MENU.TITLE"),
         icon: "fas fa-hand-holding-usd",
+        isVisible: true,
         component: OffersList,
       },
       {
         title: t("SHELL.ACCOUNT.LOGOUT"),
         icon: "fas fa-sign-out-alt",
+        isVisible: isMobile,
         clickHandler() {
           signOut();
         },
       },
-    ];
+    ]);
 
     return {
       isAuthorized,

@@ -29,7 +29,20 @@
         :noPadding="true"
         class="vc-flex-grow_1"
       >
+        <template v-if="$isPhone.value && $slots['mobile-item']">
+          <div class="vc-table-mobile">
+            <div
+              class="vc-table-mobile__item"
+              v-for="item in items"
+              :key="item.id"
+              @click="$emit('itemClick', item)"
+            >
+              <slot name="mobile-item" :item="item"></slot>
+            </div>
+          </div>
+        </template>
         <table
+          v-else
           class="vc-table vc-fill_width"
           :class="{
             'vc-table_empty': !items || !items.length,

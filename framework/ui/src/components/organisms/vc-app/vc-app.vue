@@ -67,7 +67,6 @@
 
 <script lang="ts">
 import {
-  computed,
   defineComponent,
   onBeforeUpdate,
   ref,
@@ -84,14 +83,6 @@ import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 interface BladeElement extends ComponentPublicInstance {
   onBeforeClose: () => Promise<boolean>;
   [x: string]: unknown;
-}
-
-interface IAppBarButton {
-  isVisible?: boolean | (() => boolean);
-}
-
-interface IMenuItem {
-  isVisible?: boolean | (() => boolean);
 }
 
 interface IPage {
@@ -181,8 +172,8 @@ export default defineComponent({
     watch(
       () => workspace.value,
       (value) => {
-        console.log("Workspace changed");
-        setTimeout(() => {
+        if (props.isReady) {
+          console.log("Workspace changed");
           if (value && value.length) {
             const ws = value[0].url;
             let lastBladeWithUrlIndex = -1;
@@ -212,8 +203,9 @@ export default defineComponent({
           } else {
             window?.history?.pushState(null, "", "/");
           }
-        }, 0);
-      }
+        }
+      },
+      { deep: true }
     );
 
     /**
@@ -228,15 +220,19 @@ export default defineComponent({
           (item) => item.url === data.workspace
         );
         if (ws) {
-          openWorkspace(ws);
+          workspace.value.push({
+            component: ws,
+            url: ws.url,
+          });
 
           if (data.blade) {
             const blade = (props.pages as IPage[]).find(
               (item) => item.url === data.blade
             );
             if (blade) {
-              onOpenPage(0, {
-                ...blade,
+              workspace.value.push({
+                component: blade,
+                url: blade.url,
                 param: data.param,
               });
             }
@@ -249,12 +245,10 @@ export default defineComponent({
       if (item.clickHandler && typeof item.clickHandler === "function") {
         item.clickHandler(instance?.proxy);
       } else {
-        workspace.value = [
-          {
-            component: item.component,
-            componentOptions: item.componentOptions,
-          },
-        ];
+        openWorkspace({
+          component: item.component,
+          componentOptions: item.componentOptions,
+        });
       }
     };
 
@@ -272,7 +266,15 @@ export default defineComponent({
     const openWorkspace = async (page: IPage) => {
       // Close all opened pages with onBeforeClose callback
       await onClosePage(0);
-      workspace.value = [page];
+      workspace.value = [
+        {
+          ...page,
+          url:
+            page.url === undefined
+              ? (page.component as Record<string, string>).url
+              : page.url,
+        },
+      ];
     };
 
     const onOpenPage = async (index: number, page: IPage) => {
@@ -280,7 +282,13 @@ export default defineComponent({
       if (workspace.value.length > index + 1) {
         await onClosePage(index + 1);
       }
-      workspace.value.push(page);
+      workspace.value.push({
+        ...page,
+        url:
+          page.url === undefined
+            ? (page.component as Record<string, string>).url
+            : page.url,
+      });
     };
 
     const onClosePage = async (index: number) => {

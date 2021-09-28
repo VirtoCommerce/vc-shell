@@ -29,6 +29,8 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  url: "order",
+
   props: {
     expanded: {
       type: Boolean,

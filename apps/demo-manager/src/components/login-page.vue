@@ -3,7 +3,7 @@
     <vc-form>
       <vc-input
         ref="loginField"
-        class="vc-margin-bottom_l"
+        class="vc-margin-bottom_l vc-margin-top_xs"
         :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
         :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
         :required="true"
@@ -19,8 +19,15 @@
         type="password"
         @keyup.enter="login"
       ></vc-input>
-      <div class="vc-flex vc-flex-justify_space-between vc-flex-align_center">
-        <span></span>
+      <div
+        class="
+          vc-flex
+          vc-flex-justify_center
+          vc-flex-align_center
+          vc-padding-top_s
+        "
+      >
+        <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
         <vc-button variant="primary" :disabled="loading" @click="login">
           {{ $t("SHELL.LOGIN.BUTTON") }}
         </vc-button>

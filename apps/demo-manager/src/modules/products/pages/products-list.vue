@@ -29,7 +29,9 @@
       <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
           <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-          <vc-hint class="vc-ellipsis">{{ itemData.item.path }}</vc-hint>
+          <vc-hint class="vc-ellipsis vc-margin-top_xs">
+            {{ itemData.item.path }}
+          </vc-hint>
         </div>
       </template>
 
@@ -74,16 +76,23 @@
                 :status="itemData.item.status"
               ></mp-product-status>
             </div>
-            <div class="vc-flex">
-              <div style="width: 50%" class="vc-shrink_0">
+            <div
+              class="
+                vc-margin-top_m
+                vc-fill_width
+                vc-flex
+                vc-flex-justify_space-between
+              "
+            >
+              <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>EAN/GTIN</vc-hint>
-                <div class="vc-margin-top_xs">
+                <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.productData.gtin }}
                 </div>
               </div>
-              <div style="width: 50%" class="vc-shrink_0">
+              <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>Created</vc-hint>
-                <div class="vc-margin-top_xs">
+                <div class="vc-ellipsis vc-margin-top_xs">
                   {{ moment(itemData.item.createdDate).fromNow() }}
                 </div>
               </div>
@@ -104,6 +113,8 @@ import ProductsEdit from "./products-edit.vue";
 import moment from "moment";
 
 export default defineComponent({
+  url: "products",
+
   components: {
     MpProductStatus,
   },

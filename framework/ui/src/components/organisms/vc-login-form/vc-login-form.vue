@@ -59,7 +59,7 @@ export default defineComponent({
 <style lang="less">
 .vc-login-form {
   &__logo {
-    height: 60px;
+    height: 80px;
     width: 516px;
     max-width: 90%;
     margin-bottom: 50px;

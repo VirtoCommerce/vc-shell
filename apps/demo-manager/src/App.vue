@@ -6,7 +6,7 @@
     :isAuthorized="isAuthorized"
     logo="/assets/logo.svg"
     :version="version"
-    :pages="registry"
+    :pages="pages"
   >
     <!-- Set up dashboard page -->
     <template v-slot:dashboard>
@@ -16,7 +16,7 @@
     <!-- Set up login form -->
     <template v-slot:login>
       <login-page
-        logo="/assets/logo.svg"
+        logo="/assets/logo-white.svg"
         background="/assets/background.jpg"
         title="Vendor Portal"
       ></login-page>
@@ -40,7 +40,7 @@ import UserDropdownButton from "./components/user-dropdown-button.vue";
 import { OrdersList } from "./modules/orders";
 import { OffersList } from "./modules/offers";
 import { ProductsList } from "./modules/products";
-import { useLogger, useI18n, useUser, useRouter } from "@virtoshell/core";
+import { useLogger, useI18n, useUser } from "@virtoshell/core";
 
 export default defineComponent({
   name: "App",
@@ -56,8 +56,8 @@ export default defineComponent({
     const { user, loadUser, signOut } = useUser();
     const isAuthorized = ref(false);
     const isReady = ref(false);
-    const { registry } = useRouter();
 
+    const pages = inject("pages");
     const isDesktop = inject("isDesktop");
     const isMobile = inject("isMobile");
 
@@ -153,7 +153,7 @@ export default defineComponent({
     return {
       isAuthorized,
       isReady,
-      registry,
+      pages,
       version: process.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,

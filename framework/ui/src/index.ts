@@ -2,6 +2,7 @@ import { App } from "vue";
 import * as components from "./components";
 import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
+import Vue3TouchEvents from "vue3-touch-events";
 
 import "normalize.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -11,6 +12,8 @@ import "./styles/index.less";
 export default {
   install(app: App): void {
     console.debug(`[@virtoshell/ui] - Install plugin`);
+
+    app.use(Vue3TouchEvents);
 
     // Register exported components
     Object.entries(components).forEach(([componentName, component]) => {
@@ -27,6 +30,7 @@ export default {
       desktop: 1024,
     });
 
+    app.config.globalProperties.pages = [];
     app.config.globalProperties.$isPhone = bp.smaller("phone");
     app.config.globalProperties.$isTablet = bp.between("phone", "desktop");
     app.config.globalProperties.$isMobile = bp.smaller("desktop");
@@ -38,6 +42,7 @@ export default {
     app.provide("isTablet", app.config.globalProperties.$isTablet);
     app.provide("isMobile", app.config.globalProperties.$isMobile);
     app.provide("isDesktop", app.config.globalProperties.$isDesktop);
+    app.provide("pages", app.config.globalProperties.pages);
   },
 };
 

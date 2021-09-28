@@ -66,6 +66,93 @@
       <template v-slot:item_salePrice="itemData">
         {{ itemData.item.salePrice.toFixed(2) }}
       </template>
+
+      <template v-slot:mobile-item="itemData">
+        <div
+          class="
+            offers-list__mobile-item
+            vc-padding-vertical_m
+            vc-padding-horizontal_l
+          "
+        >
+          <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
+            <vc-image
+              class="vc-flex-shrink_0"
+              aspect="1x1"
+              size="s"
+              :bordered="true"
+              :src="itemData.item.product.image"
+            ></vc-image>
+            <div class="vc-flex-grow_1 vc-margin-left_m">
+              <div class="vc-font-weight_bold vc-font-size_l">
+                {{ itemData.item.product.sellerName }}
+              </div>
+              <vc-hint class="vc-margin-top_xs">
+                {{ itemData.item.product.category }}
+              </vc-hint>
+            </div>
+            <div class="vc-margin-top_s vc-margin-bottom_m vc-margin-left_m">
+              <vc-status v-bind="statusStyle(itemData.item.status)">
+                {{ itemData.item.status }}
+              </vc-status>
+            </div>
+          </div>
+          <div
+            class="
+              vc-margin-top_m
+              vc-fill_width
+              vc-flex
+              vc-flex-justify_space-between
+            "
+          >
+            <div class="vc-ellipsis vc-flex-grow_2">
+              <vc-hint>SKU</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                {{ itemData.item.sku }}
+              </div>
+            </div>
+            <div class="vc-ellipsis vc-flex-grow_2">
+              <vc-hint>Offer #</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                {{ itemData.item.id }}
+              </div>
+            </div>
+            <div class="vc-ellipsis vc-flex-grow_1">
+              <vc-hint>Quantity</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                {{ itemData.item.qty }}
+              </div>
+            </div>
+          </div>
+          <div
+            class="
+              vc-margin-top_m
+              vc-fill_width
+              vc-flex
+              vc-flex-justify_space-between
+            "
+          >
+            <div class="vc-ellipsis vc-flex-grow_2">
+              <vc-hint>List price</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                {{ itemData.item.listPrice.toFixed(2) }}
+              </div>
+            </div>
+            <div class="vc-ellipsis vc-flex-grow_2">
+              <vc-hint>Sale price</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                {{ itemData.item.salePrice.toFixed(2) }}
+              </div>
+            </div>
+            <div class="vc-ellipsis vc-flex-grow_1">
+              <vc-hint>Created</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                {{ moment(itemData.item.createdDate).fromNow() }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
     </vc-table>
   </vc-blade>
 </template>
@@ -78,6 +165,8 @@ import moment from "moment";
 import OffersDetails from "./offers-details.vue";
 
 export default defineComponent({
+  url: "offers",
+
   props: {
     expanded: {
       type: Boolean,
@@ -297,3 +386,11 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="less">
+.offers-list {
+  &__mobile-item {
+    border-bottom: 1px solid #e3e7ec;
+  }
+}
+</style>

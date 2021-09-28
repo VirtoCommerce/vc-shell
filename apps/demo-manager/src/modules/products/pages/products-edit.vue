@@ -1,7 +1,6 @@
 <template>
   <vc-blade
     v-loading="loading"
-    :uid="uid"
     :title="productDetails?.name"
     width="600"
     :expanded="expanded"
@@ -105,6 +104,8 @@ import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 
 export default defineComponent({
+  url: "product",
+
   components: {
     MpProductStatus,
   },

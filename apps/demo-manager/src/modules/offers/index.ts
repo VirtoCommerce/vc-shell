@@ -5,8 +5,9 @@ import * as locales from "./locales";
 export default {
   install(app: App): void {
     // Register exported pages
-    Object.entries(pages).forEach(([componentName, component]) => {
-      app.component(componentName, component);
+    Object.entries(pages).forEach(([pageName, page]) => {
+      app.component(pageName, page);
+      app.config.globalProperties.pages?.push(page);
     });
 
     // Load locales

@@ -313,6 +313,12 @@ export default defineComponent({
       this.checkboxes[id] = state;
       this.$emit("selectionChanged", this.checkboxes);
     },
+
+    onRowSwipe(item) {
+      return (direction, event) => {
+        console.dir(event);
+      };
+    },
   },
 });
 </script>
@@ -391,6 +397,22 @@ export default defineComponent({
     &-text {
       font-size: var(--font-size-xl);
       font-weight: var(--font-weight-medium);
+    }
+  }
+
+  &-mobile {
+    &__item {
+      position: relative;
+
+      &-actions {
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 100px;
+        height: 100%;
+        z-index: 1;
+        background: white;
+      }
     }
   }
 }

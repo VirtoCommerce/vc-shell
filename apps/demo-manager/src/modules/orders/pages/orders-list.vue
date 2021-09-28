@@ -50,6 +50,8 @@ import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
 
 export default defineComponent({
+  url: "orders",
+
   props: {
     expanded: {
       type: Boolean,

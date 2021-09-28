@@ -1,15 +1,17 @@
 <template>
   <vc-blade
+    v-loading="loading"
     :title="$t('OFFERS.PAGES.DETAILS.TITLE')"
+    width="600"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <div class="offer-details__inner vc-flex vc-flex-grow_1">
-      <div class="offer-details__content vc-flex-grow_1">
-        <vc-container :no-padding="true">
+    <vc-container :no-padding="true">
+      <div class="offer-details__inner vc-flex vc-flex-grow_1">
+        <div class="offer-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
             <vc-form>
               <vc-autocomplete
@@ -138,10 +140,8 @@
               ></vc-input>
             </vc-form>
           </div>
-        </vc-container>
-      </div>
-      <div class="offer-details__widgets">
-        <vc-container :no-padding="true">
+        </div>
+        <div class="offer-details__widgets">
           <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
@@ -150,9 +150,9 @@
             ></vc-icon>
             <div class="vc-widget__title">Statistics</div>
           </div>
-        </vc-container>
+        </div>
       </div>
-    </div>
+    </vc-container>
   </vc-blade>
 </template>
 
@@ -161,6 +161,8 @@ import { computed, defineComponent, ref } from "vue";
 import { useI18n } from "@virtoshell/core";
 
 export default defineComponent({
+  url: "offer",
+
   props: {
     expanded: {
       type: Boolean,
@@ -305,6 +307,20 @@ export default defineComponent({
 
   &__content {
     border-right: 1px solid #eaedf3;
+  }
+
+  .vc-app_phone &__inner {
+    flex-direction: column;
+  }
+
+  .vc-app_phone &__content {
+    border-right: none;
+    border-bottom: 1px solid #eaedf3;
+  }
+
+  .vc-app_phone &__widgets {
+    display: flex;
+    flex-direction: row;
   }
 }
 

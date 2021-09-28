@@ -1,16 +1,12 @@
 import { App } from "vue";
 import * as pages from "./pages";
 import * as locales from "./locales";
-import { useRouter } from "@virtoshell/core";
 
 export default {
   install(app: App): void {
-    const { registerBlade } = useRouter();
-
-    // Setup routing
-    registerBlade({
-      name: "assets-details",
-      component: pages.AssetsDetails,
+    Object.entries(pages).forEach(([pageName, page]) => {
+      app.component(pageName, page);
+      app.config.globalProperties.pages?.push(page);
     });
 
     // Load locales

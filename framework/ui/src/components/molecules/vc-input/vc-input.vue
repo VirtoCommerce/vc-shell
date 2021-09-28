@@ -99,6 +99,8 @@ export default defineComponent({
 }
 
 .vc-input {
+  overflow: hidden;
+
   &__field-wrapper {
     border: 1px solid var(--input-border-color);
     border-radius: var(--input-border-radius);
@@ -109,6 +111,7 @@ export default defineComponent({
     border: none;
     outline: none;
     height: var(--input-height);
+    min-width: 0;
     box-sizing: border-box;
     -webkit-placeholder-color: var(--input-placeholder-color);
   }

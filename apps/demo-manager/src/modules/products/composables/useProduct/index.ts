@@ -46,7 +46,7 @@ export default (): IUseProduct => {
   });
   const productDetails = reactive<IProductDetails>({});
   let productDetailsCopy: IProductDetails;
-  const loading = ref(true);
+  const loading = ref(false);
   const modified = ref(false);
 
   watch(
@@ -140,7 +140,7 @@ export default (): IUseProduct => {
     const client = await getApiClient();
 
     const command = new CreateNewProductCommand({
-      productData: new ProductDetails(details),
+      productDetails: new ProductDetails(details),
     });
 
     try {

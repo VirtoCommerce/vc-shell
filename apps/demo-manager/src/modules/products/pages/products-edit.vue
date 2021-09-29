@@ -1,7 +1,7 @@
 <template>
   <vc-blade
     v-loading="loading"
-    :title="productDetails?.name"
+    :title="param ? productDetails?.name : $t('PRODUCTS.PAGES.DETAILS.TITLE')"
     width="600"
     :expanded="expanded"
     :closable="closable"
@@ -146,6 +146,7 @@ export default defineComponent({
       productDetails,
       loading,
       loadProduct,
+      createProduct,
       updateProductDetails,
       fetchCategories,
       revertStagedChanges,
@@ -156,7 +157,9 @@ export default defineComponent({
     const categorySearchValue = ref();
 
     onMounted(async () => {
-      await loadProduct({ id: props.param });
+      if (props.param) {
+        await loadProduct({ id: props.param });
+      }
       categories.value = await fetchCategories();
     });
 
@@ -166,13 +169,17 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: async () => {
-          await updateProductDetails(product.value.id, { ...productDetails });
+          if (props.param) {
+            await updateProductDetails(product.value.id, productDetails);
+          } else {
+            createProduct(productDetails);
+          }
           emit("parent:call", {
             method: "reload",
           });
         },
         disabled: computed(
-          () => !product.value?.canBeModified || !modified.value
+          () => !props.param || !product.value?.canBeModified || !modified.value
         ),
       },
       {
@@ -190,13 +197,14 @@ export default defineComponent({
           });
         },
         disabled: computed(
-          () => !product.value?.canBeModified || !modified.value
+          () => !props.param || !product.value?.canBeModified || !modified.value
         ),
       },
       {
         id: "revertStagedChanges",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT"),
         icon: "fas fa-undo",
+        isVisible: computed(() => !!props.param),
         onClick: async () => {
           await revertStagedChanges(product.value.id);
           emit("parent:call", {
@@ -216,6 +224,7 @@ export default defineComponent({
         id: "approve",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.APPROVE"),
         icon: "fas fa-check-circle",
+        isVisible: computed(() => !!props.param),
         onClick: async () => {
           await changeProductStatus(product.value.id, "approve");
           emit("parent:call", {
@@ -228,6 +237,7 @@ export default defineComponent({
         id: "requestChanges",
         title: "Request changes (test only)",
         icon: "fas fa-sticky-note",
+        isVisible: computed(() => !!props.param),
         onClick: async () => {
           await changeProductStatus(product.value.id, "requestChanges");
           emit("parent:call", {
@@ -240,6 +250,7 @@ export default defineComponent({
         id: "reject",
         title: "Reject (test only)",
         icon: "fas fa-ban",
+        isVisible: computed(() => !!props.param),
         onClick: async () => {
           await changeProductStatus(product.value.id, "reject");
           emit("parent:call", {
@@ -297,7 +308,7 @@ export default defineComponent({
             )
           : categories.value
       ),
-      product: computed(() => product.value),
+      product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,
       loading: computed(() => loading.value),
       onGalleryUpload,

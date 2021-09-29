@@ -174,7 +174,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: async () => {
-          reload();
+          await reload();
         },
       },
       {

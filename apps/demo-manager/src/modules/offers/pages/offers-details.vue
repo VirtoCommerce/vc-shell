@@ -19,12 +19,14 @@
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
                 :isRequired="true"
                 :isSearchable="true"
+                v-model="offerDetails.outerId"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
                 :options="products"
+                :selectedItem="product"
                 @search="onProductSearch"
-                @close="searchValue = ''"
+                @close="searchValue = null"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -32,13 +34,13 @@
                   >
                     <vc-image
                       size="xs"
-                      :src="itemData.item.image"
+                      :src="itemData.item.imgSrc"
                       :bordered="true"
                     ></vc-image>
                     <div class="flex-grow_1 vc-margin-left_l">
-                      <div class="vc-ellipsis">{{ itemData.item.title }}</div>
+                      <div class="vc-ellipsis">{{ itemData.item.name }}</div>
                       <vc-hint class="vc-ellipsis vc-margin-top_xs">
-                        Code: {{ itemData.item.gtin }}
+                        Code: {{ itemData.item.sku }}
                       </vc-hint>
                     </div>
                   </div>
@@ -48,6 +50,7 @@
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
                 :required="true"
+                v-model="currency"
                 :options="currencies"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')
@@ -58,6 +61,7 @@
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
                 :clearable="true"
                 :required="true"
+                v-model="offerDetails.sku"
                 :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
               ></vc-input>
               <div class="vc-flex">
@@ -66,6 +70,7 @@
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                   :clearable="true"
                   :required="true"
+                  v-model="offerDetails.listPrice"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
                   "
@@ -74,6 +79,7 @@
                   class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
                   :clearable="true"
+                  v-model="offerDetails.salePrice"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
                   "
@@ -85,6 +91,7 @@
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                   :clearable="true"
                   :required="true"
+                  v-model="offerDetails.minQuantity"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                   "
@@ -94,6 +101,7 @@
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE')"
                   :clearable="true"
                   :required="true"
+                  v-model="offerDetails.inStockQuantity"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                   "
@@ -105,7 +113,8 @@
                   type="date"
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.START_DATE.TITLE')"
                   :clearable="true"
-                  :required="true"
+                  :required="false"
+                  offerDetails.startDate
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.START_DATE.PLACEHOLDER')
                   "
@@ -115,7 +124,8 @@
                   type="date"
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.END_DATE.TITLE')"
                   :clearable="true"
-                  :required="true"
+                  :required="false"
+                  offerDetails.endDate
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.END_DATE.PLACEHOLDER')
                   "
@@ -158,8 +168,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, onMounted } from "vue";
 import { useI18n } from "@virtoshell/core";
+import { useOffer } from "../composables";
+import { IOfferProduct } from "../../../api_client";
+
+class BladeElement extends HTMLElement {
+  reload: () => void;
+}
 
 export default defineComponent({
   url: "offer",
@@ -174,7 +190,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-
+    param: {
+      type: String,
+      default: undefined,
+    },
     options: {
       type: Object,
       default: () => ({}),
@@ -183,14 +202,26 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const { t } = useI18n();
-    const searchValue = ref("");
+
+    const { createOffer, offerDetails, fetchProducts } = useOffer();
+    //TODO: bind to dropdown action
+    const products = ref<IOfferProduct[]>();
+    const currency: { title?: string; value?: string } = {};
+    onMounted(async () => {
+      //await loadOffer({ id: props.param });
+      products.value = await fetchProducts();
+    });
 
     const bladeToolbar = [
       {
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
-        onClick: () => {
+        onClick: async () => {
+          await createOffer(offerDetails.outerId, {
+            ...offerDetails,
+            currency: "USD",
+          });
           emit("parent:call", {
             method: "reload",
           });
@@ -201,88 +232,27 @@ export default defineComponent({
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
         onClick: () => {
-          console.log("Close blade");
           emit("page:close");
         },
-      },
-    ];
-    const products = [
-      {
-        title: "Hyper PC Case with LED light",
-        value: "1",
-        image: "/assets/1.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "DJI MAVIK AIR2 with GoPro mount accesoires",
-        value: "2",
-        image: "/assets/2.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "Apple IPhone XR 256Gb",
-        value: "3",
-        image: "/assets/3.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "SHURE SR215 Headphones",
-        value: "4",
-        image: "/assets/4.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "Samsung Galaxy Note Ultra 5G",
-        value: "5",
-        image: "/assets/5.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "Lays Stix Chips with Salt&Peper",
-        value: "6",
-        image: "/assets/6.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "Lays Stix Chips with Bacon taste",
-        value: "7",
-        image: "/assets/7.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "Lays Stix Chips with Onion&Sourcream taste",
-        value: "8",
-        image: "/assets/8.jpg",
-        gtin: "000123456789",
-      },
-      {
-        title: "Red Hot Chili Peppers (max pack)",
-        value: "9",
-        image: "/assets/9.jpg",
-        gtin: "000123456789",
       },
     ];
 
     return {
       bladeToolbar,
-      currencies: [
-        { title: "CAD", value: "CAD" },
-        { title: "RUB", value: "RUB" },
-        { title: "USD", value: "USD" },
-      ],
+      offerDetails,
+      product: computed(() =>
+        products.value?.find((x) => x.id === offerDetails.outerId)
+      ),
+      products,
+      currency,
+      currencies: { title: "USD", value: "USD" },
       conditions: [
         { title: "New", value: "New" },
         { title: "Refurbrished", value: "Refurbrished" },
         { title: "Used", value: "Used" },
       ],
-      products: computed(() =>
-        products.filter((item) =>
-          item.title.match(new RegExp(`${searchValue.value}`, "ig"))
-        )
-      ),
-      searchValue,
-      onProductSearch: (value: string) => {
-        searchValue.value = value;
+      onProductSearch: async (value: string) => {
+        products.value = await fetchProducts(value);
       },
 
       onBeforeClose: async () => {

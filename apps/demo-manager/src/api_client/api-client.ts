@@ -387,6 +387,180 @@ export class AuthApiBase {
       }
   
       /**
+       * @param body (optional) 
+       * @return Success
+       */
+      searchOffres(body: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/offers/search";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processSearchOffres(_response);
+          });
+      }
+  
+      protected processSearchOffres(response: Response): Promise<SearchOffersResult> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = SearchOffersResult.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<SearchOffersResult>(<any>null);
+      }
+  
+      /**
+       * @return Success
+       */
+      getOfferById(offerId: string | null): Promise<SellerProduct> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/offers/{offerId}";
+          if (offerId === undefined || offerId === null)
+              throw new Error("The parameter 'offerId' must be defined.");
+          url_ = url_.replace("{offerId}", encodeURIComponent("" + offerId));
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "POST",
+              headers: {
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processGetOfferById(_response);
+          });
+      }
+  
+      protected processGetOfferById(response: Response): Promise<SellerProduct> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = SellerProduct.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<SellerProduct>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      searchOfferProducts(body: SearchProductsForNewOfferQuery | undefined): Promise<SearchOfferProductsResult> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/offers/products/search";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processSearchOfferProducts(_response);
+          });
+      }
+  
+      protected processSearchOfferProducts(response: Response): Promise<SearchOfferProductsResult> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = SearchOfferProductsResult.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<SearchOfferProductsResult>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      createNewOffer(body: CreateNewOfferCommand | undefined): Promise<Offer> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/offers/new";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processCreateNewOffer(_response);
+          });
+      }
+  
+      protected processCreateNewOffer(response: Response): Promise<Offer> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = Offer.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<Offer>(<any>null);
+      }
+  
+      /**
        * @return Success
        */
       changeProductStatus(productId: string | null, status: string | null): Promise<void> {
@@ -1876,10 +2050,12 @@ export class AuthApiBase {
       take?: number;
   }
   
-  export enum PublicationRequestStatus {
-      New = "New",
+  export enum SellerProductStatus {
+      None = "None",
+      Published = "Published",
+      HasStagedChanges = "HasStagedChanges",
       WaitForApproval = "WaitForApproval",
-      RequestChanges = "RequestChanges",
+      RequiresChanges = "RequiresChanges",
       Rejected = "Rejected",
       Approved = "Approved",
   }
@@ -1938,6 +2114,14 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
+  }
+  
+  export enum PublicationRequestStatus {
+      None = "None",
+      WaitForApproval = "WaitForApproval",
+      RequestChanges = "RequestChanges",
+      Rejected = "Rejected",
+      Approved = "Approved",
   }
   
   export class INotification implements IINotification {
@@ -3229,7 +3413,7 @@ export class AuthApiBase {
       readonly description?: string | undefined;
       hasStagedChanges?: boolean;
       isPublished?: boolean;
-      status?: PublicationRequestStatus;
+      status?: SellerProductStatus;
       readonly canBeModified?: boolean;
       publications?: ProductPublication[] | undefined;
       outerId?: string | undefined;
@@ -3326,7 +3510,7 @@ export class AuthApiBase {
       description?: string | undefined;
       hasStagedChanges?: boolean;
       isPublished?: boolean;
-      status?: PublicationRequestStatus;
+      status?: SellerProductStatus;
       canBeModified?: boolean;
       publications?: ProductPublication[] | undefined;
       outerId?: string | undefined;
@@ -3384,46 +3568,6 @@ export class AuthApiBase {
   export interface ISearchProductsResult {
       totalCount?: number;
       results?: SellerProduct[] | undefined;
-  }
-  
-  export class CreateNewProductCommand implements ICreateNewProductCommand {
-      sellerName?: string | undefined;
-      productData?: CatalogProduct;
-  
-      constructor(data?: ICreateNewProductCommand) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.sellerName = _data["sellerName"];
-              this.productData = _data["productData"] ? CatalogProduct.fromJS(_data["productData"]) : <any>undefined;
-          }
-      }
-  
-      static fromJS(data: any): CreateNewProductCommand {
-          data = typeof data === 'object' ? data : {};
-          let result = new CreateNewProductCommand();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["sellerName"] = this.sellerName;
-          data["productData"] = this.productData ? this.productData.toJSON() : <any>undefined;
-          return data; 
-      }
-  }
-  
-  export interface ICreateNewProductCommand {
-      sellerName?: string | undefined;
-      productData?: CatalogProduct;
   }
   
   export class ProductDetails implements IProductDetails {
@@ -3484,6 +3628,46 @@ export class AuthApiBase {
       gtin?: string | undefined;
       categoryId?: string | undefined;
       images?: Image[] | undefined;
+  }
+  
+  export class CreateNewProductCommand implements ICreateNewProductCommand {
+      sellerName?: string | undefined;
+      productDetails?: ProductDetails;
+  
+      constructor(data?: ICreateNewProductCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerName = _data["sellerName"];
+              this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): CreateNewProductCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new CreateNewProductCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerName"] = this.sellerName;
+          data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface ICreateNewProductCommand {
+      sellerName?: string | undefined;
+      productDetails?: ProductDetails;
   }
   
   export class UpdateProductDetailsCommand implements IUpdateProductDetailsCommand {
@@ -3568,6 +3752,669 @@ export class AuthApiBase {
       storeId?: string | undefined;
       productId: string;
       comment?: string | undefined;
+  }
+  
+  export class SearchOffersQuery implements ISearchOffersQuery {
+      productId?: string | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      readonly sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  
+      constructor(data?: ISearchOffersQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.productId = _data["productId"];
+              this.responseGroup = _data["responseGroup"];
+              this.objectType = _data["objectType"];
+              if (Array.isArray(_data["objectTypes"])) {
+                  this.objectTypes = [] as any;
+                  for (let item of _data["objectTypes"])
+                      this.objectTypes!.push(item);
+              }
+              if (Array.isArray(_data["objectIds"])) {
+                  this.objectIds = [] as any;
+                  for (let item of _data["objectIds"])
+                      this.objectIds!.push(item);
+              }
+              this.keyword = _data["keyword"];
+              this.searchPhrase = _data["searchPhrase"];
+              this.languageCode = _data["languageCode"];
+              this.sort = _data["sort"];
+              if (Array.isArray(_data["sortInfos"])) {
+                  (<any>this).sortInfos = [] as any;
+                  for (let item of _data["sortInfos"])
+                      (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+              }
+              this.skip = _data["skip"];
+              this.take = _data["take"];
+          }
+      }
+  
+      static fromJS(data: any): SearchOffersQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchOffersQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["productId"] = this.productId;
+          data["responseGroup"] = this.responseGroup;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.objectTypes)) {
+              data["objectTypes"] = [];
+              for (let item of this.objectTypes)
+                  data["objectTypes"].push(item);
+          }
+          if (Array.isArray(this.objectIds)) {
+              data["objectIds"] = [];
+              for (let item of this.objectIds)
+                  data["objectIds"].push(item);
+          }
+          data["keyword"] = this.keyword;
+          data["searchPhrase"] = this.searchPhrase;
+          data["languageCode"] = this.languageCode;
+          data["sort"] = this.sort;
+          if (Array.isArray(this.sortInfos)) {
+              data["sortInfos"] = [];
+              for (let item of this.sortInfos)
+                  data["sortInfos"].push(item.toJSON());
+          }
+          data["skip"] = this.skip;
+          data["take"] = this.take;
+          return data; 
+      }
+  }
+  
+  export interface ISearchOffersQuery {
+      productId?: string | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  }
+  
+  export class Offer implements IOffer {
+      isActive?: boolean;
+      outerId?: string | undefined;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      name?: string | undefined;
+      sku?: string | undefined;
+      imgSrc?: string | undefined;
+      categoryId?: string | undefined;
+      path?: string | undefined;
+      currency?: string | undefined;
+      listPrice?: number;
+      salePrice?: number | undefined;
+      minQuantity?: number;
+      inStockQuantity?: number;
+      startDate?: Date | undefined;
+      endDate?: Date | undefined;
+      estimatedDeliveryDate?: string | undefined;
+      productId?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IOffer) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.isActive = _data["isActive"];
+              this.outerId = _data["outerId"];
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.storeId = _data["storeId"];
+              this.storeName = _data["storeName"];
+              this.name = _data["name"];
+              this.sku = _data["sku"];
+              this.imgSrc = _data["imgSrc"];
+              this.categoryId = _data["categoryId"];
+              this.path = _data["path"];
+              this.currency = _data["currency"];
+              this.listPrice = _data["listPrice"];
+              this.salePrice = _data["salePrice"];
+              this.minQuantity = _data["minQuantity"];
+              this.inStockQuantity = _data["inStockQuantity"];
+              this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+              this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+              this.estimatedDeliveryDate = _data["estimatedDeliveryDate"];
+              this.productId = _data["productId"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): Offer {
+          data = typeof data === 'object' ? data : {};
+          let result = new Offer();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["isActive"] = this.isActive;
+          data["outerId"] = this.outerId;
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["storeId"] = this.storeId;
+          data["storeName"] = this.storeName;
+          data["name"] = this.name;
+          data["sku"] = this.sku;
+          data["imgSrc"] = this.imgSrc;
+          data["categoryId"] = this.categoryId;
+          data["path"] = this.path;
+          data["currency"] = this.currency;
+          data["listPrice"] = this.listPrice;
+          data["salePrice"] = this.salePrice;
+          data["minQuantity"] = this.minQuantity;
+          data["inStockQuantity"] = this.inStockQuantity;
+          data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+          data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+          data["estimatedDeliveryDate"] = this.estimatedDeliveryDate;
+          data["productId"] = this.productId;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IOffer {
+      isActive?: boolean;
+      outerId?: string | undefined;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      name?: string | undefined;
+      sku?: string | undefined;
+      imgSrc?: string | undefined;
+      categoryId?: string | undefined;
+      path?: string | undefined;
+      currency?: string | undefined;
+      listPrice?: number;
+      salePrice?: number | undefined;
+      minQuantity?: number;
+      inStockQuantity?: number;
+      startDate?: Date | undefined;
+      endDate?: Date | undefined;
+      estimatedDeliveryDate?: string | undefined;
+      productId?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class SearchOffersResult implements ISearchOffersResult {
+      totalCount?: number;
+      results?: Offer[] | undefined;
+  
+      constructor(data?: ISearchOffersResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.totalCount = _data["totalCount"];
+              if (Array.isArray(_data["results"])) {
+                  this.results = [] as any;
+                  for (let item of _data["results"])
+                      this.results!.push(Offer.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): SearchOffersResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchOffersResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["totalCount"] = this.totalCount;
+          if (Array.isArray(this.results)) {
+              data["results"] = [];
+              for (let item of this.results)
+                  data["results"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface ISearchOffersResult {
+      totalCount?: number;
+      results?: Offer[] | undefined;
+  }
+  
+  export class SearchProductsForNewOfferQuery implements ISearchProductsForNewOfferQuery {
+      sellerId?: string | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      readonly sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  
+      constructor(data?: ISearchProductsForNewOfferQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.responseGroup = _data["responseGroup"];
+              this.objectType = _data["objectType"];
+              if (Array.isArray(_data["objectTypes"])) {
+                  this.objectTypes = [] as any;
+                  for (let item of _data["objectTypes"])
+                      this.objectTypes!.push(item);
+              }
+              if (Array.isArray(_data["objectIds"])) {
+                  this.objectIds = [] as any;
+                  for (let item of _data["objectIds"])
+                      this.objectIds!.push(item);
+              }
+              this.keyword = _data["keyword"];
+              this.searchPhrase = _data["searchPhrase"];
+              this.languageCode = _data["languageCode"];
+              this.sort = _data["sort"];
+              if (Array.isArray(_data["sortInfos"])) {
+                  (<any>this).sortInfos = [] as any;
+                  for (let item of _data["sortInfos"])
+                      (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+              }
+              this.skip = _data["skip"];
+              this.take = _data["take"];
+          }
+      }
+  
+      static fromJS(data: any): SearchProductsForNewOfferQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchProductsForNewOfferQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["responseGroup"] = this.responseGroup;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.objectTypes)) {
+              data["objectTypes"] = [];
+              for (let item of this.objectTypes)
+                  data["objectTypes"].push(item);
+          }
+          if (Array.isArray(this.objectIds)) {
+              data["objectIds"] = [];
+              for (let item of this.objectIds)
+                  data["objectIds"].push(item);
+          }
+          data["keyword"] = this.keyword;
+          data["searchPhrase"] = this.searchPhrase;
+          data["languageCode"] = this.languageCode;
+          data["sort"] = this.sort;
+          if (Array.isArray(this.sortInfos)) {
+              data["sortInfos"] = [];
+              for (let item of this.sortInfos)
+                  data["sortInfos"].push(item.toJSON());
+          }
+          data["skip"] = this.skip;
+          data["take"] = this.take;
+          return data; 
+      }
+  }
+  
+  export interface ISearchProductsForNewOfferQuery {
+      sellerId?: string | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  }
+  
+  export class OfferProduct implements IOfferProduct {
+      name?: string | undefined;
+      sku?: string | undefined;
+      imgSrc?: string | undefined;
+      categoryId?: string | undefined;
+      path?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IOfferProduct) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.name = _data["name"];
+              this.sku = _data["sku"];
+              this.imgSrc = _data["imgSrc"];
+              this.categoryId = _data["categoryId"];
+              this.path = _data["path"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): OfferProduct {
+          data = typeof data === 'object' ? data : {};
+          let result = new OfferProduct();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["name"] = this.name;
+          data["sku"] = this.sku;
+          data["imgSrc"] = this.imgSrc;
+          data["categoryId"] = this.categoryId;
+          data["path"] = this.path;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IOfferProduct {
+      name?: string | undefined;
+      sku?: string | undefined;
+      imgSrc?: string | undefined;
+      categoryId?: string | undefined;
+      path?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class SearchOfferProductsResult implements ISearchOfferProductsResult {
+      totalCount?: number;
+      results?: OfferProduct[] | undefined;
+  
+      constructor(data?: ISearchOfferProductsResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.totalCount = _data["totalCount"];
+              if (Array.isArray(_data["results"])) {
+                  this.results = [] as any;
+                  for (let item of _data["results"])
+                      this.results!.push(OfferProduct.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): SearchOfferProductsResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchOfferProductsResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["totalCount"] = this.totalCount;
+          if (Array.isArray(this.results)) {
+              data["results"] = [];
+              for (let item of this.results)
+                  data["results"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface ISearchOfferProductsResult {
+      totalCount?: number;
+      results?: OfferProduct[] | undefined;
+  }
+  
+  export class OfferDetails implements IOfferDetails {
+      isActive?: boolean;
+      outerId?: string | undefined;
+      name?: string | undefined;
+      sku!: string;
+      currency!: string;
+      listPrice!: number;
+      salePrice?: number | undefined;
+      minQuantity?: number;
+      inStockQuantity?: number;
+      startDate?: Date | undefined;
+      endDate?: Date | undefined;
+      estimatedDeliveryDate?: string | undefined;
+  
+      constructor(data?: IOfferDetails) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.isActive = _data["isActive"];
+              this.outerId = _data["outerId"];
+              this.name = _data["name"];
+              this.sku = _data["sku"];
+              this.currency = _data["currency"];
+              this.listPrice = _data["listPrice"];
+              this.salePrice = _data["salePrice"];
+              this.minQuantity = _data["minQuantity"];
+              this.inStockQuantity = _data["inStockQuantity"];
+              this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+              this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+              this.estimatedDeliveryDate = _data["estimatedDeliveryDate"];
+          }
+      }
+  
+      static fromJS(data: any): OfferDetails {
+          data = typeof data === 'object' ? data : {};
+          let result = new OfferDetails();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["isActive"] = this.isActive;
+          data["outerId"] = this.outerId;
+          data["name"] = this.name;
+          data["sku"] = this.sku;
+          data["currency"] = this.currency;
+          data["listPrice"] = this.listPrice;
+          data["salePrice"] = this.salePrice;
+          data["minQuantity"] = this.minQuantity;
+          data["inStockQuantity"] = this.inStockQuantity;
+          data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+          data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+          data["estimatedDeliveryDate"] = this.estimatedDeliveryDate;
+          return data; 
+      }
+  }
+  
+  export interface IOfferDetails {
+      isActive?: boolean;
+      outerId?: string | undefined;
+      name?: string | undefined;
+      sku: string;
+      currency: string;
+      listPrice: number;
+      salePrice?: number | undefined;
+      minQuantity?: number;
+      inStockQuantity?: number;
+      startDate?: Date | undefined;
+      endDate?: Date | undefined;
+      estimatedDeliveryDate?: string | undefined;
+  }
+  
+  export class CreateNewOfferCommand implements ICreateNewOfferCommand {
+      outerId?: string | undefined;
+      sellerName!: string;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      details!: OfferDetails;
+      productId!: string;
+  
+      constructor(data?: ICreateNewOfferCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+          if (!data) {
+              this.details = new OfferDetails();
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.outerId = _data["outerId"];
+              this.sellerName = _data["sellerName"];
+              this.storeId = _data["storeId"];
+              this.storeName = _data["storeName"];
+              this.details = _data["details"] ? OfferDetails.fromJS(_data["details"]) : new OfferDetails();
+              this.productId = _data["productId"];
+          }
+      }
+  
+      static fromJS(data: any): CreateNewOfferCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new CreateNewOfferCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["outerId"] = this.outerId;
+          data["sellerName"] = this.sellerName;
+          data["storeId"] = this.storeId;
+          data["storeName"] = this.storeName;
+          data["details"] = this.details ? this.details.toJSON() : <any>undefined;
+          data["productId"] = this.productId;
+          return data; 
+      }
+  }
+  
+  export interface ICreateNewOfferCommand {
+      outerId?: string | undefined;
+      sellerName: string;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      details: OfferDetails;
+      productId: string;
   }
   
   export class ApiException extends Error {

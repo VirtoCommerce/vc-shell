@@ -1,16 +1,16 @@
 {
   "name": "@virtoshell/app-demo-manager",
-  "version": "0.0.43",
+  "version": "0.0.44",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
   "devDependencies": {
-    "@virtoshell/api-client": "^0.0.43",
-    "@virtoshell/core": "^0.0.43",
-    "@virtoshell/mod-assets": "^0.0.43",
-    "@virtoshell/ui": "^0.0.43",
+    "@virtoshell/api-client": "^0.0.44",
+    "@virtoshell/core": "^0.0.44",
+    "@virtoshell/mod-assets": "^0.0.44",
+    "@virtoshell/ui": "^0.0.44",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

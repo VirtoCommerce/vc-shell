@@ -45,7 +45,7 @@
       <vc-container :noPadding="true" class="vc-app-menu__content">
         <template v-for="(item, index) in items" :key="index">
           <vc-app-menu-item
-            v-if="item.isVisible"
+            v-if="item.isVisible === undefined || item.isVisible"
             v-bind="item"
             @click="
               $emit('item:click', item);

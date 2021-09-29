@@ -1,10 +1,11 @@
 <template>
   <div v-if="items" class="vc-blade-toolbar vc-flex-shrink_0">
-    <vc-blade-toolbar-button
-      v-for="item in items"
-      :key="item.id"
-      v-bind="item"
-    />
+    <template v-for="item in items" :key="item.id">
+      <vc-blade-toolbar-button
+        v-if="item.isVisible === undefined || item.isVisible"
+        v-bind="item"
+      />
+    </template>
   </div>
 </template>
 

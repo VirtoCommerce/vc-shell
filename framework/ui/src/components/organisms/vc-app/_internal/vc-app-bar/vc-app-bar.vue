@@ -42,7 +42,7 @@
     <!-- Toolbar container -->
     <div class="vc-flex vc-fill_height">
       <template v-for="(item, index) in buttons" :key="index">
-        <template v-if="item.isVisible">
+        <template v-if="item.isVisible === undefined || item.isVisible">
           <!-- Draw custom component is it is passed -->
           <component
             v-if="item.component"

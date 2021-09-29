@@ -3,6 +3,38 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.44](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.44) (2021-09-29)
+
+
+### Bug Fixes
+
+* deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
+
+
+
+## 0.0.43 (2021-09-24)
+
+
+
+## 0.0.42 (2021-09-23)
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.43](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.43) (2021-09-24)
 
 

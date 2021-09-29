@@ -31,7 +31,7 @@
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="productDetails.categoryId"
+                v-model="category"
                 :required="true"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
@@ -203,7 +203,7 @@ export default defineComponent({
         onClick: async () => {
           await updateProductDetails(
             product.value.id,
-            { ...productDetails },
+            { ...productDetails, categoryId: category.value?.id },
             true
           );
           if (parent?.reload) {

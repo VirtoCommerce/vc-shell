@@ -25,12 +25,15 @@
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
+                v-model="category"
                 :required="true"
-                v-model="product.categoryId"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
+                keyProperty="id"
+                displayProperty="name"
+                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -111,6 +114,9 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const categories = ref<ICategory[]>();
+    const category = ref<ICategory>();
+
     const { t } = useI18n();
     const { closeBlade } = useRouter();
     const { createProduct, productDetails, fetchCategories } = useProduct();
@@ -121,7 +127,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: () => {
-          createProduct({ ...productDetails });
+          createProduct({ ...productDetails, categoryId: category.value?.id });
         },
       },
       {
@@ -138,7 +144,6 @@ export default defineComponent({
         },
       },
     ];
-    const categories = ref<ICategory[]>();
     onMounted(async () => {
       categories.value = await fetchCategories();
     });
@@ -147,6 +152,7 @@ export default defineComponent({
       bladeToolbar,
       product: computed(() => productDetails),
       categories,
+      category,
     };
   },
 });

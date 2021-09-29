@@ -140,7 +140,7 @@ export default (): IUseProduct => {
     const client = await getApiClient();
 
     const command = new CreateNewProductCommand({
-      productData: new ProductDetails(details),
+      productDetails: new ProductDetails(details),
     });
 
     try {

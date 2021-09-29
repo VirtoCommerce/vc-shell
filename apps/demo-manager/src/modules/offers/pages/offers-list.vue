@@ -26,30 +26,21 @@
       @paginationClick="onPaginationClick"
     >
       <!-- Override sellerName column template -->
-      <template v-slot:item_productName="itemData">
+      <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
-          <div class="vc-ellipsis">{{ itemData.item.product.sellerName }}</div>
-          <vc-hint class="vc-ellipsis">{{
-            itemData.item.product.category
-          }}</vc-hint>
+          <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+          <vc-hint class="vc-ellipsis">{{ itemData.item.name }}</vc-hint>
         </div>
       </template>
 
       <!-- Override image column template -->
-      <template v-slot:item_productImage="itemData">
+      <template v-slot:item_image="itemData">
         <vc-image
           :bordered="true"
           size="s"
           aspect="1x1"
-          :src="itemData.item.product.image"
+          :src="itemData.item.imgSrc"
         ></vc-image>
-      </template>
-
-      <!-- Override status column template -->
-      <template v-slot:item_status="itemData">
-        <vc-status v-bind="statusStyle(itemData.item.status)">
-          {{ itemData.item.status }}
-        </vc-status>
       </template>
 
       <!-- Override createdDate column template -->
@@ -59,12 +50,12 @@
 
       <!-- Override listPrice column template -->
       <template v-slot:item_listPrice="itemData">
-        {{ itemData.item.listPrice.toFixed(2) }}
+        {{ itemData.item.listPrice?.toFixed(2) }}
       </template>
 
       <!-- Override salePrice column template -->
       <template v-slot:item_salePrice="itemData">
-        {{ itemData.item.salePrice.toFixed(2) }}
+        {{ itemData.item.salePrice?.toFixed(2) }}
       </template>
     </vc-table>
   </vc-blade>
@@ -78,6 +69,10 @@ import moment from "moment";
 
 export default defineComponent({
   props: {
+    uid: {
+      type: String,
+      default: undefined,
+    },
     expanded: {
       type: Boolean,
       default: true,
@@ -87,38 +82,39 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-
-    parent: {
-      type: HTMLElement,
-      default: undefined,
-    },
-
-    child: {
-      type: HTMLElement,
-      default: undefined,
-    },
   },
 
   setup(props) {
     const { t } = useI18n();
     const { openBlade } = useRouter();
 
-    const loading = ref(false);
-    const { offers, totalCount, pages, currentPage, loadOffers } = useOffers();
+    const {
+      searchQuery,
+      offers,
+      totalCount,
+      pages,
+      currentPage,
+      loadOffers,
+      loading,
+    } = useOffers();
 
-    const sort = ref("-createdDate");
+    const sort = ref("createdDate");
 
     watch(sort, async (value) => {
-      loading.value = true;
-      await loadOffers({ sort: value });
-      loading.value = false;
+      await loadOffers({ ...searchQuery.value, sort: value });
     });
 
     onMounted(async () => {
-      loading.value = true;
       await loadOffers({ sort: sort.value });
-      loading.value = false;
     });
+
+    const reload = async () => {
+      await loadOffers({
+        ...searchQuery.value,
+        skip: (currentPage.value - 1) * searchQuery.value.take,
+        sort: sort.value,
+      });
+    };
 
     const bladeToolbar = [
       {
@@ -126,9 +122,7 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         onClick: async () => {
-          loading.value = true;
-          await loadOffers({ page: currentPage.value, sort: sort.value });
-          loading.value = false;
+          await reload();
         },
       },
       {
@@ -136,7 +130,7 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
         onClick: () => {
-          openBlade(props.parent.id, "products-list", { url: null });
+          openBlade(props.uid, "offers-details", { url: null });
         },
       },
       {
@@ -149,15 +143,15 @@ export default defineComponent({
 
     const columns = ref([
       {
-        id: "productImage",
-        field: "product.image",
+        id: "image",
+        field: "image",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
         width: 60,
         alwaysVisible: true,
       },
       {
-        id: "productName",
-        field: "product.sellerName",
+        id: "name",
+        field: "name",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME"),
         sortable: true,
         alwaysVisible: true,
@@ -176,13 +170,6 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
-        id: "status",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.STATUS"),
-        width: 180,
-        sortable: true,
-        alwaysVisible: true,
-      },
-      {
         id: "salePrice",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE"),
         width: 100,
@@ -196,13 +183,13 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
-        id: "minQty",
+        id: "minQuantity",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY"),
         width: 80,
         sortable: true,
       },
       {
-        id: "qty",
+        id: "inStockQuantity",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
         width: 80,
         sortable: true,
@@ -215,53 +202,27 @@ export default defineComponent({
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        openBlade(props.parent.id, "products-list", { url: null });
+        openBlade(props.uid, "offers-details");
       },
     };
 
     const onItemClick = (item: { id: string }) => {
-      openBlade(props.parent.id, "offers-details", { param: item.id });
+      openBlade(props.uid, "offers-details", { param: item.id });
     };
 
-    const onHeaderClick = (item: { id: string; sortable: boolean }) => {
+    const onHeaderClick = (item) => {
+      const sortBy = [":ASK", ":DESC", ""];
       if (item.sortable) {
-        if (sort.value === `${item.id}`) {
-          sort.value = `-${item.id}`;
-        } else if (sort.value === `-${item.id}`) {
-          sort.value = null;
-        } else {
-          sort.value = item.id;
-        }
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
       }
     };
 
     const onPaginationClick = async (page: number) => {
-      loading.value = true;
-      await loadOffers({ page, sort: sort.value });
-      loading.value = false;
-    };
-
-    const statusStyle = (status: string) => {
-      const result = {
-        outline: true,
-        variant: "info",
-      };
-
-      switch (status) {
-        case "Active":
-          result.outline = false;
-          result.variant = "success";
-          break;
-        case "Saved":
-          result.outline = true;
-          result.variant = "success";
-          break;
-        case "Future":
-          result.outline = true;
-          result.variant = "warning";
-          break;
-      }
-      return result;
+      await loadOffers({
+        ...searchQuery.value,
+        skip: (page - 1) * searchQuery.value.take,
+      });
     };
 
     return {
@@ -284,10 +245,6 @@ export default defineComponent({
       onItemClick,
       onHeaderClick,
       onPaginationClick,
-      statusStyle,
-      reload: () => {
-        console.log("Offers list reload");
-      },
       title: t("OFFERS.PAGES.LIST.TITLE"),
     };
   },

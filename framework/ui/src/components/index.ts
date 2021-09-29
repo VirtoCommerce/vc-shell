@@ -15,7 +15,6 @@ export { default as VcSwitch } from "./atoms/vc-switch/vc-switch.vue";
 export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
 
 /* Molecules */
-export { default as VcAutocomplete } from "./molecules/vc-autocomplete/vc-autocomplete.vue";
 export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
 export { default as VcInput } from "./molecules/vc-input/vc-input.vue";

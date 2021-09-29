@@ -10,13 +10,15 @@
   >
     <!-- Blade contents -->
     <vc-container :no-padding="true">
-      <mp-product-status :status="product.status"></mp-product-status>
       <div
         v-if="productDetails"
         class="product-details__inner vc-flex vc-flex-grow_1"
       >
         <div class="product-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
+            <div class="vc-margin-bottom_l">
+              <mp-product-status :status="product.status"></mp-product-status>
+            </div>
             <vc-form>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -32,14 +34,18 @@
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 v-model="productDetails.categoryId"
-                :required="true"
+                :isRequired="true"
+                :isSearchable="true"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
+                :selectedItem="category"
                 keyProperty="id"
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
+                @search="categorySearchValue = $event"
+                @close="categorySearchValue = null"
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -147,14 +153,11 @@ export default defineComponent({
     } = useProduct();
 
     const categories = ref<ICategory[]>();
-    const category = ref<ICategory>();
+    const categorySearchValue = ref();
 
     onMounted(async () => {
       await loadProduct({ id: props.param });
       categories.value = await fetchCategories();
-      category.value = categories.value.find(
-        (x) => x.id === product.value.categoryId
-      );
     });
 
     const bladeToolbar = reactive([
@@ -283,8 +286,17 @@ export default defineComponent({
 
     return {
       bladeToolbar,
-      category: computed(() => category.value),
-      categories: computed(() => categories.value),
+      categorySearchValue,
+      category: computed(() =>
+        categories.value?.find((x) => x.id === productDetails.categoryId)
+      ),
+      categories: computed(() =>
+        categorySearchValue.value
+          ? categories.value?.filter((item) =>
+              item.name.match(new RegExp(`${categorySearchValue.value}`, "ig"))
+            )
+          : categories.value
+      ),
       product: computed(() => product.value),
       productDetails,
       loading: computed(() => loading.value),

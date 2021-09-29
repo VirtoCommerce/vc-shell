@@ -1,7 +1,7 @@
 <template>
-  <div class="vc-select" :class="{ 'vc-select_opened': opened }">
+  <div class="vc-select" :class="{ 'vc-select_opened': isOpened }">
     <!-- Select label -->
-    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+    <vc-label v-if="label" class="vc-margin-bottom_s" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -13,13 +13,23 @@
       class="vc-select__field-wrapper vc-flex vc-flex-align_stretch"
       v-click-outside="closeDropdown"
     >
-      <input
-        class="vc-select__field vc-padding-horizontal_m"
-        :placeholder="placeholder"
-        :value="modelValue && modelValue[displayProperty]"
-        @click="openDropdown"
-        readonly
-      />
+      <div
+        class="
+          vc-select__field
+          vc-padding_m
+          vc-flex
+          vc-flex-align_center
+          vc-fill_width
+        "
+        @click="toggleDropdown"
+      >
+        <div v-if="!selectedItem" class="vc-select__field-placeholder">
+          {{ placeholder }}
+        </div>
+        <slot v-else name="item" :item="selectedItem">
+          {{ selectedItem[displayProperty] }}
+        </slot>
+      </div>
 
       <!-- Select chevron -->
       <div
@@ -29,12 +39,19 @@
           vc-flex
           vc-flex-align_center
         "
-        @click="opened = !opened"
+        @click="toggleDropdown"
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
 
-      <div v-if="opened" class="vc-select__dropdown">
+      <div v-if="isOpened" class="vc-select__dropdown">
+        <input
+          v-if="isSearchable"
+          ref="search"
+          class="vc-select__search"
+          @input="onSearch"
+        />
+
         <vc-container :no-padding="true">
           <div
             class="vc-select__item"
@@ -51,16 +68,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
 import { clickOutside } from "../../../directives";
-
-interface IOptions {
-  id: string;
-  title: string;
-}
 
 export default defineComponent({
   name: "VcSelect",
@@ -91,7 +103,12 @@ export default defineComponent({
       default: () => [],
     },
 
-    required: {
+    isRequired: {
+      type: Boolean,
+      default: false,
+    },
+
+    isSearchable: {
       type: Boolean,
       default: false,
     },
@@ -115,27 +132,45 @@ export default defineComponent({
       type: String,
       default: "title",
     },
+
+    selectedItem: {
+      type: Object,
+      default: undefined,
+    },
   },
 
-  emits: ["update:modelValue", "change", "close"],
+  emits: ["update:modelValue", "change", "close", "search"],
 
   setup(props, { emit }) {
-    const opened = ref(false);
+    const isOpened = ref(false);
+    const search = ref();
 
     return {
-      opened,
+      search,
+      isOpened,
       closeDropdown: () => {
-        opened.value = false;
+        isOpened.value = false;
         emit("close");
       },
-      openDropdown: () => {
-        opened.value = true;
+      toggleDropdown: () => {
+        if (isOpened.value) {
+          isOpened.value = false;
+          emit("close");
+        } else {
+          isOpened.value = true;
+          nextTick(() => {
+            search?.value?.focus();
+          });
+        }
       },
-      onItemSelect: (item: unknown) => {
-        emit("update:modelValue", item);
-        emit("change", item);
+      onItemSelect: (item: { [x: string]: string }) => {
+        emit("update:modelValue", item[props.keyProperty]);
+        emit("change", item[props.keyProperty]);
         emit("close");
-        opened.value = false;
+        isOpened.value = false;
+      },
+      onSearch: (event: InputEvent) => {
+        emit("search", (event.target as HTMLInputElement).value);
       },
     };
   },
@@ -169,11 +204,16 @@ export default defineComponent({
     appearance: none;
     border: none;
     outline: none;
-    height: var(--select-height);
+    min-height: var(--select-height);
     box-sizing: border-box;
+    cursor: pointer;
 
     &:invalid {
       color: var(--select-placeholder-color);
+    }
+
+    &-placeholder {
+      color: #a5a5a5;
     }
   }
 
@@ -212,7 +252,7 @@ export default defineComponent({
     position: absolute;
     left: -1px;
     right: -1px;
-    top: var(--select-height);
+    top: 100%;
     background-color: var(--select-background-color);
     border: 1px solid var(--select-border-color);
     border-top: 1px solid var(--select-background-color);
@@ -243,7 +283,7 @@ export default defineComponent({
     cursor: pointer;
 
     &:hover {
-      background-color: #dfeef9;
+      background-color: #eff7fc;
     }
   }
 }

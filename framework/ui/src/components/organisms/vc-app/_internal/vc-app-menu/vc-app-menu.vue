@@ -120,7 +120,6 @@ export default defineComponent({
 .vc-app-menu {
   position: relative;
   width: var(--app-menu-width);
-  border-right: 1px solid var(--app-menu-border-right-color);
 
   &_collapsed {
     width: var(--app-menu-width-collapsed);

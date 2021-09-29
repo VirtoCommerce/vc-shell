@@ -14,10 +14,11 @@
         <div class="offer-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
             <vc-form>
-              <vc-autocomplete
+              <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
-                :required="true"
+                :isRequired="true"
+                :isSearchable="true"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
@@ -42,7 +43,7 @@
                     </div>
                   </div>
                 </template>
-              </vc-autocomplete>
+              </vc-select>
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"

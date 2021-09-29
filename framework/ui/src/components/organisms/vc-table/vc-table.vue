@@ -313,12 +313,6 @@ export default defineComponent({
       this.checkboxes[id] = state;
       this.$emit("selectionChanged", this.checkboxes);
     },
-
-    onRowSwipe(item) {
-      return (direction, event) => {
-        console.dir(event);
-      };
-    },
   },
 });
 </script>
@@ -371,7 +365,7 @@ export default defineComponent({
       }
 
       &:hover {
-        background-color: #dfeef9;
+        background-color: #eff7fc;
       }
     }
 

@@ -176,6 +176,9 @@ export default defineComponent({
             method: "reload",
           });
         },
+        disabled: computed(
+          () => !product.value?.canBeModified || !modified.value
+        ),
       },
       {
         id: "saveAndSendToApprove",

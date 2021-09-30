@@ -19,14 +19,15 @@
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
                 :isRequired="true"
                 :isSearchable="true"
-                v-model="offerDetails.outerId"
+                v-model="offerDetails.productId"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
                 :options="products"
-                :selectedItem="product"
+                :selectedItem="offer.product"
+                keyProperty="id"
+                displayProperty="name"
                 @search="onProductSearch"
-                @close="searchValue = null"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -50,8 +51,11 @@
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
                 :required="true"
-                v-model="currency"
+                v-model="offerDetails.currency"
+                :selectedItem="currency"
                 :options="currencies"
+                keyProperty="value"
+                displayProperty="title"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')
                 "
@@ -168,7 +172,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted } from "vue";
+import { computed, defineComponent, ref, onMounted, reactive } from "vue";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct } from "../../../api_client";
@@ -203,22 +207,25 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const { createOffer, offerDetails, fetchProducts } = useOffer();
+    const { createOffer, offerDetails, fetchProducts, offer, loadOffer } =
+      useOffer();
     //TODO: bind to dropdown action
     const products = ref<IOfferProduct[]>();
-    const currency: { title?: string; value?: string } = {};
+    const currency = { title: "USD", value: "USD" };
     onMounted(async () => {
-      //await loadOffer({ id: props.param });
+      if (props.param) {
+        await loadOffer({ id: props.param });
+      }
       products.value = await fetchProducts();
     });
 
-    const bladeToolbar = [
+    const bladeToolbar = reactive([
       {
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: async () => {
-          await createOffer(offerDetails.outerId, {
+          await createOffer({
             ...offerDetails,
             currency: "USD",
           });
@@ -226,6 +233,7 @@ export default defineComponent({
             method: "reload",
           });
         },
+        disabled: computed(() => offer.value?.id),
       },
       {
         id: "close",
@@ -235,17 +243,15 @@ export default defineComponent({
           emit("page:close");
         },
       },
-    ];
+    ]);
 
     return {
+      offer,
       bladeToolbar,
       offerDetails,
-      product: computed(() =>
-        products.value?.find((x) => x.id === offerDetails.outerId)
-      ),
       products,
       currency,
-      currencies: { title: "USD", value: "USD" },
+      currencies: [{ title: "USD", value: "USD" }],
       conditions: [
         { title: "New", value: "New" },
         { title: "Refurbrished", value: "Refurbrished" },

@@ -13,19 +13,21 @@ import {
 } from "../../../../api_client";
 import offers from "../..";
 
+export type TExtOffer = IOffer & { product?: IOfferProduct };
+
 interface IUseOffer {
-  offer: Ref<IOffer>;
+  offer: Ref<TExtOffer>;
   loading: Ref<boolean>;
   offerDetails: IOfferDetails;
   loadOffer: (args: { id: string }) => void;
   fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
-  createOffer: (productId: string, details: IOfferDetails) => void;
+  createOffer: (details: IOfferDetails) => void;
 }
 
 export default (): IUseOffer => {
   const { user } = useUser();
   const logger = useLogger();
-  const offer = ref<IOffer>();
+  const offer = ref<TExtOffer>({});
   const offerDetails = reactive<IOfferDetails>(new OfferDetails());
 
   const loading = ref(false);
@@ -37,7 +39,6 @@ export default (): IUseOffer => {
     client.setAuthToken(await getAccessToken());
     return client;
   }
-
   async function fetchProducts(
     keyword?: string,
     skip = 0
@@ -51,14 +52,14 @@ export default (): IUseOffer => {
     return result.results;
   }
 
-  async function createOffer(productId: string, details: IOfferDetails) {
+  async function createOffer(details: IOfferDetails) {
     logger.info(`create new  offer`, details);
 
     const client = await getApiClient();
 
     const command = new CreateNewOfferCommand({
       sellerName: user.value.userName,
-      productId: productId,
+      productId: details.productId,
       details: new OfferDetails(details),
     });
 
@@ -80,8 +81,14 @@ export default (): IUseOffer => {
 
     try {
       loading.value = true;
-      offer.value = await client.getOfferById(args.id);
-
+      offer.value = (await client.getOfferById(args.id)) as TExtOffer;
+      if (offer.value) {
+        const result = await client.searchOfferProducts({
+          objectIds: [offer.value.id],
+          take: 1,
+        } as SearchProductsForNewOfferQuery);
+        offer.value.product = result.results[0];
+      }
       Object.assign(offerDetails, offer.value);
     } catch (e) {
       logger.error(e);

@@ -433,7 +433,7 @@ export class AuthApiBase {
       /**
        * @return Success
        */
-      getOfferById(offerId: string | null): Promise<SellerProduct> {
+      getOfferById(offerId: string | null): Promise<Offer> {
           let url_ = this.baseUrl + "/api/vcmp/seller/offers/{offerId}";
           if (offerId === undefined || offerId === null)
               throw new Error("The parameter 'offerId' must be defined.");
@@ -454,14 +454,14 @@ export class AuthApiBase {
           });
       }
   
-      protected processGetOfferById(response: Response): Promise<SellerProduct> {
+      protected processGetOfferById(response: Response): Promise<Offer> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {
               return response.text().then((_responseText) => {
               let result200: any = null;
               let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-              result200 = SellerProduct.fromJS(resultData200);
+              result200 = Offer.fromJS(resultData200);
               return result200;
               });
           } else if (status !== 200 && status !== 204) {
@@ -469,7 +469,7 @@ export class AuthApiBase {
               return throwException("An unexpected server error occurred.", status, _responseText, _headers);
               });
           }
-          return Promise.resolve<SellerProduct>(<any>null);
+          return Promise.resolve<Offer>(<any>null);
       }
   
       /**
@@ -4279,6 +4279,7 @@ export class AuthApiBase {
   }
   
   export class OfferDetails implements IOfferDetails {
+      productId?: string | undefined;
       isActive?: boolean;
       outerId?: string | undefined;
       name?: string | undefined;
@@ -4303,6 +4304,7 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.productId = _data["productId"];
               this.isActive = _data["isActive"];
               this.outerId = _data["outerId"];
               this.name = _data["name"];
@@ -4327,6 +4329,7 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["productId"] = this.productId;
           data["isActive"] = this.isActive;
           data["outerId"] = this.outerId;
           data["name"] = this.name;
@@ -4344,6 +4347,7 @@ export class AuthApiBase {
   }
   
   export interface IOfferDetails {
+      productId?: string | undefined;
       isActive?: boolean;
       outerId?: string | undefined;
       name?: string | undefined;

@@ -24,7 +24,7 @@ interface IUseProduct {
   productDetails: IProductDetails;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
-  fetchCategories: () => Promise<ICategory[]>;
+  fetchCategories: (keyword?: string, skip?: number) => Promise<ICategory[]>;
   loadProduct: (args: { id: string }) => void;
   createProduct: (details: IProductDetails) => void;
   updateProductDetails: (

@@ -44,8 +44,7 @@
                 keyProperty="id"
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-                @search="categorySearchValue = $event"
-                @close="categorySearchValue = null"
+                @search="onCategoriesSearch"
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -154,7 +153,6 @@ export default defineComponent({
     } = useProduct();
 
     const categories = ref<ICategory[]>();
-    const categorySearchValue = ref();
 
     onMounted(async () => {
       if (props.param) {
@@ -178,9 +176,6 @@ export default defineComponent({
             method: "reload",
           });
         },
-        disabled: computed(
-          () => !props.param || !product.value?.canBeModified || !modified.value
-        ),
       },
       {
         id: "saveAndSendToApprove",
@@ -226,7 +221,7 @@ export default defineComponent({
         icon: "fas fa-check-circle",
         isVisible: computed(() => !!props.param),
         onClick: async () => {
-          await changeProductStatus(product.value.id, "approve");
+          await changeProductStatus(product.value.id, "Approved");
           emit("parent:call", {
             method: "reload",
           });
@@ -239,7 +234,7 @@ export default defineComponent({
         icon: "fas fa-sticky-note",
         isVisible: computed(() => !!props.param),
         onClick: async () => {
-          await changeProductStatus(product.value.id, "requestChanges");
+          await changeProductStatus(product.value.id, "RequestChanges");
           emit("parent:call", {
             method: "reload",
           });
@@ -252,7 +247,7 @@ export default defineComponent({
         icon: "fas fa-ban",
         isVisible: computed(() => !!props.param),
         onClick: async () => {
-          await changeProductStatus(product.value.id, "reject");
+          await changeProductStatus(product.value.id, "Rejected");
           emit("parent:call", {
             method: "reload",
           });
@@ -297,17 +292,14 @@ export default defineComponent({
 
     return {
       bladeToolbar,
-      categorySearchValue,
       category: computed(() =>
         categories.value?.find((x) => x.id === productDetails.categoryId)
       ),
-      categories: computed(() =>
-        categorySearchValue.value
-          ? categories.value?.filter((item) =>
-              item.name.match(new RegExp(`${categorySearchValue.value}`, "ig"))
-            )
-          : categories.value
-      ),
+      onCategoriesSearch: async (value: string) => {
+        categories.value = await fetchCategories(value);
+      },
+
+      categories,
       product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,
       loading: computed(() => loading.value),

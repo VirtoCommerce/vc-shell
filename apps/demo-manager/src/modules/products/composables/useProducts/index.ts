@@ -22,6 +22,7 @@ interface IUseProducts {
 interface IUseProductOptions {
   pageSize?: number;
   sort?: string;
+  keyword?: string;
 }
 
 export default (options?: IUseProductOptions): IUseProducts => {
@@ -31,6 +32,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
   const searchQuery = ref<ISearchProductsQuery>({
     take: pageSize,
     sort: options?.sort,
+    keyword: options?.keyword,
   });
   const searchResult = ref<SearchProductsResult>();
   const loading = ref<boolean>(false);

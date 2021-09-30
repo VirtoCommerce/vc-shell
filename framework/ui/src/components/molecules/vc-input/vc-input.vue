@@ -1,5 +1,12 @@
 <template>
-  <div class="vc-input" :class="{ 'vc-input_clearable': clearable }">
+  <div
+    class="vc-input"
+    :class="{
+      'vc-input_clearable': clearable,
+      'vc-input_error': error,
+      'vc-input_disabled': disabled,
+    }"
+  >
     <!-- Input label -->
     <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
       <span>{{ label }}</span>
@@ -13,12 +20,13 @@
         :placeholder="placeholder"
         :type="type"
         :value="modelValue"
+        :disabled="disabled"
         @input="$emit('update:modelValue', $event.target.value)"
       />
 
       <!-- Input clear button -->
       <div
-        v-if="clearable"
+        v-if="clearable && modelValue && !disabled"
         class="
           vc-input__clear
           vc-padding-horizontal_m
@@ -30,6 +38,12 @@
         <vc-icon size="s" icon="fas fa-times"></vc-icon>
       </div>
     </div>
+
+    <slot v-if="error" name="error">
+      <vc-hint class="vc-input__error vc-margin-top_xs">
+        {{ error }}
+      </vc-hint>
+    </slot>
   </div>
 </template>
 
@@ -67,6 +81,11 @@ export default defineComponent({
       default: false,
     },
 
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+
     type: {
       type: String,
       default: "text",
@@ -81,6 +100,11 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    error: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
@@ -92,6 +116,7 @@ export default defineComponent({
   --input-height: 38px;
   --input-border-radius: 3px;
   --input-border-color: #d3dbe9;
+  --input-border-color-error: #f14e4e;
   --input-background-color: #ffffff;
   --input-placeholder-color: #a5a5a5;
   --input-clear-color: #43b0e6;
@@ -105,6 +130,14 @@ export default defineComponent({
     border: 1px solid var(--input-border-color);
     border-radius: var(--input-border-radius);
     background-color: var(--input-background-color);
+  }
+
+  &_error &__field-wrapper {
+    border: 1px solid var(--input-border-color-error);
+  }
+
+  &__error {
+    color: var(--input-border-color-error);
   }
 
   &__field {

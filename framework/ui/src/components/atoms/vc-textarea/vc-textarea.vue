@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-textarea">
+  <div
+    class="vc-textarea"
+    :class="{ 'vc-textarea_error': error, 'vc-textarea_disabled': disabled }"
+  >
     <!-- Textarea label -->
     <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
       <span>{{ label }}</span>
@@ -14,9 +17,16 @@
         class="vc-textarea__field vc-padding-horizontal_m vc-padding-vertical_s"
         :placeholder="placeholder"
         :value="modelValue"
+        :disabled="disabled"
         @input="$emit('update:modelValue', $event.target.value)"
       ></textarea>
     </div>
+
+    <slot v-if="error" name="error">
+      <vc-hint class="vc-textarea__error vc-margin-top_xs">
+        {{ error }}
+      </vc-hint>
+    </slot>
   </div>
 </template>
 
@@ -47,12 +57,22 @@ export default defineComponent({
       default: false,
     },
 
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+
     label: {
       type: String,
       default: undefined,
     },
 
     tooltip: {
+      type: String,
+      default: undefined,
+    },
+
+    error: {
       type: String,
       default: undefined,
     },
@@ -66,6 +86,7 @@ export default defineComponent({
 :root {
   --textarea-height: 120px;
   --textarea-border-color: #d3dbe9;
+  --textarea-border-color-error: #f14e4e;
   --textarea-border-radius: 3px;
   --textarea-background-color: #ffffff;
   --textarea-placeholder-color: #a5a5a5;
@@ -77,6 +98,14 @@ export default defineComponent({
     border-radius: var(--textarea-border-radius);
     box-sizing: border-box;
     background-color: var(--textarea-background-color);
+  }
+
+  &_error &__field-wrapper {
+    border: 1px solid var(--textarea-border-color-error);
+  }
+
+  &__error {
+    color: var(--textarea-border-color-error);
   }
 
   &__field {

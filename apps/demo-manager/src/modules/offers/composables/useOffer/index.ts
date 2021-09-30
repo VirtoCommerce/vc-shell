@@ -84,7 +84,7 @@ export default (): IUseOffer => {
       offer.value = (await client.getOfferById(args.id)) as TExtOffer;
       if (offer.value) {
         const result = await client.searchOfferProducts({
-          objectIds: [offer.value.id],
+          objectIds: [offer.value.productId],
           take: 1,
         } as SearchProductsForNewOfferQuery);
         offer.value.product = result.results[0];

@@ -16,7 +16,7 @@
       >
         <div class="product-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
-            <div class="vc-margin-bottom_l">
+            <div v-if="param" class="vc-margin-bottom_l">
               <mp-product-status :status="product.status"></mp-product-status>
             </div>
             <vc-form>
@@ -29,6 +29,10 @@
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
+                :error="
+                  validator.name.$errors[0] &&
+                  validator.name.$errors[0].$message
+                "
               ></vc-input>
               <vc-select
                 class="vc-margin-bottom_l"
@@ -40,11 +44,15 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
-                :selectedItem="category"
+                :initialItem="category"
                 keyProperty="id"
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
+                :error="
+                  validator.categoryId.$errors[0] &&
+                  validator.categoryId.$errors[0].$message
+                "
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -56,6 +64,10 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                 "
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
+                :error="
+                  validator.gtin.$errors[0] &&
+                  validator.gtin.$errors[0].$message
+                "
               ></vc-input>
               <vc-textarea
                 class="vc-margin-bottom_l"
@@ -65,8 +77,13 @@
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
+                :error="
+                  validator.description.$errors[0] &&
+                  validator.description.$errors[0].$message
+                "
               ></vc-textarea>
               <vc-gallery
+                v-if="param"
                 label="Gallery"
                 :images="productDetails.images"
                 @upload="onGalleryUpload"
@@ -75,7 +92,7 @@
             </vc-form>
           </div>
         </div>
-        <div class="product-details__widgets">
+        <div v-if="param" class="product-details__widgets">
           <div class="vc-widget">
             <vc-icon
               class="vc-widget__icon"
@@ -107,6 +124,8 @@ import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
+import { useVuelidate } from "@vuelidate/core";
+import { minLength, required } from "@vuelidate/validators";
 
 export default defineComponent({
   url: "product",
@@ -152,6 +171,26 @@ export default defineComponent({
       changeProductStatus,
     } = useProduct();
 
+    const rules = computed(() => ({
+      name: {
+        required,
+        minLength: minLength(3),
+      },
+      categoryId: {
+        required,
+      },
+      gtin: {
+        required,
+        minLength: minLength(3),
+      },
+      description: {
+        required,
+        minLength: minLength(10),
+      },
+    }));
+
+    const validator = useVuelidate(rules, productDetails, { $autoDirty: true });
+
     const categories = ref<ICategory[]>();
 
     onMounted(async () => {
@@ -167,35 +206,54 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: async () => {
-          if (props.param) {
-            await updateProductDetails(product.value.id, productDetails);
-          } else {
-            createProduct(productDetails);
+          // @ts-ignore
+          if (await validator.value.$validate()) {
+            try {
+              if (props.param) {
+                await updateProductDetails(product.value.id, productDetails);
+              } else {
+                await createProduct(productDetails);
+              }
+              emit("parent:call", {
+                method: "reload",
+              });
+            } catch (err) {
+              alert(err.message);
+            }
           }
-          emit("parent:call", {
-            method: "reload",
-          });
         },
         disabled: computed(
-          () => !product.value?.canBeModified || !modified.value
+          () =>
+            (props.param &&
+              (!product.value?.canBeModified || !modified.value)) ||
+            (!props.param && !modified.value)
         ),
       },
       {
         id: "saveAndSendToApprove",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
         icon: "fas fa-share-square",
+        isVisible: computed(() => !!props.param),
         onClick: async () => {
-          await updateProductDetails(
-            product.value.id,
-            { ...productDetails },
-            true
-          );
-          emit("parent:call", {
-            method: "reload",
-          });
+          // @ts-ignore
+          if (await validator.value.$validate()) {
+            try {
+              await updateProductDetails(
+                product.value.id,
+                { ...productDetails },
+                true
+              );
+              emit("parent:call", {
+                method: "reload",
+              });
+            } catch (err) {
+              alert(err.message);
+            }
+          }
         },
         disabled: computed(
-          () => !props.param || !product.value?.canBeModified || !modified.value
+          () =>
+            props.param && (!product.value?.canBeModified || !modified.value)
         ),
       },
       {
@@ -301,6 +359,7 @@ export default defineComponent({
       onCategoriesSearch: async (value: string) => {
         categories.value = await fetchCategories(value);
       },
+      validator,
 
       categories,
       product: computed(() => (props.param ? product.value : productDetails)),

@@ -11,6 +11,7 @@
       :loading="loading"
       :expanded="expanded"
       :empty="empty"
+      :notfound="notfound"
       class="vc-flex-grow_1"
       :multiselect="true"
       :columns="columns"
@@ -20,6 +21,8 @@
       :currentPage="currentPage"
       :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :searchValue="searchValue"
+      @searchValueChanged="onSearchList"
       :totalCount="totalCount"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
@@ -106,7 +109,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed, watch } from "vue";
-import { useI18n, useLogger } from "@virtoshell/core";
+import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import ProductsEdit from "./products-edit.vue";
@@ -138,6 +141,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const logger = useLogger();
+    const { debounce } = useFunctions();
     const { t } = useI18n();
     const {
       products,
@@ -150,6 +154,7 @@ export default defineComponent({
     } = useProducts();
 
     const sort = ref("createdDate");
+    const searchValue = ref();
 
     watch(sort, async (value) => {
       await loadProducts({ ...searchQuery.value, sort: value });
@@ -167,6 +172,15 @@ export default defineComponent({
         sort: sort.value,
       });
     };
+
+    const onSearchList = debounce(async (keyword: string) => {
+      logger.debug(`Products list search by ${keyword}`);
+      searchValue.value = keyword;
+      await loadProducts({
+        ...searchQuery.value,
+        keyword,
+      });
+    }, 200);
 
     const bladeToolbar = [
       {
@@ -244,6 +258,19 @@ export default defineComponent({
       },
     };
 
+    const notfound = {
+      image: "/assets/empty-product.png",
+      text: "No products found.",
+      action: "Reset search",
+      clickHandler: async () => {
+        searchValue.value = "";
+        await loadProducts({
+          ...searchQuery.value,
+          keyword: "",
+        });
+      },
+    };
+
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
         component: ProductsEdit,
@@ -283,11 +310,14 @@ export default defineComponent({
       currentPage,
       sort,
       empty,
+      notfound,
       moment,
       reload,
       onItemClick,
       onHeaderClick,
       onPaginationClick,
+      searchValue,
+      onSearchList,
       title: t("PRODUCTS.PAGES.LIST.TITLE"),
     };
   },

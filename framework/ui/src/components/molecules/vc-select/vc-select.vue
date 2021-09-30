@@ -1,5 +1,12 @@
 <template>
-  <div class="vc-select" :class="{ 'vc-select_opened': isOpened }">
+  <div
+    class="vc-select"
+    :class="{
+      'vc-select_opened': isOpened,
+      'vc-select_error': error,
+      'vc-select_disabled': isDisabled,
+    }"
+  >
     <!-- Select label -->
     <vc-label v-if="label" class="vc-margin-bottom_s" :required="isRequired">
       <span>{{ label }}</span>
@@ -33,6 +40,7 @@
 
       <!-- Select chevron -->
       <div
+        v-if="!isDisabled"
         class="
           vc-select__chevron
           vc-padding-horizontal_m
@@ -64,11 +72,17 @@
         </vc-container>
       </div>
     </div>
+
+    <slot v-if="error" name="error">
+      <vc-hint class="vc-select__error vc-margin-top_xs">
+        {{ error }}
+      </vc-hint>
+    </slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref } from "vue";
+import { defineComponent, nextTick, ref, computed } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -108,6 +122,11 @@ export default defineComponent({
       default: false,
     },
 
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
+
     isSearchable: {
       type: Boolean,
       default: false,
@@ -133,8 +152,13 @@ export default defineComponent({
       default: "title",
     },
 
-    selectedItem: {
+    initialItem: {
       type: Object,
+      default: undefined,
+    },
+
+    error: {
+      type: String,
       default: undefined,
     },
   },
@@ -144,23 +168,32 @@ export default defineComponent({
   setup(props, { emit }) {
     const isOpened = ref(false);
     const search = ref();
+    const selectedItem = computed(
+      () =>
+        (props.options as Record<string, unknown>[])?.find(
+          (item) => item[props.keyProperty] === props.modelValue
+        ) || props.initialItem
+    );
 
     return {
       search,
       isOpened,
+      selectedItem,
       closeDropdown: () => {
         isOpened.value = false;
         emit("close");
       },
       toggleDropdown: () => {
-        if (isOpened.value) {
-          isOpened.value = false;
-          emit("close");
-        } else {
-          isOpened.value = true;
-          nextTick(() => {
-            search?.value?.focus();
-          });
+        if (!props.isDisabled) {
+          if (isOpened.value) {
+            isOpened.value = false;
+            emit("close");
+          } else {
+            isOpened.value = true;
+            nextTick(() => {
+              search?.value?.focus();
+            });
+          }
         }
       },
       onItemSelect: (item: { [x: string]: string }) => {
@@ -182,7 +215,9 @@ export default defineComponent({
   --select-height: 38px;
   --select-border-radius: 3px;
   --select-border-color: #d3dbe9;
+  --select-border-color-error: #f14e4e;
   --select-background-color: #ffffff;
+  --select-background-color-disabled: #fafafa;
   --select-placeholder-color: #a5a5a5;
   --select-chevron-color: #43b0e6;
   --select-chevron-color-hover: #319ed4;
@@ -197,6 +232,18 @@ export default defineComponent({
     border: 1px solid var(--select-border-color);
     border-radius: var(--select-border-radius);
     background-color: var(--select-background-color);
+  }
+
+  &_disabled &__field-wrapper {
+    background-color: var(--select-background-color-disabled);
+  }
+
+  &_error &__field-wrapper {
+    border: 1px solid var(--select-border-color-error);
+  }
+
+  &__error {
+    color: var(--select-border-color-error);
   }
 
   &__field {

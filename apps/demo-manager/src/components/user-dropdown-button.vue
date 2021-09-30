@@ -6,6 +6,7 @@
       'user-dropdown-button_active': accountMenuVisible,
     }"
     @click="toggleAccountMenuVisible"
+    v-click-outside="toggleAccountMenuVisible"
   >
     <div
       class="user-dropdown-button__avatar"
@@ -24,7 +25,6 @@
     </div>
     <div
       v-if="menuItems && accountMenuVisible"
-      v-click-outside="toggleAccountMenuVisible"
       class="user-dropdown-button__menu"
       @click.stop="accountMenuVisible = false"
     >

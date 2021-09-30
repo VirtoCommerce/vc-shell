@@ -1,6 +1,9 @@
 <template>
   <div class="vc-table-wrapper vc-flex vc-flex-column vc-flex-grow_1">
-    <slot name="header" v-if="items && items.length">
+    <slot
+      name="header"
+      v-if="(items && items.length) || searchValue || searchValue === ''"
+    >
       <div
         class="
           vc-table__header
@@ -15,7 +18,7 @@
           class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
           :clearable="true"
-          v-model="searchValue"
+          :modelValue="searchValue"
           @update:modelValue="$emit('searchValueChanged', $event)"
         ></vc-input>
       </div>
@@ -133,23 +136,44 @@
           </tbody>
         </table>
       </vc-container>
-      <slot v-else name="empty">
-        <div
-          v-if="empty"
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
-        >
-          <img v-if="empty.image" :src="empty.image" />
-          <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
-          <vc-button v-if="empty.action" @click="empty.clickHandler">
-            {{ empty.action }}
-          </vc-button>
-        </div>
-      </slot>
+      <template v-else>
+        <slot v-if="searchValue || searchValue === ''" name="notfound">
+          <div
+            v-if="notfound"
+            class="
+              vc-fill_all
+              vc-flex vc-flex-column
+              vc-flex-align_center
+              vc-flex-justify_center
+            "
+          >
+            <img v-if="notfound.image" :src="notfound.image" />
+            <div class="vc-margin_l vc-table__empty-text">
+              {{ notfound.text }}
+            </div>
+            <vc-button v-if="notfound.action" @click="notfound.clickHandler">
+              {{ notfound.action }}
+            </vc-button>
+          </div>
+        </slot>
+        <slot v-else name="empty">
+          <div
+            v-if="empty"
+            class="
+              vc-fill_all
+              vc-flex vc-flex-column
+              vc-flex-align_center
+              vc-flex-justify_center
+            "
+          >
+            <img v-if="empty.image" :src="empty.image" />
+            <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
+            <vc-button v-if="empty.action" @click="empty.clickHandler">
+              {{ empty.action }}
+            </vc-button>
+          </div>
+        </slot>
+      </template>
     </div>
 
     <slot name="footer" v-if="items && items.length">
@@ -203,11 +227,9 @@ export default defineComponent({
 
   data() {
     const checkboxes: Record<string, boolean> = {};
-    const searchValue = "";
 
     return {
       checkboxes,
-      searchValue,
     };
   },
 
@@ -262,6 +284,11 @@ export default defineComponent({
       default: "Search...",
     },
 
+    searchValue: {
+      type: String,
+      default: undefined,
+    },
+
     loading: {
       type: Boolean,
       default: false,
@@ -269,11 +296,20 @@ export default defineComponent({
 
     empty: {
       type: Object,
-      default: () => ({}),
+      default: () => ({
+        text: "List is empty.",
+      }),
+    },
+
+    notfound: {
+      type: Object,
+      default: () => ({
+        text: "Nothing found.",
+      }),
     },
   },
 
-  emits: ["paginationClick", "selectionChanged"],
+  emits: ["paginationClick", "selectionChanged", "searchValueChanged"],
 
   watch: {
     items(value: { id: string }[]) {

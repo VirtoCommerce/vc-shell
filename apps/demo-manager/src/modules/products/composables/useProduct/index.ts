@@ -71,6 +71,7 @@ export default (): IUseProduct => {
   ): Promise<ICategory[]> {
     const client = await getApiClient();
     const result = await client.searchCategories({
+      keyword,
       skip,
       take: 20,
     } as CategoryIndexedSearchCriteria);

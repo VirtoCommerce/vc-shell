@@ -24,10 +24,15 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
                 :options="products"
-                :selectedItem="offer.product"
+                :initialItem="offer.product"
                 keyProperty="id"
                 displayProperty="name"
                 @search="onProductSearch"
+                :error="
+                  validator.productId.$errors[0] &&
+                  validator.productId.$errors[0].$message
+                "
+                :isDisabled="readonly"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -50,15 +55,19 @@
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
-                :required="true"
+                :isRequired="true"
                 v-model="offerDetails.currency"
-                :selectedItem="currency"
                 :options="currencies"
                 keyProperty="value"
                 displayProperty="title"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')
                 "
+                :error="
+                  validator.currency.$errors[0] &&
+                  validator.currency.$errors[0].$message
+                "
+                :isDisabled="readonly"
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -67,6 +76,10 @@
                 :required="true"
                 v-model="offerDetails.sku"
                 :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
+                :error="
+                  validator.sku.$errors[0] && validator.sku.$errors[0].$message
+                "
+                :disabled="readonly"
               ></vc-input>
               <div class="vc-flex">
                 <vc-input
@@ -78,6 +91,11 @@
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
                   "
+                  :error="
+                    validator.listPrice.$errors[0] &&
+                    validator.listPrice.$errors[0].$message
+                  "
+                  :disabled="readonly"
                 ></vc-input>
                 <vc-input
                   class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
@@ -87,6 +105,11 @@
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
                   "
+                  :error="
+                    validator.salePrice.$errors[0] &&
+                    validator.salePrice.$errors[0].$message
+                  "
+                  :disabled="readonly"
                 ></vc-input>
               </div>
               <div class="vc-flex">
@@ -99,6 +122,11 @@
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                   "
+                  :error="
+                    validator.minQuantity.$errors[0] &&
+                    validator.minQuantity.$errors[0].$message
+                  "
+                  :disabled="readonly"
                 ></vc-input>
                 <vc-input
                   class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
@@ -109,6 +137,11 @@
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                   "
+                  :error="
+                    validator.inStockQuantity.$errors[0] &&
+                    validator.inStockQuantity.$errors[0].$message
+                  "
+                  :disabled="readonly"
                 ></vc-input>
               </div>
               <div class="vc-flex">
@@ -122,6 +155,7 @@
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.START_DATE.PLACEHOLDER')
                   "
+                  :disabled="readonly"
                 ></vc-input>
                 <vc-input
                   class="vc-fill_width vc-margin-bottom_l vc-margin-left_s"
@@ -133,25 +167,26 @@
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.END_DATE.PLACEHOLDER')
                   "
+                  :disabled="readonly"
                 ></vc-input>
               </div>
               <vc-select
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CONDITION.TITLE')"
-                :required="true"
                 :options="conditions"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.CONDITION.PLACEHOLDER')
                 "
+                :isDisabled="readonly"
               ></vc-select>
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SHIPPING_TIME.TITLE')"
                 :clearable="true"
-                :required="true"
                 :placeholder="
                   $t('OFFERS.PAGES.DETAILS.FIELDS.SHIPPING_TIME.PLACEHOLDER')
                 "
+                :disabled="readonly"
               ></vc-input>
             </vc-form>
           </div>
@@ -176,10 +211,15 @@ import { computed, defineComponent, ref, onMounted, reactive } from "vue";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct } from "../../../api_client";
-
-class BladeElement extends HTMLElement {
-  reload: () => void;
-}
+import { useVuelidate } from "@vuelidate/core";
+import {
+  minLength,
+  maxLength,
+  required,
+  minValue,
+  decimal,
+  integer,
+} from "@vuelidate/validators";
 
 export default defineComponent({
   url: "offer",
@@ -219,21 +259,67 @@ export default defineComponent({
       products.value = await fetchProducts();
     });
 
+    const rules = computed(() => ({
+      productId: {
+        required,
+      },
+      currency: {
+        required,
+      },
+      sku: {
+        required,
+        minLength: minLength(4),
+        maxLength: maxLength(16),
+      },
+      listPrice: {
+        required,
+        decimal,
+        minValue: minValue(0.01),
+      },
+      salePrice: {
+        decimal,
+        minValue: minValue(0.01),
+      },
+      minQuantity: {
+        required,
+        integer,
+        minValue: minValue(1),
+      },
+      inStockQuantity: {
+        required,
+        integer,
+        minValue: minValue(1),
+      },
+    }));
+
+    const validator = useVuelidate(rules, offerDetails, {
+      $autoDirty: true,
+      $lazy: true,
+    });
+    const readonly = computed(() => !!offer.value?.id);
+
     const bladeToolbar = reactive([
       {
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         onClick: async () => {
-          await createOffer({
-            ...offerDetails,
-            currency: "USD",
-          });
-          emit("parent:call", {
-            method: "reload",
-          });
+          // @ts-ignore
+          if (await validator.value.$validate()) {
+            try {
+              await createOffer({
+                ...offerDetails,
+                currency: "USD",
+              });
+              emit("parent:call", {
+                method: "reload",
+              });
+            } catch (err) {
+              alert(err.message);
+            }
+          }
         },
-        disabled: computed(() => offer.value?.id),
+        disabled: readonly,
       },
       {
         id: "close",
@@ -247,6 +333,8 @@ export default defineComponent({
 
     return {
       offer,
+      validator,
+      readonly,
       bladeToolbar,
       offerDetails,
       products,
@@ -259,16 +347,6 @@ export default defineComponent({
       ],
       onProductSearch: async (value: string) => {
         products.value = await fetchProducts(value);
-      },
-
-      onBeforeClose: async () => {
-        console.log("onBeforeClose handler called.");
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            console.log("onBeforeClose handler ended.");
-            resolve(true);
-          }, 1000);
-        });
       },
     };
   },

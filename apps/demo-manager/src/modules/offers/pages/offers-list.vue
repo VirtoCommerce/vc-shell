@@ -11,6 +11,7 @@
       :loading="loading"
       :expanded="expanded"
       :empty="empty"
+      :notfound="notfound"
       class="vc-flex-grow_1"
       :multiselect="true"
       :columns="columns"
@@ -18,6 +19,8 @@
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
+      :searchValue="searchValue"
+      @searchValueChanged="onSearchList"
       :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
       :totalCount="totalCount"
@@ -72,18 +75,18 @@
               aspect="1x1"
               size="s"
               :bordered="true"
-              :src="itemData.item.product.image"
+              :src="itemData.item.imgSrc"
             ></vc-image>
             <div class="vc-flex-grow_1 vc-margin-left_m">
               <div class="vc-font-weight_bold vc-font-size_l">
-                {{ itemData.item.product.sellerName }}
+                {{ itemData.item.name }}
               </div>
               <vc-hint class="vc-margin-top_xs">
-                {{ itemData.item.product.category }}
+                {{ itemData.item.name }}
               </vc-hint>
             </div>
             <div class="vc-margin-top_s vc-margin-bottom_m vc-margin-left_m">
-              <vc-status v-bind="statusStyle(itemData.item.status)">
+              <vc-status>
                 {{ itemData.item.status }}
               </vc-status>
             </div>
@@ -150,7 +153,7 @@
 
 <script lang="ts">
 import { defineComponent, watch, onMounted, ref, computed } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useFunctions, useLogger } from "@virtoshell/core";
 import { useOffers } from "../composables";
 import moment from "moment";
 import OffersDetails from "./offers-details.vue";
@@ -181,6 +184,8 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const { t } = useI18n();
+    const logger = useLogger();
+    const { debounce } = useFunctions();
 
     const {
       searchQuery,
@@ -193,6 +198,7 @@ export default defineComponent({
     } = useOffers();
 
     const sort = ref("createdDate");
+    const searchValue = ref();
 
     watch(sort, async (value) => {
       await loadOffers({ ...searchQuery.value, sort: value });
@@ -209,6 +215,15 @@ export default defineComponent({
         sort: sort.value,
       });
     };
+
+    const onSearchList = debounce(async (keyword: string) => {
+      logger.debug(`Offers list search by ${keyword}`);
+      searchValue.value = keyword;
+      await loadOffers({
+        ...searchQuery.value,
+        keyword,
+      });
+    }, 200);
 
     const bladeToolbar = [
       {
@@ -304,6 +319,19 @@ export default defineComponent({
       },
     };
 
+    const notfound = {
+      image: "/assets/empty-product.png",
+      text: "No offers found.",
+      action: "Reset search",
+      clickHandler: async () => {
+        searchValue.value = "";
+        await loadOffers({
+          ...searchQuery.value,
+          keyword: "",
+        });
+      },
+    };
+
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
         component: OffersDetails,
@@ -329,6 +357,7 @@ export default defineComponent({
     return {
       bladeToolbar,
       empty,
+      notfound,
       columns: computed(() => {
         if (props.expanded) {
           return columns.value;
@@ -343,6 +372,8 @@ export default defineComponent({
       currentPage,
       sort,
       moment,
+      searchValue,
+      onSearchList,
       onItemClick,
       onHeaderClick,
       onPaginationClick,

@@ -6,7 +6,11 @@
       'user-dropdown-button_active': accountMenuVisible,
     }"
     @click="toggleAccountMenuVisible"
-    v-click-outside="toggleAccountMenuVisible"
+    v-click-outside="
+      () => {
+        accountMenuVisible = false;
+      }
+    "
   >
     <div
       class="user-dropdown-button__avatar"

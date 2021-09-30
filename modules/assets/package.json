@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/mod-assets",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "scripts": {
     "build": "vue-cli-service build --formats commonjs --target lib --name assets ./src/index.ts"
   },
@@ -11,8 +11,8 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@virtoshell/core": "^0.0.45",
-    "@virtoshell/ui": "^0.0.45",
+    "@virtoshell/core": "^0.0.46",
+    "@virtoshell/ui": "^0.0.46",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-service": "~4.5.0",

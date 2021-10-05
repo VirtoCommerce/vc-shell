@@ -1,25 +1,26 @@
-# v1.0
+# v2.0
 
 name: VC deployment
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       artifactUrl: 
         description: 'Full link to artifact docker image or artifact download url'
         required: true
-      deployBranch: 
-        description: 'ArgoCd branch name'
+      envName: 
+        description: 'Deployment environment name (root value of argoDeploy.json). Allowed values: dev, qa, prod'
         required: true
         default: 'dev'
       deployConfigPath:
         description: 'Path to the argoDeploy.json'
         required: true
+    secrets:
+      GITHUB_TOKEN:
+        required: true
 
 jobs:
   cd:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
 
     steps: 
 
@@ -27,7 +28,7 @@ jobs:
       uses: VirtoCommerce/vc-github-actions/get-deploy-param@master
       id: deployConfig
       with:
-        envName: ${{ github.event.inputs.deployBranch }}
+        envName: ${{ github.event.inputs.envName }}
         deployConfigPath: ${{ github.event.inputs.deployConfigPath }}
 
     - name: Start deployment
@@ -36,7 +37,7 @@ jobs:
       with:
         step: start
         token: ${{ secrets.GITHUB_TOKEN }}
-        env: Development
+        env: ${{ steps.deployConfig.outputs.environmentName }}
         no_override: false
 
     - name: Update deployment-cm

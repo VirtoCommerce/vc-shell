@@ -1,6 +1,5 @@
 <template>
   <vc-blade
-    :uid="uid"
     title="Order #123"
     :expanded="expanded"
     :closable="closable"

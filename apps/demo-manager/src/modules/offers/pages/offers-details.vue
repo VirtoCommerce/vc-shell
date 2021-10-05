@@ -234,10 +234,12 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
     param: {
       type: String,
       default: undefined,
     },
+
     options: {
       type: Object,
       default: () => ({}),
@@ -303,7 +305,7 @@ export default defineComponent({
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
-        onClick: async () => {
+        async clickHandler() {
           // @ts-ignore
           if (await validator.value.$validate()) {
             try {
@@ -314,18 +316,19 @@ export default defineComponent({
               emit("parent:call", {
                 method: "reload",
               });
+              emit("page:close");
             } catch (err) {
               alert(err.message);
             }
           }
         },
-        disabled: readonly,
+        isVisible: !props.param,
       },
       {
         id: "close",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
-        onClick: () => {
+        async clickHandler() {
           emit("page:close");
         },
       },

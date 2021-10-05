@@ -33,6 +33,7 @@ import {
   watch,
   reactive,
   inject,
+  shallowRef,
 } from "vue";
 import LoginPage from "./components/login-page.vue";
 import DashboardPage from "./components/dashboard-page.vue";
@@ -90,7 +91,7 @@ export default defineComponent({
         isAccent: true,
       },
       {
-        component: UserDropdownButton,
+        component: shallowRef(UserDropdownButton),
         componentOptions: {
           avatar: "/assets/avatar.jpg",
           name: computed(() => user.value?.userName),
@@ -103,7 +104,7 @@ export default defineComponent({
             },
             {
               title: t("SHELL.ACCOUNT.LOGOUT"),
-              clickHandler() {
+              async clickHandler() {
                 signOut();
               },
             },
@@ -126,19 +127,19 @@ export default defineComponent({
         title: t("ORDERS.MENU.TITLE"),
         icon: "fas fa-layer-group",
         isVisible: true,
-        component: OrdersList,
+        component: shallowRef(OrdersList),
       },
       {
         title: t("PRODUCTS.MENU.TITLE"),
         icon: "fas fa-cash-register",
         isVisible: true,
-        component: ProductsList,
+        component: shallowRef(ProductsList),
       },
       {
         title: t("OFFERS.MENU.TITLE"),
         icon: "fas fa-hand-holding-usd",
         isVisible: true,
-        component: OffersList,
+        component: shallowRef(OffersList),
       },
       {
         title: t("SHELL.ACCOUNT.LOGOUT"),

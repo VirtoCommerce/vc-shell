@@ -93,7 +93,7 @@
           </div>
         </div>
         <div v-if="param" class="product-details__widgets">
-          <div class="vc-widget">
+          <div class="vc-widget" @click="openOffers">
             <vc-icon
               class="vc-widget__icon"
               icon="fas fa-file-alt"
@@ -124,6 +124,7 @@ import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
+import { OffersList } from "../../offers";
 import { useVuelidate } from "@vuelidate/core";
 import { minLength, required } from "@vuelidate/validators";
 
@@ -205,7 +206,7 @@ export default defineComponent({
         id: "save",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
-        onClick: async () => {
+        async clickHandler() {
           // @ts-ignore
           if (await validator.value.$validate()) {
             try {
@@ -217,6 +218,9 @@ export default defineComponent({
               emit("parent:call", {
                 method: "reload",
               });
+              if (!props.param) {
+                emit("page:close");
+              }
             } catch (err) {
               alert(err.message);
             }
@@ -234,7 +238,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
         icon: "fas fa-share-square",
         isVisible: computed(() => !!props.param),
-        onClick: async () => {
+        async clickHandler() {
           // @ts-ignore
           if (await validator.value.$validate()) {
             try {
@@ -246,6 +250,9 @@ export default defineComponent({
               emit("parent:call", {
                 method: "reload",
               });
+              if (!props.param) {
+                emit("page:close");
+              }
             } catch (err) {
               alert(err.message);
             }
@@ -261,7 +268,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT"),
         icon: "fas fa-undo",
         isVisible: computed(() => !!props.param),
-        onClick: async () => {
+        async clickHandler() {
           await revertStagedChanges(product.value.id);
           emit("parent:call", {
             method: "reload",
@@ -281,7 +288,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.APPROVE"),
         icon: "fas fa-check-circle",
         isVisible: computed(() => !!props.param),
-        onClick: async () => {
+        async clickHandler() {
           await changeProductStatus(product.value.id, "Approved");
           emit("parent:call", {
             method: "reload",
@@ -294,7 +301,7 @@ export default defineComponent({
         title: "Request changes (test only)",
         icon: "fas fa-sticky-note",
         isVisible: computed(() => !!props.param),
-        onClick: async () => {
+        async clickHandler() {
           await changeProductStatus(product.value.id, "RequestChanges");
           emit("parent:call", {
             method: "reload",
@@ -307,7 +314,7 @@ export default defineComponent({
         title: "Reject (test only)",
         icon: "fas fa-ban",
         isVisible: computed(() => !!props.param),
-        onClick: async () => {
+        async clickHandler() {
           await changeProductStatus(product.value.id, "Rejected");
           emit("parent:call", {
             method: "reload",
@@ -319,7 +326,7 @@ export default defineComponent({
         id: "close",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
         icon: "fas fa-times",
-        onClick: () => {
+        async clickHandler() {
           emit("page:close");
         },
       },
@@ -367,6 +374,15 @@ export default defineComponent({
       loading: computed(() => loading.value),
       onGalleryUpload,
       onGalleryItemEdit,
+      async openOffers() {
+        emit("page:open", {
+          component: OffersList,
+          componentOptions: {
+            productId: product.value?.id,
+          },
+          url: null,
+        });
+      },
       async onBeforeClose() {
         if (modified.value) {
           return confirm("You have unsaved changes\nClose anyway?");

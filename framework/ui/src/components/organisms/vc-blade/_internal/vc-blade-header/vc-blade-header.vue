@@ -16,10 +16,6 @@
       </div>
     </div>
 
-    <div v-if="$slots['filters']" class="vc-blade-header__filters">
-      <slot name="filters"></slot>
-    </div>
-
     <div
       v-if="!$isPhone.value"
       class="vc-blade-header__buttons vc-flex vc-flex-align_center"

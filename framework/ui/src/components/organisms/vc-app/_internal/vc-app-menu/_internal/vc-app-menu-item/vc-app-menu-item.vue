@@ -25,7 +25,27 @@ export default defineComponent({
   props: {
     sticky: {
       type: Boolean,
+      default: true,
+    },
+
+    isVisible: {
+      type: Boolean,
       default: false,
+    },
+
+    component: {
+      type: HTMLElement,
+      default: undefined,
+    },
+
+    componentOptions: {
+      type: Object,
+      default: () => ({}),
+    },
+
+    clickHandler: {
+      type: Function,
+      default: undefined,
     },
 
     icon: {

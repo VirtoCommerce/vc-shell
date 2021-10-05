@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-blade-toolbar-button"
-    :class="{ 'vc-blade-toolbar-button_disabled': disabled }"
+    :class="{ 'vc-blade-toolbar-button_disabled': disabled || isWaiting }"
     @click="onClick"
   >
     <vc-icon
@@ -14,11 +14,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
 
 export default defineComponent({
   name: "VcBladeToolbarButton",
+
+  inheritAttrs: false,
 
   components: {
     VcIcon,
@@ -49,11 +51,19 @@ export default defineComponent({
   emits: ["click"],
 
   setup(props, { emit }) {
+    const isWaiting = ref(false);
+
     return {
-      onClick(): void {
-        if (!props.disabled) {
+      isWaiting,
+
+      async onClick(): Promise<void> {
+        console.debug("vc-blade-toolbar-item#onClick()");
+
+        if (!props.disabled && !isWaiting.value) {
           if (props.clickHandler && typeof props.clickHandler === "function") {
-            props.clickHandler();
+            isWaiting.value = true;
+            await props.clickHandler();
+            isWaiting.value = false;
           } else {
             emit("click");
           }

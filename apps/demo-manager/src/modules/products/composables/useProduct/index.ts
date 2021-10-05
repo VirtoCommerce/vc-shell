@@ -89,9 +89,9 @@ export default (): IUseProduct => {
       //TODO: use mapping insead this ugly assignments
       Object.assign(productDetails, {
         name: product.value.name,
-        images: product.value.productData.images,
+        images: product.value.productData?.images,
         categoryId: product.value.categoryId,
-        gtin: product.value.productData.gtin,
+        gtin: product.value.productData?.gtin,
         description: product.value.productData?.reviews[0]?.content,
       } as ProductDetails);
       productDetailsCopy = _cloneDeep(productDetails);

@@ -6,7 +6,7 @@
       { 'vc-app_touch': $isTouch, 'vc-app_phone': $isPhone.value },
     ]"
   >
-    <vc-loading v-if="!isReady" :active="true"></vc-loading>
+    <vc-loading v-if="!isReady" active></vc-loading>
     <template v-else>
       <!-- Show login form for unauthorized users -->
       <slot v-if="!isAuthorized" name="login">
@@ -75,6 +75,7 @@ import {
   ComponentPublicInstance,
   watch,
   onMounted,
+  shallowRef,
 } from "vue";
 import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
@@ -151,7 +152,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    console.debug("Init vc-app");
+    console.debug("vc-app: Init vc-app");
 
     const instance = getCurrentInstance();
 
@@ -173,7 +174,7 @@ export default defineComponent({
       () => workspace.value,
       (value) => {
         if (props.isReady) {
-          console.log("Workspace changed");
+          console.debug(`vc-app: workspace changed.`);
           if (value && value.length) {
             const ws = value[0].url;
             let lastBladeWithUrlIndex = -1;
@@ -209,10 +210,11 @@ export default defineComponent({
     );
 
     /**
-     * Parse given URL and open corresponding workspace and blade.
-     * @param url Url path (ex.: /products/product-edit/32)
+     * Parse location and open corresponding workspace and blade.
      */
     onMounted(() => {
+      console.debug(`vc-app#onMounted() called.`);
+
       const url = window?.location?.pathname || "/";
       const data = urlPattern.match(url);
       if (data?.workspace) {
@@ -221,7 +223,7 @@ export default defineComponent({
         );
         if (ws) {
           workspace.value.push({
-            component: ws,
+            component: shallowRef(ws),
             url: ws.url,
           });
 
@@ -231,7 +233,7 @@ export default defineComponent({
             );
             if (blade) {
               workspace.value.push({
-                component: blade,
+                component: shallowRef(blade),
                 url: blade.url,
                 param: data.param,
               });
@@ -242,6 +244,8 @@ export default defineComponent({
     });
 
     const onMenuItemClick = function (item: Record<string, unknown>) {
+      console.debug(`vc-app#onMenuItemClick() called.`);
+
       if (item.clickHandler && typeof item.clickHandler === "function") {
         item.clickHandler(instance?.proxy);
       } else {
@@ -253,22 +257,29 @@ export default defineComponent({
     };
 
     const onToolbarButtonClick = function (item: Record<string, unknown>) {
+      console.debug(`vc-app#onToolbarButtonClick() called.`);
+
       if (item.clickHandler && typeof item.clickHandler === "function") {
         item.clickHandler(instance?.proxy);
       }
     };
 
     const openDashboard = async () => {
+      console.debug(`vc-app#openDashboard() called.`);
+
       // Close all opened pages with onBeforeClose callback
       await onClosePage(0);
     };
 
     const openWorkspace = async (page: IPage) => {
+      console.debug(`vc-app#openWorkspace() called.`);
+
       // Close all opened pages with onBeforeClose callback
       await onClosePage(0);
       workspace.value = [
         {
           ...page,
+          component: shallowRef(page.component),
           url:
             page.url === undefined
               ? (page.component as Record<string, string>).url
@@ -278,12 +289,15 @@ export default defineComponent({
     };
 
     const onOpenPage = async (index: number, page: IPage) => {
+      console.debug(`vc-app#onOpenPage(${index}) called.`);
+
       // Close all child pages with onBeforeClose callback
       if (workspace.value.length > index + 1) {
         await onClosePage(index + 1);
       }
       workspace.value.push({
         ...page,
+        component: shallowRef(page.component),
         url:
           page.url === undefined
             ? (page.component as Record<string, string>).url
@@ -292,7 +306,7 @@ export default defineComponent({
     };
 
     const onClosePage = async (index: number) => {
-      console.log(`onClose called on blade ${index}`);
+      console.debug(`vc-app#onClosePage(${index}) called.`);
       const children = workspaceRefs.value.slice(index).reverse();
       let isPrevented = false;
       for (let i = 0; i < children.length; i++) {
@@ -315,6 +329,9 @@ export default defineComponent({
     };
 
     const onParentCall = async (index: number, args: IParentCallArgs) => {
+      console.debug(
+        `vc-app#onParentCall(${index}, { method: ${args.method} }) called.`
+      );
       if (index > 0) {
         const parent = workspaceRefs.value[index - 1];
         if (args.method && typeof parent[args.method] === "function") {

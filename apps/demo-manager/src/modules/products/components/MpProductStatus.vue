@@ -2,6 +2,7 @@
   <vc-status
     v-bind="statusStyles[status]"
     v-for="(status, i) in statuses"
+    class="vc-margin-bottom_xs"
     :class="{ 'vc-margin-right_xs': i < statuses.length - 1 }"
     :key="i"
     >{{

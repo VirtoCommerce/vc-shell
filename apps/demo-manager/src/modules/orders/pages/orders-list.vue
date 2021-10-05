@@ -1,10 +1,10 @@
 <template>
   <vc-blade
-    :uid="uid"
     title="Orders"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <vc-table
@@ -82,7 +82,7 @@ export default defineComponent({
         id: 1,
         title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
-        onClick: async () => {
+        async clickHandler() {
           await loadOrders();
         },
       },

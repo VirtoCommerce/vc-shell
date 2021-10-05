@@ -1,6 +1,5 @@
 <template>
   <vc-blade
-    :uid="uid"
     :title="options.name"
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
@@ -62,11 +61,6 @@ import { useI18n } from "@virtoshell/core";
 
 export default defineComponent({
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
-
     expanded: {
       type: Boolean,
       default: true,

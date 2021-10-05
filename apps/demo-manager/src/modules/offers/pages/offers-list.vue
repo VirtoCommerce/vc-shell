@@ -5,6 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <vc-table
@@ -162,10 +163,6 @@ export default defineComponent({
   url: "offers",
 
   props: {
-    uid: {
-      type: String,
-      default: undefined,
-    },
     expanded: {
       type: Boolean,
       default: true,
@@ -205,7 +202,10 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      await loadOffers({ sort: sort.value });
+      await loadOffers({
+        sort: sort.value,
+        productId: props.options?.productId,
+      });
     });
 
     const reload = async () => {
@@ -230,7 +230,7 @@ export default defineComponent({
         id: "refresh",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
-        onClick: async () => {
+        async clickHandler() {
           await reload();
         },
       },
@@ -238,7 +238,7 @@ export default defineComponent({
         id: "add",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
-        onClick: () => {
+        async clickHandler() {
           emit("page:open", {
             component: OffersDetails,
           });

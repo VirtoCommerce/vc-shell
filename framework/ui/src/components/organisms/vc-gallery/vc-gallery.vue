@@ -20,7 +20,6 @@
         @preview="onPreviewClick(i)"
         @edit="$emit('item:edit', $event)"
         @remove="$emit('item:remove', $event)"
-        @move="onMoveClick"
       ></vc-gallery-item>
 
       <vc-gallery-upload

@@ -1,10 +1,10 @@
 <template>
   <vc-blade
-    :uid="uid"
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
+    @close="$emit('page:close')"
   >
     <!-- Blade contents -->
     <vc-table
@@ -16,6 +16,7 @@
       :multiselect="true"
       :columns="columns"
       :items="products"
+      :filterItems="filterItems"
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
@@ -45,12 +46,12 @@
           size="s"
           aspect="1x1"
           :src="itemData.item.imgSrc"
-        ></vc-image>
+        />
       </template>
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <mp-product-status :status="itemData.item.status"></mp-product-status>
+        <mp-product-status :status="itemData.item.status" />
       </template>
 
       <!-- Override createdDate column template -->
@@ -68,16 +69,14 @@
             size="m"
             :bordered="true"
             :src="itemData.item.imgSrc"
-          ></vc-image>
+          />
           <div class="vc-flex-grow_1 vc-margin-left_m">
             <div class="vc-font-weight_bold vc-font-size_l">
               {{ itemData.item.name }}
             </div>
             <vc-hint class="vc-margin-top_xs">{{ itemData.item.path }}</vc-hint>
             <div class="vc-margin-top_s vc-margin-bottom_m">
-              <mp-product-status
-                :status="itemData.item.status"
-              ></mp-product-status>
+              <mp-product-status :status="itemData.item.status" />
             </div>
             <div
               class="
@@ -90,7 +89,9 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>EAN/GTIN</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
-                  {{ itemData.item.productData.gtin }}
+                  {{
+                    itemData.item.productData && itemData.item.productData.gtin
+                  }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
@@ -187,7 +188,7 @@ export default defineComponent({
         id: "refresh",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
-        onClick: async () => {
+        async clickHandler() {
           await reload();
         },
       },
@@ -195,7 +196,7 @@ export default defineComponent({
         id: "add",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
-        onClick: () => {
+        async clickHandler() {
           emit("page:open", {
             component: ProductsEdit,
           });
@@ -206,7 +207,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE"),
         icon: "fas fa-trash",
         disabled: true,
-        onClick: () => {
+        async clickHandler() {
           logger.debug("Delete selected products");
         },
       },
@@ -293,6 +294,20 @@ export default defineComponent({
       });
     };
 
+    const filterItems = [
+      {
+        title: "Status",
+        type: "multi",
+        options: [
+          { label: "Saved" },
+          { label: "Active" },
+          { label: "Archived" },
+          { label: "Future" },
+        ],
+      },
+      { title: "Created date", type: "date" },
+    ];
+
     return {
       loading,
       bladeToolbar,
@@ -303,6 +318,7 @@ export default defineComponent({
           return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
+      filterItems,
       searchQuery,
       products,
       totalCount,

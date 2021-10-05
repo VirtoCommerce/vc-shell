@@ -75,11 +75,10 @@ export default function useUser(): IUseUser {
       securityClient.setAuthToken(token);
       try {
         loading.value = true;
-        //TODO: remove after demo
-        await sleep(1000);
         user.value = await securityClient.getCurrentUser();
         console.log("[userUsers]: an user details has been loaded", user.value);
       } catch (e) {
+        console.dir(e);
         //TODO: log error
       } finally {
         loading.value = false;
@@ -126,10 +125,15 @@ export default function useUser(): IUseUser {
   }
 
   function storeAuthData(authData: AuthData) {
-    localStorage.setItem(VC_AUTH_DATA_KEY, JSON.stringify({ ...authData }));
+    localStorage.setItem(
+      VC_AUTH_DATA_KEY,
+      JSON.stringify({ ...(authData || {}) })
+    );
   }
   function readAuthData(): AuthData {
-    return JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) ?? "") as AuthData;
+    return JSON.parse(
+      localStorage.getItem(VC_AUTH_DATA_KEY) || "{}"
+    ) as AuthData;
   }
 
   function addOffsetToCurrentDate(offsetInSeconds: number): number {

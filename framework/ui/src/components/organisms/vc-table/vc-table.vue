@@ -14,6 +14,13 @@
           vc-padding_l
         "
       >
+        <div class="vc-margin-right_m">
+          <vc-table-filter
+            :items="filterItems"
+            @apply="$emit('filter:apply', $event)"
+            @reset="$emit('filter:reset')"
+          />
+        </div>
         <vc-input
           class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
@@ -35,12 +42,40 @@
         <template v-if="$isPhone.value && $slots['mobile-item']">
           <div class="vc-table-mobile">
             <div
-              class="vc-table-mobile__item"
               v-for="item in items"
               :key="item.id"
+              class="vc-table-mobile__item"
+              :class="{
+                'vc-table-mobile__item_active':
+                  mobileItems[item.id] && mobileItems[item.id].isActive,
+              }"
+              :style="`transform: translateX(${
+                (mobileItems[item.id] && mobileItems[item.id].offset) || 0
+              }px)`"
               @click="$emit('itemClick', item)"
+              @touchstart="itemTouchStart($event, item.id)"
+              @touchmove="itemTouchMove($event, item.id)"
+              @touchend="itemTouchEnd($event, item.id)"
+              @touchcancel="itemTouchCancel($event, item.id)"
             >
-              <slot name="mobile-item" :item="item"></slot>
+              <div class="vc-table-mobile__item-content">
+                <slot name="mobile-item" :item="item"></slot>
+              </div>
+              <div class="vc-table-mobile__item-actions">
+                <div
+                  class="
+                    vc-table-mobile__item-action
+                    vc-table-mobile__item-action_success
+                  "
+                >
+                  <vc-icon icon="fas fa-check" />
+                  <div class="vc-table-mobile__item-action-text">Publish</div>
+                </div>
+                <div class="vc-table-mobile__item-action">
+                  <vc-icon icon="fas fa-ellipsis-h" />
+                  <div class="vc-table-mobile__item-action-text">More</div>
+                </div>
+              </div>
             </div>
           </div>
         </template>
@@ -211,6 +246,13 @@ import VcInput from "../../molecules/vc-input/vc-input.vue";
 import VcPagination from "../../molecules/vc-pagination/vc-pagination.vue";
 import VcLoading from "../../atoms/vc-loading/vc-loading.vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
+import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
+
+interface IMobileItem {
+  isActive: boolean;
+  offset: number;
+  start: number;
+}
 
 export default defineComponent({
   name: "VcTable",
@@ -223,13 +265,16 @@ export default defineComponent({
     VcPagination,
     VcTableCounter,
     VcLoading,
+    VcTableFilter,
   },
 
   data() {
     const checkboxes: Record<string, boolean> = {};
+    const mobileItems: Record<string, IMobileItem> = {};
 
     return {
       checkboxes,
+      mobileItems,
     };
   },
 
@@ -240,6 +285,11 @@ export default defineComponent({
     },
 
     items: {
+      type: Array,
+      default: () => [],
+    },
+
+    filterItems: {
       type: Array,
       default: () => [],
     },
@@ -309,7 +359,12 @@ export default defineComponent({
     },
   },
 
-  emits: ["paginationClick", "selectionChanged", "searchValueChanged"],
+  emits: [
+    "paginationClick",
+    "selectionChanged",
+    "searchValueChanged",
+    "itemClick",
+  ],
 
   watch: {
     items(value: { id: string }[]) {
@@ -348,6 +403,30 @@ export default defineComponent({
     processCheckbox(id: string, state: boolean) {
       this.checkboxes[id] = state;
       this.$emit("selectionChanged", this.checkboxes);
+    },
+
+    itemTouchStart(e: TouchEvent, id: string): void {
+      this.mobileItems[id] = {
+        ...(this.mobileItems[id] || {}),
+        start: e.touches[0].clientX,
+      };
+    },
+
+    itemTouchMove(e: TouchEvent, id: string): void {
+      const offset = e.touches[0].clientX - this.mobileItems[id].start;
+      if (Math.abs(offset) > 10 && Math.abs(offset) <= 80) {
+        this.mobileItems[id] = {
+          ...(this.mobileItems[id] || {}),
+          offset,
+        };
+      }
+    },
+
+    itemTouchEnd(e: TouchEvent, id: string): void {
+      this.mobileItems[id] = {
+        ...(this.mobileItems[id] || {}),
+        offset: this.mobileItems[id].offset < -50 ? -80 : 0,
+      };
     },
   },
 });
@@ -433,15 +512,41 @@ export default defineComponent({
   &-mobile {
     &__item {
       position: relative;
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: stretch;
+
+      &-content {
+        flex-shrink: 0;
+        width: 100%;
+      }
 
       &-actions {
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 100px;
-        height: 100%;
-        z-index: 1;
-        background: white;
+        flex-shrink: 0;
+        width: 80px;
+        display: flex;
+        flex-direction: column;
+        justify-content: stretch;
+        background-color: #a9bfd2;
+      }
+
+      &-action {
+        display: flex;
+        flex-grow: 1;
+        flex-basis: 1;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+
+        &-text {
+          margin-top: 4px;
+          font-size: 14px;
+        }
+
+        &_success {
+          background-color: #87b563;
+        }
       }
     }
   }

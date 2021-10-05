@@ -1,0 +1,21 @@
+{
+    "artifactKey": "ghcr.io/virtocommerce/platform-demo-manager",
+    "deployRepo": "vc-deploy-dev",
+    "cmPath": "platform-dev/overlays/dev/kustomization.yaml",
+    "dev": {
+        "deployAppName": "vcplatform-dev",
+        "deployBranch": "dev",
+        "environmentId" : "dev",
+        "environmentName" : "Development",
+        "environmentType" : "development",
+        "environmentUrl" : "https://vcplatform-platform.dev.govirto.com/"
+    },
+    "qa": {
+        "deployAppName": "vcplatform-qa",
+        "deployBranch": "qa",
+        "environmentId" : "qa",
+        "environmentName" : "QA",
+        "environmentType" : "testing",
+        "environmentUrl" : "https://vcplatform-platform.qa.govirto.com/"
+    }
+}

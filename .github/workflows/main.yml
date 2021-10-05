@@ -6,6 +6,7 @@ on:
   push:
     paths-ignore:
       - '.github/**'
+      - '.deployment/**'
       - 'docs/**'
       - 'README.md'
       - 'LICENSE'
@@ -22,6 +23,10 @@ jobs:
       PACKAGE_SERVER: "ghcr.io"
       DEMO_MANAGER_CONTAINER: "platform-demo-manager"
       UI_KIT_CONTAINER: "platform-ui-kit"
+
+    outputs:
+      managerArtifactUrl: '${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}'
+      UiKitArtifactUrl: '${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}'
 
     steps:
     - uses: actions/checkout@v2
@@ -85,18 +90,163 @@ jobs:
       run: |
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM and $ARTIFACT_URL_UK"
 
-    - name: Invoke VC image deployment workflow for UI Kit
-      if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-      uses: benc-uk/workflow-dispatch@v1
-      with:
-        workflow: VC deployment
-        token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployUIKit.json" }'
+    # - name: Invoke VC image deployment workflow for UI Kit
+    #   if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+    #   uses: benc-uk/workflow-dispatch@v1
+    #   with:
+    #     workflow: VC deployment
+    #     token: ${{ secrets.REPO_TOKEN }}
+    #     inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployUIKit.json" }'
 
-    - name: Invoke VC image deployment workflow for Demo manager
-      if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-      uses: benc-uk/workflow-dispatch@v1
+    # - name: Invoke VC image deployment workflow for Demo manager
+    #   if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+    #   uses: benc-uk/workflow-dispatch@v1
+    #   with:
+    #     workflow: VC deployment
+    #     token: ${{ secrets.REPO_TOKEN }}
+    #     inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployDemoManager.json" }'
+
+  CD_Demo_manager:
+    needs: CI
+    strategy:
+      matrix:
+        include:
+          - envName: 'dev'
+            deployConfigPath: '.deployment/argoDeployDemoManager.json'
+
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+
+    steps: 
+
+    - name: Read deployment config
+      uses: VirtoCommerce/vc-github-actions/get-deploy-param@master
+      id: deployConfig
       with:
-        workflow: VC deployment
-        token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployDemoManager.json" }'
+        envName: ${{ matrix.envName }}
+        deployConfigPath: ${{ matrix.deployConfigPath }}
+
+    - name: Start deployment
+      uses: bobheadxi/deployments@master
+      id: deployment
+      with:
+        step: start
+        token: ${{ secrets.GITHUB_TOKEN }}
+        env: Development
+        no_override: false
+
+    - name: Update deployment-cm
+      uses: VirtoCommerce/vc-github-actions/create-deploy-pr@master
+      with:
+        deployRepo: ${{ steps.deployConfig.outputs.deployRepo }}
+        deployBranch: ${{ steps.deployConfig.outputs.deployBranch }}
+        artifactKey: ${{ steps.deployConfig.outputs.artifactKey }}
+        artifactUrl: ${{ needs.CI.outputs.managerArtifactUrl }}
+        taskNumber: "undefined"
+        forceCommit: "true"
+        cmPath: ${{ steps.deployConfig.outputs.cmPath }}
+
+    - name: Wait for environment is up
+      shell: pwsh
+      timeout-minutes: 15
+      run: | 
+        do {
+          Start-Sleep -s 15
+          $statusBage = (Invoke-WebRequest -Uri "https://argo.govirto.com/api/badge?name=${{ steps.deployConfig.outputs.deployAppName }}").Content
+          
+          $syncedAndHealthy = $statusBage.Contains('>Healthy<') -and $statusBage.Contains('>Synced<')
+          if (-not $syncedAndHealthy) {
+            Write-Host "Sync pending..."
+          }
+        }
+        while (-not $syncedAndHealthy)
+    - name: BUILD_STATE::successful
+      if: success()
+      run: echo "BUILD_STATE=successful" >> $GITHUB_ENV
+
+    - name: BUILD_STATE::failed
+      if: failure()
+      run: echo "BUILD_STATE=failed"  >> $GITHUB_ENV
+
+    - name: Update GitHub deployment status
+      uses: bobheadxi/deployments@master
+      if: always()
+      with:
+        step: finish
+        token: ${{ secrets.GITHUB_TOKEN }}
+        status: ${{ job.status }}
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+
+
+  CD_UI_kit:
+    needs: CI
+    strategy:
+      matrix:
+        include:
+          - envName: 'dev'
+            deployConfigPath: '.deployment/argoDeployUIKit.json'
+
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+
+    steps: 
+
+    - name: Read deployment config
+      uses: VirtoCommerce/vc-github-actions/get-deploy-param@master
+      id: deployConfig
+      with:
+        envName: ${{ matrix.envName }}
+        deployConfigPath: ${{ matrix.deployConfigPath }}
+
+    - name: Start deployment
+      uses: bobheadxi/deployments@master
+      id: deployment
+      with:
+        step: start
+        token: ${{ secrets.GITHUB_TOKEN }}
+        env: Development
+        no_override: false
+
+    - name: Update deployment-cm
+      uses: VirtoCommerce/vc-github-actions/create-deploy-pr@master
+      with:
+        deployRepo: ${{ steps.deployConfig.outputs.deployRepo }}
+        deployBranch: ${{ steps.deployConfig.outputs.deployBranch }}
+        artifactKey: ${{ steps.deployConfig.outputs.artifactKey }}
+        artifactUrl: ${{ needs.CI.outputs.UIKitArtifactUrl }}
+        taskNumber: "undefined"
+        forceCommit: "true"
+        cmPath: ${{ steps.deployConfig.outputs.cmPath }}
+
+    - name: Wait for environment is up
+      shell: pwsh
+      timeout-minutes: 15
+      run: | 
+        do {
+          Start-Sleep -s 15
+          $statusBage = (Invoke-WebRequest -Uri "https://argo.govirto.com/api/badge?name=${{ steps.deployConfig.outputs.deployAppName }}").Content
+          
+          $syncedAndHealthy = $statusBage.Contains('>Healthy<') -and $statusBage.Contains('>Synced<')
+          if (-not $syncedAndHealthy) {
+            Write-Host "Sync pending..."
+          }
+        }
+        while (-not $syncedAndHealthy)
+    - name: BUILD_STATE::successful
+      if: success()
+      run: echo "BUILD_STATE=successful" >> $GITHUB_ENV
+
+    - name: BUILD_STATE::failed
+      if: failure()
+      run: echo "BUILD_STATE=failed"  >> $GITHUB_ENV
+
+    - name: Update GitHub deployment status
+      uses: bobheadxi/deployments@master
+      if: always()
+      with:
+        step: finish
+        token: ${{ secrets.GITHUB_TOKEN }}
+        status: ${{ job.status }}
+        deployment_id: ${{ steps.deployment.outputs.deployment_id }}

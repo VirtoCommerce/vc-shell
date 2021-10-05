@@ -8,7 +8,7 @@
         "environmentId" : "dev",
         "environmentName" : "Development",
         "environmentType" : "development",
-        "environmentUrl" : "https://vcplatform-platform.dev.govirto.com/"
+        "environmentUrl" : "https://demo-manager.govirto.com/"
     },
     "qa": {
         "deployAppName": "vcplatform-qa",
@@ -16,6 +16,6 @@
         "environmentId" : "qa",
         "environmentName" : "QA",
         "environmentType" : "testing",
-        "environmentUrl" : "https://vcplatform-platform.qa.govirto.com/"
+        "environmentUrl" : "https://demo-manager.govirto.com/"
     }
 }

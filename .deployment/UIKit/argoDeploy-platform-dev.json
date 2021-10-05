@@ -3,19 +3,19 @@
     "deployRepo": "vc-deploy-dev",
     "cmPath": "ui-kit/resources/kustomization.yaml",
     "dev": {
-        "deployAppName": "vcplatform-dev",
+        "deployAppName": "ui-kit-dev",
         "deployBranch": "dev",
         "environmentId" : "dev",
         "environmentName" : "Development",
         "environmentType" : "development",
-        "environmentUrl" : "https://vcplatform-platform.dev.govirto.com/"
+        "environmentUrl" : "https://ui-kit.govirto.com/"
     },
     "qa": {
-        "deployAppName": "vcplatform-qa",
+        "deployAppName": "ui-kit-qa",
         "deployBranch": "qa",
         "environmentId" : "qa",
         "environmentName" : "QA",
         "environmentType" : "testing",
-        "environmentUrl" : "https://vcplatform-platform.qa.govirto.com/"
+        "environmentUrl" : "https://ui-kit.govirto.com/"
     }
 }

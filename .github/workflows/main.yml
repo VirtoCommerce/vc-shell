@@ -25,8 +25,8 @@ jobs:
       UI_KIT_CONTAINER: 'platform-ui-kit'
 
     outputs:
-      managerArtifactUrl: '${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}'
-      UiKitArtifactUrl: '${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}'
+      managerArtifactUrl: '${{ env.PACKAGE_SERVER }}/{{ github.repository_owner }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}'
+      UiKitArtifactUrl: '${{ env.PACKAGE_SERVER }}/{{ github.repository_owner }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}'
 
     steps:
     - uses: actions/checkout@v2

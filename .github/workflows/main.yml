@@ -20,6 +20,7 @@ jobs:
       BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
       VERSION_SUFFIX: ''
       ARTIFACT_URL: ''
+      GITHUB_USER: '${{ github.repository_owner }}'
       PACKAGE_SERVER: 'ghcr.io'
       DEMO_MANAGER_CONTAINER: 'platform-demo-manager'
       UI_KIT_CONTAINER: 'platform-ui-kit'
@@ -29,6 +30,10 @@ jobs:
       UiKitArtifactUrl: '${{ env.ARTIFACT_URL_UK }}'
 
     steps:
+    - name: Set GITHUB_USER to lowercase
+      run: |
+        echo "GITHUB_USER=${GITHUB_USER,,}" >> $GITHUB_ENV
+
     - uses: actions/checkout@v2
 
     - name: Use Node.js 14.x
@@ -59,10 +64,10 @@ jobs:
         echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
     - name: Set ARTIFACT_URL_DM
       run: |
-        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}/${{ github.repository_owner }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
     - name: Set ARTIFACT_URL_UK
       run: |
-        echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}/${{ github.repository_owner }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+        echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
     - name: Build platform-manager-demo
       run: |
         npm run build

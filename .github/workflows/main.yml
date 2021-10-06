@@ -101,7 +101,7 @@ jobs:
         include:
           - envName: 'dev'
             deployConfigPath: '.deployment/demoManager/argoDeploy-marketplace.json'
-          - envName: 'dev'
+          - envName: 'prod'
             deployConfigPath: '.deployment/demoManager/argoDeploy-platform-dev.json'
 
     runs-on: ubuntu-latest

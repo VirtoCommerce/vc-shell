@@ -10,7 +10,6 @@ export default {
     el._outsideClickHandler = function (event: MouseEvent | TouchEvent) {
       if (!el.contains(event.target as Node)) {
         event.stopPropagation();
-        event.preventDefault();
         closeHandler();
       }
     };

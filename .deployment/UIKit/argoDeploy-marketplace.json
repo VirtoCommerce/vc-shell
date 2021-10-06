@@ -1,0 +1,13 @@
+{
+    "artifactKey": "ghcr.io/virtocommerce/platform-ui-kit",
+    "deployRepo": "vc-deploy-dev",
+    "cmPath": "ui-kit/resources/kustomization.yaml",
+    "dev": {
+        "deployAppName": "vcplatform-dev",
+        "deployBranch": "dev",
+        "environmentId" : "marketplace",
+        "environmentName" : "Development",
+        "environmentType" : "development",
+        "environmentUrl" : "https://vcplatform-platform.dev.govirto.com/"
+    }
+}

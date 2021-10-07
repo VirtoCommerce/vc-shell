@@ -2338,6 +2338,146 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
+  export class ProductPartItemInfo implements IProductPartItemInfo {
+      itemId?: string | undefined;
+      priority?: number;
+  
+      constructor(data?: IProductPartItemInfo) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.itemId = _data["itemId"];
+              this.priority = _data["priority"];
+          }
+      }
+  
+      static fromJS(data: any): ProductPartItemInfo {
+          data = typeof data === 'object' ? data : {};
+          let result = new ProductPartItemInfo();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["itemId"] = this.itemId;
+          data["priority"] = this.priority;
+          return data; 
+      }
+  }
+  
+  export interface IProductPartItemInfo {
+      itemId?: string | undefined;
+      priority?: number;
+  }
+  
+  export class DemoProductPart implements IDemoProductPart {
+      configuredProductId?: string | undefined;
+      name?: string | undefined;
+      description?: string | undefined;
+      isRequired?: boolean;
+      imgSrc?: string | undefined;
+      priority?: number;
+      minQuantity?: number;
+      maxQuantity?: number;
+      defaultItemId?: string | undefined;
+      partItems?: ProductPartItemInfo[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IDemoProductPart) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.configuredProductId = _data["configuredProductId"];
+              this.name = _data["name"];
+              this.description = _data["description"];
+              this.isRequired = _data["isRequired"];
+              this.imgSrc = _data["imgSrc"];
+              this.priority = _data["priority"];
+              this.minQuantity = _data["minQuantity"];
+              this.maxQuantity = _data["maxQuantity"];
+              this.defaultItemId = _data["defaultItemId"];
+              if (Array.isArray(_data["partItems"])) {
+                  this.partItems = [] as any;
+                  for (let item of _data["partItems"])
+                      this.partItems!.push(ProductPartItemInfo.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): DemoProductPart {
+          data = typeof data === 'object' ? data : {};
+          let result = new DemoProductPart();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["configuredProductId"] = this.configuredProductId;
+          data["name"] = this.name;
+          data["description"] = this.description;
+          data["isRequired"] = this.isRequired;
+          data["imgSrc"] = this.imgSrc;
+          data["priority"] = this.priority;
+          data["minQuantity"] = this.minQuantity;
+          data["maxQuantity"] = this.maxQuantity;
+          data["defaultItemId"] = this.defaultItemId;
+          if (Array.isArray(this.partItems)) {
+              data["partItems"] = [];
+              for (let item of this.partItems)
+                  data["partItems"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IDemoProductPart {
+      configuredProductId?: string | undefined;
+      name?: string | undefined;
+      description?: string | undefined;
+      isRequired?: boolean;
+      imgSrc?: string | undefined;
+      priority?: number;
+      minQuantity?: number;
+      maxQuantity?: number;
+      defaultItemId?: string | undefined;
+      partItems?: ProductPartItemInfo[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
   export class Asset implements IAsset {
       mimeType?: string | undefined;
       size?: number;
@@ -3029,6 +3169,7 @@ export class AuthApiBase {
   }
   
   export class CatalogProduct implements ICatalogProduct {
+      productParts?: DemoProductPart[] | undefined;
       /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
@@ -3108,6 +3249,11 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              if (Array.isArray(_data["productParts"])) {
+                  this.productParts = [] as any;
+                  for (let item of _data["productParts"])
+                      this.productParts!.push(DemoProductPart.fromJS(item));
+              }
               this.code = _data["code"];
               this.manufacturerPartNumber = _data["manufacturerPartNumber"];
               this.gtin = _data["gtin"];
@@ -3224,6 +3370,11 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          if (Array.isArray(this.productParts)) {
+              data["productParts"] = [];
+              for (let item of this.productParts)
+                  data["productParts"].push(item.toJSON());
+          }
           data["code"] = this.code;
           data["manufacturerPartNumber"] = this.manufacturerPartNumber;
           data["gtin"] = this.gtin;
@@ -3333,6 +3484,7 @@ export class AuthApiBase {
   }
   
   export interface ICatalogProduct {
+      productParts?: DemoProductPart[] | undefined;
       /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
@@ -3755,6 +3907,7 @@ export class AuthApiBase {
   }
   
   export class SearchOffersQuery implements ISearchOffersQuery {
+      sellerProductId?: string | undefined;
       productId?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
@@ -3783,6 +3936,7 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerProductId = _data["sellerProductId"];
               this.productId = _data["productId"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
@@ -3819,6 +3973,7 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerProductId"] = this.sellerProductId;
           data["productId"] = this.productId;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
@@ -3848,6 +4003,7 @@ export class AuthApiBase {
   }
   
   export interface ISearchOffersQuery {
+      sellerProductId?: string | undefined;
       productId?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */

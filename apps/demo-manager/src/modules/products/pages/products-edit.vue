@@ -378,7 +378,7 @@ export default defineComponent({
         emit("page:open", {
           component: OffersList,
           componentOptions: {
-            productId: product.value?.id,
+            sellerProductId: product.value?.id,
           },
           url: null,
         });

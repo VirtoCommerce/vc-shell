@@ -204,7 +204,7 @@ export default defineComponent({
     onMounted(async () => {
       await loadOffers({
         sort: sort.value,
-        productId: props.options?.productId,
+        sellerProductId: props.options?.sellerProductId,
       });
     });
 

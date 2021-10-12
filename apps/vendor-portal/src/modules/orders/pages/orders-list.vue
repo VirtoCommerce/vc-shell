@@ -14,6 +14,7 @@
       :multiselect="true"
       :columns="columns"
       :items="orders.results"
+      :itemActionBuilder="actionBuilder"
       :totalCount="orders.totalCount"
       :pages="pages"
       :currentPage="currentPage"
@@ -224,10 +225,34 @@ export default defineComponent({
       });
     };
 
+    const actionBuilder = (item) => {
+      let result = [];
+
+      result.push({
+        icon: "fas fa-check",
+        title: "Confirm",
+        variant: "success",
+        clickHandler() {
+          alert("Confirm");
+        },
+      });
+      result.push({
+        icon: "fas fa-times",
+        title: "Decline",
+        variant: "danger",
+        clickHandler() {
+          alert("Decline");
+        },
+      });
+
+      return result;
+    };
+
     return {
       bladeToolbar,
       columns,
       orders,
+      actionBuilder,
       loading,
       onItemClick,
       moment,

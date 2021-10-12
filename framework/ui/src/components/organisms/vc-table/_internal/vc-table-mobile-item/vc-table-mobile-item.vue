@@ -19,6 +19,7 @@
       class="vc-table-mobile__item-actions"
       v-if="itemActions && itemActions.length"
     >
+      <!-- First available action -->
       <div
         class="vc-table-mobile__item-action"
         :class="[`vc-table-mobile__item-action_${itemActions[0].variant}`]"
@@ -29,7 +30,22 @@
           {{ itemActions[0].title }}
         </div>
       </div>
-      <template v-if="itemActions.length > 1">
+
+      <!-- Second available action -->
+      <div
+        v-if="itemActions.length === 2"
+        class="vc-table-mobile__item-action"
+        :class="[`vc-table-mobile__item-action_${itemActions[1].variant}`]"
+        @click.stop="itemActions[1].clickHandler(item)"
+      >
+        <vc-icon :icon="itemActions[1].icon"></vc-icon>
+        <div class="vc-table-mobile__item-action-text">
+          {{ itemActions[1].title }}
+        </div>
+      </div>
+
+      <!-- Other available actions -->
+      <template v-if="itemActions.length > 2">
         <div
           class="vc-table-mobile__item-action"
           @click.stop="isActionsPopupVisible = true"

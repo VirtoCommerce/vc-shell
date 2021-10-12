@@ -17,6 +17,7 @@
       :multiselect="true"
       :columns="columns"
       :items="offers"
+      :itemActionBuilder="actionBuilder"
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
@@ -356,6 +357,32 @@ export default defineComponent({
       });
     };
 
+    const actionBuilder = (item) => {
+      let result = [];
+
+      if (item.status === "Published") {
+        result.push({
+          icon: "fas fa-times",
+          title: "Unpublish",
+          variant: "danger",
+          clickHandler() {
+            alert("Unpublish");
+          },
+        });
+      } else {
+        result.push({
+          icon: "fas fa-check",
+          title: "Publish",
+          variant: "success",
+          clickHandler() {
+            alert("Publish");
+          },
+        });
+      }
+
+      return result;
+    };
+
     return {
       bladeToolbar,
       empty,
@@ -369,6 +396,7 @@ export default defineComponent({
       }),
       loading,
       offers,
+      actionBuilder,
       totalCount,
       pages,
       currentPage,

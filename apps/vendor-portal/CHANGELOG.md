@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.49 (2021-10-12)
+
+
+### Features
+
+* mobile extended actions, vendor-portal detached ([c92a317](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c92a31743ded9788c939641ccff9922328b6f2f6))
+
+
+
+
+
 ## [0.0.48](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.48) (2021-10-06)
 
 

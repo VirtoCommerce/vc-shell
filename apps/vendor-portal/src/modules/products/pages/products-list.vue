@@ -24,7 +24,7 @@
       :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
       :searchValue="searchValue"
-      @searchValueChanged="onSearchList"
+      @search:change="onSearchList"
       :totalCount="totalCount"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"

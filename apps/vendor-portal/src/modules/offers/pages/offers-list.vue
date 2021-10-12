@@ -21,7 +21,7 @@
       :pages="pages"
       :currentPage="currentPage"
       :searchValue="searchValue"
-      @searchValueChanged="onSearchList"
+      @search:change="onSearchList"
       :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
       :totalCount="totalCount"

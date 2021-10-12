@@ -1,7 +1,8 @@
 <template>
   <div
     class="vc-table-mobile__item"
-    :style="`transform: translateX(${offset}px)`"
+    :class="{ 'vc-table-mobile__item_moving': isMoving }"
+    :style="`transform: translateX(${offsetX}px)`"
     @click="$emit('click')"
     @touchstart="touchStart"
     @touchmove="touchMove"
@@ -9,6 +10,7 @@
     @touchcancel="touchCancel"
   >
     <div class="vc-table-mobile__item-content">
+      <!-- Mobile item slot content -->
       <slot></slot>
     </div>
 
@@ -20,7 +22,7 @@
       <div
         class="vc-table-mobile__item-action"
         :class="[`vc-table-mobile__item-action_${itemActions[0].variant}`]"
-        @click="itemActions[0].clickHandler(item)"
+        @click.stop="itemActions[0].clickHandler(item)"
       >
         <vc-icon :icon="itemActions[0].icon"></vc-icon>
         <div class="vc-table-mobile__item-action-text">
@@ -30,7 +32,7 @@
       <template v-if="itemActions.length > 1">
         <div
           class="vc-table-mobile__item-action"
-          @click="isActionsPopupVisible = true"
+          @click.stop="isActionsPopupVisible = true"
         >
           <vc-icon icon="fas fa-ellipsis-h"></vc-icon>
           <div class="vc-table-mobile__item-action-text">More</div>
@@ -90,22 +92,27 @@ export default defineComponent({
   },
 
   setup(props) {
-    const offset = ref(0);
-    const start = ref(0);
-    const startOffset = ref(0);
+    const offsetX = ref(0);
+    const startX = ref(0);
+    const startY = ref(0);
+    const startOffsetX = ref(0);
+    const isMoving = ref(false);
     const threshold = 10;
     const maxWidth = 80;
     const isActionsPopupVisible = ref(false);
     const itemActions = ref([]);
 
     return {
-      offset,
+      offsetX,
       isActionsPopupVisible,
       itemActions,
+      isMoving,
 
       async touchStart(e: TouchEvent): Promise<void> {
-        start.value = e.touches[0].clientX;
-        startOffset.value = offset.value;
+        startX.value = e.touches[0].clientX;
+        startY.value = e.touches[0].clientY;
+        startOffsetX.value = offsetX.value;
+        isMoving.value = true;
 
         if (!itemActions.value.length) {
           if (typeof props.actionBuilder === "function") {
@@ -116,22 +123,29 @@ export default defineComponent({
 
       touchMove(e: TouchEvent): void {
         if (itemActions.value && itemActions.value.length) {
-          const deltaX = e.touches[0].clientX - start.value;
+          const deltaX = e.touches[0].clientX - startX.value;
+          const deltaY = e.touches[0].clientY - startY.value;
           if (
             Math.abs(deltaX) > threshold &&
-            Math.abs(offset.value) <= maxWidth
+            Math.abs(startOffsetX.value + deltaX) <= maxWidth &&
+            startOffsetX.value + deltaX < 0
           ) {
-            offset.value = startOffset.value + deltaX;
+            if (Math.abs(deltaY) < threshold * 2) {
+              e.preventDefault();
+            }
+            offsetX.value = startOffsetX.value + deltaX;
           }
         }
       },
 
       touchEnd(): void {
-        offset.value = offset.value < -(maxWidth - threshold) ? -maxWidth : 0;
+        offsetX.value = offsetX.value < -(maxWidth / 2) ? -maxWidth : 0;
+        isMoving.value = false;
       },
 
       touchCancel(): void {
-        offset.value = offset.value < -(maxWidth - threshold) ? -maxWidth : 0;
+        offsetX.value = offsetX.value < -(maxWidth / 2) ? -maxWidth : 0;
+        isMoving.value = false;
       },
     };
   },
@@ -144,6 +158,11 @@ export default defineComponent({
   display: flex;
   flex-wrap: nowrap;
   align-items: stretch;
+  transition: transform ease 0.2s;
+
+  &_moving {
+    transition: none;
+  }
 
   &-content {
     flex-shrink: 0;

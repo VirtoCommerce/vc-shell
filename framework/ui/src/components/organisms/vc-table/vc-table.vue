@@ -15,6 +15,7 @@
           vc-padding_l
         "
       >
+        <!-- Table filter button -->
         <div class="vc-margin-right_m">
           <vc-table-filter
             :items="filterItems"
@@ -22,18 +23,23 @@
             @reset="$emit('filter:reset')"
           />
         </div>
+
+        <!-- Table search input -->
         <vc-input
           class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
           :clearable="true"
           :modelValue="searchValue"
-          @update:modelValue="$emit('searchValueChanged', $event)"
+          @update:modelValue="$emit('search:change', $event)"
         ></vc-input>
       </div>
     </slot>
 
     <div class="vc-table-wrapper__inner">
+      <!-- Table loading overlay -->
       <vc-loading :active="loading"></vc-loading>
+
+      <!-- Table scroll container -->
       <vc-container
         v-if="items && items.length"
         ref="scrollContainer"
@@ -148,6 +154,8 @@
           </tbody>
         </table>
       </vc-container>
+
+      <!-- Empty table view -->
       <template v-else>
         <slot v-if="searchValue || searchValue === ''" name="notfound">
           <div
@@ -188,6 +196,7 @@
       </template>
     </div>
 
+    <!-- Table footer -->
     <slot name="footer" v-if="items && items.length">
       <div
         class="
@@ -199,12 +208,15 @@
           vc-padding_l
         "
       >
+        <!-- Table pagination -->
         <vc-pagination
           :expanded="expanded"
           :pages="pages"
           :currentPage="currentPage"
           @itemClick="$emit('paginationClick', $event)"
         ></vc-pagination>
+
+        <!-- Table counter -->
         <vc-table-counter
           :label="totalLabel"
           :value="totalCount"
@@ -225,12 +237,6 @@ import VcLoading from "../../atoms/vc-loading/vc-loading.vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
-
-interface IMobileItem {
-  isActive: boolean;
-  offset: number;
-  start: number;
-}
 
 export default defineComponent({
   name: "VcTable",
@@ -344,8 +350,10 @@ export default defineComponent({
   emits: [
     "paginationClick",
     "selectionChanged",
-    "searchValueChanged",
+    "search:change",
     "itemClick",
+    "filter:apply",
+    "filter:reset",
   ],
 
   watch: {

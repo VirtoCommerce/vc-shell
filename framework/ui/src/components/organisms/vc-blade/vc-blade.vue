@@ -2,10 +2,11 @@
   <div
     class="vc-blade"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
-    :class="{ 'vc-blade_expanded': $isPhone.value || expanded }"
+    :class="{ 'vc-blade_expanded': $isMobile.value || expanded }"
   >
     <!-- Init blade header -->
     <vc-blade-header
+      class="vc-flex-shrink_0"
       v-if="!$isMobile.value || closable"
       :expanded="expanded"
       :closable="closable"
@@ -16,7 +17,10 @@
     ></vc-blade-header>
 
     <!-- Set up blade toolbar -->
-    <vc-blade-toolbar :items="toolbarItems"></vc-blade-toolbar>
+    <vc-blade-toolbar
+      class="vc-flex-shrink_0"
+      :items="toolbarItems"
+    ></vc-blade-toolbar>
 
     <slot></slot>
   </div>
@@ -81,7 +85,7 @@ export default defineComponent({
   --blade-margin: var(--margin-l) var(--margin-s);
 }
 
-.vc-app_phone {
+.vc-app_mobile {
   --blade-margin: 0;
   --blade-border-radius: 0;
 }

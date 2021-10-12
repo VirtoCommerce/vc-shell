@@ -17,7 +17,7 @@
     </div>
 
     <div
-      v-if="!$isPhone.value"
+      v-if="!$isMobile.value"
       class="vc-blade-header__buttons vc-flex vc-flex-align_center"
     >
       <template v-if="expandable">

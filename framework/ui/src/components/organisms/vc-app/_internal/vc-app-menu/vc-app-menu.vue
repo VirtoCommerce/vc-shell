@@ -171,7 +171,8 @@ export default defineComponent({
     right: 0;
     top: 0;
     bottom: 0;
-    left: 40%;
+    width: 300px;
+    max-width: 60%;
   }
 
   &__mobile-close {

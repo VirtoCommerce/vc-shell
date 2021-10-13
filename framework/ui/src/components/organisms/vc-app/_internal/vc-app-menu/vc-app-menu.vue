@@ -125,12 +125,13 @@ export default defineComponent({
 .vc-app-menu {
   position: relative;
   width: var(--app-menu-width);
+  transition: width 0.1s ease;
 
   &_collapsed {
     width: var(--app-menu-width-collapsed);
 
     .vc-app-menu-item__title {
-      display: none;
+      opacity: 0;
     }
   }
 

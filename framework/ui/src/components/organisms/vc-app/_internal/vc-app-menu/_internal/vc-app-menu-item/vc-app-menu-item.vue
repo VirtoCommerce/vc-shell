@@ -103,17 +103,23 @@ export default defineComponent({
   cursor: pointer;
   position: relative;
 
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 3px;
+    height: 100%;
+    background-color: #43b0e6;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
   &_active {
     background-color: var(--app-menu-item-background-color-hover);
 
     &:before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 3px;
-      height: 100%;
-      background-color: #43b0e6;
+      opacity: 1;
     }
   }
 
@@ -136,6 +142,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     flex-shrink: 0;
+    transition: color 0.2s ease;
   }
 
   &_active &__icon {
@@ -150,6 +157,8 @@ export default defineComponent({
     font-weight: var(--app-menu-item-title-font-weight);
     padding: var(--app-menu-item-title-padding);
     color: var(--app-menu-item-title-color);
+    transition: color 0.2s ease, opacity 0.1s ease;
+    opacity: 1;
   }
 
   &_active &__title {

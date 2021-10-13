@@ -3,6 +3,72 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.55 (2021-10-13)
+
+
+### Features
+
+* new icons, ptr improvements, offers list ptr ([fe0438b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fe0438b6c43b9a0d4baa52293e619c645c2f6f8d))
+
+
+
+## 0.0.54 (2021-10-13)
+
+
+### Bug Fixes
+
+* mobile blade view ([cf14a81](https://github.com/VirtoCommerce/platform-manager-sdk/commit/cf14a8194bd025134971a970889bd3473f199538))
+
+
+### Features
+
+* some smooth animations ([79f2aad](https://github.com/VirtoCommerce/platform-manager-sdk/commit/79f2aadac40f91ef76f9efc484d37184a47c2b95))
+
+
+
+## 0.0.53 (2021-10-13)
+
+
+### Features
+
+* scroll ptr, menu styling ([4eff9a0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/4eff9a0fffc9feef8dbad433d210f0537702efd2))
+
+
+
+## 0.0.52 (2021-10-13)
+
+
+
+## 0.0.51 (2021-10-13)
+
+
+### Features
+
+* pwa sample settings ([64a7f08](https://github.com/VirtoCommerce/platform-manager-sdk/commit/64a7f0818b5bad49f16257d12545fa1f68c32ad9))
+
+
+
+## 0.0.50 (2021-10-12)
+
+
+### Features
+
+* list mobile actions ([c269a88](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c269a88b9ca304520b9157a51ccd4c602fd0059b))
+* mobile swipe transition ([8fdccb1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8fdccb1345ba3f2d495a6f9344503f1c50b27a7b))
+
+
+
+## 0.0.49 (2021-10-12)
+
+
+### Features
+
+* mobile extended actions, vendor-portal detached ([c92a317](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c92a31743ded9788c939641ccff9922328b6f2f6))
+
+
+
+
+
 ## 0.0.54 (2021-10-13)
 
 

@@ -108,11 +108,13 @@ export default defineComponent({
           emit("scroll:ptr");
         }
         isOverscrollVisible.value = false;
+        isThresholdPassed.value = false;
         offsetY.value = 0;
       },
 
       touchCancel(): void {
         isOverscrollVisible.value = false;
+        isThresholdPassed.value = false;
         offsetY.value = 0;
       },
     };

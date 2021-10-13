@@ -45,7 +45,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, reactive } from "vue";
 import { useLogger, useUser, SignInResult } from "@virtoshell/core";
 
 export default defineComponent({
@@ -70,10 +70,10 @@ export default defineComponent({
     const log = useLogger();
     const signInResult = ref<SignInResult>({ succeeded: true });
     const { signIn, loading } = useUser();
-    const form = {
+    const form = reactive({
       username: "",
       password: "",
-    };
+    });
 
     const login = async () => {
       signInResult.value = await signIn(form.username, form.password);

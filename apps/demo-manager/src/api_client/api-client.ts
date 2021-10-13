@@ -181,7 +181,7 @@ export class AuthApiBase {
           url_ = url_.replace(/[?&]$/, "");
   
           let options_ = <RequestInit>{
-              method: "POST",
+              method: "GET",
               headers: {
                   "Accept": "text/plain"
               }
@@ -1929,6 +1929,7 @@ export class AuthApiBase {
   export class SearchProductsQuery implements ISearchProductsQuery {
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
+      statuses?: string[] | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -1961,6 +1962,11 @@ export class AuthApiBase {
                   this.storesIds = [] as any;
                   for (let item of _data["storesIds"])
                       this.storesIds!.push(item);
+              }
+              if (Array.isArray(_data["statuses"])) {
+                  this.statuses = [] as any;
+                  for (let item of _data["statuses"])
+                      this.statuses!.push(item);
               }
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
@@ -2003,6 +2009,11 @@ export class AuthApiBase {
               for (let item of this.storesIds)
                   data["storesIds"].push(item);
           }
+          if (Array.isArray(this.statuses)) {
+              data["statuses"] = [];
+              for (let item of this.statuses)
+                  data["statuses"].push(item);
+          }
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -2033,6 +2044,7 @@ export class AuthApiBase {
   export interface ISearchProductsQuery {
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
+      statuses?: string[] | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -2122,36 +2134,6 @@ export class AuthApiBase {
       RequestChanges = "RequestChanges",
       Rejected = "Rejected",
       Approved = "Approved",
-  }
-  
-  export class INotification implements IINotification {
-  
-      constructor(data?: IINotification) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-      }
-  
-      static fromJS(data: any): INotification {
-          data = typeof data === 'object' ? data : {};
-          let result = new INotification();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          return data; 
-      }
-  }
-  
-  export interface IINotification {
   }
   
   export class ProductPublicationRequest implements IProductPublicationRequest {

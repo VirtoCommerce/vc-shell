@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.53](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.53) (2021-10-13)
+
+
+
+## 0.0.52 (2021-10-13)
+
+
+
+## 0.0.51 (2021-10-13)
+
+
+
+## 0.0.50 (2021-10-12)
+
+
+
+## 0.0.49 (2021-10-12)
+
+
+
+## 0.0.48 (2021-10-06)
+
+
+
+## 0.0.47 (2021-10-06)
+
+
+
+## 0.0.46 (2021-09-30)
+
+
+
+## 0.0.45 (2021-09-30)
+
+
+### Bug Fixes
+
+* deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
+* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
+
+
+
+## 0.0.43 (2021-09-24)
+
+
+
+## 0.0.42 (2021-09-23)
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.52](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.52) (2021-10-13)
 
 

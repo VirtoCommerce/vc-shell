@@ -25,6 +25,38 @@ module.exports = {
     historyApiFallback: true,
   },
 
+  pwa: {
+    name: 'Vendor Portal',
+    themeColor: '#319ED4',
+    msTileColor: '#000000',
+    appleMobileWebAppCapable: 'yes',
+
+    // настройки манифеста
+    manifestOptions: {
+      display: 'fullscreen',
+      start_url: "/index.html",
+      icons: [
+        { 'src': './img/icons/192x192.png', 'sizes': '192x192', 'type': 'image/png' },
+        { 'src': './img/icons/512x512.png', 'sizes': '512x512', 'type': 'image/png' },
+        { 'src': './img/icons/192x192.png', 'sizes': '192x192', 'type': 'image/png', 'purpose': 'maskable' },
+        { 'src': './img/icons/512x512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'maskable' }
+      ],
+    },
+
+    workboxPluginMode: 'GenerateSW',
+    workboxOptions: {
+      navigateFallback: 'index.html',
+    },
+
+    iconPaths: {
+      favicon32: 'img/icons/63x64.png',
+      favicon16: 'img/icons/32x32.png',
+      appleTouchIcon: 'img/icons/192x192.png',
+      maskIcon: 'img/icons/512x512.png',
+      msTileImage: 'img/icons/192x192.png'
+    }
+  },
+
   // Tune webpack configuration
   chainWebpack: (config) => {
     const tsconfigFile = config.get('mode') === "production" ? TSCONFIG_BUILD : TSCONFIG;

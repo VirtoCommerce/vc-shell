@@ -45,6 +45,7 @@
         ref="scrollContainer"
         :noPadding="true"
         class="vc-flex-grow_1"
+        @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
         <template v-if="$isMobile.value && $slots['mobile-item']">

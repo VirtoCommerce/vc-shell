@@ -65,15 +65,13 @@ export default defineComponent({
     onMounted(async () => {
       await loadUser();
       isReady.value = true;
+      if (!isAuthorized.value) {
+        window?.history?.pushState(null, "", "/login");
+      }
     });
 
     watch(user, (value) => {
       isAuthorized.value = !!value?.userName;
-      if (!isAuthorized.value) {
-        window?.history?.pushState(null, "", "/login");
-      } else {
-        window?.history?.pushState(null, "", "/");
-      }
     });
 
     log.debug(`Initializing App`);
@@ -152,6 +150,7 @@ export default defineComponent({
         isVisible: isMobile,
         clickHandler() {
           signOut();
+          window?.history?.pushState(null, "", "/login");
         },
       },
     ]);
@@ -198,7 +197,11 @@ body,
 #app {
   font-family: "Roboto";
   height: 100%;
+  width: 100%;
   margin: 0;
+  position: fixed;
+  overflow: hidden;
+  overscroll-behavior-y: none;
 }
 
 h1,

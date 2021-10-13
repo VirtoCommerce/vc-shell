@@ -29,6 +29,7 @@
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
+      @scroll:ptr="reload"
     >
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">

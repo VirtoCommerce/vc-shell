@@ -37,6 +37,7 @@
             ref="menu"
             class="vc-flex-shrink_0"
             :items="menuItems"
+            :activeItem="activeMenuItem"
             @item:click="onMenuItemClick"
           ></vc-app-menu>
 
@@ -160,6 +161,8 @@ export default defineComponent({
 
     const instance = getCurrentInstance();
 
+    const activeMenuItem = ref();
+
     // Setup workspace
     const workspace = ref<IPage[]>([]);
     const workspaceRefs = ref<BladeElement[]>([]);
@@ -178,7 +181,6 @@ export default defineComponent({
       () => workspace.value,
       (value) => {
         if (props.isReady) {
-          console.debug(`vc-app: workspace changed.`);
           if (value && value.length) {
             const ws = value[0].url;
             let lastBladeWithUrlIndex = -1;
@@ -231,6 +233,10 @@ export default defineComponent({
             url: ws.url,
           });
 
+          activeMenuItem.value = (
+            props.menuItems as Record<string, any>[]
+          ).find((item) => item.component?.url === ws.url);
+
           if (data.blade) {
             const blade = (props.pages as IPage[]).find(
               (item) => item.url === data.blade
@@ -244,11 +250,15 @@ export default defineComponent({
             }
           }
         }
+      } else {
+        activeMenuItem.value = props.menuItems[0];
       }
     });
 
     const onMenuItemClick = function (item: Record<string, unknown>) {
       console.debug(`vc-app#onMenuItemClick() called.`);
+
+      activeMenuItem.value = item;
 
       if (item.clickHandler && typeof item.clickHandler === "function") {
         item.clickHandler(instance?.proxy);
@@ -354,6 +364,7 @@ export default defineComponent({
       workspace,
       workspaceRefs,
       setWorkspaceRef,
+      activeMenuItem,
       onMenuItemClick,
       onToolbarButtonClick,
       openDashboard,
@@ -367,9 +378,13 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+:root {
+  --app-background: #eff2fa;
+}
+
 .vc-app {
   font-size: var(--font-size-m);
-  background-color: var(--background-color);
+  background: var(--app-background);
   overflow: hidden;
 
   &__inner {
@@ -379,10 +394,11 @@ export default defineComponent({
   &__workspace {
     padding-left: var(--padding-s);
     padding-right: var(--padding-s);
+    width: 100%;
+    overflow: hidden;
 
     .vc-app_mobile & {
       padding: 0;
-      width: 100%;
     }
   }
 }

@@ -28,10 +28,7 @@
     <!-- Logo container for desktop devices -->
     <template v-else>
       <img class="vc-app-bar__logo" :src="logo" @click="$emit('logo:click')" />
-      <div
-        class="vc-app-bar__version vc-margin-left_xl"
-        @click="$emit('version:click')"
-      >
+      <div class="vc-app-bar__version" @click="$emit('version:click')">
         {{ version }}
       </div>
     </template>
@@ -154,6 +151,7 @@ export default defineComponent({
   &__version {
     color: var(--app-bar-version-color);
     font-size: var(--font-size-xs);
+    margin-left: 30px;
   }
 
   &__button {

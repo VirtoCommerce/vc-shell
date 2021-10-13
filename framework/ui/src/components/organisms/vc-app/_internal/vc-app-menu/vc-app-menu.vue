@@ -47,6 +47,7 @@
           <vc-app-menu-item
             v-if="item.isVisible === undefined || item.isVisible"
             v-bind="item"
+            :isActive="item === activeItem"
             @click="
               $emit('item:click', item);
               isMobileVisible = false;
@@ -73,6 +74,11 @@ export default defineComponent({
     items: {
       type: Array,
       default: () => [],
+    },
+
+    activeItem: {
+      type: Object,
+      default: undefined,
     },
 
     // LocalStorage field name for menu collapsed state
@@ -111,10 +117,9 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --app-menu-width: 240px;
+  --app-menu-width: 168px;
   --app-menu-width-collapsed: 60px;
   --app-menu-background-color: #ffffff;
-  --app-menu-border-right-color: #ffffff;
 }
 
 .vc-app-menu {

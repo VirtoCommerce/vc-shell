@@ -1,5 +1,9 @@
 <template>
-  <div class="vc-app-menu-item" @click="$emit('click')">
+  <div
+    class="vc-app-menu-item"
+    :class="{ 'vc-app-menu-item_active': isActive }"
+    @click="$emit('click')"
+  >
     <div
       class="vc-app-menu-item__handler"
       :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
@@ -29,6 +33,11 @@ export default defineComponent({
     },
 
     isVisible: {
+      type: Boolean,
+      default: false,
+    },
+
+    isActive: {
       type: Boolean,
       default: false,
     },
@@ -65,18 +74,20 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --app-menu-item-height: 40px;
+  --app-menu-item-height: 48px;
   --app-menu-item-icon-width: 20px;
   --app-menu-item-icon-color: #319ed4;
+  --app-menu-item-icon-color-active: #34414f;
   --app-menu-item-handler-width: 20px;
   --app-menu-item-background-color: var(--app-menu-background-color);
-  --app-menu-item-background-color-hover: #eff7fc;
-  --app-menu-item-border-bottom-color: #e7ebf1;
+  --app-menu-item-background-color-hover: #f5f6f9;
+  --app-menu-item-border-bottom: none;
   --app-menu-item-title-font-weight: var(--font-weight-medium);
+  --app-menu-item-title-font-weight-active: var(--font-weight-bold);
   --app-menu-item-title-font-size: var(--font-size-l);
-  --app-menu-item-title-padding-right: 5px;
-  --app-menu-item-title-padding-left: 9px;
+  --app-menu-item-title-padding: 0 var(--padding-m);
   --app-menu-item-title-color: #465769;
+  --app-menu-item-title-color-active: #161d25;
   --app-menu-item-handler-color: #bdd1df;
 }
 
@@ -86,10 +97,25 @@ export default defineComponent({
   width: 100%;
   height: var(--app-menu-item-height);
   background-color: var(--app-menu-item-background-color);
-  border-bottom: 1px solid var(--app-menu-item-border-bottom-color);
+  border-bottom: var(--app-menu-item-border-bottom);
   flex-wrap: nowrap;
   box-sizing: border-box;
   cursor: pointer;
+  position: relative;
+
+  &_active {
+    background-color: var(--app-menu-item-background-color-hover);
+
+    &:before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      background-color: #43b0e6;
+    }
+  }
 
   &__handler {
     width: var(--app-menu-item-handler-width);
@@ -112,15 +138,23 @@ export default defineComponent({
     flex-shrink: 0;
   }
 
+  &_active &__icon {
+    color: var(--app-menu-item-icon-color-active);
+  }
+
   &__title {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     font-size: var(--app-menu-item-title-font-size);
     font-weight: var(--app-menu-item-title-font-weight);
-    padding-right: var(--app-menu-item-title-padding-right);
-    padding-left: var(--app-menu-item-title-padding-left);
+    padding: var(--app-menu-item-title-padding);
     color: var(--app-menu-item-title-color);
+  }
+
+  &_active &__title {
+    color: var(--app-menu-item-title-color-active);
+    font-weight: var(--app-menu-item-title-font-weight-active);
   }
 
   &:hover {

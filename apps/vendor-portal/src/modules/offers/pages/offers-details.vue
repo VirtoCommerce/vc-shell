@@ -1,7 +1,11 @@
 <template>
   <vc-blade
     v-loading="loading"
-    :title="$t('OFFERS.PAGES.DETAILS.TITLE')"
+    :title="
+      param && offerDetails
+        ? offerDetails.sku
+        : $t('OFFERS.PAGES.DETAILS.TITLE')
+    "
     width="600"
     :expanded="expanded"
     :closable="closable"

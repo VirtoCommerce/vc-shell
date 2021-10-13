@@ -185,12 +185,6 @@ export default defineComponent({
     const empty = {
       image: "/assets/empty-product.png",
       text: "There are no orders yet",
-      action: "Add order",
-      clickHandler: () => {
-        emit("page:open", {
-          component: OrdersDetails,
-        });
-      },
     };
 
     const onItemClick = (item: { id: string }) => {

@@ -95,7 +95,7 @@ export default defineComponent({
 
       touchMove(e: TouchEvent): void {
         const delta = startY.value - e.touches[0].clientY;
-        if (delta < 0 && delta > -80 && component.value?.scrollTop === 0) {
+        if (delta < -20 && delta > -80 && component.value?.scrollTop === 0) {
           e.preventDefault();
           isOverscrollVisible.value = true;
           offsetY.value = -delta;

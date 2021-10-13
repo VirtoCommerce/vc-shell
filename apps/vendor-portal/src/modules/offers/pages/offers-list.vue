@@ -29,6 +29,7 @@
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
+      @scroll:ptr="reload"
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
@@ -294,7 +295,6 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
         width: 100,
         sortable: true,
-        alwaysVisible: true,
       },
       {
         id: "minQuantity",
@@ -307,7 +307,6 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
         width: 80,
         sortable: true,
-        alwaysVisible: true,
       },
     ]);
 

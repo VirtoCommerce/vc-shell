@@ -69,6 +69,11 @@ export default defineComponent({
 
     watch(user, (value) => {
       isAuthorized.value = !!value?.userName;
+      if (!isAuthorized.value) {
+        window?.history?.pushState(null, "", "/login");
+      } else {
+        window?.history?.pushState(null, "", "/");
+      }
     });
 
     log.debug(`Initializing App`);

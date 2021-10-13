@@ -174,7 +174,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - envName: 'dev'
+          - envName: 'prod'
             deployConfigPath: '.deployment/UIKit/argoDeploy-platform-dev.json'
 
     runs-on: ubuntu-latest

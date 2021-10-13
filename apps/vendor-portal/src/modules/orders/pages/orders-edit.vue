@@ -138,11 +138,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="less">
-.vc-orders-page {
-  &__created {
-    color: #a5a5a5;
-  }
-}
-</style>

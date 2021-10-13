@@ -36,14 +36,20 @@
               >
                 <template v-slot:item="itemData">
                   <div
-                    class="vc-flex vc-flex-align_center vc-padding-vertical_s"
+                    class="
+                      vc-flex
+                      vc-flex-align_center
+                      vc-padding-vertical_s
+                      vc-ellipsis
+                    "
                   >
                     <vc-image
+                      class="vc-flex-shrink_0"
                       size="xs"
                       :src="itemData.item.imgSrc"
                       :bordered="true"
                     ></vc-image>
-                    <div class="flex-grow_1 vc-margin-left_l">
+                    <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
                       <div class="vc-ellipsis">{{ itemData.item.name }}</div>
                       <vc-hint class="vc-ellipsis vc-margin-top_xs">
                         Code: {{ itemData.item.sku }}

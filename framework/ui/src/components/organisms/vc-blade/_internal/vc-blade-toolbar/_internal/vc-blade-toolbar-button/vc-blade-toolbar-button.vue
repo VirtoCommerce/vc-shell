@@ -62,8 +62,11 @@ export default defineComponent({
         if (!props.disabled && !isWaiting.value) {
           if (props.clickHandler && typeof props.clickHandler === "function") {
             isWaiting.value = true;
-            await props.clickHandler();
-            isWaiting.value = false;
+            try {
+              await props.clickHandler();
+            } finally {
+              isWaiting.value = false;
+            }
           } else {
             emit("click");
           }

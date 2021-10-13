@@ -14,6 +14,7 @@
       :multiselect="true"
       :columns="columns"
       :items="orders.results"
+      :itemActionBuilder="actionBuilder"
       :totalCount="orders.totalCount"
       :pages="pages"
       :currentPage="currentPage"
@@ -37,6 +38,52 @@
       <!-- Override total column template -->
       <template v-slot:item_total="itemData">
         {{ itemData.item.total }} {{ itemData.item.currency }}
+      </template>
+
+      <template v-slot:mobile-item="itemData">
+        <div class="orders-list__mobile-item vc-padding_m">
+          <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
+            <div class="vc-flex-grow_1">
+              <div class="vc-font-weight_bold vc-font-size_l">
+                {{ itemData.item.number }}
+              </div>
+              <vc-hint class="vc-margin-top_xs">{{
+                itemData.item.customerName
+              }}</vc-hint>
+            </div>
+            <div>
+              <vc-status v-bind="statusStyle(itemData.item.status)">
+                {{ itemData.item.status }}
+              </vc-status>
+            </div>
+          </div>
+          <div>
+            <div
+              class="
+                vc-margin-top_m
+                vc-fill_width
+                vc-flex
+                vc-flex-justify_space-between
+              "
+            >
+              <div class="vc-ellipsis vc-flex-grow_1">
+                <vc-hint>Total</vc-hint>
+                <div class="vc-ellipsis vc-margin-top_xs">
+                  {{ itemData.item.total }} {{ itemData.item.currency }}
+                </div>
+              </div>
+              <div class="vc-ellipsis vc-flex-grow_1">
+                <vc-hint>Created</vc-hint>
+                <div class="vc-ellipsis vc-margin-top_xs">
+                  {{
+                    itemData.item.createdDate &&
+                    moment(itemData.item.createdDate).fromNow()
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </template>
     </vc-table>
   </vc-blade>
@@ -178,10 +225,34 @@ export default defineComponent({
       });
     };
 
+    const actionBuilder = (item) => {
+      let result = [];
+
+      result.push({
+        icon: "fas fa-check",
+        title: "Confirm",
+        variant: "success",
+        clickHandler() {
+          alert("Confirm");
+        },
+      });
+      result.push({
+        icon: "fas fa-times",
+        title: "Decline",
+        variant: "danger",
+        clickHandler() {
+          alert("Decline");
+        },
+      });
+
+      return result;
+    };
+
     return {
       bladeToolbar,
       columns,
       orders,
+      actionBuilder,
       loading,
       onItemClick,
       moment,

@@ -16,6 +16,7 @@
       :multiselect="true"
       :columns="columns"
       :items="products"
+      :itemActionBuilder="actionBuilder"
       :filterItems="filterItems"
       :sort="sort"
       :pages="pages"
@@ -23,7 +24,7 @@
       :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
       :searchValue="searchValue"
-      @searchValueChanged="onSearchList"
+      @search:change="onSearchList"
       :totalCount="totalCount"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
@@ -97,7 +98,10 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>Created</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
-                  {{ moment(itemData.item.createdDate).fromNow() }}
+                  {{
+                    itemData.item.createdDate &&
+                    moment(itemData.item.createdDate).fromNow()
+                  }}
                 </div>
               </div>
             </div>
@@ -109,7 +113,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  computed,
+  watch,
+  reactive,
+} from "vue";
 import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -308,6 +319,51 @@ export default defineComponent({
       { title: "Created date", type: "date" },
     ];
 
+    const actionBuilder = (product) => {
+      let result = [];
+
+      if (product.status === "Published") {
+        result.push({
+          icon: "fas fa-times",
+          title: "Unpublish",
+          variant: "danger",
+          clickHandler() {
+            alert("Unpublish");
+          },
+        });
+      } else {
+        result.push({
+          icon: "fas fa-check",
+          title: "Publish",
+          variant: "success",
+          clickHandler() {
+            alert("Publish");
+          },
+        });
+      }
+
+      result.push(
+        ...[
+          {
+            icon: "fas fa-clock",
+            title: "Other action",
+            clickHandler() {
+              alert("Other action");
+            },
+          },
+          {
+            icon: "fas fa-clock",
+            title: "Other action2",
+            clickHandler() {
+              alert("Other action");
+            },
+          },
+        ]
+      );
+
+      return result;
+    };
+
     return {
       loading,
       bladeToolbar,
@@ -321,6 +377,7 @@ export default defineComponent({
       filterItems,
       searchQuery,
       products,
+      actionBuilder,
       totalCount,
       pages,
       currentPage,

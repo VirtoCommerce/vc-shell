@@ -3,7 +3,11 @@
     class="vc-app vc-fill_all vc-flex vc-flex-column vc-margin_none"
     :class="[
       `vc-theme_${theme}`,
-      { 'vc-app_touch': $isTouch, 'vc-app_phone': $isPhone.value },
+      {
+        'vc-app_touch': $isTouch,
+        'vc-app_phone': $isPhone.value,
+        'vc-app_mobile': $isMobile.value,
+      },
     ]"
   >
     <vc-loading v-if="!isReady" active></vc-loading>
@@ -45,7 +49,7 @@
           <div v-else class="vc-app__workspace vc-flex vc-flex-grow_1">
             <component
               v-for="(blade, index) in workspace"
-              v-show="index >= workspace.length - ($isDesktop.value ? 2 : 1)"
+              v-show="index >= workspace.length - ($isMobile.value ? 1 : 2)"
               :key="index"
               :is="blade.component"
               :ref="setWorkspaceRef"
@@ -376,7 +380,7 @@ export default defineComponent({
     padding-left: var(--padding-s);
     padding-right: var(--padding-s);
 
-    .vc-app_phone & {
+    .vc-app_mobile & {
       padding: 0;
       width: 100%;
     }

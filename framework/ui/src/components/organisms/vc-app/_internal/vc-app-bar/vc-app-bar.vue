@@ -1,7 +1,7 @@
 <template>
   <div class="vc-app-bar">
     <!-- Logo container for mobile devices -->
-    <template v-if="$isPhone.value">
+    <template v-if="$isMobile.value">
       <!-- Show logo on mobile dashboard -->
       <img
         v-if="workspace.length === 0"

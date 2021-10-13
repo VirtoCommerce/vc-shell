@@ -17,11 +17,12 @@
       :multiselect="true"
       :columns="columns"
       :items="offers"
+      :itemActionBuilder="actionBuilder"
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
       :searchValue="searchValue"
-      @searchValueChanged="onSearchList"
+      @search:change="onSearchList"
       :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
       :totalCount="totalCount"
@@ -86,11 +87,6 @@
                 {{ itemData.item.name }}
               </vc-hint>
             </div>
-            <div class="vc-margin-top_s vc-margin-bottom_m vc-margin-left_m">
-              <vc-status>
-                {{ itemData.item.status }}
-              </vc-status>
-            </div>
           </div>
           <div
             class="
@@ -130,19 +126,26 @@
             <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>List price</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
-                {{ itemData.item.listPrice.toFixed(2) }}
+                {{
+                  itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
+                }}
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>Sale price</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
-                {{ itemData.item.salePrice.toFixed(2) }}
+                {{
+                  itemData.item.salePrice && itemData.item.salePrice.toFixed(2)
+                }}
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_1">
               <vc-hint>Created</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
-                {{ moment(itemData.item.createdDate).fromNow() }}
+                {{
+                  itemData.item.createdDate &&
+                  moment(itemData.item.createdDate).fromNow()
+                }}
               </div>
             </div>
           </div>
@@ -354,6 +357,32 @@ export default defineComponent({
       });
     };
 
+    const actionBuilder = (item) => {
+      let result = [];
+
+      if (item.status === "Published") {
+        result.push({
+          icon: "fas fa-times",
+          title: "Unpublish",
+          variant: "danger",
+          clickHandler() {
+            alert("Unpublish");
+          },
+        });
+      } else {
+        result.push({
+          icon: "fas fa-check",
+          title: "Publish",
+          variant: "success",
+          clickHandler() {
+            alert("Publish");
+          },
+        });
+      }
+
+      return result;
+    };
+
     return {
       bladeToolbar,
       empty,
@@ -367,6 +396,7 @@ export default defineComponent({
       }),
       loading,
       offers,
+      actionBuilder,
       totalCount,
       pages,
       currentPage,

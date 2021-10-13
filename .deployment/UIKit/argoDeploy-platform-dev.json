@@ -17,5 +17,13 @@
         "environmentName" : "QA",
         "environmentType" : "testing",
         "environmentUrl" : "https://ui-kit.govirto.com/"
+    },
+     "prod": {
+        "deployAppName": "ui-kit-demo",
+        "deployBranch": "demo",
+        "environmentId" : "demo",
+        "environmentName" : "Demo",
+        "environmentType" : "production",
+        "environmentUrl" : "https://ui-kit.govirto.com/"
     }
 }

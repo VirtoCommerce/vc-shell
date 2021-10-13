@@ -412,6 +412,7 @@ export default defineComponent({
   .vc-app_phone &__content {
     border-right: none;
     border-bottom: 1px solid #eaedf3;
+    overflow: visible;
   }
 
   .vc-app_phone &__widgets {

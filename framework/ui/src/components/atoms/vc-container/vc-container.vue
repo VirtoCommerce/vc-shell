@@ -95,11 +95,11 @@ export default defineComponent({
 
       touchMove(e: TouchEvent): void {
         const delta = startY.value - e.touches[0].clientY;
-        if (delta < 0 && delta > -50 && component.value?.scrollTop === 0) {
+        if (delta < 0 && delta > -80 && component.value?.scrollTop === 0) {
           e.preventDefault();
           isOverscrollVisible.value = true;
           offsetY.value = -delta;
-          isThresholdPassed.value = Math.abs(offsetY.value) > 40;
+          isThresholdPassed.value = Math.abs(offsetY.value) > 60;
         }
       },
 
@@ -146,7 +146,7 @@ export default defineComponent({
   &__overscroll {
     position: relative;
     width: 100%;
-    height: 50px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;

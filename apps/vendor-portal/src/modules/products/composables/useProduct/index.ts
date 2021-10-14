@@ -4,7 +4,6 @@ import { cloneDeep as _cloneDeep } from "lodash";
 
 import {
   ICategory,
-  CatalogModuleIndexedSearchClient,
   CategoryIndexedSearchCriteria,
 } from "@virtoshell/api-client";
 

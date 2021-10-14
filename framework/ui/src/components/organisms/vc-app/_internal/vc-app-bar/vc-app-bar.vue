@@ -28,10 +28,7 @@
     <!-- Logo container for desktop devices -->
     <template v-else>
       <img class="vc-app-bar__logo" :src="logo" @click="$emit('logo:click')" />
-      <div
-        class="vc-app-bar__version vc-margin-left_xl"
-        @click="$emit('version:click')"
-      >
+      <div class="vc-app-bar__version" @click="$emit('version:click')">
         {{ version }}
       </div>
     </template>
@@ -131,9 +128,9 @@ export default defineComponent({
   --app-bar-background-color: #ffffff;
   --app-bar-button-width: 50px;
   --app-bar-button-border-color: var(--app-bar-background-color);
-  --app-bar-button-color: #acacac;
+  --app-bar-button-color: #7e8e9d;
   --app-bar-button-background-color: var(--app-bar-background-color);
-  --app-bar-button-color-hover: #808080;
+  --app-bar-button-color-hover: #34414f;
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
   --app-bar-version-color: #838d9a;
 }
@@ -154,6 +151,7 @@ export default defineComponent({
   &__version {
     color: var(--app-bar-version-color);
     font-size: var(--font-size-xs);
+    margin-left: 30px;
   }
 
   &__button {
@@ -166,6 +164,7 @@ export default defineComponent({
     cursor: pointer;
     color: var(--app-bar-button-color);
     background-color: var(--app-bar-button-background-color);
+    transition: color 0.2s ease;
 
     &:hover {
       color: var(--app-bar-button-color-hover);

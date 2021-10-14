@@ -408,6 +408,7 @@ export default defineComponent({
 
   &__content {
     border-right: 1px solid #eaedf3;
+    overflow: hidden;
   }
 
   .vc-app_phone &__inner {
@@ -417,6 +418,7 @@ export default defineComponent({
   .vc-app_phone &__content {
     border-right: none;
     border-bottom: 1px solid #eaedf3;
+    overflow: visible;
   }
 
   .vc-app_phone &__widgets {

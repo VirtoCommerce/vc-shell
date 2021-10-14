@@ -18,7 +18,7 @@
       <input
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
-        :type="type"
+        :type="internalType"
         :value="modelValue"
         :disabled="disabled"
         @input="$emit('update:modelValue', $event.target.value)"
@@ -26,7 +26,7 @@
 
       <!-- Input clear button -->
       <div
-        v-if="clearable && modelValue && !disabled"
+        v-if="clearable && modelValue && !disabled && type !== 'password'"
         class="
           vc-input__clear
           vc-padding-horizontal_m
@@ -36,6 +36,32 @@
         @click="$emit('update:modelValue', '')"
       >
         <vc-icon size="s" icon="fas fa-times"></vc-icon>
+      </div>
+
+      <div
+        class="
+          vc-input__showhide
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
+        v-if="type === 'password' && internalType === 'password'"
+        @click="internalType = 'text'"
+      >
+        <vc-icon size="s" icon="fas fa-eye-slash"></vc-icon>
+      </div>
+
+      <div
+        class="
+          vc-input__showhide
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
+        v-if="type === 'password' && internalType === 'text'"
+        @click="internalType = 'password'"
+      >
+        <vc-icon size="s" icon="fas fa-eye"></vc-icon>
       </div>
     </div>
 
@@ -48,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, unref } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 
@@ -108,6 +134,14 @@ export default defineComponent({
   },
 
   emits: ["update:modelValue"],
+
+  setup(props) {
+    const internalType = ref(unref(props.type));
+
+    return {
+      internalType,
+    };
+  },
 });
 </script>
 
@@ -152,6 +186,15 @@ export default defineComponent({
   &__clear {
     cursor: pointer;
     color: var(--input-clear-color);
+
+    &:hover {
+      color: var(--input-clear-color-hover);
+    }
+  }
+
+  &__showhide {
+    cursor: pointer;
+    color: var(--input-placeholder-color);
 
     &:hover {
       color: var(--input-clear-color-hover);

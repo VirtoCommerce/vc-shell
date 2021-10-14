@@ -88,10 +88,11 @@ export default defineComponent({
 
 <style lang="less">
 .user-dropdown-button {
-  width: 325px;
+  width: 204px;
   border-left: 1px solid var(--app-bar-divider-color);
-  padding: 0 var(--padding-l);
-  box-sizing: border-box;
+  padding-left: var(--padding-l);
+  padding-right: var(--padding-m);
+  margin-right: var(--margin-l);
   cursor: pointer;
   position: relative;
   display: flex;
@@ -126,10 +127,15 @@ export default defineComponent({
 
   &__chevron {
     color: #7e8e9d;
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  &:hover &__chevron {
+    color: #34414f;
   }
 
   &_active &__chevron {
-    transform: rotate(180deg);
+    transform: scaleY(-1);
   }
 
   &__menu {
@@ -139,13 +145,14 @@ export default defineComponent({
     top: var(--app-bar-height);
     background: white;
     z-index: 9999;
+    box-shadow: 0 -6px 6px white, 1px 1px 22px rgba(126, 142, 157, 0.2);
 
     &-item {
       padding: var(--padding-m);
       font-size: var(--font-size-l);
       color: #000000;
-      border-left: 1px solid #e7ebf1;
-      border-bottom: 1px solid #e7ebf1;
+      border-left: 1px solid #eef0f2;
+      border-bottom: 1px solid #eef0f2;
       background-color: white;
 
       &:hover {

@@ -119,7 +119,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useUser } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { ICategory, Image } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -171,6 +171,8 @@ export default defineComponent({
       revertStagedChanges,
       changeProductStatus,
     } = useProduct();
+
+    const { getAccessToken } = useUser();
 
     const rules = computed(() => ({
       name: {
@@ -335,11 +337,15 @@ export default defineComponent({
     const onGalleryUpload = async (files: FileList) => {
       const formData = new FormData();
       formData.append("file", files[0]);
+      const authToken = await getAccessToken();
       const result = await fetch(
         `/api/platform/assets?folderUrl=/catalog/${product.value.id}`,
         {
           method: "POST",
           body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
         }
       );
       const response = await result.json();

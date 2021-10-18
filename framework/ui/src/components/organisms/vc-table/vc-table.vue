@@ -15,8 +15,8 @@
           vc-padding_l
         "
       >
-        <!-- Table filter button -->
-        <div class="vc-margin-right_m">
+        <!-- Table filter mobile button -->
+        <div v-if="$isMobile.value" class="vc-margin-right_m">
           <vc-table-filter
             :items="filterItems"
             @apply="$emit('filter:apply', $event)"
@@ -32,6 +32,16 @@
           :modelValue="searchValue"
           @update:modelValue="$emit('search:change', $event)"
         ></vc-input>
+
+        <!-- Table filter desktop button -->
+        <div v-if="$isDesktop.value" class="vc-margin-left_m">
+          <vc-table-filter
+            :items="filterItems"
+            :title="$t('Filters')"
+            @apply="$emit('filter:apply', $event)"
+            @reset="$emit('filter:reset')"
+          />
+        </div>
       </div>
     </slot>
 

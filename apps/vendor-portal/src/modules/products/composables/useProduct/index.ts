@@ -16,6 +16,8 @@ import {
   UpdateProductDetailsCommand,
   CreateNewProductCommand,
   CreateNewPublicationRequestCommand,
+  PropertyDictionaryItemSearchCriteria,
+  PropertyDictionaryItem,
 } from "../../../../api_client";
 
 interface IUseProduct {
@@ -33,6 +35,10 @@ interface IUseProduct {
   ) => void;
   revertStagedChanges: (productId: string) => void;
   changeProductStatus: (productId: string, status: string) => void;
+  searchDictionaryItems: (
+    keyword?: string,
+    skip?: number
+  ) => Promise<PropertyDictionaryItem[]>;
 }
 
 export default (): IUseProduct => {
@@ -56,6 +62,19 @@ export default (): IUseProduct => {
     },
     { deep: true }
   );
+
+  async function searchDictionaryItems(
+    keyword?: string,
+    skip?: number
+  ): Promise<PropertyDictionaryItem[]> {
+    const client = await getApiClient();
+    const result = await client.searchPropertyDictionaryItems({
+      keyword,
+      skip,
+      take: 20,
+    } as PropertyDictionaryItemSearchCriteria);
+    return result.results;
+  }
 
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
     const { getAccessToken } = useUser();
@@ -198,5 +217,6 @@ export default (): IUseProduct => {
     createProduct,
     revertStagedChanges,
     changeProductStatus,
+    searchDictionaryItems,
   };
 };

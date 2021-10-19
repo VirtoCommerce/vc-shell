@@ -171,6 +171,50 @@ export class AuthApiBase {
       }
   
       /**
+       * @param body (optional) 
+       * @return Success
+       */
+      searchPropertyDictionaryItems(body: PropertyDictionaryItemSearchCriteria | undefined): Promise<PropertyDictionaryItemSearchResult> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/dictionaryitems/search";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processSearchPropertyDictionaryItems(_response);
+          });
+      }
+  
+      protected processSearchPropertyDictionaryItems(response: Response): Promise<PropertyDictionaryItemSearchResult> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = PropertyDictionaryItemSearchResult.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<PropertyDictionaryItemSearchResult>(<any>null);
+      }
+  
+      /**
        * @return Success
        */
       getProductById(productId: string | null): Promise<SellerProduct> {
@@ -649,6 +693,7 @@ export class AuthApiBase {
   
   export class SearchCategoriesQuery implements ISearchCategoriesQuery {
       storeId?: string | undefined;
+      sellerId?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -677,6 +722,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.storeId = _data["storeId"];
+              this.sellerId = _data["sellerId"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
               if (Array.isArray(_data["objectTypes"])) {
@@ -713,6 +759,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["storeId"] = this.storeId;
+          data["sellerId"] = this.sellerId;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -742,6 +789,7 @@ export class AuthApiBase {
   
   export interface ISearchCategoriesQuery {
       storeId?: string | undefined;
+      sellerId?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -1436,6 +1484,74 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
+  export class CategoryDescription implements ICategoryDescription {
+      content?: string | undefined;
+      descriptionType?: string | undefined;
+      languageCode?: string | undefined;
+      isInherited?: boolean;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: ICategoryDescription) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.content = _data["content"];
+              this.descriptionType = _data["descriptionType"];
+              this.languageCode = _data["languageCode"];
+              this.isInherited = _data["isInherited"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): CategoryDescription {
+          data = typeof data === 'object' ? data : {};
+          let result = new CategoryDescription();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["content"] = this.content;
+          data["descriptionType"] = this.descriptionType;
+          data["languageCode"] = this.languageCode;
+          data["isInherited"] = this.isInherited;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface ICategoryDescription {
+      content?: string | undefined;
+      descriptionType?: string | undefined;
+      languageCode?: string | undefined;
+      isInherited?: boolean;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
   export class Image implements IImage {
       binaryData?: string | undefined;
       altText?: string | undefined;
@@ -1703,6 +1819,8 @@ export class AuthApiBase {
       taxType?: string | undefined;
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
+      enableDescription?: boolean | undefined;
+      descriptions?: CategoryDescription[] | undefined;
       /** Gets the default image */
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
@@ -1759,6 +1877,12 @@ export class AuthApiBase {
                   this.seoInfos = [] as any;
                   for (let item of _data["seoInfos"])
                       this.seoInfos!.push(SeoInfo.fromJS(item));
+              }
+              this.enableDescription = _data["enableDescription"];
+              if (Array.isArray(_data["descriptions"])) {
+                  this.descriptions = [] as any;
+                  for (let item of _data["descriptions"])
+                      this.descriptions!.push(CategoryDescription.fromJS(item));
               }
               (<any>this).imgSrc = _data["imgSrc"];
               if (Array.isArray(_data["images"])) {
@@ -1823,6 +1947,12 @@ export class AuthApiBase {
               for (let item of this.seoInfos)
                   data["seoInfos"].push(item.toJSON());
           }
+          data["enableDescription"] = this.enableDescription;
+          if (Array.isArray(this.descriptions)) {
+              data["descriptions"] = [];
+              for (let item of this.descriptions)
+                  data["descriptions"].push(item.toJSON());
+          }
           data["imgSrc"] = this.imgSrc;
           if (Array.isArray(this.images)) {
               data["images"] = [];
@@ -1865,6 +1995,8 @@ export class AuthApiBase {
       taxType?: string | undefined;
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
+      enableDescription?: boolean | undefined;
+      descriptions?: CategoryDescription[] | undefined;
       /** Gets the default image */
       imgSrc?: string | undefined;
       images?: Image[] | undefined;
@@ -1927,9 +2059,10 @@ export class AuthApiBase {
   }
   
   export class SearchProductsQuery implements ISearchProductsQuery {
+      sellerId?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
-      statuses?: string[] | undefined;
+      status?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -1957,17 +2090,14 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
               this.categoryId = _data["categoryId"];
               if (Array.isArray(_data["storesIds"])) {
                   this.storesIds = [] as any;
                   for (let item of _data["storesIds"])
                       this.storesIds!.push(item);
               }
-              if (Array.isArray(_data["statuses"])) {
-                  this.statuses = [] as any;
-                  for (let item of _data["statuses"])
-                      this.statuses!.push(item);
-              }
+              this.status = _data["status"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
               if (Array.isArray(_data["objectTypes"])) {
@@ -2003,17 +2133,14 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
           data["categoryId"] = this.categoryId;
           if (Array.isArray(this.storesIds)) {
               data["storesIds"] = [];
               for (let item of this.storesIds)
                   data["storesIds"].push(item);
           }
-          if (Array.isArray(this.statuses)) {
-              data["statuses"] = [];
-              for (let item of this.statuses)
-                  data["statuses"].push(item);
-          }
+          data["status"] = this.status;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -2042,9 +2169,10 @@ export class AuthApiBase {
   }
   
   export interface ISearchProductsQuery {
+      sellerId?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
-      statuses?: string[] | undefined;
+      status?: string | undefined;
       responseGroup?: string | undefined;
       /** Search object type */
       objectType?: string | undefined;
@@ -3704,6 +3832,288 @@ export class AuthApiBase {
       results?: SellerProduct[] | undefined;
   }
   
+  /** Search criteria used for search property dictionary items */
+  export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionaryItemSearchCriteria {
+      propertyIds?: string[] | undefined;
+      catalogIds?: string[] | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      readonly sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  
+      constructor(data?: IPropertyDictionaryItemSearchCriteria) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              if (Array.isArray(_data["propertyIds"])) {
+                  this.propertyIds = [] as any;
+                  for (let item of _data["propertyIds"])
+                      this.propertyIds!.push(item);
+              }
+              if (Array.isArray(_data["catalogIds"])) {
+                  this.catalogIds = [] as any;
+                  for (let item of _data["catalogIds"])
+                      this.catalogIds!.push(item);
+              }
+              this.responseGroup = _data["responseGroup"];
+              this.objectType = _data["objectType"];
+              if (Array.isArray(_data["objectTypes"])) {
+                  this.objectTypes = [] as any;
+                  for (let item of _data["objectTypes"])
+                      this.objectTypes!.push(item);
+              }
+              if (Array.isArray(_data["objectIds"])) {
+                  this.objectIds = [] as any;
+                  for (let item of _data["objectIds"])
+                      this.objectIds!.push(item);
+              }
+              this.keyword = _data["keyword"];
+              this.searchPhrase = _data["searchPhrase"];
+              this.languageCode = _data["languageCode"];
+              this.sort = _data["sort"];
+              if (Array.isArray(_data["sortInfos"])) {
+                  (<any>this).sortInfos = [] as any;
+                  for (let item of _data["sortInfos"])
+                      (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+              }
+              this.skip = _data["skip"];
+              this.take = _data["take"];
+          }
+      }
+  
+      static fromJS(data: any): PropertyDictionaryItemSearchCriteria {
+          data = typeof data === 'object' ? data : {};
+          let result = new PropertyDictionaryItemSearchCriteria();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          if (Array.isArray(this.propertyIds)) {
+              data["propertyIds"] = [];
+              for (let item of this.propertyIds)
+                  data["propertyIds"].push(item);
+          }
+          if (Array.isArray(this.catalogIds)) {
+              data["catalogIds"] = [];
+              for (let item of this.catalogIds)
+                  data["catalogIds"].push(item);
+          }
+          data["responseGroup"] = this.responseGroup;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.objectTypes)) {
+              data["objectTypes"] = [];
+              for (let item of this.objectTypes)
+                  data["objectTypes"].push(item);
+          }
+          if (Array.isArray(this.objectIds)) {
+              data["objectIds"] = [];
+              for (let item of this.objectIds)
+                  data["objectIds"].push(item);
+          }
+          data["keyword"] = this.keyword;
+          data["searchPhrase"] = this.searchPhrase;
+          data["languageCode"] = this.languageCode;
+          data["sort"] = this.sort;
+          if (Array.isArray(this.sortInfos)) {
+              data["sortInfos"] = [];
+              for (let item of this.sortInfos)
+                  data["sortInfos"].push(item.toJSON());
+          }
+          data["skip"] = this.skip;
+          data["take"] = this.take;
+          return data; 
+      }
+  }
+  
+  /** Search criteria used for search property dictionary items */
+  export interface IPropertyDictionaryItemSearchCriteria {
+      propertyIds?: string[] | undefined;
+      catalogIds?: string[] | undefined;
+      responseGroup?: string | undefined;
+      /** Search object type */
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      /** Search phrase */
+      keyword?: string | undefined;
+      /** Property is left for backward compatibility */
+      searchPhrase?: string | undefined;
+      /** Search phrase language */
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  }
+  
+  export class PropertyDictionaryItemLocalizedValue implements IPropertyDictionaryItemLocalizedValue {
+      languageCode?: string | undefined;
+      value?: string | undefined;
+  
+      constructor(data?: IPropertyDictionaryItemLocalizedValue) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.languageCode = _data["languageCode"];
+              this.value = _data["value"];
+          }
+      }
+  
+      static fromJS(data: any): PropertyDictionaryItemLocalizedValue {
+          data = typeof data === 'object' ? data : {};
+          let result = new PropertyDictionaryItemLocalizedValue();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["languageCode"] = this.languageCode;
+          data["value"] = this.value;
+          return data; 
+      }
+  }
+  
+  export interface IPropertyDictionaryItemLocalizedValue {
+      languageCode?: string | undefined;
+      value?: string | undefined;
+  }
+  
+  export class PropertyDictionaryItem implements IPropertyDictionaryItem {
+      propertyId?: string | undefined;
+      alias?: string | undefined;
+      sortOrder?: number;
+      localizedValues?: PropertyDictionaryItemLocalizedValue[] | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IPropertyDictionaryItem) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.propertyId = _data["propertyId"];
+              this.alias = _data["alias"];
+              this.sortOrder = _data["sortOrder"];
+              if (Array.isArray(_data["localizedValues"])) {
+                  this.localizedValues = [] as any;
+                  for (let item of _data["localizedValues"])
+                      this.localizedValues!.push(PropertyDictionaryItemLocalizedValue.fromJS(item));
+              }
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): PropertyDictionaryItem {
+          data = typeof data === 'object' ? data : {};
+          let result = new PropertyDictionaryItem();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["propertyId"] = this.propertyId;
+          data["alias"] = this.alias;
+          data["sortOrder"] = this.sortOrder;
+          if (Array.isArray(this.localizedValues)) {
+              data["localizedValues"] = [];
+              for (let item of this.localizedValues)
+                  data["localizedValues"].push(item.toJSON());
+          }
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IPropertyDictionaryItem {
+      propertyId?: string | undefined;
+      alias?: string | undefined;
+      sortOrder?: number;
+      localizedValues?: PropertyDictionaryItemLocalizedValue[] | undefined;
+      id?: string | undefined;
+  }
+  
+  export class PropertyDictionaryItemSearchResult implements IPropertyDictionaryItemSearchResult {
+      totalCount?: number;
+      results?: PropertyDictionaryItem[] | undefined;
+  
+      constructor(data?: IPropertyDictionaryItemSearchResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.totalCount = _data["totalCount"];
+              if (Array.isArray(_data["results"])) {
+                  this.results = [] as any;
+                  for (let item of _data["results"])
+                      this.results!.push(PropertyDictionaryItem.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): PropertyDictionaryItemSearchResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new PropertyDictionaryItemSearchResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["totalCount"] = this.totalCount;
+          if (Array.isArray(this.results)) {
+              data["results"] = [];
+              for (let item of this.results)
+                  data["results"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface IPropertyDictionaryItemSearchResult {
+      totalCount?: number;
+      results?: PropertyDictionaryItem[] | undefined;
+  }
+  
   export class ProductDetails implements IProductDetails {
       name?: string | undefined;
       description?: string | undefined;
@@ -3889,6 +4299,7 @@ export class AuthApiBase {
   }
   
   export class SearchOffersQuery implements ISearchOffersQuery {
+      sellerId?: string | undefined;
       sellerProductId?: string | undefined;
       productId?: string | undefined;
       responseGroup?: string | undefined;
@@ -3918,6 +4329,7 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
               this.sellerProductId = _data["sellerProductId"];
               this.productId = _data["productId"];
               this.responseGroup = _data["responseGroup"];
@@ -3955,6 +4367,7 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
           data["sellerProductId"] = this.sellerProductId;
           data["productId"] = this.productId;
           data["responseGroup"] = this.responseGroup;
@@ -3985,6 +4398,7 @@ export class AuthApiBase {
   }
   
   export interface ISearchOffersQuery {
+      sellerId?: string | undefined;
       sellerProductId?: string | undefined;
       productId?: string | undefined;
       responseGroup?: string | undefined;

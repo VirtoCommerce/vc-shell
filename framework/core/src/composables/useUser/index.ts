@@ -1,6 +1,13 @@
 import { computed, Ref, ref, ComputedRef } from "vue";
 import ClientOAuth2 from "client-oauth2";
-import { UserDetail, SecurityClient } from "@virtoshell/api-client";
+import {
+  UserDetail,
+  SecurityClient,
+  ResetPasswordConfirmRequest,
+  SecurityResult,
+  ValidatePasswordResetTokenRequest,
+  IdentityResult,
+} from "@virtoshell/api-client";
 import { AuthData, SignInResult } from "../../types";
 import sleep from "../useFunctions/sleep";
 const VC_AUTH_DATA_KEY = "vc-auth-data";
@@ -21,9 +28,51 @@ interface IUseUser {
   loadUser: () => Promise<UserDetail>;
   signIn: (username: string, password: string) => Promise<SignInResult>;
   signOut: () => Promise<void>;
+  validateToken: (userId: string, token: string) => Promise<boolean>;
+  validatePassword: (password: string) => Promise<IdentityResult>;
+  resetPasswordByToken: (
+    userId: string,
+    password: string,
+    token: string
+  ) => Promise<SecurityResult>;
 }
 
-export default function useUser(): IUseUser {
+export default (): IUseUser => {
+  async function validateToken(
+    userId: string,
+    token: string
+  ): Promise<boolean> {
+    let result = false;
+    try {
+      loading.value = true;
+      //TODO: remove after demo
+      await sleep(1000);
+      result = await securityClient.validatePasswordResetToken(userId, {
+        token,
+      } as ValidatePasswordResetTokenRequest);
+    } catch (e) {
+      //TODO: log error
+    } finally {
+      loading.value = false;
+    }
+    return result;
+  }
+
+  async function validatePassword(password: string): Promise<IdentityResult> {
+    return securityClient.validatePassword(password);
+  }
+
+  async function resetPasswordByToken(
+    userId: string,
+    password: string,
+    token: string
+  ): Promise<SecurityResult> {
+    return securityClient.resetPasswordByToken(userId, {
+      newPassword: password,
+      token,
+    } as ResetPasswordConfirmRequest);
+  }
+
   async function signIn(
     username: string,
     password: string
@@ -32,8 +81,6 @@ export default function useUser(): IUseUser {
     let token = undefined;
     try {
       loading.value = true;
-      //TODO: remove after demo
-      await sleep(1000);
       token = await authClient.owner.getToken(username, password);
     } catch (e) {
       //TODO: log error
@@ -147,5 +194,8 @@ export default function useUser(): IUseUser {
     loadUser,
     signIn,
     signOut,
+    validateToken,
+    validatePassword,
+    resetPasswordByToken,
   };
-}
+};

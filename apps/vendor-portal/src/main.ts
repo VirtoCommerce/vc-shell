@@ -1,18 +1,20 @@
-import { createApp } from "vue";
-import App from "./App.vue";
+import { createApp, resolveComponent, h } from "vue";
 import VirtoShellUi from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import ModAssets from "@virtoshell/mod-assets";
 import ModOrders from "./modules/orders";
 import ModProducts from "./modules/products";
 import ModOffers from "./modules/offers";
+import router from "./router";
 
 import * as locales from "./locales";
 
 // Load required CSS
 import "@virtoshell/ui/dist/ui.css";
 
-const app = createApp(App)
+const app = createApp({
+  render: () => h(resolveComponent("router-view")),
+})
   .use(VirtoShellUi)
   .use(VirtoShellCore)
   .use(ModAssets)
@@ -23,5 +25,7 @@ const app = createApp(App)
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);
 });
+
+app.use(router);
 
 app.mount("#app");

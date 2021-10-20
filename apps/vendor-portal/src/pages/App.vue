@@ -35,12 +35,12 @@ import {
   inject,
   shallowRef,
 } from "vue";
-import LoginPage from "./components/login-page.vue";
-import DashboardPage from "./components/dashboard-page.vue";
-import UserDropdownButton from "./components/user-dropdown-button.vue";
-import { OrdersList } from "./modules/orders";
-import { OffersList } from "./modules/offers";
-import { ProductsList } from "./modules/products";
+import LoginPage from "./Login.vue";
+import DashboardPage from "./Dashboard.vue";
+import UserDropdownButton from "../components/user-dropdown-button.vue";
+import { OrdersList } from "../modules/orders";
+import { OffersList } from "../modules/offers";
+import { ProductsList } from "../modules/products";
 import { useLogger, useI18n, useUser } from "@virtoshell/core";
 
 export default defineComponent({

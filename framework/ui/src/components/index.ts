@@ -1,7 +1,9 @@
 /* Atoms */
 export { default as VcBadge } from "./atoms/vc-badge/vc-badge.vue";
 export { default as VcButton } from "./atoms/vc-button/vc-button.vue";
+export { default as VcCard } from "./atoms/vc-card/vc-card.vue";
 export { default as VcCheckbox } from "./atoms/vc-checkbox/vc-checkbox.vue";
+export { default as VcCol } from "./atoms/vc-col/vc-col.vue";
 export { default as VcContainer } from "./atoms/vc-container/vc-container.vue";
 export { default as VcHint } from "./atoms/vc-hint/vc-hint.vue";
 export { default as VcIcon } from "./atoms/vc-icon/vc-icon.vue";
@@ -10,6 +12,7 @@ export { default as VcLabel } from "./atoms/vc-label/vc-label.vue";
 export { default as VcLink } from "./atoms/vc-link/vc-link.vue";
 export { default as VcLoading } from "./atoms/vc-loading/vc-loading.vue";
 export { default as VcProgress } from "./atoms/vc-progress/vc-progress.vue";
+export { default as VcRow } from "./atoms/vc-row/vc-row.vue";
 export { default as VcStatus } from "./atoms/vc-status/vc-status.vue";
 export { default as VcSwitch } from "./atoms/vc-switch/vc-switch.vue";
 export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";

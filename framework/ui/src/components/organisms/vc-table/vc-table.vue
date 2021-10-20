@@ -3,7 +3,10 @@
     <!-- Header slot with filter and searchbar -->
     <slot
       name="header"
-      v-if="(items && items.length) || searchValue || searchValue === ''"
+      v-if="
+        ($slots['header'] || header) &&
+        ((items && items.length) || searchValue || searchValue === '')
+      "
     >
       <div
         class="
@@ -15,8 +18,8 @@
           vc-padding_l
         "
       >
-        <!-- Table filter button -->
-        <div class="vc-margin-right_m">
+        <!-- Table filter mobile button -->
+        <div v-if="$isMobile.value" class="vc-margin-right_m">
           <vc-table-filter
             :items="filterItems"
             @apply="$emit('filter:apply', $event)"
@@ -32,6 +35,16 @@
           :modelValue="searchValue"
           @update:modelValue="$emit('search:change', $event)"
         ></vc-input>
+
+        <!-- Table filter desktop button -->
+        <div v-if="$isDesktop.value" class="vc-margin-left_m">
+          <vc-table-filter
+            :items="filterItems"
+            :title="$t('Filters')"
+            @apply="$emit('filter:apply', $event)"
+            @reset="$emit('filter:reset')"
+          />
+        </div>
       </div>
     </slot>
 
@@ -198,7 +211,10 @@
     </div>
 
     <!-- Table footer -->
-    <slot name="footer" v-if="items && items.length">
+    <slot
+      name="footer"
+      v-if="($slots['footer'] || footer) && items && items.length"
+    >
       <div
         class="
           vc-table__footer
@@ -346,6 +362,16 @@ export default defineComponent({
         text: "Nothing found.",
       }),
     },
+
+    header: {
+      type: Boolean,
+      default: true,
+    },
+
+    footer: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   emits: [
@@ -429,6 +455,7 @@ export default defineComponent({
       position: sticky;
       top: 0;
       user-select: none;
+      overflow: hidden;
 
       &_sortable {
         cursor: pointer;
@@ -457,6 +484,7 @@ export default defineComponent({
 
     &-cell {
       box-sizing: border-box;
+      overflow: hidden;
 
       &_bordered {
         border-right: 1px solid #eaedf3;

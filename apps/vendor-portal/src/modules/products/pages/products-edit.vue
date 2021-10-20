@@ -49,6 +49,7 @@
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
+                @update:modelValue="setCategory"
                 :error="
                   validator.categoryId.$errors[0] &&
                   validator.categoryId.$errors[0].$message
@@ -82,6 +83,65 @@
                   validator.description.$errors[0].$message
                 "
               ></vc-textarea>
+
+              <template v-if="currentCategory">
+                <div
+                  v-for="(property, i) in currentCategory.properties"
+                  :key="i"
+                >
+                  <vc-select
+                    v-if="property.dictionary"
+                    class="vc-margin-bottom_l"
+                    :label="property.displayNames[0].name"
+                    v-model="productDetails[property.name]"
+                    :isRequired="property.required"
+                    :placeholder="property.displayNames[0].name"
+                    keyProperty="id"
+                    displayProperty="name"
+                  ></vc-select>
+
+                  <vc-input
+                    v-else-if="
+                      property.valueType === 'ShortText' ||
+                      property.valueType === 'DecimalNumber' ||
+                      property.valueType === 'Integer'
+                    "
+                    class="vc-margin-bottom_l"
+                    :label="property.displayNames[0].name"
+                    v-model="productDetails[property.name]"
+                    :clearable="true"
+                    :required="property.required"
+                    :placeholder="property.displayNames[0].name"
+                  ></vc-input>
+
+                  <vc-input
+                    v-else-if="property.valueType === 'DateTime'"
+                    class="vc-margin-bottom_l"
+                    :label="property.displayNames[0].name"
+                    v-model="productDetails[property.name]"
+                    type="date"
+                    :required="property.required"
+                    :placeholder="property.displayNames[0].name"
+                  ></vc-input>
+
+                  <vc-textarea
+                    v-else-if="property.valueType === 'LongText'"
+                    class="vc-margin-bottom_l"
+                    :label="property.displayNames[0].name"
+                    v-model="productDetails[property.name]"
+                    :required="property.required"
+                    :placeholder="property.displayNames[0].name"
+                  ></vc-textarea>
+
+                  <vc-checkbox
+                    v-else-if="property.valueType === 'Boolean'"
+                    class="vc-margin-bottom_l"
+                  >
+                    {{ property.displayNames[0].name }}
+                  </vc-checkbox>
+                </div>
+              </template>
+
               <vc-gallery
                 v-if="param"
                 label="Gallery"
@@ -172,6 +232,7 @@ export default defineComponent({
       changeProductStatus,
     } = useProduct();
 
+    const currentCategory = ref();
     const { getAccessToken } = useUser();
 
     const rules = computed(() => ({
@@ -201,6 +262,11 @@ export default defineComponent({
         await loadProduct({ id: props.param });
       }
       categories.value = await fetchCategories();
+      if (productDetails?.categoryId) {
+        currentCategory.value = categories.value?.find(
+          (x) => x.id === productDetails.categoryId
+        );
+      }
     });
 
     const bladeToolbar = reactive([
@@ -364,11 +430,17 @@ export default defineComponent({
       });
     };
 
+    const setCategory = (id: string) => {
+      currentCategory.value = categories.value?.find((x) => x.id === id);
+    };
+
     return {
       bladeToolbar,
       category: computed(() =>
         categories.value?.find((x) => x.id === productDetails.categoryId)
       ),
+      currentCategory,
+      setCategory,
       onCategoriesSearch: async (value: string) => {
         categories.value = await fetchCategories(value);
       },

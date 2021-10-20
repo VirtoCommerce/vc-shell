@@ -8,6 +8,7 @@
   >
     <!-- Blade contents -->
     <vc-table
+      class="vc-flex-grow_1"
       :expanded="expanded"
       :empty="empty"
       :loading="loading"
@@ -90,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { useOrders } from "../composables";
 import { useI18n } from "@virtoshell/core";
 import moment from "moment";
@@ -126,7 +127,6 @@ export default defineComponent({
 
     const bladeToolbar = [
       {
-        id: 1,
         title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         async clickHandler() {
@@ -134,20 +134,18 @@ export default defineComponent({
         },
       },
       {
-        id: 1,
         title: t("ORDERS.PAGES.LIST.TOOLBAR.CONFIRM"),
         icon: "fas fa-check",
         disabled: true,
       },
       {
-        id: 1,
         title: t("ORDERS.PAGES.LIST.TOOLBAR.CANCEL"),
         icon: "fas fa-times-circle",
         disabled: true,
       },
     ];
 
-    const columns = [
+    const columns = ref([
       {
         id: "number",
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER"),
@@ -180,7 +178,7 @@ export default defineComponent({
         sortable: true,
         width: 180,
       },
-    ];
+    ]);
 
     const empty = {
       image: "/assets/empty-product.png",
@@ -244,7 +242,13 @@ export default defineComponent({
 
     return {
       bladeToolbar,
-      columns,
+      columns: computed(() => {
+        if (props.expanded) {
+          return columns.value;
+        } else {
+          return columns.value.filter((item) => item.alwaysVisible === true);
+        }
+      }),
       orders,
       actionBuilder,
       loading,

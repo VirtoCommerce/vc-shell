@@ -2,7 +2,10 @@
   <div
     class="vc-blade"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
-    :class="{ 'vc-blade_expanded': $isMobile.value || expanded }"
+    :class="[
+      $attrs.class,
+      { 'vc-blade_expanded': $isMobile.value || expanded },
+    ]"
   >
     <!-- Init blade header -->
     <vc-blade-header
@@ -100,6 +103,7 @@ export default defineComponent({
   box-shadow: var(--blade-shadow);
   margin: var(--blade-margin);
   overflow: hidden;
+  transition: width 0.2s ease;
 
   &_expanded {
     width: 100% !important;

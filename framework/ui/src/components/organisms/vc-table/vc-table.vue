@@ -3,7 +3,10 @@
     <!-- Header slot with filter and searchbar -->
     <slot
       name="header"
-      v-if="(items && items.length) || searchValue || searchValue === ''"
+      v-if="
+        ($slots['header'] || header) &&
+        ((items && items.length) || searchValue || searchValue === '')
+      "
     >
       <div
         class="
@@ -208,7 +211,10 @@
     </div>
 
     <!-- Table footer -->
-    <slot name="footer" v-if="items && items.length">
+    <slot
+      name="footer"
+      v-if="($slots['footer'] || footer) && items && items.length"
+    >
       <div
         class="
           vc-table__footer
@@ -356,6 +362,16 @@ export default defineComponent({
         text: "Nothing found.",
       }),
     },
+
+    header: {
+      type: Boolean,
+      default: true,
+    },
+
+    footer: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   emits: [
@@ -439,6 +455,7 @@ export default defineComponent({
       position: sticky;
       top: 0;
       user-select: none;
+      overflow: hidden;
 
       &_sortable {
         cursor: pointer;
@@ -467,6 +484,7 @@ export default defineComponent({
 
     &-cell {
       box-sizing: border-box;
+      overflow: hidden;
 
       &_bordered {
         border-right: 1px solid #eaedf3;

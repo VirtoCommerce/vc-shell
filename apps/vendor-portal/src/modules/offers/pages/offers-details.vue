@@ -202,14 +202,7 @@
           </div>
         </div>
         <div class="offer-details__widgets">
-          <div class="vc-widget">
-            <vc-icon
-              class="vc-widget__icon"
-              icon="fas fa-file-alt"
-              size="xxl"
-            ></vc-icon>
-            <div class="vc-widget__title">Statistics</div>
-          </div>
+          <vc-widget icon="fas fa-file-alt" title="Statistics"></vc-widget>
         </div>
       </div>
     </vc-container>
@@ -391,41 +384,6 @@ export default defineComponent({
   .vc-app_phone &__widgets {
     display: flex;
     flex-direction: row;
-  }
-}
-
-.vc-widget {
-  display: flex;
-  width: 100px;
-  overflow: hidden;
-  padding: var(--padding-xl);
-  box-sizing: border-box;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #eaedf3;
-  cursor: pointer;
-  background-color: #ffffff;
-
-  &:hover {
-    background-color: #dfeef9;
-  }
-
-  &__icon {
-    color: #a9bfd2;
-  }
-
-  &__title {
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-s);
-    color: #333333;
-    margin: var(--margin-m) 0 var(--margin-xs);
-  }
-
-  &__value {
-    font-weight: var(--font-weight-medium);
-    font-size: 22px;
-    color: #43b0e6;
   }
 }
 </style>

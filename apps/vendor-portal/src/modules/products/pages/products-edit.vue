@@ -86,14 +86,16 @@
 
               <template v-if="currentCategory">
                 <div
-                  v-for="(property, i) in currentCategory.properties"
+                  v-for="(property, i) in productDetails.properties ||
+                  currentCategory.properties"
                   :key="i"
                 >
                   <vc-select
                     v-if="property.dictionary"
                     class="vc-margin-bottom_l"
                     :label="property.displayNames[0].name"
-                    v-model="productDetails[property.name]"
+                    :modelValue="getPropertyValue(property)"
+                    @update:modelValue="setPropertyValue(property, $event)"
                     :isRequired="property.required"
                     :placeholder="property.displayNames[0].name"
                     keyProperty="id"
@@ -108,7 +110,8 @@
                     "
                     class="vc-margin-bottom_l"
                     :label="property.displayNames[0].name"
-                    v-model="productDetails[property.name]"
+                    :modelValue="getPropertyValue(property)"
+                    @update:modelValue="setPropertyValue(property, $event)"
                     :clearable="true"
                     :required="property.required"
                     :placeholder="property.displayNames[0].name"
@@ -118,7 +121,8 @@
                     v-else-if="property.valueType === 'DateTime'"
                     class="vc-margin-bottom_l"
                     :label="property.displayNames[0].name"
-                    v-model="productDetails[property.name]"
+                    :modelValue="getPropertyValue(property)"
+                    @update:modelValue="setPropertyValue(property, $event)"
                     type="date"
                     :required="property.required"
                     :placeholder="property.displayNames[0].name"
@@ -128,13 +132,16 @@
                     v-else-if="property.valueType === 'LongText'"
                     class="vc-margin-bottom_l"
                     :label="property.displayNames[0].name"
-                    v-model="productDetails[property.name]"
+                    :modelValue="getPropertyValue(property)"
+                    @update:modelValue="setPropertyValue(property, $event)"
                     :required="property.required"
                     :placeholder="property.displayNames[0].name"
                   ></vc-textarea>
 
                   <vc-checkbox
                     v-else-if="property.valueType === 'Boolean'"
+                    :modelValue="getPropertyValue(property)"
+                    @update:modelValue="setPropertyValue(property, $event)"
                     class="vc-margin-bottom_l"
                   >
                     {{ property.displayNames[0].name }}
@@ -153,24 +160,15 @@
           </div>
         </div>
         <div v-if="param" class="product-details__widgets">
-          <div class="vc-widget" @click="openOffers">
-            <vc-icon
-              class="vc-widget__icon"
-              icon="fas fa-file-alt"
-              size="xxl"
-            ></vc-icon>
-            <div class="vc-widget__title">Offers</div>
-            <div class="vc-widget__value">3</div>
-          </div>
-          <div class="vc-widget">
-            <vc-icon
-              class="vc-widget__icon"
-              icon="fas fa-comment"
-              size="xxl"
-            ></vc-icon>
-            <div class="vc-widget__title">Comments</div>
-            <div class="vc-widget__value">22</div>
-          </div>
+          <vc-widget
+            icon="fas fa-file-alt"
+            title="Offers"
+            value="3"
+            @click="openOffers"
+          >
+          </vc-widget>
+          <vc-widget icon="fas fa-comment" title="Comments" value="22">
+          </vc-widget>
         </div>
       </div>
     </vc-container>
@@ -181,7 +179,13 @@
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import { useProduct } from "../composables";
-import { ICategory, Image } from "@virtoshell/api-client";
+import {
+  ICategory,
+  Image,
+  IProperty,
+  IPropertyValue,
+  PropertyValue,
+} from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
@@ -466,6 +470,18 @@ export default defineComponent({
           return confirm("You have unsaved changes\nClose anyway?");
         }
       },
+
+      setPropertyValue(property: IProperty, value: IPropertyValue) {
+        if (property.values[0]) {
+          property.values[0].value = value;
+        } else {
+          property.values[0] = new PropertyValue({ value });
+        }
+      },
+
+      getPropertyValue(property: IProperty) {
+        return property.values[0] && property.values[0].value;
+      },
     };
   },
 });
@@ -496,41 +512,6 @@ export default defineComponent({
   .vc-app_phone &__widgets {
     display: flex;
     flex-direction: row;
-  }
-}
-
-.vc-widget {
-  display: flex;
-  width: 100px;
-  overflow: hidden;
-  padding: var(--padding-xl);
-  box-sizing: border-box;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #eaedf3;
-  cursor: pointer;
-  background-color: #ffffff;
-
-  &:hover {
-    background-color: #dfeef9;
-  }
-
-  &__icon {
-    color: #a9bfd2;
-  }
-
-  &__title {
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-s);
-    color: #333333;
-    margin: var(--margin-m) 0 var(--margin-xs);
-  }
-
-  &__value {
-    font-weight: var(--font-weight-medium);
-    font-size: 22px;
-    color: #43b0e6;
   }
 }
 </style>

@@ -26,7 +26,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   margin: var(--col-margin);
-  overflow: hidden;
   min-width: 0;
   flex-basis: 0;
 

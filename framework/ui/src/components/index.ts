@@ -16,6 +16,7 @@ export { default as VcRow } from "./atoms/vc-row/vc-row.vue";
 export { default as VcStatus } from "./atoms/vc-status/vc-status.vue";
 export { default as VcSwitch } from "./atoms/vc-switch/vc-switch.vue";
 export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
+export { default as VcWidget } from "./atoms/vc-widget/vc-widget.vue";
 
 /* Molecules */
 export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcrumbs.vue";

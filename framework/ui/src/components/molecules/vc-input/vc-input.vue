@@ -1,11 +1,14 @@
 <template>
   <div
     class="vc-input"
-    :class="{
-      'vc-input_clearable': clearable,
-      'vc-input_error': error,
-      'vc-input_disabled': disabled,
-    }"
+    :class="[
+      `vc-input_${type}`,
+      {
+        'vc-input_clearable': clearable,
+        'vc-input_error': error,
+        'vc-input_disabled': disabled,
+      },
+    ]"
   >
     <!-- Input label -->
     <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
@@ -159,6 +162,15 @@ export default defineComponent({
 
 .vc-input {
   overflow: hidden;
+
+  &_date,
+  &_datetime-local {
+    max-width: 220px;
+
+    .vc-app_mobile & {
+      max-width: 100%;
+    }
+  }
 
   &__field-wrapper {
     border: 1px solid var(--input-border-color);

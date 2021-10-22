@@ -41,7 +41,7 @@
                   class="vc-margin-bottom_l"
                   label="Created date/time"
                   :modelValue="createdDate"
-                  type="date"
+                  type="datetime-local"
                   placeholder="Not set"
                   :disabled="true"
                 ></vc-input>
@@ -256,7 +256,9 @@ export default defineComponent({
         const year = date.getFullYear();
         const month = (date.getMonth() + 1).toString().padStart(2, "0");
         const day = date.getDate().toString().padStart(2, "0");
-        return `${year}-${month}-${day}`;
+        const hour = date.getHours().toString().padStart(2, "0");
+        const minute = date.getMinutes().toString().padStart(2, "0");
+        return `${year}-${month}-${day}T${hour}:${minute}`;
       }),
     };
   },

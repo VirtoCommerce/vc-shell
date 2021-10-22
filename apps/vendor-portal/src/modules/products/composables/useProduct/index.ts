@@ -110,6 +110,7 @@ export default (): IUseProduct => {
         images: product.value.productData?.images,
         categoryId: product.value.categoryId,
         gtin: product.value.productData?.gtin,
+        properties: product.value.productData?.properties,
         description: product.value.productData?.reviews[0]?.content,
       } as ProductDetails);
       productDetailsCopy = _cloneDeep(productDetails);

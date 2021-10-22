@@ -45,8 +45,6 @@ export default (): IUseUser => {
     let result = false;
     try {
       loading.value = true;
-      //TODO: remove after demo
-      await sleep(1000);
       result = await securityClient.validatePasswordResetToken(userId, {
         token,
       } as ValidatePasswordResetTokenRequest);
@@ -140,8 +138,6 @@ export default (): IUseUser => {
       authData.value = readAuthData();
     }
 
-    const result = authData.value?.accessToken || null;
-
     if (authData.value && Date.now() >= (authData.value.expiresAt ?? 0)) {
       const token = authClient.createToken(
         authData.value.accessToken ?? "",
@@ -168,7 +164,8 @@ export default (): IUseUser => {
         console.log("[userUsers]: getAccessToken() returns error", e);
       }
     }
-    return result;
+
+    return authData.value?.accessToken || null;
   }
 
   function storeAuthData(authData: AuthData) {

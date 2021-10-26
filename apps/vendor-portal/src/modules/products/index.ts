@@ -17,4 +17,5 @@ export default {
 };
 
 export * from "./pages";
+export * from "./components";
 export * from "./composables";

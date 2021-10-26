@@ -42,7 +42,11 @@
           ></vc-app-menu>
 
           <!-- If no workspace active then show dashboard -->
-          <slot v-if="!workspace.length" name="dashboard">
+          <slot
+            v-if="!workspace.length"
+            name="dashboard"
+            :openPage="onOpenPage"
+          >
             Dashboard is not defined
           </slot>
 
@@ -183,6 +187,10 @@ export default defineComponent({
         if (props.isReady) {
           if (value && value.length) {
             const ws = value[0].url;
+            activeMenuItem.value =
+              (props.menuItems as Record<string, any>[]).find(
+                (item) => item.component?.url === ws
+              ) || props.menuItems[0];
             let lastBladeWithUrlIndex = -1;
             value.forEach((item, i) => {
               if (item.url) {

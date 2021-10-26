@@ -9,8 +9,8 @@
     :pages="pages"
   >
     <!-- Set up dashboard page -->
-    <template v-slot:dashboard>
-      <dashboard-page />
+    <template v-slot:dashboard="scope">
+      <dashboard-page v-bind="scope" />
     </template>
 
     <!-- Set up login form -->
@@ -78,16 +78,6 @@ export default defineComponent({
 
     const toolbarItems = reactive([
       {
-        icon: "fas fa-cog",
-        title: t("SHELL.TOOLBAR.SETTINGS"),
-        isVisible: isDesktop,
-      },
-      {
-        icon: "fas fa-life-ring",
-        title: t("SHELL.TOOLBAR.HELP"),
-        isVisible: isDesktop,
-      },
-      {
         icon: "fas fa-bell",
         title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
         isVisible: true,
@@ -124,6 +114,7 @@ export default defineComponent({
         isVisible: true,
         clickHandler(app) {
           app.openDashboard();
+          window?.history?.pushState(null, "", "/");
         },
       },
       {

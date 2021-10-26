@@ -14,9 +14,9 @@
       :loading="loading"
       :multiselect="true"
       :columns="columns"
-      :items="orders.results"
+      :items="orders"
       :itemActionBuilder="actionBuilder"
-      :totalCount="orders.totalCount"
+      :totalCount="totalCount"
       :pages="pages"
       :currentPage="currentPage"
       @itemClick="onItemClick"
@@ -118,7 +118,8 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { orders, loadOrders, loading, pages, currentPage } = useOrders();
+    const { orders, loadOrders, loading, pages, currentPage, totalCount } =
+      useOrders();
     const { t } = useI18n();
 
     onMounted(async () => {
@@ -250,6 +251,7 @@ export default defineComponent({
         }
       }),
       orders,
+      totalCount,
       actionBuilder,
       loading,
       onItemClick,

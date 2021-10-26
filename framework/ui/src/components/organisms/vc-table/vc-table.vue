@@ -386,7 +386,7 @@ export default defineComponent({
   watch: {
     items(value: { id: string }[]) {
       this.checkboxes = {};
-      value.forEach((item) => (this.checkboxes[item.id] = false));
+      value?.forEach((item) => (this.checkboxes[item.id] = false));
       const scrollContainer = this.$refs.scrollContainer as typeof VcContainer;
       scrollContainer?.scrollTop();
     },

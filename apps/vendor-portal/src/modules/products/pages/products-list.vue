@@ -1,3 +1,7 @@
+<docs>
+About component.
+</docs>
+
 <template>
   <vc-blade
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
@@ -8,11 +12,9 @@
   >
     <!-- Blade contents -->
     <vc-table
+      class="vc-flex-grow_1"
       :loading="loading"
       :expanded="expanded"
-      :empty="empty"
-      :notfound="notfound"
-      class="vc-flex-grow_1"
       :multiselect="true"
       :columns="columns"
       :items="products"
@@ -31,6 +33,42 @@
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
     >
+      <!-- Not found template -->
+      <template v-slot:notfound>
+        <div
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
+        >
+          <img src="/assets/empty-product.png" />
+          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+            No products found.
+          </div>
+          <vc-button @click="resetSearch">Reset search</vc-button>
+        </div>
+      </template>
+
+      <!-- Empty template -->
+      <template v-slot:empty>
+        <div
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
+        >
+          <img src="/assets/empty-product.png" />
+          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+            There are no products yet
+          </div>
+          <vc-button @click="addProduct">Add product</vc-button>
+        </div>
+      </template>
+
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
@@ -114,14 +152,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  onMounted,
-  computed,
-  watch,
-  reactive,
-} from "vue";
+import { defineComponent, ref, onMounted, computed, watch } from "vue";
 import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -260,30 +291,6 @@ export default defineComponent({
       },
     ]);
 
-    const empty = {
-      image: "/assets/empty-product.png",
-      text: "There are no products yet",
-      action: "Add product",
-      clickHandler: () => {
-        emit("page:open", {
-          component: ProductsEdit,
-        });
-      },
-    };
-
-    const notfound = {
-      image: "/assets/empty-product.png",
-      text: "No products found.",
-      action: "Reset search",
-      clickHandler: async () => {
-        searchValue.value = "";
-        await loadProducts({
-          ...searchQuery.value,
-          keyword: "",
-        });
-      },
-    };
-
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
         component: ProductsEdit,
@@ -383,10 +390,20 @@ export default defineComponent({
       pages,
       currentPage,
       sort,
-      empty,
-      notfound,
       moment,
       reload,
+      async resetSearch() {
+        searchValue.value = "";
+        await loadProducts({
+          ...searchQuery.value,
+          keyword: "",
+        });
+      },
+      addProduct() {
+        emit("page:open", {
+          component: ProductsEdit,
+        });
+      },
       onItemClick,
       onHeaderClick,
       onPaginationClick,

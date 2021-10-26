@@ -1,6 +1,11 @@
 <template>
   <div class="vc-card vc-flex vc-flex-grow_1 vc-flex-column">
-    <div class="vc-card__header" v-if="header">{{ header }}</div>
+    <div class="vc-card__header" v-if="header">
+      <div class="vc-card__title">{{ header }}</div>
+      <div v-if="$slots['actions']" class="vc-card__actions">
+        <slot name="actions"></slot>
+      </div>
+    </div>
     <div class="vc-card__body">
       <slot></slot>
     </div>
@@ -42,11 +47,25 @@ export default defineComponent({
 
   &__header {
     background: var(--card-header-background);
-    color: var(--card-header-color);
+    padding: var(--card-header-padding);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  &__title {
     text-transform: uppercase;
+    color: var(--card-header-color);
     font-size: var(--card-header-font-size);
     font-weight: var(--card-header-font-weight);
-    padding: var(--card-header-padding);
+  }
+
+  &__body {
+    display: flex;
+    flex-grow: 1;
+    box-sizing: border-box;
   }
 }
 </style>

@@ -233,7 +233,6 @@ export default defineComponent({
       updateProductDetails,
       fetchCategories,
       revertStagedChanges,
-      changeProductStatus,
     } = useProduct();
 
     const currentCategory = ref();
@@ -355,53 +354,6 @@ export default defineComponent({
             )
         ),
       },
-      {
-        id: "approve",
-        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.APPROVE"),
-        icon: "fas fa-check-circle",
-        isVisible: computed(() => !!props.param),
-        async clickHandler() {
-          await changeProductStatus(product.value.id, "Approved");
-          emit("parent:call", {
-            method: "reload",
-          });
-        },
-        disabled: computed(() => product.value.canBeModified),
-      },
-      {
-        id: "requestChanges",
-        title: "Request changes (test only)",
-        icon: "fas fa-sticky-note",
-        isVisible: computed(() => !!props.param),
-        async clickHandler() {
-          await changeProductStatus(product.value.id, "RequestChanges");
-          emit("parent:call", {
-            method: "reload",
-          });
-        },
-        disabled: computed(() => product.value.canBeModified),
-      },
-      {
-        id: "reject",
-        title: "Reject (test only)",
-        icon: "fas fa-ban",
-        isVisible: computed(() => !!props.param),
-        async clickHandler() {
-          await changeProductStatus(product.value.id, "Rejected");
-          emit("parent:call", {
-            method: "reload",
-          });
-        },
-        disabled: computed(() => product.value.canBeModified),
-      },
-      {
-        id: "close",
-        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.CLOSE"),
-        icon: "fas fa-times",
-        async clickHandler() {
-          emit("page:close");
-        },
-      },
     ]);
 
     const onGalleryUpload = async (files: FileList) => {
@@ -475,7 +427,7 @@ export default defineComponent({
         if (property.values[0]) {
           property.values[0].value = value;
         } else {
-          property.values[0] = new PropertyValue({ value });
+          property.values[0] = new PropertyValue({ value, isInherited: false });
         }
       },
 

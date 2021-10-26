@@ -3,7 +3,11 @@
     class="vc-button"
     :class="[
       `vc-button_${variant}`,
-      { 'vc-button_disabled': disabled, 'vc-button_small': small },
+      {
+        'vc-button_disabled': disabled,
+        'vc-button_small': small,
+        'vc-button_outline': outline,
+      },
     ]"
     @click="onClick"
   >
@@ -48,6 +52,11 @@ export default defineComponent({
     },
 
     small: {
+      type: Boolean,
+      default: false,
+    },
+
+    outline: {
       type: Boolean,
       default: false,
     },
@@ -205,6 +214,32 @@ export default defineComponent({
 
     .vc-button__icon + .vc-button__title {
       margin-left: var(--margin-xs);
+    }
+  }
+
+  &_outline {
+    background-color: transparent;
+    color: var(--button-secondary-text-color);
+    border: 1px solid var(--button-secondary-border-color);
+
+    &:hover {
+      background-color: transparent;
+      color: var(--button-secondary-text-color-hover);
+      border: 1px solid var(--button-secondary-border-color-hover);
+    }
+
+    &:focus {
+      background-color: transparent;
+      color: var(--button-secondary-text-color-hover);
+      border: 1px solid var(--button-secondary-border-color-active);
+    }
+
+    &.vc-button_disabled,
+    &.vc-button_disabled:hover {
+      cursor: not-allowed;
+      background-color: transparent;
+      color: var(--button-secondary-text-color-disabled);
+      border: 1px solid var(--button-secondary-border-color-disabled);
     }
   }
 }

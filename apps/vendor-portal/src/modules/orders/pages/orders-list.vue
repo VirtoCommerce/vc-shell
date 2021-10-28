@@ -18,10 +18,104 @@
       :itemActionBuilder="actionBuilder"
       :totalCount="totalCount"
       :pages="pages"
+      :searchValue="searchValue"
+      :isFiltered="isFiltered"
       :currentPage="currentPage"
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
     >
+      <!-- Filters -->
+      <template v-slot:filters>
+        <h2 v-if="$isMobile.value">Filters</h2>
+        <vc-container no-padding>
+          <vc-row>
+            <vc-col class="filter-col">
+              <div class="group-title">Status filter</div>
+              <div>
+                <vc-checkbox
+                  class="vc-margin-bottom_s"
+                  :modelValue="filter.status === 'Unpaid'"
+                  @change="filter.status = 'Unpaid'"
+                  >Unpaid</vc-checkbox
+                >
+                <vc-checkbox
+                  class="vc-margin-bottom_s"
+                  :modelValue="filter.status === 'Paid'"
+                  @change="filter.status = 'Paid'"
+                  >Paid</vc-checkbox
+                >
+              </div>
+            </vc-col>
+            <vc-col class="filter-col">
+              <div class="group-title">Order date</div>
+              <div>
+                <vc-input
+                  label="Start date"
+                  type="date"
+                  class="vc-margin-bottom_m"
+                  :modelValue="getFilterDate('startDate')"
+                  @update:modelValue="setFilterDate('startDate', $event)"
+                ></vc-input>
+                <vc-input
+                  label="End date"
+                  type="date"
+                  :modelValue="getFilterDate('endDate')"
+                  @update:modelValue="setFilterDate('endDate', $event)"
+                ></vc-input>
+              </div>
+            </vc-col>
+          </vc-row>
+          <vc-row>
+            <vc-col>
+              <div class="vc-flex vc-flex-justify_end">
+                <vc-button
+                  outline
+                  class="vc-margin-right_m"
+                  @click="resetFilters"
+                  >Reset filters</vc-button
+                >
+                <vc-button @click="applyFilters">Apply</vc-button>
+              </div>
+            </vc-col>
+          </vc-row>
+        </vc-container>
+      </template>
+
+      <!-- Not found template -->
+      <template v-slot:notfound>
+        <div
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
+        >
+          <img src="/assets/empty-product.png" />
+          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+            No orders found.
+          </div>
+          <vc-button @click="resetSearch">Reset search</vc-button>
+        </div>
+      </template>
+
+      <!-- Empty template -->
+      <template v-slot:empty>
+        <div
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
+        >
+          <img src="/assets/empty-product.png" />
+          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+            There are no orders yet
+          </div>
+        </div>
+      </template>
+
       <!-- Override createdDate column template -->
       <template v-slot:item_createdDate="itemData">
         <div class="vc-orders-page__created">
@@ -91,7 +185,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useOrders } from "../composables";
 import { useI18n } from "@virtoshell/core";
 import moment from "moment";
@@ -121,6 +215,8 @@ export default defineComponent({
     const { orders, loadOrders, loading, pages, currentPage, totalCount } =
       useOrders();
     const { t } = useI18n();
+    const filter = reactive({});
+    const searchValue = ref();
 
     onMounted(async () => {
       await loadOrders();
@@ -262,6 +358,41 @@ export default defineComponent({
       statusStyle,
       onPaginationClick,
       title: t("ORDERS.PAGES.LIST.TITLE"),
+      searchValue,
+      setFilterDate(key: string, value: string) {
+        filter[key] = new Date(value);
+      },
+      getFilterDate(key: string) {
+        const date = filter[key] as Date;
+        if (filter[key]) {
+          const year = date.getUTCFullYear();
+          const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
+          const day = `${date.getUTCDate()}`.padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        }
+        return undefined;
+      },
+      async resetSearch() {
+        searchValue.value = "";
+        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+        await loadOrders({
+          ...filter,
+          keyword: "",
+        });
+      },
+      filter,
+      isFiltered: computed(() => Object.keys(filter).length),
+      async applyFilters() {
+        await loadOrders({
+          ...filter,
+        });
+      },
+      async resetFilters() {
+        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+        await loadOrders({
+          ...filter,
+        });
+      },
     };
   },
 });

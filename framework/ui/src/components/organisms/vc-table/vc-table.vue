@@ -19,12 +19,13 @@
         "
       >
         <!-- Table filter mobile button -->
-        <div v-if="$isMobile.value" class="vc-margin-right_m">
-          <vc-table-filter
-            :items="filterItems"
-            @apply="$emit('filter:apply', $event)"
-            @reset="$emit('filter:reset')"
-          />
+        <div
+          v-if="$isMobile.value && $slots['filters']"
+          class="vc-margin-right_m"
+        >
+          <vc-table-filter>
+            <slot name="filters"></slot>
+          </vc-table-filter>
         </div>
 
         <!-- Table search input -->
@@ -37,13 +38,13 @@
         ></vc-input>
 
         <!-- Table filter desktop button -->
-        <div v-if="$isDesktop.value" class="vc-margin-left_m">
-          <vc-table-filter
-            :items="filterItems"
-            :title="$t('Filters')"
-            @apply="$emit('filter:apply', $event)"
-            @reset="$emit('filter:reset')"
-          />
+        <div
+          v-if="$isDesktop.value && $slots['filters']"
+          class="vc-margin-left_m"
+        >
+          <vc-table-filter :title="$t('Filters')">
+            <slot name="filters"></slot>
+          </vc-table-filter>
         </div>
       </div>
     </slot>
@@ -171,7 +172,10 @@
 
       <!-- Empty table view -->
       <template v-else>
-        <slot v-if="searchValue || searchValue === ''" name="notfound">
+        <slot
+          v-if="searchValue || searchValue === '' || isFiltered"
+          name="notfound"
+        >
           <div
             v-if="notfound"
             class="
@@ -369,6 +373,11 @@ export default defineComponent({
     },
 
     footer: {
+      type: Boolean,
+      default: true,
+    },
+
+    isFiltered: {
       type: Boolean,
       default: true,
     },

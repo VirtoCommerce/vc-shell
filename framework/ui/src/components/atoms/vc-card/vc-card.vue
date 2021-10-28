@@ -63,7 +63,6 @@ export default defineComponent({
   }
 
   &__body {
-    display: flex;
     flex-grow: 1;
     box-sizing: border-box;
   }

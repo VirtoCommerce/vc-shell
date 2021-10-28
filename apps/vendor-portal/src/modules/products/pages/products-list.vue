@@ -19,7 +19,6 @@ About component.
       :columns="columns"
       :items="products"
       :itemActionBuilder="actionBuilder"
-      :filterItems="filterItems"
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"

@@ -210,7 +210,7 @@
       <vc-col size="2">
         <vc-card class="vc-margin-bottom_l dashboard-counters">
           <div
-            class="vc-fill_width vc-flex vc-flex-column vc-flex-justify_center"
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-justify_center"
           >
             <div class="dashboard-counters__value">3,844,134.43 USD</div>
             <div class="dashboard-counters__title">Revenue</div>
@@ -219,7 +219,7 @@
 
         <vc-card class="vc-margin-bottom_l dashboard-counters">
           <div
-            class="vc-fill_width vc-flex vc-flex-column vc-flex-justify_center"
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-justify_center"
           >
             <div class="dashboard-counters__value">10,664.83 USD</div>
             <div class="dashboard-counters__title">Average order value</div>
@@ -228,7 +228,7 @@
 
         <vc-card class="dashboard-counters">
           <div
-            class="vc-fill_width vc-flex vc-flex-column vc-flex-justify_center"
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-justify_center"
           >
             <div class="dashboard-counters__value">981</div>
             <div class="dashboard-counters__title">Items purchased</div>

@@ -29,6 +29,7 @@
           @toolbarbutton:click="onToolbarButtonClick"
           @menubutton:click="$refs.menu.isMobileVisible = true"
           @backlink:click="onClosePage(workspace.length - 1)"
+          @logo:click="openDashboard"
         ></vc-app-bar>
 
         <div class="vc-app__inner vc-flex vc-flex-grow_1">
@@ -100,6 +101,8 @@ interface IPage {
   componentOptions?: Record<string, unknown> | unknown;
   url?: string;
   param?: string;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 
 interface IParentCallArgs {
@@ -291,6 +294,7 @@ export default defineComponent({
 
       // Close all opened pages with onBeforeClose callback
       await onClosePage(0);
+      activeMenuItem.value = props.menuItems[0];
     };
 
     const openWorkspace = async (page: IPage) => {
@@ -325,6 +329,9 @@ export default defineComponent({
             ? (page.component as Record<string, string>).url
             : page.url,
       });
+      if (typeof page?.onOpen === "function") {
+        page?.onOpen?.();
+      }
     };
 
     const onClosePage = async (index: number) => {
@@ -344,6 +351,9 @@ export default defineComponent({
         }
       }
       if (!isPrevented) {
+        if (typeof workspace.value[index]?.onClose === "function") {
+          workspace.value[index]?.onClose?.();
+        }
         workspace.value.splice(index);
       } else {
         throw "Closing prevented";

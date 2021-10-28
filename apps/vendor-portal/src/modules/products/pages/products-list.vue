@@ -26,6 +26,7 @@ About component.
       :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
       :searchValue="searchValue"
       :activeFilterCount="activeFilterCount"
+      :selectedItemId="selectedItemId"
       @search:change="onSearchList"
       :totalCount="totalCount"
       @itemClick="onItemClick"
@@ -273,6 +274,7 @@ export default defineComponent({
 
     const sort = ref("createdDate");
     const searchValue = ref();
+    const selectedItemId = ref();
 
     watch(sort, async (value) => {
       await loadProducts({ ...searchQuery.value, sort: value });
@@ -369,6 +371,12 @@ export default defineComponent({
       emit("page:open", {
         component: ProductsEdit,
         param: item.id,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     };
 
@@ -451,6 +459,7 @@ export default defineComponent({
       sort,
       moment,
       reload,
+      selectedItemId,
       async resetSearch() {
         searchValue.value = "";
         Object.keys(filter).forEach((key: string) => (filter[key] = undefined));

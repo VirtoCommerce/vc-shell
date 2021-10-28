@@ -141,6 +141,7 @@
               class="vc-table__body-row"
               :class="{
                 'vc-table__body-row_even': i % 2 === 1,
+                'vc-table__body-row_selected': selectedItemId === item.id,
               }"
               @click="$emit('itemClick', item)"
             >
@@ -384,6 +385,11 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+
+    selectedItemId: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: [
@@ -487,6 +493,11 @@ export default defineComponent({
 
       &:hover {
         background-color: #eff7fc;
+      }
+
+      &_selected,
+      &_selected:hover {
+        background-color: #dfeef9;
       }
     }
 

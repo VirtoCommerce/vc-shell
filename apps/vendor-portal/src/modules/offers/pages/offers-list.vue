@@ -26,6 +26,7 @@
       :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
       :totalCount="totalCount"
+      :selectedItemId="selectedItemId"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
@@ -200,6 +201,7 @@ export default defineComponent({
 
     const sort = ref("createdDate");
     const searchValue = ref();
+    const selectedItemId = ref();
 
     watch(sort, async (value) => {
       await loadOffers({ ...searchQuery.value, sort: value });
@@ -338,6 +340,12 @@ export default defineComponent({
       emit("page:open", {
         component: OffersDetails,
         param: item.id,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     };
 
@@ -402,6 +410,7 @@ export default defineComponent({
       sort,
       moment,
       searchValue,
+      selectedItemId,
       onSearchList,
       onItemClick,
       onHeaderClick,

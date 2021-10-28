@@ -20,6 +20,7 @@
       :pages="pages"
       :searchValue="searchValue"
       :activeFilterCount="activeFilterCount"
+      :selectedItemId="selectedItemId"
       :currentPage="currentPage"
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
@@ -222,6 +223,7 @@ export default defineComponent({
     const filter = reactive({});
     const appliedFilter = ref({});
     const searchValue = ref();
+    const selectedItemId = ref();
 
     onMounted(async () => {
       await loadOrders();
@@ -291,6 +293,12 @@ export default defineComponent({
       emit("page:open", {
         component: OrdersDetails,
         param: item.id,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     };
 
@@ -364,6 +372,7 @@ export default defineComponent({
       onPaginationClick,
       title: t("ORDERS.PAGES.LIST.TITLE"),
       searchValue,
+      selectedItemId,
       setFilterDate(key: string, value: string) {
         filter[key] = new Date(value);
       },

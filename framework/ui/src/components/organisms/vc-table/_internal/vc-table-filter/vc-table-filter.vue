@@ -121,7 +121,7 @@ export default defineComponent({
     position: absolute;
     right: 0;
     top: 120%;
-    max-height: 300px;
+    max-height: 400px;
     max-width: 800px;
     min-width: 400px;
     z-index: 100;

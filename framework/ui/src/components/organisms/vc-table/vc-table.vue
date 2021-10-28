@@ -5,7 +5,10 @@
       name="header"
       v-if="
         ($slots['header'] || header) &&
-        ((items && items.length) || searchValue || searchValue === '')
+        ((items && items.length) ||
+          searchValue ||
+          searchValue === '' ||
+          activeFilterCount)
       "
     >
       <div
@@ -23,7 +26,7 @@
           v-if="$isMobile.value && $slots['filters']"
           class="vc-margin-right_m"
         >
-          <vc-table-filter>
+          <vc-table-filter :counter="activeFilterCount">
             <slot name="filters"></slot>
           </vc-table-filter>
         </div>
@@ -42,7 +45,7 @@
           v-if="$isDesktop.value && $slots['filters']"
           class="vc-margin-left_m"
         >
-          <vc-table-filter :title="$t('Filters')">
+          <vc-table-filter :title="$t('Filters')" :counter="activeFilterCount">
             <slot name="filters"></slot>
           </vc-table-filter>
         </div>
@@ -173,7 +176,7 @@
       <!-- Empty table view -->
       <template v-else>
         <slot
-          v-if="searchValue || searchValue === '' || isFiltered"
+          v-if="searchValue || searchValue === '' || activeFilterCount"
           name="notfound"
         >
           <div
@@ -377,9 +380,9 @@ export default defineComponent({
       default: true,
     },
 
-    isFiltered: {
-      type: Boolean,
-      default: true,
+    activeFilterCount: {
+      type: Number,
+      default: 0,
     },
   },
 

@@ -19,7 +19,7 @@
       :totalCount="totalCount"
       :pages="pages"
       :searchValue="searchValue"
-      :isFiltered="isFiltered"
+      :activeFilterCount="activeFilterCount"
       :currentPage="currentPage"
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
@@ -35,13 +35,17 @@
                 <vc-checkbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Unpaid'"
-                  @change="filter.status = 'Unpaid'"
+                  @update:modelValue="
+                    filter.status = $event ? 'Unpaid' : undefined
+                  "
                   >Unpaid</vc-checkbox
                 >
                 <vc-checkbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Paid'"
-                  @change="filter.status = 'Paid'"
+                  @update:modelValue="
+                    filter.status = $event ? 'Paid' : undefined
+                  "
                   >Paid</vc-checkbox
                 >
               </div>
@@ -70,7 +74,7 @@
               <div class="vc-flex vc-flex-justify_end">
                 <vc-button
                   outline
-                  class="vc-margin-right_m"
+                  class="vc-margin-right_l"
                   @click="resetFilters"
                   >Reset filters</vc-button
                 >
@@ -216,6 +220,7 @@ export default defineComponent({
       useOrders();
     const { t } = useI18n();
     const filter = reactive({});
+    const appliedFilter = ref({});
     const searchValue = ref();
 
     onMounted(async () => {
@@ -379,19 +384,26 @@ export default defineComponent({
           ...filter,
           keyword: "",
         });
+        appliedFilter.value = {};
       },
       filter,
-      isFiltered: computed(() => Object.keys(filter).length),
+      activeFilterCount: computed(
+        () => Object.values(appliedFilter.value).filter((item) => !!item).length
+      ),
       async applyFilters() {
         await loadOrders({
           ...filter,
         });
+        appliedFilter.value = {
+          ...filter,
+        };
       },
       async resetFilters() {
         Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
         await loadOrders({
           ...filter,
         });
+        appliedFilter.value = {};
       },
     };
   },

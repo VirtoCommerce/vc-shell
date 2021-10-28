@@ -25,7 +25,7 @@ About component.
       :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
       :searchValue="searchValue"
-      :isFiltered="isFiltered"
+      :activeFilterCount="activeFilterCount"
       @search:change="onSearchList"
       :totalCount="totalCount"
       @itemClick="onItemClick"
@@ -42,47 +42,31 @@ About component.
               <div class="group-title">Status filter</div>
               <div>
                 <vc-checkbox
+                  v-for="status in SellerProductStatus"
+                  :key="status"
                   class="vc-margin-bottom_s"
-                  :modelValue="filter.status === 'Draft'"
-                  @change="filter.status = 'Draft'"
-                  >Drafts</vc-checkbox
-                >
-                <vc-checkbox
-                  class="vc-margin-bottom_s"
-                  :modelValue="filter.status === 'Published'"
-                  @change="filter.status = 'Published'"
-                  >Published</vc-checkbox
-                >
-                <vc-checkbox
-                  class="vc-margin-bottom_s"
-                  :modelValue="filter.status === 'RequiresChanges'"
-                  @change="filter.status = 'RequiresChanges'"
-                  >Requires changes</vc-checkbox
-                >
-                <vc-checkbox
-                  class="vc-margin-bottom_s"
-                  :modelValue="filter.status === 'Approved'"
-                  @change="filter.status = 'Approved'"
-                  >Approved</vc-checkbox
-                >
-                <vc-checkbox
-                  class="vc-margin-bottom_s"
-                  :modelValue="filter.status === 'Rejected'"
-                  @change="filter.status = 'Rejected'"
-                  >Rejected</vc-checkbox
-                >
-                <vc-checkbox
-                  :modelValue="filter.status === 'WaitForApproval'"
-                  @change="filter.status = 'WaitForApproval'"
-                  >Waiting for approval</vc-checkbox
+                  :modelValue="filter.status === status"
+                  @update:modelValue="
+                    filter.status = $event ? status : undefined
+                  "
+                  >{{ status }}</vc-checkbox
                 >
               </div>
             </vc-col>
             <vc-col class="filter-col">
               <div class="group-title">Price between</div>
               <div>
-                <vc-input label="From" class="vc-margin-bottom_m"></vc-input>
-                <vc-input label="To"></vc-input>
+                <vc-input
+                  label="From"
+                  class="vc-margin-bottom_m"
+                  :modelValue="filter.priceStart"
+                  @update:modelValue="filter.priceStart = $event"
+                ></vc-input>
+                <vc-input
+                  label="To"
+                  :modelValue="filter.priceEnd"
+                  @update:modelValue="filter.priceEnd = $event"
+                ></vc-input>
               </div>
             </vc-col>
             <vc-col class="filter-col">
@@ -102,7 +86,7 @@ About component.
               <div class="vc-flex vc-flex-justify_end">
                 <vc-button
                   outline
-                  class="vc-margin-right_m"
+                  class="vc-margin-right_l"
                   @click="resetFilters"
                   >Reset filters</vc-button
                 >
@@ -282,8 +266,10 @@ export default defineComponent({
       loadProducts,
       loading,
       searchQuery,
+      SellerProductStatus,
     } = useProducts();
     const filter = reactive({});
+    const appliedFilter = ref({});
 
     const sort = ref("createdDate");
     const searchValue = ref();
@@ -473,6 +459,7 @@ export default defineComponent({
           ...filter,
           keyword: "",
         });
+        appliedFilter.value = {};
       },
       addProduct() {
         emit("page:open", {
@@ -486,12 +473,18 @@ export default defineComponent({
       onSearchList,
       title: t("PRODUCTS.PAGES.LIST.TITLE"),
       filter,
-      isFiltered: computed(() => Object.keys(filter).length),
+      SellerProductStatus,
+      activeFilterCount: computed(
+        () => Object.values(appliedFilter.value).filter((item) => !!item).length
+      ),
       async applyFilters() {
         await loadProducts({
           ...searchQuery.value,
           ...filter,
         });
+        appliedFilter.value = {
+          ...filter,
+        };
       },
       async resetFilters() {
         Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
@@ -499,6 +492,7 @@ export default defineComponent({
           ...searchQuery.value,
           ...filter,
         });
+        appliedFilter.value = {};
       },
     };
   },

@@ -7,6 +7,7 @@ import {
   ISearchProductsQuery,
   SearchProductsQuery,
   SearchProductsResult,
+  SellerProductStatus,
 } from "../../../../api_client";
 
 interface IUseProducts {
@@ -17,6 +18,7 @@ interface IUseProducts {
   loading: Ref<boolean>;
   currentPage: Ref<number>;
   loadProducts: (query: ISearchProductsQuery) => void;
+  SellerProductStatus: typeof SellerProductStatus;
 }
 
 interface IUseProductOptions {
@@ -77,5 +79,6 @@ export default (options?: IUseProductOptions): IUseProducts => {
     loading,
     searchQuery,
     loadProducts,
+    SellerProductStatus,
   };
 };

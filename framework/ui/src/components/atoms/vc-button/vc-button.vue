@@ -113,10 +113,10 @@ export default defineComponent({
   --button-special-text-color-active: #ffffff;
   --button-special-text-color-disabled: #ffffff;
 
-  --button-border-radius: 2px;
+  --button-border-radius: 3px;
   --button-padding: 0 14px;
   --button-padding-small: 0 12px;
-  --button-height: 28px;
+  --button-height: 36px;
   --button-height-small: 22px;
 }
 

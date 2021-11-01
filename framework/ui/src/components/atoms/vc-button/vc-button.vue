@@ -117,7 +117,7 @@ export default defineComponent({
   --button-padding: 0 14px;
   --button-padding-small: 0 12px;
   --button-height: 36px;
-  --button-height-small: 22px;
+  --button-height-small: 28px;
 }
 
 .vc-button {

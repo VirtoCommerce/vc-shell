@@ -9,10 +9,10 @@
   >
     <vc-container class="orders-edit-bordered">
       <vc-row>
-        <vc-col size="2">
+        <vc-col size="2" class="vc-padding_s">
           <vc-card header="Order info">
             <vc-row class="vc-padding_s">
-              <vc-col size="2">
+              <vc-col size="2" class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="Order reference #"
@@ -36,7 +36,7 @@
                   :disabled="true"
                 ></vc-input>
               </vc-col>
-              <vc-col size="1">
+              <vc-col size="1" class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="Created date/time"
@@ -49,10 +49,10 @@
             </vc-row>
           </vc-card>
         </vc-col>
-        <vc-col size="1">
+        <vc-col size="1" class="vc-padding_s">
           <vc-card header="Customer contact">
             <vc-row class="vc-padding_s">
-              <vc-col>
+              <vc-col class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="Full name"
@@ -82,7 +82,7 @@
       </vc-row>
 
       <vc-row>
-        <vc-col>
+        <vc-col class="vc-padding_s">
           <vc-card header="Items list">
             <vc-table
               :multiselect="false"
@@ -107,19 +107,90 @@
                   >
                 </div>
               </template>
+
+              <template v-slot:mobile-item="itemData">
+                <div class="vc-padding-vertical_m vc-padding-horizontal_l">
+                  <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
+                    <vc-image
+                      class="vc-flex-shrink_0"
+                      aspect="1x1"
+                      size="s"
+                      :bordered="true"
+                      :src="itemData.item.imageUrl"
+                    ></vc-image>
+                    <div class="vc-flex-grow_1 vc-margin-left_m">
+                      <div class="vc-font-weight_bold vc-font-size_l">
+                        {{ itemData.item.name }}
+                      </div>
+                      <vc-hint class="vc-margin-top_xs">
+                        SKU: {{ itemData.item.sku }}
+                      </vc-hint>
+                    </div>
+                  </div>
+                  <div
+                    class="
+                      vc-margin-top_m
+                      vc-fill_width
+                      vc-flex
+                      vc-flex-justify_space-between
+                    "
+                  >
+                    <div class="vc-ellipsis vc-flex-grow_2">
+                      <vc-hint>Quantity</vc-hint>
+                      <div class="vc-ellipsis vc-margin-top_xs">
+                        {{ itemData.item.quantity }}
+                      </div>
+                    </div>
+                    <div class="vc-ellipsis vc-flex-grow_2">
+                      <vc-hint>Unit price</vc-hint>
+                      <div class="vc-ellipsis vc-margin-top_xs">
+                        {{
+                          itemData.item.price && itemData.item.price.toFixed(2)
+                        }}
+                      </div>
+                    </div>
+                    <div class="vc-ellipsis vc-flex-grow_1">
+                      <vc-hint>Total</vc-hint>
+                      <div class="vc-ellipsis vc-margin-top_xs">
+                        {{
+                          itemData.item.extendedPrice &&
+                          itemData.item.extendedPrice.toFixed(2)
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
             </vc-table>
 
             <div
               class="
                 orders-totals
                 vc-flex vc-flex-row
-                vc-flex-justify_space-between
+                vc-flex-justify_end
                 vc-padding_l
               "
             >
-              <div class="vc-font-weight_bold vc-font-size_l">Total</div>
-              <div class="vc-font-weight_bold vc-font-size_l">
-                {{ order.currency }} {{ order.total && order.total.toFixed(2) }}
+              <div class="vc-margin-right_xl">
+                <span class="vc-margin-right_s">Subtotal:</span>
+                <span class="vc-font-weight_bold"
+                  >{{ order.subTotal && order.subTotal.toFixed(2) }}
+                  {{ order.currency }}</span
+                >
+              </div>
+              <div class="vc-margin-right_xl">
+                <span class="vc-margin-right_s">Discount total:</span>
+                <span class="vc-font-weight_bold"
+                  >{{ order.discountTotal && order.discountTotal.toFixed(2) }}
+                  {{ order.currency }}</span
+                >
+              </div>
+              <div class="orders-totals__counter vc-font-weight_bold">
+                <span class="vc-margin-right_s">Total:</span>
+                <span
+                  >{{ order.total && order.total.toFixed(2) }}
+                  {{ order.currency }}</span
+                >
               </div>
             </div>
           </vc-card>
@@ -127,10 +198,10 @@
       </vc-row>
 
       <vc-row>
-        <vc-col>
+        <vc-col class="vc-padding_s">
           <vc-card header="Shipping address">
             <vc-row class="vc-padding_s">
-              <vc-col size="4">
+              <vc-col size="4" class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="Country"
@@ -138,7 +209,7 @@
                   :disabled="true"
                 ></vc-input>
               </vc-col>
-              <vc-col size="2">
+              <vc-col size="2" class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="Postal/ZIP code"
@@ -147,7 +218,7 @@
                   :disabled="true"
                 ></vc-input>
               </vc-col>
-              <vc-col size="3">
+              <vc-col size="3" class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="State/Province"
@@ -156,7 +227,7 @@
                   :disabled="true"
                 ></vc-input>
               </vc-col>
-              <vc-col size="3">
+              <vc-col size="3" class="vc-padding_s">
                 <vc-input
                   class="vc-margin-bottom_l"
                   label="City"
@@ -273,5 +344,9 @@ export default defineComponent({
 .orders-totals {
   background: #fbfdfe;
   box-shadow: inset 0px 4px 7px rgba(199, 213, 227, 0.3);
+
+  &__counter {
+    color: #83a6c3;
+  }
 }
 </style>

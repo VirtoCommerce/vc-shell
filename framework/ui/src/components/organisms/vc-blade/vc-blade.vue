@@ -17,7 +17,11 @@
       :title="title"
       :subtitle="subtitle"
       @close="$emit('close')"
-    ></vc-blade-header>
+    >
+      <template v-slot:actions v-if="$slots['actions']">
+        <slot name="actions"></slot>
+      </template>
+    </vc-blade-header>
 
     <!-- Set up blade toolbar -->
     <vc-blade-toolbar

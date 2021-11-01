@@ -1,6 +1,12 @@
 <template>
-  <div class="vc-card vc-flex vc-flex-grow_1 vc-flex-column">
+  <div class="vc-card vc-flex vc-flex-column">
     <div class="vc-card__header" v-if="header">
+      <vc-icon
+        v-if="icon"
+        class="vc-card__icon"
+        :icon="icon"
+        size="xl"
+      ></vc-icon>
       <div class="vc-card__title">{{ header }}</div>
       <div v-if="$slots['actions']" class="vc-card__actions">
         <slot name="actions"></slot>
@@ -18,6 +24,11 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     header: {
+      type: String,
+      default: undefined,
+    },
+
+    icon: {
       type: String,
       default: undefined,
     },
@@ -44,6 +55,8 @@ export default defineComponent({
   box-sizing: border-box;
   box-shadow: var(--card-box-shadow);
   border-radius: var(--card-border-radius);
+  overflow: hidden;
+  flex-grow: 1;
 
   &__header {
     background: var(--card-header-background);
@@ -57,9 +70,15 @@ export default defineComponent({
 
   &__title {
     text-transform: uppercase;
+    flex-grow: 1;
     color: var(--card-header-color);
     font-size: var(--card-header-font-size);
     font-weight: var(--card-header-font-weight);
+  }
+
+  &__icon {
+    color: var(--card-header-color);
+    margin-right: var(--margin-m);
   }
 
   &__body {

@@ -156,7 +156,10 @@ About component.
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <mp-product-status :status="itemData.item.status" />
+        <mp-product-status
+          :status="itemData.item.status"
+          class="vc-margin-bottom_xs"
+        />
       </template>
 
       <!-- Override createdDate column template -->

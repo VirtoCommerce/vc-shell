@@ -16,6 +16,10 @@
       </div>
     </div>
 
+    <div v-if="$slots['actions']" class="vc-blade-header__actions">
+      <slot name="actions"></slot>
+    </div>
+
     <div
       v-if="!$isMobile.value"
       class="vc-blade-header__buttons vc-flex vc-flex-align_center"

@@ -3,6 +3,242 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.0.67](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui@0.0.40...@virtoshell/ui@0.0.67) (2021-11-02)
+
+
+### Features
+
+* mobile dashboard, image dnd upload ([eae8508](https://github.com/VirtoCommerce/platform-manager-sdk/commit/eae85084a41dad38dc2d5dea26aedc53ebd5a2e1))
+
+
+
+## 0.0.66 (2021-11-02)
+
+
+### Features
+
+* new product details ui, vc-card collapsable ([3f2d1b4](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3f2d1b4eaeacfb032399b7fd8abedf252d7693a7))
+
+
+
+## 0.0.65 (2021-11-01)
+
+
+### Features
+
+* new dashboard ([28c7d82](https://github.com/VirtoCommerce/platform-manager-sdk/commit/28c7d824b49147be20215301f091253467e35b16))
+
+
+
+## 0.0.64 (2021-10-28)
+
+
+### Features
+
+* active row highlight ([cc4f7f9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/cc4f7f90d0aad690aa9cac5f1e52b5c027964ed4))
+
+
+
+## 0.0.63 (2021-10-28)
+
+
+### Features
+
+* filter counter ([15c6bab](https://github.com/VirtoCommerce/platform-manager-sdk/commit/15c6babdf294591c627ad27df570507a3585f57b))
+
+
+
+## 0.0.62 (2021-10-28)
+
+
+### Features
+
+* filters ([2a89cf8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2a89cf872729667cbaa1c9457eadb0fbee2a0018))
+* filters (WIP) ([b25ad3a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b25ad3a23a0f08cd9b3d3837d5223dc045eb8b55))
+
+
+
+## 0.0.61 (2021-10-26)
+
+
+### Features
+
+* dashboard ([683f65a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/683f65ac6d01b974dc05d931f62277891688ef1f))
+
+
+
+## 0.0.60 (2021-10-22)
+
+
+### Features
+
+* order details page ([b8fe53d](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8fe53d7282a6e0381af5eedbf272001a63b3ba9))
+
+
+
+## 0.0.59 (2021-10-20)
+
+
+
+## 0.0.58 (2021-10-20)
+
+
+### Features
+
+* additional fields (WIP) ([27596bd](https://github.com/VirtoCommerce/platform-manager-sdk/commit/27596bdcdf30790c56e8c2d571309fb9dd05f9b4))
+* orders edit and additional components ([e8cf8a3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e8cf8a3333664c8d326fdd5df28a2fd9981c550a))
+
+
+
+## 0.0.57 (2021-10-15)
+
+
+
+## 0.0.56 (2021-10-13)
+
+
+### Features
+
+* password field unhide ([2e6deb0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2e6deb01657515c3128ec62c287ecbda5ef92e9e))
+
+
+
+## 0.0.55 (2021-10-13)
+
+
+### Features
+
+* new icons, ptr improvements, offers list ptr ([fe0438b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fe0438b6c43b9a0d4baa52293e619c645c2f6f8d))
+
+
+
+## 0.0.54 (2021-10-13)
+
+
+### Bug Fixes
+
+* ptr overscroll height ([88f3a1e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/88f3a1e356fcf0f7e4855c9b77d8db28bbcdd607))
+
+
+### Features
+
+* some smooth animations ([79f2aad](https://github.com/VirtoCommerce/platform-manager-sdk/commit/79f2aadac40f91ef76f9efc484d37184a47c2b95))
+
+
+
+## 0.0.53 (2021-10-13)
+
+
+### Features
+
+* scroll ptr, menu styling ([4eff9a0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/4eff9a0fffc9feef8dbad433d210f0537702efd2))
+
+
+
+## 0.0.52 (2021-10-13)
+
+
+
+## 0.0.51 (2021-10-13)
+
+
+
+## 0.0.50 (2021-10-12)
+
+
+### Features
+
+* list mobile actions ([c269a88](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c269a88b9ca304520b9157a51ccd4c602fd0059b))
+* mobile swipe transition ([8fdccb1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8fdccb1345ba3f2d495a6f9344503f1c50b27a7b))
+
+
+
+## 0.0.49 (2021-10-12)
+
+
+### Features
+
+* mobile extended actions, vendor-portal detached ([c92a317](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c92a31743ded9788c939641ccff9922328b6f2f6))
+
+
+
+## 0.0.48 (2021-10-06)
+
+
+
+## 0.0.47 (2021-10-06)
+
+
+### Features
+
+* filters and swipe actions ([a463ad5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a463ad59519925ea5fd1ee2f90d45e85d5ef2008))
+
+
+
+## 0.0.46 (2021-09-30)
+
+
+
+## 0.0.45 (2021-09-30)
+
+
+### Bug Fixes
+
+* build failure fix ([d9cd4e7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d9cd4e76378d328527f46f91930ee352fe8f811c))
+* deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
+
+
+### Features
+
+* blade navigation improvements ([5dd0a7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5dd0a7e745c04684de702e780e978e580800d476))
+* mobile table, menu and toolbar isVisible handling ([948d655](https://github.com/VirtoCommerce/platform-manager-sdk/commit/948d655dd106ddd08d161879a78b8a5aa2adf896))
+* validation ([43a7ab9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/43a7ab96c5dd302f5960a6b2e55f5460a547d82c))
+* vc-app update, login form improvements ([3618289](https://github.com/VirtoCommerce/platform-manager-sdk/commit/36182892ae2496b6a693aaa9ad3cea5e13d5a55f))
+* vc-select update ([5188c4b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5188c4bc60df3cac4a446d95d70d384903090171))
+* vc-select/autocomplete keyProperty and displayProperty props ([da380ab](https://github.com/VirtoCommerce/platform-manager-sdk/commit/da380ab9729bd48b0b2a869535bf01f95b51e9cd))
+
+
+
+## 0.0.43 (2021-09-24)
+
+
+### Features
+
+* autocomplete and select v-models ([775c913](https://github.com/VirtoCommerce/platform-manager-sdk/commit/775c91388c7fc05db08b82663310ba3153187245))
+* product list update on changes ([198731f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
+
+
+
+## 0.0.42 (2021-09-23)
+
+
+### Features
+
+* basic mobile UI/UX ([77be3a4](https://github.com/VirtoCommerce/platform-manager-sdk/commit/77be3a414e842500e6ca9fded1ffadd4eccb68ed))
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Features
+
+* gallery upload, table width, label updates ([596ec14](https://github.com/VirtoCommerce/platform-manager-sdk/commit/596ec1451d7f4c57abc5b336737b40d79773000d))
+* routing update ([d7ec6ef](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
 ## [0.0.66](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui@0.0.40...@virtoshell/ui@0.0.66) (2021-11-02)
 
 

@@ -305,11 +305,7 @@
           </div>
         </vc-card>
 
-        <vc-card
-          class="vc-margin-bottom_l"
-          header="Latest review"
-          icon="fas fa-comment-dots"
-        >
+        <vc-card header="Latest review" icon="fas fa-comment-dots">
           <div class="vc-separator"></div>
           <div class="vc-padding_m">
             <vc-hint>22.02.2021</vc-hint>

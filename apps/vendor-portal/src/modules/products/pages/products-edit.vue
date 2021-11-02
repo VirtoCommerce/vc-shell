@@ -56,107 +56,126 @@
                   validator.categoryId.$errors[0].$message
                 "
               ></vc-select>
-              <vc-input
-                class="vc-margin-bottom_l"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                v-model="productDetails.gtin"
-                :clearable="true"
-                :required="true"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                "
-                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
-                :error="
-                  validator.gtin.$errors[0] &&
-                  validator.gtin.$errors[0].$message
-                "
-              ></vc-input>
-              <vc-textarea
-                class="vc-margin-bottom_l"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                v-model="productDetails.description"
-                :required="true"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
-                "
-                :error="
-                  validator.description.$errors[0] &&
-                  validator.description.$errors[0].$message
-                "
-              ></vc-textarea>
 
-              <template v-if="currentCategory">
-                <div
-                  v-for="(property, i) in productDetails.properties ||
-                  currentCategory.properties"
-                  :key="i"
-                >
-                  <vc-select
-                    v-if="property.dictionary"
-                    class="vc-margin-bottom_l"
-                    :label="property.displayNames[0].name"
-                    :modelValue="getPropertyValue(property)"
-                    @update:modelValue="setPropertyValue(property, $event)"
-                    :isRequired="property.required"
-                    :placeholder="property.displayNames[0].name"
-                    keyProperty="id"
-                    displayProperty="name"
-                  ></vc-select>
-
+              <vc-card
+                header="Properties"
+                is-collapsable
+                v-if="product.id || currentCategory"
+                v-loading="!currentCategory"
+              >
+                <div class="vc-padding_l">
                   <vc-input
-                    v-else-if="
-                      property.valueType === 'ShortText' ||
-                      property.valueType === 'DecimalNumber' ||
-                      property.valueType === 'Integer'
-                    "
                     class="vc-margin-bottom_l"
-                    :label="property.displayNames[0].name"
-                    :modelValue="getPropertyValue(property)"
-                    @update:modelValue="setPropertyValue(property, $event)"
+                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
+                    v-model="productDetails.gtin"
                     :clearable="true"
-                    :required="property.required"
-                    :placeholder="property.displayNames[0].name"
+                    :required="true"
+                    :placeholder="
+                      $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                    "
+                    :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
+                    :error="
+                      validator.gtin.$errors[0] &&
+                      validator.gtin.$errors[0].$message
+                    "
                   ></vc-input>
-
-                  <vc-input
-                    v-else-if="property.valueType === 'DateTime'"
-                    class="vc-margin-bottom_l"
-                    :label="property.displayNames[0].name"
-                    :modelValue="getPropertyValue(property)"
-                    @update:modelValue="setPropertyValue(property, $event)"
-                    type="date"
-                    :required="property.required"
-                    :placeholder="property.displayNames[0].name"
-                  ></vc-input>
-
                   <vc-textarea
-                    v-else-if="property.valueType === 'LongText'"
                     class="vc-margin-bottom_l"
-                    :label="property.displayNames[0].name"
-                    :modelValue="getPropertyValue(property)"
-                    @update:modelValue="setPropertyValue(property, $event)"
-                    :required="property.required"
-                    :placeholder="property.displayNames[0].name"
+                    :label="
+                      $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
+                    "
+                    v-model="productDetails.description"
+                    :required="true"
+                    :placeholder="
+                      $t(
+                        'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
+                      )
+                    "
+                    :error="
+                      validator.description.$errors[0] &&
+                      validator.description.$errors[0].$message
+                    "
                   ></vc-textarea>
 
-                  <vc-checkbox
-                    v-else-if="property.valueType === 'Boolean'"
-                    :modelValue="getPropertyValue(property)"
-                    @update:modelValue="setPropertyValue(property, $event)"
-                    class="vc-margin-bottom_l"
+                  <div
+                    v-for="property in productDetails.properties"
+                    :key="property.id"
                   >
-                    {{ property.displayNames[0].name }}
-                  </vc-checkbox>
-                </div>
-              </template>
+                    <vc-select
+                      v-if="property.dictionary"
+                      class="vc-margin-bottom_l"
+                      :label="property.displayNames[0].name || property.name"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      :isRequired="property.required"
+                      :placeholder="property.displayNames[0].name"
+                      keyProperty="id"
+                      displayProperty="name"
+                    ></vc-select>
 
-              <vc-gallery
-                v-if="param"
-                label="Gallery"
-                :images="productDetails.images"
-                @upload="onGalleryUpload"
-                @item:edit="onGalleryItemEdit"
-              ></vc-gallery>
+                    <vc-input
+                      v-else-if="
+                        property.valueType === 'ShortText' ||
+                        property.valueType === 'DecimalNumber' ||
+                        property.valueType === 'Integer'
+                      "
+                      class="vc-margin-bottom_l"
+                      :label="property.displayNames[0].name || property.name"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      :clearable="true"
+                      :required="property.required"
+                      :placeholder="property.displayNames[0].name"
+                    ></vc-input>
+
+                    <vc-input
+                      v-else-if="property.valueType === 'DateTime'"
+                      class="vc-margin-bottom_l"
+                      :label="property.displayNames[0].name || property.name"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      type="date"
+                      :required="property.required"
+                      :placeholder="property.displayNames[0].name"
+                    ></vc-input>
+
+                    <vc-textarea
+                      v-else-if="property.valueType === 'LongText'"
+                      class="vc-margin-bottom_l"
+                      :label="property.displayNames[0].name || property.name"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      :required="property.required"
+                      :placeholder="property.displayNames[0].name"
+                    ></vc-textarea>
+
+                    <vc-checkbox
+                      v-else-if="property.valueType === 'Boolean'"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      class="vc-margin-bottom_l"
+                    >
+                      {{ property.displayNames[0].name || property.name }}
+                    </vc-checkbox>
+                  </div>
+                </div>
+              </vc-card>
+
+              <vc-card
+                header="Images"
+                class="vc-margin-vertical_m"
+                is-collapsable
+                is-collapsed
+              >
+                <div class="vc-padding_l">
+                  <vc-gallery
+                    v-if="param"
+                    :images="productDetails.images"
+                    @upload="onGalleryUpload"
+                    @item:edit="onGalleryItemEdit"
+                  ></vc-gallery>
+                </div>
+              </vc-card>
             </vc-form>
           </div>
         </div>
@@ -177,7 +196,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+} from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import {
@@ -389,6 +415,18 @@ export default defineComponent({
 
     const setCategory = (id: string) => {
       currentCategory.value = categories.value?.find((x) => x.id === id);
+      const currentProperties = [...(productDetails?.properties || [])];
+      productDetails.properties = [...(currentCategory.value.properties || [])];
+      productDetails.properties.forEach((property) => {
+        const previousPropertyValue = currentProperties?.find(
+          (item) => item.id === property.id
+        );
+        if (previousPropertyValue) {
+          property.values[0] = new PropertyValue(
+            previousPropertyValue.values[0]
+          );
+        }
+      });
     };
 
     return {
@@ -445,6 +483,7 @@ export default defineComponent({
   &__inner {
     border-top: 1px solid #eaedf3;
     overflow: hidden;
+    min-height: 100%;
   }
 
   &__content {

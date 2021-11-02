@@ -28,7 +28,7 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
                 :options="products"
-                :initialItem="offer.product"
+                :initialItem="offerDetails.product"
                 keyProperty="id"
                 displayProperty="name"
                 @search="onProductSearch"
@@ -252,8 +252,14 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const { createOffer, offerDetails, fetchProducts, offer, loadOffer } =
-      useOffer();
+    const {
+      createOffer,
+      offerDetails,
+      fetchProducts,
+      offer,
+      loadOffer,
+      loading,
+    } = useOffer();
     //TODO: bind to dropdown action
     const products = ref<IOfferProduct[]>();
     const currency = { title: "USD", value: "USD" };
@@ -339,6 +345,7 @@ export default defineComponent({
 
     return {
       offer,
+      loading,
       validator,
       readonly,
       bladeToolbar,

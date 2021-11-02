@@ -83,7 +83,7 @@ export default (): IUseOffer => {
     try {
       loading.value = true;
       offer.value = (await client.getOfferById(args.id)) as TExtOffer;
-      if (offer.value) {
+      if (offer.value && offer.value.productId) {
         const result = await client.searchOfferProducts({
           objectIds: [offer.value.productId],
           take: 1,

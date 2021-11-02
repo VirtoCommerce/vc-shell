@@ -119,19 +119,19 @@ export default defineComponent({
       },
       {
         title: t("ORDERS.MENU.TITLE"),
-        icon: "fas fa-layer-group",
+        icon: "fas fa-file-alt",
         isVisible: true,
         component: shallowRef(OrdersList),
       },
       {
         title: t("PRODUCTS.MENU.TITLE"),
-        icon: "fas fa-cash-register",
+        icon: "fas fa-box-open",
         isVisible: true,
         component: shallowRef(ProductsList),
       },
       {
         title: t("OFFERS.MENU.TITLE"),
-        icon: "fas fa-hand-holding-usd",
+        icon: "fas fa-file-invoice",
         isVisible: true,
         component: shallowRef(OffersList),
       },

@@ -18,14 +18,9 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-:root {
-  --col-margin: var(--margin-s);
-}
-
 .vc-col {
   display: flex;
   flex-direction: column;
-  margin: var(--col-margin);
   min-width: 0;
   flex-basis: 0;
 

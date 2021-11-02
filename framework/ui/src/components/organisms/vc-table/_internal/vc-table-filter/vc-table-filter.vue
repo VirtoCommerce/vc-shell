@@ -35,50 +35,7 @@
           @click="isPanelVisible = false"
         />
 
-        <div class="vc-table-filter__panel-title vc-flex-shrink_0">Filters</div>
-
-        <vc-container :no-padding="true" class="vc-flex-grow_1">
-          <template v-for="(item, i) in items" :key="i">
-            <div class="vc-table-filter__panel-block">
-              <div class="vc-table-filter__panel-block-title">
-                {{ item.title }}
-              </div>
-              <div v-if="item.type === 'multi'">
-                <div v-for="(option, i) in item.options" :key="i">
-                  <vc-checkbox>{{ option.label }}</vc-checkbox>
-                </div>
-              </div>
-              <div v-else-if="item.type === 'date'">
-                <vc-input type="date" label="Start"></vc-input>
-                <vc-input
-                  class="vc-margin-top_m"
-                  type="date"
-                  label="End"
-                ></vc-input>
-              </div>
-              <div v-else>
-                <vc-input type="text"></vc-input>
-              </div>
-            </div>
-          </template>
-        </vc-container>
-
-        <div
-          class="
-            vc-table-filter__panel-actions
-            vc-flex-shrink_0
-            vc-flex
-            vc-flex-justify_center
-            vc-padding-top_xl
-          "
-        >
-          <vc-button class="vc-margin-right_s" @click="$emit('apply')">
-            Apply filters
-          </vc-button>
-          <vc-button variant="secondary" @click="$emit('reset')">
-            Reset filters
-          </vc-button>
-        </div>
+        <slot></slot>
       </div>
     </div>
   </div>
@@ -164,8 +121,8 @@ export default defineComponent({
     position: absolute;
     right: 0;
     top: 120%;
-    max-height: 300px;
-    max-width: 600px;
+    max-height: 400px;
+    max-width: 800px;
     min-width: 400px;
     z-index: 100;
     box-shadow: 1px 1px 11px rgba(141, 152, 163, 0.6);
@@ -180,6 +137,7 @@ export default defineComponent({
     &-close {
       color: #43b0e6;
       cursor: pointer;
+      align-self: flex-end;
     }
 
     &-title {
@@ -224,6 +182,10 @@ export default defineComponent({
       font-size: 22px;
       margin-top: 24px;
       margin-bottom: 24px;
+    }
+
+    &-close {
+      align-self: flex-start;
     }
   }
 }

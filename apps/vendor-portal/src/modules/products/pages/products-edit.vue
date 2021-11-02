@@ -8,6 +8,10 @@
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
+    <template v-slot:actions>
+      <mp-product-status :status="product.status"></mp-product-status>
+    </template>
+
     <!-- Blade contents -->
     <vc-container :no-padding="true">
       <div
@@ -16,9 +20,6 @@
       >
         <div class="product-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
-            <div v-if="param" class="vc-margin-bottom_l">
-              <mp-product-status :status="product.status"></mp-product-status>
-            </div>
             <vc-form>
               <vc-input
                 class="vc-margin-bottom_l"

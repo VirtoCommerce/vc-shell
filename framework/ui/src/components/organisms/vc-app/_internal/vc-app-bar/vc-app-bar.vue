@@ -146,6 +146,7 @@ export default defineComponent({
 
   &__logo {
     height: 50%;
+    cursor: pointer;
   }
 
   &__version {

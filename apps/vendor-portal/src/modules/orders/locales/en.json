@@ -20,6 +20,7 @@
             "NUMBER": "Order number",
             "CUSTOMER": "Customer",
             "TOTAL": "Total",
+            "QTY": "Qty",
             "STATUS": "Status",
             "CREATED": "Created"
           }

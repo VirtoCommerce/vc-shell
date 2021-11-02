@@ -5,7 +5,10 @@
       name="header"
       v-if="
         ($slots['header'] || header) &&
-        ((items && items.length) || searchValue || searchValue === '')
+        ((items && items.length) ||
+          searchValue ||
+          searchValue === '' ||
+          activeFilterCount)
       "
     >
       <div
@@ -19,12 +22,13 @@
         "
       >
         <!-- Table filter mobile button -->
-        <div v-if="$isMobile.value" class="vc-margin-right_m">
-          <vc-table-filter
-            :items="filterItems"
-            @apply="$emit('filter:apply', $event)"
-            @reset="$emit('filter:reset')"
-          />
+        <div
+          v-if="$isMobile.value && $slots['filters']"
+          class="vc-margin-right_m"
+        >
+          <vc-table-filter :counter="activeFilterCount">
+            <slot name="filters"></slot>
+          </vc-table-filter>
         </div>
 
         <!-- Table search input -->
@@ -37,13 +41,13 @@
         ></vc-input>
 
         <!-- Table filter desktop button -->
-        <div v-if="$isDesktop.value" class="vc-margin-left_m">
-          <vc-table-filter
-            :items="filterItems"
-            :title="$t('Filters')"
-            @apply="$emit('filter:apply', $event)"
-            @reset="$emit('filter:reset')"
-          />
+        <div
+          v-if="$isDesktop.value && $slots['filters']"
+          class="vc-margin-left_m"
+        >
+          <vc-table-filter :title="$t('Filters')" :counter="activeFilterCount">
+            <slot name="filters"></slot>
+          </vc-table-filter>
         </div>
       </div>
     </slot>
@@ -137,6 +141,7 @@
               class="vc-table__body-row"
               :class="{
                 'vc-table__body-row_even': i % 2 === 1,
+                'vc-table__body-row_selected': selectedItemId === item.id,
               }"
               @click="$emit('itemClick', item)"
             >
@@ -171,7 +176,10 @@
 
       <!-- Empty table view -->
       <template v-else>
-        <slot v-if="searchValue || searchValue === ''" name="notfound">
+        <slot
+          v-if="searchValue || searchValue === '' || activeFilterCount"
+          name="notfound"
+        >
           <div
             v-if="notfound"
             class="
@@ -372,6 +380,16 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    activeFilterCount: {
+      type: Number,
+      default: 0,
+    },
+
+    selectedItemId: {
+      type: String,
+      default: undefined,
+    },
   },
 
   emits: [
@@ -475,6 +493,11 @@ export default defineComponent({
 
       &:hover {
         background-color: #eff7fc;
+      }
+
+      &_selected,
+      &_selected:hover {
+        background-color: #dfeef9;
       }
     }
 

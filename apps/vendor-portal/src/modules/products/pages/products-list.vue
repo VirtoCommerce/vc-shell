@@ -19,13 +19,14 @@ About component.
       :columns="columns"
       :items="products"
       :itemActionBuilder="actionBuilder"
-      :filterItems="filterItems"
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
       :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
       :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
       :searchValue="searchValue"
+      :activeFilterCount="activeFilterCount"
+      :selectedItemId="selectedItemId"
       @search:change="onSearchList"
       :totalCount="totalCount"
       @itemClick="onItemClick"
@@ -33,6 +34,70 @@ About component.
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
     >
+      <!-- Filters -->
+      <template v-slot:filters>
+        <h2 v-if="$isMobile.value">Filters</h2>
+        <vc-container no-padding>
+          <vc-row>
+            <vc-col class="filter-col">
+              <div class="group-title">Status filter</div>
+              <div>
+                <vc-checkbox
+                  v-for="status in SellerProductStatus"
+                  :key="status"
+                  class="vc-margin-bottom_s"
+                  :modelValue="filter.status === status"
+                  @update:modelValue="
+                    filter.status = $event ? status : undefined
+                  "
+                  >{{ status }}</vc-checkbox
+                >
+              </div>
+            </vc-col>
+            <vc-col class="filter-col">
+              <div class="group-title">Price between</div>
+              <div>
+                <vc-input
+                  label="From"
+                  class="vc-margin-bottom_m"
+                  :modelValue="filter.priceStart"
+                  @update:modelValue="filter.priceStart = $event"
+                ></vc-input>
+                <vc-input
+                  label="To"
+                  :modelValue="filter.priceEnd"
+                  @update:modelValue="filter.priceEnd = $event"
+                ></vc-input>
+              </div>
+            </vc-col>
+            <vc-col class="filter-col">
+              <div class="group-title">Created date</div>
+              <div>
+                <vc-input
+                  label="Start date"
+                  type="date"
+                  class="vc-margin-bottom_m"
+                ></vc-input>
+                <vc-input label="End date" type="date"></vc-input>
+              </div>
+            </vc-col>
+          </vc-row>
+          <vc-row>
+            <vc-col>
+              <div class="vc-flex vc-flex-justify_end">
+                <vc-button
+                  outline
+                  class="vc-margin-right_l"
+                  @click="resetFilters"
+                  >Reset filters</vc-button
+                >
+                <vc-button @click="applyFilters">Apply</vc-button>
+              </div>
+            </vc-col>
+          </vc-row>
+        </vc-container>
+      </template>
+
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
@@ -91,7 +156,10 @@ About component.
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <mp-product-status :status="itemData.item.status" />
+        <mp-product-status
+          :status="itemData.item.status"
+          class="vc-margin-bottom_xs"
+        />
       </template>
 
       <!-- Override createdDate column template -->
@@ -152,7 +220,14 @@ About component.
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  computed,
+  watch,
+  reactive,
+} from "vue";
 import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -195,10 +270,14 @@ export default defineComponent({
       loadProducts,
       loading,
       searchQuery,
+      SellerProductStatus,
     } = useProducts();
+    const filter = reactive({});
+    const appliedFilter = ref({});
 
     const sort = ref("createdDate");
     const searchValue = ref();
+    const selectedItemId = ref();
 
     watch(sort, async (value) => {
       await loadProducts({ ...searchQuery.value, sort: value });
@@ -295,6 +374,12 @@ export default defineComponent({
       emit("page:open", {
         component: ProductsEdit,
         param: item.id,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
     };
 
@@ -312,20 +397,6 @@ export default defineComponent({
         skip: (page - 1) * searchQuery.value.take,
       });
     };
-
-    const filterItems = [
-      {
-        title: "Status",
-        type: "multi",
-        options: [
-          { label: "Saved" },
-          { label: "Active" },
-          { label: "Archived" },
-          { label: "Future" },
-        ],
-      },
-      { title: "Created date", type: "date" },
-    ];
 
     const actionBuilder = (product) => {
       let result = [];
@@ -382,7 +453,6 @@ export default defineComponent({
           return columns.value.filter((item) => item.alwaysVisible === true);
         }
       }),
-      filterItems,
       searchQuery,
       products,
       actionBuilder,
@@ -392,12 +462,16 @@ export default defineComponent({
       sort,
       moment,
       reload,
+      selectedItemId,
       async resetSearch() {
         searchValue.value = "";
+        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
         await loadProducts({
           ...searchQuery.value,
+          ...filter,
           keyword: "",
         });
+        appliedFilter.value = {};
       },
       addProduct() {
         emit("page:open", {
@@ -410,6 +484,28 @@ export default defineComponent({
       searchValue,
       onSearchList,
       title: t("PRODUCTS.PAGES.LIST.TITLE"),
+      filter,
+      SellerProductStatus,
+      activeFilterCount: computed(
+        () => Object.values(appliedFilter.value).filter((item) => !!item).length
+      ),
+      async applyFilters() {
+        await loadProducts({
+          ...searchQuery.value,
+          ...filter,
+        });
+        appliedFilter.value = {
+          ...filter,
+        };
+      },
+      async resetFilters() {
+        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+        await loadProducts({
+          ...searchQuery.value,
+          ...filter,
+        });
+        appliedFilter.value = {};
+      },
     };
   },
 });
@@ -420,5 +516,16 @@ export default defineComponent({
   &__mobile-item {
     border-bottom: 1px solid #e3e7ec;
   }
+}
+
+.group-title {
+  margin-bottom: var(--margin-l);
+  color: #a1c0d4;
+  font-weight: var(--font-weight-bold);
+  font-size: 17px;
+}
+
+.filter-col {
+  width: 180px;
 }
 </style>

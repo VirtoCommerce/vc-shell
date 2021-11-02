@@ -1,11 +1,14 @@
 <template>
   <vc-container class="dashboard vc-fill_all">
-    <div class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s">
+    <div
+      class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s"
+      v-if="$isDesktop.value"
+    >
       Dashboard
     </div>
 
     <vc-row>
-      <vc-col size="10">
+      <vc-col size="10" v-if="$isDesktop.value">
         <vc-row>
           <!-- Latest orders block -->
           <vc-col size="3" class="vc-padding_s">
@@ -229,6 +232,39 @@
             </vc-card>
           </vc-col>
         </vc-row>
+      </vc-col>
+
+      <vc-col v-else class="vc-padding_s">
+        <div class="vc-flex">
+          <vc-col class="vc-margin-right_s">
+            <vc-card
+              class="vc-margin-bottom_l"
+              header="Orders"
+              icon="fas fa-file-alt"
+            >
+              <div class="vc-separator"></div>
+              <div class="vc-margin-vertical_l dashboard-counters__value">
+                3,334
+              </div>
+            </vc-card>
+          </vc-col>
+          <vc-col class="vc-margin-left_s">
+            <vc-card
+              class="vc-margin-bottom_l"
+              header="Products"
+              icon="fas fa-box-open"
+            >
+              <div class="vc-separator"></div>
+              <div class="vc-margin-vertical_l dashboard-counters__value">
+                49
+              </div>
+            </vc-card>
+          </vc-col>
+        </div>
+        <vc-card header="Offers" icon="fas fa-file-invoice">
+          <div class="vc-separator"></div>
+          <div class="vc-margin-vertical_l dashboard-counters__value">206</div>
+        </vc-card>
       </vc-col>
 
       <!-- Counters block -->

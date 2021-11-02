@@ -9,7 +9,7 @@
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
-          "BULK_ARCHIVE": "Archive"
+          "DELETE": "Delete selected"
         },
         "SEARCH": {
           "PLACEHOLDER": "Search keywords"
@@ -27,7 +27,8 @@
             "MIN_QTY": "Min. Quantity",
             "QTY": "Quantity in Stock"
           }
-        }
+        },
+        "DELETE_SELECTED_CONFIRMATION": "Are you sure you want to delete {count} selected offers?"
       },
       "DETAILS": {
         "TITLE": "Add offer",

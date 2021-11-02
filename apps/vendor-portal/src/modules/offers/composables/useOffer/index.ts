@@ -22,6 +22,7 @@ interface IUseOffer {
   loadOffer: (args: { id: string }) => void;
   fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
   createOffer: (details: IOfferDetails) => void;
+  deleteOffer: (args: { id: string }) => void;
 }
 
 export default (): IUseOffer => {
@@ -98,6 +99,22 @@ export default (): IUseOffer => {
     }
   }
 
+  async function deleteOffer(args: { id: string }) {
+    logger.info(`Delete offer ${args}`);
+
+    const client = await getApiClient();
+
+    try {
+      loading.value = true;
+      await client.deleteOffers([args.id]);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     offer: computed(() => offer.value),
     offerDetails,
@@ -105,5 +122,6 @@ export default (): IUseOffer => {
     loadOffer,
     createOffer,
     fetchProducts,
+    deleteOffer,
   };
 };

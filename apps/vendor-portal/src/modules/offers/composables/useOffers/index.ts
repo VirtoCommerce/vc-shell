@@ -9,6 +9,7 @@ interface IUseOffers {
   loading: Ref<boolean>;
   currentPage: Ref<number>;
   loadOffers: (query: ISearchOffersQuery) => void;
+  deleteOffers: (args: { ids: string[] }) => void;
 }
 
 interface IUseOffersOptions {
@@ -64,6 +65,22 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     }
   }
 
+  async function deleteOffers(args: { ids: string[] }) {
+    logger.info(`Delete offers ${args}`);
+
+    const client = await getApiClient();
+
+    try {
+      loading.value = true;
+      await client.deleteOffers(args.ids);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     offers: computed(() => searchResult.value?.results),
     totalCount: computed(() => searchResult.value?.totalCount),
@@ -74,5 +91,6 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     loading,
     searchQuery,
     loadOffers,
+    deleteOffers,
   };
 };

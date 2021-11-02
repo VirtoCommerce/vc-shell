@@ -30,6 +30,7 @@
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
+      @selectionChanged="onSelectionChanged"
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
@@ -157,7 +158,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, onMounted, ref, computed } from "vue";
+import {
+  defineComponent,
+  watch,
+  onMounted,
+  ref,
+  computed,
+  reactive,
+} from "vue";
 import { useI18n, useFunctions, useLogger } from "@virtoshell/core";
 import { useOffers } from "../composables";
 import moment from "moment";
@@ -196,10 +204,12 @@ export default defineComponent({
       currentPage,
       loadOffers,
       loading,
+      deleteOffers,
     } = useOffers();
 
     const sort = ref("createdDate");
     const searchValue = ref();
+    const selectedOfferIds = ref([]);
 
     watch(sort, async (value) => {
       await loadOffers({ ...searchQuery.value, sort: value });
@@ -229,7 +239,7 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar = [
+    const bladeToolbar = reactive([
       {
         id: "refresh",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
@@ -249,12 +259,25 @@ export default defineComponent({
         },
       },
       {
-        id: "batchArchive",
-        title: t("OFFERS.PAGES.LIST.TOOLBAR.BULK_ARCHIVE"),
-        icon: "fas fa-archive",
-        disabled: true,
+        id: "deleteSelected",
+        title: t("OFFERS.PAGES.LIST.TOOLBAR.DELETE"),
+        icon: "fas fa-trash",
+        async clickHandler() {
+          //TODO: replace to confirmation dialog from UI library
+          if (
+            window.confirm(
+              t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
+                count: selectedOfferIds.value.length,
+              })
+            )
+          ) {
+            await deleteOffers({ ids: selectedOfferIds.value });
+            await reload();
+          }
+        },
+        disabled: computed(() => !selectedOfferIds.value?.length),
       },
-    ];
+    ]);
 
     const columns = ref([
       {
@@ -355,6 +378,12 @@ export default defineComponent({
         skip: (page - 1) * searchQuery.value.take,
       });
     };
+    const onSelectionChanged = (checkboxes) => {
+      selectedOfferIds.value = Object.entries(checkboxes)
+        .filter(([id, isChecked]) => isChecked)
+        .map(([id, isChecked]) => id);
+      console.log(selectedOfferIds.value);
+    };
 
     const actionBuilder = (item) => {
       let result = [];
@@ -411,6 +440,7 @@ export default defineComponent({
         await loadOffers({ ...searchQuery.value });
         loading.value = false;
       },
+      onSelectionChanged,
       title: t("OFFERS.PAGES.LIST.TITLE"),
     };
   },

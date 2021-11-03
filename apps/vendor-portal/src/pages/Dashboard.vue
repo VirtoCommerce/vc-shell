@@ -198,9 +198,6 @@
                 <template v-slot:item_name="itemData">
                   <div class="vc-flex vc-flex-column">
                     <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-                    <vc-hint class="vc-ellipsis">{{
-                      itemData.item.name
-                    }}</vc-hint>
                   </div>
                 </template>
 
@@ -276,7 +273,7 @@
         >
           <div class="vc-separator"></div>
           <div class="vc-margin-vertical_l dashboard-counters__value">
-            3,844,134.43
+            {{ counters.revenue[range.revenue] }}
           </div>
           <div
             class="
@@ -286,10 +283,33 @@
               vc-margin-bottom_l
             "
           >
-            <vc-button small outline class="vc-margin-right_s">Day</vc-button>
-            <vc-button small outline class="vc-margin-right_s">Week</vc-button>
-            <vc-button small outline class="vc-margin-right_s">Month</vc-button>
-            <vc-button small>Year</vc-button>
+            <vc-button
+              small
+              :outline="range.revenue !== 'day'"
+              @click="range.revenue = 'day'"
+              class="vc-margin-right_s"
+              >Day</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.revenue !== 'week'"
+              @click="range.revenue = 'week'"
+              class="vc-margin-right_s"
+              >Week</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.revenue !== 'month'"
+              @click="range.revenue = 'month'"
+              class="vc-margin-right_s"
+              >Month</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.revenue !== 'year'"
+              @click="range.revenue = 'year'"
+              >Year</vc-button
+            >
           </div>
         </vc-card>
 
@@ -300,7 +320,7 @@
         >
           <div class="vc-separator"></div>
           <div class="vc-margin-vertical_l dashboard-counters__value">
-            1,553
+            {{ counters.purchased[range.purchased] }}
           </div>
           <div
             class="
@@ -310,10 +330,33 @@
               vc-margin-bottom_l
             "
           >
-            <vc-button small outline class="vc-margin-right_s">Day</vc-button>
-            <vc-button small outline class="vc-margin-right_s">Week</vc-button>
-            <vc-button small outline class="vc-margin-right_s">Month</vc-button>
-            <vc-button small>Year</vc-button>
+            <vc-button
+              small
+              :outline="range.purchased !== 'day'"
+              @click="range.purchased = 'day'"
+              class="vc-margin-right_s"
+              >Day</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.purchased !== 'week'"
+              @click="range.purchased = 'week'"
+              class="vc-margin-right_s"
+              >Week</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.purchased !== 'month'"
+              @click="range.purchased = 'month'"
+              class="vc-margin-right_s"
+              >Month</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.purchased !== 'year'"
+              @click="range.purchased = 'year'"
+              >Year</vc-button
+            >
           </div>
         </vc-card>
 
@@ -324,7 +367,7 @@
         >
           <div class="vc-separator"></div>
           <div class="vc-margin-vertical_l dashboard-counters__value">
-            920.75
+            {{ counters.orderAvg[range.orderAvg] }}
           </div>
           <div
             class="
@@ -334,10 +377,33 @@
               vc-margin-bottom_l
             "
           >
-            <vc-button small outline class="vc-margin-right_s">Day</vc-button>
-            <vc-button small outline class="vc-margin-right_s">Week</vc-button>
-            <vc-button small outline class="vc-margin-right_s">Month</vc-button>
-            <vc-button small>Year</vc-button>
+            <vc-button
+              small
+              :outline="range.orderAvg !== 'day'"
+              @click="range.orderAvg = 'day'"
+              class="vc-margin-right_s"
+              >Day</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.orderAvg !== 'week'"
+              @click="range.orderAvg = 'week'"
+              class="vc-margin-right_s"
+              >Week</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.orderAvg !== 'month'"
+              @click="range.orderAvg = 'month'"
+              class="vc-margin-right_s"
+              >Month</vc-button
+            >
+            <vc-button
+              small
+              :outline="range.orderAvg !== 'year'"
+              @click="range.orderAvg = 'year'"
+              >Year</vc-button
+            >
           </div>
         </vc-card>
 
@@ -367,7 +433,7 @@
 
 <script lang="ts">
 import { useI18n } from "@virtoshell/core";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import {
@@ -484,6 +550,33 @@ export default defineComponent({
       },
     ]);
 
+    const counters = reactive({
+      revenue: {
+        day: "1,230.09",
+        week: "13,445.75",
+        month: "490,314.81",
+        year: "3,553,165.94",
+      },
+      purchased: {
+        day: "17",
+        week: "993",
+        month: "31,230",
+        year: "1,151,202",
+      },
+      orderAvg: {
+        day: "515.04",
+        week: "792.45",
+        month: "620.01",
+        year: "593.10",
+      },
+    });
+
+    const range = reactive({
+      revenue: "day",
+      purchased: "day",
+      orderAvg: "day",
+    });
+
     onMounted(async () => {
       loadOrders({ take: 5 });
       loadProducts({ take: 5 });
@@ -575,6 +668,9 @@ export default defineComponent({
       calcQty(items: any[]) {
         return items.reduce((acc, item) => acc + item.quantity, 0);
       },
+
+      counters,
+      range,
     };
   },
 });

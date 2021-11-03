@@ -35,10 +35,7 @@
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
-        <div class="vc-flex vc-flex-column">
-          <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-          <vc-hint class="vc-ellipsis">{{ itemData.item.name }}</vc-hint>
-        </div>
+        <div class="vc-ellipsis">{{ itemData.item.name }}</div>
       </template>
 
       <!-- Override image column template -->
@@ -86,9 +83,6 @@
               <div class="vc-font-weight_bold vc-font-size_l">
                 {{ itemData.item.name }}
               </div>
-              <vc-hint class="vc-margin-top_xs">
-                {{ itemData.item.name }}
-              </vc-hint>
             </div>
           </div>
           <div

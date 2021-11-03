@@ -154,7 +154,7 @@
                   :disabled="readonly"
                 ></vc-input>
               </div>
-              <div class="vc-flex">
+              <!--<div class="vc-flex">
                 <vc-input
                   class="vc-fill_width vc-margin-bottom_l vc-margin-right_s"
                   type="date"
@@ -197,7 +197,7 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.SHIPPING_TIME.PLACEHOLDER')
                 "
                 :disabled="readonly"
-              ></vc-input>
+              ></vc-input>-->
             </vc-form>
           </div>
         </div>
@@ -332,14 +332,6 @@ export default defineComponent({
           }
         },
         isVisible: !props.param,
-      },
-      {
-        id: "close",
-        title: t("OFFERS.PAGES.DETAILS.TOOLBAR.CLOSE"),
-        icon: "fas fa-times",
-        async clickHandler() {
-          emit("page:close");
-        },
       },
     ]);
 

@@ -109,16 +109,13 @@
                       @update:modelValue="setPropertyValue(property, $event)"
                       :isRequired="property.required"
                       :placeholder="property.displayNames[0].name"
+                      :options="dictionaries[property.id]"
                       keyProperty="id"
-                      displayProperty="name"
+                      displayProperty="alias"
                     ></vc-select>
 
                     <vc-input
-                      v-else-if="
-                        property.valueType === 'ShortText' ||
-                        property.valueType === 'DecimalNumber' ||
-                        property.valueType === 'Integer'
-                      "
+                      v-else-if="property.valueType === 'ShortText'"
                       class="vc-margin-bottom_l"
                       :label="property.displayNames[0].name || property.name"
                       :modelValue="getPropertyValue(property)"
@@ -129,12 +126,37 @@
                     ></vc-input>
 
                     <vc-input
+                      v-else-if="property.valueType === 'Number'"
+                      class="vc-margin-bottom_l"
+                      :label="property.displayNames[0].name || property.name"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      :clearable="true"
+                      type="number"
+                      :required="property.required"
+                      :placeholder="property.displayNames[0].name"
+                    ></vc-input>
+
+                    <vc-input
+                      v-else-if="property.valueType === 'Integer'"
+                      class="vc-margin-bottom_l"
+                      :label="property.displayNames[0].name || property.name"
+                      :modelValue="getPropertyValue(property)"
+                      @update:modelValue="setPropertyValue(property, $event)"
+                      :clearable="true"
+                      type="number"
+                      step="1"
+                      :required="property.required"
+                      :placeholder="property.displayNames[0].name"
+                    ></vc-input>
+
+                    <vc-input
                       v-else-if="property.valueType === 'DateTime'"
                       class="vc-margin-bottom_l"
                       :label="property.displayNames[0].name || property.name"
                       :modelValue="getPropertyValue(property)"
                       @update:modelValue="setPropertyValue(property, $event)"
-                      type="date"
+                      type="datetime-local"
                       :required="property.required"
                       :placeholder="property.displayNames[0].name"
                     ></vc-input>
@@ -260,10 +282,13 @@ export default defineComponent({
       updateProductDetails,
       fetchCategories,
       revertStagedChanges,
+      searchDictionaryItems,
     } = useProduct();
 
     const currentCategory = ref();
     const { getAccessToken } = useUser();
+
+    const dictionaries = reactive({});
 
     const rules = computed(() => ({
       name: {
@@ -297,6 +322,13 @@ export default defineComponent({
           (x) => x.id === productDetails.categoryId
         );
       }
+      productDetails?.properties?.forEach(async (property) => {
+        if (property.dictionary) {
+          dictionaries[property.id] = await searchDictionaryItems([
+            property.id,
+          ]);
+        }
+      });
     });
 
     const bladeToolbar = reactive([
@@ -413,18 +445,26 @@ export default defineComponent({
       });
     };
 
-    const setCategory = (id: string) => {
+    const setCategory = async (id: string) => {
       currentCategory.value = categories.value?.find((x) => x.id === id);
+      Object.keys(dictionaries).forEach(
+        (item) => (dictionaries[item] = undefined)
+      );
       const currentProperties = [...(productDetails?.properties || [])];
       productDetails.properties = [...(currentCategory.value.properties || [])];
-      productDetails.properties.forEach((property) => {
+      productDetails.properties.forEach(async (property) => {
         const previousPropertyValue = currentProperties?.find(
           (item) => item.id === property.id
         );
         if (previousPropertyValue) {
-          property.values[0] = new PropertyValue(
-            previousPropertyValue.values[0]
+          property.values = previousPropertyValue.values.map(
+            (item) => new PropertyValue(item)
           );
+        }
+        if (property.dictionary) {
+          dictionaries[property.id] = await searchDictionaryItems([
+            property.id,
+          ]);
         }
       });
     };
@@ -440,7 +480,7 @@ export default defineComponent({
         categories.value = await fetchCategories(value);
       },
       validator,
-
+      dictionaries,
       categories,
       product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,

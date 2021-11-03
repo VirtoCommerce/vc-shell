@@ -1,5 +1,5 @@
 <template>
-  <div v-if="items" class="vc-blade-toolbar vc-flex-shrink_0">
+  <div v-if="isToolbarVisible()" class="vc-blade-toolbar vc-flex-shrink_0">
     <template v-for="item in items" :key="item.id">
       <vc-blade-toolbar-button
         v-if="item.isVisible === undefined || item.isVisible"
@@ -25,6 +25,18 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
+  },
+
+  setup(props) {
+    return {
+      isToolbarVisible() {
+        const visibleItems = (props.items as { isVisible: boolean }[]).filter(
+          (item) => item.isVisible === undefined || item.isVisible
+        );
+        console.dir(visibleItems);
+        return !!visibleItems.length;
+      },
+    };
   },
 });
 </script>

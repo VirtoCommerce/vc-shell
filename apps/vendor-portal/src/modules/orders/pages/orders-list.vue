@@ -22,8 +22,10 @@
       :activeFilterCount="activeFilterCount"
       :selectedItemId="selectedItemId"
       :currentPage="currentPage"
+      @search:change="onSearchList"
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
+      @scroll:ptr="reload"
     >
       <!-- Filters -->
       <template v-slot:filters>
@@ -192,7 +194,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useOrders } from "../composables";
-import { useI18n } from "@virtoshell/core";
+import { useFunctions, useI18n } from "@virtoshell/core";
 import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
 
@@ -219,6 +221,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { orders, loadOrders, loading, pages, currentPage, totalCount } =
       useOrders();
+    const { debounce } = useFunctions();
     const { t } = useI18n();
     const filter = reactive({});
     const appliedFilter = ref({});
@@ -234,7 +237,7 @@ export default defineComponent({
         title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         async clickHandler() {
-          await loadOrders();
+          await reload();
         },
       },
       {
@@ -350,7 +353,23 @@ export default defineComponent({
       return result;
     };
 
+    const onSearchList = debounce(async (keyword: string) => {
+      searchValue.value = keyword;
+      await loadOrders({
+        ...filter,
+        keyword,
+      });
+    }, 200);
+
+    const reload = async () => {
+      await loadOrders({
+        ...filter,
+        keyword: searchValue.value,
+      });
+    };
+
     return {
+      reload,
       bladeToolbar,
       columns: computed(() => {
         if (props.expanded) {
@@ -372,6 +391,7 @@ export default defineComponent({
       onPaginationClick,
       title: t("ORDERS.PAGES.LIST.TITLE"),
       searchValue,
+      onSearchList,
       selectedItemId,
       setFilterDate(key: string, value: string) {
         filter[key] = new Date(value);

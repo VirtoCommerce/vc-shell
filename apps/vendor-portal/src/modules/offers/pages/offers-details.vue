@@ -98,6 +98,7 @@
                   :clearable="true"
                   :required="true"
                   v-model="offerDetails.listPrice"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
                   "
@@ -112,6 +113,7 @@
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
                   :clearable="true"
                   v-model="offerDetails.salePrice"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
                   "
@@ -129,6 +131,7 @@
                   :clearable="true"
                   :required="true"
                   v-model="offerDetails.minQuantity"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                   "
@@ -144,6 +147,7 @@
                   :clearable="true"
                   :required="true"
                   v-model="offerDetails.inStockQuantity"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                   "
@@ -200,9 +204,6 @@
               ></vc-input>-->
             </vc-form>
           </div>
-        </div>
-        <div class="offer-details__widgets">
-          <vc-widget icon="fas fa-file-alt" title="Statistics"></vc-widget>
         </div>
       </div>
     </vc-container>

@@ -238,6 +238,7 @@
               class="vc-margin-bottom_l"
               header="Orders"
               icon="fas fa-file-alt"
+              @click="open('orders-list')"
             >
               <div class="vc-separator"></div>
               <div class="vc-margin-vertical_l dashboard-counters__value">
@@ -250,6 +251,7 @@
               class="vc-margin-bottom_l"
               header="Products"
               icon="fas fa-box-open"
+              @click="open('products-list')"
             >
               <div class="vc-separator"></div>
               <div class="vc-margin-vertical_l dashboard-counters__value">
@@ -258,7 +260,11 @@
             </vc-card>
           </vc-col>
         </div>
-        <vc-card header="Offers" icon="fas fa-file-invoice">
+        <vc-card
+          header="Offers"
+          icon="fas fa-file-invoice"
+          @click="open('offers-list')"
+        >
           <div class="vc-separator"></div>
           <div class="vc-margin-vertical_l dashboard-counters__value">206</div>
         </vc-card>

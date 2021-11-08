@@ -139,15 +139,18 @@ export default defineComponent({
   &_primary {
     background-color: var(--button-primary-background-color);
     color: var(--button-primary-text-color);
+    border: 1px solid var(--button-primary-background-color);
 
     &:hover {
       background-color: var(--button-primary-background-color-hover);
       color: var(--button-primary-text-color-hover);
+      border: 1px solid var(--button-primary-background-color-hover);
     }
 
     &:focus {
       background-color: var(--button-primary-background-color-active);
       color: var(--button-primary-text-color-active);
+      border: 1px solid var(--button-primary-background-color-active);
     }
 
     &.vc-button_disabled,
@@ -155,6 +158,7 @@ export default defineComponent({
       cursor: not-allowed;
       background-color: var(--button-primary-background-color-disabled);
       color: var(--button-primary-text-color-disabled);
+      border: 1px solid var(--button-primary-background-color-disabled);
     }
   }
 
@@ -187,15 +191,18 @@ export default defineComponent({
   &_special {
     background-color: var(--button-special-background-color);
     color: var(--button-special-text-color);
+    border: 1px solid var(--button-special-background-color);
 
     &:hover {
       background-color: var(--button-special-background-color-hover);
       color: var(--button-special-text-color-hover);
+      border: 1px solid var(--button-special-background-color-hover);
     }
 
     &:focus {
       background-color: var(--button-special-background-color-active);
       color: var(--button-special-text-color-active);
+      border: 1px solid var(--button-special-background-color-active);
     }
 
     &.vc-button_disabled,
@@ -203,6 +210,7 @@ export default defineComponent({
       cursor: not-allowed;
       background-color: var(--button-special-background-color-disabled);
       color: var(--button-special-text-color-disabled);
+      border: 1px solid var(--button-special-background-color-disabled);
     }
   }
 

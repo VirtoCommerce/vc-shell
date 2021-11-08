@@ -46,11 +46,16 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    usePtr: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   emits: ["scroll:ptr", "scroll:infinite"],
 
-  setup(_props, { emit }) {
+  setup(props, { emit }) {
     const component = ref<HTMLElement | null>(null);
     const scroll = ref(false);
     const isOverscrollVisible = ref(false);
@@ -94,12 +99,14 @@ export default defineComponent({
       },
 
       touchMove(e: TouchEvent): void {
-        const delta = startY.value - e.touches[0].clientY;
-        if (delta < -20 && delta > -80 && component.value?.scrollTop === 0) {
-          e.preventDefault();
-          isOverscrollVisible.value = true;
-          offsetY.value = -delta;
-          isThresholdPassed.value = Math.abs(offsetY.value) > 60;
+        if (props.usePtr) {
+          const delta = startY.value - e.touches[0].clientY;
+          if (delta < -20 && delta > -80 && component.value?.scrollTop === 0) {
+            e.preventDefault();
+            isOverscrollVisible.value = true;
+            offsetY.value = -delta;
+            isThresholdPassed.value = Math.abs(offsetY.value) > 60;
+          }
         }
       },
 

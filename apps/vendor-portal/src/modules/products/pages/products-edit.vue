@@ -184,6 +184,7 @@
               </vc-card>
 
               <vc-card
+                v-if="param"
                 header="Images"
                 class="vc-margin-vertical_m"
                 is-collapsable
@@ -191,7 +192,6 @@
               >
                 <div class="vc-padding_l">
                   <vc-gallery
-                    v-if="param"
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
                     @item:edit="onGalleryItemEdit"
@@ -209,8 +209,6 @@
             @click="openOffers"
           >
           </vc-widget>
-          <vc-widget icon="fas fa-comment" title="Comments" value="22">
-          </vc-widget>
         </div>
       </div>
     </vc-container>
@@ -218,14 +216,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  unref,
-} from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import {
@@ -469,6 +460,8 @@ export default defineComponent({
       });
     };
 
+    let isOffersOpened = false;
+
     return {
       bladeToolbar,
       category: computed(() =>
@@ -488,13 +481,21 @@ export default defineComponent({
       onGalleryUpload,
       onGalleryItemEdit,
       async openOffers() {
-        emit("page:open", {
-          component: OffersList,
-          componentOptions: {
-            sellerProductId: product.value?.id,
-          },
-          url: null,
-        });
+        if (!isOffersOpened) {
+          emit("page:open", {
+            component: OffersList,
+            componentOptions: {
+              sellerProductId: product.value?.id,
+            },
+            url: null,
+            onOpen() {
+              isOffersOpened = true;
+            },
+            onClose() {
+              isOffersOpened = false;
+            },
+          });
+        }
       },
       async onBeforeClose() {
         if (modified.value) {

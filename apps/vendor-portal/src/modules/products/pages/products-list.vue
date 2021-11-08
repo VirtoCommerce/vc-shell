@@ -401,7 +401,10 @@ export default defineComponent({
     const actionBuilder = (product) => {
       let result = [];
 
-      if (product.status === "Published") {
+      const statuses =
+        product.status?.split(",").map((item) => item.trim()) || [];
+
+      if (statuses.includes("Published")) {
         result.push({
           icon: "fas fa-times",
           title: "Unpublish",
@@ -421,7 +424,7 @@ export default defineComponent({
         });
       }
 
-      result.push(
+      /*result.push(
         ...[
           {
             icon: "fas fa-clock",
@@ -438,7 +441,7 @@ export default defineComponent({
             },
           },
         ]
-      );
+      );*/
 
       return result;
     };

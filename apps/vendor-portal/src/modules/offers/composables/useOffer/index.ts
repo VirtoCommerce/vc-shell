@@ -10,10 +10,16 @@ import {
   OfferDetails,
   CreateNewOfferCommand,
   SearchProductsForNewOfferQuery,
+  OfferPrice,
 } from "../../../../api_client";
 import offers from "../..";
 
-export type TExtOfferDetails = IOfferDetails & { product?: IOfferProduct };
+export type TExtOfferDetails = IOfferDetails & {
+  product?: IOfferProduct;
+  salePrice?: number;
+  listPrice?: number;
+  minQuantity?: number;
+};
 
 interface IUseOffer {
   offer: Ref<IOffer>;
@@ -22,7 +28,7 @@ interface IUseOffer {
   loadOffer: (args: { id: string }) => void;
   selectOfferProduct: (args: { id: string }) => void;
   fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
-  createOffer: (details: IOfferDetails) => void;
+  createOffer: (details: TExtOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
 }
 
@@ -54,11 +60,17 @@ export default (): IUseOffer => {
     return result.results;
   }
 
-  async function createOffer(details: IOfferDetails) {
+  async function createOffer(details: TExtOfferDetails) {
     logger.info(`create new  offer`, details);
 
     const client = await getApiClient();
-
+    //TODO: remove later when offer details blade has reworked to mutiple prices
+    const price = new OfferPrice({
+      listPrice: details.listPrice,
+      salePrice: details.salePrice,
+      minQuantity: details.minQuantity,
+    });
+    details.prices = [price];
     const command = new CreateNewOfferCommand({
       sellerName: user.value.userName,
       productId: details.productId,

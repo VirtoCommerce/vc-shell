@@ -4476,6 +4476,54 @@ export class AuthApiBase {
       take?: number;
   }
   
+  export class OfferPrice implements IOfferPrice {
+      listPrice!: number;
+      salePrice?: number | undefined;
+      minQuantity?: number;
+      id?: string | undefined;
+  
+      constructor(data?: IOfferPrice) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.listPrice = _data["listPrice"];
+              this.salePrice = _data["salePrice"];
+              this.minQuantity = _data["minQuantity"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): OfferPrice {
+          data = typeof data === 'object' ? data : {};
+          let result = new OfferPrice();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["listPrice"] = this.listPrice;
+          data["salePrice"] = this.salePrice;
+          data["minQuantity"] = this.minQuantity;
+          data["id"] = this.id;
+          return data; 
+      }
+  }
+  
+  export interface IOfferPrice {
+      listPrice: number;
+      salePrice?: number | undefined;
+      minQuantity?: number;
+      id?: string | undefined;
+  }
+  
   export class Offer implements IOffer {
       isActive?: boolean;
       outerId?: string | undefined;
@@ -4489,9 +4537,9 @@ export class AuthApiBase {
       categoryId?: string | undefined;
       path?: string | undefined;
       currency?: string | undefined;
-      listPrice?: number;
-      salePrice?: number | undefined;
-      minQuantity?: number;
+      readonly listPrice?: number | undefined;
+      readonly salePrice?: number | undefined;
+      prices?: OfferPrice[] | undefined;
       inStockQuantity?: number;
       startDate?: Date | undefined;
       endDate?: Date | undefined;
@@ -4526,9 +4574,13 @@ export class AuthApiBase {
               this.categoryId = _data["categoryId"];
               this.path = _data["path"];
               this.currency = _data["currency"];
-              this.listPrice = _data["listPrice"];
-              this.salePrice = _data["salePrice"];
-              this.minQuantity = _data["minQuantity"];
+              (<any>this).listPrice = _data["listPrice"];
+              (<any>this).salePrice = _data["salePrice"];
+              if (Array.isArray(_data["prices"])) {
+                  this.prices = [] as any;
+                  for (let item of _data["prices"])
+                      this.prices!.push(OfferPrice.fromJS(item));
+              }
               this.inStockQuantity = _data["inStockQuantity"];
               this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
               this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
@@ -4565,7 +4617,11 @@ export class AuthApiBase {
           data["currency"] = this.currency;
           data["listPrice"] = this.listPrice;
           data["salePrice"] = this.salePrice;
-          data["minQuantity"] = this.minQuantity;
+          if (Array.isArray(this.prices)) {
+              data["prices"] = [];
+              for (let item of this.prices)
+                  data["prices"].push(item.toJSON());
+          }
           data["inStockQuantity"] = this.inStockQuantity;
           data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
           data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
@@ -4593,9 +4649,9 @@ export class AuthApiBase {
       categoryId?: string | undefined;
       path?: string | undefined;
       currency?: string | undefined;
-      listPrice?: number;
+      listPrice?: number | undefined;
       salePrice?: number | undefined;
-      minQuantity?: number;
+      prices?: OfferPrice[] | undefined;
       inStockQuantity?: number;
       startDate?: Date | undefined;
       endDate?: Date | undefined;
@@ -4895,9 +4951,7 @@ export class AuthApiBase {
       name?: string | undefined;
       sku!: string;
       currency!: string;
-      listPrice!: number;
-      salePrice?: number | undefined;
-      minQuantity?: number;
+      prices?: OfferPrice[] | undefined;
       inStockQuantity?: number;
       startDate?: Date | undefined;
       endDate?: Date | undefined;
@@ -4920,9 +4974,11 @@ export class AuthApiBase {
               this.name = _data["name"];
               this.sku = _data["sku"];
               this.currency = _data["currency"];
-              this.listPrice = _data["listPrice"];
-              this.salePrice = _data["salePrice"];
-              this.minQuantity = _data["minQuantity"];
+              if (Array.isArray(_data["prices"])) {
+                  this.prices = [] as any;
+                  for (let item of _data["prices"])
+                      this.prices!.push(OfferPrice.fromJS(item));
+              }
               this.inStockQuantity = _data["inStockQuantity"];
               this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
               this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
@@ -4945,9 +5001,11 @@ export class AuthApiBase {
           data["name"] = this.name;
           data["sku"] = this.sku;
           data["currency"] = this.currency;
-          data["listPrice"] = this.listPrice;
-          data["salePrice"] = this.salePrice;
-          data["minQuantity"] = this.minQuantity;
+          if (Array.isArray(this.prices)) {
+              data["prices"] = [];
+              for (let item of this.prices)
+                  data["prices"].push(item.toJSON());
+          }
           data["inStockQuantity"] = this.inStockQuantity;
           data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
           data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
@@ -4963,9 +5021,7 @@ export class AuthApiBase {
       name?: string | undefined;
       sku: string;
       currency: string;
-      listPrice: number;
-      salePrice?: number | undefined;
-      minQuantity?: number;
+      prices?: OfferPrice[] | undefined;
       inStockQuantity?: number;
       startDate?: Date | undefined;
       endDate?: Date | undefined;

@@ -160,16 +160,16 @@
             </vc-form>
           </div>
         </div>
-        <div v-if="param" class="product-details__widgets">
+        <div v-if="product.isPublished" class="product-details__widgets">
           <vc-widget
             icon="fas fa-file-alt"
             title="Offers"
-            value="3"
+            :value="offersCount"
             @click="openOffers"
           >
           </vc-widget>
-          <vc-widget icon="fas fa-comment" title="Comments" value="22">
-          </vc-widget>
+          <!-- <vc-widget icon="fas fa-comment" title="Comments" value="22">
+          </vc-widget> -->
         </div>
       </div>
     </vc-container>
@@ -180,7 +180,9 @@
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import { useProduct } from "../composables";
+import { useOffers } from "../../offers/composables";
 import {
+  BlobFolder,
   ICategory,
   Image,
   IProperty,
@@ -236,8 +238,12 @@ export default defineComponent({
       revertStagedChanges,
     } = useProduct();
 
-    const currentCategory = ref();
+    const { searchOffers } = useOffers();
     const { getAccessToken } = useUser();
+
+    const currentCategory = ref();
+    const offersCount = ref(0);
+    const categories = ref<ICategory[]>();
 
     const rules = computed(() => ({
       name: {
@@ -259,18 +265,30 @@ export default defineComponent({
 
     const validator = useVuelidate(rules, productDetails, { $autoDirty: true });
 
-    const categories = ref<ICategory[]>();
+    const reload = async (fullReload: boolean) => {
+      if (props.param) {
+        //Do not reload product if it has unsaved changes
+        if (!modified.value && fullReload) {
+          await loadProduct({ id: props.param });
+          categories.value = await fetchCategories();
+          if (productDetails?.categoryId) {
+            currentCategory.value = categories.value?.find(
+              (x) => x.id === productDetails.categoryId
+            );
+          }
+        }
+        //Load offers count to populate widget
+        offersCount.value = (
+          await searchOffers({
+            take: 0,
+            sellerProductId: props.param,
+          })
+        ).totalCount;
+      }
+    };
 
     onMounted(async () => {
-      if (props.param) {
-        await loadProduct({ id: props.param });
-      }
-      categories.value = await fetchCategories();
-      if (productDetails?.categoryId) {
-        currentCategory.value = categories.value?.find(
-          (x) => x.id === productDetails.categoryId
-        );
-      }
+      await reload(true);
     });
 
     const bladeToolbar = reactive([
@@ -402,10 +420,11 @@ export default defineComponent({
         categories.value = await fetchCategories(value);
       },
       validator,
-
+      offersCount,
       categories,
       product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,
+      reload,
       loading: computed(() => loading.value),
       onGalleryUpload,
       onGalleryItemEdit,
@@ -413,7 +432,7 @@ export default defineComponent({
         emit("page:open", {
           component: OffersList,
           componentOptions: {
-            sellerProductId: product.value?.id,
+            sellerProduct: product.value,
           },
           url: null,
         });

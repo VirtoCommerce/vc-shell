@@ -434,7 +434,7 @@ export class AuthApiBase {
        * @param body (optional) 
        * @return Success
        */
-      searchOffres(body: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
+      searchOffers(body: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/offers/search";
           url_ = url_.replace(/[?&]$/, "");
   
@@ -452,11 +452,11 @@ export class AuthApiBase {
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
-              return this.processSearchOffres(_response);
+              return this.processSearchOffers(_response);
           });
       }
   
-      protected processSearchOffres(response: Response): Promise<SearchOffersResult> {
+      protected processSearchOffers(response: Response): Promise<SearchOffersResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {
@@ -3718,6 +3718,8 @@ export class AuthApiBase {
       publications?: ProductPublication[] | undefined;
       outerId?: string | undefined;
       productData?: CatalogProduct;
+      publishedProductDataId?: string | undefined;
+      stagedProductDataId?: string | undefined;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
       createdBy?: string | undefined;
@@ -3754,6 +3756,8 @@ export class AuthApiBase {
               }
               this.outerId = _data["outerId"];
               this.productData = _data["productData"] ? CatalogProduct.fromJS(_data["productData"]) : <any>undefined;
+              this.publishedProductDataId = _data["publishedProductDataId"];
+              this.stagedProductDataId = _data["stagedProductDataId"];
               this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
               this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
               this.createdBy = _data["createdBy"];
@@ -3790,6 +3794,8 @@ export class AuthApiBase {
           }
           data["outerId"] = this.outerId;
           data["productData"] = this.productData ? this.productData.toJSON() : <any>undefined;
+          data["publishedProductDataId"] = this.publishedProductDataId;
+          data["stagedProductDataId"] = this.stagedProductDataId;
           data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
           data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
           data["createdBy"] = this.createdBy;
@@ -3815,6 +3821,8 @@ export class AuthApiBase {
       publications?: ProductPublication[] | undefined;
       outerId?: string | undefined;
       productData?: CatalogProduct;
+      publishedProductDataId?: string | undefined;
+      stagedProductDataId?: string | undefined;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
       createdBy?: string | undefined;

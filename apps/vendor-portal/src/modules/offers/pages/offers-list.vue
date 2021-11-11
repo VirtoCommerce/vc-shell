@@ -185,7 +185,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-
+    /**
+     * Blade options params
+     * @param {ISellerProduct} sellerProduct
+     */
     options: {
       type: Object,
       default: () => ({}),
@@ -218,10 +221,8 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      await loadOffers({
-        sort: sort.value,
-        sellerProductId: props.options?.sellerProductId,
-      });
+      searchQuery.value.sellerProductId = props.options?.sellerProduct?.id;
+      await loadOffers({ ...searchQuery.value, sort: sort.value });
     });
 
     const reload = async () => {
@@ -229,6 +230,9 @@ export default defineComponent({
         ...searchQuery.value,
         skip: (currentPage.value - 1) * searchQuery.value.take,
         sort: sort.value,
+      });
+      emit("parent:call", {
+        method: "reload",
       });
     };
 
@@ -254,10 +258,8 @@ export default defineComponent({
         id: "add",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
         icon: "fas fa-plus",
-        async clickHandler() {
-          emit("page:open", {
-            component: OffersDetails,
-          });
+        clickHandler() {
+          addOffer();
         },
       },
       {
@@ -340,9 +342,7 @@ export default defineComponent({
       text: "There are no offers yet",
       action: "Add offer",
       clickHandler: () => {
-        emit("page:open", {
-          component: OffersDetails,
-        });
+        addOffer();
       },
     };
 
@@ -378,6 +378,13 @@ export default defineComponent({
         item.sortDirection = (item.sortDirection ?? 0) + 1;
         sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
       }
+    };
+
+    const addOffer = async () => {
+      emit("page:open", {
+        component: OffersDetails,
+        componentOptions: props.options,
+      });
     };
 
     const onPaginationClick = async (page: number) => {
@@ -444,11 +451,7 @@ export default defineComponent({
       onItemClick,
       onHeaderClick,
       onPaginationClick,
-      reload: async () => {
-        loading.value = true;
-        await loadOffers({ ...searchQuery.value });
-        loading.value = false;
-      },
+      reload,
       onSelectionChanged,
       title: t("OFFERS.PAGES.LIST.TITLE"),
     };

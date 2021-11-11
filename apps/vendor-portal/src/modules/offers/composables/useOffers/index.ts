@@ -8,6 +8,7 @@ interface IUseOffers {
   pages: Ref<number>;
   loading: Ref<boolean>;
   currentPage: Ref<number>;
+  searchOffers: (query: ISearchOffersQuery) => Promise<SearchOffersResult>;
   loadOffers: (query: ISearchOffersQuery) => void;
   deleteOffers: (args: { ids: string[] }) => void;
 }
@@ -44,16 +45,30 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     return client;
   }
 
+  async function searchOffers(
+    query: ISearchOffersQuery
+  ): Promise<SearchOffersResult> {
+    const client = await getApiClient();
+    try {
+      loading.value = true;
+      return client.searchOffers(query as SearchOffersQuery);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   async function loadOffers(query: ISearchOffersQuery) {
     logger.info(
       `Load offers page ${query?.skip || 1} sort by ${query?.sort || "default"}`
     );
 
     searchQuery.value = { ...searchQuery.value, ...query };
-    const client = await getApiClient();
     try {
       loading.value = true;
-      searchResult.value = await client.searchOffres({
+      searchResult.value = await searchOffers({
         ...searchQuery.value,
       } as SearchOffersQuery);
       // currentPage.value = (searchQuery.value.skip / Math.max(1, pageSize)) || 1;
@@ -88,6 +103,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     currentPage: computed(
       () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
     ),
+    searchOffers,
     loading,
     searchQuery,
     loadOffers,

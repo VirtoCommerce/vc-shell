@@ -252,14 +252,26 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const { createOffer, offerDetails, fetchProducts, offer, loadOffer } =
-      useOffer();
+    const {
+      createOffer,
+      offerDetails,
+      fetchProducts,
+      offer,
+      loadOffer,
+      selectOfferProduct,
+    } = useOffer();
     //TODO: bind to dropdown action
     const products = ref<IOfferProduct[]>();
     const currency = { title: "USD", value: "USD" };
     onMounted(async () => {
       if (props.param) {
         await loadOffer({ id: props.param });
+      }
+      if (props.options?.sellerProduct) {
+        //Since the offers can be created only for published products we must pass the id of published product in a master catalog
+        await selectOfferProduct({
+          id: props.options?.sellerProduct?.publishedProductDataId,
+        });
       }
       products.value = await fetchProducts();
     });

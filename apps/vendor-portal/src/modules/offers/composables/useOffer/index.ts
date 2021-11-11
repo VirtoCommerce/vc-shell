@@ -20,6 +20,7 @@ interface IUseOffer {
   loading: Ref<boolean>;
   offerDetails: IOfferDetails;
   loadOffer: (args: { id: string }) => void;
+  selectOfferProduct: (args: { id: string }) => void;
   fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
   createOffer: (details: IOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
@@ -75,6 +76,26 @@ export default (): IUseOffer => {
     }
   }
 
+  async function selectOfferProduct(args: { id: string }) {
+    logger.info(`selectOfferProduct  ${args}`);
+    offer.value.product = await getOfferProductById({
+      id: args.id,
+    });
+    if (offer.value.product) {
+      offerDetails.productId = args.id;
+    }
+  }
+  async function getOfferProductById(args: {
+    id: string;
+  }): Promise<IOfferProduct> {
+    const client = await getApiClient();
+    const result = await client.searchOfferProducts({
+      objectIds: [args.id],
+      take: 1,
+    } as SearchProductsForNewOfferQuery);
+    return result.results[0];
+  }
+
   async function loadOffer(args: { id: string }) {
     logger.info(`Load offer ${args}`);
 
@@ -84,11 +105,9 @@ export default (): IUseOffer => {
       loading.value = true;
       offer.value = (await client.getOfferById(args.id)) as TExtOffer;
       if (offer.value) {
-        const result = await client.searchOfferProducts({
-          objectIds: [offer.value.productId],
-          take: 1,
-        } as SearchProductsForNewOfferQuery);
-        offer.value.product = result.results[0];
+        offer.value.product = await getOfferProductById({
+          id: offer.value.productId,
+        });
       }
       Object.assign(offerDetails, offer.value);
     } catch (e) {
@@ -120,6 +139,7 @@ export default (): IUseOffer => {
     offerDetails,
     loading: computed(() => loading.value),
     loadOffer,
+    selectOfferProduct,
     createOffer,
     fetchProducts,
     deleteOffer,

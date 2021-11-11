@@ -28,7 +28,7 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
                 "
                 :options="products"
-                :initialItem="offer.product"
+                :initialItem="offerDetails.product"
                 keyProperty="id"
                 displayProperty="name"
                 @search="onProductSearch"
@@ -98,6 +98,7 @@
                   :clearable="true"
                   :required="true"
                   v-model="offerDetails.listPrice"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
                   "
@@ -112,6 +113,7 @@
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
                   :clearable="true"
                   v-model="offerDetails.salePrice"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
                   "
@@ -129,6 +131,7 @@
                   :clearable="true"
                   :required="true"
                   v-model="offerDetails.minQuantity"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                   "
@@ -144,6 +147,7 @@
                   :clearable="true"
                   :required="true"
                   v-model="offerDetails.inStockQuantity"
+                  type="number"
                   :placeholder="
                     $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                   "
@@ -154,7 +158,7 @@
                   :disabled="readonly"
                 ></vc-input>
               </div>
-              <div class="vc-flex">
+              <!--<div class="vc-flex">
                 <vc-input
                   class="vc-fill_width vc-margin-bottom_l vc-margin-right_s"
                   type="date"
@@ -197,12 +201,9 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.SHIPPING_TIME.PLACEHOLDER')
                 "
                 :disabled="readonly"
-              ></vc-input>
+              ></vc-input>-->
             </vc-form>
           </div>
-        </div>
-        <div class="offer-details__widgets">
-          <vc-widget icon="fas fa-file-alt" title="Statistics"></vc-widget>
         </div>
       </div>
     </vc-container>
@@ -258,6 +259,7 @@ export default defineComponent({
       fetchProducts,
       offer,
       loadOffer,
+      loading,
       selectOfferProduct,
     } = useOffer();
     //TODO: bind to dropdown action
@@ -339,18 +341,11 @@ export default defineComponent({
         },
         isVisible: !props.param,
       },
-      {
-        id: "close",
-        title: t("OFFERS.PAGES.DETAILS.TOOLBAR.CLOSE"),
-        icon: "fas fa-times",
-        async clickHandler() {
-          emit("page:close");
-        },
-      },
     ]);
 
     return {
       offer,
+      loading,
       validator,
       readonly,
       bladeToolbar,

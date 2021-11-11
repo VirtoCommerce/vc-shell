@@ -7,6 +7,13 @@
       vc-flex-align_center
       vc-flex-justify_center
     "
+    @drop.stop.prevent="onDrop"
+    @drag.stop.prevent
+    @dragstart.stop.prevent
+    @dragend.stop.prevent
+    @dragover.stop.prevent
+    @dragenter.stop.prevent
+    @dragleave.stop.prevent
   >
     <vc-icon
       class="vc-gallery-upload__icon"
@@ -43,6 +50,14 @@ export default defineComponent({
 
     return {
       upload,
+
+      onDrop(event: DragEvent) {
+        const fileList = event.dataTransfer?.files;
+
+        if (fileList && fileList.length) {
+          emit("upload", fileList);
+        }
+      },
     };
   },
 });

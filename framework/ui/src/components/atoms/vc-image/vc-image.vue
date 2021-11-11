@@ -9,9 +9,15 @@
           'vc-image_clickable': clickable,
         },
       ]"
-      :style="{ background: `url(${src}) center / cover no-repeat` }"
+      :style="{
+        background: src ? `url(${src}) center / cover no-repeat` : undefined,
+      }"
       @click="onClick"
-    ></div>
+    >
+      <div v-if="!src" class="vc-image_empty">
+        <vc-icon icon="fas fa-image" size="xl"></vc-icon>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -78,6 +84,7 @@ export default defineComponent({
 
 .vc-image {
   display: inline-block;
+  position: relative;
 
   &_1x1 {
     padding-bottom: 100%;
@@ -131,6 +138,16 @@ export default defineComponent({
 
   &_clickable {
     cursor: pointer;
+  }
+
+  &_empty {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #83a3be;
   }
 }
 </style>

@@ -62,6 +62,7 @@
         ref="scrollContainer"
         :noPadding="true"
         class="vc-flex-grow_1"
+        :usePtr="!!$attrs['onScroll:ptr']"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->

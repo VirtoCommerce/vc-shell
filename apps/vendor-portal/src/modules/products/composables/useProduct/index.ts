@@ -36,6 +36,7 @@ interface IUseProduct {
   revertStagedChanges: (productId: string) => void;
   changeProductStatus: (productId: string, status: string) => void;
   searchDictionaryItems: (
+    propertyIds: string[],
     keyword?: string,
     skip?: number
   ) => Promise<PropertyDictionaryItem[]>;
@@ -64,11 +65,13 @@ export default (): IUseProduct => {
   );
 
   async function searchDictionaryItems(
+    propertyIds: string[],
     keyword?: string,
     skip?: number
   ): Promise<PropertyDictionaryItem[]> {
     const client = await getApiClient();
     const result = await client.searchPropertyDictionaryItems({
+      propertyIds,
       keyword,
       skip,
       take: 20,

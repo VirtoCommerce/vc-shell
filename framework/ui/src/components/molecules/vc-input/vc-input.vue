@@ -22,6 +22,7 @@
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
         :type="internalType"
+        :step="step"
         :value="modelValue"
         :disabled="disabled"
         @input="$emit('update:modelValue', $event.target.value)"
@@ -118,6 +119,11 @@ export default defineComponent({
     type: {
       type: String,
       default: "text",
+    },
+
+    step: {
+      type: String,
+      default: undefined,
     },
 
     label: {

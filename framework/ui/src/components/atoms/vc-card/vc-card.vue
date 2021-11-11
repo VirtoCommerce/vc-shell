@@ -1,6 +1,9 @@
 <template>
-  <div class="vc-card vc-flex vc-flex-column">
-    <div class="vc-card__header" v-if="header">
+  <div
+    class="vc-card vc-flex vc-flex-column"
+    :class="{ 'vc-card_collapsable': isCollapsable }"
+  >
+    <div class="vc-card__header" v-if="header" @click="onHeaderClick">
       <vc-icon
         v-if="icon"
         class="vc-card__icon"
@@ -11,15 +14,23 @@
       <div v-if="$slots['actions']" class="vc-card__actions">
         <slot name="actions"></slot>
       </div>
+      <vc-icon
+        v-if="isCollapsable"
+        class="vc-card__collapse"
+        :icon="`fas fa-chevron-${isCollapsedInternal ? 'up' : 'down'}`"
+        size="s"
+      ></vc-icon>
     </div>
-    <div class="vc-card__body">
-      <slot></slot>
-    </div>
+    <transition name="fade">
+      <div class="vc-card__body" v-show="!isCollapsedInternal">
+        <slot></slot>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   props: {
@@ -32,6 +43,33 @@ export default defineComponent({
       type: String,
       default: undefined,
     },
+
+    isCollapsable: {
+      type: Boolean,
+      default: false,
+    },
+
+    isCollapsed: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  emits: ["header:click"],
+
+  setup(props, { emit }) {
+    const isCollapsedInternal = ref(props.isCollapsed);
+
+    return {
+      isCollapsedInternal,
+
+      onHeaderClick() {
+        if (props.isCollapsable) {
+          isCollapsedInternal.value = !isCollapsedInternal.value;
+        }
+        emit("header:click");
+      },
+    };
   },
 });
 </script>
@@ -68,6 +106,10 @@ export default defineComponent({
     box-sizing: border-box;
   }
 
+  &_collapsable &__header {
+    cursor: pointer;
+  }
+
   &__title {
     text-transform: uppercase;
     flex-grow: 1;
@@ -79,6 +121,11 @@ export default defineComponent({
   &__icon {
     color: var(--card-header-color);
     margin-right: var(--margin-m);
+  }
+
+  &__collapse {
+    color: var(--card-header-color);
+    margin-left: var(--margin-m);
   }
 
   &__body {

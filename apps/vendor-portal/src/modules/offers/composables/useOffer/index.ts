@@ -13,12 +13,12 @@ import {
 } from "../../../../api_client";
 import offers from "../..";
 
-export type TExtOffer = IOffer & { product?: IOfferProduct };
+export type TExtOfferDetails = IOfferDetails & { product?: IOfferProduct };
 
 interface IUseOffer {
-  offer: Ref<TExtOffer>;
+  offer: Ref<IOffer>;
   loading: Ref<boolean>;
-  offerDetails: IOfferDetails;
+  offerDetails: TExtOfferDetails;
   loadOffer: (args: { id: string }) => void;
   selectOfferProduct: (args: { id: string }) => void;
   fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
@@ -29,8 +29,8 @@ interface IUseOffer {
 export default (): IUseOffer => {
   const { user } = useUser();
   const logger = useLogger();
-  const offer = ref<TExtOffer>({});
-  const offerDetails = reactive<IOfferDetails>(new OfferDetails());
+  const offer = ref<IOffer>({});
+  const offerDetails = reactive<TExtOfferDetails>(new OfferDetails());
 
   const loading = ref(false);
 
@@ -78,10 +78,10 @@ export default (): IUseOffer => {
 
   async function selectOfferProduct(args: { id: string }) {
     logger.info(`selectOfferProduct  ${args}`);
-    offer.value.product = await getOfferProductById({
+    offerDetails.product = await getOfferProductById({
       id: args.id,
     });
-    if (offer.value.product) {
+    if (offerDetails.product) {
       offerDetails.productId = args.id;
     }
   }
@@ -103,12 +103,8 @@ export default (): IUseOffer => {
 
     try {
       loading.value = true;
-      offer.value = (await client.getOfferById(args.id)) as TExtOffer;
-      if (offer.value) {
-        offer.value.product = await getOfferProductById({
-          id: offer.value.productId,
-        });
-      }
+      offer.value = (await client.getOfferById(args.id)) as IOffer;
+
       Object.assign(offerDetails, offer.value);
     } catch (e) {
       logger.error(e);

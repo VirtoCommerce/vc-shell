@@ -308,32 +308,31 @@ export default defineComponent({
     const validator = useVuelidate(rules, productDetails, { $autoDirty: true });
 
     const reload = async (fullReload: boolean) => {
-      if (props.param) {
-        //Do not reload product if it has unsaved changes
-        if (!modified.value && fullReload) {
+      if (!modified.value && fullReload) {
+        if (props.param) {
           await loadProduct({ id: props.param });
-          categories.value = await fetchCategories();
-          if (productDetails?.categoryId) {
-            currentCategory.value = categories.value?.find(
-              (x) => x.id === productDetails.categoryId
-            );
-          }
-          productDetails?.properties?.forEach(async (property) => {
-            if (property.dictionary) {
-              dictionaries[property.id] = await searchDictionaryItems([
-                property.id,
-              ]);
-            }
-          });
         }
-        //Load offers count to populate widget
-        offersCount.value = (
-          await searchOffers({
-            take: 0,
-            sellerProductId: props.param,
-          })
-        ).totalCount;
+        categories.value = await fetchCategories();
+        if (productDetails?.categoryId) {
+          currentCategory.value = categories.value?.find(
+            (x) => x.id === productDetails.categoryId
+          );
+        }
+        productDetails?.properties?.forEach(async (property) => {
+          if (property.dictionary) {
+            dictionaries[property.id] = await searchDictionaryItems([
+              property.id,
+            ]);
+          }
+        });
       }
+      //Load offers count to populate widget
+      offersCount.value = (
+        await searchOffers({
+          take: 0,
+          sellerProductId: props.param,
+        })
+      ).totalCount;
     };
 
     onMounted(async () => {

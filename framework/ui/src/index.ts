@@ -3,6 +3,8 @@ import * as components from "./components";
 import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
+import { defineRule } from "vee-validate";
+import { required, email, min, max, regex } from "@vee-validate/rules";
 
 import "normalize.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -43,6 +45,13 @@ export default {
     app.provide("isMobile", app.config.globalProperties.$isMobile);
     app.provide("isDesktop", app.config.globalProperties.$isDesktop);
     app.provide("pages", app.config.globalProperties.pages);
+
+    // Define global vee-validate rules
+    defineRule("required", required);
+    defineRule("email", email);
+    defineRule("min", min);
+    defineRule("max", max);
+    defineRule("regex", regex);
   },
 };
 

@@ -29,6 +29,7 @@ export { default as VcTags } from "./molecules/vc-tags/vc-tags.vue";
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";
 export { default as VcBlade } from "./organisms/vc-blade/vc-blade.vue";
+export { default as VcDynamicProperty } from "./organisms/vc-dynamic-property/vc-dynamic-property.vue";
 export { default as VcGallery } from "./organisms/vc-gallery/vc-gallery.vue";
 export { default as VcLoginForm } from "./organisms/vc-login-form/vc-login-form.vue";
 export { default as VcNotification } from "./organisms/vc-notification/vc-notification.vue";

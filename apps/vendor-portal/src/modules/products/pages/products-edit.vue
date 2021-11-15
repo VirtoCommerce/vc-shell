@@ -30,10 +30,7 @@
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
-                :error="
-                  validator.name.$errors[0] &&
-                  validator.name.$errors[0].$message
-                "
+                rules="min:3"
               ></vc-input>
               <vc-select
                 class="vc-margin-bottom_l"
@@ -51,10 +48,6 @@
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
                 @update:modelValue="setCategory"
-                :error="
-                  validator.categoryId.$errors[0] &&
-                  validator.categoryId.$errors[0].$message
-                "
               ></vc-select>
 
               <vc-card
@@ -74,10 +67,7 @@
                       $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                     "
                     :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
-                    :error="
-                      validator.gtin.$errors[0] &&
-                      validator.gtin.$errors[0].$message
-                    "
+                    rules="min:3"
                   ></vc-input>
                   <vc-textarea
                     class="vc-margin-bottom_l"
@@ -91,95 +81,19 @@
                         'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
                       )
                     "
-                    :error="
-                      validator.description.$errors[0] &&
-                      validator.description.$errors[0].$message
-                    "
+                    rules="min:3"
                   ></vc-textarea>
 
-                  <div
+                  <vc-dynamic-property
                     v-for="property in productDetails.properties"
                     :key="property.id"
+                    :property="property"
+                    :optionsGetter="loadDictionaries"
+                    :getter="getPropertyValue"
+                    :setter="setPropertyValue"
+                    class="vc-margin-bottom_l"
                   >
-                    <vc-select
-                      v-if="property.dictionary"
-                      class="vc-margin-bottom_l"
-                      :label="property.displayNames[0].name || property.name"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      :isRequired="property.required"
-                      :placeholder="property.displayNames[0].name"
-                      :options="dictionaries[property.id]"
-                      keyProperty="id"
-                      displayProperty="alias"
-                    ></vc-select>
-
-                    <vc-input
-                      v-else-if="property.valueType === 'ShortText'"
-                      class="vc-margin-bottom_l"
-                      :label="property.displayNames[0].name || property.name"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      :clearable="true"
-                      :required="property.required"
-                      :placeholder="property.displayNames[0].name"
-                    ></vc-input>
-
-                    <vc-input
-                      v-else-if="property.valueType === 'Number'"
-                      class="vc-margin-bottom_l"
-                      :label="property.displayNames[0].name || property.name"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      :clearable="true"
-                      type="number"
-                      :required="property.required"
-                      :placeholder="property.displayNames[0].name"
-                    ></vc-input>
-
-                    <vc-input
-                      v-else-if="property.valueType === 'Integer'"
-                      class="vc-margin-bottom_l"
-                      :label="property.displayNames[0].name || property.name"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      :clearable="true"
-                      type="number"
-                      step="1"
-                      :required="property.required"
-                      :placeholder="property.displayNames[0].name"
-                    ></vc-input>
-
-                    <vc-input
-                      v-else-if="property.valueType === 'DateTime'"
-                      class="vc-margin-bottom_l"
-                      :label="property.displayNames[0].name || property.name"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      type="datetime-local"
-                      :required="property.required"
-                      :placeholder="property.displayNames[0].name"
-                    ></vc-input>
-
-                    <vc-textarea
-                      v-else-if="property.valueType === 'LongText'"
-                      class="vc-margin-bottom_l"
-                      :label="property.displayNames[0].name || property.name"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      :required="property.required"
-                      :placeholder="property.displayNames[0].name"
-                    ></vc-textarea>
-
-                    <vc-checkbox
-                      v-else-if="property.valueType === 'Boolean'"
-                      :modelValue="getPropertyValue(property)"
-                      @update:modelValue="setPropertyValue(property, $event)"
-                      class="vc-margin-bottom_l"
-                    >
-                      {{ property.displayNames[0].name || property.name }}
-                    </vc-checkbox>
-                  </div>
+                  </vc-dynamic-property>
                 </div>
               </vc-card>
 
@@ -221,7 +135,6 @@ import { useI18n, useUser } from "@virtoshell/core";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
-  BlobFolder,
   ICategory,
   Image,
   IProperty,
@@ -231,8 +144,6 @@ import {
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
-import { useVuelidate } from "@vuelidate/core";
-import { minLength, required } from "@vuelidate/validators";
 
 export default defineComponent({
   url: "product",
@@ -287,26 +198,6 @@ export default defineComponent({
     const offersCount = ref(0);
     const categories = ref<ICategory[]>();
 
-    const rules = computed(() => ({
-      name: {
-        required,
-        minLength: minLength(3),
-      },
-      categoryId: {
-        required,
-      },
-      gtin: {
-        required,
-        minLength: minLength(3),
-      },
-      description: {
-        required,
-        minLength: minLength(10),
-      },
-    }));
-
-    const validator = useVuelidate(rules, productDetails, { $autoDirty: true });
-
     const reload = async (fullReload: boolean) => {
       if (!modified.value && fullReload) {
         if (props.param) {
@@ -345,23 +236,21 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         async clickHandler() {
-          // @ts-ignore
-          if (await validator.value.$validate()) {
-            try {
-              if (props.param) {
-                await updateProductDetails(product.value.id, productDetails);
-              } else {
-                await createProduct(productDetails);
-              }
-              emit("parent:call", {
-                method: "reload",
-              });
-              if (!props.param) {
-                emit("page:close");
-              }
-            } catch (err) {
-              alert(err.message);
+          // TODO: useForm() validate
+          try {
+            if (props.param) {
+              await updateProductDetails(product.value.id, productDetails);
+            } else {
+              await createProduct(productDetails);
             }
+            emit("parent:call", {
+              method: "reload",
+            });
+            if (!props.param) {
+              emit("page:close");
+            }
+          } catch (err) {
+            alert(err.message);
           }
         },
         disabled: computed(
@@ -377,23 +266,21 @@ export default defineComponent({
         icon: "fas fa-share-square",
         isVisible: computed(() => !!props.param),
         async clickHandler() {
-          // @ts-ignore
-          if (await validator.value.$validate()) {
-            try {
-              await updateProductDetails(
-                product.value.id,
-                { ...productDetails },
-                true
-              );
-              emit("parent:call", {
-                method: "reload",
-              });
-              if (!props.param) {
-                emit("page:close");
-              }
-            } catch (err) {
-              alert(err.message);
+          // TODO: useForm() validate
+          try {
+            await updateProductDetails(
+              product.value.id,
+              { ...productDetails },
+              true
+            );
+            emit("parent:call", {
+              method: "reload",
+            });
+            if (!props.param) {
+              emit("page:close");
             }
+          } catch (err) {
+            alert(err.message);
           }
         },
         disabled: computed(
@@ -489,7 +376,6 @@ export default defineComponent({
       onCategoriesSearch: async (value: string) => {
         categories.value = await fetchCategories(value);
       },
-      validator,
       offersCount,
       dictionaries,
       categories,

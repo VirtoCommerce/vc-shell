@@ -73,9 +73,9 @@
       </div>
     </div>
 
-    <slot v-if="error" name="error">
+    <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-select__error vc-margin-top_xs">
-        {{ error }}
+        {{ errorMessage }}
       </vc-hint>
     </slot>
   </div>
@@ -157,9 +157,9 @@ export default defineComponent({
       default: undefined,
     },
 
-    error: {
+    name: {
       type: String,
-      default: undefined,
+      default: "Field",
     },
   },
 

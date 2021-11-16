@@ -22,22 +22,21 @@
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
         :type="internalType"
-        :step="step"
-        :value="modelValue"
+        :value="internalValue"
         :disabled="disabled"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="onInput"
       />
 
       <!-- Input clear button -->
       <div
-        v-if="clearable && modelValue && !disabled && type !== 'password'"
+        v-if="clearable && internalValue && !disabled && type !== 'password'"
         class="
           vc-input__clear
           vc-padding-horizontal_m
           vc-flex
           vc-flex-align_center
         "
-        @click="$emit('update:modelValue', '')"
+        @click="onReset"
       >
         <vc-icon size="s" icon="fas fa-times"></vc-icon>
       </div>
@@ -69,9 +68,9 @@
       </div>
     </div>
 
-    <slot v-if="error" name="error">
+    <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-input__error vc-margin-top_xs">
-        {{ error }}
+        {{ errorMessage }}
       </vc-hint>
     </slot>
   </div>
@@ -79,8 +78,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, unref } from "vue";
+import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
+import { IValidationRules } from "../../../typings";
 
 export default defineComponent({
   name: "VcInput",
@@ -121,11 +122,6 @@ export default defineComponent({
       default: "text",
     },
 
-    step: {
-      type: String,
-      default: undefined,
-    },
-
     label: {
       type: String,
       default: undefined,
@@ -136,19 +132,63 @@ export default defineComponent({
       default: undefined,
     },
 
-    error: {
+    name: {
       type: String,
-      default: undefined,
+      default: "Field",
+    },
+
+    rules: {
+      type: [String, Object],
     },
   },
 
   emits: ["update:modelValue"],
 
-  setup(props) {
+  setup(props, { emit }) {
     const internalType = ref(unref(props.type));
+
+    // Prepare validation rules using required and rules props combination
+    let internalRules = unref(props.rules) || "";
+    if (props.required) {
+      if (typeof internalRules === "string") {
+        (internalRules as string) = `required|${internalRules}`.replace(
+          /(\|)+$/,
+          ""
+        );
+      } else {
+        (internalRules as IValidationRules).required = true;
+      }
+    }
+
+    // Prepare field-level validation
+    const {
+      value: internalValue,
+      errorMessage,
+      handleChange,
+      resetField,
+    } = useField(props.name, internalRules, {
+      initialValue: props.modelValue,
+      label: props.label,
+    });
 
     return {
       internalType,
+      internalValue,
+      errorMessage,
+
+      // Handle input event to propertly validate value and emit changes
+      onInput(e: InputEvent) {
+        const newValue = (e.target as HTMLInputElement).value;
+        handleChange(newValue);
+        emit("update:modelValue", newValue);
+      },
+
+      // Handle input event to propertly reset value and emit changes
+      onReset() {
+        resetField();
+        handleChange("", false);
+        emit("update:modelValue", "");
+      },
     };
   },
 });

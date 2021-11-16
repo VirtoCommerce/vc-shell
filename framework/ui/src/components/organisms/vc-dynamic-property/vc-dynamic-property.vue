@@ -9,6 +9,7 @@
     :options="dictionaries[property.id]"
     keyProperty="id"
     displayProperty="alias"
+    :rules="rules"
   ></vc-select>
 
   <vc-input
@@ -19,6 +20,7 @@
     :clearable="true"
     :required="property.required"
     :placeholder="property.displayNames[0].name"
+    :rules="rules"
   ></vc-input>
 
   <vc-input
@@ -30,6 +32,7 @@
     type="number"
     :required="property.required"
     :placeholder="property.displayNames[0].name"
+    :rules="rules"
   ></vc-input>
 
   <vc-input
@@ -42,6 +45,7 @@
     step="1"
     :required="property.required"
     :placeholder="property.displayNames[0].name"
+    :rules="rules"
   ></vc-input>
 
   <vc-input
@@ -52,6 +56,7 @@
     type="datetime-local"
     :required="property.required"
     :placeholder="property.displayNames[0].name"
+    :rules="rules"
   ></vc-input>
 
   <vc-textarea
@@ -61,6 +66,7 @@
     @update:modelValue="setter(property, $event)"
     :required="property.required"
     :placeholder="property.displayNames[0].name"
+    :rules="rules"
   ></vc-textarea>
 
   <vc-checkbox
@@ -68,6 +74,7 @@
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :required="property.required"
+    :rules="rules"
   >
     {{ property.displayNames[0].name || property.name }}
   </vc-checkbox>
@@ -75,6 +82,13 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
+interface IValidationRules {
+  required?: boolean;
+  min?: number;
+  max?: number;
+  regex?: RegExp;
+}
 
 export default defineComponent({
   props: {
@@ -103,7 +117,23 @@ export default defineComponent({
   },
 
   setup(props) {
+    const rules: IValidationRules = {};
+
+    if (props.property.required) {
+      rules.required = true;
+    }
+    if (props.property.validationRule?.charCountMin) {
+      rules.min = Number(props.property.validationRule.charCountMin);
+    }
+    if (props.property.validationRule?.charCountMax) {
+      rules.max = Number(props.property.validationRule.charCountMax);
+    }
+    if (props.property.validationRule?.regExp) {
+      rules.regex = new RegExp(props.property.validationRule?.regExp);
+    }
+
     return {
+      rules,
       getLabel() {
         return (
           (props.property.displayNames as { culture: string }[]).find(

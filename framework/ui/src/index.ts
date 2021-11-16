@@ -4,7 +4,15 @@ import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import { defineRule } from "vee-validate";
-import { required, email, min, max, regex } from "@vee-validate/rules";
+import {
+  required,
+  email,
+  min,
+  max,
+  regex,
+  min_value,
+  max_value,
+} from "@vee-validate/rules";
 
 import "normalize.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -52,7 +60,10 @@ export default {
     defineRule("min", min);
     defineRule("max", max);
     defineRule("regex", regex);
+    defineRule("min_value", min_value);
+    defineRule("max_value", max_value);
   },
 };
 
 export * from "./components";
+export * from "./typings";

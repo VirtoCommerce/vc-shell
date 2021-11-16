@@ -81,8 +81,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, computed, onMounted } from "vue";
-import { useLogger, useUser } from "@virtoshell/core";
+import { defineComponent, reactive, onMounted } from "vue";
+import { useUser } from "@virtoshell/core";
 import { useRouter } from "vue-router";
 
 export default defineComponent({
@@ -154,6 +154,7 @@ export default defineComponent({
         form.errors = result.errors;
       }
     };
+
     return {
       form,
       acceptInvitation,

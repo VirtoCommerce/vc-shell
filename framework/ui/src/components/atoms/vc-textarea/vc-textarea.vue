@@ -16,23 +16,25 @@
       <textarea
         class="vc-textarea__field vc-padding-horizontal_m vc-padding-vertical_s"
         :placeholder="placeholder"
-        :value="modelValue"
+        :value="internalValue"
         :disabled="disabled"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="onInput"
       ></textarea>
     </div>
 
-    <slot v-if="error" name="error">
+    <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-textarea__error vc-margin-top_xs">
-        {{ error }}
+        {{ errorMessage }}
       </vc-hint>
     </slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, unref } from "vue";
+import { useField } from "vee-validate";
 import VcLabel from "..//vc-label/vc-label.vue";
+import { IValidationRules } from "../../../typings";
 
 export default defineComponent({
   name: "VcTextarea",
@@ -72,13 +74,54 @@ export default defineComponent({
       default: undefined,
     },
 
-    error: {
+    name: {
       type: String,
-      default: undefined,
+      default: "Field",
+    },
+
+    rules: {
+      type: [String, Object],
     },
   },
 
   emits: ["update:modelValue"],
+
+  setup(props, { emit }) {
+    // Prepare validation rules using required and rules props combination
+    let internalRules = unref(props.rules) || "";
+    if (props.required) {
+      if (typeof internalRules === "string") {
+        (internalRules as string) = `required|${internalRules}`.replace(
+          /(\|)+$/,
+          ""
+        );
+      } else {
+        (internalRules as IValidationRules).required = true;
+      }
+    }
+
+    // Prepare field-level validation
+    const {
+      value: internalValue,
+      errorMessage,
+      handleChange,
+    } = useField(props.name, internalRules, {
+      initialValue: props.modelValue,
+      label: props.label,
+    });
+
+    return {
+      internalValue,
+      errorMessage,
+
+      // Handle input event to propertly validate value and emit changes
+      onInput(e: InputEvent) {
+        const newValue = (e.target as HTMLInputElement).value;
+        handleChange(newValue);
+        emit("update:modelValue", newValue);
+      },
+    };
+  },
 });
 </script>
 

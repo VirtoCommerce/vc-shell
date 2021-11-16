@@ -4465,20 +4465,6 @@
   resolved "https://registry.npmjs.org/@vue/web-component-wrapper/-/web-component-wrapper-1.3.0.tgz"
   integrity sha512-Iu8Tbg3f+emIIMmI2ycSI8QcEuAUgPTgHwesDU1eKMLE4YC/c/sFbGc70QgMq31ijRftV0R7vCm9co6rldCeOA==
 
-"@vuelidate/core@^2.0.0-alpha.26":
-  version "2.0.0-alpha.26"
-  resolved "https://registry.yarnpkg.com/@vuelidate/core/-/core-2.0.0-alpha.26.tgz#225ee1f6e4b0500384d5aa46157866925a8ead64"
-  integrity sha512-7mtvWgyrYBydqxDhrDfZTzcWvfXQTKdKnVquPWIyH2q7XfZP/mfISK5DqK8ElS8HlomXsWHr+kBtsQrBzLFD/w==
-  dependencies:
-    vue-demi "^0.11.3"
-
-"@vuelidate/validators@^2.0.0-alpha.22":
-  version "2.0.0-alpha.22"
-  resolved "https://registry.yarnpkg.com/@vuelidate/validators/-/validators-2.0.0-alpha.22.tgz#425c28f4c19c538486f0fb739152ce8de4e17ffe"
-  integrity sha512-5ddlzwqH9CZpbqCU8SGUI10Sh6JhLB99gfh7l1S2c38gi7ZGP3CVfBk4ETFNoDg+o6SHab660kuAqIzmE+X9SQ==
-  dependencies:
-    vue-demi "^0.11.3"
-
 "@vueuse/core@^6.0.0":
   version "6.0.0"
   resolved "https://registry.npmjs.org/@vueuse/core/-/core-6.0.0.tgz"
@@ -16583,11 +16569,6 @@ vue-demi@*:
   version "0.11.3"
   resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.11.3.tgz"
   integrity sha512-DpM0TTMpclRZDV6AIacgg837zrim/C9Zn+2ztXBs9hsESJN9vC83ztjTe4KC4HgJuVle8YUjPp7HTwWtwOHfmg==
-
-vue-demi@^0.11.3:
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.11.4.tgz#6101992fe4724cf5634018a16e953f3052e94e2a"
-  integrity sha512-/3xFwzSykLW2HiiLie43a+FFgNOcokbBJ+fzvFXd0r2T8MYohqvphUyDQ8lbAwzQ3Dlcrb1c9ykifGkhSIAk6A==
 
 vue-docgen-api@^4.38.0:
   version "4.41.1"

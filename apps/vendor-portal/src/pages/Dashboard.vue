@@ -164,68 +164,117 @@
                 >
               </template>
 
-              <vc-table
-                class="vc-fill_all"
-                :loading="offersLoading"
-                :items="offers"
-                :columns="offersColumns"
-                :header="false"
-                :footer="false"
-                @itemClick="offersClick"
-              >
-                <!-- Empty template -->
-                <template v-slot:empty>
-                  <div
-                    class="
-                      vc-fill_all
-                      vc-flex vc-flex-column
-                      vc-flex-align_center
-                      vc-flex-justify_center
-                      vc-padding_xl
-                    "
+              <vc-row>
+                <vc-col style="display: block">
+                  <vc-table
+                    class="vc-fill_all"
+                    :loading="offersLoading"
+                    :items="offers"
+                    :columns="offersColumns"
+                    :header="false"
+                    :footer="false"
+                    @itemClick="offersClick"
                   >
-                    <img src="/assets/empty-product.png" />
+                    <!-- Empty template -->
+                    <template v-slot:empty>
+                      <div
+                        class="
+                          vc-fill_all
+                          vc-flex vc-flex-column
+                          vc-flex-align_center
+                          vc-flex-justify_center
+                          vc-padding_xl
+                        "
+                      >
+                        <img src="/assets/empty-product.png" />
+                        <div
+                          class="
+                            vc-margin_l
+                            vc-font-size_xl
+                            vc-font-weight_medium
+                          "
+                        >
+                          There are no offers yet
+                        </div>
+                        <vc-button @click="open('offers-add')"
+                          >Add offer</vc-button
+                        >
+                      </div>
+                    </template>
+
+                    <!-- Override sellerName column template -->
+                    <template v-slot:item_name="itemData">
+                      <div class="vc-flex vc-flex-column">
+                        <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                      </div>
+                    </template>
+
+                    <!-- Override image column template -->
+                    <template v-slot:item_image="itemData">
+                      <vc-image
+                        :bordered="true"
+                        size="s"
+                        aspect="1x1"
+                        :src="itemData.item.imgSrc"
+                      ></vc-image>
+                    </template>
+
+                    <!-- Override createdDate column template -->
+                    <template v-slot:item_createdDate="itemData">
+                      {{ moment(itemData.item.createdDate).fromNow() }}
+                    </template>
+
+                    <!-- Override listPrice column template -->
+                    <template v-slot:item_listPrice="itemData">
+                      {{ itemData.item.listPrice?.toFixed(2) }}
+                    </template>
+
+                    <!-- Override salePrice column template -->
+                    <template v-slot:item_salePrice="itemData">
+                      {{ itemData.item.salePrice?.toFixed(2) }}
+                    </template>
+                  </vc-table>
+                </vc-col>
+                <vc-col size="0" style="flex-basis: 180px">
+                  <div class="dashboard-offers__counter">
                     <div
-                      class="vc-margin_l vc-font-size_xl vc-font-weight_medium"
+                      class="
+                        dashboard-offers__counter-value
+                        dashboard-offers__counter-value_warning
+                      "
                     >
-                      There are no offers yet
+                      25
                     </div>
-                    <vc-button @click="open('offers-add')">Add offer</vc-button>
+                    <div class="dashboard-offers__counter-title">
+                      Offers ending soon
+                    </div>
                   </div>
-                </template>
-
-                <!-- Override sellerName column template -->
-                <template v-slot:item_name="itemData">
-                  <div class="vc-flex vc-flex-column">
-                    <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                  <div class="dashboard-offers__counter">
+                    <div
+                      class="
+                        dashboard-offers__counter-value
+                        dashboard-offers__counter-value_warning
+                      "
+                    >
+                      7
+                    </div>
+                    <div class="dashboard-offers__counter-title">Low stock</div>
                   </div>
-                </template>
-
-                <!-- Override image column template -->
-                <template v-slot:item_image="itemData">
-                  <vc-image
-                    :bordered="true"
-                    size="s"
-                    aspect="1x1"
-                    :src="itemData.item.imgSrc"
-                  ></vc-image>
-                </template>
-
-                <!-- Override createdDate column template -->
-                <template v-slot:item_createdDate="itemData">
-                  {{ moment(itemData.item.createdDate).fromNow() }}
-                </template>
-
-                <!-- Override listPrice column template -->
-                <template v-slot:item_listPrice="itemData">
-                  {{ itemData.item.listPrice?.toFixed(2) }}
-                </template>
-
-                <!-- Override salePrice column template -->
-                <template v-slot:item_salePrice="itemData">
-                  {{ itemData.item.salePrice?.toFixed(2) }}
-                </template>
-              </vc-table>
+                  <div class="dashboard-offers__counter">
+                    <div
+                      class="
+                        dashboard-offers__counter-value
+                        dashboard-offers__counter-value_error
+                      "
+                    >
+                      11
+                    </div>
+                    <div class="dashboard-offers__counter-title">
+                      Out of stock
+                    </div>
+                  </div>
+                </vc-col>
+              </vc-row>
             </vc-card>
           </vc-col>
         </vc-row>
@@ -715,6 +764,46 @@ export default defineComponent({
     font-weight: var(--font-weight-medium);
     font-size: var(--font-size-l);
     margin: var(--margin-xs) 0;
+  }
+
+  &-offers {
+    &__counter {
+      flex-grow: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-left: 1px solid #e5e5e5;
+      padding: var(--padding-xl);
+
+      &:not(:last-child) {
+        border-bottom: 1px solid #e5e5e5;
+      }
+
+      &:first-child {
+        border-top: 1px solid #e5e5e5;
+      }
+
+      &-value {
+        font-size: 32px;
+        font-weight: var(--font-weight-medium);
+        margin-bottom: var(--margin-s);
+
+        &_error {
+          color: #ff4a4a;
+        }
+
+        &_warning {
+          color: #f89406;
+        }
+      }
+
+      &-title {
+        font-weight: var(--font-weight-bold);
+        color: #6b7987;
+      }
+    }
   }
 }
 

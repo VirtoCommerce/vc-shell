@@ -3,16 +3,7 @@ import * as components from "./components";
 import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
-import { defineRule } from "vee-validate";
-import {
-  required,
-  email,
-  min,
-  max,
-  regex,
-  min_value,
-  max_value,
-} from "@vee-validate/rules";
+import { defineRule, useForm as _useForm } from "vee-validate";
 
 import "normalize.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -54,16 +45,80 @@ export default {
     app.provide("isDesktop", app.config.globalProperties.$isDesktop);
     app.provide("pages", app.config.globalProperties.pages);
 
-    // Define global vee-validate rules
-    defineRule("required", required);
-    defineRule("email", email);
-    defineRule("min", min);
-    defineRule("max", max);
-    defineRule("regex", regex);
-    defineRule("min_value", min_value);
-    defineRule("max_value", max_value);
+    // Define global validation rules
+    defineRule("required", (value: string) => {
+      if (!value || !value.length) {
+        return "This field is required";
+      }
+      return true;
+    });
+    defineRule("email", (value: string) => {
+      // Field is empty, should pass
+      if (!value || !value.length) {
+        return true;
+      }
+      // Check if email
+      if (!/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}/.test(value)) {
+        return "This field must be a valid email";
+      }
+      return true;
+    });
+    defineRule("min", (value: string, [limit]: number[]) => {
+      // The field is empty so it should pass
+      if (!value || !value.length) {
+        return true;
+      }
+      if (value.length < limit) {
+        return `This field must contain at least ${limit} characters`;
+      }
+      return true;
+    });
+    defineRule("max", (value: string, [limit]: number[]) => {
+      // The field is empty so it should pass
+      if (!value || !value.length) {
+        return true;
+      }
+      if (value.length > limit) {
+        return `This field must contain not more than ${limit} characters`;
+      }
+      return true;
+    });
+    defineRule("regex", (value: string, [re]: RegExp[]) => {
+      // Field is empty, should pass
+      if (!value || !value.length) {
+        return true;
+      }
+      // Check if matched
+      if (!re.test(value)) {
+        return "This field must match a given pattern";
+      }
+      return true;
+    });
+    defineRule("min_value", (value: string, [min]: number[]) => {
+      // The field is empty so it should pass
+      if (!value || !value.length) {
+        return true;
+      }
+      const numericValue = Number(value);
+      if (numericValue < min) {
+        return `Value must be greater than ${min}`;
+      }
+      return true;
+    });
+    defineRule("max_value", (value: string, [max]: number[]) => {
+      // The field is empty so it should pass
+      if (!value || !value.length) {
+        return true;
+      }
+      const numericValue = Number(value);
+      if (numericValue > max) {
+        return `Value must be less than ${max}`;
+      }
+      return true;
+    });
   },
 };
 
 export * from "./components";
 export * from "./typings";
+export const useForm = _useForm;

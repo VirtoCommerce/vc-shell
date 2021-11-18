@@ -33,6 +33,7 @@
                 displayProperty="name"
                 @search="onProductSearch"
                 :is-disabled="readonly"
+                name="product"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -72,6 +73,7 @@
                   $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')
                 "
                 :isDisabled="readonly"
+                name="currency"
               ></vc-select>
 
               <!-- SKU field -->
@@ -84,6 +86,7 @@
                 :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
                 rules="min:3"
                 :disabled="readonly"
+                name="sku"
               ></vc-input>
 
               <vc-row>
@@ -100,6 +103,7 @@
                       $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')
                     "
                     :disabled="readonly"
+                    name="listprice"
                   ></vc-input>
                 </vc-col>
 
@@ -115,6 +119,7 @@
                       $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')
                     "
                     :disabled="readonly"
+                    name="saleprice"
                   ></vc-input>
                 </vc-col>
               </vc-row>
@@ -133,6 +138,7 @@
                       $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                     "
                     :disabled="readonly"
+                    name="minqty"
                   ></vc-input>
                 </vc-col>
                 <vc-col class="vc-margin-left_s">
@@ -148,6 +154,7 @@
                       $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                     "
                     :disabled="readonly"
+                    name="qty"
                   ></vc-input>
                 </vc-col>
               </vc-row>
@@ -161,6 +168,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, onMounted, reactive } from "vue";
+import { useForm } from "@virtoshell/ui";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct } from "../../../api_client";
@@ -205,6 +213,7 @@ export default defineComponent({
 
     const products = ref<IOfferProduct[]>();
     const currency = { title: "USD", value: "USD" };
+    const { validate } = useForm({ validateOnMount: false });
 
     onMounted(async () => {
       if (props.param) {
@@ -227,18 +236,22 @@ export default defineComponent({
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         async clickHandler() {
-          // TODO: useForm() validate
-          try {
-            await createOffer({
-              ...offerDetails,
-              currency: "USD",
-            });
-            emit("parent:call", {
-              method: "reload",
-            });
-            emit("page:close");
-          } catch (err) {
-            alert(err.message);
+          const { valid } = await validate();
+          if (valid) {
+            try {
+              await createOffer({
+                ...offerDetails,
+                currency: "USD",
+              });
+              emit("parent:call", {
+                method: "reload",
+              });
+              emit("page:close");
+            } catch (err) {
+              alert(err.message);
+            }
+          } else {
+            alert("Form is not valid.\nPlease, check highlighted fields.");
           }
         },
         isVisible: !props.param,

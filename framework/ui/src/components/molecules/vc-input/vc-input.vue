@@ -22,14 +22,14 @@
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
         :type="internalType"
-        :value="internalValue"
+        :value="modelValue"
         :disabled="disabled"
         @input="onInput"
       />
 
       <!-- Input clear button -->
       <div
-        v-if="clearable && internalValue && !disabled && type !== 'password'"
+        v-if="clearable && modelValue && !disabled && type !== 'password'"
         class="
           vc-input__clear
           vc-padding-horizontal_m
@@ -77,7 +77,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, unref } from "vue";
+import { defineComponent, ref, unref, watch } from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
@@ -161,32 +161,29 @@ export default defineComponent({
     }
 
     // Prepare field-level validation
-    const {
-      value: internalValue,
-      errorMessage,
-      handleChange,
-      resetField,
-    } = useField(props.name, internalRules, {
+    const { errorMessage, handleChange } = useField(props.name, internalRules, {
       initialValue: props.modelValue,
-      label: props.label,
     });
+
+    watch(
+      () => props.modelValue,
+      (value) => {
+        handleChange(value);
+      }
+    );
 
     return {
       internalType,
-      internalValue,
       errorMessage,
 
       // Handle input event to propertly validate value and emit changes
       onInput(e: InputEvent) {
         const newValue = (e.target as HTMLInputElement).value;
-        handleChange(newValue);
         emit("update:modelValue", newValue);
       },
 
       // Handle input event to propertly reset value and emit changes
       onReset() {
-        resetField();
-        handleChange("", false);
         emit("update:modelValue", "");
       },
     };

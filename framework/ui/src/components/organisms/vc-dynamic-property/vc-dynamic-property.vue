@@ -10,6 +10,8 @@
     keyProperty="id"
     displayProperty="alias"
     :rules="rules"
+    :is-disabled="disabled"
+    :name="property.name"
   ></vc-select>
 
   <vc-input
@@ -21,6 +23,8 @@
     :required="property.required"
     :placeholder="property.displayNames[0].name"
     :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
   ></vc-input>
 
   <vc-input
@@ -33,6 +37,8 @@
     :required="property.required"
     :placeholder="property.displayNames[0].name"
     :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
   ></vc-input>
 
   <vc-input
@@ -46,6 +52,8 @@
     :required="property.required"
     :placeholder="property.displayNames[0].name"
     :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
   ></vc-input>
 
   <vc-input
@@ -57,6 +65,8 @@
     :required="property.required"
     :placeholder="property.displayNames[0].name"
     :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
   ></vc-input>
 
   <vc-textarea
@@ -67,6 +77,8 @@
     :required="property.required"
     :placeholder="property.displayNames[0].name"
     :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
   ></vc-textarea>
 
   <vc-checkbox
@@ -75,6 +87,8 @@
     @update:modelValue="setter(property, $event)"
     :required="property.required"
     :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
   >
     {{ property.displayNames[0].name || property.name }}
   </vc-checkbox>
@@ -113,6 +127,11 @@ export default defineComponent({
     culture: {
       type: String,
       default: "en-US",
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false,
     },
   },
 

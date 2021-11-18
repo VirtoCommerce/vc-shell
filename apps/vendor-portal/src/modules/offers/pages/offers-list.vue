@@ -205,7 +205,7 @@ export default defineComponent({
       deleteOffers,
     } = useOffers();
 
-    const sort = ref("createdDate");
+    const sort = ref("createdDate:DESC");
     const searchValue = ref();
     const selectedItemId = ref();
     const selectedOfferIds = ref([]);
@@ -220,6 +220,7 @@ export default defineComponent({
     });
 
     const reload = async () => {
+      selectedOfferIds.value = [];
       await loadOffers({
         ...searchQuery.value,
         skip: (currentPage.value - 1) * searchQuery.value.take,
@@ -269,6 +270,7 @@ export default defineComponent({
               })
             )
           ) {
+            emit("page:closeChildren");
             await deleteOffers({ ids: selectedOfferIds.value });
             await reload();
           }

@@ -31,6 +31,8 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
                 rules="min:3"
+                name="name"
+                :disabled="readonly"
               ></vc-input>
               <vc-select
                 class="vc-margin-bottom_l"
@@ -48,6 +50,8 @@
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
                 @update:modelValue="setCategory"
+                :is-disabled="readonly"
+                name="category"
               ></vc-select>
 
               <vc-card
@@ -68,6 +72,8 @@
                     "
                     :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
                     rules="min:3"
+                    :disabled="readonly"
+                    name="gtin"
                   ></vc-input>
                   <vc-textarea
                     class="vc-margin-bottom_l"
@@ -82,6 +88,8 @@
                       )
                     "
                     rules="min:3"
+                    :disabled="readonly"
+                    name="description"
                   ></vc-textarea>
 
                   <vc-dynamic-property
@@ -92,6 +100,7 @@
                     :getter="getPropertyValue"
                     :setter="setPropertyValue"
                     class="vc-margin-bottom_l"
+                    :disabled="readonly"
                   >
                   </vc-dynamic-property>
                 </div>
@@ -109,6 +118,7 @@
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
                     @item:edit="onGalleryItemEdit"
+                    :disabled="readonly"
                   ></vc-gallery>
                 </div>
               </vc-card>
@@ -132,6 +142,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
+import { useForm } from "@virtoshell/ui";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
@@ -176,6 +187,7 @@ export default defineComponent({
 
   setup(props, { emit }) {
     const { t } = useI18n();
+    const { validate } = useForm({ validateOnMount: false });
     const {
       modified,
       product,
@@ -236,21 +248,25 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
         async clickHandler() {
-          // TODO: useForm() validate
-          try {
-            if (props.param) {
-              await updateProductDetails(product.value.id, productDetails);
-            } else {
-              await createProduct(productDetails);
+          const { valid } = await validate();
+          if (valid) {
+            try {
+              if (props.param) {
+                await updateProductDetails(product.value.id, productDetails);
+              } else {
+                await createProduct(productDetails);
+              }
+              emit("parent:call", {
+                method: "reload",
+              });
+              if (!props.param) {
+                emit("page:close");
+              }
+            } catch (err) {
+              alert(err.message);
             }
-            emit("parent:call", {
-              method: "reload",
-            });
-            if (!props.param) {
-              emit("page:close");
-            }
-          } catch (err) {
-            alert(err.message);
+          } else {
+            alert("Form is not valid.\nPlease, check highlighted fields.");
           }
         },
         disabled: computed(
@@ -266,26 +282,33 @@ export default defineComponent({
         icon: "fas fa-share-square",
         isVisible: computed(() => !!props.param),
         async clickHandler() {
-          // TODO: useForm() validate
-          try {
-            await updateProductDetails(
-              product.value.id,
-              { ...productDetails },
-              true
-            );
-            emit("parent:call", {
-              method: "reload",
-            });
-            if (!props.param) {
-              emit("page:close");
+          const { valid } = await validate();
+          if (valid) {
+            try {
+              await updateProductDetails(
+                product.value.id,
+                { ...productDetails },
+                true
+              );
+              emit("parent:call", {
+                method: "reload",
+              });
+              if (!props.param) {
+                emit("page:close");
+              }
+            } catch (err) {
+              alert(err.message);
             }
-          } catch (err) {
-            alert(err.message);
+          } else {
+            alert("Form is not valid.\nPlease, check highlighted fields.");
           }
         },
         disabled: computed(
           () =>
-            props.param && (!product.value?.canBeModified || !modified.value)
+            !(
+              product.value?.canBeModified &&
+              (product.value?.hasStagedChanges || modified.value)
+            )
         ),
       },
       {
@@ -304,7 +327,7 @@ export default defineComponent({
             !(
               product.value?.isPublished &&
               product.value?.hasStagedChanges &&
-              product.value.canBeModified
+              product.value?.canBeModified
             )
         ),
       },
@@ -381,6 +404,7 @@ export default defineComponent({
       categories,
       product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,
+      readonly: computed(() => props.param && !product.value?.canBeModified),
       reload,
       loading: computed(() => loading.value),
       onGalleryUpload,

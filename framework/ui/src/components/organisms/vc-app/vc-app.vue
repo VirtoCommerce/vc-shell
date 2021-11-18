@@ -65,6 +65,7 @@
               :options="blade.componentOptions"
               @page:open="onOpenPage(index, $event)"
               @page:close="onClosePage(index, $event)"
+              @page:closeChildren="onClosePage(index + 1, $event)"
               @parent:call="onParentCall(index, $event)"
               @notification:show="onShowNotification(index, $event)"
             ></component>
@@ -336,27 +337,29 @@ export default defineComponent({
 
     const onClosePage = async (index: number) => {
       console.debug(`vc-app#onClosePage(${index}) called.`);
-      const children = workspaceRefs.value.slice(index).reverse();
-      let isPrevented = false;
-      for (let i = 0; i < children.length; i++) {
-        if (
-          children[i]?.onBeforeClose &&
-          typeof children[i].onBeforeClose === "function"
-        ) {
-          const result = await children[i].onBeforeClose();
-          if (result === false) {
-            isPrevented = true;
-            break;
+      if (index < workspace.value.length) {
+        const children = workspaceRefs.value.slice(index).reverse();
+        let isPrevented = false;
+        for (let i = 0; i < children.length; i++) {
+          if (
+            children[i]?.onBeforeClose &&
+            typeof children[i].onBeforeClose === "function"
+          ) {
+            const result = await children[i].onBeforeClose();
+            if (result === false) {
+              isPrevented = true;
+              break;
+            }
           }
         }
-      }
-      if (!isPrevented) {
-        if (typeof workspace.value[index]?.onClose === "function") {
-          workspace.value[index]?.onClose?.();
+        if (!isPrevented) {
+          if (typeof workspace.value[index]?.onClose === "function") {
+            workspace.value[index]?.onClose?.();
+          }
+          workspace.value.splice(index);
+        } else {
+          throw "Closing prevented";
         }
-        workspace.value.splice(index);
-      } else {
-        throw "Closing prevented";
       }
     };
 

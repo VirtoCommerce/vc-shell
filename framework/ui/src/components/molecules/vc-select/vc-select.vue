@@ -82,7 +82,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, computed } from "vue";
+import { defineComponent, nextTick, ref, computed, watch } from "vue";
+import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -175,8 +176,25 @@ export default defineComponent({
         ) || props.initialItem
     );
 
+    // Prepare field-level validation
+    const { errorMessage, handleChange } = useField(
+      props.name,
+      props.isRequired ? "required" : "",
+      {
+        initialValue: props.modelValue,
+      }
+    );
+
+    watch(
+      () => props.modelValue,
+      (value) => {
+        handleChange(value);
+      }
+    );
+
     return {
       search,
+      errorMessage,
       isOpened,
       selectedItem,
       closeDropdown: () => {

@@ -16,7 +16,7 @@
       <textarea
         class="vc-textarea__field vc-padding-horizontal_m vc-padding-vertical_s"
         :placeholder="placeholder"
-        :value="internalValue"
+        :value="modelValue"
         :disabled="disabled"
         @input="onInput"
       ></textarea>
@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, unref } from "vue";
+import { defineComponent, unref, watch } from "vue";
 import { useField } from "vee-validate";
 import VcLabel from "..//vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
@@ -101,23 +101,24 @@ export default defineComponent({
     }
 
     // Prepare field-level validation
-    const {
-      value: internalValue,
-      errorMessage,
-      handleChange,
-    } = useField(props.name, internalRules, {
+    const { errorMessage, handleChange } = useField(props.name, internalRules, {
       initialValue: props.modelValue,
       label: props.label,
     });
 
+    watch(
+      () => props.modelValue,
+      (value) => {
+        handleChange(value);
+      }
+    );
+
     return {
-      internalValue,
       errorMessage,
 
       // Handle input event to propertly validate value and emit changes
       onInput(e: InputEvent) {
         const newValue = (e.target as HTMLInputElement).value;
-        handleChange(newValue);
         emit("update:modelValue", newValue);
       },
     };

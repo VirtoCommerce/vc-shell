@@ -7,7 +7,7 @@
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
-    <vc-container class="orders-edit-bordered">
+    <vc-container>
       <vc-row>
         <vc-col size="2" class="vc-padding_s">
           <vc-card header="Order info">
@@ -337,10 +337,6 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.orders-edit-bordered {
-  border-top: 1px solid #eaedf3;
-}
-
 .orders-totals {
   background: #fbfdfe;
   box-shadow: inset 0px 4px 7px rgba(199, 213, 227, 0.3);

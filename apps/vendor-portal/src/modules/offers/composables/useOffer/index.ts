@@ -64,13 +64,6 @@ export default (): IUseOffer => {
     logger.info(`create new  offer`, details);
 
     const client = await getApiClient();
-    //TODO: remove later when offer details blade has reworked to mutiple prices
-    const price = new OfferPrice({
-      listPrice: details.listPrice,
-      salePrice: details.salePrice,
-      minQuantity: details.minQuantity,
-    });
-    details.prices = [price];
     const command = new CreateNewOfferCommand({
       sellerName: user.value.userName,
       productId: details.productId,

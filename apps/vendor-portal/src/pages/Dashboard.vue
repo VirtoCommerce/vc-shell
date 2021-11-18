@@ -684,7 +684,7 @@ export default defineComponent({
 
 <style lang="less">
 .dashboard {
-  --card-header-background: #ffffff;
+  --card-header-background: transparent;
 
   &-header {
     font-size: 25px;

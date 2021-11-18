@@ -282,6 +282,10 @@ export default defineComponent({
     }
   }
 
+  &_disabled &__field {
+    cursor: auto;
+  }
+
   &__chevron {
     position: absolute;
     right: 0;

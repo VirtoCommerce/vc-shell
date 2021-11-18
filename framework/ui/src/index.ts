@@ -46,8 +46,13 @@ export default {
     app.provide("pages", app.config.globalProperties.pages);
 
     // Define global validation rules
-    defineRule("required", (value: string) => {
-      if (!value || !value.length) {
+    defineRule("required", (value: string | boolean) => {
+      if (
+        value === null ||
+        value === undefined ||
+        value === false ||
+        value === ""
+      ) {
         return "This field is required";
       }
       return true;

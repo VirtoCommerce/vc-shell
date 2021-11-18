@@ -3,13 +3,16 @@
     class="vc-blade-toolbar-button"
     :class="{ 'vc-blade-toolbar-button_disabled': disabled || isWaiting }"
     @click="onClick"
+    :title="title"
   >
     <vc-icon
       class="vc-blade-toolbar-button__icon"
       :icon="icon"
       size="m"
     ></vc-icon>
-    <div class="vc-blade-toolbar-button__title">{{ title }}</div>
+    <div v-if="isExpanded" class="vc-blade-toolbar-button__title">
+      {{ title }}
+    </div>
   </div>
 </template>
 
@@ -30,6 +33,11 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false,
+    },
+
+    isExpanded: {
+      type: Boolean,
+      default: true,
     },
 
     icon: {

@@ -135,6 +135,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   padding: 0 var(--padding-l);
+  border-bottom: 1px solid #eaedf3;
 
   &__button {
     color: var(--blade-header-button-color);

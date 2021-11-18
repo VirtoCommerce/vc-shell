@@ -451,7 +451,6 @@ export default defineComponent({
 <style lang="less">
 .product-details {
   &__inner {
-    border-top: 1px solid #eaedf3;
     overflow: hidden;
     min-height: 100%;
   }

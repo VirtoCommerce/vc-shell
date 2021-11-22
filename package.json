@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/root",
-  "version": "0.0.77",
+  "version": "0.0.78",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",

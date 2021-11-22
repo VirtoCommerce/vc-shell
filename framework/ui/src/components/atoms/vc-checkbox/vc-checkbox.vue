@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, watch } from "vue";
+import { defineComponent, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 
 export default defineComponent({
@@ -57,9 +57,11 @@ export default defineComponent({
   emits: ["update:modelValue"],
 
   setup(props, { emit }) {
+    const instance = getCurrentInstance();
+
     // Prepare field-level validation
     const { errorMessage, handleChange } = useField(
-      props.name,
+      `${instance?.uid || props.name}`,
       props.required ? "required" : "",
       {
         initialValue: props.modelValue,

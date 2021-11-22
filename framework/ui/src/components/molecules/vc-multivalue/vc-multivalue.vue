@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, unref } from "vue";
+import { defineComponent, unref, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
@@ -124,6 +124,8 @@ export default defineComponent({
   emits: ["update:modelValue"],
 
   setup(props, { emit }) {
+    const instance = getCurrentInstance();
+
     // Prepare validation rules using required and rules props combination
     let internalRules = unref(props.rules) || "";
     if (props.required) {
@@ -139,7 +141,7 @@ export default defineComponent({
 
     // Prepare field-level validation
     const { errorMessage, handleChange, value } = useField(
-      props.name,
+      `${instance?.uid || props.name}`,
       internalRules
     );
 

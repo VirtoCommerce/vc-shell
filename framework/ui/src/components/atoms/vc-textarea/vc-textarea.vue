@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, unref, watch } from "vue";
+import { defineComponent, unref, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 import VcLabel from "..//vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
@@ -90,6 +90,8 @@ export default defineComponent({
   emits: ["update:modelValue"],
 
   setup(props, { emit }) {
+    const instance = getCurrentInstance();
+
     // Prepare validation rules using required and rules props combination
     let internalRules = unref(props.rules) || "";
     if (props.required) {
@@ -104,10 +106,14 @@ export default defineComponent({
     }
 
     // Prepare field-level validation
-    const { errorMessage, handleChange } = useField(props.name, internalRules, {
-      initialValue: props.modelValue,
-      label: props.label,
-    });
+    const { errorMessage, handleChange } = useField(
+      `${instance?.uid || props.name}`,
+      internalRules,
+      {
+        initialValue: props.modelValue,
+        label: props.label,
+      }
+    );
 
     watch(
       () => props.modelValue,

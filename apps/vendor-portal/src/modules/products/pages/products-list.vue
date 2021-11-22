@@ -39,7 +39,7 @@ About component.
         <h2 v-if="$isMobile.value">Filters</h2>
         <vc-container no-padding>
           <vc-row>
-            <vc-col class="filter-col">
+            <vc-col class="filter-col vc-padding_s">
               <div class="group-title">Status filter</div>
               <div>
                 <vc-checkbox
@@ -54,7 +54,7 @@ About component.
                 >
               </div>
             </vc-col>
-            <vc-col class="filter-col">
+            <vc-col class="filter-col vc-padding_s">
               <div class="group-title">Price between</div>
               <div>
                 <vc-input
@@ -70,7 +70,7 @@ About component.
                 ></vc-input>
               </div>
             </vc-col>
-            <vc-col class="filter-col">
+            <vc-col class="filter-col vc-padding_s">
               <div class="group-title">Created date</div>
               <div>
                 <vc-input
@@ -83,7 +83,7 @@ About component.
             </vc-col>
           </vc-row>
           <vc-row>
-            <vc-col>
+            <vc-col class="vc-padding_s">
               <div class="vc-flex vc-flex-justify_end">
                 <vc-button
                   outline
@@ -260,7 +260,7 @@ export default defineComponent({
     const filter = reactive({});
     const appliedFilter = ref({});
 
-    const sort = ref("createdDate");
+    const sort = ref("createdDate:DESC");
     const searchValue = ref();
     const selectedItemId = ref();
 

@@ -82,7 +82,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, computed, watch } from "vue";
+import {
+  defineComponent,
+  nextTick,
+  ref,
+  computed,
+  watch,
+  getCurrentInstance,
+} from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
@@ -167,6 +174,7 @@ export default defineComponent({
   emits: ["update:modelValue", "change", "close", "search"],
 
   setup(props, { emit }) {
+    const instance = getCurrentInstance();
     const isOpened = ref(false);
     const search = ref();
     const selectedItem = computed(
@@ -178,7 +186,7 @@ export default defineComponent({
 
     // Prepare field-level validation
     const { errorMessage, handleChange } = useField(
-      props.name,
+      `${instance?.uid || props.name}`,
       props.isRequired ? "required" : "",
       {
         initialValue: props.modelValue,

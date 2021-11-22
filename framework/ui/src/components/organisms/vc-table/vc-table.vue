@@ -475,6 +475,7 @@ export default defineComponent({
       top: 0;
       user-select: none;
       overflow: hidden;
+      z-index: 1;
 
       &_sortable {
         cursor: pointer;

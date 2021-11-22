@@ -32,7 +32,7 @@
         <h2 v-if="$isMobile.value">Filters</h2>
         <vc-container no-padding>
           <vc-row>
-            <vc-col class="filter-col">
+            <vc-col class="filter-col vc-padding_s">
               <div class="group-title">Status filter</div>
               <div>
                 <vc-checkbox
@@ -53,7 +53,7 @@
                 >
               </div>
             </vc-col>
-            <vc-col class="filter-col">
+            <vc-col class="filter-col vc-padding_s">
               <div class="group-title">Order date</div>
               <div>
                 <vc-input
@@ -73,7 +73,7 @@
             </vc-col>
           </vc-row>
           <vc-row>
-            <vc-col>
+            <vc-col class="vc-padding_s">
               <div class="vc-flex vc-flex-justify_end">
                 <vc-button
                   outline

@@ -119,7 +119,9 @@
 
             <vc-card header="Pricing">
               <template v-slot:actions>
-                <vc-button small @click="addPrice">Add price</vc-button>
+                <vc-button v-if="!readonly" small @click="addPrice">
+                  Add price
+                </vc-button>
               </template>
 
               <template
@@ -143,12 +145,15 @@
                       style="flex-basis: 20px"
                     ></vc-col>
                   </vc-row>
-                  <vc-row v-for="(price, i) in offerDetails.prices" :key="i">
+                  <vc-row
+                    v-for="(item, i) in offerDetails.prices"
+                    :key="`${item.id}${i}`"
+                  >
                     <vc-col class="vc-padding_s">
                       <!-- List price field -->
                       <vc-input
                         :clearable="true"
-                        v-model="price.listPrice"
+                        v-model="item.listPrice"
                         type="number"
                         :placeholder="
                           $t(
@@ -163,7 +168,7 @@
                       <!-- Sales price field -->
                       <vc-input
                         :clearable="true"
-                        v-model="price.salePrice"
+                        v-model="item.salePrice"
                         type="number"
                         :placeholder="
                           $t(
@@ -178,7 +183,7 @@
                       <!-- Minimum quantity field -->
                       <vc-input
                         :clearable="true"
-                        v-model="price.minQuantity"
+                        v-model="item.minQuantity"
                         type="number"
                         :placeholder="
                           $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
@@ -201,7 +206,7 @@
                       <vc-icon
                         class="offer-details__remove-price"
                         icon="fas fa-times-circle"
-                        @click="removePrice(price)"
+                        @click="removePrice(i)"
                       ></vc-icon>
                     </vc-col>
                   </vc-row>
@@ -332,12 +337,9 @@ export default defineComponent({
         offerDetails.prices.push(new OfferPrice());
       },
 
-      removePrice(price: OfferPrice) {
+      removePrice(idx: number) {
         if (confirm("Remove selected price?")) {
-          const idx = offerDetails.prices?.findIndex((item) => item === price);
-          if (idx > -1) {
-            offerDetails.prices.splice(idx);
-          }
+          offerDetails.prices.splice(idx, 1);
         }
       },
     };

@@ -267,7 +267,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { loading, order, loadOrder } = useOrder();
+    const { loading, order, loadOrder, loadPdf } = useOrder();
 
     onMounted(async () => {
       if (props.param) {
@@ -276,6 +276,16 @@ export default defineComponent({
     });
 
     const bladeToolbar = [
+      {
+        title: "Download PDF",
+        icon: "fas fa-file-pdf",
+        async clickHandler() {
+          if (props.param) {
+            await loadPdf();
+          }
+        },
+        disabled: !props.param,
+      },
       { title: "Confirm", icon: "fas fa-check", disabled: true },
       { title: "Cancel", icon: "fas fa-times-circle", disabled: true },
     ];

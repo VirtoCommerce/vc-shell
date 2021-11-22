@@ -433,10 +433,22 @@ export default defineComponent({
       },
 
       setPropertyValue(property: IProperty, value: IPropertyValue) {
-        if (property.values[0]) {
-          property.values[0].value = value;
+        if (
+          typeof value === "object" &&
+          Object.prototype.hasOwnProperty.call(value, "length")
+        ) {
+          property.values = (value as IPropertyValue[]).map(
+            (item) => new PropertyValue(item)
+          );
         } else {
-          property.values[0] = new PropertyValue({ value, isInherited: false });
+          if (property.values[0]) {
+            property.values[0].value = value;
+          } else {
+            property.values[0] = new PropertyValue({
+              value,
+              isInherited: false,
+            });
+          }
         }
       },
 

@@ -1,7 +1,10 @@
 <template>
   <div
     class="vc-textarea"
-    :class="{ 'vc-textarea_error': error, 'vc-textarea_disabled': disabled }"
+    :class="{
+      'vc-textarea_error': errorMessage,
+      'vc-textarea_disabled': disabled,
+    }"
   >
     <!-- Textarea label -->
     <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">

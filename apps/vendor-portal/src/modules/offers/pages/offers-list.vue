@@ -38,31 +38,6 @@
         <div class="vc-ellipsis">{{ itemData.item.name }}</div>
       </template>
 
-      <!-- Override image column template -->
-      <template v-slot:item_image="itemData">
-        <vc-image
-          :bordered="true"
-          size="s"
-          aspect="1x1"
-          :src="itemData.item.imgSrc"
-        ></vc-image>
-      </template>
-
-      <!-- Override createdDate column template -->
-      <template v-slot:item_createdDate="itemData">
-        {{ moment(itemData.item.createdDate).fromNow() }}
-      </template>
-
-      <!-- Override listPrice column template -->
-      <template v-slot:item_listPrice="itemData">
-        {{ itemData.item.listPrice?.toFixed(2) }}
-      </template>
-
-      <!-- Override salePrice column template -->
-      <template v-slot:item_salePrice="itemData">
-        {{ itemData.item.salePrice?.toFixed(2) }}
-      </template>
-
       <template v-slot:mobile-item="itemData">
         <div
           class="
@@ -281,11 +256,11 @@ export default defineComponent({
 
     const columns = ref([
       {
-        id: "image",
-        field: "image",
+        id: "imgSrc",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
         width: 60,
         alwaysVisible: true,
+        type: "image",
       },
       {
         id: "name",
@@ -299,6 +274,7 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
         width: 140,
         sortable: true,
+        type: "date-ago",
       },
       {
         id: "sku",
@@ -312,24 +288,28 @@ export default defineComponent({
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE"),
         width: 100,
         sortable: true,
+        type: "money",
       },
       {
         id: "listPrice",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
         width: 100,
         sortable: true,
+        type: "money",
       },
       {
         id: "minQuantity",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY"),
         width: 80,
         sortable: true,
+        type: "number",
       },
       {
         id: "inStockQuantity",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
         width: 80,
         sortable: true,
+        type: "number",
       },
     ]);
 

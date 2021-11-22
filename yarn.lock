@@ -4066,11 +4066,6 @@
     "@typescript-eslint/types" "4.28.4"
     eslint-visitor-keys "^2.0.0"
 
-"@vee-validate/rules@^4.5.3":
-  version "4.5.3"
-  resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.5.3.tgz#26c4e5398063145260786c7f0e94cafc6724c829"
-  integrity sha512-sPc0mLeTXxkzbS5BAZmJSUi++BtAwvGtxTTLaWQO4XdGpzDGC6GHeSqf/U8oisY7g08t/mLu+GzKtNkUphmShQ==
-
 "@vue/babel-helper-vue-jsx-merge-props@^1.2.1":
   version "1.2.1"
   resolved "https://registry.npmjs.org/@vue/babel-helper-vue-jsx-merge-props/-/babel-helper-vue-jsx-merge-props-1.2.1.tgz"

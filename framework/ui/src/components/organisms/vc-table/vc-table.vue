@@ -164,11 +164,9 @@
                 :class="cell.class"
                 :width="cell.width"
               >
-                <slot :name="`item_${cell.id}`" :item="item">{{
-                  (cell.field || cell.id)
-                    .split(".")
-                    .reduce((p, c) => (p && p[c]) || null, item)
-                }}</slot>
+                <slot :name="`item_${cell.id}`" :item="item" :cell="cell">
+                  <vc-table-cell :cell="cell" :item="item"></vc-table-cell>
+                </slot>
               </td>
             </tr>
           </tbody>
@@ -263,6 +261,7 @@ import VcLoading from "../../atoms/vc-loading/vc-loading.vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
+import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 
 export default defineComponent({
   name: "VcTable",
@@ -277,6 +276,7 @@ export default defineComponent({
     VcLoading,
     VcTableFilter,
     VcTableMobileItem,
+    VcTableCell,
   },
 
   data() {

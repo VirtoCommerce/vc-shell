@@ -144,27 +144,12 @@ About component.
         </div>
       </template>
 
-      <!-- Override image column template -->
-      <template v-slot:item_image="itemData">
-        <vc-image
-          :bordered="true"
-          size="s"
-          aspect="1x1"
-          :src="itemData.item.imgSrc"
-        />
-      </template>
-
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
         <mp-product-status
           :status="itemData.item.status"
           class="vc-margin-bottom_xs"
         />
-      </template>
-
-      <!-- Override createdDate column template -->
-      <template v-slot:item_createdDate="itemData">
-        {{ moment(itemData.item.createdDate).fromNow() }}
       </template>
 
       <template v-slot:mobile-item="itemData">
@@ -337,10 +322,11 @@ export default defineComponent({
 
     const columns = ref([
       {
-        id: "image",
+        id: "imgSrc",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
         width: 60,
         alwaysVisible: true,
+        type: "image",
       },
       {
         id: "name",
@@ -353,6 +339,7 @@ export default defineComponent({
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
         width: 140,
         sortable: true,
+        type: "date-ago",
       },
       {
         id: "status",

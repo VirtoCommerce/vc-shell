@@ -123,23 +123,11 @@
         </div>
       </template>
 
-      <!-- Override createdDate column template -->
-      <template v-slot:item_createdDate="itemData">
-        <div class="vc-orders-page__created">
-          {{ moment(itemData.item.createdDate).fromNow() }}
-        </div>
-      </template>
-
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
         <vc-status v-bind="statusStyle(itemData.item.status)">
           {{ itemData.item.status }}
         </vc-status>
-      </template>
-
-      <!-- Override total column template -->
-      <template v-slot:item_total="itemData">
-        {{ itemData.item.total }} {{ itemData.item.currency }}
       </template>
 
       <template v-slot:mobile-item="itemData">
@@ -272,6 +260,7 @@ export default defineComponent({
         width: 120,
         alwaysVisible: true,
         sortable: true,
+        type: "money",
       },
       {
         id: "status",
@@ -284,6 +273,7 @@ export default defineComponent({
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED"),
         sortable: true,
         width: 180,
+        type: "date-ago",
       },
     ]);
 
@@ -438,11 +428,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="less">
-.vc-orders-page {
-  &__created {
-    color: #a5a5a5;
-  }
-}
-</style>

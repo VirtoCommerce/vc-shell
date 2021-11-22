@@ -22,6 +22,7 @@ export { default as VcWidget } from "./atoms/vc-widget/vc-widget.vue";
 export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcrumbs.vue";
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
 export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
+export { default as VcMultivalue } from "./molecules/vc-multivalue/vc-multivalue.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
 export { default as VcTags } from "./molecules/vc-tags/vc-tags.vue";

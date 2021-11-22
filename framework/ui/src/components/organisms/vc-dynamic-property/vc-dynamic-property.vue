@@ -14,6 +14,18 @@
     :name="property.name"
   ></vc-select>
 
+  <vc-multivalue
+    v-else-if="property.valueType === 'ShortText' && property.multivalue"
+    :label="property.displayNames[0].name || property.name"
+    :modelValue="property.values"
+    @update:modelValue="setter(property, $event)"
+    :required="property.required"
+    placeholder="Add value"
+    :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
+  ></vc-multivalue>
+
   <vc-input
     v-else-if="property.valueType === 'ShortText'"
     :label="property.displayNames[0].name || property.name"
@@ -26,6 +38,19 @@
     :disabled="disabled"
     :name="property.name"
   ></vc-input>
+
+  <vc-multivalue
+    v-else-if="property.valueType === 'Number' && property.multivalue"
+    :label="property.displayNames[0].name || property.name"
+    :modelValue="property.values"
+    @update:modelValue="setter(property, $event)"
+    type="number"
+    :required="property.required"
+    placeholder="Add value"
+    :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
+  ></vc-multivalue>
 
   <vc-input
     v-else-if="property.valueType === 'Number'"

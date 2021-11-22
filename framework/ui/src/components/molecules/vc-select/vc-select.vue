@@ -3,7 +3,7 @@
     class="vc-select"
     :class="{
       'vc-select_opened': isOpened,
-      'vc-select_error': error,
+      'vc-select_error': errorMessage,
       'vc-select_disabled': isDisabled,
     }"
   >
@@ -104,7 +104,7 @@ export default defineComponent({
 
   props: {
     modelValue: {
-      type: String,
+      type: [String, Number],
       default: undefined,
     },
 

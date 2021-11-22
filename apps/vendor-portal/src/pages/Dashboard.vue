@@ -48,20 +48,6 @@
                   </div>
                 </template>
 
-                <!-- Override createdDate column template -->
-                <template v-slot:item_createdDate="itemData">
-                  <div class="vc-orders-page__created">
-                    {{ moment(itemData.item.createdDate).fromNow() }}
-                  </div>
-                </template>
-
-                <!-- Override status column template -->
-                <template v-slot:item_status="itemData">
-                  <vc-status>
-                    {{ itemData.item.status }}
-                  </vc-status>
-                </template>
-
                 <!-- Override qty column template -->
                 <template v-slot:item_items="itemData">
                   {{ calcQty(itemData.item.items) }}
@@ -121,27 +107,12 @@
                   </div>
                 </template>
 
-                <!-- Override image column template -->
-                <template v-slot:item_image="itemData">
-                  <vc-image
-                    :bordered="true"
-                    size="s"
-                    aspect="1x1"
-                    :src="itemData.item.imgSrc"
-                  />
-                </template>
-
                 <!-- Override status column template -->
                 <template v-slot:item_status="itemData">
                   <mp-product-status
                     :status="itemData.item.status"
                     class="vc-margin-bottom_xs"
                   />
-                </template>
-
-                <!-- Override createdDate column template -->
-                <template v-slot:item_createdDate="itemData">
-                  {{ moment(itemData.item.createdDate).fromNow() }}
                 </template>
               </vc-table>
             </vc-card>
@@ -200,38 +171,6 @@
                           >Add offer</vc-button
                         >
                       </div>
-                    </template>
-
-                    <!-- Override sellerName column template -->
-                    <template v-slot:item_name="itemData">
-                      <div class="vc-flex vc-flex-column">
-                        <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-                      </div>
-                    </template>
-
-                    <!-- Override image column template -->
-                    <template v-slot:item_image="itemData">
-                      <vc-image
-                        :bordered="true"
-                        size="s"
-                        aspect="1x1"
-                        :src="itemData.item.imgSrc"
-                      ></vc-image>
-                    </template>
-
-                    <!-- Override createdDate column template -->
-                    <template v-slot:item_createdDate="itemData">
-                      {{ moment(itemData.item.createdDate).fromNow() }}
-                    </template>
-
-                    <!-- Override listPrice column template -->
-                    <template v-slot:item_listPrice="itemData">
-                      {{ itemData.item.listPrice?.toFixed(2) }}
-                    </template>
-
-                    <!-- Override salePrice column template -->
-                    <template v-slot:item_salePrice="itemData">
-                      {{ itemData.item.salePrice?.toFixed(2) }}
                     </template>
                   </vc-table>
                 </vc-col>
@@ -519,9 +458,10 @@ export default defineComponent({
 
     const productsColumns = ref([
       {
-        id: "image",
+        id: "imgSrc",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
         width: 60,
+        type: "image",
       },
       {
         id: "name",
@@ -531,6 +471,7 @@ export default defineComponent({
         id: "createdDate",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
         width: 140,
+        type: "date-ago",
       },
       {
         id: "status",
@@ -553,20 +494,22 @@ export default defineComponent({
         id: "status",
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS"),
         width: 160,
+        type: "status",
       },
       {
         id: "createdDate",
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED"),
         width: 160,
+        type: "date-ago",
       },
     ]);
 
     const offersColumns = ref([
       {
-        id: "image",
-        field: "image",
+        id: "imgSrc",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
         width: 60,
+        type: "image",
       },
       {
         id: "name",
@@ -577,6 +520,7 @@ export default defineComponent({
         id: "createdDate",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
         width: 140,
+        type: "date-ago",
       },
       {
         id: "sku",
@@ -587,21 +531,25 @@ export default defineComponent({
         id: "salePrice",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE"),
         width: 100,
+        type: "money",
       },
       {
         id: "listPrice",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
         width: 100,
+        type: "money",
       },
       {
         id: "minQuantity",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY"),
         width: 80,
+        type: "number",
       },
       {
         id: "inStockQuantity",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
         width: 80,
+        type: "number",
       },
     ]);
 

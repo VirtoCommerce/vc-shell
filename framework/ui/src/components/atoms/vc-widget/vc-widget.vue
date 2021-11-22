@@ -27,7 +27,7 @@ export default defineComponent({
     },
 
     value: {
-      type: String,
+      type: [String, Number],
       default: undefined,
     },
   },

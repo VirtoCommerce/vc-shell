@@ -91,14 +91,6 @@
               :header="false"
               :footer="false"
             >
-              <template v-slot:item_imageUrl="itemData">
-                <vc-image
-                  :bordered="true"
-                  :src="itemData.item.imageUrl"
-                  aspect="1x1"
-                  size="s"
-                ></vc-image>
-              </template>
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">
                   <div>{{ itemData.item.name }}</div>
@@ -294,6 +286,7 @@ export default defineComponent({
         title: "Pic",
         width: 60,
         class: "vc-padding-right_none",
+        type: "image",
       },
       {
         id: "name",
@@ -303,16 +296,19 @@ export default defineComponent({
         id: "quantity",
         title: "Quantity",
         width: 120,
+        type: "number",
       },
       {
         id: "price",
         title: "Unit price",
         width: 120,
+        type: "money",
       },
       {
         id: "extendedPrice",
         title: "Total",
         width: 120,
+        type: "money",
       },
     ];
 

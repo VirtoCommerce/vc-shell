@@ -5,7 +5,7 @@
       `vc-input_${type}`,
       {
         'vc-input_clearable': clearable,
-        'vc-input_error': error,
+        'vc-input_error': errorMessage,
         'vc-input_disabled': disabled,
       },
     ]"
@@ -22,7 +22,7 @@
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
         :type="internalType"
-        :value="modelValue"
+        :value="value"
         :disabled="disabled"
         @input="onInput"
       />
@@ -98,7 +98,7 @@ export default defineComponent({
     },
 
     modelValue: {
-      type: String,
+      type: [String, Number, Date],
       default: "",
     },
 
@@ -160,26 +160,58 @@ export default defineComponent({
       }
     }
 
+    let initialValue = unref(props.modelValue);
+    if (props.modelValue && props.type === "datetime-local") {
+      const date = new Date(props.modelValue);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      const hour = date.getHours().toString().padStart(2, "0");
+      const minute = date.getMinutes().toString().padStart(2, "0");
+      const seconds = date.getSeconds().toString().padStart(2, "0");
+      initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
+    }
+
     // Prepare field-level validation
-    const { errorMessage, handleChange } = useField(props.name, internalRules, {
-      initialValue: props.modelValue,
-    });
+    const { errorMessage, handleChange, value } = useField(
+      props.name,
+      internalRules,
+      {
+        initialValue,
+      }
+    );
 
     watch(
       () => props.modelValue,
       (value) => {
-        handleChange(value);
+        let initialValue = unref(value);
+        if (value && props.type === "datetime-local") {
+          const date = new Date(value);
+          const year = date.getFullYear();
+          const month = (date.getMonth() + 1).toString().padStart(2, "0");
+          const day = date.getDate().toString().padStart(2, "0");
+          const hour = date.getHours().toString().padStart(2, "0");
+          const minute = date.getMinutes().toString().padStart(2, "0");
+          const seconds = date.getSeconds().toString().padStart(2, "0");
+          initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
+        }
+        handleChange(initialValue);
       }
     );
 
     return {
       internalType,
+      value,
       errorMessage,
 
       // Handle input event to propertly validate value and emit changes
       onInput(e: InputEvent) {
         const newValue = (e.target as HTMLInputElement).value;
-        emit("update:modelValue", newValue);
+        if (newValue && props.type === "datetime-local") {
+          emit("update:modelValue", new Date(newValue));
+        } else {
+          emit("update:modelValue", newValue);
+        }
       },
 
       // Handle input event to propertly reset value and emit changes

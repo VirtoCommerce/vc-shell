@@ -141,6 +141,7 @@
               :key="item.id"
               class="vc-table__body-row"
               :class="{
+                'vc-table__body-row_clickable': $attrs.onItemClick,
                 'vc-table__body-row_even': i % 2 === 1,
                 'vc-table__body-row_selected': selectedItemId === item.id,
               }"
@@ -397,7 +398,6 @@ export default defineComponent({
     "paginationClick",
     "selectionChanged",
     "search:change",
-    "itemClick",
     "filter:apply",
     "filter:reset",
   ],
@@ -440,6 +440,10 @@ export default defineComponent({
       this.checkboxes[id] = state;
       this.$emit("selectionChanged", this.checkboxes);
     },
+  },
+
+  setup(props, { attrs }) {
+    console.dir(attrs);
   },
 });
 </script>
@@ -486,20 +490,23 @@ export default defineComponent({
   &__body {
     &-row {
       height: 60px;
-      cursor: pointer;
       background-color: #ffffff;
 
       &_even {
         background-color: #f8f8f8;
       }
 
-      &:hover {
-        background-color: #eff7fc;
-      }
-
       &_selected,
       &_selected:hover {
         background-color: #dfeef9;
+      }
+
+      &_clickable {
+        cursor: pointer;
+
+        &:hover {
+          background-color: #eff7fc;
+        }
       }
     }
 

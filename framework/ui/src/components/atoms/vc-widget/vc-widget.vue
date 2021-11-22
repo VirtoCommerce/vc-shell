@@ -1,5 +1,9 @@
 <template>
-  <div class="vc-widget" @click="$emit('click')">
+  <div
+    class="vc-widget"
+    :class="{ 'vc-widget_disabled': disabled }"
+    @click="onClick"
+  >
     <vc-icon
       v-if="icon"
       class="vc-widget__icon"
@@ -30,6 +34,23 @@ export default defineComponent({
       type: [String, Number],
       default: undefined,
     },
+
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
+  emits: ["click"],
+
+  setup(props, { emit }) {
+    return {
+      onClick() {
+        if (!props.disabled) {
+          emit("click");
+        }
+      },
+    };
   },
 });
 </script>
@@ -52,8 +73,20 @@ export default defineComponent({
     background-color: #eff7fc;
   }
 
+  &_disabled {
+    cursor: default;
+  }
+
+  &_disabled:hover {
+    background-color: #ffffff;
+  }
+
   &__icon {
     color: #a9bfd2;
+  }
+
+  &_disabled &__icon {
+    color: #d2d4d7;
   }
 
   &__title {
@@ -63,10 +96,18 @@ export default defineComponent({
     margin: var(--margin-m) 0 var(--margin-xs);
   }
 
+  &_disabled &__title {
+    color: #d2d4d7;
+  }
+
   &__value {
     font-weight: var(--font-weight-medium);
     font-size: 22px;
     color: #43b0e6;
+  }
+
+  &_disabled &__value {
+    color: #d2d4d7;
   }
 }
 </style>

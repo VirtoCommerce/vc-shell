@@ -16,14 +16,14 @@
         v-for="(item, i) in images"
         :key="i"
         :image="item"
-        :readonly="readonly"
+        :readonly="disabled"
         @preview="onPreviewClick(i)"
         @edit="$emit('item:edit', $event)"
         @remove="$emit('item:remove', $event)"
       ></vc-gallery-item>
 
       <vc-gallery-upload
-        v-if="!readonly"
+        v-if="!disabled"
         class="vc-margin_s"
         :icon="uploadIcon"
         @upload="onUpload"
@@ -62,7 +62,7 @@ export default defineComponent({
       default: () => [],
     },
 
-    readonly: {
+    disabled: {
       type: Boolean,
       default: false,
     },

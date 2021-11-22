@@ -55,7 +55,7 @@ export default defineComponent({
     },
   },
 
-  emits: ["header:click"],
+  emits: ["header:click", "state:collapsed"],
 
   setup(props, { emit }) {
     const isCollapsedInternal = ref(props.isCollapsed);
@@ -66,6 +66,7 @@ export default defineComponent({
       onHeaderClick() {
         if (props.isCollapsable) {
           isCollapsedInternal.value = !isCollapsedInternal.value;
+          emit("state:collapsed", isCollapsedInternal.value);
         }
         emit("header:click");
       },

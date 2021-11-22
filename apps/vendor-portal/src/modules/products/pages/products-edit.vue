@@ -57,8 +57,10 @@
               <vc-card
                 header="Properties"
                 is-collapsable
+                :is-collapsed="restoreCollapsed('product_properties')"
                 v-if="product.id || currentCategory"
                 v-loading="!currentCategory"
+                @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="vc-padding_l">
                   <vc-input
@@ -111,7 +113,8 @@
                 header="Images"
                 class="vc-margin-vertical_m"
                 is-collapsable
-                is-collapsed
+                :is-collapsed="restoreCollapsed('product_gallery')"
+                @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
                 <div class="vc-padding_l">
                   <vc-gallery
@@ -125,11 +128,12 @@
             </vc-form>
           </div>
         </div>
-        <div v-if="product.isPublished" class="product-details__widgets">
+        <div class="product-details__widgets">
           <vc-widget
             icon="fas fa-file-alt"
             title="Offers"
             :value="offersCount"
+            :disabled="!product.isPublished"
             @click="openOffers"
           >
           </vc-widget>
@@ -454,6 +458,14 @@ export default defineComponent({
 
       getPropertyValue(property: IProperty) {
         return property.values[0] && property.values[0].value;
+      },
+
+      handleCollapsed(key: string, value: boolean): void {
+        localStorage?.setItem(key, `${value}`);
+      },
+
+      restoreCollapsed(key: string): boolean {
+        return localStorage?.getItem(key) === "true" ? true : false;
       },
     };
   },

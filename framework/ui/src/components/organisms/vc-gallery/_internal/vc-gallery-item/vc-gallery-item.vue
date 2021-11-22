@@ -16,14 +16,12 @@
     <div class="vc-flex-column vc-gallery-item__overlay vc-padding_s">
       <div class="vc-flex">
         <vc-icon
-          class="vc-gallery-item__move"
+          v-if="!readonly"
+          class="vc-gallery-item__move vc-margin-right_s"
           icon="fas fa-arrows-alt"
           size="s"
         ></vc-icon>
-        <div
-          class="vc-margin-left_s vc-gallery-item__title vc-ellipsis"
-          :title="image.name"
-        >
+        <div class="vc-gallery-item__title vc-ellipsis" :title="image.name">
           {{ image.name }}
         </div>
       </div>
@@ -50,6 +48,7 @@
           <div class="vc-margin-top_s">Fullscreen</div>
         </div>
         <div
+          v-if="!readonly"
           class="
             vc-gallery-item__button
             vc-flex vc-flex-column
@@ -64,6 +63,7 @@
           <div class="vc-margin-top_s">Edit</div>
         </div>
         <div
+          v-if="!readonly"
           class="
             vc-gallery-item__button
             vc-flex vc-flex-column
@@ -129,17 +129,19 @@ export default defineComponent({
 
   &__overlay {
     background: rgba(238, 246, 252, 0.97);
-    display: none;
+    opacity: 0;
+    display: flex;
     position: absolute;
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
+    transition: all 0.2s ease;
   }
 
   &:hover &__overlay,
   .vc-app_touch &.hover &__overlay {
-    display: flex;
+    opacity: 1;
   }
 
   &__move {

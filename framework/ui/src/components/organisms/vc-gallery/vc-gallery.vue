@@ -10,24 +10,29 @@
       {{ label }}
     </vc-label>
 
-    <div class="vc-gallery__items">
-      <vc-gallery-item
-        class="vc-margin_s"
-        v-for="(item, i) in images"
-        :key="i"
-        :image="item"
-        :readonly="disabled"
-        @preview="onPreviewClick(i)"
-        @edit="$emit('item:edit', $event)"
-        @remove="$emit('item:remove', $event)"
-      ></vc-gallery-item>
+    <template v-if="(images && images.length) || !disabled">
+      <div class="vc-gallery__items">
+        <vc-gallery-item
+          class="vc-margin_s"
+          v-for="(item, i) in images"
+          :key="i"
+          :image="item"
+          :readonly="disabled"
+          @preview="onPreviewClick(i)"
+          @edit="$emit('item:edit', $event)"
+          @remove="$emit('item:remove', $event)"
+        ></vc-gallery-item>
 
-      <vc-gallery-upload
-        v-if="!disabled"
-        class="vc-margin_s"
-        :icon="uploadIcon"
-        @upload="onUpload"
-      ></vc-gallery-upload>
+        <vc-gallery-upload
+          v-if="!disabled"
+          class="vc-margin_s"
+          :icon="uploadIcon"
+          @upload="onUpload"
+        ></vc-gallery-upload>
+      </div>
+    </template>
+    <div v-else class="vc-flex vc-flex-justify_center vc-padding_xl">
+      <vc-hint>Gallery is empty</vc-hint>
     </div>
 
     <vc-gallery-preview

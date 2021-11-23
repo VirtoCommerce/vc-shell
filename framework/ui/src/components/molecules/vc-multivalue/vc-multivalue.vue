@@ -190,33 +190,48 @@ export default defineComponent({
   }
 
   &__field-wrapper {
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--input-border-radius);
-    background-color: var(--input-background-color);
+    border: 1px solid var(--multivalue-border-color);
+    border-radius: var(--multivalue-border-radius);
+    background-color: var(--multivalue-background-color);
     align-items: center;
     display: flex;
     flex-wrap: wrap;
   }
 
   &_error &__field-wrapper {
-    border: 1px solid var(--input-border-color-error);
+    border: 1px solid var(--multivalue-border-color-error);
   }
 
   &__error {
-    color: var(--input-border-color-error);
+    color: var(--multivalue-border-color-error);
   }
 
   &__field {
     border: none;
     outline: none;
-    height: var(--input-height);
+    height: var(--multivalue-height);
     min-width: 0;
     box-sizing: border-box;
-    -webkit-placeholder-color: var(--input-placeholder-color);
     min-width: 120px;
 
+    &::-webkit-input-placeholder {
+      color: var(--multivalue-placeholder-color);
+    }
+
+    &::-moz-placeholder {
+      color: var(--multivalue-placeholder-color);
+    }
+
+    &::-ms-placeholder {
+      color: var(--multivalue-placeholder-color);
+    }
+
+    &::placeholder {
+      color: var(--multivalue-placeholder-color);
+    }
+
     &-value-wrapper {
-      height: var(--input-height);
+      height: var(--multivalue-height);
       margin-left: var(--margin-s);
       display: flex;
       align-items: center;
@@ -239,6 +254,12 @@ export default defineComponent({
         cursor: pointer;
       }
     }
+  }
+
+  &_disabled &__field-wrapper,
+  &_disabled &__field {
+    background-color: #fafafa;
+    color: #424242;
   }
 }
 </style>

@@ -260,8 +260,10 @@ export default defineComponent({
     background-color: var(--select-background-color);
   }
 
-  &_disabled &__field-wrapper {
+  &_disabled &__field-wrapper,
+  &_disabled &__field {
     background-color: var(--select-background-color-disabled);
+    color: #424242;
   }
 
   &_error &__field-wrapper {

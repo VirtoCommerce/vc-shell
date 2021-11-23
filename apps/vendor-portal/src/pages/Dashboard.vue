@@ -259,7 +259,7 @@
       </vc-col>
 
       <!-- Counters block -->
-      <vc-col size="2" class="vc-padding_s">
+      <vc-col class="dashboard-counters vc-padding_s">
         <vc-card
           class="vc-margin-bottom_l"
           header="Revenue, USD"
@@ -689,7 +689,13 @@ export default defineComponent({
   }
 
   &-counters {
-    min-height: 126px;
+    flex-grow: 0 !important;
+    flex-basis: 280px !important;
+
+    .vc-app_mobile & {
+      flex-grow: 1 !important;
+      flex-basis: 0 !important;
+    }
 
     &__title {
       font-size: 14px;

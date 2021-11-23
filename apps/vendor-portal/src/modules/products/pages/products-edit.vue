@@ -234,12 +234,14 @@ export default defineComponent({
         });
       }
       //Load offers count to populate widget
-      offersCount.value = (
-        await searchOffers({
-          take: 0,
-          sellerProductId: props.param,
-        })
-      ).totalCount;
+      if (props.param) {
+        offersCount.value = (
+          await searchOffers({
+            take: 0,
+            sellerProductId: props.param,
+          })
+        )?.totalCount;
+      }
     };
 
     onMounted(async () => {

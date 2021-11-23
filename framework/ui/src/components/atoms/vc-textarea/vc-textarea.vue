@@ -168,7 +168,28 @@ export default defineComponent({
     border: none;
     outline: none;
     min-height: var(--textarea-height);
-    -webkit-placeholder-color: var(--textarea-placeholder-color);
+
+    &::-webkit-input-placeholder {
+      color: var(--textarea-placeholder-color);
+    }
+
+    &::-moz-placeholder {
+      color: var(--textarea-placeholder-color);
+    }
+
+    &::-ms-placeholder {
+      color: var(--textarea-placeholder-color);
+    }
+
+    &::placeholder {
+      color: var(--textarea-placeholder-color);
+    }
+  }
+
+  &_disabled &__field-wrapper,
+  &_disabled &__field {
+    background-color: #fafafa;
+    color: #424242;
   }
 }
 </style>

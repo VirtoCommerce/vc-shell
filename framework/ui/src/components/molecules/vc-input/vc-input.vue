@@ -268,7 +268,22 @@ export default defineComponent({
     height: var(--input-height);
     min-width: 0;
     box-sizing: border-box;
-    -webkit-placeholder-color: var(--input-placeholder-color);
+
+    &::-webkit-input-placeholder {
+      color: var(--input-placeholder-color);
+    }
+
+    &::-moz-placeholder {
+      color: var(--input-placeholder-color);
+    }
+
+    &::-ms-placeholder {
+      color: var(--input-placeholder-color);
+    }
+
+    &::placeholder {
+      color: var(--input-placeholder-color);
+    }
   }
 
   &__clear {
@@ -287,6 +302,12 @@ export default defineComponent({
     &:hover {
       color: var(--input-clear-color-hover);
     }
+  }
+
+  &_disabled &__field-wrapper,
+  &_disabled &__field {
+    background-color: #fafafa;
+    color: #424242;
   }
 }
 </style>

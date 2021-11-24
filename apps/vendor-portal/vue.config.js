@@ -21,6 +21,9 @@ module.exports = {
       '/connect/token': {
         target: `${process.env.PLATFORM_URL}`,
       },
+      '/pushNotificationHub': {
+        target: `${process.env.PLATFORM_URL}`,
+      },
     },
     historyApiFallback: true,
   },

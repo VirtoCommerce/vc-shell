@@ -42,6 +42,7 @@ import { OrdersList } from "../modules/orders";
 import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
 import { useLogger, useI18n, useUser } from "@virtoshell/core";
+import { useSignalR } from "@quangdao/vue-signalr";
 
 export default defineComponent({
   name: "App",
@@ -52,6 +53,9 @@ export default defineComponent({
   },
 
   setup() {
+    const signalr = useSignalR();
+    signalr.on("Send", (message: unknown) => console.dir(message));
+
     const { t } = useI18n();
     const log = useLogger();
     const { user, loadUser, signOut } = useUser();

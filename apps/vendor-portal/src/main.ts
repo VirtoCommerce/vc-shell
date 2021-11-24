@@ -1,4 +1,5 @@
 import { createApp, resolveComponent, h } from "vue";
+import { VueSignalR } from "@quangdao/vue-signalr";
 import VirtoShellUi from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import ModAssets from "@virtoshell/mod-assets";
@@ -15,6 +16,9 @@ import "@virtoshell/ui/dist/ui.css";
 const app = createApp({
   render: () => h(resolveComponent("router-view")),
 })
+  .use(VueSignalR, {
+    url: "/pushNotificationHub",
+  })
   .use(VirtoShellUi)
   .use(VirtoShellCore)
   .use(ModAssets)

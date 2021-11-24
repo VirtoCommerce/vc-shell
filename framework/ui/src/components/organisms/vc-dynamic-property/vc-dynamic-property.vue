@@ -6,7 +6,7 @@
     @update:modelValue="setter(property, $event)"
     :isRequired="property.required"
     :placeholder="property.displayNames[0].name"
-    :options="dictionaries[property.id]"
+    :options="items"
     keyProperty="id"
     displayProperty="alias"
     :rules="rules"
@@ -120,7 +120,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, onMounted } from "vue";
 
 interface IValidationRules {
   required?: boolean;
@@ -145,6 +145,10 @@ export default defineComponent({
       type: Function,
     },
 
+    optionsGetter: {
+      type: Function,
+    },
+
     setter: {
       type: Function,
     },
@@ -162,6 +166,13 @@ export default defineComponent({
 
   setup(props) {
     const rules: IValidationRules = {};
+    const items = ref([]);
+
+    onMounted(async () => {
+      if (props.optionsGetter) {
+        items.value = await props.optionsGetter(props.property);
+      }
+    });
 
     if (props.property.required) {
       rules.required = true;
@@ -178,6 +189,7 @@ export default defineComponent({
 
     return {
       rules,
+      items,
       getLabel() {
         return (
           (props.property.displayNames as { culture: string }[]).find(

@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "devDependencies": {
+    "@quangdao/vue-signalr": "^0.0.8",
     "@virtoshell/api-client": "^0.0.81",
     "@virtoshell/core": "^0.0.81",
     "@virtoshell/mod-assets": "^0.0.81",
@@ -27,5 +28,8 @@
     "vee-validate": "^4.5.5",
     "vue": "^3.0.0",
     "vue-router": "^4.0.5"
+  },
+  "dependencies": {
+    "@microsoft/signalr": "^5.0.7"
   }
 }

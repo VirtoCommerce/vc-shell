@@ -441,10 +441,6 @@ export default defineComponent({
       this.$emit("selectionChanged", this.checkboxes);
     },
   },
-
-  setup(props, { attrs }) {
-    console.dir(attrs);
-  },
 });
 </script>
 

@@ -208,8 +208,6 @@ export default defineComponent({
     const { searchOffers } = useOffers();
     const { getAccessToken } = useUser();
 
-    const dictionaries = reactive({});
-
     const currentCategory = ref();
     const offersCount = ref(0);
     const categories = ref<ICategory[]>();
@@ -225,13 +223,6 @@ export default defineComponent({
             (x) => x.id === productDetails.categoryId
           );
         }
-        productDetails?.properties?.forEach(async (property) => {
-          if (property.dictionary) {
-            dictionaries[property.id] = await searchDictionaryItems([
-              property.id,
-            ]);
-          }
-        });
       }
       //Load offers count to populate widget
       if (props.param) {
@@ -371,9 +362,6 @@ export default defineComponent({
 
     const setCategory = async (id: string) => {
       currentCategory.value = categories.value?.find((x) => x.id === id);
-      Object.keys(dictionaries).forEach(
-        (item) => (dictionaries[item] = undefined)
-      );
       const currentProperties = [...(productDetails?.properties || [])];
       productDetails.properties = [...(currentCategory.value.properties || [])];
       productDetails.properties.forEach(async (property) => {
@@ -384,11 +372,6 @@ export default defineComponent({
           property.values = previousPropertyValue.values.map(
             (item) => new PropertyValue(item)
           );
-        }
-        if (property.dictionary) {
-          dictionaries[property.id] = await searchDictionaryItems([
-            property.id,
-          ]);
         }
       });
     };
@@ -406,7 +389,6 @@ export default defineComponent({
         categories.value = await fetchCategories(value);
       },
       offersCount,
-      dictionaries,
       categories,
       product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,
@@ -460,6 +442,10 @@ export default defineComponent({
 
       getPropertyValue(property: IProperty) {
         return property.values[0] && property.values[0].value;
+      },
+
+      async loadDictionaries(property: IProperty) {
+        return await searchDictionaryItems([property.id]);
       },
 
       handleCollapsed(key: string, value: boolean): void {

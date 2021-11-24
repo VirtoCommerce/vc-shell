@@ -2,7 +2,7 @@
   <vc-blade
     v-loading="loading"
     :title="param ? productDetails?.name : $t('PRODUCTS.PAGES.DETAILS.TITLE')"
-    width="600"
+    width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
@@ -444,8 +444,12 @@ export default defineComponent({
         return property.values[0] && property.values[0].value;
       },
 
-      async loadDictionaries(property: IProperty) {
-        return await searchDictionaryItems([property.id]);
+      async loadDictionaries(
+        property: IProperty,
+        keyword?: string,
+        skip?: number
+      ) {
+        return await searchDictionaryItems([property.id], keyword, skip);
       },
 
       handleCollapsed(key: string, value: boolean): void {

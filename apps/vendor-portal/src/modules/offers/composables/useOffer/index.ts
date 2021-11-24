@@ -1,18 +1,15 @@
-import { Ref, ref, computed, watch, reactive } from "vue";
+import { Ref, ref, computed, reactive } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 
 import {
   VcmpSellerCatalogClient,
   IOffer,
-  Offer,
   IOfferDetails,
   IOfferProduct,
   OfferDetails,
   CreateNewOfferCommand,
   SearchProductsForNewOfferQuery,
-  OfferPrice,
 } from "../../../../api_client";
-import offers from "../..";
 
 export type TExtOfferDetails = IOfferDetails & {
   product?: IOfferProduct;

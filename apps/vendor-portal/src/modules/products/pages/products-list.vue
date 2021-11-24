@@ -7,6 +7,7 @@ About component.
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
+    width="50%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >

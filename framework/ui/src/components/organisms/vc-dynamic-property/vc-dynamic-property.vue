@@ -12,6 +12,9 @@
     :rules="rules"
     :is-disabled="disabled"
     :name="property.name"
+    :isSearchable="true"
+    @search="onSearch"
+    @close="onClose"
   ></vc-select>
 
   <vc-multivalue
@@ -196,6 +199,18 @@ export default defineComponent({
             (item) => item.culture === props.culture
           ) || props.property.name
         );
+      },
+
+      async onSearch(keyword: string) {
+        if (props.optionsGetter) {
+          items.value = await props.optionsGetter(props.property, keyword);
+        }
+      },
+
+      async onClose() {
+        if (props.optionsGetter) {
+          items.value = await props.optionsGetter(props.property);
+        }
       },
     };
   },

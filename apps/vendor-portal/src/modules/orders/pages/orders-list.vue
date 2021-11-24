@@ -3,6 +3,7 @@
     title="Orders"
     :expanded="expanded"
     :closable="closable"
+    width="50%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >

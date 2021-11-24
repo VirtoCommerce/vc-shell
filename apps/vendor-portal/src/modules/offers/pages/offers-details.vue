@@ -6,6 +6,7 @@
         ? offerDetails.sku
         : $t('OFFERS.PAGES.DETAILS.TITLE')
     "
+    width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
@@ -276,10 +277,14 @@ export default defineComponent({
       if (props.param) {
         await loadOffer({ id: props.param });
       }
-      if (props.options?.sellerProduct) {
-        //Since the offers can be created only for published products we must pass the id of published product in a master catalog
+      if (
+        offer.value.productId ||
+        props.options?.sellerProduct?.publishedProductDataId
+      ) {
         await selectOfferProduct({
-          id: props.options?.sellerProduct?.publishedProductDataId,
+          id:
+            offer.value.productId ||
+            props.options?.sellerProduct?.publishedProductDataId,
         });
       }
       products.value = await fetchProducts();

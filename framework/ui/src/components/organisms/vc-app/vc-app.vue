@@ -70,6 +70,10 @@
               @notification:show="onShowNotification(index, $event)"
             ></component>
           </div>
+
+          <div class="vc-app__notifications">
+            <slot name="notifications"></slot>
+          </div>
         </div>
       </template>
     </template>
@@ -421,6 +425,22 @@ export default defineComponent({
     .vc-app_mobile & {
       padding: 0;
     }
+  }
+
+  &__notifications {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    z-index: 1000;
+    max-height: 100%;
+    overflow: hidden;
+    pointer-events: painted;
+    top: 0;
+    left: 0;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--padding-s);
+    box-sizing: border-box;
   }
 }
 </style>

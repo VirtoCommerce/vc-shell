@@ -23,9 +23,9 @@ export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcru
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
 export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
 export { default as VcMultivalue } from "./molecules/vc-multivalue/vc-multivalue.vue";
+export { default as VcNotification } from "./molecules/vc-notification/vc-notification.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
-export { default as VcTags } from "./molecules/vc-tags/vc-tags.vue";
 
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";
@@ -33,6 +33,5 @@ export { default as VcBlade } from "./organisms/vc-blade/vc-blade.vue";
 export { default as VcDynamicProperty } from "./organisms/vc-dynamic-property/vc-dynamic-property.vue";
 export { default as VcGallery } from "./organisms/vc-gallery/vc-gallery.vue";
 export { default as VcLoginForm } from "./organisms/vc-login-form/vc-login-form.vue";
-export { default as VcNotification } from "./organisms/vc-notification/vc-notification.vue";
 export { default as VcPopup } from "./organisms/vc-popup/vc-popup.vue";
 export { default as VcTable } from "./organisms/vc-table/vc-table.vue";

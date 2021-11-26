@@ -21,6 +21,17 @@
         title="Vendor Portal"
       ></login-page>
     </template>
+
+    <template v-slot:notifications>
+      <vc-notification
+        v-for="(item, i) in notifications"
+        :key="item.id"
+        :timeout="10000"
+        @dismiss="onNotificationDismiss(i)"
+      >
+        {{ item.title }}
+      </vc-notification>
+    </template>
   </vc-app>
 </template>
 
@@ -43,6 +54,7 @@ import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
 import { useLogger, useI18n, useUser } from "@virtoshell/core";
 import { useSignalR } from "@quangdao/vue-signalr";
+import { PushNotification } from "@virtoshell/api-client";
 
 export default defineComponent({
   name: "App",
@@ -53,14 +65,19 @@ export default defineComponent({
   },
 
   setup() {
-    const signalr = useSignalR();
-    signalr.on("Send", (message: unknown) => console.dir(message));
-
     const { t } = useI18n();
     const log = useLogger();
     const { user, loadUser, signOut } = useUser();
     const isAuthorized = ref(false);
     const isReady = ref(false);
+
+    const signalr = useSignalR();
+    const notifications = ref<PushNotification[]>([]);
+    signalr.on("Send", (message: PushNotification) => {
+      if (message.creator === user.value?.id) {
+        notifications.value.push(message);
+      }
+    });
 
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
@@ -93,7 +110,7 @@ export default defineComponent({
           avatar: "/assets/avatar.jpg",
           name: computed(() => user.value?.userName),
           role: computed(() =>
-            user.value?.isAdministrator ? "Administrator" : "Operator"
+            user.value?.isAdministrator ? "Administrator" : "Seller account"
           ),
           menuItems: [
             {
@@ -157,6 +174,10 @@ export default defineComponent({
       version: process.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,
+      notifications,
+      onNotificationDismiss(idx: number) {
+        notifications.value.splice(idx, 1);
+      },
     };
   },
 });

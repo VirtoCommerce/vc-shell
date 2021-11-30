@@ -1,10 +1,7 @@
 <template>
   <div class="vc-table-filter">
     <!-- Filter button -->
-    <div
-      class="vc-table-filter__button"
-      @click="isPanelVisible = !isPanelVisible"
-    >
+    <div class="vc-table-filter__button" @click="openPanel" ref="filterToggle">
       <vc-icon icon="fas fa-filter" size="m" />
       <span v-if="title" class="vc-table-filter__button-title">
         {{ title }}
@@ -15,35 +12,36 @@
     </div>
 
     <!-- Filter panel -->
-    <div
-      class="vc-table-filter__panel"
-      v-if="isPanelVisible"
-      @click.self="isPanelVisible = false"
-    >
+    <teleport to="body">
       <div
-        class="
-          vc-table-filter__panel-inner
-          vc-padding_xl
-          vc-flex vc-flex-column
-        "
-        @click.stop
+        class="vc-table-filter__panel"
+        v-if="isPanelVisible"
+        @click.self="closePanel"
+        ref="filterPanel"
       >
-        <vc-icon
-          class="vc-table-filter__panel-close vc-flex-shrink_0"
-          icon="fas fa-times"
-          size="xl"
-          @click="isPanelVisible = false"
-        />
+        <div
+          class="vc-table-filter__panel-inner vc-padding_xl vc-flex vc-flex-column"
+          @click.stop
+        >
+          <vc-icon
+            class="vc-table-filter__panel-close vc-flex-shrink_0"
+            icon="fas fa-times"
+            size="xl"
+            @click="closePanel"
+          />
 
-        <slot></slot>
+          <slot></slot>
+        </div>
       </div>
-    </div>
+    </teleport>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, nextTick, ref, watch, inject } from "vue";
 import { clickOutside } from "../../../../../directives";
+import { createPopper, Instance } from "@popperjs/core";
+import { useFunctions } from "@virtoshell/core";
 
 export default defineComponent({
   name: "VcTableFilter",
@@ -74,10 +72,65 @@ export default defineComponent({
   emits: ["apply", "reset"],
 
   setup() {
+    const { delay } = useFunctions();
     const isPanelVisible = ref(false);
+    const filterToggle = ref();
+    const filterPanel = ref();
+    const popper = ref<Instance>();
+    const workspace = inject("workspace");
+
+    watch(
+      () => workspace,
+      () => {
+        delay(() => popper.value?.update(), 300);
+      },
+      { deep: true }
+    );
+
+    function openPanel() {
+      isPanelVisible.value = !isPanelVisible.value;
+      const element = document.querySelector(".vc-blade");
+      if (isPanelVisible.value) {
+        nextTick(() => {
+          popper.value = createPopper(filterToggle.value, filterPanel.value, {
+            placement: "bottom-end",
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [0, 10],
+                },
+              },
+              {
+                name: "preventOverflow",
+                options: {
+                  boundary: element,
+                },
+              },
+            ],
+          });
+        });
+      } else {
+        destroyPopper();
+      }
+    }
+
+    function closePanel() {
+      isPanelVisible.value = false;
+      destroyPopper();
+    }
+
+    function destroyPopper() {
+      // To prevent memory leaks Popper needs to be destroyed.
+      popper.value?.destroy();
+    }
 
     return {
       isPanelVisible,
+      filterToggle,
+      filterPanel,
+      openPanel,
+      closePanel,
     };
   },
 });
@@ -119,8 +172,8 @@ export default defineComponent({
 
   &__panel {
     position: absolute;
-    right: 0;
-    top: 120%;
+    //right: 0;
+    //top: 20%;
     max-height: 400px;
     max-width: 800px;
     min-width: 400px;

@@ -92,12 +92,7 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -110,12 +105,7 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -150,12 +140,7 @@
           </div>
           <div>
             <div
-              class="
-                vc-margin-top_m
-                vc-fill_width
-                vc-flex
-                vc-flex-justify_space-between
-              "
+              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>Total</vc-hint>
@@ -201,6 +186,11 @@ export default defineComponent({
       default: true,
     },
 
+    param: {
+      type: String,
+      default: undefined,
+    },
+
     options: {
       type: Object,
       default: () => ({}),
@@ -218,6 +208,7 @@ export default defineComponent({
     const selectedItemId = ref();
 
     onMounted(async () => {
+      selectedItemId.value = props.param;
       await loadOrders();
     });
 

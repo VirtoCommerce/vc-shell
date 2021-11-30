@@ -34,5 +34,8 @@
     "vee-validate": "^4.5.5",
     "vue": "^3.0.0",
     "vue3-touch-events": "^4.1.0"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.0"
   }
 }

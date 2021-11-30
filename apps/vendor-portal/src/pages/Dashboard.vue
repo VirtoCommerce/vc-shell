@@ -31,13 +31,7 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="
-                      vc-fill_all
-                      vc-flex vc-flex-column
-                      vc-flex-align_center
-                      vc-flex-justify_center
-                      vc-padding_xl
-                    "
+                    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
                   >
                     <img src="/assets/empty-product.png" />
                     <div
@@ -77,13 +71,7 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="
-                      vc-fill_all
-                      vc-flex vc-flex-column
-                      vc-flex-align_center
-                      vc-flex-justify_center
-                      vc-padding_xl
-                    "
+                    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
                   >
                     <img src="/assets/empty-product.png" />
                     <div
@@ -149,21 +137,11 @@
                     <!-- Empty template -->
                     <template v-slot:empty>
                       <div
-                        class="
-                          vc-fill_all
-                          vc-flex vc-flex-column
-                          vc-flex-align_center
-                          vc-flex-justify_center
-                          vc-padding_xl
-                        "
+                        class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
                       >
                         <img src="/assets/empty-product.png" />
                         <div
-                          class="
-                            vc-margin_l
-                            vc-font-size_xl
-                            vc-font-weight_medium
-                          "
+                          class="vc-margin_l vc-font-size_xl vc-font-weight_medium"
                         >
                           There are no offers yet
                         </div>
@@ -177,10 +155,7 @@
                 <vc-col size="0" style="flex-basis: 180px">
                   <div class="dashboard-offers__counter">
                     <div
-                      class="
-                        dashboard-offers__counter-value
-                        dashboard-offers__counter-value_warning
-                      "
+                      class="dashboard-offers__counter-value dashboard-offers__counter-value_warning"
                     >
                       25
                     </div>
@@ -190,10 +165,7 @@
                   </div>
                   <div class="dashboard-offers__counter">
                     <div
-                      class="
-                        dashboard-offers__counter-value
-                        dashboard-offers__counter-value_warning
-                      "
+                      class="dashboard-offers__counter-value dashboard-offers__counter-value_warning"
                     >
                       7
                     </div>
@@ -201,10 +173,7 @@
                   </div>
                   <div class="dashboard-offers__counter">
                     <div
-                      class="
-                        dashboard-offers__counter-value
-                        dashboard-offers__counter-value_error
-                      "
+                      class="dashboard-offers__counter-value dashboard-offers__counter-value_error"
                     >
                       11
                     </div>
@@ -270,12 +239,7 @@
             {{ counters.revenue[range.revenue] }}
           </div>
           <div
-            class="
-              vc-flex
-              vc-flex-justify_center
-              vc-margin-top_s
-              vc-margin-bottom_l
-            "
+            class="vc-flex vc-flex-justify_center vc-margin-top_s vc-margin-bottom_l"
           >
             <vc-button
               small
@@ -317,12 +281,7 @@
             {{ counters.purchased[range.purchased] }}
           </div>
           <div
-            class="
-              vc-flex
-              vc-flex-justify_center
-              vc-margin-top_s
-              vc-margin-bottom_l
-            "
+            class="vc-flex vc-flex-justify_center vc-margin-top_s vc-margin-bottom_l"
           >
             <vc-button
               small
@@ -364,12 +323,7 @@
             {{ counters.orderAvg[range.orderAvg] }}
           </div>
           <div
-            class="
-              vc-flex
-              vc-flex-justify_center
-              vc-margin-top_s
-              vc-margin-bottom_l
-            "
+            class="vc-flex vc-flex-justify_center vc-margin-top_s vc-margin-bottom_l"
           >
             <vc-button
               small
@@ -625,6 +579,7 @@ export default defineComponent({
     function ordersClick(item: { id: string }): void {
       props.openPage(0, {
         component: OrdersList,
+        param: item.id,
       });
       props.openPage(1, {
         component: OrdersEdit,
@@ -635,6 +590,7 @@ export default defineComponent({
     function productsClick(item: { id: string }): void {
       props.openPage(0, {
         component: ProductsList,
+        param: item.id,
       });
       props.openPage(1, {
         component: ProductsEdit,
@@ -645,6 +601,7 @@ export default defineComponent({
     function offersClick(item: { id: string }): void {
       props.openPage(0, {
         component: OffersList,
+        param: item.id,
       });
       props.openPage(1, {
         component: OffersDetails,

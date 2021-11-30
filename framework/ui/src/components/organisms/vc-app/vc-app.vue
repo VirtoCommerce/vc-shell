@@ -91,6 +91,7 @@ import {
   watch,
   onMounted,
   shallowRef,
+  provide,
 } from "vue";
 import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
@@ -183,6 +184,7 @@ export default defineComponent({
         workspaceRefs.value.push(el);
       }
     };
+    provide("workspace", workspace.value);
     onBeforeUpdate(() => {
       workspaceRefs.value = [];
     });
@@ -258,6 +260,9 @@ export default defineComponent({
               (item) => item.url === data.blade
             );
             if (blade) {
+              if (workspace.value.length) {
+                workspace.value[0].param = data.param;
+              }
               workspace.value.push({
                 component: shallowRef(blade),
                 url: blade.url,

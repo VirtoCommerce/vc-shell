@@ -40,11 +40,7 @@
 
       <template v-slot:mobile-item="itemData">
         <div
-          class="
-            offers-list__mobile-item
-            vc-padding-vertical_m
-            vc-padding-horizontal_l
-          "
+          class="offers-list__mobile-item vc-padding-vertical_m vc-padding-horizontal_l"
         >
           <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
             <vc-image
@@ -61,12 +57,7 @@
             </div>
           </div>
           <div
-            class="
-              vc-margin-top_m
-              vc-fill_width
-              vc-flex
-              vc-flex-justify_space-between
-            "
+            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
           >
             <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>SKU</vc-hint>
@@ -83,17 +74,12 @@
             <div class="vc-ellipsis vc-flex-grow_1">
               <vc-hint>Quantity</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
-                {{ itemData.item.qty }}
+                {{ itemData.item.inStockQuantity }}
               </div>
             </div>
           </div>
           <div
-            class="
-              vc-margin-top_m
-              vc-fill_width
-              vc-flex
-              vc-flex-justify_space-between
-            "
+            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
           >
             <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>List price</vc-hint>
@@ -154,6 +140,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    param: {
+      type: String,
+      default: undefined,
+    },
     /**
      * Blade options params
      * @param {ISellerProduct} sellerProduct
@@ -190,6 +181,7 @@ export default defineComponent({
     });
 
     onMounted(async () => {
+      selectedItemId.value = props.param;
       searchQuery.value.sellerProductId = props.options?.sellerProduct?.id;
       await loadOffers({ ...searchQuery.value, sort: sort.value });
     });

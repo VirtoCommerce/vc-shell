@@ -92,6 +92,7 @@ import {
   onMounted,
   shallowRef,
   provide,
+  computed,
 } from "vue";
 import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
@@ -184,7 +185,12 @@ export default defineComponent({
         workspaceRefs.value.push(el);
       }
     };
-    provide("workspace", workspace.value);
+
+    provide(
+      "workspace",
+      computed(() => workspace.value)
+    );
+
     onBeforeUpdate(() => {
       workspaceRefs.value = [];
     });

@@ -82,7 +82,7 @@ export default defineComponent({
     watch(
       () => workspace,
       () => {
-        delay(() => popper.value?.update(), 300);
+        delay(() => popper.value?.update(), 400);
       },
       { deep: true }
     );

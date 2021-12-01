@@ -128,7 +128,7 @@
               <th
                 class="vc-table__header-cell"
                 width="44"
-                v-if="itemActionBuilder"
+                v-if="itemActionBuilder && itemActionBuilder.length"
               ></th>
             </tr>
           </thead>
@@ -171,14 +171,16 @@
               <td
                 class="vc-table__body-cell vc-table__body-cell_overflow"
                 width="44"
-                v-if="itemActionBuilder"
+                v-if="itemActionBuilder && itemActionBuilder.length"
               >
                 <div
                   class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
                   <div
                     class="vc-table__body-actions"
-                    @click.stop="showActions(item)"
+                    @click.stop="showActions(item, i)"
+                    :ref="setActionToggleRefs"
+                    aria-describedby="tooltip"
                   >
                     <vc-icon icon="fas fa-cog" size="m" />
                   </div>
@@ -186,21 +188,29 @@
                     class="vc-table__body-tooltip"
                     v-show="selectedRow === item.id"
                     @mouseleave="closeActions"
+                    :ref="setTooltipRefs"
+                    role="tooltip"
                   >
-                    <div
-                      v-for="(itemAction, i) in itemActions"
-                      :key="i"
-                      :class="[
-                        'vc-table__body-actions-item',
-                        `vc-table__body-actions-item_${itemAction.variant}`,
-                      ]"
-                      @click.stop="itemAction.clickHandler(item)"
-                    >
-                      <vc-icon :icon="itemAction.icon" size="m" />
-                      <div class="vc-table__body-actions-item-title">
-                        {{ itemAction.title }}
+                    <div class="vc-table__body-actions-items">
+                      <div
+                        v-for="(itemAction, i) in itemActions"
+                        :key="i"
+                        :class="[
+                          'vc-table__body-actions-item',
+                          `vc-table__body-actions-item_${itemAction.variant}`,
+                        ]"
+                        @click.stop="itemAction.clickHandler(item)"
+                      >
+                        <vc-icon :icon="itemAction.icon" size="m" />
+                        <div class="vc-table__body-actions-item-title">
+                          {{ itemAction.title }}
+                        </div>
                       </div>
                     </div>
+                    <div
+                      class="vc-table__body-tooltip-arrow"
+                      data-popper-arrow
+                    ></div>
                   </div>
                 </div>
               </td>
@@ -270,7 +280,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  PropType,
+  ref,
+  watch,
+  onBeforeUpdate,
+} from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -281,6 +299,7 @@ import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
+import { createPopper, Instance } from "@popperjs/core";
 
 export default defineComponent({
   name: "VcTable",
@@ -415,8 +434,16 @@ export default defineComponent({
   setup(props, { emit }) {
     const checkboxes = ref<Record<string, boolean>>({});
     const selectedRow = ref<string>();
+    const tooltip = ref<Instance>();
     const scrollContainer = ref<typeof VcContainer>();
+    const actionToggleRefs = ref<HTMLDivElement[]>([]);
+    const tooltipRefs = ref<HTMLDivElement[]>([]);
     const itemActions = ref([]);
+
+    onBeforeUpdate(() => {
+      actionToggleRefs.value = [];
+      tooltipRefs.value = [];
+    });
 
     const sortDirection = computed(() =>
       props.sort?.slice(0, 1) === "-" ? "DESC" : "ASC"
@@ -437,6 +464,18 @@ export default defineComponent({
       }
     );
 
+    function setTooltipRefs(el: HTMLDivElement) {
+      if (el) {
+        tooltipRefs.value.push(el);
+      }
+    }
+
+    function setActionToggleRefs(el: HTMLDivElement) {
+      if (el) {
+        actionToggleRefs.value.push(el);
+      }
+    }
+
     function processHeaderCheckbox() {
       const currentState = Object.values(checkboxes.value).every(
         (value) => value
@@ -452,18 +491,36 @@ export default defineComponent({
       emit("selectionChanged", checkboxes.value);
     }
 
-    async function showActions(item: { id: string }) {
+    async function showActions(item: { id: string }, index: number) {
       selectedRow.value = item.id;
 
-      if (!itemActions.value.length) {
-        if (typeof props.itemActionBuilder === "function") {
-          itemActions.value = await props.itemActionBuilder(item);
-        }
+      await nextTick(() => {
+        tooltip.value = createPopper(
+          actionToggleRefs.value[index],
+          tooltipRefs.value[index],
+          {
+            placement: "bottom",
+            onFirstUpdate: () => tooltip.value?.update(),
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [-15, 15],
+                },
+              },
+            ],
+          }
+        );
+      });
+
+      if (typeof props.itemActionBuilder === "function") {
+        itemActions.value = await props.itemActionBuilder(item);
       }
     }
 
     function closeActions() {
       selectedRow.value = undefined;
+      tooltip.value?.destroy();
     }
 
     return {
@@ -473,6 +530,9 @@ export default defineComponent({
       checkboxes,
       selectedRow,
       itemActions,
+      tooltip,
+      setTooltipRefs,
+      setActionToggleRefs,
       processHeaderCheckbox,
       processCheckbox,
       showActions,
@@ -612,22 +672,37 @@ export default defineComponent({
       flex-direction: row;
       gap: 25px;
       padding: 15px;
-      z-index: 100;
+      z-index: 0;
       position: absolute;
-      top: 35px;
       right: 0;
       filter: drop-shadow(1px 3px 14px rgba(111, 122, 131, 0.25));
+    }
 
-      &:before {
-        content: "";
-        transform: rotate(45deg);
-        position: absolute;
-        width: 12px;
-        height: 12px;
-        background: inherit;
-        top: -5px;
-        right: 15px;
-      }
+    &-tooltip-arrow,
+    &-tooltip-arrow:before {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+      // right: 8px;
+    }
+
+    &-tooltip-arrow {
+      visibility: hidden;
+    }
+
+    &-tooltip-arrow:before {
+      visibility: visible;
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
+      bottom: -5px;
+    }
+
+    &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
+      top: -5px;
     }
   }
 

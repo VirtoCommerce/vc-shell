@@ -37,10 +37,10 @@ $ yarn build
 $ yarn build-framework:ui
 $ yarn build-framework:core
 $ yarn build-framework:api-client
-$ yarn build-apps:demo-manager
+$ yarn build-apps:vendor-portal
 
-# start Platform Manager Demo with hot reload at localhost:8080
-$ yarn serve-apps:demo-manager
+# start Vendor Portal with hot reload at localhost:8080
+$ yarn serve-apps:vendor-portal
 
 # run interactive documentation
 $ yarn storybook-serve

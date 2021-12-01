@@ -170,8 +170,6 @@ export default defineComponent({
 
   &__panel {
     position: absolute;
-    //right: 0;
-    //top: 20%;
     max-height: 400px;
     max-width: 800px;
     min-width: 400px;

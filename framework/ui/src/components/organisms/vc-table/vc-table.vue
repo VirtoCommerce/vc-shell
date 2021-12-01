@@ -12,14 +12,7 @@
       "
     >
       <div
-        class="
-          vc-table__header
-          vc-flex-shrink_0
-          vc-flex
-          vc-flex-align_center
-          vc-flex-justify_space-between
-          vc-padding_l
-        "
+        class="vc-table__header vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table filter mobile button -->
         <div
@@ -132,6 +125,11 @@
                   </div>
                 </div>
               </th>
+              <th
+                class="vc-table__header-cell"
+                width="44"
+                v-if="itemActionBuilder"
+              ></th>
             </tr>
           </thead>
 
@@ -146,6 +144,7 @@
                 'vc-table__body-row_selected': selectedItemId === item.id,
               }"
               @click="$emit('itemClick', item)"
+              @mouseleave="closeActions"
             >
               <td v-if="multiselect" class="vc-table__body-cell" width="50">
                 <div
@@ -169,6 +168,42 @@
                   <vc-table-cell :cell="cell" :item="item"></vc-table-cell>
                 </slot>
               </td>
+              <td
+                class="vc-table__body-cell vc-table__body-cell_overflow"
+                width="44"
+                v-if="itemActionBuilder"
+              >
+                <div
+                  class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
+                >
+                  <div
+                    class="vc-table__body-actions"
+                    @click.stop="showActions(item)"
+                  >
+                    <vc-icon icon="fas fa-cog" size="m" />
+                  </div>
+                  <div
+                    class="vc-table__body-tooltip"
+                    v-show="selectedRow === item.id"
+                    @mouseleave="closeActions"
+                  >
+                    <div
+                      v-for="(itemAction, i) in itemActions"
+                      :key="i"
+                      :class="[
+                        'vc-table__body-actions-item',
+                        `vc-table__body-actions-item_${itemAction.variant}`,
+                      ]"
+                      @click.stop="itemAction.clickHandler(item)"
+                    >
+                      <vc-icon :icon="itemAction.icon" size="m" />
+                      <div class="vc-table__body-actions-item-title">
+                        {{ itemAction.title }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -182,12 +217,7 @@
         >
           <div
             v-if="notfound"
-            class="
-              vc-fill_all
-              vc-flex vc-flex-column
-              vc-flex-align_center
-              vc-flex-justify_center
-            "
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="notfound.image" :src="notfound.image" />
             <div class="vc-margin_l vc-table__empty-text">
@@ -201,12 +231,7 @@
         <slot v-else name="empty">
           <div
             v-if="empty"
-            class="
-              vc-fill_all
-              vc-flex vc-flex-column
-              vc-flex-align_center
-              vc-flex-justify_center
-            "
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="empty.image" :src="empty.image" />
             <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
@@ -224,14 +249,7 @@
       v-if="($slots['footer'] || footer) && items && items.length"
     >
       <div
-        class="
-          vc-table__footer
-          vc-flex-shrink_0
-          vc-flex
-          vc-flex-align_center
-          vc-flex-justify_space-between
-          vc-padding_l
-        "
+        class="vc-table__footer vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table pagination -->
         <vc-pagination
@@ -252,7 +270,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, PropType, ref, watch } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -280,14 +298,6 @@ export default defineComponent({
     VcTableCell,
   },
 
-  data() {
-    const checkboxes: Record<string, boolean> = {};
-
-    return {
-      checkboxes,
-    };
-  },
-
   props: {
     columns: {
       type: Array,
@@ -295,7 +305,7 @@ export default defineComponent({
     },
 
     items: {
-      type: Array,
+      type: Array as PropType<{ id: string }[]>,
       default: () => [],
     },
 
@@ -402,44 +412,72 @@ export default defineComponent({
     "filter:reset",
   ],
 
-  watch: {
-    items(value: { id: string }[]) {
-      this.checkboxes = {};
-      value?.forEach((item) => (this.checkboxes[item.id] = false));
-      const scrollContainer = this.$refs.scrollContainer as typeof VcContainer;
-      scrollContainer?.scrollTop();
-    },
-  },
+  setup(props, { emit }) {
+    const checkboxes = ref<Record<string, boolean>>({});
+    const selectedRow = ref<string>();
+    const scrollContainer = ref<typeof VcContainer>();
+    const itemActions = ref([]);
 
-  computed: {
-    sortDirection() {
-      return this.sort?.slice(0, 1) === "-" ? "DESC" : "ASC";
-    },
+    const sortDirection = computed(() =>
+      props.sort?.slice(0, 1) === "-" ? "DESC" : "ASC"
+    );
+    const sortField = computed(() =>
+      props.sort?.slice(0, 1) === "-" ? props.sort?.slice(1) : props.sort
+    );
+    const headerCheckbox = computed(() =>
+      Object.values(checkboxes.value).every((value) => value)
+    );
 
-    sortField() {
-      return this.sort?.slice(0, 1) === "-" ? this.sort?.slice(1) : this.sort;
-    },
+    watch(
+      () => props.items,
+      (value: { id: string }[]) => {
+        checkboxes.value = {};
+        value?.forEach((item) => (checkboxes.value[item.id] = false));
+        scrollContainer.value?.scrollTop();
+      }
+    );
 
-    headerCheckbox() {
-      return Object.values(this.checkboxes).every((value) => value);
-    },
-  },
-
-  methods: {
-    processHeaderCheckbox() {
-      const currentState = Object.values(this.checkboxes).every(
+    function processHeaderCheckbox() {
+      const currentState = Object.values(checkboxes.value).every(
         (value) => value
       );
-      Object.keys(this.checkboxes).forEach(
-        (key) => (this.checkboxes[key] = !currentState)
+      Object.keys(checkboxes.value).forEach(
+        (key) => (checkboxes.value[key] = !currentState)
       );
-      this.$emit("selectionChanged", this.checkboxes);
-    },
+      emit("selectionChanged", checkboxes.value);
+    }
 
-    processCheckbox(id: string, state: boolean) {
-      this.checkboxes[id] = state;
-      this.$emit("selectionChanged", this.checkboxes);
-    },
+    function processCheckbox(id: string, state: boolean) {
+      checkboxes.value[id] = state;
+      emit("selectionChanged", checkboxes.value);
+    }
+
+    async function showActions(item: { id: string }) {
+      selectedRow.value = item.id;
+
+      if (!itemActions.value.length) {
+        if (typeof props.itemActionBuilder === "function") {
+          itemActions.value = await props.itemActionBuilder(item);
+        }
+      }
+    }
+
+    function closeActions() {
+      selectedRow.value = undefined;
+    }
+
+    return {
+      sortDirection,
+      sortField,
+      headerCheckbox,
+      checkboxes,
+      selectedRow,
+      itemActions,
+      processHeaderCheckbox,
+      processCheckbox,
+      showActions,
+      closeActions,
+    };
   },
 });
 </script>
@@ -510,12 +548,85 @@ export default defineComponent({
       border-right: 1px solid #bdd1df;
     }
 
+    &-row:hover .vc-table__body-actions-container {
+      display: flex !important;
+    }
+
     &-cell {
       box-sizing: border-box;
       overflow: hidden;
 
       &_bordered {
         border-right: 1px solid #eaedf3;
+      }
+
+      &_overflow {
+        overflow: visible;
+      }
+    }
+
+    &-actions-container {
+      position: relative;
+      display: none !important;
+    }
+
+    &-actions {
+      color: #319ed4;
+      cursor: pointer;
+    }
+
+    &-actions-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: #319ed4;
+
+      &_danger {
+        color: #ff4a4a;
+      }
+
+      &_success {
+        color: #87b563;
+      }
+    }
+
+    &-actions-item-title {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      color: #3f3f3f;
+      margin-left: 7px;
+    }
+
+    &-tooltip {
+      background: #ffffff;
+      color: #3f3f3f;
+      border-radius: 4px 0 0 4px;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      gap: 25px;
+      padding: 15px;
+      z-index: 100;
+      position: absolute;
+      top: 35px;
+      right: 0;
+      filter: drop-shadow(1px 3px 14px rgba(111, 122, 131, 0.25));
+
+      &:before {
+        content: "";
+        transform: rotate(45deg);
+        position: absolute;
+        width: 12px;
+        height: 12px;
+        background: inherit;
+        top: -5px;
+        right: 15px;
       }
     }
   }

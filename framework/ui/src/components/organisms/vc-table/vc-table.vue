@@ -650,6 +650,18 @@ export default defineComponent({
       }
     }
 
+    &-actions-items {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      color: #3f3f3f;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      gap: 25px;
+    }
+
     &-actions-item-title {
       font-style: normal;
       font-weight: normal;
@@ -661,16 +673,7 @@ export default defineComponent({
 
     &-tooltip {
       background: #ffffff;
-      color: #3f3f3f;
       border-radius: 4px 0 0 4px;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 13px;
-      line-height: 20px;
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      gap: 25px;
       padding: 15px;
       z-index: 0;
       position: absolute;

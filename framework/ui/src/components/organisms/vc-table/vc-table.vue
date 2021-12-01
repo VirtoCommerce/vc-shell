@@ -684,7 +684,6 @@ export default defineComponent({
       width: 8px;
       height: 8px;
       background: inherit;
-      // right: 8px;
     }
 
     &-tooltip-arrow {

@@ -45,7 +45,7 @@ export default defineComponent({
       isExpanded.value =
         localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
     } catch (err) {
-      isExpanded.value = false;
+      isExpanded.value = true;
     }
 
     function toggleToolbar() {

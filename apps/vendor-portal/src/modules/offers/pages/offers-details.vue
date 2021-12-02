@@ -37,12 +37,7 @@
             >
               <template v-slot:item="itemData">
                 <div
-                  class="
-                    vc-flex
-                    vc-flex-align_center
-                    vc-padding-vertical_s
-                    vc-ellipsis
-                  "
+                  class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
                 >
                   <vc-image
                     class="vc-flex-shrink_0"
@@ -98,25 +93,25 @@
               </div>
             </vc-card>
 
-            <vc-card header="Offer Info" class="vc-margin-bottom_l">
-              <div class="vc-padding_l">
-                <!-- Currency selector -->
-                <vc-select
-                  class="vc-margin-bottom_l"
-                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"
-                  :isRequired="true"
-                  v-model="offerDetails.currency"
-                  :options="currencies"
-                  keyProperty="value"
-                  displayProperty="title"
-                  :placeholder="
-                    $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')
-                  "
-                  :isDisabled="readonly"
-                  name="currency"
-                ></vc-select>
-              </div>
-            </vc-card>
+            <!--            <vc-card header="Offer Info" class="vc-margin-bottom_l">-->
+            <!--              <div class="vc-padding_l">-->
+            <!--                &lt;!&ndash; Currency selector &ndash;&gt;-->
+            <!--                <vc-select-->
+            <!--                  class="vc-margin-bottom_l"-->
+            <!--                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"-->
+            <!--                  :isRequired="true"-->
+            <!--                  v-model="offerDetails.currency"-->
+            <!--                  :options="currencies"-->
+            <!--                  keyProperty="value"-->
+            <!--                  displayProperty="title"-->
+            <!--                  :placeholder="-->
+            <!--                    $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')-->
+            <!--                  "-->
+            <!--                  :isDisabled="readonly"-->
+            <!--                  name="currency"-->
+            <!--                ></vc-select>-->
+            <!--              </div>-->
+            <!--            </vc-card>-->
 
             <vc-card header="Pricing">
               <template v-slot:actions>
@@ -155,7 +150,11 @@
                       <vc-input
                         :clearable="true"
                         v-model="item.listPrice"
-                        type="number"
+                        v-model:optionsValue="offerDetails.currency"
+                        :currency="true"
+                        :options="currencies"
+                        keyProperty="value"
+                        displayProperty="title"
                         :placeholder="
                           $t(
                             'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER'
@@ -170,7 +169,11 @@
                       <vc-input
                         :clearable="true"
                         v-model="item.salePrice"
-                        type="number"
+                        v-model:optionsValue="offerDetails.currency"
+                        :currency="true"
+                        :options="currencies"
+                        keyProperty="value"
+                        displayProperty="title"
                         :placeholder="
                           $t(
                             'OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER'
@@ -197,12 +200,7 @@
                       v-if="!readonly"
                       size="0"
                       style="flex-basis: 20px"
-                      class="
-                        vc-padding_s
-                        vc-padding-top_l
-                        vc-flex
-                        vc-flex-align_end
-                      "
+                      class="vc-padding_s vc-padding-top_l vc-flex vc-flex-align_end"
                     >
                       <vc-icon
                         class="offer-details__remove-price"
@@ -225,7 +223,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, reactive } from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  nextTick,
+} from "vue";
 import { useForm } from "@virtoshell/ui";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
@@ -276,6 +281,8 @@ export default defineComponent({
     onMounted(async () => {
       if (props.param) {
         await loadOffer({ id: props.param });
+      } else {
+        offerDetails.currency = "USD";
       }
       if (
         offer.value.productId ||
@@ -303,7 +310,6 @@ export default defineComponent({
             try {
               await createOffer({
                 ...offerDetails,
-                currency: "USD",
               });
               emit("parent:call", {
                 method: "reload",
@@ -328,7 +334,14 @@ export default defineComponent({
       offerDetails,
       products,
       currency,
-      currencies: [{ title: "USD", value: "USD" }],
+      currencies: [
+        { title: "USD", value: "USD" },
+        { title: "EUR", value: "EUR" },
+        { title: "AED", value: "AED" },
+        { title: "AFN", value: "AFN" },
+        { title: "CHF", value: "CHF" },
+        { title: "CNY", value: "CNY" },
+      ],
 
       // Process product dropdown search
       onProductSearch: async (value: string) => {

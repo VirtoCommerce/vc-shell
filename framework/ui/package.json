@@ -37,6 +37,7 @@
     "vue3-touch-events": "^4.1.0"
   },
   "dependencies": {
-    "@popperjs/core": "^2.11.0"
+    "@popperjs/core": "^2.11.0",
+    "vue-currency-input": "^2.2.0"
   }
 }

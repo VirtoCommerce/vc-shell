@@ -19,20 +19,10 @@
     <!-- Input field -->
     <div class="vc-input__field-wrapper vc-flex vc-flex-align_stretch">
       <input
-        v-if="!currency"
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
         :type="internalType"
-        :value="value"
-        :disabled="disabled"
-        @input="onInput"
-      />
-      <input
-        v-else
-        class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
-        :placeholder="placeholder"
-        :type="internalType"
-        :value="formattedValue"
+        :value="calcValue"
         :disabled="disabled"
         @input="onInput"
         ref="inputRef"
@@ -234,6 +224,13 @@ export default defineComponent({
     const instance = getCurrentInstance();
     const popper = ref<Instance>();
     const search = ref("");
+    const calcValue = computed(() => {
+      if (props.currency) {
+        return currencyConverter?.formattedValue.value;
+      } else {
+        return value.value;
+      }
+    });
 
     // Prepare validation rules using required and rules props combination
     let internalRules = unref(props.rules) || "";
@@ -362,6 +359,7 @@ export default defineComponent({
       currencyDrop,
       search,
       searchFilter,
+      calcValue,
       inputRef: currencyConverter && currencyConverter.inputRef,
       formattedValue: currencyConverter && currencyConverter.formattedValue,
 

@@ -12,14 +12,7 @@
       "
     >
       <div
-        class="
-          vc-table__header
-          vc-flex-shrink_0
-          vc-flex
-          vc-flex-align_center
-          vc-flex-justify_space-between
-          vc-padding_l
-        "
+        class="vc-table__header vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table filter mobile button -->
         <div
@@ -132,6 +125,11 @@
                   </div>
                 </div>
               </th>
+              <th
+                class="vc-table__header-cell"
+                width="44"
+                v-if="itemActionBuilder"
+              ></th>
             </tr>
           </thead>
 
@@ -146,6 +144,8 @@
                 'vc-table__body-row_selected': selectedItemId === item.id,
               }"
               @click="$emit('itemClick', item)"
+              @mouseover="calculateActions(item)"
+              @mouseleave="closeActions"
             >
               <td v-if="multiselect" class="vc-table__body-cell" width="50">
                 <div
@@ -169,6 +169,53 @@
                   <vc-table-cell :cell="cell" :item="item"></vc-table-cell>
                 </slot>
               </td>
+              <td
+                class="vc-table__body-cell vc-table__body-cell_overflow"
+                width="44"
+                v-if="itemActionBuilder"
+              >
+                <div
+                  class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
+                >
+                  <button
+                    class="vc-table__body-actions"
+                    @click.stop="showActions(item, i)"
+                    :ref="setActionToggleRefs"
+                    aria-describedby="tooltip"
+                    :disabled="!(itemActions && itemActions.length)"
+                  >
+                    <vc-icon icon="fas fa-cog" size="m" />
+                  </button>
+                  <div
+                    class="vc-table__body-tooltip"
+                    v-show="selectedRow === item.id"
+                    @mouseleave="closeActions"
+                    :ref="setTooltipRefs"
+                    role="tooltip"
+                  >
+                    <div class="vc-table__body-actions-items">
+                      <div
+                        v-for="(itemAction, i) in itemActions"
+                        :key="i"
+                        :class="[
+                          'vc-table__body-actions-item',
+                          `vc-table__body-actions-item_${itemAction.variant}`,
+                        ]"
+                        @click.stop="itemAction.clickHandler(item)"
+                      >
+                        <vc-icon :icon="itemAction.icon" size="m" />
+                        <div class="vc-table__body-actions-item-title">
+                          {{ itemAction.title }}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      class="vc-table__body-tooltip-arrow"
+                      data-popper-arrow
+                    ></div>
+                  </div>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -182,12 +229,7 @@
         >
           <div
             v-if="notfound"
-            class="
-              vc-fill_all
-              vc-flex vc-flex-column
-              vc-flex-align_center
-              vc-flex-justify_center
-            "
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="notfound.image" :src="notfound.image" />
             <div class="vc-margin_l vc-table__empty-text">
@@ -201,12 +243,7 @@
         <slot v-else name="empty">
           <div
             v-if="empty"
-            class="
-              vc-fill_all
-              vc-flex vc-flex-column
-              vc-flex-align_center
-              vc-flex-justify_center
-            "
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="empty.image" :src="empty.image" />
             <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
@@ -224,14 +261,7 @@
       v-if="($slots['footer'] || footer) && items && items.length"
     >
       <div
-        class="
-          vc-table__footer
-          vc-flex-shrink_0
-          vc-flex
-          vc-flex-align_center
-          vc-flex-justify_space-between
-          vc-padding_l
-        "
+        class="vc-table__footer vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table pagination -->
         <vc-pagination
@@ -252,7 +282,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import {
+  computed,
+  defineComponent,
+  nextTick,
+  PropType,
+  ref,
+  watch,
+  onBeforeUpdate,
+} from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -263,6 +301,7 @@ import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
+import { createPopper, Instance } from "@popperjs/core";
 
 export default defineComponent({
   name: "VcTable",
@@ -280,14 +319,6 @@ export default defineComponent({
     VcTableCell,
   },
 
-  data() {
-    const checkboxes: Record<string, boolean> = {};
-
-    return {
-      checkboxes,
-    };
-  },
-
   props: {
     columns: {
       type: Array,
@@ -295,7 +326,7 @@ export default defineComponent({
     },
 
     items: {
-      type: Array,
+      type: Array as PropType<{ id: string }[]>,
       default: () => [],
     },
 
@@ -402,44 +433,116 @@ export default defineComponent({
     "filter:reset",
   ],
 
-  watch: {
-    items(value: { id: string }[]) {
-      this.checkboxes = {};
-      value?.forEach((item) => (this.checkboxes[item.id] = false));
-      const scrollContainer = this.$refs.scrollContainer as typeof VcContainer;
-      scrollContainer?.scrollTop();
-    },
-  },
+  setup(props, { emit }) {
+    const checkboxes = ref<Record<string, boolean>>({});
+    const selectedRow = ref<string>();
+    const tooltip = ref<Instance>();
+    const scrollContainer = ref<typeof VcContainer>();
+    const actionToggleRefs = ref<HTMLDivElement[]>([]);
+    const tooltipRefs = ref<HTMLDivElement[]>([]);
+    const itemActions = ref([]);
 
-  computed: {
-    sortDirection() {
-      return this.sort?.slice(0, 1) === "-" ? "DESC" : "ASC";
-    },
+    onBeforeUpdate(() => {
+      actionToggleRefs.value = [];
+      tooltipRefs.value = [];
+    });
 
-    sortField() {
-      return this.sort?.slice(0, 1) === "-" ? this.sort?.slice(1) : this.sort;
-    },
+    const sortDirection = computed(() =>
+      props.sort?.slice(0, 1) === "-" ? "DESC" : "ASC"
+    );
+    const sortField = computed(() =>
+      props.sort?.slice(0, 1) === "-" ? props.sort?.slice(1) : props.sort
+    );
+    const headerCheckbox = computed(() =>
+      Object.values(checkboxes.value).every((value) => value)
+    );
 
-    headerCheckbox() {
-      return Object.values(this.checkboxes).every((value) => value);
-    },
-  },
+    watch(
+      () => props.items,
+      (value: { id: string }[]) => {
+        checkboxes.value = {};
+        value?.forEach((item) => (checkboxes.value[item.id] = false));
+        scrollContainer.value?.scrollTop();
+      }
+    );
 
-  methods: {
-    processHeaderCheckbox() {
-      const currentState = Object.values(this.checkboxes).every(
+    function setTooltipRefs(el: HTMLDivElement) {
+      if (el) {
+        tooltipRefs.value.push(el);
+      }
+    }
+
+    function setActionToggleRefs(el: HTMLDivElement) {
+      if (el) {
+        actionToggleRefs.value.push(el);
+      }
+    }
+
+    function processHeaderCheckbox() {
+      const currentState = Object.values(checkboxes.value).every(
         (value) => value
       );
-      Object.keys(this.checkboxes).forEach(
-        (key) => (this.checkboxes[key] = !currentState)
+      Object.keys(checkboxes.value).forEach(
+        (key) => (checkboxes.value[key] = !currentState)
       );
-      this.$emit("selectionChanged", this.checkboxes);
-    },
+      emit("selectionChanged", checkboxes.value);
+    }
 
-    processCheckbox(id: string, state: boolean) {
-      this.checkboxes[id] = state;
-      this.$emit("selectionChanged", this.checkboxes);
-    },
+    function processCheckbox(id: string, state: boolean) {
+      checkboxes.value[id] = state;
+      emit("selectionChanged", checkboxes.value);
+    }
+
+    function showActions(item: { id: string }, index: number) {
+      selectedRow.value = item.id;
+
+      nextTick(() => {
+        tooltip.value = createPopper(
+          actionToggleRefs.value[index],
+          tooltipRefs.value[index],
+          {
+            placement: "bottom",
+            onFirstUpdate: () => tooltip.value?.update(),
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [-15, 15],
+                },
+              },
+            ],
+          }
+        );
+      });
+    }
+
+    async function calculateActions(item: { id: string }) {
+      if (typeof props.itemActionBuilder === "function") {
+        itemActions.value = await props.itemActionBuilder(item);
+      }
+    }
+
+    function closeActions() {
+      selectedRow.value = undefined;
+      tooltip.value?.destroy();
+    }
+
+    return {
+      sortDirection,
+      sortField,
+      headerCheckbox,
+      checkboxes,
+      selectedRow,
+      itemActions,
+      tooltip,
+      setTooltipRefs,
+      setActionToggleRefs,
+      processHeaderCheckbox,
+      processCheckbox,
+      showActions,
+      closeActions,
+      calculateActions,
+    };
   },
 });
 </script>
@@ -510,6 +613,10 @@ export default defineComponent({
       border-right: 1px solid #bdd1df;
     }
 
+    &-row:hover .vc-table__body-actions-container {
+      display: flex !important;
+    }
+
     &-cell {
       box-sizing: border-box;
       overflow: hidden;
@@ -517,6 +624,98 @@ export default defineComponent({
       &_bordered {
         border-right: 1px solid #eaedf3;
       }
+
+      &_overflow {
+        overflow: visible;
+      }
+    }
+
+    &-actions-container {
+      position: relative;
+      display: none !important;
+    }
+
+    &-actions {
+      color: #319ed4;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+
+      &:disabled {
+        color: gray;
+      }
+    }
+
+    &-actions-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: #319ed4;
+
+      &_danger {
+        color: #ff4a4a;
+      }
+
+      &_success {
+        color: #87b563;
+      }
+    }
+
+    &-actions-items {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      color: #3f3f3f;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      gap: 25px;
+    }
+
+    &-actions-item-title {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 20px;
+      color: #3f3f3f;
+      margin-left: 7px;
+    }
+
+    &-tooltip {
+      background: #ffffff;
+      border-radius: 4px 0 0 4px;
+      padding: 15px;
+      z-index: 0;
+      position: absolute;
+      right: 0;
+      filter: drop-shadow(1px 3px 14px rgba(111, 122, 131, 0.25));
+    }
+
+    &-tooltip-arrow,
+    &-tooltip-arrow:before {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+    }
+
+    &-tooltip-arrow {
+      visibility: hidden;
+    }
+
+    &-tooltip-arrow:before {
+      visibility: visible;
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
+      bottom: -5px;
+    }
+
+    &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
+      top: -5px;
     }
   }
 

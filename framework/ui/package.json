@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/ui",
-  "version": "0.0.87",
+  "version": "0.0.88",
   "scripts": {
     "build": "vue-cli-service build --formats commonjs --target lib --name ui ./src/index.ts",
     "watch": "vue-cli-service build --formats commonjs --target lib --name ui ./src/index.ts --watch"
@@ -35,5 +35,8 @@
     "vee-validate": "^4.5.5",
     "vue": "^3.0.0",
     "vue3-touch-events": "^4.1.0"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.0"
   }
 }

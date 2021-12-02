@@ -20,11 +20,7 @@
         ref="filterPanel"
       >
         <div
-          class="
-            vc-table-filter__panel-inner
-            vc-padding_xl
-            vc-flex vc-flex-column
-          "
+          class="vc-table-filter__panel-inner vc-padding_xl vc-flex vc-flex-column"
           @click.stop
         >
           <vc-icon
@@ -174,8 +170,6 @@ export default defineComponent({
 
   &__panel {
     position: absolute;
-    //right: 0;
-    //top: 20%;
     max-height: 400px;
     max-width: 800px;
     min-width: 400px;

@@ -16,7 +16,7 @@
     <vc-icon
       class="vc-blade-toolbar__expand"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
-      @click="isExpanded = !isExpanded"
+      @click="toggleToolbar"
     ></vc-icon>
   </div>
 </template>
@@ -41,10 +41,24 @@ export default defineComponent({
 
   setup(props) {
     const isExpanded = ref(true);
+    try {
+      isExpanded.value =
+        localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
+    } catch (err) {
+      isExpanded.value = true;
+    }
+
+    function toggleToolbar() {
+      isExpanded.value = !isExpanded.value;
+      localStorage.setItem(
+        "VC_BLADE_TOOLBAR_IS_EXPANDED",
+        isExpanded.value.toString()
+      );
+    }
 
     return {
       isExpanded,
-
+      toggleToolbar,
       isToolbarVisible() {
         const visibleItems = (props.items as { isVisible: boolean }[]).filter(
           (item) => item.isVisible === undefined || item.isVisible

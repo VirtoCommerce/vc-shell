@@ -62,10 +62,24 @@ export default () => {
     }
   }
 
+  async function changeOrderStatus(order: CustomerOrder): Promise<void> {
+    loading.value = true;
+    const client = await getApiClient();
+    try {
+      await client.updateOrder(order);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     order: computed(() => order.value),
     loadOrder,
     loadPdf,
+    changeOrderStatus,
     loading,
   };
 };

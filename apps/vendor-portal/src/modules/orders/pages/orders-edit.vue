@@ -121,12 +121,7 @@
                     </div>
                   </div>
                   <div
-                    class="
-                      vc-margin-top_m
-                      vc-fill_width
-                      vc-flex
-                      vc-flex-justify_space-between
-                    "
+                    class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
                   >
                     <div class="vc-ellipsis vc-flex-grow_2">
                       <vc-hint>Quantity</vc-hint>
@@ -157,12 +152,7 @@
             </vc-table>
 
             <div
-              class="
-                orders-totals
-                vc-flex vc-flex-row
-                vc-flex-justify_end
-                vc-padding_l
-              "
+              class="orders-totals vc-flex vc-flex-row vc-flex-justify_end vc-padding_l"
             >
               <div class="vc-margin-right_xl">
                 <span class="vc-margin-right_s">Subtotal:</span>
@@ -268,7 +258,8 @@ export default defineComponent({
   },
 
   setup(props) {
-    const { loading, order, loadOrder, loadPdf } = useOrder();
+    const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
+      useOrder();
 
     onMounted(async () => {
       if (props.param) {
@@ -276,7 +267,7 @@ export default defineComponent({
       }
     });
 
-    const bladeToolbar = [
+    const bladeToolbar = computed(() => [
       {
         title: "Download PDF",
         icon: "fas fa-file-pdf",
@@ -289,7 +280,47 @@ export default defineComponent({
       },
       { title: "Confirm", icon: "fas fa-check", disabled: true },
       { title: "Cancel", icon: "fas fa-times-circle", disabled: true },
-    ];
+      {
+        title: "Accept order",
+        icon: "far fa-check-circle",
+        async clickHandler() {
+          if (
+            props.param &&
+            (order.value.status === "Paid" || order.value.status === "Unpaid")
+          ) {
+            const lastStatus = order.value.status;
+
+            try {
+              order.value.status = "Accepted";
+              await changeOrderStatus(order.value);
+            } catch (e) {
+              order.value.status = lastStatus;
+            }
+          }
+        },
+        disabled: !(
+          (order.value.status === "Paid" || order.value.status === "Unpaid") &&
+          props.param
+        ),
+      },
+      {
+        title: "Ship order",
+        icon: "fas fa-shipping-fast",
+        async clickHandler() {
+          if (order.value.status === "Accepted" && props.param) {
+            const lastStatus = order.value.status;
+
+            try {
+              order.value.status = "Shipped";
+              await changeOrderStatus(order.value);
+            } catch (e) {
+              order.value.status = lastStatus;
+            }
+          }
+        },
+        disabled: !(order.value.status === "Accepted" && props.param),
+      },
+    ]);
 
     const columns = [
       {

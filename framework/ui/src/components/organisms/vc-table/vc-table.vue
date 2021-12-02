@@ -128,7 +128,7 @@
               <th
                 class="vc-table__header-cell"
                 width="44"
-                v-if="itemActionBuilder && itemActionBuilder.length"
+                v-if="itemActionBuilder"
               ></th>
             </tr>
           </thead>
@@ -144,6 +144,7 @@
                 'vc-table__body-row_selected': selectedItemId === item.id,
               }"
               @click="$emit('itemClick', item)"
+              @mouseover="calculateActions(item)"
               @mouseleave="closeActions"
             >
               <td v-if="multiselect" class="vc-table__body-cell" width="50">
@@ -171,19 +172,20 @@
               <td
                 class="vc-table__body-cell vc-table__body-cell_overflow"
                 width="44"
-                v-if="itemActionBuilder && itemActionBuilder.length"
+                v-if="itemActionBuilder"
               >
                 <div
                   class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
-                  <div
+                  <button
                     class="vc-table__body-actions"
                     @click.stop="showActions(item, i)"
                     :ref="setActionToggleRefs"
                     aria-describedby="tooltip"
+                    :disabled="!(itemActions && itemActions.length)"
                   >
                     <vc-icon icon="fas fa-cog" size="m" />
-                  </div>
+                  </button>
                   <div
                     class="vc-table__body-tooltip"
                     v-show="selectedRow === item.id"
@@ -512,7 +514,9 @@ export default defineComponent({
           }
         );
       });
+    }
 
+    async function calculateActions(item: { id: string }) {
       if (typeof props.itemActionBuilder === "function") {
         itemActions.value = await props.itemActionBuilder(item);
       }
@@ -537,6 +541,7 @@ export default defineComponent({
       processCheckbox,
       showActions,
       closeActions,
+      calculateActions,
     };
   },
 });
@@ -633,6 +638,12 @@ export default defineComponent({
     &-actions {
       color: #319ed4;
       cursor: pointer;
+      border: none;
+      background: transparent;
+
+      &:disabled {
+        color: gray;
+      }
     }
 
     &-actions-item {

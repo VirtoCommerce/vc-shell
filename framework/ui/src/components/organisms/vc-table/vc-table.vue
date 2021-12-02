@@ -493,10 +493,10 @@ export default defineComponent({
       emit("selectionChanged", checkboxes.value);
     }
 
-    async function showActions(item: { id: string }, index: number) {
+    function showActions(item: { id: string }, index: number) {
       selectedRow.value = item.id;
 
-      await nextTick(() => {
+      nextTick(() => {
         tooltip.value = createPopper(
           actionToggleRefs.value[index],
           tooltipRefs.value[index],

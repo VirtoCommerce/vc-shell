@@ -19,6 +19,7 @@
     <!-- Input field -->
     <div class="vc-input__field-wrapper vc-flex vc-flex-align_stretch">
       <input
+        v-if="!currency"
         class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
         :placeholder="placeholder"
         :type="internalType"
@@ -26,28 +27,71 @@
         :disabled="disabled"
         @input="onInput"
       />
+      <input
+        v-else
+        class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
+        :placeholder="placeholder"
+        :type="internalType"
+        :value="formattedValue"
+        :disabled="disabled"
+        @input="onInput"
+        ref="inputRef"
+      />
+
+      <!-- Currency dropdown button -->
+      <div
+        v-if="currency"
+        class="vc-input__dropdown-wrap vc-padding-horizontal_m vc-flex vc-flex-align_center"
+      >
+        <div
+          @click="showCurrencyDrop"
+          class="vc-input__dropdown-btn"
+          aria-describedby="tooltip"
+          ref="currencyRef"
+        >
+          {{ optionsValue }}
+        </div>
+        <teleport to="body">
+          <div
+            v-if="currencyDrop"
+            ref="currencyDropRef"
+            role="tooltip"
+            class="vc-input__dropdown"
+            @mouseleave="closeCurrencyDrop"
+          >
+            <p class="vc-input__dropdown-title">Choose currency</p>
+            <input class="vc-input__dropdown-search" v-model="search" />
+            <ul class="vc-input__dropdown-list">
+              <li v-for="(item, i) in searchFilter" :key="i">
+                <button
+                  @click="onItemSelect(item)"
+                  :class="[
+                    'vc-input__dropdown-selector',
+                    {
+                      'vc-input__dropdown-selector-active':
+                        item[displayProperty] === optionsValue,
+                    },
+                  ]"
+                >
+                  {{ item[displayProperty] }}
+                </button>
+              </li>
+            </ul>
+          </div>
+        </teleport>
+      </div>
 
       <!-- Input clear button -->
       <div
         v-if="clearable && modelValue && !disabled && type !== 'password'"
-        class="
-          vc-input__clear
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__clear vc-padding-horizontal_m vc-flex vc-flex-align_center"
         @click="onReset"
       >
         <vc-icon size="s" icon="fas fa-times"></vc-icon>
       </div>
 
       <div
-        class="
-          vc-input__showhide
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
         v-if="type === 'password' && internalType === 'password'"
         @click="internalType = 'text'"
       >
@@ -55,12 +99,7 @@
       </div>
 
       <div
-        class="
-          vc-input__showhide
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
         v-if="type === 'password' && internalType === 'text'"
         @click="internalType = 'password'"
       >
@@ -77,11 +116,28 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, unref, watch, getCurrentInstance } from "vue";
+import {
+  computed,
+  defineComponent,
+  getCurrentInstance,
+  nextTick,
+  onMounted,
+  PropType,
+  ref,
+  unref,
+  watch,
+} from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
+import { createPopper, Instance } from "@popperjs/core";
+import {
+  useCurrencyInput,
+  UseCurrencyInput,
+  parse,
+  CurrencyDisplay,
+} from "vue-currency-input";
 
 export default defineComponent({
   name: "VcInput",
@@ -140,13 +196,44 @@ export default defineComponent({
     rules: {
       type: [String, Object],
     },
+
+    currency: {
+      type: Boolean,
+      default: false,
+    },
+
+    options: {
+      type: Array as PropType<{ [x: string]: string }[]>,
+      default: () => [],
+    },
+
+    optionsValue: {
+      type: String,
+      default: "",
+    },
+
+    keyProperty: {
+      type: String,
+      default: "id",
+    },
+
+    displayProperty: {
+      type: String,
+      default: "title",
+    },
   },
 
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "update:optionsValue"],
 
   setup(props, { emit }) {
+    let currencyConverter: UseCurrencyInput | undefined = undefined;
     const internalType = ref(unref(props.type));
+    const currencyRef = ref();
+    const currencyDropRef = ref();
+    const currencyDrop = ref(false);
     const instance = getCurrentInstance();
+    const popper = ref<Instance>();
+    const search = ref("");
 
     // Prepare validation rules using required and rules props combination
     let internalRules = unref(props.rules) || "";
@@ -182,6 +269,36 @@ export default defineComponent({
       }
     );
 
+    // Init currency composable if input type === currency (created hook)
+    if (props.currency) {
+      currencyConverter = useCurrencyInput({
+        currency: props.optionsValue,
+        autoSign: false,
+      });
+    }
+
+    onMounted(() => {
+      if (!value.value && props.currency) {
+        currencyConverter && currencyConverter.setValue(null);
+      }
+    });
+
+    // Change currency settings
+    watch(
+      () => props.optionsValue,
+      (newVal) => {
+        currencyConverter && currencyConverter.setOptions({ currency: newVal });
+      }
+    );
+
+    const searchFilter = computed(() => {
+      return props.options.filter((opt) =>
+        opt[props.displayProperty]
+          .toLowerCase()
+          .includes(search.value.toLowerCase())
+      );
+    });
+
     watch(
       () => props.modelValue,
       (value) => {
@@ -200,16 +317,62 @@ export default defineComponent({
       }
     );
 
+    function showCurrencyDrop() {
+      if (!currencyDrop.value) {
+        currencyDrop.value = true;
+        nextTick(() => {
+          popper.value = createPopper(
+            currencyRef.value,
+            currencyDropRef.value,
+            {
+              placement: "bottom-end",
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [13, 15],
+                  },
+                },
+              ],
+            }
+          );
+        });
+      } else {
+        closeCurrencyDrop();
+      }
+    }
+
+    function closeCurrencyDrop() {
+      currencyDrop.value = false;
+      search.value = "";
+      popper.value?.destroy();
+    }
+
+    function onItemSelect(item: { [x: string]: string }) {
+      emit("update:optionsValue", item[props.keyProperty]);
+      closeCurrencyDrop();
+    }
+
     return {
       internalType,
       value,
       errorMessage,
+      currencyRef,
+      currencyDropRef,
+      currencyDrop,
+      search,
+      searchFilter,
+      inputRef: currencyConverter && currencyConverter.inputRef,
+      formattedValue: currencyConverter && currencyConverter.formattedValue,
 
       // Handle input event to propertly validate value and emit changes
       onInput(e: InputEvent) {
         const newValue = (e.target as HTMLInputElement).value;
         if (newValue && props.type === "datetime-local") {
           emit("update:modelValue", new Date(newValue));
+        } else if (newValue && props.currency) {
+          const parsed = parse(newValue, { currency: props.optionsValue });
+          emit("update:modelValue", parsed);
         } else {
           emit("update:modelValue", newValue);
         }
@@ -217,8 +380,15 @@ export default defineComponent({
 
       // Handle input event to propertly reset value and emit changes
       onReset() {
+        if (props.currency) {
+          currencyConverter && currencyConverter.setValue(null);
+        }
         emit("update:modelValue", "");
       },
+
+      showCurrencyDrop,
+      closeCurrencyDrop,
+      onItemSelect,
     };
   },
 });
@@ -301,6 +471,68 @@ export default defineComponent({
 
     &:hover {
       color: var(--input-clear-color-hover);
+    }
+  }
+
+  &__dropdown-wrap {
+    position: relative;
+  }
+
+  &__dropdown-btn {
+    color: var(--input-clear-color);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 20px;
+    cursor: pointer;
+  }
+
+  &__dropdown {
+    position: absolute;
+    background: #ffffff;
+    box-shadow: 1px 1px 11px rgba(141, 152, 163, 0.6);
+    border-radius: 3px;
+    padding: 11px;
+    width: 120px;
+    box-sizing: border-box;
+  }
+
+  &__dropdown-title {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 20px;
+    color: #333333;
+    padding: 0;
+    margin: 0 0 7px;
+  }
+
+  &__dropdown-search {
+    background: #ffffff;
+    border: 1px solid #eaecf2;
+    box-sizing: border-box;
+    border-radius: 4px;
+    height: 32px;
+    width: 100%;
+  }
+
+  &__dropdown-list {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0;
+  }
+
+  &__dropdown-selector {
+    border: none;
+    background: transparent;
+    padding: 13px 9px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+
+    &-active {
+      background: #dfeef9;
+      border-radius: 3px;
     }
   }
 

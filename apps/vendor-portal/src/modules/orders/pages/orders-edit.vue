@@ -257,7 +257,7 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  setup(props, { emit }) {
     const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
       useOrder();
 
@@ -293,6 +293,9 @@ export default defineComponent({
             try {
               order.value.status = "Accepted";
               await changeOrderStatus(order.value);
+              emit("parent:call", {
+                method: "reload",
+              });
             } catch (e) {
               order.value.status = lastStatus;
             }
@@ -313,6 +316,9 @@ export default defineComponent({
             try {
               order.value.status = "Shipped";
               await changeOrderStatus(order.value);
+              emit("parent:call", {
+                method: "reload",
+              });
             } catch (e) {
               order.value.status = lastStatus;
             }

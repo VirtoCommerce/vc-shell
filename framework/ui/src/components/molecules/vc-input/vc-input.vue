@@ -28,29 +28,36 @@
         ref="inputRef"
       />
 
-      <!-- Currency dropdown button -->
+      <!-- Dropdown button -->
       <div
-        v-if="currency"
+        v-if="options && options.length"
         class="vc-input__dropdown-wrap vc-padding-horizontal_m vc-flex vc-flex-align_center"
       >
         <div
-          @click="showCurrencyDrop"
-          class="vc-input__dropdown-btn"
+          @click="showDrop"
           aria-describedby="tooltip"
-          ref="currencyRef"
+          ref="toggleDropRef"
+          :class="[
+            { 'vc-input__dropdown-btn_disabled': disabled },
+            'vc-input__dropdown-btn',
+          ]"
         >
           {{ optionsValue }}
         </div>
         <teleport to="body">
           <div
-            v-if="currencyDrop"
-            ref="currencyDropRef"
+            v-if="dropActive"
+            ref="dropRef"
             role="tooltip"
             class="vc-input__dropdown"
-            @mouseleave="closeCurrencyDrop"
+            v-click-outside="closeDrop"
           >
-            <p class="vc-input__dropdown-title">Choose currency</p>
-            <input class="vc-input__dropdown-search" v-model="search" />
+            <p class="vc-input__dropdown-title">{{ optionsTitle }}</p>
+            <input
+              class="vc-input__dropdown-search"
+              v-model="search"
+              ref="searchInput"
+            />
             <ul class="vc-input__dropdown-list">
               <li v-for="(item, i) in searchFilter" :key="i">
                 <button
@@ -122,12 +129,8 @@ import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
 import { createPopper, Instance } from "@popperjs/core";
-import {
-  useCurrencyInput,
-  UseCurrencyInput,
-  parse,
-  CurrencyDisplay,
-} from "vue-currency-input";
+import { useCurrencyInput, UseCurrencyInput, parse } from "vue-currency-input";
+import { clickOutside } from "../../../directives";
 
 export default defineComponent({
   name: "VcInput",
@@ -135,6 +138,10 @@ export default defineComponent({
   components: {
     VcIcon,
     VcLabel,
+  },
+
+  directives: {
+    clickOutside,
   },
 
   props: {
@@ -197,6 +204,11 @@ export default defineComponent({
       default: () => [],
     },
 
+    optionsTitle: {
+      type: String,
+      default: "Select",
+    },
+
     optionsValue: {
       type: String,
       default: "",
@@ -218,12 +230,13 @@ export default defineComponent({
   setup(props, { emit }) {
     let currencyConverter: UseCurrencyInput | undefined = undefined;
     const internalType = ref(unref(props.type));
-    const currencyRef = ref();
-    const currencyDropRef = ref();
-    const currencyDrop = ref(false);
+    const toggleDropRef = ref();
+    const dropRef = ref();
+    const dropActive = ref(false);
     const instance = getCurrentInstance();
     const popper = ref<Instance>();
     const search = ref("");
+    const searchInput = ref();
     const calcValue = computed(() => {
       if (props.currency) {
         return currencyConverter?.formattedValue.value;
@@ -284,7 +297,8 @@ export default defineComponent({
     watch(
       () => props.optionsValue,
       (newVal) => {
-        currencyConverter && currencyConverter.setOptions({ currency: newVal });
+        currencyConverter &&
+          currencyConverter.setOptions({ currency: newVal, autoSign: false });
       }
     );
 
@@ -314,52 +328,50 @@ export default defineComponent({
       }
     );
 
-    function showCurrencyDrop() {
-      if (!currencyDrop.value) {
-        currencyDrop.value = true;
+    function showDrop() {
+      if (!dropActive.value && !props.disabled) {
+        dropActive.value = true;
         nextTick(() => {
-          popper.value = createPopper(
-            currencyRef.value,
-            currencyDropRef.value,
-            {
-              placement: "bottom-end",
-              modifiers: [
-                {
-                  name: "offset",
-                  options: {
-                    offset: [13, 15],
-                  },
+          searchInput.value.focus();
+          popper.value = createPopper(toggleDropRef.value, dropRef.value, {
+            placement: "bottom-end",
+            modifiers: [
+              {
+                name: "offset",
+                options: {
+                  offset: [13, 15],
                 },
-              ],
-            }
-          );
+              },
+            ],
+          });
         });
       } else {
-        closeCurrencyDrop();
+        closeDrop();
       }
     }
 
-    function closeCurrencyDrop() {
-      currencyDrop.value = false;
+    function closeDrop() {
+      dropActive.value = false;
       search.value = "";
       popper.value?.destroy();
     }
 
     function onItemSelect(item: { [x: string]: string }) {
       emit("update:optionsValue", item[props.keyProperty]);
-      closeCurrencyDrop();
+      closeDrop();
     }
 
     return {
       internalType,
       value,
       errorMessage,
-      currencyRef,
-      currencyDropRef,
-      currencyDrop,
+      toggleDropRef,
+      dropRef,
+      dropActive,
       search,
       searchFilter,
       calcValue,
+      searchInput,
       inputRef: currencyConverter && currencyConverter.inputRef,
       formattedValue: currencyConverter && currencyConverter.formattedValue,
 
@@ -384,8 +396,8 @@ export default defineComponent({
         emit("update:modelValue", "");
       },
 
-      showCurrencyDrop,
-      closeCurrencyDrop,
+      showDrop,
+      closeDrop,
       onItemSelect,
     };
   },
@@ -483,6 +495,11 @@ export default defineComponent({
     font-size: 13px;
     line-height: 20px;
     cursor: pointer;
+
+    &_disabled {
+      color: #7e8e9d;
+      cursor: default;
+    }
   }
 
   &__dropdown {
@@ -512,6 +529,7 @@ export default defineComponent({
     border-radius: 4px;
     height: 32px;
     width: 100%;
+    outline: none;
   }
 
   &__dropdown-list {
@@ -523,10 +541,15 @@ export default defineComponent({
   &__dropdown-selector {
     border: none;
     background: transparent;
-    padding: 13px 9px;
+    padding: 9px;
     text-align: left;
     width: 100%;
     cursor: pointer;
+    size: var(--font-size-l);
+
+    &:hover {
+      background-color: #eff7fc;
+    }
 
     &-active {
       background: #dfeef9;

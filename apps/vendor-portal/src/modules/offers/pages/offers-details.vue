@@ -155,6 +155,7 @@
                         :options="currencies"
                         keyProperty="value"
                         displayProperty="title"
+                        optionsTitle="Choose currency"
                         :placeholder="
                           $t(
                             'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER'
@@ -174,6 +175,7 @@
                         :options="currencies"
                         keyProperty="value"
                         displayProperty="title"
+                        optionsTitle="Choose currency"
                         :placeholder="
                           $t(
                             'OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER'
@@ -223,14 +225,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  ref,
-  onMounted,
-  reactive,
-  nextTick,
-} from "vue";
+import { computed, defineComponent, ref, onMounted, reactive } from "vue";
 import { useForm } from "@virtoshell/ui";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";

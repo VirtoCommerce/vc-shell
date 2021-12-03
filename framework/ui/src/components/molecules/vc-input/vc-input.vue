@@ -546,6 +546,7 @@ export default defineComponent({
     width: 100%;
     cursor: pointer;
     size: var(--font-size-l);
+    border-radius: 3px;
 
     &:hover {
       background-color: #eff7fc;
@@ -553,7 +554,6 @@ export default defineComponent({
 
     &-active {
       background: #dfeef9;
-      border-radius: 3px;
     }
   }
 

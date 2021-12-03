@@ -129,7 +129,12 @@ import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
 import { createPopper, Instance } from "@popperjs/core";
-import { useCurrencyInput, UseCurrencyInput, parse } from "vue-currency-input";
+import {
+  useCurrencyInput,
+  UseCurrencyInput,
+  parse,
+  CurrencyDisplay,
+} from "vue-currency-input";
 import { clickOutside } from "../../../directives";
 
 export default defineComponent({
@@ -284,6 +289,7 @@ export default defineComponent({
       currencyConverter = useCurrencyInput({
         currency: props.optionsValue,
         autoSign: false,
+        currencyDisplay: CurrencyDisplay.hidden,
       });
     }
 
@@ -298,7 +304,11 @@ export default defineComponent({
       () => props.optionsValue,
       (newVal) => {
         currencyConverter &&
-          currencyConverter.setOptions({ currency: newVal, autoSign: false });
+          currencyConverter.setOptions({
+            currency: newVal,
+            autoSign: false,
+            currencyDisplay: CurrencyDisplay.hidden,
+          });
       }
     );
 

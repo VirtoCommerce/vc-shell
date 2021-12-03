@@ -42,27 +42,25 @@
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
-      <teleport to="body">
-        <div v-if="isOpened" class="vc-select__dropdown" ref="dropdownRef">
-          <input
-            v-if="isSearchable"
-            ref="search"
-            class="vc-select__search"
-            @input="onSearch"
-          />
+      <div v-if="isOpened" class="vc-select__dropdown" ref="dropdownRef">
+        <input
+          v-if="isSearchable"
+          ref="search"
+          class="vc-select__search"
+          @input="onSearch"
+        />
 
-          <vc-container :no-padding="true">
-            <div
-              class="vc-select__item"
-              v-for="(item, i) in options"
-              :key="i"
-              @click="onItemSelect(item)"
-            >
-              <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
-            </div>
-          </vc-container>
-        </div>
-      </teleport>
+        <vc-container :no-padding="true">
+          <div
+            class="vc-select__item"
+            v-for="(item, i) in options"
+            :key="i"
+            @click="onItemSelect(item)"
+          >
+            <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
+          </div>
+        </vc-container>
+      </div>
     </div>
 
     <slot v-if="errorMessage" name="error">
@@ -86,8 +84,8 @@ import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
-import { clickOutside } from "../../../directives";
 import { createPopper, Instance, State } from "@popperjs/core";
+import { clickOutside } from "../../../directives";
 
 export default defineComponent({
   name: "VcSelect",
@@ -208,6 +206,7 @@ export default defineComponent({
       inputFieldWrapRef,
       closeDropdown: () => {
         isOpened.value = false;
+        popper.value?.destroy();
         emit("close");
       },
       toggleDropdown: () => {
@@ -215,9 +214,12 @@ export default defineComponent({
           if (isOpened.value) {
             isOpened.value = false;
             popper.value?.destroy();
+            inputFieldWrapRef.value.style.borderRadius =
+              "var(--select-border-radius)";
             emit("close");
           } else {
             isOpened.value = true;
+            const element = instance?.vnode.el?.parentElement;
             nextTick(() => {
               search?.value?.focus();
               popper.value = createPopper(
@@ -226,6 +228,19 @@ export default defineComponent({
                 {
                   placement: "bottom",
                   modifiers: [
+                    {
+                      name: "flip",
+                      options: {
+                        fallbackPlacements: ["top", "bottom"],
+                        boundary: element,
+                      },
+                    },
+                    {
+                      name: "preventOverflow",
+                      options: {
+                        mainAxis: false,
+                      },
+                    },
                     {
                       name: "sameWidthChangeBorders",
                       enabled: true,
@@ -281,12 +296,6 @@ export default defineComponent({
                         state.elements.popper.style.width = `${
                           ref.offsetWidth + 1
                         }px`;
-                      },
-                    },
-                    {
-                      name: "preventOverflow",
-                      options: {
-                        mainAxis: false,
                       },
                     },
                     {
@@ -391,10 +400,6 @@ export default defineComponent({
 
   &_opened &__chevron {
     transform: rotate(180deg);
-  }
-
-  &__dropdown {
-    display: none;
   }
 
   &_opened &__field-wrapper {

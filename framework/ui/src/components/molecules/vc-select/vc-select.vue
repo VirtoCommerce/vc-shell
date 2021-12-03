@@ -21,14 +21,9 @@
       v-click-outside="closeDropdown"
     >
       <div
-        class="
-          vc-select__field
-          vc-padding_m
-          vc-flex
-          vc-flex-align_center
-          vc-fill_width
-        "
+        class="vc-select__field vc-padding_m vc-flex vc-flex-align_center vc-fill_width"
         @click="toggleDropdown"
+        ref="dropdownToggleRef"
       >
         <div v-if="!selectedItem" class="vc-select__field-placeholder">
           {{ placeholder }}
@@ -41,36 +36,32 @@
       <!-- Select chevron -->
       <div
         v-if="!isDisabled"
-        class="
-          vc-select__chevron
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-select__chevron vc-padding-horizontal_m vc-flex vc-flex-align_center"
         @click="toggleDropdown"
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
+      <teleport to="body" style="position: relative">
+        <div v-if="isOpened" class="vc-select__dropdown" ref="dropdownRef">
+          <input
+            v-if="isSearchable"
+            ref="search"
+            class="vc-select__search"
+            @input="onSearch"
+          />
 
-      <div v-if="isOpened" class="vc-select__dropdown">
-        <input
-          v-if="isSearchable"
-          ref="search"
-          class="vc-select__search"
-          @input="onSearch"
-        />
-
-        <vc-container :no-padding="true">
-          <div
-            class="vc-select__item"
-            v-for="(item, i) in options"
-            :key="i"
-            @click="onItemSelect(item)"
-          >
-            <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
-          </div>
-        </vc-container>
-      </div>
+          <vc-container :no-padding="true">
+            <div
+              class="vc-select__item"
+              v-for="(item, i) in options"
+              :key="i"
+              @click="onItemSelect(item)"
+            >
+              <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
+            </div>
+          </vc-container>
+        </div>
+      </teleport>
     </div>
 
     <slot v-if="errorMessage" name="error">
@@ -95,6 +86,7 @@ import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
 import { clickOutside } from "../../../directives";
+import { createPopper, Instance, State } from "@popperjs/core";
 
 export default defineComponent({
   name: "VcSelect",
@@ -177,6 +169,10 @@ export default defineComponent({
     const instance = getCurrentInstance();
     const isOpened = ref(false);
     const search = ref();
+    const popper = ref<Instance>();
+    const dropdownToggleRef = ref();
+    const dropdownRef = ref();
+
     const selectedItem = computed(
       () =>
         (props.options as Record<string, unknown>[])?.find(
@@ -205,6 +201,8 @@ export default defineComponent({
       errorMessage,
       isOpened,
       selectedItem,
+      dropdownToggleRef,
+      dropdownRef,
       closeDropdown: () => {
         isOpened.value = false;
         emit("close");
@@ -213,11 +211,74 @@ export default defineComponent({
         if (!props.isDisabled) {
           if (isOpened.value) {
             isOpened.value = false;
+            popper.value?.destroy();
             emit("close");
           } else {
             isOpened.value = true;
             nextTick(() => {
               search?.value?.focus();
+              popper.value = createPopper(
+                dropdownToggleRef.value,
+                dropdownRef.value,
+                {
+                  placement: "bottom",
+                  modifiers: [
+                    {
+                      name: "sameWidthChangeBorders",
+                      enabled: true,
+                      phase: "beforeWrite",
+                      requires: ["computeStyles"],
+                      fn: ({ state }: { state: State }) => {
+                        const placement = state.placement;
+                        if (placement === "top") {
+                          state.styles.popper.borderTop =
+                            "1px solid var(--select-border-color)";
+                          state.styles.popper.borderBottom =
+                            "1px solid var(--select-background-color)";
+                        } else {
+                          state.styles.popper.borderBottom =
+                            "1px solid var(--select-border-color)";
+                          state.styles.popper.borderTop =
+                            "1px solid var(--select-background-color)";
+                        }
+                        state.styles.popper.width = `${
+                          state.rects.reference.width + 2
+                        }px`;
+                      },
+                      effect: ({ state }: { state: State }) => {
+                        const ref = state.elements.reference as HTMLElement;
+                        const placement = state.placement;
+                        if (placement === "top") {
+                          state.elements.popper.style.borderTop =
+                            "1px solid var(--select-border-color)";
+                          state.elements.popper.style.borderBottom =
+                            "1px solid var(--select-background-color)";
+                        } else {
+                          state.elements.popper.style.borderBottom =
+                            "1px solid var(--select-border-color)";
+                          state.elements.popper.style.borderTop =
+                            "1px solid var(--select-background-color)";
+                        }
+                        state.elements.popper.style.width = `${
+                          ref.offsetWidth + 2
+                        }px`;
+                      },
+                    },
+                    {
+                      name: "preventOverflow",
+                      options: {
+                        mainAxis: false,
+                      },
+                    },
+                    {
+                      name: "offset",
+                      options: {
+                        offset: [0, 0],
+                      },
+                    },
+                  ],
+                }
+              );
             });
           }
         }
@@ -313,15 +374,11 @@ export default defineComponent({
     transform: rotate(180deg);
   }
 
-  &__dropdown {
-    display: none;
-  }
-
   &_opened &__field-wrapper {
     border-radius: var(--select-border-radius) var(--select-border-radius) 0 0;
   }
 
-  &_opened &__dropdown {
+  &__dropdown {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -329,9 +386,6 @@ export default defineComponent({
     z-index: 10;
     overflow: hidden;
     position: absolute;
-    left: -1px;
-    right: -1px;
-    top: 100%;
     background-color: var(--select-background-color);
     border: 1px solid var(--select-border-color);
     border-top: 1px solid var(--select-background-color);

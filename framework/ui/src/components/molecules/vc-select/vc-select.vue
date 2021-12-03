@@ -18,6 +18,7 @@
     <!-- Select field -->
     <div
       class="vc-select__field-wrapper vc-flex vc-flex-align_stretch"
+      ref="inputFieldWrapRef"
       v-click-outside="closeDropdown"
     >
       <div
@@ -41,7 +42,7 @@
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
-      <teleport to="body" style="position: relative">
+      <teleport to="body">
         <div v-if="isOpened" class="vc-select__dropdown" ref="dropdownRef">
           <input
             v-if="isSearchable"
@@ -172,6 +173,7 @@ export default defineComponent({
     const popper = ref<Instance>();
     const dropdownToggleRef = ref();
     const dropdownRef = ref();
+    const inputFieldWrapRef = ref();
 
     const selectedItem = computed(
       () =>
@@ -203,6 +205,7 @@ export default defineComponent({
       selectedItem,
       dropdownToggleRef,
       dropdownRef,
+      inputFieldWrapRef,
       closeDropdown: () => {
         isOpened.value = false;
         emit("close");
@@ -235,14 +238,22 @@ export default defineComponent({
                             "1px solid var(--select-border-color)";
                           state.styles.popper.borderBottom =
                             "1px solid var(--select-background-color)";
+                          state.styles.popper.borderRadius =
+                            "var(--select-border-radius) var(--select-border-radius) 0 0";
+                          inputFieldWrapRef.value.style.borderRadius =
+                            "0 0 var(--select-border-radius) var(--select-border-radius)";
                         } else {
                           state.styles.popper.borderBottom =
                             "1px solid var(--select-border-color)";
                           state.styles.popper.borderTop =
                             "1px solid var(--select-background-color)";
+                          state.styles.popper.borderRadius =
+                            "0 0 var(--select-border-radius) var(--select-border-radius)";
+                          inputFieldWrapRef.value.style.borderRadius =
+                            "var(--select-border-radius) var(--select-border-radius) 0 0";
                         }
                         state.styles.popper.width = `${
-                          state.rects.reference.width + 2
+                          state.rects.reference.width + 1
                         }px`;
                       },
                       effect: ({ state }: { state: State }) => {
@@ -253,14 +264,22 @@ export default defineComponent({
                             "1px solid var(--select-border-color)";
                           state.elements.popper.style.borderBottom =
                             "1px solid var(--select-background-color)";
+                          state.elements.popper.style.borderRadius =
+                            "var(--select-border-radius) var(--select-border-radius) 0 0";
+                          inputFieldWrapRef.value.style.borderRadius =
+                            "0 0 var(--select-border-radius) var(--select-border-radius)";
                         } else {
                           state.elements.popper.style.borderBottom =
                             "1px solid var(--select-border-color)";
                           state.elements.popper.style.borderTop =
                             "1px solid var(--select-background-color)";
+                          state.elements.popper.style.borderRadius =
+                            "0 0 var(--select-border-radius) var(--select-border-radius)";
+                          inputFieldWrapRef.value.style.borderRadius =
+                            "var(--select-border-radius) var(--select-border-radius) 0 0";
                         }
                         state.elements.popper.style.width = `${
-                          ref.offsetWidth + 2
+                          ref.offsetWidth + 1
                         }px`;
                       },
                     },
@@ -372,6 +391,10 @@ export default defineComponent({
 
   &_opened &__chevron {
     transform: rotate(180deg);
+  }
+
+  &__dropdown {
+    display: none;
   }
 
   &_opened &__field-wrapper {

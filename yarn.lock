@@ -16618,10 +16618,22 @@ void-elements@^3.1.0:
   resolved "https://registry.npmjs.org/void-elements/-/void-elements-3.1.0.tgz"
   integrity sha1-YU9/v42AHwu18GYfWy9XhXUOTwk=
 
+vue-currency-input@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.npmjs.org/vue-currency-input/-/vue-currency-input-2.2.0.tgz"
+  integrity sha512-1KEMOeWfVkphLHOXghrMIzc/lBwdfv2ER8j2Gvui9bzpnH/DP2vLllRiZsYBS0aF0kbuKohYjg2PHZbZUkXuIA==
+  dependencies:
+    vue-demi "^0.12.1"
+
 vue-demi@*:
   version "0.11.3"
   resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.11.3.tgz"
   integrity sha512-DpM0TTMpclRZDV6AIacgg837zrim/C9Zn+2ztXBs9hsESJN9vC83ztjTe4KC4HgJuVle8YUjPp7HTwWtwOHfmg==
+
+vue-demi@^0.12.1:
+  version "0.12.1"
+  resolved "https://registry.npmjs.org/vue-demi/-/vue-demi-0.12.1.tgz"
+  integrity sha512-QL3ny+wX8c6Xm1/EZylbgzdoDolye+VpCXRhI2hug9dJTP3OUJ3lmiKN3CsVV3mOJKwFi0nsstbgob0vG7aoIw==
 
 vue-docgen-api@^4.38.0:
   version "4.41.1"

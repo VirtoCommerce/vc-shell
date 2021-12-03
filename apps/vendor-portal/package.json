@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-vendor-portal",
-  "version": "0.0.90",
+  "version": "0.0.91",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -8,10 +8,10 @@
   },
   "devDependencies": {
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^0.0.90",
-    "@virtoshell/core": "^0.0.90",
-    "@virtoshell/mod-assets": "^0.0.90",
-    "@virtoshell/ui": "^0.0.90",
+    "@virtoshell/api-client": "^0.0.91",
+    "@virtoshell/core": "^0.0.91",
+    "@virtoshell/mod-assets": "^0.0.91",
+    "@virtoshell/ui": "^0.0.91",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-pwa": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",

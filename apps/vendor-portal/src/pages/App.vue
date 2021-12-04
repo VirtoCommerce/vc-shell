@@ -220,6 +220,10 @@ body,
   overscroll-behavior-y: none;
 }
 
+body {
+  font-size: var(--font-size-m);
+}
+
 h1,
 h2,
 h3,

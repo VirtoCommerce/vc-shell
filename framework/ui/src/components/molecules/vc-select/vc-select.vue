@@ -219,7 +219,7 @@ export default defineComponent({
             emit("close");
           } else {
             isOpened.value = true;
-            const element = instance?.vnode.el?.parentElement;
+            const element = instance?.vnode.el?.parentElement.parentElement;
             nextTick(() => {
               search?.value?.focus();
               popper.value = createPopper(
@@ -268,7 +268,7 @@ export default defineComponent({
                             "var(--select-border-radius) var(--select-border-radius) 0 0";
                         }
                         state.styles.popper.width = `${
-                          state.rects.reference.width + 1
+                          state.rects.reference.width + 2
                         }px`;
                       },
                       effect: ({ state }: { state: State }) => {
@@ -294,7 +294,7 @@ export default defineComponent({
                             "var(--select-border-radius) var(--select-border-radius) 0 0";
                         }
                         state.elements.popper.style.width = `${
-                          ref.offsetWidth + 1
+                          ref.offsetWidth + 2
                         }px`;
                       },
                     },

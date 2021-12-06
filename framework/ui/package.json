@@ -34,6 +34,7 @@
     "typescript": "^4.3.5",
     "vee-validate": "^4.5.5",
     "vue": "^3.0.0",
+    "vuedraggable": "^4.1.0",
     "vue3-touch-events": "^4.1.0"
   },
   "dependencies": {

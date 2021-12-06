@@ -3,6 +3,7 @@ import * as components from "./components";
 import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
+import draggable from "vuedraggable";
 import { defineRule, useForm as _useForm } from "vee-validate";
 
 import "normalize.css";
@@ -15,6 +16,7 @@ export default {
     console.debug(`[@virtoshell/ui] - Install plugin`);
 
     app.use(Vue3TouchEvents);
+    app.component("draggable", draggable);
 
     // Register exported components
     Object.entries(components).forEach(([componentName, component]) => {

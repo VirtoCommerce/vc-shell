@@ -11,18 +11,30 @@
     </vc-label>
 
     <template v-if="(images && images.length) || !disabled">
-      <div class="vc-gallery__items">
-        <vc-gallery-item
-          class="vc-margin_s"
-          v-for="(item, i) in images"
-          :key="i"
-          :image="item"
-          :readonly="disabled"
-          @preview="onPreviewClick(i)"
-          @edit="$emit('item:edit', $event)"
-          @remove="$emit('item:remove', $event)"
-        ></vc-gallery-item>
-
+      <div class="vc-gallery__items-wrap">
+        <draggable
+          :list="images"
+          class="vc-gallery__items-wrap"
+          item-key="sortOrder"
+          tag="transition-group"
+          v-bind="dragOptions"
+          @change="updateOrder"
+          :component-data="{
+            tag: 'div',
+            type: 'transition-group',
+          }"
+        >
+          <template #item="{ element, index }">
+            <vc-gallery-item
+              class="vc-margin_s"
+              :image="element"
+              :readonly="disabled"
+              @preview="onPreviewClick(index)"
+              @edit="$emit('item:edit', $event)"
+              @remove="$emit('item:remove', $event)"
+            ></vc-gallery-item>
+          </template>
+        </draggable>
         <vc-gallery-upload
           v-if="!disabled"
           class="vc-margin_s"
@@ -45,11 +57,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, PropType, ref } from "vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryUpload from "./_internal/vc-gallery-upload/vc-gallery-upload.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
+import { Image } from "@virtoshell/api-client";
 
 export default defineComponent({
   name: "VcGallery",
@@ -63,7 +76,7 @@ export default defineComponent({
 
   props: {
     images: {
-      type: Array,
+      type: Array as PropType<Image[]>,
       default: () => [],
     },
 
@@ -98,11 +111,25 @@ export default defineComponent({
     },
   },
 
-  emits: ["upload", "item:preview", "item:edit", "item:remove", "item:move"],
+  emits: [
+    "upload",
+    "sort",
+    "item:preview",
+    "item:edit",
+    "item:remove",
+    "item:move",
+  ],
 
   setup(_props, { emit }) {
     const preview = ref(false);
     const previewImageIndex = ref();
+    const dragOptions = computed(() => {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+      };
+    });
 
     const onUpload = (files: FileList) => {
       if (files && files.length) {
@@ -115,11 +142,23 @@ export default defineComponent({
       previewImageIndex.value = index;
     };
 
+    const updateOrder = () => {
+      const images = _props.images;
+      const sortedImgs = images.map((item, index) => {
+        const newSort = index;
+        item.sortOrder = newSort;
+        return item;
+      });
+      emit("sort", ref(sortedImgs).value);
+    };
+
     return {
       preview,
       previewImageIndex,
+      dragOptions,
       onUpload,
       onPreviewClick,
+      updateOrder,
     };
   },
 });
@@ -127,10 +166,9 @@ export default defineComponent({
 
 <style lang="less">
 .vc-gallery {
-  &__items {
+  &__items-wrap {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 calc(-1 * var(--padding-s));
   }
 }
 </style>

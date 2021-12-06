@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    :title="options.name"
+    :title="options.editableAsset.name"
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
     :closable="closable"
@@ -56,8 +56,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, PropType, reactive, ref, unref, isRef } from "vue";
 import { useI18n } from "@virtoshell/core";
+import {
+  Image,
+  ProductDetails,
+} from "./../../../../apps/vendor-portal/src/api_client";
 
 export default defineComponent({
   props: {
@@ -72,27 +76,54 @@ export default defineComponent({
     },
 
     options: {
-      type: Object,
+      type: Object as PropType<{
+        editableAsset: Image;
+        product: ProductDetails;
+      }>,
       default: () => ({}),
     },
   },
 
-  setup(props) {
+  emits: ["parent:call", "page:close"],
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const localImage = reactive({ ...props.options });
+    const localImage = reactive({ ...props.options.editableAsset });
 
     const bladeToolbar = [
       {
         id: "save",
         title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
+        clickHandler() {
+          mutateImage();
+        },
       },
       {
         id: "delete",
         title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
         icon: "fas fa-trash",
+        clickHandler() {
+          mutateImage(true);
+        },
       },
     ];
+
+    function mutateImage(remove = false) {
+      const product = props.options.product;
+      const image = new Image(localImage);
+      if ("images" in product && product.images) {
+        const imageIndex = product.images.findIndex(
+          (img) => img.id === localImage.id
+        );
+
+        remove
+          ? product.images.splice(imageIndex, 1)
+          : (product.images[imageIndex] = image);
+
+        emit("parent:call", { method: "editImages", args: product.images });
+        emit("page:close");
+      }
+    }
 
     return {
       bladeToolbar,

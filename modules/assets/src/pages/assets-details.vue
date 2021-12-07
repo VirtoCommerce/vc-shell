@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    :title="options.name"
+    :title="options.editableAsset.name"
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
     :closable="closable"
@@ -32,7 +32,7 @@
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
-                v-model="localImage.alt"
+                v-model="localImage.altText"
                 :clearable="true"
                 :required="true"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
@@ -56,8 +56,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, PropType, reactive } from "vue";
 import { useI18n } from "@virtoshell/core";
+import { Image } from "@virtoshell/api-client";
 
 export default defineComponent({
   props: {
@@ -72,27 +73,50 @@ export default defineComponent({
     },
 
     options: {
-      type: Object,
+      type: Object as PropType<{
+        editableAsset: Image;
+        images: Image[];
+      }>,
       default: () => ({}),
     },
   },
 
-  setup(props) {
+  emits: ["parent:call", "page:close"],
+  setup(props, { emit }) {
     const { t } = useI18n();
-    const localImage = reactive({ ...props.options });
+    const localImage = reactive({ ...props.options.editableAsset });
 
     const bladeToolbar = [
       {
         id: "save",
         title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
         icon: "fas fa-save",
+        clickHandler() {
+          mutateImage();
+        },
       },
       {
         id: "delete",
         title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
         icon: "fas fa-trash",
+        clickHandler() {
+          mutateImage(true);
+        },
       },
     ];
+
+    function mutateImage(remove = false) {
+      const images = props.options.images;
+      const image = new Image(localImage);
+      if (images.length) {
+        const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+        remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+        emit("parent:call", { method: "editImages", args: images });
+        emit("page:close");
+      }
+    }
 
     return {
       bladeToolbar,

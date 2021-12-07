@@ -121,7 +121,9 @@
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
                     @item:edit="onGalleryItemEdit"
+                    @item:remove="onGalleryImageRemove"
                     :disabled="readonly"
+                    @sort="onGallerySort"
                   ></vc-gallery>
                 </div>
               </vc-card>
@@ -233,6 +235,10 @@ export default defineComponent({
           })
         )?.totalCount;
       }
+    };
+
+    const editImages = (args: Image[]) => {
+      productDetails.images = args;
     };
 
     onMounted(async () => {
@@ -353,11 +359,25 @@ export default defineComponent({
       files = null;
     };
 
-    const onGalleryItemEdit = (item: Record<string, Image>) => {
+    const onGalleryItemEdit = (item: Image) => {
       emit("page:open", {
         component: AssetsDetails,
-        componentOptions: item,
+        componentOptions: {
+          editableAsset: item,
+          images: productDetails.images,
+        },
       });
+    };
+
+    const onGallerySort = (images: Image[]) => {
+      productDetails.images = images;
+    };
+
+    const onGalleryImageRemove = (image: Image) => {
+      const imageIndex = productDetails.images.findIndex(
+        (img) => img.id === image.id
+      );
+      productDetails.images.splice(imageIndex, 1);
     };
 
     const setCategory = async (id: string) => {
@@ -394,9 +414,12 @@ export default defineComponent({
       productDetails,
       readonly: computed(() => props.param && !product.value?.canBeModified),
       reload,
+      editImages,
       loading: computed(() => loading.value),
       onGalleryUpload,
       onGalleryItemEdit,
+      onGallerySort,
+      onGalleryImageRemove,
       async openOffers() {
         if (!isOffersOpened) {
           emit("page:open", {
@@ -457,7 +480,7 @@ export default defineComponent({
       },
 
       restoreCollapsed(key: string): boolean {
-        return localStorage?.getItem(key) === "true" ? true : false;
+        return localStorage?.getItem(key) === "true";
       },
     };
   },

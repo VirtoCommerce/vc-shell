@@ -9,9 +9,17 @@
         "PASSWORD": {
           "LABEL": "Password",
           "PLACEHOLDER": "Enter your password"
+        },
+        "FORGOT_PASSWORD": {
+          "LABEL": "Login or email",
+          "PLACEHOLDER": "Please enter login or email"
         }
       },
-      "BUTTON": "Log in"
+      "FORGOT_PASSWORD_BUTTON": "Forgot your password?",
+      "BUTTON": "Log in",
+      "FORGOT_BUTTON": "Submit",
+      "BACK_BUTTON": "Back",
+      "BUTTON_OK": "Ok"
     },
     "MENU": {
       "DASHBOARD": "Home"

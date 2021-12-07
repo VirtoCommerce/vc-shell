@@ -10,3 +10,9 @@ export interface SignInResult {
   error?: string;
   errorCode?: string;
 }
+
+export interface RequestPasswordResult {
+  succeeded: boolean;
+  error?: string;
+  errorCode?: string;
+}

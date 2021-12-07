@@ -8,7 +8,7 @@ import {
   ValidatePasswordResetTokenRequest,
   IdentityResult,
 } from "@virtoshell/api-client";
-import { AuthData, SignInResult } from "../../types";
+import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
 import sleep from "../useFunctions/sleep";
 const VC_AUTH_DATA_KEY = "vc-auth-data";
 
@@ -35,6 +35,9 @@ interface IUseUser {
     password: string,
     token: string
   ) => Promise<SecurityResult>;
+  requestPasswordReset: (
+    loginOrEmail: string
+  ) => Promise<RequestPasswordResult>;
 }
 
 export default (): IUseUser => {
@@ -184,6 +187,21 @@ export default (): IUseUser => {
     return Date.now() + offsetInSeconds * 1000;
   }
 
+  async function requestPasswordReset(
+    loginOrEmail: string
+  ): Promise<RequestPasswordResult> {
+    try {
+      loading.value = true;
+      await securityClient.requestPasswordReset(loginOrEmail);
+      return { succeeded: true };
+    } catch (e) {
+      //TODO: log error
+      return { succeeded: false, error: e as string };
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
@@ -194,5 +212,6 @@ export default (): IUseUser => {
     validateToken,
     validatePassword,
     resetPasswordByToken,
+    requestPasswordReset,
   };
 };

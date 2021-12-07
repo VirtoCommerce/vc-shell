@@ -250,5 +250,23 @@ export default defineComponent({
       border: 1px solid var(--button-secondary-border-color-disabled);
     }
   }
+
+  &_onlytext {
+    color: var(--button-secondary-text-color);
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    height: auto;
+
+    &:hover {
+      background-color: transparent;
+      color: var(--button-secondary-text-color-hover);
+    }
+
+    &:focus {
+      background-color: transparent;
+      color: var(--button-secondary-text-color-hover);
+    }
+  }
 }
 </style>

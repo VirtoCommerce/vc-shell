@@ -31,7 +31,12 @@
       <!-- Dropdown button -->
       <div
         v-if="options && options.length"
-        class="vc-input__dropdown-wrap vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="
+          vc-input__dropdown-wrap
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
       >
         <div
           @click="showDrop"
@@ -81,14 +86,24 @@
       <!-- Input clear button -->
       <div
         v-if="clearable && modelValue && !disabled && type !== 'password'"
-        class="vc-input__clear vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="
+          vc-input__clear
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
         @click="onReset"
       >
         <vc-icon size="s" icon="fas fa-times"></vc-icon>
       </div>
 
       <div
-        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="
+          vc-input__showhide
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
         v-if="type === 'password' && internalType === 'password'"
         @click="internalType = 'text'"
       >
@@ -96,7 +111,12 @@
       </div>
 
       <div
-        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="
+          vc-input__showhide
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
         v-if="type === 'password' && internalType === 'text'"
         @click="internalType = 'password'"
       >
@@ -107,6 +127,11 @@
     <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-input__error vc-margin-top_xs">
         {{ errorMessage }}
+      </vc-hint>
+    </slot>
+    <slot v-if="fieldDescription" name="error">
+      <vc-hint class="vc-input__desc vc-margin-top_xs">
+        {{ fieldDescription }}
       </vc-hint>
     </slot>
   </div>
@@ -227,6 +252,11 @@ export default defineComponent({
     displayProperty: {
       type: String,
       default: "title",
+    },
+
+    fieldDescription: {
+      type: String,
+      default: "",
     },
   },
 
@@ -450,6 +480,14 @@ export default defineComponent({
 
   &__error {
     color: var(--input-border-color-error);
+  }
+
+  &__desc {
+    color: ver(--multivalue-placeholder-color);
+    margin: 5px 0 0;
+    word-wrap: break-word;
+    word-break: break-word;
+    padding: 0;
   }
 
   &__field {

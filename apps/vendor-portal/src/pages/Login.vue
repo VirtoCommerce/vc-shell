@@ -182,6 +182,7 @@ export default defineComponent({
       if (isLogin.value) {
         forgotPasswordRequestSent.value = false;
         forgotPasswordForm.loginOrEmail = "";
+        requestPassResult.value.error = "";
       }
     };
 

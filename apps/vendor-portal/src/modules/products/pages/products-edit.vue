@@ -363,7 +363,10 @@ export default defineComponent({
     const onGalleryItemEdit = (item: Image) => {
       emit("page:open", {
         component: AssetsDetails,
-        componentOptions: { editableAsset: item, product: productDetails },
+        componentOptions: {
+          editableAsset: item,
+          images: productDetails.images,
+        },
       });
     };
 

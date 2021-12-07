@@ -56,12 +56,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, ref, unref, isRef } from "vue";
+import { defineComponent, PropType, reactive } from "vue";
 import { useI18n } from "@virtoshell/core";
-import {
-  Image,
-  ProductDetails,
-} from "./../../../../apps/vendor-portal/src/api_client";
+import { Image } from "@virtoshell/api-client";
 
 export default defineComponent({
   props: {
@@ -78,7 +75,7 @@ export default defineComponent({
     options: {
       type: Object as PropType<{
         editableAsset: Image;
-        product: ProductDetails;
+        images: Image[];
       }>,
       default: () => ({}),
     },
@@ -109,18 +106,14 @@ export default defineComponent({
     ];
 
     function mutateImage(remove = false) {
-      const product = props.options.product;
+      const images = props.options.images;
       const image = new Image(localImage);
-      if ("images" in product && product.images) {
-        const imageIndex = product.images.findIndex(
-          (img) => img.id === localImage.id
-        );
+      if (images.length) {
+        const imageIndex = images.findIndex((img) => img.id === localImage.id);
 
-        remove
-          ? product.images.splice(imageIndex, 1)
-          : (product.images[imageIndex] = image);
+        remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
 
-        emit("parent:call", { method: "editImages", args: product.images });
+        emit("parent:call", { method: "editImages", args: images });
         emit("page:close");
       }
     }

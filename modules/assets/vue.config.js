@@ -66,6 +66,7 @@ module.exports = {
     config.externals([
       "@virtoshell/ui",
       "@virtoshell/core",
+      "@virtoshell/api-client",
     ]);
   },
 };

@@ -161,7 +161,6 @@ import {
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
-import { ProductDetails } from "../../../api_client";
 
 export default defineComponent({
   url: "product",
@@ -238,7 +237,8 @@ export default defineComponent({
       }
     };
 
-    const edit = (args: Image[]) => {
+    const editImages = (args: Image[]) => {
+      console.log(args);
       productDetails.images = args;
     };
 
@@ -415,7 +415,7 @@ export default defineComponent({
       productDetails,
       readonly: computed(() => props.param && !product.value?.canBeModified),
       reload,
-      edit,
+      editImages,
       loading: computed(() => loading.value),
       onGalleryUpload,
       onGalleryItemEdit,

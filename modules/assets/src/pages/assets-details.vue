@@ -32,7 +32,7 @@
               <vc-input
                 class="vc-margin-bottom_l"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
-                v-model="localImage.alt"
+                v-model="localImage.altText"
                 :clearable="true"
                 :required="true"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"

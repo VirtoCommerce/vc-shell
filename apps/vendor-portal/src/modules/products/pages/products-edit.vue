@@ -238,7 +238,6 @@ export default defineComponent({
     };
 
     const editImages = (args: Image[]) => {
-      console.log(args);
       productDetails.images = args;
     };
 

@@ -1,37 +1,107 @@
 <template>
   <vc-login-form :logo="logo" :background="background" :title="title">
     <vc-form>
-      <vc-input
-        ref="loginField"
-        class="vc-margin-bottom_l vc-margin-top_xs"
-        :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
-        :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
-        :required="true"
-        v-model="form.username"
-      ></vc-input>
-      <vc-input
-        ref="passwordField"
-        class="vc-margin-bottom_l"
-        :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
-        :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
-        :required="true"
-        v-model="form.password"
-        type="password"
-        @keyup.enter="login"
-      ></vc-input>
-      <div
-        class="
-          vc-flex
-          vc-flex-justify_center
-          vc-flex-align_center
-          vc-padding-top_s
-        "
-      >
-        <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
-        <vc-button variant="primary" :disabled="loading" @click="login">
-          {{ $t("SHELL.LOGIN.BUTTON") }}
-        </vc-button>
-      </div>
+      <template v-if="isLogin">
+        <vc-input
+          ref="loginField"
+          class="vc-margin-bottom_l vc-margin-top_xs"
+          :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
+          :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+          :required="true"
+          v-model="form.username"
+        ></vc-input>
+        <vc-input
+          ref="passwordField"
+          class="vc-margin-bottom_l"
+          :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
+          :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
+          :required="true"
+          v-model="form.password"
+          type="password"
+          @keyup.enter="login"
+        ></vc-input>
+        <div
+          class="
+            vc-flex
+            vc-flex-justify_end
+            vc-flex-align_center
+            vc-padding-top_s
+            vc-padding-bottom_m
+          "
+        >
+          <button
+            class="vc-button vc-button_onlytext"
+            @click="togglePassRequest"
+          >
+            {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
+          </button>
+        </div>
+        <div
+          class="
+            vc-flex
+            vc-flex-justify_center
+            vc-flex-align_center
+            vc-padding-top_s
+          "
+        >
+          <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+          <vc-button variant="primary" :disabled="loading" @click="login">
+            {{ $t("SHELL.LOGIN.BUTTON") }}
+          </vc-button>
+        </div>
+      </template>
+      <template v-else>
+        <template v-if="!forgotPasswordRequestSent">
+          <vc-input
+            ref="forgotPasswordField"
+            class="vc-margin-bottom_l vc-margin-top_xs"
+            :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+            :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
+            :required="true"
+            v-model="forgotPasswordForm.loginOrEmail"
+            fieldDescription="We will send you an email with instructions on how to reset your password."
+          ></vc-input>
+          <div
+            class="
+              vc-flex
+              vc-flex-justify_space-between
+              vc-flex-align_center
+              vc-padding-top_s
+            "
+          >
+            <vc-button variant="secondary" @click="togglePassRequest">
+              {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
+            </vc-button>
+            <vc-button variant="primary" :disabled="loading" @click="forgot">
+              {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
+            </vc-button>
+          </div>
+        </template>
+
+        <template
+          v-if="requestPassResult.succeeded && forgotPasswordRequestSent"
+        >
+          <div>Email with instructions has been sent to you.</div>
+          <div
+            class="
+              vc-flex
+              vc-flex-justify_center
+              vc-flex-align_center
+              vc-padding-top_s
+            "
+          >
+            <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+            <vc-button
+              variant="primary"
+              :disabled="loading"
+              @click="togglePassRequest"
+            >
+              {{ $t("SHELL.LOGIN.BUTTON_OK") }}
+            </vc-button>
+          </div>
+        </template>
+      </template>
+
       <vc-hint
         v-if="!signInResult.succeeded"
         class="vc-margin-top_m"
@@ -40,13 +110,26 @@
         <!-- TODO: stylizing-->
         {{ signInResult.error }}
       </vc-hint>
+      <vc-hint
+        v-if="!requestPassResult.succeeded"
+        class="vc-margin-top_m"
+        style="color: #f14e4e"
+      >
+        <!-- TODO: stylizing-->
+        {{ requestPassResult.error }}
+      </vc-hint>
     </vc-form>
   </vc-login-form>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, reactive } from "vue";
-import { useLogger, useUser, SignInResult } from "@virtoshell/core";
+import {
+  useLogger,
+  useUser,
+  SignInResult,
+  RequestPasswordResult,
+} from "@virtoshell/core";
 
 export default defineComponent({
   props: {
@@ -69,23 +152,53 @@ export default defineComponent({
   setup() {
     const log = useLogger();
     const signInResult = ref<SignInResult>({ succeeded: true });
-    const { signIn, loading } = useUser();
+    const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
+    const forgotPasswordRequestSent = ref(false);
+    const { signIn, loading, requestPasswordReset } = useUser();
+    const isLogin = ref(true);
     const form = reactive({
       username: "",
       password: "",
+    });
+    const forgotPasswordForm = reactive({
+      loginOrEmail: "",
     });
 
     const login = async () => {
       signInResult.value = await signIn(form.username, form.password);
     };
 
+    const forgot = async () => {
+      requestPassResult.value = await requestPasswordReset(
+        forgotPasswordForm.loginOrEmail
+      );
+      if (requestPassResult.value.succeeded) {
+        forgotPasswordRequestSent.value = true;
+      }
+    };
+
+    const togglePassRequest = () => {
+      isLogin.value = !isLogin.value;
+      if (isLogin.value) {
+        forgotPasswordRequestSent.value = false;
+        forgotPasswordForm.loginOrEmail = "";
+        requestPassResult.value.error = "";
+      }
+    };
+
     log.debug("Init login-page");
 
     return {
       form,
+      isLogin,
+      forgotPasswordForm,
       login,
+      forgot,
       loading,
       signInResult,
+      requestPassResult,
+      forgotPasswordRequestSent,
+      togglePassRequest,
     };
   },
 });

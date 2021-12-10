@@ -1,0 +1,81 @@
+{
+  "IMPORT": {
+    "MENU": {
+      "TITLE": "Import"
+    },
+    "PAGES": {
+      "TITLE": "Import",
+      "ACTIONS": {
+        "SELECTS": {
+          "DATA_IMPORTER": {
+            "TITLE": "Data importer",
+            "DESCRIPTION": {
+              "TITLE": "Download Products import template file:",
+              "LINK": "here"
+            }
+          },
+          "DELIMITER": {
+            "TITLE": "Delimiter"
+          }
+        },
+        "UPLOADER": {
+          "TITLE": "Uploaded",
+          "ACTIONS": {
+            "DELETE": "Delete",
+            "PREVIEW": "Preview",
+            "START_IMPORT": "Start import"
+          }
+        }
+      },
+      "LIST": {
+        "TABLE": {
+          "HEADER": {
+            "NAME": "Name",
+            "LINES_CREATED": "Lines created",
+            "LINES_UPDATED": "Lines updated",
+            "ERROR_COUNT": "Error count",
+            "DATE": "Date",
+            "REPORT_URL": "Errors report download Url"
+          }
+        }
+      },
+      "IMPORTING": {
+        "IMPORT_STARTED": "Import started",
+        "IMPORT_SUMMARY": "Import summary",
+        "EMPTY_ARCHIVE": "Archive is empty",
+        "LINES_CREATED": "Lines created",
+        "LINES_UPDATED": "Lines updated",
+        "ERROR_COUNT": "Error count",
+        "REPORT_URL": "Errors report download Url:",
+        "TIMINGS": {
+          "START": "Start",
+          "END": "End"
+        },
+        "TABLE": {
+          "HEADER": {
+            "FULL_NAME": "Full name",
+            "FIRST_NAME": "First name",
+            "LAST_NAME": "Last name",
+            "ID": "ID",
+            "OUTER_ID": "Outer ID",
+            "ORG_ID": "Org. ID",
+            "ORG_OUTER_ID": "Org. Outer ID",
+            "ORG_NAME": "Org. Name",
+            "ACCOUNT_ID": "Account ID",
+            "ACCOUNT_OUTER_ID": "Account Outer ID",
+            "ACCOUNT_LOGIN": "Account Login",
+            "STORE_ID": "Store ID"
+          }
+        },
+        "POPUP": {
+          "TITLE": "Contacts import",
+          "DESCRIPTION": "Please use horizontal scroll to see all columns from the import preview",
+          "PREVIEW_COUNT": "Preview count",
+          "PREVIEW_OF": "of",
+          "CANCEL": "Cancel",
+          "IMPORT": "Import"
+        }
+      }
+    }
+  }
+}

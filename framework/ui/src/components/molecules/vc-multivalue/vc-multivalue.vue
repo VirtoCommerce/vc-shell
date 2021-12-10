@@ -68,7 +68,7 @@ import { IValidationRules } from "../../../typings";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
 export default defineComponent({
-  name: "VcInput",
+  name: "VcMultiInput",
 
   components: {
     VcLabel,

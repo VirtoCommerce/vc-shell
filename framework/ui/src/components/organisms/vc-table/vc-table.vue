@@ -12,7 +12,14 @@
       "
     >
       <div
-        class="vc-table__header vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
+        class="
+          vc-table__header
+          vc-flex-shrink_0
+          vc-flex
+          vc-flex-align_center
+          vc-flex-justify_space-between
+          vc-padding_l
+        "
       >
         <!-- Table filter mobile button -->
         <div
@@ -57,6 +64,7 @@
         class="vc-flex-grow_1"
         :usePtr="!!$attrs['onScroll:ptr']"
         @scroll:ptr="$emit('scroll:ptr')"
+        :scrolling="scrolling"
       >
         <!-- Mobile table view -->
         <template v-if="$isMobile.value && $slots['mobile-item']">
@@ -175,7 +183,12 @@
                 v-if="itemActionBuilder"
               >
                 <div
-                  class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
+                  class="
+                    vc-table__body-actions-container
+                    vc-flex
+                    vc-flex-justify_center
+                    vc-flex-align_center
+                  "
                 >
                   <button
                     class="vc-table__body-actions"
@@ -229,7 +242,12 @@
         >
           <div
             v-if="notfound"
-            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+            class="
+              vc-fill_all
+              vc-flex vc-flex-column
+              vc-flex-align_center
+              vc-flex-justify_center
+            "
           >
             <img v-if="notfound.image" :src="notfound.image" />
             <div class="vc-margin_l vc-table__empty-text">
@@ -243,7 +261,12 @@
         <slot v-else name="empty">
           <div
             v-if="empty"
-            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+            class="
+              vc-fill_all
+              vc-flex vc-flex-column
+              vc-flex-align_center
+              vc-flex-justify_center
+            "
           >
             <img v-if="empty.image" :src="empty.image" />
             <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
@@ -261,7 +284,14 @@
       v-if="($slots['footer'] || footer) && items && items.length"
     >
       <div
-        class="vc-table__footer vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
+        class="
+          vc-table__footer
+          vc-flex-shrink_0
+          vc-flex
+          vc-flex-align_center
+          vc-flex-justify_space-between
+          vc-padding_l
+        "
       >
         <!-- Table pagination -->
         <vc-pagination
@@ -422,6 +452,11 @@ export default defineComponent({
     selectedItemId: {
       type: String,
       default: undefined,
+    },
+
+    scrolling: {
+      type: Boolean,
+      default: false,
     },
   },
 

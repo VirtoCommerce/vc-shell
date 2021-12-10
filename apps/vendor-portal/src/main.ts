@@ -6,6 +6,7 @@ import ModAssets from "@virtoshell/mod-assets";
 import ModOrders from "./modules/orders";
 import ModProducts from "./modules/products";
 import ModOffers from "./modules/offers";
+import ModImport from "./modules/import";
 import router from "./router";
 
 import * as locales from "./locales";
@@ -24,7 +25,8 @@ const app = createApp({
   .use(ModAssets)
   .use(ModOrders)
   .use(ModProducts)
-  .use(ModOffers);
+  .use(ModOffers)
+  .use(ModImport);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

@@ -132,6 +132,8 @@ export default defineComponent({
   &__body {
     flex-grow: 1;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
   }
 }
 </style>

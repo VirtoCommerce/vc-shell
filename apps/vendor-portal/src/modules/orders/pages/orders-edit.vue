@@ -121,7 +121,12 @@
                     </div>
                   </div>
                   <div
-                    class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
+                    class="
+                      vc-margin-top_m
+                      vc-fill_width
+                      vc-flex
+                      vc-flex-justify_space-between
+                    "
                   >
                     <div class="vc-ellipsis vc-flex-grow_2">
                       <vc-hint>Quantity</vc-hint>
@@ -152,7 +157,12 @@
             </vc-table>
 
             <div
-              class="orders-totals vc-flex vc-flex-row vc-flex-justify_end vc-padding_l"
+              class="
+                orders-totals
+                vc-flex vc-flex-row
+                vc-flex-justify_end
+                vc-padding_l
+              "
             >
               <div class="vc-margin-right_xl">
                 <span class="vc-margin-right_s">Subtotal:</span>
@@ -231,6 +241,7 @@
 import { computed, onMounted, defineComponent } from "vue";
 
 import { useOrder } from "../composables";
+import { ITableColumns, IToolbarItems } from "../../../types";
 
 export default defineComponent({
   url: "order",
@@ -267,7 +278,7 @@ export default defineComponent({
       }
     });
 
-    const bladeToolbar = computed(() => [
+    const bladeToolbar = computed<IToolbarItems[]>(() => [
       {
         title: "Download PDF",
         icon: "fas fa-file-pdf",
@@ -328,7 +339,7 @@ export default defineComponent({
       },
     ]);
 
-    const columns = [
+    const columns: ITableColumns[] = [
       {
         id: "imageUrl",
         title: "Pic",

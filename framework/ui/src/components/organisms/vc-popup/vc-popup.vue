@@ -1,9 +1,9 @@
 <template>
-  <div class="vc-popup">
-    <div class="vc-popup__overlay"></div>
-    <div
-      class="vc-fill_all vc-flex vc-flex-align_stretch vc-flex-justify_stretch"
-    >
+  <div
+    class="vc-popup"
+    :class="['vc-popup', { 'vc-popup_fullscreen': fullscreen }]"
+  >
+    <div class="vc-popup__wrapper">
       <div class="vc-popup__inner vc-flex vc-flex-column vc-flex-grow_1">
         <div
           class="vc-popup__header vc-flex vc-flex-shrink_0 vc-flex-align_center"
@@ -43,6 +43,11 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+
+    fullscreen: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   emits: ["close"],
@@ -52,32 +57,46 @@ export default defineComponent({
 <style lang="less">
 .vc-popup {
   position: fixed;
-  left: 0;
   top: 0;
   right: 0;
   bottom: 0;
+  left: 0;
   z-index: 9999;
+  background: rgba(31, 40, 50, 0.58);
 
-  &__overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
+  &_fullscreen {
+    .vc-popup__centerer {
+      justify-content: normal;
+      align-items: normal;
+    }
+    .vc-popup__wrapper {
+      max-height: 100vh;
+    }
+  }
+
+  &__wrapper {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
     right: 0;
     bottom: 0;
-    background: rgba(31, 40, 50, 0.58);
+    left: 0;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    max-height: 75vh;
+    height: 100%;
   }
 
   &__inner {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
+    flex: 1 1 auto;
     margin: 40px;
     box-sizing: border-box;
     background: white;
     border-radius: 5px;
     overflow: hidden;
+    flex-grow: 1;
+    position: relative;
 
     .vc-app_phone & {
       margin: 0;
@@ -87,12 +106,12 @@ export default defineComponent({
 
   &__header {
     height: 44px;
-    background-color: #eef5fa;
     padding: 0 var(--padding-l);
+    background-color: #eef5fa;
 
     &-icon {
-      color: #a1c0d4;
       cursor: pointer;
+      color: #a1c0d4;
     }
   }
 }

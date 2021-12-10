@@ -42,7 +42,7 @@ export default defineComponent({
 
     variant: {
       type: String,
-      enum: ["primary", "secondary", "special"],
+      enum: ["primary", "secondary", "special", "danger"],
       default: "primary",
     },
 
@@ -107,6 +107,11 @@ export default defineComponent({
   --button-special-background-color-hover: #eb8b03;
   --button-special-background-color-active: #eb8b03;
   --button-special-background-color-disabled: #fed498;
+
+  --button-danger-background-color: #ff4a4a;
+  --button-danger-background-color-hover: #d73a3a;
+  --button-danger-background-color-active: #d73a3a;
+  --button-danger-background-color-disabled: #ff5e5e;
 
   --button-special-text-color: #ffffff;
   --button-special-text-color-hover: #ffffff;
@@ -214,6 +219,41 @@ export default defineComponent({
     }
   }
 
+  &_danger {
+    background-color: var(--button-danger-background-color);
+    color: var(--button-special-text-color);
+    border: 1px solid var(--button-danger-background-color);
+
+    &:hover {
+      background-color: var(--button-danger-background-color-hover);
+      color: var(--button-special-text-color-hover);
+      border: 1px solid var(--button-danger-background-color-hover);
+    }
+
+    &:focus {
+      background-color: var(--button-danger-background-color-active);
+      color: var(--button-special-text-color-active);
+      border: 1px solid var(--button-danger-background-color-active);
+    }
+
+    &.vc-button_disabled,
+    &.vc-button_disabled:hover {
+      cursor: not-allowed;
+      background-color: var(--button-danger-background-color-disabled);
+      color: var(--button-special-text-color-disabled);
+      border: 1px solid var(--button-danger-background-color-disabled);
+    }
+
+    .color-scheme-outline(
+            var(--button-danger-background-color),
+            var(--button-danger-background-color),
+            var(--button-danger-background-color-hover),
+            var(--button-danger-background-color-hover),
+            var(--button-danger-background-color-active),
+            var(--button-danger-background-color-disabled),
+            var(--button-danger-background-color-disabled));
+  }
+
   &_small {
     height: var(--button-height-small);
     padding: var(--button-padding-small);
@@ -266,6 +306,41 @@ export default defineComponent({
     &:focus {
       background-color: transparent;
       color: var(--button-secondary-text-color-hover);
+    }
+  }
+
+  .color-scheme-outline(
+    @text-color,
+    @border_color,
+    @text-color-hover,
+    @border-color-hover,
+    @border-color-active,
+    @text-color-disabled,
+    @border-color-disabled) {
+    &.vc-button_outline {
+      background-color: transparent;
+      color: @text-color;
+      border: 1px solid @border_color;
+
+      &:hover {
+        background-color: transparent;
+        color: @text-color-hover;
+        border: 1px solid @border-color-hover;
+      }
+
+      &:focus {
+        background-color: transparent;
+        color: @text-color-hover;
+        border: 1px solid @border-color-active;
+      }
+
+      &.vc-button_disabled,
+      &.vc-button_disabled:hover {
+        cursor: not-allowed;
+        background-color: transparent;
+        color: @text-color-disabled;
+        border: 1px solid @border-color-disabled;
+      }
     }
   }
 }

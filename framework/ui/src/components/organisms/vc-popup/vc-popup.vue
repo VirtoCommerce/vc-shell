@@ -86,6 +86,10 @@ export default defineComponent({
     flex-direction: column;
     max-height: 75vh;
     height: 100%;
+
+    .vc-app_phone & {
+      max-height: 100vh;
+    }
   }
 
   &__inner {

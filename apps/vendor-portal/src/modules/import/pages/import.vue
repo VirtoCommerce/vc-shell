@@ -122,7 +122,10 @@
       </div>
     </div>
     <!-- Import archive -->
-    <div class="csv-import__archive vc-padding_l" v-if="!$isMobile.value">
+    <div
+      class="csv-import__archive vc-padding_l vc-flex"
+      v-if="!$isMobile.value"
+    >
       <vc-card header="Archive import">
         <vc-table
           :columns="columns"
@@ -735,11 +738,12 @@ export default defineComponent({
 <style lang="less" scoped>
 .csv-import {
   &__archive {
-    display: flex;
     flex: 1 1 auto;
 
-    &.vc-card__body {
+    ::v-deep .vc-card__body {
       flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
     }
   }
   &__inner {

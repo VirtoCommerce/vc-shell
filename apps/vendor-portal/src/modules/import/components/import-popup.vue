@@ -68,7 +68,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .import-popup {
-  ::v-deep(.vc-popup__content) {
+  :deep(.vc-popup__content) {
     display: flex;
     flex-direction: column;
   }

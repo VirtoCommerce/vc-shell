@@ -122,51 +122,53 @@
       </div>
     </div>
     <!-- Import archive -->
-    <div
-      class="csv-import__archive vc-padding_l vc-flex"
-      v-if="!$isMobile.value"
-    >
-      <vc-card header="Archive import">
-        <vc-table
-          :columns="columns"
-          :items="mock"
-          :sort="sort"
-          :header="false"
-          :selectedItemId="selectedItemId"
-        >
-          <!-- Empty template -->
-          <template v-slot:empty>
-            <div
-              class="
-                vc-fill_all
-                vc-flex vc-flex-column
-                vc-flex-align_center
-                vc-flex-justify_center
-              "
-            >
+    <div class="csv-import__archive-wrap vc-padding_xs vc-flex">
+      <div
+        class="csv-import__archive vc-padding_l vc-flex"
+        v-if="!$isMobile.value"
+      >
+        <vc-card header="Archive import">
+          <vc-table
+            :columns="columns"
+            :items="mock"
+            :sort="sort"
+            :header="false"
+            :selectedItemId="selectedItemId"
+          >
+            <!-- Empty template -->
+            <template v-slot:empty>
               <div
                 class="
-                  vc-font-size_m
-                  vc-font-weight_medium
-                  csv-import__archive-empty-text
+                  vc-fill_all
+                  vc-flex vc-flex-column
+                  vc-flex-align_center
+                  vc-flex-justify_center
                 "
               >
-                {{ t("IMPORT.PAGES.IMPORTING.EMPTY_ARCHIVE") }}
+                <div
+                  class="
+                    vc-font-size_m
+                    vc-font-weight_medium
+                    csv-import__archive-empty-text
+                  "
+                >
+                  {{ t("IMPORT.PAGES.IMPORTING.EMPTY_ARCHIVE") }}
+                </div>
               </div>
-            </div>
-          </template>
+            </template>
 
-          <!-- Override name column template -->
-          <template v-slot:item_name="itemData">
-            <div class="vc-flex vc-flex-column">
-              <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-              <vc-hint class="vc-ellipsis vc-margin-top_xs">
-                {{ itemData.item.size }} Mb
-              </vc-hint>
-            </div>
-          </template>
-        </vc-table>
-      </vc-card>
+            <!-- Override name column template -->
+            <template v-slot:item_name="itemData">
+              <div class="vc-flex vc-flex-column">
+                <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                <vc-hint class="vc-ellipsis vc-margin-top_xs">
+                  {{ itemData.item.size }} Mb
+                </vc-hint>
+              </div>
+            </template>
+          </vc-table>
+        </vc-card>
+      </div>
     </div>
     <import-popup
       v-if="importPreview"
@@ -737,6 +739,10 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .csv-import {
+  &__archive-wrap {
+    flex: 1;
+  }
+
   &__archive {
     flex: 1 1 auto;
 
@@ -746,6 +752,7 @@ export default defineComponent({
       flex-direction: column;
     }
   }
+
   &__inner {
     overflow: hidden;
   }

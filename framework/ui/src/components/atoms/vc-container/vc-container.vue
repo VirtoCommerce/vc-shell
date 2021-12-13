@@ -12,7 +12,13 @@
     @touchend="touchEnd"
     @touchcancel="touchCancel"
   >
-    <div ref="component" class="vc-container__inner">
+    <div
+      ref="component"
+      :class="[
+        'vc-container__inner',
+        { 'vc-container__inner_scrollable': scrolling },
+      ]"
+    >
       <div
         class="vc-container__overscroll"
         :class="{ 'vc-container__overscroll_passed': isThresholdPassed }"
@@ -48,6 +54,11 @@ export default defineComponent({
     },
 
     usePtr: {
+      type: Boolean,
+      default: false,
+    },
+
+    scrolling: {
       type: Boolean,
       default: false,
     },
@@ -196,6 +207,10 @@ export default defineComponent({
 
     &::-webkit-scrollbar-thumb:hover {
       background: var(--container-scroll-color-hover);
+    }
+
+    &_scrollable {
+      overflow: scroll;
     }
   }
 

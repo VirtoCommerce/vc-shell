@@ -40,7 +40,11 @@
 
       <template v-slot:mobile-item="itemData">
         <div
-          class="offers-list__mobile-item vc-padding-vertical_m vc-padding-horizontal_l"
+          class="
+            offers-list__mobile-item
+            vc-padding-vertical_m
+            vc-padding-horizontal_l
+          "
         >
           <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
             <vc-image
@@ -57,7 +61,12 @@
             </div>
           </div>
           <div
-            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
+            class="
+              vc-margin-top_m
+              vc-fill_width
+              vc-flex
+              vc-flex-justify_space-between
+            "
           >
             <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>SKU</vc-hint>
@@ -79,7 +88,12 @@
             </div>
           </div>
           <div
-            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
+            class="
+              vc-margin-top_m
+              vc-fill_width
+              vc-flex
+              vc-flex-justify_space-between
+            "
           >
             <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>List price</vc-hint>
@@ -126,6 +140,12 @@ import { useI18n, useFunctions, useLogger } from "@virtoshell/core";
 import { useOffers } from "../composables";
 import moment from "moment";
 import OffersDetails from "./offers-details.vue";
+import {
+  IActionBuilderResult,
+  ITableColumns,
+  IToolbarItems,
+} from "../../../types";
+import { IOffer } from "../../../api_client";
 
 export default defineComponent({
   url: "offers",
@@ -207,7 +227,7 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar = reactive([
+    const bladeToolbar = reactive<IToolbarItems[]>([
       {
         id: "refresh",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
@@ -246,7 +266,7 @@ export default defineComponent({
       },
     ]);
 
-    const columns = ref([
+    const columns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
@@ -340,7 +360,7 @@ export default defineComponent({
       });
     };
 
-    const onHeaderClick = (item) => {
+    const onHeaderClick = (item: ITableColumns) => {
       const sortBy = [":ASK", ":DESC", ""];
       if (item.sortable) {
         item.sortDirection = (item.sortDirection ?? 0) + 1;
@@ -361,14 +381,16 @@ export default defineComponent({
         skip: (page - 1) * searchQuery.value.take,
       });
     };
-    const onSelectionChanged = (checkboxes) => {
+    const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
       selectedOfferIds.value = Object.entries(checkboxes)
         .filter(([id, isChecked]) => isChecked)
         .map(([id, isChecked]) => id);
       console.log(selectedOfferIds.value);
     };
 
-    const actionBuilder = (item) => {
+    const actionBuilder = (
+      item: IOffer & { status: string }
+    ): IActionBuilderResult[] => {
       let result = [];
 
       if (item.status === "Published") {

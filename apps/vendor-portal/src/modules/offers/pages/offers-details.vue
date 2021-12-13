@@ -37,7 +37,12 @@
             >
               <template v-slot:item="itemData">
                 <div
-                  class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
+                  class="
+                    vc-flex
+                    vc-flex-align_center
+                    vc-padding-vertical_s
+                    vc-ellipsis
+                  "
                 >
                   <vc-image
                     class="vc-flex-shrink_0"
@@ -202,7 +207,12 @@
                       v-if="!readonly"
                       size="0"
                       style="flex-basis: 20px"
-                      class="vc-padding_s vc-padding-top_l vc-flex vc-flex-align_end"
+                      class="
+                        vc-padding_s
+                        vc-padding-top_l
+                        vc-flex
+                        vc-flex-align_end
+                      "
                     >
                       <vc-icon
                         class="offer-details__remove-price"
@@ -230,6 +240,7 @@ import { useForm } from "@virtoshell/ui";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct, OfferPrice } from "../../../api_client";
+import { IToolbarItems } from "../../../types";
 
 export default defineComponent({
   url: "offer",
@@ -294,7 +305,7 @@ export default defineComponent({
 
     const readonly = computed(() => !!offer.value?.id);
 
-    const bladeToolbar = reactive([
+    const bladeToolbar = reactive<IToolbarItems[]>([
       {
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),

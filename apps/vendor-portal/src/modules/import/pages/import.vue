@@ -740,7 +740,7 @@ export default defineComponent({
   &__archive {
     flex: 1 1 auto;
 
-    ::v-deep .vc-card__body {
+    ::v-deep(.vc-card__body) {
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;

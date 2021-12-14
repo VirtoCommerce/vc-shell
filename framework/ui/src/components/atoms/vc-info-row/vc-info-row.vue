@@ -1,6 +1,6 @@
 <template>
   <div class="vc-info-row">
-    <vc-row class="vc-info-row__row">
+    <vc-row>
       <vc-col>
         <vc-label class="vc-margin-bottom_s vc-info-row__label">
           <span>{{ label }}</span>
@@ -48,12 +48,6 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .vc-info-row {
-  margin-bottom: 11px;
-
-  &__row {
-    gap: 10px;
-  }
-
   &__value {
     margin: 0;
   }

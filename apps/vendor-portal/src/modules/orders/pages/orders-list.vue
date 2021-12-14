@@ -92,7 +92,12 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -105,7 +110,12 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -140,7 +150,12 @@
           </div>
           <div>
             <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
+              class="
+                vc-margin-top_m
+                vc-fill_width
+                vc-flex
+                vc-flex-justify_space-between
+              "
             >
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>Total</vc-hint>
@@ -171,6 +186,12 @@ import { useOrders } from "../composables";
 import { useFunctions, useI18n } from "@virtoshell/core";
 import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
+import { ICustomerOrder } from "@virtoshell/api-client";
+import {
+  IActionBuilderResult,
+  ITableColumns,
+  IToolbarItems,
+} from "../../../types";
 
 export default defineComponent({
   url: "orders",
@@ -212,7 +233,7 @@ export default defineComponent({
       await loadOrders();
     });
 
-    const bladeToolbar = [
+    const bladeToolbar: IToolbarItems[] = [
       {
         title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
@@ -232,7 +253,7 @@ export default defineComponent({
       },
     ];
 
-    const columns = ref([
+    const columns = ref<ITableColumns[]>([
       {
         id: "number",
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER"),
@@ -312,7 +333,7 @@ export default defineComponent({
       });
     };
 
-    const actionBuilder = (item) => {
+    const actionBuilder = (item: ICustomerOrder): IActionBuilderResult[] => {
       let result = [];
 
       result.push({

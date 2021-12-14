@@ -32,6 +32,11 @@
     {{ Number(value).toFixed(0) }}
   </div>
 
+  <!-- Link cell -->
+  <div v-else-if="cell.type === 'link'" class="vc-table-cell_link">
+    <vc-link>{{ value }}</vc-link>
+  </div>
+
   <!-- Default cell -->
   <div v-else class="vc-table-cell_default">
     {{ value }}

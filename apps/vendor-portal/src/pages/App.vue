@@ -52,9 +52,11 @@ import UserDropdownButton from "../components/user-dropdown-button.vue";
 import { OrdersList } from "../modules/orders";
 import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
+import { Import } from "../modules/import";
 import { useLogger, useI18n, useUser } from "@virtoshell/core";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
+import { IToolbarItems } from "../types";
 
 export default defineComponent({
   name: "App",
@@ -97,7 +99,7 @@ export default defineComponent({
 
     log.debug(`Initializing App`);
 
-    const toolbarItems = reactive([
+    const toolbarItems = reactive<IToolbarItems[]>([
       {
         icon: "fas fa-bell",
         title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
@@ -128,7 +130,7 @@ export default defineComponent({
       },
     ]);
 
-    const menuItems = reactive([
+    const menuItems = reactive<IToolbarItems[]>([
       {
         title: t("SHELL.MENU.DASHBOARD"),
         icon: "fas fa-home",
@@ -155,6 +157,12 @@ export default defineComponent({
         icon: "fas fa-file-invoice",
         isVisible: true,
         component: shallowRef(OffersList),
+      },
+      {
+        title: t("IMPORT.MENU.TITLE"),
+        icon: "fas fa-file-import",
+        isVisible: true,
+        component: shallowRef(Import),
       },
       {
         title: t("SHELL.ACCOUNT.LOGOUT"),

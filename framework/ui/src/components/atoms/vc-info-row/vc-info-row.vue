@@ -2,7 +2,7 @@
   <div class="vc-info-row">
     <vc-row>
       <vc-col>
-        <vc-label class="vc-margin-bottom_s vc-info-row__label">
+        <vc-label>
           <span>{{ label }}</span>
           <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
         </vc-label>

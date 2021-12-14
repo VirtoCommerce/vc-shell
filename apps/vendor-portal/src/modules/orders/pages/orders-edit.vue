@@ -4,48 +4,24 @@
     :title="order.number"
     :expanded="expanded"
     :closable="closable"
-    width="50%"
+    width="70%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
     <vc-container>
       <vc-row>
-        <vc-col size="2" class="vc-padding_s">
+        <vc-col size="1" class="vc-padding_s">
           <vc-card header="Order info">
             <vc-row class="vc-padding_s">
-              <vc-col size="2" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Order reference #"
-                  :modelValue="order.number"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
+              <vc-col class="vc-padding_s">
+                <vc-info-row label="Order reference #" :value="order.number" />
+                <vc-info-row
                   label="Store"
-                  :modelValue="order.storeId"
-                  placeholder="Not set"
+                  :value="order.storeId"
                   tooltip="Shows store where order was placed"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Order status"
-                  :modelValue="order.status"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="1" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Created date/time"
-                  :modelValue="createdDate"
-                  type="datetime-local"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
+                />
+                <vc-info-row label="Order status" :value="order.status" />
+                <vc-info-row label="Created date/time" :value="createdDate" />
               </vc-col>
             </vc-row>
           </vc-card>
@@ -54,28 +30,9 @@
           <vc-card header="Customer contact">
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Full name"
-                  :modelValue="order.customerName"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Email"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Phone"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
+                <vc-info-row label="Full name" :value="order.customerName" />
+                <vc-info-row label="Email" />
+                <vc-info-row label="Phone" />
               </vc-col>
             </vc-row>
           </vc-card>
@@ -194,40 +151,25 @@
         <vc-col class="vc-padding_s">
           <vc-card header="Shipping address">
             <vc-row class="vc-padding_s">
-              <vc-col size="4" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Country"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
+              <vc-col class="vc-padding_s">
+                <vc-info-row label="Country" />
+                <vc-info-row label="Postal/ZIP code" />
+                <vc-info-row label="State/Province" />
+                <vc-info-row label="City" />
+                <vc-info-row label="Address line 1" />
+                <vc-info-row label="Address line 2" />
               </vc-col>
-              <vc-col size="2" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Postal/ZIP code"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="3" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="State/Province"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="3" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="City"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
+            </vc-row>
+          </vc-card>
+        </vc-col>
+        <vc-col class="vc-padding_s">
+          <vc-card header="Payment info">
+            <vc-row class="vc-padding_s">
+              <vc-col class="vc-padding_s">
+                <vc-info-row label="Country" />
+                <vc-info-row label="Postal/ZIP code" />
+                <vc-info-row label="State/Province" />
+                <vc-info-row label="City" />
               </vc-col>
             </vc-row>
           </vc-card>
@@ -239,6 +181,7 @@
 
 <script lang="ts">
 import { computed, onMounted, defineComponent } from "vue";
+import moment from "moment";
 
 import { useOrder } from "../composables";
 import { ITableColumns, IToolbarItems } from "../../../types";
@@ -271,6 +214,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
       useOrder();
+    const locale = window.navigator.language;
 
     onMounted(async () => {
       if (props.param) {
@@ -391,18 +335,14 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      moment,
       columns,
       order,
       items: computed(() => order.value?.items),
       loading,
       createdDate: computed(() => {
         const date = new Date(order.value?.createdDate);
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const hour = date.getHours().toString().padStart(2, "0");
-        const minute = date.getMinutes().toString().padStart(2, "0");
-        return `${year}-${month}-${day}T${hour}:${minute}`;
+        return moment(date).locale(locale).format("L LT");
       }),
     };
   },

@@ -3,7 +3,7 @@
     title="Orders"
     :expanded="expanded"
     :closable="closable"
-    width="50%"
+    width="30%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
@@ -279,6 +279,7 @@ export default defineComponent({
         id: "status",
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS"),
         width: 120,
+        alwaysVisible: true,
         sortable: true,
       },
       {

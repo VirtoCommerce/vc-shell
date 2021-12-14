@@ -289,8 +289,6 @@ export default defineComponent({
         },
         disabled: !props.param,
       },
-      { title: "Confirm", icon: "fas fa-check", disabled: true },
-      { title: "Cancel", icon: "fas fa-times-circle", disabled: true },
       {
         title: "Accept order",
         icon: "far fa-check-circle",
@@ -316,6 +314,26 @@ export default defineComponent({
           (order.value.status === "Paid" || order.value.status === "Unpaid") &&
           props.param
         ),
+      },
+      {
+        title: "Cancel",
+        icon: "fas fa-times-circle",
+        disabled: false,
+        async clickHandler() {
+          if (props.param) {
+            const lastStatus = order.value.status;
+
+            try {
+              order.value.status = "Cancelled";
+              await changeOrderStatus(order.value);
+              emit("parent:call", {
+                method: "reload",
+              });
+            } catch (e) {
+              order.value.status = lastStatus;
+            }
+          }
+        },
       },
       {
         title: "Ship order",

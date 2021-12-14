@@ -21,56 +21,6 @@ export class AuthApiBase {
     }
   }
   
-  export class VcmpOperatorCatalogClient extends AuthApiBase {
-      private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-      private baseUrl: string;
-      protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-  
-      constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-          super();
-          this.http = http ? http : <any>window;
-          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
-      }
-  
-      /**
-       * @return Success
-       */
-      approveRequest(id: string | null): Promise<void> {
-          let url_ = this.baseUrl + "/api/vcmp/operator/requests/{id}/aprove";
-          if (id === undefined || id === null)
-              throw new Error("The parameter 'id' must be defined.");
-          url_ = url_.replace("{id}", encodeURIComponent("" + id));
-          url_ = url_.replace(/[?&]$/, "");
-  
-          let options_ = <RequestInit>{
-              method: "POST",
-              headers: {
-              }
-          };
-  
-          return this.transformOptions(options_).then(transformedOptions_ => {
-              return this.http.fetch(url_, transformedOptions_);
-          }).then((_response: Response) => {
-              return this.processApproveRequest(_response);
-          });
-      }
-  
-      protected processApproveRequest(response: Response): Promise<void> {
-          const status = response.status;
-          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-          if (status === 200) {
-              return response.text().then((_responseText) => {
-              return;
-              });
-          } else if (status !== 200 && status !== 204) {
-              return response.text().then((_responseText) => {
-              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-              });
-          }
-          return Promise.resolve<void>(<any>null);
-      }
-  }
-  
   export class VcmpSellerCatalogClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
@@ -681,6 +631,102 @@ export class AuthApiBase {
               });
           }
           return Promise.resolve<void>(<any>null);
+      }
+  }
+  
+  export class VcmpSellerSecurityClient extends AuthApiBase {
+      private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+      private baseUrl: string;
+      protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  
+      constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+          super();
+          this.http = http ? http : <any>window;
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      forgotPassword(body: ForgotPasswordCommand | undefined): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/security/forgotpassword";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processForgotPassword(_response);
+          });
+      }
+  
+      protected processForgotPassword(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      resetPasswordByToken(body: ResetPasswordCommand | undefined): Promise<IdentityResult> {
+          let url_ = this.baseUrl + "/api/vcmp/security/resetpasswordconfirm";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processResetPasswordByToken(_response);
+          });
+      }
+  
+      protected processResetPasswordByToken(response: Response): Promise<IdentityResult> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = IdentityResult.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<IdentityResult>(<any>null);
       }
   }
   
@@ -4539,6 +4585,7 @@ export class AuthApiBase {
       currency?: string | undefined;
       readonly listPrice?: number | undefined;
       readonly salePrice?: number | undefined;
+      readonly minQuantity?: number | undefined;
       prices?: OfferPrice[] | undefined;
       inStockQuantity?: number;
       startDate?: Date | undefined;
@@ -4576,6 +4623,7 @@ export class AuthApiBase {
               this.currency = _data["currency"];
               (<any>this).listPrice = _data["listPrice"];
               (<any>this).salePrice = _data["salePrice"];
+              (<any>this).minQuantity = _data["minQuantity"];
               if (Array.isArray(_data["prices"])) {
                   this.prices = [] as any;
                   for (let item of _data["prices"])
@@ -4617,6 +4665,7 @@ export class AuthApiBase {
           data["currency"] = this.currency;
           data["listPrice"] = this.listPrice;
           data["salePrice"] = this.salePrice;
+          data["minQuantity"] = this.minQuantity;
           if (Array.isArray(this.prices)) {
               data["prices"] = [];
               for (let item of this.prices)
@@ -4651,6 +4700,7 @@ export class AuthApiBase {
       currency?: string | undefined;
       listPrice?: number | undefined;
       salePrice?: number | undefined;
+      minQuantity?: number | undefined;
       prices?: OfferPrice[] | undefined;
       inStockQuantity?: number;
       startDate?: Date | undefined;
@@ -5085,6 +5135,174 @@ export class AuthApiBase {
       storeName?: string | undefined;
       details: OfferDetails;
       productId: string;
+  }
+  
+  export class ForgotPasswordCommand implements IForgotPasswordCommand {
+      loginOrEmail!: string;
+  
+      constructor(data?: IForgotPasswordCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.loginOrEmail = _data["loginOrEmail"];
+          }
+      }
+  
+      static fromJS(data: any): ForgotPasswordCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new ForgotPasswordCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["loginOrEmail"] = this.loginOrEmail;
+          return data; 
+      }
+  }
+  
+  export interface IForgotPasswordCommand {
+      loginOrEmail: string;
+  }
+  
+  export class ResetPasswordCommand implements IResetPasswordCommand {
+      userId!: string;
+      token!: string;
+      newPassword!: string;
+  
+      constructor(data?: IResetPasswordCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.userId = _data["userId"];
+              this.token = _data["token"];
+              this.newPassword = _data["newPassword"];
+          }
+      }
+  
+      static fromJS(data: any): ResetPasswordCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new ResetPasswordCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["userId"] = this.userId;
+          data["token"] = this.token;
+          data["newPassword"] = this.newPassword;
+          return data; 
+      }
+  }
+  
+  export interface IResetPasswordCommand {
+      userId: string;
+      token: string;
+      newPassword: string;
+  }
+  
+  export class IdentityError implements IIdentityError {
+      code?: string | undefined;
+      description?: string | undefined;
+  
+      constructor(data?: IIdentityError) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.code = _data["code"];
+              this.description = _data["description"];
+          }
+      }
+  
+      static fromJS(data: any): IdentityError {
+          data = typeof data === 'object' ? data : {};
+          let result = new IdentityError();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["code"] = this.code;
+          data["description"] = this.description;
+          return data; 
+      }
+  }
+  
+  export interface IIdentityError {
+      code?: string | undefined;
+      description?: string | undefined;
+  }
+  
+  export class IdentityResult implements IIdentityResult {
+      readonly succeeded?: boolean;
+      readonly errors?: IdentityError[] | undefined;
+  
+      constructor(data?: IIdentityResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              (<any>this).succeeded = _data["succeeded"];
+              if (Array.isArray(_data["errors"])) {
+                  (<any>this).errors = [] as any;
+                  for (let item of _data["errors"])
+                      (<any>this).errors!.push(IdentityError.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): IdentityResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new IdentityResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["succeeded"] = this.succeeded;
+          if (Array.isArray(this.errors)) {
+              data["errors"] = [];
+              for (let item of this.errors)
+                  data["errors"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface IIdentityResult {
+      succeeded?: boolean;
+      errors?: IdentityError[] | undefined;
   }
   
   export class ApiException extends Error {

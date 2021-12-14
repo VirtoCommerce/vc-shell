@@ -318,7 +318,6 @@ export default defineComponent({
       {
         title: "Cancel",
         icon: "fas fa-times-circle",
-        disabled: false,
         async clickHandler() {
           if (props.param) {
             const lastStatus = order.value.status;
@@ -334,6 +333,7 @@ export default defineComponent({
             }
           }
         },
+        disabled: !!(order.value.status === "Cancelled" && props.param),
       },
       {
         title: "Ship order",

@@ -48,6 +48,8 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .vc-info-row {
+  margin-bottom: 11px;
+
   &__value {
     margin: 0;
   }

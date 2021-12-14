@@ -4,6 +4,7 @@
  */
 import { Story } from "@storybook/vue3";
 import VcSwitch from "./vc-switch.vue";
+import VcHint from "../vc-hint/vc-hint.vue";
 
 export default {
   title: "atoms/vc-switch",
@@ -11,7 +12,7 @@ export default {
 };
 
 const Template: Story = (args) => ({
-  components: { VcSwitch },
+  components: { VcSwitch, VcHint },
   setup() {
     return { args };
   },
@@ -20,4 +21,7 @@ const Template: Story = (args) => ({
 
 export const Switch = Template.bind({});
 Switch.storyName = "vc-switch";
-Switch.args = {};
+Switch.args = {
+  checked: false,
+  disabled: false,
+};

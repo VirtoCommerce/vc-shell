@@ -204,7 +204,7 @@ export default defineComponent({
     const errorMessage = "";
     const importPreview = ref(false);
     const importing = ref(false);
-    const importStarted = ref(true);
+    const importStarted = ref(false);
     const progress = ref(0);
     const file = ref<File>();
     const timing = ref({

@@ -131,6 +131,8 @@ import {
   RequestPasswordResult,
 } from "@virtoshell/core";
 
+import { useLogin } from "../modules/login";
+
 export default defineComponent({
   props: {
     logo: {
@@ -154,7 +156,8 @@ export default defineComponent({
     const signInResult = ref<SignInResult>({ succeeded: true });
     const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
     const forgotPasswordRequestSent = ref(false);
-    const { signIn, loading, requestPasswordReset } = useUser();
+    const { signIn, loading } = useUser();
+    const { forgotPassword } = useLogin();
     const isLogin = ref(true);
     const form = reactive({
       username: "",
@@ -169,12 +172,8 @@ export default defineComponent({
     };
 
     const forgot = async () => {
-      requestPassResult.value = await requestPasswordReset(
-        forgotPasswordForm.loginOrEmail
-      );
-      if (requestPassResult.value.succeeded) {
-        forgotPasswordRequestSent.value = true;
-      }
+      await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
+      forgotPasswordRequestSent.value = true;
     };
 
     const togglePassRequest = () => {

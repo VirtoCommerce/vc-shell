@@ -8,7 +8,8 @@
         </vc-label>
       </vc-col>
       <vc-col size="2">
-        <p class="vc-info-row__value">{{ value }}</p>
+        <p class="vc-info-row__value" v-if="type === 'default'">{{ value }}</p>
+        <vc-link v-else-if="type === 'email'">{{ value }}</vc-link>
       </vc-col>
     </vc-row>
   </div>
@@ -41,6 +42,11 @@ export default defineComponent({
     tooltip: {
       type: String,
       default: "",
+    },
+
+    type: {
+      type: String,
+      default: "default",
     },
   },
 });

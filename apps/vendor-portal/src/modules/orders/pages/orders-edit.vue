@@ -15,24 +15,59 @@
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
                 <vc-info-row label="Order reference #" :value="order.number" />
+                <vc-info-row label="Created date/time" :value="createdDate" />
                 <vc-info-row
                   label="Store"
                   :value="order.storeId"
                   tooltip="Shows store where order was placed"
                 />
                 <vc-info-row label="Order status" :value="order.status" />
-                <vc-info-row label="Created date/time" :value="createdDate" />
+                <vc-info-row
+                  class="orders-edit__row_line"
+                  label="Subtotal"
+                  :value="
+                    order.subTotal &&
+                    order.subTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <vc-info-row
+                  label="Discount total"
+                  :value="
+                    order.discountTotal &&
+                    order.discountTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <vc-info-row
+                  label="Total"
+                  :value="
+                    order.total && order.total.toFixed(2) + ' ' + order.currency
+                  "
+                />
               </vc-col>
             </vc-row>
           </vc-card>
         </vc-col>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Customer contact">
+          <vc-card header="Shipping address">
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
-                <vc-info-row label="Full name" :value="order.customerName" />
-                <vc-info-row label="Email" />
-                <vc-info-row label="Phone" />
+                <vc-info-row label="Sold to" :value="order.customerName" />
+                <vc-info-row value="USA" />
+                <vc-info-row value="nathan.roberts@example.com" type="email" />
+                <vc-info-row value="+62-818-5551-71" />
+                <vc-info-row
+                  value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
+                />
+                <vc-info-row
+                  label="Ship to"
+                  class="orders-edit__row_line"
+                  value="ShipStation Support"
+                />
+                <vc-info-row value="USA" />
+                <vc-info-row
+                  value="3800 N Lamar BLVD STE 220 Austin, TX 78756-4011 US"
+                />
+                <vc-info-row value="+62-818-5551-71" />
               </vc-col>
             </vc-row>
           </vc-card>
@@ -47,7 +82,7 @@
               :columns="columns"
               :items="items"
               :header="false"
-              :footer="false"
+              :footer="true"
             >
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">
@@ -112,66 +147,6 @@
                 </div>
               </template>
             </vc-table>
-
-            <div
-              class="
-                orders-totals
-                vc-flex vc-flex-row
-                vc-flex-justify_end
-                vc-padding_l
-              "
-            >
-              <div class="vc-margin-right_xl">
-                <span class="vc-margin-right_s">Subtotal:</span>
-                <span class="vc-font-weight_bold"
-                  >{{ order.subTotal && order.subTotal.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-              <div class="vc-margin-right_xl">
-                <span class="vc-margin-right_s">Discount total:</span>
-                <span class="vc-font-weight_bold"
-                  >{{ order.discountTotal && order.discountTotal.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-              <div class="orders-totals__counter vc-font-weight_bold">
-                <span class="vc-margin-right_s">Total:</span>
-                <span
-                  >{{ order.total && order.total.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-            </div>
-          </vc-card>
-        </vc-col>
-      </vc-row>
-
-      <vc-row>
-        <vc-col class="vc-padding_s">
-          <vc-card header="Shipping address">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Country" />
-                <vc-info-row label="Postal/ZIP code" />
-                <vc-info-row label="State/Province" />
-                <vc-info-row label="City" />
-                <vc-info-row label="Address line 1" />
-                <vc-info-row label="Address line 2" />
-              </vc-col>
-            </vc-row>
-          </vc-card>
-        </vc-col>
-        <vc-col class="vc-padding_s">
-          <vc-card header="Payment info">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Country" />
-                <vc-info-row label="Postal/ZIP code" />
-                <vc-info-row label="State/Province" />
-                <vc-info-row label="City" />
-              </vc-col>
-            </vc-row>
           </vc-card>
         </vc-col>
       </vc-row>
@@ -350,6 +325,15 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+.orders-edit {
+  &__row {
+    &_line {
+      border-top: 1px solid #e5e5e5;
+      margin-top: 10px;
+      padding-top: 21px;
+    }
+  }
+}
 .orders-totals {
   background: #fbfdfe;
   box-shadow: inset 0px 4px 7px rgba(199, 213, 227, 0.3);

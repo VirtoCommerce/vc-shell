@@ -69,37 +69,35 @@
         >
           <div class="vc-padding_xl">
             <vc-progress :value="progress" v-if="importing"></vc-progress>
-            <div
-              v-else
-              class="vc-flex vc-flex-row"
-              :class="{ 'vc-flex-column': $isMobile.value }"
-            >
-              <div class="csv-import__importing-item">
-                <p class="csv-import__importing-status-title vc-margin_none">
-                  {{ t("IMPORT.PAGES.IMPORTING.LINES_CREATED") }}
-                </p>
-                <p class="vc-margin_none vc-margin-top_s">4900</p>
-              </div>
-              <div class="csv-import__importing-item">
-                <p class="csv-import__importing-status-title vc-margin_none">
-                  {{ t("IMPORT.PAGES.IMPORTING.LINES_UPDATED") }}
-                </p>
-                <p class="vc-margin_none vc-margin-top_s">4900</p>
-              </div>
-              <div class="csv-import__importing-item">
-                <p class="csv-import__importing-status-title vc-margin_none">
-                  {{ t("IMPORT.PAGES.IMPORTING.ERROR_COUNT") }}
-                </p>
-                <p class="vc-margin_none vc-margin-top_s">4900</p>
-              </div>
-              <div class="csv-import__importing-item">
-                <p class="csv-import__importing-status-title vc-margin_none">
-                  {{ t("IMPORT.PAGES.IMPORTING.REPORT_URL") }}
-                </p>
-                <vc-link class="vc-margin-top_s"
-                  >api/import/download/import_20210120234901.csv</vc-link
-                >
-              </div>
+            <div v-else :class="{ 'vc-flex-column': $isMobile.value }">
+              <vc-row>
+                <vc-col>
+                  <p class="csv-import__importing-status-title vc-margin_none">
+                    {{ t("IMPORT.PAGES.IMPORTING.LINES_CREATED") }}
+                  </p>
+                  <p class="vc-margin_none vc-margin-top_s">4900</p>
+                </vc-col>
+                <vc-col>
+                  <p class="csv-import__importing-status-title vc-margin_none">
+                    {{ t("IMPORT.PAGES.IMPORTING.LINES_UPDATED") }}
+                  </p>
+                  <p class="vc-margin_none vc-margin-top_s">4900</p>
+                </vc-col>
+                <vc-col>
+                  <p class="csv-import__importing-status-title vc-margin_none">
+                    {{ t("IMPORT.PAGES.IMPORTING.ERROR_COUNT") }}
+                  </p>
+                  <p class="vc-margin_none vc-margin-top_s">4900</p>
+                </vc-col>
+                <vc-col size="3">
+                  <p class="csv-import__importing-status-title vc-margin_none">
+                    {{ t("IMPORT.PAGES.IMPORTING.REPORT_URL") }}
+                  </p>
+                  <vc-link class="vc-margin-top_s"
+                    >api/import/download/import_20210120234901.csv</vc-link
+                  >
+                </vc-col>
+              </vc-row>
             </div>
           </div>
 
@@ -792,10 +790,6 @@ export default defineComponent({
     font-size: var(--font-size-l);
     line-height: var(--line-height-l);
     font-weight: var(--font-weight-medium);
-  }
-
-  &__importing-item {
-    flex: 0 0 17%;
   }
 }
 </style>

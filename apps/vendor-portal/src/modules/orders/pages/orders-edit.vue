@@ -4,78 +4,70 @@
     :title="order.number"
     :expanded="expanded"
     :closable="closable"
-    width="50%"
+    width="70%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
     <vc-container>
       <vc-row>
-        <vc-col size="2" class="vc-padding_s">
+        <vc-col size="1" class="vc-padding_s">
           <vc-card header="Order info">
             <vc-row class="vc-padding_s">
-              <vc-col size="2" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Order reference #"
-                  :modelValue="order.number"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
+              <vc-col class="vc-padding_s">
+                <vc-info-row label="Order reference #" :value="order.number" />
+                <vc-info-row label="Created date/time" :value="createdDate" />
+                <vc-info-row
                   label="Store"
-                  :modelValue="order.storeId"
-                  placeholder="Not set"
+                  :value="order.storeId"
                   tooltip="Shows store where order was placed"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Order status"
-                  :modelValue="order.status"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="1" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Created date/time"
-                  :modelValue="createdDate"
-                  type="datetime-local"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
+                />
+                <vc-info-row label="Order status" :value="order.status" />
+                <vc-info-row
+                  class="orders-edit__row_line"
+                  label="Subtotal"
+                  :value="
+                    order.subTotal &&
+                    order.subTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <vc-info-row
+                  label="Discount total"
+                  :value="
+                    order.discountTotal &&
+                    order.discountTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <vc-info-row
+                  label="Total"
+                  :value="
+                    order.total && order.total.toFixed(2) + ' ' + order.currency
+                  "
+                />
               </vc-col>
             </vc-row>
           </vc-card>
         </vc-col>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Customer contact">
+          <vc-card header="Shipping address">
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Full name"
-                  :modelValue="order.customerName"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Email"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Phone"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
+                <vc-info-row label="Sold to" :value="order.customerName" />
+                <vc-info-row value="USA" />
+                <vc-info-row value="nathan.roberts@example.com" type="email" />
+                <vc-info-row value="+62-818-5551-71" />
+                <vc-info-row
+                  value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
+                />
+                <vc-info-row
+                  label="Ship to"
+                  class="orders-edit__row_line"
+                  value="ShipStation Support"
+                />
+                <vc-info-row value="USA" />
+                <vc-info-row
+                  value="3800 N Lamar BLVD STE 220 Austin, TX 78756-4011 US"
+                />
+                <vc-info-row value="+62-818-5551-71" />
               </vc-col>
             </vc-row>
           </vc-card>
@@ -155,81 +147,6 @@
                 </div>
               </template>
             </vc-table>
-
-            <div
-              class="
-                orders-totals
-                vc-flex vc-flex-row
-                vc-flex-justify_end
-                vc-padding_l
-              "
-            >
-              <div class="vc-margin-right_xl">
-                <span class="vc-margin-right_s">Subtotal:</span>
-                <span class="vc-font-weight_bold"
-                  >{{ order.subTotal && order.subTotal.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-              <div class="vc-margin-right_xl">
-                <span class="vc-margin-right_s">Discount total:</span>
-                <span class="vc-font-weight_bold"
-                  >{{ order.discountTotal && order.discountTotal.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-              <div class="orders-totals__counter vc-font-weight_bold">
-                <span class="vc-margin-right_s">Total:</span>
-                <span
-                  >{{ order.total && order.total.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-            </div>
-          </vc-card>
-        </vc-col>
-      </vc-row>
-
-      <vc-row>
-        <vc-col class="vc-padding_s">
-          <vc-card header="Shipping address">
-            <vc-row class="vc-padding_s">
-              <vc-col size="4" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Country"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="2" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="Postal/ZIP code"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="3" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="State/Province"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-              <vc-col size="3" class="vc-padding_s">
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  label="City"
-                  :clearable="true"
-                  placeholder="Not set"
-                  :disabled="true"
-                ></vc-input>
-              </vc-col>
-            </vc-row>
           </vc-card>
         </vc-col>
       </vc-row>
@@ -239,6 +156,7 @@
 
 <script lang="ts">
 import { computed, onMounted, defineComponent } from "vue";
+import moment from "moment";
 
 import { useOrder } from "../composables";
 import { ITableColumns, IToolbarItems } from "../../../types";
@@ -271,6 +189,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
       useOrder();
+    const locale = window.navigator.language;
 
     onMounted(async () => {
       if (props.param) {
@@ -391,18 +310,14 @@ export default defineComponent({
 
     return {
       bladeToolbar,
+      moment,
       columns,
       order,
       items: computed(() => order.value?.items),
       loading,
       createdDate: computed(() => {
         const date = new Date(order.value?.createdDate);
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, "0");
-        const day = date.getDate().toString().padStart(2, "0");
-        const hour = date.getHours().toString().padStart(2, "0");
-        const minute = date.getMinutes().toString().padStart(2, "0");
-        return `${year}-${month}-${day}T${hour}:${minute}`;
+        return moment(date).locale(locale).format("L LT");
       }),
     };
   },
@@ -410,6 +325,15 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+.orders-edit {
+  &__row {
+    &_line {
+      border-top: 1px solid #e5e5e5;
+      margin-top: 10px;
+      padding-top: 21px;
+    }
+  }
+}
 .orders-totals {
   background: #fbfdfe;
   box-shadow: inset 0px 4px 7px rgba(199, 213, 227, 0.3);

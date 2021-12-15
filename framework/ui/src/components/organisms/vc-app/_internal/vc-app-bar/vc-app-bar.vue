@@ -45,6 +45,7 @@
             v-if="item.component"
             :is="item.component"
             v-bind="item.componentOptions"
+            :isAccent="item.isAccent"
           ></component>
 
           <!-- Otherwise draw default toolbar button -->

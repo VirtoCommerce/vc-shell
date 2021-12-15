@@ -9,7 +9,7 @@ interface IToolbarItems {
   icon?: string;
   title?: string;
   isVisible?: boolean | unknown;
-  isAccent?: boolean;
+  isAccent?: boolean | ComputedRef<boolean>;
   component?: Component;
   componentOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;

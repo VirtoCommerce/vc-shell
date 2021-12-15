@@ -53,10 +53,16 @@ import { OrdersList } from "../modules/orders";
 import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
 import { Import } from "../modules/import";
-import { useLogger, useI18n, useUser } from "@virtoshell/core";
+import {
+  useLogger,
+  useI18n,
+  useUser,
+  useNotifications,
+} from "@virtoshell/core";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import { IToolbarItems } from "../types";
+import NotificationDropdown from "../components/notification-dropdown.vue";
 
 export default defineComponent({
   name: "App",
@@ -70,14 +76,17 @@ export default defineComponent({
     const { t } = useI18n();
     const log = useLogger();
     const { user, loadUser, signOut } = useUser();
+    const { getLastNotifications, lastNotifications } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
+    const dropNotifications = ref<PushNotification[]>([]);
 
     const signalr = useSignalR();
     const notifications = ref<PushNotification[]>([]);
     signalr.on("Send", (message: PushNotification) => {
       if (message.creator === user.value?.id) {
         notifications.value.push(message);
+        dropNotifications.value.unshift(message);
       }
     });
 
@@ -87,6 +96,7 @@ export default defineComponent({
 
     onMounted(async () => {
       await loadUser();
+      await getNotifications();
       isReady.value = true;
       if (!isAuthorized.value) {
         window?.history?.pushState(null, "", "/login");
@@ -101,10 +111,17 @@ export default defineComponent({
 
     const toolbarItems = reactive<IToolbarItems[]>([
       {
-        icon: "fas fa-bell",
-        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
         isVisible: true,
-        isAccent: true,
+        isAccent: computed(() => {
+          return !!dropNotifications.value.filter(
+            (notification) => notification.isNew
+          ).length;
+        }),
+        component: shallowRef(NotificationDropdown),
+        componentOptions: {
+          title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+          list: dropNotifications.value,
+        },
       },
       {
         component: shallowRef(UserDropdownButton),
@@ -174,6 +191,15 @@ export default defineComponent({
         },
       },
     ]);
+
+    async function getNotifications() {
+      try {
+        await getLastNotifications();
+        notifications.value.push(lastNotifications.value);
+      } catch (e) {
+        log.error(e);
+      }
+    }
 
     return {
       isAuthorized,

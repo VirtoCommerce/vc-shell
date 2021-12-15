@@ -82,7 +82,7 @@
               :columns="columns"
               :items="items"
               :header="false"
-              :footer="true"
+              :footer="false"
             >
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">

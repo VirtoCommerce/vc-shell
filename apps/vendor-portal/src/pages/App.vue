@@ -195,7 +195,7 @@ export default defineComponent({
     async function getNotifications() {
       try {
         await getLastNotifications();
-        if (lastNotifications.value && lastNotifications.value.length) {
+        if (lastNotifications.value) {
           notifications.value.push(lastNotifications.value);
         }
       } catch (e) {

@@ -111,7 +111,7 @@ export default defineComponent({
 
     const toolbarItems = reactive<IToolbarItems[]>([
       {
-        isVisible: true,
+        isVisible: isDesktop,
         isAccent: computed(() => {
           return !!dropNotifications.value.filter(
             (notification) => notification.isNew
@@ -195,7 +195,9 @@ export default defineComponent({
     async function getNotifications() {
       try {
         await getLastNotifications();
-        notifications.value.push(lastNotifications.value);
+        if (lastNotifications.value && lastNotifications.value.length) {
+          notifications.value.push(lastNotifications.value);
+        }
       } catch (e) {
         log.error(e);
       }

@@ -102,7 +102,12 @@ About component.
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -115,7 +120,12 @@ About component.
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="
+            vc-fill_all
+            vc-flex vc-flex-column
+            vc-flex-align_center
+            vc-flex-justify_center
+          "
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -163,7 +173,12 @@ About component.
               <mp-product-status :status="itemData.item.status" />
             </div>
             <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
+              class="
+                vc-margin-top_m
+                vc-fill_width
+                vc-flex
+                vc-flex-justify_space-between
+              "
             >
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>EAN/GTIN</vc-hint>
@@ -204,6 +219,12 @@ import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import ProductsEdit from "./products-edit.vue";
 import moment from "moment";
+import {
+  IActionBuilderResult,
+  ITableColumns,
+  IToolbarItems,
+} from "../../../types";
+import { ISellerProduct } from "../../../api_client";
 
 export default defineComponent({
   url: "products",
@@ -282,7 +303,7 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar = [
+    const bladeToolbar: IToolbarItems[] = [
       {
         id: "refresh",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
@@ -312,7 +333,7 @@ export default defineComponent({
       },
     ];
 
-    const columns = ref([
+    const columns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
@@ -362,7 +383,7 @@ export default defineComponent({
       });
     };
 
-    const onHeaderClick = (item) => {
+    const onHeaderClick = (item: ITableColumns) => {
       const sortBy = [":ASK", ":DESC", ""];
       if (item.sortable) {
         item.sortDirection = (item.sortDirection ?? 0) + 1;
@@ -377,7 +398,7 @@ export default defineComponent({
       });
     };
 
-    const actionBuilder = (product) => {
+    const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
       let result = [];
 
       const statuses =

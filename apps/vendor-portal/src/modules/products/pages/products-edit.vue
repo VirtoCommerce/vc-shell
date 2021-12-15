@@ -161,6 +161,7 @@ import {
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
+import { IToolbarItems } from "../../../types";
 
 export default defineComponent({
   url: "product",
@@ -245,7 +246,7 @@ export default defineComponent({
       await reload(true);
     });
 
-    const bladeToolbar = reactive([
+    const bladeToolbar = reactive<IToolbarItems[]>([
       {
         id: "save",
         title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
@@ -463,7 +464,7 @@ export default defineComponent({
         }
       },
 
-      getPropertyValue(property: IProperty) {
+      getPropertyValue(property: IProperty): Record<string, unknown> {
         return property.values[0] && property.values[0].value;
       },
 

@@ -31,7 +31,13 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
+                    class="
+                      vc-fill_all
+                      vc-flex vc-flex-column
+                      vc-flex-align_center
+                      vc-flex-justify_center
+                      vc-padding_xl
+                    "
                   >
                     <img src="/assets/empty-product.png" />
                     <div
@@ -71,7 +77,13 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
+                    class="
+                      vc-fill_all
+                      vc-flex vc-flex-column
+                      vc-flex-align_center
+                      vc-flex-justify_center
+                      vc-padding_xl
+                    "
                   >
                     <img src="/assets/empty-product.png" />
                     <div
@@ -137,11 +149,21 @@
                     <!-- Empty template -->
                     <template v-slot:empty>
                       <div
-                        class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
+                        class="
+                          vc-fill_all
+                          vc-flex vc-flex-column
+                          vc-flex-align_center
+                          vc-flex-justify_center
+                          vc-padding_xl
+                        "
                       >
                         <img src="/assets/empty-product.png" />
                         <div
-                          class="vc-margin_l vc-font-size_xl vc-font-weight_medium"
+                          class="
+                            vc-margin_l
+                            vc-font-size_xl
+                            vc-font-weight_medium
+                          "
                         >
                           There are no offers yet
                         </div>
@@ -155,7 +177,10 @@
                 <vc-col size="0" style="flex-basis: 180px">
                   <div class="dashboard-offers__counter">
                     <div
-                      class="dashboard-offers__counter-value dashboard-offers__counter-value_warning"
+                      class="
+                        dashboard-offers__counter-value
+                        dashboard-offers__counter-value_warning
+                      "
                     >
                       25
                     </div>
@@ -165,7 +190,10 @@
                   </div>
                   <div class="dashboard-offers__counter">
                     <div
-                      class="dashboard-offers__counter-value dashboard-offers__counter-value_warning"
+                      class="
+                        dashboard-offers__counter-value
+                        dashboard-offers__counter-value_warning
+                      "
                     >
                       7
                     </div>
@@ -173,7 +201,10 @@
                   </div>
                   <div class="dashboard-offers__counter">
                     <div
-                      class="dashboard-offers__counter-value dashboard-offers__counter-value_error"
+                      class="
+                        dashboard-offers__counter-value
+                        dashboard-offers__counter-value_error
+                      "
                     >
                       11
                     </div>
@@ -239,7 +270,12 @@
             {{ counters.revenue[range.revenue] }}
           </div>
           <div
-            class="vc-flex vc-flex-justify_center vc-margin-top_s vc-margin-bottom_l"
+            class="
+              vc-flex
+              vc-flex-justify_center
+              vc-margin-top_s
+              vc-margin-bottom_l
+            "
           >
             <vc-button
               small
@@ -281,7 +317,12 @@
             {{ counters.purchased[range.purchased] }}
           </div>
           <div
-            class="vc-flex vc-flex-justify_center vc-margin-top_s vc-margin-bottom_l"
+            class="
+              vc-flex
+              vc-flex-justify_center
+              vc-margin-top_s
+              vc-margin-bottom_l
+            "
           >
             <vc-button
               small
@@ -323,7 +364,12 @@
             {{ counters.orderAvg[range.orderAvg] }}
           </div>
           <div
-            class="vc-flex vc-flex-justify_center vc-margin-top_s vc-margin-bottom_l"
+            class="
+              vc-flex
+              vc-flex-justify_center
+              vc-margin-top_s
+              vc-margin-bottom_l
+            "
           >
             <vc-button
               small
@@ -391,6 +437,21 @@ import {
   MpProductStatus,
 } from "../modules/products";
 import moment from "moment";
+import { OrderLineItem } from "@virtoshell/api-client";
+import { ITableColumns } from "../types";
+
+interface ITermDefinition {
+  day: string;
+  week: string;
+  month: string;
+  year: string;
+}
+
+interface ICounters {
+  revenue: ITermDefinition;
+  purchased: ITermDefinition;
+  orderAvg: ITermDefinition;
+}
 
 export default defineComponent({
   props: {
@@ -410,7 +471,7 @@ export default defineComponent({
     const { orders, loadOrders, loading: ordersLoading } = useOrders();
     const { offers, loadOffers, loading: offersLoading } = useOffers();
 
-    const productsColumns = ref([
+    const productsColumns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
         title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
@@ -434,7 +495,7 @@ export default defineComponent({
       },
     ]);
 
-    const ordersColumns = ref([
+    const ordersColumns = ref<ITableColumns[]>([
       {
         id: "number",
         title: t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER"),
@@ -458,7 +519,7 @@ export default defineComponent({
       },
     ]);
 
-    const offersColumns = ref([
+    const offersColumns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
         title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
@@ -507,7 +568,7 @@ export default defineComponent({
       },
     ]);
 
-    const counters = reactive({
+    const counters = reactive<ICounters>({
       revenue: {
         day: "1,230.09",
         week: "13,445.75",
@@ -625,7 +686,7 @@ export default defineComponent({
       offersColumns,
       offersClick,
 
-      calcQty(items: any[]) {
+      calcQty(items: OrderLineItem[]) {
         return items.reduce((acc, item) => acc + item.quantity, 0);
       },
 

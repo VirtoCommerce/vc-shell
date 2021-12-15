@@ -35,12 +35,13 @@
             ></vc-gallery-item>
           </template>
         </draggable>
-        <vc-gallery-upload
+        <vc-file-upload
           v-if="!disabled"
           class="vc-margin_s"
           :icon="uploadIcon"
           @upload="onUpload"
-        ></vc-gallery-upload>
+          variant="gallery"
+        ></vc-file-upload>
       </div>
     </template>
     <div v-else class="vc-flex vc-flex-justify_center vc-padding_xl">
@@ -60,9 +61,9 @@
 import { computed, defineComponent, PropType, ref } from "vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
-import VcGalleryUpload from "./_internal/vc-gallery-upload/vc-gallery-upload.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
 import { Image } from "@virtoshell/api-client";
+import VcFileUpload from "../../molecules/vc-file-upload/vc-file-upload.vue";
 
 export default defineComponent({
   name: "VcGallery",
@@ -70,7 +71,7 @@ export default defineComponent({
   components: {
     VcLabel,
     VcGalleryItem,
-    VcGalleryUpload,
+    VcFileUpload,
     VcGalleryPreview,
   },
 

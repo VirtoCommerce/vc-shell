@@ -13,9 +13,9 @@
         @mouseenter="tooltipVisible = true"
         @mouseleave="tooltipVisible = false"
       ></vc-icon>
-      <div class="vc-label__tooltip-content" v-if="tooltipVisible">
+      <span class="vc-label__tooltip-content" v-if="tooltipVisible">
         <slot name="tooltip"></slot>
-      </div>
+      </span>
     </span>
   </div>
 </template>
@@ -75,7 +75,6 @@ export default defineComponent({
     }
 
     &-container {
-      position: relative;
       flex-grow: 1;
     }
 

@@ -61,7 +61,7 @@ import {
 } from "@virtoshell/core";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
-import { IToolbarItems } from "../types";
+import { IBladeToolbar, IMenuItems } from "../types";
 import NotificationDropdown from "../components/notification-dropdown.vue";
 
 export default defineComponent({
@@ -109,7 +109,7 @@ export default defineComponent({
 
     log.debug(`Initializing App`);
 
-    const toolbarItems = reactive<IToolbarItems[]>([
+    const toolbarItems = reactive<IBladeToolbar[]>([
       {
         isVisible: isDesktop,
         isAccent: computed(() => {
@@ -147,7 +147,7 @@ export default defineComponent({
       },
     ]);
 
-    const menuItems = reactive<IToolbarItems[]>([
+    const menuItems = reactive<IMenuItems[]>([
       {
         title: t("SHELL.MENU.DASHBOARD"),
         icon: "fas fa-home",

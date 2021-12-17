@@ -143,7 +143,7 @@ import OffersDetails from "./offers-details.vue";
 import {
   IActionBuilderResult,
   ITableColumns,
-  IToolbarItems,
+  IBladeToolbar,
 } from "../../../types";
 import { IOffer } from "../../../api_client";
 
@@ -227,7 +227,7 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar = reactive<IToolbarItems[]>([
+    const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "refresh",
         title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),

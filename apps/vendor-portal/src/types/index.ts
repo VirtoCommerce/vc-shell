@@ -4,15 +4,19 @@ interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;
 }
 
-interface IToolbarItems {
+interface IBladeToolbar {
   id?: string;
   icon?: string;
   title?: string;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
-  component?: Component;
+  component?: Component & { url?: string };
   componentOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
+  clickHandler?(): void;
+}
+
+interface IMenuItems extends IBladeToolbar {
   clickHandler?(app?: IComponent): void;
 }
 
@@ -35,4 +39,10 @@ interface IActionBuilderResult {
   clickHandler(): void;
 }
 
-export { IToolbarItems, IComponent, ITableColumns, IActionBuilderResult };
+export {
+  IComponent,
+  ITableColumns,
+  IActionBuilderResult,
+  IBladeToolbar,
+  IMenuItems,
+};

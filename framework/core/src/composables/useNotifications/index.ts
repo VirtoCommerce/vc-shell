@@ -23,7 +23,7 @@ export default (): INotifications => {
         notificationsClient.setAuthToken(token);
         notifications.value = await notificationsClient.searchPushNotification(
           null,
-          false,
+          undefined,
           null,
           null,
           null,

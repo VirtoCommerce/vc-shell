@@ -200,7 +200,7 @@ export default defineComponent({
           lastNotifications.value.notifyEvents &&
           lastNotifications.value.notifyEvents.length
         ) {
-          notifications.value.push(lastNotifications.value);
+          dropNotifications.value.push(...lastNotifications.value.notifyEvents);
         }
       } catch (e) {
         log.error(e);

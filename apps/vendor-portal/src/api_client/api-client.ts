@@ -634,6 +634,188 @@ export class AuthApiBase {
       }
   }
   
+  export class VcmpSellerImportClient extends AuthApiBase {
+      private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+      private baseUrl: string;
+      protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  
+      constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+          super();
+          this.http = http ? http : <any>window;
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      runImport(body: ImportDataCommand | undefined): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/import/run";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processRunImport(_response);
+          });
+      }
+  
+      protected processRunImport(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      cancelJob(body: ImportCancellationRequest | undefined): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/import/task/cancel";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processCancelJob(_response);
+          });
+      }
+  
+      protected processCancelJob(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      preview(body: PreviewDataQuery | undefined): Promise<ImportDataPreview> {
+          let url_ = this.baseUrl + "/api/vcmp/import/preview";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processPreview(_response);
+          });
+      }
+  
+      protected processPreview(response: Response): Promise<ImportDataPreview> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = ImportDataPreview.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<ImportDataPreview>(<any>null);
+      }
+  
+      /**
+       * @return Success
+       */
+      getImporters(): Promise<ImporterMetadata[]> {
+          let url_ = this.baseUrl + "/api/vcmp/import/importers";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "GET",
+              headers: {
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processGetImporters(_response);
+          });
+      }
+  
+      protected processGetImporters(response: Response): Promise<ImporterMetadata[]> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              if (Array.isArray(resultData200)) {
+                  result200 = [] as any;
+                  for (let item of resultData200)
+                      result200!.push(ImporterMetadata.fromJS(item));
+              }
+              else {
+                  result200 = <any>null;
+              }
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<ImporterMetadata[]>(<any>null);
+      }
+  }
+  
   export class VcmpSellerSecurityClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
@@ -5091,6 +5273,777 @@ export class AuthApiBase {
       storeName?: string | undefined;
       details: OfferDetails;
       productId: string;
+  }
+  
+  export class PermissionScope implements IPermissionScope {
+      /** Scope type name */
+      type?: string | undefined;
+      /** Display label for particular scope value used only for  representation */
+      label?: string | undefined;
+      /** Represent string scope value */
+      scope?: string | undefined;
+  
+      constructor(data?: IPermissionScope) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.type = _data["type"];
+              this.label = _data["label"];
+              this.scope = _data["scope"];
+          }
+      }
+  
+      static fromJS(data: any): PermissionScope {
+          data = typeof data === 'object' ? data : {};
+          let result = new PermissionScope();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["type"] = this.type;
+          data["label"] = this.label;
+          data["scope"] = this.scope;
+          return data; 
+      }
+  }
+  
+  export interface IPermissionScope {
+      /** Scope type name */
+      type?: string | undefined;
+      /** Display label for particular scope value used only for  representation */
+      label?: string | undefined;
+      /** Represent string scope value */
+      scope?: string | undefined;
+  }
+  
+  export class Permission implements IPermission {
+      id?: string | undefined;
+      name?: string | undefined;
+      /** Id of the module which has registered this permission. */
+      moduleId?: string | undefined;
+      /** Display name of the group to which this permission belongs. The '|' character is used to separate Child and parent groups. */
+      groupName?: string | undefined;
+      assignedScopes?: PermissionScope[] | undefined;
+      readonly availableScopes?: PermissionScope[] | undefined;
+  
+      constructor(data?: IPermission) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.id = _data["id"];
+              this.name = _data["name"];
+              this.moduleId = _data["moduleId"];
+              this.groupName = _data["groupName"];
+              if (Array.isArray(_data["assignedScopes"])) {
+                  this.assignedScopes = [] as any;
+                  for (let item of _data["assignedScopes"])
+                      this.assignedScopes!.push(PermissionScope.fromJS(item));
+              }
+              if (Array.isArray(_data["availableScopes"])) {
+                  (<any>this).availableScopes = [] as any;
+                  for (let item of _data["availableScopes"])
+                      (<any>this).availableScopes!.push(PermissionScope.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): Permission {
+          data = typeof data === 'object' ? data : {};
+          let result = new Permission();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["id"] = this.id;
+          data["name"] = this.name;
+          data["moduleId"] = this.moduleId;
+          data["groupName"] = this.groupName;
+          if (Array.isArray(this.assignedScopes)) {
+              data["assignedScopes"] = [];
+              for (let item of this.assignedScopes)
+                  data["assignedScopes"].push(item.toJSON());
+          }
+          if (Array.isArray(this.availableScopes)) {
+              data["availableScopes"] = [];
+              for (let item of this.availableScopes)
+                  data["availableScopes"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface IPermission {
+      id?: string | undefined;
+      name?: string | undefined;
+      /** Id of the module which has registered this permission. */
+      moduleId?: string | undefined;
+      /** Display name of the group to which this permission belongs. The '|' character is used to separate Child and parent groups. */
+      groupName?: string | undefined;
+      assignedScopes?: PermissionScope[] | undefined;
+      availableScopes?: PermissionScope[] | undefined;
+  }
+  
+  export class StringIdentityUserRole implements IStringIdentityUserRole {
+      userId?: string | undefined;
+      roleId?: string | undefined;
+  
+      constructor(data?: IStringIdentityUserRole) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.userId = _data["userId"];
+              this.roleId = _data["roleId"];
+          }
+      }
+  
+      static fromJS(data: any): StringIdentityUserRole {
+          data = typeof data === 'object' ? data : {};
+          let result = new StringIdentityUserRole();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["userId"] = this.userId;
+          data["roleId"] = this.roleId;
+          return data; 
+      }
+  }
+  
+  export interface IStringIdentityUserRole {
+      userId?: string | undefined;
+      roleId?: string | undefined;
+  }
+  
+  export class Role implements IRole {
+      description?: string | undefined;
+      permissions?: Permission[] | undefined;
+      id?: string | undefined;
+      name?: string | undefined;
+      normalizedName?: string | undefined;
+      concurrencyStamp?: string | undefined;
+  
+      constructor(data?: IRole) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.description = _data["description"];
+              if (Array.isArray(_data["permissions"])) {
+                  this.permissions = [] as any;
+                  for (let item of _data["permissions"])
+                      this.permissions!.push(Permission.fromJS(item));
+              }
+              this.id = _data["id"];
+              this.name = _data["name"];
+              this.normalizedName = _data["normalizedName"];
+              this.concurrencyStamp = _data["concurrencyStamp"];
+          }
+      }
+  
+      static fromJS(data: any): Role {
+          data = typeof data === 'object' ? data : {};
+          let result = new Role();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["description"] = this.description;
+          if (Array.isArray(this.permissions)) {
+              data["permissions"] = [];
+              for (let item of this.permissions)
+                  data["permissions"].push(item.toJSON());
+          }
+          data["id"] = this.id;
+          data["name"] = this.name;
+          data["normalizedName"] = this.normalizedName;
+          data["concurrencyStamp"] = this.concurrencyStamp;
+          return data; 
+      }
+  }
+  
+  export interface IRole {
+      description?: string | undefined;
+      permissions?: Permission[] | undefined;
+      id?: string | undefined;
+      name?: string | undefined;
+      normalizedName?: string | undefined;
+      concurrencyStamp?: string | undefined;
+  }
+  
+  /** Obsolete. Left due to compatibility issues. Will be removed. Instead of, use: ApplicationUser.EmailConfirmed, ApplicationUser.LockoutEnd. */
+  export enum AccountState {
+      PendingApproval = "PendingApproval",
+      Approved = "Approved",
+      Rejected = "Rejected",
+  }
+  
+  export class ApplicationUserLogin implements IApplicationUserLogin {
+      loginProvider?: string | undefined;
+      providerKey?: string | undefined;
+  
+      constructor(data?: IApplicationUserLogin) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.loginProvider = _data["loginProvider"];
+              this.providerKey = _data["providerKey"];
+          }
+      }
+  
+      static fromJS(data: any): ApplicationUserLogin {
+          data = typeof data === 'object' ? data : {};
+          let result = new ApplicationUserLogin();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["loginProvider"] = this.loginProvider;
+          data["providerKey"] = this.providerKey;
+          return data; 
+      }
+  }
+  
+  export interface IApplicationUserLogin {
+      loginProvider?: string | undefined;
+      providerKey?: string | undefined;
+  }
+  
+  export class ApplicationUser implements IApplicationUser {
+      /** Tenant id */
+      storeId?: string | undefined;
+      memberId?: string | undefined;
+      isAdministrator?: boolean;
+      photoUrl?: string | undefined;
+      userType?: string | undefined;
+      status?: string | undefined;
+      password?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      roles?: Role[] | undefined;
+      /** Obsolete. Use LockoutEnd. DateTime in UTC when lockout ends, any time in the past is considered not locked out. */
+      lockoutEndDateUtc?: Date | undefined;
+      userState?: AccountState;
+      /** Obsolete. All permissions from assigned roles. */
+      permissions?: string[] | undefined;
+      /** External provider logins. */
+      logins?: ApplicationUserLogin[] | undefined;
+      /** Indicates that the password for this user is expired and must be changed. */
+      passwordExpired?: boolean;
+      /** The last date when the password was changed */
+      lastPasswordChangedDate?: Date | undefined;
+      /** The last date when the requested password change. */
+      lastPasswordChangeRequestDate?: Date | undefined;
+      id?: string | undefined;
+      userName?: string | undefined;
+      normalizedUserName?: string | undefined;
+      email?: string | undefined;
+      normalizedEmail?: string | undefined;
+      emailConfirmed?: boolean;
+      passwordHash?: string | undefined;
+      securityStamp?: string | undefined;
+      concurrencyStamp?: string | undefined;
+      phoneNumber?: string | undefined;
+      phoneNumberConfirmed?: boolean;
+      twoFactorEnabled?: boolean;
+      lockoutEnd?: Date | undefined;
+      lockoutEnabled?: boolean;
+      accessFailedCount?: number;
+  
+      constructor(data?: IApplicationUser) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.storeId = _data["storeId"];
+              this.memberId = _data["memberId"];
+              this.isAdministrator = _data["isAdministrator"];
+              this.photoUrl = _data["photoUrl"];
+              this.userType = _data["userType"];
+              this.status = _data["status"];
+              this.password = _data["password"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              if (Array.isArray(_data["roles"])) {
+                  this.roles = [] as any;
+                  for (let item of _data["roles"])
+                      this.roles!.push(Role.fromJS(item));
+              }
+              this.lockoutEndDateUtc = _data["lockoutEndDateUtc"] ? new Date(_data["lockoutEndDateUtc"].toString()) : <any>undefined;
+              this.userState = _data["userState"];
+              if (Array.isArray(_data["permissions"])) {
+                  this.permissions = [] as any;
+                  for (let item of _data["permissions"])
+                      this.permissions!.push(item);
+              }
+              if (Array.isArray(_data["logins"])) {
+                  this.logins = [] as any;
+                  for (let item of _data["logins"])
+                      this.logins!.push(ApplicationUserLogin.fromJS(item));
+              }
+              this.passwordExpired = _data["passwordExpired"];
+              this.lastPasswordChangedDate = _data["lastPasswordChangedDate"] ? new Date(_data["lastPasswordChangedDate"].toString()) : <any>undefined;
+              this.lastPasswordChangeRequestDate = _data["lastPasswordChangeRequestDate"] ? new Date(_data["lastPasswordChangeRequestDate"].toString()) : <any>undefined;
+              this.id = _data["id"];
+              this.userName = _data["userName"];
+              this.normalizedUserName = _data["normalizedUserName"];
+              this.email = _data["email"];
+              this.normalizedEmail = _data["normalizedEmail"];
+              this.emailConfirmed = _data["emailConfirmed"];
+              this.passwordHash = _data["passwordHash"];
+              this.securityStamp = _data["securityStamp"];
+              this.concurrencyStamp = _data["concurrencyStamp"];
+              this.phoneNumber = _data["phoneNumber"];
+              this.phoneNumberConfirmed = _data["phoneNumberConfirmed"];
+              this.twoFactorEnabled = _data["twoFactorEnabled"];
+              this.lockoutEnd = _data["lockoutEnd"] ? new Date(_data["lockoutEnd"].toString()) : <any>undefined;
+              this.lockoutEnabled = _data["lockoutEnabled"];
+              this.accessFailedCount = _data["accessFailedCount"];
+          }
+      }
+  
+      static fromJS(data: any): ApplicationUser {
+          data = typeof data === 'object' ? data : {};
+          let result = new ApplicationUser();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["storeId"] = this.storeId;
+          data["memberId"] = this.memberId;
+          data["isAdministrator"] = this.isAdministrator;
+          data["photoUrl"] = this.photoUrl;
+          data["userType"] = this.userType;
+          data["status"] = this.status;
+          data["password"] = this.password;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          if (Array.isArray(this.roles)) {
+              data["roles"] = [];
+              for (let item of this.roles)
+                  data["roles"].push(item.toJSON());
+          }
+          data["lockoutEndDateUtc"] = this.lockoutEndDateUtc ? this.lockoutEndDateUtc.toISOString() : <any>undefined;
+          data["userState"] = this.userState;
+          if (Array.isArray(this.permissions)) {
+              data["permissions"] = [];
+              for (let item of this.permissions)
+                  data["permissions"].push(item);
+          }
+          if (Array.isArray(this.logins)) {
+              data["logins"] = [];
+              for (let item of this.logins)
+                  data["logins"].push(item.toJSON());
+          }
+          data["passwordExpired"] = this.passwordExpired;
+          data["lastPasswordChangedDate"] = this.lastPasswordChangedDate ? this.lastPasswordChangedDate.toISOString() : <any>undefined;
+          data["lastPasswordChangeRequestDate"] = this.lastPasswordChangeRequestDate ? this.lastPasswordChangeRequestDate.toISOString() : <any>undefined;
+          data["id"] = this.id;
+          data["userName"] = this.userName;
+          data["normalizedUserName"] = this.normalizedUserName;
+          data["email"] = this.email;
+          data["normalizedEmail"] = this.normalizedEmail;
+          data["emailConfirmed"] = this.emailConfirmed;
+          data["passwordHash"] = this.passwordHash;
+          data["securityStamp"] = this.securityStamp;
+          data["concurrencyStamp"] = this.concurrencyStamp;
+          data["phoneNumber"] = this.phoneNumber;
+          data["phoneNumberConfirmed"] = this.phoneNumberConfirmed;
+          data["twoFactorEnabled"] = this.twoFactorEnabled;
+          data["lockoutEnd"] = this.lockoutEnd ? this.lockoutEnd.toISOString() : <any>undefined;
+          data["lockoutEnabled"] = this.lockoutEnabled;
+          data["accessFailedCount"] = this.accessFailedCount;
+          return data; 
+      }
+  }
+  
+  export interface IApplicationUser {
+      /** Tenant id */
+      storeId?: string | undefined;
+      memberId?: string | undefined;
+      isAdministrator?: boolean;
+      photoUrl?: string | undefined;
+      userType?: string | undefined;
+      status?: string | undefined;
+      password?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      roles?: Role[] | undefined;
+      /** Obsolete. Use LockoutEnd. DateTime in UTC when lockout ends, any time in the past is considered not locked out. */
+      lockoutEndDateUtc?: Date | undefined;
+      userState?: AccountState;
+      /** Obsolete. All permissions from assigned roles. */
+      permissions?: string[] | undefined;
+      /** External provider logins. */
+      logins?: ApplicationUserLogin[] | undefined;
+      /** Indicates that the password for this user is expired and must be changed. */
+      passwordExpired?: boolean;
+      /** The last date when the password was changed */
+      lastPasswordChangedDate?: Date | undefined;
+      /** The last date when the requested password change. */
+      lastPasswordChangeRequestDate?: Date | undefined;
+      id?: string | undefined;
+      userName?: string | undefined;
+      normalizedUserName?: string | undefined;
+      email?: string | undefined;
+      normalizedEmail?: string | undefined;
+      emailConfirmed?: boolean;
+      passwordHash?: string | undefined;
+      securityStamp?: string | undefined;
+      concurrencyStamp?: string | undefined;
+      phoneNumber?: string | undefined;
+      phoneNumberConfirmed?: boolean;
+      twoFactorEnabled?: boolean;
+      lockoutEnd?: Date | undefined;
+      lockoutEnabled?: boolean;
+      accessFailedCount?: number;
+  }
+  
+  export class ImportProfileOptions implements IImportProfileOptions {
+      type?: string | undefined;
+      previewObjectCount?: number;
+      importFileUrl?: string | undefined;
+  
+      constructor(data?: IImportProfileOptions) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.type = _data["type"];
+              this.previewObjectCount = _data["previewObjectCount"];
+              this.importFileUrl = _data["importFileUrl"];
+          }
+      }
+  
+      static fromJS(data: any): ImportProfileOptions {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImportProfileOptions();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["type"] = this.type;
+          data["previewObjectCount"] = this.previewObjectCount;
+          data["importFileUrl"] = this.importFileUrl;
+          return data; 
+      }
+  }
+  
+  export interface IImportProfileOptions {
+      type?: string | undefined;
+      previewObjectCount?: number;
+      importFileUrl?: string | undefined;
+  }
+  
+  export class ImportProfile implements IImportProfile {
+      id?: string | undefined;
+      dataImporterType?: string | undefined;
+      options?: ImportProfileOptions;
+  
+      constructor(data?: IImportProfile) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.id = _data["id"];
+              this.dataImporterType = _data["dataImporterType"];
+              this.options = _data["options"] ? ImportProfileOptions.fromJS(_data["options"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): ImportProfile {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImportProfile();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["id"] = this.id;
+          data["dataImporterType"] = this.dataImporterType;
+          data["options"] = this.options ? this.options.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface IImportProfile {
+      id?: string | undefined;
+      dataImporterType?: string | undefined;
+      options?: ImportProfileOptions;
+  }
+  
+  export class ImportDataCommand implements IImportDataCommand {
+      importProfile?: ImportProfile;
+  
+      constructor(data?: IImportDataCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): ImportDataCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImportDataCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface IImportDataCommand {
+      importProfile?: ImportProfile;
+  }
+  
+  export class ImportCancellationRequest implements IImportCancellationRequest {
+      jobId?: string | undefined;
+  
+      constructor(data?: IImportCancellationRequest) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.jobId = _data["jobId"];
+          }
+      }
+  
+      static fromJS(data: any): ImportCancellationRequest {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImportCancellationRequest();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["jobId"] = this.jobId;
+          return data; 
+      }
+  }
+  
+  export interface IImportCancellationRequest {
+      jobId?: string | undefined;
+  }
+  
+  export class PreviewDataQuery implements IPreviewDataQuery {
+      importProfile?: ImportProfile;
+  
+      constructor(data?: IPreviewDataQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): PreviewDataQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new PreviewDataQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface IPreviewDataQuery {
+      importProfile?: ImportProfile;
+  }
+  
+  export class ImportDataPreview implements IImportDataPreview {
+      totalCount?: number;
+      fileName?: string | undefined;
+      records?: any[] | undefined;
+  
+      constructor(data?: IImportDataPreview) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.totalCount = _data["totalCount"];
+              this.fileName = _data["fileName"];
+              if (Array.isArray(_data["records"])) {
+                  this.records = [] as any;
+                  for (let item of _data["records"])
+                      this.records!.push(item);
+              }
+          }
+      }
+  
+      static fromJS(data: any): ImportDataPreview {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImportDataPreview();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["totalCount"] = this.totalCount;
+          data["fileName"] = this.fileName;
+          if (Array.isArray(this.records)) {
+              data["records"] = [];
+              for (let item of this.records)
+                  data["records"].push(item);
+          }
+          return data; 
+      }
+  }
+  
+  export interface IImportDataPreview {
+      totalCount?: number;
+      fileName?: string | undefined;
+      records?: any[] | undefined;
+  }
+  
+  export class ImporterMetadata implements IImporterMetadata {
+      importerType?: string | undefined;
+      importerOptions?: ImportProfileOptions;
+  
+      constructor(data?: IImporterMetadata) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.importerType = _data["importerType"];
+              this.importerOptions = _data["importerOptions"] ? ImportProfileOptions.fromJS(_data["importerOptions"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): ImporterMetadata {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImporterMetadata();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["importerType"] = this.importerType;
+          data["importerOptions"] = this.importerOptions ? this.importerOptions.toJSON() : <any>undefined;
+          return data; 
+      }
+  }
+  
+  export interface IImporterMetadata {
+      importerType?: string | undefined;
+      importerOptions?: ImportProfileOptions;
   }
   
   export class ForgotPasswordCommand implements IForgotPasswordCommand {

@@ -346,7 +346,7 @@ export default defineComponent({
             typeof children[i].onBeforeClose === "function"
           ) {
             const result = await children[i].onBeforeClose();
-            if (!result) {
+            if (result === false) {
               isPrevented = true;
               break;
             }

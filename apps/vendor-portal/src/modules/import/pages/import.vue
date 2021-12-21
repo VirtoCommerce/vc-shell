@@ -11,6 +11,10 @@
           <!-- Import selects -->
           <vc-col class="vc-margin-bottom_xl">
             <vc-select
+              :options="importersList"
+              v-model="selectedImporter"
+              :initialItem="importersList[0]"
+              @change="setImporter"
               :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.TITLE')"
             ></vc-select>
             <p class="csv-import__importer-description">
@@ -39,21 +43,22 @@
         <vc-col
           class="vc-padding_l vc-padding-top_s"
           :class="{
-            'vc-flex-justify_end vc-padding_l': !uploadStatus.status,
+            'vc-flex-justify_end vc-padding_l': !uploadedFile,
           }"
         >
-          <p class="csv-import__uploaded-title" v-if="uploadStatus.status">
+          <p class="csv-import__uploaded-title" v-if="uploadedFile">
             {{ t("IMPORT.PAGES.ACTIONS.UPLOADER.TITLE") }}
           </p>
           <vc-file-upload
             variant="file-upload"
             @upload="uploadCsv"
             :notification="true"
-            :uploadStatus="uploadStatus"
+            :uploadedFile="uploadedFile"
             :uploadActions="uploadActions"
-            :isUploaded="uploadStatus.status"
+            :isUploaded="uploadSuccessful"
             :errorMessage="errorMessage"
             :loading="loading"
+            accept=".csv"
           ></vc-file-upload>
         </vc-col>
       </vc-row>
@@ -178,11 +183,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { defineComponent, onMounted, ref, computed } from "vue";
+import { useI18n, useUser } from "@virtoshell/core";
 import { ITableColumns } from "../../../types";
 import ImportPopup from "../components/import-popup.vue";
 import moment from "moment";
+import useImport from "../composables/useImport";
 
 interface INotificationActions {
   name: string;
@@ -198,10 +204,20 @@ export default defineComponent({
 
   setup() {
     const { t } = useI18n();
+    const { getAccessToken } = useUser();
+    const {
+      fetchDataImporters,
+      dataImporters,
+      currentImporter,
+      showPreview,
+      uploadedFile,
+    } = useImport();
+    const selectedImporter = ref("");
+    const importersList = ref<{ id: number; title: string }[]>([]);
     const sort = ref("date:DESC");
     const selectedItemId = ref();
     const loading = ref(false);
-    const errorMessage = "";
+    const errorMessage = ref("");
     const importPreview = ref(false);
     const importing = ref(false);
     const importStarted = ref(false);
@@ -211,11 +227,7 @@ export default defineComponent({
       start: "",
       end: "",
     });
-    const uploadStatus = ref({
-      file_name: "",
-      size: null,
-      status: false,
-    });
+    const uploadSuccessful = ref(false);
     const uploadActions = ref<INotificationActions[]>([
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
@@ -229,7 +241,8 @@ export default defineComponent({
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
         clickHandler() {
-          importPreview.value = true;
+          showPreview();
+          // importPreview.value = true;
         },
         variant: "primary",
         outline: false,
@@ -660,24 +673,68 @@ export default defineComponent({
       },
     ]);
 
-    function uploadCsv(e: File) {
-      loading.value = true;
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          file.value = e[0];
-          resolve(file.value);
-        }, 1000);
-      })
-        .then((res: File) => {
-          uploadStatus.value = {
-            file_name: res.name,
-            size: (res.size / (1024 * 1024)).toFixed(2),
-            status: true,
-          };
-        })
-        .finally(() => {
-          loading.value = false;
+    onMounted(async () => {
+      await fetchDataImporters();
+
+      createImportersList();
+    });
+
+    function createImportersList() {
+      for (let i = 0; i < dataImporters.value.length; i++) {
+        importersList.value.push({
+          id: i + 1,
+          title: dataImporters.value[i].importerType,
         });
+      }
+    }
+
+    async function uploadCsv(files: File) {
+      loading.value = true;
+      // return new Promise((resolve) => {
+      //   setTimeout(() => {
+      //     file.value = e[0];
+      //     resolve(file.value);
+      //   }, 1000);
+      // })
+      //   .then((res: File) => {
+      //     uploadedFile.value = {
+      //       file_name: res.name,
+      //       size: (res.size / (1024 * 1024)).toFixed(2),
+      //       status: true,
+      //     };
+      //   })
+      //   .finally(() => {
+      //     loading.value = false;
+      //   });
+      try {
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        const authToken = await getAccessToken();
+        const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const response = await result.json();
+        if (response?.length) {
+          uploadSuccessful.value = true;
+          uploadedFile.value = response[0];
+          currentImporter.value.importerOptions.importFileUrl =
+            uploadedFile.value.url;
+        }
+        files = null;
+      } catch (e) {
+        uploadSuccessful.value = false;
+        errorMessage.value = e;
+        uploadedFile.value = {
+          name: files[0].name,
+          size: files[0].size / (1024 * 1024),
+        };
+      } finally {
+        loading.value = false;
+      }
     }
 
     function startImport() {
@@ -696,19 +753,26 @@ export default defineComponent({
     }
 
     function deleteUpload() {
-      file.value = null;
-      importStarted.value = false;
-      uploadStatus.value = {
-        file_name: "",
-        size: null,
-        status: false,
-      };
-      progress.value = 0;
-      timing.value = {
-        start: "",
-        end: "",
-      };
-      uploadActions.value.forEach((action) => (action.isVisible = true));
+      // file.value = null;
+      // importStarted.value = false;
+      // uploadedFile.value = {
+      //   file_name: "",
+      //   size: null,
+      //   status: false,
+      // };
+      // progress.value = 0;
+      // timing.value = {
+      //   start: "",
+      //   end: "",
+      // };
+      // uploadActions.value.forEach((action) => (action.isVisible = true));
+    }
+
+    function setImporter(id: number) {
+      const selected = importersList.value.find((imp) => imp.id === id).title;
+      currentImporter.value = dataImporters.value.find((importer) => {
+        return importer.importerType === selected;
+      });
     }
 
     return {
@@ -718,7 +782,7 @@ export default defineComponent({
       mock,
       sort,
       selectedItemId,
-      uploadStatus,
+      uploadedFile: computed(() => uploadedFile.value),
       uploadActions,
       errorMessage,
       importing,
@@ -729,7 +793,12 @@ export default defineComponent({
       popupColumns,
       popupItems,
       loading,
+      importersList,
+      selectedImporter,
+      uploadSuccessful,
+      currentImporter,
       uploadCsv,
+      setImporter,
     };
   },
 });

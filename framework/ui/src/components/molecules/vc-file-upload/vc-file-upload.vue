@@ -30,12 +30,19 @@
       <vc-link @click="$refs.uploader.click()">browse your files</vc-link>
     </div>
 
-    <input ref="uploader" type="file" hidden @change="upload" />
+    <input
+      ref="uploader"
+      type="file"
+      hidden
+      @change="upload"
+      :accept="accept"
+    />
   </div>
   <div v-else>
     <VcUploadNotification
       :uploadActions="uploadActions"
-      :uploadStatus="uploadStatus"
+      :uploadedFile="uploadedFile"
+      :isUploaded="isUploaded"
     />
     <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-input__error vc-margin-top_m vc-font-size_m">
@@ -63,7 +70,7 @@ export default defineComponent({
       default: "gallery",
     },
 
-    uploadStatus: {
+    uploadedFile: {
       type: Object,
       default: () => ({}),
     },
@@ -86,6 +93,11 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false,
+    },
+
+    accept: {
+      type: String,
+      default: ".jpg, .png, .jpeg",
     },
   },
 

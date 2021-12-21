@@ -425,14 +425,13 @@ export default defineComponent({
 
   &__notifications {
     position: absolute;
-    width: 100%;
     display: flex;
     z-index: 1000;
-    max-height: 100%;
     overflow: hidden;
     pointer-events: painted;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     flex-direction: column;
     align-items: center;
     padding: var(--padding-s);

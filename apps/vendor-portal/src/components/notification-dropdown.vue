@@ -43,9 +43,8 @@
                     vc-margin-bottom_xs
                   "
                 >
-                  {{ item.params.title }}
+                  {{ item.title || item.description }}
                 </p>
-                <vc-hint>{{ item.title || item.description }}</vc-hint>
               </div>
             </vc-col>
             <vc-col size="2" class="vc-flex-align_end">
@@ -63,15 +62,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { PushNotification } from "@virtoshell/api-client";
-import { useI18n } from "@virtoshell/core";
+import { useNotifications } from "@virtoshell/core";
 import moment from "moment";
 
 interface INotificationParams extends PushNotification {
   params: {
     icon: string;
-    title: string;
     time: string;
     color: string;
   };
@@ -89,53 +87,30 @@ export default defineComponent({
       type: String,
       default: "",
     },
-
-    list: {
-      type: Array as PropType<PushNotification[]>,
-      default: () => [],
-    },
   },
-  setup(props) {
+  setup() {
     const isDropdownVisible = ref(false);
-    const { t } = useI18n();
+    const { getLastNotifications, notifications } = useNotifications();
     const locale = window.navigator.language;
 
     const populatedList = computed(() => {
-      return props.list.map((item: INotificationParams) => {
+      return notifications.value.map((item: INotificationParams) => {
         item.params = {
           icon: notificationIcon(item.notifyType),
-          title: notificationTitle(item.notifyType),
-          time: notificationTime(item.created),
+          time: moment(item.created).locale(locale).format("L LT"),
           color: notificationColor(item.description),
         };
         return item;
       });
     });
 
+    onMounted(async () => {
+      await getLastNotifications();
+    });
+
     function toggleNotificationsDrop() {
-      if (props.list && props.list.length) {
-        isDropdownVisible.value = !isDropdownVisible.value;
-      }
+      isDropdownVisible.value = !isDropdownVisible.value;
     }
-
-    const notificationTitle = (type: string) => {
-      switch (type) {
-        case "OfferCreatedDomainEvent":
-          return t("SHELL.NOTIFICATIONS.TYPES.OFFER_CREATED");
-        case "OfferDeletedDomainEvent":
-          return t("SHELL.NOTIFICATIONS.TYPES.OFFER_DELETED");
-        case "ProductCreatedDomainEvent":
-          return t("SHELL.NOTIFICATIONS.TYPES.PRODUCT_CREATED");
-        case "PublicationRequestStatusChangedDomainEvent":
-          return t("SHELL.NOTIFICATIONS.TYPES.PUBLICATION_REQUEST");
-        case "ImportPushNotifaction":
-          return t("SHELL.NOTIFICATIONS.TYPES.IMPORT_STARTED");
-      }
-    };
-
-    const notificationTime = (type: Date) => {
-      return moment(type).locale(locale).format("L LT");
-    };
 
     const notificationIcon = (type: string) => {
       const lower = type.toLowerCase();
@@ -160,11 +135,8 @@ export default defineComponent({
     return {
       isDropdownVisible,
       populatedList,
-      notificationTitle,
-      notificationTime,
+      notifications,
       toggleNotificationsDrop,
-      notificationIcon,
-      notificationColor,
     };
   },
 });

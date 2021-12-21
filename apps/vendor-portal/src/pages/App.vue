@@ -45,7 +45,6 @@ import {
   reactive,
   inject,
   shallowRef,
-  provide,
 } from "vue";
 import LoginPage from "./Login.vue";
 import DashboardPage from "./Dashboard.vue";
@@ -60,8 +59,6 @@ import {
   useUser,
   useNotifications,
 } from "@virtoshell/core";
-import { useSignalR } from "@quangdao/vue-signalr";
-import { PushNotification } from "@virtoshell/api-client";
 import { IBladeToolbar, IMenuItems } from "../types";
 import NotificationDropdown from "../components/notification-dropdown.vue";
 
@@ -77,22 +74,9 @@ export default defineComponent({
     const { t } = useI18n();
     const log = useLogger();
     const { user, loadUser, signOut } = useUser();
-    const { getLastNotifications, lastNotifications } = useNotifications();
+    const { notifications } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
-    const dropNotifications = ref<PushNotification[]>([]);
-
-    const signalr = useSignalR();
-    const notifications = ref<PushNotification[]>([]);
-    signalr.on("Send", (message: PushNotification) => {
-      if (
-        message.creator === user.value?.userName ||
-        message.creator === user.value?.id
-      ) {
-        notifications.value.push(message);
-        dropNotifications.value.unshift(message);
-      }
-    });
 
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
@@ -100,7 +84,6 @@ export default defineComponent({
 
     onMounted(async () => {
       await loadUser();
-      await getNotifications();
       isReady.value = true;
       if (!isAuthorized.value) {
         window?.history?.pushState(null, "", "/login");
@@ -117,14 +100,13 @@ export default defineComponent({
       {
         isVisible: isDesktop,
         isAccent: computed(() => {
-          return !!dropNotifications.value.filter(
+          return !!notifications.value.filter(
             (notification) => notification.isNew
           ).length;
         }),
         component: shallowRef(NotificationDropdown),
         componentOptions: {
           title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
-          list: dropNotifications.value,
         },
       },
       {
@@ -195,21 +177,6 @@ export default defineComponent({
         },
       },
     ]);
-
-    async function getNotifications() {
-      try {
-        await getLastNotifications();
-        if (
-          lastNotifications.value &&
-          lastNotifications.value.notifyEvents &&
-          lastNotifications.value.notifyEvents.length
-        ) {
-          dropNotifications.value.push(...lastNotifications.value.notifyEvents);
-        }
-      } catch (e) {
-        log.error(e);
-      }
-    }
 
     return {
       isAuthorized,

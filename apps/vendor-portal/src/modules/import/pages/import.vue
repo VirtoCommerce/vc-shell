@@ -13,7 +13,6 @@
             <vc-select
               :options="importersList"
               v-model="selectedImporter"
-              :initialItem="importersList[0]"
               @change="setImporter"
               :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.TITLE')"
             ></vc-select>

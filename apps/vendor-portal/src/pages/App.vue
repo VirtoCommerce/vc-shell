@@ -85,7 +85,10 @@ export default defineComponent({
     const signalr = useSignalR();
     const notifications = ref<PushNotification[]>([]);
     signalr.on("Send", (message: PushNotification) => {
-      if (message.creator === user.value?.id) {
+      if (
+        message.creator === user.value?.userName ||
+        message.creator === user.value?.id
+      ) {
         notifications.value.push(message);
         dropNotifications.value.unshift(message);
       }

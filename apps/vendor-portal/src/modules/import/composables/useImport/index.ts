@@ -1,15 +1,16 @@
-import { computed, ref, unref } from "vue";
+import { computed, ComputedRef, Ref, ref } from "vue";
 import {
   IImporterMetadata,
-  ImportDataPreview,
   ImporterMetadata,
   VcmpSellerImportClient,
   PreviewDataQuery,
   ImportProfile,
-  ImportDataCommand,
   ImportProfileOptions,
+  ImportDataPreview,
+  ImportCancellationRequest,
 } from "../../../../api_client/api-client";
-import { useUser } from "@virtoshell/core";
+import { useUser, useLogger } from "@virtoshell/core";
+import moment from "moment";
 
 export interface IUploadedFile {
   contentType?: string;
@@ -21,11 +22,36 @@ export interface IUploadedFile {
   url?: string;
 }
 
-export default () => {
+interface IUseImport {
+  currentImporter: Ref<IImporterMetadata>;
+  uploadedFile: Ref<IUploadedFile>;
+  importLoading: Ref<boolean>;
+  previewData: Ref<ImportDataPreview>;
+  importing: Ref<boolean>;
+  importStarted: Ref<boolean>;
+  uploadSuccessful: Ref<boolean>;
+  dataImporters: ComputedRef<ImporterMetadata[]>;
+  timer: Ref<{ start: string; end: string }>;
+  fetchDataImporters(): Promise<void>;
+  fetchPreviewData(): Promise<void>;
+  startImport(): Promise<void>;
+  cancelImport(): Promise<void>;
+}
+
+export default (): IUseImport => {
+  const logger = useLogger();
   const dataImporters = ref<ImporterMetadata[]>();
-  const currentImporter = ref<IImporterMetadata>();
   const previewData = ref<ImportDataPreview>();
+  const importLoading = ref(false);
+  const currentImporter = ref<IImporterMetadata>();
   const uploadedFile = ref<IUploadedFile>();
+  const importStarted = ref(false);
+  const importing = ref(false);
+  const uploadSuccessful = ref(false);
+  const timer = ref({
+    start: "",
+    end: "",
+  });
 
   async function getApiClient() {
     const { getAccessToken } = useUser();
@@ -35,28 +61,107 @@ export default () => {
   }
 
   async function fetchDataImporters() {
+    loadPersistedData();
     const client = await getApiClient();
     dataImporters.value = await client.getImporters();
-    console.log(await client.getImporters());
   }
 
-  async function showPreview() {
+  async function fetchPreviewData() {
     const client = await getApiClient();
-    const profile = new ImportProfile({
+
+    try {
+      importLoading.value = true;
+      const previewDataQuery = new PreviewDataQuery({
+        importProfile: createImportProfile(),
+      });
+      previewData.value = await client.preview(previewDataQuery);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      importLoading.value = false;
+    }
+  }
+
+  async function startImport() {
+    const client = await getApiClient();
+    try {
+      importStarted.value = true;
+      importing.value = true;
+      timer.value.start = moment().format("h:mm:ss a");
+      persistData();
+      await client.runImport({ importProfile: createImportProfile() });
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
+  }
+
+  async function cancelImport() {
+    const client = await getApiClient();
+    try {
+      importStarted.value = false;
+      importing.value = false;
+      uploadSuccessful.value = false;
+      uploadedFile.value = undefined;
+      persistData(true);
+      await client.cancelJob(new ImportCancellationRequest({ jobId: "" }));
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
+  }
+
+  function createImportProfile() {
+    return new ImportProfile({
       dataImporterType: currentImporter.value.importerType,
       options: new ImportProfileOptions(currentImporter.value.importerOptions),
     });
-    const previewDataQuery = new PreviewDataQuery({ importProfile: profile });
-    console.log(profile, previewDataQuery);
-    previewData.value = await client.preview(previewDataQuery);
-    console.log(previewData.value);
+  }
+
+  function persistData(clear = false) {
+    if (clear) {
+      localStorage.removeItem("VC_IMPORT_PERSISTENCE");
+    } else {
+      localStorage.setItem(
+        "VC_IMPORT_PERSISTENCE",
+        JSON.stringify({
+          currentImporter: currentImporter.value,
+          uploadedFile: uploadedFile.value,
+          importStarted: importStarted.value,
+          importing: importing.value,
+          uploadSuccessful: uploadSuccessful.value,
+          timer: timer.value,
+        })
+      );
+    }
+  }
+
+  function loadPersistedData() {
+    const data = JSON.parse(localStorage.getItem("VC_IMPORT_PERSISTENCE"));
+    if (data) {
+      currentImporter.value = data.currentImporter;
+      uploadedFile.value = data.uploadedFile;
+      importStarted.value = data.importStarted;
+      importing.value = data.importing;
+      uploadSuccessful.value = data.uploadSuccessful;
+      timer.value = data.timer;
+    }
   }
 
   return {
     currentImporter,
     uploadedFile,
+    importLoading,
+    previewData,
+    importing,
+    importStarted,
+    uploadSuccessful,
+    timer,
     dataImporters: computed(() => dataImporters.value),
     fetchDataImporters,
-    showPreview,
+    fetchPreviewData,
+    startImport,
+    cancelImport,
   };
 };

@@ -15,7 +15,7 @@
     @dragover.stop.prevent
     @dragenter.stop.prevent
     @dragleave.stop.prevent
-    v-if="!isUploaded"
+    v-if="!uploadedFile"
     v-loading="loading"
   >
     <vc-icon
@@ -73,7 +73,7 @@ export default defineComponent({
 
     uploadedFile: {
       type: Object,
-      default: () => ({}),
+      default: () => null,
     },
 
     uploadActions: {

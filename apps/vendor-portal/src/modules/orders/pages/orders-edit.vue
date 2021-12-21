@@ -52,7 +52,9 @@
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
                 <vc-info-row label="Sold to" :value="order.customerName" />
-                <vc-info-row value="USA" />
+                <vc-info-row
+                  :value="order.addresses && order.addresses[0].countryName"
+                />
                 <vc-info-row value="nathan.roberts@example.com" type="email" />
                 <vc-info-row value="+62-818-5551-71" />
                 <vc-info-row

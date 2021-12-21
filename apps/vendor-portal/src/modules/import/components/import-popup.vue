@@ -16,9 +16,9 @@
       >
         <p class="import-popup__count">
           {{ t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_COUNT") }}:
-          <span class="import-popup__digits">10</span>
+          <span class="import-popup__digits">{{ items.length }}</span>
           {{ t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_OF") }}
-          <span class="import-popup__digits">{{ count }}</span>
+          <span class="import-popup__digits">{{ total }}</span>
         </p>
       </div>
     </div>
@@ -27,12 +27,15 @@
       :items="items"
       :header="false"
       :scrolling="true"
+      :footer="false"
     ></vc-table>
     <div class="import-popup__footer vc-padding_xl vc-flex">
       <vc-button :outline="true" @click="$emit('close')">{{
         t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
       }}</vc-button>
-      <vc-button>{{ t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT") }}</vc-button>
+      <vc-button @click="$emit('startImport')" :disabled="disabled">{{
+        t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT")
+      }}</vc-button>
     </div>
   </vc-popup>
 </template>
@@ -53,14 +56,22 @@ export default defineComponent({
       type: Array,
       default: () => [],
     },
+
+    total: {
+      type: Number,
+      default: 0,
+    },
+
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const { t } = useI18n();
-    const count = 125600;
 
     return {
       t,
-      count,
     };
   },
 });

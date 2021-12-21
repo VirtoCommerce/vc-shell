@@ -94,7 +94,8 @@
         "OFFER_CREATED": "Offer created",
         "OFFER_DELETED": "Offer deleted",
         "PRODUCT_CREATED": "Product created",
-        "PUBLICATION_REQUEST": "Publication request"
+        "PUBLICATION_REQUEST": "Publication request",
+        "IMPORT_STARTED": "Import"
       }
     }
   }

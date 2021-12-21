@@ -36,6 +36,7 @@
           :variant="action.variant"
           :outline="action.outline"
           :small="true"
+          :disabled="action.disabled"
         >
           {{ action.name }}
         </vc-button>
@@ -116,6 +117,7 @@ export default defineComponent({
     width: 30px;
     height: 41px;
     background-position: center;
+    background-repeat: no-repeat;
   }
 
   &__success-img {

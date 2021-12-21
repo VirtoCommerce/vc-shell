@@ -29,7 +29,7 @@
             <vc-col size="1">
               <div
                 class="notification-dropdown__notification-icon"
-                :style="item.params.color"
+                :style="{ 'background-color': item.params.color }"
               >
                 <vc-icon :icon="item.params.icon" size="l"></vc-icon>
               </div>
@@ -45,7 +45,7 @@
                 >
                   {{ item.params.title }}
                 </p>
-                <vc-hint>{{ item.title }}</vc-hint>
+                <vc-hint>{{ item.title || item.description }}</vc-hint>
               </div>
             </vc-col>
             <vc-col size="2" class="vc-flex-align_end">
@@ -106,7 +106,7 @@ export default defineComponent({
           icon: notificationIcon(item.notifyType),
           title: notificationTitle(item.notifyType),
           time: notificationTime(item.created),
-          color: notificationColor(item.notifyType),
+          color: notificationColor(item.description),
         };
         return item;
       });
@@ -128,6 +128,8 @@ export default defineComponent({
           return t("SHELL.NOTIFICATIONS.TYPES.PRODUCT_CREATED");
         case "PublicationRequestStatusChangedDomainEvent":
           return t("SHELL.NOTIFICATIONS.TYPES.PUBLICATION_REQUEST");
+        case "ImportPushNotifaction":
+          return t("SHELL.NOTIFICATIONS.TYPES.IMPORT_STARTED");
       }
     };
 
@@ -141,11 +143,17 @@ export default defineComponent({
         return "fas fa-percentage";
       } else if (lower.includes("product")) {
         return "fas fa-box-open";
+      } else if (lower.includes("import")) {
+        return "fas fa-download";
       }
       return "fas fa-info";
     };
 
-    const notificationColor = (type: string) => {
+    const notificationColor = (description: string) => {
+      if (description === "Import has started") {
+        return "#A9BCCD";
+      }
+
       return "#87b563";
     };
 
@@ -234,7 +242,6 @@ export default defineComponent({
     &-icon {
       width: 41px;
       height: 41px;
-      background-color: #87b563;
       border-radius: 50%;
       color: #fff;
       display: flex;

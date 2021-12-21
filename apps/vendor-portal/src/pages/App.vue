@@ -45,6 +45,7 @@ import {
   reactive,
   inject,
   shallowRef,
+  provide,
 } from "vue";
 import LoginPage from "./Login.vue";
 import DashboardPage from "./Dashboard.vue";

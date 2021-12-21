@@ -230,7 +230,7 @@ export default defineComponent({
     },
 
     options: {
-      type: Array as PropType<{ [x: string]: string }[]>,
+      type: Array as PropType<Record<string, string>[]>,
       default: () => [],
     },
 

@@ -53,8 +53,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import VcUploadNotification from "./_internal/vc-file-upload-notification/vc-file-upload-notification.vue";
+import { INotificationActions } from "../../../typings";
 
 export default defineComponent({
   name: "VcFileUpload",
@@ -76,7 +77,7 @@ export default defineComponent({
     },
 
     uploadActions: {
-      type: Array,
+      type: Array as PropType<INotificationActions[]>,
       default: () => [],
     },
 

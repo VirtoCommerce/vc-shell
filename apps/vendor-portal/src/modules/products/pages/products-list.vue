@@ -222,7 +222,7 @@ import moment from "moment";
 import {
   IActionBuilderResult,
   ITableColumns,
-  IToolbarItems,
+  IBladeToolbar,
 } from "../../../types";
 import { ISellerProduct } from "../../../api_client";
 
@@ -269,7 +269,11 @@ export default defineComponent({
       searchQuery,
       SellerProductStatus,
     } = useProducts();
-    const filter = reactive({});
+    const filter = reactive<{
+      status?: string;
+      priceStart?: string;
+      priceEnd?: string;
+    }>({});
     const appliedFilter = ref({});
 
     const sort = ref("createdDate:DESC");
@@ -303,7 +307,7 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar: IToolbarItems[] = [
+    const bladeToolbar: IBladeToolbar[] = [
       {
         id: "refresh",
         title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),

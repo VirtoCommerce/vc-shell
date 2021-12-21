@@ -45,14 +45,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
-
-interface INotificationActions {
-  name: string;
-  clickHandler(): void;
-  outline: boolean;
-  variant: string;
-  isVisible?: boolean;
-}
+import { INotificationActions } from "@virtoshell/ui";
 
 export default defineComponent({
   name: "VcUploadNotification",

@@ -34,9 +34,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
+import { IBladeToolbar } from "../../../typings";
 
 export default defineComponent({
   name: "VcBlade",
@@ -77,7 +78,7 @@ export default defineComponent({
     },
 
     toolbarItems: {
-      type: Array,
+      type: Array as PropType<IBladeToolbar[]>,
       default: () => [],
     },
   },

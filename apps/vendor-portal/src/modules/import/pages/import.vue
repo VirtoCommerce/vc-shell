@@ -211,7 +211,7 @@ export default defineComponent({
       showPreview,
       uploadedFile,
     } = useImport();
-    const selectedImporter = ref("");
+    const selectedImporter = ref();
     const importersList = ref<{ id: number; title: string }[]>([]);
     const sort = ref("date:DESC");
     const selectedItemId = ref();
@@ -674,8 +674,9 @@ export default defineComponent({
 
     onMounted(async () => {
       await fetchDataImporters();
-
       createImportersList();
+      selectedImporter.value = 1;
+      setImporter(1);
     });
 
     function createImportersList() {

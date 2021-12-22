@@ -24,7 +24,7 @@
 
     <template v-slot:notifications>
       <vc-notification
-        v-for="(item, i) in notifications"
+        v-for="(item, i) in popNotifications"
         :key="item.id"
         :timeout="10000"
         @dismiss="onNotificationDismiss(i)"
@@ -80,6 +80,7 @@ export default defineComponent({
     const { notifications, updateNotifications } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
+    const popNotifications = ref<PushNotification[]>([]);
 
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
@@ -93,6 +94,14 @@ export default defineComponent({
         updateNotifications(message);
       }
     });
+
+    watch(
+      () => notifications,
+      (newVal) => {
+        popNotifications.value = newVal.value;
+      },
+      { deep: true }
+    );
 
     onMounted(async () => {
       await loadUser();
@@ -197,9 +206,9 @@ export default defineComponent({
       version: process.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,
-      notifications,
+      popNotifications,
       onNotificationDismiss(idx: number) {
-        notifications.value.splice(idx, 1);
+        popNotifications.value.splice(idx, 1);
       },
     };
   },

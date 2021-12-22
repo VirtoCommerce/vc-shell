@@ -20,41 +20,63 @@
     </div>
     <div class="notification-dropdown__drop" v-if="isDropdownVisible">
       <vc-container :noPadding="true">
-        <div
-          class="notification-dropdown__notification"
-          v-for="item in populatedList"
-          :key="`notification_${item.id}`"
-        >
-          <vc-row>
-            <vc-col size="1">
-              <div
-                class="notification-dropdown__notification-icon"
-                :style="{ 'background-color': item.params.color }"
-              >
-                <vc-icon :icon="item.params.icon" size="l"></vc-icon>
-              </div>
-            </vc-col>
-            <vc-col size="4" class="vc-flex-justify_center">
-              <div class="notification-dropdown__notification-info">
+        <div v-if="populatedList && populatedList.length">
+          <div
+            class="notification-dropdown__notification"
+            v-for="item in populatedList"
+            :key="`notification_${item.id}`"
+          >
+            <vc-row>
+              <vc-col size="1">
+                <div
+                  class="notification-dropdown__notification-icon"
+                  :style="{ 'background-color': item.params.color }"
+                >
+                  <vc-icon :icon="item.params.icon" size="l"></vc-icon>
+                </div>
+              </vc-col>
+              <vc-col size="4" class="vc-flex-justify_center">
+                <div class="notification-dropdown__notification-info">
+                  <p
+                    class="
+                      notification-dropdown__notification-title
+                      vc-margin_none
+                      vc-margin-bottom_xs
+                    "
+                  >
+                    {{ item.title }}
+                  </p>
+                  <vc-hint>{{ item.description }}</vc-hint>
+                  <div v-if="item.errors">
+                    <vc-hint class="notification-dropdown__error"
+                      >Errors: {{ item.errors && item.errors.length }}</vc-hint
+                    >
+                  </div>
+                </div>
+              </vc-col>
+              <vc-col size="2" class="vc-flex-align_end">
                 <p
                   class="
-                    notification-dropdown__notification-title
+                    notification-dropdown__notification-time
                     vc-margin_none
-                    vc-margin-bottom_xs
                   "
                 >
-                  {{ item.title || item.description }}
+                  {{ item.params.time }}
                 </p>
-              </div>
-            </vc-col>
-            <vc-col size="2" class="vc-flex-align_end">
-              <p
-                class="notification-dropdown__notification-time vc-margin_none"
-              >
-                {{ item.params.time }}
-              </p>
-            </vc-col>
-          </vc-row>
+              </vc-col>
+            </vc-row>
+          </div>
+        </div>
+        <div
+          class="
+            vc-flex
+            vc-flex-justify_center
+            vc-flex-align_center
+            vc-padding_l
+          "
+          v-else
+        >
+          No notifications yet
         </div>
       </vc-container>
     </div>
@@ -62,12 +84,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
-import { PushNotification } from "@virtoshell/api-client";
+import { computed, defineComponent, onMounted, ref, unref, watch } from "vue";
+import {
+  BulkActionPushNotification,
+  PushNotification,
+} from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
 import moment from "moment";
 
-interface INotificationParams extends PushNotification {
+interface INotificationParams
+  extends PushNotification,
+    BulkActionPushNotification {
   params: {
     icon: string;
     time: string;
@@ -90,19 +117,25 @@ export default defineComponent({
   },
   setup() {
     const isDropdownVisible = ref(false);
-    const { getLastNotifications, notifications } = useNotifications();
+    const { getLastNotifications, dropNotifications } = useNotifications();
     const locale = window.navigator.language;
 
-    const populatedList = computed(() => {
-      return notifications.value.map((item: INotificationParams) => {
-        item.params = {
-          icon: notificationIcon(item.notifyType),
-          time: moment(item.created).locale(locale).format("L LT"),
-          color: notificationColor(item.description),
-        };
-        return item;
-      });
-    });
+    const populatedList = ref<INotificationParams[]>([]);
+
+    watch(
+      () => dropNotifications,
+      (newVal) => {
+        populatedList.value = newVal.value.map((item: INotificationParams) => {
+          item.params = {
+            icon: notificationIcon(item.notifyType),
+            time: moment(item.created).locale(locale).format("L LT"),
+            color: notificationColor(item),
+          };
+          return item;
+        });
+      },
+      { deep: true }
+    );
 
     onMounted(async () => {
       await getLastNotifications();
@@ -124,9 +157,13 @@ export default defineComponent({
       return "fas fa-info";
     };
 
-    const notificationColor = (description: string) => {
-      if (description === "Import has started") {
+    const notificationColor = (item: INotificationParams) => {
+      if (item.created && item.finished) {
+        return "#87b563";
+      } else if (item.created && !item.finished && !item.errors) {
         return "#A9BCCD";
+      } else if (item.created && item.errors && item.errors.length) {
+        return "#F14E4E";
       }
 
       return "#87b563";
@@ -135,7 +172,6 @@ export default defineComponent({
     return {
       isDropdownVisible,
       populatedList,
-      notifications,
       toggleNotificationsDrop,
     };
   },
@@ -143,6 +179,9 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+:root {
+  --notification-color-error: #f14e4e;
+}
 .notification-dropdown {
   position: relative;
   display: flex;
@@ -158,6 +197,7 @@ export default defineComponent({
     border-radius: 0 0 6px 6px;
     width: 439px;
     max-height: 350px;
+    min-height: 50px;
     right: 0;
     overflow: hidden;
     display: flex;
@@ -233,6 +273,10 @@ export default defineComponent({
       line-height: var(--line-height-l);
       color: #8e8e8e;
     }
+  }
+
+  &__error {
+    --hint-color: var(--notification-color-error);
   }
 }
 </style>

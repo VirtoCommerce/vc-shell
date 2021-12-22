@@ -10,16 +10,19 @@ import useLogger from "../useLogger";
 const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
+  dropNotifications: ComputedRef<PushNotification[]>;
   notifications: ComputedRef<PushNotification[]>;
   getLastNotifications(): Promise<void>;
   updateNotifications(message: PushNotification): void;
 }
 
+const notifications = ref<PushNotification[]>([]);
+const dropNotifications = ref<PushNotification[]>([]);
+
 export default (): INotifications => {
   const { getAccessToken } = useUser();
   const logger = useLogger();
   const notificationsSearchResult = ref<PushNotificationSearchResult>();
-  const notifications = ref<PushNotification[]>([]);
 
   async function getLastNotifications() {
     const token = await getAccessToken();
@@ -49,7 +52,7 @@ export default (): INotifications => {
           notificationsSearchResult.value.notifyEvents &&
           notificationsSearchResult.value.notifyEvents.length
         ) {
-          notifications.value.push(
+          dropNotifications.value.push(
             ...notificationsSearchResult.value.notifyEvents
           );
         }
@@ -62,9 +65,11 @@ export default (): INotifications => {
 
   function updateNotifications(message: PushNotification) {
     notifications.value.unshift(message);
+    dropNotifications.value.unshift(message);
   }
 
   return {
+    dropNotifications: computed(() => dropNotifications.value),
     notifications: computed(() => notifications.value),
     getLastNotifications,
     updateNotifications,

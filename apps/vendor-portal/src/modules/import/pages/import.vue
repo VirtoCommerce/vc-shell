@@ -86,28 +86,32 @@
                   <p class="csv-import__importing-status-title vc-margin_none">
                     {{ t("IMPORT.PAGES.IMPORTING.LINES_CREATED") }}
                   </p>
-                  <p class="vc-margin_none vc-margin-top_s">4900</p>
-                </vc-col>
-                <vc-col>
-                  <p class="csv-import__importing-status-title vc-margin_none">
-                    {{ t("IMPORT.PAGES.IMPORTING.LINES_UPDATED") }}
+                  <p class="vc-margin_none vc-margin-top_s">
+                    {{ status.processedCount }}
                   </p>
-                  <p class="vc-margin_none vc-margin-top_s">4900</p>
                 </vc-col>
+                <!--                <vc-col>-->
+                <!--                  <p class="csv-import__importing-status-title vc-margin_none">-->
+                <!--                    {{ t("IMPORT.PAGES.IMPORTING.LINES_UPDATED") }}-->
+                <!--                  </p>-->
+                <!--                  <p class="vc-margin_none vc-margin-top_s">4900</p>-->
+                <!--                </vc-col>-->
                 <vc-col>
                   <p class="csv-import__importing-status-title vc-margin_none">
                     {{ t("IMPORT.PAGES.IMPORTING.ERROR_COUNT") }}
                   </p>
-                  <p class="vc-margin_none vc-margin-top_s">4900</p>
-                </vc-col>
-                <vc-col size="3">
-                  <p class="csv-import__importing-status-title vc-margin_none">
-                    {{ t("IMPORT.PAGES.IMPORTING.REPORT_URL") }}
+                  <p class="vc-margin_none vc-margin-top_s">
+                    {{ status.errorCount }}
                   </p>
-                  <vc-link class="vc-margin-top_s"
-                    >api/import/download/import_20210120234901.csv</vc-link
-                  >
                 </vc-col>
+                <!--                <vc-col size="3">-->
+                <!--                  <p class="csv-import__importing-status-title vc-margin_none">-->
+                <!--                    {{ t("IMPORT.PAGES.IMPORTING.REPORT_URL") }}-->
+                <!--                  </p>-->
+                <!--                  <vc-link class="vc-margin-top_s"-->
+                <!--                    >api/import/download/import_20210120234901.csv</vc-link-->
+                <!--                  >-->
+                <!--                </vc-col>-->
               </vc-row>
             </div>
           </div>
@@ -228,6 +232,8 @@ export default defineComponent({
       uploadSuccessful,
       cancelImport,
       timer,
+      status,
+      deleteUpload,
     } = useImport();
     const selectedImporter = ref("");
     const selectedItemId = ref();
@@ -242,7 +248,7 @@ export default defineComponent({
         },
         outline: true,
         variant: "danger",
-        isVisible: computed(() => !importing.value),
+        isVisible: computed(() => !importStarted.value),
       },
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.CANCEL_IMPORT"),
@@ -251,7 +257,7 @@ export default defineComponent({
         },
         outline: true,
         variant: "danger",
-        isVisible: computed(() => importing.value),
+        isVisible: computed(() => importStarted.value),
       },
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
@@ -292,7 +298,7 @@ export default defineComponent({
         outline: true,
         variant: "primary",
         isVisible: computed(() => uploadSuccessful.value),
-        disabled: computed(() => importing.value),
+        disabled: computed(() => importStarted.value),
       },
     ]);
 
@@ -345,10 +351,6 @@ export default defineComponent({
       }
     }
 
-    function deleteUpload() {
-      uploadedFile.value = undefined;
-    }
-
     function setImporter(type: string) {
       currentImporter.value = dataImporters.value.find((importer) => {
         return importer.importerType === type;
@@ -374,6 +376,7 @@ export default defineComponent({
       currentImporter,
       dataImporters,
       importLoading,
+      status,
       previewTotalNum: computed(() => previewData.value.totalCount),
       uploadCsv,
       setImporter,

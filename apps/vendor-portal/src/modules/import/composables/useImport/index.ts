@@ -1,4 +1,4 @@
-import { computed, ComputedRef, Ref, ref } from "vue";
+import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
 import {
   IImporterMetadata,
   ImporterMetadata,
@@ -9,8 +9,9 @@ import {
   ImportDataPreview,
   ImportCancellationRequest,
 } from "../../../../api_client/api-client";
-import { useUser, useLogger } from "@virtoshell/core";
+import { useUser, useLogger, useNotifications } from "@virtoshell/core";
 import moment from "moment";
+import { BulkActionPushNotification } from "@virtoshell/api-client";
 
 export interface IUploadedFile {
   contentType?: string;
@@ -30,16 +31,19 @@ interface IUseImport {
   importing: Ref<boolean>;
   importStarted: Ref<boolean>;
   uploadSuccessful: Ref<boolean>;
-  dataImporters: ComputedRef<ImporterMetadata[]>;
+  dataImporters: Ref<ImporterMetadata[]>;
+  status: Ref<BulkActionPushNotification>;
   timer: Ref<{ start: string; end: string }>;
   fetchDataImporters(): Promise<void>;
   fetchPreviewData(): Promise<void>;
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
+  deleteUpload(): void;
 }
 
 export default (): IUseImport => {
   const logger = useLogger();
+  const { dropNotifications } = useNotifications();
   const dataImporters = ref<ImporterMetadata[]>();
   const previewData = ref<ImportDataPreview>();
   const importLoading = ref(false);
@@ -48,10 +52,64 @@ export default (): IUseImport => {
   const importStarted = ref(false);
   const importing = ref(false);
   const uploadSuccessful = ref(false);
+  const jobId = ref("");
   const timer = ref({
     start: "",
     end: "",
   });
+  const status = ref<BulkActionPushNotification>();
+
+  watch(
+    () => dropNotifications,
+    (newVal) => {
+      try {
+        if (uploadSuccessful.value) {
+          const newImportNotifications = newVal.value.filter(
+            (notif) =>
+              notif.isNew && notif.notifyType === "ImportPushNotifaction"
+          ) as BulkActionPushNotification[];
+
+          status.value =
+            newImportNotifications && newImportNotifications.length
+              ? newImportNotifications[0]
+              : null;
+
+          if (status.value) {
+            jobId.value = status.value.jobId;
+
+            switch (status.value.description) {
+              case "Import has started":
+                setTime();
+                break;
+              case "Import finished":
+                setTime();
+                importStarted.value = true;
+                importing.value = false;
+                break;
+            }
+          }
+        }
+      } finally {
+        importLoading.value = false;
+      }
+    },
+    { deep: true }
+  );
+
+  onMounted(async () => {
+    loadPersistedData();
+    if (uploadSuccessful.value) {
+      importLoading.value = true;
+    }
+  });
+
+  function setTime() {
+    timer.value.start =
+      status.value.created && moment(status.value.created).format("h:mm:ss a");
+    timer.value.end =
+      status.value.finished &&
+      moment(status.value.finished).format("h:mm:ss a");
+  }
 
   async function getApiClient() {
     const { getAccessToken } = useUser();
@@ -61,7 +119,6 @@ export default (): IUseImport => {
   }
 
   async function fetchDataImporters() {
-    loadPersistedData();
     const client = await getApiClient();
     dataImporters.value = await client.getImporters();
   }
@@ -88,7 +145,6 @@ export default (): IUseImport => {
     try {
       importStarted.value = true;
       importing.value = true;
-      timer.value.start = moment().format("h:mm:ss a");
       persistData();
       await client.runImport({ importProfile: createImportProfile() });
     } catch (e) {
@@ -105,11 +161,18 @@ export default (): IUseImport => {
       uploadSuccessful.value = false;
       uploadedFile.value = undefined;
       persistData(true);
-      await client.cancelJob(new ImportCancellationRequest({ jobId: "" }));
+      await client.cancelJob(
+        new ImportCancellationRequest({ jobId: jobId.value })
+      );
     } catch (e) {
       logger.error(e);
       throw e;
     }
+  }
+
+  function deleteUpload() {
+    uploadedFile.value = undefined;
+    persistData(true);
   }
 
   function createImportProfile() {
@@ -128,10 +191,7 @@ export default (): IUseImport => {
         JSON.stringify({
           currentImporter: currentImporter.value,
           uploadedFile: uploadedFile.value,
-          importStarted: importStarted.value,
-          importing: importing.value,
           uploadSuccessful: uploadSuccessful.value,
-          timer: timer.value,
         })
       );
     }
@@ -142,10 +202,7 @@ export default (): IUseImport => {
     if (data) {
       currentImporter.value = data.currentImporter;
       uploadedFile.value = data.uploadedFile;
-      importStarted.value = data.importStarted;
-      importing.value = data.importing;
       uploadSuccessful.value = data.uploadSuccessful;
-      timer.value = data.timer;
     }
   }
 
@@ -158,10 +215,12 @@ export default (): IUseImport => {
     importStarted,
     uploadSuccessful,
     timer,
-    dataImporters: computed(() => dataImporters.value),
+    dataImporters,
+    status,
     fetchDataImporters,
     fetchPreviewData,
     startImport,
     cancelImport,
+    deleteUpload,
   };
 };

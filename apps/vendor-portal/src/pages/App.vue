@@ -61,6 +61,8 @@ import {
 } from "@virtoshell/core";
 import { IBladeToolbar, IMenuItems } from "../types";
 import NotificationDropdown from "../components/notification-dropdown.vue";
+import { useSignalR } from "@quangdao/vue-signalr";
+import { PushNotification } from "@virtoshell/api-client";
 
 export default defineComponent({
   name: "App",
@@ -73,14 +75,24 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const log = useLogger();
+    const signalr = useSignalR();
     const { user, loadUser, signOut } = useUser();
-    const { notifications } = useNotifications();
+    const { notifications, updateNotifications } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
 
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
     const isMobile = inject("isMobile");
+
+    signalr.on("Send", (message: PushNotification) => {
+      if (
+        message.creator === user.value?.userName ||
+        message.creator === user.value?.id
+      ) {
+        updateNotifications(message);
+      }
+    });
 
     onMounted(async () => {
       await loadUser();

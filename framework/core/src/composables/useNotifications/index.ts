@@ -4,7 +4,6 @@ import {
   PushNotificationSearchResult,
 } from "@virtoshell/api-client";
 import useUser from "../useUser";
-import { useSignalR } from "@quangdao/vue-signalr";
 import { computed, ComputedRef, ref } from "vue";
 import useLogger from "../useLogger";
 
@@ -12,24 +11,15 @@ const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
   notifications: ComputedRef<PushNotification[]>;
-  getLastNotifications: () => Promise<void>;
+  getLastNotifications(): Promise<void>;
+  updateNotifications(message: PushNotification): void;
 }
 
 export default (): INotifications => {
-  const signalr = useSignalR();
-  const { user, getAccessToken } = useUser();
+  const { getAccessToken } = useUser();
   const logger = useLogger();
   const notificationsSearchResult = ref<PushNotificationSearchResult>();
   const notifications = ref<PushNotification[]>([]);
-
-  signalr.on("Send", (message: PushNotification) => {
-    if (
-      message.creator === user.value?.userName ||
-      message.creator === user.value?.id
-    ) {
-      notifications.value.unshift(message);
-    }
-  });
 
   async function getLastNotifications() {
     const token = await getAccessToken();
@@ -70,8 +60,13 @@ export default (): INotifications => {
     }
   }
 
+  function updateNotifications(message: PushNotification) {
+    notifications.value.unshift(message);
+  }
+
   return {
     notifications: computed(() => notifications.value),
     getLastNotifications,
+    updateNotifications,
   };
 };

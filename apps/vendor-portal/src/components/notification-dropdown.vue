@@ -47,7 +47,7 @@
                     {{ item.title }}
                   </p>
                   <vc-hint>{{ item.description }}</vc-hint>
-                  <div v-if="item.errors">
+                  <div v-if="item.errors && item.errors.length">
                     <vc-hint class="notification-dropdown__error"
                       >Errors: {{ item.errors && item.errors.length }}</vc-hint
                     >

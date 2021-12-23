@@ -48,28 +48,38 @@
           </vc-card>
         </vc-col>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Shipping address">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Sold to" :value="order.customerName" />
-                <vc-info-row value="USA" />
-                <vc-info-row value="nathan.roberts@example.com" type="email" />
-                <vc-info-row value="+62-818-5551-71" />
+          <vc-card header="Buyer/recipient info">
+            <vc-col class="vc-padding_s">
+              <vc-col
+                class="vc-padding_s"
+                v-for="(item, i) in shippingInfo"
+                :key="`${item.label}_${i}`"
+              >
                 <vc-info-row
-                  value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
+                  :label="item.label"
+                  :value="item.name"
+                  :class="{ 'orders-edit__row_line': i === 1 }"
                 />
+                <vc-info-row :value="item.address" v-if="item.address" />
+                <vc-info-row :value="item.phone" v-if="item.phone" />
                 <vc-info-row
-                  label="Ship to"
-                  class="orders-edit__row_line"
-                  value="ShipStation Support"
+                  :value="item.email"
+                  type="email"
+                  v-if="item.email"
                 />
-                <vc-info-row value="USA" />
-                <vc-info-row
-                  value="3800 N Lamar BLVD STE 220 Austin, TX 78756-4011 US"
-                />
-                <vc-info-row value="+62-818-5551-71" />
+
+                <!--                <vc-info-row-->
+                <!--                  label="Ship to"-->
+                <!--                  class="orders-edit__row_line"-->
+                <!--                  value="ShipStation Support"-->
+                <!--                />-->
+                <!--                <vc-info-row value="USA" />-->
+                <!--                <vc-info-row-->
+                <!--                  value="3800 N Lamar BLVD STE 220 Austin, TX 78756-4011 US"-->
+                <!--                />-->
+                <!--                <vc-info-row value="+62-818-5551-71" />-->
               </vc-col>
-            </vc-row>
+            </vc-col>
           </vc-card>
         </vc-col>
       </vc-row>
@@ -155,11 +165,12 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import moment from "moment";
 
 import { useOrder } from "../composables";
 import { ITableColumns, IToolbarItems } from "../../../types";
+import { AddressType } from "@virtoshell/api-client";
 
 export default defineComponent({
   url: "order",
@@ -315,6 +326,47 @@ export default defineComponent({
       order,
       items: computed(() => order.value?.items),
       loading,
+      shippingInfo: computed(
+        (): {
+          label: string;
+          name: string;
+          address: string;
+          phone: string;
+          email: string;
+        }[] => {
+          return (
+            order.value.addresses &&
+            order.value.addresses.reduce((acc, address) => {
+              const orderInfo = {
+                name: `${address.firstName} ${address.lastName}`,
+                address: `${address.line1 ?? ""} ${address.line2 ?? ""}, ${
+                  address.city ?? ""
+                }, ${address.postalCode ?? ""} ${address.countryCode ?? ""}`,
+                phone: address.phone ?? "",
+                email: address.email ?? "",
+              };
+              switch (address.addressType) {
+                case AddressType.Billing:
+                  acc.push({ label: "Sold to", ...orderInfo });
+                  break;
+                case AddressType.Shipping:
+                  acc.push({ label: "Ship to", ...orderInfo });
+                  break;
+                case AddressType.BillingAndShipping:
+                  acc.push(
+                    { label: "Sold to", ...orderInfo },
+                    { label: "Ship to", ...orderInfo }
+                  );
+                  break;
+                case AddressType.Pickup:
+                  acc.push({ label: "Pick-up at", ...orderInfo });
+                  break;
+              }
+              return acc;
+            }, [])
+          );
+        }
+      ),
       createdDate: computed(() => {
         const date = new Date(order.value?.createdDate);
         return moment(date).locale(locale).format("L LT");

@@ -62,7 +62,6 @@ export default (): IUseImport => {
   watch(
     () => dropNotifications,
     (newVal) => {
-      loadPersistedData();
       if (uploadSuccessful.value) {
         const newImportNotifications = newVal.value.filter(
           (notif) => notif.isNew && notif.notifyType === "ImportPushNotifaction"
@@ -91,6 +90,10 @@ export default (): IUseImport => {
     },
     { deep: true }
   );
+
+  onMounted(() => {
+    loadPersistedData();
+  });
 
   function setTime() {
     timer.value.start =
@@ -149,6 +152,8 @@ export default (): IUseImport => {
       importing.value = false;
       uploadSuccessful.value = false;
       uploadedFile.value = undefined;
+      timer.value.start = "";
+      timer.value.end = "";
       persistData(true);
       if (jobId.value) {
         await client.cancelJob(

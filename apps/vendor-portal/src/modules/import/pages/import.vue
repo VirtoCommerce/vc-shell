@@ -190,7 +190,7 @@
       :items="popupItems"
       :total="previewTotalNum"
       @startImport="initializeImporting"
-      :disabled="importing"
+      :disabled="importStarted"
     ></import-popup>
   </vc-blade>
 </template>

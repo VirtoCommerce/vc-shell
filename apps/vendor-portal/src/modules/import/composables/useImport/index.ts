@@ -1,4 +1,4 @@
-import { computed, ComputedRef, onMounted, Ref, ref, watch } from "vue";
+import { onMounted, Ref, ref, watch } from "vue";
 import {
   IImporterMetadata,
   ImporterMetadata,
@@ -62,46 +62,35 @@ export default (): IUseImport => {
   watch(
     () => dropNotifications,
     (newVal) => {
-      try {
-        if (uploadSuccessful.value) {
-          const newImportNotifications = newVal.value.filter(
-            (notif) =>
-              notif.isNew && notif.notifyType === "ImportPushNotifaction"
-          ) as BulkActionPushNotification[];
+      loadPersistedData();
+      if (uploadSuccessful.value) {
+        const newImportNotifications = newVal.value.filter(
+          (notif) => notif.isNew && notif.notifyType === "ImportPushNotifaction"
+        ) as BulkActionPushNotification[];
 
-          status.value =
-            newImportNotifications && newImportNotifications.length
-              ? newImportNotifications[0]
-              : null;
+        status.value =
+          newImportNotifications && newImportNotifications.length
+            ? newImportNotifications[0]
+            : null;
 
-          if (status.value) {
-            jobId.value = status.value.jobId;
+        if (status.value) {
+          jobId.value = status.value.jobId;
 
-            switch (status.value.description) {
-              case "Import has started":
-                setTime();
-                break;
-              case "Import finished":
-                setTime();
-                importStarted.value = true;
-                importing.value = false;
-                break;
-            }
+          switch (status.value.description) {
+            case "Import has started":
+              setTime();
+              break;
+            case "Import finished":
+              setTime();
+              importStarted.value = true;
+              importing.value = false;
+              break;
           }
         }
-      } finally {
-        importLoading.value = false;
       }
     },
     { deep: true }
   );
-
-  onMounted(async () => {
-    loadPersistedData();
-    if (uploadSuccessful.value) {
-      importLoading.value = true;
-    }
-  });
 
   function setTime() {
     timer.value.start =
@@ -161,9 +150,11 @@ export default (): IUseImport => {
       uploadSuccessful.value = false;
       uploadedFile.value = undefined;
       persistData(true);
-      await client.cancelJob(
-        new ImportCancellationRequest({ jobId: jobId.value })
-      );
+      if (jobId.value) {
+        await client.cancelJob(
+          new ImportCancellationRequest({ jobId: jobId.value })
+        );
+      }
     } catch (e) {
       logger.error(e);
       throw e;

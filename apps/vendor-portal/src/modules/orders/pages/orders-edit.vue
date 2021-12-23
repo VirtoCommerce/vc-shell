@@ -67,17 +67,6 @@
                   type="email"
                   v-if="item.email"
                 />
-
-                <!--                <vc-info-row-->
-                <!--                  label="Ship to"-->
-                <!--                  class="orders-edit__row_line"-->
-                <!--                  value="ShipStation Support"-->
-                <!--                />-->
-                <!--                <vc-info-row value="USA" />-->
-                <!--                <vc-info-row-->
-                <!--                  value="3800 N Lamar BLVD STE 220 Austin, TX 78756-4011 US"-->
-                <!--                />-->
-                <!--                <vc-info-row value="+62-818-5551-71" />-->
               </vc-col>
             </vc-col>
           </vc-card>

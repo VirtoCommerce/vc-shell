@@ -318,12 +318,12 @@ export default defineComponent({
       shippingInfo: computed(
         (): {
           label: string;
-          name: string;
-          address: string;
-          phone: string;
-          email: string;
+          name?: string;
+          address?: string;
+          phone?: string;
+          email?: string;
         }[] => {
-          return (
+          const info =
             order.value.addresses &&
             order.value.addresses.reduce((acc, address) => {
               const orderInfo = {
@@ -352,8 +352,10 @@ export default defineComponent({
                   break;
               }
               return acc;
-            }, [])
-          );
+            }, []);
+          return info && info.length
+            ? info
+            : [{ label: "Sold to" }, { label: "Ship to" }];
         }
       ),
       createdDate: computed(() => {

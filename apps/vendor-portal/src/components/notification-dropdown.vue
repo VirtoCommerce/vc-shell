@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, unref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import {
   BulkActionPushNotification,
   PushNotification,
@@ -178,7 +178,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 :root {
   --notification-color-error: #f14e4e;
 }

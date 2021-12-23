@@ -12,8 +12,8 @@
           <!-- Import selects -->
           <vc-col class="vc-margin-bottom_xl">
             <vc-select
-              :options="dataImporters"
-              v-model="selectedImporter"
+              :options="importersList"
+              :modelValue="selectedImporter && selectedImporter.importerType"
               @change="setImporter"
               keyProperty="importerType"
               displayProperty="importerType"
@@ -45,10 +45,15 @@
         <vc-col
           class="vc-padding_l vc-padding-top_s"
           :class="{
-            'vc-flex-justify_end vc-padding_l': !uploadedFile,
+            'vc-flex-justify_end vc-padding_l': !(
+              uploadedFile && uploadedFile.url
+            ),
           }"
         >
-          <p class="csv-import__uploaded-title" v-if="uploadedFile">
+          <p
+            class="csv-import__uploaded-title"
+            v-if="uploadedFile && uploadedFile.url"
+          >
             {{ t("IMPORT.PAGES.ACTIONS.UPLOADER.TITLE") }}
           </p>
           <vc-file-upload
@@ -57,7 +62,7 @@
             :notification="true"
             :uploadedFile="uploadedFile"
             :uploadActions="uploadActions"
-            :isUploaded="uploadSuccessful"
+            :isUploaded="isValid"
             :errorMessage="errorMessage"
             :loading="loading"
             accept=".csv"
@@ -69,7 +74,7 @@
       <div class="csv-import__importing vc-padding_l" v-if="importStarted">
         <vc-card
           :header="
-            importing
+            importStatus && importStatus.inProgress
               ? $t('IMPORT.PAGES.IMPORTING.IMPORT_STARTED')
               : $t('IMPORT.PAGES.IMPORTING.IMPORT_SUMMARY')
           "
@@ -77,17 +82,20 @@
           <div class="vc-padding_xl">
             <vc-progress
               value="100"
-              v-if="importing"
+              v-if="importStatus && importStatus.inProgress"
               variant="striped"
             ></vc-progress>
-            <div v-else :class="{ 'vc-flex-column': $isMobile.value }">
+            <div
+              v-else-if="importStatus && importStatus.notification"
+              :class="{ 'vc-flex-column': $isMobile.value }"
+            >
               <vc-row>
                 <vc-col>
                   <p class="csv-import__importing-status-title vc-margin_none">
                     {{ t("IMPORT.PAGES.IMPORTING.LINES_CREATED") }}
                   </p>
                   <p class="vc-margin_none vc-margin-top_s">
-                    {{ status.processedCount }}
+                    {{ importStatus.notification.processedCount }}
                   </p>
                 </vc-col>
                 <!--                <vc-col>-->
@@ -101,7 +109,7 @@
                     {{ t("IMPORT.PAGES.IMPORTING.ERROR_COUNT") }}
                   </p>
                   <p class="vc-margin_none vc-margin-top_s">
-                    {{ status.errorCount }}
+                    {{ importStatus.notification.errorCount }}
                   </p>
                 </vc-col>
                 <!--                <vc-col size="3">-->
@@ -118,16 +126,37 @@
 
           <!-- Import timers -->
           <template v-slot:actions>
-            <div class="csv-import__time-wrapper vc-flex vc-flex-row">
-              <div class="csv-import__time" v-if="timer && timer.start">
+            <div
+              class="csv-import__time-wrapper vc-flex vc-flex-row"
+              v-if="importStatus && importStatus.notification"
+            >
+              <div
+                class="csv-import__time"
+                v-if="importStatus.notification.created"
+              >
                 {{ t("IMPORT.PAGES.IMPORTING.TIMINGS.START") }} —
                 <vc-icon icon="far fa-clock" size="xs" />
-                <span>&nbsp;{{ timer.start }}</span>
+                <span
+                  >&nbsp;{{
+                    moment(importStatus.notification.created)
+                      .locale(locale)
+                      .format("LTS")
+                  }}</span
+                >
               </div>
-              <div class="csv-import__time" v-if="timer && timer.end">
+              <div
+                class="csv-import__time"
+                v-if="importStatus.notification.finished"
+              >
                 {{ t("IMPORT.PAGES.IMPORTING.TIMINGS.END") }} —
                 <vc-icon icon="far fa-clock" size="xs" />
-                <span>&nbsp;{{ timer.end }}</span>
+                <span
+                  >&nbsp;{{
+                    moment(importStatus.notification.finished)
+                      .locale(locale)
+                      .format("LTS")
+                  }}</span
+                >
               </div>
             </div>
           </template>
@@ -201,6 +230,8 @@ import { useI18n, useUser } from "@virtoshell/core";
 import { ITableColumns } from "../../../types";
 import ImportPopup from "../components/import-popup.vue";
 import useImport from "../composables/useImport";
+import { IImporterMetadata, ImportDataPreview } from "../../../api_client";
+import moment from "moment";
 
 interface INotificationActions {
   name: string;
@@ -216,160 +247,179 @@ export default defineComponent({
   url: "import",
 
   setup() {
-    // const { t } = useI18n();
-    // const { getAccessToken } = useUser();
-    // const {
-    //   loading: importLoading,
-    //   selectedImporter,
-    //   uploadedFile,
-    //   importStatus,
-    //   setFile,
-    //   selectImporter,
-    //   fetchDataImporters,
-    //   previewData,
-    //   startImport,
-    //   cancelImport,
-    // } = useImport();
-    // const selectedImporter = ref("");
-    // const selectedItemId = ref();
-    // const loading = ref(false);
-    // const errorMessage = ref("");
-    // const importPreview = ref(false);
-    // const uploadActions = ref<INotificationActions[]>([
-    //   {
-    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
-    //     clickHandler() {
-    //       deleteUpload();
-    //     },
-    //     outline: true,
-    //     variant: "danger",
-    //     isVisible: computed(() => !importStarted.value),
-    //   },
-    //   {
-    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.CANCEL_IMPORT"),
-    //     clickHandler() {
-    //       cancelImport();
-    //     },
-    //     outline: true,
-    //     variant: "danger",
-    //     isVisible: computed(() => importStarted.value),
-    //   },
-    //   {
-    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
-    //     async clickHandler() {
-    //       await fetchPreviewData();
-    //       if (previewData.value) {
-    //         previewData.value.records.forEach((record) => {
-    //           for (const recordKey in record) {
-    //             popupColumns.value.push({
-    //               id: recordKey,
-    //               title: recordKey,
-    //               width: 130,
-    //             });
-    //           }
-    //           popupItems.value.push(record);
-    //         });
-    //         importPreview.value = true;
-    //       }
-    //     },
-    //     variant: "primary",
-    //     outline: false,
-    //     isVisible: computed(() => uploadSuccessful.value),
-    //   },
-    //   {
-    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT"),
-    //     async clickHandler() {
-    //       try {
-    //         errorMessage.value = "";
-    //         await startImport();
-    //       } catch (e) {
-    //         errorMessage.value = e.message;
-    //         importStarted.value = false;
-    //         importing.value = false;
-    //       }
-    //     },
-    //     outline: true,
-    //     variant: "primary",
-    //     isVisible: computed(() => uploadSuccessful.value),
-    //     disabled: computed(() => importStarted.value),
-    //   },
-    // ]);
-    // const popupColumns = ref<ITableColumns[]>([]);
-    // const popupItems = ref<Record<string, unknown>[]>([]);
-    // onMounted(async () => {
-    //   await fetchDataImporters();
-    //   currentImporter.value = currentImporter.value
-    //     ? currentImporter.value
-    //     : dataImporters.value[0];
-    //   selectedImporter.value = currentImporter.value.importerType;
-    // });
-    // function initializeImporting() {
-    //   importPreview.value = false;
-    //   startImport();
-    // }
-    // async function uploadCsv(files: File) {
-    //   try {
-    //     loading.value = true;
-    //     const formData = new FormData();
-    //     formData.append("file", files[0]);
-    //     const authToken = await getAccessToken();
-    //     const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
-    //       method: "POST",
-    //       body: formData,
-    //       headers: {
-    //         Authorization: `Bearer ${authToken}`,
-    //       },
-    //     });
-    //     const response = await result.json();
-    //     if (response?.length) {
-    //       uploadSuccessful.value = true;
-    //       uploadedFile.value = response[0];
-    //       currentImporter.value.importerOptions.importFileUrl =
-    //         uploadedFile.value.url;
-    //     }
-    //     files = null;
-    //   } catch (e) {
-    //     uploadSuccessful.value = false;
-    //     errorMessage.value = e.message;
-    //     uploadedFile.value = {
-    //       name: files[0].name,
-    //       size: files[0].size / (1024 * 1024),
-    //     };
-    //   } finally {
-    //     loading.value = false;
-    //   }
-    // }
-    // function setImporter(type: string) {
-    //   currentImporter.value = dataImporters.value.find((importer) => {
-    //     return importer.importerType === type;
-    //   });
-    // }
-    // return {
-    //   title: t("IMPORT.MENU.TITLE"),
-    //   t,
-    //   selectedItemId,
-    //   uploadedFile: computed(() => uploadedFile.value),
-    //   uploadActions,
-    //   errorMessage,
-    //   importing,
-    //   importStarted,
-    //   timer,
-    //   importPreview,
-    //   popupColumns,
-    //   popupItems,
-    //   loading: computed(() => loading.value || importLoading.value),
-    //   selectedImporter,
-    //   uploadSuccessful,
-    //   currentImporter,
-    //   dataImporters,
-    //   importLoading,
-    //   status,
-    //   previewTotalNum: computed(() => previewData.value.totalCount),
-    //   uploadCsv,
-    //   setImporter,
-    //   startImport,
-    //   initializeImporting,
-    // };
+    const { t } = useI18n();
+    const { getAccessToken } = useUser();
+    const {
+      loading: importLoading,
+      uploadedFile,
+      fetchDataImporters,
+      previewData,
+      startImport,
+      cancelImport,
+      selectImporter,
+      setFile,
+      selectedImporter,
+      importStatus,
+      isValid,
+    } = useImport();
+    const selectedItemId = ref();
+    const loading = ref(false);
+    const errorMessage = ref("");
+    const importPreview = ref(false);
+    const importersList = ref<IImporterMetadata[]>([]);
+    const preview = ref<ImportDataPreview>();
+    const importStarted = ref(false);
+    const uploadActions = ref<INotificationActions[]>([
+      {
+        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
+        clickHandler() {
+          setFile({
+            url: undefined,
+            name: undefined,
+            size: 0,
+          });
+          importStarted.value = false;
+        },
+        outline: true,
+        variant: "danger",
+        isVisible: computed(
+          () => !(importStatus.value && importStatus.value.inProgress)
+        ),
+      },
+      {
+        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.CANCEL_IMPORT"),
+        async clickHandler() {
+          await cancelImport();
+          importStarted.value = false;
+        },
+        outline: true,
+        variant: "danger",
+        isVisible: computed(
+          () => importStatus.value && importStatus.value.inProgress
+        ),
+      },
+      {
+        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
+        async clickHandler() {
+          preview.value = await previewData();
+          popupItems.value = [];
+          popupColumns.value = [];
+          if (preview.value) {
+            preview.value.records.forEach((record) => {
+              for (const recordKey in record) {
+                popupColumns.value.push({
+                  id: recordKey,
+                  title: recordKey,
+                  width: 130,
+                });
+              }
+              popupItems.value.push(record);
+            });
+            importPreview.value = true;
+          }
+        },
+        variant: "primary",
+        outline: false,
+        isVisible: computed(() => isValid.value),
+      },
+      {
+        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT"),
+        async clickHandler() {
+          await start();
+        },
+        outline: true,
+        variant: "primary",
+        isVisible: computed(() => isValid.value),
+        disabled: computed(
+          () => importStatus.value && importStatus.value.inProgress
+        ),
+      },
+    ]);
+    const popupColumns = ref<ITableColumns[]>([]);
+    const popupItems = ref<Record<string, unknown>[]>([]);
+    onMounted(async () => {
+      importersList.value = await fetchDataImporters();
+
+      if (importersList.value.length) {
+        selectImporter(importersList.value[0]);
+      }
+    });
+
+    function initializeImporting() {
+      importPreview.value = false;
+      start();
+    }
+
+    async function start() {
+      try {
+        errorMessage.value = "";
+        await startImport();
+        importStarted.value = true;
+      } catch (e) {
+        errorMessage.value = e.message;
+      }
+    }
+
+    async function uploadCsv(files: File) {
+      try {
+        loading.value = true;
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        const authToken = await getAccessToken();
+        const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        const response = await result.json();
+        if (response?.length) {
+          setFile(response[0]);
+        }
+        files = null;
+      } catch (e) {
+        errorMessage.value = e.message;
+        setFile({
+          name: files[0].name,
+          size: files[0].size / (1024 * 1024),
+        });
+      } finally {
+        loading.value = false;
+      }
+    }
+    function setImporter(type: string) {
+      const importer = importersList.value.find(
+        (importer) => importer.importerType === type
+      );
+      selectImporter(importer);
+    }
+    return {
+      title: t("IMPORT.MENU.TITLE"),
+      t,
+      selectedItemId,
+      uploadedFile,
+      uploadActions,
+      errorMessage,
+      importPreview,
+      popupColumns,
+      popupItems,
+      importersList,
+      loading: computed(() => loading.value || importLoading.value),
+      selectedImporter,
+      importLoading,
+      importStatus,
+      importStarted,
+      isValid,
+      status,
+      moment,
+      previewTotalNum: computed(() => preview.value.totalCount),
+      locale: window.navigator.language,
+      uploadCsv,
+      setImporter,
+      startImport,
+      initializeImporting,
+    };
   },
 });
 </script>

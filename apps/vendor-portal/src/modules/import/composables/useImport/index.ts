@@ -50,7 +50,7 @@ export default (): IUseImport => {
     importProfile: { options: {} as ImportProfileOptions } as ImportProfile,
   } as ImportDataCommand);
   const importStatus = ref<IImportStatus>();
-  const loading = ref<boolean>(false);
+  const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
   const selectedImporter = ref<IImporterMetadata>();
 
@@ -71,19 +71,24 @@ export default (): IUseImport => {
   );
 
   function selectImporter(importer: IImporterMetadata) {
-    importCommand.value.importProfile.dataImporterType = importer.importerType;
-    importCommand.value.importProfile.options = importer.importerOptions;
+    importCommand.value.importProfile = new ImportProfile({
+      dataImporterType: importer.importerType,
+      options: new ImportProfileOptions(importer.importerOptions),
+    });
     selectedImporter.value = importer;
   }
+
   function setFile(file: IUploadedFile) {
     importCommand.value.importProfile.options.importFileUrl = file.url;
     uploadedFile.value = file;
   }
 
   function updateStatus(notification: ImportPushNotification) {
-    importStatus.value.notification = notification;
-    importStatus.value.jobId = notification.jobId;
-    importStatus.value.inProgress = !notification.finished;
+    importStatus.value = {
+      notification: notification,
+      jobId: notification.jobId,
+      inProgress: !notification.finished,
+    };
   }
 
   async function getApiClient() {
@@ -100,7 +105,6 @@ export default (): IUseImport => {
 
   async function previewData() {
     const client = await getApiClient();
-
     try {
       loading.value = true;
       const previewDataQuery = new PreviewDataQuery({
@@ -118,11 +122,14 @@ export default (): IUseImport => {
   async function startImport() {
     const client = await getApiClient();
     try {
+      loading.value = true;
       const notification = await client.runImport(importCommand.value);
       updateStatus(notification);
     } catch (e) {
       logger.error(e);
       throw e;
+    } finally {
+      loading.value = false;
     }
   }
 

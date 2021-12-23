@@ -2,7 +2,6 @@ import {
   PushNotification,
   PushNotificationClient,
   PushNotificationSearchCriteria,
-  PushNotificationSearchResult,
 } from "@virtoshell/api-client";
 import useUser from "../useUser";
 import { computed, ComputedRef, ref } from "vue";

@@ -15,7 +15,7 @@
     @dragover.stop.prevent
     @dragenter.stop.prevent
     @dragleave.stop.prevent
-    v-if="!uploadedFile"
+    v-if="!(uploadedFile && uploadedFile.url)"
     v-loading="loading"
   >
     <vc-icon

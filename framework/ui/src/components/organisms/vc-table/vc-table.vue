@@ -361,7 +361,7 @@ export default defineComponent({
     },
 
     items: {
-      type: Array as PropType<Record<string, unknown>[]>,
+      type: Array as PropType<{ id: string }[]>,
       default: () => [],
     },
 

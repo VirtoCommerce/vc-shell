@@ -46,7 +46,7 @@
 </template>
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
-import { INotificationActions } from "@virtoshell/ui";
+import { INotificationActions } from "../../../../../typings";
 
 export default defineComponent({
   name: "VcUploadNotification",

@@ -216,173 +216,160 @@ export default defineComponent({
   url: "import",
 
   setup() {
-    const { t } = useI18n();
-    const { getAccessToken } = useUser();
-    const {
-      fetchDataImporters,
-      dataImporters,
-      currentImporter,
-      fetchPreviewData,
-      uploadedFile,
-      previewData,
-      importLoading,
-      importing,
-      importStarted,
-      startImport,
-      uploadSuccessful,
-      cancelImport,
-      timer,
-      status,
-      deleteUpload,
-    } = useImport();
-    const selectedImporter = ref("");
-    const selectedItemId = ref();
-    const loading = ref(false);
-    const errorMessage = ref("");
-    const importPreview = ref(false);
-    const uploadActions = ref<INotificationActions[]>([
-      {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
-        clickHandler() {
-          deleteUpload();
-        },
-        outline: true,
-        variant: "danger",
-        isVisible: computed(() => !importStarted.value),
-      },
-      {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.CANCEL_IMPORT"),
-        clickHandler() {
-          cancelImport();
-        },
-        outline: true,
-        variant: "danger",
-        isVisible: computed(() => importStarted.value),
-      },
-      {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
-        async clickHandler() {
-          await fetchPreviewData();
-
-          if (previewData.value) {
-            previewData.value.records.forEach((record) => {
-              for (const recordKey in record) {
-                popupColumns.value.push({
-                  id: recordKey,
-                  title: recordKey,
-                  width: 130,
-                });
-              }
-              popupItems.value.push(record);
-            });
-
-            importPreview.value = true;
-          }
-        },
-        variant: "primary",
-        outline: false,
-        isVisible: computed(() => uploadSuccessful.value),
-      },
-      {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT"),
-        async clickHandler() {
-          try {
-            errorMessage.value = "";
-            await startImport();
-          } catch (e) {
-            errorMessage.value = e.message;
-            importStarted.value = false;
-            importing.value = false;
-          }
-        },
-        outline: true,
-        variant: "primary",
-        isVisible: computed(() => uploadSuccessful.value),
-        disabled: computed(() => importStarted.value),
-      },
-    ]);
-
-    const popupColumns = ref<ITableColumns[]>([]);
-    const popupItems = ref<Record<string, unknown>[]>([]);
-
-    onMounted(async () => {
-      await fetchDataImporters();
-      currentImporter.value = currentImporter.value
-        ? currentImporter.value
-        : dataImporters.value[0];
-      selectedImporter.value = currentImporter.value.importerType;
-    });
-
-    function initializeImporting() {
-      importPreview.value = false;
-      startImport();
-    }
-
-    async function uploadCsv(files: File) {
-      try {
-        loading.value = true;
-        const formData = new FormData();
-        formData.append("file", files[0]);
-        const authToken = await getAccessToken();
-        const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-        const response = await result.json();
-        if (response?.length) {
-          uploadSuccessful.value = true;
-          uploadedFile.value = response[0];
-          currentImporter.value.importerOptions.importFileUrl =
-            uploadedFile.value.url;
-        }
-        files = null;
-      } catch (e) {
-        uploadSuccessful.value = false;
-        errorMessage.value = e.message;
-        uploadedFile.value = {
-          name: files[0].name,
-          size: files[0].size / (1024 * 1024),
-        };
-      } finally {
-        loading.value = false;
-      }
-    }
-
-    function setImporter(type: string) {
-      currentImporter.value = dataImporters.value.find((importer) => {
-        return importer.importerType === type;
-      });
-    }
-
-    return {
-      title: t("IMPORT.MENU.TITLE"),
-      t,
-      selectedItemId,
-      uploadedFile: computed(() => uploadedFile.value),
-      uploadActions,
-      errorMessage,
-      importing,
-      importStarted,
-      timer,
-      importPreview,
-      popupColumns,
-      popupItems,
-      loading,
-      selectedImporter,
-      uploadSuccessful,
-      currentImporter,
-      dataImporters,
-      importLoading,
-      status,
-      previewTotalNum: computed(() => previewData.value.totalCount),
-      uploadCsv,
-      setImporter,
-      startImport,
-      initializeImporting,
-    };
+    // const { t } = useI18n();
+    // const { getAccessToken } = useUser();
+    // const {
+    //   loading: importLoading,
+    //   selectedImporter,
+    //   uploadedFile,
+    //   importStatus,
+    //   setFile,
+    //   selectImporter,
+    //   fetchDataImporters,
+    //   previewData,
+    //   startImport,
+    //   cancelImport,
+    // } = useImport();
+    // const selectedImporter = ref("");
+    // const selectedItemId = ref();
+    // const loading = ref(false);
+    // const errorMessage = ref("");
+    // const importPreview = ref(false);
+    // const uploadActions = ref<INotificationActions[]>([
+    //   {
+    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
+    //     clickHandler() {
+    //       deleteUpload();
+    //     },
+    //     outline: true,
+    //     variant: "danger",
+    //     isVisible: computed(() => !importStarted.value),
+    //   },
+    //   {
+    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.CANCEL_IMPORT"),
+    //     clickHandler() {
+    //       cancelImport();
+    //     },
+    //     outline: true,
+    //     variant: "danger",
+    //     isVisible: computed(() => importStarted.value),
+    //   },
+    //   {
+    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
+    //     async clickHandler() {
+    //       await fetchPreviewData();
+    //       if (previewData.value) {
+    //         previewData.value.records.forEach((record) => {
+    //           for (const recordKey in record) {
+    //             popupColumns.value.push({
+    //               id: recordKey,
+    //               title: recordKey,
+    //               width: 130,
+    //             });
+    //           }
+    //           popupItems.value.push(record);
+    //         });
+    //         importPreview.value = true;
+    //       }
+    //     },
+    //     variant: "primary",
+    //     outline: false,
+    //     isVisible: computed(() => uploadSuccessful.value),
+    //   },
+    //   {
+    //     name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT"),
+    //     async clickHandler() {
+    //       try {
+    //         errorMessage.value = "";
+    //         await startImport();
+    //       } catch (e) {
+    //         errorMessage.value = e.message;
+    //         importStarted.value = false;
+    //         importing.value = false;
+    //       }
+    //     },
+    //     outline: true,
+    //     variant: "primary",
+    //     isVisible: computed(() => uploadSuccessful.value),
+    //     disabled: computed(() => importStarted.value),
+    //   },
+    // ]);
+    // const popupColumns = ref<ITableColumns[]>([]);
+    // const popupItems = ref<Record<string, unknown>[]>([]);
+    // onMounted(async () => {
+    //   await fetchDataImporters();
+    //   currentImporter.value = currentImporter.value
+    //     ? currentImporter.value
+    //     : dataImporters.value[0];
+    //   selectedImporter.value = currentImporter.value.importerType;
+    // });
+    // function initializeImporting() {
+    //   importPreview.value = false;
+    //   startImport();
+    // }
+    // async function uploadCsv(files: File) {
+    //   try {
+    //     loading.value = true;
+    //     const formData = new FormData();
+    //     formData.append("file", files[0]);
+    //     const authToken = await getAccessToken();
+    //     const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
+    //       method: "POST",
+    //       body: formData,
+    //       headers: {
+    //         Authorization: `Bearer ${authToken}`,
+    //       },
+    //     });
+    //     const response = await result.json();
+    //     if (response?.length) {
+    //       uploadSuccessful.value = true;
+    //       uploadedFile.value = response[0];
+    //       currentImporter.value.importerOptions.importFileUrl =
+    //         uploadedFile.value.url;
+    //     }
+    //     files = null;
+    //   } catch (e) {
+    //     uploadSuccessful.value = false;
+    //     errorMessage.value = e.message;
+    //     uploadedFile.value = {
+    //       name: files[0].name,
+    //       size: files[0].size / (1024 * 1024),
+    //     };
+    //   } finally {
+    //     loading.value = false;
+    //   }
+    // }
+    // function setImporter(type: string) {
+    //   currentImporter.value = dataImporters.value.find((importer) => {
+    //     return importer.importerType === type;
+    //   });
+    // }
+    // return {
+    //   title: t("IMPORT.MENU.TITLE"),
+    //   t,
+    //   selectedItemId,
+    //   uploadedFile: computed(() => uploadedFile.value),
+    //   uploadActions,
+    //   errorMessage,
+    //   importing,
+    //   importStarted,
+    //   timer,
+    //   importPreview,
+    //   popupColumns,
+    //   popupItems,
+    //   loading: computed(() => loading.value || importLoading.value),
+    //   selectedImporter,
+    //   uploadSuccessful,
+    //   currentImporter,
+    //   dataImporters,
+    //   importLoading,
+    //   status,
+    //   previewTotalNum: computed(() => previewData.value.totalCount),
+    //   uploadCsv,
+    //   setImporter,
+    //   startImport,
+    //   initializeImporting,
+    // };
   },
 });
 </script>

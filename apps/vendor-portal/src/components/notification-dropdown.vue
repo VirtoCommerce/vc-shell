@@ -117,13 +117,13 @@ export default defineComponent({
   },
   setup() {
     const isDropdownVisible = ref(false);
-    const { getLastNotifications, dropNotifications } = useNotifications();
+    const { loadFromHistory, notifications } = useNotifications();
     const locale = window.navigator.language;
 
     const populatedList = ref<INotificationParams[]>([]);
 
     watch(
-      () => dropNotifications,
+      () => notifications,
       (newVal) => {
         populatedList.value = newVal.value.map((item: INotificationParams) => {
           item.params = {
@@ -138,7 +138,7 @@ export default defineComponent({
     );
 
     onMounted(async () => {
-      await getLastNotifications();
+      await loadFromHistory();
     });
 
     function toggleNotificationsDrop() {

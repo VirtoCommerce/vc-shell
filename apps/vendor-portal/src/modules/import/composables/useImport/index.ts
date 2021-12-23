@@ -1,4 +1,4 @@
-import { onMounted, Ref, ref, watch } from "vue";
+import { onMounted, Ref, ref, watch, computed } from "vue";
 import {
   IImporterMetadata,
   ImporterMetadata,
@@ -8,10 +8,16 @@ import {
   ImportProfileOptions,
   ImportDataPreview,
   ImportCancellationRequest,
+  ImportPushNotification,
+  ImportDataCommand,
 } from "../../../../api_client/api-client";
 import { useUser, useLogger, useNotifications } from "@virtoshell/core";
-import moment from "moment";
-import { BulkActionPushNotification } from "@virtoshell/api-client";
+
+export interface IImportStatus {
+  notification?: ImportPushNotification;
+  jobId?: string;
+  inProgress: boolean;
+}
 
 export interface IUploadedFile {
   contentType?: string;
@@ -24,83 +30,60 @@ export interface IUploadedFile {
 }
 
 interface IUseImport {
-  currentImporter: Ref<IImporterMetadata>;
+  loading: Ref<boolean>;
+  selectedImporter: Ref<IImporterMetadata>;
   uploadedFile: Ref<IUploadedFile>;
-  importLoading: Ref<boolean>;
-  previewData: Ref<ImportDataPreview>;
-  importing: Ref<boolean>;
-  importStarted: Ref<boolean>;
-  uploadSuccessful: Ref<boolean>;
-  dataImporters: Ref<ImporterMetadata[]>;
-  status: Ref<BulkActionPushNotification>;
-  timer: Ref<{ start: string; end: string }>;
-  fetchDataImporters(): Promise<void>;
-  fetchPreviewData(): Promise<void>;
+  importStatus: Ref<IImportStatus>;
+  isValid: Ref<boolean>;
+  setFile(file: IUploadedFile): void;
+  selectImporter(importer: IImporterMetadata): void;
+  fetchDataImporters(): Promise<ImporterMetadata[]>;
+  previewData(): Promise<ImportDataPreview>;
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
-  deleteUpload(): void;
 }
 
 export default (): IUseImport => {
   const logger = useLogger();
-  const { dropNotifications } = useNotifications();
-  const dataImporters = ref<ImporterMetadata[]>();
-  const previewData = ref<ImportDataPreview>();
-  const importLoading = ref(false);
-  const currentImporter = ref<IImporterMetadata>();
+  const { notifications } = useNotifications();
+  const importCommand = ref<ImportDataCommand>({
+    importProfile: { options: {} as ImportProfileOptions } as ImportProfile,
+  } as ImportDataCommand);
+  const importStatus = ref<IImportStatus>();
+  const loading = ref<boolean>(false);
   const uploadedFile = ref<IUploadedFile>();
-  const importStarted = ref(false);
-  const importing = ref(false);
-  const uploadSuccessful = ref(false);
-  const jobId = ref("");
-  const timer = ref({
-    start: "",
-    end: "",
-  });
-  const status = ref<BulkActionPushNotification>();
+  const selectedImporter = ref<IImporterMetadata>();
 
+  //subscribe to pushnotifcation and update the import progress status
   watch(
-    () => dropNotifications,
+    () => notifications,
     (newVal) => {
-      if (uploadSuccessful.value) {
-        const newImportNotifications = newVal.value.filter(
-          (notif) => notif.isNew && notif.notifyType === "ImportPushNotifaction"
-        ) as BulkActionPushNotification[];
-
-        status.value =
-          newImportNotifications && newImportNotifications.length
-            ? newImportNotifications[0]
-            : null;
-
-        if (status.value) {
-          jobId.value = status.value.jobId;
-
-          switch (status.value.description) {
-            case "Import has started":
-              setTime();
-              break;
-            case "Import finished":
-              setTime();
-              importStarted.value = true;
-              importing.value = false;
-              break;
-          }
+      if (importStatus.value) {
+        const notification = newVal.value.find(
+          (x) => x.id === importStatus.value.notification.id
+        ) as ImportPushNotification;
+        if (notification) {
+          updateStatus(notification);
         }
       }
     },
     { deep: true }
   );
 
-  onMounted(() => {
-    loadPersistedData();
-  });
+  function selectImporter(importer: IImporterMetadata) {
+    importCommand.value.importProfile.dataImporterType = importer.importerType;
+    importCommand.value.importProfile.options = importer.importerOptions;
+    selectedImporter.value = importer;
+  }
+  function setFile(file: IUploadedFile) {
+    importCommand.value.importProfile.options.importFileUrl = file.url;
+    uploadedFile.value = file;
+  }
 
-  function setTime() {
-    timer.value.start =
-      status.value.created && moment(status.value.created).format("h:mm:ss a");
-    timer.value.end =
-      status.value.finished &&
-      moment(status.value.finished).format("h:mm:ss a");
+  function updateStatus(notification: ImportPushNotification) {
+    importStatus.value.notification = notification;
+    importStatus.value.jobId = notification.jobId;
+    importStatus.value.inProgress = !notification.finished;
   }
 
   async function getApiClient() {
@@ -112,33 +95,31 @@ export default (): IUseImport => {
 
   async function fetchDataImporters() {
     const client = await getApiClient();
-    dataImporters.value = await client.getImporters();
+    return client.getImporters();
   }
 
-  async function fetchPreviewData() {
+  async function previewData() {
     const client = await getApiClient();
 
     try {
-      importLoading.value = true;
+      loading.value = true;
       const previewDataQuery = new PreviewDataQuery({
-        importProfile: createImportProfile(),
+        importProfile: importCommand.value.importProfile,
       });
-      previewData.value = await client.preview(previewDataQuery);
+      return client.preview(previewDataQuery);
     } catch (e) {
       logger.error(e);
       throw e;
     } finally {
-      importLoading.value = false;
+      loading.value = false;
     }
   }
 
   async function startImport() {
     const client = await getApiClient();
     try {
-      importStarted.value = true;
-      importing.value = true;
-      persistData();
-      await client.runImport({ importProfile: createImportProfile() });
+      const notification = await client.runImport(importCommand.value);
+      updateStatus(notification);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -148,16 +129,9 @@ export default (): IUseImport => {
   async function cancelImport() {
     const client = await getApiClient();
     try {
-      importStarted.value = false;
-      importing.value = false;
-      uploadSuccessful.value = false;
-      uploadedFile.value = undefined;
-      timer.value.start = "";
-      timer.value.end = "";
-      persistData(true);
-      if (jobId.value) {
+      if (importStatus.value.inProgress) {
         await client.cancelJob(
-          new ImportCancellationRequest({ jobId: jobId.value })
+          new ImportCancellationRequest({ jobId: importStatus.value.jobId })
         );
       }
     } catch (e) {
@@ -166,57 +140,17 @@ export default (): IUseImport => {
     }
   }
 
-  function deleteUpload() {
-    uploadedFile.value = undefined;
-    persistData(true);
-  }
-
-  function createImportProfile() {
-    return new ImportProfile({
-      dataImporterType: currentImporter.value.importerType,
-      options: new ImportProfileOptions(currentImporter.value.importerOptions),
-    });
-  }
-
-  function persistData(clear = false) {
-    if (clear) {
-      localStorage.removeItem("VC_IMPORT_PERSISTENCE");
-    } else {
-      localStorage.setItem(
-        "VC_IMPORT_PERSISTENCE",
-        JSON.stringify({
-          currentImporter: currentImporter.value,
-          uploadedFile: uploadedFile.value,
-          uploadSuccessful: uploadSuccessful.value,
-        })
-      );
-    }
-  }
-
-  function loadPersistedData() {
-    const data = JSON.parse(localStorage.getItem("VC_IMPORT_PERSISTENCE"));
-    if (data) {
-      currentImporter.value = data.currentImporter;
-      uploadedFile.value = data.uploadedFile;
-      uploadSuccessful.value = data.uploadSuccessful;
-    }
-  }
-
   return {
-    currentImporter,
-    uploadedFile,
-    importLoading,
-    previewData,
-    importing,
-    importStarted,
-    uploadSuccessful,
-    timer,
-    dataImporters,
-    status,
+    loading: computed(() => loading.value),
+    selectedImporter: computed(() => selectedImporter.value),
+    uploadedFile: computed(() => uploadedFile.value),
+    importStatus: computed(() => importStatus.value),
+    isValid: computed(() => !!(selectedImporter.value && uploadedFile.value)),
+    setFile,
+    selectImporter,
     fetchDataImporters,
-    fetchPreviewData,
+    previewData,
     startImport,
     cancelImport,
-    deleteUpload,
   };
 };

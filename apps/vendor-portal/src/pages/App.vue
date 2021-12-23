@@ -24,10 +24,11 @@
 
     <template v-slot:notifications>
       <vc-notification
-        v-for="(item, i) in popNotifications"
+        v-for="item in popupNotifications"
         :key="item.id"
-        :timeout="10000"
-        @dismiss="onNotificationDismiss(i)"
+        :timeout="5000"
+        @dismiss="dismiss(item)"
+        @expired="markAsReaded(item)"
       >
         {{ item.title }}
       </vc-notification>
@@ -77,31 +78,22 @@ export default defineComponent({
     const log = useLogger();
     const signalr = useSignalR();
     const { user, loadUser, signOut } = useUser();
-    const { notifications, updateNotifications } = useNotifications();
+    const {
+      popupNotifications,
+      notifications,
+      addNotification,
+      dismiss,
+      markAsReaded,
+    } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
-    const popNotifications = ref<PushNotification[]>([]);
-
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
     const isMobile = inject("isMobile");
 
     signalr.on("Send", (message: PushNotification) => {
-      if (
-        message.creator === user.value?.userName ||
-        message.creator === user.value?.id
-      ) {
-        updateNotifications(message);
-      }
+      addNotification(message);
     });
-
-    watch(
-      () => notifications,
-      (newVal) => {
-        popNotifications.value = newVal.value;
-      },
-      { deep: true }
-    );
 
     onMounted(async () => {
       await loadUser();
@@ -206,10 +198,9 @@ export default defineComponent({
       version: process.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,
-      popNotifications,
-      onNotificationDismiss(idx: number) {
-        popNotifications.value.splice(idx, 1);
-      },
+      popupNotifications,
+      dismiss,
+      markAsReaded,
     };
   },
 });

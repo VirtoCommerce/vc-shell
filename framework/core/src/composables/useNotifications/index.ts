@@ -1,61 +1,43 @@
 import {
   PushNotification,
   PushNotificationClient,
+  PushNotificationSearchCriteria,
   PushNotificationSearchResult,
 } from "@virtoshell/api-client";
 import useUser from "../useUser";
 import { computed, ComputedRef, ref } from "vue";
 import useLogger from "../useLogger";
+import _ from "lodash";
 
 const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
-  dropNotifications: ComputedRef<PushNotification[]>;
   notifications: ComputedRef<PushNotification[]>;
-  getLastNotifications(): Promise<void>;
-  updateNotifications(message: PushNotification): void;
+  popupNotifications: ComputedRef<PushNotification[]>;
+  loadFromHistory(take?: number): void;
+  addNotification(message: PushNotification): void;
+  markAsReaded(sage: PushNotification): void;
+  dismiss(message: PushNotification): void;
+  dismissAll(): void;
 }
 
 const notifications = ref<PushNotification[]>([]);
-const dropNotifications = ref<PushNotification[]>([]);
+const popupNotifications = ref<PushNotification[]>([]);
 
 export default (): INotifications => {
-  const { getAccessToken } = useUser();
+  const { getAccessToken, user } = useUser();
   const logger = useLogger();
-  const notificationsSearchResult = ref<PushNotificationSearchResult>();
 
-  async function getLastNotifications() {
+  async function loadFromHistory(take = 10) {
     const token = await getAccessToken();
     if (token) {
       try {
         notificationsClient.setAuthToken(token);
-        notificationsSearchResult.value =
-          await notificationsClient.searchPushNotification(
-            null,
-            undefined,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            undefined,
-            10
-          );
-        if (
-          notificationsSearchResult.value &&
-          notificationsSearchResult.value.notifyEvents &&
-          notificationsSearchResult.value.notifyEvents.length
-        ) {
-          dropNotifications.value.push(
-            ...notificationsSearchResult.value.notifyEvents
-          );
-        }
+        const result = await notificationsClient.searchPushNotification({
+          take,
+        } as PushNotificationSearchCriteria);
+
+        notifications.value = result.notifyEvents ?? [];
       } catch (e) {
         logger.error(e);
         throw e;
@@ -63,15 +45,45 @@ export default (): INotifications => {
     }
   }
 
-  function updateNotifications(message: PushNotification) {
-    notifications.value.unshift(message);
-    dropNotifications.value.unshift(message);
+  function addNotification(message: PushNotification) {
+    if (
+      message.creator === user.value?.userName ||
+      message.creator === user.value?.id
+    ) {
+      const existsNotification = notifications.value.find(
+        (x) => x.id == message.id
+      );
+      if (existsNotification) {
+        message.isNew = existsNotification.isNew;
+        Object.assign(existsNotification, message);
+      } else {
+        popupNotifications.value.unshift(Object.assign({}, message));
+        notifications.value.unshift(message);
+      }
+    }
+  }
+  function markAsReaded(message: PushNotification) {
+    message.isNew = false;
+    _.remove(popupNotifications.value, (x) => x.id == message.id);
+  }
+  function dismiss(message: PushNotification) {
+    _.remove(popupNotifications.value, (x) => x.id == message.id);
+    _.remove(notifications.value, (x) => x.id == message.id);
+  }
+  function dismissAll() {
+    popupNotifications.value = [];
+    notifications.value = [];
   }
 
   return {
-    dropNotifications: computed(() => dropNotifications.value),
-    notifications: computed(() => notifications.value),
-    getLastNotifications,
-    updateNotifications,
+    notifications: computed(() =>
+      _.orderBy(notifications.value, ["created"], ["desc"])
+    ),
+    popupNotifications: computed(() => popupNotifications.value),
+    loadFromHistory,
+    addNotification,
+    dismissAll,
+    dismiss,
+    markAsReaded,
   };
 };

@@ -73,7 +73,7 @@ export default (): IUseImport => {
   function selectImporter(importer: IImporterMetadata) {
     importCommand.value.importProfile = new ImportProfile({
       dataImporterType: importer.importerType,
-      options: new ImportProfileOptions(importer.importerOptions),
+      options: importer.importerOptions,
     });
     selectedImporter.value = importer;
   }

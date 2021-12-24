@@ -37,7 +37,7 @@ export default defineComponent({
     },
   },
 
-  emits: ["dismiss"],
+  emits: ["dismiss", "expired"],
 
   setup(props, { emit }) {
     function Timer(callback: (...args: unknown[]) => unknown, delay: number) {
@@ -68,7 +68,7 @@ export default defineComponent({
       };
     }
 
-    const timer = Timer(() => emit("dismiss"), props.timeout);
+    const timer = Timer(() => emit("expired"), props.timeout);
     if (props.timeout) {
       timer.start();
     }

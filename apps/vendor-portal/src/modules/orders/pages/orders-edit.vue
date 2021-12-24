@@ -51,10 +51,10 @@
           <vc-card header="Shipping address">
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
-                <vc-info-row label="Sold to" :value="order.customerName" />
-                <vc-info-row value="USA" />
-                <vc-info-row value="nathan.roberts@example.com" type="email" />
-                <vc-info-row value="+62-818-5551-71" />
+                <vc-info-row label="Sold to" />
+                <vc-info-row />
+                <vc-info-row type="email" />
+                <vc-info-row />
                 <vc-info-row
                   value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
                 />
@@ -155,11 +155,10 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import moment from "moment";
-
 import { useOrder } from "../composables";
-import { ITableColumns, IToolbarItems } from "../../../types";
+import { IBladeToolbar, ITableColumns } from "../../../types";
 
 export default defineComponent({
   url: "order",
@@ -197,7 +196,7 @@ export default defineComponent({
       }
     });
 
-    const bladeToolbar = computed<IToolbarItems[]>(() => [
+    const bladeToolbar = computed<IBladeToolbar[]>(() => [
       {
         title: "Download PDF",
         icon: "fas fa-file-pdf",

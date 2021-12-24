@@ -45,6 +45,7 @@
             v-if="item.component"
             :is="item.component"
             v-bind="item.componentOptions"
+            :isAccent="item.isAccent"
           ></component>
 
           <!-- Otherwise draw default toolbar button -->
@@ -82,8 +83,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
+import { IBladeToolbar, IPage } from "../../../../../typings";
 
 export default defineComponent({
   name: "VcAppBar",
@@ -102,12 +104,12 @@ export default defineComponent({
     },
 
     workspace: {
-      type: Array,
+      type: Array as PropType<IPage[]>,
       default: () => [],
     },
 
     buttons: {
-      type: Array,
+      type: Array as PropType<IBladeToolbar[]>,
       default: () => [],
     },
   },

@@ -190,7 +190,7 @@ import { ICustomerOrder } from "@virtoshell/api-client";
 import {
   IActionBuilderResult,
   ITableColumns,
-  IToolbarItems,
+  IBladeToolbar,
 } from "../../../types";
 
 export default defineComponent({
@@ -233,7 +233,7 @@ export default defineComponent({
       await loadOrders();
     });
 
-    const bladeToolbar: IToolbarItems[] = [
+    const bladeToolbar: IBladeToolbar[] = [
       {
         title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",

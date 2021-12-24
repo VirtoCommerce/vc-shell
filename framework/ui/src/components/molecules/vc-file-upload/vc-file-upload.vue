@@ -15,7 +15,7 @@
     @dragover.stop.prevent
     @dragenter.stop.prevent
     @dragleave.stop.prevent
-    v-if="!isUploaded"
+    v-if="!(uploadedFile && uploadedFile.url)"
     v-loading="loading"
   >
     <vc-icon
@@ -30,12 +30,19 @@
       <vc-link @click="$refs.uploader.click()">browse your files</vc-link>
     </div>
 
-    <input ref="uploader" type="file" hidden @change="upload" />
+    <input
+      ref="uploader"
+      type="file"
+      hidden
+      @change="upload"
+      :accept="accept"
+    />
   </div>
   <div v-else>
     <VcUploadNotification
       :uploadActions="uploadActions"
-      :uploadStatus="uploadStatus"
+      :uploadedFile="uploadedFile"
+      :isUploaded="isUploaded"
     />
     <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-input__error vc-margin-top_m vc-font-size_m">
@@ -46,8 +53,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import VcUploadNotification from "./_internal/vc-file-upload-notification/vc-file-upload-notification.vue";
+import { INotificationActions } from "../../../typings";
 
 export default defineComponent({
   name: "VcFileUpload",
@@ -63,13 +71,13 @@ export default defineComponent({
       default: "gallery",
     },
 
-    uploadStatus: {
+    uploadedFile: {
       type: Object,
-      default: () => ({}),
+      default: () => null,
     },
 
     uploadActions: {
-      type: Array,
+      type: Array as PropType<INotificationActions[]>,
       default: () => [],
     },
 
@@ -86,6 +94,11 @@ export default defineComponent({
     loading: {
       type: Boolean,
       default: false,
+    },
+
+    accept: {
+      type: String,
+      default: ".jpg, .png, .jpeg",
     },
   },
 

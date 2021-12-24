@@ -20,7 +20,6 @@ module.exports = {
 
     // Remove unused webpack plugins to speed up bundling
     config.plugins.delete('html');
-    config.plugins.delete('friendly-errors');
     config.plugins.delete('preload');
     config.plugins.delete('prefetch');
     config.plugins.delete('feature-flags');
@@ -48,20 +47,26 @@ module.exports = {
         return options;
       });
 
-      // Define tsconfig settings for bundling
-      config.module
-        .rule('ts')
-        .use('ts-loader')
-        .merge({
-          options: {
-            configFile: tsconfigFile,
-          },
-        });
-      config
-        .plugin('fork-ts-checker')
-        .tap(args => {
-          args[0].typescript.configFile = tsconfigFile;
-          return args;
-        });
+    // Define tsconfig settings for bundling
+    config.module
+      .rule('ts')
+      .use('ts-loader')
+      .merge({
+        options: {
+          configFile: tsconfigFile,
+        },
+      });
+    config
+      .plugin('fork-ts-checker')
+      .tap(args => {
+        args[0].typescript.configFile = tsconfigFile;
+        return args;
+      });
+
+    // Set external dependencies
+    config.externals([
+      "@virtoshell/core",
+      "@virtoshell/api-client",
+    ]);
   },
 };

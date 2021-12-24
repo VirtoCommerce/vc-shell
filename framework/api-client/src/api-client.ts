@@ -3044,177 +3044,69 @@ export class OAuthAppsClient extends AuthApiBase {
   }
 }
 
-export class PushNotificationClient extends AuthApiBase {
-  private http: {
-    fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
-  };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined =
-    undefined;
 
-  constructor(
-    baseUrl?: string,
-    http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
-  ) {
-    super();
-    this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+export class PushNotificationClient extends AuthApiBase {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+      super();
+      this.http = http ? http : <any>window;
+      this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
   }
 
   /**
    * SearchAsync push notifications
-   * @param ids (optional)
-   * @param onlyNew (optional)
-   * @param startDate (optional)
-   * @param endDate (optional)
-   * @param responseGroup (optional)
-   * @param objectType (optional) Search object type
-   * @param objectTypes (optional)
-   * @param objectIds (optional)
-   * @param keyword (optional) Search phrase
-   * @param searchPhrase (optional) Property is left for backward compatibility
-   * @param languageCode (optional) Search phrase language
-   * @param sort (optional)
-   * @param sortInfos (optional)
-   * @param skip (optional)
-   * @param take (optional)
+   * @param body (optional) SearchAsync parameters.
    * @return Success
    */
-  searchPushNotification(
-    ids: string[] | null | undefined,
-    onlyNew: boolean | undefined,
-    startDate: Date | null | undefined,
-    endDate: Date | null | undefined,
-    responseGroup: string | null | undefined,
-    objectType: string | null | undefined,
-    objectTypes: string[] | null | undefined,
-    objectIds: string[] | null | undefined,
-    keyword: string | null | undefined,
-    searchPhrase: string | null | undefined,
-    languageCode: string | null | undefined,
-    sort: string | null | undefined,
-    sortInfos: SortInfo[] | null | undefined,
-    skip: number | undefined,
-    take: number | undefined
-  ): Promise<PushNotificationSearchResult> {
-    let url_ = this.baseUrl + "/api/platform/pushnotifications?";
-    if (ids !== undefined && ids !== null)
-      ids &&
-        ids.forEach((item) => {
-          url_ += "Ids=" + encodeURIComponent("" + item) + "&";
-        });
-    if (onlyNew === null)
-      throw new Error("The parameter 'onlyNew' cannot be null.");
-    else if (onlyNew !== undefined)
-      url_ += "OnlyNew=" + encodeURIComponent("" + onlyNew) + "&";
-    if (startDate !== undefined && startDate !== null)
-      url_ +=
-        "StartDate=" +
-        encodeURIComponent(startDate ? "" + startDate.toJSON() : "") +
-        "&";
-    if (endDate !== undefined && endDate !== null)
-      url_ +=
-        "EndDate=" +
-        encodeURIComponent(endDate ? "" + endDate.toJSON() : "") +
-        "&";
-    if (responseGroup !== undefined && responseGroup !== null)
-      url_ += "ResponseGroup=" + encodeURIComponent("" + responseGroup) + "&";
-    if (objectType !== undefined && objectType !== null)
-      url_ += "ObjectType=" + encodeURIComponent("" + objectType) + "&";
-    if (objectTypes !== undefined && objectTypes !== null)
-      objectTypes &&
-        objectTypes.forEach((item) => {
-          url_ += "ObjectTypes=" + encodeURIComponent("" + item) + "&";
-        });
-    if (objectIds !== undefined && objectIds !== null)
-      objectIds &&
-        objectIds.forEach((item) => {
-          url_ += "ObjectIds=" + encodeURIComponent("" + item) + "&";
-        });
-    if (keyword !== undefined && keyword !== null)
-      url_ += "Keyword=" + encodeURIComponent("" + keyword) + "&";
-    if (searchPhrase !== undefined && searchPhrase !== null)
-      url_ += "SearchPhrase=" + encodeURIComponent("" + searchPhrase) + "&";
-    if (languageCode !== undefined && languageCode !== null)
-      url_ += "LanguageCode=" + encodeURIComponent("" + languageCode) + "&";
-    if (sort !== undefined && sort !== null)
-      url_ += "Sort=" + encodeURIComponent("" + sort) + "&";
-    if (sortInfos !== undefined && sortInfos !== null)
-      sortInfos &&
-        sortInfos.forEach((item, index) => {
-          for (let attr in item)
-            if (item.hasOwnProperty(attr)) {
-              url_ +=
-                "SortInfos[" +
-                index +
-                "]." +
-                attr +
-                "=" +
-                encodeURIComponent("" + (<any>item)[attr]) +
-                "&";
-            }
-        });
-    if (skip === null) throw new Error("The parameter 'skip' cannot be null.");
-    else if (skip !== undefined)
-      url_ += "Skip=" + encodeURIComponent("" + skip) + "&";
-    if (take === null) throw new Error("The parameter 'take' cannot be null.");
-    else if (take !== undefined)
-      url_ += "Take=" + encodeURIComponent("" + take) + "&";
-    url_ = url_.replace(/[?&]$/, "");
+  searchPushNotification(body: PushNotificationSearchCriteria | undefined): Promise<PushNotificationSearchResult> {
+      let url_ = this.baseUrl + "/api/platform/pushnotifications";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_ = <RequestInit>{
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-    };
+      const content_ = JSON.stringify(body);
 
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processSearchPushNotification(_response);
+      let options_ = <RequestInit>{
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json-patch+json",
+              "Accept": "application/json"
+          }
+      };
+
+      return this.transformOptions(options_).then(transformedOptions_ => {
+          return this.http.fetch(url_, transformedOptions_);
+      }).then((_response: Response) => {
+          return this.processSearchPushNotification(_response);
       });
   }
 
-  protected processSearchPushNotification(
-    response: Response
-  ): Promise<PushNotificationSearchResult> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 =
-          _responseText === ""
-            ? null
-            : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = PushNotificationSearchResult.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status === 401) {
-      return response.text().then((_responseText) => {
-        return throwException("Unauthorized", status, _responseText, _headers);
-      });
-    } else if (status === 403) {
-      return response.text().then((_responseText) => {
-        return throwException("Forbidden", status, _responseText, _headers);
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException(
-          "An unexpected server error occurred.",
-          status,
-          _responseText,
-          _headers
-        );
-      });
-    }
-    return Promise.resolve<PushNotificationSearchResult>(<any>null);
+  protected processSearchPushNotification(response: Response): Promise<PushNotificationSearchResult> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = PushNotificationSearchResult.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status === 401) {
+          return response.text().then((_responseText) => {
+          return throwException("Unauthorized", status, _responseText, _headers);
+          });
+      } else if (status === 403) {
+          return response.text().then((_responseText) => {
+          return throwException("Forbidden", status, _responseText, _headers);
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<PushNotificationSearchResult>(<any>null);
   }
 
   /**
@@ -3222,65 +3114,49 @@ export class PushNotificationClient extends AuthApiBase {
    * @return Success
    */
   markAllAsRead(): Promise<PushNotificationSearchResult> {
-    let url_ = this.baseUrl + "/api/platform/pushnotifications/markAllAsRead";
-    url_ = url_.replace(/[?&]$/, "");
+      let url_ = this.baseUrl + "/api/platform/pushnotifications/markAllAsRead";
+      url_ = url_.replace(/[?&]$/, "");
 
-    let options_ = <RequestInit>{
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-      },
-    };
+      let options_ = <RequestInit>{
+          method: "POST",
+          headers: {
+              "Accept": "application/json"
+          }
+      };
 
-    return this.transformOptions(options_)
-      .then((transformedOptions_) => {
-        return this.http.fetch(url_, transformedOptions_);
-      })
-      .then((_response: Response) => {
-        return this.processMarkAllAsRead(_response);
+      return this.transformOptions(options_).then(transformedOptions_ => {
+          return this.http.fetch(url_, transformedOptions_);
+      }).then((_response: Response) => {
+          return this.processMarkAllAsRead(_response);
       });
   }
 
-  protected processMarkAllAsRead(
-    response: Response
-  ): Promise<PushNotificationSearchResult> {
-    const status = response.status;
-    let _headers: any = {};
-    if (response.headers && response.headers.forEach) {
-      response.headers.forEach((v: any, k: any) => (_headers[k] = v));
-    }
-    if (status === 200) {
-      return response.text().then((_responseText) => {
-        let result200: any = null;
-        let resultData200 =
-          _responseText === ""
-            ? null
-            : JSON.parse(_responseText, this.jsonParseReviver);
-        result200 = PushNotificationSearchResult.fromJS(resultData200);
-        return result200;
-      });
-    } else if (status === 401) {
-      return response.text().then((_responseText) => {
-        return throwException("Unauthorized", status, _responseText, _headers);
-      });
-    } else if (status === 403) {
-      return response.text().then((_responseText) => {
-        return throwException("Forbidden", status, _responseText, _headers);
-      });
-    } else if (status !== 200 && status !== 204) {
-      return response.text().then((_responseText) => {
-        return throwException(
-          "An unexpected server error occurred.",
-          status,
-          _responseText,
-          _headers
-        );
-      });
-    }
-    return Promise.resolve<PushNotificationSearchResult>(<any>null);
+  protected processMarkAllAsRead(response: Response): Promise<PushNotificationSearchResult> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = PushNotificationSearchResult.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status === 401) {
+          return response.text().then((_responseText) => {
+          return throwException("Unauthorized", status, _responseText, _headers);
+          });
+      } else if (status === 403) {
+          return response.text().then((_responseText) => {
+          return throwException("Forbidden", status, _responseText, _headers);
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<PushNotificationSearchResult>(<any>null);
   }
 }
-
 export class SecurityClient extends AuthApiBase {
   private http: {
     fetch(url: RequestInfo, init?: RequestInit): Promise<Response>;
@@ -31206,6 +31082,140 @@ export interface IOAuthAppSearchResult {
   totalCount?: number;
   results?: OpenIddictApplicationDescriptor[] | undefined;
 }
+
+
+export class PushNotificationSearchCriteria implements IPushNotificationSearchCriteria {
+  ids?: string[] | undefined;
+  onlyNew?: boolean;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  /** Search object type */
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  /** Search phrase */
+  keyword?: string | undefined;
+  /** Property is left for backward compatibility */
+  searchPhrase?: string | undefined;
+  /** Search phrase language */
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  readonly sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
+
+  constructor(data?: IPushNotificationSearchCriteria) {
+      if (data) {
+          for (var property in data) {
+              if (data.hasOwnProperty(property))
+                  (<any>this)[property] = (<any>data)[property];
+          }
+      }
+  }
+
+  init(_data?: any) {
+      if (_data) {
+          if (Array.isArray(_data["ids"])) {
+              this.ids = [] as any;
+              for (let item of _data["ids"])
+                  this.ids!.push(item);
+          }
+          this.onlyNew = _data["onlyNew"];
+          this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+          this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+          this.responseGroup = _data["responseGroup"];
+          this.objectType = _data["objectType"];
+          if (Array.isArray(_data["objectTypes"])) {
+              this.objectTypes = [] as any;
+              for (let item of _data["objectTypes"])
+                  this.objectTypes!.push(item);
+          }
+          if (Array.isArray(_data["objectIds"])) {
+              this.objectIds = [] as any;
+              for (let item of _data["objectIds"])
+                  this.objectIds!.push(item);
+          }
+          this.keyword = _data["keyword"];
+          this.searchPhrase = _data["searchPhrase"];
+          this.languageCode = _data["languageCode"];
+          this.sort = _data["sort"];
+          if (Array.isArray(_data["sortInfos"])) {
+              (<any>this).sortInfos = [] as any;
+              for (let item of _data["sortInfos"])
+                  (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+          }
+          this.skip = _data["skip"];
+          this.take = _data["take"];
+      }
+  }
+
+  static fromJS(data: any): PushNotificationSearchCriteria {
+      data = typeof data === 'object' ? data : {};
+      let result = new PushNotificationSearchCriteria();
+      result.init(data);
+      return result;
+  }
+
+  toJSON(data?: any) {
+      data = typeof data === 'object' ? data : {};
+      if (Array.isArray(this.ids)) {
+          data["ids"] = [];
+          for (let item of this.ids)
+              data["ids"].push(item);
+      }
+      data["onlyNew"] = this.onlyNew;
+      data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+      data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+      data["responseGroup"] = this.responseGroup;
+      data["objectType"] = this.objectType;
+      if (Array.isArray(this.objectTypes)) {
+          data["objectTypes"] = [];
+          for (let item of this.objectTypes)
+              data["objectTypes"].push(item);
+      }
+      if (Array.isArray(this.objectIds)) {
+          data["objectIds"] = [];
+          for (let item of this.objectIds)
+              data["objectIds"].push(item);
+      }
+      data["keyword"] = this.keyword;
+      data["searchPhrase"] = this.searchPhrase;
+      data["languageCode"] = this.languageCode;
+      data["sort"] = this.sort;
+      if (Array.isArray(this.sortInfos)) {
+          data["sortInfos"] = [];
+          for (let item of this.sortInfos)
+              data["sortInfos"].push(item.toJSON());
+      }
+      data["skip"] = this.skip;
+      data["take"] = this.take;
+      return data; 
+  }
+}
+
+export interface IPushNotificationSearchCriteria {
+  ids?: string[] | undefined;
+  onlyNew?: boolean;
+  startDate?: Date | undefined;
+  endDate?: Date | undefined;
+  responseGroup?: string | undefined;
+  /** Search object type */
+  objectType?: string | undefined;
+  objectTypes?: string[] | undefined;
+  objectIds?: string[] | undefined;
+  /** Search phrase */
+  keyword?: string | undefined;
+  /** Property is left for backward compatibility */
+  searchPhrase?: string | undefined;
+  /** Search phrase language */
+  languageCode?: string | undefined;
+  sort?: string | undefined;
+  sortInfos?: SortInfo[] | undefined;
+  skip?: number;
+  take?: number;
+}
+
 
 export class PushNotification implements IPushNotification {
   serverId?: string | undefined;

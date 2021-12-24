@@ -4,7 +4,6 @@
     width="100%"
     @close="$emit('page:close')"
     :closable="false"
-    v-loading="importLoading"
   >
     <div class="csv-import__inner vc-flex vc-flex-column vc-padding_xs">
       <vc-row>
@@ -331,7 +330,9 @@ export default defineComponent({
         variant: "primary",
         isVisible: computed(() => isValid.value),
         disabled: computed(
-          () => importStatus.value && importStatus.value.inProgress
+          () =>
+            (importStatus.value && importStatus.value.inProgress) ||
+            importLoading.value
         ),
       },
     ]);

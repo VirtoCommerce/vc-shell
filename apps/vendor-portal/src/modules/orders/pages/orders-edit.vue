@@ -156,10 +156,8 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted } from "vue";
 import moment from "moment";
-
 import { useOrder } from "../composables";
 import { ITableColumns, IToolbarItems } from "../../../types";
-import { AddressType } from "@virtoshell/api-client";
 
 export default defineComponent({
   url: "order",
@@ -187,8 +185,14 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
-      useOrder();
+    const {
+      loading,
+      order,
+      changeOrderStatus,
+      loadOrder,
+      loadPdf,
+      shippingInfo,
+    } = useOrder();
     const locale = window.navigator.language;
 
     onMounted(async () => {
@@ -313,51 +317,9 @@ export default defineComponent({
       moment,
       columns,
       order,
+      shippingInfo,
       items: computed(() => order.value?.items),
       loading,
-      shippingInfo: computed(
-        (): {
-          label: string;
-          name?: string;
-          address?: string;
-          phone?: string;
-          email?: string;
-        }[] => {
-          const info =
-            order.value.addresses &&
-            order.value.addresses.reduce((acc, address) => {
-              const orderInfo = {
-                name: `${address.firstName} ${address.lastName}`,
-                address: `${address.line1 ?? ""} ${address.line2 ?? ""}, ${
-                  address.city ?? ""
-                }, ${address.postalCode ?? ""} ${address.countryCode ?? ""}`,
-                phone: address.phone ?? "",
-                email: address.email ?? "",
-              };
-              switch (address.addressType) {
-                case AddressType.Billing:
-                  acc.push({ label: "Sold to", ...orderInfo });
-                  break;
-                case AddressType.Shipping:
-                  acc.push({ label: "Ship to", ...orderInfo });
-                  break;
-                case AddressType.BillingAndShipping:
-                  acc.push(
-                    { label: "Sold to", ...orderInfo },
-                    { label: "Ship to", ...orderInfo }
-                  );
-                  break;
-                case AddressType.Pickup:
-                  acc.push({ label: "Pick-up at", ...orderInfo });
-                  break;
-              }
-              return acc;
-            }, []);
-          return info && info.length
-            ? info
-            : [{ label: "Sold to" }, { label: "Ship to" }];
-        }
-      ),
       createdDate: computed(() => {
         const date = new Date(order.value?.createdDate);
         return moment(date).locale(locale).format("L LT");
@@ -372,7 +334,7 @@ export default defineComponent({
   &__row {
     &_line {
       border-top: 1px solid #e5e5e5;
-      margin-top: 10px;
+      margin-top: 5px;
       padding-top: 21px;
     }
   }

@@ -35,4 +35,18 @@ interface IActionBuilderResult {
   clickHandler(): void;
 }
 
-export { IToolbarItems, IComponent, ITableColumns, IActionBuilderResult };
+interface IShippingInfo {
+  label: string;
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+}
+
+export {
+  IToolbarItems,
+  IComponent,
+  ITableColumns,
+  IActionBuilderResult,
+  IShippingInfo,
+};

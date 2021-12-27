@@ -139,6 +139,7 @@ jobs:
         cmPath: ${{ steps.deployConfig.outputs.cmPath }}
 
     - name: Wait for environment is up
+      if: ${{ matrix.envName }} == 'dev'
       uses: VirtoCommerce/vc-github-actions/vc-argocd-cli@master
       id: argocd-cli
       with:
@@ -208,6 +209,7 @@ jobs:
         cmPath: ${{ steps.deployConfig.outputs.cmPath }}
 
     - name: Wait for environment is up
+      if: ${{ matrix.envName }} == 'dev'
       uses: VirtoCommerce/vc-github-actions/vc-argocd-cli@master
       id: argocd-cli
       with:

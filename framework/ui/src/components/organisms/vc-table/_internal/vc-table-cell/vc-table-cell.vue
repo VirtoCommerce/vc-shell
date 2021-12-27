@@ -3,7 +3,7 @@
   <div v-if="cell.type === 'money'" class="vc-table-cell_money">
     <span class="vc-table-cell_money-int">{{ Math.trunc(Number(value)) }}</span
     ><span class="vc-table-cell_money-fract"
-      >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0") }}</span
+      >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2) }}</span
     >
   </div>
 

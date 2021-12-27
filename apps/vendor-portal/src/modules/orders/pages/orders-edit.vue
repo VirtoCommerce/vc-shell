@@ -48,28 +48,27 @@
           </vc-card>
         </vc-col>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Shipping address">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Sold to" />
-                <vc-info-row />
-                <vc-info-row type="email" />
-                <vc-info-row />
+          <vc-card header="Buyer/recipient info">
+            <vc-col class="vc-padding_s">
+              <vc-col
+                class="vc-padding_s"
+                v-for="(item, i) in shippingInfo"
+                :key="`${item.label}_${i}`"
+              >
                 <vc-info-row
-                  value="1901 Thornridge Cir. Shiloh, Hawaii 81063"
+                  :label="item.label"
+                  :value="item.name"
+                  :class="{ 'orders-edit__row_line': i === 1 }"
                 />
+                <vc-info-row :value="item.address" v-if="item.address" />
+                <vc-info-row :value="item.phone" v-if="item.phone" />
                 <vc-info-row
-                  label="Ship to"
-                  class="orders-edit__row_line"
-                  value="ShipStation Support"
+                  :value="item.email"
+                  type="email"
+                  v-if="item.email"
                 />
-                <vc-info-row value="USA" />
-                <vc-info-row
-                  value="3800 N Lamar BLVD STE 220 Austin, TX 78756-4011 US"
-                />
-                <vc-info-row value="+62-818-5551-71" />
               </vc-col>
-            </vc-row>
+            </vc-col>
           </vc-card>
         </vc-col>
       </vc-row>
@@ -186,8 +185,14 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
-      useOrder();
+    const {
+      loading,
+      order,
+      changeOrderStatus,
+      loadOrder,
+      loadPdf,
+      shippingInfo,
+    } = useOrder();
     const locale = window.navigator.language;
 
     onMounted(async () => {
@@ -312,6 +317,7 @@ export default defineComponent({
       moment,
       columns,
       order,
+      shippingInfo,
       items: computed(() => order.value?.items),
       loading,
       createdDate: computed(() => {
@@ -328,7 +334,7 @@ export default defineComponent({
   &__row {
     &_line {
       border-top: 1px solid #e5e5e5;
-      margin-top: 10px;
+      margin-top: 5px;
       padding-top: 21px;
     }
   }

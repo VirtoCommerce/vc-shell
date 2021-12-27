@@ -56,6 +56,10 @@ export default defineComponent({
 .vc-info-row {
   margin-bottom: 11px;
 
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+
   &__value {
     margin: 0;
   }

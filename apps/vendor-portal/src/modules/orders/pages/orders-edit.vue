@@ -157,8 +157,7 @@
 import { computed, defineComponent, onMounted } from "vue";
 import moment from "moment";
 import { useOrder } from "../composables";
-import { ITableColumns, IToolbarItems } from "../../../types";
-import { AddressType } from "@virtoshell/api-client";
+import { IBladeToolbar, ITableColumns } from "../../../types";
 
 export default defineComponent({
   url: "order",
@@ -202,7 +201,7 @@ export default defineComponent({
       }
     });
 
-    const bladeToolbar = computed<IToolbarItems[]>(() => [
+    const bladeToolbar = computed<IBladeToolbar[]>(() => [
       {
         title: "Download PDF",
         icon: "fas fa-file-pdf",

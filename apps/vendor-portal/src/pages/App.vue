@@ -24,10 +24,11 @@
 
     <template v-slot:notifications>
       <vc-notification
-        v-for="(item, i) in notifications"
+        v-for="item in popupNotifications"
         :key="item.id"
-        :timeout="10000"
-        @dismiss="onNotificationDismiss(i)"
+        :timeout="5000"
+        @dismiss="dismiss(item)"
+        @expired="markAsReaded(item)"
       >
         {{ item.title }}
       </vc-notification>
@@ -53,10 +54,16 @@ import { OrdersList } from "../modules/orders";
 import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
 import { Import } from "../modules/import";
-import { useLogger, useI18n, useUser } from "@virtoshell/core";
+import {
+  useLogger,
+  useI18n,
+  useUser,
+  useNotifications,
+} from "@virtoshell/core";
+import { IBladeToolbar, IMenuItems } from "../types";
+import NotificationDropdown from "../components/notification-dropdown.vue";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
-import { IToolbarItems } from "../types";
 
 export default defineComponent({
   name: "App",
@@ -69,21 +76,24 @@ export default defineComponent({
   setup() {
     const { t } = useI18n();
     const log = useLogger();
+    const signalr = useSignalR();
     const { user, loadUser, signOut } = useUser();
+    const {
+      popupNotifications,
+      notifications,
+      addNotification,
+      dismiss,
+      markAsReaded,
+    } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
-
-    const signalr = useSignalR();
-    const notifications = ref<PushNotification[]>([]);
-    signalr.on("Send", (message: PushNotification) => {
-      if (message.creator === user.value?.id) {
-        notifications.value.push(message);
-      }
-    });
-
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
     const isMobile = inject("isMobile");
+
+    signalr.on("Send", (message: PushNotification) => {
+      addNotification(message);
+    });
 
     onMounted(async () => {
       await loadUser();
@@ -99,12 +109,18 @@ export default defineComponent({
 
     log.debug(`Initializing App`);
 
-    const toolbarItems = reactive<IToolbarItems[]>([
+    const toolbarItems = reactive<IBladeToolbar[]>([
       {
-        icon: "fas fa-bell",
-        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
-        isVisible: true,
-        isAccent: true,
+        isVisible: isDesktop,
+        isAccent: computed(() => {
+          return !!notifications.value.filter(
+            (notification) => notification.isNew
+          ).length;
+        }),
+        component: shallowRef(NotificationDropdown),
+        componentOptions: {
+          title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+        },
       },
       {
         component: shallowRef(UserDropdownButton),
@@ -130,7 +146,7 @@ export default defineComponent({
       },
     ]);
 
-    const menuItems = reactive<IToolbarItems[]>([
+    const menuItems = reactive<IMenuItems[]>([
       {
         title: t("SHELL.MENU.DASHBOARD"),
         icon: "fas fa-home",
@@ -182,10 +198,9 @@ export default defineComponent({
       version: process.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,
-      notifications,
-      onNotificationDismiss(idx: number) {
-        notifications.value.splice(idx, 1);
-      },
+      popupNotifications,
+      dismiss,
+      markAsReaded,
     };
   },
 });

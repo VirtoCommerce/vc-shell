@@ -18,7 +18,6 @@ module.exports = {
 
     // Remove unused webpack plugins to speed up bundling
     config.plugins.delete('html');
-    config.plugins.delete('friendly-errors');
     config.plugins.delete('preload');
     config.plugins.delete('prefetch');
     config.plugins.delete('feature-flags');

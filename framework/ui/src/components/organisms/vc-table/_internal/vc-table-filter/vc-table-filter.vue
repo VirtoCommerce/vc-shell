@@ -20,7 +20,11 @@
         ref="filterPanel"
       >
         <div
-          class="vc-table-filter__panel-inner vc-padding_xl vc-flex vc-flex-column"
+          class="
+            vc-table-filter__panel-inner
+            vc-padding_xl
+            vc-flex vc-flex-column
+          "
           @click.stop
         >
           <vc-icon
@@ -38,9 +42,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, watch, inject } from "vue";
+import { defineComponent, nextTick, ref, watch } from "vue";
 import { clickOutside } from "../../../../../directives";
 import { createPopper, Instance } from "@popperjs/core";
+import { useFunctions } from "@virtoshell/core";
 
 export default defineComponent({
   name: "VcTableFilter",
@@ -66,23 +71,28 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+
+    parentExpanded: {
+      type: Boolean,
+      default: true,
+    },
   },
 
   emits: ["apply", "reset"],
 
-  setup() {
+  setup(props) {
     const isPanelVisible = ref(false);
     const filterToggle = ref();
     const filterPanel = ref();
     const popper = ref<Instance>();
-    const workspace = inject("workspace");
 
     watch(
-      () => workspace,
+      () => props.parentExpanded,
       () => {
-        setTimeout(() => popper.value?.update(), 400);
-      },
-      { deep: true }
+        useFunctions().delay(() => {
+          popper.value?.update();
+        }, 300);
+      }
     );
 
     function openPanel() {

@@ -19,10 +19,15 @@
     <div
       class="vc-select__field-wrapper vc-flex vc-flex-align_stretch"
       ref="inputFieldWrapRef"
-      v-click-outside="closeDropdown"
     >
       <div
-        class="vc-select__field vc-padding_m vc-flex vc-flex-align_center vc-fill_width"
+        class="
+          vc-select__field
+          vc-padding_m
+          vc-flex
+          vc-flex-align_center
+          vc-fill_width
+        "
         @click="toggleDropdown"
         ref="dropdownToggleRef"
       >
@@ -37,30 +42,42 @@
       <!-- Select chevron -->
       <div
         v-if="!isDisabled"
-        class="vc-select__chevron vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="
+          vc-select__chevron
+          vc-padding-horizontal_m
+          vc-flex
+          vc-flex-align_center
+        "
         @click="toggleDropdown"
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
-      <div v-if="isOpened" class="vc-select__dropdown" ref="dropdownRef">
-        <input
-          v-if="isSearchable"
-          ref="search"
-          class="vc-select__search"
-          @input="onSearch"
-        />
+      <teleport to="#app">
+        <div
+          v-if="isOpened"
+          class="vc-select__dropdown"
+          ref="dropdownRef"
+          v-click-outside="closeDropdown"
+        >
+          <input
+            v-if="isSearchable"
+            ref="search"
+            class="vc-select__search"
+            @input="onSearch"
+          />
 
-        <vc-container :no-padding="true">
-          <div
-            class="vc-select__item"
-            v-for="(item, i) in options"
-            :key="i"
-            @click="onItemSelect(item)"
-          >
-            <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
-          </div>
-        </vc-container>
-      </div>
+          <vc-container :no-padding="true">
+            <div
+              class="vc-select__item"
+              v-for="(item, i) in options"
+              :key="i"
+              @click="onItemSelect(item)"
+            >
+              <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
+            </div>
+          </vc-container>
+        </div>
+      </teleport>
     </div>
 
     <slot v-if="errorMessage" name="error">
@@ -204,6 +221,7 @@ export default defineComponent({
       dropdownToggleRef,
       dropdownRef,
       inputFieldWrapRef,
+      instance,
       closeDropdown: () => {
         isOpened.value = false;
         popper.value?.destroy();
@@ -219,7 +237,6 @@ export default defineComponent({
             emit("close");
           } else {
             isOpened.value = true;
-            const element = instance?.vnode.el?.parentElement.parentElement;
             nextTick(() => {
               search?.value?.focus();
               popper.value = createPopper(
@@ -232,7 +249,6 @@ export default defineComponent({
                       name: "flip",
                       options: {
                         fallbackPlacements: ["top", "bottom"],
-                        boundary: element,
                       },
                     },
                     {

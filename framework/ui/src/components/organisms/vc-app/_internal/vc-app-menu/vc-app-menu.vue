@@ -60,9 +60,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, PropType, ref, watch } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
+import { IMenuItems } from "../../../../../typings";
 
 export default defineComponent({
   name: "VcAppMenu",
@@ -72,12 +73,12 @@ export default defineComponent({
   props: {
     // Array of menu items
     items: {
-      type: Array,
+      type: Array as PropType<IMenuItems[]>,
       default: () => [],
     },
 
     activeItem: {
-      type: Object,
+      type: Object as PropType<IMenuItems>,
       default: undefined,
     },
 

@@ -49,7 +49,7 @@
         "PLACEHOLDER": "Confirm password"
       },
       "CANCEL": "Cancel",
-      "SAVE": "Save",
+      "SAVE": "Update",
       "ERRORS": {
         "Repeat-password": "Passwords are not same",
         "Invalid-token": "Token is invalid or expired",

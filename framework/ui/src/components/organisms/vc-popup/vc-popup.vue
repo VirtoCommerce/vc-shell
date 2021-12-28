@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="vc-popup"
-    :class="['vc-popup', { 'vc-popup_fullscreen': fullscreen }]"
-  >
+  <div class="vc-popup" :class="['vc-popup', `vc-popup_${variant}`]">
     <div class="vc-popup__wrapper">
       <div class="vc-popup__inner vc-flex vc-flex-column vc-flex-grow_1">
         <div
@@ -44,9 +41,10 @@ export default defineComponent({
       default: true,
     },
 
-    fullscreen: {
-      type: Boolean,
-      default: true,
+    variant: {
+      type: String,
+      default: "fullscreen",
+      enum: ["small", "medium", "fullscreen"],
     },
   },
 
@@ -64,11 +62,33 @@ export default defineComponent({
   z-index: 9999;
   background: rgba(31, 40, 50, 0.58);
 
-  &_fullscreen {
-    .vc-popup__centerer {
-      justify-content: normal;
-      align-items: normal;
+  &_small {
+    .vc-popup__wrapper {
+      max-height: fit-content;
+      align-items: center;
+      display: flex;
+      flex: 0 0 auto;
+      flex-direction: inherit;
+      justify-content: center;
+
+      .vc-app_phone & {
+        align-items: stretch;
+      }
     }
+
+    .vc-popup__inner {
+      max-width: 439px;
+      width: 100%;
+    }
+  }
+
+  &_medium {
+    .vc-popup__wrapper {
+      max-height: 75vh;
+    }
+  }
+
+  &_fullscreen {
     .vc-popup__wrapper {
       max-height: 100vh;
     }
@@ -84,7 +104,6 @@ export default defineComponent({
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
-    max-height: 75vh;
     height: 100%;
 
     .vc-app_phone & {

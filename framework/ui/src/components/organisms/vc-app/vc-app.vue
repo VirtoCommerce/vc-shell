@@ -74,6 +74,9 @@
           <div class="vc-app__notifications">
             <slot name="notifications"></slot>
           </div>
+          <div class="vc-app__password-change">
+            <slot name="passwordChange"></slot>
+          </div>
         </div>
       </template>
     </template>

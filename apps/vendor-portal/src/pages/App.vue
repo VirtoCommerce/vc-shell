@@ -33,6 +33,13 @@
         {{ item.title }}
       </vc-notification>
     </template>
+
+    <template v-slot:passwordChange>
+      <change-password
+        v-if="isChangePasswordActive"
+        @close="isChangePasswordActive = false"
+      ></change-password>
+    </template>
   </vc-app>
 </template>
 
@@ -50,6 +57,7 @@ import {
 import LoginPage from "./Login.vue";
 import DashboardPage from "./Dashboard.vue";
 import UserDropdownButton from "../components/user-dropdown-button.vue";
+import ChangePassword from "../components/change-password.vue";
 import { OrdersList } from "../modules/orders";
 import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
@@ -71,6 +79,7 @@ export default defineComponent({
   components: {
     LoginPage,
     DashboardPage,
+    ChangePassword,
   },
 
   setup() {
@@ -87,6 +96,7 @@ export default defineComponent({
     } = useNotifications();
     const isAuthorized = ref(false);
     const isReady = ref(false);
+    const isChangePasswordActive = ref(false);
     const pages = inject("pages");
     const isDesktop = inject("isDesktop");
     const isMobile = inject("isMobile");
@@ -132,7 +142,10 @@ export default defineComponent({
           ),
           menuItems: [
             {
-              title: t("SHELL.ACCOUNT.PROFILE"),
+              title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+              clickHandler() {
+                isChangePasswordActive.value = true;
+              },
             },
             {
               title: t("SHELL.ACCOUNT.LOGOUT"),
@@ -199,6 +212,7 @@ export default defineComponent({
       toolbarItems,
       menuItems,
       popupNotifications,
+      isChangePasswordActive,
       dismiss,
       markAsReaded,
     };

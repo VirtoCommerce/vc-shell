@@ -3,7 +3,7 @@
     :title="$t('IMPORT.PAGES.IMPORTING.POPUP.TITLE')"
     @close="$emit('close')"
     class="import-popup"
-    :fullscreen="false"
+    variant="medium"
   >
     <div class="vc-flex vc-flex-row vc-flex-justify_space-between">
       <div class="vc-padding_xl vc-flex vc-flex-align_center">

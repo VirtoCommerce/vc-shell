@@ -17,6 +17,11 @@
     {{ value.toLocaleDateString() }}
   </div>
 
+  <!-- Finished date cell -->
+  <div v-else-if="cell.type === 'finished'">
+    {{ moment(value).locale(locale).format("L LT") }}
+  </div>
+
   <!-- Image cell -->
   <div v-else-if="cell.type === 'image'" class="vc-table-cell_image">
     <vc-image :bordered="true" size="s" aspect="1x1" :src="value" />
@@ -62,6 +67,7 @@ export default defineComponent({
 
   setup(props) {
     return {
+      locale: window.navigator.language,
       value: computed(() =>
         (props.cell.field || props.cell.id)
           .split(".")

@@ -22,6 +22,7 @@
       <vc-container :noPadding="true">
         <div v-if="populatedList && populatedList.length">
           <div
+            @click="handleClick(item.notifyType)"
             class="notification-dropdown__notification"
             v-for="item in populatedList"
             :key="`notification_${item.id}`"
@@ -84,13 +85,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from "vue";
+import { defineComponent, onMounted, PropType, ref, watch } from "vue";
 import {
   BulkActionPushNotification,
   PushNotification,
 } from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
 import moment from "moment";
+import { IMenuItems } from "@virtoshell/ui";
 
 interface INotificationParams
   extends PushNotification,
@@ -114,8 +116,14 @@ export default defineComponent({
       type: String,
       default: "",
     },
+
+    items: {
+      type: Array as PropType<IMenuItems[]>,
+      default: () => [],
+    },
   },
-  setup() {
+  emits: ["notification:click"],
+  setup(props, { emit }) {
     const isDropdownVisible = ref(false);
     const { loadFromHistory, notifications } = useNotifications();
     const locale = window.navigator.language;
@@ -169,9 +177,23 @@ export default defineComponent({
       return "#87b563";
     };
 
+    const handleClick = (notifyType: string) => {
+      const low = notifyType.toLowerCase();
+
+      if (low.includes("import")) {
+        const page = props.items.find(
+          (page: { title: string }) => page.title === "Import"
+        );
+        if (page) {
+          emit("notification:click", page);
+        }
+      }
+    };
+
     return {
       isDropdownVisible,
       populatedList,
+      handleClick,
       toggleNotificationsDrop,
     };
   },
@@ -246,6 +268,7 @@ export default defineComponent({
   &__notification {
     padding: 18px 15px;
     border-bottom: 1px solid #e3e7ec;
+    cursor: pointer;
 
     &:last-of-type {
       border-bottom: none;

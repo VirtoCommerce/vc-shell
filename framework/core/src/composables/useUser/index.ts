@@ -219,8 +219,8 @@ export default (): IUseUser => {
         newPassword,
       } as ChangePasswordRequest);
     } catch (e) {
-      console.dir(e);
       //TODO: log error
+      return { succeeded: false, errors: [e as string] } as SecurityResult;
     } finally {
       loading.value = false;
     }

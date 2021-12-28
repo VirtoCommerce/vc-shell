@@ -39,10 +39,19 @@ interface IActionBuilderResult {
   clickHandler(): void;
 }
 
+interface IShippingInfo {
+  label: string;
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+}
+
 export {
   IComponent,
   ITableColumns,
   IActionBuilderResult,
   IBladeToolbar,
   IMenuItems,
+  IShippingInfo,
 };

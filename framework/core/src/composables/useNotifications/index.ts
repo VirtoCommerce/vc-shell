@@ -40,7 +40,7 @@ export default (): INotifications => {
             Accept: "application/json",
             authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(take),
+          body: JSON.stringify({ take }),
         });
 
         result.text().then((response) => {

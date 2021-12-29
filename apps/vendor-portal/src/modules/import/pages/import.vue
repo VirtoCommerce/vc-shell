@@ -26,11 +26,19 @@
                 )
               }}
               <span>
-                <a class="vc-link" href="#">{{
-                  t(
-                    "IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.DESCRIPTION.LINK"
-                  )
-                }}</a>
+                <a
+                  class="vc-link"
+                  :href="
+                    selectedImporter
+                      ? selectedImporter.importerOptions.templateUrl
+                      : '#'
+                  "
+                  >{{
+                    t(
+                      "IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.DESCRIPTION.LINK"
+                    )
+                  }}</a
+                >
               </span>
             </p>
           </vc-col>
@@ -245,7 +253,7 @@
       :items="popupItems"
       :total="previewTotalNum"
       @startImport="initializeImporting"
-      :disabled="importStatus && importStatus.jobId"
+      :disabled="!!(importStatus && importStatus.jobId)"
     ></import-popup>
   </vc-blade>
 </template>

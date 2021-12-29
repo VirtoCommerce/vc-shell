@@ -48,6 +48,7 @@ interface IUseImport {
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
+  const { getAccessToken } = useUser();
   const importCommand = ref<ImportDataCommand>({
     importProfile: { options: {} as ImportProfileOptions } as ImportProfile,
   } as ImportDataCommand);
@@ -111,15 +112,29 @@ export default (): IUseImport => {
   }
 
   async function getApiClient() {
-    const { getAccessToken } = useUser();
     const client = new VcmpSellerImportClient();
     client.setAuthToken(await getAccessToken());
     return client;
   }
 
   async function fetchDataImporters() {
-    const client = await getApiClient();
-    return client.getImporters();
+    // TODO temporary workaround to get raw importers data
+    const token = await getAccessToken();
+    if (token) {
+      const importers = await fetch("/api/vcmp/import/importers", {
+        method: "GET",
+        headers: {
+          Accept: "text/plain",
+          authorization: `Bearer ${token}`,
+        },
+      });
+
+      return importers.text().then((response) => {
+        return <ImporterMetadata[]>JSON.parse(response);
+      });
+    } else {
+      return [];
+    }
   }
 
   async function previewData() {

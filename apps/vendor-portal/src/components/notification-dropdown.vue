@@ -134,12 +134,17 @@ export default defineComponent({
       () => notifications,
       (newVal) => {
         populatedList.value = newVal.value.map((item: INotificationParams) => {
-          item.params = {
-            icon: notificationIcon(item.notifyType),
-            time: moment(item.created).locale(locale).format("L LT"),
-            color: notificationColor(item),
-          };
-          return item;
+          return Object.assign(
+            {},
+            {
+              ...item,
+              params: {
+                icon: notificationIcon(item.notifyType),
+                time: moment(item.created).locale(locale).format("L LT"),
+                color: notificationColor(item),
+              },
+            }
+          ) as INotificationParams;
         });
       },
       { deep: true }
@@ -180,9 +185,10 @@ export default defineComponent({
     const handleClick = (notifyType: string) => {
       const low = notifyType.toLowerCase();
 
+      // TODO need to discuss on arch meeting
       if (low.includes("import")) {
         const page = props.items.find(
-          (page: { title: string }) => page.title === "Import"
+          (page: IMenuItems) => page.title === "Import"
         );
         if (page) {
           emit("notification:click", page);

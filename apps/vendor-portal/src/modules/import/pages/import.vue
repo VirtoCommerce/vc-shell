@@ -180,15 +180,7 @@
       </div>
     </div>
     <!--      Import errors-->
-    <div
-      class="csv-import__errors-wrap vc-padding_xs vc-flex"
-      v-if="
-        importStatus &&
-        importStatus.notification &&
-        importStatus.notification.errors &&
-        importStatus.notification.errors.length
-      "
-    >
+    <div class="csv-import__errors-wrap vc-padding_xs vc-flex" v-if="isErrors">
       <div
         class="csv-import__errors vc-padding_l vc-flex"
         v-if="!$isMobile.value"
@@ -419,13 +411,22 @@ export default defineComponent({
       },
       {
         id: "finished",
-        type: "finished",
+        type: "date",
+        format: "L LT",
         title: t("IMPORT.PAGES.LIST.TABLE.HEADER.DATE"),
         width: 185,
         alwaysVisible: true,
         sortable: true,
       },
     ]);
+    const isErrors = computed(
+      () =>
+        importStatus.value &&
+        importStatus.value.notification &&
+        importStatus.value.notification.errors &&
+        importStatus.value.notification.errors.length
+    );
+
     onMounted(async () => {
       importersList.value = await fetchDataImporters();
 
@@ -499,6 +500,7 @@ export default defineComponent({
       isValid,
       columns,
       importHistory,
+      isErrors,
       status,
       moment,
       bladeToolbar,

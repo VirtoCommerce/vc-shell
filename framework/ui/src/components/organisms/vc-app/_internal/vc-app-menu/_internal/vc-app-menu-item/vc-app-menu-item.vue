@@ -18,8 +18,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
+import { IMenuItems } from "../../../../../../../typings";
 
 export default defineComponent({
   name: "VcAppMenuItem",
@@ -43,7 +44,7 @@ export default defineComponent({
     },
 
     component: {
-      type: HTMLElement,
+      type: Object as PropType<IMenuItems>,
       default: undefined,
     },
 

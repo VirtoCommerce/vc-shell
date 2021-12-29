@@ -14,12 +14,11 @@
 
   <!-- Date exact cell -->
   <div v-else-if="cell.type === 'date'" class="vc-table-cell_date">
-    {{ value.toLocaleDateString() }}
-  </div>
-
-  <!-- Finished date cell -->
-  <div v-else-if="cell.type === 'finished'">
-    {{ moment(value).locale(locale).format("L LT") }}
+    {{
+      cell.format
+        ? moment(value).locale(locale).format(cell.format)
+        : value.toLocaleDateString()
+    }}
   </div>
 
   <!-- Image cell -->

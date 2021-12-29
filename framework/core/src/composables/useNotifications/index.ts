@@ -4,15 +4,15 @@ import {
   PushNotificationSearchCriteria,
 } from "@virtoshell/api-client";
 import useUser from "../useUser";
-import { computed, ComputedRef, ref } from "vue";
+import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";
 import _ from "lodash";
 
 const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
-  notifications: ComputedRef<PushNotification[]>;
-  popupNotifications: ComputedRef<PushNotification[]>;
+  readonly notifications: ComputedRef<Readonly<PushNotification[]>>;
+  readonly popupNotifications: ComputedRef<Readonly<PushNotification[]>>;
   loadFromHistory(take?: number): void;
   addNotification(message: PushNotification): void;
   markAsReaded(sage: PushNotification): void;
@@ -76,9 +76,9 @@ export default (): INotifications => {
 
   return {
     notifications: computed(() =>
-      _.orderBy(notifications.value, ["created"], ["desc"])
+      readonly(_.orderBy(notifications.value, ["created"], ["desc"]))
     ),
-    popupNotifications: computed(() => popupNotifications.value),
+    popupNotifications: computed(() => readonly(popupNotifications.value)),
     loadFromHistory,
     addNotification,
     dismissAll,

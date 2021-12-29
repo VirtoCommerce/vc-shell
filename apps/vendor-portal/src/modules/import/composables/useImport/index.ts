@@ -65,7 +65,8 @@ export default (): IUseImport => {
         ? (newVal.value.find(
             (x) => x.id === importStatus.value.notification.id
           ) as ImportPushNotification)
-        : (newVal.value.find(
+        : // TODO: this is a temporary workaround to fill history from push notifications and it will be removed when we add support of execution history for import jobs to Api.
+          (newVal.value.find(
             (x: ImportPushNotification) => x.jobId
           ) as ImportPushNotification);
 

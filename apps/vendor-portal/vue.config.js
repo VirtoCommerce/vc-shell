@@ -24,6 +24,9 @@ module.exports = {
       '/pushNotificationHub': {
         target: `${process.env.PLATFORM_URL}`,
       },
+      '/Modules': {
+        target: `${process.env.PLATFORM_URL}`,
+      }
     },
     historyApiFallback: true,
   },

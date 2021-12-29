@@ -118,7 +118,7 @@ export default (): IUseImport => {
   }
 
   async function fetchDataImporters() {
-    // TODO temporary workaround to get raw importers data
+    // TODO it's temporary workaround to get raw importers data
     const token = await getAccessToken();
     if (token) {
       const importers = await fetch("/api/vcmp/import/importers", {

@@ -30,13 +30,23 @@ export default (): INotifications => {
   async function loadFromHistory(take = 10) {
     const token = await getAccessToken();
     if (token) {
+      // TODO temporary workaround to get push notifications without base type
       try {
         notificationsClient.setAuthToken(token);
-        const result = await notificationsClient.searchPushNotification({
-          take,
-        } as PushNotificationSearchCriteria);
+        const result = await fetch("/api/platform/pushnotifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json-patch+json",
+            Accept: "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(take),
+        });
 
-        notifications.value = result.notifyEvents ?? [];
+        result.text().then((response) => {
+          notifications.value =
+            <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
+        });
       } catch (e) {
         logger.error(e);
         throw e;

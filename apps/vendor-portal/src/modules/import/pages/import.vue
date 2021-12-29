@@ -2,6 +2,7 @@
   <vc-blade
     :title="$t('IMPORT.PAGES.TITLE')"
     width="100%"
+    :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
     :closable="false"
   >
@@ -70,7 +71,10 @@
       </vc-row>
 
       <!-- Import started -->
-      <div class="csv-import__importing vc-padding_l" v-if="importStarted">
+      <div
+        class="csv-import__importing vc-padding_l"
+        v-if="importStatus && importStatus.jobId"
+      >
         <vc-card
           :header="
             importStatus && importStatus.inProgress
@@ -79,11 +83,24 @@
           "
         >
           <div class="vc-padding_xl">
-            <vc-progress
-              value="100"
-              v-if="importStatus && importStatus.inProgress"
-              variant="striped"
-            ></vc-progress>
+            <div v-if="importStatus && importStatus.inProgress">
+              <vc-progress
+                :value="importStatus.progress"
+                variant="striped"
+              ></vc-progress>
+              <div v-if="importStatus && importStatus.notification">
+                <vc-hint class="vc-margin_none vc-margin-top_m">
+                  Imported {{ importStatus.notification.processedCount }} of
+                  {{ importStatus.notification.totalCount }} lines
+                </vc-hint>
+                <vc-hint
+                  class="vc-margin_none vc-margin-top_s csv-import__error"
+                  v-if="importStatus.notification.errorCount > 0"
+                >
+                  Errors: {{ importStatus.notification.errorCount }}
+                </vc-hint>
+              </div>
+            </div>
             <div
               v-else-if="importStatus && importStatus.notification"
               :class="{ 'vc-flex-column': $isMobile.value }"
@@ -162,55 +179,65 @@
         </vc-card>
       </div>
     </div>
-    <!-- Import archive -->
-    <!--    <div class="csv-import__archive-wrap vc-padding_xs vc-flex">-->
-    <!--      <div-->
-    <!--        class="csv-import__archive vc-padding_l vc-flex"-->
-    <!--        v-if="!$isMobile.value"-->
-    <!--      >-->
-    <!--        <vc-card header="Archive import">-->
-    <!--          <vc-table-->
-    <!--            :columns="columns"-->
-    <!--            :items="mock"-->
-    <!--            :sort="sort"-->
-    <!--            :header="false"-->
-    <!--            :selectedItemId="selectedItemId"-->
-    <!--          >-->
-    <!--            &lt;!&ndash; Empty template &ndash;&gt;-->
-    <!--            <template v-slot:empty>-->
-    <!--              <div-->
-    <!--                class="-->
-    <!--                  vc-fill_all-->
-    <!--                  vc-flex vc-flex-column-->
-    <!--                  vc-flex-align_center-->
-    <!--                  vc-flex-justify_center-->
-    <!--                "-->
-    <!--              >-->
-    <!--                <div-->
-    <!--                  class="-->
-    <!--                    vc-font-size_m-->
-    <!--                    vc-font-weight_medium-->
-    <!--                    csv-import__archive-empty-text-->
-    <!--                  "-->
-    <!--                >-->
-    <!--                  {{ t("IMPORT.PAGES.IMPORTING.EMPTY_ARCHIVE") }}-->
-    <!--                </div>-->
-    <!--              </div>-->
-    <!--            </template>-->
+    <!--      Import errors-->
+    <div class="csv-import__errors-wrap vc-padding_xs vc-flex" v-if="isErrors">
+      <div
+        class="csv-import__errors vc-padding_l vc-flex"
+        v-if="!$isMobile.value"
+      >
+        <vc-card header="Errors">
+          <vc-hint
+            class="csv-import__error"
+            v-for="(error, i) in importStatus.notification.errors"
+            :key="i"
+            >{{ error }}</vc-hint
+          >
+        </vc-card>
+      </div>
+    </div>
+    <!--     Import archive -->
+    <div class="csv-import__archive-wrap vc-padding_xs vc-flex">
+      <div
+        class="csv-import__archive vc-padding_l vc-flex"
+        v-if="!$isMobile.value"
+      >
+        <vc-card header="Archive import">
+          <vc-table :columns="columns" :items="importHistory" :header="false">
+            <!-- Empty template -->
+            <template v-slot:empty>
+              <div
+                class="
+                  vc-fill_all
+                  vc-flex vc-flex-column
+                  vc-flex-align_center
+                  vc-flex-justify_center
+                "
+              >
+                <div
+                  class="
+                    vc-font-size_m
+                    vc-font-weight_medium
+                    csv-import__archive-empty-text
+                  "
+                >
+                  {{ t("IMPORT.PAGES.IMPORTING.EMPTY_ARCHIVE") }}
+                </div>
+              </div>
+            </template>
 
-    <!--            &lt;!&ndash; Override name column template &ndash;&gt;-->
-    <!--            <template v-slot:item_name="itemData">-->
-    <!--              <div class="vc-flex vc-flex-column">-->
-    <!--                <div class="vc-ellipsis">{{ itemData.item.name }}</div>-->
-    <!--                <vc-hint class="vc-ellipsis vc-margin-top_xs">-->
-    <!--                  {{ itemData.item.size }} Mb-->
-    <!--                </vc-hint>-->
-    <!--              </div>-->
-    <!--            </template>-->
-    <!--          </vc-table>-->
-    <!--        </vc-card>-->
-    <!--      </div>-->
-    <!--    </div>-->
+            <!-- Override name column template -->
+            <template v-slot:item_name="itemData">
+              <div class="vc-flex vc-flex-column">
+                <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                <!--                <vc-hint class="vc-ellipsis vc-margin-top_xs">-->
+                <!--                  {{ itemData.item.size }} Mb-->
+                <!--                </vc-hint>-->
+              </div>
+            </template>
+          </vc-table>
+        </vc-card>
+      </div>
+    </div>
     <import-popup
       v-if="importPreview"
       @close="importPreview = false"
@@ -218,15 +245,22 @@
       :items="popupItems"
       :total="previewTotalNum"
       @startImport="initializeImporting"
-      :disabled="importStarted"
+      :disabled="importStatus && importStatus.jobId"
     ></import-popup>
   </vc-blade>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, ComputedRef } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  computed,
+  ComputedRef,
+  reactive,
+} from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
-import { ITableColumns } from "../../../types";
+import { IBladeToolbar, ITableColumns } from "../../../types";
 import ImportPopup from "../components/import-popup.vue";
 import useImport from "../composables/useImport";
 import { IImporterMetadata, ImportDataPreview } from "../../../api_client";
@@ -257,39 +291,59 @@ export default defineComponent({
       cancelImport,
       selectImporter,
       setFile,
+      clearImport,
       selectedImporter,
       importStatus,
       isValid,
+      importHistory,
     } = useImport();
-    const selectedItemId = ref();
     const loading = ref(false);
     const errorMessage = ref("");
     const importPreview = ref(false);
     const importersList = ref<IImporterMetadata[]>([]);
     const preview = ref<ImportDataPreview>();
-    const importStarted = ref(false);
+    const bladeToolbar = reactive<IBladeToolbar[]>([
+      {
+        id: "new",
+        title: t("IMPORT.PAGES.TOOLBAR.NEW_IMPORT"),
+        icon: "fas fa-plus",
+        clickHandler() {
+          clearImport();
+        },
+        disabled: computed(
+          () => !(importStatus.value && importStatus.value.jobId)
+        ),
+      },
+      // {
+      //   id: "edit",
+      //   title: t("IMPORT.PAGES.TOOLBAR.EDIT"),
+      //   icon: "fas fa-pencil-alt",
+      //   clickHandler() {},
+      // },
+      // {
+      //   id: "delete",
+      //   title: t("IMPORT.PAGES.TOOLBAR.DELETE"),
+      //   icon: "fas fa-trash",
+      //   clickHandler() {
+      //   },
+      // },
+    ]);
     const uploadActions = ref<INotificationActions[]>([
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
         clickHandler() {
-          setFile({
-            url: undefined,
-            name: undefined,
-            size: 0,
-          });
-          importStarted.value = false;
+          clearImport();
         },
         outline: true,
         variant: "danger",
         isVisible: computed(
-          () => !(importStatus.value && importStatus.value.inProgress)
+          () => !(importStatus.value && importStatus.value.jobId)
         ),
       },
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.CANCEL_IMPORT"),
         async clickHandler() {
           await cancelImport();
-          importStarted.value = false;
         },
         outline: true,
         variant: "danger",
@@ -338,6 +392,41 @@ export default defineComponent({
     ]);
     const popupColumns = ref<ITableColumns[]>([]);
     const popupItems = ref<Record<string, unknown>[]>([]);
+    const columns = ref<ITableColumns[]>([
+      {
+        id: "jobId", // temp
+        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME"),
+        alwaysVisible: true,
+      },
+      {
+        id: "processedCount",
+        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.PROCESSED_COUNT"),
+        width: 147,
+      },
+      {
+        id: "errorCount",
+        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT"),
+        width: 118,
+        sortable: true,
+      },
+      {
+        id: "finished",
+        type: "date",
+        format: "L LT",
+        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.DATE"),
+        width: 185,
+        alwaysVisible: true,
+        sortable: true,
+      },
+    ]);
+    const isErrors = computed(
+      () =>
+        importStatus.value &&
+        importStatus.value.notification &&
+        importStatus.value.notification.errors &&
+        importStatus.value.notification.errors.length
+    );
+
     onMounted(async () => {
       importersList.value = await fetchDataImporters();
 
@@ -355,7 +444,6 @@ export default defineComponent({
       try {
         errorMessage.value = "";
         await startImport();
-        importStarted.value = true;
       } catch (e) {
         errorMessage.value = e.message;
       }
@@ -398,7 +486,6 @@ export default defineComponent({
     return {
       title: t("IMPORT.MENU.TITLE"),
       t,
-      selectedItemId,
       uploadedFile,
       uploadActions,
       errorMessage,
@@ -410,10 +497,13 @@ export default defineComponent({
       selectedImporter,
       importLoading,
       importStatus,
-      importStarted,
       isValid,
+      columns,
+      importHistory,
+      isErrors,
       status,
       moment,
+      bladeToolbar,
       previewTotalNum: computed(() => preview.value.totalCount),
       locale: window.navigator.language,
       uploadCsv,
@@ -425,7 +515,11 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+:root {
+  --color-error: #f14e4e;
+}
+
 .csv-import {
   &__archive-wrap {
     flex: 1;
@@ -434,7 +528,7 @@ export default defineComponent({
   &__archive {
     flex: 1 1 auto;
 
-    :deep(.vc-card__body) {
+    .vc-card__body {
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
@@ -480,6 +574,21 @@ export default defineComponent({
     font-size: var(--font-size-l);
     line-height: var(--line-height-l);
     font-weight: var(--font-weight-medium);
+  }
+
+  &__error {
+    --hint-color: var(--color-error);
+  }
+
+  &__errors-wrap {
+    height: 300px;
+  }
+
+  &__errors {
+    .vc-card__body {
+      overflow: auto;
+      padding: var(--padding-xl);
+    }
   }
 }
 </style>

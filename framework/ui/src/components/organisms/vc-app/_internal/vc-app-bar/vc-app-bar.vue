@@ -46,6 +46,8 @@
             :is="item.component"
             v-bind="item.componentOptions"
             :isAccent="item.isAccent"
+            :items="items"
+            @notification:click="$emit('notification:click', $event)"
           ></component>
 
           <!-- Otherwise draw default toolbar button -->
@@ -85,7 +87,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
-import { IBladeToolbar, IPage } from "../../../../../typings";
+import { IBladeToolbar, IMenuItems, IPage } from "../../../../../typings";
 
 export default defineComponent({
   name: "VcAppBar",
@@ -101,6 +103,11 @@ export default defineComponent({
     version: {
       type: String,
       default: "",
+    },
+
+    items: {
+      type: Array as PropType<IMenuItems[]>,
+      default: () => [],
     },
 
     workspace: {
@@ -120,6 +127,7 @@ export default defineComponent({
     "version:click",
     "toolbarbutton:click",
     "menubutton:click",
+    "notification:click",
   ],
 });
 </script>

@@ -26,9 +26,11 @@
           :workspace="workspaceRefs"
           :version="version"
           :buttons="toolbarItems"
+          :items="menuItems"
           @toolbarbutton:click="onToolbarButtonClick"
           @menubutton:click="$refs.menu.isMobileVisible = true"
           @backlink:click="onClosePage(workspace.length - 1)"
+          @notification:click="onMenuItemClick"
           @logo:click="openDashboard"
         ></vc-app-bar>
 

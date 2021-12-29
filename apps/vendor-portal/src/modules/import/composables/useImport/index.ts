@@ -1,4 +1,4 @@
-import { onMounted, Ref, ref, watch, computed } from "vue";
+import { Ref, ref, watch, computed } from "vue";
 import {
   IImporterMetadata,
   ImporterMetadata,
@@ -17,6 +17,7 @@ export interface IImportStatus {
   notification?: ImportPushNotification;
   jobId?: string;
   inProgress: boolean;
+  progress: number;
 }
 
 export interface IUploadedFile {
@@ -35,14 +36,15 @@ interface IUseImport {
   uploadedFile: Ref<IUploadedFile>;
   importStatus: Ref<IImportStatus>;
   isValid: Ref<boolean>;
+  importHistory: Ref<ImportPushNotification[]>;
   setFile(file: IUploadedFile): void;
   selectImporter(importer: IImporterMetadata): void;
   fetchDataImporters(): Promise<ImporterMetadata[]>;
   previewData(): Promise<ImportDataPreview>;
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
+  clearImport(): void;
 }
-
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
@@ -53,22 +55,38 @@ export default (): IUseImport => {
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
   const selectedImporter = ref<IImporterMetadata>();
+  const importHistory = ref<ImportPushNotification[]>([]);
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
     () => notifications,
     (newVal) => {
-      if (importStatus.value) {
-        const notification = newVal.value.find(
-          (x) => x.id === importStatus.value.notification.id
-        ) as ImportPushNotification;
-        if (notification) {
-          updateStatus(notification);
-        }
+      const notification = importStatus.value
+        ? (newVal.value.find(
+            (x) => x.id === importStatus.value.notification.id
+          ) as ImportPushNotification)
+        : // TODO: this is a temporary workaround to fill history from push notifications and it will be removed when we add support of execution history for import jobs to Api.
+          (newVal.value.find(
+            (x: ImportPushNotification) => x.jobId
+          ) as ImportPushNotification);
+
+      if (notification) {
+        updateStatus(notification);
       }
+      createImportHistory(newVal.value as ImportPushNotification[]);
     },
-    { deep: true }
+    { deep: true, immediate: true }
   );
+
+  function createImportHistory(notifications: ImportPushNotification[]) {
+    const finishedImports = notifications.filter(
+      (notification) => notification.finished
+    );
+
+    if (finishedImports && finishedImports.length) {
+      importHistory.value = finishedImports;
+    }
+  }
 
   function selectImporter(importer: IImporterMetadata) {
     importCommand.value.importProfile = new ImportProfile({
@@ -88,6 +106,7 @@ export default (): IUseImport => {
       notification: notification,
       jobId: notification.jobId,
       inProgress: !notification.finished,
+      progress: (notification.processedCount / notification.totalCount) * 100,
     };
   }
 
@@ -147,17 +166,28 @@ export default (): IUseImport => {
     }
   }
 
+  function clearImport() {
+    setFile({
+      url: undefined,
+      name: undefined,
+      size: 0,
+    });
+    importStatus.value = undefined;
+  }
+
   return {
     loading: computed(() => loading.value),
     selectedImporter: computed(() => selectedImporter.value),
     uploadedFile: computed(() => uploadedFile.value),
     importStatus: computed(() => importStatus.value),
     isValid: computed(() => !!(selectedImporter.value && uploadedFile.value)),
+    importHistory: computed(() => importHistory.value),
     setFile,
     selectImporter,
     fetchDataImporters,
     previewData,
     startImport,
     cancelImport,
+    clearImport,
   };
 };

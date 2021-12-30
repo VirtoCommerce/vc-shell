@@ -210,19 +210,38 @@ export default (): IUseUser => {
     oldPassword: string,
     newPassword: string
   ): Promise<SecurityResult> {
+    const token = await getAccessToken();
     let result;
 
-    try {
-      loading.value = true;
-      result = await securityClient.changeCurrentUserPassword({
-        oldPassword,
-        newPassword,
-      } as ChangePasswordRequest);
-    } catch (e) {
-      //TODO: log error
-      return { succeeded: false, errors: [e as string] } as SecurityResult;
-    } finally {
-      loading.value = false;
+    // TODO it's temporary workaround to get valid errors
+    if (token) {
+      try {
+        loading.value = true;
+        const res = await fetch(
+          "/api/platform/security/currentuser/changepassword",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json-patch+json",
+              Accept: "text/plain",
+              authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              oldPassword,
+              newPassword,
+            }),
+          }
+        );
+        if (res.status !== 500) {
+          result = await res.text().then((response) => {
+            return JSON.parse(response);
+          });
+        }
+      } catch (e) {
+        return { succeeded: false, errors: [e.message] } as SecurityResult;
+      } finally {
+        loading.value = false;
+      }
     }
 
     return result as SecurityResult;

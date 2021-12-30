@@ -118,7 +118,7 @@ export default (): IUseImport => {
   }
 
   async function fetchDataImporters() {
-    // TODO temporary workaround to get raw importers data
+    // TODO it's temporary workaround to get raw importers data
     const token = await getAccessToken();
     if (token) {
       const importers = await fetch("/api/vcmp/import/importers", {
@@ -130,7 +130,20 @@ export default (): IUseImport => {
       });
 
       return importers.text().then((response) => {
-        return <ImporterMetadata[]>JSON.parse(response);
+        const importers = JSON.parse(response);
+        const result = [];
+        if (Array.isArray(importers)) {
+          for (const item of importers) {
+            const importerMeta = ImporterMetadata.fromJS(item);
+            result.push({
+              importerType: importerMeta.importerType,
+              importerOptions: new ImportProfileOptions({
+                ...importerMeta.importerOptions,
+              }),
+            });
+          }
+        }
+        return result;
       });
     } else {
       return [];

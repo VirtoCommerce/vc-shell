@@ -215,28 +215,36 @@ export default (): IUseUser => {
 
     // TODO it's temporary workaround to get valid errors
     if (token) {
-      loading.value = true;
-      const res = await fetch(
-        "/api/platform/security/currentuser/changepassword",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json-patch+json",
-            Accept: "text/plain",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            oldPassword,
-            newPassword,
-          }),
+      try {
+        loading.value = true;
+        const res = await fetch(
+          "/api/platform/security/currentuser/changepassword",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json-patch+json",
+              Accept: "text/plain",
+              authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              oldPassword,
+              newPassword,
+            }),
+          }
+        );
+        if (res.status !== 500) {
+          result = await res.text().then((response) => {
+            return JSON.parse(response);
+          });
         }
-      );
-      result = await res.text().then((response) => {
-        return JSON.parse(response);
-      });
-      loading.value = false;
+      } catch (e) {
+        return { succeeded: false, errors: [e.message] } as SecurityResult;
+      } finally {
+        loading.value = false;
+      }
     }
 
+    console.log(result);
     return result as SecurityResult;
   }
 

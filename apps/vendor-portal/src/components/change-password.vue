@@ -72,7 +72,11 @@
           :key="error"
         >
           <!-- TODO: stylizing-->
-          {{ $t(`SHELL.CHANGE_PASSWORD.ERRORS.${error}`) }}
+          {{
+            error.code
+              ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${error.code}`)
+              : error
+          }}
         </vc-hint>
       </vc-form>
     </div>
@@ -82,12 +86,21 @@
 <script lang="ts">
 import { defineComponent, reactive } from "vue";
 import { useUser } from "@virtoshell/core";
+import { IIdentityError } from "@virtoshell/api-client";
+
+interface IChangePassForm {
+  isValid: boolean;
+  errors: IIdentityError[] | string[];
+  currentPassword: string;
+  password: string;
+  confirmPassword: string;
+}
 
 export default defineComponent({
   name: "ChangePassword",
   setup(props, { emit }) {
     const { changeUserPassword, loading, validatePassword } = useUser();
-    const form = reactive({
+    const form = reactive<IChangePassForm>({
       isValid: false,
       errors: [],
       currentPassword: "",
@@ -108,10 +121,9 @@ export default defineComponent({
     }
 
     async function validate() {
-      const errors = (await validatePassword(form.password)).errors;
-      form.errors = errors.map((x) => x.code);
+      form.errors = (await validatePassword(form.password)).errors;
       if (form.confirmPassword !== form.password) {
-        form.errors.push("Repeat-password");
+        form.errors.push({ code: "Repeat-password" });
       }
       form.isValid = form.errors.length == 0;
     }

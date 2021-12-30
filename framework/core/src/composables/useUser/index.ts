@@ -244,7 +244,6 @@ export default (): IUseUser => {
       }
     }
 
-    console.log(result);
     return result as SecurityResult;
   }
 

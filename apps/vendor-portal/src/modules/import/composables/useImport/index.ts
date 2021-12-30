@@ -130,7 +130,20 @@ export default (): IUseImport => {
       });
 
       return importers.text().then((response) => {
-        return <ImporterMetadata[]>JSON.parse(response);
+        const importers = JSON.parse(response);
+        const result = [];
+        if (Array.isArray(importers)) {
+          for (const item of importers) {
+            const importerMeta = ImporterMetadata.fromJS(item);
+            result.push({
+              importerType: importerMeta.importerType,
+              importerOptions: new ImportProfileOptions({
+                ...importerMeta.importerOptions,
+              }),
+            });
+          }
+        }
+        return result;
       });
     } else {
       return [];

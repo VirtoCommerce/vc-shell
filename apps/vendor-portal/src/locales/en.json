@@ -60,8 +60,8 @@
         "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
         "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
         "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
-        "recentPasswordUsed": "You have used this password in the past. Choose another one.",
-        "IncorrectPassword": "You entered an incorrect password"
+        "Incorrect password.": "You entered an incorrect password",
+        "You have used this password in the past. Choose another one.": "You have used this password in the past. Choose another one."
       }
     },
     "INVITATION": {

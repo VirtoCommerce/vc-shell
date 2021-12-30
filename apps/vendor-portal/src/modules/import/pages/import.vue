@@ -6,246 +6,257 @@
     @close="$emit('page:close')"
     :closable="false"
   >
-    <div class="csv-import__inner vc-flex vc-flex-column vc-padding_xs">
-      <vc-row>
-        <vc-col class="vc-padding_l">
-          <!-- Import selects -->
-          <vc-col class="vc-margin-bottom_xl">
-            <vc-select
-              :options="importersList"
-              :modelValue="selectedImporter && selectedImporter.importerType"
-              @change="setImporter"
-              keyProperty="importerType"
-              displayProperty="importerType"
-              :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.TITLE')"
-            ></vc-select>
-            <p class="csv-import__importer-description">
-              {{
-                t(
-                  "IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.DESCRIPTION.TITLE"
-                )
-              }}
-              <span>
-                <a
-                  class="vc-link"
-                  :href="
-                    selectedImporter
-                      ? selectedImporter.importerOptions.templateUrl
-                      : '#'
-                  "
-                  >{{
-                    t(
-                      "IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.DESCRIPTION.LINK"
-                    )
-                  }}</a
-                >
-              </span>
-            </p>
+    <vc-container>
+      <div class="csv-import__inner vc-flex vc-flex-column vc-padding_xs">
+        <vc-row>
+          <vc-col class="vc-padding_l">
+            <!-- Import selects -->
+            <vc-col class="vc-margin-bottom_xl">
+              <vc-select
+                :options="importersList"
+                :modelValue="selectedImporter && selectedImporter.importerType"
+                @change="setImporter"
+                keyProperty="importerType"
+                displayProperty="importerType"
+                :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.TITLE')"
+              ></vc-select>
+              <p class="csv-import__importer-description">
+                {{
+                  t(
+                    "IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.DESCRIPTION.TITLE"
+                  )
+                }}
+                <span>
+                  <a
+                    class="vc-link"
+                    :href="
+                      selectedImporter
+                        ? selectedImporter.importerOptions.templateUrl
+                        : '#'
+                    "
+                    >{{
+                      t(
+                        "IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.DESCRIPTION.LINK"
+                      )
+                    }}</a
+                  >
+                </span>
+              </p>
+            </vc-col>
+            <vc-col
+              ><vc-select
+                :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DELIMITER.TITLE')"
+              ></vc-select
+            ></vc-col>
           </vc-col>
+
+          <!-- Import file upload and uploaded actions -->
           <vc-col
-            ><vc-select
-              :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DELIMITER.TITLE')"
-            ></vc-select
-          ></vc-col>
-        </vc-col>
-
-        <!-- Import file upload and uploaded actions -->
-        <vc-col
-          class="vc-padding_l vc-padding-top_s"
-          :class="{
-            'vc-flex-justify_end vc-padding_l': !(
-              uploadedFile && uploadedFile.url
-            ),
-          }"
-        >
-          <p
-            class="csv-import__uploaded-title"
-            v-if="uploadedFile && uploadedFile.url"
+            class="vc-padding_l vc-padding-top_s"
+            :class="{
+              'vc-flex-justify_end vc-padding_l': !(
+                uploadedFile && uploadedFile.url
+              ),
+            }"
           >
-            {{ t("IMPORT.PAGES.ACTIONS.UPLOADER.TITLE") }}
-          </p>
-          <vc-file-upload
-            variant="file-upload"
-            @upload="uploadCsv"
-            :notification="true"
-            :uploadedFile="uploadedFile"
-            :uploadActions="uploadActions"
-            :isUploaded="isValid"
-            :errorMessage="errorMessage"
-            :loading="loading"
-            accept=".csv"
-          ></vc-file-upload>
-        </vc-col>
-      </vc-row>
+            <p
+              class="csv-import__uploaded-title"
+              v-if="uploadedFile && uploadedFile.url"
+            >
+              {{ t("IMPORT.PAGES.ACTIONS.UPLOADER.TITLE") }}
+            </p>
+            <vc-file-upload
+              variant="file-upload"
+              @upload="uploadCsv"
+              :notification="true"
+              :uploadedFile="uploadedFile"
+              :uploadActions="uploadActions"
+              :isUploaded="isValid"
+              :errorMessage="errorMessage"
+              :loading="loading"
+              accept=".csv"
+            ></vc-file-upload>
+          </vc-col>
+        </vc-row>
 
-      <!-- Import started -->
-      <div
-        class="csv-import__importing vc-padding_l"
-        v-if="importStatus && importStatus.jobId"
-      >
-        <vc-card
-          :header="
-            importStatus && importStatus.inProgress
-              ? $t('IMPORT.PAGES.IMPORTING.IMPORT_STARTED')
-              : $t('IMPORT.PAGES.IMPORTING.IMPORT_SUMMARY')
-          "
+        <!-- Import started -->
+        <div
+          class="csv-import__importing vc-padding_l"
+          v-if="importStatus && importStatus.jobId"
         >
-          <div class="vc-padding_xl">
-            <div v-if="importStatus && importStatus.inProgress">
-              <vc-progress
-                :value="importStatus.progress"
-                variant="striped"
-              ></vc-progress>
-              <div v-if="importStatus && importStatus.notification">
-                <vc-hint class="vc-margin_none vc-margin-top_m">
-                  Imported {{ importStatus.notification.processedCount }} of
-                  {{ importStatus.notification.totalCount }} lines
-                </vc-hint>
-                <vc-hint
-                  class="vc-margin_none vc-margin-top_s csv-import__error"
-                  v-if="importStatus.notification.errorCount > 0"
-                >
-                  Errors: {{ importStatus.notification.errorCount }}
-                </vc-hint>
-              </div>
-            </div>
-            <div
-              v-else-if="importStatus && importStatus.notification"
-              :class="{ 'vc-flex-column': $isMobile.value }"
-            >
-              <vc-row>
-                <vc-col>
-                  <p class="csv-import__importing-status-title vc-margin_none">
-                    {{ t("IMPORT.PAGES.IMPORTING.LINES_CREATED") }}
-                  </p>
-                  <p class="vc-margin_none vc-margin-top_s">
-                    {{ importStatus.notification.processedCount }}
-                  </p>
-                </vc-col>
-                <!--                <vc-col>-->
-                <!--                  <p class="csv-import__importing-status-title vc-margin_none">-->
-                <!--                    {{ t("IMPORT.PAGES.IMPORTING.LINES_UPDATED") }}-->
-                <!--                  </p>-->
-                <!--                  <p class="vc-margin_none vc-margin-top_s">4900</p>-->
-                <!--                </vc-col>-->
-                <vc-col>
-                  <p class="csv-import__importing-status-title vc-margin_none">
-                    {{ t("IMPORT.PAGES.IMPORTING.ERROR_COUNT") }}
-                  </p>
-                  <p class="vc-margin_none vc-margin-top_s">
-                    {{ importStatus.notification.errorCount }}
-                  </p>
-                </vc-col>
-                <!--                <vc-col size="3">-->
-                <!--                  <p class="csv-import__importing-status-title vc-margin_none">-->
-                <!--                    {{ t("IMPORT.PAGES.IMPORTING.REPORT_URL") }}-->
-                <!--                  </p>-->
-                <!--                  <vc-link class="vc-margin-top_s"-->
-                <!--                    >api/import/download/import_20210120234901.csv</vc-link-->
-                <!--                  >-->
-                <!--                </vc-col>-->
-              </vc-row>
-            </div>
-          </div>
-
-          <!-- Import timers -->
-          <template v-slot:actions>
-            <div
-              class="csv-import__time-wrapper vc-flex vc-flex-row"
-              v-if="importStatus && importStatus.notification"
-            >
-              <div
-                class="csv-import__time"
-                v-if="importStatus.notification.created"
-              >
-                {{ t("IMPORT.PAGES.IMPORTING.TIMINGS.START") }} —
-                <vc-icon icon="far fa-clock" size="xs" />
-                <span
-                  >&nbsp;{{
-                    moment(importStatus.notification.created)
-                      .locale(locale)
-                      .format("LTS")
-                  }}</span
-                >
-              </div>
-              <div
-                class="csv-import__time"
-                v-if="importStatus.notification.finished"
-              >
-                {{ t("IMPORT.PAGES.IMPORTING.TIMINGS.END") }} —
-                <vc-icon icon="far fa-clock" size="xs" />
-                <span
-                  >&nbsp;{{
-                    moment(importStatus.notification.finished)
-                      .locale(locale)
-                      .format("LTS")
-                  }}</span
-                >
-              </div>
-            </div>
-          </template>
-        </vc-card>
-      </div>
-    </div>
-    <!--      Import errors-->
-    <div class="csv-import__errors-wrap vc-padding_xs vc-flex" v-if="isErrors">
-      <div
-        class="csv-import__errors vc-padding_l vc-flex"
-        v-if="!$isMobile.value"
-      >
-        <vc-card header="Errors">
-          <vc-hint
-            class="csv-import__error"
-            v-for="(error, i) in importStatus.notification.errors"
-            :key="i"
-            >{{ error }}</vc-hint
+          <vc-card
+            :header="
+              importStatus && importStatus.inProgress
+                ? $t('IMPORT.PAGES.IMPORTING.IMPORT_STARTED')
+                : $t('IMPORT.PAGES.IMPORTING.IMPORT_SUMMARY')
+            "
           >
-        </vc-card>
-      </div>
-    </div>
-    <!--     Import archive -->
-    <div class="csv-import__archive-wrap vc-padding_xs vc-flex">
-      <div
-        class="csv-import__archive vc-padding_l vc-flex"
-        v-if="!$isMobile.value"
-      >
-        <vc-card header="Archive import">
-          <vc-table :columns="columns" :items="importHistory" :header="false">
-            <!-- Empty template -->
-            <template v-slot:empty>
+            <div class="vc-padding_xl">
+              <div v-if="importStatus && importStatus.inProgress">
+                <vc-progress
+                  :value="importStatus.progress"
+                  variant="striped"
+                ></vc-progress>
+                <div v-if="importStatus && importStatus.notification">
+                  <vc-hint class="vc-margin_none vc-margin-top_m">
+                    Imported {{ importStatus.notification.processedCount }} of
+                    {{ importStatus.notification.totalCount }} lines
+                  </vc-hint>
+                  <vc-hint
+                    class="vc-margin_none vc-margin-top_s csv-import__error"
+                    v-if="importStatus.notification.errorCount > 0"
+                  >
+                    Errors: {{ importStatus.notification.errorCount }}
+                  </vc-hint>
+                </div>
+              </div>
               <div
-                class="
-                  vc-fill_all
-                  vc-flex vc-flex-column
-                  vc-flex-align_center
-                  vc-flex-justify_center
-                "
+                v-else-if="importStatus && importStatus.notification"
+                :class="{ 'vc-flex-column': $isMobile.value }"
+              >
+                <vc-row>
+                  <vc-col>
+                    <p
+                      class="csv-import__importing-status-title vc-margin_none"
+                    >
+                      {{ t("IMPORT.PAGES.IMPORTING.LINES_CREATED") }}
+                    </p>
+                    <p class="vc-margin_none vc-margin-top_s">
+                      {{ importStatus.notification.processedCount }}
+                    </p>
+                  </vc-col>
+                  <!--                <vc-col>-->
+                  <!--                  <p class="csv-import__importing-status-title vc-margin_none">-->
+                  <!--                    {{ t("IMPORT.PAGES.IMPORTING.LINES_UPDATED") }}-->
+                  <!--                  </p>-->
+                  <!--                  <p class="vc-margin_none vc-margin-top_s">4900</p>-->
+                  <!--                </vc-col>-->
+                  <vc-col>
+                    <p
+                      class="csv-import__importing-status-title vc-margin_none"
+                    >
+                      {{ t("IMPORT.PAGES.IMPORTING.ERROR_COUNT") }}
+                    </p>
+                    <p class="vc-margin_none vc-margin-top_s">
+                      {{ importStatus.notification.errorCount }}
+                    </p>
+                  </vc-col>
+                  <!--                <vc-col size="3">-->
+                  <!--                  <p class="csv-import__importing-status-title vc-margin_none">-->
+                  <!--                    {{ t("IMPORT.PAGES.IMPORTING.REPORT_URL") }}-->
+                  <!--                  </p>-->
+                  <!--                  <vc-link class="vc-margin-top_s"-->
+                  <!--                    >api/import/download/import_20210120234901.csv</vc-link-->
+                  <!--                  >-->
+                  <!--                </vc-col>-->
+                </vc-row>
+              </div>
+            </div>
+
+            <!-- Import timers -->
+            <template v-slot:actions>
+              <div
+                class="csv-import__time-wrapper vc-flex vc-flex-row"
+                v-if="importStatus && importStatus.notification"
               >
                 <div
-                  class="
-                    vc-font-size_m
-                    vc-font-weight_medium
-                    csv-import__archive-empty-text
-                  "
+                  class="csv-import__time"
+                  v-if="importStatus.notification.created"
                 >
-                  {{ t("IMPORT.PAGES.IMPORTING.EMPTY_ARCHIVE") }}
+                  {{ t("IMPORT.PAGES.IMPORTING.TIMINGS.START") }} —
+                  <vc-icon icon="far fa-clock" size="xs" />
+                  <span
+                    >&nbsp;{{
+                      moment(importStatus.notification.created)
+                        .locale(locale)
+                        .format("LTS")
+                    }}</span
+                  >
+                </div>
+                <div
+                  class="csv-import__time"
+                  v-if="importStatus.notification.finished"
+                >
+                  {{ t("IMPORT.PAGES.IMPORTING.TIMINGS.END") }} —
+                  <vc-icon icon="far fa-clock" size="xs" />
+                  <span
+                    >&nbsp;{{
+                      moment(importStatus.notification.finished)
+                        .locale(locale)
+                        .format("LTS")
+                    }}</span
+                  >
                 </div>
               </div>
             </template>
-
-            <!-- Override name column template -->
-            <template v-slot:item_name="itemData">
-              <div class="vc-flex vc-flex-column">
-                <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-                <!--                <vc-hint class="vc-ellipsis vc-margin-top_xs">-->
-                <!--                  {{ itemData.item.size }} Mb-->
-                <!--                </vc-hint>-->
-              </div>
-            </template>
-          </vc-table>
-        </vc-card>
+          </vc-card>
+        </div>
       </div>
-    </div>
+      <!--      Import errors-->
+      <div
+        class="csv-import__errors-wrap vc-padding_xs vc-flex"
+        v-if="isErrors"
+      >
+        <div
+          class="csv-import__errors vc-padding_l vc-flex"
+          v-if="!$isMobile.value"
+        >
+          <vc-card header="Errors">
+            <vc-container>
+              <vc-hint
+                class="csv-import__error"
+                v-for="(error, i) in importStatus.notification.errors"
+                :key="i"
+                >{{ error }}</vc-hint
+              >
+            </vc-container>
+          </vc-card>
+        </div>
+      </div>
+      <!--     Import archive -->
+      <div class="csv-import__archive-wrap vc-padding_xs">
+        <div
+          class="csv-import__archive vc-padding_l vc-flex"
+          v-if="!$isMobile.value"
+        >
+          <vc-card header="Archive import">
+            <vc-table :columns="columns" :items="importHistory" :header="false">
+              <!-- Empty template -->
+              <template v-slot:empty>
+                <div
+                  class="
+                    vc-fill_all
+                    vc-flex vc-flex-column
+                    vc-flex-align_center
+                    vc-flex-justify_center
+                  "
+                >
+                  <div
+                    class="
+                      vc-font-size_m
+                      vc-font-weight_medium
+                      csv-import__archive-empty-text
+                    "
+                  >
+                    {{ t("IMPORT.PAGES.IMPORTING.EMPTY_ARCHIVE") }}
+                  </div>
+                </div>
+              </template>
+
+              <!-- Override name column template -->
+              <template v-slot:item_name="itemData">
+                <div class="vc-flex vc-flex-column">
+                  <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                  <!--                <vc-hint class="vc-ellipsis vc-margin-top_xs">-->
+                  <!--                  {{ itemData.item.size }} Mb-->
+                  <!--                </vc-hint>-->
+                </div>
+              </template>
+            </vc-table>
+          </vc-card>
+        </div>
+      </div>
+    </vc-container>
     <import-popup
       v-if="importPreview"
       @close="importPreview = false"
@@ -365,15 +376,19 @@ export default defineComponent({
           preview.value = await previewData();
           popupItems.value = [];
           popupColumns.value = [];
-          if (preview.value) {
+          if (
+            preview.value &&
+            preview.value.records &&
+            preview.value.records.length
+          ) {
+            for (const recordKey in preview.value.records[0]) {
+              popupColumns.value.push({
+                id: recordKey,
+                title: recordKey,
+                width: 130,
+              });
+            }
             preview.value.records.forEach((record) => {
-              for (const recordKey in record) {
-                popupColumns.value.push({
-                  id: recordKey,
-                  title: recordKey,
-                  width: 130,
-                });
-              }
               popupItems.value.push(record);
             });
             importPreview.value = true;
@@ -437,7 +452,6 @@ export default defineComponent({
 
     onMounted(async () => {
       importersList.value = await fetchDataImporters();
-
       if (importersList.value.length) {
         selectImporter(importersList.value[0]);
       }
@@ -530,11 +544,12 @@ export default defineComponent({
 
 .csv-import {
   &__archive-wrap {
-    flex: 1;
+    display: block;
+    height: 500px;
   }
 
   &__archive {
-    flex: 1 1 auto;
+    height: 100%;
 
     .vc-card__body {
       flex: 1 1 auto;
@@ -595,7 +610,6 @@ export default defineComponent({
   &__errors {
     .vc-card__body {
       overflow: auto;
-      padding: var(--padding-xl);
     }
   }
 }

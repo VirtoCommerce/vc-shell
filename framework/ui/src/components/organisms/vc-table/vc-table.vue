@@ -45,7 +45,11 @@
           v-if="$isDesktop.value && $slots['filters']"
           class="vc-margin-left_m"
         >
-          <vc-table-filter :title="$t('Filters')" :counter="activeFilterCount">
+          <vc-table-filter
+            :title="$t('Filters')"
+            :counter="activeFilterCount"
+            :parentExpanded="expanded"
+          >
             <slot name="filters"></slot>
           </vc-table-filter>
         </div>
@@ -332,6 +336,7 @@ import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
+import { IActionBuilderResult } from "../../../typings";
 
 export default defineComponent({
   name: "VcTable",
@@ -475,7 +480,7 @@ export default defineComponent({
     const scrollContainer = ref<typeof VcContainer>();
     const actionToggleRefs = ref<HTMLDivElement[]>([]);
     const tooltipRefs = ref<HTMLDivElement[]>([]);
-    const itemActions = ref([]);
+    const itemActions = ref<IActionBuilderResult[]>([]);
 
     onBeforeUpdate(() => {
       actionToggleRefs.value = [];

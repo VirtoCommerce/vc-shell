@@ -210,7 +210,7 @@ export default defineComponent({
     }
 
     &_scrollable {
-      overflow: scroll;
+      overflow-x: auto;
     }
   }
 

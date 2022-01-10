@@ -15,26 +15,60 @@
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
                 <vc-info-row label="Order reference #" :value="order.number" />
+                <vc-info-row label="Created date/time" :value="createdDate" />
                 <vc-info-row
                   label="Store"
                   :value="order.storeId"
                   tooltip="Shows store where order was placed"
                 />
                 <vc-info-row label="Order status" :value="order.status" />
-                <vc-info-row label="Created date/time" :value="createdDate" />
+                <vc-info-row
+                  class="orders-edit__row_line"
+                  label="Subtotal"
+                  :value="
+                    order.subTotal &&
+                    order.subTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <vc-info-row
+                  label="Discount total"
+                  :value="
+                    order.discountTotal &&
+                    order.discountTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <vc-info-row
+                  label="Total"
+                  :value="
+                    order.total && order.total.toFixed(2) + ' ' + order.currency
+                  "
+                />
               </vc-col>
             </vc-row>
           </vc-card>
         </vc-col>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Customer contact">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Full name" :value="order.customerName" />
-                <vc-info-row label="Email" />
-                <vc-info-row label="Phone" />
+          <vc-card header="Buyer/recipient info">
+            <vc-col class="vc-padding_s">
+              <vc-col
+                class="vc-padding_s"
+                v-for="(item, i) in shippingInfo"
+                :key="`${item.label}_${i}`"
+              >
+                <vc-info-row
+                  :label="item.label"
+                  :value="item.name"
+                  :class="{ 'orders-edit__row_line': i === 1 }"
+                />
+                <vc-info-row :value="item.address" v-if="item.address" />
+                <vc-info-row :value="item.phone" v-if="item.phone" />
+                <vc-info-row
+                  :value="item.email"
+                  type="email"
+                  v-if="item.email"
+                />
               </vc-col>
-            </vc-row>
+            </vc-col>
           </vc-card>
         </vc-col>
       </vc-row>
@@ -112,66 +146,6 @@
                 </div>
               </template>
             </vc-table>
-
-            <div
-              class="
-                orders-totals
-                vc-flex vc-flex-row
-                vc-flex-justify_end
-                vc-padding_l
-              "
-            >
-              <div class="vc-margin-right_xl">
-                <span class="vc-margin-right_s">Subtotal:</span>
-                <span class="vc-font-weight_bold"
-                  >{{ order.subTotal && order.subTotal.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-              <div class="vc-margin-right_xl">
-                <span class="vc-margin-right_s">Discount total:</span>
-                <span class="vc-font-weight_bold"
-                  >{{ order.discountTotal && order.discountTotal.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-              <div class="orders-totals__counter vc-font-weight_bold">
-                <span class="vc-margin-right_s">Total:</span>
-                <span
-                  >{{ order.total && order.total.toFixed(2) }}
-                  {{ order.currency }}</span
-                >
-              </div>
-            </div>
-          </vc-card>
-        </vc-col>
-      </vc-row>
-
-      <vc-row>
-        <vc-col class="vc-padding_s">
-          <vc-card header="Shipping address">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Country" />
-                <vc-info-row label="Postal/ZIP code" />
-                <vc-info-row label="State/Province" />
-                <vc-info-row label="City" />
-                <vc-info-row label="Address line 1" />
-                <vc-info-row label="Address line 2" />
-              </vc-col>
-            </vc-row>
-          </vc-card>
-        </vc-col>
-        <vc-col class="vc-padding_s">
-          <vc-card header="Payment info">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row label="Country" />
-                <vc-info-row label="Postal/ZIP code" />
-                <vc-info-row label="State/Province" />
-                <vc-info-row label="City" />
-              </vc-col>
-            </vc-row>
           </vc-card>
         </vc-col>
       </vc-row>
@@ -180,11 +154,11 @@
 </template>
 
 <script lang="ts">
-import { computed, onMounted, defineComponent } from "vue";
+import { computed, defineComponent, onMounted } from "vue";
 import moment from "moment";
 
 import { useOrder } from "../composables";
-import { ITableColumns, IToolbarItems } from "../../../types";
+import { IBladeToolbar, ITableColumns } from "../../../types";
 
 export default defineComponent({
   url: "order",
@@ -212,8 +186,14 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { loading, order, changeOrderStatus, loadOrder, loadPdf } =
-      useOrder();
+    const {
+      loading,
+      order,
+      changeOrderStatus,
+      loadOrder,
+      loadPdf,
+      shippingInfo,
+    } = useOrder();
     const locale = window.navigator.language;
 
     onMounted(async () => {
@@ -222,7 +202,7 @@ export default defineComponent({
       }
     });
 
-    const bladeToolbar = computed<IToolbarItems[]>(() => [
+    const bladeToolbar = computed<IBladeToolbar[]>(() => [
       {
         title: "Download PDF",
         icon: "fas fa-file-pdf",
@@ -338,6 +318,7 @@ export default defineComponent({
       moment,
       columns,
       order,
+      shippingInfo,
       items: computed(() => order.value?.items),
       loading,
       createdDate: computed(() => {
@@ -350,6 +331,15 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+.orders-edit {
+  &__row {
+    &_line {
+      border-top: 1px solid #e5e5e5;
+      margin-top: 5px;
+      padding-top: 21px;
+    }
+  }
+}
 .orders-totals {
   background: #fbfdfe;
   box-shadow: inset 0px 4px 7px rgba(199, 213, 227, 0.3);

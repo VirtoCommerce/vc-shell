@@ -3,7 +3,7 @@
   <div v-if="cell.type === 'money'" class="vc-table-cell_money">
     <span class="vc-table-cell_money-int">{{ Math.trunc(Number(value)) }}</span
     ><span class="vc-table-cell_money-fract"
-      >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0") }}</span
+      >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2) }}</span
     >
   </div>
 
@@ -14,7 +14,11 @@
 
   <!-- Date exact cell -->
   <div v-else-if="cell.type === 'date'" class="vc-table-cell_date">
-    {{ value.toLocaleDateString() }}
+    {{
+      cell.format
+        ? moment(value).locale(locale).format(cell.format)
+        : value.toLocaleDateString()
+    }}
   </div>
 
   <!-- Image cell -->
@@ -62,6 +66,7 @@ export default defineComponent({
 
   setup(props) {
     return {
+      locale: window.navigator.language,
       value: computed(() =>
         (props.cell.field || props.cell.id)
           .split(".")

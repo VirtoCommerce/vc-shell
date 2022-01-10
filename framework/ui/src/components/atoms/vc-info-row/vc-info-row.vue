@@ -8,7 +8,8 @@
         </vc-label>
       </vc-col>
       <vc-col size="2">
-        <p class="vc-info-row__value">{{ value }}</p>
+        <p class="vc-info-row__value" v-if="type === 'default'">{{ value }}</p>
+        <vc-link v-else-if="type === 'email'">{{ value }}</vc-link>
       </vc-col>
     </vc-row>
   </div>
@@ -42,6 +43,11 @@ export default defineComponent({
       type: String,
       default: "",
     },
+
+    type: {
+      type: String,
+      default: "default",
+    },
   },
 });
 </script>
@@ -49,6 +55,10 @@ export default defineComponent({
 <style lang="less" scoped>
 .vc-info-row {
   margin-bottom: 11px;
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 
   &__value {
     margin: 0;

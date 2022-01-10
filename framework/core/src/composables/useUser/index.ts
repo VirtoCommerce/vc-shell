@@ -7,9 +7,9 @@ import {
   SecurityResult,
   ValidatePasswordResetTokenRequest,
   IdentityResult,
+  ChangePasswordRequest,
 } from "@virtoshell/api-client";
 import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
-import sleep from "../useFunctions/sleep";
 const VC_AUTH_DATA_KEY = "vc-auth-data";
 
 const user: Ref<UserDetail | null> = ref(null);
@@ -38,6 +38,10 @@ interface IUseUser {
   requestPasswordReset: (
     loginOrEmail: string
   ) => Promise<RequestPasswordResult>;
+  changeUserPassword: (
+    oldPassword: string,
+    newPassword: string
+  ) => Promise<SecurityResult>;
 }
 
 export default (): IUseUser => {
@@ -202,6 +206,47 @@ export default (): IUseUser => {
     }
   }
 
+  async function changeUserPassword(
+    oldPassword: string,
+    newPassword: string
+  ): Promise<SecurityResult> {
+    const token = await getAccessToken();
+    let result;
+
+    // TODO it's temporary workaround to get valid errors
+    if (token) {
+      try {
+        loading.value = true;
+        const res = await fetch(
+          "/api/platform/security/currentuser/changepassword",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json-patch+json",
+              Accept: "text/plain",
+              authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              oldPassword,
+              newPassword,
+            }),
+          }
+        );
+        if (res.status !== 500) {
+          result = await res.text().then((response) => {
+            return JSON.parse(response);
+          });
+        }
+      } catch (e) {
+        return { succeeded: false, errors: [e.message] } as SecurityResult;
+      } finally {
+        loading.value = false;
+      }
+    }
+
+    return result as SecurityResult;
+  }
+
   return {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
@@ -213,5 +258,6 @@ export default (): IUseUser => {
     validatePassword,
     resetPasswordByToken,
     requestPasswordReset,
+    changeUserPassword,
   };
 };

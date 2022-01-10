@@ -240,7 +240,7 @@ import { useForm } from "@virtoshell/ui";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct, OfferPrice } from "../../../api_client";
-import { IToolbarItems } from "../../../types";
+import { IBladeToolbar } from "../../../types";
 
 export default defineComponent({
   url: "offer",
@@ -305,7 +305,7 @@ export default defineComponent({
 
     const readonly = computed(() => !!offer.value?.id);
 
-    const bladeToolbar = reactive<IToolbarItems[]>([
+    const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "save",
         title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),

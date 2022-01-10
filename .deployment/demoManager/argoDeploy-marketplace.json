@@ -1,10 +1,10 @@
 {
     "artifactKey": "ghcr.io/virtocommerce/platform-demo-manager",
-    "deployRepo": "vc-deploy-dev",
-    "cmPath": "platform-dev/overlays/marketplace/kustomization.yaml",
+    "deployRepo": "vc-deploy-marketplace",
+    "cmPath": "marketplace-app/resources/kustomization.yaml",
     "dev": {
-        "deployAppName": "vcplatform-dev",
-        "deployBranch": "marketplace",
+        "deployAppName": "marketplace-app-dev",
+        "deployBranch": "dev",
         "environmentId" : "dev",
         "environmentName" : "Development",
         "environmentType" : "development",

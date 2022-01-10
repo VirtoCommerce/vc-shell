@@ -5,6 +5,12 @@
     },
     "PAGES": {
       "TITLE": "Import",
+      "TOOLBAR": {
+        "REFRESH": "Refresh",
+        "NEW_IMPORT": "New import",
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
       "ACTIONS": {
         "SELECTS": {
           "DATA_IMPORTER": {
@@ -23,7 +29,8 @@
           "ACTIONS": {
             "DELETE": "Delete",
             "PREVIEW": "Preview",
-            "START_IMPORT": "Start import"
+            "START_IMPORT": "Start import",
+            "CANCEL_IMPORT": "Cancel"
           }
         }
       },
@@ -31,7 +38,7 @@
         "TABLE": {
           "HEADER": {
             "NAME": "Name",
-            "LINES_CREATED": "Lines created",
+            "PROCESSED_COUNT": "Processed count",
             "LINES_UPDATED": "Lines updated",
             "ERROR_COUNT": "Error count",
             "DATE": "Date",

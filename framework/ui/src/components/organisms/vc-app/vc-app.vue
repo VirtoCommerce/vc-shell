@@ -26,9 +26,11 @@
           :workspace="workspaceRefs"
           :version="version"
           :buttons="toolbarItems"
+          :items="menuItems"
           @toolbarbutton:click="onToolbarButtonClick"
           @menubutton:click="$refs.menu.isMobileVisible = true"
           @backlink:click="onClosePage(workspace.length - 1)"
+          @notification:click="onMenuItemClick"
           @logo:click="openDashboard"
         ></vc-app-bar>
 
@@ -74,6 +76,9 @@
           <div class="vc-app__notifications">
             <slot name="notifications"></slot>
           </div>
+          <div class="vc-app__password-change">
+            <slot name="passwordChange"></slot>
+          </div>
         </div>
       </template>
     </template>
@@ -86,30 +91,20 @@ import {
   onBeforeUpdate,
   ref,
   getCurrentInstance,
-  Component,
   ComponentPublicInstance,
   watch,
   onMounted,
   shallowRef,
-  provide,
-  computed,
+  PropType,
 } from "vue";
 import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
+import { IBladeToolbar, IMenuItems, IPage } from "../../../typings";
 
 interface BladeElement extends ComponentPublicInstance {
   onBeforeClose: () => Promise<boolean>;
   [x: string]: unknown;
-}
-
-interface IPage {
-  component: Component | unknown;
-  componentOptions?: Record<string, unknown> | unknown;
-  url?: string;
-  param?: string;
-  onOpen?: () => void;
-  onClose?: () => void;
 }
 
 interface IParentCallArgs {
@@ -135,12 +130,12 @@ export default defineComponent({
     },
 
     menuItems: {
-      type: Array,
+      type: Array as PropType<IMenuItems[]>,
       default: () => [],
     },
 
     toolbarItems: {
-      type: Array,
+      type: Array as PropType<IBladeToolbar[]>,
       default: () => [],
     },
 
@@ -175,7 +170,7 @@ export default defineComponent({
 
     const instance = getCurrentInstance();
 
-    const activeMenuItem = ref();
+    const activeMenuItem = ref<IBladeToolbar>();
 
     // Setup workspace
     const workspace = ref<IPage[]>([]);
@@ -185,11 +180,6 @@ export default defineComponent({
         workspaceRefs.value.push(el);
       }
     };
-
-    provide(
-      "workspace",
-      computed(() => workspace.value)
-    );
 
     onBeforeUpdate(() => {
       workspaceRefs.value = [];
@@ -204,7 +194,7 @@ export default defineComponent({
           if (value && value.length) {
             const ws = value[0].url;
             activeMenuItem.value =
-              (props.menuItems as Record<string, any>[]).find(
+              (props.menuItems as IBladeToolbar[]).find(
                 (item) => item.component?.url === ws
               ) || props.menuItems[0];
             let lastBladeWithUrlIndex = -1;
@@ -257,9 +247,9 @@ export default defineComponent({
             url: ws.url,
           });
 
-          activeMenuItem.value = (
-            props.menuItems as Record<string, any>[]
-          ).find((item) => item.component?.url === ws.url);
+          activeMenuItem.value = (props.menuItems as IBladeToolbar[]).find(
+            (item) => item.component?.url === ws.url
+          );
 
           if (data.blade) {
             const blade = (props.pages as IPage[]).find(
@@ -440,14 +430,13 @@ export default defineComponent({
 
   &__notifications {
     position: absolute;
-    width: 100%;
     display: flex;
     z-index: 1000;
-    max-height: 100%;
     overflow: hidden;
     pointer-events: painted;
     top: 0;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     flex-direction: column;
     align-items: center;
     padding: var(--padding-s);

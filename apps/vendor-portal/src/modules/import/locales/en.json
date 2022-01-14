@@ -11,6 +11,30 @@
         "EDIT": "Edit",
         "DELETE": "Delete"
       },
+      "PROFILE_SELECTOR": {
+        "TITLE": "Import profiles",
+        "TOOLBAR": {
+          "ADD_PROFILE": "Add profile",
+          "REFRESH": "Refresh"
+        }
+      },
+      "PROFILE_DETAILS": {
+        "TITLE": "New import profile",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "CANCEL": "Cancel"
+        },
+        "IMPORT_INPUTS": {
+          "JOB_CODE": "Import job code",
+          "JOB_NAME": "Import job name",
+          "JOB": "Import job"
+        },
+        "PROFILE_SETTINGS": {
+          "DECIMAL_SEPARATOR": "Decimal separator",
+          "SHEET_NAME": "Sheet name",
+          "DATE_FORMAT": "Date format"
+        }
+      },
       "ACTIONS": {
         "SELECTS": {
           "DATA_IMPORTER": {

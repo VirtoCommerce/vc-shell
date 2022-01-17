@@ -1,7 +1,7 @@
 <template>
   <vc-blade
     :title="$t('IMPORT.PAGES.PRODUCT_IMPORTER.TITLE')"
-    width="70%"
+    width="30%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
@@ -186,6 +186,7 @@ import useImport from "../composables/useImport";
 import { ImportDataPreview } from "../../../api_client";
 import ImportPopup from "../components/import-popup.vue";
 import moment from "moment";
+import ImportProfileDetails from "./import-profile-details.vue";
 
 interface INotificationActions {
   name: string;
@@ -222,7 +223,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { t } = useI18n();
     const { getAccessToken } = useUser();
     const {
@@ -250,6 +251,11 @@ export default defineComponent({
         id: "edit",
         title: t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT"),
         icon: "fas fa-pencil-alt",
+        clickHandler() {
+          emit("page:open", {
+            component: ImportProfileDetails,
+          });
+        },
       },
       {
         id: "cancel",

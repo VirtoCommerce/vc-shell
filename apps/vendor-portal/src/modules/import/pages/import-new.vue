@@ -223,7 +223,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  emits: ["page:open", "page:closd"],
+  emits: ["page:open", "page:close"],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { getAccessToken } = useUser();

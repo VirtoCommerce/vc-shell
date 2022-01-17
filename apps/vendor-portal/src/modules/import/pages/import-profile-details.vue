@@ -39,7 +39,9 @@
         <vc-col></vc-col>
       </vc-row>
       <vc-row class="vc-padding_m">
-        <vc-card header="Profile settings">
+        <vc-card
+          :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
+        >
           <vc-row>
             <vc-col>
               <vc-select
@@ -77,7 +79,10 @@
             <vc-col></vc-col>
             <vc-col class="vc-flex-align_end vc-padding_m">
               <div>
-                <vc-link href="#">Download template</vc-link> for a reference
+                <vc-link href="#">{{
+                  $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
+                }}</vc-link>
+                {{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
               </div>
             </vc-col>
           </vc-row>
@@ -93,7 +98,7 @@ import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 
 export default defineComponent({
-  url: "profile",
+  url: "import-profile-details",
   props: {
     expanded: {
       type: Boolean,
@@ -131,7 +136,6 @@ export default defineComponent({
     ]);
 
     return {
-      t,
       bladeToolbar,
     };
   },

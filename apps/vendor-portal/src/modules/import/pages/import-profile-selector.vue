@@ -8,19 +8,27 @@
   >
     <vc-container>
       <vc-row>
-        <vc-col class="vc-padding_l">
-          <vc-button>Offers XLS</vc-button>
-        </vc-col>
-        <vc-col class="vc-padding_l">
-          <vc-button>Product CSV</vc-button>
-        </vc-col>
-        <vc-col class="vc-padding_l">
-          <vc-button>Products SAP via API</vc-button>
+        <vc-col
+          class="vc-padding_l"
+          v-for="(importer, i) in importersList"
+          :key="i"
+        >
+          <vc-button @click="openImporter(importer)">{{
+            importer.importerType
+          }}</vc-button>
         </vc-col>
       </vc-row>
       <vc-col class="vc-padding_l">
-        <vc-card header="Last executions" class="vc-flex import__archive">
-          <vc-table :columns="columns" :items="importHistory" :header="false">
+        <vc-card
+          :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
+          class="vc-flex import__archive"
+        >
+          <vc-table
+            :columns="columns"
+            :items="importHistory"
+            :header="false"
+            @itemClick="onItemClick"
+          >
             <!-- Override name column template -->
             <template v-slot:item_name="itemData">
               <div class="vc-flex vc-flex-column">
@@ -35,14 +43,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
+import ImportNew from "./import-new.vue";
+import { IImporterMetadata, ImportPushNotification } from "../../../api_client";
 
 export default defineComponent({
-  url: "import",
+  url: "import-profile",
   props: {
     expanded: {
       type: Boolean,
@@ -66,7 +76,9 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { importHistory } = useImport();
+    const { importHistory, selectImporter, fetchDataImporters } = useImport();
+    const importersList = ref<IImporterMetadata[]>([]);
+
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "new",
@@ -110,17 +122,37 @@ export default defineComponent({
       },
     ]);
 
+    onMounted(async () => {
+      importersList.value = await fetchDataImporters();
+    });
+
     function profileClick() {
       emit("page:open", {
         component: ImportProfileDetails,
       });
     }
 
+    function openImporter(importer: IImporterMetadata) {
+      selectImporter(importer);
+      emit("page:open", {
+        component: ImportNew,
+      });
+    }
+
+    function onItemClick(item: ImportPushNotification) {
+      emit("page:open", {
+        component: ImportNew,
+        param: item.jobId,
+      });
+    }
+
     return {
-      t,
       bladeToolbar,
       columns,
       importHistory,
+      importersList,
+      openImporter,
+      onItemClick,
     };
   },
 });

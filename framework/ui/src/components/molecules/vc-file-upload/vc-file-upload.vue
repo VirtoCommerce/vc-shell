@@ -38,11 +38,12 @@
       :accept="accept"
     />
   </div>
-  <div v-else>
+  <div class="vc-flex vc-flex-grow_1 vc-flex-column" v-else>
     <VcUploadNotification
       :uploadActions="uploadActions"
       :uploadedFile="uploadedFile"
       :isUploaded="isUploaded"
+      class="vc-flex vc-flex-grow_1"
     />
     <slot v-if="errorMessage" name="error">
       <vc-hint class="vc-input__error vc-margin-top_m vc-font-size_m">

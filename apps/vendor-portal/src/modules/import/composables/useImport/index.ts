@@ -44,32 +44,31 @@ interface IUseImport {
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
+  getImport(jobId: string): void;
 }
+
+const selectedImporter = ref<IImporterMetadata>();
+const importCommand = ref<ImportDataCommand>({
+  importProfile: { options: {} as ImportProfileOptions } as ImportProfile,
+} as ImportDataCommand);
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
   const { getAccessToken } = useUser();
-  const importCommand = ref<ImportDataCommand>({
-    importProfile: { options: {} as ImportProfileOptions } as ImportProfile,
-  } as ImportDataCommand);
   const importStatus = ref<IImportStatus>();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
-  const selectedImporter = ref<IImporterMetadata>();
   const importHistory = ref<ImportPushNotification[]>([]);
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
     () => notifications,
     (newVal) => {
-      const notification = importStatus.value
-        ? (newVal.value.find(
-            (x) => x.id === importStatus.value.notification.id
-          ) as ImportPushNotification)
-        : // TODO: this is a temporary workaround to fill history from push notifications and it will be removed when we add support of execution history for import jobs to Api.
-          (newVal.value.find(
-            (x: ImportPushNotification) => x.jobId
-          ) as ImportPushNotification);
+      const notification =
+        importStatus.value &&
+        (newVal.value.find(
+          (x) => x.id === importStatus.value.notification.id
+        ) as ImportPushNotification);
 
       if (notification) {
         updateStatus(notification);
@@ -80,6 +79,7 @@ export default (): IUseImport => {
   );
 
   function createImportHistory(notifications: ImportPushNotification[]) {
+    console.log(notifications);
     const finishedImports = notifications.filter(
       (notification) => notification.finished
     );
@@ -203,6 +203,21 @@ export default (): IUseImport => {
     importStatus.value = undefined;
   }
 
+  function getImport(jobId: string) {
+    const notification = notifications.value.find(
+      (notification: ImportPushNotification) => notification.jobId === jobId
+    ) as ImportPushNotification;
+
+    if (notification) {
+      importStatus.value = {
+        notification: notification,
+        jobId: notification.jobId,
+        inProgress: !notification.finished,
+        progress: (notification.processedCount / notification.totalCount) * 100,
+      };
+    }
+  }
+
   return {
     loading: computed(() => loading.value),
     selectedImporter: computed(() => selectedImporter.value),
@@ -217,5 +232,6 @@ export default (): IUseImport => {
     startImport,
     cancelImport,
     clearImport,
+    getImport,
   };
 };

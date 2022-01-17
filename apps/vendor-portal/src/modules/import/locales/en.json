@@ -11,6 +11,11 @@
         "EDIT": "Edit",
         "DELETE": "Delete"
       },
+      "TEMPLATE": {
+        "DOWNLOAD_TEMPLATE": "Download template",
+        "FOR_REFERENCE": "for a reference"
+      },
+      "LAST_EXECUTIONS": "Last executions",
       "PROFILE_SELECTOR": {
         "TITLE": "Import profiles",
         "TOOLBAR": {
@@ -30,24 +35,35 @@
           "JOB": "Import job"
         },
         "PROFILE_SETTINGS": {
+          "TITLE": "Profile settings",
           "DECIMAL_SEPARATOR": "Decimal separator",
           "SHEET_NAME": "Sheet name",
           "DATE_FORMAT": "Date format"
         }
       },
-      "ACTIONS": {
-        "SELECTS": {
-          "DATA_IMPORTER": {
-            "TITLE": "Data importer",
-            "DESCRIPTION": {
-              "TITLE": "Download Products import template file:",
-              "LINK": "here"
-            }
-          },
-          "DELIMITER": {
-            "TITLE": "Delimiter"
-          }
+      "PRODUCT_IMPORTER": {
+        "TITLE": "Product CSV importer",
+        "TOOLBAR": {
+          "EDIT": "Edit",
+          "CANCEL": "Cancel"
         },
+        "EXECUTION_SETTINGS": {
+          "TITLE": "Execution settings"
+        },
+        "UPLOAD_STATUS": {
+          "TITLE": "Upload status",
+          "LINES_FOUND": "lines found",
+          "NO_ERRORS": "No errors",
+          "IN_PROGRESS": "Import in progress",
+          "STARTED_AT": "Started at",
+          "LINES_READ": "lines read",
+          "IMPORTED": "items imported",
+          "SKIPPED": "items skipped",
+          "SKIPPED_DETAILS": "Skipped lines details",
+          "CANCEL": "Cancel"
+        }
+      },
+      "ACTIONS": {
         "UPLOADER": {
           "TITLE": "Uploaded",
           "ACTIONS": {
@@ -71,33 +87,6 @@
         }
       },
       "IMPORTING": {
-        "IMPORT_STARTED": "Import started",
-        "IMPORT_SUMMARY": "Import summary",
-        "EMPTY_ARCHIVE": "Archive is empty",
-        "LINES_CREATED": "Lines created",
-        "LINES_UPDATED": "Lines updated",
-        "ERROR_COUNT": "Error count",
-        "REPORT_URL": "Errors report download Url:",
-        "TIMINGS": {
-          "START": "Start",
-          "END": "End"
-        },
-        "TABLE": {
-          "HEADER": {
-            "FULL_NAME": "Full name",
-            "FIRST_NAME": "First name",
-            "LAST_NAME": "Last name",
-            "ID": "ID",
-            "OUTER_ID": "Outer ID",
-            "ORG_ID": "Org. ID",
-            "ORG_OUTER_ID": "Org. Outer ID",
-            "ORG_NAME": "Org. Name",
-            "ACCOUNT_ID": "Account ID",
-            "ACCOUNT_OUTER_ID": "Account Outer ID",
-            "ACCOUNT_LOGIN": "Account Login",
-            "STORE_ID": "Store ID"
-          }
-        },
         "POPUP": {
           "TITLE": "Contacts import",
           "DESCRIPTION": "Please use horizontal scroll to see all columns from the import preview",

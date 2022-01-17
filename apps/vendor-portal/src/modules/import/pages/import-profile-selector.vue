@@ -75,6 +75,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
+  emits: ["page:open"],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { importHistory, selectImporter, fetchDataImporters } = useImport();

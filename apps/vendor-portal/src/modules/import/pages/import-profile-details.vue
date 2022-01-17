@@ -143,6 +143,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
+  emits: ["page:close"],
   setup(props, { emit }) {
     const { t } = useI18n();
     const showConfirmation = ref(false);

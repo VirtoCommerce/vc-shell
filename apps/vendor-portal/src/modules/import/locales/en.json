@@ -27,7 +27,8 @@
         "TITLE": "New import profile",
         "TOOLBAR": {
           "SAVE": "Save",
-          "CANCEL": "Cancel"
+          "CANCEL": "Cancel",
+          "DELETE": "Delete"
         },
         "IMPORT_INPUTS": {
           "JOB_CODE": "Import job code",
@@ -39,6 +40,12 @@
           "DECIMAL_SEPARATOR": "Decimal separator",
           "SHEET_NAME": "Sheet name",
           "DATE_FORMAT": "Date format"
+        },
+        "CONFIRM_POPUP": {
+          "DELETE_IMPORTER": {
+            "TITLE": "Delete confirmation",
+            "DESCRIPTION": "Are you sure you want to delete the import profile?"
+          }
         }
       },
       "PRODUCT_IMPORTER": {

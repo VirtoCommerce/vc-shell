@@ -79,7 +79,6 @@ export default (): IUseImport => {
   );
 
   function createImportHistory(notifications: ImportPushNotification[]) {
-    console.log(notifications);
     const finishedImports = notifications.filter(
       (notification) => notification.finished
     );

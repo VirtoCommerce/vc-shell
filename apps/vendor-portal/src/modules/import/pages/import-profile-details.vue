@@ -1,6 +1,10 @@
 <template>
   <vc-blade
-    :title="$t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')"
+    :title="
+      options.importer
+        ? options.importer.importerType
+        : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')
+    "
     width="70%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
@@ -89,15 +93,34 @@
         </vc-card>
       </vc-row>
     </vc-container>
+    <import-confirmation-popup
+      v-if="showConfirmation"
+      :title="
+        $t('IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.TITLE')
+      "
+      @close="showConfirmation = false"
+    >
+      <template v-slot:description>
+        <p>
+          {{
+            $t(
+              "IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION"
+            )
+          }}
+        </p>
+      </template>
+    </import-confirmation-popup>
   </vc-blade>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
+import importConfirmationPopup from "../components/import-confirmation-popup.vue";
 
 export default defineComponent({
+  components: { importConfirmationPopup },
   url: "import-profile-details",
   props: {
     expanded: {
@@ -120,8 +143,9 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  setup() {
+  setup(props, { emit }) {
     const { t } = useI18n();
+    const showConfirmation = ref(false);
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "save",
@@ -129,14 +153,27 @@ export default defineComponent({
         icon: "fas fa-check",
       },
       {
-        id: "refresh",
+        id: "cancel",
         title: t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL"),
         icon: "fas fa-ban",
+        clickHandler() {
+          emit("page:close");
+        },
+      },
+      {
+        id: "delete",
+        title: t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE"),
+        icon: "far fa-trash-alt",
+        isVisible: computed(() => !!props.options.importer),
+        clickHandler() {
+          showConfirmation.value = true;
+        },
       },
     ]);
 
     return {
       bladeToolbar,
+      showConfirmation,
     };
   },
 });

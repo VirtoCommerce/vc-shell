@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    :title="$t('IMPORT.PAGES.PRODUCT_IMPORTER.TITLE')"
+    :title="(selectedImporter && selectedImporter.importerType) || 'Importer'"
     width="30%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
@@ -254,6 +254,9 @@ export default defineComponent({
         clickHandler() {
           emit("page:open", {
             component: ImportProfileDetails,
+            componentOptions: {
+              importer: selectedImporter.value,
+            },
           });
         },
       },
@@ -261,6 +264,9 @@ export default defineComponent({
         id: "cancel",
         title: t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.CANCEL"),
         icon: "fas fa-ban",
+        clickHandler() {
+          emit("page:close");
+        },
       },
     ]);
     const columns = ref<ITableColumns[]>([

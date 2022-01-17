@@ -45,7 +45,12 @@
         </vc-row>
         <vc-col class="vc-padding_l">
           <vc-card :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')">
-            <vc-table :columns="columns" :items="importHistory" :header="false">
+            <vc-table
+              :columns="columns"
+              :items="importHistory"
+              :header="false"
+              :footer="false"
+            >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">

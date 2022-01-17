@@ -28,6 +28,7 @@
             :items="importHistory"
             :header="false"
             @itemClick="onItemClick"
+            :footer="false"
           >
             <!-- Override name column template -->
             <template v-slot:item_name="itemData">

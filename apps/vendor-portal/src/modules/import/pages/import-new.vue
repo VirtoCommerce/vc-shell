@@ -119,7 +119,6 @@
                 }}
                 ({{
                   moment(importStatus.notification.created)
-                    .startOf("hour")
                     .locale(locale)
                     .fromNow()
                 }})</span

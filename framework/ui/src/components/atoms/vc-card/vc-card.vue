@@ -1,7 +1,7 @@
 <template>
   <div
     class="vc-card vc-flex vc-flex-column"
-    :class="{ 'vc-card_collapsable': isCollapsable }"
+    :class="[{ 'vc-card_collapsable': isCollapsable }, `vc-card_${variant}`]"
   >
     <div class="vc-card__header" v-if="header" @click="onHeaderClick">
       <vc-icon
@@ -22,7 +22,10 @@
       ></vc-icon>
     </div>
     <transition name="fade">
-      <div class="vc-card__body" v-show="!isCollapsedInternal">
+      <div
+        :class="[{ 'vc-flex': fill }, 'vc-card__body']"
+        v-show="!isCollapsedInternal"
+      >
         <slot></slot>
       </div>
     </transition>
@@ -52,6 +55,17 @@ export default defineComponent({
     isCollapsed: {
       type: Boolean,
       default: false,
+    },
+
+    fill: {
+      type: Boolean,
+      default: false,
+    },
+
+    variant: {
+      type: String,
+      enum: ["default", "success", "danger"],
+      default: "default",
     },
   },
 
@@ -86,6 +100,12 @@ export default defineComponent({
   --card-header-font-size: var(--font-size-m);
   --card-header-font-weight: var(--font-weight-bold);
   --card-header-padding: var(--padding-m) var(--padding-l);
+
+  --card-header-background-success: #e9f7df;
+  --card-header-background-danger: #ffe6e6;
+
+  --card-header-color-success: #99c17a;
+  --card-header-color-danger: #f34747;
 }
 
 .vc-card {
@@ -132,6 +152,15 @@ export default defineComponent({
   &__body {
     flex-grow: 1;
     box-sizing: border-box;
+  }
+
+  &_success {
+    .vc-card__header {
+      background: var(--card-header-background-success);
+    }
+    .vc-card__title {
+      color: var(--card-header-color-success);
+    }
   }
 }
 </style>

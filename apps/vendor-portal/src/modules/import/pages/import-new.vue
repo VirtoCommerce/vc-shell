@@ -1,56 +1,144 @@
 <template>
   <vc-blade
-    :title="(selectedImporter && selectedImporter.importerType) || 'Importer'"
-    width="30%"
+    title="Importer"
+    width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
     @close="$emit('page:close')"
   >
     <vc-container>
-      <vc-col v-if="!importStarted">
-        <vc-row class="vc-padding_l">
+      <vc-col>
+        <div class="vc-padding_m">
+          <vc-row>
+            <vc-card
+              :header="
+                uploadedFile
+                  ? $t(
+                      'IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED'
+                    )
+                  : $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE')
+              "
+            >
+              <!-- File upload -->
+              <vc-col
+                class="vc-padding_xl"
+                v-if="!importStarted && !uploadedFile"
+              >
+                <vc-row class="vc-margin-bottom_l">
+                  <vc-link
+                    :href="
+                      selectedImporter
+                        ? selectedImporter.importerOptions.templateUrl
+                        : '#'
+                    "
+                    >{{
+                      $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
+                    }}</vc-link
+                  >
+                  &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
+                </vc-row>
+                <vc-row>
+                  <vc-file-upload
+                    variant="file-upload"
+                    @upload="uploadCsv"
+                    :notification="true"
+                    :loading="loading"
+                    accept=".csv"
+                  ></vc-file-upload>
+                </vc-row>
+              </vc-col>
+              <!-- Uploaded file actions -->
+              <vc-col v-else>
+                <vc-row>
+                  <import-upload-status
+                    :uploadActions="uploadActions"
+                    :uploadedFile="uploadedFile"
+                    :isUploaded="isValid"
+                    :isStarted="importStarted"
+                    class="vc-padding_xl"
+                  >
+                  </import-upload-status>
+                </vc-row>
+                <!-- Uploaded file import status -->
+                <vc-col v-if="importStarted">
+                  <vc-row class="import-new__progress">
+                    <vc-col class="import-new__progress-text">
+                      {{
+                        $t(
+                          "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS"
+                        )
+                      }}
+                      <vc-progress
+                        class="vc-margin-top_m"
+                        :value="importStatus.progress"
+                        variant="striped"
+                      ></vc-progress>
+                    </vc-col>
+                  </vc-row>
+                  <vc-row class="import-new__upload-border">
+                    <vc-col
+                      v-for="(badge, i) in importBadges"
+                      :key="i"
+                      class="
+                        vc-flex vc-flex-row
+                        vc-flex-align_center
+                        vc-padding_xl
+                      "
+                    >
+                      <vc-icon
+                        :icon="badge.icon"
+                        size="xxl"
+                        :style="{ color: badge.color }"
+                      ></vc-icon>
+                      <div class="vc-margin-left_m">
+                        <div class="vc-font-weight_medium">
+                          {{ badge.title }}
+                        </div>
+                        <vc-hint>{{ badge.description }}</vc-hint>
+                      </div>
+                    </vc-col>
+                  </vc-row>
+                </vc-col>
+              </vc-col>
+            </vc-card>
+          </vc-row>
+        </div>
+        <!-- Skipped details table -->
+        <vc-col class="vc-padding_m" v-if="importStarted">
           <vc-card
+            :fill="true"
+            variant="success"
             :header="
-              $t('IMPORT.PAGES.PRODUCT_IMPORTER.EXECUTION_SETTINGS.TITLE')
+              $t(
+                'IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.SKIPPED_DETAILS'
+              )
             "
           >
-            <vc-row class="vc-padding_l">
-              <div>
-                <vc-link
-                  :href="
-                    selectedImporter
-                      ? selectedImporter.importerOptions.templateUrl
-                      : '#'
-                  "
-                  >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</vc-link
-                >
-                {{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
-              </div>
-            </vc-row>
-            <vc-row class="vc-padding_l">
-              <vc-file-upload
-                variant="file-upload"
-                @upload="uploadCsv"
-                :notification="true"
-                :uploadedFile="uploadedFile"
-                :uploadActions="uploadActions"
-                :isUploaded="isValid"
-                :errorMessage="errorMessage"
-                :loading="loading"
-                accept=".csv"
-              ></vc-file-upload>
-            </vc-row>
+            <vc-table :columns="skippedColumns" :header="false" :footer="false">
+              <template v-slot:empty>
+                <vc-col class="vc-flex-align_center vc-flex-justify_center">
+                  <vc-icon
+                    icon="far fa-check-circle"
+                    class="import-new__no-errors-icon"
+                  ></vc-icon>
+                  <div class="import-new__no-errors-text vc-margin-top_l">
+                    {{
+                      $t(
+                        "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.NO_ERRORS"
+                      )
+                    }}
+                  </div>
+                </vc-col>
+              </template>
+            </vc-table>
           </vc-card>
-        </vc-row>
-        <vc-col class="vc-padding_l">
-          <vc-card :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')">
-            <vc-table
-              :columns="columns"
-              :items="importHistory"
-              :header="false"
-              :footer="false"
-            >
+        </vc-col>
+
+        <!-- History-->
+        <vc-col class="vc-padding_m" v-if="!importStarted">
+          <vc-card :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')" :fill="true">
+            <vc-table :columns="columns" :items="importHistory" :header="false">
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">
@@ -60,102 +148,6 @@
             </vc-table>
           </vc-card>
         </vc-col>
-      </vc-col>
-      <vc-col class="vc-padding_l" v-else>
-        <vc-card
-          :header="$t('IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TITLE')"
-        >
-          <template v-slot:actions v-if="inProgress">
-            <vc-button :small="true" @click="cancelImport">{{
-              $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.CANCEL")
-            }}</vc-button>
-          </template>
-          <vc-col class="vc-padding_l">
-            <vc-row class="vc-padding-bottom_l" v-if="uploadedFile">
-              {{ uploadedFile.name + " (" + uploadedFile.size + " Mb)" }}
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l">
-              <vc-icon icon="far fa-thumbs-up" size="xs"></vc-icon>
-              &nbsp;{{
-                importStatus.notification.totalCount +
-                " " +
-                $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_FOUND")
-              }}
-            </vc-row>
-            <vc-row
-              class="vc-padding-bottom_l"
-              v-if="!importStatus.notification.errorCount"
-            >
-              <vc-icon icon="far fa-thumbs-up" size="xs"></vc-icon>
-              &nbsp;{{
-                $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.NO_ERRORS")
-              }}
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l" v-else>
-              <vc-icon icon="fas fa-exclamation-triangle" size="xs"></vc-icon>
-              &nbsp;{{ importStatus.notification.errorCount }} errors
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l">
-              <vc-col>
-                {{
-                  $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS")
-                }}
-                <vc-progress
-                  class="vc-margin-top_m"
-                  :value="importStatus.progress"
-                ></vc-progress>
-              </vc-col>
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l">
-              <vc-icon icon="far fa-clock" size="xs" />
-              &nbsp;{{
-                $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT")
-              }}
-              <span
-                >&nbsp;{{
-                  moment(importStatus.notification.created)
-                    .locale(locale)
-                    .format("LTS")
-                }}
-                ({{
-                  moment(importStatus.notification.created)
-                    .locale(locale)
-                    .fromNow()
-                }})</span
-              >
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l">
-              <vc-icon icon="far fa-thumbs-up" size="xs"></vc-icon>
-              &nbsp;{{
-                $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ")
-              }}
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l">
-              <vc-icon icon="far fa-thumbs-up" size="xs"></vc-icon>
-              &nbsp;{{
-                importStatus.notification.processedCount +
-                " " +
-                $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED")
-              }}
-            </vc-row>
-            <vc-row class="vc-padding-bottom_l">
-              <vc-icon icon="fas fa-exclamation-triangle" size="xs"></vc-icon>
-              &nbsp;{{
-                $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED")
-              }}
-            </vc-row>
-            <vc-row class="vc-flex-grow_1">
-              <vc-card
-                :header="
-                  $t(
-                    'IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED_DETAILS'
-                  )
-                "
-              >
-              </vc-card>
-            </vc-row>
-          </vc-col>
-        </vc-card>
       </vc-col>
     </vc-container>
     <import-popup
@@ -171,35 +163,33 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-} from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
-import { IBladeToolbar, ITableColumns } from "../../../types";
+import {
+  IBladeToolbar,
+  INotificationActions,
+  ITableColumns,
+} from "../../../types";
 import useImport from "../composables/useImport";
 import { ImportDataPreview } from "../../../api_client";
 import ImportPopup from "../components/import-popup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
+import ImportUploadStatus from "../components/import-upload-status.vue";
 
-interface INotificationActions {
-  name: string;
-  clickHandler(): void;
-  outline: boolean;
-  variant: string;
-  isVisible?: boolean | ComputedRef<boolean>;
-  disabled?: boolean | ComputedRef<boolean>;
+interface IImportBadges {
+  id: string;
+  icon: string;
+  color: string;
+  title: string | number;
+  description: string;
 }
 
 export default defineComponent({
   url: "importer",
   components: {
     ImportPopup,
+    ImportUploadStatus,
   },
   props: {
     expanded: {
@@ -240,6 +230,7 @@ export default defineComponent({
       startImport,
       getImport,
     } = useImport();
+    const locale = window.navigator.language;
     const loading = ref(false);
     const preview = ref<ImportDataPreview>();
     const importPreview = ref(false);
@@ -259,6 +250,7 @@ export default defineComponent({
             },
           });
         },
+        isVisible: computed(() => !uploadedFile.value),
       },
       {
         id: "cancel",
@@ -276,9 +268,11 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
-        id: "processedCount",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.PROCESSED_COUNT"),
+        id: "created",
+        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT"),
         width: 147,
+        type: "date",
+        format: "L LT",
       },
       {
         id: "errorCount",
@@ -286,16 +280,66 @@ export default defineComponent({
         width: 118,
         sortable: true,
       },
+    ]);
+
+    const skippedColumns = ref<ITableColumns[]>([
       {
-        id: "finished",
-        type: "date",
-        format: "L LT",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.DATE"),
-        width: 185,
-        alwaysVisible: true,
-        sortable: true,
+        id: "error",
+        title: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.LINE"),
+        width: 147,
+      },
+      {
+        id: "errorCount",
+        title: t(
+          "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC"
+        ),
       },
     ]);
+
+    const importBadges = computed((): IImportBadges[] => {
+      return [
+        {
+          id: "clock",
+          icon: "far fa-clock",
+          color: "#A9BFD2",
+          title:
+            t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
+            " " +
+            moment(importStatus.value.notification.created)
+              .locale(locale)
+              .format("LTS"),
+          description: moment(importStatus.value.notification.created)
+            .locale(locale)
+            .fromNow(),
+        },
+        {
+          id: "linesRead",
+          icon: "fas fa-check-circle",
+          color: "#87B563",
+          title: importStatus.value.notification.totalCount,
+          description: t(
+            "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ"
+          ),
+        },
+        {
+          id: "linesImported",
+          icon: "fas fa-check-circle",
+          color: "#87B563",
+          title: importStatus.value.notification.processedCount,
+          description: t(
+            "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"
+          ),
+        },
+        {
+          id: "skipped",
+          icon: "fas fa-exclamation-circle",
+          color: "#FFBB0D",
+          title: "",
+          description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
+        },
+      ];
+    });
+
     const uploadActions = ref<INotificationActions[]>([
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
@@ -337,7 +381,7 @@ export default defineComponent({
           }
         },
         variant: "primary",
-        outline: false,
+        outline: true,
         isVisible: computed(() => isValid.value),
       },
       {
@@ -345,7 +389,7 @@ export default defineComponent({
         async clickHandler() {
           await start();
         },
-        outline: true,
+        outline: false,
         variant: "primary",
         isVisible: computed(() => isValid.value),
         disabled: computed(
@@ -420,13 +464,15 @@ export default defineComponent({
       isValid,
       errorMessage,
       selectedImporter,
+      importBadges,
+      skippedColumns,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),
       inProgress: computed(
         () => importStatus.value && importStatus.value.inProgress
       ),
-      locale: window.navigator.language,
+      locale,
       previewTotalNum: computed(() => preview.value.totalCount),
       initializeImporting,
       uploadCsv,
@@ -436,4 +482,41 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.import-new {
+  &__upload-border {
+    border-top: 1px solid #e5e5e5;
+  }
+
+  &__progress {
+    position: relative;
+    padding: 40px;
+    &:before {
+      content: "";
+      background: linear-gradient(
+        180deg,
+        #ecf2f7 0%,
+        rgba(236, 242, 246, 0) 100%
+      );
+      left: 0;
+      right: 0;
+      position: absolute;
+      height: 21px;
+      top: 0;
+    }
+
+    &-text {
+      color: #a1c0d4;
+    }
+  }
+
+  &__no-errors-icon {
+    font-size: 59px;
+    color: #87b563;
+  }
+
+  &__no-errors-text {
+    color: #87b563;
+  }
+}
+</style>

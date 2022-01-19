@@ -54,8 +54,9 @@
           "EDIT": "Edit",
           "CANCEL": "Cancel"
         },
-        "EXECUTION_SETTINGS": {
-          "TITLE": "Execution settings"
+        "FILE_UPLOAD": {
+          "TITLE": "File upload",
+          "TITLE_UPLOADED": "Uploaded"
         },
         "UPLOAD_STATUS": {
           "TITLE": "Upload status",
@@ -66,8 +67,14 @@
           "LINES_READ": "lines read",
           "IMPORTED": "items imported",
           "SKIPPED": "items skipped",
-          "SKIPPED_DETAILS": "Skipped lines details",
-          "CANCEL": "Cancel"
+          "CANCEL": "Cancel",
+          "Started at": "Started at",
+          "TABLE": {
+            "SKIPPED_DETAILS": "Skipped lines details",
+            "LINE": "Line",
+            "ERROR_DESC": "Error description",
+            "NO_ERRORS": "No errors found"
+          }
         }
       },
       "ACTIONS": {
@@ -85,7 +92,8 @@
         "TABLE": {
           "HEADER": {
             "NAME": "Name",
-            "PROCESSED_COUNT": "Processed count",
+            "STARTED_AT": "Started at",
+            "DURATION": "Duration",
             "LINES_UPDATED": "Lines updated",
             "ERROR_COUNT": "Error count",
             "DATE": "Date",
@@ -95,7 +103,7 @@
       },
       "IMPORTING": {
         "POPUP": {
-          "TITLE": "Contacts import",
+          "TITLE": "Preview import lines (up to 10 lines)",
           "DESCRIPTION": "Please use horizontal scroll to see all columns from the import preview",
           "PREVIEW_COUNT": "Preview count",
           "PREVIEW_OF": "of",

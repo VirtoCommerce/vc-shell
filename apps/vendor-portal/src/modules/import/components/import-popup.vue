@@ -29,7 +29,7 @@
       :scrolling="true"
       :footer="false"
     ></vc-table>
-    <div class="import-popup__footer vc-padding_xl vc-flex">
+    <div class="vc-padding_xl vc-flex vc-flex-justify_space-between">
       <vc-button :outline="true" @click="$emit('close')">{{
         t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
       }}</vc-button>
@@ -103,10 +103,6 @@ export default defineComponent({
 
   &__digits {
     color: var(--primary-color);
-  }
-
-  &__footer {
-    gap: 25px;
   }
 }
 </style>

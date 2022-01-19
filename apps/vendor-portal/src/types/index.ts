@@ -48,6 +48,15 @@ interface IShippingInfo {
   email?: string;
 }
 
+interface INotificationActions {
+  name: string;
+  clickHandler(): void;
+  outline: boolean;
+  variant: string;
+  isVisible?: boolean | ComputedRef<boolean>;
+  disabled?: boolean | ComputedRef<boolean>;
+}
+
 export {
   IComponent,
   ITableColumns,
@@ -55,4 +64,5 @@ export {
   IBladeToolbar,
   IMenuItems,
   IShippingInfo,
+  INotificationActions,
 };

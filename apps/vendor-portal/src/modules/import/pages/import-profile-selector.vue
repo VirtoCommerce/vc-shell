@@ -9,17 +9,23 @@
     <vc-container>
       <vc-row>
         <vc-col
-          class="vc-padding_l"
+          class="vc-padding_m"
           v-for="(importer, i) in importersList"
           :key="i"
         >
-          <vc-button @click="openImporter(importer)">{{
-            importer.importerType
-          }}</vc-button>
+          <vc-button
+            class="import__widget"
+            @click="openImporter(importer)"
+            icon="fas fa-file-csv"
+            variant="widget"
+          >
+            {{ importer.importerType }}</vc-button
+          >
         </vc-col>
       </vc-row>
-      <vc-col class="vc-padding_l">
+      <vc-col class="vc-padding_m">
         <vc-card
+          :fill="true"
           :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
           class="vc-flex import__archive"
         >
@@ -28,7 +34,6 @@
             :items="importHistory"
             :header="false"
             @itemClick="onItemClick"
-            :footer="false"
           >
             <!-- Override name column template -->
             <template v-slot:item_name="itemData">
@@ -44,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
@@ -53,7 +58,7 @@ import ImportNew from "./import-new.vue";
 import { IImporterMetadata, ImportPushNotification } from "../../../api_client";
 
 export default defineComponent({
-  url: "import-profile",
+  url: "import",
   props: {
     expanded: {
       type: Boolean,
@@ -78,10 +83,16 @@ export default defineComponent({
   emits: ["page:open"],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { importHistory, selectImporter, fetchDataImporters } = useImport();
+    const { importHistory, importStatus, selectImporter, fetchDataImporters } =
+      useImport();
     const importersList = ref<IImporterMetadata[]>([]);
 
     const bladeToolbar = reactive<IBladeToolbar[]>([
+      {
+        id: "refresh",
+        title: t("IMPORT.PAGES.TOOLBAR.REFRESH"),
+        icon: "fas fa-sync-alt",
+      },
       {
         id: "new",
         title: t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE"),
@@ -89,11 +100,6 @@ export default defineComponent({
         clickHandler() {
           profileClick();
         },
-      },
-      {
-        id: "refresh",
-        title: t("IMPORT.PAGES.TOOLBAR.REFRESH"),
-        icon: "fas fa-sync-alt",
       },
     ]);
     const columns = ref<ITableColumns[]>([
@@ -103,23 +109,16 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
-        id: "processedCount",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.PROCESSED_COUNT"),
+        id: "created",
+        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT"),
         width: 147,
+        type: "date",
+        format: "L LT",
       },
       {
         id: "errorCount",
         title: t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT"),
         width: 118,
-        sortable: true,
-      },
-      {
-        id: "finished",
-        type: "date",
-        format: "L LT",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.DATE"),
-        width: 185,
-        alwaysVisible: true,
         sortable: true,
       },
     ]);
@@ -153,6 +152,9 @@ export default defineComponent({
       columns,
       importHistory,
       importersList,
+      importStarted: computed(
+        () => importStatus.value && importStatus.value.jobId
+      ),
       openImporter,
       onItemClick,
     };
@@ -160,4 +162,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.import {
+  &__widget {
+    width: max-content;
+  }
+}
+</style>

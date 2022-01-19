@@ -15,7 +15,6 @@
     @dragover.stop.prevent
     @dragenter.stop.prevent
     @dragleave.stop.prevent
-    v-if="!(uploadedFile && uploadedFile.url)"
     v-loading="loading"
   >
     <vc-icon
@@ -38,58 +37,19 @@
       :accept="accept"
     />
   </div>
-  <div class="vc-flex vc-flex-grow_1 vc-flex-column" v-else>
-    <VcUploadNotification
-      :uploadActions="uploadActions"
-      :uploadedFile="uploadedFile"
-      :isUploaded="isUploaded"
-      class="vc-flex vc-flex-grow_1"
-    />
-    <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-input__error vc-margin-top_m vc-font-size_m">
-        {{ errorMessage }}
-      </vc-hint>
-    </slot>
-  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
-import VcUploadNotification from "./_internal/vc-file-upload-notification/vc-file-upload-notification.vue";
-import { INotificationActions } from "../../../typings";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcFileUpload",
-
-  components: {
-    VcUploadNotification,
-  },
 
   props: {
     variant: {
       type: String,
       enum: ["gallery", "import"],
       default: "gallery",
-    },
-
-    uploadedFile: {
-      type: Object,
-      default: () => null,
-    },
-
-    uploadActions: {
-      type: Array as PropType<INotificationActions[]>,
-      default: () => [],
-    },
-
-    isUploaded: {
-      type: Boolean,
-      default: false,
-    },
-
-    errorMessage: {
-      type: String,
-      default: "",
     },
 
     loading: {

@@ -55,9 +55,9 @@ export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
   const { getAccessToken } = useUser();
-  const importStatus = ref<IImportStatus>();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
+  const importStatus = ref<IImportStatus>();
   const importHistory = ref<ImportPushNotification[]>([]);
 
   //subscribe to pushnotifcation and update the import progress status
@@ -200,6 +200,7 @@ export default (): IUseImport => {
       size: 0,
     });
     importStatus.value = undefined;
+    uploadedFile.value = undefined;
   }
 
   function getImport(jobId: string) {

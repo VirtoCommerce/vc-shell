@@ -42,7 +42,7 @@ export default defineComponent({
 
     variant: {
       type: String,
-      enum: ["primary", "secondary", "special", "danger"],
+      enum: ["primary", "secondary", "special", "danger", "widget"],
       default: "primary",
     },
 
@@ -117,6 +117,15 @@ export default defineComponent({
   --button-special-text-color-hover: #ffffff;
   --button-special-text-color-active: #ffffff;
   --button-special-text-color-disabled: #ffffff;
+
+  --button-widget-background-color: #ffffff;
+  --button-widget-background-color-hover: #f2faff;
+  --button-widget-background-color-active: #eaf6ff;
+  --button-widget-background-color-disabled: #fafafa;
+
+  --button-widget-border-color: #eaedf3;
+  --button-widget-border-color-hover: #d3e2ec;
+  --button-widget-border-color-active: #deecf4;
 
   --button-border-radius: 3px;
   --button-padding: 0 14px;
@@ -252,6 +261,38 @@ export default defineComponent({
             var(--button-danger-background-color-active),
             var(--button-danger-background-color-disabled),
             var(--button-danger-background-color-disabled));
+  }
+
+  &_widget {
+    height: auto;
+    border: var(--button-widget-border-color);
+    box-shadow: 1px 4px 10px rgba(197, 206, 214, 0.24);
+    border-radius: 4px;
+    padding: 15px;
+
+    .vc-button__icon {
+      font-size: 30px;
+      color: #a9bfd2;
+    }
+
+    &:hover {
+      background-color: var(--button-widget-background-color-hover);
+      border: 1px solid var(--button-widget-background-color-hover);
+      border: var(--button-widget-border-color-hover);
+    }
+
+    &:focus {
+      background-color: var(--button-widget-background-color-active);
+      border: 1px solid var(--button-widget-background-color-active);
+      border: var(--button-widget-border-color-active);
+    }
+
+    &.vc-button_disabled,
+    &.vc-button_disabled:hover {
+      cursor: not-allowed;
+      background-color: var(--button-widget-background-color-disabled);
+      border: 1px solid var(--button-widget-background-color-disabled);
+    }
   }
 
   &_small {

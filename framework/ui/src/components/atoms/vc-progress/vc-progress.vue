@@ -19,6 +19,7 @@ export default defineComponent({
     variant: {
       type: String,
       default: "default",
+      enum: ["default", "striped"],
     },
   },
 });

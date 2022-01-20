@@ -39,6 +39,7 @@
     "vuedraggable": "^4.1.0"
   },
   "dependencies": {
+    "swiper": "^6.7.5",
     "vue-currency-input": "^2.2.0"
   }
 }

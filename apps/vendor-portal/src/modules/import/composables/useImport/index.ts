@@ -1,15 +1,13 @@
 import { Ref, ref, watch, computed } from "vue";
 import {
-  IImporterMetadata,
-  ImporterMetadata,
   VcmpSellerImportClient,
   PreviewDataQuery,
   ImportProfile,
-  ImportProfileOptions,
   ImportDataPreview,
   ImportCancellationRequest,
   ImportPushNotification,
   ImportDataCommand,
+  IDataImporter,
 } from "../../../../api_client/api-client";
 import { useUser, useLogger, useNotifications } from "@virtoshell/core";
 
@@ -32,32 +30,32 @@ export interface IUploadedFile {
 
 interface IUseImport {
   loading: Ref<boolean>;
-  selectedImporter: Ref<IImporterMetadata>;
+  selectedImporter: Ref<IDataImporter>;
   uploadedFile: Ref<IUploadedFile>;
   importStatus: Ref<IImportStatus>;
   isValid: Ref<boolean>;
   importHistory: Ref<ImportPushNotification[]>;
   setFile(file: IUploadedFile): void;
-  selectImporter(importer: IImporterMetadata): void;
-  fetchDataImporters(): Promise<ImporterMetadata[]>;
+  selectImporter(importer: IDataImporter): void;
+  fetchDataImporters(): Promise<IDataImporter[]>;
   previewData(): Promise<ImportDataPreview>;
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
   getImport(jobId: string): void;
 }
-
-const selectedImporter = ref<IImporterMetadata>();
+const selectedImporter = ref<IDataImporter>();
 const importCommand = ref<ImportDataCommand>({
-  importProfile: { options: {} as ImportProfileOptions } as ImportProfile,
+  importProfile: { settings: [] } as ImportProfile,
 } as ImportDataCommand);
+const importStatus = ref<IImportStatus>();
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
   const { getAccessToken } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
-  const importStatus = ref<IImportStatus>();
+
   const importHistory = ref<ImportPushNotification[]>([]);
 
   //subscribe to pushnotifcation and update the import progress status
@@ -88,16 +86,17 @@ export default (): IUseImport => {
     }
   }
 
-  function selectImporter(importer: IImporterMetadata) {
+  function selectImporter(importer: IDataImporter) {
     importCommand.value.importProfile = new ImportProfile({
-      dataImporterType: importer.importerType,
-      options: importer.importerOptions,
+      dataImporterType: importer.typeName,
+      settings: [],
     });
     selectedImporter.value = importer;
+    importStatus.value = undefined;
   }
 
   function setFile(file: IUploadedFile) {
-    importCommand.value.importProfile.options.importFileUrl = file.url;
+    importCommand.value.importProfile.importFileUrl = file.url;
     uploadedFile.value = file;
   }
 
@@ -117,35 +116,16 @@ export default (): IUseImport => {
   }
 
   async function fetchDataImporters() {
-    // TODO it's temporary workaround to get raw importers data
-    const token = await getAccessToken();
-    if (token) {
-      const importers = await fetch("/api/vcmp/import/importers", {
-        method: "GET",
-        headers: {
-          Accept: "text/plain",
-          authorization: `Bearer ${token}`,
-        },
-      });
+    const client = await getApiClient();
+    try {
+      loading.value = true;
 
-      return importers.text().then((response) => {
-        const importers = JSON.parse(response);
-        const result = [];
-        if (Array.isArray(importers)) {
-          for (const item of importers) {
-            const importerMeta = ImporterMetadata.fromJS(item);
-            result.push({
-              importerType: importerMeta.importerType,
-              importerOptions: new ImportProfileOptions({
-                ...importerMeta.importerOptions,
-              }),
-            });
-          }
-        }
-        return result;
-      });
-    } else {
-      return [];
+      return client.getImporters();
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
     }
   }
 
@@ -200,7 +180,6 @@ export default (): IUseImport => {
       size: 0,
     });
     importStatus.value = undefined;
-    uploadedFile.value = undefined;
   }
 
   function getImport(jobId: string) {

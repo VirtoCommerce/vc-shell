@@ -31,9 +31,8 @@
           "DELETE": "Delete"
         },
         "IMPORT_INPUTS": {
-          "JOB_CODE": "Import job code",
-          "JOB_NAME": "Import job name",
-          "JOB": "Import job"
+          "PROFILE_NAME": "Profile name",
+          "IMPORTER": "Importer"
         },
         "PROFILE_SETTINGS": {
           "TITLE": "Profile settings",

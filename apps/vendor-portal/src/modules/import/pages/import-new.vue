@@ -13,7 +13,7 @@
           <vc-row>
             <vc-card
               :header="
-                uploadedFile
+                uploadedFile && uploadedFile.url
                   ? $t(
                       'IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED'
                     )
@@ -23,18 +23,17 @@
               <!-- File upload -->
               <vc-col
                 class="vc-padding_xl"
-                v-if="!importStarted && !uploadedFile"
+                v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
                 <vc-row class="vc-margin-bottom_l">
-                  <vc-link
+                  <a
+                    class="vc-link"
                     :href="
                       selectedImporter
-                        ? selectedImporter.importerOptions.templateUrl
+                        ? selectedImporter.metadata.sampleCsvUrl
                         : '#'
                     "
-                    >{{
-                      $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
-                    }}</vc-link
+                    >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
                   >
                   &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
                 </vc-row>
@@ -50,7 +49,7 @@
               </vc-col>
               <!-- Uploaded file actions -->
               <vc-col v-else>
-                <vc-row>
+                <vc-row v-if="uploadedFile && uploadedFile.url">
                   <import-upload-status
                     :uploadActions="uploadActions"
                     :uploadedFile="uploadedFile"
@@ -101,6 +100,11 @@
                   </vc-row>
                 </vc-col>
               </vc-col>
+              <vc-hint
+                class="vc-padding_m import-new__error"
+                v-if="errorMessage"
+                >{{ errorMessage }}</vc-hint
+              >
             </vc-card>
           </vc-row>
         </div>
@@ -258,6 +262,10 @@ export default defineComponent({
         icon: "fas fa-ban",
         clickHandler() {
           emit("page:close");
+
+          if (importStatus.value.inProgress) {
+            cancelImport();
+          }
         },
       },
     ]);
@@ -325,7 +333,9 @@ export default defineComponent({
           id: "linesImported",
           icon: "fas fa-check-circle",
           color: "#87B563",
-          title: importStatus.value.notification.processedCount,
+          title:
+            importStatus.value.notification.processedCount -
+            importStatus.value.notification.errorCount,
           description: t(
             "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"
           ),
@@ -334,7 +344,7 @@ export default defineComponent({
           id: "skipped",
           icon: "fas fa-exclamation-circle",
           color: "#FFBB0D",
-          title: "",
+          title: importStatus.value.notification.errorCount,
           description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
         },
       ];
@@ -345,6 +355,7 @@ export default defineComponent({
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
         clickHandler() {
           clearImport();
+          clearErrorMessage();
         },
         outline: true,
         variant: "danger",
@@ -405,6 +416,10 @@ export default defineComponent({
         getImport(props.param);
       }
     });
+
+    function clearErrorMessage() {
+      errorMessage.value = "";
+    }
 
     async function uploadCsv(files: File) {
       try {
@@ -482,7 +497,11 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+:root {
+  --color-error: #f14e4e;
+}
+
 .import-new {
   &__upload-border {
     border-top: 1px solid #e5e5e5;
@@ -517,6 +536,10 @@ export default defineComponent({
 
   &__no-errors-text {
     color: #87b563;
+  }
+
+  &__error {
+    --hint-color: var(--color-error);
   }
 }
 </style>

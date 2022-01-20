@@ -1,28 +1,31 @@
 <template>
   <vc-blade
     :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
-    width="30%"
+    :width="bladeWidth + '%'"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
   >
     <vc-container>
-      <vc-row>
-        <vc-col
-          class="vc-padding_m"
-          v-for="(importer, i) in importersList"
-          :key="i"
+      <!-- Import profile widgets-->
+      <div class="vc-padding_m">
+        <vc-slider
+          :navigation="!expanded && importersList && importersList.length > 1"
+          :overflow="true"
+          :slides="importersList"
         >
-          <vc-button
-            class="import__widget"
-            @click="openImporter(importer)"
-            icon="fas fa-file-csv"
-            variant="widget"
-          >
-            {{ importer.importerType }}</vc-button
-          >
-        </vc-col>
-      </vc-row>
+          <template v-slot="{ slide }">
+            <vc-button
+              class="import__widget"
+              @click="openImporter(slide)"
+              icon="fas fa-file-csv"
+              variant="widget"
+            >
+              {{ slide.typeName }}</vc-button
+            >
+          </template>
+        </vc-slider>
+      </div>
       <vc-col class="vc-padding_m">
         <vc-card
           :fill="true"
@@ -55,7 +58,7 @@ import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { IImporterMetadata, ImportPushNotification } from "../../../api_client";
+import { IDataImporter, ImportPushNotification } from "../../../api_client";
 
 export default defineComponent({
   url: "import",
@@ -85,7 +88,8 @@ export default defineComponent({
     const { t } = useI18n();
     const { importHistory, importStatus, selectImporter, fetchDataImporters } =
       useImport();
-    const importersList = ref<IImporterMetadata[]>([]);
+    const importersList = ref<IDataImporter[]>([]);
+    const bladeWidth = ref(50);
 
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
@@ -128,12 +132,14 @@ export default defineComponent({
     });
 
     function profileClick() {
+      bladeWidth.value = 70;
       emit("page:open", {
         component: ImportProfileDetails,
       });
     }
 
-    function openImporter(importer: IImporterMetadata) {
+    function openImporter(importer: IDataImporter) {
+      bladeWidth.value = 30;
       selectImporter(importer);
       emit("page:open", {
         component: ImportNew,
@@ -141,6 +147,7 @@ export default defineComponent({
     }
 
     function onItemClick(item: ImportPushNotification) {
+      bladeWidth.value = 30;
       emit("page:open", {
         component: ImportNew,
         param: item.jobId,
@@ -152,6 +159,7 @@ export default defineComponent({
       columns,
       importHistory,
       importersList,
+      bladeWidth,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),

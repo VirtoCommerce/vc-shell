@@ -263,7 +263,7 @@ export default defineComponent({
         clickHandler() {
           emit("page:close");
 
-          if (importStatus.value.inProgress) {
+          if (importStatus.value?.inProgress) {
             cancelImport();
           }
         },

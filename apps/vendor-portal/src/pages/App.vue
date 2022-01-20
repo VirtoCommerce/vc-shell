@@ -61,7 +61,7 @@ import ChangePassword from "../components/change-password.vue";
 import { OrdersList } from "../modules/orders";
 import { OffersList } from "../modules/offers";
 import { ProductsList } from "../modules/products";
-import { Import } from "../modules/import";
+import { ImportProfileSelector } from "../modules/import";
 import {
   useLogger,
   useI18n,
@@ -191,7 +191,7 @@ export default defineComponent({
         title: t("IMPORT.MENU.TITLE"),
         icon: "fas fa-file-import",
         isVisible: true,
-        component: shallowRef(Import),
+        component: shallowRef(ImportProfileSelector),
       },
       {
         title: t("SHELL.ACCOUNT.LOGOUT"),

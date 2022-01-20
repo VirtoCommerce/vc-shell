@@ -280,8 +280,11 @@ export default defineComponent({
                             "1px solid var(--select-background-color)";
                           state.styles.popper.borderRadius =
                             "0 0 var(--select-border-radius) var(--select-border-radius)";
-                          inputFieldWrapRef.value.style.borderRadius =
-                            "var(--select-border-radius) var(--select-border-radius) 0 0";
+
+                          if (inputFieldWrapRef.value) {
+                            inputFieldWrapRef.value.style.borderRadius =
+                              "var(--select-border-radius) var(--select-border-radius) 0 0";
+                          }
                         }
                         state.styles.popper.width = `${
                           state.rects.reference.width + 2
@@ -306,8 +309,11 @@ export default defineComponent({
                             "1px solid var(--select-background-color)";
                           state.elements.popper.style.borderRadius =
                             "0 0 var(--select-border-radius) var(--select-border-radius)";
-                          inputFieldWrapRef.value.style.borderRadius =
-                            "var(--select-border-radius) var(--select-border-radius) 0 0";
+
+                          if (inputFieldWrapRef.value) {
+                            inputFieldWrapRef.value.style.borderRadius =
+                              "var(--select-border-radius) var(--select-border-radius) 0 0";
+                          }
                         }
                         state.elements.popper.style.width = `${
                           ref.offsetWidth + 2

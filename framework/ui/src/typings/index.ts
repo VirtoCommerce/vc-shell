@@ -42,11 +42,3 @@ export interface IActionBuilderResult {
   variant: string;
   clickHandler(): void;
 }
-
-export interface INotificationActions {
-  name: string;
-  clickHandler(): void;
-  outline: boolean;
-  variant: string;
-  isVisible?: boolean;
-}

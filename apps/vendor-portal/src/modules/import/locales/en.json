@@ -11,19 +11,72 @@
         "EDIT": "Edit",
         "DELETE": "Delete"
       },
-      "ACTIONS": {
-        "SELECTS": {
-          "DATA_IMPORTER": {
-            "TITLE": "Data importer",
-            "DESCRIPTION": {
-              "TITLE": "Download Products import template file:",
-              "LINK": "here"
-            }
-          },
-          "DELIMITER": {
-            "TITLE": "Delimiter"
-          }
+      "TEMPLATE": {
+        "DOWNLOAD_TEMPLATE": "Download template",
+        "FOR_REFERENCE": "for a reference"
+      },
+      "LAST_EXECUTIONS": "Last executions",
+      "PROFILE_SELECTOR": {
+        "TITLE": "Import profiles",
+        "TOOLBAR": {
+          "ADD_PROFILE": "Add profile",
+          "REFRESH": "Refresh"
+        }
+      },
+      "PROFILE_DETAILS": {
+        "TITLE": "New import profile",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "CANCEL": "Cancel",
+          "DELETE": "Delete"
         },
+        "IMPORT_INPUTS": {
+          "PROFILE_NAME": "Profile name",
+          "IMPORTER": "Importer"
+        },
+        "PROFILE_SETTINGS": {
+          "TITLE": "Profile settings",
+          "DECIMAL_SEPARATOR": "Decimal separator",
+          "SHEET_NAME": "Sheet name",
+          "DATE_FORMAT": "Date format"
+        },
+        "CONFIRM_POPUP": {
+          "DELETE_IMPORTER": {
+            "TITLE": "Delete confirmation",
+            "DESCRIPTION": "Are you sure you want to delete the import profile?"
+          }
+        }
+      },
+      "PRODUCT_IMPORTER": {
+        "TITLE": "Product CSV importer",
+        "TOOLBAR": {
+          "EDIT": "Edit",
+          "CANCEL": "Cancel"
+        },
+        "FILE_UPLOAD": {
+          "TITLE": "File upload",
+          "TITLE_UPLOADED": "Uploaded"
+        },
+        "UPLOAD_STATUS": {
+          "TITLE": "Upload status",
+          "LINES_FOUND": "lines found",
+          "NO_ERRORS": "No errors",
+          "IN_PROGRESS": "Import in progress",
+          "STARTED_AT": "Started at",
+          "LINES_READ": "lines read",
+          "IMPORTED": "items imported",
+          "SKIPPED": "items skipped",
+          "CANCEL": "Cancel",
+          "Started at": "Started at",
+          "TABLE": {
+            "SKIPPED_DETAILS": "Skipped lines details",
+            "LINE": "Line",
+            "ERROR_DESC": "Error description",
+            "NO_ERRORS": "No errors found"
+          }
+        }
+      },
+      "ACTIONS": {
         "UPLOADER": {
           "TITLE": "Uploaded",
           "ACTIONS": {
@@ -38,7 +91,8 @@
         "TABLE": {
           "HEADER": {
             "NAME": "Name",
-            "PROCESSED_COUNT": "Processed count",
+            "STARTED_AT": "Started at",
+            "DURATION": "Duration",
             "LINES_UPDATED": "Lines updated",
             "ERROR_COUNT": "Error count",
             "DATE": "Date",
@@ -47,35 +101,8 @@
         }
       },
       "IMPORTING": {
-        "IMPORT_STARTED": "Import started",
-        "IMPORT_SUMMARY": "Import summary",
-        "EMPTY_ARCHIVE": "Archive is empty",
-        "LINES_CREATED": "Lines created",
-        "LINES_UPDATED": "Lines updated",
-        "ERROR_COUNT": "Error count",
-        "REPORT_URL": "Errors report download Url:",
-        "TIMINGS": {
-          "START": "Start",
-          "END": "End"
-        },
-        "TABLE": {
-          "HEADER": {
-            "FULL_NAME": "Full name",
-            "FIRST_NAME": "First name",
-            "LAST_NAME": "Last name",
-            "ID": "ID",
-            "OUTER_ID": "Outer ID",
-            "ORG_ID": "Org. ID",
-            "ORG_OUTER_ID": "Org. Outer ID",
-            "ORG_NAME": "Org. Name",
-            "ACCOUNT_ID": "Account ID",
-            "ACCOUNT_OUTER_ID": "Account Outer ID",
-            "ACCOUNT_LOGIN": "Account Login",
-            "STORE_ID": "Store ID"
-          }
-        },
         "POPUP": {
-          "TITLE": "Contacts import",
+          "TITLE": "Preview import lines (up to 10 lines)",
           "DESCRIPTION": "Please use horizontal scroll to see all columns from the import preview",
           "PREVIEW_COUNT": "Preview count",
           "PREVIEW_OF": "of",

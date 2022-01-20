@@ -1,0 +1,43 @@
+<template>
+  <vc-popup @close="$emit('close')" variant="small" :title="title">
+    <div class="vc-padding_m">
+      <slot name="description">Are you sure you want to proceed?</slot>
+
+      <div
+        class="
+          vc-flex
+          vc-flex-justify_center
+          vc-flex-align_center
+          vc-padding-top_s
+        "
+      >
+        <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+        <vc-button
+          variant="primary"
+          :outline="true"
+          class="vc-margin-right_m"
+          @click="$emit('close')"
+        >
+          No
+        </vc-button>
+        <vc-button variant="primary"> Yes </vc-button>
+      </div>
+    </div>
+  </vc-popup>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "import-confirmation-popup",
+  props: {
+    title: {
+      type: String,
+      default: "",
+    },
+  },
+});
+</script>
+
+<style lang="less" scoped></style>

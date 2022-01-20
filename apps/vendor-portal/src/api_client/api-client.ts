@@ -10,38 +10,38 @@
 export class AuthApiBase {
     authToken = "";
     protected constructor() {}
-
+  
     setAuthToken(token: string) {
       this.authToken = token;
     }
-
+  
     protected transformOptions(options: any): Promise<any> {
       options.headers['authorization'] =  `Bearer ${this.authToken}`;
       return Promise.resolve(options);
     }
   }
-
+  
   export class VcmpSellerCatalogClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
       protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
+  
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
           this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       searchCategories(body: SearchCategoriesQuery | undefined): Promise<CategorySearchResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/categories/search";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -50,14 +50,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processSearchCategories(_response);
           });
       }
-
+  
       protected processSearchCategories(response: Response): Promise<CategorySearchResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -75,17 +75,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<CategorySearchResult>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       searchProducts(body: SearchProductsQuery | undefined): Promise<SearchProductsResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/products/search";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -94,14 +94,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processSearchProducts(_response);
           });
       }
-
+  
       protected processSearchProducts(response: Response): Promise<SearchProductsResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -119,17 +119,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<SearchProductsResult>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       searchPropertyDictionaryItems(body: PropertyDictionaryItemSearchCriteria | undefined): Promise<PropertyDictionaryItemSearchResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/dictionaryitems/search";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -138,14 +138,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processSearchPropertyDictionaryItems(_response);
           });
       }
-
+  
       protected processSearchPropertyDictionaryItems(response: Response): Promise<PropertyDictionaryItemSearchResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -163,7 +163,7 @@ export class AuthApiBase {
           }
           return Promise.resolve<PropertyDictionaryItemSearchResult>(<any>null);
       }
-
+  
       /**
        * @return Success
        */
@@ -173,21 +173,21 @@ export class AuthApiBase {
               throw new Error("The parameter 'productId' must be defined.");
           url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
           url_ = url_.replace(/[?&]$/, "");
-
+  
           let options_ = <RequestInit>{
               method: "GET",
               headers: {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processGetProductById(_response);
           });
       }
-
+  
       protected processGetProductById(response: Response): Promise<SellerProduct> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -205,17 +205,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<SellerProduct>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       createNewProduct(body: CreateNewProductCommand | undefined): Promise<SellerProduct> {
           let url_ = this.baseUrl + "/api/vcmp/seller/products";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -224,14 +224,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processCreateNewProduct(_response);
           });
       }
-
+  
       protected processCreateNewProduct(response: Response): Promise<SellerProduct> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -249,17 +249,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<SellerProduct>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       updateProductDetails(body: UpdateProductDetailsCommand | undefined): Promise<SellerProduct> {
           let url_ = this.baseUrl + "/api/vcmp/seller/products";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "PUT",
@@ -268,14 +268,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processUpdateProductDetails(_response);
           });
       }
-
+  
       protected processUpdateProductDetails(response: Response): Promise<SellerProduct> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -293,17 +293,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<SellerProduct>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       createNewPublicationRequest(body: CreateNewPublicationRequestCommand | undefined): Promise<ProductPublicationRequest> {
           let url_ = this.baseUrl + "/api/vcmp/seller/products/requests/new";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -312,14 +312,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processCreateNewPublicationRequest(_response);
           });
       }
-
+  
       protected processCreateNewPublicationRequest(response: Response): Promise<ProductPublicationRequest> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -337,7 +337,7 @@ export class AuthApiBase {
           }
           return Promise.resolve<ProductPublicationRequest>(<any>null);
       }
-
+  
       /**
        * @return Success
        */
@@ -347,21 +347,21 @@ export class AuthApiBase {
               throw new Error("The parameter 'productId' must be defined.");
           url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
           url_ = url_.replace(/[?&]$/, "");
-
+  
           let options_ = <RequestInit>{
               method: "POST",
               headers: {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processRevertStagedChanges(_response);
           });
       }
-
+  
       protected processRevertStagedChanges(response: Response): Promise<ProductPublicationRequest> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -379,17 +379,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<ProductPublicationRequest>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       searchOffers(body: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/offers/search";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -398,14 +398,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processSearchOffers(_response);
           });
       }
-
+  
       protected processSearchOffers(response: Response): Promise<SearchOffersResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -423,7 +423,7 @@ export class AuthApiBase {
           }
           return Promise.resolve<SearchOffersResult>(<any>null);
       }
-
+  
       /**
        * @return Success
        */
@@ -433,21 +433,21 @@ export class AuthApiBase {
               throw new Error("The parameter 'offerId' must be defined.");
           url_ = url_.replace("{offerId}", encodeURIComponent("" + offerId));
           url_ = url_.replace(/[?&]$/, "");
-
+  
           let options_ = <RequestInit>{
               method: "POST",
               headers: {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processGetOfferById(_response);
           });
       }
-
+  
       protected processGetOfferById(response: Response): Promise<Offer> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -465,17 +465,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<Offer>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       searchOfferProducts(body: SearchProductsForNewOfferQuery | undefined): Promise<SearchOfferProductsResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/offers/products/search";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -484,14 +484,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processSearchOfferProducts(_response);
           });
       }
-
+  
       protected processSearchOfferProducts(response: Response): Promise<SearchOfferProductsResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -509,17 +509,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<SearchOfferProductsResult>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       createNewOffer(body: CreateNewOfferCommand | undefined): Promise<Offer> {
           let url_ = this.baseUrl + "/api/vcmp/seller/offers/new";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -528,14 +528,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processCreateNewOffer(_response);
           });
       }
-
+  
       protected processCreateNewOffer(response: Response): Promise<Offer> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -553,9 +553,9 @@ export class AuthApiBase {
           }
           return Promise.resolve<Offer>(<any>null);
       }
-
+  
       /**
-       * @param ids (optional)
+       * @param ids (optional) 
        * @return Success
        */
       deleteOffers(ids: string[] | null | undefined): Promise<void> {
@@ -563,20 +563,20 @@ export class AuthApiBase {
           if (ids !== undefined && ids !== null)
               ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
           url_ = url_.replace(/[?&]$/, "");
-
+  
           let options_ = <RequestInit>{
               method: "DELETE",
               headers: {
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processDeleteOffers(_response);
           });
       }
-
+  
       protected processDeleteOffers(response: Response): Promise<void> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -591,7 +591,7 @@ export class AuthApiBase {
           }
           return Promise.resolve<void>(<any>null);
       }
-
+  
       /**
        * @return Success
        */
@@ -604,20 +604,20 @@ export class AuthApiBase {
               throw new Error("The parameter 'status' must be defined.");
           url_ = url_.replace("{status}", encodeURIComponent("" + status));
           url_ = url_.replace(/[?&]$/, "");
-
+  
           let options_ = <RequestInit>{
               method: "POST",
               headers: {
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processChangeProductStatus(_response);
           });
       }
-
+  
       protected processChangeProductStatus(response: Response): Promise<void> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -633,28 +633,28 @@ export class AuthApiBase {
           return Promise.resolve<void>(<any>null);
       }
   }
-
+  
   export class VcmpSellerImportClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
       protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
+  
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
           this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       runImport(body: ImportDataCommand | undefined): Promise<ImportPushNotification> {
           let url_ = this.baseUrl + "/api/vcmp/import/run";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -663,14 +663,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processRunImport(_response);
           });
       }
-
+  
       protected processRunImport(response: Response): Promise<ImportPushNotification> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -688,17 +688,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<ImportPushNotification>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       cancelJob(body: ImportCancellationRequest | undefined): Promise<void> {
           let url_ = this.baseUrl + "/api/vcmp/import/task/cancel";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -706,14 +706,14 @@ export class AuthApiBase {
                   "Content-Type": "application/json-patch+json",
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processCancelJob(_response);
           });
       }
-
+  
       protected processCancelJob(response: Response): Promise<void> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -736,17 +736,17 @@ export class AuthApiBase {
           }
           return Promise.resolve<void>(<any>null);
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       preview(body: PreviewDataQuery | undefined): Promise<ImportDataPreview> {
           let url_ = this.baseUrl + "/api/vcmp/import/preview";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -755,14 +755,14 @@ export class AuthApiBase {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processPreview(_response);
           });
       }
-
+  
       protected processPreview(response: Response): Promise<ImportDataPreview> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -788,29 +788,29 @@ export class AuthApiBase {
           }
           return Promise.resolve<ImportDataPreview>(<any>null);
       }
-
+  
       /**
        * @return Success
        */
-      getImporters(): Promise<ImporterMetadata[]> {
+      getImporters(): Promise<IDataImporter[]> {
           let url_ = this.baseUrl + "/api/vcmp/import/importers";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           let options_ = <RequestInit>{
               method: "GET",
               headers: {
                   "Accept": "text/plain"
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processGetImporters(_response);
           });
       }
-
-      protected processGetImporters(response: Response): Promise<ImporterMetadata[]> {
+  
+      protected processGetImporters(response: Response): Promise<IDataImporter[]> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {
@@ -820,7 +820,7 @@ export class AuthApiBase {
               if (Array.isArray(resultData200)) {
                   result200 = [] as any;
                   for (let item of resultData200)
-                      result200!.push(ImporterMetadata.fromJS(item));
+                      result200!.push(IDataImporter.fromJS(item));
               }
               else {
                   result200 = <any>null;
@@ -840,31 +840,31 @@ export class AuthApiBase {
               return throwException("An unexpected server error occurred.", status, _responseText, _headers);
               });
           }
-          return Promise.resolve<ImporterMetadata[]>(<any>null);
+          return Promise.resolve<IDataImporter[]>(<any>null);
       }
   }
-
+  
   export class VcmpSellerSecurityClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
       protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
+  
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
           this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
-
+  
       /**
-       * @param body (optional)
+       * @param body (optional) 
        * @return Success
        */
       forgotPassword(body: ForgotPasswordCommand | undefined): Promise<void> {
           let url_ = this.baseUrl + "/api/vcmp/security/forgotpassword";
           url_ = url_.replace(/[?&]$/, "");
-
+  
           const content_ = JSON.stringify(body);
-
+  
           let options_ = <RequestInit>{
               body: content_,
               method: "POST",
@@ -872,14 +872,14 @@ export class AuthApiBase {
                   "Content-Type": "application/json-patch+json",
               }
           };
-
+  
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
               return this.processForgotPassword(_response);
           });
       }
-
+  
       protected processForgotPassword(response: Response): Promise<void> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
@@ -895,16 +895,16 @@ export class AuthApiBase {
           return Promise.resolve<void>(<any>null);
       }
   }
-
+  
   export enum SortDirection {
       Ascending = "Ascending",
       Descending = "Descending",
   }
-
+  
   export class SortInfo implements ISortInfo {
       sortColumn?: string | undefined;
       sortDirection?: SortDirection;
-
+  
       constructor(data?: ISortInfo) {
           if (data) {
               for (var property in data) {
@@ -913,53 +913,49 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sortColumn = _data["sortColumn"];
               this.sortDirection = _data["sortDirection"];
           }
       }
-
+  
       static fromJS(data: any): SortInfo {
           data = typeof data === 'object' ? data : {};
           let result = new SortInfo();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sortColumn"] = this.sortColumn;
           data["sortDirection"] = this.sortDirection;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISortInfo {
       sortColumn?: string | undefined;
       sortDirection?: SortDirection;
   }
-
+  
   export class SearchCategoriesQuery implements ISearchCategoriesQuery {
       storeId?: string | undefined;
       sellerId?: string | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       readonly sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
-
+  
       constructor(data?: ISearchCategoriesQuery) {
           if (data) {
               for (var property in data) {
@@ -968,7 +964,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.storeId = _data["storeId"];
@@ -998,14 +994,14 @@ export class AuthApiBase {
               this.take = _data["take"];
           }
       }
-
+  
       static fromJS(data: any): SearchCategoriesQuery {
           data = typeof data === 'object' ? data : {};
           let result = new SearchCategoriesQuery();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["storeId"] = this.storeId;
@@ -1033,30 +1029,26 @@ export class AuthApiBase {
           }
           data["skip"] = this.skip;
           data["take"] = this.take;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchCategoriesQuery {
       storeId?: string | undefined;
       sellerId?: string | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
   }
-
+  
   export enum PropertyValueType {
       ShortText = "ShortText",
       LongText = "LongText",
@@ -1066,14 +1058,14 @@ export class AuthApiBase {
       Integer = "Integer",
       GeoPoint = "GeoPoint",
   }
-
+  
   export enum PropertyType {
       Product = "Product",
       Variation = "Variation",
       Category = "Category",
       Catalog = "Catalog",
   }
-
+  
   export class PropertyValue implements IPropertyValue {
       propertyName?: string | undefined;
       propertyId?: string | undefined;
@@ -1090,7 +1082,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IPropertyValue) {
           if (data) {
               for (var property in data) {
@@ -1099,7 +1091,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.propertyName = _data["propertyName"];
@@ -1119,14 +1111,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): PropertyValue {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyValue();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["propertyName"] = this.propertyName;
@@ -1144,10 +1136,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPropertyValue {
       propertyName?: string | undefined;
       propertyId?: string | undefined;
@@ -1165,7 +1157,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class PropertyAttribute implements IPropertyAttribute {
       propertyId?: string | undefined;
       value?: string | undefined;
@@ -1175,7 +1167,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IPropertyAttribute) {
           if (data) {
               for (var property in data) {
@@ -1184,7 +1176,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.propertyId = _data["propertyId"];
@@ -1197,14 +1189,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): PropertyAttribute {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyAttribute();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["propertyId"] = this.propertyId;
@@ -1215,10 +1207,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPropertyAttribute {
       propertyId?: string | undefined;
       value?: string | undefined;
@@ -1229,11 +1221,11 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class PropertyDisplayName implements IPropertyDisplayName {
       name?: string | undefined;
       languageCode?: string | undefined;
-
+  
       constructor(data?: IPropertyDisplayName) {
           if (data) {
               for (var property in data) {
@@ -1242,34 +1234,34 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.name = _data["name"];
               this.languageCode = _data["languageCode"];
           }
       }
-
+  
       static fromJS(data: any): PropertyDisplayName {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyDisplayName();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["name"] = this.name;
           data["languageCode"] = this.languageCode;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPropertyDisplayName {
       name?: string | undefined;
       languageCode?: string | undefined;
   }
-
+  
   /** Represents property validation rules definition */
   export class PropertyValidationRule implements IPropertyValidationRule {
       /** Uniquie value flag constrain */
@@ -1282,7 +1274,7 @@ export class AuthApiBase {
       regExp?: string | undefined;
       propertyId?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IPropertyValidationRule) {
           if (data) {
               for (var property in data) {
@@ -1291,7 +1283,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.isUnique = _data["isUnique"];
@@ -1302,14 +1294,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): PropertyValidationRule {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyValidationRule();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["isUnique"] = this.isUnique;
@@ -1318,10 +1310,10 @@ export class AuthApiBase {
           data["regExp"] = this.regExp;
           data["propertyId"] = this.propertyId;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   /** Represents property validation rules definition */
   export interface IPropertyValidationRule {
       /** Uniquie value flag constrain */
@@ -1335,7 +1327,7 @@ export class AuthApiBase {
       propertyId?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class Property implements IProperty {
       /** Gets or sets a value indicating whether user can change property value. */
       isReadOnly?: boolean;
@@ -1369,7 +1361,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IProperty) {
           if (data) {
               for (var property in data) {
@@ -1378,7 +1370,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.isReadOnly = _data["isReadOnly"];
@@ -1425,14 +1417,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Property {
           data = typeof data === 'object' ? data : {};
           let result = new Property();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["isReadOnly"] = this.isReadOnly;
@@ -1477,10 +1469,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IProperty {
       /** Gets or sets a value indicating whether user can change property value. */
       isReadOnly?: boolean;
@@ -1515,11 +1507,11 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class ExcludedProperty implements IExcludedProperty {
       name?: string | undefined;
       isInherited?: boolean;
-
+  
       constructor(data?: IExcludedProperty) {
           if (data) {
               for (var property in data) {
@@ -1528,34 +1520,34 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.name = _data["name"];
               this.isInherited = _data["isInherited"];
           }
       }
-
+  
       static fromJS(data: any): ExcludedProperty {
           data = typeof data === 'object' ? data : {};
           let result = new ExcludedProperty();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["name"] = this.name;
           data["isInherited"] = this.isInherited;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IExcludedProperty {
       name?: string | undefined;
       isInherited?: boolean;
   }
-
+  
   export class CategoryLink implements ICategoryLink {
       /** Entry identifier which this link belongs to */
       readonly entryId?: string | undefined;
@@ -1567,7 +1559,7 @@ export class AuthApiBase {
       catalogId?: string | undefined;
       categoryId?: string | undefined;
       category?: Category;
-
+  
       constructor(data?: ICategoryLink) {
           if (data) {
               for (var property in data) {
@@ -1576,7 +1568,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               (<any>this).entryId = _data["entryId"];
@@ -1588,14 +1580,14 @@ export class AuthApiBase {
               this.category = _data["category"] ? Category.fromJS(_data["category"]) : <any>undefined;
           }
       }
-
+  
       static fromJS(data: any): CategoryLink {
           data = typeof data === 'object' ? data : {};
           let result = new CategoryLink();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["entryId"] = this.entryId;
@@ -1605,10 +1597,10 @@ export class AuthApiBase {
           data["catalogId"] = this.catalogId;
           data["categoryId"] = this.categoryId;
           data["category"] = this.category ? this.category.toJSON() : <any>undefined;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICategoryLink {
       /** Entry identifier which this link belongs to */
       entryId?: string | undefined;
@@ -1621,7 +1613,7 @@ export class AuthApiBase {
       categoryId?: string | undefined;
       category?: Category;
   }
-
+  
   export class SeoInfo implements ISeoInfo {
       name?: string | undefined;
       /** Slug */
@@ -1647,7 +1639,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: ISeoInfo) {
           if (data) {
               for (var property in data) {
@@ -1656,7 +1648,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.name = _data["name"];
@@ -1677,14 +1669,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): SeoInfo {
           data = typeof data === 'object' ? data : {};
           let result = new SeoInfo();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["name"] = this.name;
@@ -1703,10 +1695,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISeoInfo {
       name?: string | undefined;
       /** Slug */
@@ -1733,75 +1725,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
-  export class CategoryDescription implements ICategoryDescription {
-      content?: string | undefined;
-      descriptionType?: string | undefined;
-      languageCode?: string | undefined;
-      isInherited?: boolean;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-
-      constructor(data?: ICategoryDescription) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.content = _data["content"];
-              this.descriptionType = _data["descriptionType"];
-              this.languageCode = _data["languageCode"];
-              this.isInherited = _data["isInherited"];
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-
-      static fromJS(data: any): CategoryDescription {
-          data = typeof data === 'object' ? data : {};
-          let result = new CategoryDescription();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["content"] = this.content;
-          data["descriptionType"] = this.descriptionType;
-          data["languageCode"] = this.languageCode;
-          data["isInherited"] = this.isInherited;
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data;
-      }
-  }
-
-  export interface ICategoryDescription {
-      content?: string | undefined;
-      descriptionType?: string | undefined;
-      languageCode?: string | undefined;
-      isInherited?: boolean;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  }
-
+  
   export class Image implements IImage {
       binaryData?: string | undefined;
       altText?: string | undefined;
@@ -1827,7 +1751,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IImage) {
           if (data) {
               for (var property in data) {
@@ -1836,7 +1760,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.binaryData = _data["binaryData"];
@@ -1864,14 +1788,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Image {
           data = typeof data === 'object' ? data : {};
           let result = new Image();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["binaryData"] = this.binaryData;
@@ -1897,10 +1821,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IImage {
       binaryData?: string | undefined;
       altText?: string | undefined;
@@ -1927,7 +1851,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   /** Represents one outline element: catalog, category or product. */
   export class OutlineItem implements IOutlineItem {
       /** Object id */
@@ -1940,7 +1864,7 @@ export class AuthApiBase {
       name?: string | undefined;
       /** True when this object is linked to the virtual parent. */
       hasVirtualParent?: boolean;
-
+  
       constructor(data?: IOutlineItem) {
           if (data) {
               for (var property in data) {
@@ -1949,7 +1873,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.id = _data["id"];
@@ -1963,14 +1887,14 @@ export class AuthApiBase {
               this.hasVirtualParent = _data["hasVirtualParent"];
           }
       }
-
+  
       static fromJS(data: any): OutlineItem {
           data = typeof data === 'object' ? data : {};
           let result = new OutlineItem();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["id"] = this.id;
@@ -1982,10 +1906,10 @@ export class AuthApiBase {
           }
           data["name"] = this.name;
           data["hasVirtualParent"] = this.hasVirtualParent;
-          return data;
+          return data; 
       }
   }
-
+  
   /** Represents one outline element: catalog, category or product. */
   export interface IOutlineItem {
       /** Object id */
@@ -1999,12 +1923,12 @@ export class AuthApiBase {
       /** True when this object is linked to the virtual parent. */
       hasVirtualParent?: boolean;
   }
-
+  
   /** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
   export class Outline implements IOutline {
       /** Outline parts */
       items?: OutlineItem[] | undefined;
-
+  
       constructor(data?: IOutline) {
           if (data) {
               for (var property in data) {
@@ -2013,7 +1937,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               if (Array.isArray(_data["items"])) {
@@ -2023,14 +1947,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): Outline {
           data = typeof data === 'object' ? data : {};
           let result = new Outline();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           if (Array.isArray(this.items)) {
@@ -2038,16 +1962,16 @@ export class AuthApiBase {
               for (let item of this.items)
                   data["items"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   /** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
   export interface IOutline {
       /** Outline parts */
       items?: OutlineItem[] | undefined;
   }
-
+  
   export class Category implements ICategory {
       catalogId?: string | undefined;
       parentId?: string | undefined;
@@ -2069,8 +1993,6 @@ export class AuthApiBase {
       taxType?: string | undefined;
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
-      enableDescription?: boolean | undefined;
-      descriptions?: CategoryDescription[] | undefined;
       /** Gets the default image */
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
@@ -2082,7 +2004,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: ICategory) {
           if (data) {
               for (var property in data) {
@@ -2091,7 +2013,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.catalogId = _data["catalogId"];
@@ -2128,12 +2050,6 @@ export class AuthApiBase {
                   for (let item of _data["seoInfos"])
                       this.seoInfos!.push(SeoInfo.fromJS(item));
               }
-              this.enableDescription = _data["enableDescription"];
-              if (Array.isArray(_data["descriptions"])) {
-                  this.descriptions = [] as any;
-                  for (let item of _data["descriptions"])
-                      this.descriptions!.push(CategoryDescription.fromJS(item));
-              }
               (<any>this).imgSrc = _data["imgSrc"];
               if (Array.isArray(_data["images"])) {
                   this.images = [] as any;
@@ -2153,14 +2069,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Category {
           data = typeof data === 'object' ? data : {};
           let result = new Category();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["catalogId"] = this.catalogId;
@@ -2197,12 +2113,6 @@ export class AuthApiBase {
               for (let item of this.seoInfos)
                   data["seoInfos"].push(item.toJSON());
           }
-          data["enableDescription"] = this.enableDescription;
-          if (Array.isArray(this.descriptions)) {
-              data["descriptions"] = [];
-              for (let item of this.descriptions)
-                  data["descriptions"].push(item.toJSON());
-          }
           data["imgSrc"] = this.imgSrc;
           if (Array.isArray(this.images)) {
               data["images"] = [];
@@ -2220,10 +2130,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICategory {
       catalogId?: string | undefined;
       parentId?: string | undefined;
@@ -2245,8 +2155,6 @@ export class AuthApiBase {
       taxType?: string | undefined;
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
-      enableDescription?: boolean | undefined;
-      descriptions?: CategoryDescription[] | undefined;
       /** Gets the default image */
       imgSrc?: string | undefined;
       images?: Image[] | undefined;
@@ -2259,11 +2167,11 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class CategorySearchResult implements ICategorySearchResult {
       totalCount?: number;
       results?: Category[] | undefined;
-
+  
       constructor(data?: ICategorySearchResult) {
           if (data) {
               for (var property in data) {
@@ -2272,7 +2180,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.totalCount = _data["totalCount"];
@@ -2283,14 +2191,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): CategorySearchResult {
           data = typeof data === 'object' ? data : {};
           let result = new CategorySearchResult();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["totalCount"] = this.totalCount;
@@ -2299,36 +2207,33 @@ export class AuthApiBase {
               for (let item of this.results)
                   data["results"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICategorySearchResult {
       totalCount?: number;
       results?: Category[] | undefined;
   }
-
+  
   export class SearchProductsQuery implements ISearchProductsQuery {
       sellerId?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
       status?: string | undefined;
+      outerIds?: string[] | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       readonly sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
-
+  
       constructor(data?: ISearchProductsQuery) {
           if (data) {
               for (var property in data) {
@@ -2337,7 +2242,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
@@ -2348,6 +2253,11 @@ export class AuthApiBase {
                       this.storesIds!.push(item);
               }
               this.status = _data["status"];
+              if (Array.isArray(_data["outerIds"])) {
+                  this.outerIds = [] as any;
+                  for (let item of _data["outerIds"])
+                      this.outerIds!.push(item);
+              }
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
               if (Array.isArray(_data["objectTypes"])) {
@@ -2373,14 +2283,14 @@ export class AuthApiBase {
               this.take = _data["take"];
           }
       }
-
+  
       static fromJS(data: any): SearchProductsQuery {
           data = typeof data === 'object' ? data : {};
           let result = new SearchProductsQuery();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
@@ -2391,6 +2301,11 @@ export class AuthApiBase {
                   data["storesIds"].push(item);
           }
           data["status"] = this.status;
+          if (Array.isArray(this.outerIds)) {
+              data["outerIds"] = [];
+              for (let item of this.outerIds)
+                  data["outerIds"].push(item);
+          }
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -2414,32 +2329,29 @@ export class AuthApiBase {
           }
           data["skip"] = this.skip;
           data["take"] = this.take;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchProductsQuery {
       sellerId?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
       status?: string | undefined;
+      outerIds?: string[] | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
   }
-
+  
   export enum SellerProductStatus {
       None = "None",
       Published = "Published",
@@ -2449,7 +2361,7 @@ export class AuthApiBase {
       Rejected = "Rejected",
       Approved = "Approved",
   }
-
+  
   export class Comment implements IComment {
       text?: string | undefined;
       createdDate?: Date;
@@ -2457,7 +2369,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IComment) {
           if (data) {
               for (var property in data) {
@@ -2466,7 +2378,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.text = _data["text"];
@@ -2477,14 +2389,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Comment {
           data = typeof data === 'object' ? data : {};
           let result = new Comment();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["text"] = this.text;
@@ -2493,10 +2405,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IComment {
       text?: string | undefined;
       createdDate?: Date;
@@ -2505,7 +2417,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export enum PublicationRequestStatus {
       None = "None",
       WaitForApproval = "WaitForApproval",
@@ -2513,7 +2425,7 @@ export class AuthApiBase {
       Rejected = "Rejected",
       Approved = "Approved",
   }
-
+  
   export class ProductPublicationRequest implements IProductPublicationRequest {
       storeId?: string | undefined;
       storeName?: string | undefined;
@@ -2531,7 +2443,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IProductPublicationRequest) {
           if (data) {
               for (var property in data) {
@@ -2540,7 +2452,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.storeId = _data["storeId"];
@@ -2565,14 +2477,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): ProductPublicationRequest {
           data = typeof data === 'object' ? data : {};
           let result = new ProductPublicationRequest();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["storeId"] = this.storeId;
@@ -2595,10 +2507,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IProductPublicationRequest {
       storeId?: string | undefined;
       storeName?: string | undefined;
@@ -2617,7 +2529,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class ProductPublication implements IProductPublication {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
@@ -2631,7 +2543,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IProductPublication) {
           if (data) {
               for (var property in data) {
@@ -2640,7 +2552,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
@@ -2657,14 +2569,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): ProductPublication {
           data = typeof data === 'object' ? data : {};
           let result = new ProductPublication();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
@@ -2679,10 +2591,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IProductPublication {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
@@ -2697,147 +2609,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
-  export class ProductPartItemInfo implements IProductPartItemInfo {
-      itemId?: string | undefined;
-      priority?: number;
-
-      constructor(data?: IProductPartItemInfo) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.itemId = _data["itemId"];
-              this.priority = _data["priority"];
-          }
-      }
-
-      static fromJS(data: any): ProductPartItemInfo {
-          data = typeof data === 'object' ? data : {};
-          let result = new ProductPartItemInfo();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["itemId"] = this.itemId;
-          data["priority"] = this.priority;
-          return data;
-      }
-  }
-
-  export interface IProductPartItemInfo {
-      itemId?: string | undefined;
-      priority?: number;
-  }
-
-  export class DemoProductPart implements IDemoProductPart {
-      configuredProductId?: string | undefined;
-      name?: string | undefined;
-      description?: string | undefined;
-      isRequired?: boolean;
-      imgSrc?: string | undefined;
-      priority?: number;
-      minQuantity?: number;
-      maxQuantity?: number;
-      defaultItemId?: string | undefined;
-      partItems?: ProductPartItemInfo[] | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-
-      constructor(data?: IDemoProductPart) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.configuredProductId = _data["configuredProductId"];
-              this.name = _data["name"];
-              this.description = _data["description"];
-              this.isRequired = _data["isRequired"];
-              this.imgSrc = _data["imgSrc"];
-              this.priority = _data["priority"];
-              this.minQuantity = _data["minQuantity"];
-              this.maxQuantity = _data["maxQuantity"];
-              this.defaultItemId = _data["defaultItemId"];
-              if (Array.isArray(_data["partItems"])) {
-                  this.partItems = [] as any;
-                  for (let item of _data["partItems"])
-                      this.partItems!.push(ProductPartItemInfo.fromJS(item));
-              }
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-
-      static fromJS(data: any): DemoProductPart {
-          data = typeof data === 'object' ? data : {};
-          let result = new DemoProductPart();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["configuredProductId"] = this.configuredProductId;
-          data["name"] = this.name;
-          data["description"] = this.description;
-          data["isRequired"] = this.isRequired;
-          data["imgSrc"] = this.imgSrc;
-          data["priority"] = this.priority;
-          data["minQuantity"] = this.minQuantity;
-          data["maxQuantity"] = this.maxQuantity;
-          data["defaultItemId"] = this.defaultItemId;
-          if (Array.isArray(this.partItems)) {
-              data["partItems"] = [];
-              for (let item of this.partItems)
-                  data["partItems"].push(item.toJSON());
-          }
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data;
-      }
-  }
-
-  export interface IDemoProductPart {
-      configuredProductId?: string | undefined;
-      name?: string | undefined;
-      description?: string | undefined;
-      isRequired?: boolean;
-      imgSrc?: string | undefined;
-      priority?: number;
-      minQuantity?: number;
-      maxQuantity?: number;
-      defaultItemId?: string | undefined;
-      partItems?: ProductPartItemInfo[] | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  }
-
+  
   export class Asset implements IAsset {
       mimeType?: string | undefined;
       size?: number;
@@ -2865,7 +2637,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IAsset) {
           if (data) {
               for (var property in data) {
@@ -2874,7 +2646,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.mimeType = _data["mimeType"];
@@ -2904,14 +2676,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Asset {
           data = typeof data === 'object' ? data : {};
           let result = new Asset();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["mimeType"] = this.mimeType;
@@ -2939,10 +2711,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IAsset {
       mimeType?: string | undefined;
       size?: number;
@@ -2971,7 +2743,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class EditorialReview implements IEditorialReview {
       content?: string | undefined;
       reviewType?: string | undefined;
@@ -2982,7 +2754,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IEditorialReview) {
           if (data) {
               for (var property in data) {
@@ -2991,7 +2763,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.content = _data["content"];
@@ -3005,14 +2777,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): EditorialReview {
           data = typeof data === 'object' ? data : {};
           let result = new EditorialReview();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["content"] = this.content;
@@ -3024,10 +2796,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IEditorialReview {
       content?: string | undefined;
       reviewType?: string | undefined;
@@ -3039,7 +2811,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class ProductAssociation implements IProductAssociation {
       /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
       type?: string | undefined;
@@ -3061,7 +2833,7 @@ export class AuthApiBase {
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IProductAssociation) {
           if (data) {
               for (var property in data) {
@@ -3070,7 +2842,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.type = _data["type"];
@@ -3096,14 +2868,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): ProductAssociation {
           data = typeof data === 'object' ? data : {};
           let result = new ProductAssociation();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["type"] = this.type;
@@ -3127,10 +2899,10 @@ export class AuthApiBase {
                   data["images"].push(item.toJSON());
           }
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IProductAssociation {
       /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
       type?: string | undefined;
@@ -3153,7 +2925,7 @@ export class AuthApiBase {
       images?: Image[] | undefined;
       id?: string | undefined;
   }
-
+  
   export class Variation implements IVariation {
       /** SKU code */
       code?: string | undefined;
@@ -3222,7 +2994,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IVariation) {
           if (data) {
               for (var property in data) {
@@ -3231,7 +3003,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.code = _data["code"];
@@ -3340,14 +3112,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Variation {
           data = typeof data === 'object' ? data : {};
           let result = new Variation();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["code"] = this.code;
@@ -3454,10 +3226,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IVariation {
       /** SKU code */
       code?: string | undefined;
@@ -3527,9 +3299,8 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class CatalogProduct implements ICatalogProduct {
-      productParts?: DemoProductPart[] | undefined;
       /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
@@ -3597,7 +3368,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: ICatalogProduct) {
           if (data) {
               for (var property in data) {
@@ -3606,14 +3377,9 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
-              if (Array.isArray(_data["productParts"])) {
-                  this.productParts = [] as any;
-                  for (let item of _data["productParts"])
-                      this.productParts!.push(DemoProductPart.fromJS(item));
-              }
               this.code = _data["code"];
               this.manufacturerPartNumber = _data["manufacturerPartNumber"];
               this.gtin = _data["gtin"];
@@ -3720,21 +3486,16 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): CatalogProduct {
           data = typeof data === 'object' ? data : {};
           let result = new CatalogProduct();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          if (Array.isArray(this.productParts)) {
-              data["productParts"] = [];
-              for (let item of this.productParts)
-                  data["productParts"].push(item.toJSON());
-          }
           data["code"] = this.code;
           data["manufacturerPartNumber"] = this.manufacturerPartNumber;
           data["gtin"] = this.gtin;
@@ -3839,12 +3600,11 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICatalogProduct {
-      productParts?: DemoProductPart[] | undefined;
       /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
@@ -3913,7 +3673,7 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class SellerProduct implements ISellerProduct {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
@@ -3937,7 +3697,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: ISellerProduct) {
           if (data) {
               for (var property in data) {
@@ -3946,7 +3706,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
@@ -3977,14 +3737,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): SellerProduct {
           data = typeof data === 'object' ? data : {};
           let result = new SellerProduct();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
@@ -4013,10 +3773,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISellerProduct {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
@@ -4041,11 +3801,11 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class SearchProductsResult implements ISearchProductsResult {
       totalCount?: number;
       results?: SellerProduct[] | undefined;
-
+  
       constructor(data?: ISearchProductsResult) {
           if (data) {
               for (var property in data) {
@@ -4054,7 +3814,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.totalCount = _data["totalCount"];
@@ -4065,14 +3825,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): SearchProductsResult {
           data = typeof data === 'object' ? data : {};
           let result = new SearchProductsResult();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["totalCount"] = this.totalCount;
@@ -4081,35 +3841,31 @@ export class AuthApiBase {
               for (let item of this.results)
                   data["results"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchProductsResult {
       totalCount?: number;
       results?: SellerProduct[] | undefined;
   }
-
+  
   /** Search criteria used for search property dictionary items */
   export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionaryItemSearchCriteria {
       propertyIds?: string[] | undefined;
       catalogIds?: string[] | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       readonly sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
-
+  
       constructor(data?: IPropertyDictionaryItemSearchCriteria) {
           if (data) {
               for (var property in data) {
@@ -4118,7 +3874,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               if (Array.isArray(_data["propertyIds"])) {
@@ -4156,14 +3912,14 @@ export class AuthApiBase {
               this.take = _data["take"];
           }
       }
-
+  
       static fromJS(data: any): PropertyDictionaryItemSearchCriteria {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyDictionaryItemSearchCriteria();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           if (Array.isArray(this.propertyIds)) {
@@ -4199,35 +3955,31 @@ export class AuthApiBase {
           }
           data["skip"] = this.skip;
           data["take"] = this.take;
-          return data;
+          return data; 
       }
   }
-
+  
   /** Search criteria used for search property dictionary items */
   export interface IPropertyDictionaryItemSearchCriteria {
       propertyIds?: string[] | undefined;
       catalogIds?: string[] | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
   }
-
+  
   export class PropertyDictionaryItemLocalizedValue implements IPropertyDictionaryItemLocalizedValue {
       languageCode?: string | undefined;
       value?: string | undefined;
-
+  
       constructor(data?: IPropertyDictionaryItemLocalizedValue) {
           if (data) {
               for (var property in data) {
@@ -4236,41 +3988,41 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.languageCode = _data["languageCode"];
               this.value = _data["value"];
           }
       }
-
+  
       static fromJS(data: any): PropertyDictionaryItemLocalizedValue {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyDictionaryItemLocalizedValue();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["languageCode"] = this.languageCode;
           data["value"] = this.value;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPropertyDictionaryItemLocalizedValue {
       languageCode?: string | undefined;
       value?: string | undefined;
   }
-
+  
   export class PropertyDictionaryItem implements IPropertyDictionaryItem {
       propertyId?: string | undefined;
       alias?: string | undefined;
       sortOrder?: number;
       localizedValues?: PropertyDictionaryItemLocalizedValue[] | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IPropertyDictionaryItem) {
           if (data) {
               for (var property in data) {
@@ -4279,7 +4031,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.propertyId = _data["propertyId"];
@@ -4293,14 +4045,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): PropertyDictionaryItem {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyDictionaryItem();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["propertyId"] = this.propertyId;
@@ -4312,10 +4064,10 @@ export class AuthApiBase {
                   data["localizedValues"].push(item.toJSON());
           }
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPropertyDictionaryItem {
       propertyId?: string | undefined;
       alias?: string | undefined;
@@ -4323,11 +4075,11 @@ export class AuthApiBase {
       localizedValues?: PropertyDictionaryItemLocalizedValue[] | undefined;
       id?: string | undefined;
   }
-
+  
   export class PropertyDictionaryItemSearchResult implements IPropertyDictionaryItemSearchResult {
       totalCount?: number;
       results?: PropertyDictionaryItem[] | undefined;
-
+  
       constructor(data?: IPropertyDictionaryItemSearchResult) {
           if (data) {
               for (var property in data) {
@@ -4336,7 +4088,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.totalCount = _data["totalCount"];
@@ -4347,14 +4099,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): PropertyDictionaryItemSearchResult {
           data = typeof data === 'object' ? data : {};
           let result = new PropertyDictionaryItemSearchResult();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["totalCount"] = this.totalCount;
@@ -4363,23 +4115,24 @@ export class AuthApiBase {
               for (let item of this.results)
                   data["results"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPropertyDictionaryItemSearchResult {
       totalCount?: number;
       results?: PropertyDictionaryItem[] | undefined;
   }
-
+  
   export class ProductDetails implements IProductDetails {
       name?: string | undefined;
       description?: string | undefined;
       gtin?: string | undefined;
       categoryId?: string | undefined;
+      outerId?: string | undefined;
       properties?: Property[] | undefined;
       images?: Image[] | undefined;
-
+  
       constructor(data?: IProductDetails) {
           if (data) {
               for (var property in data) {
@@ -4388,13 +4141,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.name = _data["name"];
               this.description = _data["description"];
               this.gtin = _data["gtin"];
               this.categoryId = _data["categoryId"];
+              this.outerId = _data["outerId"];
               if (Array.isArray(_data["properties"])) {
                   this.properties = [] as any;
                   for (let item of _data["properties"])
@@ -4407,20 +4161,21 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): ProductDetails {
           data = typeof data === 'object' ? data : {};
           let result = new ProductDetails();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["name"] = this.name;
           data["description"] = this.description;
           data["gtin"] = this.gtin;
           data["categoryId"] = this.categoryId;
+          data["outerId"] = this.outerId;
           if (Array.isArray(this.properties)) {
               data["properties"] = [];
               for (let item of this.properties)
@@ -4431,23 +4186,24 @@ export class AuthApiBase {
               for (let item of this.images)
                   data["images"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IProductDetails {
       name?: string | undefined;
       description?: string | undefined;
       gtin?: string | undefined;
       categoryId?: string | undefined;
+      outerId?: string | undefined;
       properties?: Property[] | undefined;
       images?: Image[] | undefined;
   }
-
+  
   export class CreateNewProductCommand implements ICreateNewProductCommand {
       sellerName?: string | undefined;
       productDetails?: ProductDetails;
-
+  
       constructor(data?: ICreateNewProductCommand) {
           if (data) {
               for (var property in data) {
@@ -4456,38 +4212,38 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerName = _data["sellerName"];
               this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
           }
       }
-
+  
       static fromJS(data: any): CreateNewProductCommand {
           data = typeof data === 'object' ? data : {};
           let result = new CreateNewProductCommand();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerName"] = this.sellerName;
           data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICreateNewProductCommand {
       sellerName?: string | undefined;
       productDetails?: ProductDetails;
   }
-
+  
   export class UpdateProductDetailsCommand implements IUpdateProductDetailsCommand {
       sellerProductId?: string | undefined;
       productDetails?: ProductDetails;
-
+  
       constructor(data?: IUpdateProductDetailsCommand) {
           if (data) {
               for (var property in data) {
@@ -4496,39 +4252,39 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerProductId = _data["sellerProductId"];
               this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
           }
       }
-
+  
       static fromJS(data: any): UpdateProductDetailsCommand {
           data = typeof data === 'object' ? data : {};
           let result = new UpdateProductDetailsCommand();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerProductId"] = this.sellerProductId;
           data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IUpdateProductDetailsCommand {
       sellerProductId?: string | undefined;
       productDetails?: ProductDetails;
   }
-
+  
   export class CreateNewPublicationRequestCommand implements ICreateNewPublicationRequestCommand {
       storeId?: string | undefined;
       productId!: string;
       comment?: string | undefined;
-
+  
       constructor(data?: ICreateNewPublicationRequestCommand) {
           if (data) {
               for (var property in data) {
@@ -4537,7 +4293,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.storeId = _data["storeId"];
@@ -4545,49 +4301,46 @@ export class AuthApiBase {
               this.comment = _data["comment"];
           }
       }
-
+  
       static fromJS(data: any): CreateNewPublicationRequestCommand {
           data = typeof data === 'object' ? data : {};
           let result = new CreateNewPublicationRequestCommand();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["storeId"] = this.storeId;
           data["productId"] = this.productId;
           data["comment"] = this.comment;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICreateNewPublicationRequestCommand {
       storeId?: string | undefined;
       productId: string;
       comment?: string | undefined;
   }
-
+  
   export class SearchOffersQuery implements ISearchOffersQuery {
       sellerId?: string | undefined;
       sellerProductId?: string | undefined;
+      outerIds?: string[] | undefined;
       productId?: string | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       readonly sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
-
+  
       constructor(data?: ISearchOffersQuery) {
           if (data) {
               for (var property in data) {
@@ -4596,11 +4349,16 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerProductId = _data["sellerProductId"];
+              if (Array.isArray(_data["outerIds"])) {
+                  this.outerIds = [] as any;
+                  for (let item of _data["outerIds"])
+                      this.outerIds!.push(item);
+              }
               this.productId = _data["productId"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
@@ -4627,18 +4385,23 @@ export class AuthApiBase {
               this.take = _data["take"];
           }
       }
-
+  
       static fromJS(data: any): SearchOffersQuery {
           data = typeof data === 'object' ? data : {};
           let result = new SearchOffersQuery();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
           data["sellerProductId"] = this.sellerProductId;
+          if (Array.isArray(this.outerIds)) {
+              data["outerIds"] = [];
+              for (let item of this.outerIds)
+                  data["outerIds"].push(item);
+          }
           data["productId"] = this.productId;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
@@ -4663,37 +4426,34 @@ export class AuthApiBase {
           }
           data["skip"] = this.skip;
           data["take"] = this.take;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchOffersQuery {
       sellerId?: string | undefined;
       sellerProductId?: string | undefined;
+      outerIds?: string[] | undefined;
       productId?: string | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
   }
-
+  
   export class OfferPrice implements IOfferPrice {
       listPrice!: number;
       salePrice?: number | undefined;
       minQuantity?: number;
       id?: string | undefined;
-
+  
       constructor(data?: IOfferPrice) {
           if (data) {
               for (var property in data) {
@@ -4702,7 +4462,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.listPrice = _data["listPrice"];
@@ -4711,31 +4471,31 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): OfferPrice {
           data = typeof data === 'object' ? data : {};
           let result = new OfferPrice();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["listPrice"] = this.listPrice;
           data["salePrice"] = this.salePrice;
           data["minQuantity"] = this.minQuantity;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IOfferPrice {
       listPrice: number;
       salePrice?: number | undefined;
       minQuantity?: number;
       id?: string | undefined;
   }
-
+  
   export class Offer implements IOffer {
       isActive?: boolean;
       outerId?: string | undefined;
@@ -4763,7 +4523,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IOffer) {
           if (data) {
               for (var property in data) {
@@ -4772,7 +4532,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.isActive = _data["isActive"];
@@ -4807,14 +4567,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): Offer {
           data = typeof data === 'object' ? data : {};
           let result = new Offer();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["isActive"] = this.isActive;
@@ -4847,10 +4607,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IOffer {
       isActive?: boolean;
       outerId?: string | undefined;
@@ -4879,11 +4639,11 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class SearchOffersResult implements ISearchOffersResult {
       totalCount?: number;
       results?: Offer[] | undefined;
-
+  
       constructor(data?: ISearchOffersResult) {
           if (data) {
               for (var property in data) {
@@ -4892,7 +4652,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.totalCount = _data["totalCount"];
@@ -4903,14 +4663,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): SearchOffersResult {
           data = typeof data === 'object' ? data : {};
           let result = new SearchOffersResult();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["totalCount"] = this.totalCount;
@@ -4919,33 +4679,29 @@ export class AuthApiBase {
               for (let item of this.results)
                   data["results"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchOffersResult {
       totalCount?: number;
       results?: Offer[] | undefined;
   }
-
+  
   export class SearchProductsForNewOfferQuery implements ISearchProductsForNewOfferQuery {
       sellerId?: string | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       readonly sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
-
+  
       constructor(data?: ISearchProductsForNewOfferQuery) {
           if (data) {
               for (var property in data) {
@@ -4954,7 +4710,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
@@ -4983,14 +4739,14 @@ export class AuthApiBase {
               this.take = _data["take"];
           }
       }
-
+  
       static fromJS(data: any): SearchProductsForNewOfferQuery {
           data = typeof data === 'object' ? data : {};
           let result = new SearchProductsForNewOfferQuery();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
@@ -5017,29 +4773,25 @@ export class AuthApiBase {
           }
           data["skip"] = this.skip;
           data["take"] = this.take;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchProductsForNewOfferQuery {
       sellerId?: string | undefined;
       responseGroup?: string | undefined;
-      /** Search object type */
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
       objectIds?: string[] | undefined;
-      /** Search phrase */
       keyword?: string | undefined;
-      /** Property is left for backward compatibility */
       searchPhrase?: string | undefined;
-      /** Search phrase language */
       languageCode?: string | undefined;
       sort?: string | undefined;
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
   }
-
+  
   export class OfferProduct implements IOfferProduct {
       name?: string | undefined;
       sku?: string | undefined;
@@ -5051,7 +4803,7 @@ export class AuthApiBase {
       createdBy?: string | undefined;
       modifiedBy?: string | undefined;
       id?: string | undefined;
-
+  
       constructor(data?: IOfferProduct) {
           if (data) {
               for (var property in data) {
@@ -5060,7 +4812,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.name = _data["name"];
@@ -5075,14 +4827,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): OfferProduct {
           data = typeof data === 'object' ? data : {};
           let result = new OfferProduct();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["name"] = this.name;
@@ -5095,10 +4847,10 @@ export class AuthApiBase {
           data["createdBy"] = this.createdBy;
           data["modifiedBy"] = this.modifiedBy;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IOfferProduct {
       name?: string | undefined;
       sku?: string | undefined;
@@ -5111,11 +4863,11 @@ export class AuthApiBase {
       modifiedBy?: string | undefined;
       id?: string | undefined;
   }
-
+  
   export class SearchOfferProductsResult implements ISearchOfferProductsResult {
       totalCount?: number;
       results?: OfferProduct[] | undefined;
-
+  
       constructor(data?: ISearchOfferProductsResult) {
           if (data) {
               for (var property in data) {
@@ -5124,7 +4876,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.totalCount = _data["totalCount"];
@@ -5135,14 +4887,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): SearchOfferProductsResult {
           data = typeof data === 'object' ? data : {};
           let result = new SearchOfferProductsResult();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["totalCount"] = this.totalCount;
@@ -5151,15 +4903,15 @@ export class AuthApiBase {
               for (let item of this.results)
                   data["results"].push(item.toJSON());
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ISearchOfferProductsResult {
       totalCount?: number;
       results?: OfferProduct[] | undefined;
   }
-
+  
   export class OfferDetails implements IOfferDetails {
       productId?: string | undefined;
       isActive?: boolean;
@@ -5172,7 +4924,7 @@ export class AuthApiBase {
       startDate?: Date | undefined;
       endDate?: Date | undefined;
       estimatedDeliveryDate?: string | undefined;
-
+  
       constructor(data?: IOfferDetails) {
           if (data) {
               for (var property in data) {
@@ -5181,7 +4933,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.productId = _data["productId"];
@@ -5201,14 +4953,14 @@ export class AuthApiBase {
               this.estimatedDeliveryDate = _data["estimatedDeliveryDate"];
           }
       }
-
+  
       static fromJS(data: any): OfferDetails {
           data = typeof data === 'object' ? data : {};
           let result = new OfferDetails();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["productId"] = this.productId;
@@ -5226,10 +4978,10 @@ export class AuthApiBase {
           data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
           data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
           data["estimatedDeliveryDate"] = this.estimatedDeliveryDate;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IOfferDetails {
       productId?: string | undefined;
       isActive?: boolean;
@@ -5243,7 +4995,7 @@ export class AuthApiBase {
       endDate?: Date | undefined;
       estimatedDeliveryDate?: string | undefined;
   }
-
+  
   export class CreateNewOfferCommand implements ICreateNewOfferCommand {
       outerId?: string | undefined;
       sellerName!: string;
@@ -5251,7 +5003,7 @@ export class AuthApiBase {
       storeName?: string | undefined;
       details!: OfferDetails;
       productId!: string;
-
+  
       constructor(data?: ICreateNewOfferCommand) {
           if (data) {
               for (var property in data) {
@@ -5263,7 +5015,7 @@ export class AuthApiBase {
               this.details = new OfferDetails();
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.outerId = _data["outerId"];
@@ -5274,14 +5026,14 @@ export class AuthApiBase {
               this.productId = _data["productId"];
           }
       }
-
+  
       static fromJS(data: any): CreateNewOfferCommand {
           data = typeof data === 'object' ? data : {};
           let result = new CreateNewOfferCommand();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["outerId"] = this.outerId;
@@ -5290,10 +5042,10 @@ export class AuthApiBase {
           data["storeName"] = this.storeName;
           data["details"] = this.details ? this.details.toJSON() : <any>undefined;
           data["productId"] = this.productId;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface ICreateNewOfferCommand {
       outerId?: string | undefined;
       sellerName: string;
@@ -5302,68 +5054,36 @@ export class AuthApiBase {
       details: OfferDetails;
       productId: string;
   }
-
-  export class PermissionScope implements IPermissionScope {
-      /** Scope type name */
-      type?: string | undefined;
-      /** Display label for particular scope value used only for  representation */
-      label?: string | undefined;
-      /** Represent string scope value */
-      scope?: string | undefined;
-
-      constructor(data?: IPermissionScope) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.type = _data["type"];
-              this.label = _data["label"];
-              this.scope = _data["scope"];
-          }
-      }
-
-      static fromJS(data: any): PermissionScope {
-          data = typeof data === 'object' ? data : {};
-          let result = new PermissionScope();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["type"] = this.type;
-          data["label"] = this.label;
-          data["scope"] = this.scope;
-          return data;
-      }
+  
+  export enum SettingValueType {
+      ShortText = "ShortText",
+      LongText = "LongText",
+      Integer = "Integer",
+      Decimal = "Decimal",
+      DateTime = "DateTime",
+      Boolean = "Boolean",
+      SecureString = "SecureString",
+      Json = "Json",
+      PositiveInteger = "PositiveInteger",
   }
-
-  export interface IPermissionScope {
-      /** Scope type name */
-      type?: string | undefined;
-      /** Display label for particular scope value used only for  representation */
-      label?: string | undefined;
-      /** Represent string scope value */
-      scope?: string | undefined;
-  }
-
-  export class Permission implements IPermission {
-      id?: string | undefined;
-      name?: string | undefined;
-      /** Id of the module which has registered this permission. */
+  
+  export class ObjectSettingEntry implements IObjectSettingEntry {
+      readonly itHasValues?: boolean;
+      objectId?: string | undefined;
+      objectType?: string | undefined;
+      isReadOnly?: string | undefined;
+      value?: any | undefined;
+      restartRequired?: boolean;
       moduleId?: string | undefined;
-      /** Display name of the group to which this permission belongs. The '|' character is used to separate Child and parent groups. */
       groupName?: string | undefined;
-      assignedScopes?: PermissionScope[] | undefined;
-      readonly availableScopes?: PermissionScope[] | undefined;
-
-      constructor(data?: IPermission) {
+      name?: string | undefined;
+      isHidden?: boolean;
+      valueType?: SettingValueType;
+      allowedValues?: any[] | undefined;
+      defaultValue?: any | undefined;
+      isDictionary?: boolean;
+  
+      constructor(data?: IObjectSettingEntry) {
           if (data) {
               for (var property in data) {
                   if (data.hasOwnProperty(property))
@@ -5371,470 +5091,93 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
-              this.id = _data["id"];
-              this.name = _data["name"];
+              (<any>this).itHasValues = _data["itHasValues"];
+              this.objectId = _data["objectId"];
+              this.objectType = _data["objectType"];
+              this.isReadOnly = _data["isReadOnly"];
+              this.value = _data["value"];
+              this.restartRequired = _data["restartRequired"];
               this.moduleId = _data["moduleId"];
               this.groupName = _data["groupName"];
-              if (Array.isArray(_data["assignedScopes"])) {
-                  this.assignedScopes = [] as any;
-                  for (let item of _data["assignedScopes"])
-                      this.assignedScopes!.push(PermissionScope.fromJS(item));
+              this.name = _data["name"];
+              this.isHidden = _data["isHidden"];
+              this.valueType = _data["valueType"];
+              if (Array.isArray(_data["allowedValues"])) {
+                  this.allowedValues = [] as any;
+                  for (let item of _data["allowedValues"])
+                      this.allowedValues!.push(item);
               }
-              if (Array.isArray(_data["availableScopes"])) {
-                  (<any>this).availableScopes = [] as any;
-                  for (let item of _data["availableScopes"])
-                      (<any>this).availableScopes!.push(PermissionScope.fromJS(item));
-              }
+              this.defaultValue = _data["defaultValue"];
+              this.isDictionary = _data["isDictionary"];
           }
       }
-
-      static fromJS(data: any): Permission {
+  
+      static fromJS(data: any): ObjectSettingEntry {
           data = typeof data === 'object' ? data : {};
-          let result = new Permission();
+          let result = new ObjectSettingEntry();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          data["id"] = this.id;
-          data["name"] = this.name;
+          data["itHasValues"] = this.itHasValues;
+          data["objectId"] = this.objectId;
+          data["objectType"] = this.objectType;
+          data["isReadOnly"] = this.isReadOnly;
+          data["value"] = this.value;
+          data["restartRequired"] = this.restartRequired;
           data["moduleId"] = this.moduleId;
           data["groupName"] = this.groupName;
-          if (Array.isArray(this.assignedScopes)) {
-              data["assignedScopes"] = [];
-              for (let item of this.assignedScopes)
-                  data["assignedScopes"].push(item.toJSON());
-          }
-          if (Array.isArray(this.availableScopes)) {
-              data["availableScopes"] = [];
-              for (let item of this.availableScopes)
-                  data["availableScopes"].push(item.toJSON());
-          }
-          return data;
-      }
-  }
-
-  export interface IPermission {
-      id?: string | undefined;
-      name?: string | undefined;
-      /** Id of the module which has registered this permission. */
-      moduleId?: string | undefined;
-      /** Display name of the group to which this permission belongs. The '|' character is used to separate Child and parent groups. */
-      groupName?: string | undefined;
-      assignedScopes?: PermissionScope[] | undefined;
-      availableScopes?: PermissionScope[] | undefined;
-  }
-
-  export class StringIdentityUserRole implements IStringIdentityUserRole {
-      userId?: string | undefined;
-      roleId?: string | undefined;
-
-      constructor(data?: IStringIdentityUserRole) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.userId = _data["userId"];
-              this.roleId = _data["roleId"];
-          }
-      }
-
-      static fromJS(data: any): StringIdentityUserRole {
-          data = typeof data === 'object' ? data : {};
-          let result = new StringIdentityUserRole();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["userId"] = this.userId;
-          data["roleId"] = this.roleId;
-          return data;
-      }
-  }
-
-  export interface IStringIdentityUserRole {
-      userId?: string | undefined;
-      roleId?: string | undefined;
-  }
-
-  export class Role implements IRole {
-      description?: string | undefined;
-      permissions?: Permission[] | undefined;
-      id?: string | undefined;
-      name?: string | undefined;
-      normalizedName?: string | undefined;
-      concurrencyStamp?: string | undefined;
-
-      constructor(data?: IRole) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.description = _data["description"];
-              if (Array.isArray(_data["permissions"])) {
-                  this.permissions = [] as any;
-                  for (let item of _data["permissions"])
-                      this.permissions!.push(Permission.fromJS(item));
-              }
-              this.id = _data["id"];
-              this.name = _data["name"];
-              this.normalizedName = _data["normalizedName"];
-              this.concurrencyStamp = _data["concurrencyStamp"];
-          }
-      }
-
-      static fromJS(data: any): Role {
-          data = typeof data === 'object' ? data : {};
-          let result = new Role();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["description"] = this.description;
-          if (Array.isArray(this.permissions)) {
-              data["permissions"] = [];
-              for (let item of this.permissions)
-                  data["permissions"].push(item.toJSON());
-          }
-          data["id"] = this.id;
           data["name"] = this.name;
-          data["normalizedName"] = this.normalizedName;
-          data["concurrencyStamp"] = this.concurrencyStamp;
-          return data;
+          data["isHidden"] = this.isHidden;
+          data["valueType"] = this.valueType;
+          if (Array.isArray(this.allowedValues)) {
+              data["allowedValues"] = [];
+              for (let item of this.allowedValues)
+                  data["allowedValues"].push(item);
+          }
+          data["defaultValue"] = this.defaultValue;
+          data["isDictionary"] = this.isDictionary;
+          return data; 
       }
   }
-
-  export interface IRole {
-      description?: string | undefined;
-      permissions?: Permission[] | undefined;
-      id?: string | undefined;
+  
+  export interface IObjectSettingEntry {
+      itHasValues?: boolean;
+      objectId?: string | undefined;
+      objectType?: string | undefined;
+      isReadOnly?: string | undefined;
+      value?: any | undefined;
+      restartRequired?: boolean;
+      moduleId?: string | undefined;
+      groupName?: string | undefined;
       name?: string | undefined;
-      normalizedName?: string | undefined;
-      concurrencyStamp?: string | undefined;
+      isHidden?: boolean;
+      valueType?: SettingValueType;
+      allowedValues?: any[] | undefined;
+      defaultValue?: any | undefined;
+      isDictionary?: boolean;
   }
-
-  /** Obsolete. Left due to compatibility issues. Will be removed. Instead of, use: ApplicationUser.EmailConfirmed, ApplicationUser.LockoutEnd. */
-  export enum AccountState {
-      PendingApproval = "PendingApproval",
-      Approved = "Approved",
-      Rejected = "Rejected",
-  }
-
-  export class ApplicationUserLogin implements IApplicationUserLogin {
-      loginProvider?: string | undefined;
-      providerKey?: string | undefined;
-
-      constructor(data?: IApplicationUserLogin) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.loginProvider = _data["loginProvider"];
-              this.providerKey = _data["providerKey"];
-          }
-      }
-
-      static fromJS(data: any): ApplicationUserLogin {
-          data = typeof data === 'object' ? data : {};
-          let result = new ApplicationUserLogin();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["loginProvider"] = this.loginProvider;
-          data["providerKey"] = this.providerKey;
-          return data;
-      }
-  }
-
-  export interface IApplicationUserLogin {
-      loginProvider?: string | undefined;
-      providerKey?: string | undefined;
-  }
-
-  export class ApplicationUser implements IApplicationUser {
-      /** Tenant id */
-      storeId?: string | undefined;
-      memberId?: string | undefined;
-      isAdministrator?: boolean;
-      photoUrl?: string | undefined;
-      userType?: string | undefined;
-      status?: string | undefined;
-      password?: string | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      roles?: Role[] | undefined;
-      /** Obsolete. Use LockoutEnd. DateTime in UTC when lockout ends, any time in the past is considered not locked out. */
-      lockoutEndDateUtc?: Date | undefined;
-      userState?: AccountState;
-      /** Obsolete. All permissions from assigned roles. */
-      permissions?: string[] | undefined;
-      /** External provider logins. */
-      logins?: ApplicationUserLogin[] | undefined;
-      /** Indicates that the password for this user is expired and must be changed. */
-      passwordExpired?: boolean;
-      /** The last date when the password was changed */
-      lastPasswordChangedDate?: Date | undefined;
-      /** The last date when the requested password change. */
-      lastPasswordChangeRequestDate?: Date | undefined;
-      id?: string | undefined;
-      userName?: string | undefined;
-      normalizedUserName?: string | undefined;
-      email?: string | undefined;
-      normalizedEmail?: string | undefined;
-      emailConfirmed?: boolean;
-      passwordHash?: string | undefined;
-      securityStamp?: string | undefined;
-      concurrencyStamp?: string | undefined;
-      phoneNumber?: string | undefined;
-      phoneNumberConfirmed?: boolean;
-      twoFactorEnabled?: boolean;
-      lockoutEnd?: Date | undefined;
-      lockoutEnabled?: boolean;
-      accessFailedCount?: number;
-
-      constructor(data?: IApplicationUser) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.storeId = _data["storeId"];
-              this.memberId = _data["memberId"];
-              this.isAdministrator = _data["isAdministrator"];
-              this.photoUrl = _data["photoUrl"];
-              this.userType = _data["userType"];
-              this.status = _data["status"];
-              this.password = _data["password"];
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              if (Array.isArray(_data["roles"])) {
-                  this.roles = [] as any;
-                  for (let item of _data["roles"])
-                      this.roles!.push(Role.fromJS(item));
-              }
-              this.lockoutEndDateUtc = _data["lockoutEndDateUtc"] ? new Date(_data["lockoutEndDateUtc"].toString()) : <any>undefined;
-              this.userState = _data["userState"];
-              if (Array.isArray(_data["permissions"])) {
-                  this.permissions = [] as any;
-                  for (let item of _data["permissions"])
-                      this.permissions!.push(item);
-              }
-              if (Array.isArray(_data["logins"])) {
-                  this.logins = [] as any;
-                  for (let item of _data["logins"])
-                      this.logins!.push(ApplicationUserLogin.fromJS(item));
-              }
-              this.passwordExpired = _data["passwordExpired"];
-              this.lastPasswordChangedDate = _data["lastPasswordChangedDate"] ? new Date(_data["lastPasswordChangedDate"].toString()) : <any>undefined;
-              this.lastPasswordChangeRequestDate = _data["lastPasswordChangeRequestDate"] ? new Date(_data["lastPasswordChangeRequestDate"].toString()) : <any>undefined;
-              this.id = _data["id"];
-              this.userName = _data["userName"];
-              this.normalizedUserName = _data["normalizedUserName"];
-              this.email = _data["email"];
-              this.normalizedEmail = _data["normalizedEmail"];
-              this.emailConfirmed = _data["emailConfirmed"];
-              this.passwordHash = _data["passwordHash"];
-              this.securityStamp = _data["securityStamp"];
-              this.concurrencyStamp = _data["concurrencyStamp"];
-              this.phoneNumber = _data["phoneNumber"];
-              this.phoneNumberConfirmed = _data["phoneNumberConfirmed"];
-              this.twoFactorEnabled = _data["twoFactorEnabled"];
-              this.lockoutEnd = _data["lockoutEnd"] ? new Date(_data["lockoutEnd"].toString()) : <any>undefined;
-              this.lockoutEnabled = _data["lockoutEnabled"];
-              this.accessFailedCount = _data["accessFailedCount"];
-          }
-      }
-
-      static fromJS(data: any): ApplicationUser {
-          data = typeof data === 'object' ? data : {};
-          let result = new ApplicationUser();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["storeId"] = this.storeId;
-          data["memberId"] = this.memberId;
-          data["isAdministrator"] = this.isAdministrator;
-          data["photoUrl"] = this.photoUrl;
-          data["userType"] = this.userType;
-          data["status"] = this.status;
-          data["password"] = this.password;
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          if (Array.isArray(this.roles)) {
-              data["roles"] = [];
-              for (let item of this.roles)
-                  data["roles"].push(item.toJSON());
-          }
-          data["lockoutEndDateUtc"] = this.lockoutEndDateUtc ? this.lockoutEndDateUtc.toISOString() : <any>undefined;
-          data["userState"] = this.userState;
-          if (Array.isArray(this.permissions)) {
-              data["permissions"] = [];
-              for (let item of this.permissions)
-                  data["permissions"].push(item);
-          }
-          if (Array.isArray(this.logins)) {
-              data["logins"] = [];
-              for (let item of this.logins)
-                  data["logins"].push(item.toJSON());
-          }
-          data["passwordExpired"] = this.passwordExpired;
-          data["lastPasswordChangedDate"] = this.lastPasswordChangedDate ? this.lastPasswordChangedDate.toISOString() : <any>undefined;
-          data["lastPasswordChangeRequestDate"] = this.lastPasswordChangeRequestDate ? this.lastPasswordChangeRequestDate.toISOString() : <any>undefined;
-          data["id"] = this.id;
-          data["userName"] = this.userName;
-          data["normalizedUserName"] = this.normalizedUserName;
-          data["email"] = this.email;
-          data["normalizedEmail"] = this.normalizedEmail;
-          data["emailConfirmed"] = this.emailConfirmed;
-          data["passwordHash"] = this.passwordHash;
-          data["securityStamp"] = this.securityStamp;
-          data["concurrencyStamp"] = this.concurrencyStamp;
-          data["phoneNumber"] = this.phoneNumber;
-          data["phoneNumberConfirmed"] = this.phoneNumberConfirmed;
-          data["twoFactorEnabled"] = this.twoFactorEnabled;
-          data["lockoutEnd"] = this.lockoutEnd ? this.lockoutEnd.toISOString() : <any>undefined;
-          data["lockoutEnabled"] = this.lockoutEnabled;
-          data["accessFailedCount"] = this.accessFailedCount;
-          return data;
-      }
-  }
-
-  export interface IApplicationUser {
-      /** Tenant id */
-      storeId?: string | undefined;
-      memberId?: string | undefined;
-      isAdministrator?: boolean;
-      photoUrl?: string | undefined;
-      userType?: string | undefined;
-      status?: string | undefined;
-      password?: string | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      roles?: Role[] | undefined;
-      /** Obsolete. Use LockoutEnd. DateTime in UTC when lockout ends, any time in the past is considered not locked out. */
-      lockoutEndDateUtc?: Date | undefined;
-      userState?: AccountState;
-      /** Obsolete. All permissions from assigned roles. */
-      permissions?: string[] | undefined;
-      /** External provider logins. */
-      logins?: ApplicationUserLogin[] | undefined;
-      /** Indicates that the password for this user is expired and must be changed. */
-      passwordExpired?: boolean;
-      /** The last date when the password was changed */
-      lastPasswordChangedDate?: Date | undefined;
-      /** The last date when the requested password change. */
-      lastPasswordChangeRequestDate?: Date | undefined;
-      id?: string | undefined;
-      userName?: string | undefined;
-      normalizedUserName?: string | undefined;
-      email?: string | undefined;
-      normalizedEmail?: string | undefined;
-      emailConfirmed?: boolean;
-      passwordHash?: string | undefined;
-      securityStamp?: string | undefined;
-      concurrencyStamp?: string | undefined;
-      phoneNumber?: string | undefined;
-      phoneNumberConfirmed?: boolean;
-      twoFactorEnabled?: boolean;
-      lockoutEnd?: Date | undefined;
-      lockoutEnabled?: boolean;
-      accessFailedCount?: number;
-  }
-
-  export class ImportProfileOptions implements IImportProfileOptions {
-      type?: string | undefined;
-      previewObjectCount?: number;
-      importFileUrl?: string | undefined;
-
-      constructor(data?: IImportProfileOptions) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-
-      init(_data?: any) {
-          if (_data) {
-              this.type = _data["type"];
-              this.previewObjectCount = _data["previewObjectCount"];
-              this.importFileUrl = _data["importFileUrl"];
-          }
-      }
-
-      static fromJS(data: any): ImportProfileOptions {
-          data = typeof data === 'object' ? data : {};
-          let result = new ImportProfileOptions();
-          result.init(data);
-          return result;
-      }
-
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["type"] = this.type;
-          data["previewObjectCount"] = this.previewObjectCount;
-          data["importFileUrl"] = this.importFileUrl;
-          return data;
-      }
-  }
-
-  export interface IImportProfileOptions {
-      type?: string | undefined;
-      previewObjectCount?: number;
-      importFileUrl?: string | undefined;
-  }
-
+  
   export class ImportProfile implements IImportProfile {
-      id?: string | undefined;
+      name?: string | undefined;
       dataImporterType?: string | undefined;
-      options?: ImportProfileOptions;
-
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      importFileUrl?: string | undefined;
+      previewObjectCount?: number;
+      settings?: ObjectSettingEntry[] | undefined;
+      readonly typeName?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
       constructor(data?: IImportProfile) {
           if (data) {
               for (var property in data) {
@@ -5843,40 +5186,78 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
-              this.id = _data["id"];
+              this.name = _data["name"];
               this.dataImporterType = _data["dataImporterType"];
-              this.options = _data["options"] ? ImportProfileOptions.fromJS(_data["options"]) : <any>undefined;
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.importFileUrl = _data["importFileUrl"];
+              this.previewObjectCount = _data["previewObjectCount"];
+              if (Array.isArray(_data["settings"])) {
+                  this.settings = [] as any;
+                  for (let item of _data["settings"])
+                      this.settings!.push(ObjectSettingEntry.fromJS(item));
+              }
+              (<any>this).typeName = _data["typeName"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): ImportProfile {
           data = typeof data === 'object' ? data : {};
           let result = new ImportProfile();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          data["id"] = this.id;
+          data["name"] = this.name;
           data["dataImporterType"] = this.dataImporterType;
-          data["options"] = this.options ? this.options.toJSON() : <any>undefined;
-          return data;
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["importFileUrl"] = this.importFileUrl;
+          data["previewObjectCount"] = this.previewObjectCount;
+          if (Array.isArray(this.settings)) {
+              data["settings"] = [];
+              for (let item of this.settings)
+                  data["settings"].push(item.toJSON());
+          }
+          data["typeName"] = this.typeName;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data; 
       }
   }
-
+  
   export interface IImportProfile {
-      id?: string | undefined;
+      name?: string | undefined;
       dataImporterType?: string | undefined;
-      options?: ImportProfileOptions;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      importFileUrl?: string | undefined;
+      previewObjectCount?: number;
+      settings?: ObjectSettingEntry[] | undefined;
+      typeName?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
   }
-
+  
   export class ImportDataCommand implements IImportDataCommand {
       importProfile?: ImportProfile;
-
+  
       constructor(data?: IImportDataCommand) {
           if (data) {
               for (var property in data) {
@@ -5885,31 +5266,31 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
           }
       }
-
+  
       static fromJS(data: any): ImportDataCommand {
           data = typeof data === 'object' ? data : {};
           let result = new ImportDataCommand();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IImportDataCommand {
       importProfile?: ImportProfile;
   }
-
+  
   export class ImportPushNotification implements IImportPushNotification {
       jobId?: string | undefined;
       finished?: Date | undefined;
@@ -5927,7 +5308,7 @@ export class AuthApiBase {
       title?: string | undefined;
       repeatCount?: number;
       id?: string | undefined;
-
+  
       constructor(data?: IImportPushNotification) {
           if (data) {
               for (var property in data) {
@@ -5936,7 +5317,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.jobId = _data["jobId"];
@@ -5961,14 +5342,14 @@ export class AuthApiBase {
               this.id = _data["id"];
           }
       }
-
+  
       static fromJS(data: any): ImportPushNotification {
           data = typeof data === 'object' ? data : {};
           let result = new ImportPushNotification();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["jobId"] = this.jobId;
@@ -5991,10 +5372,10 @@ export class AuthApiBase {
           data["title"] = this.title;
           data["repeatCount"] = this.repeatCount;
           data["id"] = this.id;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IImportPushNotification {
       jobId?: string | undefined;
       finished?: Date | undefined;
@@ -6013,10 +5394,10 @@ export class AuthApiBase {
       repeatCount?: number;
       id?: string | undefined;
   }
-
+  
   export class ImportCancellationRequest implements IImportCancellationRequest {
       jobId?: string | undefined;
-
+  
       constructor(data?: IImportCancellationRequest) {
           if (data) {
               for (var property in data) {
@@ -6025,34 +5406,34 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.jobId = _data["jobId"];
           }
       }
-
+  
       static fromJS(data: any): ImportCancellationRequest {
           data = typeof data === 'object' ? data : {};
           let result = new ImportCancellationRequest();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["jobId"] = this.jobId;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IImportCancellationRequest {
       jobId?: string | undefined;
   }
-
+  
   export class PreviewDataQuery implements IPreviewDataQuery {
       importProfile?: ImportProfile;
-
+  
       constructor(data?: IPreviewDataQuery) {
           if (data) {
               for (var property in data) {
@@ -6061,36 +5442,36 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
           }
       }
-
+  
       static fromJS(data: any): PreviewDataQuery {
           data = typeof data === 'object' ? data : {};
           let result = new PreviewDataQuery();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IPreviewDataQuery {
       importProfile?: ImportProfile;
   }
-
+  
   export class ImportDataPreview implements IImportDataPreview {
       totalCount?: number;
       fileName?: string | undefined;
       records?: any[] | undefined;
-
+  
       constructor(data?: IImportDataPreview) {
           if (data) {
               for (var property in data) {
@@ -6099,7 +5480,7 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.totalCount = _data["totalCount"];
@@ -6111,14 +5492,14 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       static fromJS(data: any): ImportDataPreview {
           data = typeof data === 'object' ? data : {};
           let result = new ImportDataPreview();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["totalCount"] = this.totalCount;
@@ -6128,21 +5509,28 @@ export class AuthApiBase {
               for (let item of this.records)
                   data["records"].push(item);
           }
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IImportDataPreview {
       totalCount?: number;
       fileName?: string | undefined;
       records?: any[] | undefined;
   }
-
-  export class ImporterMetadata implements IImporterMetadata {
-      importerType?: string | undefined;
-      importerOptions?: ImportProfileOptions;
-
-      constructor(data?: IImporterMetadata) {
+  
+  export class SettingDescriptor implements ISettingDescriptor {
+      restartRequired?: boolean;
+      moduleId?: string | undefined;
+      groupName?: string | undefined;
+      name?: string | undefined;
+      isHidden?: boolean;
+      valueType?: SettingValueType;
+      allowedValues?: any[] | undefined;
+      defaultValue?: any | undefined;
+      isDictionary?: boolean;
+  
+      constructor(data?: ISettingDescriptor) {
           if (data) {
               for (var property in data) {
                   if (data.hasOwnProperty(property))
@@ -6150,37 +5538,130 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
-              this.importerType = _data["importerType"];
-              this.importerOptions = _data["importerOptions"] ? ImportProfileOptions.fromJS(_data["importerOptions"]) : <any>undefined;
+              this.restartRequired = _data["restartRequired"];
+              this.moduleId = _data["moduleId"];
+              this.groupName = _data["groupName"];
+              this.name = _data["name"];
+              this.isHidden = _data["isHidden"];
+              this.valueType = _data["valueType"];
+              if (Array.isArray(_data["allowedValues"])) {
+                  this.allowedValues = [] as any;
+                  for (let item of _data["allowedValues"])
+                      this.allowedValues!.push(item);
+              }
+              this.defaultValue = _data["defaultValue"];
+              this.isDictionary = _data["isDictionary"];
           }
       }
-
-      static fromJS(data: any): ImporterMetadata {
+  
+      static fromJS(data: any): SettingDescriptor {
           data = typeof data === 'object' ? data : {};
-          let result = new ImporterMetadata();
+          let result = new SettingDescriptor();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          data["importerType"] = this.importerType;
-          data["importerOptions"] = this.importerOptions ? this.importerOptions.toJSON() : <any>undefined;
-          return data;
+          data["restartRequired"] = this.restartRequired;
+          data["moduleId"] = this.moduleId;
+          data["groupName"] = this.groupName;
+          data["name"] = this.name;
+          data["isHidden"] = this.isHidden;
+          data["valueType"] = this.valueType;
+          if (Array.isArray(this.allowedValues)) {
+              data["allowedValues"] = [];
+              for (let item of this.allowedValues)
+                  data["allowedValues"].push(item);
+          }
+          data["defaultValue"] = this.defaultValue;
+          data["isDictionary"] = this.isDictionary;
+          return data; 
       }
   }
-
-  export interface IImporterMetadata {
-      importerType?: string | undefined;
-      importerOptions?: ImportProfileOptions;
+  
+  export interface ISettingDescriptor {
+      restartRequired?: boolean;
+      moduleId?: string | undefined;
+      groupName?: string | undefined;
+      name?: string | undefined;
+      isHidden?: boolean;
+      valueType?: SettingValueType;
+      allowedValues?: any[] | undefined;
+      defaultValue?: any | undefined;
+      isDictionary?: boolean;
   }
-
+  
+  export class IDataImporter implements IIDataImporter {
+      readonly typeName?: string | undefined;
+      readonly metadata?: { [key: string]: string; } | undefined;
+      availSettings?: SettingDescriptor[] | undefined;
+  
+      constructor(data?: IIDataImporter) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              (<any>this).typeName = _data["typeName"];
+              if (_data["metadata"]) {
+                  (<any>this).metadata = {} as any;
+                  for (let key in _data["metadata"]) {
+                      if (_data["metadata"].hasOwnProperty(key))
+                          (<any>(<any>this).metadata)![key] = _data["metadata"][key];
+                  }
+              }
+              if (Array.isArray(_data["availSettings"])) {
+                  this.availSettings = [] as any;
+                  for (let item of _data["availSettings"])
+                      this.availSettings!.push(SettingDescriptor.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): IDataImporter {
+          data = typeof data === 'object' ? data : {};
+          let result = new IDataImporter();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["typeName"] = this.typeName;
+          if (this.metadata) {
+              data["metadata"] = {};
+              for (let key in this.metadata) {
+                  if (this.metadata.hasOwnProperty(key))
+                      (<any>data["metadata"])[key] = this.metadata[key];
+              }
+          }
+          if (Array.isArray(this.availSettings)) {
+              data["availSettings"] = [];
+              for (let item of this.availSettings)
+                  data["availSettings"].push(item.toJSON());
+          }
+          return data; 
+      }
+  }
+  
+  export interface IIDataImporter {
+      typeName?: string | undefined;
+      metadata?: { [key: string]: string; } | undefined;
+      availSettings?: SettingDescriptor[] | undefined;
+  }
+  
   export class ForgotPasswordCommand implements IForgotPasswordCommand {
       loginOrEmail!: string;
-
+  
       constructor(data?: IForgotPasswordCommand) {
           if (data) {
               for (var property in data) {
@@ -6189,60 +5670,60 @@ export class AuthApiBase {
               }
           }
       }
-
+  
       init(_data?: any) {
           if (_data) {
               this.loginOrEmail = _data["loginOrEmail"];
           }
       }
-
+  
       static fromJS(data: any): ForgotPasswordCommand {
           data = typeof data === 'object' ? data : {};
           let result = new ForgotPasswordCommand();
           result.init(data);
           return result;
       }
-
+  
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["loginOrEmail"] = this.loginOrEmail;
-          return data;
+          return data; 
       }
   }
-
+  
   export interface IForgotPasswordCommand {
       loginOrEmail: string;
   }
-
+  
   export class ApiException extends Error {
       message: string;
       status: number;
       response: string;
       headers: { [key: string]: any; };
       result: any;
-
+  
       constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
           super();
-
+  
           this.message = message;
           this.status = status;
           this.response = response;
           this.headers = headers;
           this.result = result;
       }
-
+  
       protected isApiException = true;
-
+  
       static isApiException(obj: any): obj is ApiException {
           return obj.isApiException === true;
       }
   }
-
+  
   function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): any {
       if (result !== null && result !== undefined)
           throw result;
       else
           throw new ApiException(message, status, response, headers, null);
   }
-
+  
   /* eslint-disable */

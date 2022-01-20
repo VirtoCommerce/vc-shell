@@ -14,10 +14,10 @@
             <vc-col class="vc-margin-bottom_xl">
               <vc-select
                 :options="importersList"
-                :modelValue="selectedImporter && selectedImporter.importerType"
+                :modelValue="selectedImporter && selectedImporter.typeName"
                 @change="setImporter"
-                keyProperty="importerType"
-                displayProperty="importerType"
+                keyProperty="typeName"
+                displayProperty="typeName"
                 :label="$t('IMPORT.PAGES.ACTIONS.SELECTS.DATA_IMPORTER.TITLE')"
               ></vc-select>
               <p class="csv-import__importer-description">
@@ -31,7 +31,7 @@
                     class="vc-link"
                     :href="
                       selectedImporter
-                        ? selectedImporter.importerOptions.templateUrl
+                        ? selectedImporter.metadata['sampleCsvUrl']
                         : '#'
                     "
                     >{{
@@ -282,7 +282,7 @@ import { useI18n, useUser } from "@virtoshell/core";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import ImportPopup from "../components/import-popup.vue";
 import useImport from "../composables/useImport";
-import { IImporterMetadata, ImportDataPreview } from "../../../api_client";
+import { IDataImporter, ImportDataPreview } from "../../../api_client";
 import moment from "moment";
 
 interface INotificationActions {
@@ -319,7 +319,7 @@ export default defineComponent({
     const loading = ref(false);
     const errorMessage = ref("");
     const importPreview = ref(false);
-    const importersList = ref<IImporterMetadata[]>([]);
+    const importersList = ref<IDataImporter[]>([]);
     const preview = ref<ImportDataPreview>();
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
@@ -501,7 +501,7 @@ export default defineComponent({
     }
     function setImporter(type: string) {
       const importer = importersList.value.find(
-        (importer) => importer.importerType === type
+        (importer) => importer.typeName === type
       );
       selectImporter(importer);
     }

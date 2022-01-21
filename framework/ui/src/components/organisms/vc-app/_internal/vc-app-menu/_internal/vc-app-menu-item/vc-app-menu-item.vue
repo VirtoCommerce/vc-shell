@@ -1,26 +1,50 @@
 <template>
-  <div
-    class="vc-app-menu-item"
-    :class="{ 'vc-app-menu-item_active': isActive }"
-    @click="$emit('click')"
-  >
+  <div>
     <div
-      class="vc-app-menu-item__handler"
-      :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
+      class="vc-app-menu-item"
+      :class="{ 'vc-app-menu-item_active': isActive }"
+      @click="onMenuItemClick"
     >
-      <vc-icon icon="fas fa-ellipsis-v" size="m" />
+      <div
+        class="vc-app-menu-item__handler"
+        :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
+      >
+        <vc-icon icon="fas fa-ellipsis-v" size="m" />
+      </div>
+      <div v-if="icon" class="vc-app-menu-item__icon">
+        <vc-icon :icon="icon" size="m" />
+      </div>
+      <div class="vc-app-menu-item__title">
+        {{ title }}
+        <vc-icon
+          class="vc-margin-left_m"
+          icon="fas fa-chevron-down"
+          size="xs"
+          v-if="children.length"
+        ></vc-icon>
+      </div>
     </div>
-    <div v-if="icon" class="vc-app-menu-item__icon">
-      <vc-icon :icon="icon" size="m" />
+    <!-- Nested menu items -->
+    <div class="vc-app-menu-item__child vc-margin-top_m" v-if="isOpened">
+      <div
+        :class="[
+          { 'vc-app-menu-item__child-item_active': activeChildItem === nested },
+          'vc-app-menu-item__child-item',
+        ]"
+        v-for="(nested, i) in children"
+        :key="i"
+        @click="$emit('child:click', nested)"
+      >
+        {{ nested.title }}
+      </div>
     </div>
-    <div class="vc-app-menu-item__title" :title="title">{{ title }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref, watch } from "vue";
 import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
-import { IMenuItems } from "../../../../../../../typings";
+import { IBladeToolbar, IMenuItems } from "../../../../../../../typings";
 
 export default defineComponent({
   name: "VcAppMenuItem",
@@ -41,6 +65,11 @@ export default defineComponent({
     isActive: {
       type: Boolean,
       default: false,
+    },
+
+    activeChildItem: {
+      type: Object as PropType<IMenuItems>,
+      default: undefined,
     },
 
     component: {
@@ -67,9 +96,48 @@ export default defineComponent({
       type: String,
       default: "",
     },
+
+    children: {
+      type: Array as PropType<IBladeToolbar[]>,
+      default: () => [],
+    },
+
+    isCollapsed: {
+      type: Boolean,
+      default: true,
+    },
   },
 
-  emits: ["click"],
+  emits: ["click", "child:click"],
+
+  setup(props, { emit }) {
+    const isOpened = ref(false);
+
+    watch(
+      () => props.isActive,
+      (newVal) => {
+        isOpened.value = !!(
+          newVal &&
+          props.children &&
+          props.children.some((child) => child === props.activeChildItem)
+        );
+      },
+      { immediate: true }
+    );
+
+    function onMenuItemClick() {
+      if (!props.children?.length) {
+        emit("click");
+      } else {
+        isOpened.value = !isOpened.value;
+      }
+    }
+
+    return {
+      isOpened,
+      onMenuItemClick,
+    };
+  },
 });
 </script>
 
@@ -160,6 +228,26 @@ export default defineComponent({
     color: var(--app-menu-item-title-color);
     transition: color 0.2s ease, opacity 0.1s ease;
     opacity: 1;
+    width: 100%;
+  }
+
+  &__child {
+    margin-left: 52px;
+    gap: 14px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__child-item {
+    cursor: pointer;
+    width: fit-content;
+
+    &_active {
+      padding: 5px 9px;
+      background-color: var(--app-menu-item-background-color-hover);
+      border-radius: 4px;
+      font-weight: bold;
+    }
   }
 
   &_active &__title {

@@ -48,8 +48,13 @@
             v-if="item.isVisible === undefined || item.isVisible"
             v-bind="item"
             :isActive="item === activeItem"
+            :activeChildItem="activeChildItem"
             @click="
               $emit('item:click', item);
+              isMobileVisible = false;
+            "
+            @child:click="
+              $emit('item:click', $event);
               isMobileVisible = false;
             "
           />
@@ -78,6 +83,11 @@ export default defineComponent({
     },
 
     activeItem: {
+      type: Object as PropType<IMenuItems>,
+      default: undefined,
+    },
+
+    activeChildItem: {
       type: Object as PropType<IMenuItems>,
       default: undefined,
     },

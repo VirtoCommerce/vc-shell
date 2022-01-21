@@ -33,6 +33,11 @@
       </div>
     </template>
 
+    <!-- Product name slot -->
+    <div class="vc-app-bar__product-name" v-if="$slots['productName']">
+      <slot name="productName"></slot>
+    </div>
+
     <!-- Additional spacer -->
     <div class="vc-flex-grow_1"></div>
 
@@ -143,6 +148,8 @@ export default defineComponent({
   --app-bar-button-color-hover: #34414f;
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
   --app-bar-version-color: #838d9a;
+  --app-bar-product-name-color: #34414f;
+  --app-bar-product-name-size: 20px;
 }
 
 .vc-app-bar {
@@ -162,6 +169,13 @@ export default defineComponent({
   &__version {
     color: var(--app-bar-version-color);
     font-size: var(--font-size-xs);
+    margin-left: 30px;
+  }
+
+  &__product-name {
+    color: var(--app-bar-product-name-color);
+    font-size: var(--app-bar-product-name-size);
+    font-weight: var(--font-weight-medium);
     margin-left: 30px;
   }
 

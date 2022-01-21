@@ -18,6 +18,7 @@ interface IBladeToolbar {
 
 interface IMenuItems extends IBladeToolbar {
   clickHandler?(app?: IComponent): void;
+  children?: IMenuItems[];
 }
 
 interface ITableColumns {

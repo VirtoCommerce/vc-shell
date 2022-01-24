@@ -432,7 +432,7 @@ export default defineComponent({
         icon: "fas fa-trash",
         title: "Delete",
         variant: "danger",
-        position: "left",
+        leftActions: true,
         clickHandler(item: ISellerProduct) {
           alert("Delete " + item.id);
         },

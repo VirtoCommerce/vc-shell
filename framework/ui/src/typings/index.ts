@@ -41,6 +41,6 @@ export interface IActionBuilderResult {
   icon: string;
   title: string;
   variant: string;
-  position?: string;
+  leftActions?: boolean;
   clickHandler(): void;
 }

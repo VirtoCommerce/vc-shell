@@ -145,7 +145,7 @@ export default defineComponent({
         itemActions.value &&
         itemActions.value.length &&
         itemActions.value.filter(
-          (actions: IActionBuilderResult) => !(actions.position === "left")
+          (actions: IActionBuilderResult) => !actions.leftActions
         )
     );
     const leftSwipeActions = computed(
@@ -153,7 +153,7 @@ export default defineComponent({
         itemActions.value &&
         itemActions.value.length &&
         itemActions.value.filter(
-          (actions: IActionBuilderResult) => actions.position === "left"
+          (actions: IActionBuilderResult) => actions.leftActions
         )
     );
 
@@ -176,8 +176,7 @@ export default defineComponent({
 
             if (
               itemActions.value.some(
-                (action: IActionBuilderResult) =>
-                  action.position && action.position === "left"
+                (action: IActionBuilderResult) => action.leftActions
               )
             ) {
               offsetX.value = -maxWidth;
@@ -191,9 +190,10 @@ export default defineComponent({
         if (itemActions.value && itemActions.value.length) {
           const deltaX = e.touches[0].clientX - startX.value;
           const deltaY = e.touches[0].clientY - startY.value;
+
           if (
             Math.abs(deltaX) > threshold &&
-            Math.abs(deltaX) <= maxWidth &&
+            Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2 &&
             startOffsetX.value + deltaX < 0
           ) {
             if (Math.abs(deltaY) < threshold * 2) {

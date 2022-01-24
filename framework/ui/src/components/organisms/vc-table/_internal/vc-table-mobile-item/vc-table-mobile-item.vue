@@ -193,7 +193,9 @@ export default defineComponent({
 
           if (
             Math.abs(deltaX) > threshold &&
-            Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2 &&
+            (leftSwipeActions.value && leftSwipeActions.value.length
+              ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
+              : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
             startOffsetX.value + deltaX < 0
           ) {
             if (Math.abs(deltaY) < threshold * 2) {

@@ -41,6 +41,7 @@
             class="vc-flex-shrink_0"
             :items="menuItems"
             :activeItem="activeMenuItem"
+            :activeChildItem="activeChildMenuItem"
             @item:click="onMenuItemClick"
           ></vc-app-menu>
 
@@ -170,7 +171,8 @@ export default defineComponent({
 
     const instance = getCurrentInstance();
 
-    const activeMenuItem = ref<IBladeToolbar>();
+    const activeMenuItem = ref<IMenuItems>();
+    const activeChildMenuItem = ref<IMenuItems>();
 
     // Setup workspace
     const workspace = ref<IPage[]>([]);
@@ -193,10 +195,23 @@ export default defineComponent({
         if (props.isReady) {
           if (value && value.length) {
             const ws = value[0].url;
+
             activeMenuItem.value =
-              (props.menuItems as IBladeToolbar[]).find(
+              (props.menuItems as IMenuItems[]).find(
                 (item) => item.component?.url === ws
-              ) || props.menuItems[0];
+              ) ||
+              (props.menuItems as IMenuItems[]).find((item) =>
+                item.children?.find((child) => child.component?.url === ws)
+              ) ||
+              props.menuItems[0];
+
+            activeChildMenuItem.value =
+              activeMenuItem.value &&
+              activeMenuItem.value?.children &&
+              activeMenuItem.value?.children.find(
+                (child) => child.component?.url === ws
+              );
+
             let lastBladeWithUrlIndex = -1;
             value.forEach((item, i) => {
               if (item.url) {
@@ -247,9 +262,20 @@ export default defineComponent({
             url: ws.url,
           });
 
-          activeMenuItem.value = (props.menuItems as IBladeToolbar[]).find(
-            (item) => item.component?.url === ws.url
-          );
+          activeMenuItem.value =
+            (props.menuItems as IMenuItems[]).find(
+              (item) => item.component?.url === ws.url
+            ) ||
+            (props.menuItems as IMenuItems[]).find((item) =>
+              item.children?.find((child) => child.component?.url === ws.url)
+            );
+
+          activeChildMenuItem.value =
+            activeMenuItem.value &&
+            activeMenuItem.value?.children &&
+            activeMenuItem.value?.children.find(
+              (child) => child.component?.url === ws.url
+            );
 
           if (data.blade) {
             const blade = (props.pages as IPage[]).find(
@@ -274,7 +300,6 @@ export default defineComponent({
 
     const onMenuItemClick = function (item: Record<string, unknown>) {
       console.debug(`vc-app#onMenuItemClick() called.`);
-
       activeMenuItem.value = item;
 
       if (item.clickHandler && typeof item.clickHandler === "function") {
@@ -391,6 +416,7 @@ export default defineComponent({
       workspaceRefs,
       setWorkspaceRef,
       activeMenuItem,
+      activeChildMenuItem,
       onMenuItemClick,
       onToolbarButtonClick,
       openDashboard,

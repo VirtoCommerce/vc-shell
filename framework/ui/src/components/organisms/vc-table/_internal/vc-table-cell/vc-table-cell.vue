@@ -31,6 +31,14 @@
     <vc-status>{{ value }}</vc-status>
   </div>
 
+  <!-- Status icon cell -->
+  <div
+    v-else-if="cell.type === 'status-icon'"
+    class="vc-table-cell_status-icon"
+  >
+    <vc-status-icon :status="value"></vc-status-icon>
+  </div>
+
   <!-- Number cell -->
   <div v-else-if="cell.type === 'number'" class="vc-table-cell_number">
     {{ Number(value).toFixed(0) }}

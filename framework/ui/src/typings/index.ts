@@ -25,6 +25,7 @@ export interface IBladeToolbar {
 
 export interface IMenuItems extends IBladeToolbar {
   clickHandler?(app?: IComponent): void;
+  children?: IMenuItems[];
 }
 
 export interface IPage {

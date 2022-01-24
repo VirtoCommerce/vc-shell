@@ -145,7 +145,7 @@ export default defineComponent({
         itemActions.value &&
         itemActions.value.length &&
         itemActions.value.filter(
-          (actions: IActionBuilderResult) => !actions.position
+          (actions: IActionBuilderResult) => !(actions.position === "left")
         )
     );
     const leftSwipeActions = computed(
@@ -153,7 +153,7 @@ export default defineComponent({
         itemActions.value &&
         itemActions.value.length &&
         itemActions.value.filter(
-          (actions: IActionBuilderResult) => actions.position
+          (actions: IActionBuilderResult) => actions.position === "left"
         )
     );
 

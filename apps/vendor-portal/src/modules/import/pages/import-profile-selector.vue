@@ -160,6 +160,7 @@ export default defineComponent({
       importHistory,
       importersList,
       bladeWidth,
+      title: t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"),
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),

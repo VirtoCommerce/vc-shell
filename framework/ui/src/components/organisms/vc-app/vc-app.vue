@@ -32,7 +32,11 @@
           @backlink:click="onClosePage(workspace.length - 1)"
           @notification:click="onMenuItemClick"
           @logo:click="openDashboard"
-        ></vc-app-bar>
+        >
+          <template v-slot:productName v-if="$slots['productName']">
+            <slot name="productName"></slot>
+          </template>
+        </vc-app-bar>
 
         <div class="vc-app__inner vc-flex vc-flex-grow_1">
           <!-- Init main menu -->

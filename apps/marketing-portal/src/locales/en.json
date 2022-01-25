@@ -22,7 +22,22 @@
       "BUTTON_OK": "Ok"
     },
     "MENU": {
-      "DASHBOARD": "Home"
+      "DASHBOARD": "Dashboard",
+      "PROMOTIONS": "Promotions",
+      "DYNAMIC_CONTENT": {
+        "TITLE": "Dynamic content",
+        "CHILDREN": {
+          "CONTENT_ITEMS": {
+            "TITLE": "Content items"
+          },
+          "CONTENT_PLACEHOLDERS": {
+            "TITLE": "Content placeholders"
+          },
+          "CONTENT_PUBLISHING": {
+            "TITLE": "Content publishing"
+          }
+        }
+      }
     },
     "TOOLBAR": {
       "LOGIN": "Log In",

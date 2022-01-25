@@ -3,6 +3,8 @@ import { VueSignalR } from "@quangdao/vue-signalr";
 import VirtoShellUi from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import router from "./router";
+import ModPromotions from "./modules/promotions";
+import ModDynamicContent from "./modules/dynamic-content";
 
 import * as locales from "./locales";
 
@@ -16,7 +18,9 @@ const app = createApp({
     url: "/pushNotificationHub",
   })
   .use(VirtoShellUi)
-  .use(VirtoShellCore);
+  .use(VirtoShellCore)
+  .use(ModPromotions)
+  .use(ModDynamicContent);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

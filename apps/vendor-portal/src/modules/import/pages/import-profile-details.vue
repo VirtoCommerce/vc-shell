@@ -176,10 +176,7 @@ export default defineComponent({
         (imp) => imp.typeName === importer.value
       );
 
-      return importerItem
-        ? process.env.PLATFORM_URL.slice(0, -1) +
-            importerItem.metadata.sampleCsvUrl
-        : "#";
+      return importerItem ? importerItem.metadata.sampleCsvUrl : "#";
     });
 
     onMounted(async () => {

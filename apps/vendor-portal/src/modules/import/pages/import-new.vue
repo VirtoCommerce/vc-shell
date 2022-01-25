@@ -26,9 +26,15 @@
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
                 <vc-row class="vc-margin-bottom_l">
-                  <a class="vc-link" :href="sampleTemplateUrl">{{
-                    $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
-                  }}</a>
+                  <a
+                    class="vc-link"
+                    :href="
+                      selectedImporter
+                        ? selectedImporter.metadata.sampleCsvUrl
+                        : '#'
+                    "
+                    >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
+                  >
                   &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
                 </vc-row>
                 <vc-row>
@@ -344,13 +350,6 @@ export default defineComponent({
       ];
     });
 
-    const sampleTemplateUrl = computed(() => {
-      return selectedImporter.value
-        ? process.env.PLATFORM_URL.slice(0, -1) +
-            selectedImporter.value.metadata.sampleCsvUrl
-        : "#";
-    });
-
     const uploadActions = ref<INotificationActions[]>([
       {
         name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
@@ -482,7 +481,6 @@ export default defineComponent({
       selectedImporter,
       importBadges,
       skippedColumns,
-      sampleTemplateUrl,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),

@@ -86,8 +86,8 @@ export default defineComponent({
     ]);
 
     return {
-      bladeToolbar,
       title: t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.TITLE"),
+      bladeToolbar,
     };
   },
 });

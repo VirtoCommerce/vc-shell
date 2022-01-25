@@ -53,7 +53,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { computed, defineComponent, reactive } from "vue";
 import { IBladeToolbar } from "../../../../types";
 import { useI18n } from "@virtoshell/core";
 
@@ -126,6 +126,7 @@ export default defineComponent({
     ]);
 
     return {
+      title: computed(() => contentItem.name),
       contentItem,
       bladeToolbar,
     };

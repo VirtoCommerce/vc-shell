@@ -7,6 +7,7 @@ module.exports = {
     './framework/ui-theme-dark',
     './framework/api-client',
     './apps/vendor-portal',
+    './apps/marketing-portal',
     './modules/assets',
   ]
 }

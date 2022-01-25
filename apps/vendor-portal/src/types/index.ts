@@ -38,6 +38,7 @@ interface IActionBuilderResult {
   icon: string;
   title: string;
   variant: string;
+  leftActions?: boolean;
   clickHandler(): void;
 }
 

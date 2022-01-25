@@ -9,6 +9,23 @@
     @touchend="touchEnd"
     @touchcancel="touchCancel"
   >
+    <!-- Left swipe actions-->
+    <div
+      class="vc-table-mobile__item-actions"
+      v-if="leftSwipeActions && leftSwipeActions.length"
+    >
+      <div
+        class="vc-table-mobile__item-action"
+        :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].variant}`]"
+        @click.stop="leftSwipeActions[0].clickHandler(item)"
+      >
+        <vc-icon :icon="leftSwipeActions[0].icon"></vc-icon>
+        <div class="vc-table-mobile__item-action-text">
+          {{ leftSwipeActions[0].title }}
+        </div>
+      </div>
+    </div>
+
     <div class="vc-table-mobile__item-content">
       <!-- Mobile item slot content -->
       <slot></slot>
@@ -17,35 +34,39 @@
     <!-- Item actions -->
     <div
       class="vc-table-mobile__item-actions"
-      v-if="itemActions && itemActions.length"
+      v-if="rightSwipeActions && rightSwipeActions.length"
     >
       <!-- First available action -->
       <div
         class="vc-table-mobile__item-action"
-        :class="[`vc-table-mobile__item-action_${itemActions[0].variant}`]"
-        @click.stop="itemActions[0].clickHandler(item)"
+        :class="[
+          `vc-table-mobile__item-action_${rightSwipeActions[0].variant}`,
+        ]"
+        @click.stop="rightSwipeActions[0].clickHandler(item)"
       >
-        <vc-icon :icon="itemActions[0].icon"></vc-icon>
+        <vc-icon :icon="rightSwipeActions[0].icon"></vc-icon>
         <div class="vc-table-mobile__item-action-text">
-          {{ itemActions[0].title }}
+          {{ rightSwipeActions[0].title }}
         </div>
       </div>
 
       <!-- Second available action -->
       <div
-        v-if="itemActions.length === 2"
+        v-if="rightSwipeActions.length === 2"
         class="vc-table-mobile__item-action"
-        :class="[`vc-table-mobile__item-action_${itemActions[1].variant}`]"
-        @click.stop="itemActions[1].clickHandler(item)"
+        :class="[
+          `vc-table-mobile__item-action_${rightSwipeActions[1].variant}`,
+        ]"
+        @click.stop="rightSwipeActions[1].clickHandler(item)"
       >
-        <vc-icon :icon="itemActions[1].icon"></vc-icon>
+        <vc-icon :icon="rightSwipeActions[1].icon"></vc-icon>
         <div class="vc-table-mobile__item-action-text">
-          {{ itemActions[1].title }}
+          {{ rightSwipeActions[1].title }}
         </div>
       </div>
 
       <!-- Other available actions -->
-      <template v-if="itemActions.length > 2">
+      <template v-if="rightSwipeActions.length > 2">
         <div
           class="vc-table-mobile__item-action"
           @click.stop="isActionsPopupVisible = true"
@@ -92,7 +113,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
+import { IActionBuilderResult } from "@virtoshell/ui";
+import { right } from "@popperjs/core";
 
 export default defineComponent({
   props: {
@@ -117,11 +140,28 @@ export default defineComponent({
     const maxWidth = 80;
     const isActionsPopupVisible = ref(false);
     const itemActions = ref([]);
+    const rightSwipeActions = computed(
+      () =>
+        itemActions.value &&
+        itemActions.value.length &&
+        itemActions.value.filter(
+          (actions: IActionBuilderResult) => !actions.leftActions
+        )
+    );
+    const leftSwipeActions = computed(
+      () =>
+        itemActions.value &&
+        itemActions.value.length &&
+        itemActions.value.filter(
+          (actions: IActionBuilderResult) => actions.leftActions
+        )
+    );
 
     return {
       offsetX,
       isActionsPopupVisible,
-      itemActions,
+      rightSwipeActions,
+      leftSwipeActions,
       isMoving,
 
       async touchStart(e: TouchEvent): Promise<void> {
@@ -133,6 +173,15 @@ export default defineComponent({
         if (!itemActions.value.length) {
           if (typeof props.actionBuilder === "function") {
             itemActions.value = await props.actionBuilder(props.item);
+
+            if (
+              itemActions.value.some(
+                (action: IActionBuilderResult) => action.leftActions
+              )
+            ) {
+              offsetX.value = -maxWidth;
+              startOffsetX.value = offsetX.value;
+            }
           }
         }
       },
@@ -141,9 +190,12 @@ export default defineComponent({
         if (itemActions.value && itemActions.value.length) {
           const deltaX = e.touches[0].clientX - startX.value;
           const deltaY = e.touches[0].clientY - startY.value;
+
           if (
             Math.abs(deltaX) > threshold &&
-            Math.abs(startOffsetX.value + deltaX) <= maxWidth &&
+            (leftSwipeActions.value && leftSwipeActions.value.length
+              ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
+              : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
             startOffsetX.value + deltaX < 0
           ) {
             if (Math.abs(deltaY) < threshold * 2) {
@@ -155,12 +207,30 @@ export default defineComponent({
       },
 
       touchEnd(): void {
-        offsetX.value = offsetX.value < -(maxWidth / 2) ? -maxWidth : 0;
+        const absoluteOffsetX = Math.abs(offsetX.value);
+        if (absoluteOffsetX < maxWidth) {
+          offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
+        } else {
+          offsetX.value =
+            absoluteOffsetX <= maxWidth * 2 - threshold * 2
+              ? -maxWidth
+              : -maxWidth * 2;
+        }
+
         isMoving.value = false;
       },
 
       touchCancel(): void {
-        offsetX.value = offsetX.value < -(maxWidth / 2) ? -maxWidth : 0;
+        const absoluteOffsetX = Math.abs(offsetX.value);
+        if (absoluteOffsetX < maxWidth) {
+          offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
+        } else {
+          offsetX.value =
+            absoluteOffsetX <= maxWidth * 2 - threshold * 2
+              ? -maxWidth
+              : -maxWidth * 2;
+        }
+
         isMoving.value = false;
       },
     };

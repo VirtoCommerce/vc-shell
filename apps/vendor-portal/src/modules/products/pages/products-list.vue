@@ -428,6 +428,16 @@ export default defineComponent({
         });
       }
 
+      result.push({
+        icon: "fas fa-trash",
+        title: "Delete",
+        variant: "danger",
+        leftActions: true,
+        clickHandler(item: ISellerProduct) {
+          alert("Delete " + item.id);
+        },
+      });
+
       /*result.push(
         ...[
           {

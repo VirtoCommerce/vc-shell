@@ -1,7 +1,7 @@
 {
     "artifactKey": "ghcr.io/virtocommerce/platform-marketing",
     "deployRepo": "vc-deploy-dev",
-    "cmPath": "marketing-app/overlays/demo/kustomization.yaml",
+    "cmPath": "marketing-app/overlays/dev/kustomization.yaml",
     "dev": {
         "deployAppName": "marketing-app-dev",
         "deployBranch": "dev",

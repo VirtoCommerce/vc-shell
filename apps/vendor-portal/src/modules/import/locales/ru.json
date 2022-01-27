@@ -11,6 +11,11 @@
           "ADD_PROFILE": "Добавить профиль",
           "REFRESH": "Обновить"
         }
+      },
+      "PRODUCT_IMPORTER": {
+        "UPLOAD_STATUS": {
+          "STARTED_AT": "Начато в"
+        }
       }
     }
   }

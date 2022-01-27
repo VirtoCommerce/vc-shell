@@ -322,9 +322,7 @@ export default defineComponent({
           icon: "far fa-clock",
           color: "#A9BFD2",
           title:
-            computed(() =>
-              t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT")
-            ) +
+            t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
             " " +
             moment(importStatus.value.notification.created)
               .locale(locale)
@@ -338,8 +336,8 @@ export default defineComponent({
           icon: "fas fa-check-circle",
           color: "#87B563",
           title: importStatus.value.notification.totalCount,
-          description: computed(() =>
-            t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ")
+          description: t(
+            "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ"
           ),
         },
         {
@@ -349,8 +347,8 @@ export default defineComponent({
           title:
             importStatus.value.notification.processedCount -
             importStatus.value.notification.errorCount,
-          description: computed(() =>
-            t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED")
+          description: t(
+            "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"
           ),
         },
         {
@@ -358,9 +356,7 @@ export default defineComponent({
           icon: "fas fa-exclamation-circle",
           color: "#FFBB0D",
           title: importStatus.value.notification.errorCount,
-          description: computed(() =>
-            t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED")
-          ),
+          description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
         },
       ];
     });

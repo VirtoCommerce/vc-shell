@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    title="Orders"
+    :title="$t('ORDERS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
     width="30%"
@@ -30,11 +30,13 @@
     >
       <!-- Filters -->
       <template v-slot:filters>
-        <h2 v-if="$isMobile.value">Filters</h2>
+        <h2 v-if="$isMobile.value">{{ $t("ORDERS.PAGES.FILTERS.TITLE") }}</h2>
         <vc-container no-padding>
           <vc-row>
             <vc-col class="filter-col vc-padding_s">
-              <div class="group-title">Status filter</div>
+              <div class="group-title">
+                {{ $t("ORDERS.PAGES.FILTERS.STATUS_FILTER") }}
+              </div>
               <div>
                 <vc-checkbox
                   class="vc-margin-bottom_s"
@@ -42,7 +44,7 @@
                   @update:modelValue="
                     filter.status = $event ? 'Unpaid' : undefined
                   "
-                  >Unpaid</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.FILTERS.UNPAID") }}</vc-checkbox
                 >
                 <vc-checkbox
                   class="vc-margin-bottom_s"
@@ -50,22 +52,24 @@
                   @update:modelValue="
                     filter.status = $event ? 'Paid' : undefined
                   "
-                  >Paid</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.FILTERS.PAID") }}</vc-checkbox
                 >
               </div>
             </vc-col>
             <vc-col class="filter-col vc-padding_s">
-              <div class="group-title">Order date</div>
+              <div class="group-title">
+                {{ $t("ORDERS.PAGES.FILTERS.ORDER_DATE") }}
+              </div>
               <div>
                 <vc-input
-                  label="Start date"
+                  :label="$t('ORDERS.PAGES.FILTERS.START_DATE')"
                   type="date"
                   class="vc-margin-bottom_m"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
                 ></vc-input>
                 <vc-input
-                  label="End date"
+                  :label="$t('ORDERS.PAGES.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
@@ -80,9 +84,11 @@
                   outline
                   class="vc-margin-right_l"
                   @click="resetFilters"
-                  >Reset filters</vc-button
+                  >$t('ORDERS.PAGES.FILTERS.RESET_FILTERS')</vc-button
                 >
-                <vc-button @click="applyFilters">Apply</vc-button>
+                <vc-button @click="applyFilters"
+                  >$t('ORDERS.PAGES.FILTERS.APPLY')</vc-button
+                >
               </div>
             </vc-col>
           </vc-row>
@@ -101,9 +107,11 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            No orders found.
+            {{ $t("ORDERS.PAGES.NOT_FOUND.NO_ORDERS") }}
           </div>
-          <vc-button @click="resetSearch">Reset search</vc-button>
+          <vc-button @click="resetSearch">{{
+            $t("ORDERS.PAGES.NOT_FOUND.RESET")
+          }}</vc-button>
         </div>
       </template>
 
@@ -119,7 +127,7 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            There are no orders yet
+            {{ $t("ORDERS.PAGES.EMPTY") }}
           </div>
         </div>
       </template>
@@ -158,13 +166,13 @@
               "
             >
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>Total</vc-hint>
+                <vc-hint>{{ $t("ORDERS.PAGES.STATUS.TOTAL") }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>Created</vc-hint>
+                <vc-hint>{{ $t("ORDERS.PAGES.STATUS.CREATED") }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -233,43 +241,43 @@ export default defineComponent({
       await loadOrders();
     });
 
-    const bladeToolbar: IBladeToolbar[] = [
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
-        title: t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TOOLBAR.REFRESH")),
         icon: "fas fa-sync-alt",
         async clickHandler() {
           await reload();
         },
       },
       {
-        title: t("ORDERS.PAGES.LIST.TOOLBAR.CONFIRM"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TOOLBAR.CONFIRM")),
         icon: "fas fa-check",
         disabled: true,
       },
       {
-        title: t("ORDERS.PAGES.LIST.TOOLBAR.CANCEL"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TOOLBAR.CANCEL")),
         icon: "fas fa-times-circle",
         disabled: true,
       },
-    ];
+    ]);
 
     const columns = ref<ITableColumns[]>([
       {
         id: "number",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
         width: 160,
         alwaysVisible: true,
         sortable: true,
       },
       {
         id: "customerName",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CUSTOMER"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CUSTOMER")),
         alwaysVisible: true,
         sortable: true,
       },
       {
         id: "total",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.TOTAL")),
         width: 120,
         alwaysVisible: true,
         sortable: true,
@@ -277,24 +285,24 @@ export default defineComponent({
       },
       {
         id: "status",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
         width: 120,
         alwaysVisible: true,
         sortable: true,
       },
       {
         id: "createdDate",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
         sortable: true,
         width: 180,
         type: "date-ago",
       },
     ]);
 
-    const empty = {
+    const empty = reactive({
       image: "/assets/empty-product.png",
-      text: "There are no orders yet",
-    };
+      text: computed(() => t("ORDERS.PAGES.EMPTY")),
+    });
 
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
@@ -339,7 +347,7 @@ export default defineComponent({
 
       result.push({
         icon: "fas fa-check",
-        title: "Confirm",
+        title: computed(() => t("ORDERS.PAGES.TABLE.ACTIONS.CONFIRM")),
         variant: "success",
         clickHandler() {
           alert("Confirm");
@@ -347,7 +355,7 @@ export default defineComponent({
       });
       result.push({
         icon: "fas fa-times",
-        title: "Decline",
+        title: computed(() => t("ORDERS.PAGES.TABLE.ACTIONS.DECLINE")),
         variant: "danger",
         clickHandler() {
           alert("Decline");
@@ -393,7 +401,7 @@ export default defineComponent({
       currentPage,
       statusStyle,
       onPaginationClick,
-      title: t("ORDERS.PAGES.LIST.TITLE"),
+      title: computed(() => t("ORDERS.PAGES.LIST.TITLE")),
       searchValue,
       onSearchList,
       selectedItemId,

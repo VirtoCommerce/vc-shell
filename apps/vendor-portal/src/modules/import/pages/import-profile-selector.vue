@@ -91,15 +91,19 @@ export default defineComponent({
     const importersList = ref<IDataImporter[]>([]);
     const bladeWidth = ref(50);
 
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "refresh",
-        title: t("IMPORT.PAGES.TOOLBAR.REFRESH"),
+        title: computed(() =>
+          t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.REFRESH")
+        ),
         icon: "fas fa-sync-alt",
       },
       {
         id: "new",
-        title: t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE"),
+        title: computed(() =>
+          t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE")
+        ),
         icon: "fas fa-plus",
         clickHandler() {
           profileClick();
@@ -109,19 +113,19 @@ export default defineComponent({
     const columns = ref<ITableColumns[]>([
       {
         id: "jobId", // temp
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
         alwaysVisible: true,
       },
       {
         id: "created",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
         type: "date",
         format: "L LT",
       },
       {
         id: "errorCount",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
         width: 118,
         sortable: true,
       },
@@ -155,6 +159,7 @@ export default defineComponent({
     }
 
     return {
+      title: computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE")),
       bladeToolbar,
       columns,
       importHistory,

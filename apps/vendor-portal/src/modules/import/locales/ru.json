@@ -1,0 +1,17 @@
+{
+  "IMPORT": {
+    "MENU": {
+      "TITLE": "Импорт"
+    },
+    "PAGES": {
+      "TITLE": "Импорт",
+      "PROFILE_SELECTOR": {
+        "TITLE": "Профили импорта",
+        "TOOLBAR": {
+          "ADD_PROFILE": "Добавить профиль",
+          "REFRESH": "Обновить"
+        }
+      }
+    }
+  }
+}

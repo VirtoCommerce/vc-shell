@@ -146,15 +146,15 @@ export default defineComponent({
     const importer = ref("");
     const importersList = ref<IDataImporter[]>([]);
     const showConfirmation = ref(false);
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "save",
-        title: t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.SAVE"),
+        title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.SAVE")),
         icon: "fas fa-save",
       },
       {
         id: "cancel",
-        title: t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL"),
+        title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL")),
         icon: "fas fa-ban",
         clickHandler() {
           emit("page:close");
@@ -162,7 +162,7 @@ export default defineComponent({
       },
       {
         id: "delete",
-        title: t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE"),
+        title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE")),
         icon: "far fa-trash-alt",
         isVisible: computed(() => !!props.options.importer),
         clickHandler() {
@@ -184,6 +184,11 @@ export default defineComponent({
     });
 
     return {
+      title: computed(() =>
+        props.options.importer
+          ? props.options.importer.typeName
+          : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
+      ),
       bladeToolbar,
       showConfirmation,
       importersList,

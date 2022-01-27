@@ -32,18 +32,56 @@
             "STATUS": "Status",
             "GTIN": "Code"
           }
+        },
+        "FILTERS": {
+          "TITLE": "Filters",
+          "STATUS_FILTER": "Status filter",
+          "PRICE_BETWEEN": {
+            "TITLE": "Price between",
+            "FROM": "From",
+            "TO": "To"
+          },
+          "CREATED_DATE": {
+            "TITLE": "Created date",
+            "START_DATE": "Start date"
+          },
+          "RESET_FILTERS": "Reset filters",
+          "APPLY": "Apply"
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No products found.",
+          "RESET": "Reset search"
+        },
+        "EMPTY": {
+          "NO_PRODUCTS": "There are no products yet",
+          "ADD": "Add product"
+        },
+        "MOBILE": {
+          "EAN_GTIN": "EAN/GTIN",
+          "CREATED": "Created"
+        },
+        "ACTIONS": {
+          "UNPUBLISH": "Unpublish",
+          "PUBLISH": "Publish"
         }
       },
       "DETAILS": {
         "TITLE": "Add product",
         "TOOLBAR": {
-          "SAVE": "Save",
-          "SAVEANDAPPROVE": "Save & send to approve",
+          "SAVE": {
+            "TITLE": "Save",
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+          },
+          "SAVEANDAPPROVE": {
+            "TITLE": "Save & send to approve",
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+          },
           "CLOSE": "Close",
           "REVERT": "Revert staged changes",
           "APPROVE": "Approve (test only)"
         },
         "FIELDS": {
+          "TITLE": "Properties",
           "NAME": {
             "TITLE": "Product name",
             "PLACEHOLDER": "Enter product name"
@@ -61,7 +99,13 @@
           "DESCRIPTION": {
             "TITLE": "Description",
             "PLACEHOLDER": "Enter product description"
+          },
+          "IMAGES": {
+            "TITLE": "Images"
           }
+        },
+        "ALERTS": {
+          "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
         }
       }
     }

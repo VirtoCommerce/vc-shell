@@ -55,7 +55,7 @@
               ></vc-select>
 
               <vc-card
-                header="Properties"
+                :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
                 v-if="product.id || currentCategory"
@@ -110,7 +110,7 @@
 
               <vc-card
                 v-if="param"
-                header="Images"
+                :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
                 class="vc-margin-vertical_m"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_gallery')"
@@ -146,7 +146,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+} from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import { useForm } from "@virtoshell/ui";
 import { useProduct } from "../composables";
@@ -246,10 +253,10 @@ export default defineComponent({
       await reload(true);
     });
 
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "save",
-        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE"),
+        title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
         icon: "fas fa-save",
         async clickHandler() {
           const { valid } = await validate();
@@ -270,7 +277,13 @@ export default defineComponent({
               alert(err.message);
             }
           } else {
-            alert("Form is not valid.\nPlease, check highlighted fields.");
+            alert(
+              unref(
+                computed(() =>
+                  t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID")
+                )
+              )
+            );
           }
         },
         disabled: computed(
@@ -282,7 +295,9 @@ export default defineComponent({
       },
       {
         id: "saveAndSendToApprove",
-        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE"),
+        title: computed(() =>
+          t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
+        ),
         icon: "fas fa-share-square",
         isVisible: computed(() => !!props.param),
         async clickHandler() {
@@ -304,7 +319,13 @@ export default defineComponent({
               alert(err.message);
             }
           } else {
-            alert("Form is not valid.\nPlease, check highlighted fields.");
+            alert(
+              unref(
+                computed(() =>
+                  t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
+                )
+              )
+            );
           }
         },
         disabled: computed(
@@ -317,7 +338,7 @@ export default defineComponent({
       },
       {
         id: "revertStagedChanges",
-        title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT"),
+        title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT")),
         icon: "fas fa-undo",
         isVisible: computed(() => !!props.param),
         async clickHandler() {
@@ -440,7 +461,13 @@ export default defineComponent({
       },
       async onBeforeClose() {
         if (modified.value) {
-          return confirm("You have unsaved changes\nClose anyway?");
+          return confirm(
+            unref(
+              computed(() =>
+                t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION")
+              )
+            )
+          );
         }
       },
 

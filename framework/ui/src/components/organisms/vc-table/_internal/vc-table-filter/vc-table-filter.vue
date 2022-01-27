@@ -1,7 +1,11 @@
 <template>
   <div class="vc-table-filter">
     <!-- Filter button -->
-    <div class="vc-table-filter__button" @click="openPanel" ref="filterToggle">
+    <div
+      class="vc-table-filter__button"
+      @click="openPanel($isMobile.value)"
+      ref="filterToggle"
+    >
       <vc-icon icon="fas fa-filter" size="m" />
       <span v-if="title" class="vc-table-filter__button-title">
         {{ title }}
@@ -14,7 +18,10 @@
     <!-- Filter panel -->
     <teleport to="body">
       <div
-        class="vc-table-filter__panel"
+        :class="{
+          'vc-table-filter__panel_mobile': $isMobile.value,
+          'vc-table-filter__panel': !$isMobile.value,
+        }"
         v-if="isPanelVisible"
         @click.self="closePanel"
         ref="filterPanel"
@@ -80,7 +87,7 @@ export default defineComponent({
 
   emits: ["apply", "reset"],
 
-  setup(props) {
+  setup(props, context) {
     const isPanelVisible = ref(false);
     const filterToggle = ref();
     const filterPanel = ref();
@@ -95,31 +102,34 @@ export default defineComponent({
       }
     );
 
-    function openPanel() {
+    function openPanel(isMobile: boolean) {
       isPanelVisible.value = !isPanelVisible.value;
-      const element = document.querySelector(".vc-blade");
-      if (isPanelVisible.value) {
-        nextTick(() => {
-          popper.value = createPopper(filterToggle.value, filterPanel.value, {
-            placement: "bottom-end",
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [0, 10],
+
+      if (!isMobile) {
+        const element = document.querySelector(".vc-blade");
+        if (isPanelVisible.value) {
+          nextTick(() => {
+            popper.value = createPopper(filterToggle.value, filterPanel.value, {
+              placement: "bottom-end",
+              modifiers: [
+                {
+                  name: "offset",
+                  options: {
+                    offset: [0, 10],
+                  },
                 },
-              },
-              {
-                name: "preventOverflow",
-                options: {
-                  boundary: element,
+                {
+                  name: "preventOverflow",
+                  options: {
+                    boundary: element,
+                  },
                 },
-              },
-            ],
+              ],
+            });
           });
-        });
-      } else {
-        destroyPopper();
+        } else {
+          destroyPopper();
+        }
       }
     }
 
@@ -213,38 +223,44 @@ export default defineComponent({
         margin-bottom: 12px;
       }
     }
-  }
 
-  .vc-app_mobile &__panel {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    bottom: 0;
-    z-index: 9999;
-    background: rgba(128, 140, 153, 0.6);
-    box-shadow: none;
-    border-radius: 0;
-    max-height: 100%;
-    max-width: 100%;
-    min-width: 100%;
+    &_mobile {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      bottom: 0;
+      z-index: 9999;
+      background: rgba(128, 140, 153, 0.6);
+      box-shadow: none;
+      border-radius: 0;
+      max-height: 100%;
+      max-width: 100%;
+      min-width: 100%;
 
-    &-inner {
-      width: 280px;
-      height: 100%;
-    }
+      .vc-table-filter__panel {
+        &-inner {
+          width: 280px;
+          height: 100%;
+        }
 
-    &-title {
-      display: block;
-      color: #2e3d4e;
-      font-weight: 600;
-      font-size: 22px;
-      margin-top: 24px;
-      margin-bottom: 24px;
-    }
+        &-title {
+          display: block;
+          color: #2e3d4e;
+          font-weight: 600;
+          font-size: 22px;
+          margin-top: 24px;
+          margin-bottom: 24px;
+        }
 
-    &-close {
-      align-self: flex-start;
+        &-close {
+          align-self: flex-start;
+        }
+      }
+
+      .vc-row {
+        display: block;
+      }
     }
   }
 }

@@ -11,34 +11,43 @@
     <vc-container>
       <vc-row>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Order info">
+          <vc-card :header="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TITLE')">
             <vc-row class="vc-padding_s">
               <vc-col class="vc-padding_s">
-                <vc-info-row label="Order reference #" :value="order.number" />
-                <vc-info-row label="Created date/time" :value="createdDate" />
                 <vc-info-row
-                  label="Store"
-                  :value="order.storeId"
-                  tooltip="Shows store where order was placed"
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.ORDER_REF')"
+                  :value="order.number"
                 />
-                <vc-info-row label="Order status" :value="order.status" />
+                <vc-info-row
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.CREATED_DATE')"
+                  :value="createdDate"
+                />
+                <vc-info-row
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.STORE')"
+                  :value="order.storeId"
+                  :tooltip="$t('ORDERS.PAGES.EDIT.ORDER_INFO.STORE_TOOLTIP')"
+                />
+                <vc-info-row
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.ORDER_STATUS')"
+                  :value="order.status"
+                />
                 <vc-info-row
                   class="orders-edit__row_line"
-                  label="Subtotal"
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.SUBTOTAL')"
                   :value="
                     order.subTotal &&
                     order.subTotal.toFixed(2) + ' ' + order.currency
                   "
                 />
                 <vc-info-row
-                  label="Discount total"
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.DISCOUNT_TOTAL')"
                   :value="
                     order.discountTotal &&
                     order.discountTotal.toFixed(2) + ' ' + order.currency
                   "
                 />
                 <vc-info-row
-                  label="Total"
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TOTAL')"
                   :value="
                     order.total && order.total.toFixed(2) + ' ' + order.currency
                   "
@@ -48,7 +57,7 @@
           </vc-card>
         </vc-col>
         <vc-col size="1" class="vc-padding_s">
-          <vc-card header="Buyer/recipient info">
+          <vc-card :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
             <vc-col class="vc-padding_s">
               <vc-col
                 class="vc-padding_s"
@@ -75,7 +84,7 @@
 
       <vc-row>
         <vc-col class="vc-padding_s">
-          <vc-card header="Items list">
+          <vc-card :header="$t('ORDERS.PAGES.EDIT.ITEMS_LIST.TITLE')">
             <vc-table
               :multiselect="false"
               :columns="columns"
@@ -87,7 +96,8 @@
                 <div class="vc-flex vc-flex-column">
                   <div>{{ itemData.item.name }}</div>
                   <vc-hint class="vc-margin-top_xs"
-                    >SKU: {{ itemData.item.sku }}</vc-hint
+                    >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
+                    {{ itemData.item.sku }}</vc-hint
                   >
                 </div>
               </template>
@@ -107,7 +117,8 @@
                         {{ itemData.item.name }}
                       </div>
                       <vc-hint class="vc-margin-top_xs">
-                        SKU: {{ itemData.item.sku }}
+                        {{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
+                        {{ itemData.item.sku }}
                       </vc-hint>
                     </div>
                   </div>
@@ -120,13 +131,17 @@
                     "
                   >
                     <div class="vc-ellipsis vc-flex-grow_2">
-                      <vc-hint>Quantity</vc-hint>
+                      <vc-hint>{{
+                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
+                      }}</vc-hint>
                       <div class="vc-ellipsis vc-margin-top_xs">
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
                     <div class="vc-ellipsis vc-flex-grow_2">
-                      <vc-hint>Unit price</vc-hint>
+                      <vc-hint>{{
+                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
+                      }}</vc-hint>
                       <div class="vc-ellipsis vc-margin-top_xs">
                         {{
                           itemData.item.price && itemData.item.price.toFixed(2)
@@ -134,7 +149,9 @@
                       </div>
                     </div>
                     <div class="vc-ellipsis vc-flex-grow_1">
-                      <vc-hint>Total</vc-hint>
+                      <vc-hint>{{
+                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
+                      }}</vc-hint>
                       <div class="vc-ellipsis vc-margin-top_xs">
                         {{
                           itemData.item.extendedPrice &&
@@ -154,11 +171,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import moment from "moment";
 
 import { useOrder } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
+import { useI18n } from "@virtoshell/core";
 
 export default defineComponent({
   url: "order",
@@ -186,6 +204,7 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
+    const { t } = useI18n();
     const {
       loading,
       order,
@@ -202,9 +221,9 @@ export default defineComponent({
       }
     });
 
-    const bladeToolbar = computed<IBladeToolbar[]>(() => [
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
-        title: "Download PDF",
+        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.DL_PDF")),
         icon: "fas fa-file-pdf",
         async clickHandler() {
           if (props.param) {
@@ -214,7 +233,7 @@ export default defineComponent({
         disabled: !props.param,
       },
       {
-        title: "Accept order",
+        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.ACCEPT_ORDER")),
         icon: "far fa-check-circle",
         async clickHandler() {
           if (
@@ -240,7 +259,7 @@ export default defineComponent({
         ),
       },
       {
-        title: "Cancel",
+        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.CANCEL")),
         icon: "fas fa-times-circle",
         async clickHandler() {
           if (props.param) {
@@ -260,7 +279,7 @@ export default defineComponent({
         disabled: !!(order.value.status === "Cancelled" && props.param),
       },
       {
-        title: "Ship order",
+        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.SHIP")),
         icon: "fas fa-shipping-fast",
         async clickHandler() {
           if (order.value.status === "Accepted" && props.param) {

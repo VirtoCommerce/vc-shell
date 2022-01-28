@@ -23,7 +23,7 @@ interface IMenuItems extends IBladeToolbar {
 
 interface ITableColumns {
   id: string;
-  title: string;
+  title: string | ComputedRef<string>;
   width?: number;
   field?: string;
   alwaysVisible?: boolean;
@@ -50,7 +50,7 @@ interface IShippingInfo {
 }
 
 interface INotificationActions {
-  name: string;
+  name: string | ComputedRef<string>;
   clickHandler(): void;
   outline: boolean;
   variant: string;

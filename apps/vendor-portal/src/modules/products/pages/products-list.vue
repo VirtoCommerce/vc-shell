@@ -37,11 +37,15 @@ About component.
     >
       <!-- Filters -->
       <template v-slot:filters>
-        <h2 v-if="$isMobile.value">Filters</h2>
+        <h2 v-if="$isMobile.value">
+          {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
+        </h2>
         <vc-container no-padding>
           <vc-row>
             <vc-col class="filter-col vc-padding_s">
-              <div class="group-title">Status filter</div>
+              <div class="group-title">
+                {{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
+              </div>
               <div>
                 <vc-checkbox
                   v-for="status in SellerProductStatus"
@@ -56,26 +60,32 @@ About component.
               </div>
             </vc-col>
             <vc-col class="filter-col vc-padding_s">
-              <div class="group-title">Price between</div>
+              <div class="group-title">
+                {{ $t("PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TITLE") }}
+              </div>
               <div>
                 <vc-input
-                  label="From"
+                  :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.FROM')"
                   class="vc-margin-bottom_m"
                   :modelValue="filter.priceStart"
                   @update:modelValue="filter.priceStart = $event"
                 ></vc-input>
                 <vc-input
-                  label="To"
+                  :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TO')"
                   :modelValue="filter.priceEnd"
                   @update:modelValue="filter.priceEnd = $event"
                 ></vc-input>
               </div>
             </vc-col>
             <vc-col class="filter-col vc-padding_s">
-              <div class="group-title">Created date</div>
+              <div class="group-title">
+                {{ $t("PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.TITLE") }}
+              </div>
               <div>
                 <vc-input
-                  label="Start date"
+                  :label="
+                    $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.START_DATE')
+                  "
                   type="date"
                   class="vc-margin-bottom_m"
                 ></vc-input>
@@ -90,9 +100,13 @@ About component.
                   outline
                   class="vc-margin-right_l"
                   @click="resetFilters"
-                  >Reset filters</vc-button
+                  >{{
+                    $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                  }}</vc-button
                 >
-                <vc-button @click="applyFilters">Apply</vc-button>
+                <vc-button @click="applyFilters"
+                  >$t('PRODUCTS.PAGES.LIST.FILTERS.APPLY')</vc-button
+                >
               </div>
             </vc-col>
           </vc-row>
@@ -111,9 +125,11 @@ About component.
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            No products found.
+            {{ $t("PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
-          <vc-button @click="resetSearch">Reset search</vc-button>
+          <vc-button @click="resetSearch">{{
+            $t("PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
+          }}</vc-button>
         </div>
       </template>
 
@@ -129,9 +145,11 @@ About component.
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            There are no products yet
+            {{ $t("PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
-          <vc-button @click="addProduct">Add product</vc-button>
+          <vc-button @click="addProduct">{{
+            $t("PRODUCTS.PAGES.LIST.EMPTY.ADD")
+          }}</vc-button>
         </div>
       </template>
 
@@ -181,7 +199,9 @@ About component.
               "
             >
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>EAN/GTIN</vc-hint>
+                <vc-hint>{{
+                  $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
+                }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -189,7 +209,9 @@ About component.
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>Created</vc-hint>
+                <vc-hint>{{
+                  $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED")
+                }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -307,10 +329,10 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar: IBladeToolbar[] = [
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "refresh",
-        title: t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
         icon: "fas fa-sync-alt",
         async clickHandler() {
           await reload();
@@ -318,7 +340,7 @@ export default defineComponent({
       },
       {
         id: "add",
-        title: t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
         icon: "fas fa-plus",
         async clickHandler() {
           emit("page:open", {
@@ -328,46 +350,48 @@ export default defineComponent({
       },
       {
         id: "batchDelete",
-        title: t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
         icon: "fas fa-trash",
         disabled: true,
         async clickHandler() {
           logger.debug("Delete selected products");
         },
       },
-    ];
+    ]);
 
     const columns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
         width: 60,
         alwaysVisible: true,
         type: "image",
       },
       {
         id: "name",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
         sortable: true,
         alwaysVisible: true,
       },
       {
         id: "createdDate",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
+        title: computed(() =>
+          t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
+        ),
         width: 140,
         sortable: true,
         type: "date-ago",
       },
       {
         id: "status",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
         width: 180,
         sortable: true,
       },
       {
         id: "gtin",
         field: "productData.gtin",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
         width: 180,
         sortable: true,
         alwaysVisible: true,
@@ -411,7 +435,7 @@ export default defineComponent({
       if (statuses.includes("Published")) {
         result.push({
           icon: "fas fa-times",
-          title: "Unpublish",
+          title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
           variant: "danger",
           clickHandler() {
             alert("Unpublish");
@@ -420,7 +444,7 @@ export default defineComponent({
       } else {
         result.push({
           icon: "fas fa-check",
-          title: "Publish",
+          title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.PUBLISH")),
           variant: "success",
           clickHandler() {
             alert("Publish");
@@ -490,7 +514,7 @@ export default defineComponent({
       onPaginationClick,
       searchValue,
       onSearchList,
-      title: t("PRODUCTS.PAGES.LIST.TITLE"),
+      title: computed(() => t("PRODUCTS.PAGES.LIST.TITLE")),
       filter,
       SellerProductStatus,
       activeFilterCount: computed(

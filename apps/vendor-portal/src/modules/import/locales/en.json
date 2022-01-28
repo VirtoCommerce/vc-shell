@@ -108,6 +108,11 @@
           "PREVIEW_OF": "of",
           "CANCEL": "Cancel",
           "IMPORT": "Import"
+        },
+        "CONFIRMATION_POPUP": {
+          "CONFIRMATION": "Are you sure you want to proceed?",
+          "YES": "Yes",
+          "NO": "No"
         }
       }
     }

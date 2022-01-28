@@ -13,8 +13,8 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-container :no-padding="true">
-      <div class="offer-details__inner vc-flex-grow_1">
+    <vc-container :no-padding="true" ref="container">
+      <vc-col>
         <div class="vc-padding_l">
           <vc-form>
             <!-- Product selector -->
@@ -53,33 +53,55 @@
                   <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
                     <div class="vc-ellipsis">{{ itemData.item.name }}</div>
                     <vc-hint class="vc-ellipsis vc-margin-top_xs">
-                      Code: {{ itemData.item.sku }}
+                      {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
+                      {{ itemData.item.sku }}
                     </vc-hint>
                   </div>
                 </div>
               </template>
             </vc-select>
 
-            <vc-card header="Inventory" class="vc-margin-bottom_l">
-              <template v-slot:actions>
-                <vc-checkbox>Track inventory</vc-checkbox>
+            <vc-card
+              :header="$t('OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE')"
+              class="vc-margin-bottom_l"
+            >
+              <template v-slot:actions v-if="$isDesktop.value">
+                <vc-checkbox>{{
+                  $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")
+                }}</vc-checkbox>
               </template>
 
               <div class="vc-padding_l">
                 <!-- SKU field -->
-                <vc-input
-                  class="vc-margin-bottom_l"
-                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
-                  :clearable="true"
-                  :required="true"
-                  v-model="offerDetails.sku"
-                  :placeholder="
-                    $t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')
+                <div
+                  class="
+                    vc-margin-bottom_l
+                    vc-flex vc-flex-row
+                    vc-flex-align_center
                   "
-                  rules="min:3"
-                  :disabled="readonly"
-                  name="sku"
-                ></vc-input>
+                >
+                  <vc-input
+                    class="vc-flex-grow_1"
+                    :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
+                    :clearable="true"
+                    :required="true"
+                    v-model="offerDetails.sku"
+                    :placeholder="
+                      $t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')
+                    "
+                    rules="min:3"
+                    :disabled="readonly"
+                    name="sku"
+                  ></vc-input>
+                  <div
+                    class="vc-margin-left_xl vc-margin-top_xl"
+                    v-if="$isMobile.value"
+                  >
+                    <vc-checkbox class="vc-padding-top_s" v-model="isTracked">{{
+                      $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")
+                    }}</vc-checkbox>
+                  </div>
+                </div>
 
                 <!-- Quantity in stock field -->
                 <vc-input
@@ -94,108 +116,101 @@
                   "
                   :disabled="readonly"
                   name="qty"
+                  v-if="$isDesktop.value || ($isMobile && isTracked)"
                 ></vc-input>
               </div>
             </vc-card>
 
-            <!--            <vc-card header="Offer Info" class="vc-margin-bottom_l">-->
-            <!--              <div class="vc-padding_l">-->
-            <!--                &lt;!&ndash; Currency selector &ndash;&gt;-->
-            <!--                <vc-select-->
-            <!--                  class="vc-margin-bottom_l"-->
-            <!--                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.TITLE')"-->
-            <!--                  :isRequired="true"-->
-            <!--                  v-model="offerDetails.currency"-->
-            <!--                  :options="currencies"-->
-            <!--                  keyProperty="value"-->
-            <!--                  displayProperty="title"-->
-            <!--                  :placeholder="-->
-            <!--                    $t('OFFERS.PAGES.DETAILS.FIELDS.CURRENCY.PLACEHOLDER')-->
-            <!--                  "-->
-            <!--                  :isDisabled="readonly"-->
-            <!--                  name="currency"-->
-            <!--                ></vc-select>-->
-            <!--              </div>-->
-            <!--            </vc-card>-->
-
-            <vc-card header="Pricing">
+            <vc-card :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')">
               <template v-slot:actions>
                 <vc-button v-if="!readonly" small @click="addPrice">
-                  Add price
+                  {{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
                 </vc-button>
               </template>
 
               <template
                 v-if="offerDetails.prices && offerDetails.prices.length"
               >
-                <div class="vc-padding_s vc-padding-top_l">
-                  <vc-row>
-                    <vc-col class="vc-padding-horizontal_s vc-font-weight_bold"
-                      >List price</vc-col
-                    >
-                    <vc-col class="vc-padding-horizontal_s vc-font-weight_bold"
-                      >Sales price</vc-col
-                    >
-                    <vc-col class="vc-padding-horizontal_s vc-font-weight_bold"
-                      >Min quantity</vc-col
-                    >
-                    <vc-col
-                      v-if="!readonly"
-                      size="0"
-                      class="vc-padding-horizontal_s"
-                      style="flex-basis: 20px"
-                    ></vc-col>
-                  </vc-row>
+                <div :class="{ 'vc-padding_s': $isDesktop.value }">
                   <vc-row
                     v-for="(item, i) in offerDetails.prices"
+                    :ref="setPriceRefs"
+                    :class="[
+                      {
+                        'offer-details__pricing-border vc-padding_s vc-margin_l':
+                          $isMobile.value,
+                      },
+                    ]"
                     :key="`${item.id}${i}`"
                   >
-                    <vc-col class="vc-padding_s">
-                      <!-- List price field -->
-                      <vc-input
-                        :clearable="true"
-                        v-model="item.listPrice"
-                        v-model:optionsValue="offerDetails.currency"
-                        :currency="true"
-                        :options="currencies"
-                        keyProperty="value"
-                        displayProperty="title"
-                        optionsTitle="Choose currency"
-                        :placeholder="
-                          $t(
-                            'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER'
-                          )
-                        "
-                        :disabled="readonly"
-                        name="listprice"
-                      ></vc-input>
+                    <vc-col size="2">
+                      <div class="vc-flex">
+                        <vc-col class="vc-padding_s">
+                          <!-- List price field -->
+                          <vc-input
+                            :clearable="true"
+                            v-model="item.listPrice"
+                            v-model:optionsValue="offerDetails.currency"
+                            :currency="true"
+                            :required="true"
+                            :options="currencies"
+                            keyProperty="value"
+                            displayProperty="title"
+                            :optionsTitle="
+                              $t(
+                                'OFFERS.PAGES.DETAILS.FIELDS.PRICING.CHOOSE_CURRENCY'
+                              )
+                            "
+                            :label="
+                              $t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')
+                            "
+                            :placeholder="
+                              $t(
+                                'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER'
+                              )
+                            "
+                            :disabled="readonly"
+                            name="listprice"
+                          ></vc-input>
+                        </vc-col>
+                        <vc-col class="vc-padding_s">
+                          <!-- Sales price field -->
+                          <vc-input
+                            :clearable="true"
+                            v-model="item.salePrice"
+                            v-model:optionsValue="offerDetails.currency"
+                            :currency="true"
+                            :options="currencies"
+                            keyProperty="value"
+                            displayProperty="title"
+                            :optionsTitle="
+                              $t(
+                                'OFFERS.PAGES.DETAILS.FIELDS.PRICING.CHOOSE_CURRENCY'
+                              )
+                            "
+                            :label="
+                              $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')
+                            "
+                            :placeholder="
+                              $t(
+                                'OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER'
+                              )
+                            "
+                            :disabled="readonly"
+                            name="saleprice"
+                          ></vc-input>
+                        </vc-col>
+                      </div>
                     </vc-col>
-                    <vc-col class="vc-padding_s">
-                      <!-- Sales price field -->
-                      <vc-input
-                        :clearable="true"
-                        v-model="item.salePrice"
-                        v-model:optionsValue="offerDetails.currency"
-                        :currency="true"
-                        :options="currencies"
-                        keyProperty="value"
-                        displayProperty="title"
-                        optionsTitle="Choose currency"
-                        :placeholder="
-                          $t(
-                            'OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER'
-                          )
-                        "
-                        :disabled="readonly"
-                        name="saleprice"
-                      ></vc-input>
-                    </vc-col>
+
                     <vc-col class="vc-padding_s">
                       <!-- Minimum quantity field -->
                       <vc-input
                         :clearable="true"
                         v-model="item.minQuantity"
                         type="number"
+                        :required="true"
+                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                         :placeholder="
                           $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                         "
@@ -203,39 +218,52 @@
                         name="minqty"
                       ></vc-input>
                     </vc-col>
-                    <vc-col
+
+                    <!-- Price remove button -->
+                    <div
                       v-if="!readonly"
-                      size="0"
                       style="flex-basis: 20px"
-                      class="
-                        vc-padding_s
-                        vc-padding-top_l
-                        vc-flex
-                        vc-flex-align_end
-                      "
+                      :class="{
+                        'offer-details__pricing-delete-btn': $isMobile.value,
+                        'vc-padding_s vc-margin-top_l': !$isMobile.value,
+                      }"
                     >
                       <vc-icon
-                        class="offer-details__remove-price"
+                        :class="[
+                          { 'vc-padding-top_l': !$isMobile.value },
+                          'offer-details__remove-price',
+                        ]"
                         icon="fas fa-times-circle"
                         @click="removePrice(i)"
                       ></vc-icon>
-                    </vc-col>
+                    </div>
                   </vc-row>
                 </div>
               </template>
               <div v-else class="vc-padding_xl vc-flex vc-flex-justify_center">
-                <vc-hint>No prices for this offer</vc-hint>
+                <vc-hint>{{
+                  $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.EMPTY")
+                }}</vc-hint>
               </div>
             </vc-card>
           </vc-form>
         </div>
-      </div>
+      </vc-col>
     </vc-container>
   </vc-blade>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, reactive } from "vue";
+import {
+  computed,
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  onBeforeUpdate,
+  nextTick,
+  unref,
+} from "vue";
 import { useForm } from "@virtoshell/ui";
 import { useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
@@ -282,6 +310,9 @@ export default defineComponent({
 
     const products = ref<IOfferProduct[]>();
     const currency = { title: "USD", value: "USD" };
+    const isTracked = ref(false);
+    const priceRefs = ref([]);
+    const container = ref();
     const { validate } = useForm({ validateOnMount: false });
 
     onMounted(async () => {
@@ -303,12 +334,16 @@ export default defineComponent({
       products.value = await fetchProducts();
     });
 
+    onBeforeUpdate(() => {
+      priceRefs.value = [];
+    });
+
     const readonly = computed(() => !!offer.value?.id);
 
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "save",
-        title: t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE"),
+        title: computed(() => t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE")),
         icon: "fas fa-save",
         async clickHandler() {
           const { valid } = await validate();
@@ -325,12 +360,23 @@ export default defineComponent({
               alert(err.message);
             }
           } else {
-            alert("Form is not valid.\nPlease, check highlighted fields.");
+            alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
           }
         },
         isVisible: !props.param,
+        disabled: computed(
+          () => !(offerDetails.prices && offerDetails.prices.length)
+        ),
       },
     ]);
+
+    function scrollToLastPrice() {
+      nextTick(() => {
+        const element = priceRefs.value[priceRefs.value.length - 1].$el;
+        const top = element.offsetTop;
+        container.value.$el.firstChild.scrollTo({ top, behavior: "smooth" });
+      });
+    }
 
     return {
       offer,
@@ -340,6 +386,8 @@ export default defineComponent({
       offerDetails,
       products,
       currency,
+      isTracked,
+      container,
       currencies: [
         { title: "USD", value: "USD" },
         { title: "EUR", value: "EUR" },
@@ -359,11 +407,20 @@ export default defineComponent({
           offerDetails.prices = [];
         }
         offerDetails.prices.push(new OfferPrice());
+        scrollToLastPrice();
       },
 
       removePrice(idx: number) {
-        if (confirm("Remove selected price?")) {
+        if (
+          confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))))
+        ) {
           offerDetails.prices.splice(idx, 1);
+        }
+      },
+
+      setPriceRefs(el: HTMLDivElement) {
+        if (el) {
+          priceRefs.value.push(el);
         }
       },
     };
@@ -373,10 +430,6 @@ export default defineComponent({
 
 <style lang="less">
 .offer-details {
-  &__inner {
-    overflow: hidden;
-  }
-
   .vc-app_phone &__inner {
     flex-direction: column;
   }
@@ -385,8 +438,29 @@ export default defineComponent({
     color: #41afe6;
     cursor: pointer;
 
+    &_mobile {
+      position: absolute;
+    }
+
     &:hover {
       color: #319ed4;
+    }
+  }
+
+  &__pricing-border {
+    border: 1px solid #e0e8ef;
+    box-sizing: border-box;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  &__pricing-delete-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+
+    .vc-icon {
+      color: #ff4a4a;
     }
   }
 }

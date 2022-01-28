@@ -6,7 +6,7 @@ import {
   ImportDataPreview,
   ImportCancellationRequest,
   ImportPushNotification,
-  ImportDataCommand,
+  RunImportCommand,
   IDataImporter,
 } from "../../../../api_client/api-client";
 import { useUser, useLogger, useNotifications } from "@virtoshell/core";
@@ -45,9 +45,9 @@ interface IUseImport {
   getImport(jobId: string): void;
 }
 const selectedImporter = ref<IDataImporter>();
-const importCommand = ref<ImportDataCommand>({
+const importCommand = ref<RunImportCommand>({
   importProfile: { settings: [] } as ImportProfile,
-} as ImportDataCommand);
+} as RunImportCommand);
 const importStatus = ref<IImportStatus>();
 export default (): IUseImport => {
   const logger = useLogger();

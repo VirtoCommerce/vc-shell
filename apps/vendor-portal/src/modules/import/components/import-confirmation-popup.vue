@@ -1,7 +1,9 @@
 <template>
   <vc-popup @close="$emit('close')" variant="small" :title="title">
     <div class="vc-padding_m">
-      <slot name="description">Are you sure you want to proceed?</slot>
+      <slot name="description">{{
+        $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.CONFIRMATION")
+      }}</slot>
 
       <div
         class="
@@ -18,9 +20,11 @@
           class="vc-margin-right_m"
           @click="$emit('close')"
         >
-          No
+          {{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.NO") }}
         </vc-button>
-        <vc-button variant="primary"> Yes </vc-button>
+        <vc-button variant="primary">
+          {{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.YES") }}
+        </vc-button>
       </div>
     </div>
   </vc-popup>

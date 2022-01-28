@@ -4,7 +4,7 @@
       class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s"
       v-if="$isDesktop.value"
     >
-      Dashboard
+      {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
 
     <vc-row>
@@ -12,11 +12,14 @@
         <vc-row>
           <!-- Latest orders block -->
           <vc-col size="3" class="vc-padding_s">
-            <vc-card header="Orders" icon="fas fa-file-alt">
+            <vc-card
+              :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
+              icon="fas fa-file-alt"
+            >
               <template v-slot:actions>
-                <vc-button small outline @click="open('orders-list')"
-                  >All orders</vc-button
-                >
+                <vc-button small outline @click="open('orders-list')">{{
+                  $t("SHELL.DASHBOARD.ORDERS.ALL")
+                }}</vc-button>
               </template>
 
               <vc-table
@@ -43,7 +46,7 @@
                     <div
                       class="vc-margin_l vc-font-size_xl vc-font-weight_medium"
                     >
-                      There are no orders yet
+                      {{ $t("SHELL.DASHBOARD.ORDERS.EMPTY") }}
                     </div>
                   </div>
                 </template>
@@ -58,11 +61,14 @@
 
           <!-- Latest products block -->
           <vc-col size="4" class="vc-padding_s">
-            <vc-card header="Products" icon="fas fa-box-open">
+            <vc-card
+              :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
+              icon="fas fa-box-open"
+            >
               <template v-slot:actions>
-                <vc-button small outline @click="open('products-list')"
-                  >All products</vc-button
-                >
+                <vc-button small outline @click="open('products-list')">{{
+                  $t("SHELL.DASHBOARD.PRODUCTS.ALL")
+                }}</vc-button>
               </template>
 
               <vc-table
@@ -89,11 +95,11 @@
                     <div
                       class="vc-margin_l vc-font-size_xl vc-font-weight_medium"
                     >
-                      There are no products yet
+                      {{ $t("SHELL.DASHBOARD.PRODUCTS.EMPTY") }}
                     </div>
-                    <vc-button @click="open('products-add')"
-                      >Add product</vc-button
-                    >
+                    <vc-button @click="open('products-add')">{{
+                      $t("SHELL.DASHBOARD.PRODUCTS.ADD")
+                    }}</vc-button>
                   </div>
                 </template>
 
@@ -122,17 +128,20 @@
         <vc-row>
           <!-- Offers block -->
           <vc-col class="vc-padding_s">
-            <vc-card header="Offers" icon="fas fa-file-invoice">
+            <vc-card
+              :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
+              icon="fas fa-file-invoice"
+            >
               <template v-slot:actions>
                 <vc-button
                   small
                   class="vc-margin-right_m"
                   @click="open('offers-add')"
-                  >Add offer</vc-button
+                  >{{ $t("SHELL.DASHBOARD.OFFERS.ADD") }}</vc-button
                 >
-                <vc-button small outline @click="open('offers-list')"
-                  >All offers</vc-button
-                >
+                <vc-button small outline @click="open('offers-list')">{{
+                  $t("SHELL.DASHBOARD.OFFERS.ALL")
+                }}</vc-button>
               </template>
 
               <vc-row>
@@ -165,11 +174,11 @@
                             vc-font-weight_medium
                           "
                         >
-                          There are no offers yet
+                          {{ $t("SHELL.DASHBOARD.OFFERS.EMPTY") }}
                         </div>
-                        <vc-button @click="open('offers-add')"
-                          >Add offer</vc-button
-                        >
+                        <vc-button @click="open('offers-add')">{{
+                          $t("SHELL.DASHBOARD.OFFERS.ADD")
+                        }}</vc-button>
                       </div>
                     </template>
                   </vc-table>
@@ -185,7 +194,7 @@
                       25
                     </div>
                     <div class="dashboard-offers__counter-title">
-                      Offers ending soon
+                      {{ $t("SHELL.DASHBOARD.OFFERS.ENDING") }}
                     </div>
                   </div>
                   <div class="dashboard-offers__counter">
@@ -197,7 +206,9 @@
                     >
                       7
                     </div>
-                    <div class="dashboard-offers__counter-title">Low stock</div>
+                    <div class="dashboard-offers__counter-title">
+                      {{ $t("SHELL.DASHBOARD.OFFERS.LOW_STOCK") }}
+                    </div>
                   </div>
                   <div class="dashboard-offers__counter">
                     <div
@@ -209,7 +220,7 @@
                       11
                     </div>
                     <div class="dashboard-offers__counter-title">
-                      Out of stock
+                      {{ $t("SHELL.DASHBOARD.OFFERS.OUT_STOCK") }}
                     </div>
                   </div>
                 </vc-col>
@@ -224,7 +235,7 @@
           <vc-col class="vc-margin-right_s">
             <vc-card
               class="vc-margin-bottom_l"
-              header="Orders"
+              :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
               @click="open('orders-list')"
             >
@@ -237,7 +248,7 @@
           <vc-col class="vc-margin-left_s">
             <vc-card
               class="vc-margin-bottom_l"
-              header="Products"
+              :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
               @click="open('products-list')"
             >
@@ -249,7 +260,7 @@
           </vc-col>
         </div>
         <vc-card
-          header="Offers"
+          :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
           icon="fas fa-file-invoice"
           @click="open('offers-list')"
         >
@@ -262,7 +273,7 @@
       <vc-col class="dashboard-counters vc-padding_s">
         <vc-card
           class="vc-margin-bottom_l"
-          header="Revenue, USD"
+          :header="$t('SHELL.DASHBOARD.COUNTERS.REVENUE')"
           icon="fas fa-hand-holding-usd"
         >
           <div class="vc-separator"></div>
@@ -282,34 +293,34 @@
               :outline="range.revenue !== 'day'"
               @click="range.revenue = 'day'"
               class="vc-margin-right_s"
-              >Day</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button
             >
             <vc-button
               small
               :outline="range.revenue !== 'week'"
               @click="range.revenue = 'week'"
               class="vc-margin-right_s"
-              >Week</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button
             >
             <vc-button
               small
               :outline="range.revenue !== 'month'"
               @click="range.revenue = 'month'"
               class="vc-margin-right_s"
-              >Month</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.MONTH") }}</vc-button
             >
             <vc-button
               small
               :outline="range.revenue !== 'year'"
               @click="range.revenue = 'year'"
-              >Year</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button
             >
           </div>
         </vc-card>
 
         <vc-card
           class="vc-margin-bottom_l"
-          header="Items purchased"
+          :header="$t('SHELL.DASHBOARD.COUNTERS.PURCHASED')"
           icon="fas fa-boxes"
         >
           <div class="vc-separator"></div>
@@ -329,34 +340,34 @@
               :outline="range.purchased !== 'day'"
               @click="range.purchased = 'day'"
               class="vc-margin-right_s"
-              >Day</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button
             >
             <vc-button
               small
               :outline="range.purchased !== 'week'"
               @click="range.purchased = 'week'"
               class="vc-margin-right_s"
-              >Week</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button
             >
             <vc-button
               small
               :outline="range.purchased !== 'month'"
               @click="range.purchased = 'month'"
               class="vc-margin-right_s"
-              >Month</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.MONTH") }}</vc-button
             >
             <vc-button
               small
               :outline="range.purchased !== 'year'"
               @click="range.purchased = 'year'"
-              >Year</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button
             >
           </div>
         </vc-card>
 
         <vc-card
           class="vc-margin-bottom_l"
-          header="Average order, USD"
+          :header="$t('SHELL.DASHBOARD.COUNTERS.AVERAGE_ORDER')"
           icon="fas fa-dollar-sign"
         >
           <div class="vc-separator"></div>
@@ -376,32 +387,35 @@
               :outline="range.orderAvg !== 'day'"
               @click="range.orderAvg = 'day'"
               class="vc-margin-right_s"
-              >Day</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button
             >
             <vc-button
               small
               :outline="range.orderAvg !== 'week'"
               @click="range.orderAvg = 'week'"
               class="vc-margin-right_s"
-              >Week</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button
             >
             <vc-button
               small
               :outline="range.orderAvg !== 'month'"
               @click="range.orderAvg = 'month'"
               class="vc-margin-right_s"
-              >Month</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.MONTH") }}</vc-button
             >
             <vc-button
               small
               :outline="range.orderAvg !== 'year'"
               @click="range.orderAvg = 'year'"
-              >Year</vc-button
+              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button
             >
           </div>
         </vc-card>
 
-        <vc-card header="Latest review" icon="fas fa-comment-dots">
+        <vc-card
+          :header="$t('SHELL.DASHBOARD.REVIEWS.TITLE')"
+          icon="fas fa-comment-dots"
+        >
           <div class="vc-separator"></div>
           <div class="vc-padding_m">
             <vc-hint>22.02.2021</vc-hint>
@@ -416,7 +430,9 @@
               it. Talk about... remorse!!!
             </div>
             <div class="vc-flex vc-flex-justify_center vc-margin-top_m">
-              <vc-button small outline>More reviews</vc-button>
+              <vc-button small outline>{{
+                $t("SHELL.DASHBOARD.REVIEWS.MORE")
+              }}</vc-button>
             </div>
           </div>
         </vc-card>
@@ -427,7 +443,7 @@
 
 <script lang="ts">
 import { useI18n } from "@virtoshell/core";
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref } from "vue";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import {
@@ -474,23 +490,25 @@ export default defineComponent({
     const productsColumns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
         width: 60,
         type: "image",
       },
       {
         id: "name",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
       },
       {
         id: "createdDate",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
+        title: computed(() =>
+          t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
+        ),
         width: 140,
         type: "date-ago",
       },
       {
         id: "status",
-        title: t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS"),
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
         width: 180,
       },
     ]);
@@ -498,22 +516,22 @@ export default defineComponent({
     const ordersColumns = ref<ITableColumns[]>([
       {
         id: "number",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
       },
       {
         id: "items",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY")),
         width: 80,
       },
       {
         id: "status",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
         width: 160,
         type: "status",
       },
       {
         id: "createdDate",
-        title: t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED"),
+        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
         width: 160,
         type: "date-ago",
       },
@@ -522,47 +540,49 @@ export default defineComponent({
     const offersColumns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
+        title: computed(() =>
+          t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")
+        ),
         width: 60,
         type: "image",
       },
       {
         id: "name",
         field: "name",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
       },
       {
         id: "createdDate",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
         width: 140,
         type: "date-ago",
       },
       {
         id: "sku",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
         width: 120,
       },
       {
         id: "salePrice",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
         width: 100,
         type: "money",
       },
       {
         id: "listPrice",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
         width: 100,
         type: "money",
       },
       {
         id: "minQuantity",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
         width: 80,
         type: "number",
       },
       {
         id: "inStockQuantity",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
         width: 80,
         type: "number",
       },

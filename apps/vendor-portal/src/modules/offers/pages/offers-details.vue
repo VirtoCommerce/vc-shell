@@ -14,7 +14,7 @@
   >
     <!-- Blade contents -->
     <vc-container :no-padding="true" ref="container">
-      <vc-col>
+      <div class="offer-details__inner vc-flex-grow_1">
         <div class="vc-padding_l">
           <vc-form>
             <!-- Product selector -->
@@ -248,7 +248,7 @@
             </vc-card>
           </vc-form>
         </div>
-      </vc-col>
+      </div>
     </vc-container>
   </vc-blade>
 </template>
@@ -430,6 +430,10 @@ export default defineComponent({
 
 <style lang="less">
 .offer-details {
+  &__inner {
+    overflow: hidden;
+  }
+
   .vc-app_phone &__inner {
     flex-direction: column;
   }

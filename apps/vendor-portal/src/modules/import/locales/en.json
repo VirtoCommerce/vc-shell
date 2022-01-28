@@ -35,10 +35,7 @@
           "IMPORTER": "Importer"
         },
         "PROFILE_SETTINGS": {
-          "TITLE": "Profile settings",
-          "DECIMAL_SEPARATOR": "Decimal separator",
-          "SHEET_NAME": "Sheet name",
-          "DATE_FORMAT": "Date format"
+          "TITLE": "Profile settings"
         },
         "CONFIRM_POPUP": {
           "DELETE_IMPORTER": {

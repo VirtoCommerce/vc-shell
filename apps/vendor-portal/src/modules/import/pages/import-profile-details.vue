@@ -192,9 +192,9 @@ export default defineComponent({
     });
 
     onMounted(async () => {
+      await fetchDataImporters();
       if (props.param) {
         await loadImportProfile({ id: props.param });
-        await fetchDataImporters();
 
         if (profileDetails.dataImporterType) {
           importer.value = dataImporters.value.find(

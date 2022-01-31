@@ -1,0 +1,79 @@
+{
+  "DYNAMIC_CONTENT": {
+    "PAGES": {
+      "CONTENT_ITEMS": {
+        "LIST": {
+          "TITLE": "Content items",
+          "TOOLBAR": {
+            "REFRESH": "Refresh",
+            "ADD": "Add"
+          },
+          "TABLE": {
+            "HEADER": {
+              "NAME": "Name",
+              "CREATED": "Created",
+              "DESCRIPTION": "Description",
+              "PATH": "Path",
+              "ID": "Id"
+            },
+            "NOT_FOUND": "No content items found.",
+            "RESET_SEARCH": "Reset search",
+            "IS_EMPTY": "There are no content items yet",
+            "ADD_ITEM": "Add content item"
+          }
+        }
+      },
+      "CONTENT_ITEM": {
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "RESET": "Reset",
+          "DELETE": "Delete",
+          "TYPE_PROPERTIES": "Type properties"
+        },
+        "INPUTS": {
+          "CONTENT_ITEM_NAME": {
+            "LABEL": "Content item name"
+          },
+          "DESCRIPTION": {
+            "LABEL": "Description"
+          },
+          "CONTENT_TYPE": {
+            "LABEL": "Content type"
+          },
+          "HTML": {
+            "LABEL": "HTML"
+          }
+        }
+      },
+      "CONTENT_PLACEHOLDERS": {
+        "TITLE": "Content placeholders",
+        "LIST": {
+          "EMPTY": "There are no content yet",
+          "ADD_PLACEHOLDER": "Add placeholder"
+        }
+      },
+      "CONTENT_PUBLISHING": {
+        "LIST": {
+          "TITLE": "Content publishing",
+          "TOOLBAR": {
+            "REFRESH": "Refresh",
+            "ADD": "Add"
+          },
+          "TABLE": {
+            "HEADER": {
+              "NAME": "Name",
+              "CREATED": "Created",
+              "DESCRIPTION": "Description",
+              "PATH": "Path",
+              "ID": "Id"
+            },
+            "NOT_FOUND": "No content found.",
+            "RESET_SEARCH": "Reset search",
+            "IS_EMPTY": "There are no content yet",
+            "ADD_ITEM": "Add content"
+          }
+        }
+      }
+    }
+  }
+}

@@ -7,7 +7,6 @@ import {
   ImportDataPreview,
   ImportProfile,
   ImportPushNotification,
-  IObjectSettingEntry,
   ObjectSettingEntry,
   PreviewDataQuery,
   RunImportCommand,

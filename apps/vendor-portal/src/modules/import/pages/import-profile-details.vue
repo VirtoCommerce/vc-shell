@@ -130,8 +130,9 @@ export default defineComponent({
     const { t } = useI18n();
     const {
       dataImporters,
-      profile,
+      profileDetails,
       loading,
+      profile,
       createImportProfile,
       loadImportProfile,
       deleteImportProfile,
@@ -152,12 +153,12 @@ export default defineComponent({
           if (valid) {
             try {
               if (props.param) {
-                await updateImportProfile(profile.value);
+                await updateImportProfile(profileDetails);
                 emit("parent:call", {
                   method: "reloadParent",
                 });
               } else {
-                await createImportProfile(profile.value);
+                await createImportProfile(profileDetails);
                 emit("parent:call", {
                   method: "reload",
                 });
@@ -240,7 +241,7 @@ export default defineComponent({
       dataImporters,
       importer: computed(() => profile.value.importer),
       sampleTemplateUrl,
-      profileDetails: computed(() => profile.value),
+      profileDetails,
       loading,
       setImporter,
       getSettingsValue,

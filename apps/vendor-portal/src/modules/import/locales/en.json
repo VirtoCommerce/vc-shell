@@ -91,7 +91,7 @@
             "STARTED_AT": "Started at",
             "DURATION": "Duration",
             "LINES_UPDATED": "Lines updated",
-            "ERROR_COUNT": "Error count",
+            "ERROR_COUNT": "Errors count",
             "DATE": "Date",
             "REPORT_URL": "Errors report download Url"
           }

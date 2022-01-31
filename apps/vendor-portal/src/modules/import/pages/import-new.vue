@@ -255,6 +255,7 @@ export default defineComponent({
           });
         },
         isVisible: computed(() => profile.value),
+        disabled: computed(() => importLoading.value),
       },
       {
         id: "cancel",

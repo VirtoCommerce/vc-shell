@@ -1,4 +1,4 @@
-import { computed, provide, reactive, Ref, ref, watch } from "vue";
+import { computed, provide, reactive, readonly, Ref, ref, watch } from "vue";
 import {
   CreateProfileCommand,
   IDataImporter,
@@ -40,14 +40,15 @@ export type ExtProfile = ImportProfile & {
 };
 
 interface IUseImport {
-  loading: Ref<boolean>;
-  uploadedFile: Ref<IUploadedFile>;
-  importStatus: Ref<IImportStatus>;
-  isValid: Ref<boolean>;
-  importHistory: Ref<ImportProfile[]>;
-  dataImporters: Ref<IDataImporter[]>;
-  importProfiles: Ref<ImportProfile[]>;
-  profile: Ref<ExtProfile>;
+  readonly loading: Ref<boolean>;
+  readonly uploadedFile: Ref<IUploadedFile>;
+  readonly importStatus: Ref<IImportStatus>;
+  readonly isValid: Ref<boolean>;
+  readonly importHistory: Ref<ImportProfile[]>;
+  readonly dataImporters: Ref<IDataImporter[]>;
+  readonly importProfiles: Ref<ImportProfile[]>;
+  readonly profile: Ref<ExtProfile>;
+  profileDetails: ImportProfile;
   setFile(file: IUploadedFile): void;
   setImporter(typeName: string): void;
   fetchDataImporters(): Promise<IDataImporter[]>;
@@ -55,7 +56,7 @@ interface IUseImport {
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
-  getImport(jobId: string): void;
+  getImportProcess(jobId: string): void;
   fetchImportHistory(profileId?: string): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
@@ -73,9 +74,7 @@ export default (): IUseImport => {
   const historySearchResult = ref<SearchImportProfilesResult>();
   const profileSearchResult = ref<SearchImportProfilesResult>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
-  const importCommand = ref<RunImportCommand>({
-    importProfile: { settings: [] } as ImportProfile,
-  } as RunImportCommand);
+  const profileDetails = reactive<ImportProfile>(new ImportProfile());
   const importStatus = ref<IImportStatus>();
   const dataImporters = ref<IDataImporter[]>([]);
 
@@ -113,7 +112,7 @@ export default (): IUseImport => {
   }
 
   function setFile(file: IUploadedFile) {
-    importCommand.value.importProfile.importFileUrl = file.url;
+    profile.value.importFileUrl = file.url;
     uploadedFile.value = file;
   }
 
@@ -223,7 +222,7 @@ export default (): IUseImport => {
     importStatus.value = undefined;
   }
 
-  function getImport(jobId: string) {
+  function getImportProcess(jobId: string) {
     const notification = notifications.value.find(
       (notification: ImportPushNotification) => notification.jobId === jobId
     ) as ImportPushNotification;
@@ -251,6 +250,8 @@ export default (): IUseImport => {
       profile.value.importer = dataImporters.value.find(
         (x) => x.typeName === profile.value.dataImporterType
       );
+
+      Object.assign(profileDetails, profile.value);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -263,9 +264,8 @@ export default (): IUseImport => {
     const importer = dataImporters.value.find(
       (importer) => importer.typeName === typeName
     );
-    profile.value.importer = importer;
-    profile.value.dataImporterType = typeName;
-    profile.value.settings = [...(importer.availSettings || [])];
+    profileDetails.dataImporterType = typeName;
+    profileDetails.settings = [...(importer.availSettings || [])];
   }
 
   async function updateImportProfile(updatedProfile: ImportProfile) {
@@ -333,13 +333,14 @@ export default (): IUseImport => {
     importProfiles: computed(() => profileSearchResult.value?.results),
     dataImporters: computed(() => dataImporters.value),
     profile: computed(() => profile.value),
+    profileDetails,
     setFile,
     fetchDataImporters,
     previewData,
     startImport,
     cancelImport,
     clearImport,
-    getImport,
+    getImportProcess,
     loadImportProfile,
     fetchImportHistory,
     fetchImportProfiles,

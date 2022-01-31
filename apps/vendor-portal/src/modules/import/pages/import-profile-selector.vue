@@ -60,7 +60,7 @@ import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportPushNotification } from "../../../api_client";
+import { ImportProfile, ImportPushNotification } from "../../../api_client";
 
 export default defineComponent({
   url: "import",
@@ -122,19 +122,19 @@ export default defineComponent({
     ]);
     const columns = ref<ITableColumns[]>([
       {
-        id: "jobId", // temp
+        id: "name", // temp
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
         alwaysVisible: true,
       },
       {
-        id: "created",
+        id: "createdDate",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
         type: "date",
         format: "L LT",
       },
       {
-        id: "errorCount",
+        id: "errorsCount",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
         width: 118,
         sortable: true,
@@ -165,11 +165,11 @@ export default defineComponent({
       });
     }
 
-    function onItemClick(item: ImportPushNotification) {
+    function onItemClick(item: ImportProfile) {
       bladeWidth.value = 30;
       emit("page:open", {
         component: ImportNew,
-        param: item.jobId,
+        param: item.id,
       });
     }
 

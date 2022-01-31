@@ -411,11 +411,7 @@ export default defineComponent({
       },
 
       removePrice(idx: number) {
-        if (
-          confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))))
-        ) {
-          offerDetails.prices.splice(idx, 1);
-        }
+        offerDetails.prices.splice(idx, 1);
       },
 
       setPriceRefs(el: HTMLDivElement) {

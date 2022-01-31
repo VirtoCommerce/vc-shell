@@ -1,4 +1,4 @@
-import { computed, reactive, Ref, ref, watch } from "vue";
+import { computed, provide, reactive, Ref, ref, watch } from "vue";
 import {
   CreateProfileCommand,
   IDataImporter,
@@ -35,10 +35,9 @@ export interface IUploadedFile {
   url?: string;
 }
 
-export interface IExtProfile {
-  profile: ImportProfile;
+export type ExtProfile = ImportProfile & {
   importer: IDataImporter;
-}
+};
 
 interface IUseImport {
   loading: Ref<boolean>;
@@ -48,9 +47,9 @@ interface IUseImport {
   importHistory: Ref<ImportProfile[]>;
   dataImporters: Ref<IDataImporter[]>;
   importProfiles: Ref<ImportProfile[]>;
-  profileDetails: IImportProfile;
-  profile: Ref<IExtProfile>;
+  profile: Ref<ExtProfile>;
   setFile(file: IUploadedFile): void;
+  setImporter(typeName: string): void;
   fetchDataImporters(): Promise<IDataImporter[]>;
   previewData(): Promise<ImportDataPreview>;
   startImport(): Promise<void>;
@@ -60,8 +59,8 @@ interface IUseImport {
   fetchImportHistory(profileId?: string): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
-  createImportProfile(details: IImportProfile): void;
-  updateImportProfile(profileId: string, details: IImportProfile): void;
+  createImportProfile(details: ImportProfile): void;
+  updateImportProfile(details: ImportProfile): void;
   deleteImportProfile(args: { id: string }): void;
 }
 
@@ -73,11 +72,7 @@ export default (): IUseImport => {
   const uploadedFile = ref<IUploadedFile>();
   const historySearchResult = ref<SearchImportProfilesResult>();
   const profileSearchResult = ref<SearchImportProfilesResult>();
-  const profile = ref<IExtProfile>({
-    profile: new ImportProfile(),
-    importer: new IDataImporter(),
-  });
-  const profileDetails = reactive<IImportProfile>(new ImportProfile());
+  const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
   const importCommand = ref<RunImportCommand>({
     importProfile: { settings: [] } as ImportProfile,
   } as RunImportCommand);
@@ -172,18 +167,11 @@ export default (): IUseImport => {
 
   async function previewData() {
     const client = await getApiClient();
-    const command = new ImportProfile({
-      dataImporterType: profile.value.profile.dataImporterType,
-      settings: profile.value.profile.settings.map(
-        (x) => new ObjectSettingEntry(x)
-      ),
-      importFileUrl: importCommand.value.importProfile.importFileUrl,
-    });
 
     try {
       loading.value = true;
       const previewDataQuery = new PreviewDataQuery({
-        importProfile: command,
+        importProfile: profile.value,
       });
       return client.preview(previewDataQuery);
     } catch (e) {
@@ -197,15 +185,11 @@ export default (): IUseImport => {
   async function startImport() {
     const client = await getApiClient();
 
-    const command = new ImportProfile({
-      dataImporterType: profile.value.profile.dataImporterType,
-      settings: profile.value.profile.settings,
-      importFileUrl: importCommand.value.importProfile.importFileUrl,
-    });
-
     try {
       loading.value = true;
-      const importDataQuery = new RunImportCommand({ importProfile: command });
+      const importDataQuery = new RunImportCommand({
+        importProfile: profile.value,
+      });
       const notification = await client.runImport(importDataQuery);
       updateStatus(notification);
     } catch (e) {
@@ -260,23 +244,13 @@ export default (): IUseImport => {
     try {
       loading.value = true;
 
-      const fetchedProfile = await client.getImportProfileById(args.id);
+      profile.value = (await client.getImportProfileById(
+        args.id
+      )) as ExtProfile;
 
-      const importer = dataImporters.value.find(
-        (x) => x.typeName === fetchedProfile.dataImporterType
+      profile.value.importer = dataImporters.value.find(
+        (x) => x.typeName === profile.value.dataImporterType
       );
-
-      profile.value = { profile: fetchedProfile, importer };
-
-      Object.assign(profileDetails, {
-        name: profile.value.profile.name,
-        dataImporterType: profile.value.profile.dataImporterType,
-        sellerId: profile.value.profile.sellerId,
-        sellerName: profile.value.profile.sellerName,
-        settings: profile.value.profile.settings,
-        typeName: profile.value.profile.typeName,
-        importFileUrl: profile.value.profile.importFileUrl,
-      } as IImportProfile);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -285,22 +259,28 @@ export default (): IUseImport => {
     }
   }
 
-  async function updateImportProfile(
-    profileId: string,
-    details: IImportProfile
-  ) {
+  async function setImporter(typeName: string) {
+    const importer = dataImporters.value.find(
+      (importer) => importer.typeName === typeName
+    );
+    profile.value.importer = importer;
+    profile.value.dataImporterType = typeName;
+    profile.value.settings = [...(importer.availSettings || [])];
+  }
+
+  async function updateImportProfile(updatedProfile: ImportProfile) {
     const client = await getApiClient();
 
     const command = new UpdateProfileCommand({
-      importProfileId: profileId,
-      importProfile: new ImportProfile(details),
+      importProfileId: updatedProfile.id,
+      importProfile: updatedProfile,
     });
 
     try {
       loading.value = true;
 
       await client.updateImportProfile(command);
-      await loadImportProfile({ id: profile.value.profile.id });
+      await loadImportProfile({ id: updatedProfile.id });
     } catch (e) {
       logger.error(e);
       throw e;
@@ -309,25 +289,19 @@ export default (): IUseImport => {
     }
   }
 
-  async function createImportProfile(details: IImportProfile) {
+  async function createImportProfile(newProfile: ImportProfile) {
     const client = await getApiClient();
 
+    newProfile.sellerName = user.value.userName;
+    newProfile.sellerId = user.value.id;
     const command = new CreateProfileCommand({
-      importProfile: new ImportProfile({
-        dataImporterType: details.typeName,
-        typeName: details.typeName,
-        settings: details.settings.map(
-          (setting) => new ObjectSettingEntry(setting)
-        ),
-        name: details.name,
-        sellerName: user.value.userName,
-        sellerId: user.value.id,
-      }),
+      importProfile: newProfile,
     });
 
     try {
       loading.value = true;
-      profile.value.profile = await client.createImportProfile(command);
+      const newProfileWithId = await client.createImportProfile(command);
+      await loadImportProfile({ id: newProfileWithId.id });
     } catch (e) {
       logger.error(e);
       throw e;
@@ -359,7 +333,6 @@ export default (): IUseImport => {
     importProfiles: computed(() => profileSearchResult.value?.results),
     dataImporters: computed(() => dataImporters.value),
     profile: computed(() => profile.value),
-    profileDetails,
     setFile,
     fetchDataImporters,
     previewData,
@@ -373,5 +346,6 @@ export default (): IUseImport => {
     createImportProfile,
     updateImportProfile,
     deleteImportProfile,
+    setImporter,
   };
 };

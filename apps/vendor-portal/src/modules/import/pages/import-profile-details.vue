@@ -130,13 +130,14 @@ export default defineComponent({
     const { t } = useI18n();
     const {
       dataImporters,
-      profileDetails,
+      profile,
       loading,
       createImportProfile,
       loadImportProfile,
       deleteImportProfile,
       updateImportProfile,
       fetchDataImporters,
+      setImporter,
     } = useImport();
     const { validate } = useForm({ validateOnMount: false });
     const importer = ref<IDataImporter>();
@@ -151,12 +152,12 @@ export default defineComponent({
           if (valid) {
             try {
               if (props.param) {
-                await updateImportProfile(props.param, profileDetails);
+                await updateImportProfile(profile.value);
                 emit("parent:call", {
                   method: "reloadParent",
                 });
               } else {
-                await createImportProfile({ ...profileDetails });
+                await createImportProfile(profile.value);
                 emit("parent:call", {
                   method: "reload",
                 });
@@ -195,22 +196,8 @@ export default defineComponent({
       await fetchDataImporters();
       if (props.param) {
         await loadImportProfile({ id: props.param });
-
-        if (profileDetails.dataImporterType) {
-          importer.value = dataImporters.value.find(
-            (importer) => importer.typeName === profileDetails.dataImporterType
-          );
-        }
       }
     });
-
-    function setImporter(typeName: string) {
-      importer.value = dataImporters.value.find(
-        (importer) => importer.typeName === typeName
-      );
-
-      profileDetails.settings = [...(importer.value.availSettings || [])];
-    }
 
     function getSettingsValue(setting: ObjectSettingEntry) {
       return setting.value;
@@ -251,13 +238,9 @@ export default defineComponent({
       bladeToolbar,
       showConfirmation,
       dataImporters,
-      importer: computed(() =>
-        dataImporters.value?.find(
-          (x) => x.typeName === profileDetails.dataImporterType
-        )
-      ),
+      importer: computed(() => profile.value.importer),
       sampleTemplateUrl,
-      profileDetails,
+      profileDetails: computed(() => profile.value),
       loading,
       setImporter,
       getSettingsValue,

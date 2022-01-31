@@ -226,7 +226,6 @@ export default defineComponent({
       uploadedFile,
       importStatus,
       isValid,
-      profileDetails,
       profile,
       cancelImport,
       clearImport,
@@ -252,7 +251,7 @@ export default defineComponent({
         clickHandler() {
           emit("page:open", {
             component: ImportProfileDetails,
-            param: profile.value.profile.id,
+            param: profile.value.id,
           });
         },
         isVisible: computed(() => profile.value),
@@ -507,7 +506,7 @@ export default defineComponent({
       importBadges,
       skippedColumns,
       profile,
-      profileDetails,
+      profileDetails: computed(() => profile.value),
       importLoading,
       sampleTemplateUrl,
       importStarted: computed(

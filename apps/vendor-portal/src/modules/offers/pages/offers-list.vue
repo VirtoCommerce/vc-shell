@@ -69,19 +69,19 @@
             "
           >
             <div class="vc-ellipsis vc-flex-grow_2">
-              <vc-hint>SKU</vc-hint>
+              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{ itemData.item.sku }}
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_2">
-              <vc-hint>Offer #</vc-hint>
+              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.OFFER") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{ itemData.item.id }}
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_1">
-              <vc-hint>Quantity</vc-hint>
+              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{ itemData.item.inStockQuantity }}
               </div>
@@ -96,7 +96,7 @@
             "
           >
             <div class="vc-ellipsis vc-flex-grow_2">
-              <vc-hint>List price</vc-hint>
+              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{
                   itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
@@ -104,7 +104,7 @@
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_2">
-              <vc-hint>Sale price</vc-hint>
+              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{
                   itemData.item.salePrice && itemData.item.salePrice.toFixed(2)
@@ -112,7 +112,7 @@
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_1">
-              <vc-hint>Created</vc-hint>
+              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{
                   itemData.item.createdDate &&
@@ -135,6 +135,7 @@ import {
   ref,
   computed,
   reactive,
+  unref,
 } from "vue";
 import { useI18n, useFunctions, useLogger } from "@virtoshell/core";
 import { useOffers } from "../composables";
@@ -227,10 +228,10 @@ export default defineComponent({
       });
     }, 200);
 
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "refresh",
-        title: t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.REFRESH")),
         icon: "fas fa-sync-alt",
         async clickHandler() {
           await reload();
@@ -238,7 +239,7 @@ export default defineComponent({
       },
       {
         id: "add",
-        title: t("OFFERS.PAGES.LIST.TOOLBAR.ADD"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.ADD")),
         icon: "fas fa-plus",
         clickHandler() {
           addOffer();
@@ -246,10 +247,25 @@ export default defineComponent({
       },
       {
         id: "deleteSelected",
-        title: t("OFFERS.PAGES.LIST.TOOLBAR.DELETE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.DELETE")),
         icon: "fas fa-trash",
         async clickHandler() {
-          await removeOffers();
+          //TODO: replace to confirmation dialog from UI library
+          if (
+            window.confirm(
+              unref(
+                computed(() =>
+                  t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
+                    count: selectedOfferIds.value.length,
+                  })
+                )
+              )
+            )
+          ) {
+            emit("page:closeChildren");
+            await deleteOffers({ ids: selectedOfferIds.value });
+            await reload();
+          }
         },
         disabled: computed(() => !selectedOfferIds.value?.length),
       },
@@ -258,7 +274,9 @@ export default defineComponent({
     const columns = ref<ITableColumns[]>([
       {
         id: "imgSrc",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE"),
+        title: computed(() =>
+          t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")
+        ),
         width: 60,
         alwaysVisible: true,
         type: "image",
@@ -266,67 +284,67 @@ export default defineComponent({
       {
         id: "name",
         field: "name",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
         sortable: true,
         alwaysVisible: true,
       },
       {
         id: "createdDate",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
         width: 140,
         sortable: true,
         type: "date-ago",
       },
       {
         id: "sku",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
         width: 120,
         sortable: true,
         alwaysVisible: true,
       },
       {
         id: "salePrice",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
         width: 100,
         sortable: true,
         type: "money",
       },
       {
         id: "listPrice",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
         width: 100,
         sortable: true,
         type: "money",
       },
       {
         id: "minQuantity",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
         width: 80,
         sortable: true,
         type: "number",
       },
       {
         id: "inStockQuantity",
-        title: t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY"),
+        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
         width: 80,
         sortable: true,
         type: "number",
       },
     ]);
 
-    const empty = {
+    const empty = reactive({
       image: "/assets/empty-product.png",
-      text: "There are no offers yet",
-      action: "Add offer",
+      text: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.TITLE")),
+      action: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.ACTION")),
       clickHandler: () => {
         addOffer();
       },
-    };
+    });
 
-    const notfound = {
+    const notfound = reactive({
       image: "/assets/empty-product.png",
-      text: "No offers found.",
-      action: "Reset search",
+      text: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.TITLE")),
+      action: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.ACTION")),
       clickHandler: async () => {
         searchValue.value = "";
         await loadOffers({
@@ -334,7 +352,7 @@ export default defineComponent({
           keyword: "",
         });
       },
-    };
+    });
 
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
@@ -385,7 +403,7 @@ export default defineComponent({
       if (item.status === "Published") {
         result.push({
           icon: "fas fa-times",
-          title: "Unpublish",
+          title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
           variant: "danger",
           clickHandler() {
             alert("Unpublish");
@@ -394,7 +412,7 @@ export default defineComponent({
       } else {
         result.push({
           icon: "fas fa-check",
-          title: "Publish",
+          title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
           variant: "success",
           clickHandler() {
             alert("Publish");
@@ -458,7 +476,7 @@ export default defineComponent({
       onPaginationClick,
       reload,
       onSelectionChanged,
-      title: t("OFFERS.PAGES.LIST.TITLE"),
+      title: computed(() => t("OFFERS.PAGES.LIST.TITLE")),
     };
   },
 });

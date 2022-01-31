@@ -1,0 +1,28 @@
+{
+  "language_name": "Русский",
+  "SHELL": {
+    "MENU": {
+      "DASHBOARD": "Панель управления"
+    },
+    "TOOLBAR": {
+      "NOTIFICATIONS": "Уведомления"
+    },
+    "ACCOUNT": {
+      "CHANGE_PASSWORD": "Изменить пароль"
+    },
+    "NOTIFICATIONS": {
+      "EMPTY": "Пока нет уведомлений"
+    },
+    "DASHBOARD": {
+      "TITLE": "Панель управления",
+      "ORDERS": {
+        "TITLE": "Заказы",
+        "ALL": "Все заказы"
+      },
+      "PRODUCTS": {
+        "TITLE": "Продукты",
+        "ALL": "Все продукты"
+      }
+    }
+  }
+}

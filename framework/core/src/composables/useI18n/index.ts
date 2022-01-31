@@ -29,5 +29,5 @@ export default function useI18n(): Composer<
   VueMessageType
 > {
   console.debug(`[@virtoshell/core#useI18n] - Entry point`);
-  return VueUseI18n();
+  return VueUseI18n({ useScope: "global" });
 }

@@ -23,7 +23,60 @@
             "QTY": "Qty",
             "STATUS": "Status",
             "CREATED": "Created"
+          },
+          "ACTIONS": {
+            "CONFIRM": "Confirm",
+            "DECLINE": "Decline"
           }
+        },
+        "FILTERS": {
+          "TITLE": "Filters",
+          "STATUS_FILTER": "Status filter",
+          "UNPAID": "Unpaid",
+          "PAID": "Paid",
+          "ORDER_DATE": "Order date",
+          "START_DATE": "Start date",
+          "END_DATE": "End date",
+          "RESET_FILTERS": "Reset filters",
+          "APPLY": "Apply"
+        },
+        "NOT_FOUND": {
+          "NO_ORDERS": "No orders found.",
+          "RESET": "Reset search"
+        },
+        "EMPTY": "There are no orders yet",
+        "STATUS": {
+          "TOTAL": "Total",
+          "CREATED": "Created"
+        }
+      },
+      "EDIT": {
+        "ORDER_INFO": {
+          "TITLE": "Order info",
+          "ORDER_REF": "Order reference #",
+          "CREATED_DATE": "Created date/time",
+          "STORE": "Store",
+          "STORE_TOOLTIP": "Shows store where order was placed",
+          "ORDER_STATUS": "Order status",
+          "SUBTOTAL": "Subtotal",
+          "DISCOUNT_TOTAL": "Discount total",
+          "TOTAL": "Total"
+        },
+        "BUYER_RECIPIENT": {
+          "TITLE": "Buyer/recipient info"
+        },
+        "ITEMS_LIST": {
+          "TITLE": "Items list",
+          "SKU": "SKU",
+          "QUANTITY": "Quantity",
+          "UNIT_PRICE": "Unit price",
+          "TOTAL": "Total"
+        },
+        "ACTIONS": {
+          "DL_PDF": "Download PDF",
+          "ACCEPT_ORDER": "Accept order",
+          "CANCEL": "Cancel",
+          "SHIP": "Ship order"
         }
       }
     }

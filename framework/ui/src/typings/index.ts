@@ -14,7 +14,7 @@ export interface IComponent extends ComponentPublicInstance {
 export interface IBladeToolbar {
   id?: string;
   icon?: string;
-  title?: string;
+  title?: string | ComputedRef<string>;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
   component?: Component & { url?: string };

@@ -26,7 +26,27 @@
             "LIST_PRICE": "List price",
             "MIN_QTY": "Min. Quantity",
             "QTY": "Quantity in Stock"
+          },
+          "EMPTY": {
+            "TITLE": "There are no offers yet",
+            "ACTION": "Add offer"
+          },
+          "NOT_FOUND": {
+            "TITLE": "No offers found.",
+            "ACTION": "Reset search"
+          },
+          "ACTIONS": {
+            "UNPUBLISH": "Unpublish",
+            "PUBLISH": "Publish"
           }
+        },
+        "MOBILE": {
+          "SKU": "SKU",
+          "OFFER": "Offer #",
+          "QUANTITY": "Quantity",
+          "LIST_PRICE": "List price",
+          "SALE_PRICE": "Sale price",
+          "CREATED": "Created"
         },
         "DELETE_SELECTED_CONFIRMATION": "Are you sure you want to delete {count} selected offers?"
       },
@@ -80,8 +100,23 @@
           "END_DATE": {
             "TITLE": "End date",
             "PLACEHOLDER": ""
+          },
+          "CODE": "CODE",
+          "INVENTORY": {
+            "TITLE": "Inventory",
+            "TRACK": "Track inventory"
+          },
+          "PRICING": {
+            "TITLE": "Pricing",
+            "ADD_PRICE": "Add price",
+            "CHOOSE_CURRENCY": "Choose currency",
+            "EMPTY": "No prices for this offer"
           }
         }
+      },
+      "ALERTS": {
+        "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields.",
+        "REMOVE_CONFIRMATION": "Remove selected price?"
       }
     }
   }

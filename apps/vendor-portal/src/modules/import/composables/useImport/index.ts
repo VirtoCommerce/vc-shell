@@ -295,7 +295,6 @@ export default (): IUseImport => {
   }
 
   async function createImportProfile(details: IImportProfile) {
-    console.log(profile);
     const client = await getApiClient();
 
     const command = new CreateProfileCommand({

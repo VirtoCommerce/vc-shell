@@ -27,15 +27,9 @@
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
                 <vc-row class="vc-margin-bottom_l">
-                  <a
-                    class="vc-link"
-                    :href="
-                      selectedImporter
-                        ? selectedImporter.metadata.sampleCsvUrl
-                        : '#'
-                    "
-                    >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
-                  >
+                  <a class="vc-link" :href="sampleTemplateUrl">{{
+                    $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
+                  }}</a>
                   &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
                 </vc-row>
                 <vc-row>
@@ -242,6 +236,7 @@ export default defineComponent({
       startImport,
       loadImportProfile,
       fetchImportHistory,
+      fetchDataImporters,
     } = useImport();
     const locale = window.navigator.language;
     const loading = ref(false);
@@ -261,7 +256,7 @@ export default defineComponent({
             param: profile.value.id,
           });
         },
-        isVisible: computed(() => !uploadedFile.value),
+        isVisible: computed(() => profile.value),
       },
       {
         id: "cancel",
@@ -428,7 +423,8 @@ export default defineComponent({
 
     onMounted(async () => {
       if (props.param) {
-        loadImportProfile({ id: props.param });
+        await fetchDataImporters();
+        await loadImportProfile({ id: props.param });
         await fetchImportHistory(props.param);
       }
     });
@@ -487,6 +483,12 @@ export default defineComponent({
       emit("page:close");
     }
 
+    const sampleTemplateUrl = computed(() => {
+      return selectedImporter.value
+        ? selectedImporter.value.metadata.sampleCsvUrl
+        : "#";
+    });
+
     return {
       bladeToolbar,
       columns,
@@ -507,6 +509,7 @@ export default defineComponent({
       profile,
       profileDetails,
       importLoading,
+      sampleTemplateUrl,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),

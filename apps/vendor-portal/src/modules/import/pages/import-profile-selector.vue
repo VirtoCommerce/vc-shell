@@ -93,7 +93,6 @@ export default defineComponent({
       importStatus,
       importProfiles,
       loading,
-      fetchDataImporters,
       fetchImportHistory,
       fetchImportProfiles,
     } = useImport();
@@ -149,7 +148,6 @@ export default defineComponent({
     async function reload() {
       await fetchImportHistory();
       await fetchImportProfiles();
-      await fetchDataImporters();
     }
 
     function newProfile() {

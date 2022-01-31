@@ -136,6 +136,7 @@ export default defineComponent({
       loadImportProfile,
       deleteImportProfile,
       updateImportProfile,
+      fetchDataImporters,
     } = useImport();
     const { validate } = useForm({ validateOnMount: false });
     const importer = ref<IDataImporter>();
@@ -193,6 +194,7 @@ export default defineComponent({
     onMounted(async () => {
       if (props.param) {
         await loadImportProfile({ id: props.param });
+        await fetchDataImporters();
 
         if (profileDetails.dataImporterType) {
           importer.value = dataImporters.value.find(

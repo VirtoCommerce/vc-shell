@@ -7,7 +7,6 @@ import {
   ImportDataPreview,
   ImportProfile,
   ImportPushNotification,
-  IObjectSettingEntry,
   ObjectSettingEntry,
   PreviewDataQuery,
   RunImportCommand,
@@ -54,6 +53,7 @@ interface IUseImport {
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
+  getImport(jobId: string): void;
   fetchImportHistory(profileId?: string): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
@@ -61,12 +61,7 @@ interface IUseImport {
   updateImportProfile(profileId: string, details: IImportProfile): void;
   deleteImportProfile(args: { id: string }): void;
 }
-const selectedImporter = ref<IDataImporter>();
-const importCommand = ref<RunImportCommand>({
-  importProfile: { settings: [] } as ImportProfile,
-} as RunImportCommand);
-const importStatus = ref<IImportStatus>();
-const dataImporters = ref<IDataImporter[]>([]);
+
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
@@ -77,6 +72,12 @@ export default (): IUseImport => {
   const profileSearchResult = ref<SearchImportProfilesResult>();
   const profile = ref<ImportProfile>();
   const profileDetails = reactive<IImportProfile>(new ImportProfile());
+  const selectedImporter = ref<IDataImporter>();
+  const importCommand = ref<RunImportCommand>({
+    importProfile: { settings: [] } as ImportProfile,
+  } as RunImportCommand);
+  const importStatus = ref<IImportStatus>();
+  const dataImporters = ref<IDataImporter[]>([]);
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
@@ -228,6 +229,21 @@ export default (): IUseImport => {
     importStatus.value = undefined;
   }
 
+  function getImport(jobId: string) {
+    const notification = notifications.value.find(
+      (notification: ImportPushNotification) => notification.jobId === jobId
+    ) as ImportPushNotification;
+
+    if (notification) {
+      importStatus.value = {
+        notification: notification,
+        jobId: notification.jobId,
+        inProgress: !notification.finished,
+        progress: (notification.processedCount / notification.totalCount) * 100,
+      };
+    }
+  }
+
   async function loadImportProfile(args: { id: string }) {
     const client = await getApiClient();
 
@@ -235,6 +251,7 @@ export default (): IUseImport => {
       loading.value = true;
 
       profile.value = await client.getImportProfileById(args.id);
+      selectProfile(profile.value);
 
       Object.assign(profileDetails, {
         name: profile.value.name,
@@ -337,6 +354,7 @@ export default (): IUseImport => {
     startImport,
     cancelImport,
     clearImport,
+    getImport,
     loadImportProfile,
     fetchImportHistory,
     fetchImportProfiles,

@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-marketing-portal",
-  "version": "0.0.109",
+  "version": "0.0.110",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -8,10 +8,10 @@
   },
   "devDependencies": {
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^0.0.109",
-    "@virtoshell/core": "^0.0.109",
-    "@virtoshell/mod-assets": "^0.0.109",
-    "@virtoshell/ui": "^0.0.109",
+    "@virtoshell/api-client": "^0.0.110",
+    "@virtoshell/core": "^0.0.110",
+    "@virtoshell/mod-assets": "^0.0.110",
+    "@virtoshell/ui": "^0.0.110",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-pwa": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",

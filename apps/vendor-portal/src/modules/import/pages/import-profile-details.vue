@@ -233,6 +233,7 @@ export default defineComponent({
     }
 
     async function deleteProfile() {
+      showConfirmation.value = false;
       await deleteImportProfile({ id: props.param });
 
       emit("parent:call", {

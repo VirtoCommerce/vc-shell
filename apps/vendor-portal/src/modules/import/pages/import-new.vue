@@ -225,7 +225,6 @@ export default defineComponent({
       importHistory,
       uploadedFile,
       importStatus,
-      selectedImporter,
       isValid,
       profileDetails,
       profile,
@@ -253,7 +252,7 @@ export default defineComponent({
         clickHandler() {
           emit("page:open", {
             component: ImportProfileDetails,
-            param: profile.value.id,
+            param: profile.value.profile.id,
           });
         },
         isVisible: computed(() => profile.value),
@@ -484,8 +483,10 @@ export default defineComponent({
     }
 
     const sampleTemplateUrl = computed(() => {
-      return selectedImporter.value
-        ? selectedImporter.value.metadata.sampleCsvUrl
+      return profile.value &&
+        profile.value.importer &&
+        profile.value.importer.metadata
+        ? profile.value.importer.metadata.sampleCsvUrl
         : "#";
     });
 
@@ -503,7 +504,6 @@ export default defineComponent({
       importStatus,
       isValid,
       errorMessage,
-      selectedImporter,
       importBadges,
       skippedColumns,
       profile,

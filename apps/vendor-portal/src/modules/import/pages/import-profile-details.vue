@@ -1,8 +1,9 @@
 <template>
   <vc-blade
+    v-loading="loading"
     :title="
-      options.importer
-        ? options.importer.typeName
+      param && profileDetails
+        ? profileDetails.name
         : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')
     "
     width="30%"
@@ -22,7 +23,8 @@
             :clearable="true"
             :required="true"
             tooltip="text"
-            name="profile_name"
+            name="name"
+            v-model="profileDetails.name"
           ></vc-input>
           <vc-select
             class="vc-padding_m"
@@ -31,15 +33,17 @@
             :isRequired="true"
             tooltip="text"
             name="importer"
-            :options="importersList"
+            :options="dataImporters"
+            :initialItem="importer"
             keyProperty="typeName"
             displayProperty="typeName"
             :isSearchable="true"
-            v-model="importer"
+            v-model="profileDetails.typeName"
+            @update:modelValue="setImporter"
           ></vc-select>
         </vc-col>
       </vc-row>
-      <vc-row class="vc-padding_m" v-if="importer">
+      <vc-row class="vc-padding_m" v-if="profileDetails.typeName">
         <vc-card
           :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
         >
@@ -51,37 +55,17 @@
                 }}</a>
                 {{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
               </div>
-              <vc-select
+
+              <vc-dynamic-property
                 class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
-                :label="
-                  $t(
-                    'IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.DECIMAL_SEPARATOR'
-                  )
-                "
-                :clearable="true"
-                tooltip="text"
-                name="job"
-              ></vc-select>
-              <vc-input
-                class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
-                :label="
-                  $t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.SHEET_NAME')
-                "
-                :clearable="true"
-                tooltip="text"
-                name="job_code"
-              ></vc-input>
-              <vc-input
-                class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
-                :label="
-                  $t(
-                    'IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.DATE_FORMAT'
-                  )
-                "
-                :clearable="true"
-                tooltip="text"
-                name="job_name"
-              ></vc-input>
+                v-for="(setting, i) in profileDetails.settings"
+                :key="i"
+                :property="setting"
+                :getter="getSettingsValue"
+                :setter="setSettingsValue"
+                :optionsGetter="loadDictionaries"
+              >
+              </vc-dynamic-property>
             </vc-col>
           </vc-row>
         </vc-card>
@@ -93,6 +77,7 @@
         $t('IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.TITLE')
       "
       @close="showConfirmation = false"
+      @confirm="deleteProfile"
     >
       <template v-slot:description>
         <p>
@@ -108,12 +93,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import importConfirmationPopup from "../components/import-confirmation-popup.vue";
 import useImport from "../composables/useImport";
-import { IDataImporter } from "../../../api_client";
+import { IDataImporter, ObjectSettingEntry } from "../../../api_client";
+import { useForm } from "@virtoshell/ui";
 
 export default defineComponent({
   components: { importConfirmationPopup },
@@ -139,18 +125,47 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  emits: ["page:close"],
+  emits: ["page:close", "parent:call"],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { fetchDataImporters } = useImport();
-    const importer = ref("");
-    const importersList = ref<IDataImporter[]>([]);
+    const {
+      dataImporters,
+      profileDetails,
+      loading,
+      createImportProfile,
+      loadImportProfile,
+      deleteImportProfile,
+      updateImportProfile,
+    } = useImport();
+    const { validate } = useForm({ validateOnMount: false });
+    const importer = ref<IDataImporter>();
     const showConfirmation = ref(false);
     const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "save",
         title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.SAVE")),
         icon: "fas fa-save",
+        async clickHandler() {
+          const { valid } = await validate();
+          if (valid) {
+            try {
+              if (props.param) {
+                await updateImportProfile(props.param, profileDetails);
+                emit("parent:call", {
+                  method: "reloadParent",
+                });
+              } else {
+                await createImportProfile({ ...profileDetails });
+                emit("parent:call", {
+                  method: "reload",
+                });
+              }
+              emit("page:close");
+            } catch (err) {
+              alert(err.message);
+            }
+          }
+        },
       },
       {
         id: "cancel",
@@ -164,7 +179,7 @@ export default defineComponent({
         id: "delete",
         title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE")),
         icon: "far fa-trash-alt",
-        isVisible: computed(() => !!props.options.importer),
+        isVisible: computed(() => !!props.param),
         clickHandler() {
           showConfirmation.value = true;
         },
@@ -172,16 +187,57 @@ export default defineComponent({
     ]);
 
     const sampleTemplateUrl = computed(() => {
-      const importerItem = importersList.value.find(
-        (imp) => imp.typeName === importer.value
-      );
-
-      return importerItem ? importerItem.metadata.sampleCsvUrl : "#";
+      return importer.value ? importer.value.metadata.sampleCsvUrl : "#";
     });
 
     onMounted(async () => {
-      importersList.value = await fetchDataImporters();
+      if (props.param) {
+        await loadImportProfile({ id: props.param });
+
+        if (profileDetails.dataImporterType) {
+          importer.value = dataImporters.value.find(
+            (importer) => importer.typeName === profileDetails.dataImporterType
+          );
+        }
+      }
     });
+
+    function setImporter(typeName: string) {
+      importer.value = dataImporters.value.find(
+        (importer) => importer.typeName === typeName
+      );
+
+      profileDetails.settings = [...(importer.value.availSettings || [])];
+    }
+
+    function getSettingsValue(setting: ObjectSettingEntry) {
+      return setting.value;
+    }
+
+    function setSettingsValue(
+      setting: ObjectSettingEntry,
+      value: string | boolean
+    ) {
+      setting.value = value;
+    }
+
+    function loadDictionaries(setting: ObjectSettingEntry) {
+      if (setting.allowedValues && setting.allowedValues.length) {
+        return setting.allowedValues.map((val) => ({
+          id: val,
+          alias: val,
+        }));
+      }
+    }
+
+    async function deleteProfile() {
+      await deleteImportProfile({ id: props.param });
+
+      emit("parent:call", {
+        method: "reloadParent",
+      });
+      emit("page:close");
+    }
 
     return {
       title: computed(() =>
@@ -191,9 +247,20 @@ export default defineComponent({
       ),
       bladeToolbar,
       showConfirmation,
-      importersList,
-      importer,
+      dataImporters,
+      importer: computed(() =>
+        dataImporters.value?.find(
+          (x) => x.typeName === profileDetails.dataImporterType
+        )
+      ),
       sampleTemplateUrl,
+      profileDetails,
+      loading,
+      setImporter,
+      getSettingsValue,
+      setSettingsValue,
+      loadDictionaries,
+      deleteProfile,
     };
   },
 });

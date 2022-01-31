@@ -1,13 +1,14 @@
 <template>
   <vc-blade
-    title="Importer"
+    v-loading="importLoading"
+    :title="param ? profileDetails?.name : 'Importer'"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
     @close="$emit('page:close')"
   >
-    <vc-container>
+    <vc-container class="import-new">
       <vc-col>
         <div class="vc-padding_m">
           <vc-row>
@@ -142,7 +143,12 @@
         <!-- History-->
         <vc-col class="vc-padding_m" v-if="!importStarted">
           <vc-card :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')" :fill="true">
-            <vc-table :columns="columns" :items="importHistory" :header="false">
+            <vc-table
+              :columns="columns"
+              :items="importHistory"
+              :header="false"
+              :loading="importLoading"
+            >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">
@@ -167,14 +173,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  ComputedRef,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-} from "vue";
+import { computed, ComputedRef, defineComponent, onMounted, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import {
   IBladeToolbar,
@@ -223,7 +222,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  emits: ["page:open", "page:close"],
+  emits: ["page:open", "page:close", "parent:call"],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { getAccessToken } = useUser();
@@ -234,12 +233,15 @@ export default defineComponent({
       importStatus,
       selectedImporter,
       isValid,
+      profileDetails,
+      profile,
       cancelImport,
       clearImport,
       previewData,
       setFile,
       startImport,
-      getImport,
+      loadImportProfile,
+      fetchImportHistory,
     } = useImport();
     const locale = window.navigator.language;
     const loading = ref(false);
@@ -256,9 +258,7 @@ export default defineComponent({
         clickHandler() {
           emit("page:open", {
             component: ImportProfileDetails,
-            componentOptions: {
-              importer: selectedImporter.value,
-            },
+            param: profile.value.id,
           });
         },
         isVisible: computed(() => !uploadedFile.value),
@@ -426,9 +426,10 @@ export default defineComponent({
       },
     ]);
 
-    onMounted(() => {
+    onMounted(async () => {
       if (props.param) {
-        getImport(props.param);
+        loadImportProfile({ id: props.param });
+        await fetchImportHistory(props.param);
       }
     });
 
@@ -479,11 +480,18 @@ export default defineComponent({
       start();
     }
 
+    function reloadParent() {
+      emit("parent:call", {
+        method: "reload",
+      });
+      emit("page:close");
+    }
+
     return {
       bladeToolbar,
       columns,
       moment,
-      loading: computed(() => loading.value || importLoading.value),
+      loading,
       importHistory,
       uploadedFile,
       uploadActions,
@@ -496,6 +504,9 @@ export default defineComponent({
       selectedImporter,
       importBadges,
       skippedColumns,
+      profile,
+      profileDetails,
+      importLoading,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),
@@ -507,6 +518,7 @@ export default defineComponent({
       initializeImporting,
       uploadCsv,
       cancelImport,
+      reloadParent,
     };
   },
 });
@@ -518,6 +530,11 @@ export default defineComponent({
 }
 
 .import-new {
+  .vc-container__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__upload-border {
     border-top: 1px solid #e5e5e5;
   }
@@ -545,7 +562,7 @@ export default defineComponent({
   }
 
   &__no-errors-icon {
-    font-size: 59px;
+    font-size: 59px !important;
     color: #87b563;
   }
 

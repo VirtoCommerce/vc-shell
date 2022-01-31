@@ -22,7 +22,7 @@
         >
           {{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.NO") }}
         </vc-button>
-        <vc-button variant="primary">
+        <vc-button variant="primary" @click="$emit('confirm')">
           {{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.YES") }}
         </vc-button>
       </div>

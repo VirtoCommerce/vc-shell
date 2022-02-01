@@ -77,7 +77,6 @@ interface IUseImport {
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
-  const { delay } = useFunctions();
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
@@ -89,22 +88,21 @@ export default (): IUseImport => {
   const importStatus = ref<IImportStatus>();
   const dataImporters = ref<IDataImporter[]>([]);
   const modified = ref(false);
+  const importStarted = ref(false);
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
-    () => notifications,
-    (newVal) => {
-      delay(() => {
-        const notification =
-          importStatus.value &&
-          (newVal.value.find(
-            (x) => x.id === importStatus.value.notification.id
-          ) as ImportPushNotification);
+    [() => notifications, () => importStarted],
+    ([newNotifications, isStarted]) => {
+      if (isStarted.value) {
+        const notification = newNotifications.value.find(
+          (x) => x.id === importStatus.value.notification.id
+        ) as ImportPushNotification;
 
         if (notification) {
           updateStatus(notification);
         }
-      }, 500);
+      }
     },
     { deep: true, immediate: true }
   );
@@ -214,6 +212,7 @@ export default (): IUseImport => {
         importProfile: profile.value,
       });
       const notification = await client.runImport(importDataQuery);
+      importStarted.value = true;
       updateStatus(notification);
     } catch (e) {
       logger.error(e);

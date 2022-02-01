@@ -66,7 +66,8 @@
                       <vc-progress
                         class="vc-margin-top_m"
                         :value="importStatus.progress"
-                        variant="striped"
+                        :variant="progressbarVariant"
+                        :key="importStatus.progress"
                       ></vc-progress>
                     </vc-col>
                   </vc-row>
@@ -374,10 +375,18 @@ export default defineComponent({
           title:
             "errorCount" in importStatus.value.notification
               ? importStatus.value.notification.processedCount -
-                importStatus.value.notification.errorCount
+                  importStatus.value.notification.errorCount >=
+                0
+                ? importStatus.value.notification.processedCount -
+                  importStatus.value.notification.errorCount
+                : 0
               : "errorsCount" in importStatus.value.notification
               ? importStatus.value.notification.processedCount -
-                importStatus.value.notification.errorsCount
+                  importStatus.value.notification.errorsCount >=
+                0
+                ? importStatus.value.notification.processedCount -
+                  importStatus.value.notification.errorsCount
+                : 0
               : 0,
           description: t(
             "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"
@@ -474,18 +483,20 @@ export default defineComponent({
         : "danger";
     });
 
-    watch(
-      () => importStatus,
-      (newVal) => {
-        if (
-          newVal.value.notification.finished &&
-          "isNew" in newVal.value.notification
-        ) {
-          emit("parent:call", { method: "reload" });
-        }
-      },
-      { deep: true }
+    const progressbarVariant = computed(() =>
+      inProgress.value ? "striped" : "default"
     );
+
+    const inProgress = computed(
+      () => (importStatus.value && importStatus.value.inProgress) || false
+    );
+
+    watch(importStatus, (newVal) => {
+      if (!newVal.inProgress) {
+        emit("parent:call", { method: "reload" });
+        // isParentReloaded.value = true;
+      }
+    });
 
     onMounted(async () => {
       if (props.param) {
@@ -588,11 +599,10 @@ export default defineComponent({
       importStarted: computed(
         () => !!(importStatus.value && importStatus.value.jobId)
       ),
-      inProgress: computed(
-        () => importStatus.value && importStatus.value.inProgress
-      ),
+      inProgress,
       locale,
       previewTotalNum: computed(() => preview.value.totalCount),
+      progressbarVariant,
       initializeImporting,
       uploadCsv,
       cancelImport,

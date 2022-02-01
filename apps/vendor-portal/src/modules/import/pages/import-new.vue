@@ -494,7 +494,6 @@ export default defineComponent({
     watch(importStatus, (newVal) => {
       if (!newVal.inProgress) {
         emit("parent:call", { method: "reload" });
-        // isParentReloaded.value = true;
       }
     });
 

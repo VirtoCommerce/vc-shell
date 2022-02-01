@@ -162,5 +162,14 @@ export default defineComponent({
       color: var(--card-header-color-success);
     }
   }
+
+  &_danger {
+    .vc-card__header {
+      background: var(--card-header-background-danger);
+    }
+    .vc-card__title {
+      color: var(--card-header-color-danger);
+    }
+  }
 }
 </style>

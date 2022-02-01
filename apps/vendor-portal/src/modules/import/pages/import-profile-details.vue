@@ -18,20 +18,35 @@
           <vc-input
             class="vc-padding_m"
             :label="
-              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME')
+              $t(
+                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
+              )
+            "
+            :placeholder="
+              $t(
+                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER'
+              )
             "
             :clearable="true"
             :required="true"
-            tooltip="text"
+            :tooltip="
+              $t(
+                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP'
+              )
+            "
             name="name"
             v-model="profileDetails.name"
           ></vc-input>
           <vc-select
             class="vc-padding_m"
-            :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER')"
+            :label="
+              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
+            "
             :clearable="true"
             :isRequired="true"
-            tooltip="text"
+            :tooltip="
+              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')
+            "
             name="importer"
             :options="dataImporters"
             :initialItem="importer"
@@ -59,7 +74,7 @@
               <vc-dynamic-property
                 class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
                 v-for="(setting, i) in profileDetails.settings"
-                :key="i"
+                :key="`${profileDetails.id}_${i}`"
                 :property="setting"
                 :getter="getSettingsValue"
                 :setter="setSettingsValue"
@@ -133,6 +148,7 @@ export default defineComponent({
       profileDetails,
       loading,
       profile,
+      modified,
       createImportProfile,
       loadImportProfile,
       deleteImportProfile,
@@ -169,6 +185,12 @@ export default defineComponent({
             }
           }
         },
+        disabled: computed(() => {
+          return (
+            (props.param && !modified.value) ||
+            (!props.param && !modified.value)
+          );
+        }),
       },
       {
         id: "cancel",

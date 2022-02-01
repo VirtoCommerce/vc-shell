@@ -1,13 +1,11 @@
-import { computed, provide, reactive, readonly, Ref, ref, watch } from "vue";
+import { computed, nextTick, reactive, Ref, ref, watch } from "vue";
 import {
   CreateProfileCommand,
   IDataImporter,
-  IImportProfile,
   ImportCancellationRequest,
   ImportDataPreview,
   ImportProfile,
   ImportPushNotification,
-  ObjectSettingEntry,
   PreviewDataQuery,
   RunImportCommand,
   SearchImportProfilesHistoryQuery,
@@ -16,11 +14,20 @@ import {
   SearchImportProfilesHistoryResult,
   UpdateProfileCommand,
   VcmpSellerImportClient,
+  ImportRunHistory,
 } from "../../../../api_client/api-client";
-import { useLogger, useNotifications, useUser } from "@virtoshell/core";
+import {
+  useFunctions,
+  useLogger,
+  useNotifications,
+  useUser,
+} from "@virtoshell/core";
+import { cloneDeep as _cloneDeep } from "lodash";
+
+export type INotificationHistory = ImportPushNotification | ImportRunHistory;
 
 export interface IImportStatus {
-  notification?: ImportPushNotification;
+  notification?: INotificationHistory;
   jobId?: string;
   inProgress: boolean;
   progress: number;
@@ -45,10 +52,11 @@ interface IUseImport {
   readonly uploadedFile: Ref<IUploadedFile>;
   readonly importStatus: Ref<IImportStatus>;
   readonly isValid: Ref<boolean>;
-  readonly importHistory: Ref<ImportProfile[]>;
+  readonly importHistory: Ref<ImportRunHistory[]>;
   readonly dataImporters: Ref<IDataImporter[]>;
   readonly importProfiles: Ref<ImportProfile[]>;
   readonly profile: Ref<ExtProfile>;
+  readonly modified: Ref<boolean>;
   profileDetails: ImportProfile;
   setFile(file: IUploadedFile): void;
   setImporter(typeName: string): void;
@@ -57,18 +65,19 @@ interface IUseImport {
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
-  getImportProcess(jobId: string): void;
   fetchImportHistory(profileId?: string): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
   createImportProfile(details: ImportProfile): void;
   updateImportProfile(details: ImportProfile): void;
   deleteImportProfile(args: { id: string }): void;
+  updateStatus(notification: ImportPushNotification | ImportRunHistory): void;
 }
 
 export default (): IUseImport => {
   const logger = useLogger();
   const { notifications } = useNotifications();
+  const { delay } = useFunctions();
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
@@ -76,24 +85,37 @@ export default (): IUseImport => {
   const profileSearchResult = ref<SearchImportProfilesResult>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
   const profileDetails = reactive<ImportProfile>(new ImportProfile());
+  let profileDetailsCopy: ImportProfile;
   const importStatus = ref<IImportStatus>();
   const dataImporters = ref<IDataImporter[]>([]);
+  const modified = ref(false);
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
     () => notifications,
     (newVal) => {
-      const notification =
-        importStatus.value &&
-        (newVal.value.find(
-          (x) => x.id === importStatus.value.notification.id
-        ) as ImportPushNotification);
+      delay(() => {
+        const notification =
+          importStatus.value &&
+          (newVal.value.find(
+            (x) => x.id === importStatus.value.notification.id
+          ) as ImportPushNotification);
 
-      if (notification) {
-        updateStatus(notification);
-      }
+        if (notification) {
+          updateStatus(notification);
+        }
+      }, 500);
     },
     { deep: true, immediate: true }
+  );
+
+  watch(
+    () => profileDetails,
+    (state) => {
+      modified.value =
+        JSON.stringify(profileDetailsCopy) !== JSON.stringify(state);
+    },
+    { deep: true }
   );
 
   async function fetchImportHistory(profileId?: string) {
@@ -117,12 +139,13 @@ export default (): IUseImport => {
     uploadedFile.value = file;
   }
 
-  function updateStatus(notification: ImportPushNotification) {
+  function updateStatus(notification: INotificationHistory) {
     importStatus.value = {
       notification: notification,
       jobId: notification.jobId,
       inProgress: !notification.finished,
-      progress: (notification.processedCount / notification.totalCount) * 100,
+      progress:
+        (notification.processedCount / notification.totalCount) * 100 || 0,
     };
   }
 
@@ -223,21 +246,6 @@ export default (): IUseImport => {
     importStatus.value = undefined;
   }
 
-  function getImportProcess(jobId: string) {
-    const notification = notifications.value.find(
-      (notification: ImportPushNotification) => notification.jobId === jobId
-    ) as ImportPushNotification;
-
-    if (notification) {
-      importStatus.value = {
-        notification: notification,
-        jobId: notification.jobId,
-        inProgress: !notification.finished,
-        progress: (notification.processedCount / notification.totalCount) * 100,
-      };
-    }
-  }
-
   async function loadImportProfile(args: { id: string }) {
     const client = await getApiClient();
 
@@ -253,6 +261,8 @@ export default (): IUseImport => {
       );
 
       Object.assign(profileDetails, profile.value);
+
+      profileDetailsCopy = _cloneDeep(profileDetails);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -333,6 +343,7 @@ export default (): IUseImport => {
     importHistory: computed(() => historySearchResult.value?.results),
     importProfiles: computed(() => profileSearchResult.value?.results),
     dataImporters: computed(() => dataImporters.value),
+    modified: computed(() => modified.value),
     profile: computed(() => profile.value),
     profileDetails,
     setFile,
@@ -341,7 +352,6 @@ export default (): IUseImport => {
     startImport,
     cancelImport,
     clearImport,
-    getImportProcess,
     loadImportProfile,
     fetchImportHistory,
     fetchImportProfiles,
@@ -349,5 +359,6 @@ export default (): IUseImport => {
     updateImportProfile,
     deleteImportProfile,
     setImporter,
+    updateStatus,
   };
 };

@@ -60,7 +60,11 @@ import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportProfile, ImportPushNotification } from "../../../api_client";
+import {
+  ImportProfile,
+  ImportPushNotification,
+  ImportRunHistory,
+} from "../../../api_client";
 
 export default defineComponent({
   url: "import",
@@ -122,8 +126,8 @@ export default defineComponent({
     ]);
     const columns = ref<ITableColumns[]>([
       {
-        id: "name", // temp
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
+        id: "profileName", // temp
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
         alwaysVisible: true,
       },
       {
@@ -165,11 +169,14 @@ export default defineComponent({
       });
     }
 
-    function onItemClick(item: ImportProfile) {
+    function onItemClick(item: ImportRunHistory) {
       bladeWidth.value = 30;
       emit("page:open", {
         component: ImportNew,
-        param: item.id,
+        param: item.profileId,
+        componentOptions: {
+          importJobId: item.jobId,
+        },
       });
     }
 

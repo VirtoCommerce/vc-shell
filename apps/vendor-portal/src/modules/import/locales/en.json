@@ -31,8 +31,24 @@
           "DELETE": "Delete"
         },
         "IMPORT_INPUTS": {
-          "PROFILE_NAME": "Profile name",
-          "IMPORTER": "Importer"
+          "PROFILE_NAME": {
+            "TITLE": "Profile name",
+            "PLACEHOLDER": "Enter your profile name",
+            "TOOLTIP": "Initialize profile name"
+          },
+          "IMPORTER": {
+            "TITLE": "Importer",
+            "TOOLTIP": "Select importer type"
+          },
+          "DYNAMIC": {
+            "Vcmp": {
+              "Import": {
+                "Csv": {
+                  "Delimiter": "Delimiter"
+                }
+              }
+            }
+          }
         },
         "PROFILE_SETTINGS": {
           "TITLE": "Profile settings"
@@ -48,7 +64,8 @@
         "TITLE": "Product CSV importer",
         "TOOLBAR": {
           "EDIT": "Edit",
-          "CANCEL": "Cancel"
+          "CANCEL": "Cancel",
+          "NEW_RUN": "New run"
         },
         "FILE_UPLOAD": {
           "TITLE": "File upload",
@@ -87,7 +104,7 @@
       "LIST": {
         "TABLE": {
           "HEADER": {
-            "NAME": "Name",
+            "PROFILE_NAME": "Profile name",
             "STARTED_AT": "Started at",
             "DURATION": "Duration",
             "LINES_UPDATED": "Lines updated",

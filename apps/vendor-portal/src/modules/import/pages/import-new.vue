@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    v-loading="importLoading"
+    v-loading="bladeLoading"
     :title="param ? profileDetails?.name : 'Importer'"
     width="70%"
     :toolbarItems="bladeToolbar"
@@ -37,7 +37,7 @@
                     variant="file-upload"
                     @upload="uploadCsv"
                     :notification="true"
-                    :loading="loading"
+                    :loading="fileLoading"
                     accept=".csv"
                   ></vc-file-upload>
                 </vc-row>
@@ -107,14 +107,19 @@
         <vc-col class="vc-padding_m" v-if="importStarted">
           <vc-card
             :fill="true"
-            variant="success"
+            :variant="skippedColorVariant"
             :header="
               $t(
                 'IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.SKIPPED_DETAILS'
               )
             "
           >
-            <vc-table :columns="skippedColumns" :header="false" :footer="false">
+            <vc-table
+              :columns="skippedColumns"
+              :header="false"
+              :footer="false"
+              :items="importStatus.notification.errors"
+            >
               <template v-slot:empty>
                 <vc-col class="vc-flex-align_center vc-flex-justify_center">
                   <vc-icon
@@ -129,6 +134,12 @@
                     }}
                   </div>
                 </vc-col>
+              </template>
+              <!-- Override errors column template -->
+              <template v-slot:item_errors="itemData">
+                <div class="vc-flex vc-flex-column">
+                  <div class="vc-ellipsis">{{ itemData.item }}</div>
+                </div>
               </template>
             </vc-table>
           </vc-card>
@@ -167,7 +178,7 @@
 </template>
 
 <script lang="ts">
-import { computed, ComputedRef, defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import {
   IBladeToolbar,
@@ -185,8 +196,8 @@ interface IImportBadges {
   id: string;
   icon: string;
   color: string;
-  title: string | number | ComputedRef<string>;
-  description: string | ComputedRef<string>;
+  title?: string | number;
+  description?: string;
 }
 
 export default defineComponent({
@@ -235,9 +246,10 @@ export default defineComponent({
       loadImportProfile,
       fetchImportHistory,
       fetchDataImporters,
+      updateStatus,
     } = useImport();
     const locale = window.navigator.language;
-    const loading = ref(false);
+    const fileLoading = ref(false);
     const preview = ref<ImportDataPreview>();
     const importPreview = ref(false);
     const popupColumns = ref<ITableColumns[]>([]);
@@ -271,22 +283,37 @@ export default defineComponent({
           }
         },
       },
+      {
+        id: "newRun",
+        title: computed(() =>
+          t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.NEW_RUN")
+        ),
+        icon: "fas fa-plus",
+        clickHandler() {
+          emit("parent:call", {
+            method: "openImporter",
+            args: props.param,
+          });
+        },
+        disabled: computed(() => importStatus.value?.inProgress),
+        isVisible: computed(() => !!importStatus.value),
+      },
     ]);
     const columns = ref<ITableColumns[]>([
       {
-        id: "jobId", // temp
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
+        id: "profileName", // temp
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
         alwaysVisible: true,
       },
       {
-        id: "created",
+        id: "createdDate",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
         type: "date",
         format: "L LT",
       },
       {
-        id: "errorCount",
+        id: "errorsCount",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
         width: 118,
         sortable: true,
@@ -295,14 +322,7 @@ export default defineComponent({
 
     const skippedColumns = ref<ITableColumns[]>([
       {
-        id: "error",
-        title: computed(() =>
-          t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.LINE")
-        ),
-        width: 147,
-      },
-      {
-        id: "errorCount",
+        id: "errors",
         title: computed(() =>
           t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC")
         ),
@@ -318,12 +338,25 @@ export default defineComponent({
           title:
             t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
             " " +
-            moment(importStatus.value.notification.created)
-              .locale(locale)
-              .format("LTS"),
-          description: moment(importStatus.value.notification.created)
-            .locale(locale)
-            .fromNow(),
+            ("created" in importStatus.value.notification
+              ? moment(importStatus.value.notification.created)
+                  .locale(locale)
+                  .format("LTS")
+              : "createdDate" in importStatus.value.notification
+              ? moment(importStatus.value.notification.createdDate)
+                  .locale(locale)
+                  .format("LTS")
+              : null),
+          description:
+            "created" in importStatus.value.notification
+              ? moment(importStatus.value.notification.created)
+                  .locale(locale)
+                  .fromNow()
+              : "createdDate" in importStatus.value.notification
+              ? moment(importStatus.value.notification.createdDate)
+                  .locale(locale)
+                  .fromNow()
+              : null,
         },
         {
           id: "linesRead",
@@ -339,8 +372,13 @@ export default defineComponent({
           icon: "fas fa-check-circle",
           color: "#87B563",
           title:
-            importStatus.value.notification.processedCount -
-            importStatus.value.notification.errorCount,
+            "errorCount" in importStatus.value.notification
+              ? importStatus.value.notification.processedCount -
+                importStatus.value.notification.errorCount
+              : "errorsCount" in importStatus.value.notification
+              ? importStatus.value.notification.processedCount -
+                importStatus.value.notification.errorsCount
+              : 0,
           description: t(
             "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"
           ),
@@ -349,7 +387,12 @@ export default defineComponent({
           id: "skipped",
           icon: "fas fa-exclamation-circle",
           color: "#FFBB0D",
-          title: importStatus.value.notification.errorCount,
+          title:
+            "errorCount" in importStatus.value.notification
+              ? importStatus.value.notification.errorCount
+              : "errorsCount" in importStatus.value.notification
+              ? importStatus.value.notification.errorsCount
+              : 0,
           description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
         },
       ];
@@ -420,11 +463,41 @@ export default defineComponent({
       },
     ]);
 
+    const skippedColorVariant = computed(() => {
+      return !(
+        importStatus.value &&
+        importStatus.value.notification &&
+        importStatus.value.notification.errors &&
+        importStatus.value.notification.errors.length
+      )
+        ? "success"
+        : "danger";
+    });
+
+    watch(
+      () => importStatus,
+      (newVal) => {
+        if (
+          newVal.value.notification.finished &&
+          "isNew" in newVal.value.notification
+        ) {
+          emit("parent:call", { method: "reload" });
+        }
+      },
+      { deep: true }
+    );
+
     onMounted(async () => {
       if (props.param) {
         await fetchDataImporters();
         await loadImportProfile({ id: props.param });
         await fetchImportHistory(props.param);
+      }
+      if (props.options && props.options.importJobId) {
+        const historyItem = importHistory.value.find(
+          (x) => x.jobId === props.options.importJobId
+        );
+        updateStatus(historyItem);
       }
     });
 
@@ -434,7 +507,7 @@ export default defineComponent({
 
     async function uploadCsv(files: File) {
       try {
-        loading.value = true;
+        fileLoading.value = true;
         const formData = new FormData();
         formData.append("file", files[0]);
         const authToken = await getAccessToken();
@@ -457,7 +530,7 @@ export default defineComponent({
           size: files[0].size / (1024 * 1024),
         });
       } finally {
-        loading.value = false;
+        fileLoading.value = false;
       }
     }
 
@@ -494,7 +567,8 @@ export default defineComponent({
       bladeToolbar,
       columns,
       moment,
-      loading,
+      fileLoading,
+      bladeLoading: computed(() => importLoading.value),
       importHistory,
       uploadedFile,
       uploadActions,
@@ -510,8 +584,9 @@ export default defineComponent({
       profileDetails: computed(() => profile.value),
       importLoading,
       sampleTemplateUrl,
+      skippedColorVariant,
       importStarted: computed(
-        () => importStatus.value && importStatus.value.jobId
+        () => !!(importStatus.value && importStatus.value.jobId)
       ),
       inProgress: computed(
         () => importStatus.value && importStatus.value.inProgress

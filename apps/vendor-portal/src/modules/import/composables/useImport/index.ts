@@ -13,6 +13,7 @@ import {
   SearchImportProfilesHistoryQuery,
   SearchImportProfilesQuery,
   SearchImportProfilesResult,
+  SearchImportProfilesHistoryResult,
   UpdateProfileCommand,
   VcmpSellerImportClient,
 } from "../../../../api_client/api-client";
@@ -71,7 +72,7 @@ export default (): IUseImport => {
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
-  const historySearchResult = ref<SearchImportProfilesResult>();
+  const historySearchResult = ref<SearchImportProfilesHistoryResult>();
   const profileSearchResult = ref<SearchImportProfilesResult>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
   const profileDetails = reactive<ImportProfile>(new ImportProfile());

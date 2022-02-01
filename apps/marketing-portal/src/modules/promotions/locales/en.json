@@ -1,0 +1,27 @@
+{
+  "PROMOTIONS": {
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Promotions",
+        "TOOLBAR": {
+          "REFRESH": "Refresh",
+          "ADD": "Add"
+        },
+        "TABLE": {
+          "HEADER": {
+            "NAME": "Name",
+            "START_DATE": "Start date",
+            "IS_ACTIVE": "Is active",
+            "IS_EXCLUSIVE": "Is exclusive",
+            "MODIFIED": "Modified",
+            "CREATED_DATE": "Created date"
+          },
+          "NOT_FOUND": "No promotions found.",
+          "RESET_SEARCH": "Reset search",
+          "IS_EMPTY": "There are no promotions yet",
+          "ADD_PROMO": "Add promotion"
+        }
+      }
+    }
+  }
+}

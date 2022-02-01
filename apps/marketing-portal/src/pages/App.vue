@@ -8,6 +8,9 @@
     :version="version"
     :pages="pages"
   >
+    <!-- Product name -->
+    <template v-slot:productName> Marketing Portal </template>
+
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
       <dashboard-page v-bind="scope" />
@@ -16,8 +19,8 @@
     <!-- Set up login form -->
     <template v-slot:login>
       <login-page
-        logo="/assets/logo-white.svg"
-        background="/assets/background.jpg"
+        logo="/assets/logo-black.svg"
+        background="/assets/background.jpeg"
         title="Marketing Portal"
       ></login-page>
     </template>
@@ -68,6 +71,12 @@ import { IBladeToolbar, IMenuItems } from "../types";
 import NotificationDropdown from "../components/notification-dropdown.vue";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
+import { PromotionsList } from "../modules/promotions";
+import {
+  ContentItems,
+  ContentPlaceholders,
+  ContentPublishing,
+} from "../modules/dynamic-content";
 
 export default defineComponent({
   name: "App",
@@ -164,6 +173,36 @@ export default defineComponent({
           app.openDashboard();
           window?.history?.pushState(null, "", "/");
         },
+      },
+      {
+        title: t("SHELL.MENU.PROMOTIONS"),
+        icon: "fas fa-bullhorn",
+        isVisible: true,
+        component: shallowRef(PromotionsList),
+      },
+      {
+        title: t("SHELL.MENU.DYNAMIC_CONTENT.TITLE"),
+        icon: "fas fa-vector-square",
+        isVisible: true,
+        component: shallowRef(),
+        children: [
+          {
+            title: t("SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_ITEMS.TITLE"),
+            component: shallowRef(ContentItems),
+          },
+          {
+            title: t(
+              "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PLACEHOLDERS.TITLE"
+            ),
+            component: shallowRef(ContentPlaceholders),
+          },
+          {
+            title: t(
+              "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PUBLISHING.TITLE"
+            ),
+            component: shallowRef(ContentPublishing),
+          },
+        ],
       },
       {
         title: t("SHELL.ACCOUNT.LOGOUT"),

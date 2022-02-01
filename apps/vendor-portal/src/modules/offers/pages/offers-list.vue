@@ -420,8 +420,34 @@ export default defineComponent({
         });
       }
 
+      result.push({
+        icon: "fas fa-trash",
+        title: "Delete",
+        variant: "danger",
+        leftActions: true,
+        clickHandler(item: IOffer) {
+          selectedOfferIds.value.push(item.id);
+          removeOffers();
+        },
+      });
+
       return result;
     };
+
+    async function removeOffers() {
+      //TODO: replace to confirmation dialog from UI library
+      if (
+        window.confirm(
+          t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
+            count: selectedOfferIds.value.length,
+          })
+        )
+      ) {
+        emit("page:closeChildren");
+        await deleteOffers({ ids: selectedOfferIds.value });
+        await reload();
+      }
+    }
 
     return {
       bladeToolbar,

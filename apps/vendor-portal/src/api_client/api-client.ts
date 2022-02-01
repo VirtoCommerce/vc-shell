@@ -1059,7 +1059,7 @@ export class AuthApiBase {
        * @param body (optional) 
        * @return Success
        */
-      searchImportProfilesHistory(body: SearchImportProfilesHistoryQuery | undefined): Promise<SearchImportProfilesResult> {
+      searchImportProfilesHistory(body: SearchImportProfilesHistoryQuery | undefined): Promise<SearchImportProfilesHistoryResult> {
           let url_ = this.baseUrl + "/api/vcmp/import/profiles/execution/history/search";
           url_ = url_.replace(/[?&]$/, "");
   
@@ -1081,14 +1081,14 @@ export class AuthApiBase {
           });
       }
   
-      protected processSearchImportProfilesHistory(response: Response): Promise<SearchImportProfilesResult> {
+      protected processSearchImportProfilesHistory(response: Response): Promise<SearchImportProfilesHistoryResult> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {
               return response.text().then((_responseText) => {
               let result200: any = null;
               let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-              result200 = SearchImportProfilesResult.fromJS(resultData200);
+              result200 = SearchImportProfilesHistoryResult.fromJS(resultData200);
               return result200;
               });
           } else if (status !== 200 && status !== 204) {
@@ -1096,7 +1096,7 @@ export class AuthApiBase {
               return throwException("An unexpected server error occurred.", status, _responseText, _headers);
               });
           }
-          return Promise.resolve<SearchImportProfilesResult>(<any>null);
+          return Promise.resolve<SearchImportProfilesHistoryResult>(<any>null);
       }
   }
   
@@ -2618,62 +2618,6 @@ export class AuthApiBase {
       Approved = "Approved",
   }
   
-  export class Comment implements IComment {
-      text?: string | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  
-      constructor(data?: IComment) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.text = _data["text"];
-              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-              this.createdBy = _data["createdBy"];
-              this.modifiedBy = _data["modifiedBy"];
-              this.id = _data["id"];
-          }
-      }
-  
-      static fromJS(data: any): Comment {
-          data = typeof data === 'object' ? data : {};
-          let result = new Comment();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["text"] = this.text;
-          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-          data["createdBy"] = this.createdBy;
-          data["modifiedBy"] = this.modifiedBy;
-          data["id"] = this.id;
-          return data;
-      }
-  }
-  
-  export interface IComment {
-      text?: string | undefined;
-      createdDate?: Date;
-      modifiedDate?: Date | undefined;
-      createdBy?: string | undefined;
-      modifiedBy?: string | undefined;
-      id?: string | undefined;
-  }
-  
   export enum PublicationRequestStatus {
       None = "None",
       WaitForApproval = "WaitForApproval",
@@ -2691,7 +2635,7 @@ export class AuthApiBase {
       operatorName?: string | undefined;
       sellerProductId?: string | undefined;
       sellerProduct?: SellerProduct;
-      comments?: Comment[] | undefined;
+      comment?: string | undefined;
       prevStatus?: PublicationRequestStatus;
       status?: PublicationRequestStatus;
       createdDate?: Date;
@@ -2719,11 +2663,7 @@ export class AuthApiBase {
               this.operatorName = _data["operatorName"];
               this.sellerProductId = _data["sellerProductId"];
               this.sellerProduct = _data["sellerProduct"] ? SellerProduct.fromJS(_data["sellerProduct"]) : <any>undefined;
-              if (Array.isArray(_data["comments"])) {
-                  this.comments = [] as any;
-                  for (let item of _data["comments"])
-                      this.comments!.push(Comment.fromJS(item));
-              }
+              this.comment = _data["comment"];
               this.prevStatus = _data["prevStatus"];
               this.status = _data["status"];
               this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
@@ -2751,11 +2691,7 @@ export class AuthApiBase {
           data["operatorName"] = this.operatorName;
           data["sellerProductId"] = this.sellerProductId;
           data["sellerProduct"] = this.sellerProduct ? this.sellerProduct.toJSON() : <any>undefined;
-          if (Array.isArray(this.comments)) {
-              data["comments"] = [];
-              for (let item of this.comments)
-                  data["comments"].push(item.toJSON());
-          }
+          data["comment"] = this.comment;
           data["prevStatus"] = this.prevStatus;
           data["status"] = this.status;
           data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
@@ -2776,7 +2712,7 @@ export class AuthApiBase {
       operatorName?: string | undefined;
       sellerProductId?: string | undefined;
       sellerProduct?: SellerProduct;
-      comments?: Comment[] | undefined;
+      comment?: string | undefined;
       prevStatus?: PublicationRequestStatus;
       status?: PublicationRequestStatus;
       createdDate?: Date;
@@ -6253,6 +6189,146 @@ export class AuthApiBase {
       sortInfos?: SortInfo[] | undefined;
       skip?: number;
       take?: number;
+  }
+  
+  export class ImportRunHistory implements IImportRunHistory {
+      sellerId?: string | undefined;
+      profileId?: string | undefined;
+      executed?: Date;
+      finished?: Date | undefined;
+      totalCount?: number;
+      processedCount?: number;
+      errorsCount?: number;
+      errors?: string[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IImportRunHistory) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.profileId = _data["profileId"];
+              this.executed = _data["executed"] ? new Date(_data["executed"].toString()) : <any>undefined;
+              this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
+              this.totalCount = _data["totalCount"];
+              this.processedCount = _data["processedCount"];
+              this.errorsCount = _data["errorsCount"];
+              if (Array.isArray(_data["errors"])) {
+                  this.errors = [] as any;
+                  for (let item of _data["errors"])
+                      this.errors!.push(item);
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): ImportRunHistory {
+          data = typeof data === 'object' ? data : {};
+          let result = new ImportRunHistory();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["profileId"] = this.profileId;
+          data["executed"] = this.executed ? this.executed.toISOString() : <any>undefined;
+          data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
+          data["totalCount"] = this.totalCount;
+          data["processedCount"] = this.processedCount;
+          data["errorsCount"] = this.errorsCount;
+          if (Array.isArray(this.errors)) {
+              data["errors"] = [];
+              for (let item of this.errors)
+                  data["errors"].push(item);
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IImportRunHistory {
+      sellerId?: string | undefined;
+      profileId?: string | undefined;
+      executed?: Date;
+      finished?: Date | undefined;
+      totalCount?: number;
+      processedCount?: number;
+      errorsCount?: number;
+      errors?: string[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class SearchImportProfilesHistoryResult implements ISearchImportProfilesHistoryResult {
+      totalCount?: number;
+      results?: ImportRunHistory[] | undefined;
+  
+      constructor(data?: ISearchImportProfilesHistoryResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.totalCount = _data["totalCount"];
+              if (Array.isArray(_data["results"])) {
+                  this.results = [] as any;
+                  for (let item of _data["results"])
+                      this.results!.push(ImportRunHistory.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): SearchImportProfilesHistoryResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchImportProfilesHistoryResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["totalCount"] = this.totalCount;
+          if (Array.isArray(this.results)) {
+              data["results"] = [];
+              for (let item of this.results)
+                  data["results"].push(item.toJSON());
+          }
+          return data;
+      }
+  }
+  
+  export interface ISearchImportProfilesHistoryResult {
+      totalCount?: number;
+      results?: ImportRunHistory[] | undefined;
   }
   
   export class ForgotPasswordCommand implements IForgotPasswordCommand {

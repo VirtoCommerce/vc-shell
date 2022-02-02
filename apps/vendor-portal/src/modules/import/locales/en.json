@@ -11,6 +11,9 @@
         "EDIT": "Edit",
         "DELETE": "Delete"
       },
+      "WIDGETS": {
+        "IN_PROGRESS": "In progress"
+      },
       "TEMPLATE": {
         "DOWNLOAD_TEMPLATE": "Download template",
         "FOR_REFERENCE": "for a reference"
@@ -106,6 +109,7 @@
           "HEADER": {
             "PROFILE_NAME": "Profile name",
             "STARTED_AT": "Started at",
+            "CREATED_BY": "Created by",
             "DURATION": "Duration",
             "LINES_UPDATED": "Lines updated",
             "ERROR_COUNT": "Errors count",
@@ -128,6 +132,13 @@
           "YES": "Yes",
           "NO": "No"
         }
+      }
+    }
+  },
+  "Vcmp": {
+    "Import": {
+      "Csv": {
+        "Delimiter": "Delimiter"
       }
     }
   }

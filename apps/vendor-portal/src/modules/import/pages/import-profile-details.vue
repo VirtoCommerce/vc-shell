@@ -6,7 +6,7 @@
         ? profileDetails.name
         : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')
     "
-    width="30%"
+    width="50%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
     :closable="closable"

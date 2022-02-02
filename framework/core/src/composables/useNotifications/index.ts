@@ -61,11 +61,12 @@ export default (): INotifications => {
       const existsNotification = notifications.value.find(
         (x) => x.id == message.id
       );
+
       if (existsNotification) {
         message.isNew = existsNotification.isNew;
         Object.assign(existsNotification, message);
       } else {
-        popupNotifications.value.unshift(Object.assign({}, message));
+        popupNotifications.value.unshift(message);
         notifications.value.unshift(message);
       }
     }

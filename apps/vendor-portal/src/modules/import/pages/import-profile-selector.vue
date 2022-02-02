@@ -16,14 +16,25 @@
           :slides="importProfiles"
         >
           <template v-slot="{ slide }">
-            <vc-button
-              class="import__widget"
-              @click="openImporter(slide.id)"
-              icon="fas fa-file-csv"
-              variant="widget"
-            >
-              {{ slide.name }}</vc-button
-            >
+            <div class="import__widget-wrapper">
+              <vc-status
+                variant="success"
+                :outline="false"
+                class="import__widget-progress"
+                v-if="profileInProgress(slide.id)"
+                >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</vc-status
+              >
+              <vc-button
+                class="import__widget"
+                @click="openImporter(slide.id)"
+                icon="fas fa-file-csv"
+                variant="widget"
+                :selected="selectedProfileId === slide.id"
+              >
+                {{ slide.name }}
+                <vc-hint>{{ slide.dataImporterType }}</vc-hint>
+              </vc-button>
+            </div>
           </template>
         </vc-slider>
       </div>
@@ -39,6 +50,11 @@
             :items="importHistory"
             :header="false"
             @itemClick="onItemClick"
+            :selectedItemId="selectedItemId"
+            :totalCount="totalHistoryCount"
+            :pages="historyPages"
+            :currentPage="currentPage"
+            @paginationClick="onPaginationClick"
           >
             <!-- Override name column template -->
             <template v-slot:item_name="itemData">
@@ -56,15 +72,11 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useNotifications } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import {
-  ImportProfile,
-  ImportPushNotification,
-  ImportRunHistory,
-} from "../../../api_client";
+import { ImportPushNotification, ImportRunHistory } from "../../../api_client";
 
 export default defineComponent({
   url: "import",
@@ -94,13 +106,18 @@ export default defineComponent({
     const { t } = useI18n();
     const {
       importHistory,
-      importStatus,
+      historyPages,
+      totalHistoryCount,
       importProfiles,
       loading,
+      currentPage,
       fetchImportHistory,
       fetchImportProfiles,
     } = useImport();
+    const { notifications } = useNotifications();
     const bladeWidth = ref(50);
+    const selectedProfileId = ref();
+    const selectedItemId = ref();
 
     const bladeToolbar = ref<IBladeToolbar[]>([
       {
@@ -131,6 +148,11 @@ export default defineComponent({
         alwaysVisible: true,
       },
       {
+        id: "createdBy",
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
+        width: 147,
+      },
+      {
         id: "createdDate",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
@@ -147,6 +169,17 @@ export default defineComponent({
 
     onMounted(async () => {
       await reload();
+      if (props.param) {
+        selectedProfileId.value = props.param;
+      }
+      if (props.options && props.options.importJobId) {
+        const historyItem = importHistory.value.find(
+          (x) => x.jobId === props.options.importJobId
+        );
+        if (historyItem) {
+          selectedItemId.value = historyItem.id;
+        }
+      }
     });
 
     async function reload() {
@@ -162,22 +195,61 @@ export default defineComponent({
     }
 
     function openImporter(profileId: string) {
-      bladeWidth.value = 30;
+      bladeWidth.value = 50;
+
+      const notification = profileNotification(profileId);
+
       emit("page:open", {
         component: ImportNew,
         param: profileId,
+        componentOptions: {
+          importJobId:
+            notification && !notification.finished
+              ? notification.jobId
+              : undefined,
+        },
+        onOpen() {
+          selectedProfileId.value = profileId;
+        },
+        onClose() {
+          selectedProfileId.value = undefined;
+        },
       });
     }
 
     function onItemClick(item: ImportRunHistory) {
-      bladeWidth.value = 30;
+      bladeWidth.value = 50;
       emit("page:open", {
         component: ImportNew,
         param: item.profileId,
         componentOptions: {
           importJobId: item.jobId,
         },
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
       });
+    }
+
+    async function onPaginationClick(page: number) {
+      await fetchImportHistory({
+        skip: (page - 1) * 15,
+      });
+    }
+
+    function profileNotification(profileId: string) {
+      return notifications.value.find(
+        (x: ImportPushNotification) => x.profileId === profileId
+      ) as ImportPushNotification;
+    }
+
+    function profileInProgress(profileId: string) {
+      const notification = profileNotification(profileId);
+
+      return notification && !notification.finished;
     }
 
     return {
@@ -187,12 +259,16 @@ export default defineComponent({
       importHistory,
       bladeWidth,
       importProfiles,
-      importStarted: computed(
-        () => importStatus.value && importStatus.value.jobId
-      ),
+      selectedProfileId,
+      selectedItemId,
+      historyPages,
+      totalHistoryCount,
+      currentPage,
+      profileInProgress,
       openImporter,
       onItemClick,
       reload,
+      onPaginationClick,
       loading,
     };
   },
@@ -208,6 +284,16 @@ export default defineComponent({
 
   &__widget {
     width: max-content;
+  }
+
+  &__widget-wrapper {
+    position: relative;
+  }
+
+  &__widget-progress {
+    position: absolute;
+    right: 0;
+    top: -10px;
   }
 }
 </style>

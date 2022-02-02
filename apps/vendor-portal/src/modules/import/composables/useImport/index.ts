@@ -1,4 +1,4 @@
-import { computed, nextTick, reactive, Ref, ref, watch } from "vue";
+import { computed, reactive, Ref, ref, watch } from "vue";
 import {
   CreateProfileCommand,
   IDataImporter,
@@ -15,13 +15,9 @@ import {
   UpdateProfileCommand,
   VcmpSellerImportClient,
   ImportRunHistory,
+  ISearchImportProfilesHistoryQuery,
 } from "../../../../api_client/api-client";
-import {
-  useFunctions,
-  useLogger,
-  useNotifications,
-  useUser,
-} from "@virtoshell/core";
+import { useLogger, useNotifications, useUser } from "@virtoshell/core";
 import { cloneDeep as _cloneDeep } from "lodash";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
@@ -57,6 +53,9 @@ interface IUseImport {
   readonly importProfiles: Ref<ImportProfile[]>;
   readonly profile: Ref<ExtProfile>;
   readonly modified: Ref<boolean>;
+  readonly totalHistoryCount: Ref<number>;
+  readonly historyPages: Ref<number>;
+  readonly currentPage: Ref<number>;
   profileDetails: ImportProfile;
   setFile(file: IUploadedFile): void;
   setImporter(typeName: string): void;
@@ -65,7 +64,7 @@ interface IUseImport {
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
-  fetchImportHistory(profileId?: string): void;
+  fetchImportHistory(query?: ISearchImportProfilesHistoryQuery): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
   createImportProfile(details: ImportProfile): void;
@@ -85,16 +84,17 @@ export default (): IUseImport => {
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
   const profileDetails = reactive<ImportProfile>(new ImportProfile());
   let profileDetailsCopy: ImportProfile;
-  const importStatus = ref<IImportStatus>();
   const dataImporters = ref<IDataImporter[]>([]);
   const modified = ref(false);
   const importStarted = ref(false);
+  const currentPage = ref(1);
+  const importStatus = ref<IImportStatus>();
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
     [() => notifications, () => importStarted],
     ([newNotifications, isStarted]) => {
-      if (isStarted.value) {
+      if (isStarted.value && importStatus.value) {
         const notification = newNotifications.value.find(
           (x) => x.id === importStatus.value.notification.id
         ) as ImportPushNotification;
@@ -116,14 +116,19 @@ export default (): IUseImport => {
     { deep: true }
   );
 
-  async function fetchImportHistory(profileId?: string) {
+  async function fetchImportHistory(query?: ISearchImportProfilesHistoryQuery) {
     const client = await getApiClient();
     try {
       loading.value = true;
-      const historyQuery = new SearchImportProfilesHistoryQuery({ profileId });
+      const historyQuery = new SearchImportProfilesHistoryQuery({
+        ...(query || {}),
+        take: 15,
+      });
       historySearchResult.value = await client.searchImportProfilesHistory(
         historyQuery
       );
+      currentPage.value =
+        (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -344,6 +349,11 @@ export default (): IUseImport => {
     dataImporters: computed(() => dataImporters.value),
     modified: computed(() => modified.value),
     profile: computed(() => profile.value),
+    totalHistoryCount: computed(() => historySearchResult.value?.totalCount),
+    historyPages: computed(() =>
+      Math.ceil(historySearchResult.value?.totalCount / 20)
+    ),
+    currentPage: computed(() => currentPage.value),
     profileDetails,
     setFile,
     fetchDataImporters,

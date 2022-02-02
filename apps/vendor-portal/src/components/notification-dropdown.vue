@@ -22,7 +22,7 @@
       <vc-container :noPadding="true">
         <div v-if="populatedList && populatedList.length">
           <div
-            @click="handleClick(item.notifyType)"
+            @click="handleClick(item)"
             class="notification-dropdown__notification"
             v-for="item in populatedList"
             :key="`notification_${item.id}`"
@@ -94,6 +94,8 @@ import {
 import { useNotifications } from "@virtoshell/core";
 import moment from "moment";
 import { IMenuItems } from "@virtoshell/ui";
+import { ImportNew, ImportProfileSelector } from "../modules/import";
+import { ImportPushNotification } from "../api_client";
 
 interface INotificationParams
   extends PushNotification,
@@ -122,9 +124,18 @@ export default defineComponent({
       type: Array as PropType<IMenuItems[]>,
       default: () => [],
     },
+
+    openPage: {
+      type: Function,
+      default: undefined,
+    },
+
+    closePage: {
+      type: Function,
+      default: undefined,
+    },
   },
-  emits: ["notification:click"],
-  setup(props, { emit }) {
+  setup(props) {
     const isDropdownVisible = ref(false);
     const { loadFromHistory, notifications } = useNotifications();
     const locale = window.navigator.language;
@@ -183,17 +194,29 @@ export default defineComponent({
       return "#87b563";
     };
 
-    const handleClick = (notifyType: string) => {
-      const low = notifyType.toLowerCase();
+    const handleClick = async (
+      notification: PushNotification | ImportPushNotification
+    ) => {
+      const low = notification.notifyType.toLowerCase();
 
       // TODO need to discuss on arch meeting
-      if (low.includes("import")) {
-        const page = props.items.find(
-          (page: IMenuItems) => page.title === "Import"
-        );
-        if (page) {
-          emit("notification:click", page);
-        }
+      if (low.includes("import") && "profileId" in notification) {
+        await props.closePage(0);
+        await props.closePage(1);
+        props.openPage(0, {
+          component: ImportProfileSelector,
+          param: notification.profileId,
+          componentOptions: {
+            importJobId: notification.jobId,
+          },
+        });
+        props.openPage(1, {
+          component: ImportNew,
+          param: notification.profileId,
+          componentOptions: {
+            importJobId: notification.jobId,
+          },
+        });
       }
     };
 

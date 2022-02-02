@@ -7,6 +7,7 @@
         'vc-button_disabled': disabled,
         'vc-button_small': small,
         'vc-button_outline': outline,
+        'vc-button_selected': selected,
       },
     ]"
     @click="onClick"
@@ -57,6 +58,11 @@ export default defineComponent({
     },
 
     outline: {
+      type: Boolean,
+      default: false,
+    },
+
+    selected: {
       type: Boolean,
       default: false,
     },
@@ -347,6 +353,12 @@ export default defineComponent({
     &:focus {
       background-color: transparent;
       color: var(--button-secondary-text-color-hover);
+    }
+  }
+
+  &_selected {
+    &.vc-button_widget {
+      background-color: var(--button-widget-background-color-hover);
     }
   }
 

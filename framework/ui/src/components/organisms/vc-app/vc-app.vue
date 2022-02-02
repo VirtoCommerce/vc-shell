@@ -26,11 +26,11 @@
           :workspace="workspaceRefs"
           :version="version"
           :buttons="toolbarItems"
-          :items="menuItems"
           @toolbarbutton:click="onToolbarButtonClick"
           @menubutton:click="$refs.menu.isMobileVisible = true"
           @backlink:click="onClosePage(workspace.length - 1)"
-          @notification:click="onMenuItemClick"
+          :openPage="onOpenPage"
+          :closePage="onClosePage"
           @logo:click="openDashboard"
         >
           <template v-slot:productName v-if="$slots['productName']">

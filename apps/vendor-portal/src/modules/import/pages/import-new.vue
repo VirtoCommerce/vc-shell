@@ -56,7 +56,7 @@
                 </vc-row>
                 <!-- Uploaded file import status -->
                 <vc-col v-if="importStarted">
-                  <vc-row class="import-new__progress">
+                  <vc-row class="import-new__progress" v-if="inProgress">
                     <vc-col class="import-new__progress-text">
                       {{
                         $t(
@@ -154,6 +154,10 @@
               :items="importHistory"
               :header="false"
               :loading="importLoading"
+              :totalCount="totalHistoryCount"
+              :pages="historyPages"
+              :currentPage="currentPage"
+              @paginationClick="onPaginationClick"
             >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
@@ -239,6 +243,9 @@ export default defineComponent({
       importStatus,
       isValid,
       profile,
+      historyPages,
+      totalHistoryCount,
+      currentPage,
       cancelImport,
       clearImport,
       previewData,
@@ -491,8 +498,8 @@ export default defineComponent({
       () => (importStatus.value && importStatus.value.inProgress) || false
     );
 
-    watch(importStatus, (newVal) => {
-      if (!newVal.inProgress) {
+    watch(importStatus, (newVal, oldVal) => {
+      if (!newVal.inProgress && oldVal) {
         emit("parent:call", { method: "reload" });
       }
     });
@@ -501,7 +508,7 @@ export default defineComponent({
       if (props.param) {
         await fetchDataImporters();
         await loadImportProfile({ id: props.param });
-        await fetchImportHistory(props.param);
+        await fetchImportHistory({ profileId: props.param });
       }
       if (props.options && props.options.importJobId) {
         const historyItem = importHistory.value.find(
@@ -573,6 +580,13 @@ export default defineComponent({
         : "#";
     });
 
+    async function onPaginationClick(page: number) {
+      await fetchImportHistory({
+        skip: (page - 1) * 15,
+        profileId: props.param,
+      });
+    }
+
     return {
       bladeToolbar,
       columns,
@@ -602,10 +616,14 @@ export default defineComponent({
       locale,
       previewTotalNum: computed(() => preview.value.totalCount),
       progressbarVariant,
+      historyPages,
+      totalHistoryCount,
+      currentPage,
       initializeImporting,
       uploadCsv,
       cancelImport,
       reloadParent,
+      onPaginationClick,
     };
   },
 });

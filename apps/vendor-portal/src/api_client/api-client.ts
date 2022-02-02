@@ -5404,6 +5404,8 @@ export class AuthApiBase {
   }
   
   export class ImportPushNotification implements IImportPushNotification {
+      profileId?: string | undefined;
+      profileName?: string | undefined;
       jobId?: string | undefined;
       finished?: Date | undefined;
       totalCount?: number;
@@ -5432,6 +5434,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.profileId = _data["profileId"];
+              this.profileName = _data["profileName"];
               this.jobId = _data["jobId"];
               this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
               this.totalCount = _data["totalCount"];
@@ -5464,6 +5468,8 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["profileId"] = this.profileId;
+          data["profileName"] = this.profileName;
           data["jobId"] = this.jobId;
           data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
           data["totalCount"] = this.totalCount;
@@ -5489,6 +5495,8 @@ export class AuthApiBase {
   }
   
   export interface IImportPushNotification {
+      profileId?: string | undefined;
+      profileName?: string | undefined;
       jobId?: string | undefined;
       finished?: Date | undefined;
       totalCount?: number;

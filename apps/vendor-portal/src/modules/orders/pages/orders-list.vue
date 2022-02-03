@@ -30,14 +30,12 @@
     >
       <!-- Filters -->
       <template v-slot:filters>
-        <h2 v-if="$isMobile.value">
-          {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
-        </h2>
+        <h2 v-if="$isMobile.value">{{ $t("ORDERS.PAGES.FILTERS.TITLE") }}</h2>
         <vc-container no-padding>
           <vc-row>
             <vc-col class="filter-col vc-padding_s">
               <div class="group-title">
-                {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
+                {{ $t("ORDERS.PAGES.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
                 <vc-checkbox
@@ -46,7 +44,7 @@
                   @update:modelValue="
                     filter.status = $event ? 'Unpaid' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.UNPAID") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.FILTERS.UNPAID") }}</vc-checkbox
                 >
                 <vc-checkbox
                   class="vc-margin-bottom_s"
@@ -54,24 +52,24 @@
                   @update:modelValue="
                     filter.status = $event ? 'Paid' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.PAID") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.FILTERS.PAID") }}</vc-checkbox
                 >
               </div>
             </vc-col>
             <vc-col class="filter-col vc-padding_s">
               <div class="group-title">
-                {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
+                {{ $t("ORDERS.PAGES.FILTERS.ORDER_DATE") }}
               </div>
               <div>
                 <vc-input
-                  :label="$t('ORDERS.PAGES.LIST.FILTERS.START_DATE')"
+                  :label="$t('ORDERS.PAGES.FILTERS.START_DATE')"
                   type="date"
                   class="vc-margin-bottom_m"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
                 ></vc-input>
                 <vc-input
-                  :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
+                  :label="$t('ORDERS.PAGES.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
@@ -170,13 +168,13 @@
               "
             >
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</vc-hint>
+                <vc-hint>{{ $t("ORDERS.PAGES.STATUS.TOTAL") }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</vc-hint>
+                <vc-hint>{{ $t("ORDERS.PAGES.STATUS.CREATED") }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -351,7 +349,7 @@ export default defineComponent({
 
       result.push({
         icon: "fas fa-check",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.CONFIRM")),
+        title: computed(() => t("ORDERS.PAGES.TABLE.ACTIONS.CONFIRM")),
         variant: "success",
         clickHandler() {
           alert("Confirm");
@@ -359,7 +357,7 @@ export default defineComponent({
       });
       result.push({
         icon: "fas fa-times",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.DECLINE")),
+        title: computed(() => t("ORDERS.PAGES.TABLE.ACTIONS.DECLINE")),
         variant: "danger",
         clickHandler() {
           alert("Decline");

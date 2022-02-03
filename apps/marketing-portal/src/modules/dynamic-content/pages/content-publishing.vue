@@ -12,12 +12,17 @@
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
-      :items="contentPublishing"
-      :selectedItemId="selectedItemId"
+      :items="contentItems"
+      :totalCount="totalCount"
+      :pages="pages"
+      :currentPage="currentPage"
+      @paginationClick="onPaginationClick"
+      :searchValue="searchValue"
+      @search:change="onSearchList"
+      @headerClick="onHeaderClick"
+      :sort="sort"
+      @scroll:ptr="reload"
     >
-      <!-- Filters -->
-      <template v-slot:filters> </template>
-
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
@@ -30,10 +35,18 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{ $t("PROMOTIONS.PAGES.LIST.TABLE.NOT_FOUND") }}
+            {{
+              $t(
+                "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.NOT_FOUND"
+              )
+            }}
           </div>
-          <vc-button>
-            {{ $t("PROMOTIONS.PAGES.LIST.TABLE.RESET_SEARCH") }}</vc-button
+          <vc-button @click="resetSearch">
+            {{
+              $t(
+                "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.RESET_SEARCH"
+              )
+            }}</vc-button
           >
         </div>
       </template>
@@ -50,10 +63,12 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{ $t("PROMOTIONS.PAGES.LIST.TABLE.IS_EMPTY") }}
+            {{
+              $t("DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.IS_EMPTY")
+            }}
           </div>
           <vc-button>{{
-            $t("PROMOTIONS.PAGES.LIST.TABLE.ADD_PROMO")
+            $t("DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.ADD_ITEM")
           }}</vc-button>
         </div>
       </template>
@@ -135,8 +150,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import { useFunctions, useI18n } from "@virtoshell/core";
+import { useContent } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import moment from "moment";
 
@@ -165,14 +181,25 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
-    const selectedItemId = ref();
+    const {
+      contentItems,
+      loading,
+      totalCount,
+      pages,
+      currentPage,
+      searchQuery,
+      loadContentItems,
+    } = useContent({ responseGroup: "8" });
+    const searchValue = ref();
+    const { debounce } = useFunctions();
+    const sort = ref("startDate:DESC");
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "refresh",
         title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         clickHandler() {
-          alert("reload");
+          reload();
         },
       },
       {
@@ -195,13 +222,13 @@ export default defineComponent({
         width: 343,
       },
       {
-        id: "created",
+        id: "createdDate",
         title: t(
           "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.CREATED"
         ),
         sortable: true,
         alwaysVisible: true,
-        width: 100,
+        width: 150,
         type: "date",
         format: "L",
       },
@@ -211,42 +238,88 @@ export default defineComponent({
           "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.DESCRIPTION"
         ),
         width: 100,
+        sortable: true,
       },
       {
         id: "path",
         title: t(
           "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.PATH"
         ),
-        width: 100,
+        width: 150,
+        sortable: true,
       },
       {
         id: "id",
         title: t(
           "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.ID"
         ),
-        width: 100,
+        width: 300,
         sortable: true,
       },
     ]);
-    const contentPublishing = [
-      {
-        id: "819a8174c9cd4b7d8955",
-        name: "Home Page",
-        created: Date.now(),
-        description: "Index store page",
-        path: "ContentItem\\Home Page",
-      },
-    ];
 
-    const loading = ref(false);
+    watch(sort, async (value) => {
+      await loadContentItems({ ...searchQuery.value, sort: value });
+    });
+
+    onMounted(async () => {
+      await loadContentItems({ sort: sort.value });
+    });
+
+    async function reload() {
+      await loadContentItems({
+        ...searchQuery.value,
+        skip: (currentPage.value - 1) * searchQuery.value.take,
+        sort: sort.value,
+      });
+    }
+
+    async function onPaginationClick(page: number) {
+      await loadContentItems({
+        skip: (page - 1) * 20,
+      });
+    }
+
+    const onSearchList = debounce(async (keyword: string) => {
+      searchValue.value = keyword;
+      await loadContentItems({
+        keyword,
+      });
+    }, 200);
+
+    function onHeaderClick(item: ITableColumns) {
+      const sortBy = [":ASK", ":DESC", ""];
+      if (item.sortable) {
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+      }
+    }
+
+    async function resetSearch() {
+      searchValue.value = "";
+      await loadContentItems({
+        ...searchQuery.value,
+        keyword: "",
+      });
+    }
+
     return {
       title: t("DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TITLE"),
       bladeToolbar,
       loading,
       columns,
-      contentPublishing,
-      selectedItemId,
+      contentItems,
+      totalCount,
+      pages,
+      currentPage,
+      searchValue,
+      sort,
       moment,
+      reload,
+      onPaginationClick,
+      onSearchList,
+      onHeaderClick,
+      resetSearch,
     };
   },
 });

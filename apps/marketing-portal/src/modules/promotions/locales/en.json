@@ -7,6 +7,13 @@
           "REFRESH": "Refresh",
           "ADD": "Add"
         },
+        "FILTERS": {
+          "TITLE": "Promotions filters",
+          "START_DATE": "Start date",
+          "END_DATE": "End date",
+          "RESET_FILTERS": "Reset filters",
+          "APPLY": "Apply"
+        },
         "TABLE": {
           "HEADER": {
             "NAME": "Name",

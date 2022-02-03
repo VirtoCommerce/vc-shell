@@ -1010,7 +1010,7 @@ export class ChangeLogClient extends AuthApiBase {
   /**
        * Get last modified date for given scope
       Used for signal of what something changed and for cache invalidation in external platform clients
-       * @param scope (optional) 
+       * @param scope (optional)
        * @return Success
        */
   getLastModifiedDate(
@@ -31190,7 +31190,7 @@ export class PushNotificationSearchCriteria implements IPushNotificationSearchCr
       }
       data["skip"] = this.skip;
       data["take"] = this.take;
-      return data; 
+      return data;
   }
 }
 
@@ -50214,7 +50214,7 @@ export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
   responseCode?: string | undefined;
   /** Gateway IP address */
   gatewayIpAddress?: string | undefined;
-  /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+  /** The type of payment interaction.The payment can be Capture or CheckReceived.
   The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
   type?: string | undefined;
   /** "Active", "Expired", and "Inactive" or other */
@@ -50318,7 +50318,7 @@ export interface IPaymentGatewayTransaction {
   responseCode?: string | undefined;
   /** Gateway IP address */
   gatewayIpAddress?: string | undefined;
-  /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+  /** The type of payment interaction.The payment can be Capture or CheckReceived.
   The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
   type?: string | undefined;
   /** "Active", "Expired", and "Inactive" or other */
@@ -51532,7 +51532,7 @@ export class CustomerOrder implements ICustomerOrder {
   shipments?: OrderShipment[] | undefined;
   discounts?: Discount[] | undefined;
   /** When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
-  Therefore, a discount applying to the order  will occur after tax. 
+  Therefore, a discount applying to the order  will occur after tax.
   For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100). */
   discountAmount?: number;
   taxDetails?: TaxDetail[] | undefined;
@@ -51863,7 +51863,7 @@ export interface ICustomerOrder {
   shipments?: OrderShipment[] | undefined;
   discounts?: Discount[] | undefined;
   /** When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
-  Therefore, a discount applying to the order  will occur after tax. 
+  Therefore, a discount applying to the order  will occur after tax.
   For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100). */
   discountAmount?: number;
   taxDetails?: TaxDetail[] | undefined;

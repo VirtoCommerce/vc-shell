@@ -1,6 +1,28 @@
 {
   "DYNAMIC_CONTENT": {
     "PAGES": {
+      "CONTENT_ITEMS_LIST": {
+        "LIST": {
+          "TITLE": "Content items",
+          "TOOLBAR": {
+            "REFRESH": "Refresh",
+            "ADD": "Add"
+          },
+          "TABLE": {
+            "HEADER": {
+              "NAME": "Name",
+              "CREATED": "Created",
+              "DESCRIPTION": "Description",
+              "PATH": "Path",
+              "ID": "Id"
+            },
+            "NOT_FOUND": "No content items found.",
+            "RESET_SEARCH": "Reset search",
+            "IS_EMPTY": "There are no content items yet",
+            "ADD_ITEM": "Add content item"
+          }
+        }
+      },
       "CONTENT_ITEMS": {
         "LIST": {
           "TITLE": "Content items",
@@ -48,8 +70,19 @@
       "CONTENT_PLACEHOLDERS": {
         "TITLE": "Content placeholders",
         "LIST": {
-          "EMPTY": "There are no content yet",
-          "ADD_PLACEHOLDER": "Add placeholder"
+          "TABLE": {
+            "HEADER": {
+              "NAME": "Name",
+              "CREATED": "Created",
+              "DESCRIPTION": "Description",
+              "PATH": "Path",
+              "ID": "Id"
+            },
+            "ADD_PLACEHOLDER": "Add placeholder",
+            "NOT_FOUND": "No content placeholders found.",
+            "RESET_SEARCH": "Reset search",
+            "EMPTY": "There are no content yet"
+          }
         }
       },
       "CONTENT_PUBLISHING": {

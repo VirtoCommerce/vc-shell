@@ -1,17 +1,20 @@
 <template>
   <vc-blade
-    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.TITLE')"
+    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
+    <!-- Blade contents -->
     <vc-table
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
       :items="contentItems"
+      :selectedItemId="selectedItemId"
+      @itemClick="onItemClick"
       :totalCount="totalCount"
       :pages="pages"
       :currentPage="currentPage"
@@ -36,19 +39,20 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{
               $t(
-                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.NOT_FOUND"
+                "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.NOT_FOUND"
               )
             }}
           </div>
           <vc-button @click="resetSearch">
             {{
               $t(
-                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.RESET_SEARCH"
+                "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.RESET_SEARCH"
               )
             }}</vc-button
           >
         </div>
       </template>
+
       <!-- Empty template -->
       <template v-slot:empty>
         <div
@@ -62,17 +66,16 @@
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{
-              $t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.EMPTY")
+              $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.IS_EMPTY")
             }}
           </div>
           <vc-button>{{
-            $t(
-              "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.ADD_PLACEHOLDER"
-            )
+            $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.ADD_ITEM")
           }}</vc-button>
         </div>
       </template>
 
+      <!-- Mobile template -->
       <template v-slot:mobile-item="itemData">
         <div
           class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
@@ -93,7 +96,7 @@
               <div class="vc-ellipsis vc-flex-grow_2">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.CREATED"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -103,7 +106,7 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.DESCRIPTION"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -123,7 +126,7 @@
               <div class="vc-ellipsis vc-flex-grow_2">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.PATH"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -133,7 +136,7 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.ID"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -150,13 +153,15 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
-import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useFunctions, useI18n } from "@virtoshell/core";
-import { useContent } from "../composables";
+import { IBladeToolbar, ITableColumns } from "../../../../types";
 import moment from "moment";
+import ContentItemEdit from "./content-item-edit.vue";
+import { useContent } from "../../composables";
+import { ContentItems } from "../index";
 
 export default defineComponent({
-  url: "content-placeholders",
+  url: "content-items-list",
   props: {
     expanded: {
       type: Boolean,
@@ -165,7 +170,7 @@ export default defineComponent({
 
     closable: {
       type: Boolean,
-      default: false,
+      default: true,
     },
 
     param: {
@@ -180,6 +185,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const { t } = useI18n();
+    const selectedItemId = ref();
     const {
       contentItems,
       loading,
@@ -188,7 +194,7 @@ export default defineComponent({
       currentPage,
       searchQuery,
       loadContentItems,
-    } = useContent({ folderId: "ContentPlace", responseGroup: "20" });
+    } = useContent({ folderId: "ContentItem", responseGroup: "18" });
     const searchValue = ref();
     const { debounce } = useFunctions();
     const sort = ref("startDate:DESC");
@@ -210,12 +216,11 @@ export default defineComponent({
         },
       },
     ]);
-
     const columns = ref<ITableColumns[]>([
       {
         id: "name",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.NAME"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.NAME"
         ),
         alwaysVisible: true,
         sortable: true,
@@ -223,7 +228,7 @@ export default defineComponent({
       {
         id: "createdDate",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.CREATED"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
         ),
         sortable: true,
         alwaysVisible: true,
@@ -234,7 +239,7 @@ export default defineComponent({
       {
         id: "description",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.DESCRIPTION"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
         ),
         width: 150,
         sortable: true,
@@ -242,7 +247,7 @@ export default defineComponent({
       {
         id: "path",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.PATH"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
         ),
         width: 150,
         sortable: true,
@@ -250,7 +255,7 @@ export default defineComponent({
       {
         id: "id",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.ID"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"
         ),
         sortable: true,
         width: 300,
@@ -302,17 +307,32 @@ export default defineComponent({
       });
     }
 
+    const onItemClick = (item: { id: string }) => {
+      emit("page:open", {
+        component: ContentItems,
+        param: item.id,
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
+      });
+    };
+
     return {
-      title: t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.TITLE"),
+      title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE"),
       bladeToolbar,
       loading,
       columns,
       contentItems,
+      selectedItemId,
       totalCount,
       pages,
       currentPage,
       searchValue,
       sort,
+      onItemClick,
       moment,
       reload,
       onPaginationClick,

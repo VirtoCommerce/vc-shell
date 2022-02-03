@@ -15,10 +15,16 @@
       :items="contentItems"
       :selectedItemId="selectedItemId"
       @itemClick="onItemClick"
+      :totalCount="totalCount"
+      :pages="pages"
+      :currentPage="currentPage"
+      @paginationClick="onPaginationClick"
+      :searchValue="searchValue"
+      @search:change="onSearchList"
+      @headerClick="onHeaderClick"
+      :sort="sort"
+      @scroll:ptr="reload"
     >
-      <!-- Filters -->
-      <template v-slot:filters> </template>
-
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
@@ -32,7 +38,7 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.NOT_FOUND") }}
           </div>
-          <vc-button>
+          <vc-button @click="resetSearch">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.RESET_SEARCH") }}</vc-button
           >
         </div>
@@ -133,11 +139,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from "vue";
-import { useI18n } from "@virtoshell/core";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
+import { useFunctions, useI18n } from "@virtoshell/core";
 import { IBladeToolbar, ITableColumns } from "../../../../types";
 import moment from "moment";
 import ContentItemEdit from "./content-item-edit.vue";
+import { useContentItems } from "../../composables";
 
 export default defineComponent({
   url: "content-items",
@@ -165,6 +179,18 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const selectedItemId = ref();
+    const {
+      contentItems,
+      loading,
+      totalCount,
+      pages,
+      currentPage,
+      searchQuery,
+      loadContentItems,
+    } = useContentItems();
+    const searchValue = ref();
+    const { debounce } = useFunctions();
+    const sort = ref("startDate:DESC");
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "refresh",
@@ -189,16 +215,15 @@ export default defineComponent({
         title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.NAME"),
         alwaysVisible: true,
         sortable: true,
-        width: 343,
       },
       {
-        id: "created",
+        id: "createdDate",
         title: t(
           "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"
         ),
         sortable: true,
         alwaysVisible: true,
-        width: 100,
+        width: 150,
         type: "date",
         format: "L",
       },
@@ -207,29 +232,70 @@ export default defineComponent({
         title: t(
           "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
         ),
-        width: 100,
+        width: 150,
       },
       {
         id: "path",
         title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"),
-        width: 100,
+        width: 150,
       },
       {
         id: "id",
         title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID"),
-        width: 100,
         sortable: true,
+        width: 300,
       },
     ]);
-    const contentItems = [
-      {
-        id: "819a8174c9cd4b7d8955",
-        name: "Home Page",
-        created: Date.now(),
-        description: "Index store page",
-        path: "ContentItem\\Home Page",
-      },
-    ];
+
+    watch(sort, async (value) => {
+      await loadContentItems({ ...searchQuery.value, sort: value });
+    });
+
+    onMounted(async () => {
+      searchQuery.value = {
+        ...searchQuery.value,
+        folderId: "ContentItem",
+        responseGroup: "18",
+      };
+      await loadContentItems({ sort: sort.value });
+    });
+
+    async function reload() {
+      await loadContentItems({
+        ...searchQuery.value,
+        skip: (currentPage.value - 1) * searchQuery.value.take,
+        sort: sort.value,
+      });
+    }
+
+    async function onPaginationClick(page: number) {
+      await loadContentItems({
+        skip: (page - 1) * 20,
+      });
+    }
+
+    const onSearchList = debounce(async (keyword: string) => {
+      searchValue.value = keyword;
+      await loadContentItems({
+        keyword,
+      });
+    }, 200);
+
+    function onHeaderClick(item: ITableColumns) {
+      const sortBy = [":ASK", ":DESC", ""];
+      if (item.sortable) {
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+      }
+    }
+
+    async function resetSearch() {
+      searchValue.value = "";
+      await loadContentItems({
+        ...searchQuery.value,
+        keyword: "",
+      });
+    }
 
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
@@ -244,7 +310,6 @@ export default defineComponent({
       });
     };
 
-    const loading = ref(false);
     return {
       title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE"),
       bladeToolbar,
@@ -252,8 +317,18 @@ export default defineComponent({
       columns,
       contentItems,
       selectedItemId,
+      totalCount,
+      pages,
+      currentPage,
+      searchValue,
+      sort,
       onItemClick,
       moment,
+      reload,
+      onPaginationClick,
+      onSearchList,
+      onHeaderClick,
+      resetSearch,
     };
   },
 });

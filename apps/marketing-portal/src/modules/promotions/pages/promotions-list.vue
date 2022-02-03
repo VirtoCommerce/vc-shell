@@ -22,6 +22,7 @@
       @headerClick="onHeaderClick"
       :sort="sort"
       @scroll:ptr="reload"
+      :activeFilterCount="activeFilterCount"
     >
       <!-- Filters -->
       <template v-slot:filters>
@@ -30,12 +31,43 @@
         </h2>
         <vc-container no-padding>
           <vc-row>
-            <vc-col>
+            <vc-col class="vc-padding_s">
               <div class="group-title">
                 {{ $t("PROMOTIONS.PAGES.LIST.FILTERS.START_DATE") }}
               </div>
+              <div>
+                <vc-input
+                  :modelValue="getFilterDate('startDate')"
+                  @update:modelValue="setFilterDate('startDate', $event)"
+                  type="date"
+                  class="vc-margin-bottom_m"
+                  :label="$t('PROMOTIONS.PAGES.LIST.FILTERS.START_DATE')"
+                ></vc-input>
+                <vc-input
+                  :modelValue="getFilterDate('endDate')"
+                  @update:modelValue="setFilterDate('endDate', $event)"
+                  type="date"
+                  :label="$t('PROMOTIONS.PAGES.LIST.FILTERS.END_DATE')"
+                ></vc-input>
+              </div>
             </vc-col>
-            <vc-col> </vc-col>
+          </vc-row>
+          <vc-row>
+            <vc-col class="vc-padding_s">
+              <div class="vc-flex vc-flex-justify_end">
+                <vc-button
+                  outline
+                  class="vc-margin-right_l"
+                  @click="resetFilters"
+                  >{{
+                    $t("PROMOTIONS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                  }}</vc-button
+                >
+                <vc-button @click="applyFilters">{{
+                  $t("PROMOTIONS.PAGES.LIST.FILTERS.APPLY")
+                }}</vc-button>
+              </div>
+            </vc-col>
           </vc-row>
         </vc-container>
       </template>
@@ -160,11 +192,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useI18n, useFunctions } from "@virtoshell/core";
 import moment from "moment";
-import usePromotions from "../composables/usePromotions";
+import { usePromotions } from "../composables";
 
 export default defineComponent({
   url: "promotions",
@@ -203,6 +242,11 @@ export default defineComponent({
     const searchValue = ref();
     const { debounce } = useFunctions();
     const sort = ref("startDate:DESC");
+    const filter = reactive<{
+      dateStart?: string;
+      dateEnd?: string;
+    }>({});
+    const appliedFilter = ref({});
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "refresh",
@@ -279,6 +323,10 @@ export default defineComponent({
       await loadPromotions({ sort: sort.value });
     });
 
+    const activeFilterCount = computed(
+      () => Object.values(appliedFilter.value).filter((item) => !!item).length
+    );
+
     async function reload() {
       await loadPromotions({
         ...searchQuery.value,
@@ -310,13 +358,47 @@ export default defineComponent({
 
     async function resetSearch() {
       searchValue.value = "";
-      // Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+      Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
       await loadPromotions({
-        // ...searchQuery.value,
-        // ...filter,
+        ...searchQuery.value,
+        ...filter,
         keyword: "",
       });
-      // appliedFilter.value = {};
+      appliedFilter.value = {};
+    }
+
+    async function resetFilters() {
+      Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+      await loadPromotions({
+        ...searchQuery.value,
+        ...filter,
+      });
+      appliedFilter.value = {};
+    }
+
+    async function applyFilters() {
+      await loadPromotions({
+        ...searchQuery.value,
+        ...filter,
+      });
+      appliedFilter.value = {
+        ...filter,
+      };
+    }
+
+    function getFilterDate(key: string) {
+      const date = filter[key] as Date;
+      if (filter[key]) {
+        const year = date.getUTCFullYear();
+        const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
+        const day = `${date.getUTCDate()}`.padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+      return undefined;
+    }
+
+    function setFilterDate(key: string, value: string) {
+      filter[key] = new Date(value);
     }
 
     return {
@@ -330,12 +412,19 @@ export default defineComponent({
       totalCount,
       searchValue,
       sort,
+      appliedFilter,
+      activeFilterCount,
       moment,
       onPaginationClick,
       onHeaderClick,
       resetSearch,
       reload,
       onSearchList,
+      resetFilters,
+      applyFilters,
+      getFilterDate,
+      setFilterDate,
+      filter,
     };
   },
 });

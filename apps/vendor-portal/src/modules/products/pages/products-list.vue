@@ -89,7 +89,12 @@ About component.
                   type="date"
                   class="vc-margin-bottom_m"
                 ></vc-input>
-                <vc-input label="End date" type="date"></vc-input>
+                <vc-input
+                  :label="
+                    $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.END_DATE')
+                  "
+                  type="date"
+                ></vc-input>
               </div>
             </vc-col>
           </vc-row>
@@ -104,9 +109,9 @@ About component.
                     $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
                   }}</vc-button
                 >
-                <vc-button @click="applyFilters"
-                  >$t('PRODUCTS.PAGES.LIST.FILTERS.APPLY')</vc-button
-                >
+                <vc-button @click="applyFilters">{{
+                  $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
+                }}</vc-button>
               </div>
             </vc-col>
           </vc-row>

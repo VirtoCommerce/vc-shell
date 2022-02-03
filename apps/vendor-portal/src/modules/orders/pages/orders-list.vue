@@ -84,11 +84,11 @@
                   outline
                   class="vc-margin-right_l"
                   @click="resetFilters"
-                  >$t('ORDERS.PAGES.FILTERS.RESET_FILTERS')</vc-button
+                  >{{ $t("ORDERS.PAGES.FILTERS.RESET_FILTERS") }}</vc-button
                 >
-                <vc-button @click="applyFilters"
-                  >$t('ORDERS.PAGES.FILTERS.APPLY')</vc-button
-                >
+                <vc-button @click="applyFilters">{{
+                  $t("ORDERS.PAGES.FILTERS.APPLY")
+                }}</vc-button>
               </div>
             </vc-col>
           </vc-row>

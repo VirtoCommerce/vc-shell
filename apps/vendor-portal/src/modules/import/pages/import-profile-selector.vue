@@ -1,27 +1,28 @@
 <template>
   <vc-blade
+    v-loading="loading"
     :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
     :width="bladeWidth + '%'"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
   >
-    <vc-container>
+    <vc-container class="import">
       <!-- Import profile widgets-->
       <div class="vc-padding_m">
         <vc-slider
-          :navigation="!expanded && importersList && importersList.length > 1"
+          :navigation="!expanded && importProfiles && importProfiles.length > 1"
           :overflow="true"
-          :slides="importersList"
+          :slides="importProfiles"
         >
           <template v-slot="{ slide }">
             <vc-button
               class="import__widget"
-              @click="openImporter(slide)"
+              @click="openImporter(slide.id)"
               icon="fas fa-file-csv"
               variant="widget"
             >
-              {{ slide.typeName }}</vc-button
+              {{ slide.name }}</vc-button
             >
           </template>
         </vc-slider>
@@ -33,6 +34,7 @@
           class="vc-flex import__archive"
         >
           <vc-table
+            :loading="loading"
             :columns="columns"
             :items="importHistory"
             :header="false"
@@ -52,13 +54,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { IDataImporter, ImportPushNotification } from "../../../api_client";
+import { ImportPushNotification } from "../../../api_client";
 
 export default defineComponent({
   url: "import",
@@ -86,63 +88,82 @@ export default defineComponent({
   emits: ["page:open"],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const { importHistory, importStatus, selectImporter, fetchDataImporters } =
-      useImport();
-    const importersList = ref<IDataImporter[]>([]);
+    const {
+      importHistory,
+      importStatus,
+      importProfiles,
+      loading,
+      fetchDataImporters,
+      fetchImportHistory,
+      fetchImportProfiles,
+    } = useImport();
     const bladeWidth = ref(50);
 
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "refresh",
-        title: t("IMPORT.PAGES.TOOLBAR.REFRESH"),
+        title: computed(() =>
+          t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.REFRESH")
+        ),
         icon: "fas fa-sync-alt",
+        async clickHandler() {
+          await reload();
+        },
       },
       {
         id: "new",
-        title: t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE"),
+        title: computed(() =>
+          t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE")
+        ),
         icon: "fas fa-plus",
         clickHandler() {
-          profileClick();
+          newProfile();
         },
       },
     ]);
     const columns = ref<ITableColumns[]>([
       {
         id: "jobId", // temp
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
         alwaysVisible: true,
       },
       {
         id: "created",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
         type: "date",
         format: "L LT",
       },
       {
         id: "errorCount",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
         width: 118,
         sortable: true,
       },
     ]);
 
     onMounted(async () => {
-      importersList.value = await fetchDataImporters();
+      await reload();
     });
 
-    function profileClick() {
+    async function reload() {
+      await fetchImportHistory();
+      await fetchImportProfiles();
+      await fetchDataImporters();
+    }
+
+    function newProfile() {
       bladeWidth.value = 70;
       emit("page:open", {
         component: ImportProfileDetails,
       });
     }
 
-    function openImporter(importer: IDataImporter) {
+    function openImporter(profileId: string) {
       bladeWidth.value = 30;
-      selectImporter(importer);
       emit("page:open", {
         component: ImportNew,
+        param: profileId,
       });
     }
 
@@ -155,24 +176,31 @@ export default defineComponent({
     }
 
     return {
+      title: computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE")),
       bladeToolbar,
       columns,
       importHistory,
-      importersList,
       bladeWidth,
-      title: t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"),
+      importProfiles,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),
       openImporter,
       onItemClick,
+      reload,
+      loading,
     };
   },
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .import {
+  & .vc-container__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__widget {
     width: max-content;
   }

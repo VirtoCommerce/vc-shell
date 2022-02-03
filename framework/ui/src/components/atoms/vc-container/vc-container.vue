@@ -182,8 +182,6 @@ export default defineComponent({
   }
 
   &__inner {
-    display: flex;
-    flex-direction: column;
     position: relative;
     overflow-y: auto;
     overflow-x: hidden;

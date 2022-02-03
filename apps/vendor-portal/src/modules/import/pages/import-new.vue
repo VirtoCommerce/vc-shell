@@ -1,13 +1,14 @@
 <template>
   <vc-blade
-    title="Importer"
+    v-loading="importLoading"
+    :title="param ? profileDetails?.name : 'Importer'"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
     @close="$emit('page:close')"
   >
-    <vc-container>
+    <vc-container class="import-new">
       <vc-col>
         <div class="vc-padding_m">
           <vc-row>
@@ -142,7 +143,12 @@
         <!-- History-->
         <vc-col class="vc-padding_m" v-if="!importStarted">
           <vc-card :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')" :fill="true">
-            <vc-table :columns="columns" :items="importHistory" :header="false">
+            <vc-table
+              :columns="columns"
+              :items="importHistory"
+              :header="false"
+              :loading="importLoading"
+            >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">
@@ -167,7 +173,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, ComputedRef, defineComponent, onMounted, ref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import {
   IBladeToolbar,
@@ -185,8 +191,8 @@ interface IImportBadges {
   id: string;
   icon: string;
   color: string;
-  title: string | number;
-  description: string;
+  title: string | number | ComputedRef<string>;
+  description: string | ComputedRef<string>;
 }
 
 export default defineComponent({
@@ -216,7 +222,7 @@ export default defineComponent({
       default: () => ({}),
     },
   },
-  emits: ["page:open", "page:close"],
+  emits: ["page:open", "page:close", "parent:call"],
   setup(props, { emit }) {
     const { t } = useI18n();
     const { getAccessToken } = useUser();
@@ -227,12 +233,15 @@ export default defineComponent({
       importStatus,
       selectedImporter,
       isValid,
+      profileDetails,
+      profile,
       cancelImport,
       clearImport,
       previewData,
       setFile,
       startImport,
-      getImport,
+      loadImportProfile,
+      fetchImportHistory,
     } = useImport();
     const locale = window.navigator.language;
     const loading = ref(false);
@@ -241,24 +250,24 @@ export default defineComponent({
     const popupColumns = ref<ITableColumns[]>([]);
     const popupItems = ref<Record<string, unknown>[]>([]);
     const errorMessage = ref("");
-    const bladeToolbar = reactive<IBladeToolbar[]>([
+    const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "edit",
-        title: t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT"),
+        title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
         icon: "fas fa-pencil-alt",
         clickHandler() {
           emit("page:open", {
             component: ImportProfileDetails,
-            componentOptions: {
-              importer: selectedImporter.value,
-            },
+            param: profile.value.id,
           });
         },
         isVisible: computed(() => !uploadedFile.value),
       },
       {
         id: "cancel",
-        title: t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.CANCEL"),
+        title: computed(() =>
+          t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.CANCEL")
+        ),
         icon: "fas fa-ban",
         clickHandler() {
           emit("page:close");
@@ -272,19 +281,19 @@ export default defineComponent({
     const columns = ref<ITableColumns[]>([
       {
         id: "jobId", // temp
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
         alwaysVisible: true,
       },
       {
         id: "created",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
         type: "date",
         format: "L LT",
       },
       {
         id: "errorCount",
-        title: t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT"),
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
         width: 118,
         sortable: true,
       },
@@ -293,13 +302,15 @@ export default defineComponent({
     const skippedColumns = ref<ITableColumns[]>([
       {
         id: "error",
-        title: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.LINE"),
+        title: computed(() =>
+          t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.LINE")
+        ),
         width: 147,
       },
       {
         id: "errorCount",
-        title: t(
-          "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC"
+        title: computed(() =>
+          t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC")
         ),
       },
     ]);
@@ -352,7 +363,7 @@ export default defineComponent({
 
     const uploadActions = ref<INotificationActions[]>([
       {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE"),
+        name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE")),
         clickHandler() {
           clearImport();
           clearErrorMessage();
@@ -364,7 +375,9 @@ export default defineComponent({
         ),
       },
       {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW"),
+        name: computed(() =>
+          t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW")
+        ),
         async clickHandler() {
           try {
             preview.value = await previewData();
@@ -396,7 +409,9 @@ export default defineComponent({
         isVisible: computed(() => isValid.value),
       },
       {
-        name: t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT"),
+        name: computed(() =>
+          t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")
+        ),
         async clickHandler() {
           await start();
         },
@@ -411,9 +426,10 @@ export default defineComponent({
       },
     ]);
 
-    onMounted(() => {
+    onMounted(async () => {
       if (props.param) {
-        getImport(props.param);
+        loadImportProfile({ id: props.param });
+        await fetchImportHistory(props.param);
       }
     });
 
@@ -464,11 +480,18 @@ export default defineComponent({
       start();
     }
 
+    function reloadParent() {
+      emit("parent:call", {
+        method: "reload",
+      });
+      emit("page:close");
+    }
+
     return {
       bladeToolbar,
       columns,
       moment,
-      loading: computed(() => loading.value || importLoading.value),
+      loading,
       importHistory,
       uploadedFile,
       uploadActions,
@@ -481,6 +504,9 @@ export default defineComponent({
       selectedImporter,
       importBadges,
       skippedColumns,
+      profile,
+      profileDetails,
+      importLoading,
       importStarted: computed(
         () => importStatus.value && importStatus.value.jobId
       ),
@@ -492,6 +518,7 @@ export default defineComponent({
       initializeImporting,
       uploadCsv,
       cancelImport,
+      reloadParent,
     };
   },
 });
@@ -503,6 +530,11 @@ export default defineComponent({
 }
 
 .import-new {
+  .vc-container__inner {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__upload-border {
     border-top: 1px solid #e5e5e5;
   }
@@ -530,7 +562,7 @@ export default defineComponent({
   }
 
   &__no-errors-icon {
-    font-size: 59px;
+    font-size: 59px !important;
     color: #87b563;
   }
 

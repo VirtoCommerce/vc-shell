@@ -59,7 +59,7 @@
             :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
             :required="true"
             v-model="forgotPasswordForm.loginOrEmail"
-            fieldDescription="We will send you an email with instructions on how to reset your password."
+            :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
           ></vc-input>
           <div
             class="
@@ -81,7 +81,7 @@
         <template
           v-if="requestPassResult.succeeded && forgotPasswordRequestSent"
         >
-          <div>Email with instructions has been sent to you.</div>
+          <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
           <div
             class="
               vc-flex

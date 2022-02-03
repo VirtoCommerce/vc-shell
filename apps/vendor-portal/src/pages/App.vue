@@ -72,6 +72,7 @@ import { IBladeToolbar, IMenuItems } from "../types";
 import NotificationDropdown from "../components/notification-dropdown.vue";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
+import LanguageSelector from "../components/language-selector.vue";
 
 export default defineComponent({
   name: "App",
@@ -83,7 +84,12 @@ export default defineComponent({
   },
 
   setup() {
-    const { t } = useI18n();
+    const {
+      t,
+      locale: currentLocale,
+      availableLocales,
+      getLocaleMessage,
+    } = useI18n();
     const log = useLogger();
     const signalr = useSignalR();
     const { user, loadUser, signOut } = useUser();
@@ -106,6 +112,7 @@ export default defineComponent({
     });
 
     onMounted(async () => {
+      langInit();
       await loadUser();
       isReady.value = true;
       if (!isAuthorized.value) {
@@ -119,7 +126,24 @@ export default defineComponent({
 
     log.debug(`Initializing App`);
 
-    const toolbarItems = reactive<IBladeToolbar[]>([
+    const toolbarItems = ref<IBladeToolbar[]>([
+      {
+        component: shallowRef(LanguageSelector),
+        componentOptions: {
+          value: computed(() => currentLocale.value),
+          title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
+          languageItems: computed(() =>
+            availableLocales.map((locale) => ({
+              lang: locale,
+              title: getLocaleMessage(locale).language_name,
+              clickHandler(lang: string) {
+                currentLocale.value = lang;
+                localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
+              },
+            }))
+          ),
+        },
+      },
       {
         isVisible: isDesktop,
         isAccent: computed(() => {
@@ -129,7 +153,7 @@ export default defineComponent({
         }),
         component: shallowRef(NotificationDropdown),
         componentOptions: {
-          title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+          title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
         },
       },
       {
@@ -142,13 +166,13 @@ export default defineComponent({
           ),
           menuItems: [
             {
-              title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+              title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
               clickHandler() {
                 isChangePasswordActive.value = true;
               },
             },
             {
-              title: t("SHELL.ACCOUNT.LOGOUT"),
+              title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
               async clickHandler() {
                 signOut();
               },
@@ -161,7 +185,7 @@ export default defineComponent({
 
     const menuItems = reactive<IMenuItems[]>([
       {
-        title: t("SHELL.MENU.DASHBOARD"),
+        title: computed(() => t("SHELL.MENU.DASHBOARD")),
         icon: "fas fa-home",
         isVisible: true,
         clickHandler(app) {
@@ -170,31 +194,31 @@ export default defineComponent({
         },
       },
       {
-        title: t("ORDERS.MENU.TITLE"),
+        title: computed(() => t("ORDERS.MENU.TITLE")),
         icon: "fas fa-file-alt",
         isVisible: true,
         component: shallowRef(OrdersList),
       },
       {
-        title: t("PRODUCTS.MENU.TITLE"),
+        title: computed(() => t("PRODUCTS.MENU.TITLE")),
         icon: "fas fa-box-open",
         isVisible: true,
         component: shallowRef(ProductsList),
       },
       {
-        title: t("OFFERS.MENU.TITLE"),
+        title: computed(() => t("OFFERS.MENU.TITLE")),
         icon: "fas fa-file-invoice",
         isVisible: true,
         component: shallowRef(OffersList),
       },
       {
-        title: t("IMPORT.MENU.TITLE"),
+        title: computed(() => t("IMPORT.MENU.TITLE")),
         icon: "fas fa-file-import",
         isVisible: true,
         component: shallowRef(ImportProfileSelector),
       },
       {
-        title: t("SHELL.ACCOUNT.LOGOUT"),
+        title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
         icon: "fas fa-sign-out-alt",
         isVisible: isMobile,
         clickHandler() {
@@ -203,6 +227,14 @@ export default defineComponent({
         },
       },
     ]);
+
+    function langInit() {
+      try {
+        currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS");
+      } catch (err) {
+        currentLocale.value = "en";
+      }
+    }
 
     return {
       isAuthorized,

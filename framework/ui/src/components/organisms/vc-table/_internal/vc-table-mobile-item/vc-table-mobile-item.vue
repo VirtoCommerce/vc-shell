@@ -114,8 +114,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { IActionBuilderResult } from "@virtoshell/ui";
-import { right } from "@popperjs/core";
+import { IActionBuilderResult } from "../../../../../";
 
 export default defineComponent({
   props: {

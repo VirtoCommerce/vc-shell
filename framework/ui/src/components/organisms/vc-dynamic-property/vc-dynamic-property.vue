@@ -1,11 +1,16 @@
 <template>
   <vc-select
-    v-if="property.dictionary"
-    :label="property.displayNames[0].name || property.name"
+    v-if="property.dictionary || property.isDictionary"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :isRequired="property.required"
-    :placeholder="property.displayNames[0].name"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.defaultValue
+    "
     :options="items"
     keyProperty="id"
     displayProperty="alias"
@@ -19,7 +24,9 @@
 
   <vc-multivalue
     v-else-if="property.valueType === 'ShortText' && property.multivalue"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="property.values"
     @update:modelValue="setter(property, $event)"
     :required="property.required"
@@ -31,12 +38,17 @@
 
   <vc-input
     v-else-if="property.valueType === 'ShortText'"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :clearable="true"
     :required="property.required"
-    :placeholder="property.displayNames[0].name"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.defaultValue
+    "
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
@@ -44,7 +56,9 @@
 
   <vc-multivalue
     v-else-if="property.valueType === 'Number' && property.multivalue"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="property.values"
     @update:modelValue="setter(property, $event)"
     type="number"
@@ -57,13 +71,18 @@
 
   <vc-input
     v-else-if="property.valueType === 'Number'"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :clearable="true"
     type="number"
     :required="property.required"
-    :placeholder="property.displayNames[0].name"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.defaultValue
+    "
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
@@ -71,14 +90,19 @@
 
   <vc-input
     v-else-if="property.valueType === 'Integer'"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :clearable="true"
     type="number"
     step="1"
     :required="property.required"
-    :placeholder="property.displayNames[0].name"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.defaultValue
+    "
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
@@ -86,12 +110,17 @@
 
   <vc-input
     v-else-if="property.valueType === 'DateTime'"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     type="datetime-local"
     :required="property.required"
-    :placeholder="property.displayNames[0].name"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.defaultValue
+    "
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
@@ -99,11 +128,16 @@
 
   <vc-textarea
     v-else-if="property.valueType === 'LongText'"
-    :label="property.displayNames[0].name || property.name"
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :required="property.required"
-    :placeholder="property.displayNames[0].name"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.defaultValue
+    "
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
@@ -118,7 +152,9 @@
     :disabled="disabled"
     :name="property.name"
   >
-    {{ property.displayNames[0].name || property.name }}
+    {{
+      (property.displayNames && property.displayNames[0].name) || property.name
+    }}
   </vc-checkbox>
 </template>
 

@@ -49,8 +49,9 @@
                   </p>
                   <vc-hint>{{ item.description }}</vc-hint>
                   <div v-if="item.errors && item.errors.length">
-                    <vc-hint class="notification-dropdown__error"
-                      >Errors: {{ item.errors && item.errors.length }}</vc-hint
+                    <vc-hint class="notification-dropdown__error">
+                      {{ $t("SHELL.NOTIFICATIONS.ERRORS") }}:
+                      {{ item.errors && item.errors.length }}</vc-hint
                     >
                   </div>
                 </div>
@@ -77,7 +78,7 @@
           "
           v-else
         >
-          No notifications yet
+          {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
         </div>
       </vc-container>
     </div>

@@ -104,9 +104,9 @@ About component.
                     $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
                   }}</vc-button
                 >
-                <vc-button @click="applyFilters"
-                  >$t('PRODUCTS.PAGES.LIST.FILTERS.APPLY')</vc-button
-                >
+                <vc-button @click="applyFilters">{{
+                  $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
+                }}</vc-button>
               </div>
             </vc-col>
           </vc-row>

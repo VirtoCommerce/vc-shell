@@ -471,6 +471,7 @@ export default defineComponent({
     "search:change",
     "filter:apply",
     "filter:reset",
+    "headerClick",
   ],
 
   setup(props, { emit }) {

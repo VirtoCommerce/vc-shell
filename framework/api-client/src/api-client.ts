@@ -19437,7 +19437,7 @@ export class MarketingModulePromotionClient extends AuthApiBase {
    */
   promotionsSearch(
     body: PromotionSearchCriteria | undefined
-  ): Promise<> {
+  ): Promise<PromotionSearchResult> {
     let url_ = this.baseUrl + "/api/marketing/promotions/search";
     url_ = url_.replace(/[?&]$/, "");
 

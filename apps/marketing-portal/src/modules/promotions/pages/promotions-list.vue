@@ -12,7 +12,16 @@
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
-      :items="promotionsList"
+      :items="promotions"
+      :totalCount="totalCount"
+      :pages="pages"
+      :currentPage="currentPage"
+      @paginationClick="onPaginationClick"
+      :searchValue="searchValue"
+      @search:change="onSearchList"
+      @headerClick="onHeaderClick"
+      :sort="sort"
+      @scroll:ptr="reload"
     >
       <!-- Filters -->
       <template v-slot:filters> </template>
@@ -30,7 +39,7 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.NOT_FOUND") }}
           </div>
-          <vc-button>
+          <vc-button @click="resetSearch">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.RESET_SEARCH") }}</vc-button
           >
         </div>
@@ -137,10 +146,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref, watch } from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useFunctions } from "@virtoshell/core";
 import moment from "moment";
+import usePromotions from "../composables/usePromotions";
 
 export default defineComponent({
   url: "promotions",
@@ -167,6 +177,18 @@ export default defineComponent({
   },
   setup() {
     const { t } = useI18n();
+    const {
+      promotions,
+      loading,
+      currentPage,
+      pages,
+      totalCount,
+      searchQuery,
+      loadPromotions,
+    } = usePromotions();
+    const searchValue = ref();
+    const { debounce } = useFunctions();
+    const sort = ref("startDate:DESC");
     const bladeToolbar = reactive<IBladeToolbar[]>([
       {
         id: "refresh",
@@ -191,6 +213,7 @@ export default defineComponent({
         title: t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.NAME"),
         alwaysVisible: true,
         width: 343,
+        sortable: true,
       },
       {
         id: "startDate",
@@ -213,9 +236,10 @@ export default defineComponent({
         title: t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.IS_EXCLUSIVE"),
         width: 80,
         type: "status-icon",
+        sortable: true,
       },
       {
-        id: "modified",
+        id: "modifiedDate",
         title: t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.MODIFIED"),
         width: 80,
         sortable: true,
@@ -229,27 +253,75 @@ export default defineComponent({
         alwaysVisible: true,
         type: "date",
         format: "L",
+        sortable: true,
       },
     ]);
-    const promotionsList = [
-      {
-        id: "1",
-        name: "test",
-        startDate: Date.now(),
-        isActive: true,
-        isExclusive: false,
-        modified: Date.now(),
-        createdDate: Date.now(),
-      },
-    ];
-    const loading = ref(false);
+
+    watch(sort, async (value) => {
+      await loadPromotions({ ...searchQuery.value, sort: value });
+    });
+
+    onMounted(async () => {
+      await loadPromotions({ sort: sort.value });
+    });
+
+    async function reload() {
+      await loadPromotions({
+        ...searchQuery.value,
+        skip: (currentPage.value - 1) * searchQuery.value.take,
+        sort: sort.value,
+      });
+    }
+
+    async function onPaginationClick(page: number) {
+      await loadPromotions({
+        skip: (page - 1) * 20,
+      });
+    }
+
+    const onSearchList = debounce(async (keyword: string) => {
+      searchValue.value = keyword;
+      await loadPromotions({
+        keyword,
+      });
+    }, 200);
+
+    function onHeaderClick(item: ITableColumns) {
+      const sortBy = [":ASK", ":DESC", ""];
+      if (item.sortable) {
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+      }
+    }
+
+    async function resetSearch() {
+      searchValue.value = "";
+      // Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+      await loadPromotions({
+        // ...searchQuery.value,
+        // ...filter,
+        keyword: "",
+      });
+      // appliedFilter.value = {};
+    }
+
     return {
       title: t("PROMOTIONS.PAGES.LIST.TITLE"),
       bladeToolbar,
       loading,
       columns,
-      promotionsList,
+      promotions,
+      currentPage,
+      pages,
+      totalCount,
+      searchValue,
+      sort,
       moment,
+      onPaginationClick,
+      onHeaderClick,
+      resetSearch,
+      reload,
+      onSearchList,
     };
   },
 });

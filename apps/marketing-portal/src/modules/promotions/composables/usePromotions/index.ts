@@ -9,14 +9,23 @@ import {
 
 export interface IUsePromotions {
   readonly promotions: Ref<PromotionSearchResult[]>;
+  readonly loading: Ref<boolean>;
+  readonly totalCount: Ref<number>;
+  readonly pages: Ref<number>;
+  readonly currentPage: Ref<number>;
+  searchQuery: Ref<IPromotionSearchCriteria>;
+  loadPromotions(query?: IPromotionSearchCriteria): void;
 }
 
-export default () => {
+export default (): IUsePromotions => {
   const { user } = useUser();
   const logger = useLogger();
   const searchResult = ref<PromotionSearchResult>();
   const loading = ref(false);
   const currentPage = ref(1);
+  const searchQuery = ref<IPromotionSearchCriteria>({
+    take: 20,
+  });
 
   async function getApiClient() {
     const { getAccessToken } = useUser();
@@ -25,17 +34,18 @@ export default () => {
     return client;
   }
 
-  async function loadPromotions(query: IPromotionSearchCriteria) {
+  async function loadPromotions(query?: IPromotionSearchCriteria) {
     const client = await getApiClient();
 
     try {
       loading.value = true;
-      searchResult.value = await client.promotionsSearch({
-        ...(query || {}),
-        take: 20,
-      } as PromotionSearchCriteria);
+      searchQuery.value = { ...searchQuery.value, ...query };
+      const promotionsQuery = new PromotionSearchCriteria(searchQuery.value);
+      searchResult.value = await client.promotionsSearch(promotionsQuery);
 
-      currentPage.value = (query.skip || 0) / Math.max(1, query.take || 15) + 1;
+      currentPage.value =
+        (promotionsQuery.skip || 0) / Math.max(1, promotionsQuery.take || 20) +
+        1;
     } catch (e) {
       logger.error(e);
     } finally {
@@ -45,5 +55,11 @@ export default () => {
 
   return {
     promotions: computed(() => searchResult.value?.results),
+    loading: computed(() => loading.value),
+    totalCount: computed(() => searchResult.value?.totalCount),
+    pages: computed(() => Math.ceil(searchResult.value?.totalCount / 20)),
+    currentPage: computed(() => currentPage.value),
+    searchQuery,
+    loadPromotions,
   };
 };

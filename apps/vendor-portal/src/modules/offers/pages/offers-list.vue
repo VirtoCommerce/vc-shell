@@ -136,6 +136,7 @@ import {
   computed,
   reactive,
   unref,
+  inject,
 } from "vue";
 import { useI18n, useFunctions, useLogger } from "@virtoshell/core";
 import { useOffers } from "../composables";
@@ -196,6 +197,7 @@ export default defineComponent({
     const searchValue = ref();
     const selectedItemId = ref();
     const selectedOfferIds = ref([]);
+    const isDesktop = inject("isDesktop");
 
     watch(sort, async (value) => {
       await loadOffers({ ...searchQuery.value, sort: value });
@@ -268,6 +270,7 @@ export default defineComponent({
           }
         },
         disabled: computed(() => !selectedOfferIds.value?.length),
+        isVisible: isDesktop,
       },
     ]);
 
@@ -426,7 +429,9 @@ export default defineComponent({
         variant: "danger",
         leftActions: true,
         clickHandler(item: IOffer) {
-          selectedOfferIds.value.push(item.id);
+          if (!selectedOfferIds.value.includes(item.id)) {
+            selectedOfferIds.value.push(item.id);
+          }
           removeOffers();
         },
       });

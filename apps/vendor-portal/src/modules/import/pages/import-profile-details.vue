@@ -6,7 +6,7 @@
         ? profileDetails.name
         : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')
     "
-    width="30%"
+    width="50%"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
     :closable="closable"
@@ -18,20 +18,35 @@
           <vc-input
             class="vc-padding_m"
             :label="
-              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME')
+              $t(
+                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
+              )
+            "
+            :placeholder="
+              $t(
+                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER'
+              )
             "
             :clearable="true"
             :required="true"
-            tooltip="text"
+            :tooltip="
+              $t(
+                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP'
+              )
+            "
             name="name"
             v-model="profileDetails.name"
           ></vc-input>
           <vc-select
             class="vc-padding_m"
-            :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER')"
+            :label="
+              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
+            "
             :clearable="true"
             :isRequired="true"
-            tooltip="text"
+            :tooltip="
+              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')
+            "
             name="importer"
             :options="dataImporters"
             :initialItem="importer"
@@ -59,7 +74,7 @@
               <vc-dynamic-property
                 class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
                 v-for="(setting, i) in profileDetails.settings"
-                :key="i"
+                :key="`${profileDetails.id}_${i}`"
                 :property="setting"
                 :getter="getSettingsValue"
                 :setter="setSettingsValue"
@@ -96,13 +111,13 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
-import importConfirmationPopup from "../components/import-confirmation-popup.vue";
+import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { IDataImporter, ObjectSettingEntry } from "../../../api_client";
 import { useForm } from "@virtoshell/ui";
 
 export default defineComponent({
-  components: { importConfirmationPopup },
+  components: { ImportConfirmationPopup },
   url: "import-profile-details",
   props: {
     expanded: {
@@ -132,10 +147,14 @@ export default defineComponent({
       dataImporters,
       profileDetails,
       loading,
+      profile,
+      modified,
       createImportProfile,
       loadImportProfile,
       deleteImportProfile,
       updateImportProfile,
+      fetchDataImporters,
+      setImporter,
     } = useImport();
     const { validate } = useForm({ validateOnMount: false });
     const importer = ref<IDataImporter>();
@@ -150,12 +169,12 @@ export default defineComponent({
           if (valid) {
             try {
               if (props.param) {
-                await updateImportProfile(props.param, profileDetails);
+                await updateImportProfile(profileDetails);
                 emit("parent:call", {
                   method: "reloadParent",
                 });
               } else {
-                await createImportProfile({ ...profileDetails });
+                await createImportProfile(profileDetails);
                 emit("parent:call", {
                   method: "reload",
                 });
@@ -166,6 +185,12 @@ export default defineComponent({
             }
           }
         },
+        disabled: computed(() => {
+          return (
+            (props.param && !modified.value) ||
+            (!props.param && !modified.value)
+          );
+        }),
       },
       {
         id: "cancel",
@@ -191,24 +216,11 @@ export default defineComponent({
     });
 
     onMounted(async () => {
+      await fetchDataImporters();
       if (props.param) {
         await loadImportProfile({ id: props.param });
-
-        if (profileDetails.dataImporterType) {
-          importer.value = dataImporters.value.find(
-            (importer) => importer.typeName === profileDetails.dataImporterType
-          );
-        }
       }
     });
-
-    function setImporter(typeName: string) {
-      importer.value = dataImporters.value.find(
-        (importer) => importer.typeName === typeName
-      );
-
-      profileDetails.settings = [...(importer.value.availSettings || [])];
-    }
 
     function getSettingsValue(setting: ObjectSettingEntry) {
       return setting.value;
@@ -231,6 +243,7 @@ export default defineComponent({
     }
 
     async function deleteProfile() {
+      showConfirmation.value = false;
       await deleteImportProfile({ id: props.param });
 
       emit("parent:call", {
@@ -248,11 +261,7 @@ export default defineComponent({
       bladeToolbar,
       showConfirmation,
       dataImporters,
-      importer: computed(() =>
-        dataImporters.value?.find(
-          (x) => x.typeName === profileDetails.dataImporterType
-        )
-      ),
+      importer: computed(() => profile.value.importer),
       sampleTemplateUrl,
       profileDetails,
       loading,

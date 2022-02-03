@@ -38,7 +38,7 @@ export default defineComponent({
   justify-content: center;
   flex-direction: column;
   display: none;
-  z-index: 99999;
+  z-index: 9998;
 
   &_active {
     display: flex;

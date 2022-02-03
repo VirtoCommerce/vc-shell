@@ -19,6 +19,13 @@
         class="product-details__inner vc-flex vc-flex-grow_1"
       >
         <div class="product-details__content vc-flex-grow_1">
+          <vc-status
+            :outline="false"
+            variant="danger"
+            class="vc-fill_width"
+            v-if="statusText"
+            >{{ statusText }}</vc-status
+          >
           <div class="vc-padding_l">
             <vc-form>
               <vc-input
@@ -146,14 +153,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  unref,
-} from "vue";
+import { computed, defineComponent, onMounted, ref, unref } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import { useForm } from "@virtoshell/ui";
 import { useProduct } from "../composables";
@@ -169,6 +169,7 @@ import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
+import _ from "lodash";
 
 export default defineComponent({
   url: "product",
@@ -358,6 +359,20 @@ export default defineComponent({
       },
     ]);
 
+    const statusText = computed(() => {
+      if (
+        product.value.publicationRequests &&
+        product.value.publicationRequests.length
+      ) {
+        return _.orderBy(
+          product.value.publicationRequests,
+          ["createdDate"],
+          ["desc"]
+        )[0].comment;
+      }
+      return null;
+    });
+
     const onGalleryUpload = async (files: FileList) => {
       const formData = new FormData();
       formData.append("file", files[0]);
@@ -435,6 +450,7 @@ export default defineComponent({
       product: computed(() => (props.param ? product.value : productDetails)),
       productDetails,
       readonly: computed(() => props.param && !product.value?.canBeModified),
+      statusText,
       reload,
       editImages,
       loading: computed(() => loading.value),

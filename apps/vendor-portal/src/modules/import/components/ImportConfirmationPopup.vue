@@ -34,7 +34,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  name: "import-confirmation-popup",
+  name: "ImportConfirmationPopup",
   props: {
     title: {
       type: String,

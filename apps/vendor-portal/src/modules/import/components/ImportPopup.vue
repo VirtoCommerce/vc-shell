@@ -45,7 +45,7 @@ import { defineComponent } from "vue";
 import { useI18n } from "@virtoshell/core";
 
 export default defineComponent({
-  name: "import-popup",
+  name: "ImportPopup",
   props: {
     columns: {
       type: Array,

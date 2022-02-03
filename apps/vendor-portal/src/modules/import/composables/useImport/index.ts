@@ -2,24 +2,27 @@ import { computed, reactive, Ref, ref, watch } from "vue";
 import {
   CreateProfileCommand,
   IDataImporter,
-  IImportProfile,
   ImportCancellationRequest,
   ImportDataPreview,
   ImportProfile,
   ImportPushNotification,
-  ObjectSettingEntry,
   PreviewDataQuery,
   RunImportCommand,
   SearchImportProfilesHistoryQuery,
   SearchImportProfilesQuery,
-  SearchImportProfilesResult,
+  SearchImportProfilesHistoryResult,
   UpdateProfileCommand,
   VcmpSellerImportClient,
+  ImportRunHistory,
+  ISearchImportProfilesHistoryQuery,
 } from "../../../../api_client/api-client";
 import { useLogger, useNotifications, useUser } from "@virtoshell/core";
+import { cloneDeep as _cloneDeep } from "lodash";
+
+export type INotificationHistory = ImportPushNotification | ImportRunHistory;
 
 export interface IImportStatus {
-  notification?: ImportPushNotification;
+  notification?: INotificationHistory;
   jobId?: string;
   inProgress: boolean;
   progress: number;
@@ -35,73 +38,122 @@ export interface IUploadedFile {
   url?: string;
 }
 
+export type ExtProfile = ImportProfile & {
+  importer?: IDataImporter;
+  inProgress?: boolean;
+  jobId?: string;
+};
+
+export interface ISearchProfile extends ISearchImportProfilesHistoryQuery {
+  results?: ExtProfile[];
+}
+
 interface IUseImport {
-  loading: Ref<boolean>;
-  selectedImporter: Ref<IDataImporter>;
-  uploadedFile: Ref<IUploadedFile>;
-  importStatus: Ref<IImportStatus>;
-  isValid: Ref<boolean>;
-  importHistory: Ref<ImportProfile[]>;
-  dataImporters: Ref<IDataImporter[]>;
-  importProfiles: Ref<ImportProfile[]>;
-  profileDetails: IImportProfile;
-  profile: Ref<ImportProfile>;
+  readonly loading: Ref<boolean>;
+  readonly uploadedFile: Ref<IUploadedFile>;
+  readonly importStatus: Ref<IImportStatus>;
+  readonly isValid: Ref<boolean>;
+  readonly importHistory: Ref<ImportRunHistory[]>;
+  readonly dataImporters: Ref<IDataImporter[]>;
+  readonly importProfiles: Ref<ExtProfile[]>;
+  readonly profile: Ref<ExtProfile>;
+  readonly modified: Ref<boolean>;
+  readonly totalHistoryCount: Ref<number>;
+  readonly historyPages: Ref<number>;
+  readonly currentPage: Ref<number>;
+  profileDetails: ImportProfile;
   setFile(file: IUploadedFile): void;
-  selectProfile(profile: ImportProfile): void;
+  setImporter(typeName: string): void;
   fetchDataImporters(): Promise<IDataImporter[]>;
   previewData(): Promise<ImportDataPreview>;
   startImport(): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
-  fetchImportHistory(profileId?: string): void;
+  fetchImportHistory(query?: ISearchImportProfilesHistoryQuery): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
-  createImportProfile(details: IImportProfile): void;
-  updateImportProfile(profileId: string, details: IImportProfile): void;
+  createImportProfile(details: ImportProfile): void;
+  updateImportProfile(details: ImportProfile): void;
   deleteImportProfile(args: { id: string }): void;
+  updateStatus(notification: ImportPushNotification | ImportRunHistory): void;
 }
-const selectedImporter = ref<IDataImporter>();
-const importCommand = ref<RunImportCommand>({
-  importProfile: { settings: [] } as ImportProfile,
-} as RunImportCommand);
-const importStatus = ref<IImportStatus>();
-const dataImporters = ref<IDataImporter[]>([]);
+
 export default (): IUseImport => {
   const logger = useLogger();
-  const { notifications } = useNotifications();
+  const { popupNotifications } = useNotifications();
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
-  const historySearchResult = ref<SearchImportProfilesResult>();
-  const profileSearchResult = ref<SearchImportProfilesResult>();
-  const profile = ref<ImportProfile>();
-  const profileDetails = reactive<IImportProfile>(new ImportProfile());
+  const historySearchResult = ref<SearchImportProfilesHistoryResult>();
+  const profileSearchResult = ref<ISearchProfile>();
+  const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
+  const profileDetails = reactive<ImportProfile>(new ImportProfile());
+  let profileDetailsCopy: ImportProfile;
+  const dataImporters = ref<IDataImporter[]>([]);
+  const modified = ref(false);
+  const importStarted = ref(false);
+  const currentPage = ref(1);
+  const importStatus = ref<IImportStatus>();
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
-    () => notifications,
-    (newVal) => {
-      const notification =
-        importStatus.value &&
-        (newVal.value.find(
+    [() => popupNotifications, () => importStarted],
+    ([newNotifications, isStarted]) => {
+      if (isStarted.value && importStatus.value) {
+        const notification = newNotifications.value.find(
           (x) => x.id === importStatus.value.notification.id
-        ) as ImportPushNotification);
+        ) as ImportPushNotification;
 
-      if (notification) {
-        updateStatus(notification);
+        if (notification) {
+          updateStatus(notification);
+        }
+      }
+
+      if (
+        profileSearchResult.value &&
+        profileSearchResult.value.results &&
+        profileSearchResult.value.results.length
+      ) {
+        profileSearchResult.value.results =
+          profileSearchResult.value.results.map((res) => {
+            const notification = newNotifications.value.find(
+              (x: ImportPushNotification) => x.profileId === res.id
+            ) as ImportPushNotification;
+
+            if (notification) {
+              res.inProgress = !notification.finished;
+              res.jobId = notification.jobId;
+            }
+
+            return res;
+          });
       }
     },
     { deep: true, immediate: true }
   );
 
-  async function fetchImportHistory(profileId?: string) {
+  watch(
+    () => profileDetails,
+    (state) => {
+      modified.value =
+        JSON.stringify(profileDetailsCopy) !== JSON.stringify(state);
+    },
+    { deep: true }
+  );
+
+  async function fetchImportHistory(query?: ISearchImportProfilesHistoryQuery) {
     const client = await getApiClient();
     try {
       loading.value = true;
-      const historyQuery = new SearchImportProfilesHistoryQuery({ profileId });
+      const historyQuery = new SearchImportProfilesHistoryQuery({
+        ...(query || {}),
+        take: 15,
+      });
       historySearchResult.value = await client.searchImportProfilesHistory(
         historyQuery
       );
+      currentPage.value =
+        (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -110,28 +162,18 @@ export default (): IUseImport => {
     }
   }
 
-  function selectProfile(profile: ImportProfile) {
-    importCommand.value.importProfile = new ImportProfile({
-      dataImporterType: profile.dataImporterType,
-      settings: profile.settings,
-    });
-    selectedImporter.value = dataImporters.value.find(
-      (importer) => importer.typeName === profile.dataImporterType
-    );
-    importStatus.value = undefined;
-  }
-
   function setFile(file: IUploadedFile) {
-    importCommand.value.importProfile.importFileUrl = file.url;
+    profile.value.importFileUrl = file.url;
     uploadedFile.value = file;
   }
 
-  function updateStatus(notification: ImportPushNotification) {
+  function updateStatus(notification: INotificationHistory) {
     importStatus.value = {
       notification: notification,
       jobId: notification.jobId,
       inProgress: !notification.finished,
-      progress: (notification.processedCount / notification.totalCount) * 100,
+      progress:
+        (notification.processedCount / notification.totalCount) * 100 || 0,
     };
   }
 
@@ -163,9 +205,9 @@ export default (): IUseImport => {
     try {
       loading.value = true;
       const profileQuery = new SearchImportProfilesQuery();
-      profileSearchResult.value = await client.searchImportProfiles(
+      profileSearchResult.value = (await client.searchImportProfiles(
         profileQuery
-      );
+      )) as ISearchProfile;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -176,10 +218,11 @@ export default (): IUseImport => {
 
   async function previewData() {
     const client = await getApiClient();
+
     try {
       loading.value = true;
       const previewDataQuery = new PreviewDataQuery({
-        importProfile: importCommand.value.importProfile,
+        importProfile: profile.value,
       });
       return client.preview(previewDataQuery);
     } catch (e) {
@@ -192,9 +235,14 @@ export default (): IUseImport => {
 
   async function startImport() {
     const client = await getApiClient();
+
     try {
       loading.value = true;
-      const notification = await client.runImport(importCommand.value);
+      const importDataQuery = new RunImportCommand({
+        importProfile: profile.value,
+      });
+      const notification = await client.runImport(importDataQuery);
+      importStarted.value = true;
       updateStatus(notification);
     } catch (e) {
       logger.error(e);
@@ -233,17 +281,17 @@ export default (): IUseImport => {
     try {
       loading.value = true;
 
-      profile.value = await client.getImportProfileById(args.id);
+      profile.value = (await client.getImportProfileById(
+        args.id
+      )) as ExtProfile;
 
-      Object.assign(profileDetails, {
-        name: profile.value.name,
-        dataImporterType: profile.value.dataImporterType,
-        sellerId: profile.value.sellerId,
-        sellerName: profile.value.sellerName,
-        settings: profile.value.settings,
-        typeName: profile.value.typeName,
-        importFileUrl: profile.value.importFileUrl,
-      } as IImportProfile);
+      profile.value.importer = dataImporters.value.find(
+        (x) => x.typeName === profile.value.dataImporterType
+      );
+
+      Object.assign(profileDetails, profile.value);
+
+      profileDetailsCopy = _cloneDeep(profileDetails);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -252,22 +300,27 @@ export default (): IUseImport => {
     }
   }
 
-  async function updateImportProfile(
-    profileId: string,
-    details: IImportProfile
-  ) {
+  async function setImporter(typeName: string) {
+    const importer = dataImporters.value.find(
+      (importer) => importer.typeName === typeName
+    );
+    profileDetails.dataImporterType = typeName;
+    profileDetails.settings = [...(importer.availSettings || [])];
+  }
+
+  async function updateImportProfile(updatedProfile: ImportProfile) {
     const client = await getApiClient();
 
     const command = new UpdateProfileCommand({
-      importProfileId: profileId,
-      importProfile: new ImportProfile(details),
+      importProfileId: updatedProfile.id,
+      importProfile: updatedProfile,
     });
 
     try {
       loading.value = true;
 
       await client.updateImportProfile(command);
-      await loadImportProfile({ id: profile.value.id });
+      await loadImportProfile({ id: updatedProfile.id });
     } catch (e) {
       logger.error(e);
       throw e;
@@ -276,26 +329,19 @@ export default (): IUseImport => {
     }
   }
 
-  async function createImportProfile(details: IImportProfile) {
-    console.log(profile);
+  async function createImportProfile(newProfile: ImportProfile) {
     const client = await getApiClient();
 
+    newProfile.sellerName = user.value.userName;
+    newProfile.sellerId = user.value.id;
     const command = new CreateProfileCommand({
-      importProfile: new ImportProfile({
-        dataImporterType: details.typeName,
-        typeName: details.typeName,
-        settings: details.settings.map(
-          (setting) => new ObjectSettingEntry(setting)
-        ),
-        name: details.name,
-        sellerName: user.value.userName,
-        sellerId: user.value.id,
-      }),
+      importProfile: newProfile,
     });
 
     try {
       loading.value = true;
-      profile.value = await client.createImportProfile(command);
+      const newProfileWithId = await client.createImportProfile(command);
+      await loadImportProfile({ id: newProfileWithId.id });
     } catch (e) {
       logger.error(e);
       throw e;
@@ -320,17 +366,21 @@ export default (): IUseImport => {
 
   return {
     loading: computed(() => loading.value),
-    selectedImporter: computed(() => selectedImporter.value),
     uploadedFile: computed(() => uploadedFile.value),
     importStatus: computed(() => importStatus.value),
-    isValid: computed(() => !!(selectedImporter.value && uploadedFile.value)),
+    isValid: computed(() => !!(profile.value.importer && uploadedFile.value)),
     importHistory: computed(() => historySearchResult.value?.results),
     importProfiles: computed(() => profileSearchResult.value?.results),
     dataImporters: computed(() => dataImporters.value),
+    modified: computed(() => modified.value),
     profile: computed(() => profile.value),
+    totalHistoryCount: computed(() => historySearchResult.value?.totalCount),
+    historyPages: computed(() =>
+      Math.ceil(historySearchResult.value?.totalCount / 15)
+    ),
+    currentPage: computed(() => currentPage.value),
     profileDetails,
     setFile,
-    selectProfile,
     fetchDataImporters,
     previewData,
     startImport,
@@ -342,5 +392,7 @@ export default (): IUseImport => {
     createImportProfile,
     updateImportProfile,
     deleteImportProfile,
+    setImporter,
+    updateStatus,
   };
 };

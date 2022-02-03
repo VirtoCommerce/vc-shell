@@ -113,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, watch } from "vue";
 import { IActionBuilderResult } from "../../../../../";
 
 export default defineComponent({
@@ -127,9 +127,16 @@ export default defineComponent({
       type: Function,
       default: undefined,
     },
+
+    swipingItem: {
+      type: String,
+      default: null,
+    },
   },
 
-  setup(props) {
+  emits: ["swipeStart"],
+
+  setup(props, { emit }) {
     const offsetX = ref(0);
     const startX = ref(0);
     const startY = ref(0);
@@ -139,6 +146,16 @@ export default defineComponent({
     const maxWidth = 80;
     const isActionsPopupVisible = ref(false);
     const itemActions = ref([]);
+
+    watch(
+      () => props.swipingItem,
+      (newVal) => {
+        if (newVal !== props.item.id) {
+          handleOffset();
+        }
+      }
+    );
+
     const rightSwipeActions = computed(
       () =>
         itemActions.value &&
@@ -156,82 +173,94 @@ export default defineComponent({
         )
     );
 
+    function handleOffset() {
+      if (
+        itemActions.value.some(
+          (action: IActionBuilderResult) => action.leftActions
+        )
+      ) {
+        offsetX.value = -maxWidth;
+        startOffsetX.value = offsetX.value;
+      } else {
+        offsetX.value = 0;
+        startOffsetX.value = 0;
+      }
+    }
+
+    async function touchStart(e: TouchEvent): Promise<void> {
+      startX.value = e.touches[0].clientX;
+      startY.value = e.touches[0].clientY;
+      startOffsetX.value = offsetX.value;
+      isMoving.value = true;
+
+      if (!itemActions.value.length) {
+        if (typeof props.actionBuilder === "function") {
+          itemActions.value = await props.actionBuilder(props.item);
+
+          handleOffset();
+        }
+      }
+    }
+
+    function touchMove(e: TouchEvent): void {
+      emit("swipeStart", props.item.id);
+      if (itemActions.value && itemActions.value.length) {
+        const deltaX = e.touches[0].clientX - startX.value;
+        const deltaY = e.touches[0].clientY - startY.value;
+
+        if (
+          Math.abs(deltaX) > threshold &&
+          (leftSwipeActions.value && leftSwipeActions.value.length
+            ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
+            : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
+          startOffsetX.value + deltaX < 0
+        ) {
+          if (Math.abs(deltaY) < threshold * 2) {
+            e.preventDefault();
+          }
+          offsetX.value = startOffsetX.value + deltaX;
+        }
+      }
+    }
+
+    function touchEnd(): void {
+      const absoluteOffsetX = Math.abs(offsetX.value);
+      if (absoluteOffsetX < maxWidth) {
+        offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
+      } else {
+        offsetX.value =
+          absoluteOffsetX <= maxWidth * 2 - threshold * 2
+            ? -maxWidth
+            : -maxWidth * 2;
+      }
+
+      isMoving.value = false;
+    }
+
+    function touchCancel(): void {
+      const absoluteOffsetX = Math.abs(offsetX.value);
+      if (absoluteOffsetX < maxWidth) {
+        offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
+      } else {
+        offsetX.value =
+          absoluteOffsetX <= maxWidth * 2 - threshold * 2
+            ? -maxWidth
+            : -maxWidth * 2;
+      }
+
+      isMoving.value = false;
+    }
+
     return {
       offsetX,
       isActionsPopupVisible,
       rightSwipeActions,
       leftSwipeActions,
       isMoving,
-
-      async touchStart(e: TouchEvent): Promise<void> {
-        startX.value = e.touches[0].clientX;
-        startY.value = e.touches[0].clientY;
-        startOffsetX.value = offsetX.value;
-        isMoving.value = true;
-
-        if (!itemActions.value.length) {
-          if (typeof props.actionBuilder === "function") {
-            itemActions.value = await props.actionBuilder(props.item);
-
-            if (
-              itemActions.value.some(
-                (action: IActionBuilderResult) => action.leftActions
-              )
-            ) {
-              offsetX.value = -maxWidth;
-              startOffsetX.value = offsetX.value;
-            }
-          }
-        }
-      },
-
-      touchMove(e: TouchEvent): void {
-        if (itemActions.value && itemActions.value.length) {
-          const deltaX = e.touches[0].clientX - startX.value;
-          const deltaY = e.touches[0].clientY - startY.value;
-
-          if (
-            Math.abs(deltaX) > threshold &&
-            (leftSwipeActions.value && leftSwipeActions.value.length
-              ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
-              : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
-            startOffsetX.value + deltaX < 0
-          ) {
-            if (Math.abs(deltaY) < threshold * 2) {
-              e.preventDefault();
-            }
-            offsetX.value = startOffsetX.value + deltaX;
-          }
-        }
-      },
-
-      touchEnd(): void {
-        const absoluteOffsetX = Math.abs(offsetX.value);
-        if (absoluteOffsetX < maxWidth) {
-          offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
-        } else {
-          offsetX.value =
-            absoluteOffsetX <= maxWidth * 2 - threshold * 2
-              ? -maxWidth
-              : -maxWidth * 2;
-        }
-
-        isMoving.value = false;
-      },
-
-      touchCancel(): void {
-        const absoluteOffsetX = Math.abs(offsetX.value);
-        if (absoluteOffsetX < maxWidth) {
-          offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
-        } else {
-          offsetX.value =
-            absoluteOffsetX <= maxWidth * 2 - threshold * 2
-              ? -maxWidth
-              : -maxWidth * 2;
-        }
-
-        isMoving.value = false;
-      },
+      touchStart,
+      touchMove,
+      touchEnd,
+      touchCancel,
     };
   },
 });

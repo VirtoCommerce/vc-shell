@@ -376,7 +376,7 @@ export default (): IUseImport => {
     profile: computed(() => profile.value),
     totalHistoryCount: computed(() => historySearchResult.value?.totalCount),
     historyPages: computed(() =>
-      Math.ceil(historySearchResult.value?.totalCount / 20)
+      Math.ceil(historySearchResult.value?.totalCount / 15)
     ),
     currentPage: computed(() => currentPage.value),
     profileDetails,

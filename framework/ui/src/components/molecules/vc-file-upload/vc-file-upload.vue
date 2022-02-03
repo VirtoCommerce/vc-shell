@@ -15,8 +15,8 @@
     @dragover.stop.prevent
     @dragenter.stop.prevent
     @dragleave.stop.prevent
-    v-loading="loading"
   >
+    <vc-loading :active="loading"></vc-loading>
     <vc-icon
       class="vc-file-upload__icon"
       icon="fas fa-cloud-upload-alt"

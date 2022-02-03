@@ -221,7 +221,7 @@
 
                     <!-- Price remove button -->
                     <div
-                      v-if="!readonly"
+                      v-if="!readonly && offerDetails.prices.length > 1"
                       style="flex-basis: 20px"
                       :class="{
                         'offer-details__pricing-delete-btn': $isMobile.value,
@@ -259,7 +259,6 @@ import {
   defineComponent,
   ref,
   onMounted,
-  reactive,
   onBeforeUpdate,
   nextTick,
   unref,
@@ -320,6 +319,7 @@ export default defineComponent({
         await loadOffer({ id: props.param });
       } else {
         offerDetails.currency = "USD";
+        addPrice();
       }
       if (
         offer.value.productId ||
@@ -378,6 +378,14 @@ export default defineComponent({
       });
     }
 
+    function addPrice() {
+      if (!offerDetails.prices) {
+        offerDetails.prices = [];
+      }
+      offerDetails.prices.push(new OfferPrice());
+      scrollToLastPrice();
+    }
+
     return {
       offer,
       loading,
@@ -397,25 +405,15 @@ export default defineComponent({
         { title: "CNY", value: "CNY" },
       ],
 
+      addPrice,
+
       // Process product dropdown search
       onProductSearch: async (value: string) => {
         products.value = await fetchProducts(value);
       },
 
-      addPrice() {
-        if (!offerDetails.prices) {
-          offerDetails.prices = [];
-        }
-        offerDetails.prices.push(new OfferPrice());
-        scrollToLastPrice();
-      },
-
       removePrice(idx: number) {
-        if (
-          confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))))
-        ) {
-          offerDetails.prices.splice(idx, 1);
-        }
+        offerDetails.prices.splice(idx, 1);
       },
 
       setPriceRefs(el: HTMLDivElement) {

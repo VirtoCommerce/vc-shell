@@ -79,6 +79,8 @@
               :item="item"
               :actionBuilder="itemActionBuilder"
               @click="$emit('itemClick', item)"
+              @swipeStart="handleSwipe"
+              :swipingItem="mobileSwipeItem"
             >
               <slot name="mobile-item" :item="item"></slot>
             </vc-table-mobile-item>
@@ -471,6 +473,7 @@ export default defineComponent({
     "search:change",
     "filter:apply",
     "filter:reset",
+    "itemClick",
     "headerClick",
   ],
 
@@ -482,6 +485,7 @@ export default defineComponent({
     const actionToggleRefs = ref<HTMLDivElement[]>([]);
     const tooltipRefs = ref<HTMLDivElement[]>([]);
     const itemActions = ref<IActionBuilderResult[]>([]);
+    const mobileSwipeItem = ref<string>();
 
     onBeforeUpdate(() => {
       actionToggleRefs.value = [];
@@ -568,6 +572,10 @@ export default defineComponent({
       tooltip.value?.destroy();
     }
 
+    function handleSwipe(id: string) {
+      mobileSwipeItem.value = id;
+    }
+
     return {
       sortDirection,
       sortField,
@@ -576,6 +584,7 @@ export default defineComponent({
       selectedRow,
       itemActions,
       tooltip,
+      mobileSwipeItem,
       setTooltipRefs,
       setActionToggleRefs,
       processHeaderCheckbox,
@@ -583,6 +592,7 @@ export default defineComponent({
       showActions,
       closeActions,
       calculateActions,
+      handleSwipe,
     };
   },
 });

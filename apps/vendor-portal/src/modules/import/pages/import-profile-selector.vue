@@ -16,14 +16,25 @@
           :slides="importProfiles"
         >
           <template v-slot="{ slide }">
-            <vc-button
-              class="import__widget"
-              @click="openImporter(slide.id)"
-              icon="fas fa-file-csv"
-              variant="widget"
-            >
-              {{ slide.name }}</vc-button
-            >
+            <div class="import__widget-wrapper">
+              <vc-status
+                variant="success"
+                :outline="false"
+                class="import__widget-progress"
+                v-if="slide.inProgress"
+                >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</vc-status
+              >
+              <vc-button
+                class="import__widget"
+                @click="openImporter(slide.id)"
+                icon="fas fa-file-csv"
+                variant="widget"
+                :selected="selectedProfileId === slide.id"
+              >
+                {{ slide.name }}
+                <vc-hint>{{ slide.dataImporterType }}</vc-hint>
+              </vc-button>
+            </div>
           </template>
         </vc-slider>
       </div>
@@ -39,6 +50,11 @@
             :items="importHistory"
             :header="false"
             @itemClick="onItemClick"
+            :selectedItemId="selectedItemId"
+            :totalCount="totalHistoryCount"
+            :pages="historyPages"
+            :currentPage="currentPage"
+            @paginationClick="onPaginationClick"
           >
             <!-- Override name column template -->
             <template v-slot:item_name="itemData">
@@ -60,7 +76,7 @@ import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportPushNotification } from "../../../api_client";
+import { ImportRunHistory } from "../../../api_client";
 
 export default defineComponent({
   url: "import",
@@ -90,14 +106,17 @@ export default defineComponent({
     const { t } = useI18n();
     const {
       importHistory,
-      importStatus,
+      historyPages,
+      totalHistoryCount,
       importProfiles,
       loading,
-      fetchDataImporters,
+      currentPage,
       fetchImportHistory,
       fetchImportProfiles,
     } = useImport();
     const bladeWidth = ref(50);
+    const selectedProfileId = ref();
+    const selectedItemId = ref();
 
     const bladeToolbar = ref<IBladeToolbar[]>([
       {
@@ -123,19 +142,24 @@ export default defineComponent({
     ]);
     const columns = ref<ITableColumns[]>([
       {
-        id: "jobId", // temp
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.NAME")),
+        id: "profileName", // temp
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
         alwaysVisible: true,
       },
       {
-        id: "created",
+        id: "createdBy",
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
+        width: 147,
+      },
+      {
+        id: "createdDate",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
         width: 147,
         type: "date",
         format: "L LT",
       },
       {
-        id: "errorCount",
+        id: "errorsCount",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
         width: 118,
         sortable: true,
@@ -144,12 +168,22 @@ export default defineComponent({
 
     onMounted(async () => {
       await reload();
+      if (props.param) {
+        selectedProfileId.value = props.param;
+      }
+      if (props.options && props.options.importJobId) {
+        const historyItem = importHistory.value.find(
+          (x) => x.jobId === props.options.importJobId
+        );
+        if (historyItem) {
+          selectedItemId.value = historyItem.id;
+        }
+      }
     });
 
     async function reload() {
       await fetchImportHistory();
       await fetchImportProfiles();
-      await fetchDataImporters();
     }
 
     function newProfile() {
@@ -160,18 +194,48 @@ export default defineComponent({
     }
 
     function openImporter(profileId: string) {
-      bladeWidth.value = 30;
+      bladeWidth.value = 50;
+
+      const profile = importProfiles.value.find(
+        (profile) => profile.id === profileId
+      );
+
       emit("page:open", {
         component: ImportNew,
         param: profileId,
+        componentOptions: {
+          importJobId:
+            profile && profile.inProgress ? profile.jobId : undefined,
+        },
+        onOpen() {
+          selectedProfileId.value = profileId;
+        },
+        onClose() {
+          selectedProfileId.value = undefined;
+        },
       });
     }
 
-    function onItemClick(item: ImportPushNotification) {
-      bladeWidth.value = 30;
+    function onItemClick(item: ImportRunHistory) {
+      bladeWidth.value = 50;
       emit("page:open", {
         component: ImportNew,
-        param: item.jobId,
+        param: item.profileId,
+        componentOptions: {
+          importJobId: item.jobId,
+        },
+        onOpen() {
+          selectedItemId.value = item.id;
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
+      });
+    }
+
+    async function onPaginationClick(page: number) {
+      await fetchImportHistory({
+        skip: (page - 1) * 15,
       });
     }
 
@@ -182,12 +246,15 @@ export default defineComponent({
       importHistory,
       bladeWidth,
       importProfiles,
-      importStarted: computed(
-        () => importStatus.value && importStatus.value.jobId
-      ),
+      selectedProfileId,
+      selectedItemId,
+      historyPages,
+      totalHistoryCount,
+      currentPage,
       openImporter,
       onItemClick,
       reload,
+      onPaginationClick,
       loading,
     };
   },
@@ -203,6 +270,16 @@ export default defineComponent({
 
   &__widget {
     width: max-content;
+  }
+
+  &__widget-wrapper {
+    position: relative;
+  }
+
+  &__widget-progress {
+    position: absolute;
+    right: 0;
+    top: -10px;
   }
 }
 </style>

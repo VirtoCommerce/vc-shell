@@ -125,7 +125,8 @@
     },
     "NOTIFICATIONS": {
       "EMPTY": "No notifications yet",
-      "ERRORS": "Errors"
+      "ERRORS": "Errors",
+      "PROFILE": "Profile:"
     },
     "DASHBOARD": {
       "TITLE": "Dashboard",

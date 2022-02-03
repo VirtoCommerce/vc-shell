@@ -1,7 +1,7 @@
 <template>
   <vc-blade
-    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE')"
-    width="70%"
+    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE')"
+    width="50%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
@@ -37,11 +37,17 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{ $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.NOT_FOUND") }}
+            {{
+              $t(
+                "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.NOT_FOUND"
+              )
+            }}
           </div>
           <vc-button @click="resetSearch">
             {{
-              $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.RESET_SEARCH")
+              $t(
+                "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.RESET_SEARCH"
+              )
             }}</vc-button
           >
         </div>
@@ -59,10 +65,12 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{ $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.IS_EMPTY") }}
+            {{
+              $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.IS_EMPTY")
+            }}
           </div>
           <vc-button>{{
-            $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.ADD_ITEM")
+            $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.ADD_ITEM")
           }}</vc-button>
         </div>
       </template>
@@ -88,7 +96,7 @@
               <div class="vc-ellipsis vc-flex-grow_2">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -98,7 +106,7 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -118,7 +126,7 @@
               <div class="vc-ellipsis vc-flex-grow_2">
                 <vc-hint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
                   )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -127,7 +135,9 @@
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
                 <vc-hint>{{
-                  $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID")
+                  $t(
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"
+                  )
                 }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.id }}
@@ -148,9 +158,10 @@ import { IBladeToolbar, ITableColumns } from "../../../../types";
 import moment from "moment";
 import ContentItemEdit from "./content-item-edit.vue";
 import { useContent } from "../../composables";
+import { ContentItems } from "../index";
 
 export default defineComponent({
-  url: "content-items",
+  url: "content-items-list",
   props: {
     expanded: {
       type: Boolean,
@@ -183,7 +194,7 @@ export default defineComponent({
       currentPage,
       searchQuery,
       loadContentItems,
-    } = useContent({ responseGroup: "18" });
+    } = useContent({ folderId: "ContentItem", responseGroup: "18" });
     const searchValue = ref();
     const { debounce } = useFunctions();
     const sort = ref("startDate:DESC");
@@ -208,14 +219,16 @@ export default defineComponent({
     const columns = ref<ITableColumns[]>([
       {
         id: "name",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.NAME"),
+        title: t(
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.NAME"
+        ),
         alwaysVisible: true,
         sortable: true,
       },
       {
         id: "createdDate",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
         ),
         sortable: true,
         alwaysVisible: true,
@@ -226,20 +239,24 @@ export default defineComponent({
       {
         id: "description",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
         ),
         width: 150,
         sortable: true,
       },
       {
         id: "path",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"),
+        title: t(
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
+        ),
         width: 150,
         sortable: true,
       },
       {
         id: "id",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID"),
+        title: t(
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"
+        ),
         sortable: true,
         width: 300,
       },
@@ -250,12 +267,6 @@ export default defineComponent({
     });
 
     onMounted(async () => {
-      if (props.param) {
-        return await loadContentItems({
-          sort: sort.value,
-          folderId: props.param,
-        });
-      }
       await loadContentItems({ sort: sort.value });
     });
 
@@ -298,7 +309,7 @@ export default defineComponent({
 
     const onItemClick = (item: { id: string }) => {
       emit("page:open", {
-        component: ContentItemEdit,
+        component: ContentItems,
         param: item.id,
         onOpen() {
           selectedItemId.value = item.id;
@@ -310,7 +321,7 @@ export default defineComponent({
     };
 
     return {
-      title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE"),
+      title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE"),
       bladeToolbar,
       loading,
       columns,

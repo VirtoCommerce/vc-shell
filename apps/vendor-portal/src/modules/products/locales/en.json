@@ -81,6 +81,7 @@
           "REVERT": "Revert staged changes",
           "APPROVE": "Approve (test only)"
         },
+        "DECLINE_REASON": "Decline reason",
         "FIELDS": {
           "TITLE": "Properties",
           "NAME": {

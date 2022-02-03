@@ -1,7 +1,11 @@
 <template>
   <div
     class="vc-status"
-    :class="[`vc-status_${variant}`, { 'vc-status_outline': outline }]"
+    :class="[
+      `vc-status_${variant}`,
+      { 'vc-status_outline': outline },
+      { 'vc-status_extended': extend },
+    ]"
   >
     <slot></slot>
   </div>
@@ -17,12 +21,17 @@ export default defineComponent({
     variant: {
       type: String,
       default: "info",
-      enum: ["info", "warning", "danger", "success"],
+      enum: ["info", "warning", "danger", "success", "light-danger"],
     },
 
     outline: {
       type: Boolean,
       default: true,
+    },
+
+    extend: {
+      type: Boolean,
+      default: false,
     },
   },
 });
@@ -31,11 +40,13 @@ export default defineComponent({
 <style lang="less">
 :root {
   --status-padding: 4px 14px;
+  --status-padding-extended: 12px;
 
   --status-font-size: var(--font-size-m);
   --status-font-weight: var(--font-weight-normal);
 
   --status-border-radius: 2px;
+  --status-border-radius-extended: 4px;
   --status-border-width: 1px;
 }
 
@@ -93,6 +104,23 @@ export default defineComponent({
       border: 1px solid #87b563;
       background-color: white;
     }
+  }
+
+  &_light-danger {
+    color: #333333;
+    border: 1px solid #ffefef;
+    background-color: #ffefef;
+
+    &.vc-status_outline {
+      border: 1px solid #ffefef;
+      background-color: white;
+    }
+  }
+
+  &.vc-status_extended {
+    white-space: normal;
+    padding: var(--status-padding-extended);
+    border-radius: var(--status-border-radius-extended);
   }
 }
 </style>

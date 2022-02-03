@@ -433,6 +433,7 @@ export default defineComponent({
             selectedOfferIds.value.push(item.id);
           }
           removeOffers();
+          selectedOfferIds.value = [];
         },
       });
 

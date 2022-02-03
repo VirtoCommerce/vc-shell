@@ -192,10 +192,10 @@ import {
 } from "../../../types";
 import useImport from "../composables/useImport";
 import { ImportDataPreview } from "../../../api_client";
-import ImportPopup from "../components/import-popup.vue";
+import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
-import ImportUploadStatus from "../components/import-upload-status.vue";
+import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 
 interface IImportBadges {
   id: string;

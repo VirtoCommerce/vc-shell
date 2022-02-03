@@ -111,13 +111,13 @@
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
-import importConfirmationPopup from "../components/import-confirmation-popup.vue";
+import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { IDataImporter, ObjectSettingEntry } from "../../../api_client";
 import { useForm } from "@virtoshell/ui";
 
 export default defineComponent({
-  components: { importConfirmationPopup },
+  components: { ImportConfirmationPopup },
   url: "import-profile-details",
   props: {
     expanded: {

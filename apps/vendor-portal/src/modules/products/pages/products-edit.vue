@@ -19,14 +19,28 @@
         class="product-details__inner vc-flex vc-flex-grow_1"
       >
         <div class="product-details__content vc-flex-grow_1">
-          <vc-status
-            :outline="false"
-            variant="danger"
-            class="vc-fill_width"
-            v-if="statusText"
-            >{{ statusText }}</vc-status
-          >
           <div class="vc-padding_l">
+            <vc-status
+              :outline="false"
+              :extend="true"
+              variant="light-danger"
+              class="vc-fill_width vc-margin-bottom_xl"
+              v-if="statusText"
+            >
+              <div class="vc-flex vc-flex-row vc-flex-align_center">
+                <vc-icon
+                  icon="fas fa-exclamation-circle"
+                  class="product-details__decline-icon vc-margin-right_m"
+                  size="xxl"
+                ></vc-icon>
+                <div>
+                  <div class="vc-font-weight_bold">
+                    {{ $t("PRODUCTS.PAGES.DETAILS.DECLINE_REASON") }}
+                  </div>
+                  <div>{{ statusText }}</div>
+                </div>
+              </div>
+            </vc-status>
             <vc-form>
               <vc-input
                 class="vc-margin-bottom_l"
@@ -541,6 +555,10 @@ export default defineComponent({
   &__content {
     border-right: 1px solid #eaedf3;
     overflow: hidden;
+  }
+
+  &__decline-icon {
+    color: #ff4a4a;
   }
 
   .vc-app_phone &__inner {

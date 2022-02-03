@@ -473,6 +473,8 @@ export default defineComponent({
     "search:change",
     "filter:apply",
     "filter:reset",
+    "itemClick",
+    "headerClick",
   ],
 
   setup(props, { emit }) {

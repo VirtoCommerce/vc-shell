@@ -47,7 +47,15 @@
                   >
                     {{ item.title }}
                   </p>
-                  <vc-hint>{{ item.description }}</vc-hint>
+                  <vc-hint
+                    class="vc-margin-bottom_xs"
+                    v-if="item.description"
+                    >{{ item.description }}</vc-hint
+                  >
+                  <vc-hint class="vc-margin-bottom_xs" v-if="item.profileName"
+                    >{{ $t("SHELL.NOTIFICATIONS.PROFILE") }}
+                    <b>{{ item.profileName }}</b></vc-hint
+                  >
                   <div v-if="item.errors && item.errors.length">
                     <vc-hint class="notification-dropdown__error">
                       {{ $t("SHELL.NOTIFICATIONS.ERRORS") }}:
@@ -105,6 +113,7 @@ interface INotificationParams
     time: string;
     color: string;
   };
+  profileName?: string;
 }
 
 export default defineComponent({

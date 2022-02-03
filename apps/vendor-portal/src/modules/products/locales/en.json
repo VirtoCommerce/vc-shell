@@ -43,7 +43,8 @@
           },
           "CREATED_DATE": {
             "TITLE": "Created date",
-            "START_DATE": "Start date"
+            "START_DATE": "Start date",
+            "END_DATE": "End date"
           },
           "RESET_FILTERS": "Reset filters",
           "APPLY": "Apply"

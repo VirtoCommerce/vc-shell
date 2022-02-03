@@ -8,23 +8,30 @@ import {
 import { useLogger, useUser } from "@virtoshell/core";
 import { computed, Ref, ref } from "vue";
 
-export interface IUseContentItems {
+export interface IUseContent {
   readonly contentItems: Ref<DynamicContentListEntry[]>;
   readonly loading: Ref<boolean>;
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
   readonly currentPage: Ref<number>;
-  searchQuery: Ref<IDynamicContentItemSearchCriteria>;
+  readonly searchQuery: Ref<IDynamicContentItemSearchCriteria>;
   loadContentItems(query?: IDynamicContentItemSearchCriteria);
 }
 
-export default (): IUseContentItems => {
+export interface IUseContentOptions {
+  folderId?: string;
+  responseGroup?: string;
+}
+
+export default (options?: IUseContentOptions): IUseContent => {
   const logger = useLogger();
   const searchResult = ref<DynamicContentListEntrySearchResult>();
   const loading = ref(false);
   const currentPage = ref(1);
   const searchQuery = ref<IDynamicContentItemSearchCriteria>({
     take: 20,
+    folderId: options?.folderId,
+    responseGroup: options?.responseGroup,
   });
 
   async function getApiClient() {
@@ -61,7 +68,7 @@ export default (): IUseContentItems => {
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / 20)),
     currentPage: computed(() => currentPage.value),
-    searchQuery,
+    searchQuery: computed(() => searchQuery.value),
     loadContentItems,
   };
 };

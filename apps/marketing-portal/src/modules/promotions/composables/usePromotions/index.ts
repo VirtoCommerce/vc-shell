@@ -13,7 +13,7 @@ export interface IUsePromotions {
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
   readonly currentPage: Ref<number>;
-  searchQuery: Ref<IPromotionSearchCriteria>;
+  readonly searchQuery: Ref<IPromotionSearchCriteria>;
   loadPromotions(query?: IPromotionSearchCriteria): void;
 }
 
@@ -60,7 +60,7 @@ export default (): IUsePromotions => {
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / 20)),
     currentPage: computed(() => currentPage.value),
-    searchQuery,
+    searchQuery: computed(() => searchQuery.value),
     loadPromotions,
   };
 };

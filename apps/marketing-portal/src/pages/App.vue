@@ -73,7 +73,7 @@ import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import { PromotionsList } from "../modules/promotions";
 import {
-  ContentItems,
+  ContentItemsList,
   ContentPlaceholders,
   ContentPublishing,
 } from "../modules/dynamic-content";
@@ -188,7 +188,7 @@ export default defineComponent({
         children: [
           {
             title: t("SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_ITEMS.TITLE"),
-            component: shallowRef(ContentItems),
+            component: shallowRef(ContentItemsList),
           },
           {
             title: t(

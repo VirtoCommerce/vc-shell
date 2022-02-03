@@ -82,6 +82,7 @@
             vc-flex-justify_center
           "
         >
+          <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.NOT_FOUND") }}
           </div>

@@ -24,7 +24,21 @@
       @scroll:ptr="reload"
     >
       <!-- Filters -->
-      <template v-slot:filters> </template>
+      <template v-slot:filters>
+        <h2 v-if="$isMobile.value">
+          {{ $t("PROMOTIONS.PAGES.LIST.FILTERS.TITLE") }}
+        </h2>
+        <vc-container no-padding>
+          <vc-row>
+            <vc-col>
+              <div class="group-title">
+                {{ $t("PROMOTIONS.PAGES.LIST.FILTERS.START_DATE") }}
+              </div>
+            </vc-col>
+            <vc-col> </vc-col>
+          </vc-row>
+        </vc-container>
+      </template>
 
       <!-- Not found template -->
       <template v-slot:notfound>
@@ -195,7 +209,7 @@ export default defineComponent({
         title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.REFRESH"),
         icon: "fas fa-sync-alt",
         clickHandler() {
-          alert("reload");
+          reload();
         },
       },
       {
@@ -327,4 +341,11 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.group-title {
+  margin-bottom: var(--margin-l);
+  color: #a1c0d4;
+  font-weight: var(--font-weight-bold);
+  font-size: 17px;
+}
+</style>

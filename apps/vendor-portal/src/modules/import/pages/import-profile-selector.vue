@@ -21,7 +21,7 @@
                 variant="success"
                 :outline="false"
                 class="import__widget-progress"
-                v-if="profileInProgress(slide.id)"
+                v-if="slide.inProgress"
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</vc-status
               >
               <vc-button
@@ -72,7 +72,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n, useNotifications } from "@virtoshell/core";
+import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
@@ -114,7 +114,6 @@ export default defineComponent({
       fetchImportHistory,
       fetchImportProfiles,
     } = useImport();
-    const { notifications } = useNotifications();
     const bladeWidth = ref(50);
     const selectedProfileId = ref();
     const selectedItemId = ref();
@@ -197,16 +196,16 @@ export default defineComponent({
     function openImporter(profileId: string) {
       bladeWidth.value = 50;
 
-      const notification = profileNotification(profileId);
+      const profile = importProfiles.value.find(
+        (profile) => profile.id === profileId
+      );
 
       emit("page:open", {
         component: ImportNew,
         param: profileId,
         componentOptions: {
           importJobId:
-            notification && !notification.finished
-              ? notification.jobId
-              : undefined,
+            profile && profile.inProgress ? profile.jobId : undefined,
         },
         onOpen() {
           selectedProfileId.value = profileId;
@@ -240,18 +239,6 @@ export default defineComponent({
       });
     }
 
-    function profileNotification(profileId: string) {
-      return notifications.value.find(
-        (x: ImportPushNotification) => x.profileId === profileId
-      ) as ImportPushNotification;
-    }
-
-    function profileInProgress(profileId: string) {
-      const notification = profileNotification(profileId);
-
-      return notification && !notification.finished;
-    }
-
     return {
       title: computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE")),
       bladeToolbar,
@@ -264,7 +251,6 @@ export default defineComponent({
       historyPages,
       totalHistoryCount,
       currentPage,
-      profileInProgress,
       openImporter,
       onItemClick,
       reload,

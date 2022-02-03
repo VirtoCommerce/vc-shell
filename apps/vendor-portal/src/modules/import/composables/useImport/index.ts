@@ -10,7 +10,6 @@ import {
   RunImportCommand,
   SearchImportProfilesHistoryQuery,
   SearchImportProfilesQuery,
-  SearchImportProfilesResult,
   SearchImportProfilesHistoryResult,
   UpdateProfileCommand,
   VcmpSellerImportClient,
@@ -40,8 +39,14 @@ export interface IUploadedFile {
 }
 
 export type ExtProfile = ImportProfile & {
-  importer: IDataImporter;
+  importer?: IDataImporter;
+  inProgress?: boolean;
+  jobId?: string;
 };
+
+export interface ISearchProfile extends ISearchImportProfilesHistoryQuery {
+  results?: ExtProfile[];
+}
 
 interface IUseImport {
   readonly loading: Ref<boolean>;
@@ -50,7 +55,7 @@ interface IUseImport {
   readonly isValid: Ref<boolean>;
   readonly importHistory: Ref<ImportRunHistory[]>;
   readonly dataImporters: Ref<IDataImporter[]>;
-  readonly importProfiles: Ref<ImportProfile[]>;
+  readonly importProfiles: Ref<ExtProfile[]>;
   readonly profile: Ref<ExtProfile>;
   readonly modified: Ref<boolean>;
   readonly totalHistoryCount: Ref<number>;
@@ -75,12 +80,12 @@ interface IUseImport {
 
 export default (): IUseImport => {
   const logger = useLogger();
-  const { notifications } = useNotifications();
+  const { popupNotifications } = useNotifications();
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
   const historySearchResult = ref<SearchImportProfilesHistoryResult>();
-  const profileSearchResult = ref<SearchImportProfilesResult>();
+  const profileSearchResult = ref<ISearchProfile>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
   const profileDetails = reactive<ImportProfile>(new ImportProfile());
   let profileDetailsCopy: ImportProfile;
@@ -92,7 +97,7 @@ export default (): IUseImport => {
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
-    [() => notifications, () => importStarted],
+    [() => popupNotifications, () => importStarted],
     ([newNotifications, isStarted]) => {
       if (isStarted.value && importStatus.value) {
         const notification = newNotifications.value.find(
@@ -102,6 +107,26 @@ export default (): IUseImport => {
         if (notification) {
           updateStatus(notification);
         }
+      }
+
+      if (
+        profileSearchResult.value &&
+        profileSearchResult.value.results &&
+        profileSearchResult.value.results.length
+      ) {
+        profileSearchResult.value.results =
+          profileSearchResult.value.results.map((res) => {
+            const notification = newNotifications.value.find(
+              (x: ImportPushNotification) => x.profileId === res.id
+            ) as ImportPushNotification;
+
+            if (notification) {
+              res.inProgress = !notification.finished;
+              res.jobId = notification.jobId;
+            }
+
+            return res;
+          });
       }
     },
     { deep: true, immediate: true }
@@ -180,9 +205,9 @@ export default (): IUseImport => {
     try {
       loading.value = true;
       const profileQuery = new SearchImportProfilesQuery();
-      profileSearchResult.value = await client.searchImportProfiles(
+      profileSearchResult.value = (await client.searchImportProfiles(
         profileQuery
-      );
+      )) as ISearchProfile;
     } catch (e) {
       logger.error(e);
       throw e;

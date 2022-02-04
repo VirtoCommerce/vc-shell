@@ -33,22 +33,24 @@
 
       <!-- Show scrollable area with menu items -->
       <vc-container :noPadding="true" class="vc-app-menu__content">
-        <template v-for="(item, index) in items" :key="index">
-          <vc-app-menu-item
-            v-if="item.isVisible === undefined || item.isVisible"
-            v-bind="item"
-            :isActive="item === activeItem"
-            :activeChildItem="activeChildItem"
-            @click="
-              $emit('item:click', item);
-              isMobileVisible = false;
-            "
-            @child:click="
-              $emit('item:click', $event);
-              isMobileVisible = false;
-            "
-          />
-        </template>
+        <div class="vc-flex vc-flex-column vc-app-menu__content-inner">
+          <template v-for="(item, index) in items" :key="index">
+            <vc-app-menu-item
+              v-if="item.isVisible === undefined || item.isVisible"
+              v-bind="item"
+              :isActive="item === activeItem"
+              :activeChildItem="activeChildItem"
+              @click="
+                $emit('item:click', item);
+                isMobileVisible = false;
+              "
+              @child:click="
+                $emit('item:click', $event);
+                isMobileVisible = false;
+              "
+            />
+          </template>
+        </div>
       </vc-container>
     </div>
   </div>
@@ -117,6 +119,10 @@ export default defineComponent({
 
   &__content {
     flex-grow: 1;
+  }
+
+  &__content-inner {
+    gap: 5px;
   }
 
   &_mobile {

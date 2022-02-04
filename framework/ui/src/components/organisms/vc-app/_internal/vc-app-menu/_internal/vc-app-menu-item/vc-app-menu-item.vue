@@ -146,11 +146,11 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --app-menu-item-height: 48px;
+  --app-menu-item-height: 38px;
   --app-menu-item-icon-width: 20px;
   --app-menu-item-icon-color: #337599;
   --app-menu-item-icon-color-active: #ffffff;
-  --app-menu-item-handler-width: 20px;
+  --app-menu-item-handler-width: 10px;
   --app-menu-item-background-color-hover: #337599;
   --app-menu-item-hover-radius: 4px;
   --app-menu-item-border-bottom: none;

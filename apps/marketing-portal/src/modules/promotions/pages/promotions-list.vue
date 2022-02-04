@@ -288,6 +288,7 @@ export default defineComponent({
         title: t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.IS_ACTIVE"),
         width: 80,
         sortable: true,
+        align: "center",
         type: "status-icon",
       },
       {
@@ -296,6 +297,7 @@ export default defineComponent({
         width: 80,
         type: "status-icon",
         sortable: true,
+        align: "center",
       },
       {
         id: "modifiedDate",

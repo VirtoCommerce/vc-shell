@@ -1,8 +1,7 @@
 <template>
   <div
-    class="vc-app-menu"
+    class="vc-app-menu vc-padding-top_l"
     :class="{
-      'vc-app-menu_collapsed': $isDesktop.value && isCollapsed,
       'vc-app-menu_mobile': $isMobile.value,
       'vc-app-menu_mobile-visible': isMobileVisible,
     }"
@@ -32,40 +31,33 @@
         ></vc-icon>
       </div>
 
-      <!-- Show menu collapse toggler on desktop devices -->
-      <div
-        v-if="$isDesktop.value"
-        class="vc-app-menu__toggle"
-        @click="isCollapsed = !isCollapsed"
-      >
-        <vc-app-menu-item sticky="sticky" icon="fas fa-bars"></vc-app-menu-item>
-      </div>
-
       <!-- Show scrollable area with menu items -->
       <vc-container :noPadding="true" class="vc-app-menu__content">
-        <template v-for="(item, index) in items" :key="index">
-          <vc-app-menu-item
-            v-if="item.isVisible === undefined || item.isVisible"
-            v-bind="item"
-            :isActive="item === activeItem"
-            :activeChildItem="activeChildItem"
-            @click="
-              $emit('item:click', item);
-              isMobileVisible = false;
-            "
-            @child:click="
-              $emit('item:click', $event);
-              isMobileVisible = false;
-            "
-          />
-        </template>
+        <div class="vc-flex vc-flex-column vc-app-menu__content-inner">
+          <template v-for="(item, index) in items" :key="index">
+            <vc-app-menu-item
+              v-if="item.isVisible === undefined || item.isVisible"
+              v-bind="item"
+              :isActive="item === activeItem"
+              :activeChildItem="activeChildItem"
+              @click="
+                $emit('item:click', item);
+                isMobileVisible = false;
+              "
+              @child:click="
+                $emit('item:click', $event);
+                isMobileVisible = false;
+              "
+            />
+          </template>
+        </div>
       </vc-container>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
 import { IMenuItems } from "../../../../../typings";
@@ -91,36 +83,15 @@ export default defineComponent({
       type: Object as PropType<IMenuItems>,
       default: undefined,
     },
-
-    // LocalStorage field name for menu collapsed state
-    storageCollapsedProperty: {
-      type: String,
-      default: "menuCollapsed",
-    },
   },
 
   emits: ["item:click"],
 
-  setup(props) {
+  setup() {
     const isMobileVisible = ref(false);
-
-    let isCollapsedInitial = false;
-    try {
-      isCollapsedInitial = JSON.parse(
-        localStorage.getItem(props.storageCollapsedProperty) || "false"
-      );
-    } catch (err) {
-      isCollapsedInitial = false;
-    }
-    const isCollapsed = ref(isCollapsedInitial);
-
-    watch(isCollapsed, (value) => {
-      localStorage.setItem(props.storageCollapsedProperty, `${value}`);
-    });
 
     return {
       isMobileVisible,
-      isCollapsed,
     };
   },
 });
@@ -128,7 +99,7 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --app-menu-width: 168px;
+  --app-menu-width: 230px;
   --app-menu-width-collapsed: 60px;
   --app-menu-background-color: #ffffff;
 }
@@ -148,6 +119,10 @@ export default defineComponent({
 
   &__content {
     flex-grow: 1;
+  }
+
+  &__content-inner {
+    gap: 5px;
   }
 
   &_mobile {
@@ -178,7 +153,6 @@ export default defineComponent({
   &__inner {
     display: flex;
     flex-direction: column;
-    background: var(--app-menu-background-color);
     height: 100%;
   }
 
@@ -190,6 +164,7 @@ export default defineComponent({
     bottom: 0;
     width: 300px;
     max-width: 60%;
+    background: var(--app-menu-background-color);
   }
 
   &__mobile-close {

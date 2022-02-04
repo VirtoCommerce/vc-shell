@@ -32,6 +32,7 @@ interface ITableColumns {
   sortDirection?: number;
   class?: string;
   format?: string;
+  align?: string;
 }
 
 interface IActionBuilderResult {

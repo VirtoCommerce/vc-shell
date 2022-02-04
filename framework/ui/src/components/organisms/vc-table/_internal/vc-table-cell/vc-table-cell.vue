@@ -106,5 +106,10 @@ export default defineComponent({
       font-size: 0.75em;
     }
   }
+
+  &_status-icon {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

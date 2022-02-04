@@ -572,10 +572,6 @@ export default defineComponent({
       tooltip.value?.destroy();
     }
 
-    function handleSwipe(id: string) {
-      mobileSwipeItem.value = id;
-    }
-
     return {
       sortDirection,
       sortField,
@@ -584,7 +580,6 @@ export default defineComponent({
       selectedRow,
       itemActions,
       tooltip,
-      mobileSwipeItem,
       setTooltipRefs,
       setActionToggleRefs,
       processHeaderCheckbox,
@@ -592,7 +587,6 @@ export default defineComponent({
       showActions,
       closeActions,
       calculateActions,
-      handleSwipe,
     };
   },
 });

@@ -42,7 +42,7 @@
           <!-- Init main menu -->
           <vc-app-menu
             ref="menu"
-            class="vc-flex-shrink_0"
+            class="vc-flex-shrink_0 vc-padding-left_l vc-padding-right_l"
             :items="menuItems"
             :activeItem="activeMenuItem"
             :activeChildItem="activeChildMenuItem"
@@ -435,7 +435,8 @@ export default defineComponent({
 
 <style lang="less">
 :root {
-  --app-background: #eff2fa;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
+    linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
 }
 
 .vc-app {

@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.115 (2022-02-04)
+
+
+### Features
+
+* margins fix, centered status ([25aae60](https://github.com/VirtoCommerce/platform-manager-sdk/commit/25aae60746a03edafbdf7258b4bc3a5949c80f57))
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+
+
+
+
+
 ## 0.0.114 (2022-02-03)
 
 

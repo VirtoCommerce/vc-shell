@@ -388,6 +388,14 @@ export default defineComponent({
         type: "date-ago",
       },
       {
+        id: "isPublished",
+        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
+        type: "status-icon",
+        width: 180,
+        align: "center",
+        sortable: true,
+      },
+      {
         id: "status",
         title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
         width: 180,

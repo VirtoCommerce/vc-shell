@@ -25,8 +25,9 @@
             "CREATED": "Created"
           },
           "ACTIONS": {
-            "CONFIRM": "Confirm",
-            "DECLINE": "Decline"
+            "ACCEPT": "Accept",
+            "CANCEL": "Cancel",
+            "SHIP": "Ship"
           }
         },
         "FILTERS": {
@@ -34,6 +35,9 @@
           "STATUS_FILTER": "Status filter",
           "UNPAID": "Unpaid",
           "PAID": "Paid",
+          "ACCEPTED": "Accepted",
+          "SHIPPED": "Shipped",
+          "CANCELLED": "Cancelled",
           "ORDER_DATE": "Order date",
           "START_DATE": "Start date",
           "END_DATE": "End date",

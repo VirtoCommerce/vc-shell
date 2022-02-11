@@ -517,6 +517,7 @@ export default defineComponent({
       {
         id: "number",
         title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
+        width: 80,
       },
       {
         id: "items",

@@ -253,9 +253,13 @@ export default defineComponent({
             }
           }
         },
-        disabled: !(
-          (order.value.status === "Paid" || order.value.status === "Unpaid") &&
-          props.param
+        disabled: computed(
+          () =>
+            !(
+              (order.value.status === "Paid" ||
+                order.value.status === "Unpaid") &&
+              props.param
+            )
         ),
       },
       {
@@ -276,7 +280,9 @@ export default defineComponent({
             }
           }
         },
-        disabled: !!(order.value.status === "Cancelled" && props.param),
+        disabled: computed(
+          () => !!(order.value.status === "Cancelled" && props.param)
+        ),
       },
       {
         title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.SHIP")),
@@ -296,7 +302,9 @@ export default defineComponent({
             }
           }
         },
-        disabled: !(order.value.status === "Accepted" && props.param),
+        disabled: computed(
+          () => !(order.value.status === "Accepted" && props.param)
+        ),
       },
     ]);
 

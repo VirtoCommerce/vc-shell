@@ -70,10 +70,6 @@ export default defineComponent({
       flex: 0 0 auto;
       flex-direction: inherit;
       justify-content: center;
-
-      .vc-app_phone & {
-        align-items: stretch;
-      }
     }
 
     .vc-popup__inner {

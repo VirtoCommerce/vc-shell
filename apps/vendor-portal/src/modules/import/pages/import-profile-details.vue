@@ -157,7 +157,6 @@ export default defineComponent({
       setImporter,
     } = useImport();
     const { validate } = useForm({ validateOnMount: false });
-    const importer = ref<IDataImporter>();
     const showConfirmation = ref(false);
     const bladeToolbar = ref<IBladeToolbar[]>([
       {
@@ -199,6 +198,7 @@ export default defineComponent({
         clickHandler() {
           emit("page:close");
         },
+        isVisible: computed(() => !props.param),
       },
       {
         id: "delete",
@@ -212,7 +212,14 @@ export default defineComponent({
     ]);
 
     const sampleTemplateUrl = computed(() => {
-      return importer.value ? importer.value.metadata.sampleCsvUrl : "#";
+      const importer = dataImporters.value.find(
+        (x) => x.typeName === profileDetails.typeName
+      );
+      return profile.value.importer
+        ? profile.value.importer.metadata.sampleCsvUrl
+        : importer
+        ? importer.metadata.sampleCsvUrl
+        : "#";
     });
 
     onMounted(async () => {

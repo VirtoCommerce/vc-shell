@@ -41,6 +41,14 @@
     flex-wrap: nowrap;
   }
 
+  &-gap {
+    each(range(4, 20), {
+      &_@{value} {
+        gap: @value * 1px;
+      }
+    });
+  }
+
   &-grow {
     each(range(0, 5), {
       &_@{value} {

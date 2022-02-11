@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    v-loading="loading"
+    v-loading="loading || !currentCategory"
     :title="param ? productDetails?.name : $t('PRODUCTS.PAGES.DETAILS.TITLE')"
     width="50%"
     :expanded="expanded"
@@ -80,7 +80,6 @@
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
                 v-if="product.id || currentCategory"
-                v-loading="!currentCategory"
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="vc-padding_l">
@@ -137,7 +136,7 @@
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
-                <div class="vc-padding_l">
+                <div class="vc-padding_s">
                   <vc-gallery
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
@@ -168,7 +167,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, unref } from "vue";
-import { useI18n, useUser } from "@virtoshell/core";
+import { useFunctions, useI18n, useUser } from "@virtoshell/core";
 import { useForm } from "@virtoshell/ui";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
@@ -232,6 +231,7 @@ export default defineComponent({
 
     const { searchOffers } = useOffers();
     const { getAccessToken } = useUser();
+    const { debounce } = useFunctions();
 
     const currentCategory = ref();
     const offersCount = ref(0);
@@ -405,6 +405,14 @@ export default defineComponent({
       if (response?.length) {
         const image = new Image(response[0]);
         image.createdDate = new Date();
+        if (productDetails.images && productDetails.images.length) {
+          const lastImageSortOrder =
+            productDetails.images[productDetails.images.length - 1].sortOrder;
+          image.sortOrder = lastImageSortOrder + 1;
+          console.log(lastImageSortOrder, image.sortOrder);
+        } else {
+          image.sortOrder = 0;
+        }
         productDetails.images.push(image);
       }
       files = null;
@@ -425,9 +433,13 @@ export default defineComponent({
     };
 
     const onGalleryImageRemove = (image: Image) => {
-      const imageIndex = productDetails.images.findIndex(
-        (img) => img.id === image.id
-      );
+      const imageIndex = productDetails.images.findIndex((img) => {
+        if (img.id && image.id) {
+          return img.id === image.id;
+        } else {
+          return img.url === image.url;
+        }
+      });
       productDetails.images.splice(imageIndex, 1);
     };
 
@@ -456,9 +468,9 @@ export default defineComponent({
       ),
       currentCategory,
       setCategory,
-      onCategoriesSearch: async (value: string) => {
+      onCategoriesSearch: debounce(async (value: string) => {
         categories.value = await fetchCategories(value);
-      },
+      }, 500),
       offersCount,
       categories,
       product: computed(() => (props.param ? product.value : productDetails)),

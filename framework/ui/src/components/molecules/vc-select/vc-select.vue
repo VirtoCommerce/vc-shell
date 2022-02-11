@@ -225,6 +225,7 @@ export default defineComponent({
       closeDropdown: () => {
         isOpened.value = false;
         popper.value?.destroy();
+        emit("search", "");
         emit("close");
       },
       toggleDropdown: () => {

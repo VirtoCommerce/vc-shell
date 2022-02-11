@@ -10,11 +10,7 @@
     <vc-container class="import">
       <!-- Import profile widgets-->
       <div class="vc-padding_m">
-        <vc-slider
-          :navigation="!expanded && importProfiles && importProfiles.length > 1"
-          :overflow="true"
-          :slides="importProfiles"
-        >
+        <vc-slider :navigation="true" :overflow="true" :slides="importProfiles">
           <template v-slot="{ slide }">
             <div class="import__widget-wrapper">
               <vc-status
@@ -38,33 +34,32 @@
           </template>
         </vc-slider>
       </div>
-      <vc-col class="vc-padding_m">
-        <vc-card
-          :fill="true"
-          :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
-          class="vc-flex import__archive"
+      <!--      <vc-col class="vc-padding_m">-->
+      <vc-card
+        :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
+        class="import__archive vc-margin_m"
+      >
+        <vc-table
+          :loading="loading"
+          :columns="columns"
+          :items="importHistory"
+          :header="false"
+          @itemClick="onItemClick"
+          :selectedItemId="selectedItemId"
+          :totalCount="totalHistoryCount"
+          :pages="historyPages"
+          :currentPage="currentPage"
+          @paginationClick="onPaginationClick"
         >
-          <vc-table
-            :loading="loading"
-            :columns="columns"
-            :items="importHistory"
-            :header="false"
-            @itemClick="onItemClick"
-            :selectedItemId="selectedItemId"
-            :totalCount="totalHistoryCount"
-            :pages="historyPages"
-            :currentPage="currentPage"
-            @paginationClick="onPaginationClick"
-          >
-            <!-- Override name column template -->
-            <template v-slot:item_name="itemData">
-              <div class="vc-flex vc-flex-column">
-                <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-              </div>
-            </template>
-          </vc-table>
-        </vc-card>
-      </vc-col>
+          <!-- Override name column template -->
+          <template v-slot:item_name="itemData">
+            <div class="vc-flex vc-flex-column">
+              <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+            </div>
+          </template>
+        </vc-table>
+      </vc-card>
+      <!--      </vc-col>-->
     </vc-container>
   </vc-blade>
 </template>
@@ -218,6 +213,7 @@ export default defineComponent({
 
     function onItemClick(item: ImportRunHistory) {
       bladeWidth.value = 50;
+      selectedProfileId.value = item.profileId;
       emit("page:open", {
         component: ImportNew,
         param: item.profileId,
@@ -280,6 +276,13 @@ export default defineComponent({
     position: absolute;
     right: 0;
     top: -10px;
+  }
+
+  &__archive {
+    & .vc-card__body {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 </style>

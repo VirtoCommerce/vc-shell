@@ -68,7 +68,6 @@
         class="vc-flex-grow_1"
         :usePtr="!!$attrs['onScroll:ptr']"
         @scroll:ptr="$emit('scroll:ptr')"
-        :scrolling="scrolling"
       >
         <!-- Mobile table view -->
         <template v-if="$isMobile.value && $slots['mobile-item']">
@@ -155,7 +154,8 @@
               :class="{
                 'vc-table__body-row_clickable': $attrs.onItemClick,
                 'vc-table__body-row_even': i % 2 === 1,
-                'vc-table__body-row_selected': selectedItemId === item.id,
+                'vc-table__body-row_selected':
+                  item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
               @mouseover="calculateActions(item)"
@@ -492,12 +492,16 @@ export default defineComponent({
       tooltipRefs.value = [];
     });
 
-    const sortDirection = computed(() =>
-      props.sort?.slice(0, 1) === "-" ? "DESC" : "ASC"
-    );
-    const sortField = computed(() =>
-      props.sort?.slice(0, 1) === "-" ? props.sort?.slice(1) : props.sort
-    );
+    const sortDirection = computed(() => {
+      const entry = props.sort?.split(":");
+      return entry && entry.length === 2 && entry[1];
+    });
+
+    const sortField = computed(() => {
+      const entry = props.sort?.split(":");
+      return entry && entry.length === 2 && entry[0];
+    });
+
     const headerCheckbox = computed(() =>
       Object.values(checkboxes.value).every((value) => value)
     );
@@ -572,6 +576,10 @@ export default defineComponent({
       tooltip.value?.destroy();
     }
 
+    function handleSwipe(id: string) {
+      mobileSwipeItem.value = id;
+    }
+
     return {
       sortDirection,
       sortField,
@@ -580,6 +588,7 @@ export default defineComponent({
       selectedRow,
       itemActions,
       tooltip,
+      mobileSwipeItem,
       setTooltipRefs,
       setActionToggleRefs,
       processHeaderCheckbox,
@@ -587,6 +596,7 @@ export default defineComponent({
       showActions,
       closeActions,
       calculateActions,
+      handleSwipe,
     };
   },
 });
@@ -635,6 +645,7 @@ export default defineComponent({
     &-row {
       height: 60px;
       background-color: #ffffff;
+      cursor: pointer;
 
       &_even {
         background-color: #f8f8f8;
@@ -651,6 +662,10 @@ export default defineComponent({
         &:hover {
           background-color: #eff7fc;
         }
+      }
+
+      &:hover {
+        background-color: #dfeef9;
       }
     }
 

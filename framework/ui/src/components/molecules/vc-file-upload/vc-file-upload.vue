@@ -26,7 +26,7 @@
     <div class="vc-file-upload__label vc-margin-top_l">
       <span>Drag and drop file here or</span>&nbsp;
       <br />
-      <vc-link @click="$refs.uploader.click()">browse your files</vc-link>
+      <vc-link @click="toggleUploader">browse your files</vc-link>
     </div>
 
     <input
@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "VcFileUpload",
@@ -66,7 +66,9 @@ export default defineComponent({
   emits: ["upload"],
 
   setup(_props, { emit }) {
+    const uploader = ref();
     const upload = (event: InputEvent) => {
+      console.log((event.target as HTMLInputElement).files);
       const target = event.target as HTMLInputElement;
       const fileList = target.files;
 
@@ -75,7 +77,14 @@ export default defineComponent({
       }
     };
 
+    function toggleUploader() {
+      uploader.value.value = "";
+      uploader.value.click();
+    }
+
     return {
+      uploader,
+      toggleUploader,
       upload,
 
       onDrop(event: DragEvent) {

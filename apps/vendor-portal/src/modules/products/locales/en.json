@@ -60,7 +60,8 @@
         },
         "MOBILE": {
           "EAN_GTIN": "EAN/GTIN",
-          "CREATED": "Created"
+          "CREATED": "Created",
+          "PUBLISHED": "Published"
         },
         "ACTIONS": {
           "UNPUBLISH": "Unpublish",

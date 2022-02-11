@@ -68,19 +68,13 @@
               vc-flex-justify_space-between
             "
           >
-            <div class="vc-ellipsis vc-flex-grow_2">
+            <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{ itemData.item.sku }}
               </div>
             </div>
             <div class="vc-ellipsis vc-flex-grow_2">
-              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.OFFER") }}</vc-hint>
-              <div class="vc-ellipsis vc-margin-top_xs">
-                {{ itemData.item.id }}
-              </div>
-            </div>
-            <div class="vc-ellipsis vc-flex-grow_1">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{ itemData.item.inStockQuantity }}
@@ -95,7 +89,7 @@
               vc-flex-justify_space-between
             "
           >
-            <div class="vc-ellipsis vc-flex-grow_2">
+            <div class="vc-ellipsis vc-flex-grow_2 vc-margin-right_s">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{
@@ -103,15 +97,13 @@
                 }}
               </div>
             </div>
-            <div class="vc-ellipsis vc-flex-grow_2">
+            <div class="vc-ellipsis vc-flex-grow_2 vc-margin-right_s">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
-                {{
-                  itemData.item.salePrice && itemData.item.salePrice.toFixed(2)
-                }}
+                {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
-            <div class="vc-ellipsis vc-flex-grow_1">
+            <div class="vc-ellipsis vc-flex-grow_2">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</vc-hint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{
@@ -371,7 +363,7 @@ export default defineComponent({
     };
 
     const onHeaderClick = (item: ITableColumns) => {
-      const sortBy = [":ASK", ":DESC", ""];
+      const sortBy = [":DESC", ":ASC", ""];
       if (item.sortable) {
         item.sortDirection = (item.sortDirection ?? 0) + 1;
         sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
@@ -391,11 +383,11 @@ export default defineComponent({
         skip: (page - 1) * searchQuery.value.take,
       });
     };
+
     const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
       selectedOfferIds.value = Object.entries(checkboxes)
         .filter(([id, isChecked]) => isChecked)
         .map(([id, isChecked]) => id);
-      console.log(selectedOfferIds.value);
     };
 
     const actionBuilder = (
@@ -455,6 +447,15 @@ export default defineComponent({
       }
     }
 
+    function handleSalePrice(price: number | undefined) {
+      if (!price) {
+        const emptyPrice = 0;
+        return emptyPrice.toFixed(2);
+      } else {
+        return price.toFixed(2);
+      }
+    }
+
     return {
       bladeToolbar,
       empty,
@@ -481,6 +482,7 @@ export default defineComponent({
       onHeaderClick,
       onPaginationClick,
       reload,
+      handleSalePrice,
       onSelectionChanged,
       title: computed(() => t("OFFERS.PAGES.LIST.TITLE")),
     };

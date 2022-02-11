@@ -16,7 +16,6 @@ About component.
       class="vc-flex-grow_1"
       :loading="loading"
       :expanded="expanded"
-      :multiselect="true"
       :columns="columns"
       :items="products"
       :itemActionBuilder="actionBuilder"
@@ -192,9 +191,22 @@ About component.
               {{ itemData.item.name }}
             </div>
             <vc-hint class="vc-margin-top_xs">{{ itemData.item.path }}</vc-hint>
+
             <div class="vc-margin-top_s vc-margin-bottom_m">
-              <mp-product-status :status="itemData.item.status" />
+              <vc-hint>{{
+                $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
+              }}</vc-hint>
+              <div class="vc-ellipsis vc-margin-top_xs">
+                <vc-status-icon
+                  :status="itemData.item.isPublished"
+                ></vc-status-icon>
+              </div>
+              <mp-product-status
+                class="vc-margin-top_m"
+                :status="itemData.item.status"
+              />
             </div>
+
             <div
               class="
                 vc-margin-top_m
@@ -203,7 +215,7 @@ About component.
                 vc-flex-justify_space-between
               "
             >
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
                 <vc-hint>{{
                   $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
                 }}</vc-hint>
@@ -213,7 +225,7 @@ About component.
                   }}
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
                 <vc-hint>{{
                   $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED")
                 }}</vc-hint>
@@ -357,7 +369,7 @@ export default defineComponent({
         id: "batchDelete",
         title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
         icon: "fas fa-trash",
-        disabled: true,
+        isVisible: false,
         async clickHandler() {
           logger.debug("Delete selected products");
         },
@@ -406,7 +418,6 @@ export default defineComponent({
         field: "productData.gtin",
         title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
         width: 180,
-        sortable: true,
         alwaysVisible: true,
       },
     ]);
@@ -425,7 +436,7 @@ export default defineComponent({
     };
 
     const onHeaderClick = (item: ITableColumns) => {
-      const sortBy = [":ASK", ":DESC", ""];
+      const sortBy = [":DESC", ":ASC", ""];
       if (item.sortable) {
         item.sortDirection = (item.sortDirection ?? 0) + 1;
         sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
@@ -445,7 +456,7 @@ export default defineComponent({
       const statuses =
         product.status?.split(",").map((item) => item.trim()) || [];
 
-      if (statuses.includes("Published")) {
+      /*if (statuses.includes("Published")) {
         result.push({
           icon: "fas fa-times",
           title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
@@ -471,9 +482,10 @@ export default defineComponent({
         variant: "danger",
         leftActions: true,
         clickHandler(item: ISellerProduct) {
-          alert("Delete " + item.id);
+          if (window.confirm("Delete " + item.id)) {
+          }
         },
-      });
+      });*/
 
       /*result.push(
         ...[

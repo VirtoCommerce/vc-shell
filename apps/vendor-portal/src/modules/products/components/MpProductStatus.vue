@@ -53,9 +53,12 @@ export default defineComponent({
     };
     return {
       statuses: computed(() =>
-        props.status.split(",").map(function (item) {
-          return item.trim();
-        })
+        props.status
+          .split(",")
+          .map((item) => {
+            return item.trim();
+          })
+          .filter((x) => x !== "Published")
       ),
       statusStyles,
       camelToSnake,

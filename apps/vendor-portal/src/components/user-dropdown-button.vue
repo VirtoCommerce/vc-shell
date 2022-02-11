@@ -1,9 +1,9 @@
 <template>
   <div
-    v-if="$isDesktop.value"
     class="user-dropdown-button"
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
+      'user-dropdown-button_no-pointer': $isMobile.value,
     }"
     @click="toggleAccountMenuVisible"
     v-click-outside="
@@ -24,7 +24,10 @@
         {{ role }}
       </div>
     </div>
-    <div v-if="menuItems" class="user-dropdown-button__chevron">
+    <div
+      v-if="menuItems && menuItems.length"
+      class="user-dropdown-button__chevron"
+    >
       <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
     </div>
     <div
@@ -72,10 +75,12 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const accountMenuVisible = ref(false);
     const toggleAccountMenuVisible = () => {
-      accountMenuVisible.value = !accountMenuVisible.value;
+      if (props.menuItems && props.menuItems.length) {
+        accountMenuVisible.value = !accountMenuVisible.value;
+      }
     };
 
     return {
@@ -100,6 +105,10 @@ export default defineComponent({
   align-items: center;
   height: 100%;
 
+  &_no-pointer {
+    cursor: default;
+  }
+
   &:hover,
   &_active {
     background: var(--app-bar-toolbar-icon-background-hover);
@@ -113,6 +122,7 @@ export default defineComponent({
     background-color: var(--app-bar-account-info-role-color);
     background-size: cover;
     background-position: center;
+    flex-shrink: 0;
   }
 
   &__name {

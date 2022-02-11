@@ -182,7 +182,7 @@ export default defineComponent({
 
     modelValue: {
       type: [String, Number, Date],
-      default: "",
+      default: null,
     },
 
     clearable: {
@@ -578,6 +578,8 @@ export default defineComponent({
     height: 32px;
     width: 100%;
     outline: none;
+    padding-left: var(--padding-s);
+    padding-right: var(--padding-s);
   }
 
   &__dropdown-list {

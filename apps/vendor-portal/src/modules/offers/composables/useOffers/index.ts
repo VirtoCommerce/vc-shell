@@ -2,12 +2,12 @@ import { Ref, ref, computed } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 
 interface IUseOffers {
+  readonly offers: Ref<IOffer[]>;
+  readonly totalCount: Ref<number>;
+  readonly pages: Ref<number>;
+  readonly loading: Ref<boolean>;
+  readonly currentPage: Ref<number>;
   searchQuery: Ref<ISearchOffersQuery>;
-  offers: Ref<IOffer[]>;
-  totalCount: Ref<number>;
-  pages: Ref<number>;
-  loading: Ref<boolean>;
-  currentPage: Ref<number>;
   searchOffers: (query: ISearchOffersQuery) => Promise<SearchOffersResult>;
   loadOffers: (query: ISearchOffersQuery) => void;
   deleteOffers: (args: { ids: string[] }) => void;
@@ -26,6 +26,8 @@ import {
   SearchOffersQuery,
   SearchOffersResult,
 } from "../../../../api_client";
+import { Simulate } from "react-dom/test-utils";
+import load = Simulate.load;
 
 export default (options?: IUseOffersOptions): IUseOffers => {
   const logger = useLogger();
@@ -51,7 +53,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     const client = await getApiClient();
     try {
       loading.value = true;
-      return client.searchOffers(query as SearchOffersQuery);
+      return await client.searchOffers(query as SearchOffersQuery);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -103,10 +105,10 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     currentPage: computed(
       () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
     ),
-    searchOffers,
-    loading,
+    loading: computed(() => loading.value),
     searchQuery,
     loadOffers,
     deleteOffers,
+    searchOffers,
   };
 };

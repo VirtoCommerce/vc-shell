@@ -1,7 +1,7 @@
 <template>
   <vc-blade
     v-loading="bladeLoading"
-    :title="param ? profileDetails?.name : 'Importer'"
+    :title="param && profileDetails?.name ? profileDetails.name : 'Importer'"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
@@ -107,6 +107,7 @@
         <!-- Skipped details table -->
         <vc-col class="vc-padding_m" v-if="importStarted">
           <vc-card
+            class="import-new__skipped"
             :fill="true"
             :variant="skippedColorVariant"
             :header="
@@ -148,7 +149,11 @@
 
         <!-- History-->
         <vc-col class="vc-padding_m" v-if="!importStarted">
-          <vc-card :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')" :fill="true">
+          <vc-card
+            :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
+            :fill="true"
+            class="import-new__history"
+          >
             <vc-table
               :columns="columns"
               :items="importHistory"
@@ -275,7 +280,7 @@ export default defineComponent({
           });
         },
         isVisible: computed(() => profile.value),
-        disabled: computed(() => importLoading.value),
+        disabled: computed(() => importLoading.value || !profile.value.name),
       },
       {
         id: "cancel",
@@ -283,13 +288,14 @@ export default defineComponent({
           t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.CANCEL")
         ),
         icon: "fas fa-ban",
-        clickHandler() {
-          emit("page:close");
-
+        async clickHandler() {
           if (importStatus.value?.inProgress) {
-            cancelImport();
+            await cancelImport();
+            emit("page:close");
           }
         },
+        disabled: computed(() => !importStatus.value?.inProgress),
+        isVisible: computed(() => !!props.param),
       },
       {
         id: "newRun",
@@ -304,7 +310,7 @@ export default defineComponent({
           });
         },
         disabled: computed(() => importStatus.value?.inProgress),
-        isVisible: computed(() => !!importStatus.value),
+        isVisible: computed(() => !!(importStatus.value && profile.value.name)),
       },
     ]);
     const columns = ref<ITableColumns[]>([
@@ -511,9 +517,11 @@ export default defineComponent({
         await fetchImportHistory({ profileId: props.param });
       }
       if (props.options && props.options.importJobId) {
-        const historyItem = importHistory.value.find(
-          (x) => x.jobId === props.options.importJobId
-        );
+        const historyItem =
+          importHistory.value &&
+          importHistory.value.find(
+            (x) => x.jobId === props.options.importJobId
+          );
         updateStatus(historyItem);
       }
     });
@@ -635,7 +643,7 @@ export default defineComponent({
 }
 
 .import-new {
-  .vc-container__inner {
+  & .vc-container__inner {
     display: flex;
     flex-direction: column;
   }
@@ -677,6 +685,20 @@ export default defineComponent({
 
   &__error {
     --hint-color: var(--color-error);
+  }
+
+  &__skipped {
+    & .vc-card__body {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+
+  &__history {
+    & .vc-card__body {
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 </style>

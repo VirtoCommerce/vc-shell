@@ -42,7 +42,6 @@
         },
         "MOBILE": {
           "SKU": "SKU",
-          "OFFER": "Offer #",
           "QUANTITY": "Quantity",
           "LIST_PRICE": "List price",
           "SALE_PRICE": "Sale price",

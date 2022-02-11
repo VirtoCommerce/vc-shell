@@ -409,7 +409,6 @@ export default defineComponent({
           const lastImageSortOrder =
             productDetails.images[productDetails.images.length - 1].sortOrder;
           image.sortOrder = lastImageSortOrder + 1;
-          console.log(lastImageSortOrder, image.sortOrder);
         } else {
           image.sortOrder = 0;
         }

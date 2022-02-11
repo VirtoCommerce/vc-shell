@@ -68,7 +68,6 @@ export default defineComponent({
   setup(_props, { emit }) {
     const uploader = ref();
     const upload = (event: InputEvent) => {
-      console.log((event.target as HTMLInputElement).files);
       const target = event.target as HTMLInputElement;
       const fileList = target.files;
 

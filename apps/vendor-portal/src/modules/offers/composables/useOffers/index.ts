@@ -20,14 +20,11 @@ interface IUseOffersOptions {
 
 import {
   VcmpSellerCatalogClient,
-  Offer,
   IOffer,
   ISearchOffersQuery,
   SearchOffersQuery,
   SearchOffersResult,
 } from "../../../../api_client";
-import { Simulate } from "react-dom/test-utils";
-import load = Simulate.load;
 
 export default (options?: IUseOffersOptions): IUseOffers => {
   const logger = useLogger();

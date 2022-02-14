@@ -643,7 +643,6 @@ export default defineComponent({
     &-row {
       height: 60px;
       background-color: #ffffff;
-      cursor: pointer;
 
       &_even {
         background-color: #f8f8f8;

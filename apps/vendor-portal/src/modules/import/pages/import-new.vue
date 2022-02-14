@@ -170,6 +170,10 @@
                   <div class="vc-ellipsis">{{ itemData.item.name }}</div>
                 </div>
               </template>
+              <!-- Override finished column template -->
+              <template v-slot:item_finished="itemData">
+                <ImportStatus :item="itemData.item" />
+              </template>
             </vc-table>
           </vc-card>
         </vc-col>
@@ -201,6 +205,7 @@ import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
+import ImportStatus from "../components/ImportStatus.vue";
 
 interface IImportBadges {
   id: string;
@@ -213,6 +218,7 @@ interface IImportBadges {
 export default defineComponent({
   url: "importer",
   components: {
+    ImportStatus,
     ImportPopup,
     ImportUploadStatus,
   },
@@ -318,6 +324,16 @@ export default defineComponent({
         id: "profileName", // temp
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
         alwaysVisible: true,
+      },
+      {
+        id: "createdBy",
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
+        width: 147,
+      },
+      {
+        id: "finished",
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STATUS")),
+        width: 147,
       },
       {
         id: "createdDate",

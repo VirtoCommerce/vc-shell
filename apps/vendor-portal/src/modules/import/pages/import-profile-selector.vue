@@ -34,7 +34,6 @@
           </template>
         </vc-slider>
       </div>
-      <!--      <vc-col class="vc-padding_m">-->
       <vc-card
         :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
         class="import__archive vc-margin_m"
@@ -57,9 +56,13 @@
               <div class="vc-ellipsis">{{ itemData.item.name }}</div>
             </div>
           </template>
+
+          <!-- Override finished column template -->
+          <template v-slot:item_finished="itemData">
+            <ImportStatus :item="itemData.item" />
+          </template>
         </vc-table>
       </vc-card>
-      <!--      </vc-col>-->
     </vc-container>
   </vc-blade>
 </template>
@@ -72,8 +75,11 @@ import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
 import { ImportRunHistory } from "../../../api_client";
+import ImportStatus from "../components/ImportStatus.vue";
 
 export default defineComponent({
+  components: { ImportStatus },
+
   url: "import",
   props: {
     expanded: {
@@ -140,10 +146,16 @@ export default defineComponent({
         id: "profileName", // temp
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
         alwaysVisible: true,
+        width: 147,
       },
       {
         id: "createdBy",
         title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
+        width: 147,
+      },
+      {
+        id: "finished",
+        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STATUS")),
         width: 147,
       },
       {

@@ -52,7 +52,7 @@
         ></vc-icon>
       </div>
       <vc-container :noPadding="true" @click.stop>
-        <div v-if="populatedList && populatedList.length">
+        <vc-col v-if="populatedList && populatedList.length">
           <div
             @click="handleClick(item)"
             class="notification-dropdown__notification"
@@ -110,7 +110,7 @@
               </vc-row>
             </div>
           </div>
-        </div>
+        </vc-col>
         <div
           class="
             vc-flex
@@ -324,7 +324,7 @@ export default defineComponent({
       border-radius: 0;
 
       &-visible {
-        display: block;
+        display: flex;
       }
     }
   }

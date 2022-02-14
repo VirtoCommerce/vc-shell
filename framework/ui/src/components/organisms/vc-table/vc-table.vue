@@ -473,8 +473,6 @@ export default defineComponent({
     "search:change",
     "filter:apply",
     "filter:reset",
-    "itemClick",
-    "headerClick",
   ],
 
   setup(props, { emit }) {
@@ -660,12 +658,8 @@ export default defineComponent({
         cursor: pointer;
 
         &:hover {
-          background-color: #eff7fc;
+          background-color: #dfeef9;
         }
-      }
-
-      &:hover {
-        background-color: #dfeef9;
       }
     }
 

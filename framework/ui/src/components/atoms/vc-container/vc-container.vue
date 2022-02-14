@@ -100,21 +100,23 @@ export default defineComponent({
     }
 
     function touchMove(e: TouchEvent): void {
-      const touch = e.touches[0];
-      if (!touchable.value) {
-        return;
-      }
+      if (props.usePtr) {
+        const touch = e.touches[0];
+        if (!touchable.value) {
+          return;
+        }
 
-      if (!ceiling.value) {
-        checkPullStart(e);
-      }
+        if (!ceiling.value) {
+          checkPullStart(e);
+        }
 
-      delta.value = touch.clientY - startY.value;
+        delta.value = touch.clientY - startY.value;
 
-      if (ceiling.value && delta.value >= 0 && delta.value < 80) {
-        e.preventDefault();
+        if (ceiling.value && delta.value >= 0 && delta.value < 80) {
+          e.preventDefault();
 
-        setStatus(ease(delta.value));
+          setStatus(ease(delta.value));
+        }
       }
     }
 

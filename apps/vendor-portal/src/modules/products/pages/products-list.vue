@@ -193,14 +193,6 @@ About component.
             <vc-hint class="vc-margin-top_xs">{{ itemData.item.path }}</vc-hint>
 
             <div class="vc-margin-top_s vc-margin-bottom_m">
-              <vc-hint>{{
-                $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
-              }}</vc-hint>
-              <div class="vc-ellipsis vc-margin-top_xs">
-                <vc-status-icon
-                  :status="itemData.item.isPublished"
-                ></vc-status-icon>
-              </div>
               <mp-product-status
                 class="vc-margin-top_m"
                 :status="itemData.item.status"

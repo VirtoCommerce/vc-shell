@@ -70,6 +70,7 @@
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
+                @close="onCategoriesSearch"
                 @update:modelValue="setCategory"
                 :is-disabled="readonly"
                 name="category"

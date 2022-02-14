@@ -497,6 +497,7 @@ export default defineComponent({
       {
         id: "name",
         title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
+        width: 120,
       },
       {
         id: "createdDate",
@@ -517,6 +518,7 @@ export default defineComponent({
       {
         id: "number",
         title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
+        width: 80,
       },
       {
         id: "items",
@@ -550,6 +552,7 @@ export default defineComponent({
         id: "name",
         field: "name",
         title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
+        width: 120,
       },
       {
         id: "createdDate",

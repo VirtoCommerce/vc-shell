@@ -13,12 +13,12 @@
       :expanded="expanded"
       :empty="empty"
       :loading="loading"
-      :multiselect="true"
       :columns="columns"
       :items="orders"
       :itemActionBuilder="actionBuilder"
       :totalCount="totalCount"
       :pages="pages"
+      :sort="sort"
       :searchValue="searchValue"
       :activeFilterCount="activeFilterCount"
       :selectedItemId="selectedItemId"
@@ -27,15 +27,19 @@
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
+      @headerClick="onHeaderClick"
+      @selectionChanged="onSelectionChanged"
     >
       <!-- Filters -->
       <template v-slot:filters>
-        <h2 v-if="$isMobile.value">{{ $t("ORDERS.PAGES.FILTERS.TITLE") }}</h2>
+        <h2 v-if="$isMobile.value">
+          {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
+        </h2>
         <vc-container no-padding>
           <vc-row>
             <vc-col class="filter-col vc-padding_s">
               <div class="group-title">
-                {{ $t("ORDERS.PAGES.FILTERS.STATUS_FILTER") }}
+                {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
                 <vc-checkbox
@@ -44,7 +48,7 @@
                   @update:modelValue="
                     filter.status = $event ? 'Unpaid' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.FILTERS.UNPAID") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.UNPAID") }}</vc-checkbox
                 >
                 <vc-checkbox
                   class="vc-margin-bottom_s"
@@ -52,24 +56,49 @@
                   @update:modelValue="
                     filter.status = $event ? 'Paid' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.FILTERS.PAID") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.PAID") }}</vc-checkbox
+                >
+
+                <vc-checkbox
+                  class="vc-margin-bottom_s"
+                  :modelValue="filter.status === 'Accepted'"
+                  @update:modelValue="
+                    filter.status = $event ? 'Accepted' : undefined
+                  "
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.ACCEPTED") }}</vc-checkbox
+                >
+                <vc-checkbox
+                  class="vc-margin-bottom_s"
+                  :modelValue="filter.status === 'Shipped'"
+                  @update:modelValue="
+                    filter.status = $event ? 'Shipped' : undefined
+                  "
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.SHIPPED") }}</vc-checkbox
+                >
+                <vc-checkbox
+                  class="vc-margin-bottom_s"
+                  :modelValue="filter.status === 'Cancelled'"
+                  @update:modelValue="
+                    filter.status = $event ? 'Cancelled' : undefined
+                  "
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.CANCELLED") }}</vc-checkbox
                 >
               </div>
             </vc-col>
             <vc-col class="filter-col vc-padding_s">
               <div class="group-title">
-                {{ $t("ORDERS.PAGES.FILTERS.ORDER_DATE") }}
+                {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
                 <vc-input
-                  :label="$t('ORDERS.PAGES.FILTERS.START_DATE')"
+                  :label="$t('ORDERS.PAGES.LIST.FILTERS.START_DATE')"
                   type="date"
                   class="vc-margin-bottom_m"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
                 ></vc-input>
                 <vc-input
-                  :label="$t('ORDERS.PAGES.FILTERS.END_DATE')"
+                  :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
@@ -109,10 +138,10 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{ $t("ORDERS.PAGES.NOT_FOUND.NO_ORDERS") }}
+            {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.NO_ORDERS") }}
           </div>
           <vc-button @click="resetSearch">{{
-            $t("ORDERS.PAGES.NOT_FOUND.RESET")
+            $t("ORDERS.PAGES.LIST.NOT_FOUND.RESET")
           }}</vc-button>
         </div>
       </template>
@@ -129,7 +158,7 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{ $t("ORDERS.PAGES.EMPTY") }}
+            {{ $t("ORDERS.PAGES.LIST.EMPTY") }}
           </div>
         </div>
       </template>
@@ -167,14 +196,14 @@
                 vc-flex-justify_space-between
               "
             >
-              <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{ $t("ORDERS.PAGES.STATUS.TOTAL") }}</vc-hint>
+              <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
+                <vc-hint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{ $t("ORDERS.PAGES.STATUS.CREATED") }}</vc-hint>
+              <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
+                <vc-hint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</vc-hint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -191,12 +220,19 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+} from "vue";
 import { useOrders } from "../composables";
 import { useFunctions, useI18n } from "@virtoshell/core";
 import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
-import { ICustomerOrder } from "@virtoshell/api-client";
+import { CustomerOrder } from "@virtoshell/api-client";
 import {
   IActionBuilderResult,
   ITableColumns,
@@ -229,18 +265,31 @@ export default defineComponent({
   },
 
   setup(props, { emit }) {
-    const { orders, loadOrders, loading, pages, currentPage, totalCount } =
-      useOrders();
+    const {
+      orders,
+      loadOrders,
+      loading,
+      pages,
+      currentPage,
+      totalCount,
+      changeOrderStatus,
+    } = useOrders();
     const { debounce } = useFunctions();
     const { t } = useI18n();
     const filter = reactive({});
     const appliedFilter = ref({});
     const searchValue = ref();
     const selectedItemId = ref();
+    const selectedOrdersIds = ref([]);
+    const sort = ref("createdDate:DESC");
 
     onMounted(async () => {
       selectedItemId.value = props.param;
       await loadOrders();
+    });
+
+    watch(sort, async (value) => {
+      await loadOrders({ ...filter, keyword: searchValue.value, sort: value });
     });
 
     const bladeToolbar = ref<IBladeToolbar[]>([
@@ -254,12 +303,14 @@ export default defineComponent({
       {
         title: computed(() => t("ORDERS.PAGES.LIST.TOOLBAR.CONFIRM")),
         icon: "fas fa-check",
-        disabled: true,
+        disabled: computed(() => !selectedOrdersIds.value?.length),
+        isVisible: false,
       },
       {
         title: computed(() => t("ORDERS.PAGES.LIST.TOOLBAR.CANCEL")),
         icon: "fas fa-times-circle",
-        disabled: true,
+        disabled: computed(() => !selectedOrdersIds.value?.length),
+        isVisible: false,
       },
     ]);
 
@@ -331,9 +382,16 @@ export default defineComponent({
           result.variant = "success";
           break;
         case "New":
-          result.outline = true;
+          result.outline = false;
           result.variant = "success";
           break;
+        case "Cancelled":
+          result.outline = true;
+          result.variant = "danger";
+          break;
+        case "Shipped":
+          result.outline = true;
+          result.variant = "success";
       }
       return result;
     };
@@ -344,25 +402,47 @@ export default defineComponent({
       });
     };
 
-    const actionBuilder = (item: ICustomerOrder): IActionBuilderResult[] => {
+    const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       let result = [];
 
-      result.push({
-        icon: "fas fa-check",
-        title: computed(() => t("ORDERS.PAGES.TABLE.ACTIONS.CONFIRM")),
-        variant: "success",
-        clickHandler() {
-          alert("Confirm");
-        },
-      });
-      result.push({
-        icon: "fas fa-times",
-        title: computed(() => t("ORDERS.PAGES.TABLE.ACTIONS.DECLINE")),
-        variant: "danger",
-        clickHandler() {
-          alert("Decline");
-        },
-      });
+      if (item.status === "Paid" || item.status === "Unpaid") {
+        result.push({
+          icon: "fas fa-check",
+          title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.ACCEPT")),
+          variant: "success",
+          async clickHandler() {
+            item.status = "Accepted";
+            await changeOrderStatus(item);
+            await reload();
+          },
+        });
+      }
+
+      if (item.status !== "Cancelled") {
+        result.push({
+          icon: "fas fa-times",
+          title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.CANCEL")),
+          variant: "danger",
+          async clickHandler() {
+            item.status = "Cancelled";
+            await changeOrderStatus(item);
+            await reload();
+          },
+        });
+      }
+
+      if (item.status === "Accepted") {
+        result.push({
+          icon: "fas fa-shipping-fast",
+          title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.SHIP")),
+          variant: "danger",
+          async clickHandler() {
+            item.status = "Shipped";
+            await changeOrderStatus(item);
+            await reload();
+          },
+        });
+      }
 
       return result;
     };
@@ -380,6 +460,20 @@ export default defineComponent({
         ...filter,
         keyword: searchValue.value,
       });
+    };
+
+    const onHeaderClick = (item: ITableColumns) => {
+      const sortBy = [":DESC", ":ASC", ""];
+      if (item.sortable) {
+        item.sortDirection = (item.sortDirection ?? 0) + 1;
+        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+      }
+    };
+
+    const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
+      selectedOrdersIds.value = Object.entries(checkboxes)
+        .filter(([id, isChecked]) => isChecked)
+        .map(([id, isChecked]) => id);
     };
 
     return {
@@ -401,22 +495,25 @@ export default defineComponent({
       empty,
       pages,
       currentPage,
+      sort,
       statusStyle,
       onPaginationClick,
+      onHeaderClick,
       title: computed(() => t("ORDERS.PAGES.LIST.TITLE")),
       searchValue,
       onSearchList,
       selectedItemId,
+      onSelectionChanged,
       setFilterDate(key: string, value: string) {
-        filter[key] = new Date(value);
+        const date = new Date(value);
+        if (date instanceof Date && !isNaN(date.valueOf())) {
+          filter[key] = date;
+        }
       },
       getFilterDate(key: string) {
         const date = filter[key] as Date;
-        if (filter[key]) {
-          const year = date.getUTCFullYear();
-          const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
-          const day = `${date.getUTCDate()}`.padStart(2, "0");
-          return `${year}-${month}-${day}`;
+        if (date) {
+          return moment(date).format("YYYY-MM-DD");
         }
         return undefined;
       },

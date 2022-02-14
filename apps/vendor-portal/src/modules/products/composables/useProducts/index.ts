@@ -11,11 +11,11 @@ import {
 } from "../../../../api_client";
 
 interface IUseProducts {
+  readonly products: Ref<ISellerProduct[]>;
+  readonly totalCount: Ref<number>;
+  readonly pages: Ref<number>;
+  readonly loading: Ref<boolean>;
   searchQuery: Ref<ISearchProductsQuery>;
-  products: Ref<ISellerProduct[]>;
-  totalCount: Ref<number>;
-  pages: Ref<number>;
-  loading: Ref<boolean>;
   currentPage: Ref<number>;
   loadProducts: (query: ISearchProductsQuery) => void;
   SellerProductStatus: typeof SellerProductStatus;
@@ -37,7 +37,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     keyword: options?.keyword,
   });
   const searchResult = ref<SearchProductsResult>();
-  const loading = ref<boolean>(false);
+  const loading = ref(false);
 
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
     const { getAccessToken } = useUser();
@@ -76,7 +76,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     currentPage: computed(
       () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
     ),
-    loading,
+    loading: computed(() => loading.value),
     searchQuery,
     loadProducts,
     SellerProductStatus,

@@ -287,7 +287,7 @@ export default defineComponent({
     }, 200);
 
     function onHeaderClick(item: ITableColumns) {
-      const sortBy = [":ASK", ":DESC", ""];
+      const sortBy = [":DESC", ":ASC", ""];
       if (item.sortable) {
         item.sortDirection = (item.sortDirection ?? 0) + 1;
         sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;

@@ -33,7 +33,27 @@
 
       <!-- Show scrollable area with menu items -->
       <vc-container :noPadding="true" class="vc-app-menu__content">
-        <div class="vc-flex vc-flex-column vc-app-menu__content-inner">
+        <div
+          class="
+            vc-flex vc-flex-column
+            vc-app-menu__content-inner
+            vc-padding-left_l
+            vc-padding-right_l
+          "
+        >
+          <template
+            v-for="(item, index) in mobileMenuItems"
+            :key="`info_item_${index}`"
+          >
+            <template v-if="item.isVisible === undefined || item.isVisible">
+              <component
+                v-if="item.component"
+                :is="item.component"
+                v-bind="item.componentOptions"
+                class="vc-padding_none vc-margin-bottom_s vc-fill_width"
+              ></component>
+            </template>
+          </template>
           <template v-for="(item, index) in items" :key="index">
             <vc-app-menu-item
               v-if="item.isVisible === undefined || item.isVisible"
@@ -60,7 +80,7 @@
 import { defineComponent, PropType, ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
-import { IMenuItems } from "../../../../../typings";
+import { IBladeToolbar, IMenuItems } from "../../../../../typings";
 
 export default defineComponent({
   name: "VcAppMenu",
@@ -71,6 +91,11 @@ export default defineComponent({
     // Array of menu items
     items: {
       type: Array as PropType<IMenuItems[]>,
+      default: () => [],
+    },
+
+    mobileMenuItems: {
+      type: Array as PropType<IBladeToolbar[]>,
       default: () => [],
     },
 

@@ -34,14 +34,16 @@
               @remove="$emit('item:remove', $event)"
             ></vc-gallery-item>
           </template>
+          <template #footer>
+            <vc-file-upload
+              v-if="!disabled"
+              class="vc-margin_s"
+              :icon="uploadIcon"
+              @upload="onUpload"
+              variant="gallery"
+            ></vc-file-upload>
+          </template>
         </draggable>
-        <vc-file-upload
-          v-if="!disabled"
-          class="vc-margin_s"
-          :icon="uploadIcon"
-          @upload="onUpload"
-          variant="gallery"
-        ></vc-file-upload>
       </div>
     </template>
     <div v-else class="vc-flex vc-flex-justify_center vc-padding_xl">
@@ -146,8 +148,7 @@ export default defineComponent({
     const updateOrder = () => {
       const images = _props.images;
       const sortedImgs = images.map((item, index) => {
-        const newSort = index;
-        item.sortOrder = newSort;
+        item.sortOrder = index;
         return item;
       });
       emit("sort", ref(sortedImgs).value);

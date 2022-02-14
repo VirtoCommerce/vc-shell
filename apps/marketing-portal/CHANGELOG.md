@@ -3,6 +3,22 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.0.116 (2022-02-14)
+
+
+### Bug Fixes
+
+* vm-463 ([dc2806f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc2806fb6358d2ac3db31fdfa0cb135cd0509e45))
+
+
+### Features
+
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+
+
+
+
+
 ## 0.0.115 (2022-02-04)
 
 

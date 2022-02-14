@@ -1,6 +1,7 @@
 <template>
   <vc-app
     :menuItems="menuItems"
+    :mobileMenuItems="mobileMenuItems"
     :toolbarItems="toolbarItems"
     :isReady="isReady"
     :isAuthorized="isAuthorized"
@@ -143,9 +144,9 @@ export default defineComponent({
             }))
           ),
         },
+        isVisible: isDesktop,
       },
       {
-        isVisible: isDesktop,
         isAccent: computed(() => {
           return !!notifications.value.filter(
             (notification) => notification.isNew
@@ -180,6 +181,20 @@ export default defineComponent({
           ],
         },
         isVisible: isDesktop,
+      },
+    ]);
+
+    const mobileMenuItems = ref<IBladeToolbar[]>([
+      {
+        component: shallowRef(UserDropdownButton),
+        componentOptions: {
+          avatar: "/assets/avatar.jpg",
+          name: computed(() => user.value?.userName),
+          role: computed(() =>
+            user.value?.isAdministrator ? "Administrator" : "Seller account"
+          ),
+        },
+        isVisible: isMobile,
       },
     ]);
 
@@ -218,6 +233,14 @@ export default defineComponent({
         component: shallowRef(ImportProfileSelector),
       },
       {
+        title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
+        icon: "fas fa-key",
+        isVisible: isMobile,
+        clickHandler() {
+          isChangePasswordActive.value = true;
+        },
+      },
+      {
         title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
         icon: "fas fa-sign-out-alt",
         isVisible: isMobile,
@@ -243,6 +266,7 @@ export default defineComponent({
       version: process.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,
+      mobileMenuItems,
       popupNotifications,
       isChangePasswordActive,
       dismiss,

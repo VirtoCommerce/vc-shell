@@ -42,10 +42,11 @@
           <!-- Init main menu -->
           <vc-app-menu
             ref="menu"
-            class="vc-flex-shrink_0 vc-padding-left_l vc-padding-right_l"
+            class="vc-flex-shrink_0"
             :items="menuItems"
             :activeItem="activeMenuItem"
             :activeChildItem="activeChildMenuItem"
+            :mobileMenuItems="mobileMenuItems"
             @item:click="onMenuItemClick"
           ></vc-app-menu>
 
@@ -136,6 +137,11 @@ export default defineComponent({
 
     menuItems: {
       type: Array as PropType<IMenuItems[]>,
+      default: () => [],
+    },
+
+    mobileMenuItems: {
+      type: Array as PropType<IBladeToolbar[]>,
       default: () => [],
     },
 

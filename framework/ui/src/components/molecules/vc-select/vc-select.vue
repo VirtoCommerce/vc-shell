@@ -52,7 +52,7 @@
       >
         <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
       </div>
-      <teleport to="body">
+      <teleport to="#app">
         <div
           v-if="isOpened"
           class="vc-select__dropdown"

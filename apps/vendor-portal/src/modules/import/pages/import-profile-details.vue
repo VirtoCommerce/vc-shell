@@ -216,9 +216,10 @@ export default defineComponent({
         (x) => x.typeName === profileDetails.typeName
       );
       return profile.value.importer
-        ? profile.value.importer.metadata.sampleCsvUrl
+        ? profile.value.importer.metadata &&
+            profile.value.importer.metadata.sampleCsvUrl
         : importer
-        ? importer.metadata.sampleCsvUrl
+        ? importer.metadata && importer.metadata.sampleCsvUrl
         : "#";
     });
 

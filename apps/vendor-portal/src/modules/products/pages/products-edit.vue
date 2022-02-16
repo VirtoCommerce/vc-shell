@@ -393,7 +393,7 @@ export default defineComponent({
       formData.append("file", files[0]);
       const authToken = await getAccessToken();
       const result = await fetch(
-        `/api/platform/assets?folderUrl=/catalog/${product.value.id}`,
+        `/api/assets?folderUrl=/catalog/${product.value.id}`,
         {
           method: "POST",
           body: formData,

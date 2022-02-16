@@ -266,6 +266,7 @@ export default defineComponent({
       fetchImportHistory,
       fetchDataImporters,
       updateStatus,
+      getLongRunning,
     } = useImport();
     const locale = window.navigator.language;
     const fileLoading = ref(false);
@@ -297,10 +298,11 @@ export default defineComponent({
         async clickHandler() {
           if (importStatus.value?.inProgress) {
             await cancelImport();
-            emit("page:close");
           }
         },
-        disabled: computed(() => !importStatus.value?.inProgress),
+        disabled: computed(() => {
+          return !importStatus.value?.inProgress;
+        }),
         isVisible: computed(() => !!props.param),
       },
       {
@@ -538,7 +540,11 @@ export default defineComponent({
           importHistory.value.find(
             (x) => x.jobId === props.options.importJobId
           );
-        updateStatus(historyItem);
+        if (historyItem) {
+          updateStatus(historyItem);
+        } else {
+          getLongRunning({ id: props.param });
+        }
       }
     });
 
@@ -552,7 +558,7 @@ export default defineComponent({
         const formData = new FormData();
         formData.append("file", files[0]);
         const authToken = await getAccessToken();
-        const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
+        const result = await fetch(`/api/assets?folderUrl=/tmp`, {
           method: "POST",
           body: formData,
           headers: {

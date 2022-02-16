@@ -301,11 +301,7 @@ export default defineComponent({
           }
         },
         disabled: computed(() => {
-          console.log(importStatus.value?.inProgress, "progress");
-          return !(
-            importStatus.value?.inProgress &&
-            !!(importStatus.value && importStatus.value.jobId)
-          );
+          return !importStatus.value?.inProgress;
         }),
         isVisible: computed(() => !!props.param),
       },

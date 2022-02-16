@@ -552,7 +552,7 @@ export default defineComponent({
         const formData = new FormData();
         formData.append("file", files[0]);
         const authToken = await getAccessToken();
-        const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
+        const result = await fetch(`/api/assets?folderUrl=/tmp`, {
           method: "POST",
           body: formData,
           headers: {

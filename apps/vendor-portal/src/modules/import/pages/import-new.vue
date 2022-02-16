@@ -275,6 +275,7 @@ export default defineComponent({
     const popupColumns = ref<ITableColumns[]>([]);
     const popupItems = ref<Record<string, unknown>[]>([]);
     const errorMessage = ref("");
+    const cancelled = ref(false);
     const bladeToolbar = ref<IBladeToolbar[]>([
       {
         id: "edit",
@@ -297,11 +298,16 @@ export default defineComponent({
         icon: "fas fa-ban",
         async clickHandler() {
           if (importStatus.value?.inProgress) {
-            await cancelImport();
+            try {
+              await cancelImport();
+              cancelled.value = true;
+            } catch (e) {
+              cancelled.value = false;
+            }
           }
         },
         disabled: computed(() => {
-          return !importStatus.value?.inProgress;
+          return !importStatus.value?.inProgress || cancelled.value;
         }),
         isVisible: computed(() => !!props.param),
       },

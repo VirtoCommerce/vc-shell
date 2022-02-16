@@ -49,8 +49,7 @@
     :clearable="true"
     :required="property.required"
     :placeholder="
-      (property.displayNames && property.displayNames[0].name) ||
-      property.defaultValue
+      (property.displayNames && property.displayNames[0].name) || 'Add value'
     "
     :rules="rules"
     :disabled="disabled"

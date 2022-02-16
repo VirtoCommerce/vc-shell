@@ -30,7 +30,8 @@
             "CATEGORY": "Category",
             "CREATED_DATE": "Created Date",
             "STATUS": "Status",
-            "GTIN": "Code"
+            "GTIN": "Code",
+            "PUBLISHED": "Published"
           }
         },
         "FILTERS": {
@@ -59,7 +60,8 @@
         },
         "MOBILE": {
           "EAN_GTIN": "EAN/GTIN",
-          "CREATED": "Created"
+          "CREATED": "Created",
+          "PUBLISHED": "Published"
         },
         "ACTIONS": {
           "UNPUBLISH": "Unpublish",

@@ -8,6 +8,7 @@
           'vc-image_bordered': bordered,
           'vc-image_clickable': clickable,
         },
+        'vc-image_all',
       ]"
       :style="{
         background: src ? `url(${src}) center / cover no-repeat` : undefined,
@@ -85,6 +86,10 @@ export default defineComponent({
 .vc-image {
   display: inline-block;
   position: relative;
+
+  &_all {
+    position: relative;
+  }
 
   &_1x1 {
     padding-bottom: 100%;

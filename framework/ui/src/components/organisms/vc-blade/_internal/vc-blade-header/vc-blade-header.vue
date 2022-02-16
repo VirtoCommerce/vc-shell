@@ -6,7 +6,7 @@
 
     <div class="vc-blade-header__info vc-flex-grow_1">
       <div
-        class="vc-blade-header__title"
+        class="vc-blade-header__title vc-ellipsis"
         :class="{ 'vc-blade-header__title_only': !subtitle }"
       >
         {{ title }}

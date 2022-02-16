@@ -65,11 +65,11 @@
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE')"
               class="vc-margin-bottom_l"
             >
-              <template v-slot:actions v-if="$isDesktop.value">
-                <vc-checkbox>{{
-                  $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")
-                }}</vc-checkbox>
-              </template>
+              <!--              <template v-slot:actions v-if="$isDesktop.value">-->
+              <!--                <vc-checkbox>{{-->
+              <!--                  $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")-->
+              <!--                }}</vc-checkbox>-->
+              <!--              </template>-->
 
               <div class="vc-padding_l">
                 <!-- SKU field -->
@@ -93,14 +93,14 @@
                     :disabled="readonly"
                     name="sku"
                   ></vc-input>
-                  <div
-                    class="vc-margin-left_xl vc-margin-top_xl"
-                    v-if="$isMobile.value"
-                  >
-                    <vc-checkbox class="vc-padding-top_s" v-model="isTracked">{{
-                      $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")
-                    }}</vc-checkbox>
-                  </div>
+                  <!--                  <div-->
+                  <!--                    class="vc-margin-left_xl vc-margin-top_xl"-->
+                  <!--                    v-if="$isMobile.value"-->
+                  <!--                  >-->
+                  <!--                    <vc-checkbox class="vc-padding-top_s" v-model="isTracked">{{-->
+                  <!--                      $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")-->
+                  <!--                    }}</vc-checkbox>-->
+                  <!--                  </div>-->
                 </div>
 
                 <!-- Quantity in stock field -->
@@ -116,7 +116,6 @@
                   "
                   :disabled="readonly"
                   name="qty"
-                  v-if="$isDesktop.value || ($isMobile && isTracked)"
                 ></vc-input>
               </div>
             </vc-card>
@@ -264,7 +263,7 @@ import {
   unref,
 } from "vue";
 import { useForm } from "@virtoshell/ui";
-import { useI18n } from "@virtoshell/core";
+import { useFunctions, useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct, OfferPrice } from "../../../api_client";
 import { IBladeToolbar } from "../../../types";
@@ -306,7 +305,7 @@ export default defineComponent({
       loading,
       selectOfferProduct,
     } = useOffer();
-
+    const { debounce } = useFunctions();
     const products = ref<IOfferProduct[]>();
     const currency = { title: "USD", value: "USD" };
     const isTracked = ref(false);
@@ -408,9 +407,9 @@ export default defineComponent({
       addPrice,
 
       // Process product dropdown search
-      onProductSearch: async (value: string) => {
+      onProductSearch: debounce(async (value: string) => {
         products.value = await fetchProducts(value);
-      },
+      }, 500),
 
       removePrice(idx: number) {
         offerDetails.prices.splice(idx, 1);

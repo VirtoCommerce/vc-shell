@@ -13,30 +13,64 @@
       :class="[
         'notification-dropdown__button',
         { 'notification-dropdown__button_accent': isAccent },
-        { 'notification-dropdown__button_active': isDropdownVisible },
+        {
+          'notification-dropdown__button_active':
+            isDropdownVisible && !$isMobile.value,
+        },
       ]"
     >
       <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
     </div>
-    <div class="notification-dropdown__drop" v-if="isDropdownVisible">
-      <vc-container :noPadding="true">
-        <div v-if="populatedList && populatedList.length">
+    <div
+      v-if="$isMobile.value && isDropdownVisible"
+      class="notification-dropdown__overlay"
+      @click.stop="toggleNotificationsDrop"
+    ></div>
+    <div
+      class="notification-dropdown__drop"
+      v-if="isDropdownVisible"
+      :class="{
+        'notification-dropdown__drop_mobile': $isMobile.value,
+        'notification-dropdown__drop_mobile-visible':
+          $isMobile.value && isDropdownVisible,
+      }"
+    >
+      <div
+        v-if="$isMobile.value"
+        class="
+          notification-dropdown__mobile-close
+          vc-flex
+          vc-flex-justify_end
+          vc-flex-align_center
+          vc-padding_l
+        "
+      >
+        <vc-icon
+          icon="fas fa-times"
+          size="xl"
+          @click.stop="isDropdownVisible = false"
+        ></vc-icon>
+      </div>
+      <vc-container :noPadding="true" @click.stop>
+        <vc-col v-if="populatedList && populatedList.length">
           <div
             @click="handleClick(item)"
             class="notification-dropdown__notification"
             v-for="item in populatedList"
             :key="`notification_${item.id}`"
           >
-            <vc-row>
-              <vc-col size="1">
-                <div
-                  class="notification-dropdown__notification-icon"
-                  :style="{ 'background-color': item.params.color }"
-                >
-                  <vc-icon :icon="item.params.icon" size="l"></vc-icon>
-                </div>
-              </vc-col>
-              <vc-col size="4" class="vc-flex-justify_center">
+            <div class="vc-flex">
+              <div
+                class="
+                  notification-dropdown__notification-icon
+                  vc-margin-right_l
+                "
+                :style="{ 'background-color': item.params.color }"
+              >
+                <vc-icon :icon="item.params.icon" size="l"></vc-icon>
+              </div>
+
+              <vc-row class="vc-flex-justify_space-between vc-flex-grow_1">
                 <div class="notification-dropdown__notification-info">
                   <p
                     class="
@@ -63,20 +97,20 @@
                     >
                   </div>
                 </div>
-              </vc-col>
-              <vc-col size="2" class="vc-flex-align_end">
-                <p
-                  class="
-                    notification-dropdown__notification-time
-                    vc-margin_none
-                  "
-                >
-                  {{ item.params.time }}
-                </p>
-              </vc-col>
-            </vc-row>
+                <div>
+                  <p
+                    class="
+                      notification-dropdown__notification-time
+                      vc-margin_none
+                    "
+                  >
+                    {{ item.params.time }}
+                  </p>
+                </div>
+              </vc-row>
+            </div>
           </div>
-        </div>
+        </vc-col>
         <div
           class="
             vc-flex
@@ -148,7 +182,7 @@ export default defineComponent({
     const isDropdownVisible = ref(false);
     const { loadFromHistory, notifications } = useNotifications();
     const locale = window.navigator.language;
-
+    const isMobileVisible = ref(false);
     const populatedList = ref<INotificationParams[]>([]);
 
     watch(
@@ -207,6 +241,7 @@ export default defineComponent({
       notification: PushNotification | ImportPushNotification
     ) => {
       const low = notification.notifyType.toLowerCase();
+      isDropdownVisible.value = false;
 
       // TODO need to discuss on arch meeting
       if (low.includes("import") && "profileId" in notification) {
@@ -232,6 +267,7 @@ export default defineComponent({
     return {
       isDropdownVisible,
       populatedList,
+      isMobileVisible,
       handleClick,
       toggleNotificationsDrop,
     };
@@ -249,6 +285,17 @@ export default defineComponent({
   align-items: center;
   height: 100%;
 
+  &__overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9998;
+    background: #808c99;
+    opacity: 0.6;
+  }
+
   &__drop {
     position: absolute;
     top: var(--app-bar-height);
@@ -263,6 +310,23 @@ export default defineComponent({
     overflow: hidden;
     display: flex;
     flex-direction: column;
+
+    &_mobile {
+      display: none;
+      position: fixed;
+      right: 0;
+      top: 0;
+      max-height: 100%;
+      max-width: 300px;
+      width: 100%;
+      bottom: 0;
+      z-index: 9999;
+      border-radius: 0;
+
+      &-visible {
+        display: flex;
+      }
+    }
   }
 
   &__button {
@@ -335,6 +399,10 @@ export default defineComponent({
       line-height: var(--line-height-l);
       color: #8e8e8e;
     }
+  }
+
+  &__mobile-close {
+    color: #319ed4;
   }
 
   &__error {

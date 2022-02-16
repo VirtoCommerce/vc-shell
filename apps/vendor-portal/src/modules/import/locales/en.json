@@ -110,11 +110,17 @@
             "PROFILE_NAME": "Profile name",
             "STARTED_AT": "Started at",
             "CREATED_BY": "Created by",
-            "DURATION": "Duration",
+            "STATUS": "Status",
             "LINES_UPDATED": "Lines updated",
             "ERROR_COUNT": "Errors count",
             "DATE": "Date",
             "REPORT_URL": "Errors report download Url"
+          },
+          "STATUSES": {
+            "COMPLETED": "Completed",
+            "COMPLETED_WITH_ERRORS": "Completed with errors",
+            "FAILED": "Failed",
+            "CANCELLED": "Cancelled"
           }
         }
       },

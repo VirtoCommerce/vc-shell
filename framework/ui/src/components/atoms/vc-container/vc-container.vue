@@ -10,24 +10,22 @@
     @touchstart="touchStart"
     @touchmove="touchMove"
     @touchend="touchEnd"
-    @touchcancel="touchCancel"
   >
     <div
       ref="component"
-      :class="[
-        'vc-container__inner',
-        { 'vc-container__inner_scrollable': scrolling },
-      ]"
+      class="vc-container__inner"
+      :style="{
+        transform: dist ? `translate3d(0, ${dist}px, 0)` : '',
+      }"
     >
       <div
         class="vc-container__overscroll"
-        :class="{ 'vc-container__overscroll_passed': isThresholdPassed }"
-        v-if="isOverscrollVisible"
-        :style="`height: ${offsetY}px`"
+        :class="{ 'vc-container__overscroll_passed': status === 'loosing' }"
+        :style="{ height: dist ? `${dist}px` : '0px' }"
       >
         <vc-icon
           icon="fas fa-spinner"
-          size="l"
+          :style="{ 'font-size': `${dist / 2}px` }"
           class="vc-container__overscroll-icon"
         ></vc-icon>
       </div>
@@ -37,7 +35,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, computed, nextTick } from "vue";
 
 export default defineComponent({
   name: "VcContainer",
@@ -57,33 +55,26 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-
-    scrolling: {
-      type: Boolean,
-      default: false,
-    },
   },
 
   emits: ["scroll:ptr", "scroll:infinite"],
 
   setup(props, { emit }) {
-    const component = ref<HTMLElement | null>(null);
+    const component = ref<HTMLElement>();
     const scroll = ref(false);
-    const isOverscrollVisible = ref(false);
-    const isThresholdPassed = ref(false);
     const startY = ref(0);
-    const offsetY = ref(0);
+    const ceiling = ref();
+    const pullDist = ref(60);
+    const dist = ref(0);
+    const status = ref("normal");
+    const delta = ref(0);
 
     onMounted(() => {
       const observer = new ResizeObserver(() => {
-        if (
+        scroll.value = !!(
           component.value &&
           component.value.clientHeight < component.value.scrollHeight
-        ) {
-          scroll.value = true;
-        } else {
-          scroll.value = false;
-        }
+        );
       });
 
       if (component.value) {
@@ -91,50 +82,102 @@ export default defineComponent({
       }
     });
 
+    const touchable = computed(
+      () => status.value !== "refresh" && status.value !== "success"
+    );
+
     const scrollTop = () => {
       if (component.value) {
         component.value.scroll(0, 0);
       }
     };
 
+    function touchStart(e: TouchEvent): void {
+      if (!touchable.value) {
+        return;
+      }
+      checkPullStart(e);
+    }
+
+    function touchMove(e: TouchEvent): void {
+      if (props.usePtr) {
+        const touch = e.touches[0];
+        if (!touchable.value) {
+          return;
+        }
+
+        if (!ceiling.value) {
+          checkPullStart(e);
+        }
+
+        delta.value = touch.clientY - startY.value;
+
+        if (ceiling.value && delta.value >= 0 && delta.value < 80) {
+          e.preventDefault();
+
+          setStatus(ease(delta.value));
+        }
+      }
+    }
+
+    function touchEnd(): void {
+      if (delta.value && touchable.value) {
+        if (status.value === "loosing") {
+          nextTick(() => emit("scroll:ptr"));
+        }
+        setStatus(0);
+      }
+    }
+
+    function getScrollTop(el: HTMLElement) {
+      const top = el.scrollTop;
+
+      return Math.max(top, 0);
+    }
+
+    function checkPullStart(e: TouchEvent) {
+      ceiling.value = getScrollTop(component.value as HTMLElement) === 0;
+
+      if (ceiling.value) {
+        startY.value = e.touches[0].clientY;
+      }
+    }
+
+    function setStatus(distance: number) {
+      let stat;
+      if (distance === 0) {
+        stat = "normal";
+      } else {
+        stat = distance < pullDist.value ? "pulling" : "loosing";
+      }
+      dist.value = distance;
+      if (stat !== status.value) {
+        status.value = stat;
+      }
+    }
+
+    function ease(distance: number) {
+      const pullDistance = +pullDist.value;
+      if (distance > pullDistance) {
+        if (distance < pullDistance * 2) {
+          distance = pullDistance + (distance - pullDistance) / 2;
+        } else {
+          distance = pullDistance * 1.5 + (distance - pullDistance * 2) / 4;
+        }
+      }
+      return Math.round(distance);
+    }
+
     return {
       scroll,
       component,
+      dist,
+      status,
       scrollTop,
-      isOverscrollVisible,
-      isThresholdPassed,
-      offsetY,
-
-      touchStart(e: TouchEvent): void {
-        startY.value = e.touches[0].clientY;
-      },
-
-      touchMove(e: TouchEvent): void {
-        if (props.usePtr) {
-          const delta = startY.value - e.touches[0].clientY;
-          if (delta < -20 && delta > -80 && component.value?.scrollTop === 0) {
-            e.preventDefault();
-            isOverscrollVisible.value = true;
-            offsetY.value = -delta;
-            isThresholdPassed.value = Math.abs(offsetY.value) > 60;
-          }
-        }
-      },
-
-      touchEnd(): void {
-        if (isThresholdPassed.value) {
-          emit("scroll:ptr");
-        }
-        isOverscrollVisible.value = false;
-        isThresholdPassed.value = false;
-        offsetY.value = 0;
-      },
-
-      touchCancel(): void {
-        isOverscrollVisible.value = false;
-        isThresholdPassed.value = false;
-        offsetY.value = 0;
-      },
+      getScrollTop,
+      touchStart,
+      touchMove,
+      touchEnd,
     };
   },
 });
@@ -166,10 +209,10 @@ export default defineComponent({
   &__overscroll {
     position: relative;
     width: 100%;
-    height: 80px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
+    overflow: hidden;
 
     &-icon {
       color: #a1c0d4;
@@ -189,6 +232,7 @@ export default defineComponent({
     padding: var(--container-scroll-padding);
     scrollbar-color: var(--container-scroll-color);
     scrollbar-width: thin;
+    transition-property: transform;
 
     &::-webkit-scrollbar {
       width: var(--container-scroll-width);
@@ -207,10 +251,6 @@ export default defineComponent({
 
     &::-webkit-scrollbar-thumb:hover {
       background: var(--container-scroll-color-hover);
-    }
-
-    &_scrollable {
-      overflow-x: auto;
     }
   }
 

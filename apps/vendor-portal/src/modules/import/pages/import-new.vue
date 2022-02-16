@@ -266,6 +266,7 @@ export default defineComponent({
       fetchImportHistory,
       fetchDataImporters,
       updateStatus,
+      getLongRunning,
     } = useImport();
     const locale = window.navigator.language;
     const fileLoading = ref(false);
@@ -299,7 +300,13 @@ export default defineComponent({
             await cancelImport();
           }
         },
-        disabled: computed(() => !importStatus.value?.inProgress),
+        disabled: computed(() => {
+          console.log(importStatus.value?.inProgress, "progress");
+          return !(
+            importStatus.value?.inProgress &&
+            !!(importStatus.value && importStatus.value.jobId)
+          );
+        }),
         isVisible: computed(() => !!props.param),
       },
       {
@@ -537,7 +544,11 @@ export default defineComponent({
           importHistory.value.find(
             (x) => x.jobId === props.options.importJobId
           );
-        updateStatus(historyItem);
+        if (historyItem) {
+          updateStatus(historyItem);
+        } else {
+          getLongRunning({ id: props.param });
+        }
       }
     });
 

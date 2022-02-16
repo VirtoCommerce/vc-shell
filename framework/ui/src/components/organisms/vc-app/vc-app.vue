@@ -108,12 +108,12 @@ import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { IBladeToolbar, IMenuItems, IPage } from "../../../typings";
 
-interface BladeElement extends ComponentPublicInstance {
+export interface BladeElement extends ComponentPublicInstance {
   onBeforeClose: () => Promise<boolean>;
   [x: string]: unknown;
 }
 
-interface IParentCallArgs {
+export interface IParentCallArgs {
   method: string;
   args?: unknown;
   callback?: (args: unknown) => void;

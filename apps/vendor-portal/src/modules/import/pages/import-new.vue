@@ -297,7 +297,6 @@ export default defineComponent({
         async clickHandler() {
           if (importStatus.value?.inProgress) {
             await cancelImport();
-            emit("page:close");
           }
         },
         disabled: computed(() => !importStatus.value?.inProgress),

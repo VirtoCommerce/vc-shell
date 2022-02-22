@@ -5,7 +5,7 @@ import {
 import useUser from "../useUser";
 import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";
-import _ from "lodash";
+import _ from "lodash-es";
 
 const notificationsClient = new PushNotificationClient();
 

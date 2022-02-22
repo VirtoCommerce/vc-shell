@@ -60,7 +60,7 @@ interface INotificationActions {
   disabled?: boolean | ComputedRef<boolean>;
 }
 
-export {
+export type {
   IComponent,
   ITableColumns,
   IActionBuilderResult,

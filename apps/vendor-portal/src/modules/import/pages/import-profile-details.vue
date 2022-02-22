@@ -113,7 +113,7 @@ import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
-import { IDataImporter, ObjectSettingEntry } from "../../../api_client";
+import { ObjectSettingEntry } from "../../../api_client";
 import { useForm } from "@virtoshell/ui";
 
 export default defineComponent({

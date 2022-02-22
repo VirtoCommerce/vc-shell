@@ -123,12 +123,7 @@
                     </div>
                   </div>
                   <div
-                    class="
-                      vc-margin-top_m
-                      vc-fill_width
-                      vc-flex
-                      vc-flex-justify_space-between
-                    "
+                    class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
                   >
                     <div class="vc-ellipsis vc-flex-grow_2">
                       <vc-hint>{{
@@ -171,7 +166,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import moment from "moment";
 
 import { useOrder } from "../composables";

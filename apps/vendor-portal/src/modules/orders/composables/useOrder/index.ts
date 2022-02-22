@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { computed, Ref, ref } from "vue";
 import { useUser, useLogger } from "@virtoshell/core";
 import {
@@ -16,7 +15,6 @@ interface IUseOrder {
   loadPdf: () => Promise<void>;
   changeOrderStatus: (order: CustomerOrder) => Promise<void>;
 }
-
 
 const order: Ref<CustomerOrder> = ref({} as CustomerOrder);
 
@@ -50,12 +48,17 @@ export default (): IUseOrder => {
     const client = await getApiClient();
     try {
       const response = await client.getInvoicePdf(order.value.number);
-      let dataType = response.data.type;
-      let binaryData = [];
+      const dataType = response.data.type;
+      const binaryData = [];
       binaryData.push(response.data);
-      let downloadLink = document.createElement('a');
-      downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
-      downloadLink.setAttribute('download', response.fileName || `Invoice ${order.value.number}`);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = window.URL.createObjectURL(
+        new Blob(binaryData, { type: dataType })
+      );
+      downloadLink.setAttribute(
+        "download",
+        response.fileName || `Invoice ${order.value.number}`
+      );
       document.body.appendChild(downloadLink);
       downloadLink.click();
       document.body.removeChild(downloadLink);
@@ -80,42 +83,41 @@ export default (): IUseOrder => {
 
   return {
     order: computed(() => order.value),
-    shippingInfo: computed(
-      () => {
-        const info =
-          order.value.addresses &&
-          order.value.addresses.reduce((acc, address) => {
-            const orderInfo = {
-              name: `${address.firstName} ${address.lastName}`,
-              address: `${address.line1 ?? ""} ${address.line2 ?? ""}, ${address.city ?? ""
-                }, ${address.postalCode ?? ""} ${address.countryCode ?? ""}`,
-              phone: address.phone ?? "",
-              email: address.email ?? "",
-            };
-            switch (address.addressType) {
-              case AddressType.Billing:
-                acc.push({ label: "Sold to", ...orderInfo });
-                break;
-              case AddressType.Shipping:
-                acc.push({ label: "Ship to", ...orderInfo });
-                break;
-              case AddressType.BillingAndShipping:
-                acc.push(
-                  { label: "Sold to", ...orderInfo },
-                  { label: "Ship to", ...orderInfo }
-                );
-                break;
-              case AddressType.Pickup:
-                acc.push({ label: "Pick-up at", ...orderInfo });
-                break;
-            }
-            return acc;
-          }, []);
-        return info && info.length
-          ? info
-          : [{ label: "Sold to" }, { label: "Ship to" }];
-      }
-    ),
+    shippingInfo: computed(() => {
+      const info =
+        order.value.addresses &&
+        order.value.addresses.reduce((acc, address) => {
+          const orderInfo = {
+            name: `${address.firstName} ${address.lastName}`,
+            address: `${address.line1 ?? ""} ${address.line2 ?? ""}, ${
+              address.city ?? ""
+            }, ${address.postalCode ?? ""} ${address.countryCode ?? ""}`,
+            phone: address.phone ?? "",
+            email: address.email ?? "",
+          };
+          switch (address.addressType) {
+            case AddressType.Billing:
+              acc.push({ label: "Sold to", ...orderInfo });
+              break;
+            case AddressType.Shipping:
+              acc.push({ label: "Ship to", ...orderInfo });
+              break;
+            case AddressType.BillingAndShipping:
+              acc.push(
+                { label: "Sold to", ...orderInfo },
+                { label: "Ship to", ...orderInfo }
+              );
+              break;
+            case AddressType.Pickup:
+              acc.push({ label: "Pick-up at", ...orderInfo });
+              break;
+          }
+          return acc;
+        }, []);
+      return info && info.length
+        ? info
+        : [{ label: "Sold to" }, { label: "Ship to" }];
+    }),
     loadOrder,
     loadPdf,
     changeOrderStatus,

@@ -1,4 +1,2 @@
-import useOrders from "./useOrders";
-import useOrder from "./useOrder";
-
-export { useOrders, useOrder };
+export { default as useOrders } from "./useOrders";
+export { default as useOrder } from "./useOrder";

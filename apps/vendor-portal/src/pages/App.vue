@@ -263,7 +263,7 @@ export default defineComponent({
       isAuthorized,
       isReady,
       pages,
-      version: process.env.PACKAGE_VERSION,
+      version: import.meta.env.PACKAGE_VERSION,
       toolbarItems,
       menuItems,
       mobileMenuItems,

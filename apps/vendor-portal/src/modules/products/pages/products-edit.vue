@@ -183,7 +183,7 @@ import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
-import _ from "lodash";
+import _ from "lodash-es";
 
 export default defineComponent({
   url: "product",

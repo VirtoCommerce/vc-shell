@@ -1,7 +1,3 @@
-<docs>
-About component.
-</docs>
-
 <template>
   <vc-blade
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
@@ -120,12 +116,7 @@ About component.
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -140,12 +131,7 @@ About component.
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -200,12 +186,7 @@ About component.
             </div>
 
             <div
-              class="
-                vc-margin-top_m
-                vc-fill_width
-                vc-flex
-                vc-flex-justify_space-between
-              "
+              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
                 <vc-hint>{{
@@ -445,8 +426,8 @@ export default defineComponent({
     const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
       let result = [];
 
-      const statuses =
-        product.status?.split(",").map((item) => item.trim()) || [];
+      // const statuses =
+      //   product.status?.split(",").map((item) => item.trim()) || [];
 
       /*if (statuses.includes("Published")) {
         result.push({

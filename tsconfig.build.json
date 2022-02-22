@@ -10,9 +10,11 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "target": "esnext",
-    "jsx": "preserve"
+    "jsx": "preserve",
+    "isolatedModules": true,
+    "useDefineForClassFields": true
   }
 }

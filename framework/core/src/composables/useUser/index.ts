@@ -7,7 +7,6 @@ import {
   SecurityResult,
   ValidatePasswordResetTokenRequest,
   IdentityResult,
-  ChangePasswordRequest,
 } from "@virtoshell/api-client";
 import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
 const VC_AUTH_DATA_KEY = "vc-auth-data";

@@ -10,8 +10,7 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "@virtoshell/core";
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {

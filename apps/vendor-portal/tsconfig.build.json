@@ -7,14 +7,16 @@
     "lib": [
       "esnext",
       "dom"
-    ]
+    ],
+    "types": ["vite/client"]
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "vite.config.ts"
   ],
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
 }

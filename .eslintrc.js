@@ -3,7 +3,8 @@ module.exports = {
   env: {
     node: true,
   },
-  ignorePatterns: ["**/*.common.js"],
+  ignorePatterns: ["**/*.cjs.js"],
+  plugins: ['@typescript-eslint', 'vue'],
   extends: [
     "plugin:vue/vue3-essential",
     "eslint:recommended",
@@ -11,8 +12,9 @@ module.exports = {
     "plugin:import/typescript",
     "@vue/typescript/recommended",
     "@vue/prettier",
-    "@vue/prettier/@typescript-eslint",
+    "@vue/eslint-config-typescript/recommended",
   ],
+  parser: "vue-eslint-parser",
   parserOptions: {
     ecmaVersion: 2020,
   },
@@ -20,5 +22,6 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/ban-ts-comment": "warn",
+    "vue/multi-word-component-names": 'off'
   },
 };

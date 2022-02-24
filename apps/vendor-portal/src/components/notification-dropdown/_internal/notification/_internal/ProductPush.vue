@@ -8,7 +8,7 @@
 <script lang="ts">
 import { computed, defineComponent, PropType } from "vue";
 import { useI18n } from "@virtoshell/core";
-import { IProductPushNotification } from "../../../../types";
+import { IProductPushNotification } from "../../../../../types";
 
 export default defineComponent({
   name: "ProductPush",

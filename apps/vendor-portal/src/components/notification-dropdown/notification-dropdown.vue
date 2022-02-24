@@ -85,7 +85,7 @@ import { useNotifications } from "@virtoshell/core";
 import { IMenuItems } from "@virtoshell/ui";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client";
-import NotificationItem from "./_internal/notification.vue";
+import NotificationItem from "./_internal/notification/notification.vue";
 import { ProductsList, ProductsEdit } from "../../modules/products";
 import { IProductPushNotification } from "../../types";
 
@@ -289,26 +289,6 @@ export default defineComponent({
 
     &:last-of-type {
       border-bottom: none;
-    }
-
-    &-icon {
-      width: 41px;
-      height: 41px;
-      border-radius: 50%;
-      color: #fff;
-    }
-
-    &-title {
-      color: var(--basic-black-color);
-      font-size: var(--font-size-xl);
-      line-height: var(--line-height-l);
-      font-weight: var(--font-weight-bold);
-    }
-
-    &-time {
-      font-size: var(--font-size-s);
-      line-height: var(--line-height-l);
-      color: #8e8e8e;
     }
   }
 

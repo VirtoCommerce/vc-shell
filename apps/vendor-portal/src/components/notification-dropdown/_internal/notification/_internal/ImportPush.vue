@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ImportPushNotification } from "../../../../api_client";
+import { ImportPushNotification } from "../../../../../api_client";
 
 export default defineComponent({
   name: "ImportPush",

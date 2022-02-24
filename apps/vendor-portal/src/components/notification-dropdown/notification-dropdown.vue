@@ -52,63 +52,14 @@
         ></vc-icon>
       </div>
       <vc-container :noPadding="true" @click.stop>
-        <vc-col v-if="populatedList && populatedList.length">
+        <vc-col v-if="notifications && notifications.length">
           <div
             @click="handleClick(item)"
             class="notification-dropdown__notification"
-            v-for="item in populatedList"
+            v-for="item in notifications"
             :key="`notification_${item.id}`"
           >
-            <div class="vc-flex">
-              <div
-                class="
-                  notification-dropdown__notification-icon
-                  vc-margin-right_l
-                "
-                :style="{ 'background-color': item.params.color }"
-              >
-                <vc-icon :icon="item.params.icon" size="l"></vc-icon>
-              </div>
-
-              <vc-row class="vc-flex-justify_space-between vc-flex-grow_1">
-                <div class="notification-dropdown__notification-info">
-                  <p
-                    class="
-                      notification-dropdown__notification-title
-                      vc-margin_none
-                      vc-margin-bottom_xs
-                    "
-                  >
-                    {{ item.title }}
-                  </p>
-                  <vc-hint
-                    class="vc-margin-bottom_xs"
-                    v-if="item.description"
-                    >{{ item.description }}</vc-hint
-                  >
-                  <vc-hint class="vc-margin-bottom_xs" v-if="item.profileName"
-                    >{{ $t("SHELL.NOTIFICATIONS.PROFILE") }}
-                    <b>{{ item.profileName }}</b></vc-hint
-                  >
-                  <div v-if="item.errors && item.errors.length">
-                    <vc-hint class="notification-dropdown__error">
-                      {{ $t("SHELL.NOTIFICATIONS.ERRORS") }}:
-                      {{ item.errors && item.errors.length }}</vc-hint
-                    >
-                  </div>
-                </div>
-                <div>
-                  <p
-                    class="
-                      notification-dropdown__notification-time
-                      vc-margin_none
-                    "
-                  >
-                    {{ item.params.time }}
-                  </p>
-                </div>
-              </vc-row>
-            </div>
+            <NotificationItem :notification="item"></NotificationItem>
           </div>
         </vc-col>
         <div
@@ -128,30 +79,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch } from "vue";
-import {
-  BulkActionPushNotification,
-  PushNotification,
-} from "@virtoshell/api-client";
+import { defineComponent, onMounted, PropType, ref } from "vue";
+import { PushNotification } from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
-import moment from "moment";
 import { IMenuItems } from "@virtoshell/ui";
-import { ImportNew, ImportProfileSelector } from "../modules/import";
-import { ImportPushNotification } from "../api_client";
-
-interface INotificationParams
-  extends PushNotification,
-    BulkActionPushNotification {
-  params: {
-    icon: string;
-    time: string;
-    color: string;
-  };
-  profileName?: string;
-}
+import { ImportNew, ImportProfileSelector } from "../../modules/import";
+import { ImportPushNotification } from "../../api_client";
+import NotificationItem from "./_internal/notification.vue";
+import { ProductsList, ProductsEdit } from "../../modules/products";
+import { IProductPushNotification } from "../../types";
 
 export default defineComponent({
   name: "notification-dropdown",
+  components: { NotificationItem },
+
   props: {
     isAccent: {
       type: Boolean,
@@ -181,29 +122,7 @@ export default defineComponent({
   setup(props) {
     const isDropdownVisible = ref(false);
     const { loadFromHistory, notifications } = useNotifications();
-    const locale = window.navigator.language;
     const isMobileVisible = ref(false);
-    const populatedList = ref<INotificationParams[]>([]);
-
-    watch(
-      () => notifications,
-      (newVal) => {
-        populatedList.value = newVal.value.map((item: INotificationParams) => {
-          return Object.assign(
-            {},
-            {
-              ...item,
-              params: {
-                icon: notificationIcon(item.notifyType),
-                time: moment(item.created).locale(locale).format("L LT"),
-                color: notificationColor(item),
-              },
-            }
-          ) as INotificationParams;
-        });
-      },
-      { deep: true }
-    );
 
     onMounted(async () => {
       await loadFromHistory();
@@ -213,32 +132,11 @@ export default defineComponent({
       isDropdownVisible.value = !isDropdownVisible.value;
     }
 
-    const notificationIcon = (type: string) => {
-      const lower = type.toLowerCase();
-      if (lower.includes("offer")) {
-        return "fas fa-percentage";
-      } else if (lower.includes("product")) {
-        return "fas fa-box-open";
-      } else if (lower.includes("import")) {
-        return "fas fa-download";
-      }
-      return "fas fa-info";
-    };
-
-    const notificationColor = (item: INotificationParams) => {
-      if (item.created && item.finished) {
-        return "#87b563";
-      } else if (item.created && !item.finished && !item.errors) {
-        return "#A9BCCD";
-      } else if (item.created && item.errors && item.errors.length) {
-        return "#F14E4E";
-      }
-
-      return "#87b563";
-    };
-
     const handleClick = async (
-      notification: PushNotification | ImportPushNotification
+      notification:
+        | PushNotification
+        | ImportPushNotification
+        | IProductPushNotification
     ) => {
       const low = notification.notifyType.toLowerCase();
       isDropdownVisible.value = false;
@@ -261,13 +159,29 @@ export default defineComponent({
             importJobId: notification.jobId,
           },
         });
+      } else if (
+        (low.includes("product") ||
+          notification.notifyType ===
+            "PublicationRequestStatusChangedDomainEvent") &&
+        "productId" in notification
+      ) {
+        await props.closePage(0);
+        await props.closePage(1);
+        props.openPage(0, {
+          component: ProductsList,
+          param: notification.productId,
+        });
+        props.openPage(1, {
+          component: ProductsEdit,
+          param: notification.productId,
+        });
       }
     };
 
     return {
       isDropdownVisible,
-      populatedList,
       isMobileVisible,
+      notifications,
       handleClick,
       toggleNotificationsDrop,
     };
@@ -382,9 +296,6 @@ export default defineComponent({
       height: 41px;
       border-radius: 50%;
       color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     &-title {

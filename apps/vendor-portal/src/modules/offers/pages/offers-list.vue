@@ -449,8 +449,7 @@ export default defineComponent({
 
     function handleSalePrice(price: number | undefined) {
       if (!price) {
-        const emptyPrice = 0;
-        return emptyPrice.toFixed(2);
+        return "N/A";
       } else {
         return price.toFixed(2);
       }

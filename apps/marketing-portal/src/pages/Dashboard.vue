@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts">
-import { useI18n } from "@virtoshell/core";
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -19,6 +19,13 @@ export default defineComponent({
       type: Function,
       default: undefined,
     },
+  },
+  setup() {
+    const router = useRouter();
+    onMounted(() => {
+      router.push("/");
+    });
+    return {};
   },
 });
 </script>

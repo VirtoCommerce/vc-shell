@@ -103,6 +103,7 @@ import {
   shallowRef,
   PropType,
 } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
@@ -181,6 +182,8 @@ export default defineComponent({
 
     const instance = getCurrentInstance();
 
+    const router = useRouter();
+    const route = useRoute();
     const activeMenuItem = ref<IMenuItems>();
     const activeChildMenuItem = ref<IMenuItems>();
 
@@ -245,9 +248,9 @@ export default defineComponent({
               blade,
               param,
             });
-            window?.history?.pushState(null, "", url);
+            router.push(url);
           } else {
-            window?.history?.pushState(null, "", "/");
+            router.push("/");
           }
         }
       },
@@ -260,7 +263,7 @@ export default defineComponent({
     onMounted(() => {
       console.debug(`vc-app#onMounted() called.`);
 
-      const url = window?.location?.pathname || "/";
+      const url = route.path || "/";
       const data = urlPattern.match(url);
       if (data?.workspace) {
         const ws = (props.pages as IPage[]).find(

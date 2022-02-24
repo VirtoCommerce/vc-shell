@@ -77,6 +77,7 @@ import {
   ContentPlaceholders,
   ContentPublishing,
 } from "../modules/dynamic-content";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "App",
@@ -99,6 +100,7 @@ export default defineComponent({
       dismiss,
       markAsReaded,
     } = useNotifications();
+    const router = useRouter();
     const isAuthorized = ref(false);
     const isReady = ref(false);
     const isChangePasswordActive = ref(false);
@@ -114,7 +116,7 @@ export default defineComponent({
       await loadUser();
       isReady.value = true;
       if (!isAuthorized.value) {
-        window?.history?.pushState(null, "", "/login");
+        router.push("/login");
       }
     });
 
@@ -156,6 +158,7 @@ export default defineComponent({
               title: t("SHELL.ACCOUNT.LOGOUT"),
               async clickHandler() {
                 signOut();
+                router.push("/login");
               },
             },
           ],
@@ -171,7 +174,7 @@ export default defineComponent({
         isVisible: true,
         clickHandler(app) {
           app.openDashboard();
-          window?.history?.pushState(null, "", "/");
+          router.push("/");
         },
       },
       {
@@ -210,7 +213,7 @@ export default defineComponent({
         isVisible: isMobile,
         clickHandler() {
           signOut();
-          window?.history?.pushState(null, "", "/login");
+          router.push("/login");
         },
       },
     ]);

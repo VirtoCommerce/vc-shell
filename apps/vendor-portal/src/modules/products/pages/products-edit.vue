@@ -1,6 +1,6 @@
 <template>
   <vc-blade
-    v-loading="loading || !currentCategory"
+    v-loading="loading || productLoading"
     :title="param ? productDetails?.name : $t('PRODUCTS.PAGES.DETAILS.TITLE')"
     width="50%"
     :expanded="expanded"
@@ -74,7 +74,26 @@
                 @update:modelValue="setCategory"
                 :is-disabled="readonly"
                 name="category"
-              ></vc-select>
+              >
+                <template v-slot:item="itemData">
+                  <div
+                    class="
+                      vc-flex
+                      vc-flex-align_center
+                      vc-padding-vertical_s
+                      vc-ellipsis
+                    "
+                  >
+                    <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
+                      <div class="vc-ellipsis">{{ itemData.item.path }}</div>
+                      <vc-hint class="vc-ellipsis vc-margin-top_xs">
+                        {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
+                        {{ itemData.item.code }}
+                      </vc-hint>
+                    </div>
+                  </div>
+                </template>
+              </vc-select>
 
               <vc-card
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
@@ -237,17 +256,23 @@ export default defineComponent({
     const currentCategory = ref();
     const offersCount = ref(0);
     const categories = ref<ICategory[]>();
+    const productLoading = ref(false);
 
     const reload = async (fullReload: boolean) => {
       if (!modified.value && fullReload) {
-        if (props.param) {
-          await loadProduct({ id: props.param });
-        }
-        categories.value = await fetchCategories();
-        if (productDetails?.categoryId) {
-          currentCategory.value = categories.value?.find(
-            (x) => x.id === productDetails.categoryId
-          );
+        try {
+          productLoading.value = true;
+          if (props.param) {
+            await loadProduct({ id: props.param });
+          }
+          categories.value = await fetchCategories();
+          if (productDetails?.categoryId) {
+            currentCategory.value = categories.value?.find(
+              (x) => x.id === productDetails.categoryId
+            );
+          }
+        } finally {
+          productLoading.value = false;
         }
       }
       //Load offers count to populate widget
@@ -477,6 +502,7 @@ export default defineComponent({
       productDetails,
       readonly: computed(() => props.param && !product.value?.canBeModified),
       statusText,
+      productLoading,
       reload,
       editImages,
       loading: computed(() => loading.value),

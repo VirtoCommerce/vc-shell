@@ -126,7 +126,14 @@
     "NOTIFICATIONS": {
       "EMPTY": "No notifications yet",
       "ERRORS": "Errors",
-      "PROFILE": "Profile:"
+      "PROFILE": "Profile:",
+      "TITLE": {
+        "PRODUCT": {
+          "TITLE": "Product",
+          "UPDATE": "status update",
+          "MORE_DETAILS": "Click the notification to see details"
+        }
+      }
     },
     "DASHBOARD": {
       "TITLE": "Dashboard",

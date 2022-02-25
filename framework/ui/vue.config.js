@@ -67,6 +67,7 @@ module.exports = {
     config.externals([
       "@virtoshell/core",
       "@virtoshell/api-client",
+      "vue-router"
     ]);
   },
 };

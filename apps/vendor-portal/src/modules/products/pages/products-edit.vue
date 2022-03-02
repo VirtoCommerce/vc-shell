@@ -197,6 +197,7 @@ import {
   IProperty,
   IPropertyValue,
   PropertyValue,
+  PropertyDictionaryItem,
 } from "@virtoshell/api-client";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
@@ -484,6 +485,14 @@ export default defineComponent({
       });
     };
 
+    async function loadDictionaries(
+      property: IProperty,
+      keyword?: string,
+      skip?: number
+    ) {
+      return await searchDictionaryItems([property.id], keyword, skip);
+    }
+
     let isOffersOpened = false;
 
     return {
@@ -539,7 +548,11 @@ export default defineComponent({
         }
       },
 
-      setPropertyValue(property: IProperty, value: IPropertyValue) {
+      setPropertyValue(
+        property: IProperty,
+        value: IPropertyValue,
+        dictionary?: PropertyDictionaryItem[]
+      ) {
         if (
           typeof value === "object" &&
           Object.prototype.hasOwnProperty.call(value, "length")
@@ -548,28 +561,47 @@ export default defineComponent({
             (item) => new PropertyValue(item)
           );
         } else {
-          if (property.values[0]) {
-            property.values[0].value = value;
-          } else {
+          if (dictionary && dictionary.length) {
+            const valueId = value as string;
+            let valueName;
+            const dictionaryItem = dictionary.find((x) => x.id === valueId);
+            if (dictionaryItem) {
+              valueName = dictionaryItem.alias;
+            } else {
+              valueName = property.name;
+            }
             property.values[0] = new PropertyValue({
-              value,
+              valueId,
+              value: valueName,
               isInherited: false,
             });
+          } else {
+            if (property.values[0]) {
+              property.values[0].value = value;
+            } else {
+              property.values[0] = new PropertyValue({
+                value,
+                isInherited: false,
+              });
+            }
           }
         }
       },
 
-      getPropertyValue(property: IProperty): Record<string, unknown> {
+      getPropertyValue(
+        property: IProperty,
+        isDictionary?: boolean
+      ): Record<string, unknown> {
+        if (isDictionary) {
+          return (
+            property.values[0] &&
+            (property.values[0].valueId as unknown as Record<string, unknown>)
+          );
+        }
         return property.values[0] && property.values[0].value;
       },
 
-      async loadDictionaries(
-        property: IProperty,
-        keyword?: string,
-        skip?: number
-      ) {
-        return await searchDictionaryItems([property.id], keyword, skip);
-      },
+      loadDictionaries,
 
       handleCollapsed(key: string, value: boolean): void {
         localStorage?.setItem(key, `${value}`);

@@ -3,7 +3,8 @@
     v-if="property.dictionary || property.isDictionary"
     :label="
       (property.displayNames && property.displayNames[0].name) ||
-      $t(property.displayName || property.name)
+      property.displayName ||
+      property.name
     "
     :modelValue="getter(property, true)"
     @update:modelValue="setter(property, $event, items)"
@@ -17,7 +18,7 @@
     displayProperty="alias"
     :rules="rules"
     :is-disabled="disabled"
-    :name="$t(property.displayName || property.name)"
+    :name="property.displayName || property.name"
     :isSearchable="true"
     @search="onSearch"
     @close="onClose"
@@ -26,8 +27,7 @@
   <vc-multivalue
     v-else-if="property.valueType === 'ShortText' && property.multivalue"
     :label="
-      (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      (property.displayNames && property.displayNames[0].name) || property.name
     "
     :modelValue="property.values"
     @update:modelValue="setter(property, $event)"
@@ -35,14 +35,15 @@
     placeholder="Add value"
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="property.name"
   ></vc-multivalue>
 
   <vc-input
     v-else-if="property.valueType === 'ShortText'"
     :label="
       (property.displayNames && property.displayNames[0].name) ||
-      $t(property.displayName || property.name)
+      property.displayName ||
+      property.name
     "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
@@ -53,14 +54,13 @@
     "
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.displayName || property.name)"
+    :name="property.displayName || property.name"
   ></vc-input>
 
   <vc-multivalue
     v-else-if="property.valueType === 'Number' && property.multivalue"
     :label="
-      (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      (property.displayNames && property.displayNames[0].name) || property.name
     "
     :modelValue="property.values"
     @update:modelValue="setter(property, $event)"
@@ -69,14 +69,13 @@
     placeholder="Add value"
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="property.name"
   ></vc-multivalue>
 
   <vc-input
     v-else-if="property.valueType === 'Number'"
     :label="
-      (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      (property.displayNames && property.displayNames[0].name) || property.name
     "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
@@ -89,14 +88,13 @@
     "
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="property.name"
   ></vc-input>
 
   <vc-input
     v-else-if="property.valueType === 'Integer'"
     :label="
-      (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      (property.displayNames && property.displayNames[0].name) || property.name
     "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
@@ -110,14 +108,13 @@
     "
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="property.name"
   ></vc-input>
 
   <vc-input
     v-else-if="property.valueType === 'DateTime'"
     :label="
-      (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      (property.displayNames && property.displayNames[0].name) || property.name
     "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
@@ -129,14 +126,13 @@
     "
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="property.name"
   ></vc-input>
 
   <vc-textarea
     v-else-if="property.valueType === 'LongText'"
     :label="
-      (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      (property.displayNames && property.displayNames[0].name) || property.name
     "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
@@ -147,7 +143,7 @@
     "
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="property.name"
   ></vc-textarea>
 
   <vc-checkbox
@@ -157,11 +153,12 @@
     :required="property.required"
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.displayName || property.name)"
+    :name="property.displayName || property.name"
   >
     {{
       (property.displayNames && property.displayNames[0].name) ||
-      $t(property.displayName || property.name)
+      property.displayName ||
+      property.name
     }}
   </vc-checkbox>
 </template>

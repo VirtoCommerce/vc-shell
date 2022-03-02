@@ -561,9 +561,7 @@ export default defineComponent({
             (item) => new PropertyValue(item)
           );
         } else {
-          if (property.values[0]) {
-            property.values[0].value = value;
-          } else {
+          if (dictionary && dictionary.length) {
             const valueId = value as string;
             let valueName;
             const dictionaryItem = dictionary.find((x) => x.id === valueId);
@@ -577,6 +575,15 @@ export default defineComponent({
               value: valueName,
               isInherited: false,
             });
+          } else {
+            if (property.values[0]) {
+              property.values[0].value = value;
+            } else {
+              property.values[0] = new PropertyValue({
+                value,
+                isInherited: false,
+              });
+            }
           }
         }
       },

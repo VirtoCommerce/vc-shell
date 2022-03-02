@@ -113,7 +113,6 @@ export default defineComponent({
     const isMobile = inject<Ref<boolean>>("isMobile");
 
     signalr.on("Send", (message: PushNotification) => {
-      console.log(message);
       addNotification(message);
     });
 

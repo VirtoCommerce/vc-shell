@@ -3,11 +3,11 @@
     v-if="property.dictionary || property.isDictionary"
     :label="
       (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      $t(property.name || property.displayName)
     "
-    :modelValue="getter(property)"
-    @update:modelValue="setter(property, $event)"
-    :isRequired="property.required"
+    :modelValue="getter(property, true)"
+    @update:modelValue="setter(property, $event, items)"
+    :isRequired="property.required || property.isRequired"
     :placeholder="
       (property.displayNames && property.displayNames[0].name) ||
       property.defaultValue
@@ -17,7 +17,7 @@
     displayProperty="alias"
     :rules="rules"
     :is-disabled="disabled"
-    :name="$t(property.name)"
+    :name="$t(property.name || property.displayName)"
     :isSearchable="true"
     @search="onSearch"
     @close="onClose"
@@ -42,18 +42,18 @@
     v-else-if="property.valueType === 'ShortText'"
     :label="
       (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      $t(property.name || property.displayName)
     "
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
     :clearable="true"
-    :required="property.required"
+    :required="property.required || property.isRequired"
     :placeholder="
       (property.displayNames && property.displayNames[0].name) || 'Add value'
     "
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="$t(property.name || property.displayName)"
   ></vc-input>
 
   <vc-multivalue
@@ -154,14 +154,14 @@
     v-else-if="property.valueType === 'Boolean'"
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
-    :required="property.required"
+    :required="property.required || property.isRequired"
     :rules="rules"
     :disabled="disabled"
-    :name="$t(property.name)"
+    :name="$t(property.name || property.displayName)"
   >
     {{
       (property.displayNames && property.displayNames[0].name) ||
-      $t(property.name)
+      $t(property.name || property.displayName)
     }}
   </vc-checkbox>
 </template>

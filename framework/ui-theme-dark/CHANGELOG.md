@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [0.0.123](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.123) (2022-03-04)
+## [0.0.123](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.123) (2022-03-04)
 
 
 
@@ -198,7 +198,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -226,7 +225,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.122](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.122) (2022-02-28)
+## [0.0.122](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.122) (2022-02-28)
 
 
 
@@ -421,7 +420,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -448,7 +446,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.121](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.121) (2022-02-24)
+## [0.0.121](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.121) (2022-02-24)
 
 
 
@@ -643,7 +641,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -670,7 +667,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.120](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.120) (2022-02-17)
+## [0.0.120](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.120) (2022-02-17)
 
 
 
@@ -865,7 +862,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -892,7 +888,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.119](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.119) (2022-02-16)
+## [0.0.119](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.119) (2022-02-16)
 
 
 
@@ -1087,7 +1083,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -1114,7 +1109,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.118](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.118) (2022-02-16)
+## [0.0.118](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.118) (2022-02-16)
 
 
 
@@ -1309,7 +1304,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -1336,7 +1330,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.117](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.117) (2022-02-16)
+## [0.0.117](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.117) (2022-02-16)
 
 
 
@@ -1531,7 +1525,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -1558,7 +1551,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.116](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.116) (2022-02-14)
+## [0.0.116](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.116) (2022-02-14)
 
 
 
@@ -1753,7 +1746,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -1780,7 +1772,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.115](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.115) (2022-02-04)
+## [0.0.115](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.115) (2022-02-04)
 
 
 
@@ -1975,7 +1967,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -2002,12 +1993,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.114](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.114) (2022-02-03)
-
-
-### Features
-
-* marketing ([db3544d](https://github.com/VirtoCommerce/platform-manager-sdk/commit/db3544d478e729121daefd9ec06f23bffcce5980))
+## [0.0.114](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.114) (2022-02-03)
 
 
 
@@ -2202,7 +2188,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -2229,7 +2214,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.113](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.113) (2022-02-03)
+## [0.0.113](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.113) (2022-02-03)
 
 
 
@@ -2424,7 +2409,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -2451,7 +2435,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.112](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.112) (2022-02-03)
+## [0.0.112](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.112) (2022-02-03)
 
 
 
@@ -2646,7 +2630,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -2673,7 +2656,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.111](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.111) (2022-01-31)
+## [0.0.111](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.111) (2022-01-31)
 
 
 
@@ -2868,7 +2851,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -2895,7 +2877,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.110](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.110) (2022-01-31)
+## [0.0.110](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.110) (2022-01-31)
 
 
 
@@ -3090,7 +3072,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -3117,7 +3098,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.109](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.109) (2022-01-28)
+## [0.0.109](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.109) (2022-01-28)
 
 
 
@@ -3312,7 +3293,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -3339,7 +3319,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.108](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.108) (2022-01-24)
+## [0.0.108](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.108) (2022-01-24)
 
 
 
@@ -3534,7 +3514,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -3561,7 +3540,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.107](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.107) (2022-01-20)
+## [0.0.107](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.107) (2022-01-20)
 
 
 
@@ -3756,7 +3735,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -3783,7 +3761,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.106](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.106) (2022-01-10)
+## [0.0.106](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.106) (2022-01-10)
 
 
 
@@ -3978,7 +3956,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -4005,7 +3982,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.105](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.105) (2021-12-30)
+## [0.0.105](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.105) (2021-12-30)
 
 
 
@@ -4200,7 +4177,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -4227,7 +4203,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.104](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.104) (2021-12-29)
+## [0.0.104](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.104) (2021-12-29)
 
 
 
@@ -4422,7 +4398,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -4449,7 +4424,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.103](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.103) (2021-12-28)
+## [0.0.103](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.103) (2021-12-28)
 
 
 
@@ -4644,7 +4619,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -4671,7 +4645,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.102](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.102) (2021-12-27)
+## [0.0.102](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.102) (2021-12-27)
 
 
 
@@ -4866,7 +4840,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -4893,7 +4866,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.101](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.101) (2021-12-24)
+## [0.0.101](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.101) (2021-12-24)
 
 
 
@@ -5088,7 +5061,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -5115,12 +5087,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.100](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.100) (2021-12-24)
-
-
-### Features
-
-* import & pushnotifications refactoring ([00ad42d](https://github.com/VirtoCommerce/platform-manager-sdk/commit/00ad42ddbb516e0bc139457a4091573afadf1431))
+## [0.0.100](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.100) (2021-12-24)
 
 
 
@@ -5315,7 +5282,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -5342,7 +5308,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.99](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.99) (2021-12-15)
+## [0.0.99](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.99) (2021-12-15)
 
 
 
@@ -5537,7 +5503,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -5564,7 +5529,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.98](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.98) (2021-12-15)
+## [0.0.98](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.98) (2021-12-15)
 
 
 
@@ -5759,7 +5724,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -5786,7 +5750,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.97](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.97) (2021-12-15)
+## [0.0.97](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.97) (2021-12-15)
 
 
 
@@ -5981,7 +5945,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -6008,7 +5971,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.96](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.96) (2021-12-13)
+## [0.0.96](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.96) (2021-12-13)
 
 
 
@@ -6203,7 +6166,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -6230,7 +6192,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.95](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.95) (2021-12-07)
+## [0.0.95](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.95) (2021-12-07)
 
 
 
@@ -6421,7 +6383,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -6448,7 +6409,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.94](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.94) (2021-12-07)
+## [0.0.94](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.94) (2021-12-07)
 
 
 
@@ -6639,7 +6600,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -6666,7 +6626,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.93](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.93) (2021-12-07)
+## [0.0.93](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.93) (2021-12-07)
 
 
 
@@ -6857,7 +6817,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -6884,7 +6843,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.92](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.92) (2021-12-04)
+## [0.0.92](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.92) (2021-12-04)
 
 
 
@@ -7075,7 +7034,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -7102,7 +7060,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.91](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.91) (2021-12-03)
+## [0.0.91](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.91) (2021-12-03)
 
 
 
@@ -7293,7 +7251,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -7320,7 +7277,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.90](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.90) (2021-12-02)
+## [0.0.90](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.90) (2021-12-02)
 
 
 
@@ -7507,7 +7464,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -7534,7 +7490,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.89](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.89) (2021-12-02)
+## [0.0.89](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.89) (2021-12-02)
 
 
 
@@ -7717,7 +7673,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -7744,7 +7699,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.88](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.88) (2021-12-02)
+## [0.0.88](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.88) (2021-12-02)
 
 
 
@@ -7923,7 +7878,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -7950,7 +7904,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.87](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.87) (2021-12-01)
+## [0.0.87](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.87) (2021-12-01)
 
 
 
@@ -8125,7 +8079,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -8152,7 +8105,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.86](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.86) (2021-12-01)
+## [0.0.86](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.86) (2021-12-01)
 
 
 
@@ -8323,7 +8276,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -8350,7 +8302,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.85](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.85) (2021-12-01)
+## [0.0.85](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.85) (2021-12-01)
 
 
 
@@ -8517,7 +8469,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -8544,7 +8495,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.84](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.84) (2021-11-26)
+## [0.0.84](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.84) (2021-11-26)
 
 
 
@@ -8707,7 +8658,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -8734,7 +8684,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.83](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.83) (2021-11-24)
+## [0.0.83](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.83) (2021-11-24)
 
 
 
@@ -8893,7 +8843,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -8920,7 +8869,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.82](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.82) (2021-11-24)
+## [0.0.82](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.82) (2021-11-24)
 
 
 
@@ -9075,7 +9024,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -9102,7 +9050,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.81](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.81) (2021-11-23)
+## [0.0.81](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.81) (2021-11-23)
 
 
 
@@ -9253,7 +9201,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -9280,7 +9227,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.80](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.80) (2021-11-22)
+## [0.0.80](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.80) (2021-11-22)
 
 
 
@@ -9427,7 +9374,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -9454,7 +9400,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.79](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.79) (2021-11-22)
+## [0.0.79](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.79) (2021-11-22)
 
 
 
@@ -9597,7 +9543,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -9624,7 +9569,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.78](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.78) (2021-11-22)
+## [0.0.78](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.78) (2021-11-22)
 
 
 
@@ -9763,7 +9708,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -9790,7 +9734,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.77](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.77) (2021-11-18)
+## [0.0.77](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.77) (2021-11-18)
 
 
 
@@ -9925,7 +9869,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -9952,7 +9895,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.76](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.76) (2021-11-18)
+## [0.0.76](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.76) (2021-11-18)
 
 
 
@@ -10083,7 +10026,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10110,7 +10052,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.75](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.75) (2021-11-18)
+## [0.0.75](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.75) (2021-11-18)
 
 
 
@@ -10237,7 +10179,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10264,7 +10205,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.74](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.74) (2021-11-12)
+## [0.0.74](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.74) (2021-11-12)
 
 
 
@@ -10387,7 +10328,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10414,7 +10354,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.73](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.73) (2021-11-11)
+## [0.0.73](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.73) (2021-11-11)
 
 
 ### Features
@@ -10533,7 +10473,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10560,7 +10499,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.72](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.72) (2021-11-11)
+## [0.0.72](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.72) (2021-11-11)
 
 
 
@@ -10674,7 +10613,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10701,7 +10639,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.71](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.71) (2021-11-11)
+## [0.0.71](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.71) (2021-11-11)
 
 
 
@@ -10811,7 +10749,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10839,7 +10776,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.70](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.70) (2021-11-08)
+## [0.0.70](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.70) (2021-11-08)
 
 
 
@@ -10945,7 +10882,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -10972,7 +10908,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.69](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.69) (2021-11-03)
+## [0.0.69](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.69) (2021-11-03)
 
 
 
@@ -11074,7 +11010,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11101,7 +11036,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.68](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.68) (2021-11-02)
+## [0.0.68](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.68) (2021-11-02)
 
 
 
@@ -11199,7 +11134,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11226,7 +11160,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.67](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.67) (2021-11-02)
+## [0.0.67](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.67) (2021-11-02)
 
 
 
@@ -11320,7 +11254,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11347,7 +11280,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.66](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.66) (2021-11-02)
+## [0.0.66](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.66) (2021-11-02)
 
 
 
@@ -11437,7 +11370,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11464,7 +11396,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.65](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.65) (2021-11-01)
+## [0.0.65](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.65) (2021-11-01)
 
 
 
@@ -11550,7 +11482,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11577,7 +11508,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.64](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.64) (2021-10-28)
+## [0.0.64](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.64) (2021-10-28)
 
 
 
@@ -11659,7 +11590,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11686,7 +11616,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.63](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.63) (2021-10-28)
+## [0.0.63](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.63) (2021-10-28)
 
 
 
@@ -11764,7 +11694,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11791,7 +11720,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.62](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.62) (2021-10-28)
+## [0.0.62](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.62) (2021-10-28)
 
 
 
@@ -11865,7 +11794,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11892,7 +11820,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.61](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.61) (2021-10-26)
+## [0.0.61](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.61) (2021-10-26)
 
 
 
@@ -11962,7 +11890,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -11989,7 +11916,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.60](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.60) (2021-10-22)
+## [0.0.60](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.60) (2021-10-22)
 
 
 
@@ -12055,7 +11982,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12082,7 +12008,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.59](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.59) (2021-10-20)
+## [0.0.59](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.59) (2021-10-20)
 
 
 
@@ -12144,7 +12070,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12172,7 +12097,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.58](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.58) (2021-10-20)
+## [0.0.58](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.58) (2021-10-20)
 
 
 
@@ -12230,7 +12155,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12257,7 +12181,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.57](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.57) (2021-10-15)
+## [0.0.57](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.57) (2021-10-15)
 
 
 
@@ -12311,7 +12235,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12339,7 +12262,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.56](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.56) (2021-10-13)
+## [0.0.56](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.56) (2021-10-13)
 
 
 
@@ -12389,7 +12312,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12416,7 +12338,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.55](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.55) (2021-10-13)
+## [0.0.55](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.55) (2021-10-13)
 
 
 
@@ -12462,7 +12384,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12489,7 +12410,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.54](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.54) (2021-10-13)
+## [0.0.54](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.54) (2021-10-13)
 
 
 
@@ -12531,7 +12452,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12558,7 +12478,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.53](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.53) (2021-10-13)
+## [0.0.53](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.53) (2021-10-13)
 
 
 
@@ -12596,7 +12516,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12623,7 +12542,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.52](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.52) (2021-10-13)
+## [0.0.52](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.52) (2021-10-13)
 
 
 
@@ -12657,7 +12576,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12685,7 +12603,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.51](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.51) (2021-10-13)
+## [0.0.51](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.51) (2021-10-13)
 
 
 
@@ -12715,7 +12633,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12742,7 +12659,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.50](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.50) (2021-10-12)
+## [0.0.50](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.50) (2021-10-12)
 
 
 
@@ -12768,7 +12685,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12795,7 +12711,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.49](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.49) (2021-10-12)
+## [0.0.49](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.49) (2021-10-12)
 
 
 
@@ -12817,7 +12733,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12844,7 +12759,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.48](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.48) (2021-10-06)
+## [0.0.48](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.48) (2021-10-06)
 
 
 
@@ -12862,7 +12777,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12889,7 +12803,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.47](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.47) (2021-10-06)
+## [0.0.47](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.47) (2021-10-06)
 
 
 
@@ -12903,7 +12817,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12930,7 +12843,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.46](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.46) (2021-09-30)
+## [0.0.46](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.46) (2021-09-30)
 
 
 
@@ -12940,7 +12853,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Bug Fixes
 
 * deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
 
 
 
@@ -12967,40 +12879,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.45](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.45) (2021-09-30)
-
-
-### Bug Fixes
-
-* deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
-* minor refactoring ([a0c287c](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a0c287ccf4678a315737c98961d1ea51394f24a8))
-
-
-
-## 0.0.43 (2021-09-24)
-
-
-
-## 0.0.42 (2021-09-23)
-
-
-
-## 0.0.41 (2021-09-23)
-
-
-
-## 0.0.40 (2021-09-23)
-
-
-### Reverts
-
-* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
-
-
-
-
-
-## [0.0.44](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.44) (2021-09-29)
+## [0.0.45](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.45) (2021-09-30)
 
 
 ### Bug Fixes
@@ -13032,7 +12911,16 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.43](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.43) (2021-09-24)
+## [0.0.44](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.44) (2021-09-29)
+
+
+### Bug Fixes
+
+* deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
+
+
+
+## 0.0.43 (2021-09-24)
 
 
 
@@ -13055,7 +12943,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.42) (2021-09-23)
+## [0.0.43](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.43) (2021-09-24)
+
+
+
+## 0.0.42 (2021-09-23)
 
 
 
@@ -13074,7 +12966,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.41) (2021-09-23)
+## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.42) (2021-09-23)
+
+
+
+## 0.0.41 (2021-09-23)
 
 
 
@@ -13089,7 +12985,22 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.40](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.40...@virtoshell/api-client@0.0.40) (2021-09-23)
+## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.41) (2021-09-23)
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+
+
+## [0.0.40](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.40...@virtoshell/ui-theme-dark@0.0.40) (2021-09-23)
 
 
 ### Reverts
@@ -13101,7 +13012,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.39](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.39) (2021-09-13)
+## [0.0.39](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.39) (2021-09-13)
 
 
 
@@ -13115,13 +13026,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 0.0.35 (2021-09-07)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
-## [0.0.38](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.38) (2021-09-09)
+## [0.0.38](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.38) (2021-09-09)
 
 
 
@@ -13135,13 +13046,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 0.0.35 (2021-09-07)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
-## [0.0.37](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.37) (2021-09-07)
+## [0.0.37](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.37) (2021-09-07)
 
 
 
@@ -13151,65 +13062,70 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 0.0.35 (2021-09-07)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
-## [0.0.36](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.36) (2021-09-07)
+## [0.0.36](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.36) (2021-09-07)
 
 
 
 ## 0.0.35 (2021-09-07)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
-## [0.0.35](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.35) (2021-09-07)
+## [0.0.35](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.35) (2021-09-07)
 
-**Note:** Version bump only for package @virtoshell/api-client
-
-
-
-
-
-## [0.0.34](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.34) (2021-09-07)
-
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
-## [0.0.33](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.33) (2021-09-02)
+## [0.0.34](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.34) (2021-09-07)
 
-**Note:** Version bump only for package @virtoshell/api-client
-
-
-
-
-
-## [0.0.32](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.32) (2021-08-31)
-
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
-## [0.0.31](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/api-client@0.0.30...@virtoshell/api-client@0.0.31) (2021-08-30)
+## [0.0.33](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.33) (2021-09-02)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
+
+
+
+
+
+## [0.0.32](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.32) (2021-08-31)
+
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
+
+
+
+
+
+## [0.0.31](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui-theme-dark@0.0.30...@virtoshell/ui-theme-dark@0.0.31) (2021-08-30)
+
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
 
 
 ## 0.0.29 (2021-08-26)
+
+
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
 
 
 ### Features
@@ -13220,13 +13136,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 ## 0.0.29 (2021-08-20)
-
-
-### Features
-
-* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
-* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
-* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
 
 
 
@@ -13257,6 +13166,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## 0.0.30 (2021-08-26)
 
 
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
+
+
 ### Features
 
 * typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
@@ -13265,13 +13179,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 ## 0.0.29 (2021-08-20)
-
-
-### Features
-
-* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
-* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
-* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
 
 
 
@@ -13301,12 +13208,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
 
-
-### Features
-
-* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
-* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
-* merge from main ([6dbc94a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6dbc94a00e5df3578ca140ff719df1940b73437a))
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13314,7 +13216,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.28](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.28) (2021-08-19)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13322,7 +13224,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.27](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.27) (2021-08-19)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13330,7 +13232,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.26](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.26) (2021-08-19)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13338,7 +13240,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.25](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.25) (2021-08-12)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13346,7 +13248,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.24](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.24) (2021-08-12)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13354,7 +13256,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.23](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.23) (2021-08-11)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13362,7 +13264,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.22) (2021-08-11)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13370,7 +13272,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.21](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.21) (2021-08-11)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13378,7 +13280,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.20](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.20) (2021-08-11)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13386,7 +13288,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.19) (2021-08-11)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13394,7 +13296,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.18](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.18) (2021-08-11)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13402,7 +13304,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.17](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.17) (2021-08-10)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13410,7 +13312,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.16](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.16) (2021-08-10)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13418,7 +13320,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.15](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.15) (2021-08-09)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13426,7 +13328,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.14](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.13...v0.0.14) (2021-08-05)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13434,7 +13336,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.13](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.12...v0.0.13) (2021-08-05)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13442,7 +13344,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.12](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.11...v0.0.12) (2021-08-05)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13461,7 +13363,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.10](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.9...v0.0.10) (2021-08-04)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13491,7 +13393,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.7](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.6...v0.0.7) (2021-07-28)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13499,7 +13401,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.6](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.5...v0.0.6) (2021-07-28)
 
-**Note:** Version bump only for package @virtoshell/api-client
+**Note:** Version bump only for package @virtoshell/ui-theme-dark
 
 
 
@@ -13511,14 +13413,3 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * package renaming, separate themes ([bbf6027](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bbf602708a4bf8575f58db1ce32e0dd0a0fa7c8b))
-
-
-
-
-
-## [0.0.4](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.3...v0.0.4) (2021-07-21)
-
-
-### Features
-
-* commitlint, packages cleanup ([0e7f5d5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0e7f5d56aad4bd32fcca9aab8e0ed9ba84a5f9f2))

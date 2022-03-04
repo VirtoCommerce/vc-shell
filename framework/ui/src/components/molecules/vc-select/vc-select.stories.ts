@@ -20,4 +20,6 @@ const Template: Story = (args) => ({
 
 export const Select = Template.bind({});
 Select.storyName = "vc-select";
-Select.args = {};
+Select.args = {
+  options: [{ id: 1, title: "Option" }],
+};

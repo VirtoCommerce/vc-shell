@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-marketing-portal",
-  "version": "0.0.116",
+  "version": "0.0.123",
   "private": true,
   "scripts": {
     "serve": "vite serve",
@@ -8,10 +8,10 @@
   },
   "devDependencies": {
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^0.0.116",
-    "@virtoshell/core": "^0.0.116",
-    "@virtoshell/mod-assets": "^0.0.116",
-    "@virtoshell/ui": "^0.0.116",
+    "@virtoshell/api-client": "^0.0.123",
+    "@virtoshell/core": "^0.0.123",
+    "@virtoshell/mod-assets": "^0.0.123",
+    "@virtoshell/ui": "^0.0.123",
     "@vue/compiler-sfc": "^3.0.0",
     "less": "^3.0.4",
     "lodash-es": "^4.17.21",

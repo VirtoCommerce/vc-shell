@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-vendor-portal",
-  "version": "0.0.116",
+  "version": "0.0.123",
   "private": true,
   "scripts": {
     "serve": "vite serve",
@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^0.0.116",
-    "@virtoshell/core": "^0.0.116",
-    "@virtoshell/mod-assets": "^0.0.116",
-    "@virtoshell/ui": "^0.0.116",
+    "@virtoshell/api-client": "^0.0.123",
+    "@virtoshell/core": "^0.0.123",
+    "@virtoshell/mod-assets": "^0.0.123",
+    "@virtoshell/ui": "^0.0.123",
     "@microsoft/signalr": "^5.0.7",
     "moment": "^2.29.1",
     "vee-validate": "^4.5.5",

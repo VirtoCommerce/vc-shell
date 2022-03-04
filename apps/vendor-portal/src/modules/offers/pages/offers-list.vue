@@ -40,11 +40,7 @@
 
       <template v-slot:mobile-item="itemData">
         <div
-          class="
-            offers-list__mobile-item
-            vc-padding-vertical_m
-            vc-padding-horizontal_l
-          "
+          class="offers-list__mobile-item vc-padding-vertical_m vc-padding-horizontal_l"
         >
           <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
             <vc-image
@@ -61,12 +57,7 @@
             </div>
           </div>
           <div
-            class="
-              vc-margin-top_m
-              vc-fill_width
-              vc-flex
-              vc-flex-justify_space-between
-            "
+            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
           >
             <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</vc-hint>
@@ -82,12 +73,7 @@
             </div>
           </div>
           <div
-            class="
-              vc-margin-top_m
-              vc-fill_width
-              vc-flex
-              vc-flex-justify_space-between
-            "
+            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
           >
             <div class="vc-ellipsis vc-flex-grow_2 vc-margin-right_s">
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</vc-hint>
@@ -449,8 +435,7 @@ export default defineComponent({
 
     function handleSalePrice(price: number | undefined) {
       if (!price) {
-        const emptyPrice = 0;
-        return emptyPrice.toFixed(2);
+        return "N/A";
       } else {
         return price.toFixed(2);
       }

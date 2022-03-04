@@ -10,7 +10,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -18,6 +19,13 @@ export default defineComponent({
       type: Function,
       default: undefined,
     },
+  },
+  setup() {
+    const router = useRouter();
+    onMounted(() => {
+      router.push("/");
+    });
+    return {};
   },
 });
 </script>

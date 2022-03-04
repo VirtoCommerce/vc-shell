@@ -54,6 +54,7 @@ import {
   reactive,
   inject,
   shallowRef,
+  Ref,
 } from "vue";
 import LoginPage from "./Login.vue";
 import DashboardPage from "./Dashboard.vue";
@@ -70,10 +71,11 @@ import {
   useNotifications,
 } from "@virtoshell/core";
 import { IBladeToolbar, IMenuItems } from "../types";
-import NotificationDropdown from "../components/notification-dropdown.vue";
+import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
+import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   name: "App",
@@ -101,12 +103,14 @@ export default defineComponent({
       dismiss,
       markAsReaded,
     } = useNotifications();
+    const route = useRoute();
+    const router = useRouter();
     const isAuthorized = ref(false);
     const isReady = ref(false);
     const isChangePasswordActive = ref(false);
     const pages = inject("pages");
-    const isDesktop = inject("isDesktop");
-    const isMobile = inject("isMobile");
+    const isDesktop = inject<Ref<boolean>>("isDesktop");
+    const isMobile = inject<Ref<boolean>>("isMobile");
 
     signalr.on("Send", (message: PushNotification) => {
       addNotification(message);
@@ -117,7 +121,7 @@ export default defineComponent({
       await loadUser();
       isReady.value = true;
       if (!isAuthorized.value) {
-        window?.history?.pushState(null, "", "/login");
+        router.push("/login");
       }
     });
 
@@ -144,7 +148,13 @@ export default defineComponent({
             }))
           ),
         },
-        isVisible: isDesktop,
+        isVisible: computed(() => {
+          return isDesktop.value
+            ? isDesktop.value
+            : isMobile.value
+            ? route.path === "/"
+            : false;
+        }),
       },
       {
         isAccent: computed(() => {
@@ -176,6 +186,7 @@ export default defineComponent({
               title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
               async clickHandler() {
                 signOut();
+                router.push("/login");
               },
             },
           ],
@@ -205,7 +216,7 @@ export default defineComponent({
         isVisible: true,
         clickHandler(app) {
           app.openDashboard();
-          window?.history?.pushState(null, "", "/");
+          router.push("/");
         },
       },
       {
@@ -246,7 +257,7 @@ export default defineComponent({
         isVisible: isMobile,
         clickHandler() {
           signOut();
-          window?.history?.pushState(null, "", "/login");
+          router.push("/login");
         },
       },
     ]);

@@ -1,10 +1,19 @@
 <template>
   <!-- Money cell -->
   <div v-if="cell.type === 'money'" class="vc-table-cell_money">
-    <span class="vc-table-cell_money-int">{{ Math.trunc(Number(value)) }}</span
-    ><span class="vc-table-cell_money-fract"
-      >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2) }}</span
-    >
+    <template v-if="value > 0">
+      <span class="vc-table-cell_money-int">{{
+        Math.trunc(Number(value))
+      }}</span
+      ><span class="vc-table-cell_money-fract"
+        >.{{
+          `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2)
+        }}</span
+      >
+    </template>
+    <template v-else>
+      <span class="vc-table-cell_money-int">N/A</span>
+    </template>
   </div>
 
   <!-- Date ago cell -->

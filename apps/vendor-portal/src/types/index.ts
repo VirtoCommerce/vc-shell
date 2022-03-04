@@ -1,4 +1,5 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
+import { PushNotification } from "@virtoshell/api-client";
 
 interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;
@@ -60,7 +61,14 @@ interface INotificationActions {
   disabled?: boolean | ComputedRef<boolean>;
 }
 
-export type {
+interface IProductPushNotification extends PushNotification {
+  profileName?: string;
+  newStatus?: string;
+  productId?: string;
+  productName?: string;
+}
+
+export {
   IComponent,
   ITableColumns,
   IActionBuilderResult,

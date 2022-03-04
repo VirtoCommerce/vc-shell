@@ -76,11 +76,12 @@ interface IUseImport {
   updateImportProfile(details: ImportProfile): void;
   deleteImportProfile(args: { id: string }): void;
   updateStatus(notification: ImportPushNotification | ImportRunHistory): void;
+  getLongRunning(args: { id: string }): void;
 }
 
 export default (): IUseImport => {
   const logger = useLogger();
-  const { popupNotifications } = useNotifications();
+  const { notifications } = useNotifications();
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
@@ -97,7 +98,7 @@ export default (): IUseImport => {
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
-    [() => popupNotifications, () => importStarted],
+    [() => notifications, () => importStarted],
     ([newNotifications, isStarted]) => {
       if (isStarted.value && importStatus.value) {
         const notification = newNotifications.value.find(
@@ -364,6 +365,17 @@ export default (): IUseImport => {
     }
   }
 
+  function getLongRunning(args: { id: string }) {
+    const job = notifications.value.find((x: ImportPushNotification) => {
+      return x.profileId === args.id;
+    }) as ImportPushNotification;
+
+    if (job && !job.finished) {
+      importStarted.value = true;
+      updateStatus(job);
+    }
+  }
+
   return {
     loading: computed(() => loading.value),
     uploadedFile: computed(() => uploadedFile.value),
@@ -394,5 +406,6 @@ export default (): IUseImport => {
     deleteImportProfile,
     setImporter,
     updateStatus,
+    getLongRunning,
   };
 };

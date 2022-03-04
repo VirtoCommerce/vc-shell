@@ -2,7 +2,7 @@
   "name": "@virtoshell/mod-assets",
   "version": "0.0.116",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build "
   },
   "main": "./dist/mod-assets.cjs.js",
   "types": "./dist/index.d.ts",
@@ -11,12 +11,13 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
+    "less": "^3.0.4",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
     "@virtoshell/api-client": "^0.0.116",
     "@virtoshell/core": "^0.0.116",
     "@virtoshell/ui": "^0.0.116",
-    "less": "^3.0.4",
-    "lodash-es": "^4.17.21",
-    "typescript": "^4.3.5",
     "vue": "^3.0.0"
   }
 }

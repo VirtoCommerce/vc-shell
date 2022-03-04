@@ -40,12 +40,7 @@
           v-model="form.confirmPassword"
         ></vc-input>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding-top_s
-          "
+          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
         >
           <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
           <vc-button
@@ -83,8 +78,8 @@
   </vc-popup>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from "vue";
+<script lang="ts" setup>
+import { reactive, defineEmits } from "vue";
 import { useUser } from "@virtoshell/core";
 import { IIdentityError } from "@virtoshell/api-client";
 
@@ -96,46 +91,32 @@ interface IChangePassForm {
   confirmPassword: string;
 }
 
-export default defineComponent({
-  name: "ChangePassword",
-  setup(props, { emit }) {
-    const { changeUserPassword, loading, validatePassword } = useUser();
-    const form = reactive<IChangePassForm>({
-      isValid: false,
-      errors: [],
-      currentPassword: "",
-      password: "",
-      confirmPassword: "",
-    });
-
-    async function changePassword() {
-      const result = await changeUserPassword(
-        form.currentPassword,
-        form.password
-      );
-      if (result.succeeded) {
-        emit("close");
-      } else {
-        form.errors = result.errors;
-      }
-    }
-
-    async function validate() {
-      form.errors = (await validatePassword(form.password)).errors;
-      if (form.confirmPassword !== form.password) {
-        form.errors.push({ code: "Repeat-password" });
-      }
-      form.isValid = form.errors.length == 0;
-    }
-
-    return {
-      loading,
-      form,
-      changePassword,
-      validate,
-    };
-  },
+const emit = defineEmits(["close"]);
+const { changeUserPassword, loading, validatePassword } = useUser();
+const form = reactive<IChangePassForm>({
+  isValid: false,
+  errors: [],
+  currentPassword: "",
+  password: "",
+  confirmPassword: "",
 });
+
+async function changePassword() {
+  const result = await changeUserPassword(form.currentPassword, form.password);
+  if (result.succeeded) {
+    emit("close");
+  } else {
+    form.errors = result.errors;
+  }
+}
+
+async function validate() {
+  form.errors = (await validatePassword(form.password)).errors;
+  if (form.confirmPassword !== form.password) {
+    form.errors.push({ code: "Repeat-password" });
+  }
+  form.isValid = form.errors.length == 0;
+}
 </script>
 
 <style lang="less" scoped></style>

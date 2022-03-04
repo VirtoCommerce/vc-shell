@@ -10,8 +10,8 @@ export function init(app: App): App {
   console.debug(`[@virtoshell/core#useLogger:init] - Entry point`);
   app.use(
     createLogger({
-      enabled: process.env.VUE_APP_LOG_ENABLED === "true",
-      level: (process.env.VUE_APP_LOG_LEVEL ?? "debug") as LogLevel,
+      enabled: import.meta.env.APP_LOG_ENABLED === "true",
+      level: (import.meta.env.APP_LOG_LEVEL ?? "debug") as LogLevel,
     })
   );
 

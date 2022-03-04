@@ -32,33 +32,25 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref, defineProps } from "vue";
 
-export default defineComponent({
-  name: "LanguageSelector",
-  props: {
-    title: {
-      type: String,
-      default: "",
-    },
-    value: {
-      type: String,
-      default: "",
-    },
-    languageItems: {
-      type: Array,
-      default: () => [],
-    },
+defineProps({
+  title: {
+    type: String,
+    default: "",
   },
-  setup() {
-    const isDropActive = ref(false);
-
-    return {
-      isDropActive,
-    };
+  value: {
+    type: String,
+    default: "",
+  },
+  languageItems: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const isDropActive = ref(false);
 </script>
 
 <style lang="less" scoped>

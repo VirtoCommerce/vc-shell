@@ -75,11 +75,7 @@
                     <vc-col
                       v-for="(badge, i) in importBadges"
                       :key="i"
-                      class="
-                        vc-flex vc-flex-row
-                        vc-flex-align_center
-                        vc-padding_xl
-                      "
+                      class="vc-flex vc-flex-row vc-flex-align_center vc-padding_xl"
                     >
                       <vc-icon
                         :icon="badge.icon"
@@ -191,8 +187,8 @@
   </vc-blade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
+<script lang="ts" setup>
+import { computed, defineEmits, defineProps, onMounted, ref, watch } from "vue";
 import { useI18n, useUser } from "@virtoshell/core";
 import {
   IBladeToolbar,
@@ -215,442 +211,391 @@ interface IImportBadges {
   description?: string;
 }
 
-export default defineComponent({
-  url: "importer",
-  components: {
-    ImportStatus,
-    ImportPopup,
-    ImportUploadStatus,
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
 
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+  closable: {
+    type: Boolean,
+    default: true,
   },
-  emits: ["page:open", "page:close", "parent:call"],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const { getAccessToken } = useUser();
-    const {
-      loading: importLoading,
-      importHistory,
-      uploadedFile,
-      importStatus,
-      isValid,
-      profile,
-      historyPages,
-      totalHistoryCount,
-      currentPage,
-      cancelImport,
-      clearImport,
-      previewData,
-      setFile,
-      startImport,
-      loadImportProfile,
-      fetchImportHistory,
-      fetchDataImporters,
-      updateStatus,
-    } = useImport();
-    const locale = window.navigator.language;
-    const fileLoading = ref(false);
-    const preview = ref<ImportDataPreview>();
-    const importPreview = ref(false);
-    const popupColumns = ref<ITableColumns[]>([]);
-    const popupItems = ref<Record<string, unknown>[]>([]);
-    const errorMessage = ref("");
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "edit",
-        title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
-        icon: "fas fa-pencil-alt",
-        clickHandler() {
-          emit("page:open", {
-            component: ImportProfileDetails,
-            param: profile.value.id,
-          });
-        },
-        isVisible: computed(() => profile.value),
-        disabled: computed(() => importLoading.value || !profile.value.name),
-      },
-      {
-        id: "cancel",
-        title: computed(() =>
-          t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.CANCEL")
-        ),
-        icon: "fas fa-ban",
-        async clickHandler() {
-          if (importStatus.value?.inProgress) {
-            await cancelImport();
-            emit("page:close");
-          }
-        },
-        disabled: computed(() => !importStatus.value?.inProgress),
-        isVisible: computed(() => !!props.param),
-      },
-      {
-        id: "newRun",
-        title: computed(() =>
-          t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.NEW_RUN")
-        ),
-        icon: "fas fa-plus",
-        clickHandler() {
-          emit("parent:call", {
-            method: "openImporter",
-            args: props.param,
-          });
-        },
-        disabled: computed(() => importStatus.value?.inProgress),
-        isVisible: computed(() => !!(importStatus.value && profile.value.name)),
-      },
-    ]);
-    const columns = ref<ITableColumns[]>([
-      {
-        id: "profileName", // temp
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
-        alwaysVisible: true,
-      },
-      {
-        id: "createdBy",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
-        width: 147,
-      },
-      {
-        id: "finished",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 147,
-      },
-      {
-        id: "createdDate",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
-        width: 147,
-        type: "date",
-        format: "L LT",
-      },
-      {
-        id: "errorsCount",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
-        width: 118,
-        sortable: true,
-      },
-    ]);
 
-    const skippedColumns = ref<ITableColumns[]>([
-      {
-        id: "errors",
-        title: computed(() =>
-          t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC")
-        ),
-      },
-    ]);
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    const importBadges = computed((): IImportBadges[] => {
-      return [
-        {
-          id: "clock",
-          icon: "far fa-clock",
-          color: "#A9BFD2",
-          title:
-            t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
-            " " +
-            ("created" in importStatus.value.notification
-              ? moment(importStatus.value.notification.created)
-                  .locale(locale)
-                  .format("LTS")
-              : "createdDate" in importStatus.value.notification
-              ? moment(importStatus.value.notification.createdDate)
-                  .locale(locale)
-                  .format("LTS")
-              : null),
-          description:
-            "created" in importStatus.value.notification
-              ? moment(importStatus.value.notification.created)
-                  .locale(locale)
-                  .fromNow()
-              : "createdDate" in importStatus.value.notification
-              ? moment(importStatus.value.notification.createdDate)
-                  .locale(locale)
-                  .fromNow()
-              : null,
-        },
-        {
-          id: "linesRead",
-          icon: "fas fa-check-circle",
-          color: "#87B563",
-          title: importStatus.value.notification.totalCount,
-          description: t(
-            "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ"
-          ),
-        },
-        {
-          id: "linesImported",
-          icon: "fas fa-check-circle",
-          color: "#87B563",
-          title:
-            "errorCount" in importStatus.value.notification
-              ? importStatus.value.notification.processedCount -
-                  importStatus.value.notification.errorCount >=
-                0
-                ? importStatus.value.notification.processedCount -
-                  importStatus.value.notification.errorCount
-                : 0
-              : "errorsCount" in importStatus.value.notification
-              ? importStatus.value.notification.processedCount -
-                  importStatus.value.notification.errorsCount >=
-                0
-                ? importStatus.value.notification.processedCount -
-                  importStatus.value.notification.errorsCount
-                : 0
-              : 0,
-          description: t(
-            "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"
-          ),
-        },
-        {
-          id: "skipped",
-          icon: "fas fa-exclamation-circle",
-          color: "#FFBB0D",
-          title:
-            "errorCount" in importStatus.value.notification
-              ? importStatus.value.notification.errorCount
-              : "errorsCount" in importStatus.value.notification
-              ? importStatus.value.notification.errorsCount
-              : 0,
-          description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
-        },
-      ];
-    });
-
-    const uploadActions = ref<INotificationActions[]>([
-      {
-        name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE")),
-        clickHandler() {
-          clearImport();
-          clearErrorMessage();
-        },
-        outline: true,
-        variant: "danger",
-        isVisible: computed(
-          () => !(importStatus.value && importStatus.value.jobId)
-        ),
-      },
-      {
-        name: computed(() =>
-          t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW")
-        ),
-        async clickHandler() {
-          try {
-            preview.value = await previewData();
-            popupItems.value = [];
-            popupColumns.value = [];
-            if (
-              preview.value &&
-              preview.value.records &&
-              preview.value.records.length
-            ) {
-              for (const recordKey in preview.value.records[0]) {
-                popupColumns.value.push({
-                  id: recordKey,
-                  title: recordKey,
-                  width: 130,
-                });
-              }
-              preview.value.records.forEach((record) => {
-                popupItems.value.push(record);
-              });
-              importPreview.value = true;
-            }
-          } catch (e) {
-            errorMessage.value = e.message;
-          }
-        },
-        variant: "primary",
-        outline: true,
-        isVisible: computed(() => isValid.value),
-      },
-      {
-        name: computed(() =>
-          t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")
-        ),
-        async clickHandler() {
-          await start();
-        },
-        outline: false,
-        variant: "primary",
-        isVisible: computed(() => isValid.value),
-        disabled: computed(
-          () =>
-            (importStatus.value && importStatus.value.inProgress) ||
-            importLoading.value
-        ),
-      },
-    ]);
-
-    const skippedColorVariant = computed(() => {
-      return !(
-        importStatus.value &&
-        importStatus.value.notification &&
-        importStatus.value.notification.errors &&
-        importStatus.value.notification.errors.length
-      )
-        ? "success"
-        : "danger";
-    });
-
-    const progressbarVariant = computed(() =>
-      inProgress.value ? "striped" : "default"
-    );
-
-    const inProgress = computed(
-      () => (importStatus.value && importStatus.value.inProgress) || false
-    );
-
-    watch(importStatus, (newVal, oldVal) => {
-      if (!newVal.inProgress && oldVal) {
-        emit("parent:call", { method: "reload" });
-      }
-    });
-
-    onMounted(async () => {
-      if (props.param) {
-        await fetchDataImporters();
-        await loadImportProfile({ id: props.param });
-        await fetchImportHistory({ profileId: props.param });
-      }
-      if (props.options && props.options.importJobId) {
-        const historyItem =
-          importHistory.value &&
-          importHistory.value.find(
-            (x) => x.jobId === props.options.importJobId
-          );
-        updateStatus(historyItem);
-      }
-    });
-
-    function clearErrorMessage() {
-      errorMessage.value = "";
-    }
-
-    async function uploadCsv(files: File) {
-      try {
-        fileLoading.value = true;
-        const formData = new FormData();
-        formData.append("file", files[0]);
-        const authToken = await getAccessToken();
-        const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        });
-        const response = await result.json();
-        if (response?.length) {
-          setFile(response[0]);
-        }
-        files = null;
-      } catch (e) {
-        errorMessage.value = e.message;
-        setFile({
-          name: files[0].name,
-          size: files[0].size / (1024 * 1024),
-        });
-      } finally {
-        fileLoading.value = false;
-      }
-    }
-
-    async function start() {
-      try {
-        errorMessage.value = "";
-        await startImport();
-      } catch (e) {
-        errorMessage.value = e.message;
-      }
-    }
-
-    function initializeImporting() {
-      importPreview.value = false;
-      start();
-    }
-
-    function reloadParent() {
-      emit("parent:call", {
-        method: "reload",
-      });
-      emit("page:close");
-    }
-
-    const sampleTemplateUrl = computed(() => {
-      return profile.value &&
-        profile.value.importer &&
-        profile.value.importer.metadata
-        ? profile.value.importer.metadata.sampleCsvUrl
-        : "#";
-    });
-
-    async function onPaginationClick(page: number) {
-      await fetchImportHistory({
-        skip: (page - 1) * 15,
-        profileId: props.param,
-      });
-    }
-
-    return {
-      bladeToolbar,
-      columns,
-      moment,
-      fileLoading,
-      bladeLoading: computed(() => importLoading.value),
-      importHistory,
-      uploadedFile,
-      uploadActions,
-      importPreview,
-      popupColumns,
-      popupItems,
-      importStatus,
-      isValid,
-      errorMessage,
-      importBadges,
-      skippedColumns,
-      profile,
-      profileDetails: computed(() => profile.value),
-      importLoading,
-      sampleTemplateUrl,
-      skippedColorVariant,
-      importStarted: computed(
-        () => !!(importStatus.value && importStatus.value.jobId)
-      ),
-      inProgress,
-      locale,
-      previewTotalNum: computed(() => preview.value.totalCount),
-      progressbarVariant,
-      historyPages,
-      totalHistoryCount,
-      currentPage,
-      initializeImporting,
-      uploadCsv,
-      cancelImport,
-      reloadParent,
-      onPaginationClick,
-    };
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+const emit = defineEmits(["page:open", "page:close", "parent:call"]);
+const { t } = useI18n();
+const { getAccessToken } = useUser();
+const {
+  loading: importLoading,
+  importHistory,
+  uploadedFile,
+  importStatus,
+  isValid,
+  profile,
+  historyPages,
+  totalHistoryCount,
+  currentPage,
+  cancelImport,
+  clearImport,
+  previewData,
+  setFile,
+  startImport,
+  loadImportProfile,
+  fetchImportHistory,
+  fetchDataImporters,
+  updateStatus,
+} = useImport();
+const locale = window.navigator.language;
+const fileLoading = ref(false);
+const preview = ref<ImportDataPreview>();
+const importPreview = ref(false);
+const popupColumns = ref<ITableColumns[]>([]);
+const popupItems = ref<Record<string, unknown>[]>([]);
+const errorMessage = ref("");
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "edit",
+    title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
+    icon: "fas fa-pencil-alt",
+    clickHandler() {
+      emit("page:open", {
+        component: ImportProfileDetails,
+        param: profile.value.id,
+      });
+    },
+    isVisible: computed(() => profile.value),
+    disabled: computed(() => importLoading.value || !profile.value.name),
+  },
+  {
+    id: "cancel",
+    title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.CANCEL")),
+    icon: "fas fa-ban",
+    async clickHandler() {
+      if (importStatus.value?.inProgress) {
+        await cancelImport();
+        emit("page:close");
+      }
+    },
+    disabled: computed(() => !importStatus.value?.inProgress),
+    isVisible: computed(() => !!props.param),
+  },
+  {
+    id: "newRun",
+    title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.NEW_RUN")),
+    icon: "fas fa-plus",
+    clickHandler() {
+      emit("parent:call", {
+        method: "openImporter",
+        args: props.param,
+      });
+    },
+    disabled: computed(() => importStatus.value?.inProgress),
+    isVisible: computed(() => !!(importStatus.value && profile.value.name)),
+  },
+]);
+const columns = ref<ITableColumns[]>([
+  {
+    id: "profileName", // temp
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
+    alwaysVisible: true,
+  },
+  {
+    id: "createdBy",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
+    width: 147,
+  },
+  {
+    id: "finished",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 147,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
+    width: 147,
+    type: "date",
+    format: "L LT",
+  },
+  {
+    id: "errorsCount",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
+    width: 118,
+    sortable: true,
+  },
+]);
+
+const skippedColumns = ref<ITableColumns[]>([
+  {
+    id: "errors",
+    title: computed(() =>
+      t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC")
+    ),
+  },
+]);
+
+const importBadges = computed((): IImportBadges[] => {
+  return [
+    {
+      id: "clock",
+      icon: "far fa-clock",
+      color: "#A9BFD2",
+      title:
+        t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
+        " " +
+        ("created" in importStatus.value.notification
+          ? moment(importStatus.value.notification.created)
+              .locale(locale)
+              .format("LTS")
+          : "createdDate" in importStatus.value.notification
+          ? moment(importStatus.value.notification.createdDate)
+              .locale(locale)
+              .format("LTS")
+          : null),
+      description:
+        "created" in importStatus.value.notification
+          ? moment(importStatus.value.notification.created)
+              .locale(locale)
+              .fromNow()
+          : "createdDate" in importStatus.value.notification
+          ? moment(importStatus.value.notification.createdDate)
+              .locale(locale)
+              .fromNow()
+          : null,
+    },
+    {
+      id: "linesRead",
+      icon: "fas fa-check-circle",
+      color: "#87B563",
+      title: importStatus.value.notification.totalCount,
+      description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.LINES_READ"),
+    },
+    {
+      id: "linesImported",
+      icon: "fas fa-check-circle",
+      color: "#87B563",
+      title:
+        "errorCount" in importStatus.value.notification
+          ? importStatus.value.notification.processedCount -
+              importStatus.value.notification.errorCount >=
+            0
+            ? importStatus.value.notification.processedCount -
+              importStatus.value.notification.errorCount
+            : 0
+          : "errorsCount" in importStatus.value.notification
+          ? importStatus.value.notification.processedCount -
+              importStatus.value.notification.errorsCount >=
+            0
+            ? importStatus.value.notification.processedCount -
+              importStatus.value.notification.errorsCount
+            : 0
+          : 0,
+      description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"),
+    },
+    {
+      id: "skipped",
+      icon: "fas fa-exclamation-circle",
+      color: "#FFBB0D",
+      title:
+        "errorCount" in importStatus.value.notification
+          ? importStatus.value.notification.errorCount
+          : "errorsCount" in importStatus.value.notification
+          ? importStatus.value.notification.errorsCount
+          : 0,
+      description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.SKIPPED"),
+    },
+  ];
+});
+
+const uploadActions = ref<INotificationActions[]>([
+  {
+    name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE")),
+    clickHandler() {
+      clearImport();
+      clearErrorMessage();
+    },
+    outline: true,
+    variant: "danger",
+    isVisible: computed(
+      () => !(importStatus.value && importStatus.value.jobId)
+    ),
+  },
+  {
+    name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW")),
+    async clickHandler() {
+      try {
+        preview.value = await previewData();
+        popupItems.value = [];
+        popupColumns.value = [];
+        if (
+          preview.value &&
+          preview.value.records &&
+          preview.value.records.length
+        ) {
+          for (const recordKey in preview.value.records[0]) {
+            popupColumns.value.push({
+              id: recordKey,
+              title: recordKey,
+              width: 130,
+            });
+          }
+          preview.value.records.forEach((record) => {
+            popupItems.value.push(record);
+          });
+          importPreview.value = true;
+        }
+      } catch (e) {
+        errorMessage.value = e.message;
+      }
+    },
+    variant: "primary",
+    outline: true,
+    isVisible: computed(() => isValid.value),
+  },
+  {
+    name: computed(() =>
+      t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")
+    ),
+    async clickHandler() {
+      await start();
+    },
+    outline: false,
+    variant: "primary",
+    isVisible: computed(() => isValid.value),
+    disabled: computed(
+      () =>
+        (importStatus.value && importStatus.value.inProgress) ||
+        importLoading.value
+    ),
+  },
+]);
+
+const skippedColorVariant = computed(() => {
+  return !(
+    importStatus.value &&
+    importStatus.value.notification &&
+    importStatus.value.notification.errors &&
+    importStatus.value.notification.errors.length
+  )
+    ? "success"
+    : "danger";
+});
+
+const progressbarVariant = computed(() =>
+  inProgress.value ? "striped" : "default"
+);
+
+const inProgress = computed(
+  () => (importStatus.value && importStatus.value.inProgress) || false
+);
+
+const bladeLoading = computed(() => importLoading.value);
+
+const profileDetails = computed(() => profile.value);
+
+const importStarted = computed(
+  () => !!(importStatus.value && importStatus.value.jobId)
+);
+
+const previewTotalNum = computed(() => preview.value.totalCount);
+
+watch(importStatus, (newVal, oldVal) => {
+  if (!newVal.inProgress && oldVal) {
+    emit("parent:call", { method: "reload" });
+  }
+});
+
+onMounted(async () => {
+  if (props.param) {
+    await fetchDataImporters();
+    await loadImportProfile({ id: props.param });
+    await fetchImportHistory({ profileId: props.param });
+  }
+  if (props.options && props.options.importJobId) {
+    const historyItem =
+      importHistory.value &&
+      importHistory.value.find((x) => x.jobId === props.options.importJobId);
+    updateStatus(historyItem);
+  }
+});
+
+function clearErrorMessage() {
+  errorMessage.value = "";
+}
+
+async function uploadCsv(files: File) {
+  try {
+    fileLoading.value = true;
+    const formData = new FormData();
+    formData.append("file", files[0]);
+    const authToken = await getAccessToken();
+    const result = await fetch(`/api/platform/assets?folderUrl=/tmp`, {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+    const response = await result.json();
+    if (response?.length) {
+      setFile(response[0]);
+    }
+    files = null;
+  } catch (e) {
+    errorMessage.value = e.message;
+    setFile({
+      name: files[0].name,
+      size: files[0].size / (1024 * 1024),
+    });
+  } finally {
+    fileLoading.value = false;
+  }
+}
+
+async function start() {
+  try {
+    errorMessage.value = "";
+    await startImport();
+  } catch (e) {
+    errorMessage.value = e.message;
+  }
+}
+
+function initializeImporting() {
+  importPreview.value = false;
+  start();
+}
+
+function reloadParent() {
+  emit("parent:call", {
+    method: "reload",
+  });
+  emit("page:close");
+}
+
+const sampleTemplateUrl = computed(() => {
+  return profile.value &&
+    profile.value.importer &&
+    profile.value.importer.metadata
+    ? profile.value.importer.metadata.sampleCsvUrl
+    : "#";
+});
+
+async function onPaginationClick(page: number) {
+  await fetchImportHistory({
+    skip: (page - 1) * 15,
+    profileId: props.param,
+  });
+}
 </script>
 
 <style lang="less">

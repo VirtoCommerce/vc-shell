@@ -68,7 +68,21 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import {
+  defineComponent,
+  computed,
+  defineProps,
+  defineEmits,
+  onMounted,
+  ref,
+} from "vue";
+
+export default defineComponent({
+  url: "import",
+});
+</script>
+
+<script lang="ts" setup>
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import useImport from "../composables/useImport";
@@ -77,196 +91,169 @@ import ImportNew from "./import-new.vue";
 import { ImportRunHistory } from "../../../api_client";
 import ImportStatus from "../components/ImportStatus.vue";
 
-export default defineComponent({
-  components: { ImportStatus },
-
-  url: "import",
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
-  emits: ["page:open"],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const {
-      importHistory,
-      historyPages,
-      totalHistoryCount,
-      importProfiles,
-      loading,
-      currentPage,
-      fetchImportHistory,
-      fetchImportProfiles,
-    } = useImport();
-    const bladeWidth = ref(50);
-    const selectedProfileId = ref();
-    const selectedItemId = ref();
 
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "refresh",
-        title: computed(() =>
-          t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.REFRESH")
-        ),
-        icon: "fas fa-sync-alt",
-        async clickHandler() {
-          await reload();
-        },
-      },
-      {
-        id: "new",
-        title: computed(() =>
-          t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE")
-        ),
-        icon: "fas fa-plus",
-        clickHandler() {
-          newProfile();
-        },
-      },
-    ]);
-    const columns = ref<ITableColumns[]>([
-      {
-        id: "profileName", // temp
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
-        alwaysVisible: true,
-        width: 147,
-      },
-      {
-        id: "createdBy",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
-        width: 147,
-      },
-      {
-        id: "finished",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 147,
-      },
-      {
-        id: "createdDate",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
-        width: 147,
-        type: "date",
-        format: "L LT",
-      },
-      {
-        id: "errorsCount",
-        title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
-        width: 118,
-        sortable: true,
-      },
-    ]);
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    onMounted(async () => {
-      await reload();
-      if (props.param) {
-        selectedProfileId.value = props.param;
-      }
-      if (props.options && props.options.importJobId) {
-        const historyItem = importHistory.value.find(
-          (x) => x.jobId === props.options.importJobId
-        );
-        if (historyItem) {
-          selectedItemId.value = historyItem.id;
-        }
-      }
-    });
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    async function reload() {
-      await fetchImportHistory();
-      await fetchImportProfiles();
-    }
-
-    function newProfile() {
-      bladeWidth.value = 70;
-      emit("page:open", {
-        component: ImportProfileDetails,
-      });
-    }
-
-    function openImporter(profileId: string) {
-      bladeWidth.value = 50;
-
-      const profile = importProfiles.value.find(
-        (profile) => profile.id === profileId
-      );
-
-      emit("page:open", {
-        component: ImportNew,
-        param: profileId,
-        componentOptions: {
-          importJobId:
-            profile && profile.inProgress ? profile.jobId : undefined,
-        },
-        onOpen() {
-          selectedProfileId.value = profileId;
-        },
-        onClose() {
-          selectedProfileId.value = undefined;
-        },
-      });
-    }
-
-    function onItemClick(item: ImportRunHistory) {
-      bladeWidth.value = 50;
-      selectedProfileId.value = item.profileId;
-      emit("page:open", {
-        component: ImportNew,
-        param: item.profileId,
-        componentOptions: {
-          importJobId: item.jobId,
-        },
-        onOpen() {
-          selectedItemId.value = item.id;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
-      });
-    }
-
-    async function onPaginationClick(page: number) {
-      await fetchImportHistory({
-        skip: (page - 1) * 15,
-      });
-    }
-
-    return {
-      title: computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE")),
-      bladeToolbar,
-      columns,
-      importHistory,
-      bladeWidth,
-      importProfiles,
-      selectedProfileId,
-      selectedItemId,
-      historyPages,
-      totalHistoryCount,
-      currentPage,
-      openImporter,
-      onItemClick,
-      reload,
-      onPaginationClick,
-      loading,
-    };
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+const emit = defineEmits(["page:open"]);
+const { t } = useI18n();
+const {
+  importHistory,
+  historyPages,
+  totalHistoryCount,
+  importProfiles,
+  loading,
+  currentPage,
+  fetchImportHistory,
+  fetchImportProfiles,
+} = useImport();
+const bladeWidth = ref(50);
+const selectedProfileId = ref();
+const selectedItemId = ref();
+
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "refresh",
+    title: computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.REFRESH")),
+    icon: "fas fa-sync-alt",
+    async clickHandler() {
+      await reload();
+    },
+  },
+  {
+    id: "new",
+    title: computed(() =>
+      t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE")
+    ),
+    icon: "fas fa-plus",
+    clickHandler() {
+      newProfile();
+    },
+  },
+]);
+const columns = ref<ITableColumns[]>([
+  {
+    id: "profileName", // temp
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
+    alwaysVisible: true,
+    width: 147,
+  },
+  {
+    id: "createdBy",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.CREATED_BY")),
+    width: 147,
+  },
+  {
+    id: "finished",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 147,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.STARTED_AT")),
+    width: 147,
+    type: "date",
+    format: "L LT",
+  },
+  {
+    id: "errorsCount",
+    title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.ERROR_COUNT")),
+    width: 118,
+    sortable: true,
+  },
+]);
+
+const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
+
+onMounted(async () => {
+  await reload();
+  if (props.param) {
+    selectedProfileId.value = props.param;
+  }
+  if (props.options && props.options.importJobId) {
+    const historyItem = importHistory.value.find(
+      (x) => x.jobId === props.options.importJobId
+    );
+    if (historyItem) {
+      selectedItemId.value = historyItem.id;
+    }
+  }
+});
+
+async function reload() {
+  await fetchImportHistory();
+  await fetchImportProfiles();
+}
+
+function newProfile() {
+  bladeWidth.value = 70;
+  emit("page:open", {
+    component: ImportProfileDetails,
+  });
+}
+
+function openImporter(profileId: string) {
+  bladeWidth.value = 50;
+
+  const profile = importProfiles.value.find(
+    (profile) => profile.id === profileId
+  );
+
+  emit("page:open", {
+    component: ImportNew,
+    param: profileId,
+    componentOptions: {
+      importJobId: profile && profile.inProgress ? profile.jobId : undefined,
+    },
+    onOpen() {
+      selectedProfileId.value = profileId;
+    },
+    onClose() {
+      selectedProfileId.value = undefined;
+    },
+  });
+}
+
+function onItemClick(item: ImportRunHistory) {
+  bladeWidth.value = 50;
+  selectedProfileId.value = item.profileId;
+  emit("page:open", {
+    component: ImportNew,
+    param: item.profileId,
+    componentOptions: {
+      importJobId: item.jobId,
+    },
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });
+}
+
+async function onPaginationClick(page: number) {
+  await fetchImportHistory({
+    skip: (page - 1) * 15,
+  });
+}
 </script>
 
 <style lang="less">

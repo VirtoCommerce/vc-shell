@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "rootDir": ".",
     "resolveJsonModule": true,
+    "composite": true,
     "paths": {
       "@virtoshell/api-client": [
         "framework/api-client/src"

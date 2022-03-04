@@ -6,12 +6,7 @@
       }}</slot>
 
       <div
-        class="
-          vc-flex
-          vc-flex-justify_center
-          vc-flex-align_center
-          vc-padding-top_s
-        "
+        class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
       >
         <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
         <vc-button
@@ -30,16 +25,13 @@
   </vc-popup>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { defineProps } from "vue";
 
-export default defineComponent({
-  name: "ImportConfirmationPopup",
-  props: {
-    title: {
-      type: String,
-      default: "",
-    },
+defineProps({
+  title: {
+    type: String,
+    default: "",
   },
 });
 </script>

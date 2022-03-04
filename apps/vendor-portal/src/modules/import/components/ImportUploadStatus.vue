@@ -47,43 +47,34 @@
     </div>
   </div>
 </template>
-<script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+<script lang="ts" setup>
+import { computed, defineProps, PropType } from "vue";
 import { INotificationActions } from "../../../types";
 
-export default defineComponent({
-  name: "ImportUploadStatus",
-  props: {
-    uploadActions: {
-      type: Array as PropType<INotificationActions[]>,
-      default: () => [],
-    },
-
-    uploadedFile: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    isUploaded: {
-      type: Boolean,
-      default: false,
-    },
-
-    isStarted: {
-      type: Boolean,
-      default: false,
-    },
+const props = defineProps({
+  uploadActions: {
+    type: Array as PropType<INotificationActions[]>,
+    default: () => [],
   },
-  setup(props) {
-    const filteredActions = computed(() =>
-      props.uploadActions.filter((action) => action.isVisible)
-    );
 
-    return {
-      filteredActions,
-    };
+  uploadedFile: {
+    type: Object,
+    default: () => ({}),
+  },
+
+  isUploaded: {
+    type: Boolean,
+    default: false,
+  },
+
+  isStarted: {
+    type: Boolean,
+    default: false,
   },
 });
+const filteredActions = computed(() =>
+  props.uploadActions.filter((action) => action.isVisible)
+);
 </script>
 <style lang="less">
 :root {

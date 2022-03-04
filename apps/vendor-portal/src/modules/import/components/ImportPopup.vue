@@ -40,39 +40,30 @@
   </vc-popup>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+import { defineProps } from "vue";
 import { useI18n } from "@virtoshell/core";
 
-export default defineComponent({
-  name: "ImportPopup",
-  props: {
-    columns: {
-      type: Array,
-      default: () => [],
-    },
-
-    items: {
-      type: Array,
-      default: () => [],
-    },
-
-    total: {
-      type: Number,
-      default: 0,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+const { t } = useI18n();
+defineProps({
+  columns: {
+    type: Array,
+    default: () => [],
   },
-  setup() {
-    const { t } = useI18n();
 
-    return {
-      t,
-    };
+  items: {
+    type: Array,
+    default: () => [],
+  },
+
+  total: {
+    type: Number,
+    default: 0,
+  },
+
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

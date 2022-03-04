@@ -107,179 +107,159 @@
   </vc-blade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+<script lang="ts" setup>
+import { computed, defineEmits, defineProps, onMounted, ref } from "vue";
 import { IBladeToolbar } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { ObjectSettingEntry } from "../../../api_client";
 import { useForm } from "@virtoshell/ui";
-
-export default defineComponent({
-  components: { ImportConfirmationPopup },
-  url: "import-profile-details",
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+const emit = defineEmits(["page:close", "parent:call"]);
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
-  emits: ["page:close", "parent:call"],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const {
-      dataImporters,
-      profileDetails,
-      loading,
-      profile,
-      modified,
-      createImportProfile,
-      loadImportProfile,
-      deleteImportProfile,
-      updateImportProfile,
-      fetchDataImporters,
-      setImporter,
-    } = useImport();
-    const { validate } = useForm({ validateOnMount: false });
-    const showConfirmation = ref(false);
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "save",
-        title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.SAVE")),
-        icon: "fas fa-save",
-        async clickHandler() {
-          const { valid } = await validate();
-          if (valid) {
-            try {
-              if (props.param) {
-                await updateImportProfile(profileDetails);
-                emit("parent:call", {
-                  method: "reloadParent",
-                });
-              } else {
-                await createImportProfile(profileDetails);
-                emit("parent:call", {
-                  method: "reload",
-                });
-              }
-              emit("page:close");
-            } catch (err) {
-              alert(err.message);
-            }
-          }
-        },
-        disabled: computed(() => {
-          return (
-            (props.param && !modified.value) ||
-            (!props.param && !modified.value)
-          );
-        }),
-      },
-      {
-        id: "cancel",
-        title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL")),
-        icon: "fas fa-ban",
-        clickHandler() {
-          emit("page:close");
-        },
-        isVisible: computed(() => !props.param),
-      },
-      {
-        id: "delete",
-        title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE")),
-        icon: "far fa-trash-alt",
-        isVisible: computed(() => !!props.param),
-        clickHandler() {
-          showConfirmation.value = true;
-        },
-      },
-    ]);
 
-    const sampleTemplateUrl = computed(() => {
-      const importer = dataImporters.value.find(
-        (x) => x.typeName === profileDetails.typeName
-      );
-      return profile.value.importer
-        ? profile.value.importer.metadata.sampleCsvUrl
-        : importer
-        ? importer.metadata.sampleCsvUrl
-        : "#";
-    });
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    onMounted(async () => {
-      await fetchDataImporters();
-      if (props.param) {
-        await loadImportProfile({ id: props.param });
-      }
-    });
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    function getSettingsValue(setting: ObjectSettingEntry) {
-      return setting.value;
-    }
-
-    function setSettingsValue(
-      setting: ObjectSettingEntry,
-      value: string | boolean
-    ) {
-      setting.value = value;
-    }
-
-    function loadDictionaries(setting: ObjectSettingEntry) {
-      if (setting.allowedValues && setting.allowedValues.length) {
-        return setting.allowedValues.map((val) => ({
-          id: val,
-          alias: val,
-        }));
-      }
-    }
-
-    async function deleteProfile() {
-      showConfirmation.value = false;
-      await deleteImportProfile({ id: props.param });
-
-      emit("parent:call", {
-        method: "reloadParent",
-      });
-      emit("page:close");
-    }
-
-    return {
-      title: computed(() =>
-        props.options.importer
-          ? props.options.importer.typeName
-          : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
-      ),
-      bladeToolbar,
-      showConfirmation,
-      dataImporters,
-      importer: computed(() => profile.value.importer),
-      sampleTemplateUrl,
-      profileDetails,
-      loading,
-      setImporter,
-      getSettingsValue,
-      setSettingsValue,
-      loadDictionaries,
-      deleteProfile,
-    };
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+const { t } = useI18n();
+const {
+  dataImporters,
+  profileDetails,
+  loading,
+  profile,
+  modified,
+  createImportProfile,
+  loadImportProfile,
+  deleteImportProfile,
+  updateImportProfile,
+  fetchDataImporters,
+  setImporter,
+} = useImport();
+const { validate } = useForm({ validateOnMount: false });
+const showConfirmation = ref(false);
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.SAVE")),
+    icon: "fas fa-save",
+    async clickHandler() {
+      const { valid } = await validate();
+      if (valid) {
+        try {
+          if (props.param) {
+            await updateImportProfile(profileDetails);
+            emit("parent:call", {
+              method: "reloadParent",
+            });
+          } else {
+            await createImportProfile(profileDetails);
+            emit("parent:call", {
+              method: "reload",
+            });
+          }
+          emit("page:close");
+        } catch (err) {
+          alert(err.message);
+        }
+      }
+    },
+    disabled: computed(() => {
+      return (
+        (props.param && !modified.value) || (!props.param && !modified.value)
+      );
+    }),
+  },
+  {
+    id: "cancel",
+    title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL")),
+    icon: "fas fa-ban",
+    clickHandler() {
+      emit("page:close");
+    },
+    isVisible: computed(() => !props.param),
+  },
+  {
+    id: "delete",
+    title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE")),
+    icon: "far fa-trash-alt",
+    isVisible: computed(() => !!props.param),
+    clickHandler() {
+      showConfirmation.value = true;
+    },
+  },
+]);
+
+const sampleTemplateUrl = computed(() => {
+  const importer = dataImporters.value.find(
+    (x) => x.typeName === profileDetails.typeName
+  );
+  return profile.value.importer
+    ? profile.value.importer.metadata.sampleCsvUrl
+    : importer
+    ? importer.metadata.sampleCsvUrl
+    : "#";
+});
+
+const title = computed(() =>
+  props.options.importer
+    ? props.options.importer.typeName
+    : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
+);
+
+const importer = computed(() => profile.value.importer);
+
+onMounted(async () => {
+  await fetchDataImporters();
+  if (props.param) {
+    await loadImportProfile({ id: props.param });
+  }
+});
+
+function getSettingsValue(setting: ObjectSettingEntry) {
+  return setting.value;
+}
+
+function setSettingsValue(
+  setting: ObjectSettingEntry,
+  value: string | boolean
+) {
+  setting.value = value;
+}
+
+function loadDictionaries(setting: ObjectSettingEntry) {
+  if (setting.allowedValues && setting.allowedValues.length) {
+    return setting.allowedValues.map((val) => ({
+      id: val,
+      alias: val,
+    }));
+  }
+}
+
+async function deleteProfile() {
+  showConfirmation.value = false;
+  await deleteImportProfile({ id: props.param });
+
+  emit("parent:call", {
+    method: "reloadParent",
+  });
+  emit("page:close");
+}
 </script>
 
 <style lang="less" scoped></style>

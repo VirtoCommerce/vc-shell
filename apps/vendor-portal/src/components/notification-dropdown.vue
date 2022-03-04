@@ -37,13 +37,7 @@
     >
       <div
         v-if="$isMobile.value"
-        class="
-          notification-dropdown__mobile-close
-          vc-flex
-          vc-flex-justify_end
-          vc-flex-align_center
-          vc-padding_l
-        "
+        class="notification-dropdown__mobile-close vc-flex vc-flex-justify_end vc-flex-align_center vc-padding_l"
       >
         <vc-icon
           icon="fas fa-times"
@@ -61,10 +55,7 @@
           >
             <div class="vc-flex">
               <div
-                class="
-                  notification-dropdown__notification-icon
-                  vc-margin-right_l
-                "
+                class="notification-dropdown__notification-icon vc-margin-right_l"
                 :style="{ 'background-color': item.params.color }"
               >
                 <vc-icon :icon="item.params.icon" size="l"></vc-icon>
@@ -73,11 +64,7 @@
               <vc-row class="vc-flex-justify_space-between vc-flex-grow_1">
                 <div class="notification-dropdown__notification-info">
                   <p
-                    class="
-                      notification-dropdown__notification-title
-                      vc-margin_none
-                      vc-margin-bottom_xs
-                    "
+                    class="notification-dropdown__notification-title vc-margin_none vc-margin-bottom_xs"
                   >
                     {{ item.title }}
                   </p>
@@ -99,10 +86,7 @@
                 </div>
                 <div>
                   <p
-                    class="
-                      notification-dropdown__notification-time
-                      vc-margin_none
-                    "
+                    class="notification-dropdown__notification-time vc-margin_none"
                   >
                     {{ item.params.time }}
                   </p>
@@ -112,12 +96,7 @@
           </div>
         </vc-col>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding_l
-          "
+          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding_l"
           v-else
         >
           {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
@@ -127,8 +106,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch } from "vue";
+<script lang="ts" setup>
+import { onMounted, PropType, ref, watch, defineProps } from "vue";
 import {
   BulkActionPushNotification,
   PushNotification,
@@ -149,130 +128,116 @@ interface INotificationParams
   };
   profileName?: string;
 }
-
-export default defineComponent({
-  name: "notification-dropdown",
-  props: {
-    isAccent: {
-      type: Boolean,
-      default: false,
-    },
-
-    title: {
-      type: String,
-      default: "",
-    },
-
-    items: {
-      type: Array as PropType<IMenuItems[]>,
-      default: () => [],
-    },
-
-    openPage: {
-      type: Function,
-      default: undefined,
-    },
-
-    closePage: {
-      type: Function,
-      default: undefined,
-    },
+const props = defineProps({
+  isAccent: {
+    type: Boolean,
+    default: false,
   },
-  setup(props) {
-    const isDropdownVisible = ref(false);
-    const { loadFromHistory, notifications } = useNotifications();
-    const locale = window.navigator.language;
-    const isMobileVisible = ref(false);
-    const populatedList = ref<INotificationParams[]>([]);
 
-    watch(
-      () => notifications,
-      (newVal) => {
-        populatedList.value = newVal.value.map((item: INotificationParams) => {
-          return Object.assign(
-            {},
-            {
-              ...item,
-              params: {
-                icon: notificationIcon(item.notifyType),
-                time: moment(item.created).locale(locale).format("L LT"),
-                color: notificationColor(item),
-              },
-            }
-          ) as INotificationParams;
-        });
-      },
-      { deep: true }
-    );
+  title: {
+    type: String,
+    default: "",
+  },
 
-    onMounted(async () => {
-      await loadFromHistory();
-    });
+  items: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
+  },
 
-    function toggleNotificationsDrop() {
-      isDropdownVisible.value = !isDropdownVisible.value;
-    }
+  openPage: {
+    type: Function,
+    default: undefined,
+  },
 
-    const notificationIcon = (type: string) => {
-      const lower = type.toLowerCase();
-      if (lower.includes("offer")) {
-        return "fas fa-percentage";
-      } else if (lower.includes("product")) {
-        return "fas fa-box-open";
-      } else if (lower.includes("import")) {
-        return "fas fa-download";
-      }
-      return "fas fa-info";
-    };
-
-    const notificationColor = (item: INotificationParams) => {
-      if (item.created && item.finished) {
-        return "#87b563";
-      } else if (item.created && !item.finished && !item.errors) {
-        return "#A9BCCD";
-      } else if (item.created && item.errors && item.errors.length) {
-        return "#F14E4E";
-      }
-
-      return "#87b563";
-    };
-
-    const handleClick = async (
-      notification: PushNotification | ImportPushNotification
-    ) => {
-      const low = notification.notifyType.toLowerCase();
-      isDropdownVisible.value = false;
-
-      // TODO need to discuss on arch meeting
-      if (low.includes("import") && "profileId" in notification) {
-        await props.closePage(0);
-        await props.closePage(1);
-        props.openPage(0, {
-          component: ImportProfileSelector,
-          param: notification.profileId,
-          componentOptions: {
-            importJobId: notification.jobId,
-          },
-        });
-        props.openPage(1, {
-          component: ImportNew,
-          param: notification.profileId,
-          componentOptions: {
-            importJobId: notification.jobId,
-          },
-        });
-      }
-    };
-
-    return {
-      isDropdownVisible,
-      populatedList,
-      isMobileVisible,
-      handleClick,
-      toggleNotificationsDrop,
-    };
+  closePage: {
+    type: Function,
+    default: undefined,
   },
 });
+const isDropdownVisible = ref(false);
+const { loadFromHistory, notifications } = useNotifications();
+const locale = window.navigator.language;
+const isMobileVisible = ref(false);
+const populatedList = ref<INotificationParams[]>([]);
+
+watch(
+  () => notifications,
+  (newVal) => {
+    populatedList.value = newVal.value.map((item: INotificationParams) => {
+      return Object.assign(
+        {},
+        {
+          ...item,
+          params: {
+            icon: notificationIcon(item.notifyType),
+            time: moment(item.created).locale(locale).format("L LT"),
+            color: notificationColor(item),
+          },
+        }
+      ) as INotificationParams;
+    });
+  },
+  { deep: true }
+);
+
+onMounted(async () => {
+  await loadFromHistory();
+});
+
+function toggleNotificationsDrop() {
+  isDropdownVisible.value = !isDropdownVisible.value;
+}
+
+const notificationIcon = (type: string) => {
+  const lower = type.toLowerCase();
+  if (lower.includes("offer")) {
+    return "fas fa-percentage";
+  } else if (lower.includes("product")) {
+    return "fas fa-box-open";
+  } else if (lower.includes("import")) {
+    return "fas fa-download";
+  }
+  return "fas fa-info";
+};
+
+const notificationColor = (item: INotificationParams) => {
+  if (item.created && item.finished) {
+    return "#87b563";
+  } else if (item.created && !item.finished && !item.errors) {
+    return "#A9BCCD";
+  } else if (item.created && item.errors && item.errors.length) {
+    return "#F14E4E";
+  }
+
+  return "#87b563";
+};
+
+const handleClick = async (
+  notification: PushNotification | ImportPushNotification
+) => {
+  const low = notification.notifyType.toLowerCase();
+  isDropdownVisible.value = false;
+
+  // TODO need to discuss on arch meeting
+  if (low.includes("import") && "profileId" in notification) {
+    await props.closePage(0);
+    await props.closePage(1);
+    props.openPage(0, {
+      component: ImportProfileSelector,
+      param: notification.profileId,
+      componentOptions: {
+        importJobId: notification.jobId,
+      },
+    });
+    props.openPage(1, {
+      component: ImportNew,
+      param: notification.profileId,
+      componentOptions: {
+        importJobId: notification.jobId,
+      },
+    });
+  }
+};
 </script>
 
 <style lang="less">

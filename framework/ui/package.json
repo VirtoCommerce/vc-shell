@@ -12,25 +12,26 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.15.3",
-    "@popperjs/core": "^2.11.0",
-    "@virtoshell/core": "^0.0.116",
-    "@vueuse/core": "^6.0.0",
-    "@vueuse/integrations": "^6.0.0",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@rollup/plugin-commonjs": "^21.0.2",
     "less": "^3.0.4",
-    "lodash-es": "^4.17.21",
-    "moment": "^2.29.1",
-    "normalize.css": "^8.0.1",
-    "roboto-fontface": "^0.10.0",
-    "vite-tsconfig-paths": "^3.4.0",
-    "typescript": "^4.3.5",
-    "vee-validate": "^4.5.5",
-    "vue": "^3.0.0",
-    "vue3-touch-events": "^4.1.0",
-    "vuedraggable": "^4.1.0"
+    "url-pattern": "^1.0.3",
+    "typescript": "^4.6.2"
   },
   "dependencies": {
+    "@virtoshell/core": "^0.0.116",
+    "@popperjs/core": "^2.11.0",
+    "@fortawesome/fontawesome-free": "^5.15.3",
     "swiper": "^6.7.5",
-    "vue-currency-input": "^2.2.0"
+    "@vueuse/core": "^6.0.0",
+    "@vueuse/integrations": "^6.0.0",
+    "vue-currency-input": "^2.2.0",
+    "vuedraggable": "^4.1.0",
+    "roboto-fontface": "^0.10.0",
+    "vue3-touch-events": "^4.1.0",
+    "vee-validate": "^4.5.5",
+    "normalize.css": "^8.0.1",
+    "moment": "^2.29.1",
+    "vue": "^3.0.0"
   }
 }

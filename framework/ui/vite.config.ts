@@ -6,6 +6,7 @@ import typescript from "@rollup/plugin-typescript";
 export default defineConfig({
   plugins: [vue()],
   build: {
+    sourcemap: true,
     minify: false,
     lib: {
       entry: path.resolve(__dirname, "./src/index.ts"),
@@ -13,10 +14,16 @@ export default defineConfig({
       formats: ["cjs"],
     },
     rollupOptions: {
-      external: ["@virtoshell/core", "@virtoshell/api-client", "vue"],
+      external: [
+        "@virtoshell/core",
+        "@virtoshell/api-client",
+        "vue",
+        "vue-router",
+      ],
       output: {
         globals: {
-          vue: "vue",
+          vue: "Vue",
+          "vue-router": "vue-router",
           "@virtoshell/core": "@virtoshell/core",
           "@virtoshell/api-client": "@virtoshell/api-client",
         },
@@ -27,7 +34,7 @@ export default defineConfig({
       },
       plugins: [
         typescript({
-          tsconfig: path.resolve(__dirname, "./tsconfig.build.json"),
+          tsconfig: path.resolve(__dirname, "tsconfig.json"),
         }),
       ],
     },

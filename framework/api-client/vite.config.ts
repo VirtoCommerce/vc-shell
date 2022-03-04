@@ -4,6 +4,7 @@ import typescript from "@rollup/plugin-typescript";
 
 export default defineConfig({
   build: {
+    sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, "./src/index.ts"),
       name: "api-client",
@@ -12,7 +13,7 @@ export default defineConfig({
     rollupOptions: {
       plugins: [
         typescript({
-          tsconfig: path.resolve(__dirname, "./tsconfig.build.json"),
+          tsconfig: path.resolve(__dirname, "./tsconfig.json"),
         }),
       ],
     },

@@ -419,9 +419,9 @@
   </vc-container>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from "@virtoshell/core";
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import {
@@ -430,7 +430,6 @@ import {
   useProducts,
   MpProductStatus,
 } from "../modules/products";
-import moment from "moment";
 import { OrderLineItem } from "@virtoshell/api-client";
 import { ITableColumns } from "../types";
 import { useRouter } from "vue-router";
@@ -448,257 +447,226 @@ interface ICounters {
   orderAvg: ITermDefinition;
 }
 
-export default defineComponent({
-  props: {
-    openPage: {
-      type: Function,
-      default: undefined,
-    },
+const props = defineProps({
+  openPage: {
+    type: Function,
+    default: undefined,
   },
+});
+const { t } = useI18n();
+const { products, loadProducts, loading: productsLoading } = useProducts();
+const { orders, loadOrders, loading: ordersLoading } = useOrders();
+const { offers, loadOffers, loading: offersLoading } = useOffers();
+const router = useRouter();
 
-  components: {
-    MpProductStatus,
+const productsColumns = ref<ITableColumns[]>([
+  {
+    id: "imgSrc",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
+    width: 60,
+    type: "image",
   },
+  {
+    id: "name",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
+    width: 120,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    width: 140,
+    type: "date-ago",
+  },
+  {
+    id: "status",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 180,
+  },
+]);
 
-  setup(props) {
-    const { t } = useI18n();
-    const { products, loadProducts, loading: productsLoading } = useProducts();
-    const { orders, loadOrders, loading: ordersLoading } = useOrders();
-    const { offers, loadOffers, loading: offersLoading } = useOffers();
-    const router = useRouter();
+const ordersColumns = ref<ITableColumns[]>([
+  {
+    id: "number",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
+    width: 80,
+  },
+  {
+    id: "items",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY")),
+    width: 80,
+  },
+  {
+    id: "status",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 160,
+    type: "status",
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
+    width: 160,
+    type: "date-ago",
+  },
+]);
 
-    const productsColumns = ref<ITableColumns[]>([
-      {
-        id: "imgSrc",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-        width: 60,
-        type: "image",
-      },
-      {
-        id: "name",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
-        width: 120,
-      },
-      {
-        id: "createdDate",
-        title: computed(() =>
-          t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
-        ),
-        width: 140,
-        type: "date-ago",
-      },
-      {
-        id: "status",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 180,
-      },
-    ]);
+const offersColumns = ref<ITableColumns[]>([
+  {
+    id: "imgSrc",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")),
+    width: 60,
+    type: "image",
+  },
+  {
+    id: "name",
+    field: "name",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
+    width: 120,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    width: 140,
+    type: "date-ago",
+  },
+  {
+    id: "sku",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
+    width: 120,
+  },
+  {
+    id: "salePrice",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
+    width: 100,
+    type: "money",
+  },
+  {
+    id: "listPrice",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
+    width: 100,
+    type: "money",
+  },
+  {
+    id: "minQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
+    width: 80,
+    type: "number",
+  },
+  {
+    id: "inStockQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
+    width: 80,
+    type: "number",
+  },
+]);
 
-    const ordersColumns = ref<ITableColumns[]>([
-      {
-        id: "number",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
-        width: 80,
-      },
-      {
-        id: "items",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY")),
-        width: 80,
-      },
-      {
-        id: "status",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 160,
-        type: "status",
-      },
-      {
-        id: "createdDate",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
-        width: 160,
-        type: "date-ago",
-      },
-    ]);
+/* const counters = reactive<ICounters>({
+  revenue: {
+    day: "1,230.09",
+    week: "13,445.75",
+    month: "490,314.81",
+    year: "3,553,165.94",
+  },
+  purchased: {
+    day: "17",
+    week: "993",
+    month: "31,230",
+    year: "1,151,202",
+  },
+  orderAvg: {
+    day: "515.04",
+    week: "792.45",
+    month: "620.01",
+    year: "593.10",
+  },
+});
+ */
 
-    const offersColumns = ref<ITableColumns[]>([
-      {
-        id: "imgSrc",
-        title: computed(() =>
-          t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")
-        ),
-        width: 60,
-        type: "image",
-      },
-      {
-        id: "name",
-        field: "name",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
-        width: 120,
-      },
-      {
-        id: "createdDate",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-        width: 140,
-        type: "date-ago",
-      },
-      {
-        id: "sku",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
-        width: 120,
-      },
-      {
-        id: "salePrice",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
-        width: 100,
-        type: "money",
-      },
-      {
-        id: "listPrice",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
-        width: 100,
-        type: "money",
-      },
-      {
-        id: "minQuantity",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
-        width: 80,
-        type: "number",
-      },
-      {
-        id: "inStockQuantity",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
-        width: 80,
-        type: "number",
-      },
-    ]);
+/*const range = reactive({
+  revenue: "day",
+  purchased: "day",
+  orderAvg: "day",
+});
+ */
 
-    const counters = reactive<ICounters>({
-      revenue: {
-        day: "1,230.09",
-        week: "13,445.75",
-        month: "490,314.81",
-        year: "3,553,165.94",
-      },
-      purchased: {
-        day: "17",
-        week: "993",
-        month: "31,230",
-        year: "1,151,202",
-      },
-      orderAvg: {
-        day: "515.04",
-        week: "792.45",
-        month: "620.01",
-        year: "593.10",
-      },
-    });
+onMounted(async () => {
+  router.push("/");
+  loadOrders({ take: 5 });
+  loadProducts({ take: 5 });
+  loadOffers({ take: 5 });
+});
 
-    const range = reactive({
-      revenue: "day",
-      purchased: "day",
-      orderAvg: "day",
-    });
-
-    onMounted(async () => {
-      router.push("/");
-      loadOrders({ take: 5 });
-      loadProducts({ take: 5 });
-      loadOffers({ take: 5 });
-    });
-
-    function open(key: string): void {
-      switch (key) {
-        case "orders-list":
-          props.openPage(0, {
-            component: OrdersList,
-          });
-          break;
-        case "products-list":
-          props.openPage(0, {
-            component: ProductsList,
-          });
-          break;
-        case "products-add":
-          props.openPage(0, {
-            component: ProductsList,
-          });
-          props.openPage(1, {
-            component: ProductsEdit,
-          });
-          break;
-        case "offers-list":
-          props.openPage(0, {
-            component: OffersList,
-          });
-          break;
-        case "offers-add":
-          props.openPage(0, {
-            component: OffersList,
-          });
-          props.openPage(1, {
-            component: OffersDetails,
-          });
-          break;
-      }
-    }
-
-    function ordersClick(item: { id: string }): void {
+function open(key: string): void {
+  switch (key) {
+    case "orders-list":
       props.openPage(0, {
         component: OrdersList,
-        param: item.id,
       });
-      props.openPage(1, {
-        component: OrdersEdit,
-        param: item.id,
-      });
-    }
-
-    function productsClick(item: { id: string }): void {
+      break;
+    case "products-list":
       props.openPage(0, {
         component: ProductsList,
-        param: item.id,
+      });
+      break;
+    case "products-add":
+      props.openPage(0, {
+        component: ProductsList,
       });
       props.openPage(1, {
         component: ProductsEdit,
-        param: item.id,
       });
-    }
-
-    function offersClick(item: { id: string }): void {
+      break;
+    case "offers-list":
       props.openPage(0, {
         component: OffersList,
-        param: item.id,
+      });
+      break;
+    case "offers-add":
+      props.openPage(0, {
+        component: OffersList,
       });
       props.openPage(1, {
         component: OffersDetails,
-        param: item.id,
       });
-    }
+      break;
+  }
+}
 
-    return {
-      moment,
-      open,
-      products,
-      productsLoading,
-      productsColumns,
-      productsClick,
-      orders,
-      ordersLoading,
-      ordersColumns,
-      ordersClick,
-      offers,
-      offersLoading,
-      offersColumns,
-      offersClick,
+function ordersClick(item: { id: string }): void {
+  props.openPage(0, {
+    component: OrdersList,
+    param: item.id,
+  });
+  props.openPage(1, {
+    component: OrdersEdit,
+    param: item.id,
+  });
+}
 
-      calcQty(items: OrderLineItem[]) {
-        return items.reduce((acc, item) => acc + item.quantity, 0);
-      },
+function productsClick(item: { id: string }): void {
+  props.openPage(0, {
+    component: ProductsList,
+    param: item.id,
+  });
+  props.openPage(1, {
+    component: ProductsEdit,
+    param: item.id,
+  });
+}
 
-      counters,
-      range,
-    };
-  },
-});
+function offersClick(item: { id: string }): void {
+  props.openPage(0, {
+    component: OffersList,
+    param: item.id,
+  });
+  props.openPage(1, {
+    component: OffersDetails,
+    param: item.id,
+  });
+}
+
+function calcQty(items: OrderLineItem[]) {
+  return items.reduce((acc, item) => acc + item.quantity, 0);
+}
 </script>
 
 <style lang="less">

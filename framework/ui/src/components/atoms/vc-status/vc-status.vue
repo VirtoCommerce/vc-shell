@@ -16,23 +16,25 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcStatus",
+});
+</script>
 
-  props: {
-    variant: {
-      type: String,
-      default: "info",
-      enum: ["info", "warning", "danger", "success", "light-danger"],
-    },
+<script lang="ts" setup>
+defineProps({
+  variant: {
+    type: String,
+    default: "info",
+    enum: ["info", "warning", "danger", "success", "light-danger"],
+  },
 
-    outline: {
-      type: Boolean,
-      default: true,
-    },
+  outline: {
+    type: Boolean,
+    default: true,
+  },
 
-    extend: {
-      type: Boolean,
-      default: false,
-    },
+  extend: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

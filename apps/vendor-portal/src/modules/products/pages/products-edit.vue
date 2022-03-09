@@ -181,7 +181,14 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, unref } from "vue";
+import { defineComponent, computed, onMounted, ref, unref } from "vue";
+
+export default defineComponent({
+  url: "product",
+});
+</script>
+
+<script lang="ts" setup>
 import { useFunctions, useI18n, useUser } from "@virtoshell/core";
 import { useForm } from "@virtoshell/ui";
 import { useProduct } from "../composables";
@@ -200,414 +207,384 @@ import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
 
-export default defineComponent({
-  url: "product",
-
-  components: {
-    MpProductStatus,
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
 
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+  closable: {
+    type: Boolean,
+    default: true,
   },
 
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const { validate } = useForm({ validateOnMount: false });
-    const {
-      modified,
-      product,
-      productDetails,
-      loading,
-      loadProduct,
-      createProduct,
-      updateProductDetails,
-      fetchCategories,
-      revertStagedChanges,
-      searchDictionaryItems,
-    } = useProduct();
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    const { searchOffers } = useOffers();
-    const { getAccessToken } = useUser();
-    const { debounce } = useFunctions();
+  options: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+const { t } = useI18n();
+const { validate } = useForm({ validateOnMount: false });
+const {
+  modified,
+  product: productData,
+  productDetails,
+  loading: prodLoading,
+  loadProduct,
+  createProduct,
+  updateProductDetails,
+  fetchCategories,
+  revertStagedChanges,
+  searchDictionaryItems,
+} = useProduct();
 
-    const currentCategory = ref();
-    const offersCount = ref(0);
-    const categories = ref<ICategory[]>();
-    const productLoading = ref(false);
+const { searchOffers } = useOffers();
+const { getAccessToken } = useUser();
+const { debounce } = useFunctions();
 
-    const reload = async (fullReload: boolean) => {
-      if (!modified.value && fullReload) {
-        try {
-          productLoading.value = true;
-          if (props.param) {
-            await loadProduct({ id: props.param });
-          }
-          categories.value = await fetchCategories();
-          if (productDetails?.categoryId) {
-            currentCategory.value = categories.value?.find(
-              (x) => x.id === productDetails.categoryId
-            );
-          }
-        } finally {
-          productLoading.value = false;
-        }
-      }
-      //Load offers count to populate widget
+const currentCategory = ref();
+const offersCount = ref(0);
+const categories = ref<ICategory[]>();
+const productLoading = ref(false);
+let isOffersOpened = false;
+
+const reload = async (fullReload: boolean) => {
+  if (!modified.value && fullReload) {
+    try {
+      productLoading.value = true;
       if (props.param) {
-        offersCount.value = (
-          await searchOffers({
-            take: 0,
-            sellerProductId: props.param,
-          })
-        )?.totalCount;
+        await loadProduct({ id: props.param });
       }
-    };
+      categories.value = await fetchCategories();
+      if (productDetails?.categoryId) {
+        currentCategory.value = categories.value?.find(
+          (x) => x.id === productDetails.categoryId
+        );
+      }
+    } finally {
+      productLoading.value = false;
+    }
+  }
+  //Load offers count to populate widget
+  if (props.param) {
+    offersCount.value = (
+      await searchOffers({
+        take: 0,
+        sellerProductId: props.param,
+      })
+    )?.totalCount;
+  }
+};
 
-    const editImages = (args: Image[]) => {
-      productDetails.images = args;
-    };
+onMounted(async () => {
+  await reload(true);
+});
 
-    onMounted(async () => {
-      await reload(true);
-    });
-
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "save",
-        title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
-        icon: "fas fa-save",
-        async clickHandler() {
-          const { valid } = await validate();
-          if (valid) {
-            try {
-              if (props.param) {
-                await updateProductDetails(product.value.id, productDetails);
-              } else {
-                await createProduct(productDetails);
-              }
-              emit("parent:call", {
-                method: "reload",
-              });
-              if (!props.param) {
-                emit("page:close");
-              }
-            } catch (err) {
-              alert(err.message);
-            }
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
+    icon: "fas fa-save",
+    async clickHandler() {
+      const { valid } = await validate();
+      if (valid) {
+        try {
+          if (props.param) {
+            await updateProductDetails(productData.value.id, productDetails);
           } else {
-            alert(
-              unref(
-                computed(() =>
-                  t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID")
-                )
-              )
-            );
+            await createProduct(productDetails);
           }
-        },
-        disabled: computed(
-          () =>
-            (props.param &&
-              (!product.value?.canBeModified || !modified.value)) ||
-            (!props.param && !modified.value)
-        ),
-      },
-      {
-        id: "saveAndSendToApprove",
-        title: computed(() =>
-          t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
-        ),
-        icon: "fas fa-share-square",
-        isVisible: computed(() => !!props.param),
-        async clickHandler() {
-          const { valid } = await validate();
-          if (valid) {
-            try {
-              await updateProductDetails(
-                product.value.id,
-                { ...productDetails },
-                true
-              );
-              emit("parent:call", {
-                method: "reload",
-              });
-              if (!props.param) {
-                emit("page:close");
-              }
-            } catch (err) {
-              alert(err.message);
-            }
-          } else {
-            alert(
-              unref(
-                computed(() =>
-                  t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
-                )
-              )
-            );
-          }
-        },
-        disabled: computed(
-          () =>
-            !(
-              product.value?.canBeModified &&
-              (product.value?.hasStagedChanges || modified.value)
-            )
-        ),
-      },
-      {
-        id: "revertStagedChanges",
-        title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT")),
-        icon: "fas fa-undo",
-        isVisible: computed(() => !!props.param),
-        async clickHandler() {
-          await revertStagedChanges(product.value.id);
           emit("parent:call", {
             method: "reload",
           });
-        },
-        disabled: computed(
-          () =>
-            !(
-              product.value?.isPublished &&
-              product.value?.hasStagedChanges &&
-              product.value?.canBeModified
-            )
-        ),
-      },
-    ]);
-
-    const statusText = computed(() => {
-      if (
-        product.value.publicationRequests &&
-        product.value.publicationRequests.length
-      ) {
-        return _.orderBy(
-          product.value.publicationRequests,
-          ["createdDate"],
-          ["desc"]
-        )[0].comment;
-      }
-      return null;
-    });
-
-    const onGalleryUpload = async (files: FileList) => {
-      const formData = new FormData();
-      formData.append("file", files[0]);
-      const authToken = await getAccessToken();
-      const result = await fetch(
-        `/api/assets?folderUrl=/catalog/${product.value.id}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const response = await result.json();
-      if (response?.length) {
-        const image = new Image(response[0]);
-        image.createdDate = new Date();
-        if (productDetails.images && productDetails.images.length) {
-          const lastImageSortOrder =
-            productDetails.images[productDetails.images.length - 1].sortOrder;
-          image.sortOrder = lastImageSortOrder + 1;
-        } else {
-          image.sortOrder = 0;
-        }
-        productDetails.images.push(image);
-      }
-      files = null;
-    };
-
-    const onGalleryItemEdit = (item: Image) => {
-      emit("page:open", {
-        component: AssetsDetails,
-        componentOptions: {
-          editableAsset: item,
-          images: productDetails.images,
-        },
-      });
-    };
-
-    const onGallerySort = (images: Image[]) => {
-      productDetails.images = images;
-    };
-
-    const onGalleryImageRemove = (image: Image) => {
-      const imageIndex = productDetails.images.findIndex((img) => {
-        if (img.id && image.id) {
-          return img.id === image.id;
-        } else {
-          return img.url === image.url;
-        }
-      });
-      productDetails.images.splice(imageIndex, 1);
-    };
-
-    const setCategory = async (id: string) => {
-      currentCategory.value = categories.value?.find((x) => x.id === id);
-      const currentProperties = [...(productDetails?.properties || [])];
-      productDetails.properties = [...(currentCategory.value.properties || [])];
-      productDetails.properties.forEach(async (property) => {
-        const previousPropertyValue = currentProperties?.find(
-          (item) => item.id === property.id
-        );
-        if (previousPropertyValue) {
-          property.values = previousPropertyValue.values.map(
-            (item) => new PropertyValue(item)
-          );
-        }
-      });
-    };
-
-    async function loadDictionaries(
-      property: IProperty,
-      keyword?: string,
-      skip?: number
-    ) {
-      return await searchDictionaryItems([property.id], keyword, skip);
-    }
-
-    let isOffersOpened = false;
-
-    return {
-      bladeToolbar,
-      category: computed(() =>
-        categories.value?.find((x) => x.id === productDetails.categoryId)
-      ),
-      currentCategory,
-      setCategory,
-      onCategoriesSearch: debounce(async (value: string) => {
-        categories.value = await fetchCategories(value);
-      }, 500),
-      offersCount,
-      categories,
-      product: computed(() => (props.param ? product.value : productDetails)),
-      productDetails,
-      readonly: computed(() => props.param && !product.value?.canBeModified),
-      statusText,
-      productLoading,
-      reload,
-      editImages,
-      loading: computed(() => loading.value),
-      onGalleryUpload,
-      onGalleryItemEdit,
-      onGallerySort,
-      onGalleryImageRemove,
-      async openOffers() {
-        if (!isOffersOpened) {
-          emit("page:open", {
-            component: OffersList,
-            componentOptions: {
-              sellerProduct: product.value,
-            },
-            url: null,
-            onOpen() {
-              isOffersOpened = true;
-            },
-            onClose() {
-              isOffersOpened = false;
-            },
-          });
-        }
-      },
-      async onBeforeClose() {
-        if (modified.value) {
-          return confirm(
-            unref(
-              computed(() =>
-                t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION")
-              )
-            )
-          );
-        }
-      },
-
-      setPropertyValue(
-        property: IProperty,
-        value: IPropertyValue,
-        dictionary?: PropertyDictionaryItem[]
-      ) {
-        if (
-          typeof value === "object" &&
-          Object.prototype.hasOwnProperty.call(value, "length")
-        ) {
-          property.values = (value as IPropertyValue[]).map(
-            (item) => new PropertyValue(item)
-          );
-        } else {
-          if (dictionary && dictionary.length) {
-            const valueId = value as string;
-            let valueName;
-            const dictionaryItem = dictionary.find((x) => x.id === valueId);
-            if (dictionaryItem) {
-              valueName = dictionaryItem.alias;
-            } else {
-              valueName = property.name;
-            }
-            property.values[0] = new PropertyValue({
-              valueId,
-              value: valueName,
-              isInherited: false,
-            });
-          } else {
-            if (property.values[0]) {
-              property.values[0].value = value;
-            } else {
-              property.values[0] = new PropertyValue({
-                value,
-                isInherited: false,
-              });
-            }
+          if (!props.param) {
+            emit("page:close");
           }
+        } catch (err) {
+          alert(err.message);
         }
-      },
-
-      getPropertyValue(
-        property: IProperty,
-        isDictionary?: boolean
-      ): Record<string, unknown> {
-        if (isDictionary) {
-          return (
-            property.values[0] &&
-            (property.values[0].valueId as unknown as Record<string, unknown>)
-          );
-        }
-        return property.values[0] && property.values[0].value;
-      },
-
-      loadDictionaries,
-
-      handleCollapsed(key: string, value: boolean): void {
-        localStorage?.setItem(key, `${value}`);
-      },
-
-      restoreCollapsed(key: string): boolean {
-        return localStorage?.getItem(key) === "true";
-      },
-    };
+      } else {
+        alert(
+          unref(
+            computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))
+          )
+        );
+      }
+    },
+    disabled: computed(
+      () =>
+        (props.param &&
+          (!productData.value?.canBeModified || !modified.value)) ||
+        (!props.param && !modified.value)
+    ),
   },
+  {
+    id: "saveAndSendToApprove",
+    title: computed(() =>
+      t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
+    ),
+    icon: "fas fa-share-square",
+    isVisible: computed(() => !!props.param),
+    async clickHandler() {
+      const { valid } = await validate();
+      if (valid) {
+        try {
+          await updateProductDetails(
+            productData.value.id,
+            { ...productDetails },
+            true
+          );
+          emit("parent:call", {
+            method: "reload",
+          });
+          if (!props.param) {
+            emit("page:close");
+          }
+        } catch (err) {
+          alert(err.message);
+        }
+      } else {
+        alert(
+          unref(
+            computed(() =>
+              t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
+            )
+          )
+        );
+      }
+    },
+    disabled: computed(
+      () =>
+        !(
+          productData.value?.canBeModified &&
+          (productData.value?.hasStagedChanges || modified.value)
+        )
+    ),
+  },
+  {
+    id: "revertStagedChanges",
+    title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT")),
+    icon: "fas fa-undo",
+    isVisible: computed(() => !!props.param),
+    async clickHandler() {
+      await revertStagedChanges(productData.value.id);
+      emit("parent:call", {
+        method: "reload",
+      });
+    },
+    disabled: computed(
+      () =>
+        !(
+          productData.value?.isPublished &&
+          productData.value?.hasStagedChanges &&
+          productData.value?.canBeModified
+        )
+    ),
+  },
+]);
+
+const statusText = computed(() => {
+  if (
+    productData.value.publicationRequests &&
+    productData.value.publicationRequests.length
+  ) {
+    return _.orderBy(
+      productData.value.publicationRequests,
+      ["createdDate"],
+      ["desc"]
+    )[0].comment;
+  }
+  return null;
 });
+
+const category = computed(() =>
+  categories.value?.find((x) => x.id === productDetails.categoryId)
+);
+
+const product = computed(() =>
+  props.param ? productData.value : productDetails
+);
+const readonly = computed(
+  () => props.param && !productData.value?.canBeModified
+);
+const loading = computed(() => prodLoading.value);
+
+const onGalleryUpload = async (files: FileList) => {
+  const formData = new FormData();
+  formData.append("file", files[0]);
+  const authToken = await getAccessToken();
+  const result = await fetch(
+    `/api/assets?folderUrl=/catalog/${productData.value.id}`,
+    {
+      method: "POST",
+      body: formData,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }
+  );
+  const response = await result.json();
+  if (response?.length) {
+    const image = new Image(response[0]);
+    image.createdDate = new Date();
+    if (productDetails.images && productDetails.images.length) {
+      const lastImageSortOrder =
+        productDetails.images[productDetails.images.length - 1].sortOrder;
+      image.sortOrder = lastImageSortOrder + 1;
+    } else {
+      image.sortOrder = 0;
+    }
+    productDetails.images.push(image);
+  }
+  files = null;
+};
+
+const onGalleryItemEdit = (item: Image) => {
+  emit("page:open", {
+    component: AssetsDetails,
+    componentOptions: {
+      editableAsset: item,
+      images: productDetails.images,
+    },
+  });
+};
+
+const onGallerySort = (images: Image[]) => {
+  productDetails.images = images;
+};
+
+const onGalleryImageRemove = (image: Image) => {
+  const imageIndex = productDetails.images.findIndex((img) => {
+    if (img.id && image.id) {
+      return img.id === image.id;
+    } else {
+      return img.url === image.url;
+    }
+  });
+  productDetails.images.splice(imageIndex, 1);
+};
+
+const setCategory = async (id: string) => {
+  currentCategory.value = categories.value?.find((x) => x.id === id);
+  const currentProperties = [...(productDetails?.properties || [])];
+  productDetails.properties = [...(currentCategory.value.properties || [])];
+  productDetails.properties.forEach(async (property) => {
+    const previousPropertyValue = currentProperties?.find(
+      (item) => item.id === property.id
+    );
+    if (previousPropertyValue) {
+      property.values = previousPropertyValue.values.map(
+        (item) => new PropertyValue(item)
+      );
+    }
+  });
+};
+
+async function loadDictionaries(
+  property: IProperty,
+  keyword?: string,
+  skip?: number
+) {
+  return await searchDictionaryItems([property.id], keyword, skip);
+}
+
+const onCategoriesSearch = debounce(async (value: string) => {
+  categories.value = await fetchCategories(value);
+}, 500);
+async function openOffers() {
+  if (!isOffersOpened) {
+    emit("page:open", {
+      component: OffersList,
+      componentOptions: {
+        sellerProduct: productData.value,
+      },
+      url: null,
+      onOpen() {
+        isOffersOpened = true;
+      },
+      onClose() {
+        isOffersOpened = false;
+      },
+    });
+  }
+}
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function onBeforeClose() {
+  if (modified.value) {
+    return confirm(
+      unref(
+        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
+      )
+    );
+  }
+}
+
+function setPropertyValue(
+  property: IProperty,
+  value: IPropertyValue,
+  dictionary?: PropertyDictionaryItem[]
+) {
+  if (
+    typeof value === "object" &&
+    Object.prototype.hasOwnProperty.call(value, "length")
+  ) {
+    property.values = (value as IPropertyValue[]).map(
+      (item) => new PropertyValue(item)
+    );
+  } else {
+    if (dictionary && dictionary.length) {
+      const valueId = value as string;
+      let valueName;
+      const dictionaryItem = dictionary.find((x) => x.id === valueId);
+      if (dictionaryItem) {
+        valueName = dictionaryItem.alias;
+      } else {
+        valueName = property.name;
+      }
+      property.values[0] = new PropertyValue({
+        valueId,
+        value: valueName,
+        isInherited: false,
+      });
+    } else {
+      if (property.values[0]) {
+        property.values[0].value = value;
+      } else {
+        property.values[0] = new PropertyValue({
+          value,
+          isInherited: false,
+        });
+      }
+    }
+  }
+}
+
+function getPropertyValue(
+  property: IProperty,
+  isDictionary?: boolean
+): Record<string, unknown> {
+  if (isDictionary) {
+    return (
+      property.values[0] &&
+      (property.values[0].valueId as unknown as Record<string, unknown>)
+    );
+  }
+  return property.values[0] && property.values[0].value;
+}
+
+function handleCollapsed(key: string, value: boolean): void {
+  localStorage?.setItem(key, `${value}`);
+}
+
+function restoreCollapsed(key: string): boolean {
+  return localStorage?.getItem(key) === "true";
+}
 </script>
 
 <style lang="less">

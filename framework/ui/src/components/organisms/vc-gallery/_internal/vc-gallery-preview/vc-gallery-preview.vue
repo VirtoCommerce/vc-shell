@@ -53,47 +53,38 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import VcPopup from "../../../vc-popup/vc-popup.vue";
+import { defineComponent, computed, ref } from "vue";
 
 export default defineComponent({
   name: "VcGalleryPreview",
+});
+</script>
 
-  components: {
-    VcPopup,
+<script lang="ts" setup>
+import VcPopup from "../../../vc-popup/vc-popup.vue";
+
+const props = defineProps({
+  images: {
+    type: Array,
+    default: () => [],
   },
 
-  props: {
-    images: {
-      type: Array,
-      default: () => [],
-    },
-
-    index: {
-      type: Number,
-      default: 0,
-    },
-  },
-
-  setup(props) {
-    const localIndex = ref(props.index);
-    const currentImage = computed(() => props.images[localIndex.value] || {});
-
-    const copyLink = (link: string) => {
-      if (link.charAt(0) === "/") {
-        navigator.clipboard?.writeText(`${location.origin}${link}`);
-      } else {
-        navigator.clipboard?.writeText(link);
-      }
-    };
-
-    return {
-      currentImage,
-      localIndex,
-      copyLink,
-    };
+  index: {
+    type: Number,
+    default: 0,
   },
 });
+
+const localIndex = ref(props.index);
+const currentImage = computed(() => props.images[localIndex.value] || {});
+
+const copyLink = (link: string) => {
+  if (link.charAt(0) === "/") {
+    navigator.clipboard?.writeText(`${location.origin}${link}`);
+  } else {
+    navigator.clipboard?.writeText(link);
+  }
+};
 </script>
 
 <style lang="less">

@@ -226,6 +226,13 @@ import {
   watch,
   reactive,
 } from "vue";
+
+export default defineComponent({
+  url: "products",
+});
+</script>
+
+<script lang="ts" setup>
 import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -238,198 +245,201 @@ import {
 } from "../../../types";
 import { ISellerProduct } from "../../../api_client";
 
-export default defineComponent({
-  url: "products",
-
-  components: {
-    MpProductStatus,
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
 
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+  closable: {
+    type: Boolean,
+    default: true,
   },
 
-  setup(props, { emit }) {
-    const logger = useLogger();
-    const { debounce } = useFunctions();
-    const { t } = useI18n();
-    const {
-      products,
-      totalCount,
-      pages,
-      currentPage,
-      loadProducts,
-      loading,
-      searchQuery,
-      SellerProductStatus,
-    } = useProducts();
-    const filter = reactive<{
-      status?: string;
-      priceStart?: string;
-      priceEnd?: string;
-    }>({});
-    const appliedFilter = ref({});
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    const sort = ref("createdDate:DESC");
-    const searchValue = ref();
-    const selectedItemId = ref();
+  options: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+const emit = defineEmits(["page:close", "page:open"]);
+const logger = useLogger();
+const { debounce } = useFunctions();
+const { t } = useI18n();
+const {
+  products,
+  totalCount,
+  pages,
+  currentPage,
+  loadProducts,
+  loading,
+  searchQuery,
+  SellerProductStatus,
+} = useProducts();
+const filter = reactive<{
+  status?: string;
+  priceStart?: string;
+  priceEnd?: string;
+}>({});
+const appliedFilter = ref({});
 
-    watch(sort, async (value) => {
-      await loadProducts({ ...searchQuery.value, sort: value });
-    });
+const sort = ref("createdDate:DESC");
+const searchValue = ref();
+const selectedItemId = ref();
 
-    onMounted(async () => {
-      selectedItemId.value = props.param;
-      await loadProducts({ sort: sort.value });
-    });
+watch(sort, async (value) => {
+  await loadProducts({ ...searchQuery.value, sort: value });
+});
 
-    const reload = async () => {
-      logger.debug("Products list reload");
-      await loadProducts({
-        ...searchQuery.value,
-        skip: (currentPage.value - 1) * searchQuery.value.take,
-        sort: sort.value,
-      });
-    };
+onMounted(async () => {
+  selectedItemId.value = props.param;
+  await loadProducts({ sort: sort.value });
+});
 
-    const onSearchList = debounce(async (keyword: string) => {
-      logger.debug(`Products list search by ${keyword}`);
-      searchValue.value = keyword;
-      await loadProducts({
-        ...searchQuery.value,
-        keyword,
-      });
-    }, 200);
+const reload = async () => {
+  logger.debug("Products list reload");
+  await loadProducts({
+    ...searchQuery.value,
+    skip: (currentPage.value - 1) * searchQuery.value.take,
+    sort: sort.value,
+  });
+};
 
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "refresh",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
-        icon: "fas fa-sync-alt",
-        async clickHandler() {
-          await reload();
-        },
-      },
-      {
-        id: "add",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
-        icon: "fas fa-plus",
-        async clickHandler() {
-          emit("page:open", {
-            component: ProductsEdit,
-          });
-        },
-      },
-      {
-        id: "batchDelete",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
-        icon: "fas fa-trash",
-        isVisible: false,
-        async clickHandler() {
-          logger.debug("Delete selected products");
-        },
-      },
-    ]);
+const onSearchList = debounce(async (keyword: string) => {
+  logger.debug(`Products list search by ${keyword}`);
+  searchValue.value = keyword;
+  await loadProducts({
+    ...searchQuery.value,
+    keyword,
+  });
+}, 200);
 
-    const columns = ref<ITableColumns[]>([
-      {
-        id: "imgSrc",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-        width: 60,
-        alwaysVisible: true,
-        type: "image",
-      },
-      {
-        id: "name",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
-        sortable: true,
-        alwaysVisible: true,
-      },
-      {
-        id: "createdDate",
-        title: computed(() =>
-          t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
-        ),
-        width: 140,
-        sortable: true,
-        type: "date-ago",
-      },
-      {
-        id: "isPublished",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
-        type: "status-icon",
-        width: 180,
-        align: "center",
-        sortable: true,
-      },
-      {
-        id: "status",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 180,
-        sortable: true,
-      },
-      {
-        id: "gtin",
-        field: "productData.gtin",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
-        width: 180,
-        alwaysVisible: true,
-      },
-    ]);
-
-    const onItemClick = (item: { id: string }) => {
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "refresh",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
+    icon: "fas fa-sync-alt",
+    async clickHandler() {
+      await reload();
+    },
+  },
+  {
+    id: "add",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
+    icon: "fas fa-plus",
+    async clickHandler() {
       emit("page:open", {
         component: ProductsEdit,
-        param: item.id,
-        onOpen() {
-          selectedItemId.value = item.id;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
       });
-    };
+    },
+  },
+  {
+    id: "batchDelete",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
+    icon: "fas fa-trash",
+    isVisible: false,
+    async clickHandler() {
+      logger.debug("Delete selected products");
+    },
+  },
+]);
 
-    const onHeaderClick = (item: ITableColumns) => {
-      const sortBy = [":DESC", ":ASC", ""];
-      if (item.sortable) {
-        item.sortDirection = (item.sortDirection ?? 0) + 1;
-        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
-      }
-    };
+const tableColumns = ref<ITableColumns[]>([
+  {
+    id: "imgSrc",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
+    width: 60,
+    alwaysVisible: true,
+    type: "image",
+  },
+  {
+    id: "name",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
+    sortable: true,
+    alwaysVisible: true,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    width: 140,
+    sortable: true,
+    type: "date-ago",
+  },
+  {
+    id: "isPublished",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
+    type: "status-icon",
+    width: 180,
+    align: "center",
+    sortable: true,
+  },
+  {
+    id: "status",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 180,
+    sortable: true,
+  },
+  {
+    id: "gtin",
+    field: "productData.gtin",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
+    width: 180,
+    alwaysVisible: true,
+  },
+]);
 
-    const onPaginationClick = async (page: number) => {
-      await loadProducts({
-        ...searchQuery.value,
-        skip: (page - 1) * searchQuery.value.take,
-      });
-    };
+const columns = computed(() => {
+  if (props.expanded) {
+    return tableColumns.value;
+  } else {
+    return tableColumns.value.filter((item) => item.alwaysVisible === true);
+  }
+});
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
+const activeFilterCount = computed(
+  () => Object.values(appliedFilter.value).filter((item) => !!item).length
+);
 
-    const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
-      let result = [];
+const onItemClick = (item: { id: string }) => {
+  emit("page:open", {
+    component: ProductsEdit,
+    param: item.id,
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });
+};
 
-      // const statuses =
-      //   product.status?.split(",").map((item) => item.trim()) || [];
+const onHeaderClick = (item: ITableColumns) => {
+  const sortBy = [":DESC", ":ASC", ""];
+  if (item.sortable) {
+    item.sortDirection = (item.sortDirection ?? 0) + 1;
+    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+  }
+};
 
-      /*if (statuses.includes("Published")) {
+const onPaginationClick = async (page: number) => {
+  await loadProducts({
+    ...searchQuery.value,
+    skip: (page - 1) * searchQuery.value.take,
+  });
+};
+
+const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
+  let result = [];
+
+  // const statuses =
+  //   product.status?.split(",").map((item) => item.trim()) || [];
+
+  /*if (statuses.includes("Published")) {
         result.push({
           icon: "fas fa-times",
           title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
@@ -460,7 +470,7 @@ export default defineComponent({
         },
       });*/
 
-      /*result.push(
+  /*result.push(
         ...[
           {
             icon: "fas fa-clock",
@@ -479,75 +489,42 @@ export default defineComponent({
         ]
       );*/
 
-      return result;
-    };
+  return result;
+};
 
-    return {
-      loading,
-      bladeToolbar,
-      columns: computed(() => {
-        if (props.expanded) {
-          return columns.value;
-        } else {
-          return columns.value.filter((item) => item.alwaysVisible === true);
-        }
-      }),
-      searchQuery,
-      products,
-      actionBuilder,
-      totalCount,
-      pages,
-      currentPage,
-      sort,
-      moment,
-      reload,
-      selectedItemId,
-      async resetSearch() {
-        searchValue.value = "";
-        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
-        await loadProducts({
-          ...searchQuery.value,
-          ...filter,
-          keyword: "",
-        });
-        appliedFilter.value = {};
-      },
-      addProduct() {
-        emit("page:open", {
-          component: ProductsEdit,
-        });
-      },
-      onItemClick,
-      onHeaderClick,
-      onPaginationClick,
-      searchValue,
-      onSearchList,
-      title: computed(() => t("PRODUCTS.PAGES.LIST.TITLE")),
-      filter,
-      SellerProductStatus,
-      activeFilterCount: computed(
-        () => Object.values(appliedFilter.value).filter((item) => !!item).length
-      ),
-      async applyFilters() {
-        await loadProducts({
-          ...searchQuery.value,
-          ...filter,
-        });
-        appliedFilter.value = {
-          ...filter,
-        };
-      },
-      async resetFilters() {
-        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
-        await loadProducts({
-          ...searchQuery.value,
-          ...filter,
-        });
-        appliedFilter.value = {};
-      },
-    };
-  },
-});
+async function resetSearch() {
+  searchValue.value = "";
+  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+  await loadProducts({
+    ...searchQuery.value,
+    ...filter,
+    keyword: "",
+  });
+  appliedFilter.value = {};
+}
+function addProduct() {
+  emit("page:open", {
+    component: ProductsEdit,
+  });
+}
+
+async function applyFilters() {
+  await loadProducts({
+    ...searchQuery.value,
+    ...filter,
+  });
+  appliedFilter.value = {
+    ...filter,
+  };
+}
+async function resetFilters() {
+  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+  await loadProducts({
+    ...searchQuery.value,
+    ...filter,
+  });
+  appliedFilter.value = {};
+}
 </script>
 
 <style lang="less">

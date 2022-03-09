@@ -14,16 +14,19 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ImportPushNotification } from "../../../../../api_client";
 
 export default defineComponent({
   name: "ImportPush",
   inheritAttrs: false,
-  props: {
-    notification: {
-      type: Object as PropType<ImportPushNotification>,
-      default: () => ({}),
-    },
+});
+</script>
+<script lang="ts" setup>
+import { ImportPushNotification } from "../../../../../api_client";
+
+defineProps({
+  notification: {
+    type: Object as PropType<ImportPushNotification>,
+    default: () => ({}),
   },
 });
 </script>

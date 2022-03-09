@@ -35,104 +35,97 @@
 
 <script lang="ts">
 import { defineComponent, unref, watch, getCurrentInstance } from "vue";
+
+export default defineComponent({
+  name: "VcTextarea",
+});
+</script>
+
+<script lang="ts" setup>
 import { useField } from "vee-validate";
 import VcLabel from "..//vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
 
-export default defineComponent({
-  name: "VcTextarea",
-
-  components: {
-    VcLabel,
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: "",
   },
 
-  props: {
-    placeholder: {
-      type: String,
-      default: "",
-    },
-
-    modelValue: {
-      type: String,
-      default: undefined,
-    },
-
-    required: {
-      type: Boolean,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    label: {
-      type: String,
-      default: undefined,
-    },
-
-    tooltip: {
-      type: String,
-      default: undefined,
-    },
-
-    name: {
-      type: String,
-      default: "Field",
-    },
-
-    rules: {
-      type: [String, Object],
-    },
+  modelValue: {
+    type: String,
+    default: undefined,
   },
 
-  emits: ["update:modelValue"],
+  required: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    const instance = getCurrentInstance();
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-    // Prepare validation rules using required and rules props combination
-    let internalRules = unref(props.rules) || "";
-    if (props.required) {
-      if (typeof internalRules === "string") {
-        (internalRules as string) = `required|${internalRules}`.replace(
-          /(\|)+$/,
-          ""
-        );
-      } else {
-        (internalRules as IValidationRules).required = true;
-      }
-    }
+  label: {
+    type: String,
+    default: undefined,
+  },
 
-    // Prepare field-level validation
-    const { errorMessage, handleChange } = useField(
-      `${instance?.uid || props.name}`,
-      internalRules,
-      {
-        initialValue: props.modelValue,
-        label: props.label,
-      }
-    );
+  tooltip: {
+    type: String,
+    default: undefined,
+  },
 
-    watch(
-      () => props.modelValue,
-      (value) => {
-        handleChange(value);
-      }
-    );
+  name: {
+    type: String,
+    default: "Field",
+  },
 
-    return {
-      errorMessage,
-
-      // Handle input event to propertly validate value and emit changes
-      onInput(e: InputEvent) {
-        const newValue = (e.target as HTMLInputElement).value;
-        emit("update:modelValue", newValue);
-      },
-    };
+  rules: {
+    type: [String, Object],
   },
 });
+
+const emit = defineEmits(["update:modelValue"]);
+
+const instance = getCurrentInstance();
+
+// Prepare validation rules using required and rules props combination
+let internalRules = unref(props.rules) || "";
+if (props.required) {
+  if (typeof internalRules === "string") {
+    (internalRules as string) = `required|${internalRules}`.replace(
+      /(\|)+$/,
+      ""
+    );
+  } else {
+    (internalRules as IValidationRules).required = true;
+  }
+}
+
+// Prepare field-level validation
+const { errorMessage, handleChange } = useField(
+  `${instance?.uid || props.name}`,
+  internalRules,
+  {
+    initialValue: props.modelValue,
+    label: props.label,
+  }
+);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    handleChange(value);
+  }
+);
+
+// Handle input event to propertly validate value and emit changes
+function onInput(e: InputEvent) {
+  const newValue = (e.target as HTMLInputElement).value;
+  emit("update:modelValue", newValue);
+}
 </script>
 
 <style lang="less">

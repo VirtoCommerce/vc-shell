@@ -68,7 +68,7 @@ interface IProductPushNotification extends PushNotification {
   productName?: string;
 }
 
-export {
+export type {
   IComponent,
   ITableColumns,
   IActionBuilderResult,
@@ -76,4 +76,5 @@ export {
   IMenuItems,
   IShippingInfo,
   INotificationActions,
+  IProductPushNotification,
 };

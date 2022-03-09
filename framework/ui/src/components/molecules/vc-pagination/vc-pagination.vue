@@ -93,32 +93,33 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
 export default defineComponent({
   name: "VcPagination",
+});
+</script>
 
-  components: { VcIcon },
+<script lang="ts" setup>
+import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
-  props: {
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
-
-    pages: {
-      type: Number,
-      default: 1,
-    },
-
-    currentPage: {
-      type: Number,
-      default: 1,
-    },
+defineProps({
+  expanded: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["itemClick"],
+  pages: {
+    type: Number,
+    default: 1,
+  },
+
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
 });
+
+defineEmits(["itemClick"]);
 </script>
 
 <style lang="less">

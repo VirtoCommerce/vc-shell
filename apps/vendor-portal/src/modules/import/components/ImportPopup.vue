@@ -40,8 +40,15 @@
   </vc-popup>
 </template>
 
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "ImportPopup",
+});
+</script>
+
 <script lang="ts" setup>
-import { defineProps } from "vue";
 import { useI18n } from "@virtoshell/core";
 
 const { t } = useI18n();

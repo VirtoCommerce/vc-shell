@@ -7,16 +7,19 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { PushNotification } from "@virtoshell/api-client";
 
 export default defineComponent({
   name: "DefaultPush",
   inheritAttrs: false,
-  props: {
-    notification: {
-      type: Object as PropType<PushNotification>,
-      default: () => ({}),
-    },
+});
+</script>
+<script lang="ts" setup>
+import { PushNotification } from "@virtoshell/api-client";
+
+defineProps({
+  notification: {
+    type: Object as PropType<PushNotification>,
+    default: () => ({}),
   },
 });
 </script>

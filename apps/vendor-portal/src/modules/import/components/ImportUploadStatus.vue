@@ -47,8 +47,15 @@
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import { defineComponent, computed, PropType } from "vue";
+
+export default defineComponent({
+  name: "ImportUploadStatus",
+});
+</script>
 <script lang="ts" setup>
-import { computed, defineProps, PropType } from "vue";
 import { INotificationActions } from "../../../types";
 
 const props = defineProps({

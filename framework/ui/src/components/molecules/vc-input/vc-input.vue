@@ -31,12 +31,7 @@
       <!-- Dropdown button -->
       <div
         v-if="options && options.length"
-        class="
-          vc-input__dropdown-wrap
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__dropdown-wrap vc-padding-horizontal_m vc-flex vc-flex-align_center"
       >
         <div
           @click="showDrop"
@@ -86,24 +81,14 @@
       <!-- Input clear button -->
       <div
         v-if="clearable && modelValue && !disabled && type !== 'password'"
-        class="
-          vc-input__clear
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__clear vc-padding-horizontal_m vc-flex vc-flex-align_center"
         @click="onReset"
       >
         <vc-icon size="s" icon="fas fa-times"></vc-icon>
       </div>
 
       <div
-        class="
-          vc-input__showhide
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
         v-if="type === 'password' && internalType === 'password'"
         @click="internalType = 'text'"
       >
@@ -111,12 +96,7 @@
       </div>
 
       <div
-        class="
-          vc-input__showhide
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
         v-if="type === 'password' && internalType === 'text'"
         @click="internalType = 'password'"
       >
@@ -139,8 +119,8 @@
 
 <script lang="ts">
 import {
-  computed,
   defineComponent,
+  computed,
   getCurrentInstance,
   nextTick,
   onMounted,
@@ -149,6 +129,13 @@ import {
   unref,
   watch,
 } from "vue";
+
+export default defineComponent({
+  name: "VcInput",
+});
+</script>
+
+<script lang="ts" setup>
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
@@ -160,142 +147,190 @@ import {
   parse,
   CurrencyDisplay,
 } from "vue-currency-input";
-import { clickOutside } from "../../../directives";
+import { clickOutside as vClickOutside } from "../../../directives";
 
-export default defineComponent({
-  name: "VcInput",
-
-  components: {
-    VcIcon,
-    VcLabel,
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: "",
   },
 
-  directives: {
-    clickOutside,
+  modelValue: {
+    type: [String, Number, Date],
+    default: null,
   },
 
-  props: {
-    placeholder: {
-      type: String,
-      default: "",
-    },
-
-    modelValue: {
-      type: [String, Number, Date],
-      default: null,
-    },
-
-    clearable: {
-      type: Boolean,
-      default: false,
-    },
-
-    required: {
-      type: Boolean,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    type: {
-      type: String,
-      default: "text",
-    },
-
-    label: {
-      type: String,
-      default: undefined,
-    },
-
-    tooltip: {
-      type: String,
-      default: undefined,
-    },
-
-    name: {
-      type: String,
-      default: "Field",
-    },
-
-    rules: {
-      type: [String, Object],
-    },
-
-    currency: {
-      type: Boolean,
-      default: false,
-    },
-
-    options: {
-      type: Array as PropType<Record<string, string>[]>,
-      default: () => [],
-    },
-
-    optionsTitle: {
-      type: String,
-      default: "Select",
-    },
-
-    optionsValue: {
-      type: String,
-      default: "",
-    },
-
-    keyProperty: {
-      type: String,
-      default: "id",
-    },
-
-    displayProperty: {
-      type: String,
-      default: "title",
-    },
-
-    fieldDescription: {
-      type: String,
-      default: "",
-    },
+  clearable: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["update:modelValue", "update:optionsValue"],
+  required: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    let currencyConverter: UseCurrencyInput | undefined = undefined;
-    const internalType = ref(unref(props.type));
-    const toggleDropRef = ref();
-    const dropRef = ref();
-    const dropActive = ref(false);
-    const instance = getCurrentInstance();
-    const popper = ref<Instance>();
-    const search = ref("");
-    const searchInput = ref();
-    const calcValue = computed(() => {
-      if (props.currency) {
-        return currencyConverter?.formattedValue.value;
-      } else {
-        return value.value;
-      }
-    });
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-    // Prepare validation rules using required and rules props combination
-    let internalRules = unref(props.rules) || "";
-    if (props.required) {
-      if (typeof internalRules === "string") {
-        (internalRules as string) = `required|${internalRules}`.replace(
-          /(\|)+$/,
-          ""
-        );
-      } else {
-        (internalRules as IValidationRules).required = true;
-      }
-    }
+  type: {
+    type: String,
+    default: "text",
+  },
 
-    let initialValue = unref(props.modelValue);
-    if (props.modelValue && props.type === "datetime-local") {
-      const date = new Date(props.modelValue);
+  label: {
+    type: String,
+    default: undefined,
+  },
+
+  tooltip: {
+    type: String,
+    default: undefined,
+  },
+
+  name: {
+    type: String,
+    default: "Field",
+  },
+
+  rules: {
+    type: [String, Object],
+  },
+
+  currency: {
+    type: Boolean,
+    default: false,
+  },
+
+  options: {
+    type: Array as PropType<Record<string, string>[]>,
+    default: () => [],
+  },
+
+  optionsTitle: {
+    type: String,
+    default: "Select",
+  },
+
+  optionsValue: {
+    type: String,
+    default: "",
+  },
+
+  keyProperty: {
+    type: String,
+    default: "id",
+  },
+
+  displayProperty: {
+    type: String,
+    default: "title",
+  },
+
+  fieldDescription: {
+    type: String,
+    default: "",
+  },
+});
+
+const emit = defineEmits(["update:modelValue", "update:optionsValue"]);
+let currencyConverter: UseCurrencyInput | undefined = undefined;
+const internalType = ref(unref(props.type));
+const toggleDropRef = ref();
+const dropRef = ref();
+const dropActive = ref(false);
+const instance = getCurrentInstance();
+const popper = ref<Instance>();
+const search = ref("");
+const searchInput = ref();
+const calcValue = computed(() => {
+  if (props.currency) {
+    return currencyConverter?.formattedValue.value;
+  } else {
+    return value.value;
+  }
+});
+
+// Prepare validation rules using required and rules props combination
+let internalRules = unref(props.rules) || "";
+if (props.required) {
+  if (typeof internalRules === "string") {
+    (internalRules as string) = `required|${internalRules}`.replace(
+      /(\|)+$/,
+      ""
+    );
+  } else {
+    (internalRules as IValidationRules).required = true;
+  }
+}
+
+let initialValue = unref(props.modelValue);
+if (props.modelValue && props.type === "datetime-local") {
+  const date = new Date(props.modelValue);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const hour = date.getHours().toString().padStart(2, "0");
+  const minute = date.getMinutes().toString().padStart(2, "0");
+  const seconds = date.getSeconds().toString().padStart(2, "0");
+  initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
+}
+
+// Prepare field-level validation
+const { errorMessage, handleChange, value } = useField(
+  `${instance?.uid || props.name}`,
+  internalRules,
+  {
+    initialValue,
+  }
+);
+
+// Init currency composable if input type === currency (created hook)
+if (props.currency) {
+  currencyConverter = useCurrencyInput({
+    currency: props.optionsValue,
+    autoSign: false,
+    currencyDisplay: CurrencyDisplay.hidden,
+  });
+}
+
+onMounted(() => {
+  if (!value.value && props.currency) {
+    currencyConverter && currencyConverter.setValue(null);
+  }
+});
+
+// Change currency settings
+watch(
+  () => props.optionsValue,
+  (newVal) => {
+    currencyConverter &&
+      currencyConverter.setOptions({
+        currency: newVal,
+        autoSign: false,
+        currencyDisplay: CurrencyDisplay.hidden,
+      });
+  }
+);
+
+const searchFilter = computed(() => {
+  return props.options.filter((opt) =>
+    opt[props.displayProperty]
+      .toLowerCase()
+      .includes(search.value.toLowerCase())
+  );
+});
+
+const inputRef = currencyConverter && currencyConverter.inputRef;
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    let initialValue = unref(value);
+    if (value && props.type === "datetime-local") {
+      const date = new Date(value);
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
       const day = date.getDate().toString().padStart(2, "0");
@@ -304,144 +339,63 @@ export default defineComponent({
       const seconds = date.getSeconds().toString().padStart(2, "0");
       initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
     }
+    handleChange(initialValue);
+  }
+);
 
-    // Prepare field-level validation
-    const { errorMessage, handleChange, value } = useField(
-      `${instance?.uid || props.name}`,
-      internalRules,
-      {
-        initialValue,
-      }
-    );
-
-    // Init currency composable if input type === currency (created hook)
-    if (props.currency) {
-      currencyConverter = useCurrencyInput({
-        currency: props.optionsValue,
-        autoSign: false,
-        currencyDisplay: CurrencyDisplay.hidden,
+function showDrop() {
+  if (!dropActive.value && !props.disabled) {
+    dropActive.value = true;
+    nextTick(() => {
+      searchInput.value.focus();
+      popper.value = createPopper(toggleDropRef.value, dropRef.value, {
+        placement: "bottom-end",
+        modifiers: [
+          {
+            name: "offset",
+            options: {
+              offset: [13, 15],
+            },
+          },
+        ],
       });
-    }
-
-    onMounted(() => {
-      if (!value.value && props.currency) {
-        currencyConverter && currencyConverter.setValue(null);
-      }
     });
+  } else {
+    closeDrop();
+  }
+}
 
-    // Change currency settings
-    watch(
-      () => props.optionsValue,
-      (newVal) => {
-        currencyConverter &&
-          currencyConverter.setOptions({
-            currency: newVal,
-            autoSign: false,
-            currencyDisplay: CurrencyDisplay.hidden,
-          });
-      }
-    );
+function closeDrop() {
+  dropActive.value = false;
+  search.value = "";
+  popper.value?.destroy();
+}
 
-    const searchFilter = computed(() => {
-      return props.options.filter((opt) =>
-        opt[props.displayProperty]
-          .toLowerCase()
-          .includes(search.value.toLowerCase())
-      );
-    });
+function onItemSelect(item: { [x: string]: string }) {
+  emit("update:optionsValue", item[props.keyProperty]);
+  closeDrop();
+}
 
-    watch(
-      () => props.modelValue,
-      (value) => {
-        let initialValue = unref(value);
-        if (value && props.type === "datetime-local") {
-          const date = new Date(value);
-          const year = date.getFullYear();
-          const month = (date.getMonth() + 1).toString().padStart(2, "0");
-          const day = date.getDate().toString().padStart(2, "0");
-          const hour = date.getHours().toString().padStart(2, "0");
-          const minute = date.getMinutes().toString().padStart(2, "0");
-          const seconds = date.getSeconds().toString().padStart(2, "0");
-          initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
-        }
-        handleChange(initialValue);
-      }
-    );
+// Handle input event to propertly validate value and emit changes
+function onInput(e: InputEvent) {
+  const newValue = (e.target as HTMLInputElement).value;
+  if (newValue && props.type === "datetime-local") {
+    emit("update:modelValue", new Date(newValue));
+  } else if (newValue && props.currency) {
+    const parsed = parse(newValue, { currency: props.optionsValue });
+    emit("update:modelValue", parsed);
+  } else {
+    emit("update:modelValue", newValue);
+  }
+}
 
-    function showDrop() {
-      if (!dropActive.value && !props.disabled) {
-        dropActive.value = true;
-        nextTick(() => {
-          searchInput.value.focus();
-          popper.value = createPopper(toggleDropRef.value, dropRef.value, {
-            placement: "bottom-end",
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [13, 15],
-                },
-              },
-            ],
-          });
-        });
-      } else {
-        closeDrop();
-      }
-    }
-
-    function closeDrop() {
-      dropActive.value = false;
-      search.value = "";
-      popper.value?.destroy();
-    }
-
-    function onItemSelect(item: { [x: string]: string }) {
-      emit("update:optionsValue", item[props.keyProperty]);
-      closeDrop();
-    }
-
-    return {
-      internalType,
-      value,
-      errorMessage,
-      toggleDropRef,
-      dropRef,
-      dropActive,
-      search,
-      searchFilter,
-      calcValue,
-      searchInput,
-      inputRef: currencyConverter && currencyConverter.inputRef,
-      formattedValue: currencyConverter && currencyConverter.formattedValue,
-
-      // Handle input event to propertly validate value and emit changes
-      onInput(e: InputEvent) {
-        const newValue = (e.target as HTMLInputElement).value;
-        if (newValue && props.type === "datetime-local") {
-          emit("update:modelValue", new Date(newValue));
-        } else if (newValue && props.currency) {
-          const parsed = parse(newValue, { currency: props.optionsValue });
-          emit("update:modelValue", parsed);
-        } else {
-          emit("update:modelValue", newValue);
-        }
-      },
-
-      // Handle input event to propertly reset value and emit changes
-      onReset() {
-        if (props.currency) {
-          currencyConverter && currencyConverter.setValue(null);
-        }
-        emit("update:modelValue", "");
-      },
-
-      showDrop,
-      closeDrop,
-      onItemSelect,
-    };
-  },
-});
+// Handle input event to propertly reset value and emit changes
+function onReset() {
+  if (props.currency) {
+    currencyConverter && currencyConverter.setValue(null);
+  }
+  emit("update:modelValue", "");
+}
 </script>
 
 <style lang="less">

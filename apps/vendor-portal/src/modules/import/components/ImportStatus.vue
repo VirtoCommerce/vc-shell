@@ -10,8 +10,15 @@
   >
 </template>
 
+<script lang="ts">
+import { defineComponent, computed, PropType } from "vue";
+
+export default defineComponent({
+  name: "ImportStatus",
+});
+</script>
+
 <script lang="ts" setup>
-import { computed, defineProps, PropType } from "vue";
 import { ImportRunHistory } from "../../../api_client";
 import { camelToSnake } from "@virtoshell/core";
 

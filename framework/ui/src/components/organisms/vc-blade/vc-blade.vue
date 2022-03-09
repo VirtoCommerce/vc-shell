@@ -35,52 +35,49 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
+
+export default defineComponent({
+  name: "VcBlade",
+  inheritAttrs: false,
+});
+</script>
+
+<script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 import { IBladeToolbar } from "../../../typings";
 
-export default defineComponent({
-  name: "VcBlade",
-
-  inheritAttrs: false,
-
-  components: {
-    VcBladeHeader,
-    VcBladeToolbar,
+defineProps({
+  icon: {
+    type: String,
   },
 
-  props: {
-    icon: {
-      type: String,
-    },
+  title: {
+    type: String,
+  },
 
-    title: {
-      type: String,
-    },
+  subtitle: {
+    type: String,
+  },
 
-    subtitle: {
-      type: String,
-    },
+  width: {
+    type: [Number, String],
+    default: "30%",
+  },
 
-    width: {
-      type: [Number, String],
-      default: "30%",
-    },
+  expanded: {
+    type: Boolean,
+    default: false,
+  },
 
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    toolbarItems: {
-      type: Array as PropType<IBladeToolbar[]>,
-      default: () => [],
-    },
+  toolbarItems: {
+    type: Array as PropType<IBladeToolbar[]>,
+    default: () => [],
   },
 });
 </script>

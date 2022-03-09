@@ -45,71 +45,66 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
 
 export default defineComponent({
   name: "VcBladeHeader",
+});
+</script>
 
-  components: {
-    VcIcon,
+<script lang="ts" setup>
+import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
+
+const props = defineProps({
+  expandable: {
+    type: Boolean,
+    default: false,
   },
 
-  props: {
-    expandable: {
-      type: Boolean,
-      default: false,
-    },
-
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
-
-    closable: {
-      type: Boolean,
-      default: false,
-    },
-
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    subtitle: {
-      type: String,
-      default: undefined,
-    },
-
-    icon: {
-      type: String,
-      default: undefined,
-    },
+  expanded: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["close", "expand", "collapse"],
+  closable: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    return {
-      onExpand(): void {
-        if (props.expandable) {
-          emit("expand");
-        }
-      },
+  title: {
+    type: String,
+    default: undefined,
+  },
 
-      onCollapse(): void {
-        if (props.expandable) {
-          emit("collapse");
-        }
-      },
+  subtitle: {
+    type: String,
+    default: undefined,
+  },
 
-      onClose(): void {
-        if (props.closable) {
-          emit("close");
-        }
-      },
-    };
+  icon: {
+    type: String,
+    default: undefined,
   },
 });
+
+const emit = defineEmits(["close", "expand", "collapse"]);
+
+function onExpand(): void {
+  if (props.expandable) {
+    emit("expand");
+  }
+}
+
+function onCollapse(): void {
+  if (props.expandable) {
+    emit("collapse");
+  }
+}
+
+function onClose(): void {
+  if (props.closable) {
+    emit("close");
+  }
+}
 </script>
 
 <style lang="less">

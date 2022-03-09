@@ -48,42 +48,38 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-
 export default defineComponent({
-  props: {
-    avatar: {
-      type: String,
-      default: undefined,
-    },
+  name: "user-dropdown-button",
+});
+</script>
 
-    name: {
-      type: String,
-      default: undefined,
-    },
-
-    role: {
-      type: String,
-      default: undefined,
-    },
-
-    menuItems: {
-      type: Array,
-      default: () => [],
-    },
+<script lang="ts" setup>
+defineProps({
+  avatar: {
+    type: String,
+    default: undefined,
   },
 
-  setup() {
-    const accountMenuVisible = ref(false);
-    const toggleAccountMenuVisible = () => {
-      accountMenuVisible.value = !accountMenuVisible.value;
-    };
+  name: {
+    type: String,
+    default: undefined,
+  },
 
-    return {
-      accountMenuVisible,
-      toggleAccountMenuVisible,
-    };
+  role: {
+    type: String,
+    default: undefined,
+  },
+
+  menuItems: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const accountMenuVisible = ref(false);
+const toggleAccountMenuVisible = () => {
+  accountMenuVisible.value = !accountMenuVisible.value;
+};
 </script>
 
 <style lang="less">

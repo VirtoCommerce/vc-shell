@@ -27,51 +27,49 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcImage",
+});
+</script>
 
-  props: {
-    aspect: {
-      type: String,
-      default: "1x1",
-    },
-
-    rounded: {
-      type: Boolean,
-      default: false,
-    },
-
-    bordered: {
-      type: Boolean,
-      default: false,
-    },
-
-    clickable: {
-      type: Boolean,
-      default: false,
-    },
-
-    src: {
-      type: String,
-      default: undefined,
-    },
-
-    size: {
-      type: String,
-      default: "auto",
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  aspect: {
+    type: String,
+    default: "1x1",
   },
 
-  emits: ["click"],
+  rounded: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (props.clickable) {
-          emit("click");
-        }
-      },
-    };
+  bordered: {
+    type: Boolean,
+    default: false,
+  },
+
+  clickable: {
+    type: Boolean,
+    default: false,
+  },
+
+  src: {
+    type: String,
+    default: undefined,
+  },
+
+  size: {
+    type: String,
+    default: "auto",
   },
 });
+
+const emit = defineEmits(["click"]);
+
+function onClick(): void {
+  if (props.clickable) {
+    emit("click");
+  }
+}
 </script>
 
 <style lang="less">

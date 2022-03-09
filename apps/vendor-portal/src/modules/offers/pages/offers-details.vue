@@ -37,12 +37,7 @@
             >
               <template v-slot:item="itemData">
                 <div
-                  class="
-                    vc-flex
-                    vc-flex-align_center
-                    vc-padding-vertical_s
-                    vc-ellipsis
-                  "
+                  class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
                 >
                   <vc-image
                     class="vc-flex-shrink_0"
@@ -74,11 +69,7 @@
               <div class="vc-padding_l">
                 <!-- SKU field -->
                 <div
-                  class="
-                    vc-margin-bottom_l
-                    vc-flex vc-flex-row
-                    vc-flex-align_center
-                  "
+                  class="vc-margin-bottom_l vc-flex vc-flex-row vc-flex-align_center"
                 >
                   <vc-input
                     class="vc-flex-grow_1"
@@ -262,167 +253,156 @@ import {
   nextTick,
   unref,
 } from "vue";
+
+export default defineComponent({
+  url: "offer",
+});
+</script>
+
+<script lang="ts" setup>
 import { useForm } from "@virtoshell/ui";
 import { useFunctions, useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct, OfferPrice } from "../../../api_client";
 import { IBladeToolbar } from "../../../types";
 
-export default defineComponent({
-  url: "offer",
-
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
 
-  setup(props, { emit }) {
-    const { t } = useI18n();
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    const {
-      createOffer,
-      offerDetails,
-      fetchProducts,
-      offer,
-      loadOffer,
-      loading,
-      selectOfferProduct,
-    } = useOffer();
-    const { debounce } = useFunctions();
-    const products = ref<IOfferProduct[]>();
-    const currency = { title: "USD", value: "USD" };
-    const isTracked = ref(false);
-    const priceRefs = ref([]);
-    const container = ref();
-    const { validate } = useForm({ validateOnMount: false });
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    onMounted(async () => {
-      if (props.param) {
-        await loadOffer({ id: props.param });
-      } else {
-        offerDetails.currency = "USD";
-        addPrice();
-      }
-      if (
-        offer.value.productId ||
-        props.options?.sellerProduct?.publishedProductDataId
-      ) {
-        await selectOfferProduct({
-          id:
-            offer.value.productId ||
-            props.options?.sellerProduct?.publishedProductDataId,
-        });
-      }
-      products.value = await fetchProducts();
-    });
-
-    onBeforeUpdate(() => {
-      priceRefs.value = [];
-    });
-
-    const readonly = computed(() => !!offer.value?.id);
-
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "save",
-        title: computed(() => t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE")),
-        icon: "fas fa-save",
-        async clickHandler() {
-          const { valid } = await validate();
-          if (valid) {
-            try {
-              await createOffer({
-                ...offerDetails,
-              });
-              emit("parent:call", {
-                method: "reload",
-              });
-              emit("page:close");
-            } catch (err) {
-              alert(err.message);
-            }
-          } else {
-            alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
-          }
-        },
-        isVisible: !props.param,
-        disabled: computed(
-          () => !(offerDetails.prices && offerDetails.prices.length)
-        ),
-      },
-    ]);
-
-    function scrollToLastPrice() {
-      nextTick(() => {
-        const element = priceRefs.value[priceRefs.value.length - 1].$el;
-        const top = element.offsetTop;
-        container.value.$el.firstChild.scrollTo({ top, behavior: "smooth" });
-      });
-    }
-
-    function addPrice() {
-      if (!offerDetails.prices) {
-        offerDetails.prices = [];
-      }
-      offerDetails.prices.push(new OfferPrice());
-      scrollToLastPrice();
-    }
-
-    return {
-      offer,
-      loading,
-      readonly,
-      bladeToolbar,
-      offerDetails,
-      products,
-      currency,
-      isTracked,
-      container,
-      currencies: [
-        { title: "USD", value: "USD" },
-        { title: "EUR", value: "EUR" },
-        { title: "AED", value: "AED" },
-        { title: "AFN", value: "AFN" },
-        { title: "CHF", value: "CHF" },
-        { title: "CNY", value: "CNY" },
-      ],
-
-      addPrice,
-
-      // Process product dropdown search
-      onProductSearch: debounce(async (value: string) => {
-        products.value = await fetchProducts(value);
-      }, 500),
-
-      removePrice(idx: number) {
-        offerDetails.prices.splice(idx, 1);
-      },
-
-      setPriceRefs(el: HTMLDivElement) {
-        if (el) {
-          priceRefs.value.push(el);
-        }
-      },
-    };
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+
+const emit = defineEmits(["parent:call", "page:close"]);
+const { t } = useI18n();
+
+const {
+  createOffer,
+  offerDetails,
+  fetchProducts,
+  offer,
+  loadOffer,
+  loading,
+  selectOfferProduct,
+} = useOffer();
+const { debounce } = useFunctions();
+const products = ref<IOfferProduct[]>();
+// const currency = { title: "USD", value: "USD" };
+// const isTracked = ref(false);
+const priceRefs = ref([]);
+const container = ref();
+const currencies = [
+  { title: "USD", value: "USD" },
+  { title: "EUR", value: "EUR" },
+  { title: "AED", value: "AED" },
+  { title: "AFN", value: "AFN" },
+  { title: "CHF", value: "CHF" },
+  { title: "CNY", value: "CNY" },
+];
+const { validate } = useForm({ validateOnMount: false });
+
+onMounted(async () => {
+  if (props.param) {
+    await loadOffer({ id: props.param });
+  } else {
+    offerDetails.currency = "USD";
+    addPrice();
+  }
+  if (
+    offer.value.productId ||
+    props.options?.sellerProduct?.publishedProductDataId
+  ) {
+    await selectOfferProduct({
+      id:
+        offer.value.productId ||
+        props.options?.sellerProduct?.publishedProductDataId,
+    });
+  }
+  products.value = await fetchProducts();
+});
+
+onBeforeUpdate(() => {
+  priceRefs.value = [];
+});
+
+const readonly = computed(() => !!offer.value?.id);
+
+// Process product dropdown search
+const onProductSearch = () =>
+  debounce(async (value: string) => {
+    products.value = await fetchProducts(value);
+  }, 500);
+
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: computed(() => t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE")),
+    icon: "fas fa-save",
+    async clickHandler() {
+      const { valid } = await validate();
+      if (valid) {
+        try {
+          await createOffer({
+            ...offerDetails,
+          });
+          emit("parent:call", {
+            method: "reload",
+          });
+          emit("page:close");
+        } catch (err) {
+          alert(err.message);
+        }
+      } else {
+        alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
+      }
+    },
+    isVisible: !props.param,
+    disabled: computed(
+      () => !(offerDetails.prices && offerDetails.prices.length)
+    ),
+  },
+]);
+
+function scrollToLastPrice() {
+  nextTick(() => {
+    const element = priceRefs.value[priceRefs.value.length - 1].$el;
+    const top = element.offsetTop;
+    container.value.$el.firstChild.scrollTo({ top, behavior: "smooth" });
+  });
+}
+
+function addPrice() {
+  if (!offerDetails.prices) {
+    offerDetails.prices = [];
+  }
+  offerDetails.prices.push(new OfferPrice());
+  scrollToLastPrice();
+}
+
+function removePrice(idx: number) {
+  offerDetails.prices.splice(idx, 1);
+}
+
+function setPriceRefs(el: HTMLDivElement) {
+  if (el) {
+    priceRefs.value.push(el);
+  }
+}
 </script>
 
 <style lang="less">

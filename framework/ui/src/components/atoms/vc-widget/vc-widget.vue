@@ -19,40 +19,39 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  props: {
-    icon: {
-      type: String,
-      default: undefined,
-    },
+  name: "VcWidget",
+});
+</script>
 
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    value: {
-      type: [String, Number],
-      default: undefined,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  icon: {
+    type: String,
+    default: undefined,
   },
 
-  emits: ["click"],
+  title: {
+    type: String,
+    default: undefined,
+  },
 
-  setup(props, { emit }) {
-    return {
-      onClick() {
-        if (!props.disabled) {
-          emit("click");
-        }
-      },
-    };
+  value: {
+    type: [String, Number],
+    default: undefined,
+  },
+
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
+const emit = defineEmits(["click"]);
+
+function onClick() {
+  if (!props.disabled) {
+    emit("click");
+  }
+}
 </script>
 
 <style lang="less">

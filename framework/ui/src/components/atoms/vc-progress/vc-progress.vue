@@ -9,18 +9,20 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcProgress",
+});
+</script>
 
-  props: {
-    value: {
-      type: Number,
-      default: 0,
-    },
+<script lang="ts" setup>
+defineProps({
+  value: {
+    type: Number,
+    default: 0,
+  },
 
-    variant: {
-      type: String,
-      default: "default",
-      enum: ["default", "striped"],
-    },
+  variant: {
+    type: String,
+    default: "default",
+    enum: ["default", "striped"],
   },
 });
 </script>

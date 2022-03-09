@@ -17,18 +17,19 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import VcIcon from "./../vc-icon/vc-icon.vue";
 
 export default defineComponent({
   name: "VcStatusIcon",
-  components: {
-    VcIcon,
-  },
-  props: {
-    status: {
-      type: Boolean,
-      default: false,
-    },
+});
+</script>
+
+<script lang="ts" setup>
+import VcIcon from "./../vc-icon/vc-icon.vue";
+
+defineProps({
+  status: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

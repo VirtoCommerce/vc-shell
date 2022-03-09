@@ -22,52 +22,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
+import { defineComponent, defineProps, ref } from "vue";
 
 export default defineComponent({
   name: "VcBladeToolbar",
+});
+</script>
 
-  components: {
-    VcBladeToolbarButton,
-  },
+<script lang="ts" setup>
+import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
 
-  props: {
-    items: {
-      type: Array,
-      default: () => [],
-    },
-  },
-
-  setup(props) {
-    const isExpanded = ref(true);
-    try {
-      isExpanded.value =
-        localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
-    } catch (err) {
-      isExpanded.value = true;
-    }
-
-    function toggleToolbar() {
-      isExpanded.value = !isExpanded.value;
-      localStorage.setItem(
-        "VC_BLADE_TOOLBAR_IS_EXPANDED",
-        isExpanded.value.toString()
-      );
-    }
-
-    return {
-      isExpanded,
-      toggleToolbar,
-      isToolbarVisible() {
-        const visibleItems = (props.items as { isVisible: boolean }[]).filter(
-          (item) => item.isVisible === undefined || item.isVisible
-        );
-        return !!visibleItems.length;
-      },
-    };
+const props = defineProps({
+  items: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const isExpanded = ref(true);
+try {
+  isExpanded.value =
+    localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
+} catch (err) {
+  isExpanded.value = true;
+}
+
+function toggleToolbar() {
+  isExpanded.value = !isExpanded.value;
+  localStorage.setItem(
+    "VC_BLADE_TOOLBAR_IS_EXPANDED",
+    isExpanded.value.toString()
+  );
+}
+
+function isToolbarVisible() {
+  const visibleItems = (props.items as { isVisible: boolean }[]).filter(
+    (item) => item.isVisible === undefined || item.isVisible
+  );
+  return !!visibleItems.length;
+}
 </script>
 
 <style lang="less">

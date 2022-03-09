@@ -4,7 +4,6 @@ import { VitePWA } from "vite-plugin-pwa";
 import typescript from "@rollup/plugin-typescript";
 import path from "path";
 import fs from "fs";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync("./package.json");
@@ -65,15 +64,12 @@ export default defineConfig(({ mode }) => {
           ],
         },
       }),
-      // tsconfigPaths(),
     ],
     define: {
-      "import.meta.env": {
-        PACKAGE_VERSION: `"${version}"`,
-        APP_PLATFORM_URL: `"${process.env.APP_PLATFORM_URL}"`,
-        APP_LOG_ENABLED: `"${process.env.APP_LOG_ENABLED}"`,
-        APP_LOG_LEVEL: `"${process.env.APP_LOG_LEVEL}"`,
-      },
+      "import.meta.env.PACKAGE_VERSION": `"${version}"`,
+      "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
+      "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
+      "import.meta.env.APP_LOG_LEVEL": `"${process.env.APP_LOG_LEVEL}"`,
     },
     server: {
       watch: {
@@ -97,6 +93,7 @@ export default defineConfig(({ mode }) => {
         "@virtoshell/ui",
         "@virtoshell/mod-assets",
         "url-pattern",
+        "vee-validate",
       ],
     },
     build: {

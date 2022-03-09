@@ -21,12 +21,14 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcLoading",
+});
+</script>
 
-  props: {
-    active: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+defineProps({
+  active: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

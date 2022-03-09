@@ -60,110 +60,95 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { defineComponent, computed, PropType, ref } from "vue";
+
+export default defineComponent({
+  name: "VcGallery",
+});
+</script>
+
+<script lang="ts" setup>
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
 import { Image } from "@virtoshell/api-client";
 import VcFileUpload from "../../molecules/vc-file-upload/vc-file-upload.vue";
 
-export default defineComponent({
-  name: "VcGallery",
-
-  components: {
-    VcLabel,
-    VcGalleryItem,
-    VcFileUpload,
-    VcGalleryPreview,
+const props = defineProps({
+  images: {
+    type: Array as PropType<Image[]>,
+    default: () => [],
   },
 
-  props: {
-    images: {
-      type: Array as PropType<Image[]>,
-      default: () => [],
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    required: {
-      type: Boolean,
-      default: false,
-    },
-
-    label: {
-      type: String,
-      default: undefined,
-    },
-
-    tooltip: {
-      type: String,
-      default: undefined,
-    },
-
-    tooltipIcon: {
-      type: String,
-      default: "fas fa-info",
-    },
-
-    uploadIcon: {
-      type: String,
-      default: "fas fa-upload",
-    },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: [
-    "upload",
-    "sort",
-    "item:preview",
-    "item:edit",
-    "item:remove",
-    "item:move",
-  ],
+  required: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(_props, { emit }) {
-    const preview = ref(false);
-    const previewImageIndex = ref();
-    const dragOptions = computed(() => {
-      return {
-        animation: 200,
-        group: "description",
-        disabled: false,
-      };
-    });
+  label: {
+    type: String,
+    default: undefined,
+  },
 
-    const onUpload = (files: FileList) => {
-      if (files && files.length) {
-        emit("upload", files);
-      }
-    };
+  tooltip: {
+    type: String,
+    default: undefined,
+  },
 
-    const onPreviewClick = (index: number) => {
-      preview.value = true;
-      previewImageIndex.value = index;
-    };
+  tooltipIcon: {
+    type: String,
+    default: "fas fa-info",
+  },
 
-    const updateOrder = () => {
-      const images = _props.images;
-      const sortedImgs = images.map((item, index) => {
-        item.sortOrder = index;
-        return item;
-      });
-      emit("sort", ref(sortedImgs).value);
-    };
-
-    return {
-      preview,
-      previewImageIndex,
-      dragOptions,
-      onUpload,
-      onPreviewClick,
-      updateOrder,
-    };
+  uploadIcon: {
+    type: String,
+    default: "fas fa-upload",
   },
 });
+
+const emit = defineEmits([
+  "upload",
+  "sort",
+  "item:preview",
+  "item:edit",
+  "item:remove",
+  "item:move",
+]);
+
+const preview = ref(false);
+const previewImageIndex = ref();
+const dragOptions = computed(() => {
+  return {
+    animation: 200,
+    group: "description",
+    disabled: false,
+  };
+});
+
+const onUpload = (files: FileList) => {
+  if (files && files.length) {
+    emit("upload", files);
+  }
+};
+
+const onPreviewClick = (index: number) => {
+  preview.value = true;
+  previewImageIndex.value = index;
+};
+
+const updateOrder = () => {
+  const images = props.images;
+  const sortedImgs = images.map((item, index) => {
+    item.sortOrder = index;
+    return item;
+  });
+  emit("sort", ref(sortedImgs).value);
+};
 </script>
 
 <style lang="less">

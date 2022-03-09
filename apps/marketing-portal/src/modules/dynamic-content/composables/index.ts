@@ -1,3 +1,2 @@
-import useContent from "./useContent";
-import useContentItem from "./useContentItem";
-export { useContent, useContentItem };
+export { default as useContent } from "./useContent";
+export { default as useContentItem } from "./useContentItem";

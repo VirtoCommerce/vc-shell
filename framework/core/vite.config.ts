@@ -1,10 +1,9 @@
 import path from "path";
 import typescript from "@rollup/plugin-typescript";
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
-import tsconfigPaths from "vite-tsconfig-paths";
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   return {
     plugins: [vue()],
     build: {

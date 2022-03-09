@@ -10,17 +10,19 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcTableCounter",
+});
+</script>
 
-  props: {
-    label: {
-      type: String,
-      default: "Total",
-    },
+<script lang="ts" setup>
+defineProps({
+  label: {
+    type: String,
+    default: "Total",
+  },
 
-    value: {
-      type: Number,
-      default: 0,
-    },
+  value: {
+    type: Number,
+    default: 0,
   },
 });
 </script>

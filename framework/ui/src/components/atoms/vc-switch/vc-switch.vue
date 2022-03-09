@@ -20,21 +20,24 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcSwitch",
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
+});
+</script>
 
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
+  },
 
-    tooltip: {
-      type: String,
-      default: "",
-    },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+
+  tooltip: {
+    type: String,
+    default: "",
   },
 });
 </script>

@@ -3,7 +3,7 @@ import * as components from "./components";
 import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
-import draggable from "vuedraggable";
+import draggable from "vuedraggable/src/vuedraggable";
 import { defineRule, useForm as _useForm } from "vee-validate";
 
 import "normalize.css";

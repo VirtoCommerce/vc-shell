@@ -1,11 +1,6 @@
 <template>
   <div
-    class="
-      vc-fill_all
-      vc-flex vc-flex-column
-      vc-flex-align_center
-      vc-flex-justify_center
-    "
+    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
     :style="{
       background: `url(${background}) center / cover no-repeat`,
     }"
@@ -32,28 +27,28 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcLoginForm",
+});
+</script>
 
-  props: {
-    logo: {
-      type: String,
-      default: undefined,
-    },
-
-    background: {
-      type: String,
-      default: undefined,
-    },
-
-    title: {
-      type: String,
-      default: "Login",
-    },
+<script lang="ts" setup>
+defineProps({
+  logo: {
+    type: String,
+    default: undefined,
   },
 
-  setup() {
-    console.debug("Init vc-login-form");
+  background: {
+    type: String,
+    default: undefined,
+  },
+
+  title: {
+    type: String,
+    default: "Login",
   },
 });
+
+console.debug("Init vc-login-form");
 </script>
 
 <style lang="less">

@@ -166,6 +166,12 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 
+export default defineComponent({
+  name: "VcDynamicProperty",
+});
+</script>
+
+<script lang="ts" setup>
 interface IValidationRules {
   required?: boolean;
   min?: number;
@@ -173,87 +179,80 @@ interface IValidationRules {
   regex?: RegExp;
 }
 
-export default defineComponent({
-  props: {
-    property: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    dictionaries: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    getter: {
-      type: Function,
-    },
-
-    optionsGetter: {
-      type: Function,
-    },
-
-    setter: {
-      type: Function,
-    },
-
-    culture: {
-      type: String,
-      default: "en-US",
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+const props = defineProps({
+  property: {
+    type: Object,
+    default: () => ({}),
   },
 
-  setup(props) {
-    const rules: IValidationRules = {};
-    const items = ref([]);
+  dictionaries: {
+    type: Object,
+    default: () => ({}),
+  },
 
-    onMounted(async () => {
-      if (props.optionsGetter) {
-        items.value = await props.optionsGetter(props.property);
-      }
-    });
+  getter: {
+    type: Function,
+  },
 
-    if (props.property.required) {
-      rules.required = true;
-    }
-    if (props.property.validationRule?.charCountMin) {
-      rules.min = Number(props.property.validationRule.charCountMin);
-    }
-    if (props.property.validationRule?.charCountMax) {
-      rules.max = Number(props.property.validationRule.charCountMax);
-    }
-    if (props.property.validationRule?.regExp) {
-      rules.regex = new RegExp(props.property.validationRule?.regExp);
-    }
+  optionsGetter: {
+    type: Function,
+  },
 
-    return {
-      rules,
-      items,
-      getLabel() {
-        return (
-          (props.property.displayNames as { culture: string }[]).find(
-            (item) => item.culture === props.culture
-          ) || props.property.name
-        );
-      },
+  setter: {
+    type: Function,
+  },
 
-      async onSearch(keyword: string) {
-        if (props.optionsGetter) {
-          items.value = await props.optionsGetter(props.property, keyword);
-        }
-      },
+  culture: {
+    type: String,
+    default: "en-US",
+  },
 
-      async onClose() {
-        if (props.optionsGetter) {
-          items.value = await props.optionsGetter(props.property);
-        }
-      },
-    };
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
+
+const rules: IValidationRules = {};
+const items = ref([]);
+
+onMounted(async () => {
+  if (props.optionsGetter) {
+    items.value = await props.optionsGetter(props.property);
+  }
+});
+
+if (props.property.required) {
+  rules.required = true;
+}
+if (props.property.validationRule?.charCountMin) {
+  rules.min = Number(props.property.validationRule.charCountMin);
+}
+if (props.property.validationRule?.charCountMax) {
+  rules.max = Number(props.property.validationRule.charCountMax);
+}
+if (props.property.validationRule?.regExp) {
+  rules.regex = new RegExp(props.property.validationRule?.regExp);
+}
+
+/*function getLabel() {
+  return (
+    (props.property.displayNames as { culture: string }[]).find(
+      (item) => item.culture === props.culture
+    ) || props.property.name
+  );
+}
+ */
+
+async function onSearch(keyword: string) {
+  if (props.optionsGetter) {
+    items.value = await props.optionsGetter(props.property, keyword);
+  }
+}
+
+async function onClose() {
+  if (props.optionsGetter) {
+    items.value = await props.optionsGetter(props.property);
+  }
+}
 </script>

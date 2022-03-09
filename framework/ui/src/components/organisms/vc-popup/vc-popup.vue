@@ -25,31 +25,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, defineProps } from "vue";
 
 export default defineComponent({
   name: "VcPopup",
+});
+</script>
 
-  props: {
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    variant: {
-      type: String,
-      default: "fullscreen",
-      enum: ["small", "medium", "fullscreen"],
-    },
+<script lang="ts" setup>
+defineProps({
+  title: {
+    type: String,
+    default: undefined,
   },
 
-  emits: ["close"],
+  closable: {
+    type: Boolean,
+    default: true,
+  },
+
+  variant: {
+    type: String,
+    default: "fullscreen",
+    enum: ["small", "medium", "fullscreen"],
+  },
 });
+
+defineEmits(["close"]);
 </script>
 
 <style lang="less">

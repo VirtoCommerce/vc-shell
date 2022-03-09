@@ -38,55 +38,52 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
+
+export default defineComponent({
+  name: "VcSlider",
+});
+</script>
+
+<script lang="ts" setup>
 import { Swiper as SwiperComponent, SwiperSlide } from "swiper/vue";
 import SwiperCore, { Navigation } from "swiper";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import "swiper/components/navigation/navigation.min.css";
 SwiperCore.use([Navigation]);
-export default defineComponent({
-  name: "VcSlider",
-  components: {
-    SwiperComponent,
-    SwiperSlide,
+
+defineProps({
+  slides: {
+    type: Array,
+    default: () => [],
   },
-  props: {
-    slides: {
-      type: Array,
-      default: () => [],
-    },
 
-    navigation: {
-      type: Boolean,
-      default: false,
-    },
-
-    overflow: {
-      type: Boolean,
-      default: false,
-    },
-
-    slidesPerView: {
-      type: String,
-      default: "auto",
-    },
-
-    spaceBetweenSlides: {
-      type: Number,
-      default: 10,
-    },
+  navigation: {
+    type: Boolean,
+    default: false,
   },
-  setup() {
-    const buttonsList = computed(() => ({
-      nextEl: ".vc-slider__next",
-      prevEl: ".vc-slider__prev",
-    }));
-    return {
-      buttonsList,
-    };
+
+  overflow: {
+    type: Boolean,
+    default: false,
+  },
+
+  slidesPerView: {
+    type: String,
+    default: "auto",
+  },
+
+  spaceBetweenSlides: {
+    type: Number,
+    default: 10,
   },
 });
+
+const buttonsList = computed(() => ({
+  nextEl: ".vc-slider__next",
+  prevEl: ".vc-slider__prev",
+}));
 </script>
 
 <style lang="less" scoped>

@@ -6,7 +6,7 @@
         class="vc-checkbox__input"
         :checked="modelValue"
         :disabled="disabled"
-        @change="$emit('update:modelValue', $event.target.checked)"
+        @change="onChange"
       />
       <span class="vc-checkbox__checkmark"></span>
       <div v-if="$slots['default']" class="vc-margin-left_s">
@@ -27,64 +27,60 @@
 
 <script lang="ts">
 import { defineComponent, watch, getCurrentInstance } from "vue";
-import { useField } from "vee-validate";
 
 export default defineComponent({
   name: "VcCheckbox",
+});
+</script>
 
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+import { useField } from "vee-validate";
 
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    required: {
-      type: Boolean,
-      default: false,
-    },
-
-    name: {
-      type: String,
-      default: "Field",
-    },
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["update:modelValue"],
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    const instance = getCurrentInstance();
+  required: {
+    type: Boolean,
+    default: false,
+  },
 
-    // Prepare field-level validation
-    const { errorMessage, handleChange } = useField(
-      `${instance?.uid || props.name}`,
-      props.required ? "required" : "",
-      {
-        initialValue: props.modelValue,
-      }
-    );
-
-    watch(
-      () => props.modelValue,
-      (value) => {
-        handleChange(value);
-      }
-    );
-    return {
-      errorMessage,
-
-      // Handle input event to propertly validate value and emit changes
-      onChange(e: InputEvent) {
-        const newValue = (e.target as HTMLInputElement).checked;
-        emit("update:modelValue", newValue);
-      },
-    };
+  name: {
+    type: String,
+    default: "Field",
   },
 });
+const emit = defineEmits(["update:modelValue"]);
+const instance = getCurrentInstance();
+
+// Prepare field-level validation
+const { errorMessage, handleChange } = useField(
+  `${instance?.uid || props.name}`,
+  props.required ? "required" : "",
+  {
+    initialValue: props.modelValue,
+  }
+);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    handleChange(value);
+  }
+);
+
+// Handle input event to propertly validate value and emit changes
+function onChange(e: InputEvent) {
+  const newValue = (e.target as HTMLInputElement).checked;
+  emit("update:modelValue", newValue);
+}
 </script>
 
 <style lang="less">

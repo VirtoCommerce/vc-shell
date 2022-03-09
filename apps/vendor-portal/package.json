@@ -3,7 +3,7 @@
   "version": "0.0.123",
   "private": true,
   "scripts": {
-    "serve": "vite serve",
+    "serve": "vite",
     "build": "vite build"
   },
   "devDependencies": {

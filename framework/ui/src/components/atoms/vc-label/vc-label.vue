@@ -22,35 +22,28 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import VcIcon from "../vc-icon/vc-icon.vue";
 
 export default defineComponent({
   name: "VcLabel",
+});
+</script>
 
-  components: {
-    VcIcon,
+<script lang="ts" setup>
+import VcIcon from "../vc-icon/vc-icon.vue";
+
+defineProps({
+  required: {
+    type: Boolean,
+    default: false,
   },
 
-  props: {
-    required: {
-      type: Boolean,
-      default: false,
-    },
-
-    tooltipIcon: {
-      type: String,
-      default: "fas fa-info-circle",
-    },
-  },
-
-  setup() {
-    const tooltipVisible = ref(false);
-
-    return {
-      tooltipVisible,
-    };
+  tooltipIcon: {
+    type: String,
+    default: "fas fa-info-circle",
   },
 });
+
+const tooltipVisible = ref(false);
 </script>
 
 <style lang="less">

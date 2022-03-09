@@ -9,24 +9,19 @@
   </vc-container>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted } from "vue";
+<script lang="ts" setup>
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-export default defineComponent({
-  props: {
-    openPage: {
-      type: Function,
-      default: undefined,
-    },
+defineProps({
+  openPage: {
+    type: Function,
+    default: undefined,
   },
-  setup() {
-    const router = useRouter();
-    onMounted(() => {
-      router.push("/");
-    });
-    return {};
-  },
+});
+const router = useRouter();
+onMounted(() => {
+  router.push("/");
 });
 </script>
 

@@ -53,85 +53,83 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from "vue";
-import { IBladeToolbar } from "../../../../types";
-import { useI18n } from "@virtoshell/core";
+import { defineComponent, computed, reactive } from "vue";
 
 export default defineComponent({
   url: "item",
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
+});
+</script>
 
-    closable: {
-      type: Boolean,
-      default: true,
-    },
+<script lang="ts" setup>
+import { IBladeToolbar } from "../../../../types";
+import { useI18n } from "@virtoshell/core";
 
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
-  setup() {
-    const { t } = useI18n();
-    const contentItem = {
-      id: "819a8174c9cd4b7d8955",
-      name: "Home Page",
-      created: Date.now(),
-      description: "Index store page",
-      path: "ContentItem\\Home Page",
-    };
 
-    const bladeToolbar = reactive<IBladeToolbar[]>([
-      {
-        id: "save",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.SAVE"),
-        icon: "fas fa-save",
-        clickHandler() {
-          alert("save");
-        },
-      },
-      {
-        id: "reset",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.RESET"),
-        icon: "fas fa-undo",
-        clickHandler() {
-          alert("reset");
-        },
-      },
-      {
-        id: "delete",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.DELETE"),
-        icon: "fas fa-trash",
-        clickHandler() {
-          alert("delete");
-        },
-      },
-      {
-        id: "typeProps",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.TYPE_PROPERTIES"),
-        icon: "fas fa-download",
-        clickHandler() {
-          alert("type properties");
-        },
-      },
-    ]);
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    return {
-      title: computed(() => contentItem.name),
-      contentItem,
-      bladeToolbar,
-    };
+  param: {
+    type: String,
+    default: undefined,
+  },
+
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+const { t } = useI18n();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const title = computed(() => contentItem.name);
+const contentItem = {
+  id: "819a8174c9cd4b7d8955",
+  name: "Home Page",
+  created: Date.now(),
+  description: "Index store page",
+  path: "ContentItem\\Home Page",
+};
+
+const bladeToolbar = reactive<IBladeToolbar[]>([
+  {
+    id: "save",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.SAVE"),
+    icon: "fas fa-save",
+    clickHandler() {
+      alert("save");
+    },
+  },
+  {
+    id: "reset",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.RESET"),
+    icon: "fas fa-undo",
+    clickHandler() {
+      alert("reset");
+    },
+  },
+  {
+    id: "delete",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.DELETE"),
+    icon: "fas fa-trash",
+    clickHandler() {
+      alert("delete");
+    },
+  },
+  {
+    id: "typeProps",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.TOOLBAR.TYPE_PROPERTIES"),
+    icon: "fas fa-download",
+    clickHandler() {
+      alert("type properties");
+    },
+  },
+]);
 </script>
 
 <style lang="less" scoped></style>

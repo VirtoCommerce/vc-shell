@@ -7,17 +7,19 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcIcon",
+});
+</script>
 
-  props: {
-    icon: {
-      type: String,
-      default: "fas fa-square-full",
-    },
+<script lang="ts" setup>
+defineProps({
+  icon: {
+    type: String,
+    default: "fas fa-square-full",
+  },
 
-    size: {
-      type: String,
-      default: "m",
-    },
+  size: {
+    type: String,
+    default: "m",
   },
 });
 </script>

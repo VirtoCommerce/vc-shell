@@ -16,6 +16,15 @@ export default defineConfig(({ mode }) => {
   const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
   return {
+    resolve: {
+      preserveSymlinks: true,
+      alias: {
+        "@virtoshell/ui/dist/ui.css": "@virtoshell/ui/dist/ui.css",
+        "@virtoshell/ui": "@virtoshell/ui/src/index.ts",
+        "@virtoshell/core": "@virtoshell/core/src/index.ts",
+        "@virtoshell/mod-assets": "@virtoshell/mod-assets/src/index.ts",
+      },
+    },
     envPrefix: "APP_",
     plugins: [
       vue(),
@@ -56,9 +65,13 @@ export default defineConfig(({ mode }) => {
     define: {
       "import.meta.env.PACKAGE_VERSION": `"${version}"`,
       "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
+      "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
+      "import.meta.env.APP_LOG_LEVEL": `"${process.env.APP_LOG_LEVEL}"`,
     },
     server: {
-      watch: {},
+      watch: {
+        ignored: ["!**/node_modules/@virtoshell/**"],
+      },
       host: "0.0.0.0",
       port: 8080,
       proxy: {
@@ -70,24 +83,28 @@ export default defineConfig(({ mode }) => {
     },
     optimizeDeps: {
       include: [
+        "vue",
+        "vue-router",
         "@virtoshell/core",
         "@virtoshell/api-client",
         "@virtoshell/ui",
         "@virtoshell/mod-assets",
+        "url-pattern",
+        "vee-validate",
       ],
     },
     build: {
+      sourcemap: true,
       emptyOutDir: true,
-      minify: false,
+      commonjsOptions: {
+        include: [/^@virtoshell(\/.+)?$/, /node_modules/],
+      },
       rollupOptions: {
         plugins: [
           typescript({
             tsconfig: tsconfigFile,
           }),
         ],
-      },
-      commonjsOptions: {
-        include: [/^@virtoshell(\/.+)?$/, /node_modules/],
       },
     },
   };

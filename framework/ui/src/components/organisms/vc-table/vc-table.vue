@@ -298,6 +298,13 @@ import {
   watch,
   onBeforeUpdate,
 } from "vue";
+
+export default defineComponent({
+  name: "VcTable",
+});
+</script>
+
+<script lang="ts" setup>
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -311,264 +318,224 @@ import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult } from "../../../typings";
 
-export default defineComponent({
-  name: "VcTable",
-
-  components: {
-    VcIcon,
-    VcCheckbox,
-    VcContainer,
-    VcInput,
-    VcPagination,
-    VcTableCounter,
-    VcLoading,
-    VcTableFilter,
-    VcTableMobileItem,
-    VcTableCell,
+const props = defineProps({
+  columns: {
+    type: Array,
+    default: () => [],
   },
 
-  props: {
-    columns: {
-      type: Array,
-      default: () => [],
-    },
-
-    items: {
-      type: Array as PropType<{ id: string }[]>,
-      default: () => [],
-    },
-
-    filterItems: {
-      type: Array,
-      default: () => [],
-    },
-
-    itemActionBuilder: {
-      type: Function,
-      default: undefined,
-    },
-
-    sort: {
-      type: String,
-      default: undefined,
-    },
-
-    multiselect: {
-      type: Boolean,
-      default: false,
-    },
-
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
-
-    totalLabel: {
-      type: String,
-      default: "Totals:",
-    },
-
-    totalCount: {
-      type: Number,
-      default: 0,
-    },
-
-    pages: {
-      type: Number,
-      default: 0,
-    },
-
-    currentPage: {
-      type: Number,
-      default: 0,
-    },
-
-    searchPlaceholder: {
-      type: String,
-      default: "Search...",
-    },
-
-    searchValue: {
-      type: String,
-      default: undefined,
-    },
-
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-
-    empty: {
-      type: Object,
-      default: () => ({
-        text: "List is empty.",
-      }),
-    },
-
-    notfound: {
-      type: Object,
-      default: () => ({
-        text: "Nothing found.",
-      }),
-    },
-
-    header: {
-      type: Boolean,
-      default: true,
-    },
-
-    footer: {
-      type: Boolean,
-      default: true,
-    },
-
-    activeFilterCount: {
-      type: Number,
-      default: 0,
-    },
-
-    selectedItemId: {
-      type: String,
-      default: undefined,
-    },
-
-    scrolling: {
-      type: Boolean,
-      default: false,
-    },
+  items: {
+    type: Array as PropType<{ id: string }[]>,
+    default: () => [],
   },
 
-  emits: [
-    "paginationClick",
-    "selectionChanged",
-    "search:change",
-    "filter:apply",
-    "filter:reset",
-  ],
+  filterItems: {
+    type: Array,
+    default: () => [],
+  },
 
-  setup(props, { emit }) {
-    const checkboxes = ref<Record<string, boolean>>({});
-    const selectedRow = ref<string>();
-    const tooltip = ref<Instance>();
-    const scrollContainer = ref<typeof VcContainer>();
-    const actionToggleRefs = ref<HTMLDivElement[]>([]);
-    const tooltipRefs = ref<HTMLDivElement[]>([]);
-    const itemActions = ref<IActionBuilderResult[]>([]);
-    const mobileSwipeItem = ref<string>();
+  itemActionBuilder: {
+    type: Function,
+    default: undefined,
+  },
 
-    onBeforeUpdate(() => {
-      actionToggleRefs.value = [];
-      tooltipRefs.value = [];
-    });
+  sort: {
+    type: String,
+    default: undefined,
+  },
 
-    const sortDirection = computed(() => {
-      const entry = props.sort?.split(":");
-      return entry && entry.length === 2 && entry[1];
-    });
+  multiselect: {
+    type: Boolean,
+    default: false,
+  },
 
-    const sortField = computed(() => {
-      const entry = props.sort?.split(":");
-      return entry && entry.length === 2 && entry[0];
-    });
+  expanded: {
+    type: Boolean,
+    default: false,
+  },
 
-    const headerCheckbox = computed(() =>
-      Object.values(checkboxes.value).every((value) => value)
-    );
+  totalLabel: {
+    type: String,
+    default: "Totals:",
+  },
 
-    watch(
-      () => props.items,
-      (value: { id: string }[]) => {
-        checkboxes.value = {};
-        value?.forEach((item) => (checkboxes.value[item.id] = false));
-        scrollContainer.value?.scrollTop();
-      }
-    );
+  totalCount: {
+    type: Number,
+    default: 0,
+  },
 
-    function setTooltipRefs(el: HTMLDivElement) {
-      if (el) {
-        tooltipRefs.value.push(el);
-      }
-    }
+  pages: {
+    type: Number,
+    default: 0,
+  },
 
-    function setActionToggleRefs(el: HTMLDivElement) {
-      if (el) {
-        actionToggleRefs.value.push(el);
-      }
-    }
+  currentPage: {
+    type: Number,
+    default: 0,
+  },
 
-    function processHeaderCheckbox() {
-      const currentState = Object.values(checkboxes.value).every(
-        (value) => value
-      );
-      Object.keys(checkboxes.value).forEach(
-        (key) => (checkboxes.value[key] = !currentState)
-      );
-      emit("selectionChanged", checkboxes.value);
-    }
+  searchPlaceholder: {
+    type: String,
+    default: "Search...",
+  },
 
-    function processCheckbox(id: string, state: boolean) {
-      checkboxes.value[id] = state;
-      emit("selectionChanged", checkboxes.value);
-    }
+  searchValue: {
+    type: String,
+    default: undefined,
+  },
 
-    function showActions(item: { id: string }, index: number) {
-      selectedRow.value = item.id;
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 
-      nextTick(() => {
-        tooltip.value = createPopper(
-          actionToggleRefs.value[index],
-          tooltipRefs.value[index],
-          {
-            placement: "bottom",
-            onFirstUpdate: () => tooltip.value?.update(),
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [-15, 15],
-                },
-              },
-            ],
-          }
-        );
-      });
-    }
+  empty: {
+    type: Object,
+    default: () => ({
+      text: "List is empty.",
+    }),
+  },
 
-    async function calculateActions(item: { id: string }) {
-      if (typeof props.itemActionBuilder === "function") {
-        itemActions.value = await props.itemActionBuilder(item);
-      }
-    }
+  notfound: {
+    type: Object,
+    default: () => ({
+      text: "Nothing found.",
+    }),
+  },
 
-    function closeActions() {
-      selectedRow.value = undefined;
-      tooltip.value?.destroy();
-    }
+  header: {
+    type: Boolean,
+    default: true,
+  },
 
-    function handleSwipe(id: string) {
-      mobileSwipeItem.value = id;
-    }
+  footer: {
+    type: Boolean,
+    default: true,
+  },
 
-    return {
-      sortDirection,
-      sortField,
-      headerCheckbox,
-      checkboxes,
-      selectedRow,
-      itemActions,
-      tooltip,
-      mobileSwipeItem,
-      setTooltipRefs,
-      setActionToggleRefs,
-      processHeaderCheckbox,
-      processCheckbox,
-      showActions,
-      closeActions,
-      calculateActions,
-      handleSwipe,
-    };
+  activeFilterCount: {
+    type: Number,
+    default: 0,
+  },
+
+  selectedItemId: {
+    type: String,
+    default: undefined,
+  },
+
+  scrolling: {
+    type: Boolean,
+    default: false,
   },
 });
+
+const emit = defineEmits([
+  "paginationClick",
+  "selectionChanged",
+  "search:change",
+  "filter:apply",
+  "filter:reset",
+]);
+
+const checkboxes = ref<Record<string, boolean>>({});
+const selectedRow = ref<string>();
+const tooltip = ref<Instance>();
+const scrollContainer = ref<typeof VcContainer>();
+const actionToggleRefs = ref<HTMLDivElement[]>([]);
+const tooltipRefs = ref<HTMLDivElement[]>([]);
+const itemActions = ref<IActionBuilderResult[]>([]);
+const mobileSwipeItem = ref<string>();
+
+onBeforeUpdate(() => {
+  actionToggleRefs.value = [];
+  tooltipRefs.value = [];
+});
+
+const sortDirection = computed(() => {
+  const entry = props.sort?.split(":");
+  return entry && entry.length === 2 && entry[1];
+});
+
+const sortField = computed(() => {
+  const entry = props.sort?.split(":");
+  return entry && entry.length === 2 && entry[0];
+});
+
+const headerCheckbox = computed(() =>
+  Object.values(checkboxes.value).every((value) => value)
+);
+
+watch(
+  () => props.items,
+  (value: { id: string }[]) => {
+    checkboxes.value = {};
+    value?.forEach((item) => (checkboxes.value[item.id] = false));
+    scrollContainer.value?.scrollTop();
+  }
+);
+
+function setTooltipRefs(el: HTMLDivElement) {
+  if (el) {
+    tooltipRefs.value.push(el);
+  }
+}
+
+function setActionToggleRefs(el: HTMLDivElement) {
+  if (el) {
+    actionToggleRefs.value.push(el);
+  }
+}
+
+function processHeaderCheckbox() {
+  const currentState = Object.values(checkboxes.value).every((value) => value);
+  Object.keys(checkboxes.value).forEach(
+    (key) => (checkboxes.value[key] = !currentState)
+  );
+  emit("selectionChanged", checkboxes.value);
+}
+
+function processCheckbox(id: string, state: boolean) {
+  checkboxes.value[id] = state;
+  emit("selectionChanged", checkboxes.value);
+}
+
+function showActions(item: { id: string }, index: number) {
+  selectedRow.value = item.id;
+
+  nextTick(() => {
+    tooltip.value = createPopper(
+      actionToggleRefs.value[index],
+      tooltipRefs.value[index],
+      {
+        placement: "bottom",
+        onFirstUpdate: () => tooltip.value?.update(),
+        modifiers: [
+          {
+            name: "offset",
+            options: {
+              offset: [-15, 15],
+            },
+          },
+        ],
+      }
+    );
+  });
+}
+
+async function calculateActions(item: { id: string }) {
+  if (typeof props.itemActionBuilder === "function") {
+    itemActions.value = await props.itemActionBuilder(item);
+  }
+}
+
+function closeActions() {
+  selectedRow.value = undefined;
+  tooltip.value?.destroy();
+}
+
+function handleSwipe(id: string) {
+  mobileSwipeItem.value = id;
+}
 </script>
 
 <style lang="less">

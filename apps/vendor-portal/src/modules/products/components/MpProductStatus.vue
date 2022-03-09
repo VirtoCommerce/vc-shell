@@ -11,58 +11,55 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
-import { camelToSnake } from "@virtoshell/core";
+import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   name: "MpProductStatus",
+});
+</script>
 
-  props: {
-    status: {
-      type: String,
-      default: "None",
-    },
-  },
+<script lang="ts" setup>
+import { camelToSnake } from "@virtoshell/core";
 
-  setup(props) {
-    const statusStyles = {
-      RequestChanges: {
-        outline: true,
-        variant: "danger",
-      },
-      Approved: {
-        outline: true,
-        variant: "success",
-      },
-      WaitForApproval: {
-        outline: true,
-        variant: "warning",
-      },
-      Rejected: {
-        outline: false,
-        variant: "danger",
-      },
-      HasStagedChanges: {
-        outline: true,
-        variant: "warning",
-      },
-      Published: {
-        outline: false,
-        variant: "success",
-      },
-    };
-    return {
-      statuses: computed(() =>
-        props.status
-          .split(",")
-          .map((item) => {
-            return item.trim();
-          })
-          .filter((x) => x !== "Published")
-      ),
-      statusStyles,
-      camelToSnake,
-    };
+const props = defineProps({
+  status: {
+    type: String,
+    default: "None",
   },
 });
+
+const statusStyles = {
+  RequestChanges: {
+    outline: true,
+    variant: "danger",
+  },
+  Approved: {
+    outline: true,
+    variant: "success",
+  },
+  WaitForApproval: {
+    outline: true,
+    variant: "warning",
+  },
+  Rejected: {
+    outline: false,
+    variant: "danger",
+  },
+  HasStagedChanges: {
+    outline: true,
+    variant: "warning",
+  },
+  Published: {
+    outline: false,
+    variant: "success",
+  },
+};
+const statuses = computed(() =>
+  props.status
+    .split(",")
+    .map((item) => {
+      return item.trim();
+    })
+    .filter((x) => x !== "Published")
+);
 </script>

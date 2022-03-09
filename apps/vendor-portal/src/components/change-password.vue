@@ -78,8 +78,15 @@
   </vc-popup>
 </template>
 
+<script lang="ts">
+import { defineComponent, reactive } from "vue";
+
+export default defineComponent({
+  name: "change-password",
+});
+</script>
+
 <script lang="ts" setup>
-import { reactive, defineEmits } from "vue";
 import { useUser } from "@virtoshell/core";
 import { IIdentityError } from "@virtoshell/api-client";
 

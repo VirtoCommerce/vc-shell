@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.build.json",
   "compilerOptions": {
-    "composite": true,
     "outDir": "dist",
     "rootDir": "src",
     "strict": false,
@@ -14,7 +13,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.vue",
-    "vite.config.ts"
   ],
   "exclude": [
     "node_modules",

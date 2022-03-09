@@ -39,11 +39,7 @@
               <vc-col size="4" class="vc-flex-justify_center">
                 <div class="notification-dropdown__notification-info">
                   <p
-                    class="
-                      notification-dropdown__notification-title
-                      vc-margin_none
-                      vc-margin-bottom_xs
-                    "
+                    class="notification-dropdown__notification-title vc-margin_none vc-margin-bottom_xs"
                   >
                     {{ item.title }}
                   </p>
@@ -57,10 +53,7 @@
               </vc-col>
               <vc-col size="2" class="vc-flex-align_end">
                 <p
-                  class="
-                    notification-dropdown__notification-time
-                    vc-margin_none
-                  "
+                  class="notification-dropdown__notification-time vc-margin_none"
                 >
                   {{ item.params.time }}
                 </p>
@@ -69,12 +62,7 @@
           </div>
         </div>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding_l
-          "
+          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding_l"
           v-else
         >
           No notifications yet
@@ -86,6 +74,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, ref, watch } from "vue";
+
+export default defineComponent({
+  name: "notification-dropdown",
+});
+</script>
+
+<script lang="ts" setup>
 import {
   BulkActionPushNotification,
   PushNotification,
@@ -104,106 +99,96 @@ interface INotificationParams
   };
 }
 
-export default defineComponent({
-  name: "notification-dropdown",
-  props: {
-    isAccent: {
-      type: Boolean,
-      default: false,
-    },
-
-    title: {
-      type: String,
-      default: "",
-    },
-
-    items: {
-      type: Array as PropType<IMenuItems[]>,
-      default: () => [],
-    },
+const props = defineProps({
+  isAccent: {
+    type: Boolean,
+    default: false,
   },
-  emits: ["notification:click"],
-  setup(props, { emit }) {
-    const isDropdownVisible = ref(false);
-    const { loadFromHistory, notifications } = useNotifications();
-    const locale = window.navigator.language;
 
-    const populatedList = ref<INotificationParams[]>([]);
+  title: {
+    type: String,
+    default: "",
+  },
 
-    watch(
-      () => notifications,
-      (newVal) => {
-        populatedList.value = newVal.value.map((item: INotificationParams) => {
-          return Object.assign(
-            {},
-            {
-              ...item,
-              params: {
-                icon: notificationIcon(item.notifyType),
-                time: moment(item.created).locale(locale).format("L LT"),
-                color: notificationColor(item),
-              },
-            }
-          ) as INotificationParams;
-        });
-      },
-      { deep: true }
-    );
-
-    onMounted(async () => {
-      await loadFromHistory();
-    });
-
-    function toggleNotificationsDrop() {
-      isDropdownVisible.value = !isDropdownVisible.value;
-    }
-
-    const notificationIcon = (type: string) => {
-      const lower = type.toLowerCase();
-      if (lower.includes("offer")) {
-        return "fas fa-percentage";
-      } else if (lower.includes("product")) {
-        return "fas fa-box-open";
-      } else if (lower.includes("import")) {
-        return "fas fa-download";
-      }
-      return "fas fa-info";
-    };
-
-    const notificationColor = (item: INotificationParams) => {
-      if (item.created && item.finished) {
-        return "#87b563";
-      } else if (item.created && !item.finished && !item.errors) {
-        return "#A9BCCD";
-      } else if (item.created && item.errors && item.errors.length) {
-        return "#F14E4E";
-      }
-
-      return "#87b563";
-    };
-
-    const handleClick = (notifyType: string) => {
-      const low = notifyType.toLowerCase();
-
-      // TODO need to discuss on arch meeting
-      if (low.includes("import")) {
-        const page = props.items.find(
-          (page: IMenuItems) => page.title === "Import"
-        );
-        if (page) {
-          emit("notification:click", page);
-        }
-      }
-    };
-
-    return {
-      isDropdownVisible,
-      populatedList,
-      handleClick,
-      toggleNotificationsDrop,
-    };
+  items: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
   },
 });
+
+const emit = defineEmits(["notification:click"]);
+
+const isDropdownVisible = ref(false);
+const { loadFromHistory, notifications } = useNotifications();
+const locale = window.navigator.language;
+
+const populatedList = ref<INotificationParams[]>([]);
+
+watch(
+  () => notifications,
+  (newVal) => {
+    populatedList.value = newVal.value.map((item: INotificationParams) => {
+      return Object.assign(
+        {},
+        {
+          ...item,
+          params: {
+            icon: notificationIcon(item.notifyType),
+            time: moment(item.created).locale(locale).format("L LT"),
+            color: notificationColor(item),
+          },
+        }
+      ) as INotificationParams;
+    });
+  },
+  { deep: true }
+);
+
+onMounted(async () => {
+  await loadFromHistory();
+});
+
+function toggleNotificationsDrop() {
+  isDropdownVisible.value = !isDropdownVisible.value;
+}
+
+const notificationIcon = (type: string) => {
+  const lower = type.toLowerCase();
+  if (lower.includes("offer")) {
+    return "fas fa-percentage";
+  } else if (lower.includes("product")) {
+    return "fas fa-box-open";
+  } else if (lower.includes("import")) {
+    return "fas fa-download";
+  }
+  return "fas fa-info";
+};
+
+const notificationColor = (item: INotificationParams) => {
+  if (item.created && item.finished) {
+    return "#87b563";
+  } else if (item.created && !item.finished && !item.errors) {
+    return "#A9BCCD";
+  } else if (item.created && item.errors && item.errors.length) {
+    return "#F14E4E";
+  }
+
+  return "#87b563";
+};
+
+const handleClick = (notifyType: string) => {
+  const low = notifyType.toLowerCase();
+
+  // TODO need to discuss on arch meeting
+  if (low.includes("import")) {
+    const page = props.items.find(
+      (page: IMenuItems) => page.title === "Import"
+    );
+    if (page) {
+      emit("notification:click", page);
+    }
+  }
+};
 </script>
 
 <style lang="less">

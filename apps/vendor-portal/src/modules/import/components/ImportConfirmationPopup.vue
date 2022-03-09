@@ -25,9 +25,14 @@
   </vc-popup>
 </template>
 
-<script lang="ts" setup>
-import { defineProps } from "vue";
+<script lang="ts">
+import { defineComponent } from "vue";
 
+export default defineComponent({
+  name: "ImportConfirmationPopup",
+});
+</script>
+<script lang="ts" setup>
 defineProps({
   title: {
     type: String,

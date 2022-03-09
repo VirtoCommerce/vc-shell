@@ -1,12 +1,6 @@
 <template>
   <div
-    class="
-      vc-file-upload
-      vc-padding_l
-      vc-flex vc-flex-column
-      vc-flex-align_center
-      vc-flex-justify_center
-    "
+    class="vc-file-upload vc-padding_l vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
     :class="`vc-file-upload_${variant}`"
     @drop.stop.prevent="onDrop"
     @drag.stop.prevent
@@ -44,58 +38,52 @@ import { defineComponent, ref } from "vue";
 
 export default defineComponent({
   name: "VcFileUpload",
+});
+</script>
 
-  props: {
-    variant: {
-      type: String,
-      enum: ["gallery", "import"],
-      default: "gallery",
-    },
-
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-
-    accept: {
-      type: String,
-      default: ".jpg, .png, .jpeg",
-    },
+<script lang="ts" setup>
+defineProps({
+  variant: {
+    type: String,
+    enum: ["gallery", "import"],
+    default: "gallery",
   },
 
-  emits: ["upload"],
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(_props, { emit }) {
-    const uploader = ref();
-    const upload = (event: InputEvent) => {
-      const target = event.target as HTMLInputElement;
-      const fileList = target.files;
-
-      if (fileList && fileList.length) {
-        emit("upload", fileList);
-      }
-    };
-
-    function toggleUploader() {
-      uploader.value.value = "";
-      uploader.value.click();
-    }
-
-    return {
-      uploader,
-      toggleUploader,
-      upload,
-
-      onDrop(event: DragEvent) {
-        const fileList = event.dataTransfer?.files;
-
-        if (fileList && fileList.length) {
-          emit("upload", fileList);
-        }
-      },
-    };
+  accept: {
+    type: String,
+    default: ".jpg, .png, .jpeg",
   },
 });
+
+const emit = defineEmits(["upload"]);
+
+const uploader = ref();
+const upload = (event: InputEvent) => {
+  const target = event.target as HTMLInputElement;
+  const fileList = target.files;
+
+  if (fileList && fileList.length) {
+    emit("upload", fileList);
+  }
+};
+
+function toggleUploader() {
+  uploader.value.value = "";
+  uploader.value.click();
+}
+
+function onDrop(event: DragEvent) {
+  const fileList = event.dataTransfer?.files;
+
+  if (fileList && fileList.length) {
+    emit("upload", fileList);
+  }
+}
 </script>
 
 <style lang="less">

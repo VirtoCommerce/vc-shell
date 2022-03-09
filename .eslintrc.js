@@ -2,6 +2,7 @@ module.exports = {
   root: true,
   env: {
     node: true,
+    'vue/setup-compiler-macros': true
   },
   ignorePatterns: ["**/*.cjs.js"],
   plugins: ['@typescript-eslint', 'vue'],

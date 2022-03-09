@@ -166,190 +166,176 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
+
+export default defineComponent({
+  url: "order",
+});
+</script>
+
+<script lang="ts" setup>
 import moment from "moment";
 
 import { useOrder } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import { useI18n } from "@virtoshell/core";
 
-export default defineComponent({
-  url: "order",
-
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
 
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const {
-      loading,
-      order,
-      changeOrderStatus,
-      loadOrder,
-      loadPdf,
-      shippingInfo,
-    } = useOrder();
-    const locale = window.navigator.language;
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    onMounted(async () => {
-      if (props.param) {
-        await loadOrder({ id: props.param });
-      }
-    });
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.DL_PDF")),
-        icon: "fas fa-file-pdf",
-        async clickHandler() {
-          if (props.param) {
-            await loadPdf();
-          }
-        },
-        disabled: !props.param,
-      },
-      {
-        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.ACCEPT_ORDER")),
-        icon: "far fa-check-circle",
-        async clickHandler() {
-          if (
-            props.param &&
-            (order.value.status === "Paid" || order.value.status === "Unpaid")
-          ) {
-            const lastStatus = order.value.status;
-
-            try {
-              order.value.status = "Accepted";
-              await changeOrderStatus(order.value);
-              emit("parent:call", {
-                method: "reload",
-              });
-            } catch (e) {
-              order.value.status = lastStatus;
-            }
-          }
-        },
-        disabled: computed(
-          () =>
-            !(
-              (order.value.status === "Paid" ||
-                order.value.status === "Unpaid") &&
-              props.param
-            )
-        ),
-      },
-      {
-        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.CANCEL")),
-        icon: "fas fa-times-circle",
-        async clickHandler() {
-          if (props.param) {
-            const lastStatus = order.value.status;
-
-            try {
-              order.value.status = "Cancelled";
-              await changeOrderStatus(order.value);
-              emit("parent:call", {
-                method: "reload",
-              });
-            } catch (e) {
-              order.value.status = lastStatus;
-            }
-          }
-        },
-        disabled: computed(
-          () => !!(order.value.status === "Cancelled" && props.param)
-        ),
-      },
-      {
-        title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.SHIP")),
-        icon: "fas fa-shipping-fast",
-        async clickHandler() {
-          if (order.value.status === "Accepted" && props.param) {
-            const lastStatus = order.value.status;
-
-            try {
-              order.value.status = "Shipped";
-              await changeOrderStatus(order.value);
-              emit("parent:call", {
-                method: "reload",
-              });
-            } catch (e) {
-              order.value.status = lastStatus;
-            }
-          }
-        },
-        disabled: computed(
-          () => !(order.value.status === "Accepted" && props.param)
-        ),
-      },
-    ]);
-
-    const columns: ITableColumns[] = [
-      {
-        id: "imageUrl",
-        title: "Pic",
-        width: 60,
-        class: "vc-padding-right_none",
-        type: "image",
-      },
-      {
-        id: "name",
-        title: "Name",
-      },
-      {
-        id: "quantity",
-        title: "Quantity",
-        width: 120,
-        type: "number",
-      },
-      {
-        id: "price",
-        title: "Unit price",
-        width: 120,
-        type: "money",
-      },
-      {
-        id: "extendedPrice",
-        title: "Total",
-        width: 120,
-        type: "money",
-      },
-    ];
-
-    return {
-      bladeToolbar,
-      moment,
-      columns,
-      order,
-      shippingInfo,
-      items: computed(() => order.value?.items),
-      loading,
-      createdDate: computed(() => {
-        const date = new Date(order.value?.createdDate);
-        return moment(date).locale(locale).format("L LT");
-      }),
-    };
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+
+const emit = defineEmits(["parent:call"]);
+const { t } = useI18n();
+const { loading, order, changeOrderStatus, loadOrder, loadPdf, shippingInfo } =
+  useOrder();
+const locale = window.navigator.language;
+const items = computed(() => order.value?.items);
+const createdDate = computed(() => {
+  const date = new Date(order.value?.createdDate);
+  return moment(date).locale(locale).format("L LT");
+});
+
+onMounted(async () => {
+  if (props.param) {
+    await loadOrder({ id: props.param });
+  }
+});
+
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.DL_PDF")),
+    icon: "fas fa-file-pdf",
+    async clickHandler() {
+      if (props.param) {
+        await loadPdf();
+      }
+    },
+    disabled: !props.param,
+  },
+  {
+    title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.ACCEPT_ORDER")),
+    icon: "far fa-check-circle",
+    async clickHandler() {
+      if (
+        props.param &&
+        (order.value.status === "Paid" || order.value.status === "Unpaid")
+      ) {
+        const lastStatus = order.value.status;
+
+        try {
+          order.value.status = "Accepted";
+          await changeOrderStatus(order.value);
+          emit("parent:call", {
+            method: "reload",
+          });
+        } catch (e) {
+          order.value.status = lastStatus;
+        }
+      }
+    },
+    disabled: computed(
+      () =>
+        !(
+          (order.value.status === "Paid" || order.value.status === "Unpaid") &&
+          props.param
+        )
+    ),
+  },
+  {
+    title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.CANCEL")),
+    icon: "fas fa-times-circle",
+    async clickHandler() {
+      if (props.param) {
+        const lastStatus = order.value.status;
+
+        try {
+          order.value.status = "Cancelled";
+          await changeOrderStatus(order.value);
+          emit("parent:call", {
+            method: "reload",
+          });
+        } catch (e) {
+          order.value.status = lastStatus;
+        }
+      }
+    },
+    disabled: computed(
+      () => !!(order.value.status === "Cancelled" && props.param)
+    ),
+  },
+  {
+    title: computed(() => t("ORDERS.PAGES.EDIT.ACTIONS.SHIP")),
+    icon: "fas fa-shipping-fast",
+    async clickHandler() {
+      if (order.value.status === "Accepted" && props.param) {
+        const lastStatus = order.value.status;
+
+        try {
+          order.value.status = "Shipped";
+          await changeOrderStatus(order.value);
+          emit("parent:call", {
+            method: "reload",
+          });
+        } catch (e) {
+          order.value.status = lastStatus;
+        }
+      }
+    },
+    disabled: computed(
+      () => !(order.value.status === "Accepted" && props.param)
+    ),
+  },
+]);
+
+const columns: ITableColumns[] = [
+  {
+    id: "imageUrl",
+    title: "Pic",
+    width: 60,
+    class: "vc-padding-right_none",
+    type: "image",
+  },
+  {
+    id: "name",
+    title: "Name",
+  },
+  {
+    id: "quantity",
+    title: "Quantity",
+    width: 120,
+    type: "number",
+  },
+  {
+    id: "price",
+    title: "Unit price",
+    width: 120,
+    type: "money",
+  },
+  {
+    id: "extendedPrice",
+    title: "Total",
+    width: 120,
+    type: "money",
+  },
+];
 </script>
 
 <style lang="less">

@@ -68,14 +68,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  defineProps,
-  defineEmits,
-  onMounted,
-  ref,
-} from "vue";
+import { defineComponent, computed, onMounted, ref } from "vue";
 
 export default defineComponent({
   url: "import",
@@ -180,6 +173,7 @@ const columns = ref<ITableColumns[]>([
   },
 ]);
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
 onMounted(async () => {

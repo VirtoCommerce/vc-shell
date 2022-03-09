@@ -26,19 +26,10 @@
         </div>
       </div>
       <div
-        class="
-          vc-flex
-          vc-flex-grow_1
-          vc-flex-align_center
-          vc-flex-justify_space-around
-        "
+        class="vc-flex vc-flex-grow_1 vc-flex-align_center vc-flex-justify_space-around"
       >
         <div
-          class="
-            vc-gallery-item__button
-            vc-flex vc-flex-column
-            vc-flex-align_center
-          "
+          class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
           @click="$emit('preview', image)"
         >
           <vc-icon
@@ -49,11 +40,7 @@
         </div>
         <div
           v-if="!readonly"
-          class="
-            vc-gallery-item__button
-            vc-flex vc-flex-column
-            vc-flex-align_center
-          "
+          class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
           @click="$emit('edit', image)"
         >
           <vc-icon
@@ -64,11 +51,7 @@
         </div>
         <div
           v-if="!readonly"
-          class="
-            vc-gallery-item__button
-            vc-flex vc-flex-column
-            vc-flex-align_center
-          "
+          class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
           @click="$emit('remove', image)"
         >
           <vc-icon
@@ -83,38 +66,31 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import { clickOutside } from "../../../../../directives";
+import { defineComponent, defineProps, ref } from "vue";
 
 export default defineComponent({
   name: "VcGalleryItem",
+});
+</script>
 
-  directives: {
-    clickOutside,
+<script lang="ts" setup>
+import { clickOutside as vClickOutside } from "../../../../../directives";
+
+defineProps({
+  image: {
+    type: Object,
+    default: () => ({}),
   },
 
-  props: {
-    image: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    readonly: {
-      type: Boolean,
-      default: false,
-    },
-  },
-
-  emits: ["preview", "edit", "remove"],
-
-  setup() {
-    const hover = ref(false);
-
-    return {
-      hover,
-    };
+  readonly: {
+    type: Boolean,
+    default: false,
   },
 });
+
+defineEmits(["preview", "edit", "remove"]);
+
+const hover = ref(false);
 </script>
 
 <style lang="less">

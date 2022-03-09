@@ -17,37 +17,36 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+
+export default defineComponent({
+  name: "VcInfoRow",
+});
+</script>
+
+<script lang="ts" setup>
 import VcLabel from "../vc-label/vc-label.vue";
 import VcRow from "../vc-row/vc-row.vue";
 import VcCol from "../vc-col/vc-col.vue";
 
-export default defineComponent({
-  name: "vc-info-row",
-  components: {
-    VcLabel,
-    VcRow,
-    VcCol,
+defineProps({
+  label: {
+    type: String,
+    default: "",
   },
-  props: {
-    label: {
-      type: String,
-      default: "",
-    },
 
-    value: {
-      type: String,
-      default: "",
-    },
+  value: {
+    type: String,
+    default: "",
+  },
 
-    tooltip: {
-      type: String,
-      default: "",
-    },
+  tooltip: {
+    type: String,
+    default: "",
+  },
 
-    type: {
-      type: String,
-      default: "default",
-    },
+  type: {
+    type: String,
+    default: "default",
   },
 });
 </script>

@@ -46,102 +46,96 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, watch } from "vue";
-import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
-import { IBladeToolbar, IMenuItems } from "../../../../../../../typings";
 
 export default defineComponent({
   name: "VcAppMenuItem",
+});
+</script>
 
-  components: { VcIcon },
+<script lang="ts" setup>
+import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
+import { IBladeToolbar, IMenuItems } from "../../../../../../../typings";
 
-  props: {
-    sticky: {
-      type: Boolean,
-      default: true,
-    },
-
-    isVisible: {
-      type: Boolean,
-      default: false,
-    },
-
-    isActive: {
-      type: Boolean,
-      default: false,
-    },
-
-    activeChildItem: {
-      type: Object as PropType<IMenuItems>,
-      default: undefined,
-    },
-
-    component: {
-      type: Object as PropType<IMenuItems>,
-      default: undefined,
-    },
-
-    componentOptions: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    clickHandler: {
-      type: Function,
-      default: undefined,
-    },
-
-    icon: {
-      type: String,
-      default: "",
-    },
-
-    title: {
-      type: String,
-      default: "",
-    },
-
-    children: {
-      type: Array as PropType<IBladeToolbar[]>,
-      default: () => [],
-    },
-
-    isCollapsed: {
-      type: Boolean,
-      default: true,
-    },
+const props = defineProps({
+  sticky: {
+    type: Boolean,
+    default: true,
   },
 
-  emits: ["click", "child:click"],
+  isVisible: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    const isOpened = ref(false);
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 
-    watch(
-      () => props.isActive,
-      (newVal) => {
-        isOpened.value = !!(
-          newVal &&
-          props.children &&
-          props.children.some((child) => child === props.activeChildItem)
-        );
-      },
-      { immediate: true }
-    );
+  activeChildItem: {
+    type: Object as PropType<IMenuItems>,
+    default: undefined,
+  },
 
-    function onMenuItemClick() {
-      if (!props.children?.length) {
-        emit("click");
-      } else {
-        isOpened.value = !isOpened.value;
-      }
-    }
+  component: {
+    type: Object as PropType<IMenuItems>,
+    default: undefined,
+  },
 
-    return {
-      isOpened,
-      onMenuItemClick,
-    };
+  componentOptions: {
+    type: Object,
+    default: () => ({}),
+  },
+
+  clickHandler: {
+    type: Function,
+    default: undefined,
+  },
+
+  icon: {
+    type: String,
+    default: "",
+  },
+
+  title: {
+    type: String,
+    default: "",
+  },
+
+  children: {
+    type: Array as PropType<IBladeToolbar[]>,
+    default: () => [],
+  },
+
+  isCollapsed: {
+    type: Boolean,
+    default: true,
   },
 });
+
+const emit = defineEmits(["click", "child:click"]);
+
+const isOpened = ref(false);
+
+watch(
+  () => props.isActive,
+  (newVal) => {
+    isOpened.value = !!(
+      newVal &&
+      props.children &&
+      props.children.some((child) => child === props.activeChildItem)
+    );
+  },
+  { immediate: true }
+);
+
+function onMenuItemClick() {
+  if (!props.children?.length) {
+    emit("click");
+  } else {
+    isOpened.value = !isOpened.value;
+  }
+}
 </script>
 
 <style lang="less">

@@ -32,9 +32,15 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, defineProps } from "vue";
+<script lang="ts">
+import { defineComponent, ref } from "vue";
 
+export default defineComponent({
+  name: "language-selector",
+});
+</script>
+
+<script lang="ts" setup>
 defineProps({
   title: {
     type: String,

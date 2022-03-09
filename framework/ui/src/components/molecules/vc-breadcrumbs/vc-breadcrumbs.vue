@@ -11,20 +11,19 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 
 export default defineComponent({
   name: "VcBreadcrumbs",
+});
+</script>
 
-  components: {
-    VcBreadcrumbsItem,
-  },
+<script lang="ts" setup>
+import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 
-  props: {
-    items: {
-      type: Array,
-      default: () => [],
-    },
+defineProps({
+  items: {
+    type: Array,
+    default: () => [],
   },
 });
 </script>

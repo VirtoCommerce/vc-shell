@@ -64,38 +64,31 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import moment from "moment";
 
-export default defineComponent({
-  props: {
-    cell: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
+const props = defineProps({
+  cell: {
+    type: Object,
+    default: () => ({}),
   },
 
-  setup(props) {
-    return {
-      locale: window.navigator.language,
-      value: computed(() =>
-        (props.cell.field || props.cell.id)
-          .split(".")
-          .reduce(
-            (p: { [x: string]: unknown }, c: string) => (p && p[c]) || null,
-            props.item
-          )
-      ),
-      moment,
-    };
+  item: {
+    type: Object,
+    default: () => ({}),
   },
 });
+
+const locale = window.navigator.language;
+const value = computed(() =>
+  (props.cell.field || props.cell.id)
+    .split(".")
+    .reduce(
+      (p: { [x: string]: unknown }, c: string) => (p && p[c]) || null,
+      props.item
+    )
+);
 </script>
 
 <style lang="less">

@@ -17,36 +17,33 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "VcBadge",
+});
+</script>
 
-  props: {
-    active: {
-      type: Boolean,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    clickable: {
-      type: Boolean,
-      default: true,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  active: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["click"],
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (props.clickable && !props.disabled) {
-          emit("click");
-        }
-      },
-    };
+  clickable: {
+    type: Boolean,
+    default: true,
   },
 });
+const emit = defineEmits(["click"]);
+
+function onClick(): void {
+  if (props.clickable && !props.disabled) {
+    emit("click");
+  }
+}
 </script>
 
 <style lang="less">

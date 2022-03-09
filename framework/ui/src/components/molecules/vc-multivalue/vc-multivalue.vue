@@ -62,109 +62,100 @@
 
 <script lang="ts">
 import { defineComponent, unref, getCurrentInstance } from "vue";
+
+export default defineComponent({
+  name: "VcMultivalue",
+});
+</script>
+
+<script lang="ts" setup>
 import { useField } from "vee-validate";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  name: "VcMultiInput",
-
-  components: {
-    VcLabel,
-    VcIcon,
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: "",
   },
 
-  props: {
-    placeholder: {
-      type: String,
-      default: "",
-    },
-
-    modelValue: {
-      type: Array,
-      default: () => [],
-    },
-
-    required: {
-      type: Boolean,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    type: {
-      type: String,
-      default: "text",
-    },
-
-    label: {
-      type: String,
-      default: undefined,
-    },
-
-    tooltip: {
-      type: String,
-      default: undefined,
-    },
-
-    name: {
-      type: String,
-      default: "Field",
-    },
-
-    rules: {
-      type: [String, Object],
-    },
+  modelValue: {
+    type: Array,
+    default: () => [],
   },
 
-  emits: ["update:modelValue"],
+  required: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    const instance = getCurrentInstance();
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-    // Prepare validation rules using required and rules props combination
-    let internalRules = unref(props.rules) || "";
-    if (props.required) {
-      if (typeof internalRules === "string") {
-        (internalRules as string) = `required|${internalRules}`.replace(
-          /(\|)+$/,
-          ""
-        );
-      } else {
-        (internalRules as IValidationRules).required = true;
-      }
-    }
+  type: {
+    type: String,
+    default: "text",
+  },
 
-    // Prepare field-level validation
-    const { errorMessage, handleChange, value } = useField(
-      `${instance?.uid || props.name}`,
-      internalRules
-    );
+  label: {
+    type: String,
+    default: undefined,
+  },
 
-    return {
-      value,
-      errorMessage,
+  tooltip: {
+    type: String,
+    default: undefined,
+  },
 
-      // Handle input event to propertly validate value and emit changes
-      onInput(e: InputEvent) {
-        const newValue = (e.target as HTMLInputElement).value;
-        emit("update:modelValue", [...props.modelValue, { value: newValue }]);
-        handleChange("");
-      },
+  name: {
+    type: String,
+    default: "Field",
+  },
 
-      // Handle event to propertly remove particular value and emit changes
-      onDelete(i: number) {
-        const result = unref(props.modelValue);
-        result.splice(i, 1);
-        emit("update:modelValue", [...result]);
-      },
-    };
+  rules: {
+    type: [String, Object],
   },
 });
+
+const emit = defineEmits(["update:modelValue"]);
+
+const instance = getCurrentInstance();
+
+// Prepare validation rules using required and rules props combination
+let internalRules = unref(props.rules) || "";
+if (props.required) {
+  if (typeof internalRules === "string") {
+    (internalRules as string) = `required|${internalRules}`.replace(
+      /(\|)+$/,
+      ""
+    );
+  } else {
+    (internalRules as IValidationRules).required = true;
+  }
+}
+
+// Prepare field-level validation
+const { errorMessage, handleChange, value } = useField(
+  `${instance?.uid || props.name}`,
+  internalRules
+);
+
+// Handle input event to propertly validate value and emit changes
+function onInput(e: InputEvent) {
+  const newValue = (e.target as HTMLInputElement).value;
+  emit("update:modelValue", [...props.modelValue, { value: newValue }]);
+  handleChange("");
+}
+
+// Handle event to propertly remove particular value and emit changes
+function onDelete(i: number) {
+  const result = unref(props.modelValue);
+  result.splice(i, 1);
+  emit("update:modelValue", [...result]);
+}
 </script>
 
 <style lang="less">

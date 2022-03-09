@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     v-loading="loading"
     :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
     :width="bladeWidth + '%'"
@@ -7,20 +7,20 @@
     :closable="closable"
     :expanded="expanded"
   >
-    <vc-container class="import">
+    <VcContainer class="import">
       <!-- Import profile widgets-->
       <div class="vc-padding_m">
-        <vc-slider :navigation="true" :overflow="true" :slides="importProfiles">
+        <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
           <template v-slot="{ slide }">
             <div class="import__widget-wrapper">
-              <vc-status
+              <VcStatus
                 variant="success"
                 :outline="false"
                 class="import__widget-progress"
                 v-if="slide.inProgress"
-                >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</vc-status
+                >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
-              <vc-button
+              <VcButton
                 class="import__widget"
                 @click="openImporter(slide.id)"
                 icon="fas fa-file-csv"
@@ -28,17 +28,17 @@
                 :selected="selectedProfileId === slide.id"
               >
                 {{ slide.name }}
-                <vc-hint>{{ slide.dataImporterType }}</vc-hint>
-              </vc-button>
+                <VcHint>{{ slide.dataImporterType }}</VcHint>
+              </VcButton>
             </div>
           </template>
-        </vc-slider>
+        </VcSlider>
       </div>
-      <vc-card
+      <VcCard
         :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
         class="import__archive vc-margin_m"
       >
-        <vc-table
+        <VcTable
           :loading="loading"
           :columns="columns"
           :items="importHistory"
@@ -61,10 +61,10 @@
           <template v-slot:item_finished="itemData">
             <ImportStatus :item="itemData.item" />
           </template>
-        </vc-table>
-      </vc-card>
-    </vc-container>
-  </vc-blade>
+        </VcTable>
+      </VcCard>
+    </VcContainer>
+  </VcBlade>
 </template>
 
 <script lang="ts">

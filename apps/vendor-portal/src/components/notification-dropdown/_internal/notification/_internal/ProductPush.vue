@@ -1,19 +1,12 @@
 <template>
   <slot name="title" v-bind:title="notificationTitle"></slot>
-  <vc-hint class="vc-margin-bottom_xs" :style="{ color: variant }">{{
+  <VcHint class="vc-margin-bottom_xs" :style="{ color: variant }">{{
     notificationDescription
-  }}</vc-hint>
+  }}</VcHint>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
-
-export default defineComponent({
-  name: "ProductPush",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, PropType } from "vue";
 import { useI18n } from "@virtoshell/core";
 import { IProductPushNotification } from "../../../../../types";
 

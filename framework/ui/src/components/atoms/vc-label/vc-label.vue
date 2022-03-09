@@ -6,13 +6,13 @@
       v-if="$slots['tooltip']"
       class="vc-label__tooltip-container vc-margin-left_xs"
     >
-      <vc-icon
+      <VcIcon
         class="vc-label__tooltip-icon"
         :icon="tooltipIcon"
         size="s"
         @mouseenter="tooltipVisible = true"
         @mouseleave="tooltipVisible = false"
-      ></vc-icon>
+      ></VcIcon>
       <span class="vc-label__tooltip-content" v-if="tooltipVisible">
         <slot name="tooltip"></slot>
       </span>
@@ -20,16 +20,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-
-export default defineComponent({
-  name: "VcLabel",
-});
-</script>
-
 <script lang="ts" setup>
 import VcIcon from "../vc-icon/vc-icon.vue";
+import { ref } from "vue";
 
 defineProps({
   required: {

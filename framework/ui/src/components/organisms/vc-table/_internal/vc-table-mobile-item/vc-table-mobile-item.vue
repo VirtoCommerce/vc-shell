@@ -19,7 +19,7 @@
         :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].variant}`]"
         @click.stop="leftSwipeActions[0].clickHandler(item)"
       >
-        <vc-icon :icon="leftSwipeActions[0].icon"></vc-icon>
+        <VcIcon :icon="leftSwipeActions[0].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
           {{ leftSwipeActions[0].title }}
         </div>
@@ -44,7 +44,7 @@
         ]"
         @click.stop="rightSwipeActions[0].clickHandler(item)"
       >
-        <vc-icon :icon="rightSwipeActions[0].icon"></vc-icon>
+        <VcIcon :icon="rightSwipeActions[0].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
           {{ rightSwipeActions[0].title }}
         </div>
@@ -59,7 +59,7 @@
         ]"
         @click.stop="rightSwipeActions[1].clickHandler(item)"
       >
-        <vc-icon :icon="rightSwipeActions[1].icon"></vc-icon>
+        <VcIcon :icon="rightSwipeActions[1].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
           {{ rightSwipeActions[1].title }}
         </div>
@@ -71,7 +71,7 @@
           class="vc-table-mobile__item-action"
           @click.stop="isActionsPopupVisible = true"
         >
-          <vc-icon icon="fas fa-ellipsis-h"></vc-icon>
+          <VcIcon icon="fas fa-ellipsis-h"></VcIcon>
           <div class="vc-table-mobile__item-action-text">More</div>
         </div>
 
@@ -83,12 +83,12 @@
                 <span class="vc-table-mobile__item-actions-popup-title">
                   {{ $t("All actions") }}
                 </span>
-                <vc-icon
+                <VcIcon
                   class="vc-table-mobile__item-actions-popup-close"
                   icon="fas fa-times-circle"
                   size="xl"
                   @click="isActionsPopupVisible = false"
-                ></vc-icon>
+                ></VcIcon>
               </div>
 
               <div class="vc-table-mobile__item-actions-popup-items">
@@ -98,7 +98,7 @@
                   class="vc-table-mobile__item-actions-popup-item"
                   @click="itemAction.clickHandler(item)"
                 >
-                  <vc-icon :icon="itemAction.icon" size="xl"></vc-icon>
+                  <VcIcon :icon="itemAction.icon" size="xl"></VcIcon>
                   <div class="vc-table-mobile__item-actions-popup-item-title">
                     {{ itemAction.title }}
                   </div>

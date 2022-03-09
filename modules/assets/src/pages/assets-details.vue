@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="options.editableAsset.name"
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
@@ -10,16 +10,16 @@
     <!-- Blade contents -->
     <div class="assets-details__inner vc-flex vc-flex-grow_1">
       <div class="assets-details__content vc-flex-grow_1">
-        <vc-container :no-padding="true">
+        <VcContainer :no-padding="true">
           <div class="vc-padding_l">
-            <vc-form>
-              <vc-image
+            <VcForm>
+              <VcImage
                 class="vc-margin-bottom_l"
                 :src="localImage.url"
                 size="xl"
                 :bordered="true"
-              ></vc-image>
-              <vc-input
+              ></VcImage>
+              <VcInput
                 class="vc-margin-bottom_l"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="localImage.name"
@@ -28,8 +28,8 @@
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
-              ></vc-input>
-              <vc-input
+              ></VcInput>
+              <VcInput
                 class="vc-margin-bottom_l"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
                 v-model="localImage.altText"
@@ -37,8 +37,8 @@
                 :required="true"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
-              ></vc-input>
-              <vc-textarea
+              ></VcInput>
+              <VcTextarea
                 class="vc-margin-bottom_l"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="localImage.description"
@@ -46,84 +46,74 @@
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
-              ></vc-textarea>
-            </vc-form>
+              ></VcTextarea>
+            </VcForm>
           </div>
-        </vc-container>
+        </VcContainer>
       </div>
     </div>
-  </vc-blade>
+  </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, reactive } from "vue";
+<script lang="ts" setup>
+import { PropType, reactive } from "vue";
 import { useI18n } from "@virtoshell/core";
 import { Image } from "@virtoshell/api-client";
 
-export default defineComponent({
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    options: {
-      type: Object as PropType<{
-        editableAsset: Image;
-        images: Image[];
-      }>,
-      default: () => ({}),
-    },
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
 
-  emits: ["parent:call", "page:close"],
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const localImage = reactive({ ...props.options.editableAsset });
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    const bladeToolbar = [
-      {
-        id: "save",
-        title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
-        icon: "fas fa-save",
-        clickHandler() {
-          mutateImage();
-        },
-      },
-      {
-        id: "delete",
-        title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
-        icon: "fas fa-trash",
-        clickHandler() {
-          mutateImage(true);
-        },
-      },
-    ];
-
-    function mutateImage(remove = false) {
-      const images = props.options.images;
-      const image = new Image(localImage);
-      if (images.length) {
-        const imageIndex = images.findIndex((img) => img.id === localImage.id);
-
-        remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
-
-        emit("parent:call", { method: "editImages", args: images });
-        emit("page:close");
-      }
-    }
-
-    return {
-      bladeToolbar,
-      localImage,
-    };
+  options: {
+    type: Object as PropType<{
+      editableAsset: Image;
+      images: Image[];
+    }>,
+    default: () => ({}),
   },
 });
+const emit = defineEmits(["parent:call", "page:close"]);
+const { t } = useI18n();
+const localImage = reactive({ ...props.options.editableAsset });
+
+const bladeToolbar = [
+  {
+    id: "save",
+    title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
+    icon: "fas fa-save",
+    clickHandler() {
+      mutateImage();
+    },
+  },
+  {
+    id: "delete",
+    title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
+    icon: "fas fa-trash",
+    clickHandler() {
+      mutateImage(true);
+    },
+  },
+];
+
+function mutateImage(remove = false) {
+  const images = props.options.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+    emit("parent:call", { method: "editImages", args: images });
+    emit("page:close");
+  }
+}
 </script>
 
 <style lang="less">

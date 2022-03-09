@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     v-loading="loading"
     :title="
       param && profileDetails
@@ -12,10 +12,10 @@
     :closable="closable"
     :expanded="expanded"
   >
-    <vc-container>
-      <vc-row>
-        <vc-col>
-          <vc-input
+    <VcContainer>
+      <VcRow>
+        <VcCol>
+          <VcInput
             class="vc-padding_m"
             :label="
               $t(
@@ -36,8 +36,8 @@
             "
             name="name"
             v-model="profileDetails.name"
-          ></vc-input>
-          <vc-select
+          ></VcInput>
+          <VcSelect
             class="vc-padding_m"
             :label="
               $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
@@ -55,15 +55,15 @@
             :isSearchable="true"
             v-model="profileDetails.typeName"
             @update:modelValue="setImporter"
-          ></vc-select>
-        </vc-col>
-      </vc-row>
-      <vc-row class="vc-padding_m" v-if="profileDetails.typeName">
-        <vc-card
+          ></VcSelect>
+        </VcCol>
+      </VcRow>
+      <VcRow class="vc-padding_m" v-if="profileDetails.typeName">
+        <VcCard
           :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
         >
-          <vc-row>
-            <vc-col>
+          <VcRow>
+            <VcCol>
               <div class="vc-padding_l">
                 <a class="vc-link" :href="sampleTemplateUrl">{{
                   $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
@@ -71,7 +71,7 @@
                 {{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
               </div>
 
-              <vc-dynamic-property
+              <VcDynamicProperty
                 class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
                 v-for="(setting, i) in profileDetails.settings"
                 :key="`${profileDetails.id}_${i}`"
@@ -80,12 +80,12 @@
                 :setter="setSettingsValue"
                 :optionsGetter="loadDictionaries"
               >
-              </vc-dynamic-property>
-            </vc-col>
-          </vc-row>
-        </vc-card>
-      </vc-row>
-    </vc-container>
+              </VcDynamicProperty>
+            </VcCol>
+          </VcRow>
+        </VcCard>
+      </VcRow>
+    </VcContainer>
     <import-confirmation-popup
       v-if="showConfirmation"
       :title="
@@ -104,7 +104,7 @@
         </p>
       </template>
     </import-confirmation-popup>
-  </vc-blade>
+  </VcBlade>
 </template>
 
 <script lang="ts">

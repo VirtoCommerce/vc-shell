@@ -6,7 +6,7 @@
     }"
     @click="onClick"
   >
-    <vc-icon
+    <VcIcon
       v-if="icon"
       class="vc-breadcrumbs-item__icon"
       :icon="icon"
@@ -17,14 +17,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcBreadcrumbsItem",
-});
-</script>
 
 <script lang="ts" setup>
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";

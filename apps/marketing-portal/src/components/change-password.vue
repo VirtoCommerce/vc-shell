@@ -1,12 +1,12 @@
 <template>
-  <vc-popup
+  <VcPopup
     variant="small"
     :title="$t('SHELL.ACCOUNT.CHANGE_PASSWORD')"
     @close="$emit('close')"
   >
     <div class="vc-padding_m">
-      <vc-form>
-        <vc-input
+      <VcForm>
+        <VcInput
           ref="passwordField"
           class="vc-margin-bottom_l vc-margin-top_xs"
           :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
@@ -16,8 +16,8 @@
           type="password"
           :required="true"
           v-model="form.currentPassword"
-        ></vc-input>
-        <vc-input
+        ></VcInput>
+        <VcInput
           ref="newPasswordField"
           class="vc-margin-bottom_l vc-margin-top_xs"
           :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
@@ -26,8 +26,8 @@
           @update:modelValue="validate"
           :required="true"
           v-model="form.password"
-        ></vc-input>
-        <vc-input
+        ></VcInput>
+        <VcInput
           ref="confirmPasswordField"
           class="vc-margin-bottom_l"
           :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
@@ -38,29 +38,29 @@
           @update:modelValue="validate"
           type="password"
           v-model="form.confirmPassword"
-        ></vc-input>
+        ></VcInput>
         <div
           class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
         >
           <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
-          <vc-button
+          <VcButton
             variant="primary"
             :outline="true"
             class="vc-margin-right_m"
             @click="$emit('close')"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.CANCEL") }}
-          </vc-button>
-          <vc-button
+          </VcButton>
+          <VcButton
             variant="primary"
             :disabled="loading || !form.isValid"
             @click="changePassword"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.SAVE") }}
-          </vc-button>
+          </VcButton>
         </div>
 
-        <vc-hint
+        <VcHint
           class="vc-margin-top_m"
           style="color: #f14e4e"
           v-for="error in form.errors"
@@ -72,21 +72,14 @@
               ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${error.code}`)
               : error
           }}
-        </vc-hint>
-      </vc-form>
+        </VcHint>
+      </VcForm>
     </div>
-  </vc-popup>
+  </VcPopup>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive } from "vue";
-
-export default defineComponent({
-  name: "ChangePassword",
-});
-</script>
-
 <script lang="ts" setup>
+import { reactive } from "vue";
 import { useUser } from "@virtoshell/core";
 import { IIdentityError } from "@virtoshell/api-client";
 

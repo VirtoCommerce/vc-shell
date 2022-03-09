@@ -9,19 +9,11 @@
       />
       <span class="vc-switch__slider"></span>
     </label>
-    <vc-hint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
+    <VcHint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
       {{ tooltip }}
-    </vc-hint>
+    </VcHint>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcSwitch",
-});
-</script>
 
 <script lang="ts" setup>
 defineProps({

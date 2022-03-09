@@ -15,7 +15,7 @@
         'language-selector__button',
       ]"
     >
-      <vc-icon icon="fas fa-globe" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-globe" size="xl"></VcIcon>
     </div>
     <div class="language-selector__dropdown" v-if="isDropActive">
       <div
@@ -32,15 +32,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-
-export default defineComponent({
-  name: "language-selector",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref } from "vue";
 defineProps({
   title: {
     type: String,

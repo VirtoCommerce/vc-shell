@@ -12,25 +12,17 @@
     ]"
     @click="onClick"
   >
-    <vc-icon
+    <VcIcon
       v-if="icon"
       class="vc-button__icon"
       :icon="icon"
       :size="small ? 'xs' : 's'"
-    ></vc-icon>
+    ></VcIcon>
     <div v-if="$slots['default']" class="vc-button__title">
       <slot></slot>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcButton",
-});
-</script>
 
 <script lang="ts" setup>
 import VcIcon from "../vc-icon/vc-icon.vue";

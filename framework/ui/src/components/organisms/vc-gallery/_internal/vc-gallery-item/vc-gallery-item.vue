@@ -12,15 +12,15 @@
       }
     "
   >
-    <vc-image aspect="1x1" :src="image.url"></vc-image>
+    <VcImage aspect="1x1" :src="image.url"></VcImage>
     <div class="vc-flex-column vc-gallery-item__overlay vc-padding_s">
       <div class="vc-flex">
-        <vc-icon
+        <VcIcon
           v-if="!readonly"
           class="vc-gallery-item__move vc-margin-right_s"
           icon="fas fa-arrows-alt"
           size="s"
-        ></vc-icon>
+        ></VcIcon>
         <div class="vc-gallery-item__title vc-ellipsis" :title="image.name">
           {{ image.name }}
         </div>
@@ -32,10 +32,10 @@
           class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
           @click="$emit('preview', image)"
         >
-          <vc-icon
+          <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-eye"
-          ></vc-icon>
+          ></VcIcon>
           <div class="vc-margin-top_s">Fullscreen</div>
         </div>
         <div
@@ -43,10 +43,10 @@
           class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
           @click="$emit('edit', image)"
         >
-          <vc-icon
+          <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-pen"
-          ></vc-icon>
+          ></VcIcon>
           <div class="vc-margin-top_s">Edit</div>
         </div>
         <div
@@ -54,10 +54,10 @@
           class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
           @click="$emit('remove', image)"
         >
-          <vc-icon
+          <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-trash"
-          ></vc-icon>
+          ></VcIcon>
           <div class="vc-margin-top_s">Delete</div>
         </div>
       </div>
@@ -65,15 +65,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineProps, ref } from "vue";
-
-export default defineComponent({
-  name: "VcGalleryItem",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref } from "vue";
 import { clickOutside as vClickOutside } from "../../../../../directives";
 
 defineProps({

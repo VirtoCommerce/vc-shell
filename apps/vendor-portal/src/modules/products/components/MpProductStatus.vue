@@ -1,24 +1,17 @@
 <template>
-  <vc-status
+  <VcStatus
     v-bind="statusStyles[status]"
     v-for="(status, i) in statuses"
     :class="[$attrs.class, { 'vc-margin-right_xs': i < statuses.length - 1 }]"
     :key="i"
     >{{
       $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`)
-    }}</vc-status
+    }}</VcStatus
   >
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue";
-
-export default defineComponent({
-  name: "MpProductStatus",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed } from "vue";
 import { camelToSnake } from "@virtoshell/core";
 
 const props = defineProps({

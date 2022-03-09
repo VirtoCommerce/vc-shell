@@ -1,5 +1,5 @@
 <template>
-  <vc-container class="dashboard vc-fill_all">
+  <VcContainer class="dashboard vc-fill_all">
     <div
       class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s"
       v-if="$isDesktop.value"
@@ -7,12 +7,12 @@
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
 
-    <vc-row>
-      <vc-col size="10" v-if="$isDesktop.value">
-        <vc-row>
+    <VcRow>
+      <VcCol size="10" v-if="$isDesktop.value">
+        <VcRow>
           <!-- Latest orders block -->
-          <vc-col size="3" class="vc-padding_s">
-            <vc-card
+          <VcCol size="3" class="vc-padding_s">
+            <VcCard
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
             >
@@ -50,12 +50,12 @@
                   {{ calcQty(itemData.item.items) }}
                 </template>
               </vc-table>
-            </vc-card>
-          </vc-col>
+            </VcCard>
+          </VcCol>
 
           <!-- Latest products block -->
-          <vc-col size="4" class="vc-padding_s">
-            <vc-card
+          <VcCol size="4" class="vc-padding_s">
+            <VcCard
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
             >
@@ -109,14 +109,14 @@
                   />
                 </template>
               </vc-table>
-            </vc-card>
-          </vc-col>
-        </vc-row>
+            </VcCard>
+          </VcCol>
+        </VcRow>
 
-        <vc-row>
+        <VcRow>
           <!-- Offers block -->
-          <vc-col class="vc-padding_s">
-            <vc-card
+          <VcCol class="vc-padding_s">
+            <VcCard
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
             >
@@ -132,8 +132,8 @@
                 }}</vc-button>
               </template>
 
-              <vc-row>
-                <vc-col style="display: block">
+              <VcRow>
+                <VcCol style="display: block">
                   <vc-table
                     class="vc-fill_all"
                     :loading="offersLoading"
@@ -160,8 +160,8 @@
                       </div>
                     </template>
                   </vc-table>
-                </vc-col>
-                <!--                <vc-col size="0" style="flex-basis: 180px">-->
+                </VcCol>
+                <!--                <VcCol size="0" style="flex-basis: 180px">-->
                 <!--                  <div class="dashboard-offers__counter">-->
                 <!--                    <div-->
                 <!--                      class="-->
@@ -201,17 +201,17 @@
                 <!--                      {{ $t("SHELL.DASHBOARD.OFFERS.OUT_STOCK") }}-->
                 <!--                    </div>-->
                 <!--                  </div>-->
-                <!--                </vc-col>-->
-              </vc-row>
-            </vc-card>
-          </vc-col>
-        </vc-row>
-      </vc-col>
+                <!--                </VcCol>-->
+              </VcRow>
+            </VcCard>
+          </VcCol>
+        </VcRow>
+      </VcCol>
 
-      <vc-col v-else class="vc-padding_s">
+      <VcCol v-else class="vc-padding_s">
         <div class="vc-flex">
-          <vc-col class="vc-margin-right_s">
-            <vc-card
+          <VcCol class="vc-margin-right_s">
+            <VcCard
               class="vc-margin-bottom_l"
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
@@ -221,10 +221,10 @@
               <div class="vc-margin-vertical_l dashboard-counters__value">
                 3,334
               </div>
-            </vc-card>
-          </vc-col>
-          <vc-col class="vc-margin-left_s">
-            <vc-card
+            </VcCard>
+          </VcCol>
+          <VcCol class="vc-margin-left_s">
+            <VcCard
               class="vc-margin-bottom_l"
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
@@ -234,22 +234,22 @@
               <div class="vc-margin-vertical_l dashboard-counters__value">
                 49
               </div>
-            </vc-card>
-          </vc-col>
+            </VcCard>
+          </VcCol>
         </div>
-        <vc-card
+        <VcCard
           :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
           icon="fas fa-file-invoice"
           @click="open('offers-list')"
         >
           <div class="vc-separator"></div>
           <div class="vc-margin-vertical_l dashboard-counters__value">206</div>
-        </vc-card>
-      </vc-col>
+        </VcCard>
+      </VcCol>
 
       <!-- Counters block -->
-      <!--      <vc-col class="dashboard-counters vc-padding_s">-->
-      <!--        <vc-card-->
+      <!--      <VcCol class="dashboard-counters vc-padding_s">-->
+      <!--        <VcCard-->
       <!--          class="vc-margin-bottom_l"-->
       <!--          :header="$t('SHELL.DASHBOARD.COUNTERS.REVENUE')"-->
       <!--          icon="fas fa-hand-holding-usd"-->
@@ -294,9 +294,9 @@
       <!--              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
       <!--            >-->
       <!--          </div>-->
-      <!--        </vc-card>-->
+      <!--        </VcCard>-->
 
-      <!--        <vc-card-->
+      <!--        <VcCard-->
       <!--          class="vc-margin-bottom_l"-->
       <!--          :header="$t('SHELL.DASHBOARD.COUNTERS.PURCHASED')"-->
       <!--          icon="fas fa-boxes"-->
@@ -341,9 +341,9 @@
       <!--              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
       <!--            >-->
       <!--          </div>-->
-      <!--        </vc-card>-->
+      <!--        </VcCard>-->
 
-      <!--        <vc-card-->
+      <!--        <VcCard-->
       <!--          class="vc-margin-bottom_l"-->
       <!--          :header="$t('SHELL.DASHBOARD.COUNTERS.AVERAGE_ORDER')"-->
       <!--          icon="fas fa-dollar-sign"-->
@@ -388,9 +388,9 @@
       <!--              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
       <!--            >-->
       <!--          </div>-->
-      <!--        </vc-card>-->
+      <!--        </VcCard>-->
 
-      <!--        <vc-card-->
+      <!--        <VcCard-->
       <!--          :header="$t('SHELL.DASHBOARD.REVIEWS.TITLE')"-->
       <!--          icon="fas fa-comment-dots"-->
       <!--        >-->
@@ -413,10 +413,10 @@
       <!--              }}</vc-button>-->
       <!--            </div>-->
       <!--          </div>-->
-      <!--        </vc-card>-->
-      <!--      </vc-col>-->
-    </vc-row>
-  </vc-container>
+      <!--        </VcCard>-->
+      <!--      </VcCol>-->
+    </VcRow>
+  </VcContainer>
 </template>
 
 <script lang="ts" setup>
@@ -434,6 +434,7 @@ import { OrderLineItem } from "@virtoshell/api-client";
 import { ITableColumns } from "../types";
 import { useRouter } from "vue-router";
 
+/*
 interface ITermDefinition {
   day: string;
   week: string;
@@ -446,6 +447,7 @@ interface ICounters {
   purchased: ITermDefinition;
   orderAvg: ITermDefinition;
 }
+ */
 
 const props = defineProps({
   openPage: {

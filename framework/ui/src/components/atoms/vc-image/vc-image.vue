@@ -16,19 +16,11 @@
       @click="onClick"
     >
       <div v-if="!src" class="vc-image_empty">
-        <vc-icon icon="fas fa-image" size="xl"></vc-icon>
+        <VcIcon icon="fas fa-image" size="xl"></VcIcon>
       </div>
     </div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcImage",
-});
-</script>
 
 <script lang="ts" setup>
 const props = defineProps({

@@ -22,14 +22,14 @@
       <div class="vc-slider__prev">
         <slot name="prevBtn">
           <div class="vc-slider__btn">
-            <vc-icon icon="fas fa-chevron-left"></vc-icon>
+            <VcIcon icon="fas fa-chevron-left"></VcIcon>
           </div>
         </slot>
       </div>
       <div class="vc-slider__next">
         <slot name="nextBtn">
           <div class="vc-slider__btn">
-            <vc-icon icon="fas fa-chevron-right"></vc-icon>
+            <VcIcon icon="fas fa-chevron-right"></VcIcon>
           </div>
         </slot>
       </div>
@@ -37,15 +37,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed } from "vue";
-
-export default defineComponent({
-  name: "VcSlider",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed } from "vue";
 import { Swiper as SwiperComponent, SwiperSlide } from "swiper/vue";
 import SwiperCore, { Navigation } from "swiper";
 import "swiper/swiper-bundle.min.css";

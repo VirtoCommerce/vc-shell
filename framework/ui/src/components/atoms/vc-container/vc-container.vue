@@ -23,26 +23,19 @@
         :class="{ 'vc-container__overscroll_passed': status === 'loosing' }"
         :style="{ height: dist ? `${dist}px` : '0px' }"
       >
-        <vc-icon
+        <VcIcon
           icon="fas fa-spinner"
           :style="{ 'font-size': `${dist / 2}px` }"
           class="vc-container__overscroll-icon"
-        ></vc-icon>
+        ></VcIcon>
       </div>
       <slot></slot>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, computed, nextTick } from "vue";
-
-export default defineComponent({
-  name: "VcContainer",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref, onMounted, computed, nextTick } from "vue";
 const props = defineProps({
   shadow: {
     type: Boolean,

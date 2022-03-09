@@ -1,6 +1,6 @@
 <template>
   <div v-if="items" class="vc-breadcrumbs">
-    <vc-breadcrumbs-item
+    <VcBreadcrumbsItem
       v-for="(item, i) in items"
       :key="item.id"
       v-bind="item"
@@ -8,14 +8,6 @@
     />
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcBreadcrumbs",
-});
-</script>
 
 <script lang="ts" setup>
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";

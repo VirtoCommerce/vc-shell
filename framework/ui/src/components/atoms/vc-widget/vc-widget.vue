@@ -4,24 +4,16 @@
     :class="{ 'vc-widget_disabled': disabled }"
     @click="onClick"
   >
-    <vc-icon
+    <VcIcon
       v-if="icon"
       class="vc-widget__icon"
       :icon="icon"
       size="xxl"
-    ></vc-icon>
+    ></VcIcon>
     <div v-if="title" class="vc-widget__title">{{ title }}</div>
     <div v-if="value !== undefined" class="vc-widget__value">{{ value }}</div>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcWidget",
-});
-</script>
 
 <script lang="ts" setup>
 const props = defineProps({

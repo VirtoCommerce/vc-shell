@@ -12,19 +12,19 @@
         class="vc-app-menu-item__handler"
         :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
       >
-        <vc-icon icon="fas fa-ellipsis-v" size="m" />
+        <VcIcon icon="fas fa-ellipsis-v" size="m" />
       </div>
       <div v-if="icon" class="vc-app-menu-item__icon">
-        <vc-icon :icon="icon" size="m" />
+        <VcIcon :icon="icon" size="m" />
       </div>
       <div class="vc-app-menu-item__title">
         {{ title }}
-        <vc-icon
+        <VcIcon
           class="vc-margin-left_m vc-app-menu-item__title-icon"
           icon="fas fa-chevron-down"
           size="xs"
           v-if="children.length"
-        ></vc-icon>
+        ></VcIcon>
       </div>
     </div>
     <!-- Nested menu items -->
@@ -44,15 +44,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref, watch } from "vue";
-
-export default defineComponent({
-  name: "VcAppMenuItem",
-});
-</script>
-
 <script lang="ts" setup>
+import { PropType, ref, watch } from "vue";
 import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
 import { IBladeToolbar, IMenuItems } from "../../../../../../../typings";
 

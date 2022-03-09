@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('OFFERS.PAGES.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       :loading="loading"
       :expanded="expanded"
       :empty="empty"
@@ -43,13 +43,13 @@
           class="offers-list__mobile-item vc-padding-vertical_m vc-padding-horizontal_l"
         >
           <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
-            <vc-image
+            <VcImage
               class="vc-flex-shrink_0"
               aspect="1x1"
               size="s"
               :bordered="true"
               :src="itemData.item.imgSrc"
-            ></vc-image>
+            ></VcImage>
             <div class="vc-flex-grow_1 vc-margin-left_m">
               <div class="vc-font-weight_bold vc-font-size_l">
                 {{ itemData.item.name }}
@@ -60,7 +60,7 @@
             class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
           >
             <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</vc-hint>
+              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
               <div class="vc-ellipsis vc-margin-top_xs">
                 {{ itemData.item.sku }}
               </div>
@@ -101,8 +101,8 @@
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">

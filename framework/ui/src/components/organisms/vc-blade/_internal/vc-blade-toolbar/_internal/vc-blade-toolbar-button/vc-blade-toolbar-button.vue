@@ -5,11 +5,11 @@
     @click="onClick"
     :title="title"
   >
-    <vc-icon
+    <VcIcon
       class="vc-blade-toolbar-button__icon"
       :icon="icon"
       size="m"
-    ></vc-icon>
+    ></VcIcon>
     <div v-if="isExpanded" class="vc-blade-toolbar-button__title">
       {{ title }}
     </div>
@@ -20,7 +20,6 @@
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
-  name: "VcBladeToolbarButton",
   inheritAttrs: false,
 });
 </script>

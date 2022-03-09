@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('ORDERS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       class="vc-flex-grow_1"
       :expanded="expanded"
       :empty="empty"
@@ -35,79 +35,79 @@
         <h2 v-if="$isMobile.value">
           {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
-        <vc-container no-padding>
-          <vc-row>
-            <vc-col class="filter-col vc-padding_s">
+        <VcContainer no-padding>
+          <VcRow>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
-                <vc-checkbox
+                <VcCheckbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Unpaid'"
                   @update:modelValue="
                     filter.status = $event ? 'Unpaid' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.UNPAID") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.UNPAID") }}</VcCheckbox
                 >
-                <vc-checkbox
+                <VcCheckbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Paid'"
                   @update:modelValue="
                     filter.status = $event ? 'Paid' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.PAID") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.PAID") }}</VcCheckbox
                 >
 
-                <vc-checkbox
+                <VcCheckbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Accepted'"
                   @update:modelValue="
                     filter.status = $event ? 'Accepted' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.ACCEPTED") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.ACCEPTED") }}</VcCheckbox
                 >
-                <vc-checkbox
+                <VcCheckbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Shipped'"
                   @update:modelValue="
                     filter.status = $event ? 'Shipped' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.SHIPPED") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.SHIPPED") }}</VcCheckbox
                 >
-                <vc-checkbox
+                <VcCheckbox
                   class="vc-margin-bottom_s"
                   :modelValue="filter.status === 'Cancelled'"
                   @update:modelValue="
                     filter.status = $event ? 'Cancelled' : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.CANCELLED") }}</vc-checkbox
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.CANCELLED") }}</VcCheckbox
                 >
               </div>
-            </vc-col>
-            <vc-col class="filter-col vc-padding_s">
+            </VcCol>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
-                <vc-input
+                <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.START_DATE')"
                   type="date"
                   class="vc-margin-bottom_m"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
-                ></vc-input>
-                <vc-input
+                ></VcInput>
+                <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
-                ></vc-input>
+                ></VcInput>
               </div>
-            </vc-col>
-          </vc-row>
-          <vc-row>
-            <vc-col class="vc-padding_s">
+            </VcCol>
+          </VcRow>
+          <VcRow>
+            <VcCol class="vc-padding_s">
               <div class="vc-flex vc-flex-justify_end">
                 <vc-button
                   outline
@@ -121,9 +121,9 @@
                   $t("ORDERS.PAGES.LIST.FILTERS.APPLY")
                 }}</vc-button>
               </div>
-            </vc-col>
-          </vc-row>
-        </vc-container>
+            </VcCol>
+          </VcRow>
+        </VcContainer>
       </template>
 
       <!-- Not found template -->
@@ -155,9 +155,9 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <vc-status v-bind="statusStyle(itemData.item.status)">
+        <VcStatus v-bind="statusStyle(itemData.item.status)">
           {{ itemData.item.status }}
-        </vc-status>
+        </VcStatus>
       </template>
 
       <template v-slot:mobile-item="itemData">
@@ -167,14 +167,14 @@
               <div class="vc-font-weight_bold vc-font-size_l">
                 {{ itemData.item.number }}
               </div>
-              <vc-hint class="vc-margin-top_xs">{{
+              <VcHint class="vc-margin-top_xs">{{
                 itemData.item.customerName
-              }}</vc-hint>
+              }}</VcHint>
             </div>
             <div>
-              <vc-status v-bind="statusStyle(itemData.item.status)">
+              <VcStatus v-bind="statusStyle(itemData.item.status)">
                 {{ itemData.item.status }}
-              </vc-status>
+              </VcStatus>
             </div>
           </div>
           <div>
@@ -182,13 +182,13 @@
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-                <vc-hint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</vc-hint>
+                <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-                <vc-hint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</vc-hint>
+                <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -200,8 +200,8 @@
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">

@@ -8,14 +8,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcLink",
-});
-</script>
-
 <script lang="ts" setup>
 const props = defineProps({
   active: {

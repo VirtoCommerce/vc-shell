@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     v-loading="loading"
     :title="order.number"
     :expanded="expanded"
@@ -8,30 +8,30 @@
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
-    <vc-container>
-      <vc-row>
-        <vc-col size="1" class="vc-padding_s">
-          <vc-card :header="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TITLE')">
-            <vc-row class="vc-padding_s">
-              <vc-col class="vc-padding_s">
-                <vc-info-row
+    <VcContainer>
+      <VcRow>
+        <VcCol size="1" class="vc-padding_s">
+          <VcCard :header="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TITLE')">
+            <VcRow class="vc-padding_s">
+              <VcCol class="vc-padding_s">
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.ORDER_REF')"
                   :value="order.number"
                 />
-                <vc-info-row
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.CREATED_DATE')"
                   :value="createdDate"
                 />
-                <vc-info-row
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.STORE')"
                   :value="order.storeId"
                   :tooltip="$t('ORDERS.PAGES.EDIT.ORDER_INFO.STORE_TOOLTIP')"
                 />
-                <vc-info-row
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.ORDER_STATUS')"
                   :value="order.status"
                 />
-                <vc-info-row
+                <VcInfoRow
                   class="orders-edit__row_line"
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.SUBTOTAL')"
                   :value="
@@ -39,53 +39,49 @@
                     order.subTotal.toFixed(2) + ' ' + order.currency
                   "
                 />
-                <vc-info-row
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.DISCOUNT_TOTAL')"
                   :value="
                     order.discountTotal &&
                     order.discountTotal.toFixed(2) + ' ' + order.currency
                   "
                 />
-                <vc-info-row
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TOTAL')"
                   :value="
                     order.total && order.total.toFixed(2) + ' ' + order.currency
                   "
                 />
-              </vc-col>
-            </vc-row>
-          </vc-card>
-        </vc-col>
-        <vc-col size="1" class="vc-padding_s">
-          <vc-card :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
-            <vc-col class="vc-padding_s">
-              <vc-col
+              </VcCol>
+            </VcRow>
+          </VcCard>
+        </VcCol>
+        <VcCol size="1" class="vc-padding_s">
+          <VcCard :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
+            <VcCol class="vc-padding_s">
+              <VcCol
                 class="vc-padding_s"
                 v-for="(item, i) in shippingInfo"
                 :key="`${item.label}_${i}`"
               >
-                <vc-info-row
+                <VcInfoRow
                   :label="item.label"
                   :value="item.name"
                   :class="{ 'orders-edit__row_line': i === 1 }"
                 />
-                <vc-info-row :value="item.address" v-if="item.address" />
-                <vc-info-row :value="item.phone" v-if="item.phone" />
-                <vc-info-row
-                  :value="item.email"
-                  type="email"
-                  v-if="item.email"
-                />
-              </vc-col>
-            </vc-col>
-          </vc-card>
-        </vc-col>
-      </vc-row>
+                <VcInfoRow :value="item.address" v-if="item.address" />
+                <VcInfoRow :value="item.phone" v-if="item.phone" />
+                <VcInfoRow :value="item.email" type="email" v-if="item.email" />
+              </VcCol>
+            </VcCol>
+          </VcCard>
+        </VcCol>
+      </VcRow>
 
-      <vc-row>
-        <vc-col class="vc-padding_s">
-          <vc-card :header="$t('ORDERS.PAGES.EDIT.ITEMS_LIST.TITLE')">
-            <vc-table
+      <VcRow>
+        <VcCol class="vc-padding_s">
+          <VcCard :header="$t('ORDERS.PAGES.EDIT.ITEMS_LIST.TITLE')">
+            <VcTable
               :multiselect="false"
               :columns="columns"
               :items="items"
@@ -95,9 +91,9 @@
               <template v-slot:item_name="itemData">
                 <div class="vc-flex vc-flex-column">
                   <div>{{ itemData.item.name }}</div>
-                  <vc-hint class="vc-margin-top_xs"
+                  <VcHint class="vc-margin-top_xs"
                     >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
-                    {{ itemData.item.sku }}</vc-hint
+                    {{ itemData.item.sku }}</VcHint
                   >
                 </div>
               </template>
@@ -105,38 +101,38 @@
               <template v-slot:mobile-item="itemData">
                 <div class="vc-padding-vertical_m vc-padding-horizontal_l">
                   <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
-                    <vc-image
+                    <VcImage
                       class="vc-flex-shrink_0"
                       aspect="1x1"
                       size="s"
                       :bordered="true"
                       :src="itemData.item.imageUrl"
-                    ></vc-image>
+                    ></VcImage>
                     <div class="vc-flex-grow_1 vc-margin-left_m">
                       <div class="vc-font-weight_bold vc-font-size_l">
                         {{ itemData.item.name }}
                       </div>
-                      <vc-hint class="vc-margin-top_xs">
+                      <VcHint class="vc-margin-top_xs">
                         {{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
                         {{ itemData.item.sku }}
-                      </vc-hint>
+                      </VcHint>
                     </div>
                   </div>
                   <div
                     class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
                   >
                     <div class="vc-ellipsis vc-flex-grow_2">
-                      <vc-hint>{{
+                      <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
-                      }}</vc-hint>
+                      }}</VcHint>
                       <div class="vc-ellipsis vc-margin-top_xs">
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
                     <div class="vc-ellipsis vc-flex-grow_2">
-                      <vc-hint>{{
+                      <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
-                      }}</vc-hint>
+                      }}</VcHint>
                       <div class="vc-ellipsis vc-margin-top_xs">
                         {{
                           itemData.item.price && itemData.item.price.toFixed(2)
@@ -144,9 +140,9 @@
                       </div>
                     </div>
                     <div class="vc-ellipsis vc-flex-grow_1">
-                      <vc-hint>{{
+                      <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
-                      }}</vc-hint>
+                      }}</VcHint>
                       <div class="vc-ellipsis vc-margin-top_xs">
                         {{
                           itemData.item.extendedPrice &&
@@ -157,12 +153,12 @@
                   </div>
                 </div>
               </template>
-            </vc-table>
-          </vc-card>
-        </vc-col>
-      </vc-row>
-    </vc-container>
-  </vc-blade>
+            </VcTable>
+          </VcCard>
+        </VcCol>
+      </VcRow>
+    </VcContainer>
+  </VcBlade>
 </template>
 
 <script lang="ts">

@@ -18,15 +18,15 @@
         v-if="$isMobile.value"
         class="vc-app-menu__mobile-close vc-flex vc-flex-justify_end vc-flex-align_center vc-padding_l"
       >
-        <vc-icon
+        <VcIcon
           icon="fas fa-times"
           size="xl"
           @click="isMobileVisible = false"
-        ></vc-icon>
+        ></VcIcon>
       </div>
 
       <!-- Show scrollable area with menu items -->
-      <vc-container :noPadding="true" class="vc-app-menu__content">
+      <VcContainer :noPadding="true" class="vc-app-menu__content">
         <div
           class="vc-flex vc-flex-column vc-app-menu__content-inner vc-padding-left_l vc-padding-right_l"
         >
@@ -44,7 +44,7 @@
             </template>
           </template>
           <template v-for="(item, index) in items" :key="index">
-            <vc-app-menu-item
+            <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
               :isActive="item === activeItem"
@@ -60,20 +60,13 @@
             />
           </template>
         </div>
-      </vc-container>
+      </VcContainer>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineProps, PropType, ref } from "vue";
-
-export default defineComponent({
-  name: "VcAppMenu",
-});
-</script>
-
 <script lang="ts" setup>
+import { PropType, ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
 import { IBladeToolbar, IMenuItems } from "../../../../../typings";

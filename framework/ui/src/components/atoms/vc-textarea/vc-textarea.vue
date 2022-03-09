@@ -7,12 +7,12 @@
     }"
   >
     <!-- Textarea label -->
-    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
       </template>
-    </vc-label>
+    </VcLabel>
 
     <!-- Textarea field -->
     <div class="vc-textarea__field-wrapper vc-flex vc-flex-align_stretch">
@@ -26,22 +26,15 @@
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-textarea__error vc-margin-top_xs">
+      <VcHint class="vc-textarea__error vc-margin-top_xs">
         {{ errorMessage }}
-      </vc-hint>
+      </VcHint>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, unref, watch, getCurrentInstance } from "vue";
-
-export default defineComponent({
-  name: "VcTextarea",
-});
-</script>
-
 <script lang="ts" setup>
+import { unref, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 import VcLabel from "..//vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";

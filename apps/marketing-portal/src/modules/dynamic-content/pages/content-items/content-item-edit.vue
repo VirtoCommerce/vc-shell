@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="contentItem.name"
     width="30%"
     @close="$emit('page:close')"
@@ -8,11 +8,11 @@
     :toolbarItems="bladeToolbar"
   >
     <!-- Blade contents -->
-    <vc-container :no-padding="true">
+    <VcContainer :no-padding="true">
       <div class="vc-flex-grow_1">
         <div class="vc-padding_l">
-          <vc-form>
-            <vc-input
+          <VcForm>
+            <VcInput
               class="vc-margin-bottom_l"
               :label="
                 $t(
@@ -20,8 +20,8 @@
                 )
               "
             >
-            </vc-input>
-            <vc-textarea
+            </VcInput>
+            <VcTextarea
               class="vc-margin-bottom_l"
               :label="
                 $t(
@@ -29,27 +29,27 @@
                 )
               "
             >
-            </vc-textarea>
-            <vc-select
+            </VcTextarea>
+            <VcSelect
               class="vc-margin-bottom_l"
               :label="
                 $t(
                   'DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.INPUTS.CONTENT_TYPE.LABEL'
                 )
               "
-            ></vc-select>
-            <vc-textarea
+            ></VcSelect>
+            <VcTextarea
               class="vc-margin-bottom_l"
               :label="
                 $t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.INPUTS.HTML.LABEL')
               "
             >
-            </vc-textarea>
-          </vc-form>
+            </VcTextarea>
+          </VcForm>
         </div>
       </div>
-    </vc-container>
-  </vc-blade>
+    </VcContainer>
+  </VcBlade>
 </template>
 
 <script lang="ts">

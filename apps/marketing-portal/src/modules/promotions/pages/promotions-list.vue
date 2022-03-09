@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('PROMOTIONS.PAGES.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
@@ -29,47 +29,47 @@
         <h2 v-if="$isMobile.value">
           {{ $t("PROMOTIONS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
-        <vc-container no-padding>
-          <vc-row>
-            <vc-col class="vc-padding_s">
+        <VcContainer no-padding>
+          <VcRow>
+            <VcCol class="vc-padding_s">
               <div class="group-title">
                 {{ $t("PROMOTIONS.PAGES.LIST.FILTERS.START_DATE") }}
               </div>
               <div>
-                <vc-input
+                <VcInput
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
                   type="date"
                   class="vc-margin-bottom_m"
                   :label="$t('PROMOTIONS.PAGES.LIST.FILTERS.START_DATE')"
-                ></vc-input>
-                <vc-input
+                ></VcInput>
+                <VcInput
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
                   type="date"
                   :label="$t('PROMOTIONS.PAGES.LIST.FILTERS.END_DATE')"
-                ></vc-input>
+                ></VcInput>
               </div>
-            </vc-col>
-          </vc-row>
-          <vc-row>
-            <vc-col class="vc-padding_s">
+            </VcCol>
+          </VcRow>
+          <VcRow>
+            <VcCol class="vc-padding_s">
               <div class="vc-flex vc-flex-justify_end">
-                <vc-button
+                <VcButton
                   outline
                   class="vc-margin-right_l"
                   @click="resetFilters"
                   >{{
                     $t("PROMOTIONS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</vc-button
+                  }}</VcButton
                 >
-                <vc-button @click="applyFilters">{{
+                <VcButton @click="applyFilters">{{
                   $t("PROMOTIONS.PAGES.LIST.FILTERS.APPLY")
-                }}</vc-button>
+                }}</VcButton>
               </div>
-            </vc-col>
-          </vc-row>
-        </vc-container>
+            </VcCol>
+          </VcRow>
+        </VcContainer>
       </template>
 
       <!-- Not found template -->
@@ -81,8 +81,8 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.NOT_FOUND") }}
           </div>
-          <vc-button @click="resetSearch">
-            {{ $t("PROMOTIONS.PAGES.LIST.TABLE.RESET_SEARCH") }}</vc-button
+          <VcButton @click="resetSearch">
+            {{ $t("PROMOTIONS.PAGES.LIST.TABLE.RESET_SEARCH") }}</VcButton
           >
         </div>
       </template>
@@ -96,9 +96,7 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.IS_EMPTY") }}
           </div>
-          <vc-button>{{
-            $t("PROMOTIONS.PAGES.LIST.TABLE.ADD_PROMO")
-          }}</vc-button>
+          <VcButton>{{ $t("PROMOTIONS.PAGES.LIST.TABLE.ADD_PROMO") }}</VcButton>
         </div>
       </template>
 
@@ -116,17 +114,17 @@
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_2">
-                <vc-hint>{{
+                <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.START_DATE")
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ moment(itemData.item.startDate).format("L") }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.MODIFIED")
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ moment(itemData.item.modified).format("L") }}
                 </div>
@@ -137,29 +135,27 @@
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.IS_ACTIVE")
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
-                  <vc-status-icon
-                    :status="itemData.item.isActive"
-                  ></vc-status-icon>
+                  <VcStatusIcon :status="itemData.item.isActive"></VcStatusIcon>
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.IS_EXCLUSIVE")
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
-                  <vc-status-icon
+                  <VcStatusIcon
                     :status="itemData.item.isExclusive"
-                  ></vc-status-icon>
+                  ></VcStatusIcon>
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ moment(itemData.item.createdDate).format("L") }}
                 </div>
@@ -168,8 +164,8 @@
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">
@@ -227,6 +223,7 @@ const {
 } = usePromotions();
 const searchValue = ref();
 const { debounce } = useFunctions();
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = t("PROMOTIONS.PAGES.LIST.TITLE");
 const sort = ref("startDate:DESC");
 const filter = reactive<{

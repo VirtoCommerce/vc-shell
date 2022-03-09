@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       class="vc-flex-grow_1"
       :loading="loading"
       :expanded="expanded"
@@ -35,14 +35,14 @@
         <h2 v-if="$isMobile.value">
           {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
-        <vc-container no-padding>
-          <vc-row>
-            <vc-col class="filter-col vc-padding_s">
+        <VcContainer no-padding>
+          <VcRow>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
-                <vc-checkbox
+                <VcCheckbox
                   v-for="status in SellerProductStatus"
                   :key="status"
                   class="vc-margin-bottom_s"
@@ -50,67 +50,67 @@
                   @update:modelValue="
                     filter.status = $event ? status : undefined
                   "
-                  >{{ status }}</vc-checkbox
+                  >{{ status }}</VcCheckbox
                 >
               </div>
-            </vc-col>
-            <vc-col class="filter-col vc-padding_s">
+            </VcCol>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TITLE") }}
               </div>
               <div>
-                <vc-input
+                <VcInput
                   :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.FROM')"
                   class="vc-margin-bottom_m"
                   :modelValue="filter.priceStart"
                   @update:modelValue="filter.priceStart = $event"
-                ></vc-input>
-                <vc-input
+                ></VcInput>
+                <VcInput
                   :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TO')"
                   :modelValue="filter.priceEnd"
                   @update:modelValue="filter.priceEnd = $event"
-                ></vc-input>
+                ></VcInput>
               </div>
-            </vc-col>
-            <vc-col class="filter-col vc-padding_s">
+            </VcCol>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.TITLE") }}
               </div>
               <div>
-                <vc-input
+                <VcInput
                   :label="
                     $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.START_DATE')
                   "
                   type="date"
                   class="vc-margin-bottom_m"
-                ></vc-input>
-                <vc-input
+                ></VcInput>
+                <VcInput
                   :label="
                     $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.END_DATE')
                   "
                   type="date"
-                ></vc-input>
+                ></VcInput>
               </div>
-            </vc-col>
-          </vc-row>
-          <vc-row>
-            <vc-col class="vc-padding_s">
+            </VcCol>
+          </VcRow>
+          <VcRow>
+            <VcCol class="vc-padding_s">
               <div class="vc-flex vc-flex-justify_end">
-                <vc-button
+                <VcButton
                   outline
                   class="vc-margin-right_l"
                   @click="resetFilters"
                   >{{
                     $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</vc-button
+                  }}</VcButton
                 >
-                <vc-button @click="applyFilters">{{
+                <VcButton @click="applyFilters">{{
                   $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
-                }}</vc-button>
+                }}</VcButton>
               </div>
-            </vc-col>
-          </vc-row>
-        </vc-container>
+            </VcCol>
+          </VcRow>
+        </VcContainer>
       </template>
 
       <!-- Not found template -->
@@ -122,9 +122,9 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
-          <vc-button @click="resetSearch">{{
+          <VcButton @click="resetSearch">{{
             $t("PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
-          }}</vc-button>
+          }}</VcButton>
         </div>
       </template>
 
@@ -137,9 +137,9 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
-          <vc-button @click="addProduct">{{
+          <VcButton @click="addProduct">{{
             $t("PRODUCTS.PAGES.LIST.EMPTY.ADD")
-          }}</vc-button>
+          }}</VcButton>
         </div>
       </template>
 
@@ -147,9 +147,9 @@
       <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
           <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-          <vc-hint class="vc-ellipsis vc-margin-top_xs">
+          <VcHint class="vc-ellipsis vc-margin-top_xs">
             {{ itemData.item.path }}
-          </vc-hint>
+          </VcHint>
         </div>
       </template>
 
@@ -165,7 +165,7 @@
         <div
           class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
         >
-          <vc-image
+          <VcImage
             class="vc-flex-shrink_0"
             aspect="1x1"
             size="m"
@@ -176,7 +176,7 @@
             <div class="vc-font-weight_bold vc-font-size_l">
               {{ itemData.item.name }}
             </div>
-            <vc-hint class="vc-margin-top_xs">{{ itemData.item.path }}</vc-hint>
+            <VcHint class="vc-margin-top_xs">{{ itemData.item.path }}</VcHint>
 
             <div class="vc-margin-top_s vc-margin-bottom_m">
               <mp-product-status
@@ -189,9 +189,7 @@
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-                <vc-hint>{{
-                  $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
-                }}</vc-hint>
+                <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -199,9 +197,7 @@
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-                <vc-hint>{{
-                  $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED")
-                }}</vc-hint>
+                <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -213,8 +209,8 @@
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">

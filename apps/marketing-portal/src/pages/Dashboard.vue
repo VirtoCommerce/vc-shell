@@ -1,12 +1,12 @@
 <template>
-  <vc-container class="dashboard vc-fill_all">
+  <VcContainer class="dashboard vc-fill_all">
     <div
       class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s"
       v-if="$isDesktop.value"
     >
       Dashboard
     </div>
-  </vc-container>
+  </VcContainer>
 </template>
 
 <script lang="ts" setup>

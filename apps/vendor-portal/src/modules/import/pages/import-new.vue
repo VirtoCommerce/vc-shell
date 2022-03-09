@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     v-loading="bladeLoading"
     :title="param && profileDetails?.name ? profileDetails.name : 'Importer'"
     width="70%"
@@ -8,11 +8,11 @@
     :expanded="expanded"
     @close="$emit('page:close')"
   >
-    <vc-container class="import-new">
-      <vc-col>
+    <VcContainer class="import-new">
+      <VcCol>
         <div class="vc-padding_m">
-          <vc-row>
-            <vc-card
+          <VcRow>
+            <VcCard
               :header="
                 uploadedFile && uploadedFile.url
                   ? $t(
@@ -22,29 +22,29 @@
               "
             >
               <!-- File upload -->
-              <vc-col
+              <VcCol
                 class="vc-padding_xl"
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
-                <vc-row class="vc-margin-bottom_l">
+                <VcRow class="vc-margin-bottom_l">
                   <a class="vc-link" :href="sampleTemplateUrl">{{
                     $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
                   }}</a>
                   &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
-                </vc-row>
-                <vc-row>
-                  <vc-file-upload
+                </VcRow>
+                <VcRow>
+                  <VcFileUpload
                     variant="file-upload"
                     @upload="uploadCsv"
                     :notification="true"
                     :loading="fileLoading"
                     accept=".csv"
-                  ></vc-file-upload>
-                </vc-row>
-              </vc-col>
+                  ></VcFileUpload>
+                </VcRow>
+              </VcCol>
               <!-- Uploaded file actions -->
-              <vc-col v-else>
-                <vc-row v-if="uploadedFile && uploadedFile.url">
+              <VcCol v-else>
+                <VcRow v-if="uploadedFile && uploadedFile.url">
                   <import-upload-status
                     :uploadActions="uploadActions"
                     :uploadedFile="uploadedFile"
@@ -53,26 +53,26 @@
                     class="vc-padding_xl"
                   >
                   </import-upload-status>
-                </vc-row>
+                </VcRow>
                 <!-- Uploaded file import status -->
-                <vc-col v-if="importStarted">
-                  <vc-row class="import-new__progress" v-if="inProgress">
-                    <vc-col class="import-new__progress-text">
+                <VcCol v-if="importStarted">
+                  <VcRow class="import-new__progress" v-if="inProgress">
+                    <VcCol class="import-new__progress-text">
                       {{
                         $t(
                           "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS"
                         )
                       }}
-                      <vc-progress
+                      <VcProgress
                         class="vc-margin-top_m"
                         :value="importStatus.progress"
                         :variant="progressbarVariant"
                         :key="importStatus.progress"
-                      ></vc-progress>
-                    </vc-col>
-                  </vc-row>
-                  <vc-row class="import-new__upload-border">
-                    <vc-col
+                      ></VcProgress>
+                    </VcCol>
+                  </VcRow>
+                  <VcRow class="import-new__upload-border">
+                    <VcCol
                       v-for="(badge, i) in importBadges"
                       :key="i"
                       class="vc-flex vc-flex-row vc-flex-align_center vc-padding_xl"
@@ -88,21 +88,21 @@
                         </div>
                         <vc-hint>{{ badge.description }}</vc-hint>
                       </div>
-                    </vc-col>
-                  </vc-row>
-                </vc-col>
-              </vc-col>
+                    </VcCol>
+                  </VcRow>
+                </VcCol>
+              </VcCol>
               <vc-hint
                 class="vc-padding_m import-new__error"
                 v-if="errorMessage"
                 >{{ errorMessage }}</vc-hint
               >
-            </vc-card>
-          </vc-row>
+            </VcCard>
+          </VcRow>
         </div>
         <!-- Skipped details table -->
-        <vc-col class="vc-padding_m" v-if="importStarted">
-          <vc-card
+        <VcCol class="vc-padding_m" v-if="importStarted">
+          <VcCard
             class="import-new__skipped"
             :fill="true"
             :variant="skippedColorVariant"
@@ -112,14 +112,14 @@
               )
             "
           >
-            <vc-table
+            <VcTable
               :columns="skippedColumns"
               :header="false"
               :footer="false"
               :items="importStatus.notification.errors"
             >
               <template v-slot:empty>
-                <vc-col class="vc-flex-align_center vc-flex-justify_center">
+                <VcCol class="vc-flex-align_center vc-flex-justify_center">
                   <vc-icon
                     icon="far fa-check-circle"
                     class="import-new__no-errors-icon"
@@ -131,7 +131,7 @@
                       )
                     }}
                   </div>
-                </vc-col>
+                </VcCol>
               </template>
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
@@ -139,18 +139,18 @@
                   <div class="vc-ellipsis">{{ itemData.item }}</div>
                 </div>
               </template>
-            </vc-table>
-          </vc-card>
-        </vc-col>
+            </VcTable>
+          </VcCard>
+        </VcCol>
 
         <!-- History-->
-        <vc-col class="vc-padding_m" v-if="!importStarted">
-          <vc-card
+        <VcCol class="vc-padding_m" v-if="!importStarted">
+          <VcCard
             :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
             :fill="true"
             class="import-new__history"
           >
-            <vc-table
+            <VcTable
               :columns="columns"
               :items="importHistory"
               :header="false"
@@ -170,12 +170,12 @@
               <template v-slot:item_finished="itemData">
                 <ImportStatus :item="itemData.item" />
               </template>
-            </vc-table>
-          </vc-card>
-        </vc-col>
-      </vc-col>
-    </vc-container>
-    <import-popup
+            </VcTable>
+          </VcCard>
+        </VcCol>
+      </VcCol>
+    </VcContainer>
+    <ImportPopup
       v-if="importPreview"
       @close="importPreview = false"
       :columns="popupColumns"
@@ -183,8 +183,8 @@
       :total="previewTotalNum"
       @startImport="initializeImporting"
       :disabled="!!(importStatus && importStatus.jobId)"
-    ></import-popup>
-  </vc-blade>
+    ></ImportPopup>
+  </VcBlade>
 </template>
 
 <script lang="ts">
@@ -594,6 +594,7 @@ function initializeImporting() {
   start();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function reloadParent() {
   emit("parent:call", {
     method: "reload",

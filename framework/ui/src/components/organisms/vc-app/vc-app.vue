@@ -10,7 +10,7 @@
       },
     ]"
   >
-    <vc-loading v-if="!isReady" active></vc-loading>
+    <VcLoading v-if="!isReady" active></VcLoading>
     <template v-else>
       <!-- Show login form for unauthorized users -->
       <slot v-if="!isAuthorized" name="login">
@@ -20,7 +20,7 @@
       <!-- Show main app layout for authorized users -->
       <template v-else>
         <!-- Init application top bar -->
-        <vc-app-bar
+        <VcAppBar
           class="vc-flex-shrink_0"
           :logo="logo"
           :workspace="workspaceRefs"
@@ -36,11 +36,11 @@
           <template v-slot:productName v-if="$slots['productName']">
             <slot name="productName"></slot>
           </template>
-        </vc-app-bar>
+        </VcAppBar>
 
         <div class="vc-app__inner vc-flex vc-flex-grow_1">
           <!-- Init main menu -->
-          <vc-app-menu
+          <VcAppMenu
             ref="menu"
             class="vc-flex-shrink_0"
             :items="menuItems"
@@ -48,7 +48,7 @@
             :activeChildItem="activeChildMenuItem"
             :mobileMenuItems="mobileMenuItems"
             @item:click="onMenuItemClick"
-          ></vc-app-menu>
+          ></VcAppMenu>
 
           <!-- If no workspace active then show dashboard -->
           <slot
@@ -105,7 +105,6 @@ import {
 } from "vue";
 
 export default defineComponent({
-  name: "VcApp",
   inheritAttrs: false,
 });
 </script>

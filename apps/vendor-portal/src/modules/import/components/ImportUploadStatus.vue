@@ -10,7 +10,7 @@
         <div class="vc-font-weight_normal vc-font-size_l">
           {{ uploadedFile.name }}
         </div>
-        <vc-hint> {{ uploadedFile.size }} Mb </vc-hint>
+        <VcHint> {{ uploadedFile.size }} Mb </VcHint>
       </div>
     </div>
     <div
@@ -18,7 +18,7 @@
       v-if="filteredActions && filteredActions.length && !isStarted"
     >
       <div>
-        <vc-button
+        <VcButton
           v-for="(action, i) in filteredActions.slice(0, 1)"
           :key="i"
           @click="action.clickHandler"
@@ -28,10 +28,10 @@
           :disabled="action.disabled"
         >
           {{ action.name }}
-        </vc-button>
+        </VcButton>
       </div>
       <div class="vc-file-upload-notification__btn">
-        <vc-button
+        <VcButton
           v-for="(action, i) in filteredActions.slice(1, 3)"
           :key="i"
           @click="action.clickHandler"
@@ -42,20 +42,14 @@
           class="vc-margin-left_m"
         >
           {{ action.name }}
-        </vc-button>
+        </VcButton>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType } from "vue";
-
-export default defineComponent({
-  name: "ImportUploadStatus",
-});
-</script>
 <script lang="ts" setup>
+import { computed, PropType } from "vue";
 import { INotificationActions } from "../../../types";
 
 const props = defineProps({

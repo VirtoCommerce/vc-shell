@@ -16,10 +16,10 @@
         { 'notification-dropdown__button_active': isDropdownVisible },
       ]"
     >
-      <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
     </div>
     <div class="notification-dropdown__drop" v-if="isDropdownVisible">
-      <vc-container :noPadding="true">
+      <VcContainer :noPadding="true">
         <div v-if="populatedList && populatedList.length">
           <div
             @click="handleClick(item.notifyType)"
@@ -27,38 +27,38 @@
             v-for="item in populatedList"
             :key="`notification_${item.id}`"
           >
-            <vc-row>
-              <vc-col size="1">
+            <VcRow>
+              <VcCol size="1">
                 <div
                   class="notification-dropdown__notification-icon"
                   :style="{ 'background-color': item.params.color }"
                 >
-                  <vc-icon :icon="item.params.icon" size="l"></vc-icon>
+                  <VcIcon :icon="item.params.icon" size="l"></VcIcon>
                 </div>
-              </vc-col>
-              <vc-col size="4" class="vc-flex-justify_center">
+              </VcCol>
+              <VcCol size="4" class="vc-flex-justify_center">
                 <div class="notification-dropdown__notification-info">
                   <p
                     class="notification-dropdown__notification-title vc-margin_none vc-margin-bottom_xs"
                   >
                     {{ item.title }}
                   </p>
-                  <vc-hint>{{ item.description }}</vc-hint>
+                  <VcHint>{{ item.description }}</VcHint>
                   <div v-if="item.errors && item.errors.length">
-                    <vc-hint class="notification-dropdown__error"
-                      >Errors: {{ item.errors && item.errors.length }}</vc-hint
+                    <VcHint class="notification-dropdown__error"
+                      >Errors: {{ item.errors && item.errors.length }}</VcHint
                     >
                   </div>
                 </div>
-              </vc-col>
-              <vc-col size="2" class="vc-flex-align_end">
+              </VcCol>
+              <VcCol size="2" class="vc-flex-align_end">
                 <p
                   class="notification-dropdown__notification-time vc-margin_none"
                 >
                   {{ item.params.time }}
                 </p>
-              </vc-col>
-            </vc-row>
+              </VcCol>
+            </VcRow>
           </div>
         </div>
         <div
@@ -67,20 +67,13 @@
         >
           No notifications yet
         </div>
-      </vc-container>
+      </VcContainer>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch } from "vue";
-
-export default defineComponent({
-  name: "notification-dropdown",
-});
-</script>
-
 <script lang="ts" setup>
+import { onMounted, PropType, ref, watch } from "vue";
 import {
   BulkActionPushNotification,
   PushNotification,

@@ -11,10 +11,10 @@
     ]"
   >
     <!-- Input label -->
-    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
-    </vc-label>
+    </VcLabel>
 
     <!-- Input field -->
     <div class="vc-input__field-wrapper vc-flex vc-flex-align_stretch">
@@ -84,7 +84,7 @@
         class="vc-input__clear vc-padding-horizontal_m vc-flex vc-flex-align_center"
         @click="onReset"
       >
-        <vc-icon size="s" icon="fas fa-times"></vc-icon>
+        <VcIcon size="s" icon="fas fa-times"></VcIcon>
       </div>
 
       <div
@@ -92,7 +92,7 @@
         v-if="type === 'password' && internalType === 'password'"
         @click="internalType = 'text'"
       >
-        <vc-icon size="s" icon="fas fa-eye-slash"></vc-icon>
+        <VcIcon size="s" icon="fas fa-eye-slash"></VcIcon>
       </div>
 
       <div
@@ -100,26 +100,25 @@
         v-if="type === 'password' && internalType === 'text'"
         @click="internalType = 'password'"
       >
-        <vc-icon size="s" icon="fas fa-eye"></vc-icon>
+        <VcIcon size="s" icon="fas fa-eye"></VcIcon>
       </div>
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-input__error vc-margin-top_xs">
+      <VcHint class="vc-input__error vc-margin-top_xs">
         {{ errorMessage }}
-      </vc-hint>
+      </VcHint>
     </slot>
     <slot v-if="fieldDescription" name="error">
-      <vc-hint class="vc-input__desc vc-margin-top_xs">
+      <VcHint class="vc-input__desc vc-margin-top_xs">
         {{ fieldDescription }}
-      </vc-hint>
+      </VcHint>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
-  defineComponent,
   computed,
   getCurrentInstance,
   nextTick,
@@ -129,13 +128,6 @@ import {
   unref,
   watch,
 } from "vue";
-
-export default defineComponent({
-  name: "VcInput",
-});
-</script>
-
-<script lang="ts" setup>
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";

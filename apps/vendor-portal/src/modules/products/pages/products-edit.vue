@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     v-loading="loading || productLoading"
     :title="param ? productDetails?.name : $t('PRODUCTS.PAGES.DETAILS.TITLE')"
     width="50%"
@@ -13,14 +13,14 @@
     </template>
 
     <!-- Blade contents -->
-    <vc-container :no-padding="true">
+    <VcContainer :no-padding="true">
       <div
         v-if="productDetails"
         class="product-details__inner vc-flex vc-flex-grow_1"
       >
         <div class="product-details__content vc-flex-grow_1">
           <div class="vc-padding_l">
-            <vc-status
+            <VcStatus
               :outline="false"
               :extend="true"
               variant="light-danger"
@@ -40,9 +40,9 @@
                   <div>{{ statusText }}</div>
                 </div>
               </div>
-            </vc-status>
-            <vc-form>
-              <vc-input
+            </VcStatus>
+            <VcForm>
+              <VcInput
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="productDetails.name"
@@ -54,8 +54,8 @@
                 rules="min:3"
                 name="name"
                 :disabled="readonly"
-              ></vc-input>
-              <vc-select
+              ></VcInput>
+              <VcSelect
                 class="vc-margin-bottom_l"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 v-model="productDetails.categoryId"
@@ -81,16 +81,16 @@
                   >
                     <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
                       <div class="vc-ellipsis">{{ itemData.item.path }}</div>
-                      <vc-hint class="vc-ellipsis vc-margin-top_xs">
+                      <VcHint class="vc-ellipsis vc-margin-top_xs">
                         {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
                         {{ itemData.item.code }}
-                      </vc-hint>
+                      </VcHint>
                     </div>
                   </div>
                 </template>
-              </vc-select>
+              </VcSelect>
 
-              <vc-card
+              <VcCard
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
@@ -98,7 +98,7 @@
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="vc-padding_l">
-                  <vc-input
+                  <VcInput
                     class="vc-margin-bottom_l"
                     :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                     v-model="productDetails.gtin"
@@ -111,8 +111,8 @@
                     rules="min:3"
                     :disabled="readonly"
                     name="gtin"
-                  ></vc-input>
-                  <vc-textarea
+                  ></VcInput>
+                  <VcTextarea
                     class="vc-margin-bottom_l"
                     :label="
                       $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
@@ -127,9 +127,9 @@
                     rules="min:3"
                     :disabled="readonly"
                     name="description"
-                  ></vc-textarea>
+                  ></VcTextarea>
 
-                  <vc-dynamic-property
+                  <VcDynamicProperty
                     v-for="property in productDetails.properties"
                     :key="property.id"
                     :property="property"
@@ -139,11 +139,11 @@
                     class="vc-margin-bottom_l"
                     :disabled="readonly"
                   >
-                  </vc-dynamic-property>
+                  </VcDynamicProperty>
                 </div>
-              </vc-card>
+              </VcCard>
 
-              <vc-card
+              <VcCard
                 v-if="param"
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
                 class="vc-margin-vertical_m"
@@ -152,32 +152,32 @@
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
                 <div class="vc-padding_s">
-                  <vc-gallery
+                  <VcGallery
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
                     @item:edit="onGalleryItemEdit"
                     @item:remove="onGalleryImageRemove"
                     :disabled="readonly"
                     @sort="onGallerySort"
-                  ></vc-gallery>
+                  ></VcGallery>
                 </div>
-              </vc-card>
-            </vc-form>
+              </VcCard>
+            </VcForm>
           </div>
         </div>
         <div class="product-details__widgets">
-          <vc-widget
+          <VcWidget
             icon="fas fa-file-alt"
             title="Offers"
             :value="offersCount"
             :disabled="!product.isPublished"
             @click="openOffers"
           >
-          </vc-widget>
+          </VcWidget>
         </div>
       </div>
-    </vc-container>
-  </vc-blade>
+    </VcContainer>
+  </VcBlade>
 </template>
 
 <script lang="ts">

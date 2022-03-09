@@ -25,7 +25,7 @@
       </div>
     </div>
     <div v-if="menuItems" class="user-dropdown-button__chevron">
-      <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-chevron-down" size="xl"></VcIcon>
     </div>
     <div
       v-if="menuItems && accountMenuVisible"
@@ -46,14 +46,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-export default defineComponent({
-  name: "user-dropdown-button",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref } from "vue";
+
 defineProps({
   avatar: {
     type: String,

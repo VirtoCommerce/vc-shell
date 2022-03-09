@@ -49,15 +49,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-
-export default defineComponent({
-  name: "user-dropdown-button",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref } from "vue";
 const props = defineProps({
   avatar: {
     type: String,

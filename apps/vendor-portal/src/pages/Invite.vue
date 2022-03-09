@@ -2,22 +2,22 @@
   <div
     class="vc-app vc-fill_all vc-flex vc-flex-column vc-margin_none vc-theme_light"
   >
-    <vc-loading v-if="loading" active></vc-loading>
+    <VcLoading v-if="loading" active></VcLoading>
 
-    <vc-login-form
+    <VcLoginForm
       logo="/assets/logo-white.svg"
       background="/assets/background.jpg"
       :title="$t('SHELL.INVITATION.TITLE')"
     >
-      <vc-form>
-        <vc-input
+      <VcForm>
+        <VcInput
           ref="userName"
           class="vc-margin-bottom_l vc-margin-top_xs"
           :label="$t('SHELL.INVITATION.FIELDS.USER_NAME.LABEL')"
           :modelValue="userName"
           :disabled="true"
-        ></vc-input>
-        <vc-input
+        ></VcInput>
+        <VcInput
           ref="passwordField"
           class="vc-margin-bottom_l vc-margin-top_xs"
           :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
@@ -27,8 +27,8 @@
           :disabled="!form.tokenIsValid"
           v-model="form.password"
           @update:modelValue="validate()"
-        ></vc-input>
-        <vc-input
+        ></VcInput>
+        <VcInput
           ref="confirmPasswordField"
           class="vc-margin-bottom_l"
           :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
@@ -41,7 +41,7 @@
           type="password"
           @update:modelValue="validate()"
           @keyup.enter="changePassword"
-        ></vc-input>
+        ></VcInput>
         <div
           class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
         >
@@ -64,8 +64,8 @@
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.INVITATION.ERRORS.${error}`) }}
         </vc-hint>
-      </vc-form>
-    </vc-login-form>
+      </VcForm>
+    </VcLoginForm>
   </div>
 </template>
 

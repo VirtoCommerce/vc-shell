@@ -22,14 +22,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcLoginForm",
-});
-</script>
-
 <script lang="ts" setup>
 defineProps({
   logo: {

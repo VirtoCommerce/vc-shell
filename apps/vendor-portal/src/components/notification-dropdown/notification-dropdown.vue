@@ -19,7 +19,7 @@
         },
       ]"
     >
-      <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
     </div>
     <div
       v-if="$isMobile.value && isDropdownVisible"
@@ -39,14 +39,14 @@
         v-if="$isMobile.value"
         class="notification-dropdown__mobile-close vc-flex vc-flex-justify_end vc-flex-align_center vc-padding_l"
       >
-        <vc-icon
+        <VcIcon
           icon="fas fa-times"
           size="xl"
           @click.stop="isDropdownVisible = false"
-        ></vc-icon>
+        ></VcIcon>
       </div>
-      <vc-container :noPadding="true" @click.stop>
-        <vc-col v-if="notifications && notifications.length">
+      <VcContainer :noPadding="true" @click.stop>
+        <VcCol v-if="notifications && notifications.length">
           <div
             @click="handleClick(item)"
             class="notification-dropdown__notification"
@@ -55,27 +55,20 @@
           >
             <NotificationItem :notification="item"></NotificationItem>
           </div>
-        </vc-col>
+        </VcCol>
         <div
           class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding_l"
           v-else
         >
           {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
         </div>
-      </vc-container>
+      </VcContainer>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from "vue";
-
-export default defineComponent({
-  name: "notification-dropdown",
-});
-</script>
-
 <script lang="ts" setup>
+import { onMounted, PropType, ref } from "vue";
 import { PushNotification } from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
 import { IMenuItems } from "@virtoshell/ui";
@@ -113,7 +106,6 @@ const props = defineProps({
 });
 const isDropdownVisible = ref(false);
 const { loadFromHistory, notifications } = useNotifications();
-const isMobileVisible = ref(false);
 
 onMounted(async () => {
   await loadFromHistory();

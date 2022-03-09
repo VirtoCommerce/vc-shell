@@ -8,12 +8,12 @@
     }"
   >
     <!-- Select label -->
-    <vc-label v-if="label" class="vc-margin-bottom_s" :required="isRequired">
+    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
       </template>
-    </vc-label>
+    </VcLabel>
 
     <!-- Select field -->
     <div
@@ -39,7 +39,7 @@
         class="vc-select__chevron vc-padding-horizontal_m vc-flex vc-flex-align_center"
         @click="toggleDropdown"
       >
-        <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
+        <VcIcon size="s" icon="fas fa-chevron-down"></VcIcon>
       </div>
       <teleport to="#app">
         <div
@@ -55,7 +55,7 @@
             @input="onSearch"
           />
 
-          <vc-container :no-padding="true">
+          <VcContainer :no-padding="true">
             <div
               class="vc-select__item"
               v-for="(item, i) in options"
@@ -64,35 +64,21 @@
             >
               <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
             </div>
-          </vc-container>
+          </VcContainer>
         </div>
       </teleport>
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-select__error vc-margin-top_xs">
+      <VcHint class="vc-select__error vc-margin-top_xs">
         {{ errorMessage }}
-      </vc-hint>
+      </VcHint>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import {
-  defineComponent,
-  nextTick,
-  ref,
-  computed,
-  watch,
-  getCurrentInstance,
-} from "vue";
-
-export default defineComponent({
-  name: "VcSelect",
-});
-</script>
-
 <script lang="ts" setup>
+import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";

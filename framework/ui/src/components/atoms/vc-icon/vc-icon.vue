@@ -2,14 +2,6 @@
   <i :class="`vc-icon vc-icon_${size} ${icon.toLowerCase()}`" />
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcIcon",
-});
-</script>
-
 <script lang="ts" setup>
 defineProps({
   icon: {

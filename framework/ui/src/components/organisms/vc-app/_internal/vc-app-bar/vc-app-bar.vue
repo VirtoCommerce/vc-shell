@@ -19,10 +19,10 @@
       </div>
 
       <!-- Show back link when more than one blade is opened -->
-      <vc-link v-else @click="$emit('backlink:click')">
-        <vc-icon icon="fas fa-chevron-left" size="s"></vc-icon>
+      <VcLink v-else @click="$emit('backlink:click')">
+        <VcIcon icon="fas fa-chevron-left" size="s"></VcIcon>
         <span class="vc-margin-left_s vc-font-size_l">{{ $t("Back") }}</span>
-      </vc-link>
+      </VcLink>
     </template>
 
     <!-- Logo container for desktop devices -->
@@ -63,10 +63,10 @@
             :title="item.title"
             @click="$emit('button:click', item)"
           >
-            <vc-icon
+            <VcIcon
               :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
               size="xl"
-            ></vc-icon>
+            ></VcIcon>
           </div>
         </template>
       </template>
@@ -78,20 +78,13 @@
       class="vc-app-bar__mobile-toggler vc-flex vc-flex-align_center vc-flex-justify_center vc-fill_height"
       @click="$emit('menubutton:click')"
     >
-      <vc-icon icon="fas fa-bars"></vc-icon>
+      <VcIcon icon="fas fa-bars"></VcIcon>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType } from "vue";
-
-export default defineComponent({
-  name: "VcAppBar",
-});
-</script>
-
 <script lang="ts" setup>
+import { PropType } from "vue";
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
 import { IBladeToolbar, IPage } from "../../../../../typings";
 

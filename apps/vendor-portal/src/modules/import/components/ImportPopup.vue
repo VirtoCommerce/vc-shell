@@ -1,5 +1,5 @@
 <template>
-  <vc-popup
+  <VcPopup
     :title="$t('IMPORT.PAGES.IMPORTING.POPUP.TITLE')"
     @close="$emit('close')"
     class="import-popup"
@@ -22,31 +22,23 @@
         </p>
       </div>
     </div>
-    <vc-table
+    <VcTable
       :columns="columns"
       :items="items"
       :header="false"
       :scrolling="true"
       :footer="false"
-    ></vc-table>
+    ></VcTable>
     <div class="vc-padding_xl vc-flex vc-flex-justify_space-between">
-      <vc-button :outline="true" @click="$emit('close')">{{
+      <VcButton :outline="true" @click="$emit('close')">{{
         t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
-      }}</vc-button>
-      <vc-button @click="$emit('startImport')" :disabled="disabled">{{
+      }}</VcButton>
+      <VcButton @click="$emit('startImport')" :disabled="disabled">{{
         t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT")
-      }}</vc-button>
+      }}</VcButton>
     </div>
-  </vc-popup>
+  </VcPopup>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "ImportPopup",
-});
-</script>
 
 <script lang="ts" setup>
 import { useI18n } from "@virtoshell/core";

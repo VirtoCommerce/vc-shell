@@ -8,7 +8,7 @@
     ]"
   >
     <!-- Init blade header -->
-    <vc-blade-header
+    <VcBladeHeader
       class="vc-flex-shrink_0"
       v-if="!$isMobile.value || closable"
       :expanded="expanded"
@@ -21,13 +21,13 @@
       <template v-slot:actions v-if="$slots['actions']">
         <slot name="actions"></slot>
       </template>
-    </vc-blade-header>
+    </VcBladeHeader>
 
     <!-- Set up blade toolbar -->
-    <vc-blade-toolbar
+    <VcBladeToolbar
       class="vc-flex-shrink_0"
       :items="toolbarItems"
-    ></vc-blade-toolbar>
+    ></VcBladeToolbar>
 
     <slot></slot>
   </div>
@@ -37,7 +37,6 @@
 import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
-  name: "VcBlade",
   inheritAttrs: false,
 });
 </script>

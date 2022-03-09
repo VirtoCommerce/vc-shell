@@ -10,10 +10,10 @@
     ]"
   >
     <!-- Input label -->
-    <vc-label v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
-    </vc-label>
+    </VcLabel>
 
     <!-- Input field -->
     <div class="vc-multivalue__field-wrapper vc-flex">
@@ -32,13 +32,13 @@
               type === "number" ? Number(item.value).toFixed(3) : item.value
             }}</span
           >
-          <vc-icon
+          <VcIcon
             v-if="!disabled"
             class="vc-multivalue__field-value-clear"
             icon="fas fa-times"
             size="s"
             @click="onDelete(i)"
-          ></vc-icon>
+          ></VcIcon>
         </div>
       </div>
 
@@ -53,22 +53,16 @@
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-multivalue__error vc-margin-top_xs">
+      <VcHint class="vc-multivalue__error vc-margin-top_xs">
         {{ errorMessage }}
-      </vc-hint>
+      </VcHint>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, unref, getCurrentInstance } from "vue";
-
-export default defineComponent({
-  name: "VcMultivalue",
-});
-</script>
-
 <script lang="ts" setup>
+import { unref, getCurrentInstance } from "vue";
+
 import { useField } from "vee-validate";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";

@@ -18,23 +18,16 @@
     </label>
 
     <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-checkbox__error vc-margin-top_xs">
+      <VcHint class="vc-checkbox__error vc-margin-top_xs">
         {{ errorMessage }}
-      </vc-hint>
+      </VcHint>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, watch, getCurrentInstance } from "vue";
-
-export default defineComponent({
-  name: "VcCheckbox",
-});
-</script>
-
 <script lang="ts" setup>
 import { useField } from "vee-validate";
+import { watch, getCurrentInstance } from "vue";
 
 const props = defineProps({
   modelValue: {

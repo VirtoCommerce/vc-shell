@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
@@ -38,12 +38,12 @@
               )
             }}
           </div>
-          <vc-button @click="resetSearch">
+          <VcButton @click="resetSearch">
             {{
               $t(
                 "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.RESET_SEARCH"
               )
-            }}</vc-button
+            }}</VcButton
           >
         </div>
       </template>
@@ -79,21 +79,21 @@
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_2">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ moment(itemData.item.created).format("L") }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.description }}
                 </div>
@@ -104,21 +104,21 @@
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_2">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.path }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.id }}
                 </div>
@@ -127,8 +127,8 @@
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">

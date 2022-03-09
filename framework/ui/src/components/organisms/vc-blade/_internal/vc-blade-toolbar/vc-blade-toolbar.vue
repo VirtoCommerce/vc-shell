@@ -6,30 +6,23 @@
   >
     <div class="vc-blade-toolbar__buttons">
       <template v-for="item in items" :key="item.id">
-        <vc-blade-toolbar-button
+        <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
           v-bind="item"
           :isExpanded="isExpanded"
         />
       </template>
     </div>
-    <vc-icon
+    <VcIcon
       class="vc-blade-toolbar__expand"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
       @click="toggleToolbar"
-    ></vc-icon>
+    ></VcIcon>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineProps, ref } from "vue";
-
-export default defineComponent({
-  name: "VcBladeToolbar",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref } from "vue";
 import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
 
 const props = defineProps({

@@ -6,10 +6,10 @@
         'background-color': current.styles.color,
       }"
     >
-      <vc-icon :icon="current.styles.icon" size="l"></vc-icon>
+      <VcIcon :icon="current.styles.icon" size="l"></VcIcon>
     </div>
 
-    <vc-row class="vc-flex-justify_space-between vc-flex-grow_1">
+    <VcRow class="vc-flex-justify_space-between vc-flex-grow_1">
       <div>
         <component
           :is="current.component"
@@ -31,26 +31,12 @@
           {{ pushTime }}
         </p>
       </div>
-    </vc-row>
+    </VcRow>
   </div>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  reactive,
-  ref,
-  shallowRef,
-  watch,
-} from "vue";
-
-export default defineComponent({
-  name: "NotificationItem",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, reactive, ref, shallowRef, watch } from "vue";
 import ImportPush from "./_internal/ImportPush.vue";
 import DefaultPush from "./_internal/DefaultPush.vue";
 import ProductPush from "./_internal/ProductPush.vue";

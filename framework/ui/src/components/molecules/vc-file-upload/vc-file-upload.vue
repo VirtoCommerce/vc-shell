@@ -10,17 +10,17 @@
     @dragenter.stop.prevent
     @dragleave.stop.prevent
   >
-    <vc-loading :active="loading"></vc-loading>
-    <vc-icon
+    <VcLoading :active="loading"></VcLoading>
+    <VcIcon
       class="vc-file-upload__icon"
       icon="fas fa-cloud-upload-alt"
       size="xxl"
-    ></vc-icon>
+    ></VcIcon>
 
     <div class="vc-file-upload__label vc-margin-top_l">
       <span>Drag and drop file here or</span>&nbsp;
       <br />
-      <vc-link @click="toggleUploader">browse your files</vc-link>
+      <VcLink @click="toggleUploader">browse your files</VcLink>
     </div>
 
     <input
@@ -33,15 +33,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-
-export default defineComponent({
-  name: "VcFileUpload",
-});
-</script>
-
 <script lang="ts" setup>
+import { ref } from "vue";
 defineProps({
   variant: {
     type: String,

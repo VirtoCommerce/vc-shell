@@ -1,27 +1,19 @@
 <template>
   <div class="vc-info-row">
-    <vc-row>
-      <vc-col>
-        <vc-label>
+    <VcRow>
+      <VcCol>
+        <VcLabel>
           <span>{{ label }}</span>
           <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
-        </vc-label>
-      </vc-col>
-      <vc-col size="2">
+        </VcLabel>
+      </VcCol>
+      <VcCol size="2">
         <p class="vc-info-row__value" v-if="type === 'default'">{{ value }}</p>
-        <vc-link v-else-if="type === 'email'">{{ value }}</vc-link>
-      </vc-col>
-    </vc-row>
+        <VcLink v-else-if="type === 'email'">{{ value }}</VcLink>
+      </VcCol>
+    </VcRow>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcInfoRow",
-});
-</script>
 
 <script lang="ts" setup>
 import VcLabel from "../vc-label/vc-label.vue";

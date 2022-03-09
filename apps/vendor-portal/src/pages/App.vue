@@ -1,5 +1,5 @@
 <template>
-  <vc-app
+  <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
     :toolbarItems="toolbarItems"
@@ -11,20 +11,20 @@
   >
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
-      <dashboard-page v-bind="scope" />
+      <DashboardPage v-bind="scope" />
     </template>
 
     <!-- Set up login form -->
     <template v-slot:login>
-      <login-page
+      <LoginPage
         logo="/assets/logo-white.svg"
         background="/assets/background.jpg"
         title="Vendor Portal"
-      ></login-page>
+      ></LoginPage>
     </template>
 
     <template v-slot:notifications>
-      <vc-notification
+      <VcNotification
         v-for="item in popupNotifications"
         :key="item.id"
         :timeout="5000"
@@ -32,7 +32,7 @@
         @expired="markAsReaded(item)"
       >
         {{ item.title }}
-      </vc-notification>
+      </VcNotification>
     </template>
 
     <template v-slot:passwordChange>
@@ -41,12 +41,11 @@
         @close="isChangePasswordActive = false"
       ></change-password>
     </template>
-  </vc-app>
+  </VcApp>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
-  defineComponent,
   computed,
   onMounted,
   ref,
@@ -56,13 +55,6 @@ import {
   shallowRef,
   Ref,
 } from "vue";
-
-export default defineComponent({
-  name: "App",
-});
-</script>
-
-<script lang="ts" setup>
 import LoginPage from "./Login.vue";
 import DashboardPage from "./Dashboard.vue";
 import UserDropdownButton from "../components/user-dropdown-button.vue";

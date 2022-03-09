@@ -6,7 +6,7 @@
       @click="openPanel($isMobile.value)"
       ref="filterToggle"
     >
-      <vc-icon icon="fas fa-filter" size="m" />
+      <VcIcon icon="fas fa-filter" size="m" />
       <span v-if="title" class="vc-table-filter__button-title">
         {{ title }}
       </span>
@@ -30,7 +30,7 @@
           class="vc-table-filter__panel-inner vc-padding_xl vc-flex vc-flex-column"
           @click.stop
         >
-          <vc-icon
+          <VcIcon
             class="vc-table-filter__panel-close vc-flex-shrink_0"
             icon="fas fa-times"
             size="xl"
@@ -48,8 +48,6 @@
 import { defineComponent, nextTick, ref, watch } from "vue";
 
 export default defineComponent({
-  name: "VcTableFilter",
-
   inheritAttrs: false,
 });
 </script>

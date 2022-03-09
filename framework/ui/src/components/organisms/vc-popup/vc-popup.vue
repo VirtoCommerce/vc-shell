@@ -8,12 +8,12 @@
           <div class="vc-ellipsis vc-flex-grow_1">
             <slot name="title">{{ title }}</slot>
           </div>
-          <vc-icon
+          <VcIcon
             v-if="closable"
             class="vc-popup__header-icon"
             icon="fas fa-times"
             @click="$emit('close')"
-          ></vc-icon>
+          ></VcIcon>
         </div>
 
         <div class="vc-popup__content vc-flex-grow_1">
@@ -24,15 +24,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, defineProps } from "vue";
-
-export default defineComponent({
-  name: "VcPopup",
-});
-</script>
-
 <script lang="ts" setup>
+import { defineProps } from "vue";
 defineProps({
   title: {
     type: String,

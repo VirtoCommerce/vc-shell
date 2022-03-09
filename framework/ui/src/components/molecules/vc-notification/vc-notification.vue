@@ -7,22 +7,14 @@
     <div class="vc-notification__content">
       <slot></slot>
     </div>
-    <vc-icon
+    <VcIcon
       icon="fas fa-times"
       class="vc-notification__dismiss"
       size="s"
       @click="onDismiss"
-    ></vc-icon>
+    ></VcIcon>
   </div>
 </template>
-
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcNotification",
-});
-</script>
 
 <script lang="ts" setup>
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";

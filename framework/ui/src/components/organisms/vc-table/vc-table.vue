@@ -19,42 +19,42 @@
           v-if="$isMobile.value && $slots['filters']"
           class="vc-margin-right_m"
         >
-          <vc-table-filter :counter="activeFilterCount">
+          <VcTableFilter :counter="activeFilterCount">
             <slot name="filters"></slot>
-          </vc-table-filter>
+          </VcTableFilter>
         </div>
 
         <!-- Table search input -->
-        <vc-input
+        <VcInput
           class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
           :clearable="true"
           :modelValue="searchValue"
           @update:modelValue="$emit('search:change', $event)"
-        ></vc-input>
+        ></VcInput>
 
         <!-- Table filter desktop button -->
         <div
           v-if="$isDesktop.value && $slots['filters']"
           class="vc-margin-left_m"
         >
-          <vc-table-filter
+          <VcTableFilter
             :title="$t('Filters')"
             :counter="activeFilterCount"
             :parentExpanded="expanded"
           >
             <slot name="filters"></slot>
-          </vc-table-filter>
+          </VcTableFilter>
         </div>
       </div>
     </slot>
 
     <div class="vc-table-wrapper__inner">
       <!-- Table loading overlay -->
-      <vc-loading :active="loading"></vc-loading>
+      <VcLoading :active="loading"></VcLoading>
 
       <!-- Table scroll container -->
-      <vc-container
+      <VcContainer
         v-if="items && items.length"
         ref="scrollContainer"
         :noPadding="true"
@@ -65,7 +65,7 @@
         <!-- Mobile table view -->
         <template v-if="$isMobile.value && $slots['mobile-item']">
           <div class="vc-table-mobile">
-            <vc-table-mobile-item
+            <VcTableMobileItem
               v-for="item in items"
               :key="item.id"
               :item="item"
@@ -75,7 +75,7 @@
               :swipingItem="mobileSwipeItem"
             >
               <slot name="mobile-item" :item="item"></slot>
-            </vc-table-mobile-item>
+            </VcTableMobileItem>
           </div>
         </template>
 
@@ -94,11 +94,11 @@
                 <div
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
-                  <vc-checkbox
+                  <VcCheckbox
                     :modelValue="headerCheckbox"
                     @update:modelValue="processHeaderCheckbox"
                     @click.stop
-                  ></vc-checkbox>
+                  ></VcCheckbox>
                 </div>
               </th>
               <th
@@ -122,12 +122,12 @@
                     v-if="sortField === item.id"
                     class="vc-table__header-cell_sort vc-margin-left_xs"
                   >
-                    <vc-icon
+                    <VcIcon
                       size="xs"
                       :icon="`fas fa-caret-${
                         sortDirection === 'DESC' ? 'down' : 'up'
                       }`"
-                    ></vc-icon>
+                    ></VcIcon>
                   </div>
                 </div>
               </th>
@@ -158,11 +158,11 @@
                 <div
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
-                  <vc-checkbox
+                  <VcCheckbox
                     :modelValue="checkboxes[item.id]"
                     @update:modelValue="processCheckbox(item.id, $event)"
                     @click.stop
-                  ></vc-checkbox>
+                  ></VcCheckbox>
                 </div>
               </td>
               <td
@@ -173,7 +173,7 @@
                 :width="cell.width"
               >
                 <slot :name="`item_${cell.id}`" :item="item" :cell="cell">
-                  <vc-table-cell :cell="cell" :item="item"></vc-table-cell>
+                  <VcTableCell :cell="cell" :item="item"></VcTableCell>
                 </slot>
               </td>
               <td
@@ -191,7 +191,7 @@
                     aria-describedby="tooltip"
                     :disabled="!(itemActions && itemActions.length)"
                   >
-                    <vc-icon icon="fas fa-cog" size="m" />
+                    <VcIcon icon="fas fa-cog" size="m" />
                   </button>
                   <div
                     class="vc-table__body-tooltip"
@@ -210,7 +210,7 @@
                         ]"
                         @click.stop="itemAction.clickHandler(item)"
                       >
-                        <vc-icon :icon="itemAction.icon" size="m" />
+                        <VcIcon :icon="itemAction.icon" size="m" />
                         <div class="vc-table__body-actions-item-title">
                           {{ itemAction.title }}
                         </div>
@@ -226,7 +226,7 @@
             </tr>
           </tbody>
         </table>
-      </vc-container>
+      </VcContainer>
 
       <!-- Empty table view -->
       <template v-else>
@@ -242,9 +242,9 @@
             <div class="vc-margin_l vc-table__empty-text">
               {{ notfound.text }}
             </div>
-            <vc-button v-if="notfound.action" @click="notfound.clickHandler">
+            <VcButton v-if="notfound.action" @click="notfound.clickHandler">
               {{ notfound.action }}
-            </vc-button>
+            </VcButton>
           </div>
         </slot>
         <slot v-else name="empty">
@@ -254,9 +254,9 @@
           >
             <img v-if="empty.image" :src="empty.image" />
             <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
-            <vc-button v-if="empty.action" @click="empty.clickHandler">
+            <VcButton v-if="empty.action" @click="empty.clickHandler">
               {{ empty.action }}
-            </vc-button>
+            </VcButton>
           </div>
         </slot>
       </template>
@@ -271,40 +271,25 @@
         class="vc-table__footer vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table pagination -->
-        <vc-pagination
+        <VcPagination
           :expanded="expanded"
           :pages="pages"
           :currentPage="currentPage"
           @itemClick="$emit('paginationClick', $event)"
-        ></vc-pagination>
+        ></VcPagination>
 
         <!-- Table counter -->
-        <vc-table-counter
+        <VcTableCounter
           :label="totalLabel"
           :value="totalCount"
-        ></vc-table-counter>
+        ></VcTableCounter>
       </div>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  PropType,
-  ref,
-  watch,
-  onBeforeUpdate,
-} from "vue";
-
-export default defineComponent({
-  name: "VcTable",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, nextTick, PropType, ref, watch, onBeforeUpdate } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";

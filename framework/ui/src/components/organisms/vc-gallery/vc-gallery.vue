@@ -1,6 +1,6 @@
 <template>
   <div class="vc-gallery">
-    <vc-label
+    <VcLabel
       v-if="label"
       class="vc-gallery__label"
       :tooltip="tooltip"
@@ -8,7 +8,7 @@
       :tooltip-icon="tooltipIcon"
     >
       {{ label }}
-    </vc-label>
+    </VcLabel>
 
     <template v-if="(images && images.length) || !disabled">
       <div class="vc-gallery__items-wrap">
@@ -25,49 +25,42 @@
           }"
         >
           <template #item="{ element, index }">
-            <vc-gallery-item
+            <VcGalleryItem
               class="vc-margin_s"
               :image="element"
               :readonly="disabled"
               @preview="onPreviewClick(index)"
               @edit="$emit('item:edit', $event)"
               @remove="$emit('item:remove', $event)"
-            ></vc-gallery-item>
+            ></VcGalleryItem>
           </template>
           <template #footer>
-            <vc-file-upload
+            <VcFileUpload
               v-if="!disabled"
               class="vc-margin_s"
               :icon="uploadIcon"
               @upload="onUpload"
               variant="gallery"
-            ></vc-file-upload>
+            ></VcFileUpload>
           </template>
         </draggable>
       </div>
     </template>
     <div v-else class="vc-flex vc-flex-justify_center vc-padding_xl">
-      <vc-hint>Gallery is empty</vc-hint>
+      <VcHint>Gallery is empty</VcHint>
     </div>
 
-    <vc-gallery-preview
+    <VcGalleryPreview
       v-if="preview"
       :images="images"
       :index="previewImageIndex"
       @close="preview = false"
-    ></vc-gallery-preview>
+    ></VcGalleryPreview>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, PropType, ref } from "vue";
-
-export default defineComponent({
-  name: "VcGallery",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, PropType, ref } from "vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";

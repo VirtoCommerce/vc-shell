@@ -7,8 +7,6 @@ import draggable from "vuedraggable/src/vuedraggable";
 import { defineRule, useForm as _useForm } from "vee-validate";
 
 import "normalize.css";
-import "@fortawesome/fontawesome-free/css/all.min.css";
-import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "./styles/index.less";
 
 export default {

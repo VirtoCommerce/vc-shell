@@ -38,14 +38,15 @@ jobs:
 
     - uses: actions/checkout@v2
 
-    - name: Use Node.js 14.x
-      uses: actions/setup-node@v1
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v2
       with:
-        node-version: 14.x
+        node-version: '16.x'
+        cache: 'yarn'
 
     - name: Install dependencies
       run: |
-        npm install
+        yarn
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master
       id: image
@@ -71,10 +72,10 @@ jobs:
         echo "ARTIFACT_URL_M=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.MARKETING_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
     - name: Build platform-manager-demo
       run: |
-        npm run build
+        yarn build
     - name: Build platform-manager-ui docs
       run: |
-        npm run storybook-build
+        yarn storybook-build
     - name: Docker Login
       uses: azure/docker-login@v1
       with:

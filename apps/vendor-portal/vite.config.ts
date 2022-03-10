@@ -66,6 +66,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     define: {
+      global: mode === "production" ? undefined : {},
       "import.meta.env.PACKAGE_VERSION": `"${version}"`,
       "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
       "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,

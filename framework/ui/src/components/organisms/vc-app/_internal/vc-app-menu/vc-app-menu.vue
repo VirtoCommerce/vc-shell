@@ -16,30 +16,19 @@
       <!-- Show menu close handler on mobile devices -->
       <div
         v-if="$isMobile.value"
-        class="
-          vc-app-menu__mobile-close
-          vc-flex
-          vc-flex-justify_end
-          vc-flex-align_center
-          vc-padding_l
-        "
+        class="vc-app-menu__mobile-close vc-flex vc-flex-justify_end vc-flex-align_center vc-padding_l"
       >
-        <vc-icon
+        <VcIcon
           icon="fas fa-times"
           size="xl"
           @click="isMobileVisible = false"
-        ></vc-icon>
+        ></VcIcon>
       </div>
 
       <!-- Show scrollable area with menu items -->
-      <vc-container :noPadding="true" class="vc-app-menu__content">
+      <VcContainer :noPadding="true" class="vc-app-menu__content">
         <div
-          class="
-            vc-flex vc-flex-column
-            vc-app-menu__content-inner
-            vc-padding-left_l
-            vc-padding-right_l
-          "
+          class="vc-flex vc-flex-column vc-app-menu__content-inner vc-padding-left_l vc-padding-right_l"
         >
           <template
             v-for="(item, index) in mobileMenuItems"
@@ -55,7 +44,7 @@
             </template>
           </template>
           <template v-for="(item, index) in items" :key="index">
-            <vc-app-menu-item
+            <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
               :isActive="item === activeItem"
@@ -71,55 +60,43 @@
             />
           </template>
         </div>
-      </vc-container>
+      </VcContainer>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { PropType, ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
 import { IBladeToolbar, IMenuItems } from "../../../../../typings";
 
-export default defineComponent({
-  name: "VcAppMenu",
-
-  components: { VcAppMenuItem, VcContainer },
-
-  props: {
-    // Array of menu items
-    items: {
-      type: Array as PropType<IMenuItems[]>,
-      default: () => [],
-    },
-
-    mobileMenuItems: {
-      type: Array as PropType<IBladeToolbar[]>,
-      default: () => [],
-    },
-
-    activeItem: {
-      type: Object as PropType<IMenuItems>,
-      default: undefined,
-    },
-
-    activeChildItem: {
-      type: Object as PropType<IMenuItems>,
-      default: undefined,
-    },
+defineProps({
+  // Array of menu items
+  items: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
   },
 
-  emits: ["item:click"],
+  mobileMenuItems: {
+    type: Array as PropType<IBladeToolbar[]>,
+    default: () => [],
+  },
 
-  setup() {
-    const isMobileVisible = ref(false);
+  activeItem: {
+    type: Object as PropType<IMenuItems>,
+    default: undefined,
+  },
 
-    return {
-      isMobileVisible,
-    };
+  activeChildItem: {
+    type: Object as PropType<IMenuItems>,
+    default: undefined,
   },
 });
+
+defineEmits(["item:click"]);
+
+const isMobileVisible = ref(false);
 </script>
 
 <style lang="less">

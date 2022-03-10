@@ -12,74 +12,61 @@
     ]"
     @click="onClick"
   >
-    <vc-icon
+    <VcIcon
       v-if="icon"
       class="vc-button__icon"
       :icon="icon"
       :size="small ? 'xs' : 's'"
-    ></vc-icon>
+    ></VcIcon>
     <div v-if="$slots['default']" class="vc-button__title">
       <slot></slot>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import VcIcon from "../vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  name: "VcButton",
-
-  components: {
-    VcIcon,
+const props = defineProps({
+  icon: {
+    type: String,
+    default: undefined,
   },
 
-  props: {
-    icon: {
-      type: String,
-      default: undefined,
-    },
-
-    variant: {
-      type: String,
-      enum: ["primary", "secondary", "special", "danger", "widget"],
-      default: "primary",
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    small: {
-      type: Boolean,
-      default: false,
-    },
-
-    outline: {
-      type: Boolean,
-      default: false,
-    },
-
-    selected: {
-      type: Boolean,
-      default: false,
-    },
+  variant: {
+    type: String,
+    enum: ["primary", "secondary", "special", "danger", "widget"],
+    default: "primary",
   },
 
-  emits: ["click"],
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (!props.disabled) {
-          emit("click");
-        }
-      },
-    };
+  small: {
+    type: Boolean,
+    default: false,
+  },
+
+  outline: {
+    type: Boolean,
+    default: false,
+  },
+
+  selected: {
+    type: Boolean,
+    default: false,
   },
 });
+
+const emit = defineEmits(["click"]);
+
+function onClick(): void {
+  if (!props.disabled) {
+    emit("click");
+  }
+}
 </script>
 
 <style lang="less">

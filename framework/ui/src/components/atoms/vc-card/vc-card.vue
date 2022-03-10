@@ -4,22 +4,17 @@
     :class="[{ 'vc-card_collapsable': isCollapsable }, `vc-card_${variant}`]"
   >
     <div class="vc-card__header" v-if="header" @click="onHeaderClick">
-      <vc-icon
-        v-if="icon"
-        class="vc-card__icon"
-        :icon="icon"
-        size="xl"
-      ></vc-icon>
+      <VcIcon v-if="icon" class="vc-card__icon" :icon="icon" size="xl"></VcIcon>
       <div class="vc-card__title">{{ header }}</div>
       <div v-if="$slots['actions']" class="vc-card__actions">
         <slot name="actions"></slot>
       </div>
-      <vc-icon
+      <VcIcon
         v-if="isCollapsable"
         class="vc-card__collapse"
         :icon="`fas fa-chevron-${isCollapsedInternal ? 'up' : 'down'}`"
         size="s"
-      ></vc-icon>
+      ></VcIcon>
     </div>
     <transition name="fade">
       <div
@@ -32,61 +27,50 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-
-export default defineComponent({
-  props: {
-    header: {
-      type: String,
-      default: undefined,
-    },
-
-    icon: {
-      type: String,
-      default: undefined,
-    },
-
-    isCollapsable: {
-      type: Boolean,
-      default: false,
-    },
-
-    isCollapsed: {
-      type: Boolean,
-      default: false,
-    },
-
-    fill: {
-      type: Boolean,
-      default: false,
-    },
-
-    variant: {
-      type: String,
-      enum: ["default", "success", "danger"],
-      default: "default",
-    },
+<script lang="ts" setup>
+import { ref } from "vue";
+const props = defineProps({
+  header: {
+    type: String,
+    default: undefined,
   },
 
-  emits: ["header:click", "state:collapsed"],
+  icon: {
+    type: String,
+    default: undefined,
+  },
 
-  setup(props, { emit }) {
-    const isCollapsedInternal = ref(props.isCollapsed);
+  isCollapsable: {
+    type: Boolean,
+    default: false,
+  },
 
-    return {
-      isCollapsedInternal,
+  isCollapsed: {
+    type: Boolean,
+    default: false,
+  },
 
-      onHeaderClick() {
-        if (props.isCollapsable) {
-          isCollapsedInternal.value = !isCollapsedInternal.value;
-          emit("state:collapsed", isCollapsedInternal.value);
-        }
-        emit("header:click");
-      },
-    };
+  fill: {
+    type: Boolean,
+    default: false,
+  },
+
+  variant: {
+    type: String,
+    enum: ["default", "success", "danger"],
+    default: "default",
   },
 });
+const emit = defineEmits(["header:click", "state:collapsed"]);
+const isCollapsedInternal = ref(props.isCollapsed);
+
+function onHeaderClick() {
+  if (props.isCollapsable) {
+    isCollapsedInternal.value = !isCollapsedInternal.value;
+    emit("state:collapsed", isCollapsedInternal.value);
+  }
+  emit("header:click");
+}
 </script>
 
 <style lang="less">

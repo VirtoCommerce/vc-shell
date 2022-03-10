@@ -22,14 +22,14 @@
       <div class="vc-slider__prev">
         <slot name="prevBtn">
           <div class="vc-slider__btn">
-            <vc-icon icon="fas fa-chevron-left"></vc-icon>
+            <VcIcon icon="fas fa-chevron-left"></VcIcon>
           </div>
         </slot>
       </div>
       <div class="vc-slider__next">
         <slot name="nextBtn">
           <div class="vc-slider__btn">
-            <vc-icon icon="fas fa-chevron-right"></vc-icon>
+            <VcIcon icon="fas fa-chevron-right"></VcIcon>
           </div>
         </slot>
       </div>
@@ -37,56 +37,46 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import { Swiper as SwiperComponent, SwiperSlide } from "swiper/vue";
 import SwiperCore, { Navigation } from "swiper";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import "swiper/components/navigation/navigation.min.css";
 SwiperCore.use([Navigation]);
-export default defineComponent({
-  name: "VcSlider",
-  components: {
-    SwiperComponent,
-    SwiperSlide,
+
+defineProps({
+  slides: {
+    type: Array,
+    default: () => [],
   },
-  props: {
-    slides: {
-      type: Array,
-      default: () => [],
-    },
 
-    navigation: {
-      type: Boolean,
-      default: false,
-    },
-
-    overflow: {
-      type: Boolean,
-      default: false,
-    },
-
-    slidesPerView: {
-      type: String,
-      default: "auto",
-    },
-
-    spaceBetweenSlides: {
-      type: Number,
-      default: 10,
-    },
+  navigation: {
+    type: Boolean,
+    default: false,
   },
-  setup() {
-    const buttonsList = computed(() => ({
-      nextEl: ".vc-slider__next",
-      prevEl: ".vc-slider__prev",
-    }));
-    return {
-      buttonsList,
-    };
+
+  overflow: {
+    type: Boolean,
+    default: false,
+  },
+
+  slidesPerView: {
+    type: String,
+    default: "auto",
+  },
+
+  spaceBetweenSlides: {
+    type: Number,
+    default: 10,
   },
 });
+
+const buttonsList = computed(() => ({
+  nextEl: ".vc-slider__next",
+  prevEl: ".vc-slider__prev",
+}));
 </script>
 
 <style lang="less" scoped>

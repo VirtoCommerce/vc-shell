@@ -1,5 +1,5 @@
 <template>
-  <vc-container class="dashboard vc-fill_all">
+  <VcContainer class="dashboard vc-fill_all">
     <div
       class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s"
       v-if="$isDesktop.value"
@@ -7,12 +7,12 @@
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
 
-    <vc-row>
-      <vc-col size="10" v-if="$isDesktop.value">
-        <vc-row>
+    <VcRow>
+      <VcCol size="10" v-if="$isDesktop.value">
+        <VcRow>
           <!-- Latest orders block -->
-          <vc-col size="3" class="vc-padding_s">
-            <vc-card
+          <VcCol size="3" class="vc-padding_s">
+            <VcCard
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
             >
@@ -34,13 +34,7 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="
-                      vc-fill_all
-                      vc-flex vc-flex-column
-                      vc-flex-align_center
-                      vc-flex-justify_center
-                      vc-padding_xl
-                    "
+                    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
                   >
                     <img src="/assets/empty-product.png" />
                     <div
@@ -56,12 +50,12 @@
                   {{ calcQty(itemData.item.items) }}
                 </template>
               </vc-table>
-            </vc-card>
-          </vc-col>
+            </VcCard>
+          </VcCol>
 
           <!-- Latest products block -->
-          <vc-col size="4" class="vc-padding_s">
-            <vc-card
+          <VcCol size="4" class="vc-padding_s">
+            <VcCard
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
             >
@@ -83,13 +77,7 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="
-                      vc-fill_all
-                      vc-flex vc-flex-column
-                      vc-flex-align_center
-                      vc-flex-justify_center
-                      vc-padding_xl
-                    "
+                    class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
                   >
                     <img src="/assets/empty-product.png" />
                     <div
@@ -121,14 +109,14 @@
                   />
                 </template>
               </vc-table>
-            </vc-card>
-          </vc-col>
-        </vc-row>
+            </VcCard>
+          </VcCol>
+        </VcRow>
 
-        <vc-row>
+        <VcRow>
           <!-- Offers block -->
-          <vc-col class="vc-padding_s">
-            <vc-card
+          <VcCol class="vc-padding_s">
+            <VcCard
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
             >
@@ -144,8 +132,8 @@
                 }}</vc-button>
               </template>
 
-              <vc-row>
-                <vc-col style="display: block">
+              <VcRow>
+                <VcCol style="display: block">
                   <vc-table
                     class="vc-fill_all"
                     :loading="offersLoading"
@@ -158,21 +146,11 @@
                     <!-- Empty template -->
                     <template v-slot:empty>
                       <div
-                        class="
-                          vc-fill_all
-                          vc-flex vc-flex-column
-                          vc-flex-align_center
-                          vc-flex-justify_center
-                          vc-padding_xl
-                        "
+                        class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center vc-padding_xl"
                       >
                         <img src="/assets/empty-product.png" />
                         <div
-                          class="
-                            vc-margin_l
-                            vc-font-size_xl
-                            vc-font-weight_medium
-                          "
+                          class="vc-margin_l vc-font-size_xl vc-font-weight_medium"
                         >
                           {{ $t("SHELL.DASHBOARD.OFFERS.EMPTY") }}
                         </div>
@@ -182,8 +160,8 @@
                       </div>
                     </template>
                   </vc-table>
-                </vc-col>
-                <!--                <vc-col size="0" style="flex-basis: 180px">-->
+                </VcCol>
+                <!--                <VcCol size="0" style="flex-basis: 180px">-->
                 <!--                  <div class="dashboard-offers__counter">-->
                 <!--                    <div-->
                 <!--                      class="-->
@@ -223,17 +201,17 @@
                 <!--                      {{ $t("SHELL.DASHBOARD.OFFERS.OUT_STOCK") }}-->
                 <!--                    </div>-->
                 <!--                  </div>-->
-                <!--                </vc-col>-->
-              </vc-row>
-            </vc-card>
-          </vc-col>
-        </vc-row>
-      </vc-col>
+                <!--                </VcCol>-->
+              </VcRow>
+            </VcCard>
+          </VcCol>
+        </VcRow>
+      </VcCol>
 
-      <vc-col v-else class="vc-padding_s">
+      <VcCol v-else class="vc-padding_s">
         <div class="vc-flex">
-          <vc-col class="vc-margin-right_s">
-            <vc-card
+          <VcCol class="vc-margin-right_s">
+            <VcCard
               class="vc-margin-bottom_l"
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
@@ -243,10 +221,10 @@
               <div class="vc-margin-vertical_l dashboard-counters__value">
                 3,334
               </div>
-            </vc-card>
-          </vc-col>
-          <vc-col class="vc-margin-left_s">
-            <vc-card
+            </VcCard>
+          </VcCol>
+          <VcCol class="vc-margin-left_s">
+            <VcCard
               class="vc-margin-bottom_l"
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
@@ -256,22 +234,22 @@
               <div class="vc-margin-vertical_l dashboard-counters__value">
                 49
               </div>
-            </vc-card>
-          </vc-col>
+            </VcCard>
+          </VcCol>
         </div>
-        <vc-card
+        <VcCard
           :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
           icon="fas fa-file-invoice"
           @click="open('offers-list')"
         >
           <div class="vc-separator"></div>
           <div class="vc-margin-vertical_l dashboard-counters__value">206</div>
-        </vc-card>
-      </vc-col>
+        </VcCard>
+      </VcCol>
 
       <!-- Counters block -->
-      <!--      <vc-col class="dashboard-counters vc-padding_s">-->
-      <!--        <vc-card-->
+      <!--      <VcCol class="dashboard-counters vc-padding_s">-->
+      <!--        <VcCard-->
       <!--          class="vc-margin-bottom_l"-->
       <!--          :header="$t('SHELL.DASHBOARD.COUNTERS.REVENUE')"-->
       <!--          icon="fas fa-hand-holding-usd"-->
@@ -316,9 +294,9 @@
       <!--              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
       <!--            >-->
       <!--          </div>-->
-      <!--        </vc-card>-->
+      <!--        </VcCard>-->
 
-      <!--        <vc-card-->
+      <!--        <VcCard-->
       <!--          class="vc-margin-bottom_l"-->
       <!--          :header="$t('SHELL.DASHBOARD.COUNTERS.PURCHASED')"-->
       <!--          icon="fas fa-boxes"-->
@@ -363,9 +341,9 @@
       <!--              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
       <!--            >-->
       <!--          </div>-->
-      <!--        </vc-card>-->
+      <!--        </VcCard>-->
 
-      <!--        <vc-card-->
+      <!--        <VcCard-->
       <!--          class="vc-margin-bottom_l"-->
       <!--          :header="$t('SHELL.DASHBOARD.COUNTERS.AVERAGE_ORDER')"-->
       <!--          icon="fas fa-dollar-sign"-->
@@ -410,9 +388,9 @@
       <!--              >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
       <!--            >-->
       <!--          </div>-->
-      <!--        </vc-card>-->
+      <!--        </VcCard>-->
 
-      <!--        <vc-card-->
+      <!--        <VcCard-->
       <!--          :header="$t('SHELL.DASHBOARD.REVIEWS.TITLE')"-->
       <!--          icon="fas fa-comment-dots"-->
       <!--        >-->
@@ -435,15 +413,15 @@
       <!--              }}</vc-button>-->
       <!--            </div>-->
       <!--          </div>-->
-      <!--        </vc-card>-->
-      <!--      </vc-col>-->
-    </vc-row>
-  </vc-container>
+      <!--        </VcCard>-->
+      <!--      </VcCol>-->
+    </VcRow>
+  </VcContainer>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { useI18n } from "@virtoshell/core";
-import { computed, defineComponent, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import {
@@ -452,11 +430,11 @@ import {
   useProducts,
   MpProductStatus,
 } from "../modules/products";
-import moment from "moment";
 import { OrderLineItem } from "@virtoshell/api-client";
 import { ITableColumns } from "../types";
 import { useRouter } from "vue-router";
 
+/*
 interface ITermDefinition {
   day: string;
   week: string;
@@ -469,258 +447,228 @@ interface ICounters {
   purchased: ITermDefinition;
   orderAvg: ITermDefinition;
 }
+ */
 
-export default defineComponent({
-  props: {
-    openPage: {
-      type: Function,
-      default: undefined,
-    },
+const props = defineProps({
+  openPage: {
+    type: Function,
+    default: undefined,
   },
+});
+const { t } = useI18n();
+const { products, loadProducts, loading: productsLoading } = useProducts();
+const { orders, loadOrders, loading: ordersLoading } = useOrders();
+const { offers, loadOffers, loading: offersLoading } = useOffers();
+const router = useRouter();
 
-  components: {
-    MpProductStatus,
+const productsColumns = ref<ITableColumns[]>([
+  {
+    id: "imgSrc",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
+    width: 60,
+    type: "image",
   },
+  {
+    id: "name",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
+    width: 120,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    width: 140,
+    type: "date-ago",
+  },
+  {
+    id: "status",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 180,
+  },
+]);
 
-  setup(props) {
-    const { t } = useI18n();
-    const { products, loadProducts, loading: productsLoading } = useProducts();
-    const { orders, loadOrders, loading: ordersLoading } = useOrders();
-    const { offers, loadOffers, loading: offersLoading } = useOffers();
-    const router = useRouter();
+const ordersColumns = ref<ITableColumns[]>([
+  {
+    id: "number",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
+    width: 80,
+  },
+  {
+    id: "items",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY")),
+    width: 80,
+  },
+  {
+    id: "status",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 160,
+    type: "status",
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
+    width: 160,
+    type: "date-ago",
+  },
+]);
 
-    const productsColumns = ref<ITableColumns[]>([
-      {
-        id: "imgSrc",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-        width: 60,
-        type: "image",
-      },
-      {
-        id: "name",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
-        width: 120,
-      },
-      {
-        id: "createdDate",
-        title: computed(() =>
-          t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
-        ),
-        width: 140,
-        type: "date-ago",
-      },
-      {
-        id: "status",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 180,
-      },
-    ]);
+const offersColumns = ref<ITableColumns[]>([
+  {
+    id: "imgSrc",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")),
+    width: 60,
+    type: "image",
+  },
+  {
+    id: "name",
+    field: "name",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
+    width: 120,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    width: 140,
+    type: "date-ago",
+  },
+  {
+    id: "sku",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
+    width: 120,
+  },
+  {
+    id: "salePrice",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
+    width: 100,
+    type: "money",
+  },
+  {
+    id: "listPrice",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
+    width: 100,
+    type: "money",
+  },
+  {
+    id: "minQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
+    width: 80,
+    type: "number",
+  },
+  {
+    id: "inStockQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
+    width: 80,
+    type: "number",
+  },
+]);
 
-    const ordersColumns = ref<ITableColumns[]>([
-      {
-        id: "number",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
-        width: 80,
-      },
-      {
-        id: "items",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY")),
-        width: 80,
-      },
-      {
-        id: "status",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 160,
-        type: "status",
-      },
-      {
-        id: "createdDate",
-        title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
-        width: 160,
-        type: "date-ago",
-      },
-    ]);
+/* const counters = reactive<ICounters>({
+  revenue: {
+    day: "1,230.09",
+    week: "13,445.75",
+    month: "490,314.81",
+    year: "3,553,165.94",
+  },
+  purchased: {
+    day: "17",
+    week: "993",
+    month: "31,230",
+    year: "1,151,202",
+  },
+  orderAvg: {
+    day: "515.04",
+    week: "792.45",
+    month: "620.01",
+    year: "593.10",
+  },
+});
+ */
 
-    const offersColumns = ref<ITableColumns[]>([
-      {
-        id: "imgSrc",
-        title: computed(() =>
-          t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_IMAGE")
-        ),
-        width: 60,
-        type: "image",
-      },
-      {
-        id: "name",
-        field: "name",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.PRODUCT_NAME")),
-        width: 120,
-      },
-      {
-        id: "createdDate",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-        width: 140,
-        type: "date-ago",
-      },
-      {
-        id: "sku",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SKU")),
-        width: 120,
-      },
-      {
-        id: "salePrice",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
-        width: 100,
-        type: "money",
-      },
-      {
-        id: "listPrice",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
-        width: 100,
-        type: "money",
-      },
-      {
-        id: "minQuantity",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
-        width: 80,
-        type: "number",
-      },
-      {
-        id: "inStockQuantity",
-        title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
-        width: 80,
-        type: "number",
-      },
-    ]);
+/*const range = reactive({
+  revenue: "day",
+  purchased: "day",
+  orderAvg: "day",
+});
+ */
 
-    const counters = reactive<ICounters>({
-      revenue: {
-        day: "1,230.09",
-        week: "13,445.75",
-        month: "490,314.81",
-        year: "3,553,165.94",
-      },
-      purchased: {
-        day: "17",
-        week: "993",
-        month: "31,230",
-        year: "1,151,202",
-      },
-      orderAvg: {
-        day: "515.04",
-        week: "792.45",
-        month: "620.01",
-        year: "593.10",
-      },
-    });
+onMounted(async () => {
+  router.push("/");
+  loadOrders({ take: 5 });
+  loadProducts({ take: 5 });
+  loadOffers({ take: 5 });
+});
 
-    const range = reactive({
-      revenue: "day",
-      purchased: "day",
-      orderAvg: "day",
-    });
-
-    onMounted(async () => {
-      router.push("/");
-      loadOrders({ take: 5 });
-      loadProducts({ take: 5 });
-      loadOffers({ take: 5 });
-    });
-
-    function open(key: string): void {
-      switch (key) {
-        case "orders-list":
-          props.openPage(0, {
-            component: OrdersList,
-          });
-          break;
-        case "products-list":
-          props.openPage(0, {
-            component: ProductsList,
-          });
-          break;
-        case "products-add":
-          props.openPage(0, {
-            component: ProductsList,
-          });
-          props.openPage(1, {
-            component: ProductsEdit,
-          });
-          break;
-        case "offers-list":
-          props.openPage(0, {
-            component: OffersList,
-          });
-          break;
-        case "offers-add":
-          props.openPage(0, {
-            component: OffersList,
-          });
-          props.openPage(1, {
-            component: OffersDetails,
-          });
-          break;
-      }
-    }
-
-    function ordersClick(item: { id: string }): void {
+function open(key: string): void {
+  switch (key) {
+    case "orders-list":
       props.openPage(0, {
         component: OrdersList,
-        param: item.id,
       });
-      props.openPage(1, {
-        component: OrdersEdit,
-        param: item.id,
-      });
-    }
-
-    function productsClick(item: { id: string }): void {
+      break;
+    case "products-list":
       props.openPage(0, {
         component: ProductsList,
-        param: item.id,
+      });
+      break;
+    case "products-add":
+      props.openPage(0, {
+        component: ProductsList,
       });
       props.openPage(1, {
         component: ProductsEdit,
-        param: item.id,
       });
-    }
-
-    function offersClick(item: { id: string }): void {
+      break;
+    case "offers-list":
       props.openPage(0, {
         component: OffersList,
-        param: item.id,
+      });
+      break;
+    case "offers-add":
+      props.openPage(0, {
+        component: OffersList,
       });
       props.openPage(1, {
         component: OffersDetails,
-        param: item.id,
       });
-    }
+      break;
+  }
+}
 
-    return {
-      moment,
-      open,
-      products,
-      productsLoading,
-      productsColumns,
-      productsClick,
-      orders,
-      ordersLoading,
-      ordersColumns,
-      ordersClick,
-      offers,
-      offersLoading,
-      offersColumns,
-      offersClick,
+function ordersClick(item: { id: string }): void {
+  props.openPage(0, {
+    component: OrdersList,
+    param: item.id,
+  });
+  props.openPage(1, {
+    component: OrdersEdit,
+    param: item.id,
+  });
+}
 
-      calcQty(items: OrderLineItem[]) {
-        return items.reduce((acc, item) => acc + item.quantity, 0);
-      },
+function productsClick(item: { id: string }): void {
+  props.openPage(0, {
+    component: ProductsList,
+    param: item.id,
+  });
+  props.openPage(1, {
+    component: ProductsEdit,
+    param: item.id,
+  });
+}
 
-      counters,
-      range,
-    };
-  },
-});
+function offersClick(item: { id: string }): void {
+  props.openPage(0, {
+    component: OffersList,
+    param: item.id,
+  });
+  props.openPage(1, {
+    component: OffersDetails,
+    param: item.id,
+  });
+}
+
+function calcQty(items: OrderLineItem[]) {
+  return items.reduce((acc, item) => acc + item.quantity, 0);
+}
 </script>
 
 <style lang="less">

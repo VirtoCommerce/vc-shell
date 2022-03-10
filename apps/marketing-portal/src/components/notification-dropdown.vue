@@ -16,10 +16,10 @@
         { 'notification-dropdown__button_active': isDropdownVisible },
       ]"
     >
-      <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
     </div>
     <div class="notification-dropdown__drop" v-if="isDropdownVisible">
-      <vc-container :noPadding="true">
+      <VcContainer :noPadding="true">
         <div v-if="populatedList && populatedList.length">
           <div
             @click="handleClick(item.notifyType)"
@@ -27,65 +27,53 @@
             v-for="item in populatedList"
             :key="`notification_${item.id}`"
           >
-            <vc-row>
-              <vc-col size="1">
+            <VcRow>
+              <VcCol size="1">
                 <div
                   class="notification-dropdown__notification-icon"
                   :style="{ 'background-color': item.params.color }"
                 >
-                  <vc-icon :icon="item.params.icon" size="l"></vc-icon>
+                  <VcIcon :icon="item.params.icon" size="l"></VcIcon>
                 </div>
-              </vc-col>
-              <vc-col size="4" class="vc-flex-justify_center">
+              </VcCol>
+              <VcCol size="4" class="vc-flex-justify_center">
                 <div class="notification-dropdown__notification-info">
                   <p
-                    class="
-                      notification-dropdown__notification-title
-                      vc-margin_none
-                      vc-margin-bottom_xs
-                    "
+                    class="notification-dropdown__notification-title vc-margin_none vc-margin-bottom_xs"
                   >
                     {{ item.title }}
                   </p>
-                  <vc-hint>{{ item.description }}</vc-hint>
+                  <VcHint>{{ item.description }}</VcHint>
                   <div v-if="item.errors && item.errors.length">
-                    <vc-hint class="notification-dropdown__error"
-                      >Errors: {{ item.errors && item.errors.length }}</vc-hint
+                    <VcHint class="notification-dropdown__error"
+                      >Errors: {{ item.errors && item.errors.length }}</VcHint
                     >
                   </div>
                 </div>
-              </vc-col>
-              <vc-col size="2" class="vc-flex-align_end">
+              </VcCol>
+              <VcCol size="2" class="vc-flex-align_end">
                 <p
-                  class="
-                    notification-dropdown__notification-time
-                    vc-margin_none
-                  "
+                  class="notification-dropdown__notification-time vc-margin_none"
                 >
                   {{ item.params.time }}
                 </p>
-              </vc-col>
-            </vc-row>
+              </VcCol>
+            </VcRow>
           </div>
         </div>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding_l
-          "
+          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding_l"
           v-else
         >
           No notifications yet
         </div>
-      </vc-container>
+      </VcContainer>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref, watch } from "vue";
+<script lang="ts" setup>
+import { onMounted, PropType, ref, watch } from "vue";
 import {
   BulkActionPushNotification,
   PushNotification,
@@ -104,106 +92,96 @@ interface INotificationParams
   };
 }
 
-export default defineComponent({
-  name: "notification-dropdown",
-  props: {
-    isAccent: {
-      type: Boolean,
-      default: false,
-    },
-
-    title: {
-      type: String,
-      default: "",
-    },
-
-    items: {
-      type: Array as PropType<IMenuItems[]>,
-      default: () => [],
-    },
+const props = defineProps({
+  isAccent: {
+    type: Boolean,
+    default: false,
   },
-  emits: ["notification:click"],
-  setup(props, { emit }) {
-    const isDropdownVisible = ref(false);
-    const { loadFromHistory, notifications } = useNotifications();
-    const locale = window.navigator.language;
 
-    const populatedList = ref<INotificationParams[]>([]);
+  title: {
+    type: String,
+    default: "",
+  },
 
-    watch(
-      () => notifications,
-      (newVal) => {
-        populatedList.value = newVal.value.map((item: INotificationParams) => {
-          return Object.assign(
-            {},
-            {
-              ...item,
-              params: {
-                icon: notificationIcon(item.notifyType),
-                time: moment(item.created).locale(locale).format("L LT"),
-                color: notificationColor(item),
-              },
-            }
-          ) as INotificationParams;
-        });
-      },
-      { deep: true }
-    );
-
-    onMounted(async () => {
-      await loadFromHistory();
-    });
-
-    function toggleNotificationsDrop() {
-      isDropdownVisible.value = !isDropdownVisible.value;
-    }
-
-    const notificationIcon = (type: string) => {
-      const lower = type.toLowerCase();
-      if (lower.includes("offer")) {
-        return "fas fa-percentage";
-      } else if (lower.includes("product")) {
-        return "fas fa-box-open";
-      } else if (lower.includes("import")) {
-        return "fas fa-download";
-      }
-      return "fas fa-info";
-    };
-
-    const notificationColor = (item: INotificationParams) => {
-      if (item.created && item.finished) {
-        return "#87b563";
-      } else if (item.created && !item.finished && !item.errors) {
-        return "#A9BCCD";
-      } else if (item.created && item.errors && item.errors.length) {
-        return "#F14E4E";
-      }
-
-      return "#87b563";
-    };
-
-    const handleClick = (notifyType: string) => {
-      const low = notifyType.toLowerCase();
-
-      // TODO need to discuss on arch meeting
-      if (low.includes("import")) {
-        const page = props.items.find(
-          (page: IMenuItems) => page.title === "Import"
-        );
-        if (page) {
-          emit("notification:click", page);
-        }
-      }
-    };
-
-    return {
-      isDropdownVisible,
-      populatedList,
-      handleClick,
-      toggleNotificationsDrop,
-    };
+  items: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
   },
 });
+
+const emit = defineEmits(["notification:click"]);
+
+const isDropdownVisible = ref(false);
+const { loadFromHistory, notifications } = useNotifications();
+const locale = window.navigator.language;
+
+const populatedList = ref<INotificationParams[]>([]);
+
+watch(
+  () => notifications,
+  (newVal) => {
+    populatedList.value = newVal.value.map((item: INotificationParams) => {
+      return Object.assign(
+        {},
+        {
+          ...item,
+          params: {
+            icon: notificationIcon(item.notifyType),
+            time: moment(item.created).locale(locale).format("L LT"),
+            color: notificationColor(item),
+          },
+        }
+      ) as INotificationParams;
+    });
+  },
+  { deep: true }
+);
+
+onMounted(async () => {
+  await loadFromHistory();
+});
+
+function toggleNotificationsDrop() {
+  isDropdownVisible.value = !isDropdownVisible.value;
+}
+
+const notificationIcon = (type: string) => {
+  const lower = type.toLowerCase();
+  if (lower.includes("offer")) {
+    return "fas fa-percentage";
+  } else if (lower.includes("product")) {
+    return "fas fa-box-open";
+  } else if (lower.includes("import")) {
+    return "fas fa-download";
+  }
+  return "fas fa-info";
+};
+
+const notificationColor = (item: INotificationParams) => {
+  if (item.created && item.finished) {
+    return "#87b563";
+  } else if (item.created && !item.finished && !item.errors) {
+    return "#A9BCCD";
+  } else if (item.created && item.errors && item.errors.length) {
+    return "#F14E4E";
+  }
+
+  return "#87b563";
+};
+
+const handleClick = (notifyType: string) => {
+  const low = notifyType.toLowerCase();
+
+  // TODO need to discuss on arch meeting
+  if (low.includes("import")) {
+    const page = props.items.find(
+      (page: IMenuItems) => page.title === "Import"
+    );
+    if (page) {
+      emit("notification:click", page);
+    }
+  }
+};
 </script>
 
 <style lang="less">

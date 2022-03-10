@@ -5,22 +5,16 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+defineProps({
+  label: {
+    type: String,
+    default: "Total",
+  },
 
-export default defineComponent({
-  name: "VcTableCounter",
-
-  props: {
-    label: {
-      type: String,
-      default: "Total",
-    },
-
-    value: {
-      type: Number,
-      default: 0,
-    },
+  value: {
+    type: Number,
+    default: 0,
   },
 });
 </script>

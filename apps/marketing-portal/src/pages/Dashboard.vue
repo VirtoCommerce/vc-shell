@@ -1,32 +1,27 @@
 <template>
-  <vc-container class="dashboard vc-fill_all">
+  <VcContainer class="dashboard vc-fill_all">
     <div
       class="dashboard-header vc-margin-vertical_m vc-padding-horizontal_s"
       v-if="$isDesktop.value"
     >
       Dashboard
     </div>
-  </vc-container>
+  </VcContainer>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted } from "vue";
+<script lang="ts" setup>
+import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 
-export default defineComponent({
-  props: {
-    openPage: {
-      type: Function,
-      default: undefined,
-    },
+defineProps({
+  openPage: {
+    type: Function,
+    default: undefined,
   },
-  setup() {
-    const router = useRouter();
-    onMounted(() => {
-      router.push("/");
-    });
-    return {};
-  },
+});
+const router = useRouter();
+onMounted(() => {
+  router.push("/");
 });
 </script>
 

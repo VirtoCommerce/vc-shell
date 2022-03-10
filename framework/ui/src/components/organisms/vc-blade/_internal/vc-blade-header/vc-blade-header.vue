@@ -1,7 +1,7 @@
 <template>
   <div class="vc-blade-header vc-flex-shrink_0">
     <div v-if="icon" class="vc-blade-header__icon">
-      <vc-icon :icon="icon" size="xxl"></vc-icon>
+      <VcIcon :icon="icon" size="xxl"></VcIcon>
     </div>
 
     <div class="vc-blade-header__info vc-flex-grow_1">
@@ -30,86 +30,73 @@
           class="vc-blade-header__button"
           @click="onCollapse"
         >
-          <vc-icon icon="fas fa-window-minimize" size="s"></vc-icon>
+          <VcIcon icon="fas fa-window-minimize" size="s"></VcIcon>
         </div>
         <div v-else class="vc-blade-header__button" @click="onExpand">
-          <vc-icon icon="fas fa-window-maximize" size="s"></vc-icon>
+          <VcIcon icon="fas fa-window-maximize" size="s"></VcIcon>
         </div>
       </template>
       <div v-if="closable" class="vc-blade-header__button" @click="onClose">
-        <vc-icon icon="fas fa-times"></vc-icon>
+        <VcIcon icon="fas fa-times"></VcIcon>
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  name: "VcBladeHeader",
-
-  components: {
-    VcIcon,
+const props = defineProps({
+  expandable: {
+    type: Boolean,
+    default: false,
   },
 
-  props: {
-    expandable: {
-      type: Boolean,
-      default: false,
-    },
-
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
-
-    closable: {
-      type: Boolean,
-      default: false,
-    },
-
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    subtitle: {
-      type: String,
-      default: undefined,
-    },
-
-    icon: {
-      type: String,
-      default: undefined,
-    },
+  expanded: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["close", "expand", "collapse"],
+  closable: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    return {
-      onExpand(): void {
-        if (props.expandable) {
-          emit("expand");
-        }
-      },
+  title: {
+    type: String,
+    default: undefined,
+  },
 
-      onCollapse(): void {
-        if (props.expandable) {
-          emit("collapse");
-        }
-      },
+  subtitle: {
+    type: String,
+    default: undefined,
+  },
 
-      onClose(): void {
-        if (props.closable) {
-          emit("close");
-        }
-      },
-    };
+  icon: {
+    type: String,
+    default: undefined,
   },
 });
+
+const emit = defineEmits(["close", "expand", "collapse"]);
+
+function onExpand(): void {
+  if (props.expandable) {
+    emit("expand");
+  }
+}
+
+function onCollapse(): void {
+  if (props.expandable) {
+    emit("collapse");
+  }
+}
+
+function onClose(): void {
+  if (props.closable) {
+    emit("close");
+  }
+}
 </script>
 
 <style lang="less">

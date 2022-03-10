@@ -25,7 +25,7 @@
       </div>
     </div>
     <div v-if="menuItems" class="user-dropdown-button__chevron">
-      <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-chevron-down" size="xl"></VcIcon>
     </div>
     <div
       v-if="menuItems && accountMenuVisible"
@@ -46,44 +46,35 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref } from "vue";
 
-export default defineComponent({
-  props: {
-    avatar: {
-      type: String,
-      default: undefined,
-    },
-
-    name: {
-      type: String,
-      default: undefined,
-    },
-
-    role: {
-      type: String,
-      default: undefined,
-    },
-
-    menuItems: {
-      type: Array,
-      default: () => [],
-    },
+defineProps({
+  avatar: {
+    type: String,
+    default: undefined,
   },
 
-  setup() {
-    const accountMenuVisible = ref(false);
-    const toggleAccountMenuVisible = () => {
-      accountMenuVisible.value = !accountMenuVisible.value;
-    };
+  name: {
+    type: String,
+    default: undefined,
+  },
 
-    return {
-      accountMenuVisible,
-      toggleAccountMenuVisible,
-    };
+  role: {
+    type: String,
+    default: undefined,
+  },
+
+  menuItems: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const accountMenuVisible = ref(false);
+const toggleAccountMenuVisible = () => {
+  accountMenuVisible.value = !accountMenuVisible.value;
+};
 </script>
 
 <style lang="less">

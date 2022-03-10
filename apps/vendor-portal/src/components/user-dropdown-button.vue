@@ -49,46 +49,36 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-
-export default defineComponent({
-  props: {
-    avatar: {
-      type: String,
-      default: undefined,
-    },
-
-    name: {
-      type: String,
-      default: undefined,
-    },
-
-    role: {
-      type: String,
-      default: undefined,
-    },
-
-    menuItems: {
-      type: Array,
-      default: () => [],
-    },
+<script lang="ts" setup>
+import { ref } from "vue";
+const props = defineProps({
+  avatar: {
+    type: String,
+    default: undefined,
   },
 
-  setup(props) {
-    const accountMenuVisible = ref(false);
-    const toggleAccountMenuVisible = () => {
-      if (props.menuItems && props.menuItems.length) {
-        accountMenuVisible.value = !accountMenuVisible.value;
-      }
-    };
+  name: {
+    type: String,
+    default: undefined,
+  },
 
-    return {
-      accountMenuVisible,
-      toggleAccountMenuVisible,
-    };
+  role: {
+    type: String,
+    default: undefined,
+  },
+
+  menuItems: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const accountMenuVisible = ref(false);
+const toggleAccountMenuVisible = () => {
+  if (props.menuItems && props.menuItems.length) {
+    accountMenuVisible.value = !accountMenuVisible.value;
+  }
+};
 </script>
 
 <style lang="less">

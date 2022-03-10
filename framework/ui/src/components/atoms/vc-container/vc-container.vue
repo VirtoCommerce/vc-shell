@@ -23,164 +23,142 @@
         :class="{ 'vc-container__overscroll_passed': status === 'loosing' }"
         :style="{ height: dist ? `${dist}px` : '0px' }"
       >
-        <vc-icon
+        <VcIcon
           icon="fas fa-spinner"
           :style="{ 'font-size': `${dist / 2}px` }"
           class="vc-container__overscroll-icon"
-        ></vc-icon>
+        ></VcIcon>
       </div>
       <slot></slot>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted, computed, nextTick } from "vue";
-
-export default defineComponent({
-  name: "VcContainer",
-
-  props: {
-    shadow: {
-      type: Boolean,
-      default: false,
-    },
-
-    noPadding: {
-      type: Boolean,
-      default: false,
-    },
-
-    usePtr: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+import { ref, onMounted, computed, nextTick } from "vue";
+const props = defineProps({
+  shadow: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["scroll:ptr", "scroll:infinite"],
+  noPadding: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    const component = ref<HTMLElement>();
-    const scroll = ref(false);
-    const startY = ref(0);
-    const ceiling = ref();
-    const pullDist = ref(60);
-    const dist = ref(0);
-    const status = ref("normal");
-    const delta = ref(0);
+  usePtr: {
+    type: Boolean,
+    default: false,
+  },
+});
+const emit = defineEmits(["scroll:ptr", "scroll:infinite"]);
+const component = ref<HTMLElement>();
+const scroll = ref(false);
+const startY = ref(0);
+const ceiling = ref();
+const pullDist = ref(60);
+const dist = ref(0);
+const status = ref("normal");
+const delta = ref(0);
 
-    onMounted(() => {
-      const observer = new ResizeObserver(() => {
-        scroll.value = !!(
-          component.value &&
-          component.value.clientHeight < component.value.scrollHeight
-        );
-      });
+onMounted(() => {
+  const observer = new ResizeObserver(() => {
+    scroll.value = (component.value &&
+      component.value.clientHeight < component.value.scrollHeight) as boolean;
+  });
 
-      if (component.value) {
-        observer.observe(component.value);
-      }
-    });
+  if (component.value) {
+    observer.observe(component.value);
+  }
+});
 
-    const touchable = computed(
-      () => status.value !== "refresh" && status.value !== "success"
-    );
+const touchable = computed(
+  () => status.value !== "refresh" && status.value !== "success"
+);
 
-    const scrollTop = () => {
-      if (component.value) {
-        component.value.scroll(0, 0);
-      }
-    };
+/* const scrollTop = () => {
+  if (component.value) {
+    component.value.scroll(0, 0);
+  }
+};
+ */
 
-    function touchStart(e: TouchEvent): void {
-      if (!touchable.value) {
-        return;
-      }
+function touchStart(e: TouchEvent): void {
+  if (!touchable.value) {
+    return;
+  }
+  checkPullStart(e);
+}
+
+function touchMove(e: TouchEvent): void {
+  if (props.usePtr) {
+    const touch = e.touches[0];
+    if (!touchable.value) {
+      return;
+    }
+
+    if (!ceiling.value) {
       checkPullStart(e);
     }
 
-    function touchMove(e: TouchEvent): void {
-      if (props.usePtr) {
-        const touch = e.touches[0];
-        if (!touchable.value) {
-          return;
-        }
+    delta.value = touch.clientY - startY.value;
 
-        if (!ceiling.value) {
-          checkPullStart(e);
-        }
+    if (ceiling.value && delta.value >= 0 && delta.value < 80) {
+      e.preventDefault();
 
-        delta.value = touch.clientY - startY.value;
-
-        if (ceiling.value && delta.value >= 0 && delta.value < 80) {
-          e.preventDefault();
-
-          setStatus(ease(delta.value));
-        }
-      }
+      setStatus(ease(delta.value));
     }
+  }
+}
 
-    function touchEnd(): void {
-      if (delta.value && touchable.value) {
-        if (status.value === "loosing") {
-          nextTick(() => emit("scroll:ptr"));
-        }
-        setStatus(0);
-      }
+function touchEnd(): void {
+  if (delta.value && touchable.value) {
+    if (status.value === "loosing") {
+      nextTick(() => emit("scroll:ptr"));
     }
+    setStatus(0);
+  }
+}
 
-    function getScrollTop(el: HTMLElement) {
-      const top = el.scrollTop;
+function getScrollTop(el: HTMLElement) {
+  const top = el.scrollTop;
 
-      return Math.max(top, 0);
+  return Math.max(top, 0);
+}
+
+function checkPullStart(e: TouchEvent) {
+  ceiling.value = getScrollTop(component.value as HTMLElement) === 0;
+
+  if (ceiling.value) {
+    startY.value = e.touches[0].clientY;
+  }
+}
+
+function setStatus(distance: number) {
+  let stat;
+  if (distance === 0) {
+    stat = "normal";
+  } else {
+    stat = distance < pullDist.value ? "pulling" : "loosing";
+  }
+  dist.value = distance;
+  if (stat !== status.value) {
+    status.value = stat;
+  }
+}
+
+function ease(distance: number) {
+  const pullDistance = +pullDist.value;
+  if (distance > pullDistance) {
+    if (distance < pullDistance * 2) {
+      distance = pullDistance + (distance - pullDistance) / 2;
+    } else {
+      distance = pullDistance * 1.5 + (distance - pullDistance * 2) / 4;
     }
-
-    function checkPullStart(e: TouchEvent) {
-      ceiling.value = getScrollTop(component.value as HTMLElement) === 0;
-
-      if (ceiling.value) {
-        startY.value = e.touches[0].clientY;
-      }
-    }
-
-    function setStatus(distance: number) {
-      let stat;
-      if (distance === 0) {
-        stat = "normal";
-      } else {
-        stat = distance < pullDist.value ? "pulling" : "loosing";
-      }
-      dist.value = distance;
-      if (stat !== status.value) {
-        status.value = stat;
-      }
-    }
-
-    function ease(distance: number) {
-      const pullDistance = +pullDist.value;
-      if (distance > pullDistance) {
-        if (distance < pullDistance * 2) {
-          distance = pullDistance + (distance - pullDistance) / 2;
-        } else {
-          distance = pullDistance * 1.5 + (distance - pullDistance * 2) / 4;
-        }
-      }
-      return Math.round(distance);
-    }
-
-    return {
-      scroll,
-      component,
-      dist,
-      status,
-      scrollTop,
-      getScrollTop,
-      touchStart,
-      touchMove,
-      touchEnd,
-    };
-  },
-});
+  }
+  return Math.round(distance);
+}
 </script>
 
 <style lang="less">

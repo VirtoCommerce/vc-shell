@@ -1,5 +1,5 @@
 <template>
-  <vc-select
+  <VcSelect
     v-if="property.dictionary || property.isDictionary"
     :label="
       (property.displayNames && property.displayNames[0].name) ||
@@ -22,9 +22,9 @@
     :isSearchable="true"
     @search="onSearch"
     @close="onClose"
-  ></vc-select>
+  ></VcSelect>
 
-  <vc-multivalue
+  <VcMultivalue
     v-else-if="property.valueType === 'ShortText' && property.multivalue"
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
@@ -36,9 +36,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
-  ></vc-multivalue>
+  ></VcMultivalue>
 
-  <vc-input
+  <VcInput
     v-else-if="property.valueType === 'ShortText'"
     :label="
       (property.displayNames && property.displayNames[0].name) ||
@@ -55,9 +55,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.displayName || property.name"
-  ></vc-input>
+  ></VcInput>
 
-  <vc-multivalue
+  <VcMultivalue
     v-else-if="property.valueType === 'Number' && property.multivalue"
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
@@ -70,9 +70,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
-  ></vc-multivalue>
+  ></VcMultivalue>
 
-  <vc-input
+  <VcInput
     v-else-if="property.valueType === 'Number'"
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
@@ -89,9 +89,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
-  ></vc-input>
+  ></VcInput>
 
-  <vc-input
+  <VcInput
     v-else-if="property.valueType === 'Integer'"
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
@@ -109,9 +109,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
-  ></vc-input>
+  ></VcInput>
 
-  <vc-input
+  <VcInput
     v-else-if="property.valueType === 'DateTime'"
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
@@ -127,9 +127,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
-  ></vc-input>
+  ></VcInput>
 
-  <vc-textarea
+  <VcTextarea
     v-else-if="property.valueType === 'LongText'"
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
@@ -144,9 +144,9 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
-  ></vc-textarea>
+  ></VcTextarea>
 
-  <vc-checkbox
+  <VcCheckbox
     v-else-if="property.valueType === 'Boolean'"
     :modelValue="getter(property)"
     @update:modelValue="setter(property, $event)"
@@ -160,12 +160,11 @@
       property.displayName ||
       property.name
     }}
-  </vc-checkbox>
+  </VcCheckbox>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
-
+<script lang="ts" setup>
+import { ref, onMounted } from "vue";
 interface IValidationRules {
   required?: boolean;
   min?: number;
@@ -173,87 +172,80 @@ interface IValidationRules {
   regex?: RegExp;
 }
 
-export default defineComponent({
-  props: {
-    property: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    dictionaries: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    getter: {
-      type: Function,
-    },
-
-    optionsGetter: {
-      type: Function,
-    },
-
-    setter: {
-      type: Function,
-    },
-
-    culture: {
-      type: String,
-      default: "en-US",
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+const props = defineProps({
+  property: {
+    type: Object,
+    default: () => ({}),
   },
 
-  setup(props) {
-    const rules: IValidationRules = {};
-    const items = ref([]);
+  dictionaries: {
+    type: Object,
+    default: () => ({}),
+  },
 
-    onMounted(async () => {
-      if (props.optionsGetter) {
-        items.value = await props.optionsGetter(props.property);
-      }
-    });
+  getter: {
+    type: Function,
+  },
 
-    if (props.property.required) {
-      rules.required = true;
-    }
-    if (props.property.validationRule?.charCountMin) {
-      rules.min = Number(props.property.validationRule.charCountMin);
-    }
-    if (props.property.validationRule?.charCountMax) {
-      rules.max = Number(props.property.validationRule.charCountMax);
-    }
-    if (props.property.validationRule?.regExp) {
-      rules.regex = new RegExp(props.property.validationRule?.regExp);
-    }
+  optionsGetter: {
+    type: Function,
+  },
 
-    return {
-      rules,
-      items,
-      getLabel() {
-        return (
-          (props.property.displayNames as { culture: string }[]).find(
-            (item) => item.culture === props.culture
-          ) || props.property.name
-        );
-      },
+  setter: {
+    type: Function,
+  },
 
-      async onSearch(keyword: string) {
-        if (props.optionsGetter) {
-          items.value = await props.optionsGetter(props.property, keyword);
-        }
-      },
+  culture: {
+    type: String,
+    default: "en-US",
+  },
 
-      async onClose() {
-        if (props.optionsGetter) {
-          items.value = await props.optionsGetter(props.property);
-        }
-      },
-    };
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
+
+const rules: IValidationRules = {};
+const items = ref([]);
+
+onMounted(async () => {
+  if (props.optionsGetter) {
+    items.value = await props.optionsGetter(props.property);
+  }
+});
+
+if (props.property.required) {
+  rules.required = true;
+}
+if (props.property.validationRule?.charCountMin) {
+  rules.min = Number(props.property.validationRule.charCountMin);
+}
+if (props.property.validationRule?.charCountMax) {
+  rules.max = Number(props.property.validationRule.charCountMax);
+}
+if (props.property.validationRule?.regExp) {
+  rules.regex = new RegExp(props.property.validationRule?.regExp);
+}
+
+/*function getLabel() {
+  return (
+    (props.property.displayNames as { culture: string }[]).find(
+      (item) => item.culture === props.culture
+    ) || props.property.name
+  );
+}
+ */
+
+async function onSearch(keyword: string) {
+  if (props.optionsGetter) {
+    items.value = await props.optionsGetter(props.property, keyword);
+  }
+}
+
+async function onClose() {
+  if (props.optionsGetter) {
+    items.value = await props.optionsGetter(props.property);
+  }
+}
 </script>

@@ -11,28 +11,22 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+defineProps({
+  variant: {
+    type: String,
+    default: "info",
+    enum: ["info", "warning", "danger", "success", "light-danger"],
+  },
 
-export default defineComponent({
-  name: "VcStatus",
+  outline: {
+    type: Boolean,
+    default: true,
+  },
 
-  props: {
-    variant: {
-      type: String,
-      default: "info",
-      enum: ["info", "warning", "danger", "success", "light-danger"],
-    },
-
-    outline: {
-      type: Boolean,
-      default: true,
-    },
-
-    extend: {
-      type: Boolean,
-      default: false,
-    },
+  extend: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

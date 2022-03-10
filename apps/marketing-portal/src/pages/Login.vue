@@ -1,16 +1,16 @@
 <template>
-  <vc-login-form :logo="logo" :background="background" :title="title">
-    <vc-form>
+  <VcLoginForm :logo="logo" :background="background" :title="title">
+    <VcForm>
       <template v-if="isLogin">
-        <vc-input
+        <VcInput
           ref="loginField"
           class="vc-margin-bottom_l vc-margin-top_xs"
           :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
           :required="true"
           v-model="form.username"
-        ></vc-input>
-        <vc-input
+        ></VcInput>
+        <VcInput
           ref="passwordField"
           class="vc-margin-bottom_l"
           :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
@@ -19,15 +19,9 @@
           v-model="form.password"
           type="password"
           @keyup.enter="login"
-        ></vc-input>
+        ></VcInput>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_end
-            vc-flex-align_center
-            vc-padding-top_s
-            vc-padding-bottom_m
-          "
+          class="vc-flex vc-flex-justify_end vc-flex-align_center vc-padding-top_s vc-padding-bottom_m"
         >
           <button
             class="vc-button vc-button_onlytext"
@@ -37,22 +31,17 @@
           </button>
         </div>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding-top_s
-          "
+          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
         >
           <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
-          <vc-button variant="primary" :disabled="loading" @click="login">
+          <VcButton variant="primary" :disabled="loading" @click="login">
             {{ $t("SHELL.LOGIN.BUTTON") }}
-          </vc-button>
+          </VcButton>
         </div>
       </template>
       <template v-else>
         <template v-if="!forgotPasswordRequestSent">
-          <vc-input
+          <VcInput
             ref="forgotPasswordField"
             class="vc-margin-bottom_l vc-margin-top_xs"
             :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
@@ -60,21 +49,16 @@
             :required="true"
             v-model="forgotPasswordForm.loginOrEmail"
             fieldDescription="We will send you an email with instructions on how to reset your password."
-          ></vc-input>
+          ></VcInput>
           <div
-            class="
-              vc-flex
-              vc-flex-justify_space-between
-              vc-flex-align_center
-              vc-padding-top_s
-            "
+            class="vc-flex vc-flex-justify_space-between vc-flex-align_center vc-padding-top_s"
           >
-            <vc-button variant="secondary" @click="togglePassRequest">
+            <VcButton variant="secondary" @click="togglePassRequest">
               {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
-            </vc-button>
-            <vc-button variant="primary" :disabled="loading" @click="forgot">
+            </VcButton>
+            <VcButton variant="primary" :disabled="loading" @click="forgot">
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
-            </vc-button>
+            </VcButton>
           </div>
         </template>
 
@@ -83,47 +67,42 @@
         >
           <div>Email with instructions has been sent to you.</div>
           <div
-            class="
-              vc-flex
-              vc-flex-justify_center
-              vc-flex-align_center
-              vc-padding-top_s
-            "
+            class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
           >
             <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
-            <vc-button
+            <VcButton
               variant="primary"
               :disabled="loading"
               @click="togglePassRequest"
             >
               {{ $t("SHELL.LOGIN.BUTTON_OK") }}
-            </vc-button>
+            </VcButton>
           </div>
         </template>
       </template>
 
-      <vc-hint
+      <VcHint
         v-if="!signInResult.succeeded"
         class="vc-margin-top_m"
         style="color: #f14e4e"
       >
         <!-- TODO: stylizing-->
         {{ signInResult.error }}
-      </vc-hint>
-      <vc-hint
+      </VcHint>
+      <VcHint
         v-if="!requestPassResult.succeeded"
         class="vc-margin-top_m"
         style="color: #f14e4e"
       >
         <!-- TODO: stylizing-->
         {{ requestPassResult.error }}
-      </vc-hint>
-    </vc-form>
-  </vc-login-form>
+      </VcHint>
+    </VcForm>
+  </VcLoginForm>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, reactive } from "vue";
+<script lang="ts" setup>
+import { ref, reactive } from "vue";
 import {
   useLogger,
   useUser,
@@ -133,72 +112,54 @@ import {
 
 import { useLogin } from "../modules/login";
 
-export default defineComponent({
-  props: {
-    logo: {
-      type: String,
-      default: undefined,
-    },
-
-    background: {
-      type: String,
-      default: undefined,
-    },
-
-    title: {
-      type: String,
-      default: undefined,
-    },
+defineProps({
+  logo: {
+    type: String,
+    default: undefined,
   },
 
-  setup() {
-    const log = useLogger();
-    const signInResult = ref<SignInResult>({ succeeded: true });
-    const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
-    const forgotPasswordRequestSent = ref(false);
-    const { signIn, loading } = useUser();
-    const { forgotPassword } = useLogin();
-    const isLogin = ref(true);
-    const form = reactive({
-      username: "",
-      password: "",
-    });
-    const forgotPasswordForm = reactive({
-      loginOrEmail: "",
-    });
+  background: {
+    type: String,
+    default: undefined,
+  },
 
-    const login = async () => {
-      signInResult.value = await signIn(form.username, form.password);
-    };
-
-    const forgot = async () => {
-      await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
-      forgotPasswordRequestSent.value = true;
-    };
-
-    const togglePassRequest = () => {
-      isLogin.value = !isLogin.value;
-      if (isLogin.value) {
-        forgotPasswordRequestSent.value = false;
-        forgotPasswordForm.loginOrEmail = "";
-        requestPassResult.value.error = "";
-      }
-    };
-
-    log.debug("Init login-page");
-
-    return {
-      form,
-      isLogin,
-      forgotPasswordForm,
-      login,
-      forgot,
-      loading,
-      signInResult,
-      requestPassResult,
-      forgotPasswordRequestSent,
-      togglePassRequest,
-    };
+  title: {
+    type: String,
+    default: undefined,
   },
 });
+const log = useLogger();
+const signInResult = ref<SignInResult>({ succeeded: true });
+const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
+const forgotPasswordRequestSent = ref(false);
+const { signIn, loading } = useUser();
+const { forgotPassword } = useLogin();
+const isLogin = ref(true);
+const form = reactive({
+  username: "",
+  password: "",
+});
+const forgotPasswordForm = reactive({
+  loginOrEmail: "",
+});
+
+const login = async () => {
+  signInResult.value = await signIn(form.username, form.password);
+};
+
+const forgot = async () => {
+  await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
+  forgotPasswordRequestSent.value = true;
+};
+
+const togglePassRequest = () => {
+  isLogin.value = !isLogin.value;
+  if (isLogin.value) {
+    forgotPasswordRequestSent.value = false;
+    forgotPasswordForm.loginOrEmail = "";
+    requestPassResult.value.error = "";
+  }
+};
+
+log.debug("Init login-page");
 </script>

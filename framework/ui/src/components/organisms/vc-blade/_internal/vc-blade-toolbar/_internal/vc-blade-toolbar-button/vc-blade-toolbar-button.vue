@@ -5,11 +5,11 @@
     @click="onClick"
     :title="title"
   >
-    <vc-icon
+    <VcIcon
       class="vc-blade-toolbar-button__icon"
       :icon="icon"
       size="m"
-    ></vc-icon>
+    ></VcIcon>
     <div v-if="isExpanded" class="vc-blade-toolbar-button__title">
       {{ title }}
     </div>
@@ -18,71 +18,61 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
 
 export default defineComponent({
-  name: "VcBladeToolbarButton",
-
   inheritAttrs: false,
+});
+</script>
 
-  components: {
-    VcIcon,
+<script lang="ts" setup>
+import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
+
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 
-  props: {
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    isExpanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    icon: {
-      type: String,
-      default: "fas fa-question-circle",
-    },
-
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    clickHandler: {
-      type: Function,
-      default: undefined,
-    },
+  isExpanded: {
+    type: Boolean,
+    default: true,
   },
 
-  emits: ["click"],
+  icon: {
+    type: String,
+    default: "fas fa-question-circle",
+  },
 
-  setup(props, { emit }) {
-    const isWaiting = ref(false);
+  title: {
+    type: String,
+    default: undefined,
+  },
 
-    return {
-      isWaiting,
-
-      async onClick(): Promise<void> {
-        console.debug("vc-blade-toolbar-item#onClick()");
-
-        if (!props.disabled && !isWaiting.value) {
-          if (props.clickHandler && typeof props.clickHandler === "function") {
-            isWaiting.value = true;
-            try {
-              await props.clickHandler();
-            } finally {
-              isWaiting.value = false;
-            }
-          } else {
-            emit("click");
-          }
-        }
-      },
-    };
+  clickHandler: {
+    type: Function,
+    default: undefined,
   },
 });
+const emit = defineEmits(["click"]);
+
+const isWaiting = ref(false);
+
+async function onClick(): Promise<void> {
+  console.debug("vc-blade-toolbar-item#onClick()");
+
+  if (!props.disabled && !isWaiting.value) {
+    if (props.clickHandler && typeof props.clickHandler === "function") {
+      isWaiting.value = true;
+      try {
+        await props.clickHandler();
+      } finally {
+        isWaiting.value = false;
+      }
+    } else {
+      emit("click");
+    }
+  }
+}
 </script>
 
 <style lang="less">

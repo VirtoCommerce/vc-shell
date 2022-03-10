@@ -1,68 +1,58 @@
 <template>
-  <vc-status
+  <VcStatus
     v-bind="statusStyles[status]"
     v-for="(status, i) in statuses"
     :class="[$attrs.class, { 'vc-margin-right_xs': i < statuses.length - 1 }]"
     :key="i"
     >{{
       $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`)
-    }}</vc-status
+    }}</VcStatus
   >
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import { camelToSnake } from "@virtoshell/core";
 
-export default defineComponent({
-  name: "MpProductStatus",
-
-  props: {
-    status: {
-      type: String,
-      default: "None",
-    },
-  },
-
-  setup(props) {
-    const statusStyles = {
-      RequestChanges: {
-        outline: true,
-        variant: "danger",
-      },
-      Approved: {
-        outline: true,
-        variant: "success",
-      },
-      WaitForApproval: {
-        outline: true,
-        variant: "warning",
-      },
-      Rejected: {
-        outline: false,
-        variant: "danger",
-      },
-      HasStagedChanges: {
-        outline: true,
-        variant: "warning",
-      },
-      Published: {
-        outline: false,
-        variant: "success",
-      },
-    };
-    return {
-      statuses: computed(() =>
-        props.status
-          .split(",")
-          .map((item) => {
-            return item.trim();
-          })
-          .filter((x) => x !== "Published")
-      ),
-      statusStyles,
-      camelToSnake,
-    };
+const props = defineProps({
+  status: {
+    type: String,
+    default: "None",
   },
 });
+
+const statusStyles = {
+  RequestChanges: {
+    outline: true,
+    variant: "danger",
+  },
+  Approved: {
+    outline: true,
+    variant: "success",
+  },
+  WaitForApproval: {
+    outline: true,
+    variant: "warning",
+  },
+  Rejected: {
+    outline: false,
+    variant: "danger",
+  },
+  HasStagedChanges: {
+    outline: true,
+    variant: "warning",
+  },
+  Published: {
+    outline: false,
+    variant: "success",
+  },
+};
+const statuses = computed(() =>
+  props.status
+    .split(",")
+    .map((item) => {
+      return item.trim();
+    })
+    .filter((x) => x !== "Published")
+);
 </script>

@@ -8,7 +8,7 @@
       }"
       @click="currentPage !== 1 && $emit('itemClick', 1)"
     >
-      <vc-icon size="xs" icon="fas fa-angle-double-left"></vc-icon>
+      <VcIcon size="xs" icon="fas fa-angle-double-left"></VcIcon>
     </div>
 
     <!-- To previous page arrow -->
@@ -19,7 +19,7 @@
       }"
       @click="currentPage !== 1 && $emit('itemClick', currentPage - 1)"
     >
-      <vc-icon size="xs" icon="fas fa-arrow-left"></vc-icon>
+      <VcIcon size="xs" icon="fas fa-arrow-left"></VcIcon>
     </div>
 
     <template v-if="expanded && $isDesktop.value">
@@ -75,7 +75,7 @@
       }"
       @click="currentPage !== pages && $emit('itemClick', currentPage + 1)"
     >
-      <vc-icon size="xs" icon="fas fa-arrow-right"></vc-icon>
+      <VcIcon size="xs" icon="fas fa-arrow-right"></VcIcon>
     </div>
 
     <!-- To last page chevron -->
@@ -86,39 +86,32 @@
       }"
       @click="currentPage !== pages && $emit('itemClick', pages)"
     >
-      <vc-icon size="xs" icon="fas fa-angle-double-right"></vc-icon>
+      <VcIcon size="xs" icon="fas fa-angle-double-right"></VcIcon>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  name: "VcPagination",
-
-  components: { VcIcon },
-
-  props: {
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
-
-    pages: {
-      type: Number,
-      default: 1,
-    },
-
-    currentPage: {
-      type: Number,
-      default: 1,
-    },
+defineProps({
+  expanded: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["itemClick"],
+  pages: {
+    type: Number,
+    default: 1,
+  },
+
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
 });
+
+defineEmits(["itemClick"]);
 </script>
 
 <style lang="less">

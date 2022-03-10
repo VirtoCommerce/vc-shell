@@ -30,9 +30,6 @@
       "path": "framework/ui/"
     },
     {
-      "path": "framework/ui-theme-dark/"
-    },
-    {
       "path": "modules/assets/"
     }
   ]

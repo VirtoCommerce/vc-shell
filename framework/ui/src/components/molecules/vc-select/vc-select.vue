@@ -8,12 +8,12 @@
     }"
   >
     <!-- Select label -->
-    <vc-label v-if="label" class="vc-margin-bottom_s" :required="isRequired">
+    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
       </template>
-    </vc-label>
+    </VcLabel>
 
     <!-- Select field -->
     <div
@@ -21,13 +21,7 @@
       ref="inputFieldWrapRef"
     >
       <div
-        class="
-          vc-select__field
-          vc-padding_m
-          vc-flex
-          vc-flex-align_center
-          vc-fill_width
-        "
+        class="vc-select__field vc-padding_m vc-flex vc-flex-align_center vc-fill_width"
         @click="toggleDropdown"
         ref="dropdownToggleRef"
       >
@@ -42,15 +36,10 @@
       <!-- Select chevron -->
       <div
         v-if="!isDisabled"
-        class="
-          vc-select__chevron
-          vc-padding-horizontal_m
-          vc-flex
-          vc-flex-align_center
-        "
+        class="vc-select__chevron vc-padding-horizontal_m vc-flex vc-flex-align_center"
         @click="toggleDropdown"
       >
-        <vc-icon size="s" icon="fas fa-chevron-down"></vc-icon>
+        <VcIcon size="s" icon="fas fa-chevron-down"></VcIcon>
       </div>
       <teleport to="#app">
         <div
@@ -66,7 +55,7 @@
             @input="onSearch"
           />
 
-          <vc-container :no-padding="true">
+          <VcContainer :no-padding="true">
             <div
               class="vc-select__item"
               v-for="(item, i) in options"
@@ -75,276 +64,244 @@
             >
               <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
             </div>
-          </vc-container>
+          </VcContainer>
         </div>
       </teleport>
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <vc-hint class="vc-select__error vc-margin-top_xs">
+      <VcHint class="vc-select__error vc-margin-top_xs">
         {{ errorMessage }}
-      </vc-hint>
+      </VcHint>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import {
-  defineComponent,
-  nextTick,
-  ref,
-  computed,
-  watch,
-  getCurrentInstance,
-} from "vue";
+<script lang="ts" setup>
+import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { clickOutside } from "../../../directives";
+import { clickOutside as vClickOutside } from "../../../directives";
 
-export default defineComponent({
-  name: "VcSelect",
-
-  components: {
-    VcIcon,
-    VcLabel,
-    VcContainer,
+const props = defineProps({
+  modelValue: {
+    type: [String, Number],
+    default: undefined,
   },
 
-  directives: {
-    clickOutside,
+  placeholder: {
+    type: String,
+    default: "Click to select...",
   },
 
-  props: {
-    modelValue: {
-      type: [String, Number],
-      default: undefined,
-    },
-
-    placeholder: {
-      type: String,
-      default: "Click to select...",
-    },
-
-    options: {
-      type: Array,
-      default: () => [],
-    },
-
-    isRequired: {
-      type: Boolean,
-      default: false,
-    },
-
-    isDisabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    isSearchable: {
-      type: Boolean,
-      default: false,
-    },
-
-    label: {
-      type: String,
-      default: undefined,
-    },
-
-    tooltip: {
-      type: String,
-      default: undefined,
-    },
-
-    keyProperty: {
-      type: String,
-      default: "id",
-    },
-
-    displayProperty: {
-      type: String,
-      default: "title",
-    },
-
-    initialItem: {
-      type: Object,
-      default: undefined,
-    },
-
-    name: {
-      type: String,
-      default: "Field",
-    },
+  options: {
+    type: Array,
+    default: () => [],
   },
 
-  emits: ["update:modelValue", "change", "close", "search"],
+  isRequired: {
+    type: Boolean,
+    default: false,
+  },
 
-  setup(props, { emit }) {
-    const instance = getCurrentInstance();
-    const isOpened = ref(false);
-    const search = ref();
-    const popper = ref<Instance>();
-    const dropdownToggleRef = ref();
-    const dropdownRef = ref();
-    const inputFieldWrapRef = ref();
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
 
-    const selectedItem = computed(
-      () =>
-        (props.options as Record<string, unknown>[])?.find(
-          (item) => item[props.keyProperty] === props.modelValue
-        ) || props.initialItem
-    );
+  isSearchable: {
+    type: Boolean,
+    default: false,
+  },
 
-    // Prepare field-level validation
-    const { errorMessage, handleChange } = useField(
-      `${instance?.uid || props.name}`,
-      props.isRequired ? "required" : "",
-      {
-        initialValue: props.modelValue,
-      }
-    );
+  label: {
+    type: String,
+    default: undefined,
+  },
 
-    watch(
-      () => props.modelValue,
-      (value) => {
-        handleChange(value);
-      }
-    );
+  tooltip: {
+    type: String,
+    default: undefined,
+  },
 
-    return {
-      search,
-      errorMessage,
-      isOpened,
-      selectedItem,
-      dropdownToggleRef,
-      dropdownRef,
-      inputFieldWrapRef,
-      instance,
-      closeDropdown: () => {
-        isOpened.value = false;
-        popper.value?.destroy();
-        emit("close");
-      },
-      toggleDropdown: () => {
-        if (!props.isDisabled) {
-          if (isOpened.value) {
-            isOpened.value = false;
-            popper.value?.destroy();
-            inputFieldWrapRef.value.style.borderRadius =
-              "var(--select-border-radius)";
-            emit("close");
-          } else {
-            isOpened.value = true;
-            nextTick(() => {
-              search?.value?.focus();
-              popper.value = createPopper(
-                dropdownToggleRef.value,
-                dropdownRef.value,
-                {
-                  placement: "bottom",
-                  modifiers: [
-                    {
-                      name: "flip",
-                      options: {
-                        fallbackPlacements: ["top", "bottom"],
-                      },
-                    },
-                    {
-                      name: "preventOverflow",
-                      options: {
-                        mainAxis: false,
-                      },
-                    },
-                    {
-                      name: "sameWidthChangeBorders",
-                      enabled: true,
-                      phase: "beforeWrite",
-                      requires: ["computeStyles"],
-                      fn: ({ state }: { state: State }) => {
-                        const placement = state.placement;
-                        if (placement === "top") {
-                          state.styles.popper.borderTop =
-                            "1px solid var(--select-border-color)";
-                          state.styles.popper.borderBottom =
-                            "1px solid var(--select-background-color)";
-                          state.styles.popper.borderRadius =
-                            "var(--select-border-radius) var(--select-border-radius) 0 0";
-                          inputFieldWrapRef.value.style.borderRadius =
-                            "0 0 var(--select-border-radius) var(--select-border-radius)";
-                        } else {
-                          state.styles.popper.borderBottom =
-                            "1px solid var(--select-border-color)";
-                          state.styles.popper.borderTop =
-                            "1px solid var(--select-background-color)";
-                          state.styles.popper.borderRadius =
-                            "0 0 var(--select-border-radius) var(--select-border-radius)";
+  keyProperty: {
+    type: String,
+    default: "id",
+  },
 
-                          if (inputFieldWrapRef.value) {
-                            inputFieldWrapRef.value.style.borderRadius =
-                              "var(--select-border-radius) var(--select-border-radius) 0 0";
-                          }
-                        }
-                        state.styles.popper.width = `${
-                          state.rects.reference.width + 2
-                        }px`;
-                      },
-                      effect: ({ state }: { state: State }) => {
-                        const ref = state.elements.reference as HTMLElement;
-                        const placement = state.placement;
-                        if (placement === "top") {
-                          state.elements.popper.style.borderTop =
-                            "1px solid var(--select-border-color)";
-                          state.elements.popper.style.borderBottom =
-                            "1px solid var(--select-background-color)";
-                          state.elements.popper.style.borderRadius =
-                            "var(--select-border-radius) var(--select-border-radius) 0 0";
-                          inputFieldWrapRef.value.style.borderRadius =
-                            "0 0 var(--select-border-radius) var(--select-border-radius)";
-                        } else {
-                          state.elements.popper.style.borderBottom =
-                            "1px solid var(--select-border-color)";
-                          state.elements.popper.style.borderTop =
-                            "1px solid var(--select-background-color)";
-                          state.elements.popper.style.borderRadius =
-                            "0 0 var(--select-border-radius) var(--select-border-radius)";
+  displayProperty: {
+    type: String,
+    default: "title",
+  },
 
-                          if (inputFieldWrapRef.value) {
-                            inputFieldWrapRef.value.style.borderRadius =
-                              "var(--select-border-radius) var(--select-border-radius) 0 0";
-                          }
-                        }
-                        state.elements.popper.style.width = `${
-                          ref.offsetWidth + 2
-                        }px`;
-                      },
-                    },
-                    {
-                      name: "offset",
-                      options: {
-                        offset: [0, 0],
-                      },
-                    },
-                  ],
-                }
-              );
-            });
-          }
-        }
-      },
-      onItemSelect: (item: { [x: string]: string }) => {
-        emit("update:modelValue", item[props.keyProperty]);
-        emit("change", item[props.keyProperty]);
-        emit("close");
-        isOpened.value = false;
-      },
-      onSearch: (event: InputEvent) => {
-        emit("search", (event.target as HTMLInputElement).value);
-      },
-    };
+  initialItem: {
+    type: Object,
+    default: undefined,
+  },
+
+  name: {
+    type: String,
+    default: "Field",
   },
 });
+
+const emit = defineEmits(["update:modelValue", "change", "close", "search"]);
+
+const instance = getCurrentInstance();
+const isOpened = ref(false);
+const search = ref();
+const popper = ref<Instance>();
+const dropdownToggleRef = ref();
+const dropdownRef = ref();
+const inputFieldWrapRef = ref();
+
+const selectedItem = computed(
+  () =>
+    (props.options as Record<string, unknown>[])?.find(
+      (item) => item[props.keyProperty] === props.modelValue
+    ) || props.initialItem
+);
+
+// Prepare field-level validation
+const { errorMessage, handleChange } = useField(
+  `${instance?.uid || props.name}`,
+  props.isRequired ? "required" : "",
+  {
+    initialValue: props.modelValue,
+  }
+);
+
+watch(
+  () => props.modelValue,
+  (value) => {
+    handleChange(value);
+  }
+);
+
+function closeDropdown() {
+  isOpened.value = false;
+  popper.value?.destroy();
+  emit("close");
+}
+function toggleDropdown() {
+  if (!props.isDisabled) {
+    if (isOpened.value) {
+      isOpened.value = false;
+      popper.value?.destroy();
+      inputFieldWrapRef.value.style.borderRadius =
+        "var(--select-border-radius)";
+      emit("close");
+    } else {
+      isOpened.value = true;
+      nextTick(() => {
+        search?.value?.focus();
+        popper.value = createPopper(
+          dropdownToggleRef.value,
+          dropdownRef.value,
+          {
+            placement: "bottom",
+            modifiers: [
+              {
+                name: "flip",
+                options: {
+                  fallbackPlacements: ["top", "bottom"],
+                },
+              },
+              {
+                name: "preventOverflow",
+                options: {
+                  mainAxis: false,
+                },
+              },
+              {
+                name: "sameWidthChangeBorders",
+                enabled: true,
+                phase: "beforeWrite",
+                requires: ["computeStyles"],
+                fn: ({ state }: { state: State }) => {
+                  const placement = state.placement;
+                  if (placement === "top") {
+                    state.styles.popper.borderTop =
+                      "1px solid var(--select-border-color)";
+                    state.styles.popper.borderBottom =
+                      "1px solid var(--select-background-color)";
+                    state.styles.popper.borderRadius =
+                      "var(--select-border-radius) var(--select-border-radius) 0 0";
+                    inputFieldWrapRef.value.style.borderRadius =
+                      "0 0 var(--select-border-radius) var(--select-border-radius)";
+                  } else {
+                    state.styles.popper.borderBottom =
+                      "1px solid var(--select-border-color)";
+                    state.styles.popper.borderTop =
+                      "1px solid var(--select-background-color)";
+                    state.styles.popper.borderRadius =
+                      "0 0 var(--select-border-radius) var(--select-border-radius)";
+
+                    if (inputFieldWrapRef.value) {
+                      inputFieldWrapRef.value.style.borderRadius =
+                        "var(--select-border-radius) var(--select-border-radius) 0 0";
+                    }
+                  }
+                  state.styles.popper.width = `${
+                    state.rects.reference.width + 2
+                  }px`;
+                },
+                effect: ({ state }: { state: State }) => {
+                  const ref = state.elements.reference as HTMLElement;
+                  const placement = state.placement;
+                  if (placement === "top") {
+                    state.elements.popper.style.borderTop =
+                      "1px solid var(--select-border-color)";
+                    state.elements.popper.style.borderBottom =
+                      "1px solid var(--select-background-color)";
+                    state.elements.popper.style.borderRadius =
+                      "var(--select-border-radius) var(--select-border-radius) 0 0";
+                    inputFieldWrapRef.value.style.borderRadius =
+                      "0 0 var(--select-border-radius) var(--select-border-radius)";
+                  } else {
+                    state.elements.popper.style.borderBottom =
+                      "1px solid var(--select-border-color)";
+                    state.elements.popper.style.borderTop =
+                      "1px solid var(--select-background-color)";
+                    state.elements.popper.style.borderRadius =
+                      "0 0 var(--select-border-radius) var(--select-border-radius)";
+
+                    if (inputFieldWrapRef.value) {
+                      inputFieldWrapRef.value.style.borderRadius =
+                        "var(--select-border-radius) var(--select-border-radius) 0 0";
+                    }
+                  }
+                  state.elements.popper.style.width = `${
+                    ref.offsetWidth + 2
+                  }px`;
+                },
+              },
+              {
+                name: "offset",
+                options: {
+                  offset: [0, 0],
+                },
+              },
+            ],
+          }
+        );
+      });
+    }
+  }
+}
+
+function onItemSelect(item: { [x: string]: string }) {
+  emit("update:modelValue", item[props.keyProperty]);
+  emit("change", item[props.keyProperty]);
+  emit("close");
+  isOpened.value = false;
+}
+function onSearch(event: InputEvent) {
+  emit("search", (event.target as HTMLInputElement).value);
+}
 </script>
 
 <style lang="less">

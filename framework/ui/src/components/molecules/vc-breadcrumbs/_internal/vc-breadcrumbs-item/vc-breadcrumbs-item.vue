@@ -6,7 +6,7 @@
     }"
     @click="onClick"
   >
-    <vc-icon
+    <VcIcon
       v-if="icon"
       class="vc-breadcrumbs-item__icon"
       :icon="icon"
@@ -18,53 +18,42 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  name: "VcBreadcrumbsItem",
-
-  components: {
-    VcIcon,
+const props = defineProps({
+  current: {
+    type: Boolean,
+    default: false,
   },
 
-  props: {
-    current: {
-      type: Boolean,
-      default: false,
-    },
-
-    icon: {
-      type: String,
-      default: undefined,
-    },
-
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    clickHandler: {
-      type: Function,
-      default: undefined,
-    },
+  icon: {
+    type: String,
+    default: undefined,
   },
 
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (!props.current) {
-          if (props.clickHandler && typeof props.clickHandler === "function") {
-            props.clickHandler();
-          } else {
-            emit("click");
-          }
-        }
-      },
-    };
+  title: {
+    type: String,
+    default: undefined,
+  },
+
+  clickHandler: {
+    type: Function,
+    default: undefined,
   },
 });
+
+const emit = defineEmits(["click"]);
+
+function onClick(): void {
+  if (!props.current) {
+    if (props.clickHandler && typeof props.clickHandler === "function") {
+      props.clickHandler();
+    } else {
+      emit("click");
+    }
+  }
+}
 </script>
 
 <style lang="less">

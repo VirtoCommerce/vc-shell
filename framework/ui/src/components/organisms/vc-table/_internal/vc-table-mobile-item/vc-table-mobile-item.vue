@@ -19,7 +19,7 @@
         :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].variant}`]"
         @click.stop="leftSwipeActions[0].clickHandler(item)"
       >
-        <vc-icon :icon="leftSwipeActions[0].icon"></vc-icon>
+        <VcIcon :icon="leftSwipeActions[0].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
           {{ leftSwipeActions[0].title }}
         </div>
@@ -44,7 +44,7 @@
         ]"
         @click.stop="rightSwipeActions[0].clickHandler(item)"
       >
-        <vc-icon :icon="rightSwipeActions[0].icon"></vc-icon>
+        <VcIcon :icon="rightSwipeActions[0].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
           {{ rightSwipeActions[0].title }}
         </div>
@@ -59,7 +59,7 @@
         ]"
         @click.stop="rightSwipeActions[1].clickHandler(item)"
       >
-        <vc-icon :icon="rightSwipeActions[1].icon"></vc-icon>
+        <VcIcon :icon="rightSwipeActions[1].icon"></VcIcon>
         <div class="vc-table-mobile__item-action-text">
           {{ rightSwipeActions[1].title }}
         </div>
@@ -71,7 +71,7 @@
           class="vc-table-mobile__item-action"
           @click.stop="isActionsPopupVisible = true"
         >
-          <vc-icon icon="fas fa-ellipsis-h"></vc-icon>
+          <VcIcon icon="fas fa-ellipsis-h"></VcIcon>
           <div class="vc-table-mobile__item-action-text">More</div>
         </div>
 
@@ -83,12 +83,12 @@
                 <span class="vc-table-mobile__item-actions-popup-title">
                   {{ $t("All actions") }}
                 </span>
-                <vc-icon
+                <VcIcon
                   class="vc-table-mobile__item-actions-popup-close"
                   icon="fas fa-times-circle"
                   size="xl"
                   @click="isActionsPopupVisible = false"
-                ></vc-icon>
+                ></VcIcon>
               </div>
 
               <div class="vc-table-mobile__item-actions-popup-items">
@@ -98,7 +98,7 @@
                   class="vc-table-mobile__item-actions-popup-item"
                   @click="itemAction.clickHandler(item)"
                 >
-                  <vc-icon :icon="itemAction.icon" size="xl"></vc-icon>
+                  <VcIcon :icon="itemAction.icon" size="xl"></VcIcon>
                   <div class="vc-table-mobile__item-actions-popup-item-title">
                     {{ itemAction.title }}
                   </div>
@@ -112,158 +112,139 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
-import { IActionBuilderResult } from "../../../../../";
+<script lang="ts" setup>
+import { computed, ref, watch } from "vue";
+import { IActionBuilderResult } from "../../../../../typings";
 
-export default defineComponent({
-  props: {
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    actionBuilder: {
-      type: Function,
-      default: undefined,
-    },
-
-    swipingItem: {
-      type: String,
-      default: null,
-    },
+const props = defineProps({
+  item: {
+    type: Object,
+    default: () => ({}),
   },
 
-  emits: ["swipeStart"],
+  actionBuilder: {
+    type: Function,
+    default: undefined,
+  },
 
-  setup(props, { emit }) {
-    const offsetX = ref(0);
-    const startX = ref(0);
-    const startY = ref(0);
-    const startOffsetX = ref(0);
-    const isMoving = ref(false);
-    const threshold = 10;
-    const maxWidth = 80;
-    const isActionsPopupVisible = ref(false);
-    const itemActions = ref([]);
-
-    watch(
-      () => props.swipingItem,
-      (newVal) => {
-        if (newVal !== props.item.id) {
-          handleOffset();
-        }
-      }
-    );
-
-    const rightSwipeActions = computed(
-      () =>
-        itemActions.value &&
-        itemActions.value.length &&
-        itemActions.value.filter(
-          (actions: IActionBuilderResult) => !actions.leftActions
-        )
-    );
-    const leftSwipeActions = computed(
-      () =>
-        itemActions.value &&
-        itemActions.value.length &&
-        itemActions.value.filter(
-          (actions: IActionBuilderResult) => actions.leftActions
-        )
-    );
-
-    function handleOffset() {
-      if (
-        itemActions.value.some(
-          (action: IActionBuilderResult) => action.leftActions
-        )
-      ) {
-        offsetX.value = -maxWidth;
-        startOffsetX.value = offsetX.value;
-      } else {
-        offsetX.value = 0;
-        startOffsetX.value = 0;
-      }
-    }
-
-    async function touchStart(e: TouchEvent): Promise<void> {
-      startX.value = e.touches[0].clientX;
-      startY.value = e.touches[0].clientY;
-      startOffsetX.value = offsetX.value;
-      isMoving.value = true;
-
-      if (!itemActions.value.length) {
-        if (typeof props.actionBuilder === "function") {
-          itemActions.value = await props.actionBuilder(props.item);
-
-          handleOffset();
-        }
-      }
-    }
-
-    function touchMove(e: TouchEvent): void {
-      emit("swipeStart", props.item.id);
-      if (itemActions.value && itemActions.value.length) {
-        const deltaX = e.touches[0].clientX - startX.value;
-        const deltaY = e.touches[0].clientY - startY.value;
-
-        if (
-          Math.abs(deltaX) > threshold &&
-          (leftSwipeActions.value && leftSwipeActions.value.length
-            ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
-            : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
-          startOffsetX.value + deltaX < 0
-        ) {
-          if (Math.abs(deltaY) < threshold * 2) {
-            e.preventDefault();
-          }
-          offsetX.value = startOffsetX.value + deltaX;
-        }
-      }
-    }
-
-    function touchEnd(): void {
-      const absoluteOffsetX = Math.abs(offsetX.value);
-      if (absoluteOffsetX < maxWidth) {
-        offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
-      } else {
-        offsetX.value =
-          absoluteOffsetX <= maxWidth * 2 - threshold * 2
-            ? -maxWidth
-            : -maxWidth * 2;
-      }
-
-      isMoving.value = false;
-    }
-
-    function touchCancel(): void {
-      const absoluteOffsetX = Math.abs(offsetX.value);
-      if (absoluteOffsetX < maxWidth) {
-        offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
-      } else {
-        offsetX.value =
-          absoluteOffsetX <= maxWidth * 2 - threshold * 2
-            ? -maxWidth
-            : -maxWidth * 2;
-      }
-
-      isMoving.value = false;
-    }
-
-    return {
-      offsetX,
-      isActionsPopupVisible,
-      rightSwipeActions,
-      leftSwipeActions,
-      isMoving,
-      touchStart,
-      touchMove,
-      touchEnd,
-      touchCancel,
-    };
+  swipingItem: {
+    type: String,
+    default: null,
   },
 });
+
+const emit = defineEmits(["swipeStart"]);
+const offsetX = ref(0);
+const startX = ref(0);
+const startY = ref(0);
+const startOffsetX = ref(0);
+const isMoving = ref(false);
+const threshold = 10;
+const maxWidth = 80;
+const isActionsPopupVisible = ref(false);
+const itemActions = ref([]);
+
+watch(
+  () => props.swipingItem,
+  (newVal) => {
+    if (newVal !== props.item.id) {
+      handleOffset();
+    }
+  }
+);
+
+const rightSwipeActions = computed(
+  () =>
+    itemActions.value &&
+    itemActions.value.length &&
+    itemActions.value.filter(
+      (actions: IActionBuilderResult) => !actions.leftActions
+    )
+);
+const leftSwipeActions = computed(
+  () =>
+    itemActions.value &&
+    itemActions.value.length &&
+    itemActions.value.filter(
+      (actions: IActionBuilderResult) => actions.leftActions
+    )
+);
+
+function handleOffset() {
+  if (
+    itemActions.value.some((action: IActionBuilderResult) => action.leftActions)
+  ) {
+    offsetX.value = -maxWidth;
+    startOffsetX.value = offsetX.value;
+  } else {
+    offsetX.value = 0;
+    startOffsetX.value = 0;
+  }
+}
+
+async function touchStart(e: TouchEvent): Promise<void> {
+  startX.value = e.touches[0].clientX;
+  startY.value = e.touches[0].clientY;
+  startOffsetX.value = offsetX.value;
+  isMoving.value = true;
+
+  if (!itemActions.value.length) {
+    if (typeof props.actionBuilder === "function") {
+      itemActions.value = await props.actionBuilder(props.item);
+
+      handleOffset();
+    }
+  }
+}
+
+function touchMove(e: TouchEvent): void {
+  emit("swipeStart", props.item.id);
+  if (itemActions.value && itemActions.value.length) {
+    const deltaX = e.touches[0].clientX - startX.value;
+    const deltaY = e.touches[0].clientY - startY.value;
+
+    if (
+      Math.abs(deltaX) > threshold &&
+      (leftSwipeActions.value && leftSwipeActions.value.length
+        ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
+        : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
+      startOffsetX.value + deltaX < 0
+    ) {
+      if (Math.abs(deltaY) < threshold * 2) {
+        e.preventDefault();
+      }
+      offsetX.value = startOffsetX.value + deltaX;
+    }
+  }
+}
+
+function touchEnd(): void {
+  const absoluteOffsetX = Math.abs(offsetX.value);
+  if (absoluteOffsetX < maxWidth) {
+    offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
+  } else {
+    offsetX.value =
+      absoluteOffsetX <= maxWidth * 2 - threshold * 2
+        ? -maxWidth
+        : -maxWidth * 2;
+  }
+
+  isMoving.value = false;
+}
+
+function touchCancel(): void {
+  const absoluteOffsetX = Math.abs(offsetX.value);
+  if (absoluteOffsetX < maxWidth) {
+    offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
+  } else {
+    offsetX.value =
+      absoluteOffsetX <= maxWidth * 2 - threshold * 2
+        ? -maxWidth
+        : -maxWidth * 2;
+  }
+
+  isMoving.value = false;
+}
 </script>
 
 <style lang="less">

@@ -1,11 +1,6 @@
-/* eslint-disable */
 import { computed, ref } from "vue";
 import { useUser } from "@virtoshell/core";
-import {
-  AssetEntryClient,
-  AssetEntry,
-} from "@virtoshell/api-client";
-
+import { AssetEntryClient, AssetEntry } from "@virtoshell/api-client";
 
 export default () => {
   const loading = ref(false);
@@ -16,7 +11,7 @@ export default () => {
     const { getAccessToken } = useUser();
     const client = new AssetEntryClient();
     try {
-      client.setAuthToken(await getAccessToken() as string);
+      client.setAuthToken((await getAccessToken()) as string);
       asset.value = await client.get(undefined, id);
     } catch (e) {
       console.error(e);

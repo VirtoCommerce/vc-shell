@@ -9,32 +9,27 @@
       />
       <span class="vc-switch__slider"></span>
     </label>
-    <vc-hint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
+    <VcHint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
       {{ tooltip }}
-    </vc-hint>
+    </VcHint>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
+defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false,
+  },
 
-export default defineComponent({
-  name: "VcSwitch",
-  props: {
-    modelValue: {
-      type: Boolean,
-      default: false,
-    },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    tooltip: {
-      type: String,
-      default: "",
-    },
+  tooltip: {
+    type: String,
+    default: "",
   },
 });
 </script>

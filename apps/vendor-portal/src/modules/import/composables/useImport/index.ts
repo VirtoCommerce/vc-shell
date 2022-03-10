@@ -17,7 +17,7 @@ import {
   ISearchImportProfilesHistoryQuery,
 } from "../../../../api_client/api-client";
 import { useLogger, useNotifications, useUser } from "@virtoshell/core";
-import { cloneDeep as _cloneDeep } from "lodash";
+import { cloneDeep as _cloneDeep } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
 

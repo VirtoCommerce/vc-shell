@@ -1,20 +1,18 @@
 {
   "name": "@virtoshell/api-client",
-  "version": "0.0.123",
+  "version": "0.1.0",
   "description": "",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/api-client.cjs.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "watch": "tsc -w -p tsconfig.build.json"
+    "build": "vite build"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "lodash": "^4.17.21",
-    "typescript": "^4.3.5"
+    "typescript": "^4.6.2"
   }
 }

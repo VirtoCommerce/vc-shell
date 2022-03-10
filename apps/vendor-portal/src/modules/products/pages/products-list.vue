@@ -1,9 +1,5 @@
-<docs>
-About component.
-</docs>
-
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('PRODUCTS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
@@ -12,7 +8,7 @@ About component.
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       class="vc-flex-grow_1"
       :loading="loading"
       :expanded="expanded"
@@ -39,14 +35,14 @@ About component.
         <h2 v-if="$isMobile.value">
           {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
-        <vc-container no-padding>
-          <vc-row>
-            <vc-col class="filter-col vc-padding_s">
+        <VcContainer no-padding>
+          <VcRow>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
-                <vc-checkbox
+                <VcCheckbox
                   v-for="status in SellerProductStatus"
                   :key="status"
                   class="vc-margin-bottom_s"
@@ -54,106 +50,96 @@ About component.
                   @update:modelValue="
                     filter.status = $event ? status : undefined
                   "
-                  >{{ status }}</vc-checkbox
+                  >{{ status }}</VcCheckbox
                 >
               </div>
-            </vc-col>
-            <vc-col class="filter-col vc-padding_s">
+            </VcCol>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TITLE") }}
               </div>
               <div>
-                <vc-input
+                <VcInput
                   :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.FROM')"
                   class="vc-margin-bottom_m"
                   :modelValue="filter.priceStart"
                   @update:modelValue="filter.priceStart = $event"
-                ></vc-input>
-                <vc-input
+                ></VcInput>
+                <VcInput
                   :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TO')"
                   :modelValue="filter.priceEnd"
                   @update:modelValue="filter.priceEnd = $event"
-                ></vc-input>
+                ></VcInput>
               </div>
-            </vc-col>
-            <vc-col class="filter-col vc-padding_s">
+            </VcCol>
+            <VcCol class="filter-col vc-padding_s">
               <div class="group-title">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.TITLE") }}
               </div>
               <div>
-                <vc-input
+                <VcInput
                   :label="
                     $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.START_DATE')
                   "
                   type="date"
                   class="vc-margin-bottom_m"
-                ></vc-input>
-                <vc-input
+                ></VcInput>
+                <VcInput
                   :label="
                     $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.END_DATE')
                   "
                   type="date"
-                ></vc-input>
+                ></VcInput>
               </div>
-            </vc-col>
-          </vc-row>
-          <vc-row>
-            <vc-col class="vc-padding_s">
+            </VcCol>
+          </VcRow>
+          <VcRow>
+            <VcCol class="vc-padding_s">
               <div class="vc-flex vc-flex-justify_end">
-                <vc-button
+                <VcButton
                   outline
                   class="vc-margin-right_l"
                   @click="resetFilters"
                   >{{
                     $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</vc-button
+                  }}</VcButton
                 >
-                <vc-button @click="applyFilters">{{
+                <VcButton @click="applyFilters">{{
                   $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
-                }}</vc-button>
+                }}</VcButton>
               </div>
-            </vc-col>
-          </vc-row>
-        </vc-container>
+            </VcCol>
+          </VcRow>
+        </VcContainer>
       </template>
 
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
-          <vc-button @click="resetSearch">{{
+          <VcButton @click="resetSearch">{{
             $t("PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
-          }}</vc-button>
+          }}</VcButton>
         </div>
       </template>
 
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
-          <vc-button @click="addProduct">{{
+          <VcButton @click="addProduct">{{
             $t("PRODUCTS.PAGES.LIST.EMPTY.ADD")
-          }}</vc-button>
+          }}</VcButton>
         </div>
       </template>
 
@@ -161,9 +147,9 @@ About component.
       <template v-slot:item_name="itemData">
         <div class="vc-flex vc-flex-column">
           <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-          <vc-hint class="vc-ellipsis vc-margin-top_xs">
+          <VcHint class="vc-ellipsis vc-margin-top_xs">
             {{ itemData.item.path }}
-          </vc-hint>
+          </VcHint>
         </div>
       </template>
 
@@ -179,7 +165,7 @@ About component.
         <div
           class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
         >
-          <vc-image
+          <VcImage
             class="vc-flex-shrink_0"
             aspect="1x1"
             size="m"
@@ -190,7 +176,7 @@ About component.
             <div class="vc-font-weight_bold vc-font-size_l">
               {{ itemData.item.name }}
             </div>
-            <vc-hint class="vc-margin-top_xs">{{ itemData.item.path }}</vc-hint>
+            <VcHint class="vc-margin-top_xs">{{ itemData.item.path }}</VcHint>
 
             <div class="vc-margin-top_s vc-margin-bottom_m">
               <mp-product-status
@@ -200,17 +186,10 @@ About component.
             </div>
 
             <div
-              class="
-                vc-margin-top_m
-                vc-fill_width
-                vc-flex
-                vc-flex-justify_space-between
-              "
+              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-                <vc-hint>{{
-                  $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
-                }}</vc-hint>
+                <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -218,9 +197,7 @@ About component.
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
-                <vc-hint>{{
-                  $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED")
-                }}</vc-hint>
+                <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{
                     itemData.item.createdDate &&
@@ -232,8 +209,8 @@ About component.
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">
@@ -245,6 +222,13 @@ import {
   watch,
   reactive,
 } from "vue";
+
+export default defineComponent({
+  url: "products",
+});
+</script>
+
+<script lang="ts" setup>
 import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -257,198 +241,201 @@ import {
 } from "../../../types";
 import { ISellerProduct } from "../../../api_client";
 
-export default defineComponent({
-  url: "products",
-
-  components: {
-    MpProductStatus,
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
 
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+  closable: {
+    type: Boolean,
+    default: true,
   },
 
-  setup(props, { emit }) {
-    const logger = useLogger();
-    const { debounce } = useFunctions();
-    const { t } = useI18n();
-    const {
-      products,
-      totalCount,
-      pages,
-      currentPage,
-      loadProducts,
-      loading,
-      searchQuery,
-      SellerProductStatus,
-    } = useProducts();
-    const filter = reactive<{
-      status?: string;
-      priceStart?: string;
-      priceEnd?: string;
-    }>({});
-    const appliedFilter = ref({});
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    const sort = ref("createdDate:DESC");
-    const searchValue = ref();
-    const selectedItemId = ref();
+  options: {
+    type: Object,
+    default: () => ({}),
+  },
+});
+const emit = defineEmits(["page:close", "page:open"]);
+const logger = useLogger();
+const { debounce } = useFunctions();
+const { t } = useI18n();
+const {
+  products,
+  totalCount,
+  pages,
+  currentPage,
+  loadProducts,
+  loading,
+  searchQuery,
+  SellerProductStatus,
+} = useProducts();
+const filter = reactive<{
+  status?: string;
+  priceStart?: string;
+  priceEnd?: string;
+}>({});
+const appliedFilter = ref({});
 
-    watch(sort, async (value) => {
-      await loadProducts({ ...searchQuery.value, sort: value });
-    });
+const sort = ref("createdDate:DESC");
+const searchValue = ref();
+const selectedItemId = ref();
 
-    onMounted(async () => {
-      selectedItemId.value = props.param;
-      await loadProducts({ sort: sort.value });
-    });
+watch(sort, async (value) => {
+  await loadProducts({ ...searchQuery.value, sort: value });
+});
 
-    const reload = async () => {
-      logger.debug("Products list reload");
-      await loadProducts({
-        ...searchQuery.value,
-        skip: (currentPage.value - 1) * searchQuery.value.take,
-        sort: sort.value,
-      });
-    };
+onMounted(async () => {
+  selectedItemId.value = props.param;
+  await loadProducts({ sort: sort.value });
+});
 
-    const onSearchList = debounce(async (keyword: string) => {
-      logger.debug(`Products list search by ${keyword}`);
-      searchValue.value = keyword;
-      await loadProducts({
-        ...searchQuery.value,
-        keyword,
-      });
-    }, 200);
+const reload = async () => {
+  logger.debug("Products list reload");
+  await loadProducts({
+    ...searchQuery.value,
+    skip: (currentPage.value - 1) * searchQuery.value.take,
+    sort: sort.value,
+  });
+};
 
-    const bladeToolbar = ref<IBladeToolbar[]>([
-      {
-        id: "refresh",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
-        icon: "fas fa-sync-alt",
-        async clickHandler() {
-          await reload();
-        },
-      },
-      {
-        id: "add",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
-        icon: "fas fa-plus",
-        async clickHandler() {
-          emit("page:open", {
-            component: ProductsEdit,
-          });
-        },
-      },
-      {
-        id: "batchDelete",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
-        icon: "fas fa-trash",
-        isVisible: false,
-        async clickHandler() {
-          logger.debug("Delete selected products");
-        },
-      },
-    ]);
+const onSearchList = debounce(async (keyword: string) => {
+  logger.debug(`Products list search by ${keyword}`);
+  searchValue.value = keyword;
+  await loadProducts({
+    ...searchQuery.value,
+    keyword,
+  });
+}, 200);
 
-    const columns = ref<ITableColumns[]>([
-      {
-        id: "imgSrc",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-        width: 60,
-        alwaysVisible: true,
-        type: "image",
-      },
-      {
-        id: "name",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
-        sortable: true,
-        alwaysVisible: true,
-      },
-      {
-        id: "createdDate",
-        title: computed(() =>
-          t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
-        ),
-        width: 140,
-        sortable: true,
-        type: "date-ago",
-      },
-      {
-        id: "isPublished",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
-        type: "status-icon",
-        width: 180,
-        align: "center",
-        sortable: true,
-      },
-      {
-        id: "status",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-        width: 180,
-        sortable: true,
-      },
-      {
-        id: "gtin",
-        field: "productData.gtin",
-        title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
-        width: 180,
-        alwaysVisible: true,
-      },
-    ]);
-
-    const onItemClick = (item: { id: string }) => {
+const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "refresh",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
+    icon: "fas fa-sync-alt",
+    async clickHandler() {
+      await reload();
+    },
+  },
+  {
+    id: "add",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
+    icon: "fas fa-plus",
+    async clickHandler() {
       emit("page:open", {
         component: ProductsEdit,
-        param: item.id,
-        onOpen() {
-          selectedItemId.value = item.id;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
       });
-    };
+    },
+  },
+  {
+    id: "batchDelete",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
+    icon: "fas fa-trash",
+    isVisible: false,
+    async clickHandler() {
+      logger.debug("Delete selected products");
+    },
+  },
+]);
 
-    const onHeaderClick = (item: ITableColumns) => {
-      const sortBy = [":DESC", ":ASC", ""];
-      if (item.sortable) {
-        item.sortDirection = (item.sortDirection ?? 0) + 1;
-        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
-      }
-    };
+const tableColumns = ref<ITableColumns[]>([
+  {
+    id: "imgSrc",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
+    width: 60,
+    alwaysVisible: true,
+    type: "image",
+  },
+  {
+    id: "name",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
+    sortable: true,
+    alwaysVisible: true,
+  },
+  {
+    id: "createdDate",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    width: 140,
+    sortable: true,
+    type: "date-ago",
+  },
+  {
+    id: "isPublished",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
+    type: "status-icon",
+    width: 180,
+    align: "center",
+    sortable: true,
+  },
+  {
+    id: "status",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    width: 180,
+    sortable: true,
+  },
+  {
+    id: "gtin",
+    field: "productData.gtin",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
+    width: 180,
+    alwaysVisible: true,
+  },
+]);
 
-    const onPaginationClick = async (page: number) => {
-      await loadProducts({
-        ...searchQuery.value,
-        skip: (page - 1) * searchQuery.value.take,
-      });
-    };
+const columns = computed(() => {
+  if (props.expanded) {
+    return tableColumns.value;
+  } else {
+    return tableColumns.value.filter((item) => item.alwaysVisible === true);
+  }
+});
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
+const activeFilterCount = computed(
+  () => Object.values(appliedFilter.value).filter((item) => !!item).length
+);
 
-    const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
-      let result = [];
+const onItemClick = (item: { id: string }) => {
+  emit("page:open", {
+    component: ProductsEdit,
+    param: item.id,
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });
+};
 
-      const statuses =
-        product.status?.split(",").map((item) => item.trim()) || [];
+const onHeaderClick = (item: ITableColumns) => {
+  const sortBy = [":DESC", ":ASC", ""];
+  if (item.sortable) {
+    item.sortDirection = (item.sortDirection ?? 0) + 1;
+    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+  }
+};
 
-      /*if (statuses.includes("Published")) {
+const onPaginationClick = async (page: number) => {
+  await loadProducts({
+    ...searchQuery.value,
+    skip: (page - 1) * searchQuery.value.take,
+  });
+};
+
+const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
+  let result = [];
+
+  // const statuses =
+  //   product.status?.split(",").map((item) => item.trim()) || [];
+
+  /*if (statuses.includes("Published")) {
         result.push({
           icon: "fas fa-times",
           title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
@@ -479,7 +466,7 @@ export default defineComponent({
         },
       });*/
 
-      /*result.push(
+  /*result.push(
         ...[
           {
             icon: "fas fa-clock",
@@ -498,75 +485,42 @@ export default defineComponent({
         ]
       );*/
 
-      return result;
-    };
+  return result;
+};
 
-    return {
-      loading,
-      bladeToolbar,
-      columns: computed(() => {
-        if (props.expanded) {
-          return columns.value;
-        } else {
-          return columns.value.filter((item) => item.alwaysVisible === true);
-        }
-      }),
-      searchQuery,
-      products,
-      actionBuilder,
-      totalCount,
-      pages,
-      currentPage,
-      sort,
-      moment,
-      reload,
-      selectedItemId,
-      async resetSearch() {
-        searchValue.value = "";
-        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
-        await loadProducts({
-          ...searchQuery.value,
-          ...filter,
-          keyword: "",
-        });
-        appliedFilter.value = {};
-      },
-      addProduct() {
-        emit("page:open", {
-          component: ProductsEdit,
-        });
-      },
-      onItemClick,
-      onHeaderClick,
-      onPaginationClick,
-      searchValue,
-      onSearchList,
-      title: computed(() => t("PRODUCTS.PAGES.LIST.TITLE")),
-      filter,
-      SellerProductStatus,
-      activeFilterCount: computed(
-        () => Object.values(appliedFilter.value).filter((item) => !!item).length
-      ),
-      async applyFilters() {
-        await loadProducts({
-          ...searchQuery.value,
-          ...filter,
-        });
-        appliedFilter.value = {
-          ...filter,
-        };
-      },
-      async resetFilters() {
-        Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
-        await loadProducts({
-          ...searchQuery.value,
-          ...filter,
-        });
-        appliedFilter.value = {};
-      },
-    };
-  },
-});
+async function resetSearch() {
+  searchValue.value = "";
+  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+  await loadProducts({
+    ...searchQuery.value,
+    ...filter,
+    keyword: "",
+  });
+  appliedFilter.value = {};
+}
+function addProduct() {
+  emit("page:open", {
+    component: ProductsEdit,
+  });
+}
+
+async function applyFilters() {
+  await loadProducts({
+    ...searchQuery.value,
+    ...filter,
+  });
+  appliedFilter.value = {
+    ...filter,
+  };
+}
+async function resetFilters() {
+  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+  await loadProducts({
+    ...searchQuery.value,
+    ...filter,
+  });
+  appliedFilter.value = {};
+}
 </script>
 
 <style lang="less">

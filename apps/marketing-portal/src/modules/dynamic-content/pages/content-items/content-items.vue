@@ -1,5 +1,5 @@
 <template>
-  <vc-blade
+  <VcBlade
     :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE')"
     width="70%"
     :expanded="expanded"
@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <vc-table
+    <VcTable
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
@@ -28,21 +28,16 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.NOT_FOUND") }}
           </div>
-          <vc-button @click="resetSearch">
+          <VcButton @click="resetSearch">
             {{
               $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.RESET_SEARCH")
-            }}</vc-button
+            }}</VcButton
           >
         </div>
       </template>
@@ -50,20 +45,15 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="
-            vc-fill_all
-            vc-flex vc-flex-column
-            vc-flex-align_center
-            vc-flex-justify_center
-          "
+          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{ $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.IS_EMPTY") }}
           </div>
-          <vc-button>{{
+          <VcButton>{{
             $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.ADD_ITEM")
-          }}</vc-button>
+          }}</VcButton>
         </div>
       </template>
 
@@ -78,29 +68,24 @@
             </div>
 
             <div
-              class="
-                vc-margin-top_m
-                vc-fill_width
-                vc-flex
-                vc-flex-justify_space-between
-              "
+              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_2">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ moment(itemData.item.created).format("L") }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.description }}
                 </div>
@@ -108,27 +93,22 @@
             </div>
 
             <div
-              class="
-                vc-margin-top_m
-                vc-fill_width
-                vc-flex
-                vc-flex-justify_space-between
-              "
+              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
               <div class="vc-ellipsis vc-flex-grow_2">
-                <vc-hint>{{
+                <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"
                   )
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.path }}
                 </div>
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
-                <vc-hint>{{
+                <VcHint>{{
                   $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID")
-                }}</vc-hint>
+                }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.id }}
                 </div>
@@ -137,200 +117,183 @@
           </div>
         </div>
       </template>
-    </vc-table>
-  </vc-blade>
+    </VcTable>
+  </VcBlade>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+
+export default defineComponent({
+  url: "content-items",
+});
+</script>
+
+<script lang="ts" setup>
 import { useFunctions, useI18n } from "@virtoshell/core";
 import { IBladeToolbar, ITableColumns } from "../../../../types";
 import moment from "moment";
 import ContentItemEdit from "./content-item-edit.vue";
 import { useContent } from "../../composables";
 
-export default defineComponent({
-  url: "content-items",
-  props: {
-    expanded: {
-      type: Boolean,
-      default: true,
-    },
-
-    closable: {
-      type: Boolean,
-      default: true,
-    },
-
-    param: {
-      type: String,
-      default: undefined,
-    },
-
-    options: {
-      type: Object,
-      default: () => ({}),
-    },
+const props = defineProps({
+  expanded: {
+    type: Boolean,
+    default: true,
   },
-  setup(props, { emit }) {
-    const { t } = useI18n();
-    const selectedItemId = ref();
-    const {
-      contentItems,
-      loading,
-      totalCount,
-      pages,
-      currentPage,
-      searchQuery,
-      loadContentItems,
-    } = useContent({ responseGroup: "18" });
-    const searchValue = ref();
-    const { debounce } = useFunctions();
-    const sort = ref("startDate:DESC");
-    const bladeToolbar = reactive<IBladeToolbar[]>([
-      {
-        id: "refresh",
-        title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.REFRESH"),
-        icon: "fas fa-sync-alt",
-        clickHandler() {
-          reload();
-        },
-      },
-      {
-        id: "add",
-        title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.ADD"),
-        icon: "fas fa-plus",
-        clickHandler() {
-          alert("add");
-        },
-      },
-    ]);
-    const columns = ref<ITableColumns[]>([
-      {
-        id: "name",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.NAME"),
-        alwaysVisible: true,
-        sortable: true,
-      },
-      {
-        id: "createdDate",
-        title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"
-        ),
-        sortable: true,
-        alwaysVisible: true,
-        width: 150,
-        type: "date",
-        format: "L",
-      },
-      {
-        id: "description",
-        title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
-        ),
-        width: 150,
-        sortable: true,
-      },
-      {
-        id: "path",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"),
-        width: 150,
-        sortable: true,
-      },
-      {
-        id: "id",
-        title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID"),
-        sortable: true,
-        width: 300,
-      },
-    ]);
 
-    watch(sort, async (value) => {
-      await loadContentItems({ ...searchQuery.value, sort: value });
-    });
+  closable: {
+    type: Boolean,
+    default: true,
+  },
 
-    onMounted(async () => {
-      if (props.param) {
-        return await loadContentItems({
-          sort: sort.value,
-          folderId: props.param,
-        });
-      }
-      await loadContentItems({ sort: sort.value });
-    });
+  param: {
+    type: String,
+    default: undefined,
+  },
 
-    async function reload() {
-      await loadContentItems({
-        ...searchQuery.value,
-        skip: (currentPage.value - 1) * searchQuery.value.take,
-        sort: sort.value,
-      });
-    }
-
-    async function onPaginationClick(page: number) {
-      await loadContentItems({
-        skip: (page - 1) * 20,
-      });
-    }
-
-    const onSearchList = debounce(async (keyword: string) => {
-      searchValue.value = keyword;
-      await loadContentItems({
-        keyword,
-      });
-    }, 200);
-
-    function onHeaderClick(item: ITableColumns) {
-      const sortBy = [":DESC", ":ASC", ""];
-      if (item.sortable) {
-        item.sortDirection = (item.sortDirection ?? 0) + 1;
-        sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
-      }
-    }
-
-    async function resetSearch() {
-      searchValue.value = "";
-      await loadContentItems({
-        ...searchQuery.value,
-        keyword: "",
-      });
-    }
-
-    const onItemClick = (item: { id: string }) => {
-      emit("page:open", {
-        component: ContentItemEdit,
-        param: item.id,
-        onOpen() {
-          selectedItemId.value = item.id;
-        },
-        onClose() {
-          selectedItemId.value = undefined;
-        },
-      });
-    };
-
-    return {
-      title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE"),
-      bladeToolbar,
-      loading,
-      columns,
-      contentItems,
-      selectedItemId,
-      totalCount,
-      pages,
-      currentPage,
-      searchValue,
-      sort,
-      onItemClick,
-      moment,
-      reload,
-      onPaginationClick,
-      onSearchList,
-      onHeaderClick,
-      resetSearch,
-    };
+  options: {
+    type: Object,
+    default: () => ({}),
   },
 });
+
+const emit = defineEmits(["page:open", "page:close"]);
+const { t } = useI18n();
+const selectedItemId = ref();
+const {
+  contentItems,
+  loading,
+  totalCount,
+  pages,
+  currentPage,
+  searchQuery,
+  loadContentItems,
+} = useContent({ responseGroup: "18" });
+const searchValue = ref();
+const { debounce } = useFunctions();
+const sort = ref("startDate:DESC");
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE");
+const bladeToolbar = reactive<IBladeToolbar[]>([
+  {
+    id: "refresh",
+    title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.REFRESH"),
+    icon: "fas fa-sync-alt",
+    clickHandler() {
+      reload();
+    },
+  },
+  {
+    id: "add",
+    title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.ADD"),
+    icon: "fas fa-plus",
+    clickHandler() {
+      alert("add");
+    },
+  },
+]);
+const columns = ref<ITableColumns[]>([
+  {
+    id: "name",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.NAME"),
+    alwaysVisible: true,
+    sortable: true,
+  },
+  {
+    id: "createdDate",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"),
+    sortable: true,
+    alwaysVisible: true,
+    width: 150,
+    type: "date",
+    format: "L",
+  },
+  {
+    id: "description",
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
+    ),
+    width: 150,
+    sortable: true,
+  },
+  {
+    id: "path",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"),
+    width: 150,
+    sortable: true,
+  },
+  {
+    id: "id",
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID"),
+    sortable: true,
+    width: 300,
+  },
+]);
+
+watch(sort, async (value) => {
+  await loadContentItems({ ...searchQuery.value, sort: value });
+});
+
+onMounted(async () => {
+  if (props.param) {
+    return await loadContentItems({
+      sort: sort.value,
+      folderId: props.param,
+    });
+  }
+  await loadContentItems({ sort: sort.value });
+});
+
+async function reload() {
+  await loadContentItems({
+    ...searchQuery.value,
+    skip: (currentPage.value - 1) * searchQuery.value.take,
+    sort: sort.value,
+  });
+}
+
+async function onPaginationClick(page: number) {
+  await loadContentItems({
+    skip: (page - 1) * 20,
+  });
+}
+
+const onSearchList = debounce(async (keyword: string) => {
+  searchValue.value = keyword;
+  await loadContentItems({
+    keyword,
+  });
+}, 200);
+
+function onHeaderClick(item: ITableColumns) {
+  const sortBy = [":DESC", ":ASC", ""];
+  if (item.sortable) {
+    item.sortDirection = (item.sortDirection ?? 0) + 1;
+    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+  }
+}
+
+async function resetSearch() {
+  searchValue.value = "";
+  await loadContentItems({
+    ...searchQuery.value,
+    keyword: "",
+  });
+}
+
+const onItemClick = (item: { id: string }) => {
+  emit("page:open", {
+    component: ContentItemEdit,
+    param: item.id,
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });
+};
 </script>
 
 <style lang="less" scoped></style>

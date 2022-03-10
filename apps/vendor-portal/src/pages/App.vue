@@ -1,5 +1,5 @@
 <template>
-  <vc-app
+  <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
     :toolbarItems="toolbarItems"
@@ -11,20 +11,20 @@
   >
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
-      <dashboard-page v-bind="scope" />
+      <DashboardPage v-bind="scope" />
     </template>
 
     <!-- Set up login form -->
     <template v-slot:login>
-      <login-page
+      <LoginPage
         logo="/assets/logo-white.svg"
         background="/assets/background.jpg"
         title="Vendor Portal"
-      ></login-page>
+      ></LoginPage>
     </template>
 
     <template v-slot:notifications>
-      <vc-notification
+      <VcNotification
         v-for="item in popupNotifications"
         :key="item.id"
         :timeout="5000"
@@ -32,7 +32,7 @@
         @expired="markAsReaded(item)"
       >
         {{ item.title }}
-      </vc-notification>
+      </VcNotification>
     </template>
 
     <template v-slot:passwordChange>
@@ -41,12 +41,11 @@
         @close="isChangePasswordActive = false"
       ></change-password>
     </template>
-  </vc-app>
+  </VcApp>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
-  defineComponent,
   computed,
   onMounted,
   ref,
@@ -77,214 +76,188 @@ import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
 
-export default defineComponent({
-  name: "App",
+const {
+  t,
+  locale: currentLocale,
+  availableLocales,
+  getLocaleMessage,
+} = useI18n();
+const log = useLogger();
+const signalr = useSignalR();
+const { user, loadUser, signOut } = useUser();
+const {
+  popupNotifications,
+  notifications,
+  addNotification,
+  dismiss,
+  markAsReaded,
+} = useNotifications();
+const route = useRoute();
+const router = useRouter();
+const isAuthorized = ref(false);
+const isReady = ref(false);
+const isChangePasswordActive = ref(false);
+const pages = inject("pages");
+const isDesktop = inject<Ref<boolean>>("isDesktop");
+const isMobile = inject<Ref<boolean>>("isMobile");
+const version = import.meta.env.PACKAGE_VERSION;
 
-  components: {
-    LoginPage,
-    DashboardPage,
-    ChangePassword,
-  },
-
-  setup() {
-    const {
-      t,
-      locale: currentLocale,
-      availableLocales,
-      getLocaleMessage,
-    } = useI18n();
-    const log = useLogger();
-    const signalr = useSignalR();
-    const { user, loadUser, signOut } = useUser();
-    const {
-      popupNotifications,
-      notifications,
-      addNotification,
-      dismiss,
-      markAsReaded,
-    } = useNotifications();
-    const route = useRoute();
-    const router = useRouter();
-    const isAuthorized = ref(false);
-    const isReady = ref(false);
-    const isChangePasswordActive = ref(false);
-    const pages = inject("pages");
-    const isDesktop = inject<Ref<boolean>>("isDesktop");
-    const isMobile = inject<Ref<boolean>>("isMobile");
-
-    signalr.on("Send", (message: PushNotification) => {
-      addNotification(message);
-    });
-
-    onMounted(async () => {
-      langInit();
-      await loadUser();
-      isReady.value = true;
-      if (!isAuthorized.value) {
-        router.push("/login");
-      }
-    });
-
-    watch(user, (value) => {
-      isAuthorized.value = !!value?.userName;
-    });
-
-    log.debug(`Initializing App`);
-
-    const toolbarItems = ref<IBladeToolbar[]>([
-      {
-        component: shallowRef(LanguageSelector),
-        componentOptions: {
-          value: computed(() => currentLocale.value),
-          title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
-          languageItems: computed(() =>
-            availableLocales.map((locale) => ({
-              lang: locale,
-              title: getLocaleMessage(locale).language_name,
-              clickHandler(lang: string) {
-                currentLocale.value = lang;
-                localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
-              },
-            }))
-          ),
-        },
-        isVisible: computed(() => {
-          return isDesktop.value
-            ? isDesktop.value
-            : isMobile.value
-            ? route.path === "/"
-            : false;
-        }),
-      },
-      {
-        isAccent: computed(() => {
-          return !!notifications.value.filter(
-            (notification) => notification.isNew
-          ).length;
-        }),
-        component: shallowRef(NotificationDropdown),
-        componentOptions: {
-          title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
-        },
-      },
-      {
-        component: shallowRef(UserDropdownButton),
-        componentOptions: {
-          avatar: "/assets/avatar.jpg",
-          name: computed(() => user.value?.userName),
-          role: computed(() =>
-            user.value?.isAdministrator ? "Administrator" : "Seller account"
-          ),
-          menuItems: [
-            {
-              title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
-              clickHandler() {
-                isChangePasswordActive.value = true;
-              },
-            },
-            {
-              title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-              async clickHandler() {
-                signOut();
-                router.push("/login");
-              },
-            },
-          ],
-        },
-        isVisible: isDesktop,
-      },
-    ]);
-
-    const mobileMenuItems = ref<IBladeToolbar[]>([
-      {
-        component: shallowRef(UserDropdownButton),
-        componentOptions: {
-          avatar: "/assets/avatar.jpg",
-          name: computed(() => user.value?.userName),
-          role: computed(() =>
-            user.value?.isAdministrator ? "Administrator" : "Seller account"
-          ),
-        },
-        isVisible: isMobile,
-      },
-    ]);
-
-    const menuItems = reactive<IMenuItems[]>([
-      {
-        title: computed(() => t("SHELL.MENU.DASHBOARD")),
-        icon: "fas fa-home",
-        isVisible: true,
-        clickHandler(app) {
-          app.openDashboard();
-          router.push("/");
-        },
-      },
-      {
-        title: computed(() => t("ORDERS.MENU.TITLE")),
-        icon: "fas fa-file-alt",
-        isVisible: true,
-        component: shallowRef(OrdersList),
-      },
-      {
-        title: computed(() => t("PRODUCTS.MENU.TITLE")),
-        icon: "fas fa-box-open",
-        isVisible: true,
-        component: shallowRef(ProductsList),
-      },
-      {
-        title: computed(() => t("OFFERS.MENU.TITLE")),
-        icon: "fas fa-file-invoice",
-        isVisible: true,
-        component: shallowRef(OffersList),
-      },
-      {
-        title: computed(() => t("IMPORT.MENU.TITLE")),
-        icon: "fas fa-file-import",
-        isVisible: true,
-        component: shallowRef(ImportProfileSelector),
-      },
-      {
-        title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
-        icon: "fas fa-key",
-        isVisible: isMobile,
-        clickHandler() {
-          isChangePasswordActive.value = true;
-        },
-      },
-      {
-        title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-        icon: "fas fa-sign-out-alt",
-        isVisible: isMobile,
-        clickHandler() {
-          signOut();
-          router.push("/login");
-        },
-      },
-    ]);
-
-    function langInit() {
-      try {
-        currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS");
-      } catch (err) {
-        currentLocale.value = "en";
-      }
-    }
-
-    return {
-      isAuthorized,
-      isReady,
-      pages,
-      version: process.env.PACKAGE_VERSION,
-      toolbarItems,
-      menuItems,
-      mobileMenuItems,
-      popupNotifications,
-      isChangePasswordActive,
-      dismiss,
-      markAsReaded,
-    };
-  },
+signalr.on("Send", (message: PushNotification) => {
+  addNotification(message);
 });
+
+onMounted(async () => {
+  langInit();
+  await loadUser();
+  isReady.value = true;
+  if (!isAuthorized.value) {
+    router.push("/login");
+  }
+});
+
+watch(user, (value) => {
+  isAuthorized.value = !!value?.userName;
+});
+
+log.debug(`Initializing App`);
+
+const toolbarItems = ref<IBladeToolbar[]>([
+  {
+    component: shallowRef(LanguageSelector),
+    componentOptions: {
+      value: computed(() => currentLocale.value),
+      title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
+      languageItems: computed(() =>
+        availableLocales.map((locale) => ({
+          lang: locale,
+          title: getLocaleMessage(locale).language_name,
+          clickHandler(lang: string) {
+            currentLocale.value = lang;
+            localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
+          },
+        }))
+      ),
+    },
+    isVisible: computed(() => {
+      return isDesktop.value
+        ? isDesktop.value
+        : isMobile.value
+        ? route.path === "/"
+        : false;
+    }),
+  },
+  {
+    isAccent: computed(() => {
+      return !!notifications.value.filter((notification) => notification.isNew)
+        .length;
+    }),
+    component: shallowRef(NotificationDropdown),
+    componentOptions: {
+      title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
+    },
+  },
+  {
+    component: shallowRef(UserDropdownButton),
+    componentOptions: {
+      avatar: "/assets/avatar.jpg",
+      name: computed(() => user.value?.userName),
+      role: computed(() =>
+        user.value?.isAdministrator ? "Administrator" : "Seller account"
+      ),
+      menuItems: [
+        {
+          title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
+          clickHandler() {
+            isChangePasswordActive.value = true;
+          },
+        },
+        {
+          title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
+          async clickHandler() {
+            signOut();
+            router.push("/login");
+          },
+        },
+      ],
+    },
+    isVisible: isDesktop,
+  },
+]);
+
+const mobileMenuItems = ref<IBladeToolbar[]>([
+  {
+    component: shallowRef(UserDropdownButton),
+    componentOptions: {
+      avatar: "/assets/avatar.jpg",
+      name: computed(() => user.value?.userName),
+      role: computed(() =>
+        user.value?.isAdministrator ? "Administrator" : "Seller account"
+      ),
+    },
+    isVisible: isMobile,
+  },
+]);
+
+const menuItems = reactive<IMenuItems[]>([
+  {
+    title: computed(() => t("SHELL.MENU.DASHBOARD")),
+    icon: "fas fa-home",
+    isVisible: true,
+    clickHandler(app) {
+      app.openDashboard();
+      router.push("/");
+    },
+  },
+  {
+    title: computed(() => t("ORDERS.MENU.TITLE")),
+    icon: "fas fa-file-alt",
+    isVisible: true,
+    component: shallowRef(OrdersList),
+  },
+  {
+    title: computed(() => t("PRODUCTS.MENU.TITLE")),
+    icon: "fas fa-box-open",
+    isVisible: true,
+    component: shallowRef(ProductsList),
+  },
+  {
+    title: computed(() => t("OFFERS.MENU.TITLE")),
+    icon: "fas fa-file-invoice",
+    isVisible: true,
+    component: shallowRef(OffersList),
+  },
+  {
+    title: computed(() => t("IMPORT.MENU.TITLE")),
+    icon: "fas fa-file-import",
+    isVisible: true,
+    component: shallowRef(ImportProfileSelector),
+  },
+  {
+    title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
+    icon: "fas fa-key",
+    isVisible: isMobile,
+    clickHandler() {
+      isChangePasswordActive.value = true;
+    },
+  },
+  {
+    title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
+    icon: "fas fa-sign-out-alt",
+    isVisible: isMobile,
+    clickHandler() {
+      signOut();
+      router.push("/login");
+    },
+  },
+]);
+
+function langInit() {
+  try {
+    currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS");
+  } catch (err) {
+    currentLocale.value = "en";
+  }
+}
 </script>
 
 <style lang="less">

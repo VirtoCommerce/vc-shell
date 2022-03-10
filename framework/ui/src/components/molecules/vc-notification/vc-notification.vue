@@ -7,90 +7,79 @@
     <div class="vc-notification__content">
       <slot></slot>
     </div>
-    <vc-icon
+    <VcIcon
       icon="fas fa-times"
       class="vc-notification__dismiss"
       size="s"
       @click="onDismiss"
-    ></vc-icon>
+    ></VcIcon>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  components: {
-    VcIcon,
+const props = defineProps({
+  variant: {
+    type: String,
+    default: "info",
   },
 
-  props: {
-    variant: {
-      type: String,
-      default: "info",
-    },
-
-    timeout: {
-      type: Number,
-      default: 0,
-    },
-  },
-
-  emits: ["dismiss", "expired"],
-
-  setup(props, { emit }) {
-    function Timer(callback: (...args: unknown[]) => unknown, delay: number) {
-      let timerId: number;
-      let from: number;
-      let remaining = delay;
-
-      function pause() {
-        window.clearTimeout(timerId);
-        remaining -= Date.now() - from;
-      }
-
-      function resume() {
-        from = Date.now();
-        window.clearTimeout(timerId);
-        timerId = window.setTimeout(callback, remaining);
-      }
-
-      function start() {
-        remaining = delay;
-        resume();
-      }
-
-      return {
-        pause,
-        resume,
-        start,
-      };
-    }
-
-    const timer = Timer(() => emit("expired"), props.timeout);
-    if (props.timeout) {
-      timer.start();
-    }
-
-    return {
-      onMouseEnter() {
-        timer.pause();
-      },
-
-      onMouseLeave() {
-        if (props.timeout) {
-          timer.resume();
-        }
-      },
-
-      onDismiss() {
-        timer.pause();
-        emit("dismiss");
-      },
-    };
+  timeout: {
+    type: Number,
+    default: 0,
   },
 });
+
+const emit = defineEmits(["dismiss", "expired"]);
+
+function Timer(callback: (...args: unknown[]) => unknown, delay: number) {
+  let timerId: number;
+  let from: number;
+  let remaining = delay;
+
+  function pause() {
+    window.clearTimeout(timerId);
+    remaining -= Date.now() - from;
+  }
+
+  function resume() {
+    from = Date.now();
+    window.clearTimeout(timerId);
+    timerId = window.setTimeout(callback, remaining);
+  }
+
+  function start() {
+    remaining = delay;
+    resume();
+  }
+
+  return {
+    pause,
+    resume,
+    start,
+  };
+}
+
+const timer = Timer(() => emit("expired"), props.timeout);
+if (props.timeout) {
+  timer.start();
+}
+
+function onMouseEnter() {
+  timer.pause();
+}
+
+function onMouseLeave() {
+  if (props.timeout) {
+    timer.resume();
+  }
+}
+
+function onDismiss() {
+  timer.pause();
+  emit("dismiss");
+}
 </script>
 
 <style lang="less">

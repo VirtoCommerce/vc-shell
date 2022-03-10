@@ -4,14 +4,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcHint",
-});
-</script>
-
 <style lang="less">
 :root {
   --hint-color: #a5a5a5;

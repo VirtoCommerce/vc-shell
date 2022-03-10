@@ -1,6 +1,6 @@
-import { Ref, ref, computed, watch, reactive, ComputedRef } from "vue";
+import { Ref, ref, computed, watch, reactive } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
-import { cloneDeep as _cloneDeep } from "lodash";
+import { cloneDeep as _cloneDeep } from "lodash-es";
 
 import {
   ICategory,

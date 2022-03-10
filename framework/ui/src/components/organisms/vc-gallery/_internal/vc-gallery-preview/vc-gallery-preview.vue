@@ -1,9 +1,9 @@
 <template>
-  <vc-popup :title="currentImage.title" @close="$emit('close')">
+  <VcPopup :title="currentImage.title" @close="$emit('close')">
     <template v-slot:title>
       <div>
         <span>{{ currentImage.name }} (</span>
-        <vc-link @click="copyLink(currentImage.src)">copy image link</vc-link>
+        <VcLink @click="copyLink(currentImage.src)">copy image link</VcLink>
         <span>)</span>
       </div>
     </template>
@@ -20,14 +20,14 @@
           class="vc-gallery-preview__prev"
           @click="localIndex--"
         >
-          <vc-icon icon="fas fa-arrow-left" size="xl"></vc-icon>
+          <VcIcon icon="fas fa-arrow-left" size="xl"></VcIcon>
         </div>
         <div
           v-if="localIndex < images.length - 1"
           class="vc-gallery-preview__next"
           @click="localIndex++"
         >
-          <vc-icon icon="fas fa-arrow-right" size="xl"></vc-icon>
+          <VcIcon icon="fas fa-arrow-right" size="xl"></VcIcon>
         </div>
       </div>
       <div class="vc-gallery-preview__images vc-flex-shrink_1 vc-flex">
@@ -39,61 +39,45 @@
             'vc-gallery-preview__images-item_current': i === localIndex,
           }"
         >
-          <vc-image
+          <VcImage
             :src="item.url"
             size="xl"
             :bordered="true"
             :clickable="true"
             @click="localIndex = i"
-          ></vc-image>
+          ></VcImage>
         </div>
       </div>
     </div>
-  </vc-popup>
+  </VcPopup>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { computed, ref } from "vue";
 import VcPopup from "../../../vc-popup/vc-popup.vue";
 
-export default defineComponent({
-  name: "VcGalleryPreview",
-
-  components: {
-    VcPopup,
+const props = defineProps({
+  images: {
+    type: Array,
+    default: () => [],
   },
 
-  props: {
-    images: {
-      type: Array,
-      default: () => [],
-    },
-
-    index: {
-      type: Number,
-      default: 0,
-    },
-  },
-
-  setup(props) {
-    const localIndex = ref(props.index);
-    const currentImage = computed(() => props.images[localIndex.value] || {});
-
-    const copyLink = (link: string) => {
-      if (link.charAt(0) === "/") {
-        navigator.clipboard?.writeText(`${location.origin}${link}`);
-      } else {
-        navigator.clipboard?.writeText(link);
-      }
-    };
-
-    return {
-      currentImage,
-      localIndex,
-      copyLink,
-    };
+  index: {
+    type: Number,
+    default: 0,
   },
 });
+
+const localIndex = ref(props.index);
+const currentImage = computed(() => props.images[localIndex.value] || {});
+
+const copyLink = (link: string) => {
+  if (link.charAt(0) === "/") {
+    navigator.clipboard?.writeText(`${location.origin}${link}`);
+  } else {
+    navigator.clipboard?.writeText(link);
+  }
+};
 </script>
 
 <style lang="less">

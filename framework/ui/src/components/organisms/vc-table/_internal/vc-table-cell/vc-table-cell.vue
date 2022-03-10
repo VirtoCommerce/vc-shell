@@ -32,12 +32,12 @@
 
   <!-- Image cell -->
   <div v-else-if="cell.type === 'image'" class="vc-table-cell_image">
-    <vc-image :bordered="true" size="s" aspect="1x1" :src="value" />
+    <VcImage :bordered="true" size="s" aspect="1x1" :src="value" />
   </div>
 
   <!-- Status cell -->
   <div v-else-if="cell.type === 'status'" class="vc-table-cell_status">
-    <vc-status>{{ value }}</vc-status>
+    <VcStatus>{{ value }}</VcStatus>
   </div>
 
   <!-- Status icon cell -->
@@ -45,7 +45,7 @@
     v-else-if="cell.type === 'status-icon'"
     class="vc-table-cell_status-icon"
   >
-    <vc-status-icon :status="value"></vc-status-icon>
+    <VcStatusIcon :status="value"></VcStatusIcon>
   </div>
 
   <!-- Number cell -->
@@ -55,7 +55,7 @@
 
   <!-- Link cell -->
   <div v-else-if="cell.type === 'link'" class="vc-table-cell_link">
-    <vc-link>{{ value }}</vc-link>
+    <VcLink>{{ value }}</VcLink>
   </div>
 
   <!-- Default cell -->
@@ -64,38 +64,31 @@
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script lang="ts" setup>
+import { computed } from "vue";
 import moment from "moment";
 
-export default defineComponent({
-  props: {
-    cell: {
-      type: Object,
-      default: () => ({}),
-    },
-
-    item: {
-      type: Object,
-      default: () => ({}),
-    },
+const props = defineProps({
+  cell: {
+    type: Object,
+    default: () => ({}),
   },
 
-  setup(props) {
-    return {
-      locale: window.navigator.language,
-      value: computed(() =>
-        (props.cell.field || props.cell.id)
-          .split(".")
-          .reduce(
-            (p: { [x: string]: unknown }, c: string) => (p && p[c]) || null,
-            props.item
-          )
-      ),
-      moment,
-    };
+  item: {
+    type: Object,
+    default: () => ({}),
   },
 });
+
+const locale = window.navigator.language;
+const value = computed(() =>
+  (props.cell.field || props.cell.id)
+    .split(".")
+    .reduce(
+      (p: { [x: string]: unknown }, c: string) => (p && p[c]) || null,
+      props.item
+    )
+);
 </script>
 
 <style lang="less">

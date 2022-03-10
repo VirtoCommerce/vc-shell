@@ -6,68 +6,54 @@
   >
     <div class="vc-blade-toolbar__buttons">
       <template v-for="item in items" :key="item.id">
-        <vc-blade-toolbar-button
+        <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
           v-bind="item"
           :isExpanded="isExpanded"
         />
       </template>
     </div>
-    <vc-icon
+    <VcIcon
       class="vc-blade-toolbar__expand"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
       @click="toggleToolbar"
-    ></vc-icon>
+    ></VcIcon>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
+<script lang="ts" setup>
+import { ref } from "vue";
 import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
 
-export default defineComponent({
-  name: "VcBladeToolbar",
-
-  components: {
-    VcBladeToolbarButton,
-  },
-
-  props: {
-    items: {
-      type: Array,
-      default: () => [],
-    },
-  },
-
-  setup(props) {
-    const isExpanded = ref(true);
-    try {
-      isExpanded.value =
-        localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
-    } catch (err) {
-      isExpanded.value = true;
-    }
-
-    function toggleToolbar() {
-      isExpanded.value = !isExpanded.value;
-      localStorage.setItem(
-        "VC_BLADE_TOOLBAR_IS_EXPANDED",
-        isExpanded.value.toString()
-      );
-    }
-
-    return {
-      isExpanded,
-      toggleToolbar,
-      isToolbarVisible() {
-        const visibleItems = (props.items as { isVisible: boolean }[]).filter(
-          (item) => item.isVisible === undefined || item.isVisible
-        );
-        return !!visibleItems.length;
-      },
-    };
+const props = defineProps({
+  items: {
+    type: Array,
+    default: () => [],
   },
 });
+
+const isExpanded = ref(true);
+try {
+  isExpanded.value =
+    localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
+} catch (err) {
+  isExpanded.value = true;
+}
+
+function toggleToolbar() {
+  isExpanded.value = !isExpanded.value;
+  localStorage.setItem(
+    "VC_BLADE_TOOLBAR_IS_EXPANDED",
+    isExpanded.value.toString()
+  );
+}
+
+function isToolbarVisible() {
+  const visibleItems = (props.items as { isVisible: boolean }[]).filter(
+    (item) => item.isVisible === undefined || item.isVisible
+  );
+  return !!visibleItems.length;
+}
 </script>
 
 <style lang="less">

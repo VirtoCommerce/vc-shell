@@ -19,7 +19,7 @@
         },
       ]"
     >
-      <vc-icon icon="fas fa-bell" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
     </div>
     <div
       v-if="$isMobile.value && isDropdownVisible"
@@ -37,22 +37,16 @@
     >
       <div
         v-if="$isMobile.value"
-        class="
-          notification-dropdown__mobile-close
-          vc-flex
-          vc-flex-justify_end
-          vc-flex-align_center
-          vc-padding_l
-        "
+        class="notification-dropdown__mobile-close vc-flex vc-flex-justify_end vc-flex-align_center vc-padding_l"
       >
-        <vc-icon
+        <VcIcon
           icon="fas fa-times"
           size="xl"
           @click.stop="isDropdownVisible = false"
-        ></vc-icon>
+        ></VcIcon>
       </div>
-      <vc-container :noPadding="true" @click.stop>
-        <vc-col v-if="notifications && notifications.length">
+      <VcContainer :noPadding="true" @click.stop>
+        <VcCol v-if="notifications && notifications.length">
           <div
             @click="handleClick(item)"
             class="notification-dropdown__notification"
@@ -61,25 +55,20 @@
           >
             <NotificationItem :notification="item"></NotificationItem>
           </div>
-        </vc-col>
+        </VcCol>
         <div
-          class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding_l
-          "
+          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding_l"
           v-else
         >
           {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
         </div>
-      </vc-container>
+      </VcContainer>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, PropType, ref } from "vue";
+<script lang="ts" setup>
+import { onMounted, PropType, ref } from "vue";
 import { PushNotification } from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
 import { IMenuItems } from "@virtoshell/ui";
@@ -89,104 +78,88 @@ import NotificationItem from "./_internal/notification/notification.vue";
 import { ProductsList, ProductsEdit } from "../../modules/products";
 import { IProductPushNotification } from "../../types";
 
-export default defineComponent({
-  name: "notification-dropdown",
-  components: { NotificationItem },
-
-  props: {
-    isAccent: {
-      type: Boolean,
-      default: false,
-    },
-
-    title: {
-      type: String,
-      default: "",
-    },
-
-    items: {
-      type: Array as PropType<IMenuItems[]>,
-      default: () => [],
-    },
-
-    openPage: {
-      type: Function,
-      default: undefined,
-    },
-
-    closePage: {
-      type: Function,
-      default: undefined,
-    },
+const props = defineProps({
+  isAccent: {
+    type: Boolean,
+    default: false,
   },
-  setup(props) {
-    const isDropdownVisible = ref(false);
-    const { loadFromHistory, notifications } = useNotifications();
-    const isMobileVisible = ref(false);
 
-    onMounted(async () => {
-      await loadFromHistory();
-    });
+  title: {
+    type: String,
+    default: "",
+  },
 
-    function toggleNotificationsDrop() {
-      isDropdownVisible.value = !isDropdownVisible.value;
-    }
+  items: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
+  },
 
-    const handleClick = async (
-      notification:
-        | PushNotification
-        | ImportPushNotification
-        | IProductPushNotification
-    ) => {
-      const low = notification.notifyType.toLowerCase();
-      isDropdownVisible.value = false;
+  openPage: {
+    type: Function,
+    default: undefined,
+  },
 
-      // TODO need to discuss on arch meeting
-      if (low.includes("import") && "profileId" in notification) {
-        await props.closePage(0);
-        await props.closePage(1);
-        props.openPage(0, {
-          component: ImportProfileSelector,
-          param: notification.profileId,
-          componentOptions: {
-            importJobId: notification.jobId,
-          },
-        });
-        props.openPage(1, {
-          component: ImportNew,
-          param: notification.profileId,
-          componentOptions: {
-            importJobId: notification.jobId,
-          },
-        });
-      } else if (
-        (low.includes("product") ||
-          notification.notifyType ===
-            "PublicationRequestStatusChangedDomainEvent") &&
-        "productId" in notification
-      ) {
-        await props.closePage(0);
-        await props.closePage(1);
-        props.openPage(0, {
-          component: ProductsList,
-          param: notification.productId,
-        });
-        props.openPage(1, {
-          component: ProductsEdit,
-          param: notification.productId,
-        });
-      }
-    };
-
-    return {
-      isDropdownVisible,
-      isMobileVisible,
-      notifications,
-      handleClick,
-      toggleNotificationsDrop,
-    };
+  closePage: {
+    type: Function,
+    default: undefined,
   },
 });
+const isDropdownVisible = ref(false);
+const { loadFromHistory, notifications } = useNotifications();
+
+onMounted(async () => {
+  await loadFromHistory();
+});
+
+function toggleNotificationsDrop() {
+  isDropdownVisible.value = !isDropdownVisible.value;
+}
+
+const handleClick = async (
+  notification:
+    | PushNotification
+    | ImportPushNotification
+    | IProductPushNotification
+) => {
+  const low = notification.notifyType.toLowerCase();
+  isDropdownVisible.value = false;
+
+  // TODO need to discuss on arch meeting
+  if (low.includes("import") && "profileId" in notification) {
+    await props.closePage(0);
+    await props.closePage(1);
+    props.openPage(0, {
+      component: ImportProfileSelector,
+      param: notification.profileId,
+      componentOptions: {
+        importJobId: notification.jobId,
+      },
+    });
+    props.openPage(1, {
+      component: ImportNew,
+      param: notification.profileId,
+      componentOptions: {
+        importJobId: notification.jobId,
+      },
+    });
+  } else if (
+    (low.includes("product") ||
+      notification.notifyType ===
+        "PublicationRequestStatusChangedDomainEvent") &&
+    "productId" in notification
+  ) {
+    await props.closePage(0);
+    await props.closePage(1);
+    props.openPage(0, {
+      component: ProductsList,
+      param: notification.productId,
+    });
+    props.openPage(1, {
+      component: ProductsEdit,
+      param: notification.productId,
+    });
+  }
+};
 </script>
 
 <style lang="less">

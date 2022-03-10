@@ -1,34 +1,27 @@
 <template>
   <div class="vc-status-icon">
     <template v-if="status">
-      <vc-icon
+      <VcIcon
         icon="fas fa-check-circle"
         class="vc-status-icon__active"
-      ></vc-icon>
+      ></VcIcon>
     </template>
     <template v-else>
-      <vc-icon
+      <VcIcon
         icon="fas fa-times-circle"
         class="vc-status-icon__disabled"
-      ></vc-icon>
+      ></VcIcon>
     </template>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import VcIcon from "./../vc-icon/vc-icon.vue";
 
-export default defineComponent({
-  name: "VcStatusIcon",
-  components: {
-    VcIcon,
-  },
-  props: {
-    status: {
-      type: Boolean,
-      default: false,
-    },
+defineProps({
+  status: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>

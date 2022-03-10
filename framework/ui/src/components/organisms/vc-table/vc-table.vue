@@ -12,56 +12,49 @@
       "
     >
       <div
-        class="
-          vc-table__header
-          vc-flex-shrink_0
-          vc-flex
-          vc-flex-align_center
-          vc-flex-justify_space-between
-          vc-padding_l
-        "
+        class="vc-table__header vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table filter mobile button -->
         <div
           v-if="$isMobile.value && $slots['filters']"
           class="vc-margin-right_m"
         >
-          <vc-table-filter :counter="activeFilterCount">
+          <VcTableFilter :counter="activeFilterCount">
             <slot name="filters"></slot>
-          </vc-table-filter>
+          </VcTableFilter>
         </div>
 
         <!-- Table search input -->
-        <vc-input
+        <VcInput
           class="vc-flex-grow_1"
           :placeholder="searchPlaceholder"
           :clearable="true"
           :modelValue="searchValue"
           @update:modelValue="$emit('search:change', $event)"
-        ></vc-input>
+        ></VcInput>
 
         <!-- Table filter desktop button -->
         <div
           v-if="$isDesktop.value && $slots['filters']"
           class="vc-margin-left_m"
         >
-          <vc-table-filter
+          <VcTableFilter
             :title="$t('Filters')"
             :counter="activeFilterCount"
             :parentExpanded="expanded"
           >
             <slot name="filters"></slot>
-          </vc-table-filter>
+          </VcTableFilter>
         </div>
       </div>
     </slot>
 
     <div class="vc-table-wrapper__inner">
       <!-- Table loading overlay -->
-      <vc-loading :active="loading"></vc-loading>
+      <VcLoading :active="loading"></VcLoading>
 
       <!-- Table scroll container -->
-      <vc-container
+      <VcContainer
         v-if="items && items.length"
         ref="scrollContainer"
         :noPadding="true"
@@ -72,7 +65,7 @@
         <!-- Mobile table view -->
         <template v-if="$isMobile.value && $slots['mobile-item']">
           <div class="vc-table-mobile">
-            <vc-table-mobile-item
+            <VcTableMobileItem
               v-for="item in items"
               :key="item.id"
               :item="item"
@@ -82,7 +75,7 @@
               :swipingItem="mobileSwipeItem"
             >
               <slot name="mobile-item" :item="item"></slot>
-            </vc-table-mobile-item>
+            </VcTableMobileItem>
           </div>
         </template>
 
@@ -101,11 +94,11 @@
                 <div
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
-                  <vc-checkbox
+                  <VcCheckbox
                     :modelValue="headerCheckbox"
                     @update:modelValue="processHeaderCheckbox"
                     @click.stop
-                  ></vc-checkbox>
+                  ></VcCheckbox>
                 </div>
               </th>
               <th
@@ -129,12 +122,12 @@
                     v-if="sortField === item.id"
                     class="vc-table__header-cell_sort vc-margin-left_xs"
                   >
-                    <vc-icon
+                    <VcIcon
                       size="xs"
                       :icon="`fas fa-caret-${
                         sortDirection === 'DESC' ? 'down' : 'up'
                       }`"
-                    ></vc-icon>
+                    ></VcIcon>
                   </div>
                 </div>
               </th>
@@ -165,11 +158,11 @@
                 <div
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
-                  <vc-checkbox
+                  <VcCheckbox
                     :modelValue="checkboxes[item.id]"
                     @update:modelValue="processCheckbox(item.id, $event)"
                     @click.stop
-                  ></vc-checkbox>
+                  ></VcCheckbox>
                 </div>
               </td>
               <td
@@ -180,7 +173,7 @@
                 :width="cell.width"
               >
                 <slot :name="`item_${cell.id}`" :item="item" :cell="cell">
-                  <vc-table-cell :cell="cell" :item="item"></vc-table-cell>
+                  <VcTableCell :cell="cell" :item="item"></VcTableCell>
                 </slot>
               </td>
               <td
@@ -189,12 +182,7 @@
                 v-if="itemActionBuilder"
               >
                 <div
-                  class="
-                    vc-table__body-actions-container
-                    vc-flex
-                    vc-flex-justify_center
-                    vc-flex-align_center
-                  "
+                  class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
                   <button
                     class="vc-table__body-actions"
@@ -203,7 +191,7 @@
                     aria-describedby="tooltip"
                     :disabled="!(itemActions && itemActions.length)"
                   >
-                    <vc-icon icon="fas fa-cog" size="m" />
+                    <VcIcon icon="fas fa-cog" size="m" />
                   </button>
                   <div
                     class="vc-table__body-tooltip"
@@ -222,7 +210,7 @@
                         ]"
                         @click.stop="itemAction.clickHandler(item)"
                       >
-                        <vc-icon :icon="itemAction.icon" size="m" />
+                        <VcIcon :icon="itemAction.icon" size="m" />
                         <div class="vc-table__body-actions-item-title">
                           {{ itemAction.title }}
                         </div>
@@ -238,7 +226,7 @@
             </tr>
           </tbody>
         </table>
-      </vc-container>
+      </VcContainer>
 
       <!-- Empty table view -->
       <template v-else>
@@ -248,37 +236,27 @@
         >
           <div
             v-if="notfound"
-            class="
-              vc-fill_all
-              vc-flex vc-flex-column
-              vc-flex-align_center
-              vc-flex-justify_center
-            "
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="notfound.image" :src="notfound.image" />
             <div class="vc-margin_l vc-table__empty-text">
               {{ notfound.text }}
             </div>
-            <vc-button v-if="notfound.action" @click="notfound.clickHandler">
+            <VcButton v-if="notfound.action" @click="notfound.clickHandler">
               {{ notfound.action }}
-            </vc-button>
+            </VcButton>
           </div>
         </slot>
         <slot v-else name="empty">
           <div
             v-if="empty"
-            class="
-              vc-fill_all
-              vc-flex vc-flex-column
-              vc-flex-align_center
-              vc-flex-justify_center
-            "
+            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="empty.image" :src="empty.image" />
             <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
-            <vc-button v-if="empty.action" @click="empty.clickHandler">
+            <VcButton v-if="empty.action" @click="empty.clickHandler">
               {{ empty.action }}
-            </vc-button>
+            </VcButton>
           </div>
         </slot>
       </template>
@@ -290,43 +268,28 @@
       v-if="($slots['footer'] || footer) && items && items.length"
     >
       <div
-        class="
-          vc-table__footer
-          vc-flex-shrink_0
-          vc-flex
-          vc-flex-align_center
-          vc-flex-justify_space-between
-          vc-padding_l
-        "
+        class="vc-table__footer vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
       >
         <!-- Table pagination -->
-        <vc-pagination
+        <VcPagination
           :expanded="expanded"
           :pages="pages"
           :currentPage="currentPage"
           @itemClick="$emit('paginationClick', $event)"
-        ></vc-pagination>
+        ></VcPagination>
 
         <!-- Table counter -->
-        <vc-table-counter
+        <VcTableCounter
           :label="totalLabel"
           :value="totalCount"
-        ></vc-table-counter>
+        ></VcTableCounter>
       </div>
     </slot>
   </div>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  nextTick,
-  PropType,
-  ref,
-  watch,
-  onBeforeUpdate,
-} from "vue";
+<script lang="ts" setup>
+import { computed, nextTick, PropType, ref, watch, onBeforeUpdate } from "vue";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
 import VcContainer from "../../atoms/vc-container/vc-container.vue";
@@ -340,264 +303,224 @@ import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult } from "../../../typings";
 
-export default defineComponent({
-  name: "VcTable",
-
-  components: {
-    VcIcon,
-    VcCheckbox,
-    VcContainer,
-    VcInput,
-    VcPagination,
-    VcTableCounter,
-    VcLoading,
-    VcTableFilter,
-    VcTableMobileItem,
-    VcTableCell,
+const props = defineProps({
+  columns: {
+    type: Array,
+    default: () => [],
   },
 
-  props: {
-    columns: {
-      type: Array,
-      default: () => [],
-    },
-
-    items: {
-      type: Array as PropType<{ id: string }[]>,
-      default: () => [],
-    },
-
-    filterItems: {
-      type: Array,
-      default: () => [],
-    },
-
-    itemActionBuilder: {
-      type: Function,
-      default: undefined,
-    },
-
-    sort: {
-      type: String,
-      default: undefined,
-    },
-
-    multiselect: {
-      type: Boolean,
-      default: false,
-    },
-
-    expanded: {
-      type: Boolean,
-      default: false,
-    },
-
-    totalLabel: {
-      type: String,
-      default: "Totals:",
-    },
-
-    totalCount: {
-      type: Number,
-      default: 0,
-    },
-
-    pages: {
-      type: Number,
-      default: 0,
-    },
-
-    currentPage: {
-      type: Number,
-      default: 0,
-    },
-
-    searchPlaceholder: {
-      type: String,
-      default: "Search...",
-    },
-
-    searchValue: {
-      type: String,
-      default: undefined,
-    },
-
-    loading: {
-      type: Boolean,
-      default: false,
-    },
-
-    empty: {
-      type: Object,
-      default: () => ({
-        text: "List is empty.",
-      }),
-    },
-
-    notfound: {
-      type: Object,
-      default: () => ({
-        text: "Nothing found.",
-      }),
-    },
-
-    header: {
-      type: Boolean,
-      default: true,
-    },
-
-    footer: {
-      type: Boolean,
-      default: true,
-    },
-
-    activeFilterCount: {
-      type: Number,
-      default: 0,
-    },
-
-    selectedItemId: {
-      type: String,
-      default: undefined,
-    },
-
-    scrolling: {
-      type: Boolean,
-      default: false,
-    },
+  items: {
+    type: Array as PropType<{ id: string }[]>,
+    default: () => [],
   },
 
-  emits: [
-    "paginationClick",
-    "selectionChanged",
-    "search:change",
-    "filter:apply",
-    "filter:reset",
-  ],
+  filterItems: {
+    type: Array,
+    default: () => [],
+  },
 
-  setup(props, { emit }) {
-    const checkboxes = ref<Record<string, boolean>>({});
-    const selectedRow = ref<string>();
-    const tooltip = ref<Instance>();
-    const scrollContainer = ref<typeof VcContainer>();
-    const actionToggleRefs = ref<HTMLDivElement[]>([]);
-    const tooltipRefs = ref<HTMLDivElement[]>([]);
-    const itemActions = ref<IActionBuilderResult[]>([]);
-    const mobileSwipeItem = ref<string>();
+  itemActionBuilder: {
+    type: Function,
+    default: undefined,
+  },
 
-    onBeforeUpdate(() => {
-      actionToggleRefs.value = [];
-      tooltipRefs.value = [];
-    });
+  sort: {
+    type: String,
+    default: undefined,
+  },
 
-    const sortDirection = computed(() => {
-      const entry = props.sort?.split(":");
-      return entry && entry.length === 2 && entry[1];
-    });
+  multiselect: {
+    type: Boolean,
+    default: false,
+  },
 
-    const sortField = computed(() => {
-      const entry = props.sort?.split(":");
-      return entry && entry.length === 2 && entry[0];
-    });
+  expanded: {
+    type: Boolean,
+    default: false,
+  },
 
-    const headerCheckbox = computed(() =>
-      Object.values(checkboxes.value).every((value) => value)
-    );
+  totalLabel: {
+    type: String,
+    default: "Totals:",
+  },
 
-    watch(
-      () => props.items,
-      (value: { id: string }[]) => {
-        checkboxes.value = {};
-        value?.forEach((item) => (checkboxes.value[item.id] = false));
-        scrollContainer.value?.scrollTop();
-      }
-    );
+  totalCount: {
+    type: Number,
+    default: 0,
+  },
 
-    function setTooltipRefs(el: HTMLDivElement) {
-      if (el) {
-        tooltipRefs.value.push(el);
-      }
-    }
+  pages: {
+    type: Number,
+    default: 0,
+  },
 
-    function setActionToggleRefs(el: HTMLDivElement) {
-      if (el) {
-        actionToggleRefs.value.push(el);
-      }
-    }
+  currentPage: {
+    type: Number,
+    default: 0,
+  },
 
-    function processHeaderCheckbox() {
-      const currentState = Object.values(checkboxes.value).every(
-        (value) => value
-      );
-      Object.keys(checkboxes.value).forEach(
-        (key) => (checkboxes.value[key] = !currentState)
-      );
-      emit("selectionChanged", checkboxes.value);
-    }
+  searchPlaceholder: {
+    type: String,
+    default: "Search...",
+  },
 
-    function processCheckbox(id: string, state: boolean) {
-      checkboxes.value[id] = state;
-      emit("selectionChanged", checkboxes.value);
-    }
+  searchValue: {
+    type: String,
+    default: undefined,
+  },
 
-    function showActions(item: { id: string }, index: number) {
-      selectedRow.value = item.id;
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 
-      nextTick(() => {
-        tooltip.value = createPopper(
-          actionToggleRefs.value[index],
-          tooltipRefs.value[index],
-          {
-            placement: "bottom",
-            onFirstUpdate: () => tooltip.value?.update(),
-            modifiers: [
-              {
-                name: "offset",
-                options: {
-                  offset: [-15, 15],
-                },
-              },
-            ],
-          }
-        );
-      });
-    }
+  empty: {
+    type: Object,
+    default: () => ({
+      text: "List is empty.",
+    }),
+  },
 
-    async function calculateActions(item: { id: string }) {
-      if (typeof props.itemActionBuilder === "function") {
-        itemActions.value = await props.itemActionBuilder(item);
-      }
-    }
+  notfound: {
+    type: Object,
+    default: () => ({
+      text: "Nothing found.",
+    }),
+  },
 
-    function closeActions() {
-      selectedRow.value = undefined;
-      tooltip.value?.destroy();
-    }
+  header: {
+    type: Boolean,
+    default: true,
+  },
 
-    function handleSwipe(id: string) {
-      mobileSwipeItem.value = id;
-    }
+  footer: {
+    type: Boolean,
+    default: true,
+  },
 
-    return {
-      sortDirection,
-      sortField,
-      headerCheckbox,
-      checkboxes,
-      selectedRow,
-      itemActions,
-      tooltip,
-      mobileSwipeItem,
-      setTooltipRefs,
-      setActionToggleRefs,
-      processHeaderCheckbox,
-      processCheckbox,
-      showActions,
-      closeActions,
-      calculateActions,
-      handleSwipe,
-    };
+  activeFilterCount: {
+    type: Number,
+    default: 0,
+  },
+
+  selectedItemId: {
+    type: String,
+    default: undefined,
+  },
+
+  scrolling: {
+    type: Boolean,
+    default: false,
   },
 });
+
+const emit = defineEmits([
+  "paginationClick",
+  "selectionChanged",
+  "search:change",
+  "filter:apply",
+  "filter:reset",
+]);
+
+const checkboxes = ref<Record<string, boolean>>({});
+const selectedRow = ref<string>();
+const tooltip = ref<Instance>();
+const scrollContainer = ref<typeof VcContainer>();
+const actionToggleRefs = ref<HTMLDivElement[]>([]);
+const tooltipRefs = ref<HTMLDivElement[]>([]);
+const itemActions = ref<IActionBuilderResult[]>([]);
+const mobileSwipeItem = ref<string>();
+
+onBeforeUpdate(() => {
+  actionToggleRefs.value = [];
+  tooltipRefs.value = [];
+});
+
+const sortDirection = computed(() => {
+  const entry = props.sort?.split(":");
+  return entry && entry.length === 2 && entry[1];
+});
+
+const sortField = computed(() => {
+  const entry = props.sort?.split(":");
+  return entry && entry.length === 2 && entry[0];
+});
+
+const headerCheckbox = computed(() =>
+  Object.values(checkboxes.value).every((value) => value)
+);
+
+watch(
+  () => props.items,
+  (value: { id: string }[]) => {
+    checkboxes.value = {};
+    value?.forEach((item) => (checkboxes.value[item.id] = false));
+    scrollContainer.value?.scrollTop();
+  }
+);
+
+function setTooltipRefs(el: HTMLDivElement) {
+  if (el) {
+    tooltipRefs.value.push(el);
+  }
+}
+
+function setActionToggleRefs(el: HTMLDivElement) {
+  if (el) {
+    actionToggleRefs.value.push(el);
+  }
+}
+
+function processHeaderCheckbox() {
+  const currentState = Object.values(checkboxes.value).every((value) => value);
+  Object.keys(checkboxes.value).forEach(
+    (key) => (checkboxes.value[key] = !currentState)
+  );
+  emit("selectionChanged", checkboxes.value);
+}
+
+function processCheckbox(id: string, state: boolean) {
+  checkboxes.value[id] = state;
+  emit("selectionChanged", checkboxes.value);
+}
+
+function showActions(item: { id: string }, index: number) {
+  selectedRow.value = item.id;
+
+  nextTick(() => {
+    tooltip.value = createPopper(
+      actionToggleRefs.value[index],
+      tooltipRefs.value[index],
+      {
+        placement: "bottom",
+        onFirstUpdate: () => tooltip.value?.update(),
+        modifiers: [
+          {
+            name: "offset",
+            options: {
+              offset: [-15, 15],
+            },
+          },
+        ],
+      }
+    );
+  });
+}
+
+async function calculateActions(item: { id: string }) {
+  if (typeof props.itemActionBuilder === "function") {
+    itemActions.value = await props.itemActionBuilder(item);
+  }
+}
+
+function closeActions() {
+  selectedRow.value = undefined;
+  tooltip.value?.destroy();
+}
+
+function handleSwipe(id: string) {
+  mobileSwipeItem.value = id;
+}
 </script>
 
 <style lang="less">

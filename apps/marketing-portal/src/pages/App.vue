@@ -1,5 +1,5 @@
 <template>
-  <vc-app
+  <VcApp
     :menuItems="menuItems"
     :toolbarItems="toolbarItems"
     :isReady="isReady"
@@ -13,20 +13,20 @@
 
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
-      <dashboard-page v-bind="scope" />
+      <DashboardPage v-bind="scope" />
     </template>
 
     <!-- Set up login form -->
     <template v-slot:login>
-      <login-page
+      <LoginPage
         logo="/assets/logo-black.svg"
         background="/assets/background.jpeg"
         title="Marketing Portal"
-      ></login-page>
+      ></LoginPage>
     </template>
 
     <template v-slot:notifications>
-      <vc-notification
+      <VcNotification
         v-for="item in popupNotifications"
         :key="item.id"
         :timeout="5000"
@@ -34,21 +34,20 @@
         @expired="markAsReaded(item)"
       >
         {{ item.title }}
-      </vc-notification>
+      </VcNotification>
     </template>
 
     <template v-slot:passwordChange>
-      <change-password
+      <ChangePassword
         v-if="isChangePasswordActive"
         @close="isChangePasswordActive = false"
-      ></change-password>
+      ></ChangePassword>
     </template>
-  </vc-app>
+  </VcApp>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
-  defineComponent,
   computed,
   onMounted,
   ref,
@@ -79,159 +78,134 @@ import {
 } from "../modules/dynamic-content";
 import { useRouter } from "vue-router";
 
-export default defineComponent({
-  name: "App",
+const { t } = useI18n();
+const log = useLogger();
+const signalr = useSignalR();
+const { user, loadUser, signOut } = useUser();
+const {
+  popupNotifications,
+  notifications,
+  addNotification,
+  dismiss,
+  markAsReaded,
+} = useNotifications();
+const router = useRouter();
+const isAuthorized = ref(false);
+const isReady = ref(false);
+const isChangePasswordActive = ref(false);
+const pages = inject("pages");
+const isDesktop = inject("isDesktop");
+const isMobile = inject("isMobile");
+const version = import.meta.env.PACKAGE_VERSION;
 
-  components: {
-    LoginPage,
-    DashboardPage,
-    ChangePassword,
-  },
-
-  setup() {
-    const { t } = useI18n();
-    const log = useLogger();
-    const signalr = useSignalR();
-    const { user, loadUser, signOut } = useUser();
-    const {
-      popupNotifications,
-      notifications,
-      addNotification,
-      dismiss,
-      markAsReaded,
-    } = useNotifications();
-    const router = useRouter();
-    const isAuthorized = ref(false);
-    const isReady = ref(false);
-    const isChangePasswordActive = ref(false);
-    const pages = inject("pages");
-    const isDesktop = inject("isDesktop");
-    const isMobile = inject("isMobile");
-
-    signalr.on("Send", (message: PushNotification) => {
-      addNotification(message);
-    });
-
-    onMounted(async () => {
-      await loadUser();
-      isReady.value = true;
-      if (!isAuthorized.value) {
-        router.push("/login");
-      }
-    });
-
-    watch(user, (value) => {
-      isAuthorized.value = !!value?.userName;
-    });
-
-    log.debug(`Initializing App`);
-
-    const toolbarItems = reactive<IBladeToolbar[]>([
-      {
-        isVisible: isDesktop,
-        isAccent: computed(() => {
-          return !!notifications.value.filter(
-            (notification) => notification.isNew
-          ).length;
-        }),
-        component: shallowRef(NotificationDropdown),
-        componentOptions: {
-          title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
-        },
-      },
-      {
-        component: shallowRef(UserDropdownButton),
-        componentOptions: {
-          avatar: "/assets/avatar.jpg",
-          name: computed(() => user.value?.userName),
-          role: computed(() =>
-            user.value?.isAdministrator ? "Administrator" : "User account"
-          ),
-          menuItems: [
-            {
-              title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
-              clickHandler() {
-                isChangePasswordActive.value = true;
-              },
-            },
-            {
-              title: t("SHELL.ACCOUNT.LOGOUT"),
-              async clickHandler() {
-                signOut();
-                router.push("/login");
-              },
-            },
-          ],
-        },
-        isVisible: isDesktop,
-      },
-    ]);
-
-    const menuItems = reactive<IMenuItems[]>([
-      {
-        title: t("SHELL.MENU.DASHBOARD"),
-        icon: "fas fa-home",
-        isVisible: true,
-        clickHandler(app) {
-          app.openDashboard();
-          router.push("/");
-        },
-      },
-      {
-        title: t("SHELL.MENU.PROMOTIONS"),
-        icon: "fas fa-bullhorn",
-        isVisible: true,
-        component: shallowRef(PromotionsList),
-      },
-      {
-        title: t("SHELL.MENU.DYNAMIC_CONTENT.TITLE"),
-        icon: "fas fa-vector-square",
-        isVisible: true,
-        component: shallowRef(),
-        children: [
-          {
-            title: t("SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_ITEMS.TITLE"),
-            component: shallowRef(ContentItemsList),
-          },
-          {
-            title: t(
-              "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PLACEHOLDERS.TITLE"
-            ),
-            component: shallowRef(ContentPlaceholders),
-          },
-          {
-            title: t(
-              "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PUBLISHING.TITLE"
-            ),
-            component: shallowRef(ContentPublishing),
-          },
-        ],
-      },
-      {
-        title: t("SHELL.ACCOUNT.LOGOUT"),
-        icon: "fas fa-sign-out-alt",
-        isVisible: isMobile,
-        clickHandler() {
-          signOut();
-          router.push("/login");
-        },
-      },
-    ]);
-
-    return {
-      isAuthorized,
-      isReady,
-      pages,
-      version: process.env.PACKAGE_VERSION,
-      toolbarItems,
-      menuItems,
-      popupNotifications,
-      isChangePasswordActive,
-      dismiss,
-      markAsReaded,
-    };
-  },
+signalr.on("Send", (message: PushNotification) => {
+  addNotification(message);
 });
+
+onMounted(async () => {
+  await loadUser();
+  isReady.value = true;
+  if (!isAuthorized.value) {
+    router.push("/login");
+  }
+});
+
+watch(user, (value) => {
+  isAuthorized.value = !!value?.userName;
+});
+
+log.debug(`Initializing App`);
+
+const toolbarItems = reactive<IBladeToolbar[]>([
+  {
+    isVisible: isDesktop,
+    isAccent: computed(() => {
+      return !!notifications.value.filter((notification) => notification.isNew)
+        .length;
+    }),
+    component: shallowRef(NotificationDropdown),
+    componentOptions: {
+      title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+    },
+  },
+  {
+    component: shallowRef(UserDropdownButton),
+    componentOptions: {
+      avatar: "/assets/avatar.jpg",
+      name: computed(() => user.value?.userName),
+      role: computed(() =>
+        user.value?.isAdministrator ? "Administrator" : "User account"
+      ),
+      menuItems: [
+        {
+          title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+          clickHandler() {
+            isChangePasswordActive.value = true;
+          },
+        },
+        {
+          title: t("SHELL.ACCOUNT.LOGOUT"),
+          async clickHandler() {
+            signOut();
+            router.push("/login");
+          },
+        },
+      ],
+    },
+    isVisible: isDesktop,
+  },
+]);
+
+const menuItems = reactive<IMenuItems[]>([
+  {
+    title: t("SHELL.MENU.DASHBOARD"),
+    icon: "fas fa-home",
+    isVisible: true,
+    clickHandler(app) {
+      app.openDashboard();
+      router.push("/");
+    },
+  },
+  {
+    title: t("SHELL.MENU.PROMOTIONS"),
+    icon: "fas fa-bullhorn",
+    isVisible: true,
+    component: shallowRef(PromotionsList),
+  },
+  {
+    title: t("SHELL.MENU.DYNAMIC_CONTENT.TITLE"),
+    icon: "fas fa-vector-square",
+    isVisible: true,
+    component: shallowRef(),
+    children: [
+      {
+        title: t("SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_ITEMS.TITLE"),
+        component: shallowRef(ContentItemsList),
+      },
+      {
+        title: t(
+          "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PLACEHOLDERS.TITLE"
+        ),
+        component: shallowRef(ContentPlaceholders),
+      },
+      {
+        title: t(
+          "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PUBLISHING.TITLE"
+        ),
+        component: shallowRef(ContentPublishing),
+      },
+    ],
+  },
+  {
+    title: t("SHELL.ACCOUNT.LOGOUT"),
+    icon: "fas fa-sign-out-alt",
+    isVisible: isMobile,
+    clickHandler() {
+      signOut();
+      router.push("/login");
+    },
+  },
+]);
 </script>
 
 <style lang="less">

@@ -6,7 +6,7 @@
       @click="openPanel($isMobile.value)"
       ref="filterToggle"
     >
-      <vc-icon icon="fas fa-filter" size="m" />
+      <VcIcon icon="fas fa-filter" size="m" />
       <span v-if="title" class="vc-table-filter__button-title">
         {{ title }}
       </span>
@@ -27,14 +27,10 @@
         ref="filterPanel"
       >
         <div
-          class="
-            vc-table-filter__panel-inner
-            vc-padding_xl
-            vc-flex vc-flex-column
-          "
+          class="vc-table-filter__panel-inner vc-padding_xl vc-flex vc-flex-column"
           @click.stop
         >
-          <vc-icon
+          <VcIcon
             class="vc-table-filter__panel-close vc-flex-shrink_0"
             icon="fas fa-times"
             size="xl"
@@ -50,108 +46,94 @@
 
 <script lang="ts">
 import { defineComponent, nextTick, ref, watch } from "vue";
-import { clickOutside } from "../../../../../directives";
+
+export default defineComponent({
+  inheritAttrs: false,
+});
+</script>
+
+<script lang="ts" setup>
 import { createPopper, Instance } from "@popperjs/core";
 import { useFunctions } from "@virtoshell/core";
 
-export default defineComponent({
-  name: "VcTableFilter",
-
-  inheritAttrs: false,
-
-  directives: {
-    clickOutside,
+const props = defineProps({
+  items: {
+    type: Array,
+    default: () => [],
   },
 
-  props: {
-    items: {
-      type: Array,
-      default: () => [],
-    },
-
-    title: {
-      type: String,
-      default: undefined,
-    },
-
-    counter: {
-      type: Number,
-      default: 0,
-    },
-
-    parentExpanded: {
-      type: Boolean,
-      default: true,
-    },
+  title: {
+    type: String,
+    default: undefined,
   },
 
-  emits: ["apply", "reset"],
+  counter: {
+    type: Number,
+    default: 0,
+  },
 
-  setup(props, context) {
-    const isPanelVisible = ref(false);
-    const filterToggle = ref();
-    const filterPanel = ref();
-    const popper = ref<Instance>();
-
-    watch(
-      () => props.parentExpanded,
-      () => {
-        useFunctions().delay(() => {
-          popper.value?.update();
-        }, 300);
-      }
-    );
-
-    function openPanel(isMobile: boolean) {
-      isPanelVisible.value = !isPanelVisible.value;
-
-      if (!isMobile) {
-        const element = document.querySelector(".vc-blade");
-        if (isPanelVisible.value) {
-          nextTick(() => {
-            popper.value = createPopper(filterToggle.value, filterPanel.value, {
-              placement: "bottom-end",
-              modifiers: [
-                {
-                  name: "offset",
-                  options: {
-                    offset: [0, 10],
-                  },
-                },
-                {
-                  name: "preventOverflow",
-                  options: {
-                    boundary: element,
-                  },
-                },
-              ],
-            });
-          });
-        } else {
-          destroyPopper();
-        }
-      }
-    }
-
-    function closePanel() {
-      isPanelVisible.value = false;
-      destroyPopper();
-    }
-
-    function destroyPopper() {
-      // To prevent memory leaks Popper needs to be destroyed.
-      popper.value?.destroy();
-    }
-
-    return {
-      isPanelVisible,
-      filterToggle,
-      filterPanel,
-      openPanel,
-      closePanel,
-    };
+  parentExpanded: {
+    type: Boolean,
+    default: true,
   },
 });
+
+defineEmits(["apply", "reset"]);
+
+const isPanelVisible = ref(false);
+const filterToggle = ref();
+const filterPanel = ref();
+const popper = ref<Instance>();
+
+watch(
+  () => props.parentExpanded,
+  () => {
+    useFunctions().delay(() => {
+      popper.value?.update();
+    }, 300);
+  }
+);
+
+function openPanel(isMobile: boolean) {
+  isPanelVisible.value = !isPanelVisible.value;
+
+  if (!isMobile) {
+    const element = document.querySelector(".vc-blade");
+    if (isPanelVisible.value) {
+      nextTick(() => {
+        popper.value = createPopper(filterToggle.value, filterPanel.value, {
+          placement: "bottom-end",
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [0, 10],
+              },
+            },
+            {
+              name: "preventOverflow",
+              options: {
+                boundary: element,
+              },
+            },
+          ],
+        });
+      });
+    } else {
+      destroyPopper();
+    }
+  }
+}
+
+function closePanel() {
+  isPanelVisible.value = false;
+  destroyPopper();
+}
+
+function destroyPopper() {
+  // To prevent memory leaks Popper needs to be destroyed.
+  popper.value?.destroy();
+}
 </script>
 
 <style lang="less">

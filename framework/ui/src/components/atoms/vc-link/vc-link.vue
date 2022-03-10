@@ -8,36 +8,24 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "VcLink",
-
-  props: {
-    active: {
-      type: Boolean,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
+<script lang="ts" setup>
+const props = defineProps({
+  active: {
+    type: Boolean,
+    default: false,
   },
 
-  emits: ["click"],
-
-  setup(props, { emit }) {
-    return {
-      onClick(): void {
-        if (!props.disabled) {
-          emit("click");
-        }
-      },
-    };
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
+const emit = defineEmits(["click"]);
+function onClick(): void {
+  if (!props.disabled) {
+    emit("click");
+  }
+}
 </script>
 
 <style lang="less">

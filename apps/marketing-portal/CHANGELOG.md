@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.1.0 (2022-03-10)
+
+
+### Bug Fixes
+
+* ci build ([69d67ca](https://github.com/VirtoCommerce/platform-manager-sdk/commit/69d67cabe18d8ea0111dc3814309b2be3ff1b902))
+* components names fix ([ed26248](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ed26248d143a3f22da41b38026499253b021ea08))
+
+
+### Features
+
+* vite + setup WIP 99% ([d2a9a08](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d2a9a08a4e6a2b30ee8042803c099b713d70d02a))
+
+
+
+## 0.0.123 (2022-03-04)
+
+
+### Features
+
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+* vite ([f7b0053](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f7b0053b37490c3341b521e1284336b25523cb97))
+* vite WIP ([2abf60e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2abf60ec2ab895f08c8973c830604f84c1632ef4))
+
+
+
+
+
 ## 0.0.123 (2022-03-04)
 
 

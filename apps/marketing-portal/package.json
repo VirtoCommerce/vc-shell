@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vite",
-    "build": "vite build --debug"
+    "preview": "vite preview",
+    "build": "vite build"
   },
   "devDependencies": {
     "less": "^3.0.4",

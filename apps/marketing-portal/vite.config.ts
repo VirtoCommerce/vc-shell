@@ -15,6 +15,12 @@ export default defineConfig(({ mode }) => {
   const TSCONFIG_BUILD = path.resolve(__dirname, "./tsconfig.build.json");
   const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
+  // "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
+  const _define: { global?: unknown } = {};
+  if (mode !== "production") {
+    _define.global = {};
+  }
+
   return {
     resolve: {
       preserveSymlinks: true,
@@ -63,7 +69,7 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     define: {
-      global: mode === "production" ? undefined : {},
+      ..._define,
       "import.meta.env.PACKAGE_VERSION": `"${version}"`,
       "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
       "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,

@@ -286,27 +286,6 @@ onMounted(async () => {
   await reload(true);
 });
 
-const test = ref({
-  isReadOnly: true,
-  isManageable: true,
-  isNew: false,
-  catalogId: "5aa50aaea01544529a6b6d576a668439",
-  name: "BRAND",
-  required: false,
-  dictionary: true,
-  multivalue: true,
-  multilanguage: false,
-  hidden: false,
-  valueType: "ShortText",
-  type: "Product",
-  values: [],
-  attributes: [],
-  displayNames: [{ name: "Brand", languageCode: "en-US" }],
-  validationRules: [],
-  isInherited: true,
-  id: "18e4e3c0-b16e-4d28-b800-26a10c274caa",
-});
-
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",

@@ -1,6 +1,8 @@
 <template>
   <VcSelect
-    v-if="property.dictionary || property.isDictionary"
+    v-if="
+      (property.dictionary || property.isDictionary) && !property.multivalue
+    "
     :label="
       (property.displayNames && property.displayNames[0].name) ||
       property.displayName ||
@@ -25,7 +27,11 @@
   ></VcSelect>
 
   <VcMultivalue
-    v-else-if="property.valueType === 'ShortText' && property.multivalue"
+    v-else-if="
+      property.valueType === 'ShortText' &&
+      property.multivalue &&
+      !(property.dictionary || property.isDictionary)
+    "
     :label="
       (property.displayNames && property.displayNames[0].name) || property.name
     "
@@ -36,6 +42,30 @@
     :rules="rules"
     :disabled="disabled"
     :name="property.name"
+  ></VcMultivalue>
+
+  <VcMultivalue
+    v-else-if="
+      property.valueType === 'ShortText' &&
+      property.multivalue &&
+      (property.dictionary || property.isDictionary)
+    "
+    :label="
+      (property.displayNames && property.displayNames[0].name) || property.name
+    "
+    :modelValue="property.values"
+    @update:modelValue="setter(property, $event, items)"
+    :required="property.required"
+    placeholder="Add value"
+    :multivalue="property.multivalue"
+    :rules="rules"
+    :disabled="disabled"
+    :name="property.name"
+    :options="items"
+    keyProperty="id"
+    displayProperty="alias"
+    @search="onSearch"
+    @close="onClose"
   ></VcMultivalue>
 
   <VcInput

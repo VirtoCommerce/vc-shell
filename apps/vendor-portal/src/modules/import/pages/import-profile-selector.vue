@@ -233,6 +233,7 @@ function onItemClick(item: ImportRunHistory) {
     param: item.profileId,
     componentOptions: {
       importJobId: item.jobId,
+      title: item.profileName,
     },
     onOpen() {
       selectedItemId.value = item.id;
@@ -248,6 +249,11 @@ async function onPaginationClick(page: number) {
     skip: (page - 1) * 15,
   });
 }
+
+defineExpose({
+  openImporter,
+  reload,
+});
 </script>
 
 <style lang="less">

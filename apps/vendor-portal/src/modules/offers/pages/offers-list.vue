@@ -345,7 +345,6 @@ const columns = computed(() => {
   }
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
@@ -453,6 +452,11 @@ function handleSalePrice(price: number | undefined) {
     return price.toFixed(2);
   }
 }
+
+defineExpose({
+  title,
+  reload,
+});
 </script>
 
 <style lang="less">

@@ -471,8 +471,8 @@ const columns = computed(() => {
     return tableColumns.value.filter((item) => item.alwaysVisible === true);
   }
 });
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
+
 function setFilterDate(key: string, value: string) {
   const date = new Date(value);
   if (date instanceof Date && !isNaN(date.valueOf())) {
@@ -513,4 +513,9 @@ async function resetFilters() {
   });
   appliedFilter.value = {};
 }
+
+defineExpose({
+  title,
+  reload,
+});
 </script>

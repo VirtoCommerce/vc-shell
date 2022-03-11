@@ -395,7 +395,6 @@ const columns = computed(() => {
     return tableColumns.value.filter((item) => item.alwaysVisible === true);
   }
 });
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(
   () => Object.values(appliedFilter.value).filter((item) => !!item).length
@@ -521,6 +520,11 @@ async function resetFilters() {
   });
   appliedFilter.value = {};
 }
+
+defineExpose({
+  reload,
+  title,
+});
 </script>
 
 <style lang="less">

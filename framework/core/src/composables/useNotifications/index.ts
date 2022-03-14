@@ -54,21 +54,16 @@ export default (): INotifications => {
   }
 
   function addNotification(message: PushNotification) {
-    if (
-      message.creator === user.value?.userName ||
-      message.creator === user.value?.id
-    ) {
-      const existsNotification = notifications.value.find(
-        (x) => x.id == message.id
-      );
+    const existsNotification = notifications.value.find(
+      (x) => x.id == message.id
+    );
 
-      if (existsNotification) {
-        message.isNew = existsNotification.isNew;
-        Object.assign(existsNotification, message);
-      } else {
-        popupNotifications.value.unshift(message);
-        notifications.value.unshift(message);
-      }
+    if (existsNotification) {
+      message.isNew = existsNotification.isNew;
+      Object.assign(existsNotification, message);
+    } else {
+      popupNotifications.value.unshift(message);
+      notifications.value.unshift(message);
     }
   }
   function markAsReaded(message: PushNotification) {

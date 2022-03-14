@@ -77,12 +77,14 @@ const touchable = computed(
   () => status.value !== "refresh" && status.value !== "success"
 );
 
-/* const scrollTop = () => {
+const scrollTop = () => {
   if (component.value) {
     component.value.scroll(0, 0);
   }
 };
- */
+defineExpose({
+  scrollTop,
+});
 
 function touchStart(e: TouchEvent): void {
   if (!touchable.value) {

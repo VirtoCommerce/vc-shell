@@ -455,6 +455,10 @@ const onGalleryItemEdit = (item: Image) => {
   });
 };
 
+const editImages = (args: Image[]) => {
+  productDetails.images = args;
+};
+
 const onGallerySort = (images: Image[]) => {
   productDetails.images = images;
 };
@@ -525,6 +529,25 @@ async function onBeforeClose() {
   }
 }
 
+function handleDictionaryValue(
+  property: IProperty,
+  valueId: string,
+  dictionary: PropertyDictionaryItem[]
+) {
+  let valueName;
+  const dictionaryItem = dictionary.find((x) => x.id === valueId);
+  if (dictionaryItem) {
+    valueName = dictionaryItem.alias;
+  } else {
+    valueName = property.name;
+  }
+
+  return {
+    value: valueName,
+    valueId,
+  };
+}
+
 function setPropertyValue(
   property: IProperty,
   value: IPropertyValue,
@@ -534,22 +557,29 @@ function setPropertyValue(
     typeof value === "object" &&
     Object.prototype.hasOwnProperty.call(value, "length")
   ) {
-    property.values = (value as IPropertyValue[]).map(
-      (item) => new PropertyValue(item)
-    );
+    if (dictionary && dictionary.length) {
+      property.values = (value as IPropertyValue[]).map((item) => {
+        const handledValue = handleDictionaryValue(
+          property,
+          item.valueId,
+          dictionary
+        );
+        return new PropertyValue(handledValue);
+      });
+    } else {
+      property.values = (value as IPropertyValue[]).map(
+        (item) => new PropertyValue(item)
+      );
+    }
   } else {
     if (dictionary && dictionary.length) {
-      const valueId = value as string;
-      let valueName;
-      const dictionaryItem = dictionary.find((x) => x.id === valueId);
-      if (dictionaryItem) {
-        valueName = dictionaryItem.alias;
-      } else {
-        valueName = property.name;
-      }
+      const handledValue = handleDictionaryValue(
+        property,
+        value as string,
+        dictionary
+      );
       property.values[0] = new PropertyValue({
-        valueId,
-        value: valueName,
+        ...handledValue,
         isInherited: false,
       });
     } else {
@@ -585,6 +615,10 @@ function handleCollapsed(key: string, value: boolean): void {
 function restoreCollapsed(key: string): boolean {
   return localStorage?.getItem(key) === "true";
 }
+
+defineExpose({
+  editImages,
+});
 </script>
 
 <style lang="less">

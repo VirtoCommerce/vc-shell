@@ -97,6 +97,10 @@ defineProps({
 defineEmits(["item:click"]);
 
 const isMobileVisible = ref(false);
+
+defineExpose({
+  isMobileVisible,
+});
 </script>
 
 <style lang="less">

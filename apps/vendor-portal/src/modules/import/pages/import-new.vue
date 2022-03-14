@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="bladeLoading"
-    :title="param && profileDetails?.name ? profileDetails.name : 'Importer'"
+    :title="param && profileDetails?.name ? profileDetails.name : options.title"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
@@ -594,7 +594,6 @@ function initializeImporting() {
   start();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function reloadParent() {
   emit("parent:call", {
     method: "reload",
@@ -616,6 +615,10 @@ async function onPaginationClick(page: number) {
     profileId: props.param,
   });
 }
+
+defineExpose({
+  reloadParent,
+});
 </script>
 
 <style lang="less">

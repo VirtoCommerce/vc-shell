@@ -17,6 +17,7 @@ interface INotifications {
   markAsReaded(sage: PushNotification): void;
   dismiss(message: PushNotification): void;
   dismissAll(): void;
+  markAllAsRead(): void;
 }
 
 const notifications = ref<PushNotification[]>([]);
@@ -66,17 +67,39 @@ export default (): INotifications => {
       notifications.value.unshift(message);
     }
   }
+
   function markAsReaded(message: PushNotification) {
     message.isNew = false;
     _.remove(popupNotifications.value, (x) => x.id == message.id);
   }
+
   function dismiss(message: PushNotification) {
     _.remove(popupNotifications.value, (x) => x.id == message.id);
     _.remove(notifications.value, (x) => x.id == message.id);
   }
+
   function dismissAll() {
     popupNotifications.value = [];
     notifications.value = [];
+  }
+
+  async function markAllAsRead() {
+    const token = await getAccessToken();
+    if (token) {
+      notificationsClient.setAuthToken(token);
+      try {
+        await notificationsClient.markAllAsRead();
+        notifications.value = notifications.value.map((x) => {
+          if (x.isNew) {
+            x.isNew = false;
+          }
+          return x;
+        });
+      } catch (e) {
+        logger.error(e);
+        throw e;
+      }
+    }
   }
 
   return {
@@ -89,5 +112,6 @@ export default (): INotifications => {
     dismissAll,
     dismiss,
     markAsReaded,
+    markAllAsRead,
   };
 };

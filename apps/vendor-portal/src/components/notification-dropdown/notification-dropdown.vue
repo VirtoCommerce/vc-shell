@@ -109,7 +109,7 @@ const props = defineProps({
   },
 });
 const isDropdownVisible = ref(false);
-const { loadFromHistory, notifications } = useNotifications();
+const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
 
 onMounted(async () => {
   await loadFromHistory();
@@ -117,6 +117,9 @@ onMounted(async () => {
 
 function toggleNotificationsDrop() {
   isDropdownVisible.value = !isDropdownVisible.value;
+  if (isDropdownVisible.value && notifications.value.some((x) => x.isNew)) {
+    markAllAsRead();
+  }
 }
 
 const handleClick = async (

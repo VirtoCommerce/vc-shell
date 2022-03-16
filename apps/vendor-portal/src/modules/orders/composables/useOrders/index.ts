@@ -1,12 +1,13 @@
 import { computed, Ref, ref } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 import {
-  OrderModuleClient,
+  VcmpSellerOrdersClient,
   CustomerOrderSearchResult,
-  CustomerOrderSearchCriteria,
-  ICustomerOrderSearchCriteria,
+  SearchOrdersQuery,
+  ISearchOrdersQuery,
+  ChangeOrderStatusCommand,
   CustomerOrder,
-} from "@virtoshell/api-client";
+} from "../../../../api_client";
 
 interface IUseOrders {
   readonly orders: Ref<CustomerOrder[]>;
@@ -14,9 +15,8 @@ interface IUseOrders {
   readonly pages: Ref<number>;
   readonly loading: Ref<boolean>;
   readonly currentPage: Ref<number>;
-  loadOrders(query?: ICustomerOrderSearchCriteria): void;
-  deleteOrders(args: { ids: string[] }): void;
-  changeOrderStatus(order: CustomerOrder): Promise<void>;
+  loadOrders(query?: ISearchOrdersQuery): void;
+  changeOrderStatus(orderId: string, newStatus: string): Promise<void>;
 }
 
 export default (): IUseOrders => {
@@ -26,21 +26,21 @@ export default (): IUseOrders => {
   const orders = ref(new CustomerOrderSearchResult({ results: [] }));
   const currentPage = ref(1);
 
-  async function getApiClient(): Promise<OrderModuleClient> {
-    const client = new OrderModuleClient();
+  async function getApiClient(): Promise<VcmpSellerOrdersClient> {
+    const client = new VcmpSellerOrdersClient();
     client.setAuthToken(await getAccessToken());
     return client;
   }
 
-  async function loadOrders(query?: ICustomerOrderSearchCriteria) {
+  async function loadOrders(query?: ISearchOrdersQuery) {
     loading.value = true;
     const client = await getApiClient();
     try {
-      orders.value = await client.searchCustomerOrder({
+      orders.value = await client.searchOrders({
         take: 20,
         ...(query || {}),
         employeeId: user.value.id,
-      } as CustomerOrderSearchCriteria);
+      } as SearchOrdersQuery);
       currentPage.value =
         (query?.skip || 0) / Math.max(1, query?.take || 20) + 1;
     } catch (e) {
@@ -51,25 +51,18 @@ export default (): IUseOrders => {
     }
   }
 
-  async function deleteOrders(args: { ids: string[] }) {
-    const client = await getApiClient();
-
-    try {
-      loading.value = true;
-      await client.deleteOrdersByIds(args.ids);
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function changeOrderStatus(order: CustomerOrder): Promise<void> {
+  async function changeOrderStatus(
+    orderId: string,
+    newStatus: string
+  ): Promise<void> {
     loading.value = true;
     const client = await getApiClient();
     try {
-      await client.updateOrder(order);
+      const command = new ChangeOrderStatusCommand();
+      {
+        orderId, newStatus;
+      }
+      await client.updateOrderStatus(command);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -85,7 +78,6 @@ export default (): IUseOrders => {
     loading: computed(() => loading.value),
     currentPage: computed(() => currentPage.value),
     loadOrders,
-    deleteOrders,
     changeOrderStatus,
   };
 };

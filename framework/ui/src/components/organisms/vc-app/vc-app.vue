@@ -312,7 +312,7 @@ const onMenuItemClick = function (item: Record<string, unknown>) {
   activeMenuItem.value = item;
 
   if (item.clickHandler && typeof item.clickHandler === "function") {
-    item.clickHandler(instance?.proxy);
+    item.clickHandler(instance?.exposed);
   } else {
     openWorkspace({
       component: item.component,
@@ -417,6 +417,16 @@ const onParentCall = async (index: number, args: IParentCallArgs) => {
     }
   }
 };
+
+defineExpose({
+  openDashboard,
+  openWorkspace,
+  onOpenPage,
+  onClosePage,
+  onParentCall,
+  onToolbarButtonClick,
+  onMenuItemClick,
+});
 </script>
 
 <style lang="less">

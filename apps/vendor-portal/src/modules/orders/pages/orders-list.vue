@@ -399,8 +399,7 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.ACCEPT")),
       variant: "success",
       async clickHandler() {
-        item.status = "Accepted";
-        await changeOrderStatus(item);
+        await changeOrderStatus(item.id, "Accepted");
         await reload();
       },
     });
@@ -412,8 +411,7 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.CANCEL")),
       variant: "danger",
       async clickHandler() {
-        item.status = "Cancelled";
-        await changeOrderStatus(item);
+        await changeOrderStatus(item.id, "Cancelled");
         await reload();
       },
     });
@@ -426,7 +424,8 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       variant: "danger",
       async clickHandler() {
         item.status = "Shipped";
-        await changeOrderStatus(item);
+        item.status = "Shipped";
+        await changeOrderStatus(item.id, "Cancelled");
         await reload();
       },
     });

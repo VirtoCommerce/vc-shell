@@ -591,47 +591,6 @@ export class AuthApiBase {
           }
           return Promise.resolve<void>(<any>null);
       }
-  
-      /**
-       * @return Success
-       */
-      changeProductStatus(productId: string | null, status: string | null): Promise<void> {
-          let url_ = this.baseUrl + "/api/vcmp/seller/product/{productId}/status/new/{status}";
-          if (productId === undefined || productId === null)
-              throw new Error("The parameter 'productId' must be defined.");
-          url_ = url_.replace("{productId}", encodeURIComponent("" + productId));
-          if (status === undefined || status === null)
-              throw new Error("The parameter 'status' must be defined.");
-          url_ = url_.replace("{status}", encodeURIComponent("" + status));
-          url_ = url_.replace(/[?&]$/, "");
-  
-          let options_ = <RequestInit>{
-              method: "POST",
-              headers: {
-              }
-          };
-  
-          return this.transformOptions(options_).then(transformedOptions_ => {
-              return this.http.fetch(url_, transformedOptions_);
-          }).then((_response: Response) => {
-              return this.processChangeProductStatus(_response);
-          });
-      }
-  
-      protected processChangeProductStatus(response: Response): Promise<void> {
-          const status = response.status;
-          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-          if (status === 200) {
-              return response.text().then((_responseText) => {
-              return;
-              });
-          } else if (status !== 200 && status !== 204) {
-              return response.text().then((_responseText) => {
-              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-              });
-          }
-          return Promise.resolve<void>(<any>null);
-      }
   }
   
   export class VcmpSellerImportClient extends AuthApiBase {
@@ -1100,6 +1059,102 @@ export class AuthApiBase {
       }
   }
   
+  export class VcmpSellerOrdersClient extends AuthApiBase {
+      private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+      private baseUrl: string;
+      protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+  
+      constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+          super();
+          this.http = http ? http : <any>window;
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      searchOrders(body: SearchOrdersQuery | undefined): Promise<CustomerOrderSearchResult> {
+          let url_ = this.baseUrl + "/api/vcmp/orders/search";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processSearchOrders(_response);
+          });
+      }
+  
+      protected processSearchOrders(response: Response): Promise<CustomerOrderSearchResult> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = CustomerOrderSearchResult.fromJS(resultData200);
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<CustomerOrderSearchResult>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      updateOrderStatus(body: ChangeOrderStatusCommand | undefined): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/orders/status";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "PUT",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processUpdateOrderStatus(_response);
+          });
+      }
+  
+      protected processUpdateOrderStatus(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 204) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
+      }
+  }
+  
   export class VcmpSellerSecurityClient extends AuthApiBase {
       private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
       private baseUrl: string;
@@ -1199,6 +1254,7 @@ export class AuthApiBase {
   
   export class SearchCategoriesQuery implements ISearchCategoriesQuery {
       storeId?: string | undefined;
+      sellerName?: string | undefined;
       sellerId?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
@@ -1224,6 +1280,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.storeId = _data["storeId"];
+              this.sellerName = _data["sellerName"];
               this.sellerId = _data["sellerId"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
@@ -1261,6 +1318,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["storeId"] = this.storeId;
+          data["sellerName"] = this.sellerName;
           data["sellerId"] = this.sellerId;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
@@ -1291,6 +1349,7 @@ export class AuthApiBase {
   
   export interface ISearchCategoriesQuery {
       storeId?: string | undefined;
+      sellerName?: string | undefined;
       sellerId?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
@@ -1815,6 +1874,10 @@ export class AuthApiBase {
       catalogId?: string | undefined;
       categoryId?: string | undefined;
       category?: Category;
+      /** Gets the Id of either target Catetory or Catalog */
+      readonly targetId?: string | undefined;
+      /** Gets the name of either target Catetory or Catalog */
+      readonly name?: string | undefined;
   
       constructor(data?: ICategoryLink) {
           if (data) {
@@ -1834,6 +1897,8 @@ export class AuthApiBase {
               this.catalogId = _data["catalogId"];
               this.categoryId = _data["categoryId"];
               this.category = _data["category"] ? Category.fromJS(_data["category"]) : <any>undefined;
+              (<any>this).targetId = _data["targetId"];
+              (<any>this).name = _data["name"];
           }
       }
   
@@ -1853,6 +1918,8 @@ export class AuthApiBase {
           data["catalogId"] = this.catalogId;
           data["categoryId"] = this.categoryId;
           data["category"] = this.category ? this.category.toJSON() : <any>undefined;
+          data["targetId"] = this.targetId;
+          data["name"] = this.name;
           return data;
       }
   }
@@ -1868,6 +1935,10 @@ export class AuthApiBase {
       catalogId?: string | undefined;
       categoryId?: string | undefined;
       category?: Category;
+      /** Gets the Id of either target Catetory or Catalog */
+      targetId?: string | undefined;
+      /** Gets the name of either target Catetory or Catalog */
+      name?: string | undefined;
   }
   
   export class SeoInfo implements ISeoInfo {
@@ -1975,6 +2046,74 @@ export class AuthApiBase {
       /** Active/Inactive */
       isActive?: boolean;
       languageCode?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class CategoryDescription implements ICategoryDescription {
+      content?: string | undefined;
+      descriptionType?: string | undefined;
+      languageCode?: string | undefined;
+      isInherited?: boolean;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: ICategoryDescription) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.content = _data["content"];
+              this.descriptionType = _data["descriptionType"];
+              this.languageCode = _data["languageCode"];
+              this.isInherited = _data["isInherited"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): CategoryDescription {
+          data = typeof data === 'object' ? data : {};
+          let result = new CategoryDescription();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["content"] = this.content;
+          data["descriptionType"] = this.descriptionType;
+          data["languageCode"] = this.languageCode;
+          data["isInherited"] = this.isInherited;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface ICategoryDescription {
+      content?: string | undefined;
+      descriptionType?: string | undefined;
+      languageCode?: string | undefined;
+      isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
       createdBy?: string | undefined;
@@ -2249,6 +2388,8 @@ export class AuthApiBase {
       taxType?: string | undefined;
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
+      enableDescription?: boolean | undefined;
+      descriptions?: CategoryDescription[] | undefined;
       /** Gets the default image */
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
@@ -2305,6 +2446,12 @@ export class AuthApiBase {
                   this.seoInfos = [] as any;
                   for (let item of _data["seoInfos"])
                       this.seoInfos!.push(SeoInfo.fromJS(item));
+              }
+              this.enableDescription = _data["enableDescription"];
+              if (Array.isArray(_data["descriptions"])) {
+                  this.descriptions = [] as any;
+                  for (let item of _data["descriptions"])
+                      this.descriptions!.push(CategoryDescription.fromJS(item));
               }
               (<any>this).imgSrc = _data["imgSrc"];
               if (Array.isArray(_data["images"])) {
@@ -2369,6 +2516,12 @@ export class AuthApiBase {
               for (let item of this.seoInfos)
                   data["seoInfos"].push(item.toJSON());
           }
+          data["enableDescription"] = this.enableDescription;
+          if (Array.isArray(this.descriptions)) {
+              data["descriptions"] = [];
+              for (let item of this.descriptions)
+                  data["descriptions"].push(item.toJSON());
+          }
           data["imgSrc"] = this.imgSrc;
           if (Array.isArray(this.images)) {
               data["images"] = [];
@@ -2411,6 +2564,8 @@ export class AuthApiBase {
       taxType?: string | undefined;
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
+      enableDescription?: boolean | undefined;
+      descriptions?: CategoryDescription[] | undefined;
       /** Gets the default image */
       imgSrc?: string | undefined;
       images?: Image[] | undefined;
@@ -2474,6 +2629,7 @@ export class AuthApiBase {
   
   export class SearchProductsQuery implements ISearchProductsQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
       status?: string | undefined;
@@ -2502,6 +2658,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.categoryId = _data["categoryId"];
               if (Array.isArray(_data["storesIds"])) {
                   this.storesIds = [] as any;
@@ -2550,6 +2707,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["categoryId"] = this.categoryId;
           if (Array.isArray(this.storesIds)) {
               data["storesIds"] = [];
@@ -2591,6 +2749,7 @@ export class AuthApiBase {
   
   export interface ISearchProductsQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
       status?: string | undefined;
@@ -4313,6 +4472,7 @@ export class AuthApiBase {
   }
   
   export class CreateNewProductCommand implements ICreateNewProductCommand {
+      sellerId?: string | undefined;
       sellerName?: string | undefined;
       productDetails?: ProductDetails;
   
@@ -4327,6 +4487,7 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
               this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
           }
@@ -4341,6 +4502,7 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
           data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
           return data;
@@ -4348,11 +4510,14 @@ export class AuthApiBase {
   }
   
   export interface ICreateNewProductCommand {
+      sellerId?: string | undefined;
       sellerName?: string | undefined;
       productDetails?: ProductDetails;
   }
   
   export class UpdateProductDetailsCommand implements IUpdateProductDetailsCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       sellerProductId?: string | undefined;
       productDetails?: ProductDetails;
   
@@ -4367,6 +4532,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.sellerProductId = _data["sellerProductId"];
               this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
           }
@@ -4381,6 +4548,8 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["sellerProductId"] = this.sellerProductId;
           data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
           return data;
@@ -4388,11 +4557,15 @@ export class AuthApiBase {
   }
   
   export interface IUpdateProductDetailsCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       sellerProductId?: string | undefined;
       productDetails?: ProductDetails;
   }
   
   export class CreateNewPublicationRequestCommand implements ICreateNewPublicationRequestCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       storeId?: string | undefined;
       productId!: string;
       comment?: string | undefined;
@@ -4408,6 +4581,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.storeId = _data["storeId"];
               this.productId = _data["productId"];
               this.comment = _data["comment"];
@@ -4423,6 +4598,8 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["storeId"] = this.storeId;
           data["productId"] = this.productId;
           data["comment"] = this.comment;
@@ -4431,6 +4608,8 @@ export class AuthApiBase {
   }
   
   export interface ICreateNewPublicationRequestCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       storeId?: string | undefined;
       productId: string;
       comment?: string | undefined;
@@ -4438,6 +4617,7 @@ export class AuthApiBase {
   
   export class SearchOffersQuery implements ISearchOffersQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       sellerProductId?: string | undefined;
       outerIds?: string[] | undefined;
       productId?: string | undefined;
@@ -4465,6 +4645,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.sellerProductId = _data["sellerProductId"];
               if (Array.isArray(_data["outerIds"])) {
                   this.outerIds = [] as any;
@@ -4508,6 +4689,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["sellerProductId"] = this.sellerProductId;
           if (Array.isArray(this.outerIds)) {
               data["outerIds"] = [];
@@ -4544,6 +4726,7 @@ export class AuthApiBase {
   
   export interface ISearchOffersQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       sellerProductId?: string | undefined;
       outerIds?: string[] | undefined;
       productId?: string | undefined;
@@ -4802,6 +4985,7 @@ export class AuthApiBase {
   
   export class SearchProductsForNewOfferQuery implements ISearchProductsForNewOfferQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
@@ -4826,6 +5010,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
               if (Array.isArray(_data["objectTypes"])) {
@@ -4862,6 +5047,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -4891,6 +5077,7 @@ export class AuthApiBase {
   
   export interface ISearchProductsForNewOfferQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
@@ -5110,7 +5297,8 @@ export class AuthApiBase {
   
   export class CreateNewOfferCommand implements ICreateNewOfferCommand {
       outerId?: string | undefined;
-      sellerName!: string;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       storeId?: string | undefined;
       storeName?: string | undefined;
       details!: OfferDetails;
@@ -5131,6 +5319,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.outerId = _data["outerId"];
+              this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
               this.storeId = _data["storeId"];
               this.storeName = _data["storeName"];
@@ -5149,6 +5338,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["outerId"] = this.outerId;
+          data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
           data["storeId"] = this.storeId;
           data["storeName"] = this.storeName;
@@ -5160,7 +5350,8 @@ export class AuthApiBase {
   
   export interface ICreateNewOfferCommand {
       outerId?: string | undefined;
-      sellerName: string;
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       storeId?: string | undefined;
       storeName?: string | undefined;
       details: OfferDetails;
@@ -5368,6 +5559,8 @@ export class AuthApiBase {
   }
   
   export class RunImportCommand implements IRunImportCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       importProfile?: ImportProfile;
   
       constructor(data?: IRunImportCommand) {
@@ -5381,6 +5574,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
           }
       }
@@ -5394,12 +5589,16 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
           return data;
       }
   }
   
   export interface IRunImportCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       importProfile?: ImportProfile;
   }
   
@@ -5410,7 +5609,7 @@ export class AuthApiBase {
       finished?: Date | undefined;
       totalCount?: number;
       processedCount?: number;
-      errorCount?: number;
+      readonly errorCount?: number;
       errors?: string[] | undefined;
       reportUrl?: string | undefined;
       serverId?: string | undefined;
@@ -5440,7 +5639,7 @@ export class AuthApiBase {
               this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
               this.totalCount = _data["totalCount"];
               this.processedCount = _data["processedCount"];
-              this.errorCount = _data["errorCount"];
+              (<any>this).errorCount = _data["errorCount"];
               if (Array.isArray(_data["errors"])) {
                   this.errors = [] as any;
                   for (let item of _data["errors"])
@@ -5780,6 +5979,8 @@ export class AuthApiBase {
   }
   
   export class CreateProfileCommand implements ICreateProfileCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       importProfile?: ImportProfile;
   
       constructor(data?: ICreateProfileCommand) {
@@ -5793,6 +5994,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
           }
       }
@@ -5806,16 +6009,22 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
           return data;
       }
   }
   
   export interface ICreateProfileCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       importProfile?: ImportProfile;
   }
   
   export class UpdateProfileCommand implements IUpdateProfileCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       importProfileId!: string;
       importProfile?: ImportProfile;
   
@@ -5830,6 +6039,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.importProfileId = _data["importProfileId"];
               this.importProfile = _data["importProfile"] ? ImportProfile.fromJS(_data["importProfile"]) : <any>undefined;
           }
@@ -5844,6 +6055,8 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["importProfileId"] = this.importProfileId;
           data["importProfile"] = this.importProfile ? this.importProfile.toJSON() : <any>undefined;
           return data;
@@ -5851,12 +6064,15 @@ export class AuthApiBase {
   }
   
   export interface IUpdateProfileCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       importProfileId: string;
       importProfile?: ImportProfile;
   }
   
   export class SearchImportProfilesQuery implements ISearchImportProfilesQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       name?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
@@ -5882,6 +6098,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.name = _data["name"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
@@ -5919,6 +6136,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["name"] = this.name;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
@@ -5949,6 +6167,7 @@ export class AuthApiBase {
   
   export interface ISearchImportProfilesQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       name?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
@@ -6013,7 +6232,9 @@ export class AuthApiBase {
   
   export class SearchImportProfilesHistoryQuery implements ISearchImportProfilesHistoryQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       profileId?: string | undefined;
+      jobId?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
@@ -6038,7 +6259,9 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.profileId = _data["profileId"];
+              this.jobId = _data["jobId"];
               this.responseGroup = _data["responseGroup"];
               this.objectType = _data["objectType"];
               if (Array.isArray(_data["objectTypes"])) {
@@ -6075,7 +6298,9 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["profileId"] = this.profileId;
+          data["jobId"] = this.jobId;
           data["responseGroup"] = this.responseGroup;
           data["objectType"] = this.objectType;
           if (Array.isArray(this.objectTypes)) {
@@ -6105,7 +6330,9 @@ export class AuthApiBase {
   
   export interface ISearchImportProfilesHistoryQuery {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       profileId?: string | undefined;
+      jobId?: string | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
       objectTypes?: string[] | undefined;
@@ -6121,6 +6348,7 @@ export class AuthApiBase {
   
   export class ImportRunHistory implements IImportRunHistory {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       jobId?: string | undefined;
       profileId?: string | undefined;
       profileName?: string | undefined;
@@ -6148,6 +6376,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.jobId = _data["jobId"];
               this.profileId = _data["profileId"];
               this.profileName = _data["profileName"];
@@ -6179,6 +6408,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["jobId"] = this.jobId;
           data["profileId"] = this.profileId;
           data["profileName"] = this.profileName;
@@ -6203,6 +6433,7 @@ export class AuthApiBase {
   
   export interface IImportRunHistory {
       sellerId?: string | undefined;
+      sellerName?: string | undefined;
       jobId?: string | undefined;
       profileId?: string | undefined;
       profileName?: string | undefined;
@@ -6265,6 +6496,2829 @@ export class AuthApiBase {
   export interface ISearchImportProfilesHistoryResult {
       totalCount?: number;
       results?: ImportRunHistory[] | undefined;
+  }
+  
+  export class SearchOrdersQuery implements ISearchOrdersQuery {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      /** Search orders with flag IsPrototype */
+      withPrototypes?: boolean;
+      /** Search only recurring orders created by subscription */
+      onlyRecurring?: boolean;
+      /** Search orders with given subscription */
+      subscriptionId?: string | undefined;
+      subscriptionIds?: string[] | undefined;
+      /** It used to limit search within an operation (customer order for example) */
+      operationId?: string | undefined;
+      customerId?: string | undefined;
+      customerIds?: string[] | undefined;
+      ids?: string[] | undefined;
+      employeeId?: string | undefined;
+      storeIds?: string[] | undefined;
+      /** Search by status */
+      status?: string | undefined;
+      statuses?: string[] | undefined;
+      /** Search by numbers */
+      number?: string | undefined;
+      numbers?: string[] | undefined;
+      startDate?: Date | undefined;
+      endDate?: Date | undefined;
+      responseGroup?: string | undefined;
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      keyword?: string | undefined;
+      searchPhrase?: string | undefined;
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      readonly sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  
+      constructor(data?: ISearchOrdersQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.withPrototypes = _data["withPrototypes"];
+              this.onlyRecurring = _data["onlyRecurring"];
+              this.subscriptionId = _data["subscriptionId"];
+              if (Array.isArray(_data["subscriptionIds"])) {
+                  this.subscriptionIds = [] as any;
+                  for (let item of _data["subscriptionIds"])
+                      this.subscriptionIds!.push(item);
+              }
+              this.operationId = _data["operationId"];
+              this.customerId = _data["customerId"];
+              if (Array.isArray(_data["customerIds"])) {
+                  this.customerIds = [] as any;
+                  for (let item of _data["customerIds"])
+                      this.customerIds!.push(item);
+              }
+              if (Array.isArray(_data["ids"])) {
+                  this.ids = [] as any;
+                  for (let item of _data["ids"])
+                      this.ids!.push(item);
+              }
+              this.employeeId = _data["employeeId"];
+              if (Array.isArray(_data["storeIds"])) {
+                  this.storeIds = [] as any;
+                  for (let item of _data["storeIds"])
+                      this.storeIds!.push(item);
+              }
+              this.status = _data["status"];
+              if (Array.isArray(_data["statuses"])) {
+                  this.statuses = [] as any;
+                  for (let item of _data["statuses"])
+                      this.statuses!.push(item);
+              }
+              this.number = _data["number"];
+              if (Array.isArray(_data["numbers"])) {
+                  this.numbers = [] as any;
+                  for (let item of _data["numbers"])
+                      this.numbers!.push(item);
+              }
+              this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+              this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
+              this.responseGroup = _data["responseGroup"];
+              this.objectType = _data["objectType"];
+              if (Array.isArray(_data["objectTypes"])) {
+                  this.objectTypes = [] as any;
+                  for (let item of _data["objectTypes"])
+                      this.objectTypes!.push(item);
+              }
+              if (Array.isArray(_data["objectIds"])) {
+                  this.objectIds = [] as any;
+                  for (let item of _data["objectIds"])
+                      this.objectIds!.push(item);
+              }
+              this.keyword = _data["keyword"];
+              this.searchPhrase = _data["searchPhrase"];
+              this.languageCode = _data["languageCode"];
+              this.sort = _data["sort"];
+              if (Array.isArray(_data["sortInfos"])) {
+                  (<any>this).sortInfos = [] as any;
+                  for (let item of _data["sortInfos"])
+                      (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+              }
+              this.skip = _data["skip"];
+              this.take = _data["take"];
+          }
+      }
+  
+      static fromJS(data: any): SearchOrdersQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new SearchOrdersQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["withPrototypes"] = this.withPrototypes;
+          data["onlyRecurring"] = this.onlyRecurring;
+          data["subscriptionId"] = this.subscriptionId;
+          if (Array.isArray(this.subscriptionIds)) {
+              data["subscriptionIds"] = [];
+              for (let item of this.subscriptionIds)
+                  data["subscriptionIds"].push(item);
+          }
+          data["operationId"] = this.operationId;
+          data["customerId"] = this.customerId;
+          if (Array.isArray(this.customerIds)) {
+              data["customerIds"] = [];
+              for (let item of this.customerIds)
+                  data["customerIds"].push(item);
+          }
+          if (Array.isArray(this.ids)) {
+              data["ids"] = [];
+              for (let item of this.ids)
+                  data["ids"].push(item);
+          }
+          data["employeeId"] = this.employeeId;
+          if (Array.isArray(this.storeIds)) {
+              data["storeIds"] = [];
+              for (let item of this.storeIds)
+                  data["storeIds"].push(item);
+          }
+          data["status"] = this.status;
+          if (Array.isArray(this.statuses)) {
+              data["statuses"] = [];
+              for (let item of this.statuses)
+                  data["statuses"].push(item);
+          }
+          data["number"] = this.number;
+          if (Array.isArray(this.numbers)) {
+              data["numbers"] = [];
+              for (let item of this.numbers)
+                  data["numbers"].push(item);
+          }
+          data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+          data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
+          data["responseGroup"] = this.responseGroup;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.objectTypes)) {
+              data["objectTypes"] = [];
+              for (let item of this.objectTypes)
+                  data["objectTypes"].push(item);
+          }
+          if (Array.isArray(this.objectIds)) {
+              data["objectIds"] = [];
+              for (let item of this.objectIds)
+                  data["objectIds"].push(item);
+          }
+          data["keyword"] = this.keyword;
+          data["searchPhrase"] = this.searchPhrase;
+          data["languageCode"] = this.languageCode;
+          data["sort"] = this.sort;
+          if (Array.isArray(this.sortInfos)) {
+              data["sortInfos"] = [];
+              for (let item of this.sortInfos)
+                  data["sortInfos"].push(item.toJSON());
+          }
+          data["skip"] = this.skip;
+          data["take"] = this.take;
+          return data;
+      }
+  }
+  
+  export interface ISearchOrdersQuery {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      /** Search orders with flag IsPrototype */
+      withPrototypes?: boolean;
+      /** Search only recurring orders created by subscription */
+      onlyRecurring?: boolean;
+      /** Search orders with given subscription */
+      subscriptionId?: string | undefined;
+      subscriptionIds?: string[] | undefined;
+      /** It used to limit search within an operation (customer order for example) */
+      operationId?: string | undefined;
+      customerId?: string | undefined;
+      customerIds?: string[] | undefined;
+      ids?: string[] | undefined;
+      employeeId?: string | undefined;
+      storeIds?: string[] | undefined;
+      /** Search by status */
+      status?: string | undefined;
+      statuses?: string[] | undefined;
+      /** Search by numbers */
+      number?: string | undefined;
+      numbers?: string[] | undefined;
+      startDate?: Date | undefined;
+      endDate?: Date | undefined;
+      responseGroup?: string | undefined;
+      objectType?: string | undefined;
+      objectTypes?: string[] | undefined;
+      objectIds?: string[] | undefined;
+      keyword?: string | undefined;
+      searchPhrase?: string | undefined;
+      languageCode?: string | undefined;
+      sort?: string | undefined;
+      sortInfos?: SortInfo[] | undefined;
+      skip?: number;
+      take?: number;
+  }
+  
+  export enum AddressType {
+      Billing = "Billing",
+      Shipping = "Shipping",
+      BillingAndShipping = "BillingAndShipping",
+      Pickup = "Pickup",
+  }
+  
+  export class OrderAddress implements IOrderAddress {
+      addressType?: AddressType;
+      key?: string | undefined;
+      name?: string | undefined;
+      organization?: string | undefined;
+      countryCode?: string | undefined;
+      countryName?: string | undefined;
+      city?: string | undefined;
+      postalCode?: string | undefined;
+      zip?: string | undefined;
+      line1?: string | undefined;
+      line2?: string | undefined;
+      regionId?: string | undefined;
+      regionName?: string | undefined;
+      firstName?: string | undefined;
+      middleName?: string | undefined;
+      lastName?: string | undefined;
+      phone?: string | undefined;
+      email?: string | undefined;
+      outerId?: string | undefined;
+      isDefault?: boolean;
+  
+      constructor(data?: IOrderAddress) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.addressType = _data["addressType"];
+              this.key = _data["key"];
+              this.name = _data["name"];
+              this.organization = _data["organization"];
+              this.countryCode = _data["countryCode"];
+              this.countryName = _data["countryName"];
+              this.city = _data["city"];
+              this.postalCode = _data["postalCode"];
+              this.zip = _data["zip"];
+              this.line1 = _data["line1"];
+              this.line2 = _data["line2"];
+              this.regionId = _data["regionId"];
+              this.regionName = _data["regionName"];
+              this.firstName = _data["firstName"];
+              this.middleName = _data["middleName"];
+              this.lastName = _data["lastName"];
+              this.phone = _data["phone"];
+              this.email = _data["email"];
+              this.outerId = _data["outerId"];
+              this.isDefault = _data["isDefault"];
+          }
+      }
+  
+      static fromJS(data: any): OrderAddress {
+          data = typeof data === 'object' ? data : {};
+          let result = new OrderAddress();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["addressType"] = this.addressType;
+          data["key"] = this.key;
+          data["name"] = this.name;
+          data["organization"] = this.organization;
+          data["countryCode"] = this.countryCode;
+          data["countryName"] = this.countryName;
+          data["city"] = this.city;
+          data["postalCode"] = this.postalCode;
+          data["zip"] = this.zip;
+          data["line1"] = this.line1;
+          data["line2"] = this.line2;
+          data["regionId"] = this.regionId;
+          data["regionName"] = this.regionName;
+          data["firstName"] = this.firstName;
+          data["middleName"] = this.middleName;
+          data["lastName"] = this.lastName;
+          data["phone"] = this.phone;
+          data["email"] = this.email;
+          data["outerId"] = this.outerId;
+          data["isDefault"] = this.isDefault;
+          return data;
+      }
+  }
+  
+  export interface IOrderAddress {
+      addressType?: AddressType;
+      key?: string | undefined;
+      name?: string | undefined;
+      organization?: string | undefined;
+      countryCode?: string | undefined;
+      countryName?: string | undefined;
+      city?: string | undefined;
+      postalCode?: string | undefined;
+      zip?: string | undefined;
+      line1?: string | undefined;
+      line2?: string | undefined;
+      regionId?: string | undefined;
+      regionName?: string | undefined;
+      firstName?: string | undefined;
+      middleName?: string | undefined;
+      lastName?: string | undefined;
+      phone?: string | undefined;
+      email?: string | undefined;
+      outerId?: string | undefined;
+      isDefault?: boolean;
+  }
+  
+  export class TaxDetail implements ITaxDetail {
+      rate?: number;
+      amount?: number;
+      name?: string | undefined;
+  
+      constructor(data?: ITaxDetail) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.rate = _data["rate"];
+              this.amount = _data["amount"];
+              this.name = _data["name"];
+          }
+      }
+  
+      static fromJS(data: any): TaxDetail {
+          data = typeof data === 'object' ? data : {};
+          let result = new TaxDetail();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["rate"] = this.rate;
+          data["amount"] = this.amount;
+          data["name"] = this.name;
+          return data;
+      }
+  }
+  
+  export interface ITaxDetail {
+      rate?: number;
+      amount?: number;
+      name?: string | undefined;
+  }
+  
+  export enum PaymentMethodType {
+      Unknown = "Unknown",
+      Standard = "Standard",
+      Redirection = "Redirection",
+      PreparedForm = "PreparedForm",
+  }
+  
+  export enum PaymentMethodGroupType {
+      Paypal = "Paypal",
+      BankCard = "BankCard",
+      Alternative = "Alternative",
+      Manual = "Manual",
+  }
+  
+  export class PaymentMethod implements IPaymentMethod {
+      code?: string | undefined;
+      readonly name?: string | undefined;
+      logoUrl?: string | undefined;
+      isActive?: boolean;
+      priority?: number;
+      isAvailableForPartial?: boolean;
+      currency?: string | undefined;
+      price?: number;
+      readonly priceWithTax?: number;
+      readonly total?: number;
+      readonly totalWithTax?: number;
+      discountAmount?: number;
+      readonly discountAmountWithTax?: number;
+      storeId?: string | undefined;
+      readonly typeName?: string | undefined;
+      settings?: ObjectSettingEntry[] | undefined;
+      taxType?: string | undefined;
+      readonly taxTotal?: number;
+      taxPercentRate?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      paymentMethodType?: PaymentMethodType;
+      paymentMethodGroupType?: PaymentMethodGroupType;
+      id?: string | undefined;
+  
+      constructor(data?: IPaymentMethod) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.code = _data["code"];
+              (<any>this).name = _data["name"];
+              this.logoUrl = _data["logoUrl"];
+              this.isActive = _data["isActive"];
+              this.priority = _data["priority"];
+              this.isAvailableForPartial = _data["isAvailableForPartial"];
+              this.currency = _data["currency"];
+              this.price = _data["price"];
+              (<any>this).priceWithTax = _data["priceWithTax"];
+              (<any>this).total = _data["total"];
+              (<any>this).totalWithTax = _data["totalWithTax"];
+              this.discountAmount = _data["discountAmount"];
+              (<any>this).discountAmountWithTax = _data["discountAmountWithTax"];
+              this.storeId = _data["storeId"];
+              (<any>this).typeName = _data["typeName"];
+              if (Array.isArray(_data["settings"])) {
+                  this.settings = [] as any;
+                  for (let item of _data["settings"])
+                      this.settings!.push(ObjectSettingEntry.fromJS(item));
+              }
+              this.taxType = _data["taxType"];
+              (<any>this).taxTotal = _data["taxTotal"];
+              this.taxPercentRate = _data["taxPercentRate"];
+              if (Array.isArray(_data["taxDetails"])) {
+                  this.taxDetails = [] as any;
+                  for (let item of _data["taxDetails"])
+                      this.taxDetails!.push(TaxDetail.fromJS(item));
+              }
+              this.paymentMethodType = _data["paymentMethodType"];
+              this.paymentMethodGroupType = _data["paymentMethodGroupType"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): PaymentMethod {
+          data = typeof data === 'object' ? data : {};
+          let result = new PaymentMethod();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["code"] = this.code;
+          data["name"] = this.name;
+          data["logoUrl"] = this.logoUrl;
+          data["isActive"] = this.isActive;
+          data["priority"] = this.priority;
+          data["isAvailableForPartial"] = this.isAvailableForPartial;
+          data["currency"] = this.currency;
+          data["price"] = this.price;
+          data["priceWithTax"] = this.priceWithTax;
+          data["total"] = this.total;
+          data["totalWithTax"] = this.totalWithTax;
+          data["discountAmount"] = this.discountAmount;
+          data["discountAmountWithTax"] = this.discountAmountWithTax;
+          data["storeId"] = this.storeId;
+          data["typeName"] = this.typeName;
+          if (Array.isArray(this.settings)) {
+              data["settings"] = [];
+              for (let item of this.settings)
+                  data["settings"].push(item.toJSON());
+          }
+          data["taxType"] = this.taxType;
+          data["taxTotal"] = this.taxTotal;
+          data["taxPercentRate"] = this.taxPercentRate;
+          if (Array.isArray(this.taxDetails)) {
+              data["taxDetails"] = [];
+              for (let item of this.taxDetails)
+                  data["taxDetails"].push(item.toJSON());
+          }
+          data["paymentMethodType"] = this.paymentMethodType;
+          data["paymentMethodGroupType"] = this.paymentMethodGroupType;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IPaymentMethod {
+      code?: string | undefined;
+      name?: string | undefined;
+      logoUrl?: string | undefined;
+      isActive?: boolean;
+      priority?: number;
+      isAvailableForPartial?: boolean;
+      currency?: string | undefined;
+      price?: number;
+      priceWithTax?: number;
+      total?: number;
+      totalWithTax?: number;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      storeId?: string | undefined;
+      typeName?: string | undefined;
+      settings?: ObjectSettingEntry[] | undefined;
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      paymentMethodType?: PaymentMethodType;
+      paymentMethodGroupType?: PaymentMethodGroupType;
+      id?: string | undefined;
+  }
+  
+  export enum PaymentStatus {
+      New = "New",
+      Pending = "Pending",
+      Authorized = "Authorized",
+      Paid = "Paid",
+      PartiallyRefunded = "PartiallyRefunded",
+      Refunded = "Refunded",
+      Voided = "Voided",
+      Custom = "Custom",
+      Cancelled = "Cancelled",
+      Declined = "Declined",
+      Error = "Error",
+  }
+  
+  export class ProcessPaymentRequestResult implements IProcessPaymentRequestResult {
+      redirectUrl?: string | undefined;
+      htmlForm?: string | undefined;
+      outerId?: string | undefined;
+      paymentMethod?: PaymentMethod;
+      isSuccess?: boolean;
+      errorMessage?: string | undefined;
+      newPaymentStatus?: PaymentStatus;
+  
+      constructor(data?: IProcessPaymentRequestResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.redirectUrl = _data["redirectUrl"];
+              this.htmlForm = _data["htmlForm"];
+              this.outerId = _data["outerId"];
+              this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
+              this.isSuccess = _data["isSuccess"];
+              this.errorMessage = _data["errorMessage"];
+              this.newPaymentStatus = _data["newPaymentStatus"];
+          }
+      }
+  
+      static fromJS(data: any): ProcessPaymentRequestResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new ProcessPaymentRequestResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["redirectUrl"] = this.redirectUrl;
+          data["htmlForm"] = this.htmlForm;
+          data["outerId"] = this.outerId;
+          data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
+          data["isSuccess"] = this.isSuccess;
+          data["errorMessage"] = this.errorMessage;
+          data["newPaymentStatus"] = this.newPaymentStatus;
+          return data;
+      }
+  }
+  
+  export interface IProcessPaymentRequestResult {
+      redirectUrl?: string | undefined;
+      htmlForm?: string | undefined;
+      outerId?: string | undefined;
+      paymentMethod?: PaymentMethod;
+      isSuccess?: boolean;
+      errorMessage?: string | undefined;
+      newPaymentStatus?: PaymentStatus;
+  }
+  
+  export class Discount implements IDiscount {
+      promotionId?: string | undefined;
+      currency?: string | undefined;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      coupon?: string | undefined;
+      description?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IDiscount) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.promotionId = _data["promotionId"];
+              this.currency = _data["currency"];
+              this.discountAmount = _data["discountAmount"];
+              this.discountAmountWithTax = _data["discountAmountWithTax"];
+              this.coupon = _data["coupon"];
+              this.description = _data["description"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): Discount {
+          data = typeof data === 'object' ? data : {};
+          let result = new Discount();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["promotionId"] = this.promotionId;
+          data["currency"] = this.currency;
+          data["discountAmount"] = this.discountAmount;
+          data["discountAmountWithTax"] = this.discountAmountWithTax;
+          data["coupon"] = this.coupon;
+          data["description"] = this.description;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IDiscount {
+      promotionId?: string | undefined;
+      currency?: string | undefined;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      coupon?: string | undefined;
+      description?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
+      amount?: number;
+      currencyCode?: string | undefined;
+      /** Flag represent that current transaction is processed */
+      isProcessed?: boolean;
+      /** Date when this transaction was handled */
+      processedDate?: Date | undefined;
+      processError?: string | undefined;
+      processAttemptCount?: number;
+      /** Raw request data */
+      requestData?: string | undefined;
+      /** Raw response data */
+      responseData?: string | undefined;
+      /** Gateway or VC response status code */
+      responseCode?: string | undefined;
+      /** Gateway IP address */
+      gatewayIpAddress?: string | undefined;
+      /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+  The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
+      type?: string | undefined;
+      /** "Active", "Expired", and "Inactive" or other */
+      status?: string | undefined;
+      note?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IPaymentGatewayTransaction) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.amount = _data["amount"];
+              this.currencyCode = _data["currencyCode"];
+              this.isProcessed = _data["isProcessed"];
+              this.processedDate = _data["processedDate"] ? new Date(_data["processedDate"].toString()) : <any>undefined;
+              this.processError = _data["processError"];
+              this.processAttemptCount = _data["processAttemptCount"];
+              this.requestData = _data["requestData"];
+              this.responseData = _data["responseData"];
+              this.responseCode = _data["responseCode"];
+              this.gatewayIpAddress = _data["gatewayIpAddress"];
+              this.type = _data["type"];
+              this.status = _data["status"];
+              this.note = _data["note"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): PaymentGatewayTransaction {
+          data = typeof data === 'object' ? data : {};
+          let result = new PaymentGatewayTransaction();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["amount"] = this.amount;
+          data["currencyCode"] = this.currencyCode;
+          data["isProcessed"] = this.isProcessed;
+          data["processedDate"] = this.processedDate ? this.processedDate.toISOString() : <any>undefined;
+          data["processError"] = this.processError;
+          data["processAttemptCount"] = this.processAttemptCount;
+          data["requestData"] = this.requestData;
+          data["responseData"] = this.responseData;
+          data["responseCode"] = this.responseCode;
+          data["gatewayIpAddress"] = this.gatewayIpAddress;
+          data["type"] = this.type;
+          data["status"] = this.status;
+          data["note"] = this.note;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IPaymentGatewayTransaction {
+      amount?: number;
+      currencyCode?: string | undefined;
+      /** Flag represent that current transaction is processed */
+      isProcessed?: boolean;
+      /** Date when this transaction was handled */
+      processedDate?: Date | undefined;
+      processError?: string | undefined;
+      processAttemptCount?: number;
+      /** Raw request data */
+      requestData?: string | undefined;
+      /** Raw response data */
+      responseData?: string | undefined;
+      /** Gateway or VC response status code */
+      responseCode?: string | undefined;
+      /** Gateway IP address */
+      gatewayIpAddress?: string | undefined;
+      /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+  The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
+      type?: string | undefined;
+      /** "Active", "Expired", and "Inactive" or other */
+      status?: string | undefined;
+      note?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class IOperation implements IIOperation {
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      childrenOperations?: IOperation[] | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IIOperation) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.operationType = _data["operationType"];
+              this.parentOperationId = _data["parentOperationId"];
+              this.number = _data["number"];
+              this.isApproved = _data["isApproved"];
+              this.status = _data["status"];
+              this.comment = _data["comment"];
+              this.currency = _data["currency"];
+              if (Array.isArray(_data["childrenOperations"])) {
+                  this.childrenOperations = [] as any;
+                  for (let item of _data["childrenOperations"])
+                      this.childrenOperations!.push(IOperation.fromJS(item));
+              }
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): IOperation {
+          data = typeof data === 'object' ? data : {};
+          let result = new IOperation();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["operationType"] = this.operationType;
+          data["parentOperationId"] = this.parentOperationId;
+          data["number"] = this.number;
+          data["isApproved"] = this.isApproved;
+          data["status"] = this.status;
+          data["comment"] = this.comment;
+          data["currency"] = this.currency;
+          if (Array.isArray(this.childrenOperations)) {
+              data["childrenOperations"] = [];
+              for (let item of this.childrenOperations)
+                  data["childrenOperations"].push(item.toJSON());
+          }
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IIOperation {
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      childrenOperations?: IOperation[] | undefined;
+      id?: string | undefined;
+  }
+  
+  export enum CancelledState {
+      Undefined = "Undefined",
+      Requested = "Requested",
+      Completed = "Completed",
+  }
+  
+  export enum DynamicPropertyValueType {
+      Undefined = "Undefined",
+      ShortText = "ShortText",
+      LongText = "LongText",
+      Integer = "Integer",
+      Decimal = "Decimal",
+      DateTime = "DateTime",
+      Boolean = "Boolean",
+      Html = "Html",
+      Image = "Image",
+  }
+  
+  export class DynamicPropertyObjectValue implements IDynamicPropertyObjectValue {
+      objectType?: string | undefined;
+      objectId?: string | undefined;
+      locale?: string | undefined;
+      value?: any | undefined;
+      valueId?: string | undefined;
+      valueType?: DynamicPropertyValueType;
+      propertyId?: string | undefined;
+      propertyName?: string | undefined;
+  
+      constructor(data?: IDynamicPropertyObjectValue) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.objectType = _data["objectType"];
+              this.objectId = _data["objectId"];
+              this.locale = _data["locale"];
+              this.value = _data["value"];
+              this.valueId = _data["valueId"];
+              this.valueType = _data["valueType"];
+              this.propertyId = _data["propertyId"];
+              this.propertyName = _data["propertyName"];
+          }
+      }
+  
+      static fromJS(data: any): DynamicPropertyObjectValue {
+          data = typeof data === 'object' ? data : {};
+          let result = new DynamicPropertyObjectValue();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["objectType"] = this.objectType;
+          data["objectId"] = this.objectId;
+          data["locale"] = this.locale;
+          data["value"] = this.value;
+          data["valueId"] = this.valueId;
+          data["valueType"] = this.valueType;
+          data["propertyId"] = this.propertyId;
+          data["propertyName"] = this.propertyName;
+          return data;
+      }
+  }
+  
+  export interface IDynamicPropertyObjectValue {
+      objectType?: string | undefined;
+      objectId?: string | undefined;
+      locale?: string | undefined;
+      value?: any | undefined;
+      valueId?: string | undefined;
+      valueType?: DynamicPropertyValueType;
+      propertyId?: string | undefined;
+      propertyName?: string | undefined;
+  }
+  
+  export class DynamicPropertyName implements IDynamicPropertyName {
+      locale?: string | undefined;
+      name?: string | undefined;
+  
+      constructor(data?: IDynamicPropertyName) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.locale = _data["locale"];
+              this.name = _data["name"];
+          }
+      }
+  
+      static fromJS(data: any): DynamicPropertyName {
+          data = typeof data === 'object' ? data : {};
+          let result = new DynamicPropertyName();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["locale"] = this.locale;
+          data["name"] = this.name;
+          return data;
+      }
+  }
+  
+  export interface IDynamicPropertyName {
+      locale?: string | undefined;
+      name?: string | undefined;
+  }
+  
+  export class DynamicObjectProperty implements IDynamicObjectProperty {
+      objectId?: string | undefined;
+      values?: DynamicPropertyObjectValue[] | undefined;
+      name?: string | undefined;
+      description?: string | undefined;
+      objectType?: string | undefined;
+      isArray?: boolean;
+      isDictionary?: boolean;
+      isMultilingual?: boolean;
+      isRequired?: boolean;
+      displayOrder?: number | undefined;
+      valueType?: DynamicPropertyValueType;
+      displayNames?: DynamicPropertyName[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IDynamicObjectProperty) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.objectId = _data["objectId"];
+              if (Array.isArray(_data["values"])) {
+                  this.values = [] as any;
+                  for (let item of _data["values"])
+                      this.values!.push(DynamicPropertyObjectValue.fromJS(item));
+              }
+              this.name = _data["name"];
+              this.description = _data["description"];
+              this.objectType = _data["objectType"];
+              this.isArray = _data["isArray"];
+              this.isDictionary = _data["isDictionary"];
+              this.isMultilingual = _data["isMultilingual"];
+              this.isRequired = _data["isRequired"];
+              this.displayOrder = _data["displayOrder"];
+              this.valueType = _data["valueType"];
+              if (Array.isArray(_data["displayNames"])) {
+                  this.displayNames = [] as any;
+                  for (let item of _data["displayNames"])
+                      this.displayNames!.push(DynamicPropertyName.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): DynamicObjectProperty {
+          data = typeof data === 'object' ? data : {};
+          let result = new DynamicObjectProperty();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["objectId"] = this.objectId;
+          if (Array.isArray(this.values)) {
+              data["values"] = [];
+              for (let item of this.values)
+                  data["values"].push(item.toJSON());
+          }
+          data["name"] = this.name;
+          data["description"] = this.description;
+          data["objectType"] = this.objectType;
+          data["isArray"] = this.isArray;
+          data["isDictionary"] = this.isDictionary;
+          data["isMultilingual"] = this.isMultilingual;
+          data["isRequired"] = this.isRequired;
+          data["displayOrder"] = this.displayOrder;
+          data["valueType"] = this.valueType;
+          if (Array.isArray(this.displayNames)) {
+              data["displayNames"] = [];
+              for (let item of this.displayNames)
+                  data["displayNames"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IDynamicObjectProperty {
+      objectId?: string | undefined;
+      values?: DynamicPropertyObjectValue[] | undefined;
+      name?: string | undefined;
+      description?: string | undefined;
+      objectType?: string | undefined;
+      isArray?: boolean;
+      isDictionary?: boolean;
+      isMultilingual?: boolean;
+      isRequired?: boolean;
+      displayOrder?: number | undefined;
+      valueType?: DynamicPropertyValueType;
+      displayNames?: DynamicPropertyName[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export enum EntryState {
+      Detached = "Detached",
+      Unchanged = "Unchanged",
+      Added = "Added",
+      Deleted = "Deleted",
+      Modified = "Modified",
+  }
+  
+  export class OperationLog implements IOperationLog {
+      objectType?: string | undefined;
+      objectId?: string | undefined;
+      operationType?: EntryState;
+      detail?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IOperationLog) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.objectType = _data["objectType"];
+              this.objectId = _data["objectId"];
+              this.operationType = _data["operationType"];
+              this.detail = _data["detail"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): OperationLog {
+          data = typeof data === 'object' ? data : {};
+          let result = new OperationLog();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["objectType"] = this.objectType;
+          data["objectId"] = this.objectId;
+          data["operationType"] = this.operationType;
+          data["detail"] = this.detail;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IOperationLog {
+      objectType?: string | undefined;
+      objectId?: string | undefined;
+      operationType?: EntryState;
+      detail?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class PaymentIn implements IPaymentIn {
+      orderId?: string | undefined;
+      purpose?: string | undefined;
+      /** Payment method (gateway) code */
+      gatewayCode?: string | undefined;
+      paymentMethod?: PaymentMethod;
+      organizationId?: string | undefined;
+      organizationName?: string | undefined;
+      customerId?: string | undefined;
+      customerName?: string | undefined;
+      incomingDate?: Date | undefined;
+      billingAddress?: OrderAddress;
+      paymentStatus?: PaymentStatus;
+      authorizedDate?: Date | undefined;
+      capturedDate?: Date | undefined;
+      voidedDate?: Date | undefined;
+      processPaymentResult?: ProcessPaymentRequestResult;
+      price?: number;
+      priceWithTax?: number;
+      total?: number;
+      totalWithTax?: number;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      objectType?: string | undefined;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      discounts?: Discount[] | undefined;
+      transactions?: PaymentGatewayTransaction[] | undefined;
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      sum?: number;
+      outerId?: string | undefined;
+      cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      operationsLog?: OperationLog[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IPaymentIn) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.orderId = _data["orderId"];
+              this.purpose = _data["purpose"];
+              this.gatewayCode = _data["gatewayCode"];
+              this.paymentMethod = _data["paymentMethod"] ? PaymentMethod.fromJS(_data["paymentMethod"]) : <any>undefined;
+              this.organizationId = _data["organizationId"];
+              this.organizationName = _data["organizationName"];
+              this.customerId = _data["customerId"];
+              this.customerName = _data["customerName"];
+              this.incomingDate = _data["incomingDate"] ? new Date(_data["incomingDate"].toString()) : <any>undefined;
+              this.billingAddress = _data["billingAddress"] ? OrderAddress.fromJS(_data["billingAddress"]) : <any>undefined;
+              this.paymentStatus = _data["paymentStatus"];
+              this.authorizedDate = _data["authorizedDate"] ? new Date(_data["authorizedDate"].toString()) : <any>undefined;
+              this.capturedDate = _data["capturedDate"] ? new Date(_data["capturedDate"].toString()) : <any>undefined;
+              this.voidedDate = _data["voidedDate"] ? new Date(_data["voidedDate"].toString()) : <any>undefined;
+              this.processPaymentResult = _data["processPaymentResult"] ? ProcessPaymentRequestResult.fromJS(_data["processPaymentResult"]) : <any>undefined;
+              this.price = _data["price"];
+              this.priceWithTax = _data["priceWithTax"];
+              this.total = _data["total"];
+              this.totalWithTax = _data["totalWithTax"];
+              this.discountAmount = _data["discountAmount"];
+              this.discountAmountWithTax = _data["discountAmountWithTax"];
+              this.objectType = _data["objectType"];
+              this.taxType = _data["taxType"];
+              this.taxTotal = _data["taxTotal"];
+              this.taxPercentRate = _data["taxPercentRate"];
+              if (Array.isArray(_data["taxDetails"])) {
+                  this.taxDetails = [] as any;
+                  for (let item of _data["taxDetails"])
+                      this.taxDetails!.push(TaxDetail.fromJS(item));
+              }
+              if (Array.isArray(_data["discounts"])) {
+                  this.discounts = [] as any;
+                  for (let item of _data["discounts"])
+                      this.discounts!.push(Discount.fromJS(item));
+              }
+              if (Array.isArray(_data["transactions"])) {
+                  this.transactions = [] as any;
+                  for (let item of _data["transactions"])
+                      this.transactions!.push(PaymentGatewayTransaction.fromJS(item));
+              }
+              this.operationType = _data["operationType"];
+              this.parentOperationId = _data["parentOperationId"];
+              this.number = _data["number"];
+              this.isApproved = _data["isApproved"];
+              this.status = _data["status"];
+              this.comment = _data["comment"];
+              this.currency = _data["currency"];
+              this.sum = _data["sum"];
+              this.outerId = _data["outerId"];
+              this.cancelledState = _data["cancelledState"];
+              this.isCancelled = _data["isCancelled"];
+              this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+              this.cancelReason = _data["cancelReason"];
+              if (Array.isArray(_data["dynamicProperties"])) {
+                  this.dynamicProperties = [] as any;
+                  for (let item of _data["dynamicProperties"])
+                      this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+              }
+              if (Array.isArray(_data["operationsLog"])) {
+                  this.operationsLog = [] as any;
+                  for (let item of _data["operationsLog"])
+                      this.operationsLog!.push(OperationLog.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): PaymentIn {
+          data = typeof data === 'object' ? data : {};
+          let result = new PaymentIn();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["orderId"] = this.orderId;
+          data["purpose"] = this.purpose;
+          data["gatewayCode"] = this.gatewayCode;
+          data["paymentMethod"] = this.paymentMethod ? this.paymentMethod.toJSON() : <any>undefined;
+          data["organizationId"] = this.organizationId;
+          data["organizationName"] = this.organizationName;
+          data["customerId"] = this.customerId;
+          data["customerName"] = this.customerName;
+          data["incomingDate"] = this.incomingDate ? this.incomingDate.toISOString() : <any>undefined;
+          data["billingAddress"] = this.billingAddress ? this.billingAddress.toJSON() : <any>undefined;
+          data["paymentStatus"] = this.paymentStatus;
+          data["authorizedDate"] = this.authorizedDate ? this.authorizedDate.toISOString() : <any>undefined;
+          data["capturedDate"] = this.capturedDate ? this.capturedDate.toISOString() : <any>undefined;
+          data["voidedDate"] = this.voidedDate ? this.voidedDate.toISOString() : <any>undefined;
+          data["processPaymentResult"] = this.processPaymentResult ? this.processPaymentResult.toJSON() : <any>undefined;
+          data["price"] = this.price;
+          data["priceWithTax"] = this.priceWithTax;
+          data["total"] = this.total;
+          data["totalWithTax"] = this.totalWithTax;
+          data["discountAmount"] = this.discountAmount;
+          data["discountAmountWithTax"] = this.discountAmountWithTax;
+          data["objectType"] = this.objectType;
+          data["taxType"] = this.taxType;
+          data["taxTotal"] = this.taxTotal;
+          data["taxPercentRate"] = this.taxPercentRate;
+          if (Array.isArray(this.taxDetails)) {
+              data["taxDetails"] = [];
+              for (let item of this.taxDetails)
+                  data["taxDetails"].push(item.toJSON());
+          }
+          if (Array.isArray(this.discounts)) {
+              data["discounts"] = [];
+              for (let item of this.discounts)
+                  data["discounts"].push(item.toJSON());
+          }
+          if (Array.isArray(this.transactions)) {
+              data["transactions"] = [];
+              for (let item of this.transactions)
+                  data["transactions"].push(item.toJSON());
+          }
+          data["operationType"] = this.operationType;
+          data["parentOperationId"] = this.parentOperationId;
+          data["number"] = this.number;
+          data["isApproved"] = this.isApproved;
+          data["status"] = this.status;
+          data["comment"] = this.comment;
+          data["currency"] = this.currency;
+          data["sum"] = this.sum;
+          data["outerId"] = this.outerId;
+          data["cancelledState"] = this.cancelledState;
+          data["isCancelled"] = this.isCancelled;
+          data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+          data["cancelReason"] = this.cancelReason;
+          if (Array.isArray(this.dynamicProperties)) {
+              data["dynamicProperties"] = [];
+              for (let item of this.dynamicProperties)
+                  data["dynamicProperties"].push(item.toJSON());
+          }
+          if (Array.isArray(this.operationsLog)) {
+              data["operationsLog"] = [];
+              for (let item of this.operationsLog)
+                  data["operationsLog"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IPaymentIn {
+      orderId?: string | undefined;
+      purpose?: string | undefined;
+      /** Payment method (gateway) code */
+      gatewayCode?: string | undefined;
+      paymentMethod?: PaymentMethod;
+      organizationId?: string | undefined;
+      organizationName?: string | undefined;
+      customerId?: string | undefined;
+      customerName?: string | undefined;
+      incomingDate?: Date | undefined;
+      billingAddress?: OrderAddress;
+      paymentStatus?: PaymentStatus;
+      authorizedDate?: Date | undefined;
+      capturedDate?: Date | undefined;
+      voidedDate?: Date | undefined;
+      processPaymentResult?: ProcessPaymentRequestResult;
+      price?: number;
+      priceWithTax?: number;
+      total?: number;
+      totalWithTax?: number;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      objectType?: string | undefined;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      discounts?: Discount[] | undefined;
+      transactions?: PaymentGatewayTransaction[] | undefined;
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      sum?: number;
+      outerId?: string | undefined;
+      cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      operationsLog?: OperationLog[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class OrderLineItem implements IOrderLineItem {
+      /** Price id */
+      priceId?: string | undefined;
+      currency?: string | undefined;
+      /** unit price without discount and tax */
+      price?: number;
+      priceWithTax?: number;
+      /** Resulting price with discount for one unit */
+      placedPrice?: number;
+      placedPriceWithTax?: number;
+      extendedPrice?: number;
+      extendedPriceWithTax?: number;
+      /** Gets the value of the single qty line item discount amount */
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      discountTotal?: number;
+      discountTotalWithTax?: number;
+      fee?: number;
+      feeWithTax?: number;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      /** Reserve quantity */
+      reserveQuantity?: number;
+      quantity?: number;
+      productId?: string | undefined;
+      sku?: string | undefined;
+      productType?: string | undefined;
+      catalogId?: string | undefined;
+      categoryId?: string | undefined;
+      name?: string | undefined;
+      comment?: string | undefined;
+      imageUrl?: string | undefined;
+      isGift?: boolean | undefined;
+      shippingMethodCode?: string | undefined;
+      fulfillmentLocationCode?: string | undefined;
+      fulfillmentCenterId?: string | undefined;
+      fulfillmentCenterName?: string | undefined;
+      outerId?: string | undefined;
+      weightUnit?: string | undefined;
+      weight?: number | undefined;
+      measureUnit?: string | undefined;
+      height?: number | undefined;
+      length?: number | undefined;
+      width?: number | undefined;
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      readonly objectType?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      discounts?: Discount[] | undefined;
+      taxDetails?: TaxDetail[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IOrderLineItem) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.priceId = _data["priceId"];
+              this.currency = _data["currency"];
+              this.price = _data["price"];
+              this.priceWithTax = _data["priceWithTax"];
+              this.placedPrice = _data["placedPrice"];
+              this.placedPriceWithTax = _data["placedPriceWithTax"];
+              this.extendedPrice = _data["extendedPrice"];
+              this.extendedPriceWithTax = _data["extendedPriceWithTax"];
+              this.discountAmount = _data["discountAmount"];
+              this.discountAmountWithTax = _data["discountAmountWithTax"];
+              this.discountTotal = _data["discountTotal"];
+              this.discountTotalWithTax = _data["discountTotalWithTax"];
+              this.fee = _data["fee"];
+              this.feeWithTax = _data["feeWithTax"];
+              this.taxType = _data["taxType"];
+              this.taxTotal = _data["taxTotal"];
+              this.taxPercentRate = _data["taxPercentRate"];
+              this.reserveQuantity = _data["reserveQuantity"];
+              this.quantity = _data["quantity"];
+              this.productId = _data["productId"];
+              this.sku = _data["sku"];
+              this.productType = _data["productType"];
+              this.catalogId = _data["catalogId"];
+              this.categoryId = _data["categoryId"];
+              this.name = _data["name"];
+              this.comment = _data["comment"];
+              this.imageUrl = _data["imageUrl"];
+              this.isGift = _data["isGift"];
+              this.shippingMethodCode = _data["shippingMethodCode"];
+              this.fulfillmentLocationCode = _data["fulfillmentLocationCode"];
+              this.fulfillmentCenterId = _data["fulfillmentCenterId"];
+              this.fulfillmentCenterName = _data["fulfillmentCenterName"];
+              this.outerId = _data["outerId"];
+              this.weightUnit = _data["weightUnit"];
+              this.weight = _data["weight"];
+              this.measureUnit = _data["measureUnit"];
+              this.height = _data["height"];
+              this.length = _data["length"];
+              this.width = _data["width"];
+              this.isCancelled = _data["isCancelled"];
+              this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+              this.cancelReason = _data["cancelReason"];
+              (<any>this).objectType = _data["objectType"];
+              if (Array.isArray(_data["dynamicProperties"])) {
+                  this.dynamicProperties = [] as any;
+                  for (let item of _data["dynamicProperties"])
+                      this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+              }
+              if (Array.isArray(_data["discounts"])) {
+                  this.discounts = [] as any;
+                  for (let item of _data["discounts"])
+                      this.discounts!.push(Discount.fromJS(item));
+              }
+              if (Array.isArray(_data["taxDetails"])) {
+                  this.taxDetails = [] as any;
+                  for (let item of _data["taxDetails"])
+                      this.taxDetails!.push(TaxDetail.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): OrderLineItem {
+          data = typeof data === 'object' ? data : {};
+          let result = new OrderLineItem();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["priceId"] = this.priceId;
+          data["currency"] = this.currency;
+          data["price"] = this.price;
+          data["priceWithTax"] = this.priceWithTax;
+          data["placedPrice"] = this.placedPrice;
+          data["placedPriceWithTax"] = this.placedPriceWithTax;
+          data["extendedPrice"] = this.extendedPrice;
+          data["extendedPriceWithTax"] = this.extendedPriceWithTax;
+          data["discountAmount"] = this.discountAmount;
+          data["discountAmountWithTax"] = this.discountAmountWithTax;
+          data["discountTotal"] = this.discountTotal;
+          data["discountTotalWithTax"] = this.discountTotalWithTax;
+          data["fee"] = this.fee;
+          data["feeWithTax"] = this.feeWithTax;
+          data["taxType"] = this.taxType;
+          data["taxTotal"] = this.taxTotal;
+          data["taxPercentRate"] = this.taxPercentRate;
+          data["reserveQuantity"] = this.reserveQuantity;
+          data["quantity"] = this.quantity;
+          data["productId"] = this.productId;
+          data["sku"] = this.sku;
+          data["productType"] = this.productType;
+          data["catalogId"] = this.catalogId;
+          data["categoryId"] = this.categoryId;
+          data["name"] = this.name;
+          data["comment"] = this.comment;
+          data["imageUrl"] = this.imageUrl;
+          data["isGift"] = this.isGift;
+          data["shippingMethodCode"] = this.shippingMethodCode;
+          data["fulfillmentLocationCode"] = this.fulfillmentLocationCode;
+          data["fulfillmentCenterId"] = this.fulfillmentCenterId;
+          data["fulfillmentCenterName"] = this.fulfillmentCenterName;
+          data["outerId"] = this.outerId;
+          data["weightUnit"] = this.weightUnit;
+          data["weight"] = this.weight;
+          data["measureUnit"] = this.measureUnit;
+          data["height"] = this.height;
+          data["length"] = this.length;
+          data["width"] = this.width;
+          data["isCancelled"] = this.isCancelled;
+          data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+          data["cancelReason"] = this.cancelReason;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.dynamicProperties)) {
+              data["dynamicProperties"] = [];
+              for (let item of this.dynamicProperties)
+                  data["dynamicProperties"].push(item.toJSON());
+          }
+          if (Array.isArray(this.discounts)) {
+              data["discounts"] = [];
+              for (let item of this.discounts)
+                  data["discounts"].push(item.toJSON());
+          }
+          if (Array.isArray(this.taxDetails)) {
+              data["taxDetails"] = [];
+              for (let item of this.taxDetails)
+                  data["taxDetails"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IOrderLineItem {
+      /** Price id */
+      priceId?: string | undefined;
+      currency?: string | undefined;
+      /** unit price without discount and tax */
+      price?: number;
+      priceWithTax?: number;
+      /** Resulting price with discount for one unit */
+      placedPrice?: number;
+      placedPriceWithTax?: number;
+      extendedPrice?: number;
+      extendedPriceWithTax?: number;
+      /** Gets the value of the single qty line item discount amount */
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      discountTotal?: number;
+      discountTotalWithTax?: number;
+      fee?: number;
+      feeWithTax?: number;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      /** Reserve quantity */
+      reserveQuantity?: number;
+      quantity?: number;
+      productId?: string | undefined;
+      sku?: string | undefined;
+      productType?: string | undefined;
+      catalogId?: string | undefined;
+      categoryId?: string | undefined;
+      name?: string | undefined;
+      comment?: string | undefined;
+      imageUrl?: string | undefined;
+      isGift?: boolean | undefined;
+      shippingMethodCode?: string | undefined;
+      fulfillmentLocationCode?: string | undefined;
+      fulfillmentCenterId?: string | undefined;
+      fulfillmentCenterName?: string | undefined;
+      outerId?: string | undefined;
+      weightUnit?: string | undefined;
+      weight?: number | undefined;
+      measureUnit?: string | undefined;
+      height?: number | undefined;
+      length?: number | undefined;
+      width?: number | undefined;
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      objectType?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      discounts?: Discount[] | undefined;
+      taxDetails?: TaxDetail[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class ShippingMethod implements IShippingMethod {
+      code?: string | undefined;
+      readonly name?: string | undefined;
+      logoUrl?: string | undefined;
+      isActive?: boolean;
+      priority?: number;
+      taxType?: string | undefined;
+      storeId?: string | undefined;
+      settings?: ObjectSettingEntry[] | undefined;
+      readonly typeName?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IShippingMethod) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.code = _data["code"];
+              (<any>this).name = _data["name"];
+              this.logoUrl = _data["logoUrl"];
+              this.isActive = _data["isActive"];
+              this.priority = _data["priority"];
+              this.taxType = _data["taxType"];
+              this.storeId = _data["storeId"];
+              if (Array.isArray(_data["settings"])) {
+                  this.settings = [] as any;
+                  for (let item of _data["settings"])
+                      this.settings!.push(ObjectSettingEntry.fromJS(item));
+              }
+              (<any>this).typeName = _data["typeName"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): ShippingMethod {
+          data = typeof data === 'object' ? data : {};
+          let result = new ShippingMethod();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["code"] = this.code;
+          data["name"] = this.name;
+          data["logoUrl"] = this.logoUrl;
+          data["isActive"] = this.isActive;
+          data["priority"] = this.priority;
+          data["taxType"] = this.taxType;
+          data["storeId"] = this.storeId;
+          if (Array.isArray(this.settings)) {
+              data["settings"] = [];
+              for (let item of this.settings)
+                  data["settings"].push(item.toJSON());
+          }
+          data["typeName"] = this.typeName;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IShippingMethod {
+      code?: string | undefined;
+      name?: string | undefined;
+      logoUrl?: string | undefined;
+      isActive?: boolean;
+      priority?: number;
+      taxType?: string | undefined;
+      storeId?: string | undefined;
+      settings?: ObjectSettingEntry[] | undefined;
+      typeName?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class OrderShipmentItem implements IOrderShipmentItem {
+      lineItemId?: string | undefined;
+      lineItem?: OrderLineItem;
+      barCode?: string | undefined;
+      quantity?: number;
+      outerId?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IOrderShipmentItem) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.lineItemId = _data["lineItemId"];
+              this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
+              this.barCode = _data["barCode"];
+              this.quantity = _data["quantity"];
+              this.outerId = _data["outerId"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): OrderShipmentItem {
+          data = typeof data === 'object' ? data : {};
+          let result = new OrderShipmentItem();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["lineItemId"] = this.lineItemId;
+          data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
+          data["barCode"] = this.barCode;
+          data["quantity"] = this.quantity;
+          data["outerId"] = this.outerId;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IOrderShipmentItem {
+      lineItemId?: string | undefined;
+      lineItem?: OrderLineItem;
+      barCode?: string | undefined;
+      quantity?: number;
+      outerId?: string | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class ShipmentPackage implements IShipmentPackage {
+      barCode?: string | undefined;
+      packageType?: string | undefined;
+      items?: OrderShipmentItem[] | undefined;
+      weightUnit?: string | undefined;
+      weight?: number | undefined;
+      measureUnit?: string | undefined;
+      height?: number | undefined;
+      length?: number | undefined;
+      width?: number | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IShipmentPackage) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.barCode = _data["barCode"];
+              this.packageType = _data["packageType"];
+              if (Array.isArray(_data["items"])) {
+                  this.items = [] as any;
+                  for (let item of _data["items"])
+                      this.items!.push(OrderShipmentItem.fromJS(item));
+              }
+              this.weightUnit = _data["weightUnit"];
+              this.weight = _data["weight"];
+              this.measureUnit = _data["measureUnit"];
+              this.height = _data["height"];
+              this.length = _data["length"];
+              this.width = _data["width"];
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): ShipmentPackage {
+          data = typeof data === 'object' ? data : {};
+          let result = new ShipmentPackage();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["barCode"] = this.barCode;
+          data["packageType"] = this.packageType;
+          if (Array.isArray(this.items)) {
+              data["items"] = [];
+              for (let item of this.items)
+                  data["items"].push(item.toJSON());
+          }
+          data["weightUnit"] = this.weightUnit;
+          data["weight"] = this.weight;
+          data["measureUnit"] = this.measureUnit;
+          data["height"] = this.height;
+          data["length"] = this.length;
+          data["width"] = this.width;
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IShipmentPackage {
+      barCode?: string | undefined;
+      packageType?: string | undefined;
+      items?: OrderShipmentItem[] | undefined;
+      weightUnit?: string | undefined;
+      weight?: number | undefined;
+      measureUnit?: string | undefined;
+      height?: number | undefined;
+      length?: number | undefined;
+      width?: number | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class OrderShipment implements IOrderShipment {
+      organizationId?: string | undefined;
+      organizationName?: string | undefined;
+      fulfillmentCenterId?: string | undefined;
+      fulfillmentCenterName?: string | undefined;
+      employeeId?: string | undefined;
+      employeeName?: string | undefined;
+      /** Current shipment method code */
+      shipmentMethodCode?: string | undefined;
+      /** Current shipment option code */
+      shipmentMethodOption?: string | undefined;
+      shippingMethod?: ShippingMethod;
+      customerOrderId?: string | undefined;
+      customerOrder?: CustomerOrder;
+      items?: OrderShipmentItem[] | undefined;
+      packages?: ShipmentPackage[] | undefined;
+      inPayments?: PaymentIn[] | undefined;
+      weightUnit?: string | undefined;
+      weight?: number | undefined;
+      measureUnit?: string | undefined;
+      height?: number | undefined;
+      length?: number | undefined;
+      width?: number | undefined;
+      discounts?: Discount[] | undefined;
+      deliveryAddress?: OrderAddress;
+      price?: number;
+      priceWithTax?: number;
+      total?: number;
+      totalWithTax?: number;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      fee?: number;
+      feeWithTax?: number;
+      objectType?: string | undefined;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      sum?: number;
+      outerId?: string | undefined;
+      cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      operationsLog?: OperationLog[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: IOrderShipment) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.organizationId = _data["organizationId"];
+              this.organizationName = _data["organizationName"];
+              this.fulfillmentCenterId = _data["fulfillmentCenterId"];
+              this.fulfillmentCenterName = _data["fulfillmentCenterName"];
+              this.employeeId = _data["employeeId"];
+              this.employeeName = _data["employeeName"];
+              this.shipmentMethodCode = _data["shipmentMethodCode"];
+              this.shipmentMethodOption = _data["shipmentMethodOption"];
+              this.shippingMethod = _data["shippingMethod"] ? ShippingMethod.fromJS(_data["shippingMethod"]) : <any>undefined;
+              this.customerOrderId = _data["customerOrderId"];
+              this.customerOrder = _data["customerOrder"] ? CustomerOrder.fromJS(_data["customerOrder"]) : <any>undefined;
+              if (Array.isArray(_data["items"])) {
+                  this.items = [] as any;
+                  for (let item of _data["items"])
+                      this.items!.push(OrderShipmentItem.fromJS(item));
+              }
+              if (Array.isArray(_data["packages"])) {
+                  this.packages = [] as any;
+                  for (let item of _data["packages"])
+                      this.packages!.push(ShipmentPackage.fromJS(item));
+              }
+              if (Array.isArray(_data["inPayments"])) {
+                  this.inPayments = [] as any;
+                  for (let item of _data["inPayments"])
+                      this.inPayments!.push(PaymentIn.fromJS(item));
+              }
+              this.weightUnit = _data["weightUnit"];
+              this.weight = _data["weight"];
+              this.measureUnit = _data["measureUnit"];
+              this.height = _data["height"];
+              this.length = _data["length"];
+              this.width = _data["width"];
+              if (Array.isArray(_data["discounts"])) {
+                  this.discounts = [] as any;
+                  for (let item of _data["discounts"])
+                      this.discounts!.push(Discount.fromJS(item));
+              }
+              this.deliveryAddress = _data["deliveryAddress"] ? OrderAddress.fromJS(_data["deliveryAddress"]) : <any>undefined;
+              this.price = _data["price"];
+              this.priceWithTax = _data["priceWithTax"];
+              this.total = _data["total"];
+              this.totalWithTax = _data["totalWithTax"];
+              this.discountAmount = _data["discountAmount"];
+              this.discountAmountWithTax = _data["discountAmountWithTax"];
+              this.fee = _data["fee"];
+              this.feeWithTax = _data["feeWithTax"];
+              this.objectType = _data["objectType"];
+              this.taxType = _data["taxType"];
+              this.taxTotal = _data["taxTotal"];
+              this.taxPercentRate = _data["taxPercentRate"];
+              if (Array.isArray(_data["taxDetails"])) {
+                  this.taxDetails = [] as any;
+                  for (let item of _data["taxDetails"])
+                      this.taxDetails!.push(TaxDetail.fromJS(item));
+              }
+              this.operationType = _data["operationType"];
+              this.parentOperationId = _data["parentOperationId"];
+              this.number = _data["number"];
+              this.isApproved = _data["isApproved"];
+              this.status = _data["status"];
+              this.comment = _data["comment"];
+              this.currency = _data["currency"];
+              this.sum = _data["sum"];
+              this.outerId = _data["outerId"];
+              this.cancelledState = _data["cancelledState"];
+              this.isCancelled = _data["isCancelled"];
+              this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+              this.cancelReason = _data["cancelReason"];
+              if (Array.isArray(_data["dynamicProperties"])) {
+                  this.dynamicProperties = [] as any;
+                  for (let item of _data["dynamicProperties"])
+                      this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+              }
+              if (Array.isArray(_data["operationsLog"])) {
+                  this.operationsLog = [] as any;
+                  for (let item of _data["operationsLog"])
+                      this.operationsLog!.push(OperationLog.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): OrderShipment {
+          data = typeof data === 'object' ? data : {};
+          let result = new OrderShipment();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["organizationId"] = this.organizationId;
+          data["organizationName"] = this.organizationName;
+          data["fulfillmentCenterId"] = this.fulfillmentCenterId;
+          data["fulfillmentCenterName"] = this.fulfillmentCenterName;
+          data["employeeId"] = this.employeeId;
+          data["employeeName"] = this.employeeName;
+          data["shipmentMethodCode"] = this.shipmentMethodCode;
+          data["shipmentMethodOption"] = this.shipmentMethodOption;
+          data["shippingMethod"] = this.shippingMethod ? this.shippingMethod.toJSON() : <any>undefined;
+          data["customerOrderId"] = this.customerOrderId;
+          data["customerOrder"] = this.customerOrder ? this.customerOrder.toJSON() : <any>undefined;
+          if (Array.isArray(this.items)) {
+              data["items"] = [];
+              for (let item of this.items)
+                  data["items"].push(item.toJSON());
+          }
+          if (Array.isArray(this.packages)) {
+              data["packages"] = [];
+              for (let item of this.packages)
+                  data["packages"].push(item.toJSON());
+          }
+          if (Array.isArray(this.inPayments)) {
+              data["inPayments"] = [];
+              for (let item of this.inPayments)
+                  data["inPayments"].push(item.toJSON());
+          }
+          data["weightUnit"] = this.weightUnit;
+          data["weight"] = this.weight;
+          data["measureUnit"] = this.measureUnit;
+          data["height"] = this.height;
+          data["length"] = this.length;
+          data["width"] = this.width;
+          if (Array.isArray(this.discounts)) {
+              data["discounts"] = [];
+              for (let item of this.discounts)
+                  data["discounts"].push(item.toJSON());
+          }
+          data["deliveryAddress"] = this.deliveryAddress ? this.deliveryAddress.toJSON() : <any>undefined;
+          data["price"] = this.price;
+          data["priceWithTax"] = this.priceWithTax;
+          data["total"] = this.total;
+          data["totalWithTax"] = this.totalWithTax;
+          data["discountAmount"] = this.discountAmount;
+          data["discountAmountWithTax"] = this.discountAmountWithTax;
+          data["fee"] = this.fee;
+          data["feeWithTax"] = this.feeWithTax;
+          data["objectType"] = this.objectType;
+          data["taxType"] = this.taxType;
+          data["taxTotal"] = this.taxTotal;
+          data["taxPercentRate"] = this.taxPercentRate;
+          if (Array.isArray(this.taxDetails)) {
+              data["taxDetails"] = [];
+              for (let item of this.taxDetails)
+                  data["taxDetails"].push(item.toJSON());
+          }
+          data["operationType"] = this.operationType;
+          data["parentOperationId"] = this.parentOperationId;
+          data["number"] = this.number;
+          data["isApproved"] = this.isApproved;
+          data["status"] = this.status;
+          data["comment"] = this.comment;
+          data["currency"] = this.currency;
+          data["sum"] = this.sum;
+          data["outerId"] = this.outerId;
+          data["cancelledState"] = this.cancelledState;
+          data["isCancelled"] = this.isCancelled;
+          data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+          data["cancelReason"] = this.cancelReason;
+          if (Array.isArray(this.dynamicProperties)) {
+              data["dynamicProperties"] = [];
+              for (let item of this.dynamicProperties)
+                  data["dynamicProperties"].push(item.toJSON());
+          }
+          if (Array.isArray(this.operationsLog)) {
+              data["operationsLog"] = [];
+              for (let item of this.operationsLog)
+                  data["operationsLog"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface IOrderShipment {
+      organizationId?: string | undefined;
+      organizationName?: string | undefined;
+      fulfillmentCenterId?: string | undefined;
+      fulfillmentCenterName?: string | undefined;
+      employeeId?: string | undefined;
+      employeeName?: string | undefined;
+      /** Current shipment method code */
+      shipmentMethodCode?: string | undefined;
+      /** Current shipment option code */
+      shipmentMethodOption?: string | undefined;
+      shippingMethod?: ShippingMethod;
+      customerOrderId?: string | undefined;
+      customerOrder?: CustomerOrder;
+      items?: OrderShipmentItem[] | undefined;
+      packages?: ShipmentPackage[] | undefined;
+      inPayments?: PaymentIn[] | undefined;
+      weightUnit?: string | undefined;
+      weight?: number | undefined;
+      measureUnit?: string | undefined;
+      height?: number | undefined;
+      length?: number | undefined;
+      width?: number | undefined;
+      discounts?: Discount[] | undefined;
+      deliveryAddress?: OrderAddress;
+      price?: number;
+      priceWithTax?: number;
+      total?: number;
+      totalWithTax?: number;
+      discountAmount?: number;
+      discountAmountWithTax?: number;
+      fee?: number;
+      feeWithTax?: number;
+      objectType?: string | undefined;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      sum?: number;
+      outerId?: string | undefined;
+      cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      operationsLog?: OperationLog[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class CustomerOrder implements ICustomerOrder {
+      customerId?: string | undefined;
+      customerName?: string | undefined;
+      channelId?: string | undefined;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      organizationId?: string | undefined;
+      organizationName?: string | undefined;
+      employeeId?: string | undefined;
+      employeeName?: string | undefined;
+      /** The basis shopping cart id of which the order was created */
+      shoppingCartId?: string | undefined;
+      /** Flag determines that the order is the prototype */
+      isPrototype?: boolean;
+      /** Internal number of order provided by customer */
+      purchaseOrderNumber?: string | undefined;
+      /** Number for subscription  associated with this order */
+      subscriptionNumber?: string | undefined;
+      /** Identifier for subscription  associated with this order */
+      subscriptionId?: string | undefined;
+      objectType?: string | undefined;
+      addresses?: OrderAddress[] | undefined;
+      inPayments?: PaymentIn[] | undefined;
+      items?: OrderLineItem[] | undefined;
+      shipments?: OrderShipment[] | undefined;
+      discounts?: Discount[] | undefined;
+      /** When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
+  Therefore, a discount applying to the order  will occur after tax. 
+  For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100). */
+      discountAmount?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      scopes?: string[] | undefined;
+      /** Grand order total */
+      total?: number;
+      subTotal?: number;
+      subTotalWithTax?: number;
+      subTotalDiscount?: number;
+      subTotalDiscountWithTax?: number;
+      subTotalTaxTotal?: number;
+      shippingTotal?: number;
+      shippingTotalWithTax?: number;
+      shippingSubTotal?: number;
+      shippingSubTotalWithTax?: number;
+      shippingDiscountTotal?: number;
+      shippingDiscountTotalWithTax?: number;
+      shippingTaxTotal?: number;
+      paymentTotal?: number;
+      paymentTotalWithTax?: number;
+      paymentSubTotal?: number;
+      paymentSubTotalWithTax?: number;
+      paymentDiscountTotal?: number;
+      paymentDiscountTotalWithTax?: number;
+      paymentTaxTotal?: number;
+      discountTotal?: number;
+      discountTotalWithTax?: number;
+      fee?: number;
+      feeWithTax?: number;
+      feeTotal?: number;
+      feeTotalWithTax?: number;
+      handlingTotal?: number;
+      handlingTotalWithTax?: number;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      languageCode?: string | undefined;
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      sum?: number;
+      outerId?: string | undefined;
+      cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      operationsLog?: OperationLog[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  
+      constructor(data?: ICustomerOrder) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.customerId = _data["customerId"];
+              this.customerName = _data["customerName"];
+              this.channelId = _data["channelId"];
+              this.storeId = _data["storeId"];
+              this.storeName = _data["storeName"];
+              this.organizationId = _data["organizationId"];
+              this.organizationName = _data["organizationName"];
+              this.employeeId = _data["employeeId"];
+              this.employeeName = _data["employeeName"];
+              this.shoppingCartId = _data["shoppingCartId"];
+              this.isPrototype = _data["isPrototype"];
+              this.purchaseOrderNumber = _data["purchaseOrderNumber"];
+              this.subscriptionNumber = _data["subscriptionNumber"];
+              this.subscriptionId = _data["subscriptionId"];
+              this.objectType = _data["objectType"];
+              if (Array.isArray(_data["addresses"])) {
+                  this.addresses = [] as any;
+                  for (let item of _data["addresses"])
+                      this.addresses!.push(OrderAddress.fromJS(item));
+              }
+              if (Array.isArray(_data["inPayments"])) {
+                  this.inPayments = [] as any;
+                  for (let item of _data["inPayments"])
+                      this.inPayments!.push(PaymentIn.fromJS(item));
+              }
+              if (Array.isArray(_data["items"])) {
+                  this.items = [] as any;
+                  for (let item of _data["items"])
+                      this.items!.push(OrderLineItem.fromJS(item));
+              }
+              if (Array.isArray(_data["shipments"])) {
+                  this.shipments = [] as any;
+                  for (let item of _data["shipments"])
+                      this.shipments!.push(OrderShipment.fromJS(item));
+              }
+              if (Array.isArray(_data["discounts"])) {
+                  this.discounts = [] as any;
+                  for (let item of _data["discounts"])
+                      this.discounts!.push(Discount.fromJS(item));
+              }
+              this.discountAmount = _data["discountAmount"];
+              if (Array.isArray(_data["taxDetails"])) {
+                  this.taxDetails = [] as any;
+                  for (let item of _data["taxDetails"])
+                      this.taxDetails!.push(TaxDetail.fromJS(item));
+              }
+              if (Array.isArray(_data["scopes"])) {
+                  this.scopes = [] as any;
+                  for (let item of _data["scopes"])
+                      this.scopes!.push(item);
+              }
+              this.total = _data["total"];
+              this.subTotal = _data["subTotal"];
+              this.subTotalWithTax = _data["subTotalWithTax"];
+              this.subTotalDiscount = _data["subTotalDiscount"];
+              this.subTotalDiscountWithTax = _data["subTotalDiscountWithTax"];
+              this.subTotalTaxTotal = _data["subTotalTaxTotal"];
+              this.shippingTotal = _data["shippingTotal"];
+              this.shippingTotalWithTax = _data["shippingTotalWithTax"];
+              this.shippingSubTotal = _data["shippingSubTotal"];
+              this.shippingSubTotalWithTax = _data["shippingSubTotalWithTax"];
+              this.shippingDiscountTotal = _data["shippingDiscountTotal"];
+              this.shippingDiscountTotalWithTax = _data["shippingDiscountTotalWithTax"];
+              this.shippingTaxTotal = _data["shippingTaxTotal"];
+              this.paymentTotal = _data["paymentTotal"];
+              this.paymentTotalWithTax = _data["paymentTotalWithTax"];
+              this.paymentSubTotal = _data["paymentSubTotal"];
+              this.paymentSubTotalWithTax = _data["paymentSubTotalWithTax"];
+              this.paymentDiscountTotal = _data["paymentDiscountTotal"];
+              this.paymentDiscountTotalWithTax = _data["paymentDiscountTotalWithTax"];
+              this.paymentTaxTotal = _data["paymentTaxTotal"];
+              this.discountTotal = _data["discountTotal"];
+              this.discountTotalWithTax = _data["discountTotalWithTax"];
+              this.fee = _data["fee"];
+              this.feeWithTax = _data["feeWithTax"];
+              this.feeTotal = _data["feeTotal"];
+              this.feeTotalWithTax = _data["feeTotalWithTax"];
+              this.handlingTotal = _data["handlingTotal"];
+              this.handlingTotalWithTax = _data["handlingTotalWithTax"];
+              this.taxType = _data["taxType"];
+              this.taxTotal = _data["taxTotal"];
+              this.taxPercentRate = _data["taxPercentRate"];
+              this.languageCode = _data["languageCode"];
+              this.operationType = _data["operationType"];
+              this.parentOperationId = _data["parentOperationId"];
+              this.number = _data["number"];
+              this.isApproved = _data["isApproved"];
+              this.status = _data["status"];
+              this.comment = _data["comment"];
+              this.currency = _data["currency"];
+              this.sum = _data["sum"];
+              this.outerId = _data["outerId"];
+              this.cancelledState = _data["cancelledState"];
+              this.isCancelled = _data["isCancelled"];
+              this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+              this.cancelReason = _data["cancelReason"];
+              if (Array.isArray(_data["dynamicProperties"])) {
+                  this.dynamicProperties = [] as any;
+                  for (let item of _data["dynamicProperties"])
+                      this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+              }
+              if (Array.isArray(_data["operationsLog"])) {
+                  this.operationsLog = [] as any;
+                  for (let item of _data["operationsLog"])
+                      this.operationsLog!.push(OperationLog.fromJS(item));
+              }
+              this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+              this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+              this.createdBy = _data["createdBy"];
+              this.modifiedBy = _data["modifiedBy"];
+              this.id = _data["id"];
+          }
+      }
+  
+      static fromJS(data: any): CustomerOrder {
+          data = typeof data === 'object' ? data : {};
+          let result = new CustomerOrder();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["customerId"] = this.customerId;
+          data["customerName"] = this.customerName;
+          data["channelId"] = this.channelId;
+          data["storeId"] = this.storeId;
+          data["storeName"] = this.storeName;
+          data["organizationId"] = this.organizationId;
+          data["organizationName"] = this.organizationName;
+          data["employeeId"] = this.employeeId;
+          data["employeeName"] = this.employeeName;
+          data["shoppingCartId"] = this.shoppingCartId;
+          data["isPrototype"] = this.isPrototype;
+          data["purchaseOrderNumber"] = this.purchaseOrderNumber;
+          data["subscriptionNumber"] = this.subscriptionNumber;
+          data["subscriptionId"] = this.subscriptionId;
+          data["objectType"] = this.objectType;
+          if (Array.isArray(this.addresses)) {
+              data["addresses"] = [];
+              for (let item of this.addresses)
+                  data["addresses"].push(item.toJSON());
+          }
+          if (Array.isArray(this.inPayments)) {
+              data["inPayments"] = [];
+              for (let item of this.inPayments)
+                  data["inPayments"].push(item.toJSON());
+          }
+          if (Array.isArray(this.items)) {
+              data["items"] = [];
+              for (let item of this.items)
+                  data["items"].push(item.toJSON());
+          }
+          if (Array.isArray(this.shipments)) {
+              data["shipments"] = [];
+              for (let item of this.shipments)
+                  data["shipments"].push(item.toJSON());
+          }
+          if (Array.isArray(this.discounts)) {
+              data["discounts"] = [];
+              for (let item of this.discounts)
+                  data["discounts"].push(item.toJSON());
+          }
+          data["discountAmount"] = this.discountAmount;
+          if (Array.isArray(this.taxDetails)) {
+              data["taxDetails"] = [];
+              for (let item of this.taxDetails)
+                  data["taxDetails"].push(item.toJSON());
+          }
+          if (Array.isArray(this.scopes)) {
+              data["scopes"] = [];
+              for (let item of this.scopes)
+                  data["scopes"].push(item);
+          }
+          data["total"] = this.total;
+          data["subTotal"] = this.subTotal;
+          data["subTotalWithTax"] = this.subTotalWithTax;
+          data["subTotalDiscount"] = this.subTotalDiscount;
+          data["subTotalDiscountWithTax"] = this.subTotalDiscountWithTax;
+          data["subTotalTaxTotal"] = this.subTotalTaxTotal;
+          data["shippingTotal"] = this.shippingTotal;
+          data["shippingTotalWithTax"] = this.shippingTotalWithTax;
+          data["shippingSubTotal"] = this.shippingSubTotal;
+          data["shippingSubTotalWithTax"] = this.shippingSubTotalWithTax;
+          data["shippingDiscountTotal"] = this.shippingDiscountTotal;
+          data["shippingDiscountTotalWithTax"] = this.shippingDiscountTotalWithTax;
+          data["shippingTaxTotal"] = this.shippingTaxTotal;
+          data["paymentTotal"] = this.paymentTotal;
+          data["paymentTotalWithTax"] = this.paymentTotalWithTax;
+          data["paymentSubTotal"] = this.paymentSubTotal;
+          data["paymentSubTotalWithTax"] = this.paymentSubTotalWithTax;
+          data["paymentDiscountTotal"] = this.paymentDiscountTotal;
+          data["paymentDiscountTotalWithTax"] = this.paymentDiscountTotalWithTax;
+          data["paymentTaxTotal"] = this.paymentTaxTotal;
+          data["discountTotal"] = this.discountTotal;
+          data["discountTotalWithTax"] = this.discountTotalWithTax;
+          data["fee"] = this.fee;
+          data["feeWithTax"] = this.feeWithTax;
+          data["feeTotal"] = this.feeTotal;
+          data["feeTotalWithTax"] = this.feeTotalWithTax;
+          data["handlingTotal"] = this.handlingTotal;
+          data["handlingTotalWithTax"] = this.handlingTotalWithTax;
+          data["taxType"] = this.taxType;
+          data["taxTotal"] = this.taxTotal;
+          data["taxPercentRate"] = this.taxPercentRate;
+          data["languageCode"] = this.languageCode;
+          data["operationType"] = this.operationType;
+          data["parentOperationId"] = this.parentOperationId;
+          data["number"] = this.number;
+          data["isApproved"] = this.isApproved;
+          data["status"] = this.status;
+          data["comment"] = this.comment;
+          data["currency"] = this.currency;
+          data["sum"] = this.sum;
+          data["outerId"] = this.outerId;
+          data["cancelledState"] = this.cancelledState;
+          data["isCancelled"] = this.isCancelled;
+          data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+          data["cancelReason"] = this.cancelReason;
+          if (Array.isArray(this.dynamicProperties)) {
+              data["dynamicProperties"] = [];
+              for (let item of this.dynamicProperties)
+                  data["dynamicProperties"].push(item.toJSON());
+          }
+          if (Array.isArray(this.operationsLog)) {
+              data["operationsLog"] = [];
+              for (let item of this.operationsLog)
+                  data["operationsLog"].push(item.toJSON());
+          }
+          data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+          data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+          data["createdBy"] = this.createdBy;
+          data["modifiedBy"] = this.modifiedBy;
+          data["id"] = this.id;
+          return data;
+      }
+  }
+  
+  export interface ICustomerOrder {
+      customerId?: string | undefined;
+      customerName?: string | undefined;
+      channelId?: string | undefined;
+      storeId?: string | undefined;
+      storeName?: string | undefined;
+      organizationId?: string | undefined;
+      organizationName?: string | undefined;
+      employeeId?: string | undefined;
+      employeeName?: string | undefined;
+      /** The basis shopping cart id of which the order was created */
+      shoppingCartId?: string | undefined;
+      /** Flag determines that the order is the prototype */
+      isPrototype?: boolean;
+      /** Internal number of order provided by customer */
+      purchaseOrderNumber?: string | undefined;
+      /** Number for subscription  associated with this order */
+      subscriptionNumber?: string | undefined;
+      /** Identifier for subscription  associated with this order */
+      subscriptionId?: string | undefined;
+      objectType?: string | undefined;
+      addresses?: OrderAddress[] | undefined;
+      inPayments?: PaymentIn[] | undefined;
+      items?: OrderLineItem[] | undefined;
+      shipments?: OrderShipment[] | undefined;
+      discounts?: Discount[] | undefined;
+      /** When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
+  Therefore, a discount applying to the order  will occur after tax. 
+  For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100). */
+      discountAmount?: number;
+      taxDetails?: TaxDetail[] | undefined;
+      scopes?: string[] | undefined;
+      /** Grand order total */
+      total?: number;
+      subTotal?: number;
+      subTotalWithTax?: number;
+      subTotalDiscount?: number;
+      subTotalDiscountWithTax?: number;
+      subTotalTaxTotal?: number;
+      shippingTotal?: number;
+      shippingTotalWithTax?: number;
+      shippingSubTotal?: number;
+      shippingSubTotalWithTax?: number;
+      shippingDiscountTotal?: number;
+      shippingDiscountTotalWithTax?: number;
+      shippingTaxTotal?: number;
+      paymentTotal?: number;
+      paymentTotalWithTax?: number;
+      paymentSubTotal?: number;
+      paymentSubTotalWithTax?: number;
+      paymentDiscountTotal?: number;
+      paymentDiscountTotalWithTax?: number;
+      paymentTaxTotal?: number;
+      discountTotal?: number;
+      discountTotalWithTax?: number;
+      fee?: number;
+      feeWithTax?: number;
+      feeTotal?: number;
+      feeTotalWithTax?: number;
+      handlingTotal?: number;
+      handlingTotalWithTax?: number;
+      /** Tax category or type */
+      taxType?: string | undefined;
+      taxTotal?: number;
+      taxPercentRate?: number;
+      languageCode?: string | undefined;
+      operationType?: string | undefined;
+      parentOperationId?: string | undefined;
+      number?: string | undefined;
+      isApproved?: boolean;
+      status?: string | undefined;
+      comment?: string | undefined;
+      currency?: string | undefined;
+      sum?: number;
+      outerId?: string | undefined;
+      cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
+      isCancelled?: boolean;
+      cancelledDate?: Date | undefined;
+      cancelReason?: string | undefined;
+      dynamicProperties?: DynamicObjectProperty[] | undefined;
+      operationsLog?: OperationLog[] | undefined;
+      createdDate?: Date;
+      modifiedDate?: Date | undefined;
+      createdBy?: string | undefined;
+      modifiedBy?: string | undefined;
+      id?: string | undefined;
+  }
+  
+  export class CustomerOrderSearchResult implements ICustomerOrderSearchResult {
+      totalCount?: number;
+      results?: CustomerOrder[] | undefined;
+  
+      constructor(data?: ICustomerOrderSearchResult) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.totalCount = _data["totalCount"];
+              if (Array.isArray(_data["results"])) {
+                  this.results = [] as any;
+                  for (let item of _data["results"])
+                      this.results!.push(CustomerOrder.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): CustomerOrderSearchResult {
+          data = typeof data === 'object' ? data : {};
+          let result = new CustomerOrderSearchResult();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["totalCount"] = this.totalCount;
+          if (Array.isArray(this.results)) {
+              data["results"] = [];
+              for (let item of this.results)
+                  data["results"].push(item.toJSON());
+          }
+          return data;
+      }
+  }
+  
+  export interface ICustomerOrderSearchResult {
+      totalCount?: number;
+      results?: CustomerOrder[] | undefined;
+  }
+  
+  export class ChangeOrderStatusCommand implements IChangeOrderStatusCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      orderId?: string | undefined;
+      newStatus?: string | undefined;
+  
+      constructor(data?: IChangeOrderStatusCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.orderId = _data["orderId"];
+              this.newStatus = _data["newStatus"];
+          }
+      }
+  
+      static fromJS(data: any): ChangeOrderStatusCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new ChangeOrderStatusCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["orderId"] = this.orderId;
+          data["newStatus"] = this.newStatus;
+          return data;
+      }
+  }
+  
+  export interface IChangeOrderStatusCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      orderId?: string | undefined;
+      newStatus?: string | undefined;
   }
   
   export class ForgotPasswordCommand implements IForgotPasswordCommand {

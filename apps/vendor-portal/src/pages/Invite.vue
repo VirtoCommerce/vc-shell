@@ -11,7 +11,6 @@
     >
       <VcForm>
         <VcInput
-          ref="userName"
           class="vc-margin-bottom_l vc-margin-top_xs"
           :label="$t('SHELL.INVITATION.FIELDS.USER_NAME.LABEL')"
           :modelValue="userName"
@@ -40,7 +39,7 @@
           v-model="form.confirmPassword"
           type="password"
           @update:modelValue="validate()"
-          @keyup.enter="changePassword"
+          @keyup.enter="acceptInvitation"
         ></VcInput>
         <div
           class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"

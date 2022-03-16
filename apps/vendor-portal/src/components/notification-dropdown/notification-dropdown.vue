@@ -76,7 +76,11 @@ import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { ProductsList, ProductsEdit } from "../../modules/products";
-import { IProductPushNotification } from "../../types";
+import {
+  IProductPushNotification,
+  INewOrderPushNotification,
+} from "../../types";
+import { OrdersEdit, OrdersList } from "../../modules/orders";
 
 const props = defineProps({
   isAccent: {
@@ -120,6 +124,7 @@ const handleClick = async (
     | PushNotification
     | ImportPushNotification
     | IProductPushNotification
+    | INewOrderPushNotification
 ) => {
   const low = notification.notifyType.toLowerCase();
   isDropdownVisible.value = false;
@@ -157,6 +162,21 @@ const handleClick = async (
     props.openPage(1, {
       component: ProductsEdit,
       param: notification.productId,
+    });
+  } else if (
+    (low.includes("order") ||
+      notification.notifyType === "OrderCreatedEventHandler") &&
+    "orderId" in notification
+  ) {
+    await props.closePage(0);
+    await props.closePage(1);
+    props.openPage(0, {
+      component: OrdersList,
+      param: notification.orderId,
+    });
+    props.openPage(1, {
+      component: OrdersEdit,
+      param: notification.orderId,
     });
   }
 };

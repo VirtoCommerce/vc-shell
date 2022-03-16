@@ -68,6 +68,10 @@ interface IProductPushNotification extends PushNotification {
   productName?: string;
 }
 
+interface INewOrderPushNotification extends PushNotification {
+  orderId?: string;
+}
+
 export type {
   IComponent,
   ITableColumns,
@@ -77,4 +81,5 @@ export type {
   IShippingInfo,
   INotificationActions,
   IProductPushNotification,
+  INewOrderPushNotification,
 };

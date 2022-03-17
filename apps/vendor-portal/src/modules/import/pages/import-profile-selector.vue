@@ -173,7 +173,6 @@ const columns = ref<ITableColumns[]>([
   },
 ]);
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
 onMounted(async () => {
@@ -253,6 +252,7 @@ async function onPaginationClick(page: number) {
 defineExpose({
   openImporter,
   reload,
+  title,
 });
 </script>
 

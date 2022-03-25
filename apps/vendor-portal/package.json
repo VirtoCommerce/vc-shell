@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-vendor-portal",
-  "version": "0.1.4",
+  "version": "0.1.7",
   "private": true,
   "scripts": {
     "serve": "vite",
@@ -15,10 +15,10 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^0.1.4",
-    "@virtoshell/core": "^0.1.4",
-    "@virtoshell/mod-assets": "^0.1.4",
-    "@virtoshell/ui": "^0.1.4",
+    "@virtoshell/api-client": "^0.1.7",
+    "@virtoshell/core": "^0.1.7",
+    "@virtoshell/mod-assets": "^0.1.7",
+    "@virtoshell/ui": "^0.1.7",
     "moment": "^2.29.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.5.5",

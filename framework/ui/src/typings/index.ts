@@ -20,6 +20,14 @@ export interface IBladeToolbar {
   component?: Component & { url?: string };
   componentOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
+  dropdownItems?: IBladeDropdownItem[];
+  clickHandler?(): void;
+}
+
+export interface IBladeDropdownItem {
+  id: number;
+  title: string;
+  icon?: string;
   clickHandler?(): void;
 }
 

@@ -88,6 +88,11 @@ export default defineConfig(({ mode }) => {
         "/api": `${process.env.APP_PLATFORM_URL}`,
         "/connect/token": `${process.env.APP_PLATFORM_URL}`,
         "/pushNotificationHub": `${process.env.APP_PLATFORM_URL}`,
+        "^/pushNotificationHub": {
+          target: `${process.env.APP_PLATFORM_URL}`,
+          changeOrigin: true,
+          ws: true,
+        },
         "/Modules": `${process.env.APP_PLATFORM_URL}`,
       },
     },
@@ -101,6 +106,7 @@ export default defineConfig(({ mode }) => {
         "@virtoshell/mod-assets",
         "url-pattern",
         "vee-validate",
+        "ace-builds",
       ],
     },
     build: {

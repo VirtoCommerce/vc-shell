@@ -176,7 +176,6 @@ const {
 } = useContent({ folderId: "ContentPlace", responseGroup: "20" });
 const searchValue = ref();
 const { debounce } = useFunctions();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.TITLE");
 const sort = ref("startDate:DESC");
 const bladeToolbar = reactive<IBladeToolbar[]>([
@@ -286,6 +285,11 @@ async function resetSearch() {
     keyword: "",
   });
 }
+
+defineExpose({
+  title,
+  reload,
+});
 </script>
 
 <style lang="less" scoped></style>

@@ -28,10 +28,14 @@ export default (options?: IUseContentOptions): IUseContent => {
   const searchResult = ref<DynamicContentListEntrySearchResult>();
   const loading = ref(false);
   const currentPage = ref(1);
-  const searchQuery = ref<IDynamicContentItemSearchCriteria>({
-    take: 20,
-    folderId: options?.folderId,
-    responseGroup: options?.responseGroup,
+  const searchQuery = ref<IDynamicContentItemSearchCriteria>();
+  const computedSearchQuery = computed(() => {
+    searchQuery.value = {
+      take: 20,
+      folderId: options?.folderId,
+      responseGroup: options?.responseGroup,
+    };
+    return searchQuery.value;
   });
 
   async function getApiClient() {
@@ -46,13 +50,13 @@ export default (options?: IUseContentOptions): IUseContent => {
 
     try {
       loading.value = true;
-      searchQuery.value = { ...searchQuery.value, ...query };
+      searchQuery.value = { ...computedSearchQuery.value, ...query };
       searchResult.value = await client.dynamicContentItemsEntriesSearch({
         ...searchQuery.value,
       } as DynamicContentItemSearchCriteria);
 
       currentPage.value =
-        (searchQuery.value.skip || 0) /
+        (computedSearchQuery.value.skip || 0) /
           Math.max(1, searchQuery.value.take || 20) +
         1;
     } catch (e) {
@@ -68,7 +72,7 @@ export default (options?: IUseContentOptions): IUseContent => {
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / 20)),
     currentPage: computed(() => currentPage.value),
-    searchQuery: computed(() => searchQuery.value),
+    searchQuery: computed(() => computedSearchQuery.value),
     loadContentItems,
   };
 };

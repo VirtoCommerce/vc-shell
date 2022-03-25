@@ -6,7 +6,8 @@
           "TITLE": "Content items",
           "TOOLBAR": {
             "REFRESH": "Refresh",
-            "ADD": "Add"
+            "ADD": "Add",
+            "BACK": "Back"
           },
           "TABLE": {
             "HEADER": {
@@ -14,12 +15,20 @@
               "CREATED": "Created",
               "DESCRIPTION": "Description",
               "PATH": "Path",
-              "ID": "Id"
+              "ID": "Id",
+              "IMAGE": "Image"
             },
             "NOT_FOUND": "No content items found.",
             "RESET_SEARCH": "Reset search",
             "IS_EMPTY": "There are no content items yet",
             "ADD_ITEM": "Add content item"
+          },
+          "BREADCRUMBS": {
+            "ALL_ITEMS": "All items"
+          },
+          "ACTIONS": {
+            "MANAGE": "Manage",
+            "DELETE": "Delete"
           }
         }
       },
@@ -46,24 +55,52 @@
         }
       },
       "CONTENT_ITEM": {
+        "TITLE": "New content item",
         "TOOLBAR": {
-          "SAVE": "Save",
+          "SAVE": {
+            "TITLE": "Save",
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+          },
           "RESET": "Reset",
           "DELETE": "Delete",
           "TYPE_PROPERTIES": "Type properties"
         },
         "INPUTS": {
           "CONTENT_ITEM_NAME": {
-            "LABEL": "Content item name"
+            "LABEL": "Content item name",
+            "PLACEHOLDER": "Enter content item name"
           },
           "DESCRIPTION": {
-            "LABEL": "Description"
+            "LABEL": "Description",
+            "PLACEHOLDER": "Enter content item description"
           },
           "CONTENT_TYPE": {
             "LABEL": "Content type"
           },
           "HTML": {
             "LABEL": "HTML"
+          }
+        }
+      },
+      "CONTENT_ITEM_FOLDER": {
+        "TITLE": "New content item folder",
+        "TOOLBAR": {
+          "SAVE": {
+            "TITLE": "Save",
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+          },
+          "RESET": "Reset",
+          "DELETE": "Delete",
+          "TYPE_PROPERTIES": "Type properties"
+        },
+        "INPUTS": {
+          "FOLDER_NAME": {
+            "LABEL": "Folder name",
+            "PLACEHOLDER": "Enter folder name"
+          },
+          "DESCRIPTION": {
+            "LABEL": "Description",
+            "PLACEHOLDER": "Enter folder description"
           }
         }
       },
@@ -106,6 +143,70 @@
             "ADD_ITEM": "Add content"
           }
         }
+      },
+      "CONTENT_MANAGE_PROPERTY": {
+        "TITLE": "Manage property",
+        "TOOLBAR": {
+          "SAVE": {
+            "TITLE": "Save"
+          },
+          "RESET": "Reset",
+          "DELETE": "Delete",
+          "TYPE_PROPERTIES": "Type properties"
+        },
+        "FORM": {
+          "INPUTS": {
+            "PROPERTY_NAME": {
+              "LABEL": "Property name",
+              "PLACEHOLDER": "Enter short text"
+            },
+            "DISPLAY_ORDER": {
+              "LABEL": "Display order",
+              "PLACEHOLDER": "Display order"
+            },
+            "DESCRIPTION": {
+              "LABEL": "Description",
+              "PLACEHOLDER": "Enter property description"
+            },
+            "DISPLAY_NAME": {
+              "LABEL": "Display name",
+              "PLACEHOLDER": "Enter display name"
+            }
+          },
+          "SWITCHES": {
+            "REQUIRED": "Required",
+            "MULTIVALUE": "Multivalue",
+            "MULTILINGUAL": "Multilingual",
+            "DICTIONARY": "Dictionary"
+          },
+          "VALUE_TYPE": "Value Type"
+        }
+      },
+      "DICTIONARY_VALUES": {
+        "TITLE": "Dictionary values",
+        "TOOLBAR": {
+          "SAVE": {
+            "TITLE": "Save"
+          },
+          "RESET": "Reset",
+          "DELETE": "Delete",
+          "TYPE_PROPERTIES": "Type properties"
+        },
+        "FORM": {
+          "INPUTS": {
+            "ENTRY_NAME": {
+              "LABEL": "Entry name",
+              "PLACEHOLDER": "Enter name",
+              "ADD": "Add"
+            }
+          }
+        },
+        "TABLE": {
+          "HEADER": {
+            "NAME": "Name"
+          }
+        },
+        "DELETE_SELECTED_CONFIRMATION": "Are you sure you want to delete {count} selected dictionary items?"
       }
     }
   }

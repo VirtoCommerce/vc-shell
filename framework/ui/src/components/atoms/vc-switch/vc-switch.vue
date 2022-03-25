@@ -1,17 +1,24 @@
 <template>
-  <div class="vc-switch">
-    <label>
-      <input
-        type="checkbox"
-        class="vc-switch__input"
-        :checked="modelValue"
-        :disabled="disabled"
-      />
-      <span class="vc-switch__slider"></span>
-    </label>
-    <VcHint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
-      {{ tooltip }}
-    </VcHint>
+  <div>
+    <!-- Switch label -->
+    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
+      <span>{{ label }}</span>
+    </VcLabel>
+    <div class="vc-switch">
+      <label>
+        <input
+          type="checkbox"
+          class="vc-switch__input"
+          :checked="modelValue"
+          :disabled="disabled"
+          @input="onInput"
+        />
+        <span class="vc-switch__slider"></span>
+      </label>
+      <VcHint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
+        {{ tooltip }}
+      </VcHint>
+    </div>
   </div>
 </template>
 
@@ -31,7 +38,24 @@ defineProps({
     type: String,
     default: "",
   },
+
+  required: {
+    type: Boolean,
+    default: false,
+  },
+
+  label: {
+    type: String,
+    default: undefined,
+  },
 });
+
+const emit = defineEmits(["update:modelValue"]);
+
+function onInput(e: InputEvent) {
+  const newValue = (e.target as HTMLInputElement).checked;
+  emit("update:modelValue", newValue);
+}
 </script>
 
 <style lang="less">

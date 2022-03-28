@@ -1,4 +1,6 @@
-export { default as useContent } from "./useContent";
+export { default as useContentItems } from "./useContentItems";
+export { default as useContentPlaces } from "./useContentPlaces";
+export { default as useContentPlace } from "./useContentPlace";
 export { default as useContentItem } from "./useContentItem";
 export { default as useContentItemFolder } from "./useContentItemFolder";
 export { default as useDynamicProperties } from "./useDynamicProperties";

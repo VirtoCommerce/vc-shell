@@ -56,8 +56,15 @@
   </VcBlade>
 </template>
 
+<script lang="ts">
+import { defineComponent, computed, reactive, unref, onMounted } from "vue";
+
+export default defineComponent({
+  url: "folder",
+});
+</script>
+
 <script lang="ts" setup>
-import { computed, reactive, unref, onMounted } from "vue";
 import { IBladeToolbar } from "../../../../types";
 import { useI18n } from "@virtoshell/core";
 import { useContentItemFolder } from "../../composables";

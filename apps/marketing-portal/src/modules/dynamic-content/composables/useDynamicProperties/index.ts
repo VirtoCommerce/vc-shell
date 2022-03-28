@@ -14,15 +14,15 @@ import {
 import { computed, ref, Ref, watch } from "vue";
 
 interface IUseDynamicProperties {
-  dynamicProperties: Ref<DynamicProperty[]>;
-  loading: Ref<boolean>;
-  modified: Ref<boolean>;
-  currentPage: Ref<number>;
-  pages: Ref<number>;
-  totalCount: Ref<number>;
-  searchQuery: Ref<IDynamicPropertySearchCriteria>;
+  readonly dynamicProperties: Ref<DynamicProperty[]>;
+  readonly loading: Ref<boolean>;
+  readonly modified: Ref<boolean>;
+  readonly currentPage: Ref<number>;
+  readonly pages: Ref<number>;
+  readonly totalCount: Ref<number>;
+  readonly searchQuery: Ref<IDynamicPropertySearchCriteria>;
+  readonly valueTypes: Ref<{ id: string; title: string }[]>;
   propertyDetails: Ref<DynamicProperty>;
-  valueTypes: Ref<{ id: string; title: string }[]>;
   getDynamicProperties: (query: IDynamicPropertySearchCriteria) => void;
   handlePropertyDetailsItem: (property: DynamicProperty) => void;
   resetPropertyEntries: () => void;

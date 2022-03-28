@@ -8,9 +8,9 @@ import { useLogger, useUser } from "@virtoshell/core";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
 interface IUseDictionaryItems {
-  modified: Ref<boolean>;
-  loading: Ref<boolean>;
-  stagedDictionaryItems: Ref<DynamicPropertyDictionaryItem[]>;
+  readonly modified: Ref<boolean>;
+  readonly loading: Ref<boolean>;
+  readonly stagedDictionaryItems: Ref<DynamicPropertyDictionaryItem[]>;
   dictionaryItemsDetails: Ref<DynamicPropertyDictionaryItem[]>;
   searchDictionaryItems: (
     propertyId: string,

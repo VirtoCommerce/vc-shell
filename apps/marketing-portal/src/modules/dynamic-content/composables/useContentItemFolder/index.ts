@@ -8,10 +8,10 @@ import { computed, Ref, ref, watch } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
 interface IUseContentItemFolder {
-  loading: Ref<boolean>;
-  modified: Ref<boolean>;
+  readonly loading: Ref<boolean>;
+  readonly modified: Ref<boolean>;
+  readonly folder: Ref<DynamicContentFolder>;
   folderDetails: Ref<IDynamicContentFolder>;
-  folder: Ref<DynamicContentFolder>;
   createContentFolder: (details: IDynamicContentFolder) => void;
   deleteContentFolder: (args: { id: string }) => void;
   getDynamicContentFolderById: (args: { id: string }) => void;

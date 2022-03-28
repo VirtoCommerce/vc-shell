@@ -12,10 +12,10 @@ import { cloneDeep as _cloneDeep } from "lodash-es";
 import useDynamicProperties from "../useDynamicProperties";
 
 interface IUseContentItem {
-  contentItem: Ref<DynamicContentItem>;
+  readonly contentItem: Ref<DynamicContentItem>;
+  readonly loading: Ref<boolean>;
+  readonly modified: Ref<boolean>;
   contentItemDetails: Ref<DynamicContentItem>;
-  loading: Ref<boolean>;
-  modified: Ref<boolean>;
   loadContentItem: (args: { id: string }) => void;
   updateContentItemDetails: (details: IDynamicContentItem) => void;
   createContentItemDetails: (details: IDynamicContentItem) => void;

@@ -8,7 +8,7 @@ import {
 import { useLogger, useUser } from "@virtoshell/core";
 import { computed, Ref, ref } from "vue";
 
-export interface IUseContent {
+export interface IUseContentItems {
   readonly contentItems: Ref<DynamicContentListEntry[]>;
   readonly loading: Ref<boolean>;
   readonly totalCount: Ref<number>;
@@ -18,12 +18,12 @@ export interface IUseContent {
   loadContentItems(query?: IDynamicContentItemSearchCriteria);
 }
 
-export interface IUseContentOptions {
+export interface IUseContentItemsOptions {
   folderId?: string;
   responseGroup?: string;
 }
 
-export default (options?: IUseContentOptions): IUseContent => {
+export default (options?: IUseContentItemsOptions): IUseContentItems => {
   const logger = useLogger();
   const searchResult = ref<DynamicContentListEntrySearchResult>();
   const loading = ref(false);

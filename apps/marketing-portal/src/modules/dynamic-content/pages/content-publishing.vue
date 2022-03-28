@@ -139,7 +139,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useFunctions, useI18n } from "@virtoshell/core";
-import { useContent } from "../composables";
+import { useContentItems } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import moment from "moment";
 
@@ -174,7 +174,7 @@ const {
   currentPage,
   searchQuery,
   loadContentItems,
-} = useContent({ responseGroup: "8" });
+} = useContentItems({ responseGroup: "8" });
 const searchValue = ref();
 const { debounce } = useFunctions();
 const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TITLE");

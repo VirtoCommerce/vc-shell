@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE')"
+    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.TITLE')"
     width="50%"
     :expanded="expanded"
     :closable="closable"
@@ -17,8 +17,7 @@
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
-      :items="contentItems"
-      :selectedItemId="selectedItemId"
+      :items="contentPlaces"
       @itemClick="onItemClick"
       :totalCount="totalCount"
       :itemActionBuilder="actionBuilder"
@@ -40,20 +39,19 @@
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{
               $t(
-                "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.NOT_FOUND"
+                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.NOT_FOUND"
               )
             }}
           </div>
           <VcButton @click="resetSearch">
             {{
               $t(
-                "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.RESET_SEARCH"
+                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.RESET_SEARCH"
               )
             }}</VcButton
           >
         </div>
       </template>
-
       <!-- Empty template -->
       <template v-slot:empty>
         <div
@@ -62,12 +60,16 @@
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
             {{
-              $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.IS_EMPTY")
+              $t(
+                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.EMPTY"
+              )
             }}
           </div>
-          <vc-button @click="addContentItem">{{
-            $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.ADD_ITEM")
-          }}</vc-button>
+          <VcButton>{{
+            $t(
+              "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.ADD_PLACEHOLDER"
+            )
+          }}</VcButton>
         </div>
       </template>
 
@@ -76,7 +78,7 @@
         <div class="vc-flex vc-flex-justify_center">
           <VcIcon
             size="xxl"
-            class="content-items-list__icon"
+            class="content-placeholders-list__icon"
             :icon="
               itemData.item.objectType === 'DynamicContentFolder'
                 ? 'fa fa-folder'
@@ -86,7 +88,6 @@
         </div>
       </template>
 
-      <!-- Mobile template -->
       <template v-slot:mobile-item="itemData">
         <div
           class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
@@ -99,10 +100,10 @@
             <div
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div class="vc-ellipsis vc-flex-grow_2">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.CREATED"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -112,7 +113,7 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -124,10 +125,10 @@
             <div
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div class="vc-ellipsis vc-flex-grow_2">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.PATH"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -137,7 +138,7 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.ID"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -155,37 +156,37 @@
 <script lang="ts">
 import {
   defineComponent,
-  computed,
-  ref,
-  reactive,
   onMounted,
+  reactive,
+  ref,
   watch,
+  computed,
 } from "vue";
 
 export default defineComponent({
-  url: "content-items-list",
+  url: "content-placeholders",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n } from "@virtoshell/core";
 import {
   IActionBuilderResult,
   IBladeToolbar,
   ITableColumns,
 } from "../../../../types";
-import moment from "moment";
+import { useFunctions, useI18n } from "@virtoshell/core";
 import {
-  useContentItems,
-  useContentItem,
   useContentItemFolder,
+  useContentPlace,
+  useContentPlaces,
 } from "../../composables";
-import ContentItemFolder from "./content-item-folder.vue";
+import moment from "moment";
 import {
   DynamicContentFolder,
   DynamicContentItem,
 } from "@virtoshell/api-client";
-import ContentItem from "./content-item.vue";
+import ContentItemFolder from "../content-items/content-item-folder.vue";
+import ContentPlaceholder from "./content-placeholder.vue";
 
 interface IContentType {
   responseGroup: string;
@@ -207,7 +208,7 @@ defineProps({
 
   closable: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 
   param: {
@@ -220,33 +221,32 @@ defineProps({
     default: () => ({}),
   },
 });
-
 const emit = defineEmits(["page:open", "page:close"]);
 const { t } = useI18n();
-const selectedItemId = ref();
-const contentType = ref<IContentType>({ responseGroup: "18" });
+const contentType = ref<IContentType>({
+  responseGroup: "20",
+});
 const {
-  contentItems,
+  contentPlaces,
   loading,
   totalCount,
   pages,
   currentPage,
   searchQuery,
-  loadContentItems,
-} = useContentItems(contentType.value);
-
+  loadContentPlaces,
+} = useContentPlaces(contentType.value);
+const { deleteContentPlaceDetails } = useContentPlace();
 const { deleteContentFolder } = useContentItemFolder();
-const { deleteContentItemDetails } = useContentItem();
-
-const { debounce } = useFunctions();
 const searchValue = ref();
-const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE");
+const { debounce } = useFunctions();
+const selectedItemId = ref();
+const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.TITLE");
 const sort = ref("created:DESC");
 const bladeToolbar = reactive<IBladeToolbar[]>([
   {
     id: "refresh",
-    title: computed(() =>
-      t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.REFRESH")
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TOOLBAR.REFRESH"
     ),
     icon: "fas fa-sync-alt",
     clickHandler() {
@@ -255,8 +255,8 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
   },
   {
     id: "add",
-    title: computed(() =>
-      t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.ADD")
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TOOLBAR.ADD"
     ),
     icon: "fas fa-plus",
     dropdownItems: [
@@ -264,7 +264,7 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
         id: 1,
         icon: "fa fa-folder",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.DROPDOWN.CONTENT_ITEM_FOLDER"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TOOLBAR.DROPDOWN.PLACEHOLDER_FOLDER"
         ),
         clickHandler() {
           emit("page:open", {
@@ -277,7 +277,7 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
         id: 2,
         icon: "fas fa-location-arrow",
         title: t(
-          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.DROPDOWN.CONTENT_ITEM"
+          "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TOOLBAR.DROPDOWN.PLACEHOLDER"
         ),
         clickHandler() {
           addContentItem();
@@ -286,6 +286,13 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
     ],
   },
 ]);
+
+function addContentItem() {
+  emit("page:open", {
+    component: ContentPlaceholder,
+    componentOptions: { folderId: contentType.value.folderId },
+  });
+}
 
 const breadcrumbs = ref<IBreadcrumbs[]>([
   {
@@ -305,7 +312,7 @@ const columns = ref<ITableColumns[]>([
   {
     id: "image",
     title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.IMAGE"
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.IMAGE"
     ),
     alwaysVisible: true,
     width: 70,
@@ -313,65 +320,82 @@ const columns = ref<ITableColumns[]>([
   },
   {
     id: "name",
-    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.NAME"),
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.NAME"
+    ),
     alwaysVisible: true,
+    width: 120,
     sortable: true,
   },
   {
     id: "createdDate",
     title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.CREATED"
     ),
     sortable: true,
     alwaysVisible: true,
+    width: 150,
     type: "date",
     format: "L",
   },
   {
     id: "description",
     title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
     ),
+    width: 150,
     sortable: true,
   },
   {
     id: "path",
-    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"),
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.PATH"
+    ),
+    width: 150,
     sortable: true,
   },
   {
     id: "id",
-    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"),
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.TABLE.HEADER.ID"
+    ),
     sortable: true,
+    width: 300,
   },
 ]);
 
 watch(sort, async (value) => {
-  await loadContentItems({ ...searchQuery.value, sort: value });
+  await loadContentPlaces({ ...searchQuery.value, sort: value });
 });
 
 watch(
   () => breadcrumbs,
   async () => {
-    await loadContentItems({ sort: sort.value });
+    await loadContentPlaces({ sort: sort.value });
   },
   { deep: true }
 );
 
 onMounted(async () => {
-  contentType.value.folderId = "ContentItem";
+  contentType.value.folderId = "ContentPlace";
   breadcrumbs.value.push({
-    id: "ContentItem",
+    id: "ContentPlace",
     title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.BREADCRUMBS.ALL_ITEMS"
+      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.BREADCRUMBS.ALL_PLACEHOLDERS"
     ),
     clickHandler: (id: string) => handleBreadcrumbs(id),
   });
-  await loadContentItems({ sort: sort.value });
+  await loadContentPlaces({ sort: sort.value });
 });
 
+function handleBreadcrumbs(id: string) {
+  contentType.value.folderId = id;
+  const item = breadcrumbs.value.findIndex((x) => x.id === id);
+  breadcrumbs.value.splice(item + 1);
+}
+
 async function reload() {
-  await loadContentItems({
+  await loadContentPlaces({
     ...searchQuery.value,
     skip: (currentPage.value - 1) * searchQuery.value.take,
     sort: sort.value,
@@ -379,14 +403,14 @@ async function reload() {
 }
 
 async function onPaginationClick(page: number) {
-  await loadContentItems({
+  await loadContentPlaces({
     skip: (page - 1) * 20,
   });
 }
 
 const onSearchList = debounce(async (keyword: string) => {
   searchValue.value = keyword;
-  await loadContentItems({
+  await loadContentPlaces({
     keyword,
   });
 }, 200);
@@ -401,13 +425,14 @@ function onHeaderClick(item: ITableColumns) {
 
 async function resetSearch() {
   searchValue.value = "";
-  await loadContentItems({
+  await loadContentPlaces({
     ...searchQuery.value,
     keyword: "",
   });
 }
 
 const onItemClick = async (item: DynamicContentFolder | DynamicContentItem) => {
+  console.log(item);
   if (item.objectType === "DynamicContentFolder") {
     contentType.value.folderId = item.id;
     const isBreadcrumbExist = breadcrumbs.value.find((x) => x.id === item.id);
@@ -423,43 +448,12 @@ const onItemClick = async (item: DynamicContentFolder | DynamicContentItem) => {
   }
 };
 
-const actionBuilder = (
-  item: DynamicContentFolder | DynamicContentItem
-): IActionBuilderResult[] => {
-  return [
-    {
-      icon: "fas fa-trash",
-      title: computed(() =>
-        t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.ACTIONS.DELETE")
-      ),
-      variant: "danger",
-      async clickHandler() {
-        if (item.objectType === "DynamicContentFolder") {
-          await deleteContentFolder({ id: item.id });
-        } else {
-          await deleteContentItemDetails({ id: item.id });
-        }
-        await reload();
-      },
-    },
-    {
-      icon: "fa fa-edit",
-      title: computed(() =>
-        t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.ACTIONS.MANAGE")
-      ),
-      clickHandler() {
-        openEntry(item);
-      },
-    },
-  ];
-};
-
 function openEntry(item: DynamicContentFolder | DynamicContentItem) {
   emit("page:open", {
     component:
       item.objectType === "DynamicContentFolder"
         ? ContentItemFolder
-        : ContentItem,
+        : ContentPlaceholder,
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -470,18 +464,36 @@ function openEntry(item: DynamicContentFolder | DynamicContentItem) {
   });
 }
 
-function addContentItem() {
-  emit("page:open", {
-    component: ContentItem,
-    componentOptions: { folderId: contentType.value.folderId },
-  });
-}
-
-function handleBreadcrumbs(id: string) {
-  contentType.value.folderId = id;
-  const item = breadcrumbs.value.findIndex((x) => x.id === id);
-  breadcrumbs.value.splice(item + 1);
-}
+const actionBuilder = (
+  item: DynamicContentFolder | DynamicContentItem
+): IActionBuilderResult[] => {
+  return [
+    {
+      icon: "fas fa-trash",
+      title: computed(() =>
+        t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.ACTIONS.DELETE")
+      ),
+      variant: "danger",
+      async clickHandler() {
+        if (item.objectType === "DynamicContentFolder") {
+          await deleteContentFolder({ id: item.id });
+        } else {
+          await deleteContentPlaceDetails({ id: item.id });
+        }
+        await reload();
+      },
+    },
+    {
+      icon: "fa fa-edit",
+      title: computed(() =>
+        t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS_LIST.LIST.ACTIONS.MANAGE")
+      ),
+      clickHandler() {
+        openEntry(item);
+      },
+    },
+  ];
+};
 
 defineExpose({
   title,
@@ -490,7 +502,7 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-.content-items-list {
+.content-placeholders-list {
   &__icon {
     color: #a9bfd2;
   }

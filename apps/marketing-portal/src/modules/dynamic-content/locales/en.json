@@ -7,7 +7,10 @@
           "TOOLBAR": {
             "REFRESH": "Refresh",
             "ADD": "Add",
-            "BACK": "Back"
+            "DROPDOWN": {
+              "CONTENT_ITEM_FOLDER": "Content item folder",
+              "CONTENT_ITEM": "Content item"
+            }
           },
           "TABLE": {
             "HEADER": {
@@ -82,8 +85,33 @@
           }
         }
       },
+      "CONTENT_PLACEHOLDER": {
+        "TITLE": "New placeholder",
+        "TOOLBAR": {
+          "SAVE": {
+            "TITLE": "Save",
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+          },
+          "RESET": "Reset",
+          "DELETE": "Delete",
+          "TYPE_PROPERTIES": "Type properties"
+        },
+        "INPUTS": {
+          "CONTENT_PLACEHOLDER_NAME": {
+            "LABEL": "Placeholder name",
+            "PLACEHOLDER": "Specify placeholder name"
+          },
+          "DESCRIPTION": {
+            "LABEL": "Placeholder description",
+            "PLACEHOLDER": "Specify placeholder description"
+          },
+          "PLACEHOLDER_IMAGE_DESCRIPTION": {
+            "LABEL": "Placeholder image description"
+          }
+        }
+      },
       "CONTENT_ITEM_FOLDER": {
-        "TITLE": "New content item folder",
+        "TITLE": "New folder",
         "TOOLBAR": {
           "SAVE": {
             "TITLE": "Save",
@@ -104,11 +132,20 @@
           }
         }
       },
-      "CONTENT_PLACEHOLDERS": {
+      "CONTENT_PLACEHOLDERS_LIST": {
         "TITLE": "Content placeholders",
         "LIST": {
+          "TOOLBAR": {
+            "REFRESH": "Refresh",
+            "ADD": "Add",
+            "DROPDOWN": {
+              "PLACEHOLDER_FOLDER": "Placeholder folder",
+              "PLACEHOLDER": "Placeholder"
+            }
+          },
           "TABLE": {
             "HEADER": {
+              "IMAGE": "Image",
               "NAME": "Name",
               "CREATED": "Created",
               "DESCRIPTION": "Description",
@@ -119,6 +156,13 @@
             "NOT_FOUND": "No content placeholders found.",
             "RESET_SEARCH": "Reset search",
             "EMPTY": "There are no content yet"
+          },
+          "BREADCRUMBS": {
+            "ALL_PLACEHOLDERS": "All placeholders"
+          },
+          "ACTIONS": {
+            "MANAGE": "Manage",
+            "DELETE": "Delete"
           }
         }
       },

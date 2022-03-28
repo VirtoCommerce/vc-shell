@@ -58,45 +58,6 @@
               :setter="setPropertyValue"
               class="vc-margin-bottom_l"
             ></VcDynamicProperty>
-            <!--            <VcInput-->
-            <!--              class="vc-margin-bottom_l"-->
-            <!--              :label="-->
-            <!--                $t(-->
-            <!--                  'DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.INPUTS.CONTENT_ITEM_NAME.LABEL'-->
-            <!--                )-->
-            <!--              "-->
-            <!--            >-->
-            <!--            </VcInput>-->
-            <!--            <VcTextarea-->
-            <!--              class="vc-margin-bottom_l"-->
-            <!--              :label="-->
-            <!--                $t(-->
-            <!--                  'DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.INPUTS.DESCRIPTION.LABEL'-->
-            <!--                )-->
-            <!--              "-->
-            <!--            >-->
-            <!--            </VcTextarea>-->
-            <!--            <VcSelect-->
-            <!--              class="vc-margin-bottom_l"-->
-            <!--              :label="-->
-            <!--                $t(-->
-            <!--                  'DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.INPUTS.CONTENT_TYPE.LABEL'-->
-            <!--                )-->
-            <!--              "-->
-            <!--            ></VcSelect>-->
-            <!--            <VcTextarea-->
-            <!--              class="vc-margin-bottom_l"-->
-            <!--              :label="-->
-            <!--                $t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEM.INPUTS.HTML.LABEL')-->
-            <!--              "-->
-            <!--            >-->
-            <!--            </VcTextarea>-->
-            <!--            <Codemirror-->
-            <!--              :options="cmOptions"-->
-            <!--              border-->
-            <!--              placeholder="test placeholder"-->
-            <!--              :height="200"-->
-            <!--            />-->
           </VcForm>
         </div>
       </div>

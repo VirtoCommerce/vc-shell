@@ -139,7 +139,7 @@ import { useFunctions, useI18n } from "@virtoshell/core";
 import { IBladeToolbar, ITableColumns } from "../../../../types";
 import moment from "moment";
 import ContentItemEdit from "./content-item.vue";
-import { useContent } from "../../composables";
+import { useContentItems } from "../../composables";
 import useDynamicProperties from "../../composables/useDynamicProperties";
 import ContentManageProperty from "./content-manage-property.vue";
 
@@ -176,7 +176,7 @@ const selectedItemId = ref();
 //   currentPage,
 //   searchQuery,
 //   loadContentItems,
-// } = useContent({ responseGroup: "18" });
+// } = useContentItems({ responseGroup: "18" });
 const searchValue = ref();
 const { debounce } = useFunctions();
 const {

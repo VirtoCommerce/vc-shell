@@ -80,6 +80,97 @@ export class AuthApiBase {
        * @param body (optional) 
        * @return Success
        */
+      validateProduct(body: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/products/validate";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+                  "Accept": "text/plain"
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processValidateProduct(_response);
+          });
+      }
+  
+      protected processValidateProduct(response: Response): Promise<ValidationFailure[]> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              if (Array.isArray(resultData200)) {
+                  result200 = [] as any;
+                  for (let item of resultData200)
+                      result200!.push(ValidationFailure.fromJS(item));
+              }
+              else {
+                  result200 = <any>null;
+              }
+              return result200;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<ValidationFailure[]>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
+      runExport(body: RunExportCommand | undefined): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/seller/categories/export";
+          url_ = url_.replace(/[?&]$/, "");
+  
+          const content_ = JSON.stringify(body);
+  
+          let options_ = <RequestInit>{
+              body: content_,
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json-patch+json",
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processRunExport(_response);
+          });
+      }
+  
+      protected processRunExport(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
+      }
+  
+      /**
+       * @param body (optional) 
+       * @return Success
+       */
       searchProducts(body: SearchProductsQuery | undefined): Promise<SearchProductsResult> {
           let url_ = this.baseUrl + "/api/vcmp/seller/products/search";
           url_ = url_.replace(/[?&]$/, "");
@@ -2627,12 +2718,461 @@ export class AuthApiBase {
       results?: Category[] | undefined;
   }
   
+  export class ProductDetails implements IProductDetails {
+      name?: string | undefined;
+      description?: string | undefined;
+      gtin?: string | undefined;
+      categoryId?: string | undefined;
+      outerId?: string | undefined;
+      properties?: Property[] | undefined;
+      images?: Image[] | undefined;
+  
+      constructor(data?: IProductDetails) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.name = _data["name"];
+              this.description = _data["description"];
+              this.gtin = _data["gtin"];
+              this.categoryId = _data["categoryId"];
+              this.outerId = _data["outerId"];
+              if (Array.isArray(_data["properties"])) {
+                  this.properties = [] as any;
+                  for (let item of _data["properties"])
+                      this.properties!.push(Property.fromJS(item));
+              }
+              if (Array.isArray(_data["images"])) {
+                  this.images = [] as any;
+                  for (let item of _data["images"])
+                      this.images!.push(Image.fromJS(item));
+              }
+          }
+      }
+  
+      static fromJS(data: any): ProductDetails {
+          data = typeof data === 'object' ? data : {};
+          let result = new ProductDetails();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["name"] = this.name;
+          data["description"] = this.description;
+          data["gtin"] = this.gtin;
+          data["categoryId"] = this.categoryId;
+          data["outerId"] = this.outerId;
+          if (Array.isArray(this.properties)) {
+              data["properties"] = [];
+              for (let item of this.properties)
+                  data["properties"].push(item.toJSON());
+          }
+          if (Array.isArray(this.images)) {
+              data["images"] = [];
+              for (let item of this.images)
+                  data["images"].push(item.toJSON());
+          }
+          return data;
+      }
+  }
+  
+  export interface IProductDetails {
+      name?: string | undefined;
+      description?: string | undefined;
+      gtin?: string | undefined;
+      categoryId?: string | undefined;
+      outerId?: string | undefined;
+      properties?: Property[] | undefined;
+      images?: Image[] | undefined;
+  }
+  
+  export class ValidateProductQuery implements IValidateProductQuery {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      productDetails?: ProductDetails;
+  
+      constructor(data?: IValidateProductQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
+              this.productDetails = _data["productDetails"] ? ProductDetails.fromJS(_data["productDetails"]) : <any>undefined;
+          }
+      }
+  
+      static fromJS(data: any): ValidateProductQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new ValidateProductQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
+          data["productDetails"] = this.productDetails ? this.productDetails.toJSON() : <any>undefined;
+          return data;
+      }
+  }
+  
+  export interface IValidateProductQuery {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
+      productDetails?: ProductDetails;
+  }
+  
+  export enum Severity {
+      Error = "Error",
+      Warning = "Warning",
+      Info = "Info",
+  }
+  
+  export class ValidationFailure implements IValidationFailure {
+      propertyName?: string | undefined;
+      errorMessage?: string | undefined;
+      attemptedValue?: any | undefined;
+      customState?: any | undefined;
+      severity?: Severity;
+      errorCode?: string | undefined;
+      formattedMessagePlaceholderValues?: { [key: string]: any; } | undefined;
+  
+      constructor(data?: IValidationFailure) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.propertyName = _data["propertyName"];
+              this.errorMessage = _data["errorMessage"];
+              this.attemptedValue = _data["attemptedValue"];
+              this.customState = _data["customState"];
+              this.severity = _data["severity"];
+              this.errorCode = _data["errorCode"];
+              if (_data["formattedMessagePlaceholderValues"]) {
+                  this.formattedMessagePlaceholderValues = {} as any;
+                  for (let key in _data["formattedMessagePlaceholderValues"]) {
+                      if (_data["formattedMessagePlaceholderValues"].hasOwnProperty(key))
+                          (<any>this.formattedMessagePlaceholderValues)![key] = _data["formattedMessagePlaceholderValues"][key];
+                  }
+              }
+          }
+      }
+  
+      static fromJS(data: any): ValidationFailure {
+          data = typeof data === 'object' ? data : {};
+          let result = new ValidationFailure();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["propertyName"] = this.propertyName;
+          data["errorMessage"] = this.errorMessage;
+          data["attemptedValue"] = this.attemptedValue;
+          data["customState"] = this.customState;
+          data["severity"] = this.severity;
+          data["errorCode"] = this.errorCode;
+          if (this.formattedMessagePlaceholderValues) {
+              data["formattedMessagePlaceholderValues"] = {};
+              for (let key in this.formattedMessagePlaceholderValues) {
+                  if (this.formattedMessagePlaceholderValues.hasOwnProperty(key))
+                      (<any>data["formattedMessagePlaceholderValues"])[key] = this.formattedMessagePlaceholderValues[key];
+              }
+          }
+          return data;
+      }
+  }
+  
+  export interface IValidationFailure {
+      propertyName?: string | undefined;
+      errorMessage?: string | undefined;
+      attemptedValue?: any | undefined;
+      customState?: any | undefined;
+      severity?: Severity;
+      errorCode?: string | undefined;
+      formattedMessagePlaceholderValues?: { [key: string]: any; } | undefined;
+  }
+  
+  /** Export property information */
+  export class ExportedTypePropertyInfo implements IExportedTypePropertyInfo {
+      /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
+      fullName?: string | undefined;
+      /** Property group. Properties can be divided into different groups to simplify selection.
+  Group could be used for grouping property infos. */
+      group?: string | undefined;
+      /** User-friendly name for this property */
+      displayName?: string | undefined;
+      /** * Reserved for future use */
+      isRequired?: boolean;
+  
+      constructor(data?: IExportedTypePropertyInfo) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.fullName = _data["fullName"];
+              this.group = _data["group"];
+              this.displayName = _data["displayName"];
+              this.isRequired = _data["isRequired"];
+          }
+      }
+  
+      static fromJS(data: any): ExportedTypePropertyInfo {
+          data = typeof data === 'object' ? data : {};
+          let result = new ExportedTypePropertyInfo();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["fullName"] = this.fullName;
+          data["group"] = this.group;
+          data["displayName"] = this.displayName;
+          data["isRequired"] = this.isRequired;
+          return data;
+      }
+  }
+  
+  /** Export property information */
+  export interface IExportedTypePropertyInfo {
+      /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
+      fullName?: string | undefined;
+      /** Property group. Properties can be divided into different groups to simplify selection.
+  Group could be used for grouping property infos. */
+      group?: string | undefined;
+      /** User-friendly name for this property */
+      displayName?: string | undefined;
+      /** * Reserved for future use */
+      isRequired?: boolean;
+  }
+  
+  /** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
+  export class ExportDataQuery implements IExportDataQuery {
+      /** This used to instantiate a data query of this type at export start. */
+      readonly exportTypeName?: string | undefined;
+      /** Keyword to search data */
+      keyword?: string | undefined;
+      /** Object keys to search data */
+      objectIds?: string[] | undefined;
+      /** How to sort the dataset matching a query */
+      sort?: string | undefined;
+      /** User selected properties to export */
+      includedProperties?: ExportedTypePropertyInfo[] | undefined;
+      /** Paging: skip records */
+      skip?: number | undefined;
+      /** Paging: records in one page */
+      take?: number | undefined;
+      /** True means preview (lightweight) data is queried, false - full version requested */
+      isPreview?: boolean;
+  
+      constructor(data?: IExportDataQuery) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              (<any>this).exportTypeName = _data["exportTypeName"];
+              this.keyword = _data["keyword"];
+              if (Array.isArray(_data["objectIds"])) {
+                  this.objectIds = [] as any;
+                  for (let item of _data["objectIds"])
+                      this.objectIds!.push(item);
+              }
+              this.sort = _data["sort"];
+              if (Array.isArray(_data["includedProperties"])) {
+                  this.includedProperties = [] as any;
+                  for (let item of _data["includedProperties"])
+                      this.includedProperties!.push(ExportedTypePropertyInfo.fromJS(item));
+              }
+              this.skip = _data["skip"];
+              this.take = _data["take"];
+              this.isPreview = _data["isPreview"];
+          }
+      }
+  
+      static fromJS(data: any): ExportDataQuery {
+          data = typeof data === 'object' ? data : {};
+          let result = new ExportDataQuery();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["exportTypeName"] = this.exportTypeName;
+          data["keyword"] = this.keyword;
+          if (Array.isArray(this.objectIds)) {
+              data["objectIds"] = [];
+              for (let item of this.objectIds)
+                  data["objectIds"].push(item);
+          }
+          data["sort"] = this.sort;
+          if (Array.isArray(this.includedProperties)) {
+              data["includedProperties"] = [];
+              for (let item of this.includedProperties)
+                  data["includedProperties"].push(item.toJSON());
+          }
+          data["skip"] = this.skip;
+          data["take"] = this.take;
+          data["isPreview"] = this.isPreview;
+          return data;
+      }
+  }
+  
+  /** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
+  export interface IExportDataQuery {
+      /** This used to instantiate a data query of this type at export start. */
+      exportTypeName?: string | undefined;
+      /** Keyword to search data */
+      keyword?: string | undefined;
+      /** Object keys to search data */
+      objectIds?: string[] | undefined;
+      /** How to sort the dataset matching a query */
+      sort?: string | undefined;
+      /** User selected properties to export */
+      includedProperties?: ExportedTypePropertyInfo[] | undefined;
+      /** Paging: skip records */
+      skip?: number | undefined;
+      /** Paging: records in one page */
+      take?: number | undefined;
+      /** True means preview (lightweight) data is queried, false - full version requested */
+      isPreview?: boolean;
+  }
+  
+  export class IExportProviderConfiguration implements IIExportProviderConfiguration {
+      /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
+      type?: string | undefined;
+  
+      constructor(data?: IIExportProviderConfiguration) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.type = _data["type"];
+          }
+      }
+  
+      static fromJS(data: any): IExportProviderConfiguration {
+          data = typeof data === 'object' ? data : {};
+          let result = new IExportProviderConfiguration();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["type"] = this.type;
+          return data;
+      }
+  }
+  
+  export interface IIExportProviderConfiguration {
+      /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
+      type?: string | undefined;
+  }
+  
+  export class RunExportCommand implements IRunExportCommand {
+      /** Full type name of exportable entity */
+      exportTypeName?: string | undefined;
+      dataQuery?: ExportDataQuery;
+      providerConfig?: IExportProviderConfiguration;
+      /** Selected export provider name */
+      providerName?: string | undefined;
+  
+      constructor(data?: IRunExportCommand) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.exportTypeName = _data["exportTypeName"];
+              this.dataQuery = _data["dataQuery"] ? ExportDataQuery.fromJS(_data["dataQuery"]) : <any>undefined;
+              this.providerConfig = _data["providerConfig"] ? IExportProviderConfiguration.fromJS(_data["providerConfig"]) : <any>undefined;
+              this.providerName = _data["providerName"];
+          }
+      }
+  
+      static fromJS(data: any): RunExportCommand {
+          data = typeof data === 'object' ? data : {};
+          let result = new RunExportCommand();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["exportTypeName"] = this.exportTypeName;
+          data["dataQuery"] = this.dataQuery ? this.dataQuery.toJSON() : <any>undefined;
+          data["providerConfig"] = this.providerConfig ? this.providerConfig.toJSON() : <any>undefined;
+          data["providerName"] = this.providerName;
+          return data;
+      }
+  }
+  
+  export interface IRunExportCommand {
+      /** Full type name of exportable entity */
+      exportTypeName?: string | undefined;
+      dataQuery?: ExportDataQuery;
+      providerConfig?: IExportProviderConfiguration;
+      /** Selected export provider name */
+      providerName?: string | undefined;
+  }
+  
   export class SearchProductsQuery implements ISearchProductsQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
+      searchForAllSellers?: boolean;
+      gtin?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
       status?: string | undefined;
+      isPublished?: boolean | undefined;
       outerIds?: string[] | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
@@ -2659,6 +3199,8 @@ export class AuthApiBase {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
+              this.searchForAllSellers = _data["searchForAllSellers"];
+              this.gtin = _data["gtin"];
               this.categoryId = _data["categoryId"];
               if (Array.isArray(_data["storesIds"])) {
                   this.storesIds = [] as any;
@@ -2666,6 +3208,7 @@ export class AuthApiBase {
                       this.storesIds!.push(item);
               }
               this.status = _data["status"];
+              this.isPublished = _data["isPublished"];
               if (Array.isArray(_data["outerIds"])) {
                   this.outerIds = [] as any;
                   for (let item of _data["outerIds"])
@@ -2708,6 +3251,8 @@ export class AuthApiBase {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
+          data["searchForAllSellers"] = this.searchForAllSellers;
+          data["gtin"] = this.gtin;
           data["categoryId"] = this.categoryId;
           if (Array.isArray(this.storesIds)) {
               data["storesIds"] = [];
@@ -2715,6 +3260,7 @@ export class AuthApiBase {
                   data["storesIds"].push(item);
           }
           data["status"] = this.status;
+          data["isPublished"] = this.isPublished;
           if (Array.isArray(this.outerIds)) {
               data["outerIds"] = [];
               for (let item of this.outerIds)
@@ -2750,9 +3296,12 @@ export class AuthApiBase {
   export interface ISearchProductsQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
+      searchForAllSellers?: boolean;
+      gtin?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
       status?: string | undefined;
+      isPublished?: boolean | undefined;
       outerIds?: string[] | undefined;
       responseGroup?: string | undefined;
       objectType?: string | undefined;
@@ -3950,6 +4499,7 @@ export class AuthApiBase {
       sellerName?: string | undefined;
       name?: string | undefined;
       imgSrc?: string | undefined;
+      gtin?: string | undefined;
       categoryId?: string | undefined;
       path?: string | undefined;
       readonly outline?: string | undefined;
@@ -3984,6 +4534,7 @@ export class AuthApiBase {
               this.sellerName = _data["sellerName"];
               this.name = _data["name"];
               this.imgSrc = _data["imgSrc"];
+              this.gtin = _data["gtin"];
               this.categoryId = _data["categoryId"];
               this.path = _data["path"];
               (<any>this).outline = _data["outline"];
@@ -4022,6 +4573,7 @@ export class AuthApiBase {
           data["sellerName"] = this.sellerName;
           data["name"] = this.name;
           data["imgSrc"] = this.imgSrc;
+          data["gtin"] = this.gtin;
           data["categoryId"] = this.categoryId;
           data["path"] = this.path;
           data["outline"] = this.outline;
@@ -4053,6 +4605,7 @@ export class AuthApiBase {
       sellerName?: string | undefined;
       name?: string | undefined;
       imgSrc?: string | undefined;
+      gtin?: string | undefined;
       categoryId?: string | undefined;
       path?: string | undefined;
       outline?: string | undefined;
@@ -4393,82 +4946,6 @@ export class AuthApiBase {
   export interface IPropertyDictionaryItemSearchResult {
       totalCount?: number;
       results?: PropertyDictionaryItem[] | undefined;
-  }
-  
-  export class ProductDetails implements IProductDetails {
-      name?: string | undefined;
-      description?: string | undefined;
-      gtin?: string | undefined;
-      categoryId?: string | undefined;
-      outerId?: string | undefined;
-      properties?: Property[] | undefined;
-      images?: Image[] | undefined;
-  
-      constructor(data?: IProductDetails) {
-          if (data) {
-              for (var property in data) {
-                  if (data.hasOwnProperty(property))
-                      (<any>this)[property] = (<any>data)[property];
-              }
-          }
-      }
-  
-      init(_data?: any) {
-          if (_data) {
-              this.name = _data["name"];
-              this.description = _data["description"];
-              this.gtin = _data["gtin"];
-              this.categoryId = _data["categoryId"];
-              this.outerId = _data["outerId"];
-              if (Array.isArray(_data["properties"])) {
-                  this.properties = [] as any;
-                  for (let item of _data["properties"])
-                      this.properties!.push(Property.fromJS(item));
-              }
-              if (Array.isArray(_data["images"])) {
-                  this.images = [] as any;
-                  for (let item of _data["images"])
-                      this.images!.push(Image.fromJS(item));
-              }
-          }
-      }
-  
-      static fromJS(data: any): ProductDetails {
-          data = typeof data === 'object' ? data : {};
-          let result = new ProductDetails();
-          result.init(data);
-          return result;
-      }
-  
-      toJSON(data?: any) {
-          data = typeof data === 'object' ? data : {};
-          data["name"] = this.name;
-          data["description"] = this.description;
-          data["gtin"] = this.gtin;
-          data["categoryId"] = this.categoryId;
-          data["outerId"] = this.outerId;
-          if (Array.isArray(this.properties)) {
-              data["properties"] = [];
-              for (let item of this.properties)
-                  data["properties"].push(item.toJSON());
-          }
-          if (Array.isArray(this.images)) {
-              data["images"] = [];
-              for (let item of this.images)
-                  data["images"].push(item.toJSON());
-          }
-          return data;
-      }
-  }
-  
-  export interface IProductDetails {
-      name?: string | undefined;
-      description?: string | undefined;
-      gtin?: string | undefined;
-      categoryId?: string | undefined;
-      outerId?: string | undefined;
-      properties?: Property[] | undefined;
-      images?: Image[] | undefined;
   }
   
   export class CreateNewProductCommand implements ICreateNewProductCommand {
@@ -5380,6 +5857,8 @@ export class AuthApiBase {
       moduleId?: string | undefined;
       groupName?: string | undefined;
       name?: string | undefined;
+      displayName?: string | undefined;
+      isRequired?: boolean;
       isHidden?: boolean;
       valueType?: SettingValueType;
       allowedValues?: any[] | undefined;
@@ -5406,6 +5885,8 @@ export class AuthApiBase {
               this.moduleId = _data["moduleId"];
               this.groupName = _data["groupName"];
               this.name = _data["name"];
+              this.displayName = _data["displayName"];
+              this.isRequired = _data["isRequired"];
               this.isHidden = _data["isHidden"];
               this.valueType = _data["valueType"];
               if (Array.isArray(_data["allowedValues"])) {
@@ -5436,6 +5917,8 @@ export class AuthApiBase {
           data["moduleId"] = this.moduleId;
           data["groupName"] = this.groupName;
           data["name"] = this.name;
+          data["displayName"] = this.displayName;
+          data["isRequired"] = this.isRequired;
           data["isHidden"] = this.isHidden;
           data["valueType"] = this.valueType;
           if (Array.isArray(this.allowedValues)) {
@@ -5459,6 +5942,8 @@ export class AuthApiBase {
       moduleId?: string | undefined;
       groupName?: string | undefined;
       name?: string | undefined;
+      displayName?: string | undefined;
+      isRequired?: boolean;
       isHidden?: boolean;
       valueType?: SettingValueType;
       allowedValues?: any[] | undefined;
@@ -5843,6 +6328,8 @@ export class AuthApiBase {
       moduleId?: string | undefined;
       groupName?: string | undefined;
       name?: string | undefined;
+      displayName?: string | undefined;
+      isRequired?: boolean;
       isHidden?: boolean;
       valueType?: SettingValueType;
       allowedValues?: any[] | undefined;
@@ -5864,6 +6351,8 @@ export class AuthApiBase {
               this.moduleId = _data["moduleId"];
               this.groupName = _data["groupName"];
               this.name = _data["name"];
+              this.displayName = _data["displayName"];
+              this.isRequired = _data["isRequired"];
               this.isHidden = _data["isHidden"];
               this.valueType = _data["valueType"];
               if (Array.isArray(_data["allowedValues"])) {
@@ -5889,6 +6378,8 @@ export class AuthApiBase {
           data["moduleId"] = this.moduleId;
           data["groupName"] = this.groupName;
           data["name"] = this.name;
+          data["displayName"] = this.displayName;
+          data["isRequired"] = this.isRequired;
           data["isHidden"] = this.isHidden;
           data["valueType"] = this.valueType;
           if (Array.isArray(this.allowedValues)) {
@@ -5907,6 +6398,8 @@ export class AuthApiBase {
       moduleId?: string | undefined;
       groupName?: string | undefined;
       name?: string | undefined;
+      displayName?: string | undefined;
+      isRequired?: boolean;
       isHidden?: boolean;
       valueType?: SettingValueType;
       allowedValues?: any[] | undefined;

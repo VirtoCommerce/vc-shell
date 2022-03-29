@@ -32,7 +32,6 @@
             >
             </VcInput>
             <VcTextarea
-              class="vc-margin-bottom_l"
               v-model="contentPlaceDetails.description"
               rules="min:3"
               name="description"
@@ -49,18 +48,38 @@
               "
             >
             </VcTextarea>
-            <div class="vc-margin-bottom_l">
-              <!-- File upload label -->
-              <VcLabel class="vc-margin-bottom_s">
-                <span>{{
-                  $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE_DESCRIPTION.LABEL"
-                  )
-                }}</span>
-              </VcLabel>
-              <VcFileUpload variant="import" @upload="onUpload"></VcFileUpload>
-            </div>
-            <VcImage :src="contentPlaceDetails.imageUrl"></VcImage>
+            <VcRow class="content-placeholder__image-loader">
+              <div class="content-placeholder__dropbox vc-margin-top_l">
+                <!-- File upload label -->
+                <VcLabel class="vc-margin-bottom_s">
+                  <span>{{
+                    $t(
+                      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE_DESCRIPTION.LABEL"
+                    )
+                  }}</span>
+                </VcLabel>
+                <VcFileUpload
+                  variant="import"
+                  @upload="onUpload"
+                ></VcFileUpload>
+              </div>
+
+              <div class="vc-margin-top_l">
+                <!-- File upload label -->
+                <VcLabel size="1" class="vc-margin-bottom_s">
+                  <span>{{
+                    $t(
+                      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE_DESCRIPTION.LABEL"
+                    )
+                  }}</span>
+                </VcLabel>
+                <VcImage
+                  :src="contentPlaceDetails.imageUrl"
+                  size="xxl"
+                  class="content-placeholder__image"
+                ></VcImage>
+              </div>
+            </VcRow>
           </VcForm>
         </div>
       </div>
@@ -236,4 +255,19 @@ defineExpose({
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.content-placeholder {
+  &__image {
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  &__image-loader {
+    gap: var(--margin-l);
+  }
+
+  &__dropbox {
+    flex: 1 1 auto;
+  }
+}
+</style>

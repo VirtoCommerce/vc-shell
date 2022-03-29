@@ -7,6 +7,7 @@
           "TOOLBAR": {
             "REFRESH": "Refresh",
             "ADD": "Add",
+            "BACK": "Back",
             "DROPDOWN": {
               "CONTENT_ITEM_FOLDER": "Content item folder",
               "CONTENT_ITEM": "Content item"
@@ -106,7 +107,7 @@
             "PLACEHOLDER": "Specify placeholder description"
           },
           "PLACEHOLDER_IMAGE_DESCRIPTION": {
-            "LABEL": "Placeholder image description"
+            "LABEL": "Current image"
           }
         }
       },
@@ -138,6 +139,7 @@
           "TOOLBAR": {
             "REFRESH": "Refresh",
             "ADD": "Add",
+            "BACK": "Back",
             "DROPDOWN": {
               "PLACEHOLDER_FOLDER": "Placeholder folder",
               "PLACEHOLDER": "Placeholder"

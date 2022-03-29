@@ -71,6 +71,7 @@ function onClick(): void {
   --image-size-m: 64px;
   --image-size-l: 96px;
   --image-size-xl: 128px;
+  --image-size-xxl: 145px;
 }
 
 .vc-image {
@@ -119,6 +120,10 @@ function onClick(): void {
 
   &_xl {
     width: var(--image-size-xl);
+  }
+
+  &_xxl {
+    width: var(--image-size-xxl);
   }
 
   &_rounded {

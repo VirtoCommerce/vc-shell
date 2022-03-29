@@ -94,9 +94,9 @@ const props = defineProps({
 const emit = defineEmits(["parent:call", "page:close"]);
 const { t } = useI18n();
 const title = computed(() => {
-  return folder.value?.name
-    ? folder.value?.name
-    : t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM_FOLDER.TITLE");
+  return (
+    folder.value?.name || t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEM_FOLDER.TITLE")
+  );
 });
 const {
   folderDetails,

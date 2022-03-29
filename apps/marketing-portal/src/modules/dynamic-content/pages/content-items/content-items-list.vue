@@ -242,7 +242,24 @@ const { debounce } = useFunctions();
 const searchValue = ref();
 const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE");
 const sort = ref("created:DESC");
+const breadcrumbs = ref<IBreadcrumbs[]>([]);
+
 const bladeToolbar = reactive<IBladeToolbar[]>([
+  {
+    id: "back",
+    title: computed(() =>
+      t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.BACK")
+    ),
+    icon: "fas fa-arrow-left",
+    disabled: computed(() => breadcrumbs.value.length === 1),
+    clickHandler() {
+      if (breadcrumbs.value.length > 1) {
+        const prevItem = breadcrumbs.value[breadcrumbs.value.length - 2];
+        breadcrumbs.value.splice(breadcrumbs.value.length - 1, 1);
+        contentType.value.folderId = prevItem.id as string;
+      }
+    },
+  },
   {
     id: "refresh",
     title: computed(() =>
@@ -284,20 +301,6 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
         },
       },
     ],
-  },
-]);
-
-const breadcrumbs = ref<IBreadcrumbs[]>([
-  {
-    title: "Back",
-    icon: "fas fa-arrow-left",
-    async clickHandler() {
-      if (breadcrumbs.value.length > 2) {
-        const prevItem = breadcrumbs.value[breadcrumbs.value.length - 2];
-        breadcrumbs.value.splice(breadcrumbs.value.length - 1, 1);
-        contentType.value.folderId = prevItem.id as string;
-      }
-    },
   },
 ]);
 

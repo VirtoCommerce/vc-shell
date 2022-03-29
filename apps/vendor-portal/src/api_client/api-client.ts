@@ -3167,7 +3167,7 @@ export class AuthApiBase {
   export class SearchProductsQuery implements ISearchProductsQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      searchForAllSellers?: boolean;
+      searchFromAllSellers?: boolean;
       gtin?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
@@ -3199,7 +3199,7 @@ export class AuthApiBase {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
-              this.searchForAllSellers = _data["searchForAllSellers"];
+              this.searchFromAllSellers = _data["searchFromAllSellers"];
               this.gtin = _data["gtin"];
               this.categoryId = _data["categoryId"];
               if (Array.isArray(_data["storesIds"])) {
@@ -3251,7 +3251,7 @@ export class AuthApiBase {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
-          data["searchForAllSellers"] = this.searchForAllSellers;
+          data["searchFromAllSellers"] = this.searchFromAllSellers;
           data["gtin"] = this.gtin;
           data["categoryId"] = this.categoryId;
           if (Array.isArray(this.storesIds)) {
@@ -3296,7 +3296,7 @@ export class AuthApiBase {
   export interface ISearchProductsQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      searchForAllSellers?: boolean;
+      searchFromAllSellers?: boolean;
       gtin?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;

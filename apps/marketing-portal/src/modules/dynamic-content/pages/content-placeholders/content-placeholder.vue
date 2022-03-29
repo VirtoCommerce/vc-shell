@@ -54,7 +54,7 @@
                 <VcLabel class="vc-margin-bottom_s">
                   <span>{{
                     $t(
-                      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE_DESCRIPTION.LABEL"
+                      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE.LABEL"
                     )
                   }}</span>
                 </VcLabel>

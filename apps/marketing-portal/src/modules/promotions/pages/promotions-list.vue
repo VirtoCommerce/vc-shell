@@ -223,7 +223,6 @@ const {
 } = usePromotions();
 const searchValue = ref();
 const { debounce } = useFunctions();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = t("PROMOTIONS.PAGES.LIST.TITLE");
 const sort = ref("startDate:DESC");
 const filter = reactive<{
@@ -386,6 +385,11 @@ function getFilterDate(key: string) {
 function setFilterDate(key: string, value: string) {
   filter[key] = new Date(value);
 }
+
+defineExpose({
+  title,
+  reload,
+});
 </script>
 
 <style lang="less" scoped>

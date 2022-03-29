@@ -9,6 +9,12 @@ import {
   SearchProductsResult,
   SellerProductStatus,
 } from "../../../../api_client";
+import {
+  ExportClient,
+  ExportDataQuery,
+  ExportDataRequest,
+  PlatformExportPushNotification,
+} from "@virtoshell/api-client";
 
 interface IUseProducts {
   readonly products: Ref<ISellerProduct[]>;
@@ -19,6 +25,7 @@ interface IUseProducts {
   currentPage: Ref<number>;
   loadProducts: (query: ISearchProductsQuery) => void;
   SellerProductStatus: typeof SellerProductStatus;
+  exportCategories: () => void;
 }
 
 interface IUseProductOptions {
@@ -69,6 +76,31 @@ export default (options?: IUseProductOptions): IUseProducts => {
     }
   }
 
+  async function exportCategories(): Promise<PlatformExportPushNotification> {
+    const { getAccessToken } = useUser();
+    const client = new ExportClient();
+    client.setAuthToken(await getAccessToken());
+
+    const command = new ExportDataRequest({
+      exportTypeName:
+        "VirtoCommerce.MarketplaceVendorModule.Data.ExportImport.ExportableCategory",
+      dataQuery: new ExportDataQuery({
+        exportTypeName: "CategoryExportDataQuery",
+      }),
+      providerName: "CsvExportProvider",
+    });
+
+    try {
+      loading.value = true;
+      return await client.runExport(command);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     products: computed(() => searchResult.value?.results),
     totalCount: computed(() => searchResult.value?.totalCount),
@@ -79,6 +111,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     loading: computed(() => loading.value),
     searchQuery,
     loadProducts,
+    exportCategories,
     SellerProductStatus,
   };
 };

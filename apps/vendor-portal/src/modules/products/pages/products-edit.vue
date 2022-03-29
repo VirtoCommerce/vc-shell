@@ -518,7 +518,7 @@ async function openOffers() {
     });
   }
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 async function onBeforeClose() {
   if (modified.value) {
     return confirm(
@@ -618,6 +618,7 @@ function restoreCollapsed(key: string): boolean {
 
 defineExpose({
   editImages,
+  onBeforeClose,
 });
 </script>
 

@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.8 (2022-03-29)
+
+
+### Bug Fixes
+
+* invite ([1dd5fa4](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1dd5fa4ae2e82cf2bcf745b4af2054eb194a61f1))
+* small fixes ([0d5a552](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0d5a5521673a988f449b98889468667d68cd7fd6))
+* small fixes ([e2b4d4b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/e2b4d4b7580ebf96c6994b9ed604ed976cf81b8a))
+
+
+### Features
+
+* pk-178 pk-176 pk-177 ([f139214](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f1392148b8f46032f836c3789373d8659ba6d9d3))
+* pk-181 pk-179 pk-180 ([5f741d7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5f741d73dce1edf4017ad8e0420a6958f5c71f65))
+
+
+
+## 0.1.4 (2022-03-16)
+
+
+
+## 0.1.2 (2022-03-10)
+
+
+
+## 0.1.1 (2022-03-10)
+
+
+### Bug Fixes
+
+* invalid "global" override ([6575582](https://github.com/VirtoCommerce/platform-manager-sdk/commit/65755822d679c51b9a9fdad1663fc4537b1ecffc))
+
+
+
+## 0.0.123 (2022-03-04)
+
+
+### Features
+
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+
+
+
+
+
 ## 0.1.7 (2022-03-17)
 
 

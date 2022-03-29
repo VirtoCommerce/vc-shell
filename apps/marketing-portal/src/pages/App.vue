@@ -73,7 +73,7 @@ import { PushNotification } from "@virtoshell/api-client";
 import { PromotionsList } from "../modules/promotions";
 import {
   ContentItemsList,
-  ContentPlaceholders,
+  ContentPlaceholdersList,
   ContentPublishing,
 } from "../modules/dynamic-content";
 import { useRouter } from "vue-router";
@@ -186,7 +186,7 @@ const menuItems = reactive<IMenuItems[]>([
         title: t(
           "SHELL.MENU.DYNAMIC_CONTENT.CHILDREN.CONTENT_PLACEHOLDERS.TITLE"
         ),
-        component: shallowRef(ContentPlaceholders),
+        component: shallowRef(ContentPlaceholdersList),
       },
       {
         title: t(

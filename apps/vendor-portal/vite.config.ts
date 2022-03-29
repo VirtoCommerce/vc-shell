@@ -106,6 +106,7 @@ export default defineConfig(({ mode }) => {
         "@virtoshell/mod-assets",
         "url-pattern",
         "vee-validate",
+        "ace-builds",
       ],
     },
     build: {

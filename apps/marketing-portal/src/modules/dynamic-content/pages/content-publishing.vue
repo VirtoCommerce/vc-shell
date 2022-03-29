@@ -139,7 +139,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useFunctions, useI18n } from "@virtoshell/core";
-import { useContent } from "../composables";
+import { useContentItems } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
 import moment from "moment";
 
@@ -174,10 +174,9 @@ const {
   currentPage,
   searchQuery,
   loadContentItems,
-} = useContent({ responseGroup: "8" });
+} = useContentItems({ responseGroup: "8" });
 const searchValue = ref();
 const { debounce } = useFunctions();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TITLE");
 const sort = ref("startDate:DESC");
 const bladeToolbar = reactive<IBladeToolbar[]>([
@@ -283,6 +282,11 @@ async function resetSearch() {
     keyword: "",
   });
 }
+
+defineExpose({
+  title,
+  reload,
+});
 </script>
 
 <style lang="less" scoped></style>

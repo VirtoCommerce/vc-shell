@@ -7,13 +7,21 @@ interface IComponent extends ComponentPublicInstance {
 interface IBladeToolbar {
   id?: string;
   icon?: string;
-  title?: string;
+  title?: string | ComputedRef<string>;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
   component?: Component & { url?: string };
   componentOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
+  dropdownItems?: IBladeDropdownItem[];
   clickHandler?(): void;
+}
+
+interface IBladeDropdownItem {
+  id: number;
+  title: string;
+  icon?: string;
+  clickHandler?(item: IBladeDropdownItem): void;
 }
 
 interface IMenuItems extends IBladeToolbar {
@@ -37,9 +45,10 @@ interface ITableColumns {
 
 interface IActionBuilderResult {
   icon: string;
-  title: string;
-  variant: string;
-  clickHandler(): void;
+  title: string | ComputedRef<string>;
+  variant?: string;
+  leftActions?: boolean;
+  clickHandler?(): void;
 }
 
 interface IShippingInfo {
@@ -59,7 +68,7 @@ interface INotificationActions {
   disabled?: boolean | ComputedRef<boolean>;
 }
 
-export {
+export type {
   IComponent,
   ITableColumns,
   IActionBuilderResult,
@@ -67,4 +76,5 @@ export {
   IMenuItems,
   IShippingInfo,
   INotificationActions,
+  IBladeDropdownItem,
 };

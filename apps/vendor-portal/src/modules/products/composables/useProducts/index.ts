@@ -9,6 +9,12 @@ import {
   SearchProductsResult,
   SellerProductStatus,
 } from "../../../../api_client";
+import {
+  ExportClient,
+  ExportDataQuery,
+  ExportDataRequest,
+  PlatformExportPushNotification,
+} from "@virtoshell/api-client";
 
 interface IUseProducts {
   readonly products: Ref<ISellerProduct[]>;
@@ -117,6 +123,31 @@ export default (options?: IUseProductOptions): IUseProducts => {
       link.parentNode.removeChild(link);
 
       window.URL.revokeObjectURL(blobUrl);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function exportCategories(): Promise<PlatformExportPushNotification> {
+    const { getAccessToken } = useUser();
+    const client = new ExportClient();
+    client.setAuthToken(await getAccessToken());
+
+    const command = new ExportDataRequest({
+      exportTypeName:
+        "VirtoCommerce.MarketplaceVendorModule.Data.ExportImport.ExportableCategory",
+      dataQuery: new ExportDataQuery({
+        exportTypeName: "CategoryExportDataQuery",
+      }),
+      providerName: "CsvExportProvider",
+    });
+
+    try {
+      loading.value = true;
+      return await client.runExport(command);
     } catch (e) {
       logger.error(e);
       throw e;

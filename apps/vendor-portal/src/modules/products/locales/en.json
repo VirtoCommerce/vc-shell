@@ -9,7 +9,9 @@
       "NONE": "New"
     },
     "MENU": {
-      "TITLE": "Products"
+      "TITLE": "Products",
+      "MARKETPLACE_PRODUCTS": "Marketplace Products",
+      "MY_PRODUCTS": "My Products"
     },
     "PAGES": {
       "LIST": {
@@ -17,6 +19,7 @@
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
+          "EXPORT_CATEGORIES": "Export categories",
           "BULK_DELETE": "Delete"
         },
         "SEARCH": {

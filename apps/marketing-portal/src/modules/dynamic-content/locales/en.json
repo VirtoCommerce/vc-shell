@@ -106,6 +106,9 @@
             "LABEL": "Placeholder description",
             "PLACEHOLDER": "Specify placeholder description"
           },
+          "PLACEHOLDER_IMAGE": {
+            "LABEL": "Placeholder image"
+          },
           "PLACEHOLDER_IMAGE_DESCRIPTION": {
             "LABEL": "Current image"
           }

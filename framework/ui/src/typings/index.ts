@@ -33,6 +33,7 @@ export interface IBladeDropdownItem {
 
 export interface IMenuItems extends IBladeToolbar {
   clickHandler?(app?: IComponent): void;
+  componentOptions?: Record<string, unknown> | unknown;
   children?: IMenuItems[];
 }
 

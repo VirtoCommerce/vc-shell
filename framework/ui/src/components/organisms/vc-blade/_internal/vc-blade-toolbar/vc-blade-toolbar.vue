@@ -77,7 +77,7 @@ function isToolbarVisible() {
     flex-grow: 1;
     display: flex;
     justify-content: flex-start;
-    align-items: stretch;
+    align-items: center;
     overflow-x: auto;
     padding: 0 var(--padding-s);
   }

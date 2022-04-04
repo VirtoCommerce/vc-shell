@@ -203,11 +203,26 @@ watch(
   (value) => {
     if (props.isReady) {
       if (value && value.length) {
-        const ws = value[0].url;
+        let ws: string;
+
+        if (
+          value[0].componentOptions &&
+          (value[0].componentOptions as Record<string, string>).url
+        ) {
+          ws = (value[0].componentOptions as Record<string, string>).url;
+        } else {
+          ws = value[0].url as string;
+        }
 
         activeMenuItem.value =
           (props.menuItems as IMenuItems[]).find(
             (item) => item.component?.url === ws
+          ) ||
+          (props.menuItems as IMenuItems[]).find((item) =>
+            item.children?.find(
+              (child) =>
+                (child.componentOptions as Record<string, string>).url === ws
+            )
           ) ||
           (props.menuItems as IMenuItems[]).find((item) =>
             item.children?.find((child) => child.component?.url === ws)
@@ -217,27 +232,64 @@ watch(
         activeChildMenuItem.value =
           activeMenuItem.value &&
           activeMenuItem.value?.children &&
-          activeMenuItem.value?.children.find(
-            (child) => child.component?.url === ws
-          );
+          activeMenuItem.value?.children.find((child) => {
+            if (
+              child.componentOptions &&
+              (child.componentOptions as Record<string, string>).url
+            ) {
+              return (
+                (child.componentOptions as Record<string, string>).url === ws
+              );
+            }
+            return child.component?.url === ws;
+          });
 
         let lastBladeWithUrlIndex = -1;
         value.forEach((item, i) => {
-          if (item.url) {
+          if (
+            item.componentOptions &&
+            (item.componentOptions as Record<string, string>).url
+          ) {
+            lastBladeWithUrlIndex = i;
+          } else if (item.url) {
             lastBladeWithUrlIndex = i;
           }
         });
         const lastBladeWithUrl = value[lastBladeWithUrlIndex];
-        const blade =
-          (lastBladeWithUrl &&
-            lastBladeWithUrl.url !== ws &&
-            lastBladeWithUrl.url) ||
-          undefined;
-        const param =
-          (lastBladeWithUrl &&
-            lastBladeWithUrl.url !== ws &&
-            lastBladeWithUrl.param) ||
-          undefined;
+
+        let blade: string | undefined;
+        let param: string | undefined;
+
+        if (
+          lastBladeWithUrl.componentOptions &&
+          (lastBladeWithUrl.componentOptions as Record<string, string>).url
+        ) {
+          blade =
+            (lastBladeWithUrl &&
+              (lastBladeWithUrl.componentOptions as Record<string, string>)
+                .url !== ws &&
+              (lastBladeWithUrl.componentOptions as Record<string, string>)
+                .url) ||
+            undefined;
+
+          param =
+            (lastBladeWithUrl &&
+              (lastBladeWithUrl.componentOptions as Record<string, string>)
+                .url !== ws &&
+              lastBladeWithUrl.param) ||
+            undefined;
+        } else {
+          blade =
+            (lastBladeWithUrl &&
+              lastBladeWithUrl.url !== ws &&
+              lastBladeWithUrl.url) ||
+            undefined;
+          param =
+            (lastBladeWithUrl &&
+              lastBladeWithUrl.url !== ws &&
+              lastBladeWithUrl.param) ||
+            undefined;
+        }
 
         const url = urlPattern.stringify({
           workspace: ws,

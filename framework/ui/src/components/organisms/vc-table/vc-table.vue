@@ -420,6 +420,7 @@ const emit = defineEmits([
   "search:change",
   "filter:apply",
   "filter:reset",
+  "itemClick",
 ]);
 
 const checkboxes = ref<Record<string, boolean>>({});
@@ -593,6 +594,10 @@ function handleSwipe(id: string) {
       display: flex !important;
     }
 
+    &-row:hover {
+      background-color: #dfeef9;
+    }
+
     &-cell {
       box-sizing: border-box;
       overflow: hidden;
@@ -627,6 +632,7 @@ function handleSwipe(id: string) {
       flex-direction: row;
       align-items: center;
       color: #319ed4;
+      cursor: pointer;
 
       &_danger {
         color: #ff4a4a;

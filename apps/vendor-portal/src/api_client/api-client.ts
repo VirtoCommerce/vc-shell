@@ -131,7 +131,7 @@ export class AuthApiBase {
        * @param body (optional) 
        * @return Success
        */
-      runExport(body: RunExportCommand | undefined): Promise<void> {
+      exportSellerCategories(body: RunCategoriesExportCommand | undefined): Promise<void> {
           let url_ = this.baseUrl + "/api/vcmp/seller/categories/export";
           url_ = url_.replace(/[?&]$/, "");
   
@@ -148,11 +148,11 @@ export class AuthApiBase {
           return this.transformOptions(options_).then(transformedOptions_ => {
               return this.http.fetch(url_, transformedOptions_);
           }).then((_response: Response) => {
-              return this.processRunExport(_response);
+              return this.processExportSellerCategories(_response);
           });
       }
   
-      protected processRunExport(response: Response): Promise<void> {
+      protected processExportSellerCategories(response: Response): Promise<void> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {
@@ -3112,7 +3112,9 @@ export class AuthApiBase {
       type?: string | undefined;
   }
   
-  export class RunExportCommand implements IRunExportCommand {
+  export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       /** Full type name of exportable entity */
       exportTypeName?: string | undefined;
       dataQuery?: ExportDataQuery;
@@ -3120,7 +3122,7 @@ export class AuthApiBase {
       /** Selected export provider name */
       providerName?: string | undefined;
   
-      constructor(data?: IRunExportCommand) {
+      constructor(data?: IRunCategoriesExportCommand) {
           if (data) {
               for (var property in data) {
                   if (data.hasOwnProperty(property))
@@ -3131,6 +3133,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
+              this.sellerId = _data["sellerId"];
+              this.sellerName = _data["sellerName"];
               this.exportTypeName = _data["exportTypeName"];
               this.dataQuery = _data["dataQuery"] ? ExportDataQuery.fromJS(_data["dataQuery"]) : <any>undefined;
               this.providerConfig = _data["providerConfig"] ? IExportProviderConfiguration.fromJS(_data["providerConfig"]) : <any>undefined;
@@ -3138,15 +3142,17 @@ export class AuthApiBase {
           }
       }
   
-      static fromJS(data: any): RunExportCommand {
+      static fromJS(data: any): RunCategoriesExportCommand {
           data = typeof data === 'object' ? data : {};
-          let result = new RunExportCommand();
+          let result = new RunCategoriesExportCommand();
           result.init(data);
           return result;
       }
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
+          data["sellerId"] = this.sellerId;
+          data["sellerName"] = this.sellerName;
           data["exportTypeName"] = this.exportTypeName;
           data["dataQuery"] = this.dataQuery ? this.dataQuery.toJSON() : <any>undefined;
           data["providerConfig"] = this.providerConfig ? this.providerConfig.toJSON() : <any>undefined;
@@ -3155,7 +3161,9 @@ export class AuthApiBase {
       }
   }
   
-  export interface IRunExportCommand {
+  export interface IRunCategoriesExportCommand {
+      sellerId?: string | undefined;
+      sellerName?: string | undefined;
       /** Full type name of exportable entity */
       exportTypeName?: string | undefined;
       dataQuery?: ExportDataQuery;
@@ -3167,7 +3175,8 @@ export class AuthApiBase {
   export class SearchProductsQuery implements ISearchProductsQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      searchForAllSellers?: boolean;
+      publishedProductsIds?: string[] | undefined;
+      searchFromAllSellers?: boolean;
       gtin?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
@@ -3199,7 +3208,12 @@ export class AuthApiBase {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
-              this.searchForAllSellers = _data["searchForAllSellers"];
+              if (Array.isArray(_data["publishedProductsIds"])) {
+                  this.publishedProductsIds = [] as any;
+                  for (let item of _data["publishedProductsIds"])
+                      this.publishedProductsIds!.push(item);
+              }
+              this.searchFromAllSellers = _data["searchFromAllSellers"];
               this.gtin = _data["gtin"];
               this.categoryId = _data["categoryId"];
               if (Array.isArray(_data["storesIds"])) {
@@ -3251,7 +3265,12 @@ export class AuthApiBase {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
-          data["searchForAllSellers"] = this.searchForAllSellers;
+          if (Array.isArray(this.publishedProductsIds)) {
+              data["publishedProductsIds"] = [];
+              for (let item of this.publishedProductsIds)
+                  data["publishedProductsIds"].push(item);
+          }
+          data["searchFromAllSellers"] = this.searchFromAllSellers;
           data["gtin"] = this.gtin;
           data["categoryId"] = this.categoryId;
           if (Array.isArray(this.storesIds)) {
@@ -3296,7 +3315,8 @@ export class AuthApiBase {
   export interface ISearchProductsQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      searchForAllSellers?: boolean;
+      publishedProductsIds?: string[] | undefined;
+      searchFromAllSellers?: boolean;
       gtin?: string | undefined;
       categoryId?: string | undefined;
       storesIds?: string[] | undefined;
@@ -5570,6 +5590,7 @@ export class AuthApiBase {
   
   export class OfferProduct implements IOfferProduct {
       name?: string | undefined;
+      sellerProductId?: string | undefined;
       sku?: string | undefined;
       imgSrc?: string | undefined;
       categoryId?: string | undefined;
@@ -5592,6 +5613,7 @@ export class AuthApiBase {
       init(_data?: any) {
           if (_data) {
               this.name = _data["name"];
+              this.sellerProductId = _data["sellerProductId"];
               this.sku = _data["sku"];
               this.imgSrc = _data["imgSrc"];
               this.categoryId = _data["categoryId"];
@@ -5614,6 +5636,7 @@ export class AuthApiBase {
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
           data["name"] = this.name;
+          data["sellerProductId"] = this.sellerProductId;
           data["sku"] = this.sku;
           data["imgSrc"] = this.imgSrc;
           data["categoryId"] = this.categoryId;
@@ -5629,6 +5652,7 @@ export class AuthApiBase {
   
   export interface IOfferProduct {
       name?: string | undefined;
+      sellerProductId?: string | undefined;
       sku?: string | undefined;
       imgSrc?: string | undefined;
       categoryId?: string | undefined;

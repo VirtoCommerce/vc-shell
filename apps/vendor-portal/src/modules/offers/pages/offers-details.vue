@@ -33,8 +33,37 @@
               displayProperty="name"
               @search="onProductSearch"
               :is-disabled="readonly"
+              :customSelectedItem="true"
               name="product"
             >
+              <template v-slot:customItem="itemData">
+                <div
+                  class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
+                >
+                  <VcImage
+                    class="vc-flex-shrink_0"
+                    size="xs"
+                    :src="itemData.item.imgSrc"
+                    :bordered="true"
+                  ></VcImage>
+                  <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
+                    <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                    <VcHint class="vc-ellipsis vc-margin-top_xs">
+                      {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
+                      {{ itemData.item.sku }}
+                    </VcHint>
+                    <div
+                      class="vc-link vc-margin-top_xs"
+                      v-if="itemData.item.sellerProductId"
+                      @click.stop="
+                        showProductDetails(itemData.item.sellerProductId)
+                      "
+                    >
+                      {{ $t("OFFERS.PAGES.DETAILS.MORE_INFO") }}
+                    </div>
+                  </div>
+                </div>
+              </template>
               <template v-slot:item="itemData">
                 <div
                   class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
@@ -265,6 +294,7 @@ import { useFunctions, useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import { IOfferProduct, OfferPrice } from "../../../api_client";
 import { IBladeToolbar } from "../../../types";
+import ProductsEdit from "../../products/pages/products-edit.vue";
 
 const props = defineProps({
   expanded: {
@@ -288,7 +318,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["parent:call", "page:close"]);
+const emit = defineEmits(["parent:call", "page:close", "page:open"]);
 const { t } = useI18n();
 
 const {
@@ -402,6 +432,13 @@ function setPriceRefs(el: HTMLDivElement) {
   if (el) {
     priceRefs.value.push(el);
   }
+}
+
+function showProductDetails(id: string) {
+  emit("page:open", {
+    component: ProductsEdit,
+    param: id,
+  });
 }
 </script>
 

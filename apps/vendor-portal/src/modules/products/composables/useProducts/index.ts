@@ -33,7 +33,7 @@ interface IUseProductOptions {
   sort?: string;
   keyword?: string;
   isPublished?: boolean;
-  SearchFromAllSellers?: boolean;
+  searchFromAllSellers?: boolean;
 }
 
 export default (options?: IUseProductOptions): IUseProducts => {
@@ -45,7 +45,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     sort: options?.sort,
     keyword: options?.keyword,
     isPublished: options?.isPublished,
-    SearchFromAllSellers: options?.SearchFromAllSellers,
+    searchFromAllSellers: options?.searchFromAllSellers,
   });
   const searchResult = ref<SearchProductsResult>();
   const loading = ref(false);
@@ -80,14 +80,18 @@ export default (options?: IUseProductOptions): IUseProducts => {
   }
 
   async function exportCategories() {
-    const { getAccessToken } = useUser();
+    const { getAccessToken, user } = useUser();
     const authToken = await getAccessToken();
 
     try {
       loading.value = true;
       const result = await fetch("/api/vcmp/seller/categories/export", {
         method: "POST",
-        body: JSON.stringify({}),
+        body: JSON.stringify({
+          dataQuery: {
+            sellerId: user.value.id,
+          },
+        }),
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json-patch+json",

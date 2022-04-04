@@ -215,7 +215,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-  url: "orders",
+  // url: "orders",
 });
 </script>
 

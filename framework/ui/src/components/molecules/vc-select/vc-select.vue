@@ -28,9 +28,18 @@
         <div v-if="!selectedItem" class="vc-select__field-placeholder">
           {{ placeholder }}
         </div>
-        <slot v-else name="item" :item="selectedItem">
+        <slot
+          v-else-if="selectedItem && !customSelectedItem"
+          name="item"
+          :item="selectedItem"
+        >
           {{ selectedItem[displayProperty] }}
         </slot>
+        <slot
+          v-else-if="customSelectedItem"
+          name="customItem"
+          :item="selectedItem"
+        ></slot>
       </div>
 
       <!-- Select chevron -->
@@ -78,7 +87,14 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
+import {
+  nextTick,
+  ref,
+  computed,
+  watch,
+  getCurrentInstance,
+  onUpdated,
+} from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
@@ -113,6 +129,11 @@ const props = defineProps({
   },
 
   isSearchable: {
+    type: Boolean,
+    default: false,
+  },
+
+  customSelectedItem: {
     type: Boolean,
     default: false,
   },

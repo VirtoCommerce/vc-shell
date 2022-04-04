@@ -87,23 +87,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
       loading.value = true;
       const result = await fetch("/api/vcmp/seller/categories/export", {
         method: "POST",
-        body: JSON.stringify({
-          exportTypeName:
-            "VirtoCommerce.MarketplaceVendorModule.Data.ExportImport.ExportableCategory",
-          dataQuery: {
-            ExportTypeName: "CategoryExportDataQuery",
-            includedProperties: [
-              {
-                fullName: "Name",
-                group: "ExportableCategory",
-                displayName: "Name",
-                isRequired: false,
-              },
-            ],
-            isPreview: false,
-          },
-          providerName: "CsvExportProvider",
-        }),
+        body: JSON.stringify({}),
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json-patch+json",
@@ -123,31 +107,6 @@ export default (options?: IUseProductOptions): IUseProducts => {
       link.parentNode.removeChild(link);
 
       window.URL.revokeObjectURL(blobUrl);
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-  }
-
-  async function exportCategories(): Promise<PlatformExportPushNotification> {
-    const { getAccessToken } = useUser();
-    const client = new ExportClient();
-    client.setAuthToken(await getAccessToken());
-
-    const command = new ExportDataRequest({
-      exportTypeName:
-        "VirtoCommerce.MarketplaceVendorModule.Data.ExportImport.ExportableCategory",
-      dataQuery: new ExportDataQuery({
-        exportTypeName: "CategoryExportDataQuery",
-      }),
-      providerName: "CsvExportProvider",
-    });
-
-    try {
-      loading.value = true;
-      return await client.runExport(command);
     } catch (e) {
       logger.error(e);
       throw e;

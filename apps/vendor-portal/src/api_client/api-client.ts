@@ -131,7 +131,7 @@ export class AuthApiBase {
        * @param body (optional) 
        * @return Success
        */
-      runExport(body: RunExportCommand | undefined): Promise<void> {
+      runExport(body: RunCategoriesExportCommand | undefined): Promise<void> {
           let url_ = this.baseUrl + "/api/vcmp/seller/categories/export";
           url_ = url_.replace(/[?&]$/, "");
   
@@ -3112,7 +3112,7 @@ export class AuthApiBase {
       type?: string | undefined;
   }
   
-  export class RunExportCommand implements IRunExportCommand {
+  export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
       /** Full type name of exportable entity */
       exportTypeName?: string | undefined;
       dataQuery?: ExportDataQuery;
@@ -3120,7 +3120,7 @@ export class AuthApiBase {
       /** Selected export provider name */
       providerName?: string | undefined;
   
-      constructor(data?: IRunExportCommand) {
+      constructor(data?: IRunCategoriesExportCommand) {
           if (data) {
               for (var property in data) {
                   if (data.hasOwnProperty(property))
@@ -3138,9 +3138,9 @@ export class AuthApiBase {
           }
       }
   
-      static fromJS(data: any): RunExportCommand {
+      static fromJS(data: any): RunCategoriesExportCommand {
           data = typeof data === 'object' ? data : {};
-          let result = new RunExportCommand();
+          let result = new RunCategoriesExportCommand();
           result.init(data);
           return result;
       }
@@ -3155,7 +3155,7 @@ export class AuthApiBase {
       }
   }
   
-  export interface IRunExportCommand {
+  export interface IRunCategoriesExportCommand {
       /** Full type name of exportable entity */
       exportTypeName?: string | undefined;
       dataQuery?: ExportDataQuery;

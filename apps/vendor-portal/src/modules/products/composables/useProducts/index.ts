@@ -87,11 +87,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
       loading.value = true;
       const result = await fetch("/api/vcmp/seller/categories/export", {
         method: "POST",
-        body: JSON.stringify({
-          dataQuery: {
-            sellerId: user.value.id,
-          },
-        }),
+        body: JSON.stringify({}),
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json-patch+json",

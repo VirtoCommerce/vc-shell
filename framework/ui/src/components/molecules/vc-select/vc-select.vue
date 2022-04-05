@@ -29,17 +29,13 @@
           {{ placeholder }}
         </div>
         <slot
-          v-else-if="selectedItem && !customSelectedItem"
-          name="item"
-          :item="selectedItem"
-        >
-          {{ selectedItem[displayProperty] }}
-        </slot>
-        <slot
-          v-else-if="customSelectedItem"
-          name="customItem"
+          v-else-if="$slots['selectedItem']"
+          name="selectedItem"
           :item="selectedItem"
         ></slot>
+        <slot v-else name="item" :item="selectedItem">
+          {{ selectedItem[displayProperty] }}
+        </slot>
       </div>
 
       <!-- Select chevron -->
@@ -129,11 +125,6 @@ const props = defineProps({
   },
 
   isSearchable: {
-    type: Boolean,
-    default: false,
-  },
-
-  customSelectedItem: {
     type: Boolean,
     default: false,
   },

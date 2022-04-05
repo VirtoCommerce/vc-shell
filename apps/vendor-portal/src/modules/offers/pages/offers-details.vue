@@ -36,7 +36,7 @@
               :customSelectedItem="true"
               name="product"
             >
-              <template v-slot:customItem="itemData">
+              <template v-slot:selectedItem="itemData">
                 <div
                   class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
                 >

@@ -83,14 +83,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  nextTick,
-  ref,
-  computed,
-  watch,
-  getCurrentInstance,
-  onUpdated,
-} from "vue";
+import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";

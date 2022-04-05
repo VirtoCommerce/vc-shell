@@ -33,7 +33,6 @@
               displayProperty="name"
               @search="onProductSearch"
               :is-disabled="readonly"
-              :customSelectedItem="true"
               name="product"
             >
               <template v-slot:selectedItem="itemData">

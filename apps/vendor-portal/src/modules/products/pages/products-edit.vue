@@ -245,7 +245,7 @@ const {
 } = useProduct();
 
 const { searchOffers } = useOffers();
-const { getAccessToken } = useUser();
+const { getAccessToken, user } = useUser();
 const { debounce } = useFunctions();
 
 const currentCategory = ref();
@@ -411,7 +411,9 @@ const product = computed(() =>
   props.param ? productData.value : productDetails
 );
 const readonly = computed(
-  () => props.param && !productData.value?.canBeModified
+  () =>
+    (props.param && !productData.value?.canBeModified) ||
+    (productData.value.sellerId && productData.value.sellerId !== user.value.id)
 );
 const loading = computed(() => prodLoading.value);
 
@@ -518,7 +520,7 @@ async function openOffers() {
     });
   }
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 async function onBeforeClose() {
   if (modified.value) {
     return confirm(
@@ -618,6 +620,7 @@ function restoreCollapsed(key: string): boolean {
 
 defineExpose({
   editImages,
+  onBeforeClose,
 });
 </script>
 

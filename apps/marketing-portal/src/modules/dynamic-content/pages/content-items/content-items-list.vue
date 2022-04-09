@@ -4,9 +4,14 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
+    v-loading="loading"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
+    <!-- Breadcrumbs -->
+    <div class="vc-padding-left_l vc-padding-top_l">
+      <VcBreadcrumbs :items="breadcrumbs" />
+    </div>
     <!-- Blade contents -->
     <VcTable
       :expanded="expanded"
@@ -16,6 +21,7 @@
       :selectedItemId="selectedItemId"
       @itemClick="onItemClick"
       :totalCount="totalCount"
+      :itemActionBuilder="actionBuilder"
       :pages="pages"
       :currentPage="currentPage"
       @paginationClick="onPaginationClick"
@@ -59,9 +65,24 @@
               $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.IS_EMPTY")
             }}
           </div>
-          <vc-button>{{
+          <vc-button @click="addContentItem">{{
             $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.ADD_ITEM")
           }}</vc-button>
+        </div>
+      </template>
+
+      <!-- Image column override -->
+      <template v-slot:item_image="itemData">
+        <div class="vc-flex vc-flex-justify_center">
+          <VcIcon
+            size="xxl"
+            class="content-items-list__icon"
+            :icon="
+              itemData.item.objectType === 'DynamicContentFolder'
+                ? 'fa fa-folder'
+                : 'fa fa-location-arrow'
+            "
+          ></VcIcon>
         </div>
       </template>
 
@@ -78,7 +99,7 @@
             <div
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
-              <div class="vc-ellipsis vc-flex-grow_2">
+              <div class="vc-ellipsis vc-flex-grow_1">
                 <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.CREATED"
@@ -103,7 +124,7 @@
             <div
               class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
             >
-              <div class="vc-ellipsis vc-flex-grow_2">
+              <div class="vc-ellipsis vc-flex-grow_1">
                 <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"
@@ -132,7 +153,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
+import {
+  defineComponent,
+  computed,
+  ref,
+  reactive,
+  onMounted,
+  watch,
+} from "vue";
 
 export default defineComponent({
   url: "content-items-list",
@@ -141,10 +169,35 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useFunctions, useI18n } from "@virtoshell/core";
-import { IBladeToolbar, ITableColumns } from "../../../../types";
+import {
+  IActionBuilderResult,
+  IBladeToolbar,
+  ITableColumns,
+} from "../../../../types";
 import moment from "moment";
-import { useContent } from "../../composables";
-import { ContentItems } from "../index";
+import {
+  useContentItems,
+  useContentItem,
+  useContentItemFolder,
+} from "../../composables";
+import ContentItemFolder from "./content-item-folder.vue";
+import {
+  DynamicContentFolder,
+  DynamicContentItem,
+} from "@virtoshell/api-client";
+import ContentItem from "./content-item.vue";
+
+interface IContentType {
+  responseGroup: string;
+  folderId?: string;
+}
+
+interface IBreadcrumbs {
+  id?: number | string;
+  title: string;
+  icon?: string;
+  clickHandler?(id: string): void;
+}
 
 defineProps({
   expanded: {
@@ -171,6 +224,7 @@ defineProps({
 const emit = defineEmits(["page:open", "page:close"]);
 const { t } = useI18n();
 const selectedItemId = ref();
+const contentType = ref<IContentType>({ responseGroup: "18" });
 const {
   contentItems,
   loading,
@@ -179,17 +233,38 @@ const {
   currentPage,
   searchQuery,
   loadContentItems,
-} = useContent({ folderId: "ContentItem", responseGroup: "18" });
+} = useContentItems(contentType.value);
+
+const { deleteContentFolder } = useContentItemFolder();
+const { deleteContentItemDetails } = useContentItem();
 
 const { debounce } = useFunctions();
 const searchValue = ref();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TITLE");
-const sort = ref("startDate:DESC");
+const sort = ref("created:DESC");
+const breadcrumbs = ref<IBreadcrumbs[]>([]);
+
 const bladeToolbar = reactive<IBladeToolbar[]>([
   {
+    id: "back",
+    title: computed(() =>
+      t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.BACK")
+    ),
+    icon: "fas fa-arrow-left",
+    disabled: computed(() => breadcrumbs.value.length === 1),
+    clickHandler() {
+      if (breadcrumbs.value.length > 1) {
+        const prevItem = breadcrumbs.value[breadcrumbs.value.length - 2];
+        breadcrumbs.value.splice(breadcrumbs.value.length - 1, 1);
+        contentType.value.folderId = prevItem.id as string;
+      }
+    },
+  },
+  {
     id: "refresh",
-    title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.REFRESH"),
+    title: computed(() =>
+      t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.REFRESH")
+    ),
     icon: "fas fa-sync-alt",
     clickHandler() {
       reload();
@@ -197,14 +272,48 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
   },
   {
     id: "add",
-    title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.ADD"),
+    title: computed(() =>
+      t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.ADD")
+    ),
     icon: "fas fa-plus",
-    clickHandler() {
-      alert("add");
-    },
+    dropdownItems: [
+      {
+        id: 1,
+        icon: "fa fa-folder",
+        title: t(
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.DROPDOWN.CONTENT_ITEM_FOLDER"
+        ),
+        clickHandler() {
+          emit("page:open", {
+            component: ContentItemFolder,
+            componentOptions: { folderId: contentType.value.folderId },
+          });
+        },
+      },
+      {
+        id: 2,
+        icon: "fas fa-location-arrow",
+        title: t(
+          "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TOOLBAR.DROPDOWN.CONTENT_ITEM"
+        ),
+        clickHandler() {
+          addContentItem();
+        },
+      },
+    ],
   },
 ]);
+
 const columns = ref<ITableColumns[]>([
+  {
+    id: "image",
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.IMAGE"
+    ),
+    alwaysVisible: true,
+    width: 70,
+    align: "center",
+  },
   {
     id: "name",
     title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.NAME"),
@@ -218,7 +327,6 @@ const columns = ref<ITableColumns[]>([
     ),
     sortable: true,
     alwaysVisible: true,
-    width: 150,
     type: "date",
     format: "L",
   },
@@ -227,20 +335,17 @@ const columns = ref<ITableColumns[]>([
     title: t(
       "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.DESCRIPTION"
     ),
-    width: 150,
     sortable: true,
   },
   {
     id: "path",
     title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.PATH"),
-    width: 150,
     sortable: true,
   },
   {
     id: "id",
     title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.TABLE.HEADER.ID"),
     sortable: true,
-    width: 300,
   },
 ]);
 
@@ -248,7 +353,23 @@ watch(sort, async (value) => {
   await loadContentItems({ ...searchQuery.value, sort: value });
 });
 
+watch(
+  () => breadcrumbs,
+  async () => {
+    await loadContentItems({ sort: sort.value });
+  },
+  { deep: true }
+);
+
 onMounted(async () => {
+  contentType.value.folderId = "ContentItem";
+  breadcrumbs.value.push({
+    id: "ContentItem",
+    title: t(
+      "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.BREADCRUMBS.ALL_ITEMS"
+    ),
+    clickHandler: (id: string) => handleBreadcrumbs(id),
+  });
   await loadContentItems({ sort: sort.value });
 });
 
@@ -289,9 +410,59 @@ async function resetSearch() {
   });
 }
 
-const onItemClick = (item: { id: string }) => {
+const onItemClick = async (item: DynamicContentFolder | DynamicContentItem) => {
+  if (item.objectType === "DynamicContentFolder") {
+    contentType.value.folderId = item.id;
+    const isBreadcrumbExist = breadcrumbs.value.find((x) => x.id === item.id);
+    if (!isBreadcrumbExist) {
+      breadcrumbs.value.push({
+        id: item.id,
+        title: item.name,
+        clickHandler: (id: string) => handleBreadcrumbs(id),
+      });
+    }
+  } else {
+    openEntry(item);
+  }
+};
+
+const actionBuilder = (
+  item: DynamicContentFolder | DynamicContentItem
+): IActionBuilderResult[] => {
+  return [
+    {
+      icon: "fas fa-trash",
+      title: computed(() =>
+        t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.ACTIONS.DELETE")
+      ),
+      variant: "danger",
+      async clickHandler() {
+        if (item.objectType === "DynamicContentFolder") {
+          await deleteContentFolder({ id: item.id });
+        } else {
+          await deleteContentItemDetails({ id: item.id });
+        }
+        await reload();
+      },
+    },
+    {
+      icon: "fa fa-edit",
+      title: computed(() =>
+        t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS_LIST.LIST.ACTIONS.MANAGE")
+      ),
+      clickHandler() {
+        openEntry(item);
+      },
+    },
+  ];
+};
+
+function openEntry(item: DynamicContentFolder | DynamicContentItem) {
   emit("page:open", {
-    component: ContentItems,
+    component:
+      item.objectType === "DynamicContentFolder"
+        ? ContentItemFolder
+        : ContentItem,
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -300,7 +471,31 @@ const onItemClick = (item: { id: string }) => {
       selectedItemId.value = undefined;
     },
   });
-};
+}
+
+function addContentItem() {
+  emit("page:open", {
+    component: ContentItem,
+    componentOptions: { folderId: contentType.value.folderId },
+  });
+}
+
+function handleBreadcrumbs(id: string) {
+  contentType.value.folderId = id;
+  const item = breadcrumbs.value.findIndex((x) => x.id === id);
+  breadcrumbs.value.splice(item + 1);
+}
+
+defineExpose({
+  title,
+  reload,
+});
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.content-items-list {
+  &__icon {
+    color: #a9bfd2;
+  }
+}
+</style>

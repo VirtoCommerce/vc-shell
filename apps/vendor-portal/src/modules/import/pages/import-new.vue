@@ -533,7 +533,10 @@ onMounted(async () => {
   if (props.param) {
     await fetchDataImporters();
     await loadImportProfile({ id: props.param });
-    await fetchImportHistory({ profileId: props.param });
+    await fetchImportHistory({
+      profileId: props.param,
+      jobId: props.options.importJobId,
+    });
   }
   if (props.options && props.options.importJobId) {
     const historyItem =

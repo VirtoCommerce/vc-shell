@@ -41,6 +41,11 @@ const props = defineProps({
     type: Function,
     default: undefined,
   },
+
+  id: {
+    type: String,
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(["click"]);
@@ -48,7 +53,7 @@ const emit = defineEmits(["click"]);
 function onClick(): void {
   if (!props.current) {
     if (props.clickHandler && typeof props.clickHandler === "function") {
-      props.clickHandler();
+      props.clickHandler(props.id);
     } else {
       emit("click");
     }

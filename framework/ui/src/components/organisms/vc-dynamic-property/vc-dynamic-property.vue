@@ -17,7 +17,7 @@
     "
     :options="items"
     keyProperty="id"
-    displayProperty="alias"
+    :displayProperty="handleDisplayProperty"
     :rules="rules"
     :is-disabled="disabled"
     :name="property.displayName || property.name"
@@ -191,10 +191,29 @@
       property.name
     }}
   </VcCheckbox>
+
+  <VcEditor
+    v-else-if="property.valueType === 'Html'"
+    :label="
+      (property.displayNames && property.displayNames[0].name) ||
+      property.displayName ||
+      property.name
+    "
+    :modelValue="getter(property)"
+    @update:modelValue="setter(property, $event)"
+    :required="property.required"
+    :placeholder="
+      (property.displayNames && property.displayNames[0].name) || 'Add value'
+    "
+    :rules="rules"
+    :disabled="disabled"
+    :name="property.displayName || property.name"
+  >
+  </VcEditor>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 interface IValidationRules {
   required?: boolean;
   min?: number;
@@ -238,6 +257,9 @@ const props = defineProps({
 
 const rules: IValidationRules = {};
 const items = ref([]);
+const handleDisplayProperty = computed(() => {
+  return items.value.some((x: { alias: string }) => x.alias) ? "alias" : "name";
+});
 
 onMounted(async () => {
   if (props.optionsGetter) {

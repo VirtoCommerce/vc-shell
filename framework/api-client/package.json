@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/api-client",
-  "version": "0.1.6",
+  "version": "0.1.12",
   "description": "",
   "main": "./dist/api-client.cjs.js",
   "types": "./dist/index.d.ts",

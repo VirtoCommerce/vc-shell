@@ -1,25 +1,27 @@
 <template>
   <VcBlade
-    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.TITLE')"
+    :title="$t('DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE')"
     width="50%"
     :expanded="expanded"
     :closable="closable"
+    v-loading="loading"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
+    <!-- Blade contents -->
     <VcTable
       :expanded="expanded"
       :loading="loading"
       :columns="columns"
-      :items="contentItems"
+      :items="dynamicProperties"
+      :selectedItemId="selectedItemId"
+      @itemClick="onItemClick"
       :totalCount="totalCount"
       :pages="pages"
+      :header="false"
       :currentPage="currentPage"
       @paginationClick="onPaginationClick"
-      :searchValue="searchValue"
-      @search:change="onSearchList"
       @headerClick="onHeaderClick"
-      :sort="sort"
       @scroll:ptr="reload"
     >
       <!-- Not found template -->
@@ -29,21 +31,16 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{
-              $t(
-                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.NOT_FOUND"
-              )
-            }}
+            {{ $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.NOT_FOUND") }}
           </div>
           <VcButton @click="resetSearch">
             {{
-              $t(
-                "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.RESET_SEARCH"
-              )
+              $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.RESET_SEARCH")
             }}</VcButton
           >
         </div>
       </template>
+
       <!-- Empty template -->
       <template v-slot:empty>
         <div
@@ -51,18 +48,28 @@
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
-            {{
-              $t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.EMPTY")
-            }}
+            {{ $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.IS_EMPTY") }}
           </div>
           <VcButton>{{
-            $t(
-              "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.ADD_PLACEHOLDER"
-            )
+            $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.ADD_ITEM")
           }}</VcButton>
         </div>
       </template>
 
+      <!-- Image column override -->
+      <template v-slot:item_image="itemData">
+        <div class="vc-flex vc-flex-justify_center">
+          <VcIcon
+            :icon="
+              itemData.item.objectType === 'DynamicContentFolder'
+                ? 'fa fa-folder'
+                : 'fa fa-location-arrow'
+            "
+          ></VcIcon>
+        </div>
+      </template>
+
+      <!-- Mobile template -->
       <template v-slot:mobile-item="itemData">
         <div
           class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
@@ -78,7 +85,7 @@
               <div class="vc-ellipsis vc-flex-grow_2">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.CREATED"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.CREATED"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -88,7 +95,7 @@
               <div class="vc-ellipsis vc-flex-grow_1">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.DESCRIPTION"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.DESCRIPTION"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -103,7 +110,7 @@
               <div class="vc-ellipsis vc-flex-grow_2">
                 <VcHint>{{
                   $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.PATH"
+                    "DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.PATH"
                   )
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
@@ -112,9 +119,7 @@
               </div>
               <div class="vc-ellipsis vc-flex-grow_1">
                 <VcHint>{{
-                  $t(
-                    "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.ID"
-                  )
+                  $t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.ID")
                 }}</VcHint>
                 <div class="vc-ellipsis vc-margin-top_xs">
                   {{ itemData.item.id }}
@@ -128,21 +133,17 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, reactive, ref, watch } from "vue";
-
-export default defineComponent({
-  url: "content-placeholders",
-});
-</script>
-
 <script lang="ts" setup>
-import { IBladeToolbar, ITableColumns } from "../../../types";
+import { onMounted, reactive, ref, watch } from "vue";
 import { useFunctions, useI18n } from "@virtoshell/core";
-import { useContent } from "../composables";
+import { IBladeToolbar, ITableColumns } from "../../../../types";
 import moment from "moment";
+import ContentItemEdit from "./content-item.vue";
+import { useContentItems } from "../../composables";
+import useDynamicProperties from "../../composables/useDynamicProperties";
+import ContentManageProperty from "./content-manage-property.vue";
 
-defineProps({
+const props = defineProps({
   expanded: {
     type: Boolean,
     default: true,
@@ -150,7 +151,7 @@ defineProps({
 
   closable: {
     type: Boolean,
-    default: false,
+    default: true,
   },
 
   param: {
@@ -163,22 +164,32 @@ defineProps({
     default: () => ({}),
   },
 });
-defineEmits(["page:close"]);
+
+const emit = defineEmits(["page:open", "page:close"]);
 const { t } = useI18n();
-const {
-  contentItems,
-  loading,
-  totalCount,
-  pages,
-  currentPage,
-  searchQuery,
-  loadContentItems,
-} = useContent({ folderId: "ContentPlace", responseGroup: "20" });
+const selectedItemId = ref();
+// const {
+//   contentItems,
+//   loading,
+//   totalCount,
+//   pages,
+//   currentPage,
+//   searchQuery,
+//   loadContentItems,
+// } = useContentItems({ responseGroup: "18" });
 const searchValue = ref();
 const { debounce } = useFunctions();
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.TITLE");
+const {
+  getDynamicProperties,
+  dynamicProperties,
+  loading,
+  currentPage,
+  searchQuery,
+  pages,
+  totalCount,
+} = useDynamicProperties({ take: 20, objectType: props.options.objectType });
 const sort = ref("startDate:DESC");
+const title = t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TITLE");
 const bladeToolbar = reactive<IBladeToolbar[]>([
   {
     id: "refresh",
@@ -193,99 +204,66 @@ const bladeToolbar = reactive<IBladeToolbar[]>([
     title: t("PROMOTIONS.PAGES.LIST.TOOLBAR.ADD"),
     icon: "fas fa-plus",
     clickHandler() {
-      alert("add");
+      emit("page:open", {
+        component: ContentManageProperty,
+        componentOptions: {
+          objectType: props.options.objectType,
+        },
+      });
     },
   },
 ]);
-
 const columns = ref<ITableColumns[]>([
   {
     id: "name",
-    title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.NAME"
-    ),
+    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_ITEMS.LIST.TABLE.HEADER.NAME"),
     alwaysVisible: true,
     sortable: true,
-  },
-  {
-    id: "createdDate",
-    title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.CREATED"
-    ),
-    sortable: true,
-    alwaysVisible: true,
-    width: 150,
-    type: "date",
-    format: "L",
-  },
-  {
-    id: "description",
-    title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.DESCRIPTION"
-    ),
-    width: 150,
-    sortable: true,
-  },
-  {
-    id: "path",
-    title: t(
-      "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.PATH"
-    ),
-    width: 150,
-    sortable: true,
-  },
-  {
-    id: "id",
-    title: t("DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDERS.LIST.TABLE.HEADER.ID"),
-    sortable: true,
-    width: 300,
   },
 ]);
 
 watch(sort, async (value) => {
-  await loadContentItems({ ...searchQuery.value, sort: value });
+  await getDynamicProperties({ ...searchQuery.value, sort: value });
 });
 
 onMounted(async () => {
-  await loadContentItems({ sort: sort.value });
+  if (props.options.objectType) {
+    await getDynamicProperties({ ...searchQuery.value });
+  }
 });
 
 async function reload() {
-  await loadContentItems({
+  await getDynamicProperties({
     ...searchQuery.value,
-    skip: (currentPage.value - 1) * searchQuery.value.take,
-    sort: sort.value,
+    skip: (currentPage.value - 1) * 20,
   });
 }
 
 async function onPaginationClick(page: number) {
-  await loadContentItems({
+  await getDynamicProperties({
     skip: (page - 1) * 20,
   });
 }
 
-const onSearchList = debounce(async (keyword: string) => {
-  searchValue.value = keyword;
-  await loadContentItems({
-    keyword,
+const onItemClick = (item: { id: string }) => {
+  emit("page:open", {
+    component: ContentManageProperty,
+    componentOptions: {
+      item,
+    },
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
   });
-}, 200);
+};
 
-function onHeaderClick(item: ITableColumns) {
-  const sortBy = [":DESC", ":ASC", ""];
-  if (item.sortable) {
-    item.sortDirection = (item.sortDirection ?? 0) + 1;
-    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
-  }
-}
-
-async function resetSearch() {
-  searchValue.value = "";
-  await loadContentItems({
-    ...searchQuery.value,
-    keyword: "",
-  });
-}
+defineExpose({
+  title,
+  reload,
+});
 </script>
 
 <style lang="less" scoped></style>

@@ -220,7 +220,7 @@ function onMenuItemClick() {
   }
 
   &__child {
-    margin-left: 52px;
+    margin-left: 42px;
     gap: 4px;
     display: flex;
     flex-direction: column;

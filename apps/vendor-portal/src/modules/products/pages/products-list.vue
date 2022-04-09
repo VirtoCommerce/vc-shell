@@ -221,6 +221,7 @@ import {
   computed,
   watch,
   reactive,
+  getCurrentInstance,
 } from "vue";
 
 export default defineComponent({
@@ -275,7 +276,8 @@ const {
   loading,
   searchQuery,
   SellerProductStatus,
-} = useProducts();
+  exportCategories,
+} = useProducts(props.options.query);
 const filter = reactive<{
   status?: string;
   priceStart?: string;
@@ -331,6 +333,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       emit("page:open", {
         component: ProductsEdit,
       });
+    },
+  },
+  {
+    id: "export",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
+    icon: "fas fa-file-export",
+    async clickHandler() {
+      await exportCategories();
     },
   },
   {

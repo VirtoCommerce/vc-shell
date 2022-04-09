@@ -218,7 +218,28 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("PRODUCTS.MENU.TITLE")),
     icon: "fas fa-box-open",
     isVisible: true,
-    component: shallowRef(ProductsList),
+    component: shallowRef(),
+    children: [
+      {
+        title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
+        component: shallowRef(ProductsList),
+        componentOptions: {
+          url: "all-products",
+          readonly: true,
+          query: {
+            isPublished: true,
+            SearchFromAllSellers: true,
+          },
+        },
+      },
+      {
+        title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
+        component: shallowRef(ProductsList),
+        componentOptions: {
+          url: "products",
+        },
+      },
+    ],
   },
   {
     title: computed(() => t("OFFERS.MENU.TITLE")),

@@ -34,7 +34,6 @@ interface IUseProduct {
     sendToAprove?: boolean
   ) => void;
   revertStagedChanges: (productId: string) => void;
-  changeProductStatus: (productId: string, status: string) => void;
   searchDictionaryItems: (
     propertyIds: string[],
     keyword?: string,
@@ -194,22 +193,6 @@ export default (): IUseProduct => {
     }
   }
 
-  async function changeProductStatus(productId: string, status: string) {
-    logger.info(`approve product`, productId);
-
-    const client = await getApiClient();
-    try {
-      loading.value = true;
-      await client.changeProductStatus(productId, status);
-      await loadProduct({ id: productId });
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-  }
-
   return {
     product: computed(() => product.value),
     modified: computed(() => modified.value),
@@ -220,7 +203,6 @@ export default (): IUseProduct => {
     fetchCategories,
     createProduct,
     revertStagedChanges,
-    changeProductStatus,
     searchDictionaryItems,
   };
 };

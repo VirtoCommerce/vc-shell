@@ -28,6 +28,11 @@
         <div v-if="!selectedItem" class="vc-select__field-placeholder">
           {{ placeholder }}
         </div>
+        <slot
+          v-else-if="$slots['selectedItem']"
+          name="selectedItem"
+          :item="selectedItem"
+        ></slot>
         <slot v-else name="item" :item="selectedItem">
           {{ selectedItem[displayProperty] }}
         </slot>

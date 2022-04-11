@@ -232,7 +232,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (
         props.param &&
-        (order.value.status === "Paid" || order.value.status === "Unpaid")
+        (order.value.status === "Paid" ||
+          order.value.status === "Unpaid" ||
+          order.value.status === "New")
       ) {
         const lastStatus = order.value.status;
 

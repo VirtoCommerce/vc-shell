@@ -1,11 +1,11 @@
 {
   "name": "@virtoshell/app-vendor-portal",
-  "version": "0.1.12",
+  "version": "0.1.6",
   "private": true,
   "scripts": {
-    "serve": "vite",
+    "serve": "APP_ENV=development vite",
     "preview": "vite preview",
-    "build": "vite build"
+    "build": "APP_ENV=production vite build"
   },
   "devDependencies": {
     "less": "^3.0.4",
@@ -17,6 +17,7 @@
     "@quangdao/vue-signalr": "^0.0.8",
     "@virtoshell/api-client": "^0.1.12",
     "@virtoshell/core": "^0.1.12",
+    "@virtoshell/config-generator": "^0.0.1",
     "@virtoshell/mod-assets": "^0.1.12",
     "@virtoshell/ui": "^0.1.12",
     "moment": "^2.29.1",

@@ -17,6 +17,7 @@
   "dependencies": {
     "@virtoshell/api-client": "^0.1.12",
     "@virtoshell/core": "^0.1.12",
+    "@virtoshell/config-generator": "^0.0.1",
     "@virtoshell/ui": "^0.1.12",
     "vue": "^3.0.0"
   }

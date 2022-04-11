@@ -21,6 +21,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.0",
     "@virtoshell/core": "^0.1.12",
+    "@virtoshell/config-generator": "^0.0.1",
     "@vueuse/core": "^6.0.0",
     "@vueuse/integrations": "^6.0.0",
     "moment": "^2.29.1",

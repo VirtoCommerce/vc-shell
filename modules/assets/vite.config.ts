@@ -1,42 +1,32 @@
-import { defineConfig } from "vite";
-import path from "path";
 import vue from "@vitejs/plugin-vue";
-import typescript from "@rollup/plugin-typescript";
+import { getLibraryConfiguration } from "@virtoshell/config-generator";
+import { PreRenderedAsset } from "rollup";
 
-export default defineConfig({
-  plugins: [vue()],
-  build: {
-    sourcemap: true,
-    minify: false,
-    lib: {
-      entry: path.resolve(__dirname, "./src/index.ts"),
-      name: "assets",
-      formats: ["cjs"],
-    },
-    rollupOptions: {
-      external: [
-        "@virtoshell/ui",
-        "@virtoshell/core",
-        "@virtoshell/api-client",
-        "vue",
-      ],
-      output: {
-        globals: {
-          vue: "Vue",
-          "@virtoshell/ui": "@virtoshell/ui",
-          "@virtoshell/core": "@virtoshell/core",
-          "@virtoshell/api-client": "@virtoshell/api-client",
-        },
-        assetFileNames: (assetInfo) => {
-          if (assetInfo.name === "style.css") return "assets.css";
-          return assetInfo.name as string;
+export default getLibraryConfiguration(
+  {
+    plugins: [vue()],
+    build: {
+      rollupOptions: {
+        external: [
+          "@virtoshell/ui",
+          "@virtoshell/core",
+          "@virtoshell/api-client",
+          "vue",
+        ],
+        output: {
+          globals: {
+            vue: "Vue",
+            "@virtoshell/ui": "@virtoshell/ui",
+            "@virtoshell/core": "@virtoshell/core",
+            "@virtoshell/api-client": "@virtoshell/api-client",
+          },
+          assetFileNames: (assetInfo: PreRenderedAsset) => {
+            if (assetInfo.name === "style.css") return "assets.css";
+            return assetInfo.name as string;
+          },
         },
       },
-      plugins: [
-        typescript({
-          tsconfig: path.resolve(__dirname, "./tsconfig.json"),
-        }),
-      ],
     },
   },
-});
+  "assets"
+);

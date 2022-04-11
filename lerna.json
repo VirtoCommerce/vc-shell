@@ -3,7 +3,8 @@
   "packages": [
     "apps/*",
     "framework/*",
-    "modules/*"
+    "modules/*",
+    "cli/*"
   ],
   "useWorkspaces": true,
   "version": "independent",

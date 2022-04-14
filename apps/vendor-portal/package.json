@@ -3,9 +3,9 @@
   "version": "0.1.12",
   "private": true,
   "scripts": {
-    "serve": "APP_ENV=development vite",
+    "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
-    "build": "APP_ENV=production vite build"
+    "build": "cross-env APP_ENV=production vite build"
   },
   "devDependencies": {
     "less": "^3.0.4",

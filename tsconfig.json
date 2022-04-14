@@ -16,6 +16,9 @@
       ],
       "@virtoshell/mod-assets": [
         "modules/assets/src"
+      ],
+      "@virtoshell/config-generator": [
+        "cli/config/src"
       ]
     }
   },
@@ -31,6 +34,9 @@
     },
     {
       "path": "modules/assets/"
+    },
+    {
+      "path": "cli/config/"
     }
   ]
 }

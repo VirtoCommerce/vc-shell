@@ -15,16 +15,20 @@
     "jsx": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    "outDir": ".",
+    "rootDir": ".",
     "strict": false,
+    "composite": true,
     "lib": [
       "esnext",
       "dom"
     ]
   },
+  "files": [
+    "package.json",
+  ],
   "include": [
-    "src/**/*.ts"
+    "src"
   ],
   "exclude": [
     "node_modules",

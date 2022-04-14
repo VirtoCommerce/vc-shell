@@ -20,10 +20,6 @@ export default getLibraryConfiguration(
             "@virtoshell/core": "@virtoshell/core",
             "@virtoshell/api-client": "@virtoshell/api-client",
           },
-          assetFileNames: (assetInfo: PreRenderedAsset) => {
-            if (assetInfo.name === "style.css") return "assets.css";
-            return assetInfo.name as string;
-          },
         },
       },
     },

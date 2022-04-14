@@ -6,6 +6,7 @@
   },
   "main": "./dist/mod-assets.cjs.js",
   "types": "./dist/index.d.ts",
+  "style": "./dist/style.css",
   "files": [
     "dist/*",
     "src/**/*.vue"

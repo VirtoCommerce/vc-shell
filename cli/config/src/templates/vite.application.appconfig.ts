@@ -28,7 +28,6 @@ export default {
   resolve: {
     preserveSymlinks: true,
     alias: {
-      "@virtoshell/ui/dist/ui.css": "@virtoshell/ui/dist/ui.css",
       "@virtoshell/ui": "@virtoshell/ui/src/index.ts",
       "@virtoshell/core": "@virtoshell/core/src/index.ts",
       "@virtoshell/mod-assets": "@virtoshell/mod-assets/src/index.ts",

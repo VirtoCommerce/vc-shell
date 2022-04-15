@@ -411,13 +411,7 @@ const product = computed(() =>
   props.param ? productData.value : productDetails
 );
 const readonly = computed(
-  () =>
-    (props.param &&
-      !productData.value?.canBeModified &&
-      productData.value.sellerId &&
-      productData.value.sellerId !== user.value.id) ||
-    (productData.value.createdBy &&
-      productData.value.createdBy !== user.value.userName)
+  () => props.param && !productData.value?.canBeModified
 );
 const loading = computed(() => prodLoading.value);
 

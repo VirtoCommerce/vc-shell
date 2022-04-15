@@ -73,9 +73,6 @@ jobs:
     - name: Build platform-manager-demo
       run: |
         yarn build
-    - name: Build platform-manager-ui docs
-      run: |
-        yarn storybook-build
     - name: Docker Login
       uses: azure/docker-login@v1
       with:

@@ -32,6 +32,9 @@
     "modules/*",
     "cli/*"
   ],
+  "dependencies": {
+    "@tailwindcss/line-clamp": "^0.3.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
@@ -42,6 +45,7 @@
     "@storybook/addon-backgrounds": "^6.4.18",
     "@storybook/addon-essentials": "^6.3.8",
     "@storybook/addon-links": "^6.3.8",
+    "@storybook/builder-vite": "^0.1.28",
     "@storybook/components": "^6.3.8",
     "@storybook/core-client": "^6.3.8",
     "@storybook/core-events": "^6.3.8",
@@ -69,10 +73,11 @@
     "lint-staged": "^11.0.1",
     "lodash-es": "^4.17.21",
     "path": "^0.12.7",
+    "postcss": "^8.4.12",
     "prettier": "^2.5.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "storybook-builder-vite": "^0.1.18",
+    "tailwindcss": "^3.0.24",
     "typescript": "^4.5.5",
     "vite": "^2.8.3",
     "vite-plugin-checker": "^0.4.2",

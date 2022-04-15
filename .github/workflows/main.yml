@@ -73,9 +73,6 @@ jobs:
     - name: Build platform-manager-demo
       run: |
         yarn build
-    - name: Build platform-manager-ui docs
-      run: |
-        yarn storybook-build
     - name: Docker Login
       uses: azure/docker-login@v1
       with:
@@ -87,10 +84,6 @@ jobs:
       run: |
           docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_DM }} -f .dockerfiles/platform-manager-demo/Dockerfile.demo
           docker push ${{ env.ARTIFACT_URL_DM }}
-    - name: Build and Publish Docker Image For Platform Manager UI Docs
-      run: |
-          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_UK }} -f .dockerfiles/platform-manager-ui/Dockerfile.demo
-          docker push ${{ env.ARTIFACT_URL_UK }}
     - name: Build and Publish Docker Image For Platform Marketing
       run: |
           docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_M }} -f .dockerfiles/platform-manager-marketing/Dockerfile.demo
@@ -108,20 +101,6 @@ jobs:
       argoServer: 'argo.govirto.com'
       artifactUrl: ${{ needs.CI.outputs.managerArtifactUrl }}
       matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/demoManager/argoDeploy-marketplace.json"},{"envName": "prod", "confPath": ".deployment/demoManager/argoDeploy-platform-dev.json"}]}'
-
-    secrets:
-      envPAT: ${{ secrets.REPO_TOKEN }}
-      argoLogin: ${{ secrets.ARGOCD_LOGIN }}
-      argoPassword: ${{ secrets.ARGOCD_PASSWORD }}
-
-  CD_UI_kit:
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-    needs: CI
-    uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
-    with:
-      argoServer: 'argo.govirto.com'
-      artifactUrl: ${{ needs.CI.outputs.UIKitArtifactUrl }}
-      matrix: '{"include":[{"envName": "prod", "confPath": ".deployment/UIKit/argoDeploy-platform-dev.json"}]}'
 
     secrets:
       envPAT: ${{ secrets.REPO_TOKEN }}

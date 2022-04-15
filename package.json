@@ -23,7 +23,7 @@
     "serve-apps:vendor-portal": "cd apps/vendor-portal && yarn serve",
     "build-apps:marketing-portal": "lerna run build --scope @virtoshell/app-marketing-portal",
     "serve-apps:marketing-portal": "cd apps/marketing-portal && yarn serve",
-    "storybook-build": "build-storybook -s .storybook/assets",
+    "storybook-build": "cross-env APP_ENV=production build-storybook -s .storybook/assets",
     "storybook-serve": "start-storybook -s .storybook/assets -p 6006"
   },
   "workspaces": [

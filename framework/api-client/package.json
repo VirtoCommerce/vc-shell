@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/api-client",
-  "version": "0.1.13",
+  "version": "0.1.15",
   "description": "",
   "main": "./dist/api-client.cjs.js",
   "types": "./dist/index.d.ts",
@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@virtoshell/config-generator": "^0.1.13",
+    "@virtoshell/config-generator": "^0.1.15",
     "typescript": "^4.6.2"
   }
 }

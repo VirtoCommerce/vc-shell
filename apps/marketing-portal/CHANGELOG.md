@@ -3,6 +3,61 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.15 (2022-04-15)
+
+
+
+## 0.1.14 (2022-04-15)
+
+
+
+## 0.1.13 (2022-04-14)
+
+
+### Bug Fixes
+
+* build on windows ([417c9fc](https://github.com/VirtoCommerce/platform-manager-sdk/commit/417c9fc507fe0b5c50746b7e05ea8b2817c48f0b))
+* template fix ([07b1fd3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/07b1fd3f75022ac9b7e130774b1475d4e9239649))
+
+
+### Features
+
+* cli config generation lib ([4630d4f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/4630d4f055e8300eaf69d8e0f5ac94fa31c91703))
+
+
+
+## 0.1.10 (2022-04-04)
+
+
+
+## 0.1.4 (2022-03-16)
+
+
+
+## 0.1.2 (2022-03-10)
+
+
+
+## 0.1.1 (2022-03-10)
+
+
+### Bug Fixes
+
+* invalid "global" override ([6575582](https://github.com/VirtoCommerce/platform-manager-sdk/commit/65755822d679c51b9a9fdad1663fc4537b1ecffc))
+
+
+
+## 0.0.123 (2022-03-04)
+
+
+### Features
+
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+
+
+
+
+
 ## 0.1.14 (2022-04-15)
 
 

@@ -228,7 +228,7 @@ const menuItems = reactive<IMenuItems[]>([
           readonly: true,
           query: {
             isPublished: true,
-            SearchFromAllSellers: true,
+            searchFromAllSellers: true,
           },
         },
       },

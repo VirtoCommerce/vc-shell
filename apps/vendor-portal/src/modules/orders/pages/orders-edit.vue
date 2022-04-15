@@ -252,7 +252,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     disabled: computed(
       () =>
         !(
-          (order.value.status === "Paid" || order.value.status === "Unpaid") &&
+          (order.value.status === "Paid" ||
+            order.value.status === "Unpaid" ||
+            order.value.status === "New") &&
           props.param
         )
     ),

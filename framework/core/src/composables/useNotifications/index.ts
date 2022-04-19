@@ -55,16 +55,18 @@ export default (): INotifications => {
   }
 
   function addNotification(message: PushNotification) {
-    const existsNotification = notifications.value.find(
-      (x) => x.id == message.id
-    );
+    if (message.notifyType !== "IndexProgressPushNotification") {
+      const existsNotification = notifications.value.find(
+        (x) => x.id == message.id
+      );
 
-    if (existsNotification) {
-      message.isNew = existsNotification.isNew;
-      Object.assign(existsNotification, message);
-    } else {
-      popupNotifications.value.unshift(message);
-      notifications.value.unshift(message);
+      if (existsNotification) {
+        message.isNew = existsNotification.isNew;
+        Object.assign(existsNotification, message);
+      } else {
+        popupNotifications.value.unshift(message);
+        notifications.value.unshift(message);
+      }
     }
   }
 

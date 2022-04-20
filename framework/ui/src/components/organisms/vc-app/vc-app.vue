@@ -1,6 +1,14 @@
 <template>
   <div
     class="vc-app flex flex-col w-full h-full box-border m-0 overflow-hidden text-m"
+    :class="[
+      `vc-theme_${theme}`,
+      {
+        'vc-app_touch': $isTouch,
+        'vc-app_phone': $isPhone.value,
+        'vc-app_mobile': $isMobile.value,
+      },
+    ]"
   >
     <VcLoading v-if="!isReady" active></VcLoading>
     <template v-else>

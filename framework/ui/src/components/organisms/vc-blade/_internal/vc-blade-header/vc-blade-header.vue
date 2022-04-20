@@ -1,33 +1,38 @@
 <template>
-  <div class="vc-blade-header vc-flex-shrink_0">
-    <div v-if="icon" class="vc-blade-header__icon">
+  <div
+    class="vc-flex-shrink_0 h-[var(--blade-header-height)] bg-[color:var(--blade-header-background-color)] flex items-center py-0 px-l border-solid border-b border-b-[color:#eaedf3]"
+  >
+    <div v-if="icon" class="text-[color:var(--blade-header-icon-color)] mr-m">
       <VcIcon :icon="icon" size="xxl"></VcIcon>
     </div>
 
-    <div class="vc-blade-header__info vc-flex-grow_1">
+    <div class="overflow-hidden grow">
       <div
-        class="vc-blade-header__title vc-ellipsis"
-        :class="{ 'vc-blade-header__title_only': !subtitle }"
+        class="text-[color:var(--blade-header-title-color)] text-lg text-ellipsis overflow-hidden whitespace-nowrap"
+        :class="{
+          '!text-[length:var(--blade-header-title-font-size)] font-medium':
+            !subtitle,
+        }"
       >
         {{ title }}
       </div>
-      <div v-if="subtitle" class="vc-blade-header__subtitle">
+      <div
+        v-if="subtitle"
+        class="text-[var(--blade-header-subtitle-color)] text-xs mt-xs"
+      >
         {{ subtitle }}
       </div>
     </div>
 
-    <div v-if="$slots['actions']" class="vc-blade-header__actions">
+    <div v-if="$slots['actions']">
       <slot name="actions"></slot>
     </div>
 
-    <div
-      v-if="!$isMobile.value"
-      class="vc-blade-header__buttons vc-flex vc-flex-align_center"
-    >
+    <div v-if="!$isMobile.value" class="flex items-center">
       <template v-if="expandable">
         <div
           v-if="expanded"
-          class="vc-blade-header__button"
+          class="text-[color:var(--blade-header-button-color)] ml-l cursor-pointer hover:text-[color:var(--blade-header-button-color-hover)]"
           @click="onCollapse"
         >
           <VcIcon icon="fas fa-window-minimize" size="s"></VcIcon>
@@ -36,7 +41,11 @@
           <VcIcon icon="fas fa-window-maximize" size="s"></VcIcon>
         </div>
       </template>
-      <div v-if="closable" class="vc-blade-header__button" @click="onClose">
+      <div
+        v-if="closable"
+        class="text-[color:var(--blade-header-button-color)] ml-l cursor-pointer hover:text-[color:var(--blade-header-button-color-hover)]"
+        @click="onClose"
+      >
         <VcIcon icon="fas fa-times"></VcIcon>
       </div>
     </div>
@@ -106,7 +115,6 @@ function onClose(): void {
 
   --blade-header-button-color: #a1c0d4;
   --blade-header-button-color-hover: #7ea8c4;
-  --blade-header-button-color-disabled: #d5e3ec;
 
   --blade-header-icon-color: #a1c0d4;
 
@@ -114,55 +122,5 @@ function onClose(): void {
   --blade-header-title-color: #2e3d4e;
 
   --blade-header-subtitle-color: #a1c0d4;
-}
-
-.vc-blade-header {
-  height: var(--blade-header-height);
-  background-color: var(--blade-header-background-color);
-  display: flex;
-  align-items: center;
-  padding: 0 var(--padding-l);
-  border-bottom: 1px solid #eaedf3;
-
-  &__button {
-    color: var(--blade-header-button-color);
-    margin-left: var(--margin-l);
-    cursor: pointer;
-
-    &:hover {
-      color: var(--blade-header-button-color-hover);
-    }
-
-    &_disabled,
-    &_disabled:hover {
-      color: var(--blade-header-button-color-disabled);
-      cursor: not-allowed;
-    }
-  }
-
-  &__icon {
-    color: var(--blade-header-icon-color);
-    margin-right: var(--margin-m);
-  }
-
-  &__info {
-    overflow: hidden;
-  }
-
-  &__title {
-    color: var(--blade-header-title-color);
-    font-size: var(--font-size-l);
-
-    &_only {
-      font-size: var(--blade-header-title-font-size);
-      font-weight: var(--font-weight-medium);
-    }
-  }
-
-  &__subtitle {
-    color: var(--blade-header-subtitle-color);
-    font-size: var(--font-size-xs);
-    margin-top: var(--margin-xs);
-  }
 }
 </style>

@@ -486,7 +486,7 @@ defineExpose({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
     linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
@@ -497,7 +497,7 @@ defineExpose({
 
   &__workspace {
     .vc-app_mobile & {
-      padding: 0;
+      @apply p-0;
     }
   }
 

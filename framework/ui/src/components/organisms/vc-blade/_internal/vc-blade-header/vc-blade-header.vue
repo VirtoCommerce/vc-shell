@@ -18,7 +18,7 @@
       </div>
       <div
         v-if="subtitle"
-        class="text-[var(--blade-header-subtitle-color)] text-xs mt-xs"
+        class="text-[color:var(--blade-header-subtitle-color)] text-xs mt-xs"
       >
         {{ subtitle }}
       </div>

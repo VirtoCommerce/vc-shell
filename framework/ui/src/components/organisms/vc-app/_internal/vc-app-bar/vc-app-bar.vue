@@ -1,11 +1,13 @@
 <template>
-  <div class="vc-app-bar">
+  <div
+    class="relative flex items-center content-between h-[var(--app-bar-height)] bg-[color:var(--app-bar-background-color)] pl-l"
+  >
     <!-- Logo container for mobile devices -->
     <template v-if="$isMobile.value">
       <!-- Show logo on mobile dashboard -->
       <img
         v-if="workspace.length === 0"
-        class="vc-app-bar__logo"
+        class="h-3/6 cursor-pointer"
         :src="logo"
         @click="$emit('logo:click')"
       />
@@ -13,7 +15,7 @@
       <!-- Show workspace name when at least one blade is opened -->
       <div
         v-else-if="workspace.length === 1"
-        class="vc-ellipsis vc-font-size_header"
+        class="overflow-ellipsis overflow-hidden whitespace-nowrap text-[length:var(--font-size-header)] leading-[var(--line-height-header)]"
       >
         {{ workspace[0].title }}
       </div>
@@ -21,28 +23,38 @@
       <!-- Show back link when more than one blade is opened -->
       <VcLink v-else @click="$emit('backlink:click')">
         <VcIcon icon="fas fa-chevron-left" size="s"></VcIcon>
-        <span class="vc-margin-left_s vc-font-size_l">{{ $t("Back") }}</span>
+        <span class="ml-s text-lg">{{ $t("Back") }}</span>
       </VcLink>
     </template>
 
     <!-- Logo container for desktop devices -->
     <template v-else>
-      <img class="vc-app-bar__logo" :src="logo" @click="$emit('logo:click')" />
-      <div class="vc-app-bar__version" @click="$emit('version:click')">
+      <img
+        class="h-3/6 cursor-pointer"
+        :src="logo"
+        @click="$emit('logo:click')"
+      />
+      <div
+        class="text-[color:var(--app-bar-version-color)] text-xs ml-[30px]"
+        @click="$emit('version:click')"
+      >
         {{ version }}
       </div>
     </template>
 
     <!-- Product name slot -->
-    <div class="vc-app-bar__product-name" v-if="$slots['productName']">
+    <div
+      class="text-[color:var(--app-bar-product-name-color)] text-[length:var(--app-bar-product-name-size)] font-medium ml-[30px]"
+      v-if="$slots['productName']"
+    >
       <slot name="productName"></slot>
     </div>
 
     <!-- Additional spacer -->
-    <div class="vc-flex-grow_1"></div>
+    <div class="grow basis-0"></div>
 
     <!-- Toolbar container -->
-    <div class="vc-flex vc-fill_height">
+    <div class="flex h-full box-border">
       <template v-for="(item, index) in buttons" :key="index">
         <template v-if="item.isVisible === undefined || item.isVisible">
           <!-- Draw custom component is it is passed -->
@@ -58,7 +70,7 @@
           <!-- Otherwise draw default toolbar button -->
           <div
             v-else
-            class="vc-app-bar__button"
+            class="relative flex items-center content-center w-[var(--app-bar-button-width)] border-l border-solid border-[color:var(--app-bar-button-border-color)] cursor-pointer text-[color: var(--app-bar-button-color)] bg-[color:var(--app-bar-button-background-color)] transition-[color] duration-200 hover:text-[color:var(--app-bar-button-color-hover)] hover:bg-[color:var(--app-bar-button-background-color-hover)]"
             :class="{ 'vc-app-bar__button_accent': item.isAccent }"
             :title="item.title"
             @click="$emit('button:click', item)"
@@ -75,7 +87,7 @@
     <!-- Show menu toggler on mobile devices -->
     <div
       v-if="$isMobile.value"
-      class="vc-app-bar__mobile-toggler vc-flex vc-flex-align_center vc-flex-justify_center vc-fill_height"
+      class="text-[#319ed4] w-[var(--app-bar-button-width)] flex items-center content-center h-full box-border"
       @click="$emit('menubutton:click')"
     >
       <VcIcon icon="fas fa-bars"></VcIcon>
@@ -129,7 +141,7 @@ defineEmits([
 ]);
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --app-bar-height: 60px;
   --app-bar-background-color: #ffffff;
@@ -145,66 +157,10 @@ defineEmits([
 }
 
 .vc-app-bar {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: var(--app-bar-height);
-  background-color: var(--app-bar-background-color);
-  padding-left: var(--padding-l);
-
-  &__logo {
-    height: 50%;
-    cursor: pointer;
-  }
-
-  &__version {
-    color: var(--app-bar-version-color);
-    font-size: var(--font-size-xs);
-    margin-left: 30px;
-  }
-
-  &__product-name {
-    color: var(--app-bar-product-name-color);
-    font-size: var(--app-bar-product-name-size);
-    font-weight: var(--font-weight-medium);
-    margin-left: 30px;
-  }
-
   &__button {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--app-bar-button-width);
-    border-left: 1px solid var(--app-bar-button-border-color);
-    cursor: pointer;
-    color: var(--app-bar-button-color);
-    background-color: var(--app-bar-button-background-color);
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--app-bar-button-color-hover);
-      background-color: var(--app-bar-button-background-color-hover);
-    }
-
     &_accent:before {
-      content: "";
-      display: block;
-      position: absolute;
-      right: 12px;
-      top: 18px;
-      width: 7px;
-      height: 7px;
-      background: #ff4a4a;
-      border-radius: 50%;
-      z-index: 1;
+      @apply content-[""] block absolute right-3 top-[18px] w-[7px] h-[7px] bg-[#ff4a4a] rounded-full z-[1];
     }
-  }
-
-  &__mobile-toggler {
-    color: #319ed4;
-    width: var(--app-bar-button-width);
   }
 }
 </style>

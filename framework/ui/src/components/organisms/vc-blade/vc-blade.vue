@@ -87,11 +87,4 @@ defineProps({
   --blade-margin: 0;
   --blade-border-radius: 0;
 }
-
-.vc-blade {
-  &_expanded {
-    width: 100% !important;
-    flex-shrink: 1;
-  }
-}
 </style>

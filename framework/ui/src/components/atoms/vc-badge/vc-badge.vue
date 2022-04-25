@@ -1,10 +1,13 @@
 <template>
   <div
-    class="vc-badge"
+    class="inline-block rounded-[var(--badge-border-radius)] py-[4px] px-[8px] text-m font-normal bg-[color:var(--badge-background-color)] text-[color:var(--badge-text-color)] border border-solid border-[color:var(--badge-border-color)] transition duration-200"
     :class="{
-      'vc-badge_active': active,
-      'vc-badge_clickable': clickable,
-      'vc-badge_disabled': disabled,
+      'bg-[color:var(--badge-background-color-active)] text-[color:var(--badge-text-color-active)] border-[color:var(--badge-border-color-active)]':
+        active,
+      'cursor-pointer hover:bg-[color:var(--badge-background-color-active)] hover:text-[color:var(--badge-text-color-hover)] hover:border-[color:var(--badge-border-color-hover)]':
+        clickable,
+      'cursor-not-allowed bg-[color:var(--badge-background-color-disabled)] text-[color:var(--badge-text-color-disabled)] border-[color:var(--badge-border-color-disabled)] hover:bg-[color:var(--badge-background-color-disabled)] hover:text-[color:var(--badge-text-color-disabled)] hover:border-[color:var(--badge-border-color-disabled)]':
+        disabled,
     }"
     @click="onClick"
   >
@@ -38,13 +41,8 @@ function onClick(): void {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
-  --badge-padding: 4px 8px;
-
-  --badge-font-size: var(--font-size-m);
-  --badge-font-weight: var(--font-weight-normal);
-
   --badge-background-color: #ffffff;
   --badge-background-color-hover: #fafafa;
   --badge-background-color-active: #fafafa;
@@ -56,47 +54,10 @@ function onClick(): void {
   --badge-text-color-disabled: #8296ab;
 
   --badge-border-radius: 35px;
-  --badge-border-width: 1px;
 
   --badge-border-color: #a1bfd4;
   --badge-border-color-hover: #8fb3cc;
   --badge-border-color-active: #8fb3cc;
   --badge-border-color-disabled: #b2cbdc;
-}
-
-.vc-badge {
-  display: inline-block;
-  border-radius: var(--badge-border-radius);
-  padding: var(--badge-padding);
-  font-size: var(--badge-font-size);
-  font-weight: var(--badge-font-weight);
-  background-color: var(--badge-background-color);
-  color: var(--badge-text-color);
-  border: var(--badge-border-width) solid var(--badge-border-color);
-  transition: all 0.2s ease;
-
-  &_clickable {
-    cursor: pointer;
-
-    &:hover {
-      background-color: var(--badge-background-color-hover);
-      color: var(--badge-text-color-hover);
-      border: var(--badge-border-width) solid var(--badge-border-color-hover);
-    }
-  }
-
-  &_active {
-    background-color: var(--badge-background-color-active);
-    color: var(--badge-text-color-active);
-    border: var(--badge-border-width) solid var(--badge-border-color-active);
-  }
-
-  &_disabled,
-  &_disabled:hover {
-    cursor: not-allowed;
-    background-color: var(--badge-background-color-disabled);
-    color: var(--badge-text-color-disabled);
-    border: var(--badge-border-width) solid var(--badge-border-color-disabled);
-  }
 }
 </style>

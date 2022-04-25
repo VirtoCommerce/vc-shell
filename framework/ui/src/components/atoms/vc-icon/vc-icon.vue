@@ -16,7 +16,7 @@ defineProps({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --icon-size-xs: 12px;
   --icon-size-s: 14px;
@@ -26,29 +26,13 @@ defineProps({
   --icon-size-xxl: 30px;
 }
 
+$sizes: xs, s, m, l, xl, xxl;
+
 .vc-icon {
-  &_xs {
-    font-size: var(--icon-size-xs);
-  }
-
-  &_s {
-    font-size: var(--icon-size-s);
-  }
-
-  &_m {
-    font-size: var(--icon-size-m);
-  }
-
-  &_l {
-    font-size: var(--icon-size-l);
-  }
-
-  &_xl {
-    font-size: var(--icon-size-xl);
-  }
-
-  &_xxl {
-    font-size: var(--icon-size-xxl);
+  @each $size in $sizes {
+    &_#{$size} {
+      @apply text-[length:var(--icon-size-#{$size})];
+    }
   }
 }
 </style>

@@ -1,16 +1,16 @@
 <template>
-  <div
+  <button
     class="vc-button"
     :class="[
       `vc-button_${variant}`,
       {
-        'vc-button_disabled': disabled,
         'vc-button_small': small,
         'vc-button_outline': outline,
         'vc-button_selected': selected,
       },
     ]"
     @click="onClick"
+    :disabled="disabled"
   >
     <VcIcon
       v-if="icon"
@@ -18,10 +18,10 @@
       :icon="icon"
       :size="small ? 'xs' : 's'"
     ></VcIcon>
-    <div v-if="$slots['default']" class="vc-button__title">
+    <span v-if="$slots['default']" class="vc-button__title">
       <slot></slot>
-    </div>
-  </div>
+    </span>
+  </button>
 </template>
 
 <script lang="ts" setup>
@@ -69,7 +69,7 @@ function onClick(): void {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --button-primary-background-color: #41afe6;
   --button-primary-background-color-hover: #319ed4;
@@ -121,266 +121,93 @@ function onClick(): void {
   --button-widget-border-color-active: #deecf4;
 
   --button-border-radius: 3px;
-  --button-padding: 0 14px;
-  --button-padding-small: 0 12px;
+  --button-padding: 14px;
+  --button-padding-small: 12px;
   --button-height: 36px;
   --button-height-small: 28px;
 }
 
+$variants: primary, secondary, special, danger, widget;
+
 .vc-button {
-  border-radius: var(--button-border-radius);
-  padding: var(--button-padding);
-  height: var(--button-height);
-  display: inline-flex;
-  align-items: center;
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-s);
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: all 0.2s ease;
+  @apply inline-flex items-center font-medium text-sm cursor-pointer box-border transition duration-200 rounded-[var(--button-border-radius)] px-[var(--button-padding)] h-[var(--button-height)];
 
   &__icon + &__title {
-    margin-left: var(--margin-s);
+    @apply ml-s;
   }
 
-  &_primary {
-    background-color: var(--button-primary-background-color);
-    color: var(--button-primary-text-color);
-    border: 1px solid var(--button-primary-background-color);
-
-    &:hover {
-      background-color: var(--button-primary-background-color-hover);
-      color: var(--button-primary-text-color-hover);
-      border: 1px solid var(--button-primary-background-color-hover);
+  @each $variant in $variants {
+    &_#{$variant} {
+      @apply bg-[color:var(--button-#{$variant}-background-color)]
+      text-[color:var(--button-#{$variant}-text-color)]
+      border border-solid border-[color:var(--button-#{$variant}-background-color)]
+      hover:bg-[color:var(--button-#{$variant}-background-color-hover)]
+      hover:text-[color:var(--button-#{$variant}-text-color-hover)]
+      hover:border-[color:var(--button-#{$variant}-background-color-hover)]
+      focus:bg-[color:var(--button-#{$variant}-background-color-active)]
+      focus:text-[color:var(--button-#{$variant}-text-color-active)]
+      focus:bg-[color:var(--button-#{$variant}-background-color-active)]
+      disabled:cursor-not-allowed
+      disabled:bg-[color:var(--button-#{$variant}-background-color-disabled)]
+      disabled:text-[color:var(--button-#{$variant}-text-color-disabled)]
+      disabled:border-[color:var(--button-#{$variant}-background-color-disabled)];
     }
-
-    &:focus {
-      background-color: var(--button-primary-background-color-active);
-      color: var(--button-primary-text-color-active);
-      border: 1px solid var(--button-primary-background-color-active);
-    }
-
-    &.vc-button_disabled,
-    &.vc-button_disabled:hover {
-      cursor: not-allowed;
-      background-color: var(--button-primary-background-color-disabled);
-      color: var(--button-primary-text-color-disabled);
-      border: 1px solid var(--button-primary-background-color-disabled);
-    }
-  }
-
-  &_secondary {
-    background-color: var(--button-secondary-background-color);
-    color: var(--button-secondary-text-color);
-    border: 1px solid var(--button-secondary-border-color);
-
-    &:hover {
-      background-color: var(--button-secondary-background-color-hover);
-      color: var(--button-secondary-text-color-hover);
-      border: 1px solid var(--button-secondary-border-color-hover);
-    }
-
-    &:focus {
-      background-color: var(--button-secondary-background-color-active);
-      color: var(--button-secondary-text-color-hover);
-      border: 1px solid var(--button-secondary-border-color-active);
-    }
-
-    &.vc-button_disabled,
-    &.vc-button_disabled:hover {
-      cursor: not-allowed;
-      background-color: var(--button-secondary-background-color-disabled);
-      color: var(--button-secondary-text-color-disabled);
-      border: 1px solid var(--button-secondary-border-color-disabled);
-    }
-  }
-
-  &_special {
-    background-color: var(--button-special-background-color);
-    color: var(--button-special-text-color);
-    border: 1px solid var(--button-special-background-color);
-
-    &:hover {
-      background-color: var(--button-special-background-color-hover);
-      color: var(--button-special-text-color-hover);
-      border: 1px solid var(--button-special-background-color-hover);
-    }
-
-    &:focus {
-      background-color: var(--button-special-background-color-active);
-      color: var(--button-special-text-color-active);
-      border: 1px solid var(--button-special-background-color-active);
-    }
-
-    &.vc-button_disabled,
-    &.vc-button_disabled:hover {
-      cursor: not-allowed;
-      background-color: var(--button-special-background-color-disabled);
-      color: var(--button-special-text-color-disabled);
-      border: 1px solid var(--button-special-background-color-disabled);
-    }
-  }
-
-  &_danger {
-    background-color: var(--button-danger-background-color);
-    color: var(--button-special-text-color);
-    border: 1px solid var(--button-danger-background-color);
-
-    &:hover {
-      background-color: var(--button-danger-background-color-hover);
-      color: var(--button-special-text-color-hover);
-      border: 1px solid var(--button-danger-background-color-hover);
-    }
-
-    &:focus {
-      background-color: var(--button-danger-background-color-active);
-      color: var(--button-special-text-color-active);
-      border: 1px solid var(--button-danger-background-color-active);
-    }
-
-    &.vc-button_disabled,
-    &.vc-button_disabled:hover {
-      cursor: not-allowed;
-      background-color: var(--button-danger-background-color-disabled);
-      color: var(--button-special-text-color-disabled);
-      border: 1px solid var(--button-danger-background-color-disabled);
-    }
-
-    .color-scheme-outline(
-            var(--button-danger-background-color),
-            var(--button-danger-background-color),
-            var(--button-danger-background-color-hover),
-            var(--button-danger-background-color-hover),
-            var(--button-danger-background-color-active),
-            var(--button-danger-background-color-disabled),
-            var(--button-danger-background-color-disabled));
   }
 
   &_widget {
-    height: auto;
-    border: var(--button-widget-border-color);
-    box-shadow: 1px 4px 10px rgba(197, 206, 214, 0.24);
-    border-radius: 4px;
-    padding: 15px;
+    @apply h-auto border-[color:var(--button-widget-border-color)]
+    shadow-[1px_4px_10px_rgba(197,206,214,0.24)]
+    rounded-[4px]
+    p-[15px]
+    hover:bg-[color:var(--button-widget-background-color-hover)]
+    hover:border-[color:var(--button-widget-border-color-hover)]
+    focus:bg-[color:var(--button-widget-background-color-active)]
+    focus:border-[color:var(--button-widget-border-color-active)]
+    disabled:cursor-not-allowed
+    disabled:bg-[color:var(--button-widget-background-color-disabled)]
+    disabled:border-[color:var(--button-widget-background-color-disabled)];
 
     .vc-button__icon {
-      font-size: 30px;
-      color: #a9bfd2;
-    }
-
-    &:hover {
-      background-color: var(--button-widget-background-color-hover);
-      border: 1px solid var(--button-widget-background-color-hover);
-      border: var(--button-widget-border-color-hover);
-    }
-
-    &:focus {
-      background-color: var(--button-widget-background-color-active);
-      border: 1px solid var(--button-widget-background-color-active);
-      border: var(--button-widget-border-color-active);
-    }
-
-    &.vc-button_disabled,
-    &.vc-button_disabled:hover {
-      cursor: not-allowed;
-      background-color: var(--button-widget-background-color-disabled);
-      border: 1px solid var(--button-widget-background-color-disabled);
+      @apply text-[30px] text-[color:#a9bfd2];
     }
   }
 
   &_small {
-    height: var(--button-height-small);
-    padding: var(--button-padding-small);
-    font-weight: var(--font-weight-normal);
-    font-size: var(--font-size-xs);
+    @apply h-[var(--button-height-small)]
+      px-[var(--button-padding-small)]
+      font-normal
+      text-xs;
 
     .vc-button__icon + .vc-button__title {
-      margin-left: var(--margin-xs);
+      @apply ml-xs;
     }
   }
 
   &_outline {
-    background-color: transparent;
-    color: var(--button-secondary-text-color);
-    border: 1px solid var(--button-secondary-border-color);
-
-    &:hover {
-      background-color: transparent;
-      color: var(--button-secondary-text-color-hover);
-      border: 1px solid var(--button-secondary-border-color-hover);
-    }
-
-    &:focus {
-      background-color: transparent;
-      color: var(--button-secondary-text-color-hover);
-      border: 1px solid var(--button-secondary-border-color-active);
-    }
-
-    &.vc-button_disabled,
-    &.vc-button_disabled:hover {
-      cursor: not-allowed;
-      background-color: transparent;
-      color: var(--button-secondary-text-color-disabled);
-      border: 1px solid var(--button-secondary-border-color-disabled);
-    }
+    @apply bg-transparent
+    text-[color:var(--button-secondary-text-color)]
+    border-[color:var(--button-secondary-border-color)]
+    hover:text-[color:var(--button-secondary-text-color-hover)]
+    hover:border-[color:var(--button-secondary-border-color-hover)]
+    focus:text-[color:var(--button-secondary-text-color-hover)]
+    focus:border-[color:var(--button-secondary-border-color-active)]
+    disabled:cursor-not-allowed
+    disabled:text-[color:var(--button-secondary-text-color-disabled)]
+    disabled:border-[color:var(--button-secondary-border-color-disabled)];
   }
 
   &_onlytext {
-    color: var(--button-secondary-text-color);
-    padding: 0;
-    border: none;
-    background-color: transparent;
-    height: auto;
-
-    &:hover {
-      background-color: transparent;
-      color: var(--button-secondary-text-color-hover);
-    }
-
-    &:focus {
-      background-color: transparent;
-      color: var(--button-secondary-text-color-hover);
-    }
+    @apply text-[color:var(--button-secondary-text-color)]
+    p-0 border-none bg-transparent h-auto
+    hover:bg-transparent
+    hover:text-[color:var(--button-secondary-text-color-hover)]
+    focus:bg-transparent
+    focus:text-[color:var(--button-secondary-text-color-hover)];
   }
 
   &_selected {
     &.vc-button_widget {
-      background-color: var(--button-widget-background-color-hover);
-    }
-  }
-
-  .color-scheme-outline(
-    @text-color,
-    @border_color,
-    @text-color-hover,
-    @border-color-hover,
-    @border-color-active,
-    @text-color-disabled,
-    @border-color-disabled) {
-    &.vc-button_outline {
-      background-color: transparent;
-      color: @text-color;
-      border: 1px solid @border_color;
-
-      &:hover {
-        background-color: transparent;
-        color: @text-color-hover;
-        border: 1px solid @border-color-hover;
-      }
-
-      &:focus {
-        background-color: transparent;
-        color: @text-color-hover;
-        border: 1px solid @border-color-active;
-      }
-
-      &.vc-button_disabled,
-      &.vc-button_disabled:hover {
-        cursor: not-allowed;
-        background-color: transparent;
-        color: @text-color-disabled;
-        border: 1px solid @border-color-disabled;
-      }
+      @apply bg-[color:var(--button-widget-background-color-hover)];
     }
   }
 }

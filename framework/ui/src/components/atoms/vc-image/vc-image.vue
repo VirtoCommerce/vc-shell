@@ -4,18 +4,21 @@
       :class="[
         `vc-image_${aspect}`,
         {
-          'vc-image_rounded': rounded,
-          'vc-image_bordered': bordered,
-          'vc-image_clickable': clickable,
+          'rounded-full pb-[var(--image-padding-bottom-1x1)]': rounded,
+          'rounded-[3px] border border-solid border-[color:#efefef]': bordered,
+          'cursor-pointer': clickable,
         },
-        'vc-image_all',
+        'relative',
       ]"
       :style="{
         background: src ? `url(${src}) center / cover no-repeat` : undefined,
       }"
       @click="onClick"
     >
-      <div v-if="!src" class="vc-image_empty">
+      <div
+        v-if="!src"
+        class="absolute w-full h-full flex items-center content-center text-[#83a3be]"
+      >
         <VcIcon icon="fas fa-image" size="xl"></VcIcon>
       </div>
     </div>
@@ -64,7 +67,7 @@ function onClick(): void {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --image-size-xs: 32px;
   --image-size-s: 48px;
@@ -74,80 +77,28 @@ function onClick(): void {
   --image-size-xxl: 145px;
 }
 
+$paddings: (
+  1x1: 100%,
+  16x9: 56.25%,
+  4x3: 75%,
+  3x2: 66.66%,
+);
+
+$sizes: xs, s, m, l, xl, xxl, auto;
+
 .vc-image {
-  display: inline-block;
-  position: relative;
+  @apply inline-block relative;
 
-  &_all {
-    position: relative;
+  @each $name, $padding in $paddings {
+    &_#{$name} {
+      @apply pb-[$padding];
+    }
   }
 
-  &_1x1 {
-    padding-bottom: 100%;
-  }
-
-  &_16x9 {
-    padding-bottom: 56.25%;
-  }
-
-  &_4x3 {
-    padding-bottom: 75%;
-  }
-
-  &_3x2 {
-    padding-bottom: 66.66%;
-  }
-
-  &_auto {
-    width: 100%;
-  }
-
-  &_xs {
-    width: var(--image-size-xs);
-  }
-
-  &_s {
-    width: var(--image-size-s);
-  }
-
-  &_m {
-    width: var(--image-size-m);
-  }
-
-  &_l {
-    width: var(--image-size-l);
-  }
-
-  &_xl {
-    width: var(--image-size-xl);
-  }
-
-  &_xxl {
-    width: var(--image-size-xxl);
-  }
-
-  &_rounded {
-    padding-bottom: var(--image-padding-bottom-1x1);
-    border-radius: 50%;
-  }
-
-  &_bordered {
-    border-radius: 3px;
-    border: 1px solid #efefef;
-  }
-
-  &_clickable {
-    cursor: pointer;
-  }
-
-  &_empty {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #83a3be;
+  @each $size in $sizes {
+    &_#{$size} {
+      @apply w-[--image-size-#{$size}];
+    }
   }
 }
 </style>

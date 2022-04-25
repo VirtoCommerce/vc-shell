@@ -9,16 +9,18 @@
         @change="onChange"
       />
       <span class="vc-checkbox__checkmark"></span>
-      <div v-if="$slots['default']" class="vc-margin-left_s">
+      <div v-if="$slots['default']" class="ml-s">
         <slot></slot>
       </div>
-      <span v-if="required" class="vc-checkbox__required vc-margin-left_xs"
+      <span
+        v-if="required"
+        class="text-[color:var(--checkbox-required-color)] ml-xs"
         >*</span
       >
     </label>
 
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-checkbox__error vc-margin-top_xs">
+      <VcHint class="vc-checkbox__error mt-xs">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -76,7 +78,7 @@ function onChange(e: InputEvent) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --checkbox-size: 14px;
   --checkbox-border-radius: 2px;
@@ -88,22 +90,12 @@ function onChange(e: InputEvent) {
 }
 
 .vc-checkbox {
-  &__input {
-    position: absolute;
-    opacity: 0;
-    z-index: -1;
-    margin: 0;
-  }
-
   &__label {
-    display: inline-flex;
-    user-select: none;
-    cursor: pointer;
-    font-size: var(--font-size-m);
+    @apply inline-flex select-none cursor-pointer text-m;
   }
 
-  &__required {
-    color: var(--checkbox-required-color);
+  &__input {
+    @apply absolute opacity-0 z-[-1] m-0;
   }
 
   &__error {
@@ -111,35 +103,34 @@ function onChange(e: InputEvent) {
   }
 
   &__checkmark {
-    height: var(--checkbox-size);
-  }
+    @apply h-[var(--checkbox-size)];
 
-  &__checkmark:before {
-    content: "";
-    display: inline-block;
-    box-sizing: border-box;
-    width: var(--checkbox-size);
-    height: var(--checkbox-size);
-    flex-shrink: 0;
-    flex-grow: 0;
-    border-radius: var(--checkbox-border-radius);
-    background-repeat: no-repeat;
-    background-position: left top;
-    background-size: auto var(--checkbox-size);
-    background-color: var(--checkbox-background-color);
-    background-image: var(--checkbox-image);
+    &:before {
+      @apply inline-block box-border
+      w-[var(--checkbox-size)]
+      h-[var(--checkbox-size)]
+      shrink-0
+      grow-0
+      rounded-[var(--checkbox-border-radius)]
+      bg-no-repeat
+      bg-left-top
+      bg-[length:auto_var(--checkbox-size)]
+      bg-[color:var(--checkbox-background-color)]
+      bg-[image:var(--checkbox-image)]
+      content-[""];
+    }
   }
 
   &__input:checked ~ &__checkmark:before {
-    background-image: var(--checkbox-image-checked);
+    @apply bg-[image:var(--checkbox-image-checked)];
   }
 
   &_disabled &__checkmark:before {
-    background-color: #fafafa;
+    @apply bg-[#fafafa];
   }
 
   &_disabled &__label {
-    cursor: auto;
+    @apply cursor-auto;
   }
 }
 </style>

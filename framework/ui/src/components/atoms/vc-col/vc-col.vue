@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-col" :style="{ flexGrow: size }">
+  <div class="vc-col flex flex-col min-w-0 basis-0" :style="{ flexGrow: size }">
     <slot></slot>
   </div>
 </template>
@@ -13,15 +13,10 @@ defineProps({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-col {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  flex-basis: 0;
-
   .vc-app_mobile & {
-    flex-grow: 1 !important;
+    @apply grow #{!important};
   }
 }
 </style>

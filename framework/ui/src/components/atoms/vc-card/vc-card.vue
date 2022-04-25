@@ -114,7 +114,7 @@ $variants: success, danger;
   }
 
   &__icon {
-    @apply text-[color:var(--card-header-color)] ml-m;
+    @apply text-[color:var(--card-header-color)] mr-m;
   }
 
   &__collapse {

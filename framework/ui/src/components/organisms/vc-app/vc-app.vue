@@ -221,6 +221,7 @@ watch(
           (props.menuItems as IMenuItems[]).find((item) =>
             item.children?.find(
               (child) =>
+                (child.componentOptions as Record<string, string>) &&
                 (child.componentOptions as Record<string, string>).url === ws
             )
           ) ||

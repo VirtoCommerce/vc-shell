@@ -159,8 +159,8 @@ $variants: primary, secondary, special, danger, widget;
     shadow-[1px_4px_10px_rgba(197,206,214,0.24)]
     rounded-[4px]
     p-[15px]
+    border-[color:var(--button-widget-background-color)]
     hover:bg-[color:var(--button-widget-background-color-hover)]
-    hover:border-[color:var(--button-widget-border-color-hover)]
     focus:bg-[color:var(--button-widget-background-color-active)]
     focus:border-[color:var(--button-widget-border-color-active)]
     disabled:cursor-not-allowed

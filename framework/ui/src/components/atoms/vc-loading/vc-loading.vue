@@ -1,16 +1,20 @@
 <template>
   <div
-    class="vc-loading vc-fill_all"
+    class="absolute items-center justify-center flex-col z-[9998] hidden w-full h-full box-border"
     :class="{
-      'vc-loading_active': active,
+      '!flex backdrop-blur-[3px] bg-[rgba(255, 255, 255, 0.5)]': active,
     }"
   >
-    <div class="vc-loading__animation">
-      <span class="vc-loading__marker"></span>
-      <div class="vc-loading__markers">
-        <span></span>
-        <span></span>
-        <span></span>
+    <div class="relative w-[142px] h-[40px] z-[1]">
+      <span
+        class="absolute w-4 h-4 top-[12px] left-[15px] bg-[#319ed4] rounded-full translate-x-0 animate-loadingMarker"
+      ></span>
+      <div class="translate-x-0 mt-m ml-[31px] animate-loadingMarkers">
+        <span
+          class="block float-left w-4 h-4 bg-[#319ed4] rounded-full ml-l"
+          v-for="(item, i) in 3"
+          :key="i"
+        ></span>
       </div>
     </div>
   </div>
@@ -24,67 +28,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="less">
-.vc-loading {
-  position: absolute;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  display: none;
-  z-index: 9998;
-
-  &_active {
-    display: flex;
-    backdrop-filter: blur(3px);
-    background-color: rgba(255, 255, 255, 0.5);
-  }
-
-  &__animation {
-    position: relative;
-    width: 142px;
-    height: 40px;
-    z-index: 1;
-  }
-
-  &__marker {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    top: 12px;
-    left: 15px;
-    background: #319ed4;
-    border-radius: 50%;
-    transform: translateX(0);
-    animation: "vc-loading__marker" 3s infinite;
-  }
-
-  &__markers {
-    transform: translateX(0);
-    margin-top: 12px;
-    margin-left: 31px;
-    animation: "vc-loading__markers" 3s infinite;
-
-    span {
-      display: block;
-      float: left;
-      width: 16px;
-      height: 16px;
-      margin-left: 16px;
-      background: #319ed4;
-      border-radius: 50%;
-    }
-  }
-}
-
-@keyframes vc-loading__marker {
-  50% {
-    transform: translateX(96px);
-  }
-}
-@keyframes vc-loading__markers {
-  50% {
-    transform: translateX(-31px);
-  }
-}
-</style>

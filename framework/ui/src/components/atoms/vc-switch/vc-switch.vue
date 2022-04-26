@@ -1,10 +1,10 @@
 <template>
   <div>
     <!-- Switch label -->
-    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="mb-s" :required="required">
       <span>{{ label }}</span>
     </VcLabel>
-    <div class="vc-switch">
+    <div class="relative inline-block w-[54px] h-[18px]">
       <label>
         <input
           type="checkbox"
@@ -15,7 +15,7 @@
         />
         <span class="vc-switch__slider"></span>
       </label>
-      <VcHint class="vc-margin-top_s vc-switch__tooltip" v-if="tooltip">
+      <VcHint class="mt-s w-max" v-if="tooltip">
         {{ tooltip }}
       </VcHint>
     </div>
@@ -58,7 +58,7 @@ function onInput(e: InputEvent) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --switch-main-color: #43b0e6;
   --switch-secondary-color: #565656;
@@ -69,77 +69,32 @@ function onInput(e: InputEvent) {
 }
 
 .vc-switch {
-  position: relative;
-  display: inline-block;
-  width: 54px;
-  height: 18px;
-
   &__input {
-    width: 0;
-    height: 0;
-    opacity: 0;
+    @apply w-0 h-0 opacity-0;
 
     &:checked + .vc-switch__slider:before {
-      transform: translateX(29px);
+      @apply translate-x-[29px];
     }
 
     &:checked + .vc-switch__slider {
-      background-color: var(--switch-main-color);
-
-      &:after {
-        background-image: var(--switch-active-icon);
-        background-position: 10px;
-        background-size: 10px 7px;
-      }
+      @apply bg-[color:var(--switch-main-color)] after:bg-[image:var(--switch-active-icon)] after:bg-[position:10px] after:bg-[length:10px_7px];
     }
 
     &:disabled + .vc-switch__slider {
-      background-color: var(--switch-secondary-color);
+      @apply bg-[color:var(--switch-secondary-color)];
     }
   }
 
   &__slider {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: var(--switch-secondary-color);
-    border-radius: 3px;
-    cursor: pointer;
-    transition: var(--switch-transition);
+    @apply absolute top-0 right-0 bottom-0 left-0 bg-[color:var(--switch-secondary-color)] rounded-[3px] cursor-pointer transition duration-200;
 
     &:after {
-      display: inline-block;
-      width: 100%;
-      height: 100%;
-      background-image: var(--switch-disabled-icon);
-      background-position: calc(100% - 11px);
-      background-repeat: no-repeat;
-      background-size: 8px 8px;
-      content: "";
+      @apply inline-block w-full h-full bg-[image:var(--switch-disabled-icon)] bg-[position:calc(100%-11px)] bg-no-repeat bg-[length:8px_8px] content-[""];
     }
 
     &:before {
-      position: absolute;
-      bottom: 1px;
-      left: 1px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 23px;
-      height: 16px;
-      background-color: #fff;
-      border-radius: 2px;
-      color: #d2d2d2;
-      font-size: 10px;
-      transition: var(--switch-transition);
-      content: "|||";
+      @apply absolute bottom-px left-px flex justify-center items-center w-[23px] h-[16px] bg-white rounded-sm text-[color:#d2d2d2] text-[10px] transition duration-200 content-["|||"];
     }
-  }
-
-  &__tooltip {
-    width: max-content;
   }
 }
 </style>

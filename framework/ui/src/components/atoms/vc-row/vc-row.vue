@@ -1,13 +1,11 @@
 <template>
-  <div class="vc-row vc-flex vc-flex-align_stretch">
+  <div class="vc-row flex-nowrap flex items-stretch">
     <slot></slot>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 .vc-row {
-  flex-wrap: nowrap;
-
   .vc-app_mobile & {
     display: block;
   }

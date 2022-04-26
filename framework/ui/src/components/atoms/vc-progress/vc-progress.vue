@@ -1,6 +1,14 @@
 <template>
-  <div :class="['vc-progress', variant]">
-    <div class="vc-progress__value" :style="`width: ${value}%`"></div>
+  <div
+    :class="[
+      'border border-[length:var(--progressbar-border-width)] border-[color:var(--progressbar-border-color)] rounded-[var(--progressbar-border-radius)] h-[var(--progressbar-height)] transition duration-200 box-border bg-[color:var(--progressbar-background-color)]',
+      variant,
+    ]"
+  >
+    <div
+      class="bg-[color:var(--progressbar-foreground-color)] transition duration-200 h-full"
+      :style="`width: ${value}%`"
+    ></div>
   </div>
 </template>
 
@@ -19,7 +27,7 @@ defineProps({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --progressbar-height: 16px;
   --progressbar-border-radius: 2px;
@@ -39,19 +47,6 @@ defineProps({
 }
 
 .vc-progress {
-  border: var(--progressbar-border-width) solid var(--progressbar-border-color);
-  border-radius: var(--progressbar-border-radius);
-  height: var(--progressbar-height);
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-  background-color: var(--progressbar-background-color);
-
-  &__value {
-    background-color: var(--progressbar-foreground-color);
-    transition: all 0.2s ease;
-    height: 100%;
-  }
-
   &.striped {
     .vc-progress__value {
       background: linear-gradient(

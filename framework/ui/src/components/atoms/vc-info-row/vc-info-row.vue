@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-info-row">
+  <div class="mb-[11px] last-of-type:mb-0">
     <VcRow>
       <VcCol>
         <VcLabel>
@@ -8,7 +8,7 @@
         </VcLabel>
       </VcCol>
       <VcCol size="2">
-        <p class="vc-info-row__value" v-if="type === 'default'">{{ value }}</p>
+        <p class="m-0" v-if="type === 'default'">{{ value }}</p>
         <VcLink v-else-if="type === 'email'">{{ value }}</VcLink>
       </VcCol>
     </VcRow>
@@ -42,17 +42,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="less" scoped>
-.vc-info-row {
-  margin-bottom: 11px;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
-
-  &__value {
-    margin: 0;
-  }
-}
-</style>

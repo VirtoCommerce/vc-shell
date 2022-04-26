@@ -189,6 +189,7 @@ $variants: primary, secondary, special, danger, widget;
     border-[color:var(--button-secondary-border-color)]
     hover:text-[color:var(--button-secondary-text-color-hover)]
     hover:border-[color:var(--button-secondary-border-color-hover)]
+    hover:bg-transparent
     focus:text-[color:var(--button-secondary-text-color-hover)]
     focus:border-[color:var(--button-secondary-border-color-active)]
     disabled:cursor-not-allowed

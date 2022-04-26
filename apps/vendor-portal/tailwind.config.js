@@ -29,6 +29,27 @@ module.exports = {
                 "l": "16px",
                 "xl": "20px",
             },
+            keyframes: {
+                loadingMarker: {
+                    '50%': {transform: 'translateX(96px)'}
+                },
+                loadingMarkers: {
+                    '50%': {transform: 'translateX(-31px)'}
+                },
+                loadingProgress: {
+                    from: {
+                        "background-position": '0 0, left'
+                    },
+                    to: {
+                        "background-position": '30px 0, left'
+                    }
+                }
+            },
+            animation: {
+                loadingMarker: "loadingMarker 3s infinite",
+                loadingMarkers: "loadingMarkers 3s infinite",
+                loadingProgress: "loadingProgress 1s linear infinite"
+            }
         },
     },
 

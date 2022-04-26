@@ -17,7 +17,7 @@
     >
       <div
         v-if="!src"
-        class="absolute w-full h-full flex items-center content-center text-[#83a3be]"
+        class="absolute w-full h-full flex items-center justify-center text-[#83a3be]"
       >
         <VcIcon icon="fas fa-image" size="xl"></VcIcon>
       </div>
@@ -91,13 +91,13 @@ $sizes: xs, s, m, l, xl, xxl, auto;
 
   @each $name, $padding in $paddings {
     &_#{$name} {
-      @apply pb-[$padding];
+      @apply pb-[#{$padding}];
     }
   }
 
   @each $size in $sizes {
     &_#{$size} {
-      @apply w-[--image-size-#{$size}];
+      @apply w-[var(--image-size-#{$size})];
     }
   }
 }

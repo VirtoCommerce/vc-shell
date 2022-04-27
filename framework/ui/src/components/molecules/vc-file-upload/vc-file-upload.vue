@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-file-upload vc-padding_l vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+    class="relative h-[145px] box-border border border-dashed border-[#c8dbea] rounded-[6px] p-2 p-4 flex flex-col items-center justify-center"
     :class="`vc-file-upload_${variant}`"
     @drop.stop.prevent="onDrop"
     @drag.stop.prevent
@@ -12,12 +12,12 @@
   >
     <VcLoading :active="loading"></VcLoading>
     <VcIcon
-      class="vc-file-upload__icon"
+      class="text-[#c8dbea]"
       icon="fas fa-cloud-upload-alt"
       size="xxl"
     ></VcIcon>
 
-    <div class="vc-file-upload__label vc-margin-top_l">
+    <div class="text-[#9db0be] text-center text-lg leading-lg mt-4">
       <span>Drag and drop file here or</span>&nbsp;
       <br />
       <VcLink @click="toggleUploader">browse your files</VcLink>
@@ -38,7 +38,7 @@ import { ref } from "vue";
 defineProps({
   variant: {
     type: String,
-    enum: ["gallery", "import"],
+    enum: ["gallery", "file-upload"],
     default: "gallery",
   },
 
@@ -79,35 +79,15 @@ function onDrop(event: DragEvent) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-file-upload {
-  position: relative;
-  height: 145px;
-  box-sizing: border-box;
-  border: 1px dashed #c8dbea;
-  border-radius: 6px;
-  padding: var(--padding-s);
-
-  &__icon {
-    color: #c8dbea;
-  }
-
-  &__label {
-    color: #9db0be;
-    text-align: center;
-    font-size: var(--font-size-l);
-    line-height: var(--line-height-l);
-  }
-
   // variants
   &_gallery {
-    width: 155px;
-    height: 155px;
+    @apply w-[155px] h-[155px];
   }
 
   &_file-upload {
-    width: 100%;
-    background-color: #f2f8fd;
+    @apply w-full bg-[#f2f8fd];
   }
 }
 </style>

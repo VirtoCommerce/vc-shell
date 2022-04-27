@@ -1,6 +1,6 @@
 <template>
   <div
-    class="inline-block rounded-[var(--badge-border-radius)] py-[4px] px-[8px] text-m font-normal bg-[color:var(--badge-background-color)] text-[color:var(--badge-text-color)] border border-solid border-[color:var(--badge-border-color)] transition duration-200"
+    class="inline-block rounded-[var(--badge-border-radius)] py-1 px-2 text-base font-normal bg-[color:var(--badge-background-color)] text-[color:var(--badge-text-color)] border border-solid border-[color:var(--badge-border-color)] transition duration-200"
     :class="{
       'bg-[color:var(--badge-background-color-active)] text-[color:var(--badge-text-color-active)] border-[color:var(--badge-border-color-active)]':
         active,

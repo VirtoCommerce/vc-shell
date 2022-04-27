@@ -8,7 +8,7 @@ module.exports = {
         fontSize: {
             "xs": "11px",
             "sm": "12px",
-            "m": "13px",
+            "base": "13px",
             "lg": "14px",
             "xl": "16px",
             "2xl": "23px",
@@ -16,19 +16,12 @@ module.exports = {
         lineHeight: {
             "xs": "14px",
             "sm": "16px",
-            "m": "18px",
+            "base": "18px",
             "lg": "19px",
             "xl": "22px",
             "header": "28px"
         },
         extend: {
-            spacing: {
-                "xs": "4px",
-                "s": "8px",
-                "m": "12px",
-                "l": "16px",
-                "xl": "20px",
-            },
             keyframes: {
                 loadingMarker: {
                     '50%': {transform: 'translateX(96px)'}

@@ -1,9 +1,5 @@
 module.exports = {
     content: ["./src/components/**/*.{vue,js,ts,jsx,tsx}"],
-  theme: {
-      corePlugins: {
-          preflight: false,
-      }
-  },
+    theme: {},
     plugins: [require("@tailwindcss/line-clamp")],
 }

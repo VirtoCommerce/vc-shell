@@ -7,7 +7,7 @@
     }"
   >
     <!-- Textarea label -->
-    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="mb-s" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -121,7 +121,7 @@ function onInput(e: InputEvent) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --textarea-height: 120px;
   --textarea-border-color: #d3dbe9;
@@ -133,49 +133,40 @@ function onInput(e: InputEvent) {
 
 .vc-textarea {
   &__field-wrapper {
-    border: 1px solid var(--textarea-border-color);
-    border-radius: var(--textarea-border-radius);
-    box-sizing: border-box;
-    background-color: var(--textarea-background-color);
+    @apply border border-solid
+      border-[color:var(--textarea-border-color)]
+      rounded-[var(--textarea-border-radius)]
+      box-border
+      bg-[color:var(--textarea-background-color)];
   }
 
   &_error &__field-wrapper {
-    border: 1px solid var(--textarea-border-color-error);
+    @apply border border-solid border-[color:var(--textarea-border-color-error)];
   }
 
   &__error {
-    color: var(--textarea-border-color-error);
+    @apply text-[color:var(--textarea-border-color-error)];
   }
 
   &__field {
-    width: 100%;
-    resize: vertical;
-    box-sizing: border-box;
-    border: none;
-    outline: none;
-    min-height: var(--textarea-height);
+    @apply w-full resize-y box-border border-none outline-none min-h-[var(--textarea-height)] placeholder:text-[color:var(--textarea-placeholder-color)];
 
     &::-webkit-input-placeholder {
-      color: var(--textarea-placeholder-color);
+      @apply text-[color:var(--textarea-placeholder-color)];
     }
 
     &::-moz-placeholder {
-      color: var(--textarea-placeholder-color);
+      @apply text-[color:var(--textarea-placeholder-color)];
     }
 
     &::-ms-placeholder {
-      color: var(--textarea-placeholder-color);
-    }
-
-    &::placeholder {
-      color: var(--textarea-placeholder-color);
+      @apply text-[color:var(--textarea-placeholder-color)];
     }
   }
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    background-color: #fafafa;
-    color: #424242;
+    @apply bg-[#fafafa] text-[#424242];
   }
 }
 </style>

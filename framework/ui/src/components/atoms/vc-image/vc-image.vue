@@ -84,7 +84,7 @@ $paddings: (
   3x2: 66.66%,
 );
 
-$sizes: xs, s, m, l, xl, xxl, auto;
+$aspects: xs, s, m, l, xl, xxl;
 
 .vc-image {
   @apply inline-block relative;
@@ -95,10 +95,14 @@ $sizes: xs, s, m, l, xl, xxl, auto;
     }
   }
 
-  @each $size in $sizes {
-    &_#{$size} {
-      @apply w-[var(--image-size-#{$size})];
+  @each $aspect in $aspects {
+    &_#{$aspect} {
+      @apply w-[var(--image-size-#{$aspect})];
     }
+  }
+
+  &_auto {
+    @apply w-full;
   }
 }
 </style>

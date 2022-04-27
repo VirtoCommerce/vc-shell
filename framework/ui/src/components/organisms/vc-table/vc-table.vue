@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-table-wrapper vc-flex vc-flex-column vc-flex-grow_1">
+  <div class="relative overflow-hidden flex flex-col grow">
     <!-- Header slot with filter and searchbar -->
     <slot
       name="header"
@@ -49,7 +49,7 @@
       </div>
     </slot>
 
-    <div class="vc-table-wrapper__inner">
+    <div class="flex relative overflow-hidden grow">
       <!-- Table loading overlay -->
       <VcLoading :active="loading"></VcLoading>
 
@@ -82,7 +82,7 @@
         <!-- Desktop table view -->
         <table
           v-else
-          class="vc-table vc-fill_width"
+          class="[border-spacing:0] border-collapse relative pt-[43px] table-fixed box-border w-full"
           :class="{
             'vc-table_empty': !items || !items.length,
             'vc-table_multiselect': multiselect,
@@ -90,7 +90,11 @@
         >
           <thead v-if="columns" class="vc-table__header">
             <tr class="vc-table__header-row">
-              <th v-if="multiselect" class="vc-table__header-cell" width="50">
+              <th
+                v-if="multiselect"
+                class="h-[42px] bg-[#f9f9f9] !border-0 shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] box-border sticky top-0 select-none overflow-hidden z-[1]"
+                width="50"
+              >
                 <div
                   class="vc-flex vc-flex-justify_center vc-flex-align_center"
                 >
@@ -104,9 +108,9 @@
               <th
                 v-for="item in columns"
                 :key="item.id"
-                class="vc-table__header-cell vc-padding-horizontal_m"
+                class="h-[42px] bg-[#f9f9f9] !border-0 shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] box-border sticky top-0 select-none overflow-hidden z-[1] px-3"
                 :class="{
-                  'vc-table__header-cell_sortable': item.sortable,
+                  'cursor-pointer': item.sortable,
                 }"
                 :width="item.width"
                 @click="$emit('headerClick', item)"
@@ -132,7 +136,7 @@
                 </div>
               </th>
               <th
-                class="vc-table__header-cell"
+                class="h-[42px] bg-[#f9f9f9] !border-0 shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] box-border sticky top-0 select-none overflow-hidden z-[1]"
                 width="44"
                 v-if="itemActionBuilder"
               ></th>
@@ -143,11 +147,11 @@
             <tr
               v-for="(item, i) in items"
               :key="item.id"
-              class="vc-table__body-row"
+              class="vc-table__body-row h-[60px] bg-white hover:bg-[#dfeef9]"
               :class="{
-                'vc-table__body-row_clickable': $attrs.onItemClick,
-                'vc-table__body-row_even': i % 2 === 1,
-                'vc-table__body-row_selected':
+                'cursor-pointer hover:bg-[#dfeef9]': $attrs.onItemClick,
+                'bg-[#f8f8f8]': i % 2 === 1,
+                'bg-[#dfeef9] hover:bg-[#dfeef9]':
                   item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
@@ -168,7 +172,7 @@
               <td
                 v-for="cell in columns"
                 :key="`${item.id}_${cell.id}`"
-                class="vc-table__body-cell vc-padding-horizontal_m"
+                class="box-border overflow-hidden px-3"
                 :class="cell.class"
                 :width="cell.width"
               >
@@ -177,15 +181,15 @@
                 </slot>
               </td>
               <td
-                class="vc-table__body-cell vc-table__body-cell_overflow"
+                class="box-border overflow-hidden px-3 overflow-visible"
                 width="44"
                 v-if="itemActionBuilder"
               >
                 <div
-                  class="vc-table__body-actions-container vc-flex vc-flex-justify_center vc-flex-align_center"
+                  class="vc-table__body-actions-container relative !hidden flex justify-center items-center"
                 >
                   <button
-                    class="vc-table__body-actions"
+                    class="text-[#319ed4] cursor-pointer border-none bg-transparent disabled:text-[gray]"
                     @click.stop="showActions(item, i)"
                     :ref="setActionToggleRefs"
                     aria-describedby="tooltip"
@@ -194,24 +198,28 @@
                     <VcIcon icon="fas fa-cog" size="m" />
                   </button>
                   <div
-                    class="vc-table__body-tooltip"
+                    class="vc-table__body-tooltip bg-white rounded-l-[4px] p-[15px] z-0 absolute right-0 drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
                     v-show="selectedRow === item.id"
                     @mouseleave="closeActions"
                     :ref="setTooltipRefs"
                     role="tooltip"
                   >
-                    <div class="vc-table__body-actions-items">
+                    <div
+                      class="flex items-center flex-row text-[#3f3f3f] font-normal not-italic text-base leading-[20px] gap-[25px]"
+                    >
                       <div
                         v-for="(itemAction, i) in itemActions"
                         :key="i"
                         :class="[
-                          'vc-table__body-actions-item',
+                          'flex flex-row items-center text-[#319ed4] cursor-pointer',
                           `vc-table__body-actions-item_${itemAction.variant}`,
                         ]"
                         @click.stop="itemAction.clickHandler(item)"
                       >
                         <VcIcon :icon="itemAction.icon" size="m" />
-                        <div class="vc-table__body-actions-item-title">
+                        <div
+                          class="not-italic font-normal text-base leading-[20px] text-[#3f3f3f] ml-[7px]"
+                        >
                           {{ itemAction.title }}
                         </div>
                       </div>
@@ -253,7 +261,7 @@
             class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
           >
             <img v-if="empty.image" :src="empty.image" />
-            <div class="vc-margin_l vc-table__empty-text">{{ empty.text }}</div>
+            <div class="m-4 text-xl font-medium">{{ empty.text }}</div>
             <VcButton v-if="empty.action" @click="empty.clickHandler">
               {{ empty.action }}
             </VcButton>
@@ -268,7 +276,7 @@
       v-if="($slots['footer'] || footer) && items && items.length"
     >
       <div
-        class="vc-table__footer vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
+        class="bg-[#fbfdfe] border-t border-solid border-[#eaedf3] flex-shrink-0 flex items-center justify-between p-4"
       >
         <!-- Table pagination -->
         <VcPagination
@@ -524,192 +532,41 @@ function handleSwipe(id: string) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
+$variants: (
+  danger: #ff4a4a,
+  success: #87b563,
+);
+
 .vc-table {
-  border-spacing: 0;
-  border-collapse: collapse;
-  position: relative;
-  padding-top: 43px;
-  table-layout: fixed;
-
-  &-wrapper {
-    position: relative;
-    overflow: hidden;
-
-    &__inner {
-      display: flex;
-      position: relative;
-      overflow: hidden;
-      flex-grow: 1;
-    }
-  }
-
-  &__header {
-    &-cell {
-      height: 42px;
-      background-color: #f9f9f9;
-      border: 0 !important;
-      box-shadow: inset 0px 1px 0px #eaedf3, inset 0px -1px 0px #eaedf3;
-      box-sizing: border-box;
-      position: sticky;
-      top: 0;
-      user-select: none;
-      overflow: hidden;
-      z-index: 1;
-
-      &_sortable {
-        cursor: pointer;
-      }
-    }
-  }
-
   &__body {
-    &-row {
-      height: 60px;
-      background-color: #ffffff;
+    &-row:hover .vc-table__body-actions-container {
+      @apply flex #{!important};
+    }
 
-      &_even {
-        background-color: #f8f8f8;
-      }
-
-      &_selected,
-      &_selected:hover {
-        background-color: #dfeef9;
-      }
-
-      &_clickable {
-        cursor: pointer;
-
-        &:hover {
-          background-color: #dfeef9;
+    &-actions-item {
+      @each $name, $variant in $variants {
+        &_#{$name} {
+          @apply text-[#{$variant}];
         }
       }
     }
 
-    &-row:hover &-cell_bordered {
-      border-right: 1px solid #bdd1df;
-    }
-
-    &-row:hover .vc-table__body-actions-container {
-      display: flex !important;
-    }
-
-    &-row:hover {
-      background-color: #dfeef9;
-    }
-
-    &-cell {
-      box-sizing: border-box;
-      overflow: hidden;
-
-      &_bordered {
-        border-right: 1px solid #eaedf3;
-      }
-
-      &_overflow {
-        overflow: visible;
-      }
-    }
-
-    &-actions-container {
-      position: relative;
-      display: none !important;
-    }
-
-    &-actions {
-      color: #319ed4;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-
-      &:disabled {
-        color: gray;
-      }
-    }
-
-    &-actions-item {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      color: #319ed4;
-      cursor: pointer;
-
-      &_danger {
-        color: #ff4a4a;
-      }
-
-      &_success {
-        color: #87b563;
-      }
-    }
-
-    &-actions-items {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      color: #3f3f3f;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 13px;
-      line-height: 20px;
-      gap: 25px;
-    }
-
-    &-actions-item-title {
-      font-style: normal;
-      font-weight: normal;
-      font-size: 13px;
-      line-height: 20px;
-      color: #3f3f3f;
-      margin-left: 7px;
-    }
-
-    &-tooltip {
-      background: #ffffff;
-      border-radius: 4px 0 0 4px;
-      padding: 15px;
-      z-index: 0;
-      position: absolute;
-      right: 0;
-      filter: drop-shadow(1px 3px 14px rgba(111, 122, 131, 0.25));
-    }
-
     &-tooltip-arrow,
     &-tooltip-arrow:before {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: inherit;
+      @apply absolute w-2 h-2 bg-inherit;
     }
 
     &-tooltip-arrow {
-      visibility: hidden;
-    }
-
-    &-tooltip-arrow:before {
-      visibility: visible;
-      content: "";
-      transform: rotate(45deg);
+      @apply invisible before:visible before:content-[""] before:rotate-45;
     }
 
     &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
-      bottom: -5px;
+      @apply bottom-[-5px];
     }
 
     &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
-      top: -5px;
-    }
-  }
-
-  &__footer {
-    background-color: #fbfdfe;
-    border-top: 2px solid #eaedf3;
-  }
-
-  &__empty {
-    &-text {
-      font-size: var(--font-size-xl);
-      font-weight: var(--font-weight-medium);
+      @apply top-[-5px];
     }
   }
 }

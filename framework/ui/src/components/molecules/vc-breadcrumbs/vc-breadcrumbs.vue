@@ -1,5 +1,5 @@
 <template>
-  <div v-if="items" class="vc-breadcrumbs">
+  <div v-if="items" class="flex items-center flex-nowrap">
     <VcBreadcrumbsItem
       v-for="(item, i) in items"
       :key="item.id"
@@ -19,11 +19,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="less">
-.vc-breadcrumbs {
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-}
-</style>

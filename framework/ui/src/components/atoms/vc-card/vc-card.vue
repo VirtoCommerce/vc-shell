@@ -100,7 +100,7 @@ $variants: success, danger;
   flex-grow flex flex-col;
 
   &__header {
-    @apply bg-[color:var(--card-header-background)] px-l py-m flex items-center content-between w-full box-border;
+    @apply bg-[color:var(--card-header-background)] px-4 py-3 flex items-center content-between w-full box-border;
   }
 
   &_collapsable &__header {
@@ -110,15 +110,15 @@ $variants: success, danger;
   &__title {
     @apply uppercase flex-grow
     text-[color:var(--card-header-color)]
-    text-m font-bold uppercase;
+    text-base font-bold uppercase;
   }
 
   &__icon {
-    @apply text-[color:var(--card-header-color)] mr-m;
+    @apply text-[color:var(--card-header-color)] mr-3;
   }
 
   &__collapse {
-    @apply text-[color:var(--card-header-color)] ml-m;
+    @apply text-[color:var(--card-header-color)] ml-3;
   }
 
   &__body {

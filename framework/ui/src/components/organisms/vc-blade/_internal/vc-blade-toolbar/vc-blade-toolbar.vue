@@ -4,7 +4,7 @@
     class="h-[var(--blade-toolbar-height)] bg-[color:var(--blade-toolbar-background-color)] border-b-[color:#eaedf3] border-solid border-b flex box-border w-full content-center items-stretch shrink-0"
     :class="{ '!h-[var(--blade-toolbar-height-expanded)]': isExpanded }"
   >
-    <div class="grow flex content-start items-center overflow-x-auto px-s">
+    <div class="grow flex content-start items-center overflow-x-auto px-2">
       <template v-for="item in items" :key="item.id">
         <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
@@ -14,7 +14,7 @@
       </template>
     </div>
     <VcIcon
-      class="self-center justify-self-center text-[#a1c0d4] cursor-pointer mr-l hover:text-[#7ea8c4]"
+      class="self-center justify-self-center text-[#a1c0d4] cursor-pointer mr-4 hover:text-[#7ea8c4]"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
       @click="toggleToolbar"
     ></VcIcon>

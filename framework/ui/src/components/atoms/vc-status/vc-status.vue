@@ -62,7 +62,7 @@ defineProps({
 $variants: info, warning, danger, success, light-danger;
 
 .vc-status {
-  @apply inline-block rounded-[var(--status-border-radius)] py-[4px] px-[14px] text-m font-normal whitespace-nowrap;
+  @apply inline-block rounded-[var(--status-border-radius)] py-1 px-3.5 text-base font-normal whitespace-nowrap;
 
   @each $variant in $variants {
     &_#{$variant} {

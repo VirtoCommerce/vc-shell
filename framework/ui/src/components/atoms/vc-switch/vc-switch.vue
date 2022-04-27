@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Switch label -->
-    <VcLabel v-if="label" class="mb-s" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="required">
       <span>{{ label }}</span>
     </VcLabel>
     <div class="relative inline-block w-[54px] h-[18px]">

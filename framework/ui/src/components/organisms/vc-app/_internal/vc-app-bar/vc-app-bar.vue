@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex items-center content-between h-[var(--app-bar-height)] bg-[color:var(--app-bar-background-color)] pl-l"
+    class="relative flex items-center content-between h-[var(--app-bar-height)] bg-[color:var(--app-bar-background-color)] pl-4"
   >
     <!-- Logo container for mobile devices -->
     <template v-if="$isMobile.value">
@@ -70,7 +70,7 @@
           <!-- Otherwise draw default toolbar button -->
           <div
             v-else
-            class="relative flex items-center content-center w-[var(--app-bar-button-width)] border-l border-solid border-[color:var(--app-bar-button-border-color)] cursor-pointer text-[color: var(--app-bar-button-color)] bg-[color:var(--app-bar-button-background-color)] transition-[color] duration-200 hover:text-[color:var(--app-bar-button-color-hover)] hover:bg-[color:var(--app-bar-button-background-color-hover)]"
+            class="relative flex items-center justify-center w-[var(--app-bar-button-width)] border-l border-solid border-[color:var(--app-bar-button-border-color)] cursor-pointer text-[color: var(--app-bar-button-color)] bg-[color:var(--app-bar-button-background-color)] transition-[color] duration-200 hover:text-[color:var(--app-bar-button-color-hover)] hover:bg-[color:var(--app-bar-button-background-color-hover)]"
             :class="{ 'vc-app-bar__button_accent': item.isAccent }"
             :title="item.title"
             @click="$emit('button:click', item)"
@@ -87,7 +87,7 @@
     <!-- Show menu toggler on mobile devices -->
     <div
       v-if="$isMobile.value"
-      class="text-[#319ed4] w-[var(--app-bar-button-width)] flex items-center content-center h-full box-border"
+      class="text-[#319ed4] w-[var(--app-bar-button-width)] flex items-center justify-center h-full box-border"
       @click="$emit('menubutton:click')"
     >
       <VcIcon icon="fas fa-bars"></VcIcon>

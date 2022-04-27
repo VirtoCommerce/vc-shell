@@ -9,14 +9,14 @@
     ]"
   >
     <!-- Editor label -->
-    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="mb-s" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
     </VcLabel>
 
     <!-- Editor field -->
     <v-ace-editor
-      class="vc-editor__field"
+      class="border border-solid border-[color:var(--editor-border-color)] rounded-[var(--editor-border-radius)]"
       v-model:value="value"
       lang="html"
       theme="chrome"
@@ -24,7 +24,7 @@
       @input="onInput"
     />
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-editor__error vc-margin-top_xs">
+      <VcHint class="vc-editor__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -121,7 +121,7 @@ watch(
 );
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --editor-border-radius: 3px;
   --editor-border-color: #d3dbe9;
@@ -130,17 +130,12 @@ watch(
 }
 
 .vc-editor {
-  &__field {
-    border: 1px solid var(--editor-border-color);
-    border-radius: var(--editor-border-radius);
-  }
-
   &__error {
-    color: var(--editor-border-color-error);
+    @apply text-[color:var(--editor-border-color-error)] mt-1;
   }
 
   &_error .ace_editor {
-    border: 1px solid var(--editor-border-color-error);
+    @apply border border-solid border-[color:var(--editor-border-color-error)];
   }
 }
 </style>

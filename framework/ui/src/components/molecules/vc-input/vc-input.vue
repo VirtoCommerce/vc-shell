@@ -11,15 +11,15 @@
     ]"
   >
     <!-- Input label -->
-    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
     </VcLabel>
 
     <!-- Input field -->
-    <div class="vc-input__field-wrapper vc-flex vc-flex-align_stretch">
+    <div class="vc-input__field-wrapper">
       <input
-        class="vc-input__field vc-flex-grow_1 vc-padding-left_m"
+        class="vc-input__field"
         :placeholder="placeholder"
         :type="internalType"
         :value="calcValue"
@@ -29,10 +29,7 @@
       />
 
       <!-- Dropdown button -->
-      <div
-        v-if="options && options.length"
-        class="vc-input__dropdown-wrap vc-padding-horizontal_m vc-flex vc-flex-align_center"
-      >
+      <div v-if="options && options.length" class="vc-input__dropdown-wrap">
         <div
           @click="showDrop"
           aria-describedby="tooltip"
@@ -81,14 +78,14 @@
       <!-- Input clear button -->
       <div
         v-if="clearable && modelValue && !disabled && type !== 'password'"
-        class="vc-input__clear vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="vc-input__clear"
         @click="onReset"
       >
         <VcIcon size="s" icon="fas fa-times"></VcIcon>
       </div>
 
       <div
-        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="vc-input__showhide"
         v-if="type === 'password' && internalType === 'password'"
         @click="internalType = 'text'"
       >
@@ -96,7 +93,7 @@
       </div>
 
       <div
-        class="vc-input__showhide vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="vc-input__showhide"
         v-if="type === 'password' && internalType === 'text'"
         @click="internalType = 'password'"
       >
@@ -105,12 +102,12 @@
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-input__error vc-margin-top_xs">
+      <VcHint class="vc-input__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
     <slot v-if="fieldDescription" name="error">
-      <VcHint class="vc-input__desc vc-margin-top_xs">
+      <VcHint class="vc-input__desc">
         {{ fieldDescription }}
       </VcHint>
     </slot>
@@ -390,7 +387,7 @@ function onReset() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --input-height: 38px;
   --input-border-radius: 3px;
@@ -403,160 +400,102 @@ function onReset() {
 }
 
 .vc-input {
-  overflow: hidden;
+  @apply overflow-hidden;
 
   &_date,
   &_datetime-local {
-    max-width: 220px;
+    @apply max-w-[220px];
 
     .vc-app_mobile & {
-      max-width: 100%;
+      @apply max-w-full;
     }
   }
 
   &__field-wrapper {
-    border: 1px solid var(--input-border-color);
-    border-radius: var(--input-border-radius);
-    background-color: var(--input-background-color);
+    @apply border border-solid border-[color:var(--input-border-color)]
+    rounded-[var(--input-border-radius)]
+    bg-[color:var(--input-background-color)] flex items-stretch;
   }
 
   &_error &__field-wrapper {
-    border: 1px solid var(--input-border-color-error);
+    @apply border border-solid border-[color:var(--input-border-color-error)];
   }
 
   &__error {
-    color: var(--input-border-color-error);
+    @apply text-[color:var(--input-border-color-error)] mt-1;
   }
 
   &__desc {
-    color: ver(--multivalue-placeholder-color);
-    margin: 5px 0 0;
-    word-wrap: break-word;
-    word-break: break-word;
-    padding: 0;
+    @apply text-[color:var(--multivalue-placeholder-color)] mt-1 break-words p-0;
   }
 
   &__field {
-    border: none;
-    outline: none;
-    height: var(--input-height);
-    min-width: 0;
-    box-sizing: border-box;
+    @apply border-none outline-none h-[var(--input-height)] min-w-0 box-border grow pl-3;
 
     &::-webkit-input-placeholder {
-      color: var(--input-placeholder-color);
+      @apply text-[color:var(--input-placeholder-color)];
     }
 
     &::-moz-placeholder {
-      color: var(--input-placeholder-color);
+      @apply text-[color:var(--input-placeholder-color)];
     }
 
     &::-ms-placeholder {
-      color: var(--input-placeholder-color);
+      @apply text-[color:var(--input-placeholder-color)];
     }
 
     &::placeholder {
-      color: var(--input-placeholder-color);
+      @apply text-[color:var(--input-placeholder-color)];
     }
   }
 
   &__clear {
-    cursor: pointer;
-    color: var(--input-clear-color);
-
-    &:hover {
-      color: var(--input-clear-color-hover);
-    }
+    @apply cursor-pointer text-[color:var(--input-clear-color)] hover:text-[color:var(--input-clear-color-hover)] px-3 flex items-center;
   }
 
   &__showhide {
-    cursor: pointer;
-    color: var(--input-placeholder-color);
-
-    &:hover {
-      color: var(--input-clear-color-hover);
-    }
+    @apply cursor-pointer text-[color:var(--input-placeholder-color)] hover:text-[color:var(--input-clear-color-hover)] px-3 flex items-center;
   }
 
   &__dropdown-wrap {
-    position: relative;
+    @apply relative px-3 flex items-center;
   }
 
   &__dropdown-btn {
-    color: var(--input-clear-color);
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 20px;
-    cursor: pointer;
+    @apply text-[color:var(--input-clear-color)] not-italic font-medium text-[13px] leading-[20px] cursor-pointer;
 
     &_disabled {
-      color: #7e8e9d;
-      cursor: default;
+      @apply text-[#7e8e9d] cursor-default;
     }
   }
 
   &__dropdown {
-    position: absolute;
-    background: #ffffff;
-    box-shadow: 1px 1px 11px rgba(141, 152, 163, 0.6);
-    border-radius: 3px;
-    padding: 11px;
-    width: 120px;
-    box-sizing: border-box;
+    @apply absolute bg-white shadow-[1px_1px_11px_rgba(141,152,163,0.6)] rounded-[3px] p-[11px] w-[120px] box-border;
   }
 
   &__dropdown-title {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 20px;
-    color: #333333;
-    padding: 0;
-    margin: 0 0 7px;
+    @apply not-italic font-normal text-base leading-[20px] text-[#333333] p-0 mb-[7px];
   }
 
   &__dropdown-search {
-    background: #ffffff;
-    border: 1px solid #eaecf2;
-    box-sizing: border-box;
-    border-radius: 4px;
-    height: 32px;
-    width: 100%;
-    outline: none;
-    padding-left: var(--padding-s);
-    padding-right: var(--padding-s);
+    @apply bg-white border border-solid border-[#eaecf2] box-border rounded-[4px] h-8 w-full outline-none px-2;
   }
 
   &__dropdown-list {
-    list-style: none;
-    padding: 0;
-    margin: 8px 0 0;
+    @apply list-none p-0 mt-2;
   }
 
   &__dropdown-selector {
-    border: none;
-    background: transparent;
-    padding: 9px;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-    size: var(--font-size-l);
-    border-radius: 3px;
-
-    &:hover {
-      background-color: #eff7fc;
-    }
+    @apply border-none bg-transparent p-[9px] text-left w-full cursor-pointer text-lg rounded-[3px] hover:bg-[#eff7fc];
 
     &-active {
-      background: #dfeef9;
+      @apply bg-[#dfeef9];
     }
   }
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    background-color: #fafafa;
-    color: #424242;
+    @apply bg-[#fafafa] text-[#424242];
   }
 }
 </style>

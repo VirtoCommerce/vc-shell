@@ -61,7 +61,7 @@ function onClick(): void {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --breadcrumbs-item-height: 28px;
   --breadcrumbs-item-border-color: #a1c0d4;
@@ -73,38 +73,31 @@ function onClick(): void {
 }
 
 .vc-breadcrumbs-item {
-  height: var(--breadcrumbs-item-height);
-  box-sizing: border-box;
-  border-radius: calc(var(--breadcrumbs-item-height) / 2);
-  border: 1px solid var(--breadcrumbs-item-border-color);
-  color: var(--breadcrumbs-item-color);
-  white-space: nowrap;
-  padding: 0 var(--padding-m);
-  margin-right: var(--margin-s);
-  font-size: var(--font-size-s);
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-
-  &:hover {
-    border: 1px solid var(--breadcrumbs-item-border-color-hover);
-  }
+  @apply h-[var(--breadcrumbs-item-height)]
+  box-border rounded-[calc(var(--breadcrumbs-item-height)/2)]
+  border border-solid
+  border-[color:var(--breadcrumbs-item-border-color)]
+  text-[color:var(--breadcrumbs-item-color)]
+  whitespace-nowrap
+  px-3 mr-2
+  text-sm cursor-pointer inline-flex items-center
+  hover:border
+  hover:border-solid
+  hover:border-[color:var(--breadcrumbs-item-border-color-hover)];
 
   &__icon {
-    margin-right: var(--margin-s);
-    color: var(--breadcrumbs-item-icon-color);
+    @apply mr-2 text-[color:var(--breadcrumbs-item-icon-color)];
   }
 
   &_disabled {
-    opacity: 0.4;
+    @apply opacity-[0.4];
   }
 
   &_current,
   &_current:hover {
-    color: var(--breadcrumbs-item-color-current);
-    border: 1px solid var(--breadcrumbs-item-border-color-current);
-    cursor: default;
-    margin-right: 0;
+    @apply text-[color:var(--breadcrumbs-item-color-current)]
+    border border-solid border-[color:var(--breadcrumbs-item-border-color-current)]
+    cursor-default mr-0;
   }
 }
 </style>

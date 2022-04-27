@@ -11,13 +11,13 @@
     ]"
   >
     <!-- Input label -->
-    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
     </VcLabel>
 
     <!-- Input field -->
-    <div class="vc-multivalue__field-wrapper vc-flex" ref="inputFieldWrapRef">
+    <div class="vc-multivalue__field-wrapper" ref="inputFieldWrapRef">
       <div
         v-for="(item, i) in modelValue"
         :key="item.id"
@@ -25,7 +25,7 @@
       >
         <div class="vc-multivalue__field-value">
           <span
-            class="vc-multivalue__field-value-content vc-ellipsis"
+            class="text-ellipsis overflow-hidden whitespace-nowrap"
             :title="
               type === 'number' ? Number(item.value).toFixed(3) : item.value
             "
@@ -46,7 +46,7 @@
       <template v-if="multivalue">
         <div
           ref="dropdownToggleRef"
-          class="vc-multivalue__field vc-multivalue__field_dictionary vc-flex-grow_1 vc-padding_s"
+          class="vc-multivalue__field vc-multivalue__field_dictionary grow p-2"
         >
           <VcButton small @click="toggleDropdown">Add +</VcButton>
           <teleport to="#app">
@@ -80,7 +80,7 @@
       </template>
       <template v-else>
         <input
-          class="vc-multivalue__field vc-flex-grow_1 vc-padding-left_m"
+          class="vc-multivalue__field grow pl-3"
           :placeholder="placeholder"
           :type="type"
           :value="value"
@@ -91,7 +91,7 @@
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-multivalue__error vc-margin-top_xs">
+      <VcHint class="vc-multivalue__error mt-1">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -350,7 +350,7 @@ function onSearch(event: InputEvent) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --multivalue-height: 38px;
   --multivalue-border-radius: 3px;
@@ -371,139 +371,96 @@ function onSearch(event: InputEvent) {
 }
 
 .vc-multivalue {
-  overflow: hidden;
+  @apply overflow-hidden;
 
   &_date,
   &_datetime-local {
-    max-width: 220px;
+    @apply max-w-[220px];
 
     .vc-app_mobile & {
-      max-width: 100%;
+      @apply max-w-full;
     }
   }
 
   &__field-wrapper {
-    border: 1px solid var(--multivalue-border-color);
-    border-radius: var(--multivalue-border-radius);
-    background-color: var(--multivalue-background-color);
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
+    @apply border border-solid
+    border-[color:var(--multivalue-border-color)]
+    rounded-[var(--multivalue-border-radius)]
+    bg-[color:var(--multivalue-background-color)]
+    items-center
+    flex
+    flex-wrap;
   }
 
   &__dropdown {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    max-height: 300px;
-    z-index: 10;
-    overflow: hidden;
-    position: absolute;
-    background-color: var(--select-background-color);
-    border: 1px solid var(--select-border-color);
-    border-top: 1px solid var(--select-background-color);
-    border-radius: 0 0 var(--select-border-radius) var(--select-border-radius);
-    padding: var(--padding-s);
+    @apply flex flex-col box-border
+    max-h-[300px] z-10 overflow-hidden
+    absolute bg-[color:var(--select-background-color)]
+    border border-solid border-[color:var(--select-border-color)]
+    border-t-[color:var(--select-background-color)]
+    rounded-b-[var(--select-border-radius)]
+    p-2;
   }
 
   &__search {
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #eaecf2;
-    border-radius: 4px;
-    height: 32px;
-    line-height: 32px;
-    outline: none;
-    margin-bottom: var(--margin-m);
-    padding-left: var(--padding-s);
-    padding-right: var(--padding-s);
+    @apply w-full box-border border border-solid border-[#eaecf2]
+      rounded-[4px] h-8 leading-[32px]
+      outline-none mb-3 px-2;
   }
 
   &__item {
-    display: flex;
-    align-items: center;
-    min-height: 36px;
-    padding-left: var(--padding-s);
-    padding-right: var(--padding-s);
-    border-radius: 3px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #eff7fc;
-    }
+    @apply flex items-center min-h-[36px] px-2 rounded-[3px] cursor-pointer hover:bg-[#eff7fc];
   }
 
   &_opened &__field-wrapper {
-    border-radius: var(--select-border-radius) var(--select-border-radius) 0 0;
+    @apply rounded-t-[var(--select-border-radius)];
   }
 
   &_error &__field-wrapper {
-    border: 1px solid var(--multivalue-border-color-error);
+    @apply border border-solid border-[color:var(--multivalue-border-color-error)];
   }
 
   &__error {
-    color: var(--multivalue-border-color-error);
+    @apply text-[color:var(--multivalue-border-color-error)];
   }
 
   &__field {
-    border: none;
-    outline: none;
-    height: var(--multivalue-height);
-    min-width: 0;
-    box-sizing: border-box;
-    min-width: 120px;
+    @apply border-none outline-none h-[var(--multivalue-height)]
+      min-w-[120px] box-border placeholder:text-[color:var(--multivalue-placeholder-color)];
 
     &::-webkit-input-placeholder {
-      color: var(--multivalue-placeholder-color);
+      @apply text-[color:var(--multivalue-placeholder-color)];
     }
 
     &::-moz-placeholder {
-      color: var(--multivalue-placeholder-color);
+      @apply text-[color:var(--multivalue-placeholder-color)];
     }
 
     &::-ms-placeholder {
-      color: var(--multivalue-placeholder-color);
-    }
-
-    &::placeholder {
-      color: var(--multivalue-placeholder-color);
+      @apply text-[color:var(--multivalue-placeholder-color)];
     }
 
     &-value-wrapper {
-      height: var(--multivalue-height);
-      margin-left: var(--margin-s);
-      display: flex;
-      align-items: center;
+      @apply h-[var(--multivalue-height)] ml-2 flex items-center;
     }
 
     &-value {
-      background: #fbfdfe;
-      border: 1px solid #bdd1df;
-      border-radius: 2px;
-      display: flex;
-      align-items: center;
-      height: 28px;
-      box-sizing: border-box;
-      padding: 0 var(--padding-s);
-      max-width: 150px;
+      @apply bg-[#fbfdfe] border border-solid border-[color:#bdd1df] rounded-[2px]
+        flex items-center h-[28px] box-border px-2 max-w-[150px];
 
       &-clear {
-        color: #a9bfd2;
-        margin-left: var(--margin-s);
-        cursor: pointer;
+        @apply text-[#a9bfd2] ml-2 cursor-pointer;
       }
     }
 
     &_dictionary {
-      height: auto;
-      min-width: auto;
+      @apply h-auto min-w-[auto];
     }
   }
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    background-color: #fafafa;
-    color: #424242;
+    @apply bg-[#fafafa] text-[#424242];
   }
 }
 </style>

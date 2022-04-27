@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-app flex flex-col w-full h-full box-border m-0 overflow-hidden text-m"
+    class="vc-app flex flex-col w-full h-full box-border m-0 overflow-hidden text-base"
     :class="[
       `vc-theme_${theme}`,
       {

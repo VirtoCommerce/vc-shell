@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-pagination vc-flex">
+  <div class="vc-pagination flex">
     <!-- To first page chevron -->
     <div
       class="vc-pagination__item"
@@ -114,7 +114,7 @@ defineProps({
 defineEmits(["itemClick"]);
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --pagination-item-width: 30px;
   --pagination-item-height: 30px;
@@ -136,45 +136,34 @@ defineEmits(["itemClick"]);
 
 .vc-pagination {
   &__item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--pagination-item-width);
-    height: var(--pagination-item-height);
-    background-color: var(--pagination-item-background-color);
-    border: 1px solid var(--pagination-item-border-color);
-    border-radius: var(--pagination-item-border-radius);
-    color: var(--pagination-item-color);
-    box-sizing: border-box;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-right: var(--pagination-item-margin);
-    user-select: none;
-
-    &:last-child {
-      margin-right: 0;
-    }
-
-    &:hover {
-      background-color: var(--pagination-item-background-color-hover);
-      color: var(--pagination-item-color-hover);
-      border: 1px solid var(--pagination-item-border-color-hover);
-    }
+    @apply flex items-center justify-center w-[var(--pagination-item-width)]
+    h-[var(--pagination-item-height)]
+    bg-[color:var(--pagination-item-background-color)]
+    border border-solid border-[color:var(--pagination-item-border-color)]
+    rounded-[var(--pagination-item-border-radius)]
+    text-[color:var(--pagination-item-color)]
+    box-border cursor-pointer
+    transition duration-200
+    mr-[var(--pagination-item-margin)] select-none last:mr-0
+    hover:bg-[color:var(--pagination-item-background-color-hover)]
+    hover:text-[color:var(--pagination-item-color-hover)]
+    hover:border hover:border-solid
+    hover:border-[color:var(--pagination-item-border-color-hover)];
 
     &_current,
     &_current:hover {
-      background-color: var(--pagination-item-background-color-current);
-      color: var(--pagination-item-color-current);
-      border: 1px solid var(--pagination-item-border-color-current);
-      cursor: auto;
+      @apply bg-[color:var(--pagination-item-background-color-current)]
+      text-[color:var(--pagination-item-color-current)]
+      border border-solid border-[color:var(--pagination-item-border-color-current)]
+      cursor-auto;
     }
 
     &_disabled,
     &_disabled:hover {
-      background-color: var(--pagination-item-background-color-disabled);
-      color: var(--pagination-item-color-disabled);
-      border: 1px solid var(--pagination-item-border-color-disabled);
-      cursor: auto;
+      @apply bg-[color:var(--pagination-item-background-color-disabled)]
+      text-[color:var(--pagination-item-color-disabled)]
+      border border-solid border-[color:var(--pagination-item-border-color-disabled)]
+      cursor-auto;
     }
   }
 }

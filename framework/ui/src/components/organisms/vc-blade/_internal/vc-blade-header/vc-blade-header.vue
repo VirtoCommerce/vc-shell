@@ -1,8 +1,8 @@
 <template>
   <div
-    class="vc-flex-shrink_0 h-[var(--blade-header-height)] bg-[color:var(--blade-header-background-color)] flex items-center py-0 px-l border-solid border-b border-b-[color:#eaedf3]"
+    class="vc-flex-shrink_0 h-[var(--blade-header-height)] bg-[color:var(--blade-header-background-color)] flex items-center py-0 px-4 border-solid border-b border-b-[color:#eaedf3]"
   >
-    <div v-if="icon" class="text-[color:var(--blade-header-icon-color)] mr-m">
+    <div v-if="icon" class="text-[color:var(--blade-header-icon-color)] mr-3">
       <VcIcon :icon="icon" size="xxl"></VcIcon>
     </div>
 
@@ -18,7 +18,7 @@
       </div>
       <div
         v-if="subtitle"
-        class="text-[color:var(--blade-header-subtitle-color)] text-xs mt-xs"
+        class="text-[color:var(--blade-header-subtitle-color)] text-xs mt-1"
       >
         {{ subtitle }}
       </div>
@@ -32,7 +32,7 @@
       <template v-if="expandable">
         <div
           v-if="expanded"
-          class="text-[color:var(--blade-header-button-color)] ml-l cursor-pointer hover:text-[color:var(--blade-header-button-color-hover)]"
+          class="text-[color:var(--blade-header-button-color)] ml-4 cursor-pointer hover:text-[color:var(--blade-header-button-color-hover)]"
           @click="onCollapse"
         >
           <VcIcon icon="fas fa-window-minimize" size="s"></VcIcon>
@@ -43,7 +43,7 @@
       </template>
       <div
         v-if="closable"
-        class="text-[color:var(--blade-header-button-color)] ml-l cursor-pointer hover:text-[color:var(--blade-header-button-color-hover)]"
+        class="text-[color:var(--blade-header-button-color)] ml-4 cursor-pointer hover:text-[color:var(--blade-header-button-color-hover)]"
         @click="onClose"
       >
         <VcIcon icon="fas fa-times"></VcIcon>

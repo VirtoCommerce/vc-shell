@@ -46,59 +46,40 @@ function onClick() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-widget {
-  display: flex;
-  width: 100px;
-  overflow: hidden;
-  padding: var(--padding-xl);
-  box-sizing: border-box;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid #eaedf3;
-  cursor: pointer;
-  background-color: #ffffff;
-
-  &:hover {
-    background-color: #eff7fc;
-  }
+  @apply flex w-[100px] overflow-hidden p-5
+    box-border flex-col items-center
+    justify-center border-b border-solid
+    border-b-[#eaedf3] cursor-pointer bg-white
+    hover:bg-[#eff7fc];
 
   &_disabled {
-    cursor: default;
-  }
-
-  &_disabled:hover {
-    background-color: #ffffff;
+    @apply cursor-default hover:bg-white;
   }
 
   &__icon {
-    color: #a9bfd2;
+    @apply text-[#a9bfd2];
   }
 
   &_disabled &__icon {
-    color: #d2d4d7;
+    @apply text-[#d2d4d7];
   }
 
   &__title {
-    font-weight: var(--font-weight-medium);
-    font-size: var(--font-size-s);
-    color: #333333;
-    margin: var(--margin-m) 0 var(--margin-xs);
+    @apply font-medium text-sm text-[#333333] mt-3 mb-1 mx-0;
   }
 
   &_disabled &__title {
-    color: #d2d4d7;
+    @apply text-[#d2d4d7];
   }
 
   &__value {
-    font-weight: var(--font-weight-medium);
-    font-size: 22px;
-    color: #43b0e6;
+    @apply font-medium text-[22px] text-[#43b0e6];
   }
 
   &_disabled &__value {
-    color: #d2d4d7;
+    @apply text-[#d2d4d7];
   }
 }
 </style>

@@ -1,15 +1,15 @@
 <template>
   <div
-    class="vc-notification"
+    class="vc-notification flex items-center mt-1 mb-3 mx-2 bg-[color:var(--notification-background)] border border-solid border-[color:#eef0f2] box-border shadow-[2px_2px_11px_rgba(126,142,157,0.4)] rounded-[var(--notification-border-radius)] overflow-hidden py-2 px-4 max-w-[600px]"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >
-    <div class="vc-notification__content">
+    <div class="text-[color:var(--notification-content-color)]">
       <slot></slot>
     </div>
     <VcIcon
       icon="fas fa-times"
-      class="vc-notification__dismiss"
+      class="cursor-pointer text-[color:var(--notification-dismiss-color)] ml-2"
       size="s"
       @click="onDismiss"
     ></VcIcon>
@@ -82,10 +82,9 @@ function onDismiss() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --notification-background: #ffffff;
-  --notification-border: 1px solid #eef0f2;
   --notification-border-radius: 4px;
   --notification-box-shadow: 2px 2px 11px rgba(126, 142, 157, 0.4);
   --notification-dismiss-color: #83a3be;
@@ -93,31 +92,10 @@ function onDismiss() {
 }
 
 .vc-notification {
-  display: flex;
-  align-items: center;
-  margin: var(--margin-xs) var(--margin-s) var(--margin-m) var(--margin-s);
-  background: var(--notification-background);
-  border: var(--notification-border);
-  box-sizing: border-box;
-  box-shadow: var(--notification-box-shadow);
-  border-radius: var(--notification-border-radius);
-  overflow: hidden;
-  padding: var(--padding-s) var(--padding-l);
-  max-width: 600px;
   pointer-events: all;
 
   .vc-app_mobile {
-    max-width: 80%;
-  }
-
-  &__content {
-    color: var(--notification-content-color);
-  }
-
-  &__dismiss {
-    cursor: pointer;
-    color: var(--notification-dismiss-color);
-    margin-left: var(--margin-s);
+    @apply max-w-[80%];
   }
 }
 </style>

@@ -133,12 +133,13 @@ $variants: primary, secondary, special, danger, widget;
   @apply inline-flex items-center font-medium text-sm cursor-pointer box-border transition duration-200 rounded-[var(--button-border-radius)] px-[var(--button-padding)] h-[var(--button-height)];
 
   &__icon + &__title {
-    @apply ml-s;
+    @apply ml-2;
   }
 
   @each $variant in $variants {
     &_#{$variant} {
       @apply bg-[color:var(--button-#{$variant}-background-color)]
+      text-left
       text-[color:var(--button-#{$variant}-text-color)]
       border border-solid border-[color:var(--button-#{$variant}-background-color)]
       hover:bg-[color:var(--button-#{$variant}-background-color-hover)]
@@ -179,7 +180,7 @@ $variants: primary, secondary, special, danger, widget;
       text-xs;
 
     .vc-button__icon + .vc-button__title {
-      @apply ml-xs;
+      @apply ml-1;
     }
   }
 

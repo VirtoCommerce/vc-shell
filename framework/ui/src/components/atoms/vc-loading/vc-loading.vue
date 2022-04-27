@@ -9,11 +9,11 @@
       <span
         class="absolute w-4 h-4 top-[12px] left-[15px] bg-[#319ed4] rounded-full translate-x-0 animate-loadingMarker"
       ></span>
-      <div class="translate-x-0 mt-m ml-[31px] animate-loadingMarkers">
+      <div class="translate-x-0 mt-3 ml-[31px] animate-loadingMarkers">
         <span
-          class="block float-left w-4 h-4 bg-[#319ed4] rounded-full ml-l"
-          v-for="(item, i) in 3"
-          :key="i"
+          class="block float-left w-4 h-4 bg-[#319ed4] rounded-full ml-4"
+          v-for="item in 3"
+          :key="`marker_${item}`"
         ></span>
       </div>
     </div>

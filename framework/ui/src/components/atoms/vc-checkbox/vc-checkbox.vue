@@ -9,18 +9,18 @@
         @change="onChange"
       />
       <span class="vc-checkbox__checkmark"></span>
-      <div v-if="$slots['default']" class="ml-s">
+      <div v-if="$slots['default']" class="ml-2">
         <slot></slot>
       </div>
       <span
         v-if="required"
-        class="text-[color:var(--checkbox-required-color)] ml-xs"
+        class="text-[color:var(--checkbox-required-color)] ml-1"
         >*</span
       >
     </label>
 
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-checkbox__error mt-xs">
+      <VcHint class="vc-checkbox__error mt-1">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -91,7 +91,7 @@ function onChange(e: InputEvent) {
 
 .vc-checkbox {
   &__label {
-    @apply inline-flex select-none cursor-pointer text-m;
+    @apply inline-flex select-none cursor-pointer text-base;
   }
 
   &__input {

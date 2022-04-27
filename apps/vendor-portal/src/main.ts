@@ -7,6 +7,7 @@ import ModOrders from "./modules/orders";
 import ModProducts from "./modules/products";
 import ModOffers from "./modules/offers";
 import ModImport from "./modules/import";
+import ModSettings from "./modules/settings";
 import router from "./router";
 
 import * as locales from "./locales";
@@ -27,7 +28,8 @@ const app = createApp({
   .use(ModOrders)
   .use(ModProducts)
   .use(ModOffers)
-  .use(ModImport);
+  .use(ModImport)
+  .use(ModSettings);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

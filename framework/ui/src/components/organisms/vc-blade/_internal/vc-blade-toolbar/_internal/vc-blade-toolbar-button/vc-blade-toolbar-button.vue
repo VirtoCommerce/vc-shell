@@ -30,7 +30,7 @@
           >
             <VcIcon
               :icon="item.icon"
-              class="vc-blade-toolbar-button__dropdown-item-icon vc-margin-right_s"
+              class="vc-blade-toolbar-button__dropdown-item-icon"
             />
             {{ item.title }}
           </div>
@@ -144,7 +144,7 @@ function handleDropItemClick(item: IBladeDropdownItem) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --blade-toolbar-button-title-color: #465769;
   --blade-toolbar-button-title-color-hover: #465769;
@@ -166,81 +166,57 @@ function handleDropItemClick(item: IBladeDropdownItem) {
 }
 
 .vc-blade-toolbar-button {
-  padding: 0 var(--padding-s);
-  background-color: var(--blade-toolbar-button-background-color);
-  box-sizing: border-box;
-  cursor: pointer;
+  @apply px-2 bg-[color:var(--blade-toolbar-button-background-color)] box-border cursor-pointer;
 
   &__wrap {
-    display: inline-flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+    @apply inline-flex flex-col justify-center items-center relative;
   }
 
   &__title {
-    font-size: var(--font-size-s);
-    white-space: nowrap;
-    margin-top: var(--margin-xs);
-    color: var(--blade-toolbar-button-title-color);
+    @apply text-sm whitespace-nowrap mt-1 text-[color:var(--blade-toolbar-button-title-color)];
   }
 
   &__icon {
-    color: var(--blade-toolbar-button-icon-color);
+    @apply text-[color:var(--blade-toolbar-button-icon-color)];
   }
 
   &__dropdown {
-    position: absolute;
-    background: white;
-    z-index: 9999;
-    box-shadow: 1px 1px 22px rgba(126, 142, 157, 0.2);
+    @apply absolute bg-white z-[9999] shadow-[1px_1px_22px_rgba(126,142,157,0.2)];
   }
 
   &__dropdown-item {
-    padding: var(--padding-m);
-    font-size: var(--font-size-l);
-    color: #000000;
-    border-left: 1px solid #eef0f2;
-    border-bottom: 1px solid #eef0f2;
-    background-color: white;
-    cursor: pointer;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    &:hover {
-      background-color: #eff7fc;
-    }
+    @apply p-3 text-lg text-black border-l border-solid
+    border-l-[#eef0f2] border-b border-b-[#eef0f2]
+    bg-white cursor-pointer flex flex-row items-center
+    hover:bg-[#eff7fc];
   }
 
   &__dropdown-item-icon {
-    color: #a9bfd2;
+    @apply text-[#a9bfd2] mr-2;
   }
 
   &:hover {
-    background-color: var(--blade-toolbar-button-background-color-hover);
+    @apply bg-[color:var(--blade-toolbar-button-background-color-hover)];
 
     .vc-blade-toolbar-button__title {
-      color: var(--blade-toolbar-button-title-color-hover);
+      @apply text-[color:var(--blade-toolbar-button-title-color-hover)];
     }
 
     .vc-blade-toolbar-button__icon {
-      color: var(--blade-toolbar-button-icon-color-hover);
+      @apply text-[color:var(--blade-toolbar-button-icon-color-hover)];
     }
   }
 
   &_disabled,
   &_disabled:hover {
-    background-color: var(--blade-toolbar-button-background-color-disabled);
-    cursor: default;
+    @apply bg-[color:var(--blade-toolbar-button-background-color-disabled)] cursor-default;
 
     .vc-blade-toolbar-button__title {
-      color: var(--blade-toolbar-button-title-color-disabled);
+      @apply text-[color:var(--blade-toolbar-button-title-color-disabled)];
     }
 
     .vc-blade-toolbar-button__icon {
-      color: var(--blade-toolbar-button-icon-color-disabled);
+      @apply text-[color:var(--blade-toolbar-button-icon-color-disabled)];
     }
   }
 }

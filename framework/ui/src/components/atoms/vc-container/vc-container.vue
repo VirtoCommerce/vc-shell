@@ -181,7 +181,7 @@ function ease(distance: number) {
   }
 
   &__overscroll {
-    @apply relative w-full flex items-start content-center overflow-hidden;
+    @apply relative w-full flex items-start justify-center overflow-hidden;
 
     &-icon {
       @apply text-[color:#a1c0d4] animate-spin;
@@ -195,9 +195,7 @@ function ease(distance: number) {
   &__inner {
     @apply relative overflow-y-auto overflow-x-hidden
     flex-1 p-[var(--container-scroll-padding)]
-    transition-transform;
-    scrollbar-color: var(--container-scroll-color);
-    scrollbar-width: thin;
+    transition-transform [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
 
     &::-webkit-scrollbar {
       @apply w-[var(--container-scroll-width)] bg-transparent;

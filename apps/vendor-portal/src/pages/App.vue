@@ -281,7 +281,7 @@ function langInit() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-theme_light {
   --background-color: #f5f6f9;
   --top-bar-color: #161d25;
@@ -309,17 +309,11 @@ function langInit() {
 html,
 body,
 #app {
-  font-family: "Roboto";
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  position: fixed;
-  overflow: hidden;
-  overscroll-behavior-y: none;
+  @apply font-roboto h-full w-full m-0 fixed overflow-hidden overscroll-y-none;
 }
 
 body {
-  font-size: var(--font-size-m);
+  @apply text-base;
 }
 
 h1,
@@ -332,19 +326,19 @@ button,
 input,
 select,
 textarea {
-  font-family: "Roboto";
+  @apply font-roboto;
 }
 ::-webkit-input-placeholder {
-  font-family: "Roboto";
+  @apply font-roboto;
 }
 :-moz-placeholder {
-  font-family: "Roboto";
+  @apply font-roboto;
 }
 ::-moz-placeholder {
-  font-family: "Roboto";
+  @apply font-roboto;
 }
 :-ms-input-placeholder {
-  font-family: "Roboto";
+  @apply font-roboto;
 }
 
 .vc-app.vc-theme_light {

@@ -13,52 +13,50 @@
     "
   >
     <VcImage aspect="1x1" :src="image.url"></VcImage>
-    <div class="vc-flex-column vc-gallery-item__overlay vc-padding_s">
-      <div class="vc-flex">
+    <div class="vc-gallery-item__overlay">
+      <div class="flex">
         <VcIcon
           v-if="!readonly"
-          class="vc-gallery-item__move vc-margin-right_s"
+          class="vc-gallery-item__move"
           icon="fas fa-arrows-alt"
           size="s"
         ></VcIcon>
-        <div class="vc-gallery-item__title vc-ellipsis" :title="image.name">
+        <div
+          class="text-ellipsis overflow-hidden whitespace-nowrap"
+          :title="image.name"
+        >
           {{ image.name }}
         </div>
       </div>
-      <div
-        class="vc-flex vc-flex-grow_1 vc-flex-align_center vc-flex-justify_space-around"
-      >
-        <div
-          class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
-          @click="$emit('preview', image)"
-        >
+      <div class="flex grow basis-0 items-center justify-around">
+        <div class="vc-gallery-item__button" @click="$emit('preview', image)">
           <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-eye"
           ></VcIcon>
-          <div class="vc-margin-top_s">Fullscreen</div>
+          <div class="mt-2">Fullscreen</div>
         </div>
         <div
           v-if="!readonly"
-          class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
+          class="vc-gallery-item__button"
           @click="$emit('edit', image)"
         >
           <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-pen"
           ></VcIcon>
-          <div class="vc-margin-top_s">Edit</div>
+          <div class="mt-2">Edit</div>
         </div>
         <div
           v-if="!readonly"
-          class="vc-gallery-item__button vc-flex vc-flex-column vc-flex-align_center"
+          class="vc-gallery-item__button"
           @click="$emit('remove', image)"
         >
           <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-trash"
           ></VcIcon>
-          <div class="vc-margin-top_s">Delete</div>
+          <div class="mt-2">Delete</div>
         </div>
       </div>
     </div>
@@ -86,43 +84,28 @@ defineEmits(["preview", "edit", "remove"]);
 const hover = ref(false);
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-gallery-item {
-  position: relative;
-  width: 155px;
-  height: 155px;
-  box-sizing: border-box;
-  border: 1px solid #d3dae9;
-  border-radius: 6px;
-  padding: var(--padding-xs);
+  @apply relative w-[155px] h-[155px] box-border border border-solid border-[#d3dae9] rounded-md p-1;
 
   &__overlay {
-    background: rgba(238, 246, 252, 0.97);
-    opacity: 0;
-    display: flex;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    transition: all 0.2s ease;
+    @apply bg-[rgba(238,246,252,0.97)] flex-col p-2 opacity-0 flex absolute left-0 top-0 right-0 bottom-0 transition duration-200;
   }
 
   &:hover &__overlay,
-  .vc-app_touch &.hover &__overlay {
-    opacity: 1;
+  .vc-app_touch &_hover &__overlay {
+    @apply opacity-100;
   }
 
   &__move {
-    color: #a1c0d4;
-    cursor: pointer;
+    @apply text-[#a1c0d4] cursor-pointer mr-2;
   }
 
   &__button {
-    cursor: pointer;
+    @apply cursor-pointer flex flex-col items-center;
 
     &-icon {
-      color: #319ed4;
+      @apply text-[#319ed4];
     }
   }
 }

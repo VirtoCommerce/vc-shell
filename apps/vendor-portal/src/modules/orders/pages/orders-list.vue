@@ -32,7 +32,7 @@
     >
       <!-- Filters -->
       <template v-slot:filters>
-        <h2 v-if="$isMobile.value">
+        <h2 v-if="$isMobile.value" class="my-4 text-[19px] font-bold">
           {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
         <VcContainer no-padding>

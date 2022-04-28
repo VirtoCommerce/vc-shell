@@ -83,7 +83,7 @@
           </div>
 
           <div
-            class="vc-app__notifications absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-s box-border"
+            class="[pointer-events:painted] absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-s box-border"
           >
             <slot name="notifications"></slot>
           </div>
@@ -499,10 +499,6 @@ defineExpose({
     .vc-app_mobile & {
       @apply p-0;
     }
-  }
-
-  &__notifications {
-    pointer-events: painted;
   }
 }
 </style>

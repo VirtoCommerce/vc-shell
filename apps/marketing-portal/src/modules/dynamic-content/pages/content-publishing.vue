@@ -26,7 +26,7 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="w-full h-full box-border flex flex-col items-center justify-center"
         >
           <img src="/assets/empty-product.png" />
           <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
@@ -49,10 +49,10 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="w-full h-full box-border flex flex-col items-center justify-center"
         >
           <img src="/assets/empty-product.png" />
-          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+          <div class="m-4 text-xl font-medium">
             {{
               $t("DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.IS_EMPTY")
             }}
@@ -65,59 +65,69 @@
 
       <!-- Mobile template -->
       <template v-slot:mobile-item="itemData">
-        <div
-          class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
-        >
-          <div class="vc-flex-grow_1 vc-margin-left_m">
-            <div class="vc-font-weight_bold vc-font-size_l">
+        <div class="p-3 flex flex-nowrap">
+          <div class="grow basis-0 ml-3">
+            <div class="font-bold text-lg">
               {{ itemData.item.name }}
             </div>
 
-            <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-            >
-              <div class="vc-ellipsis vc-flex-grow_2">
+            <div class="mt-3 w-full flex justify-between">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              >
                 <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.CREATED"
                   )
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ moment(itemData.item.created).format("L") }}
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+              >
                 <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.DESCRIPTION"
                   )
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ itemData.item.description }}
                 </div>
               </div>
             </div>
 
-            <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-            >
-              <div class="vc-ellipsis vc-flex-grow_2">
+            <div class="mt-3 w-full flex justify-between">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              >
                 <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.PATH"
                   )
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ itemData.item.path }}
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+              >
                 <VcHint>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_PUBLISHING.LIST.TABLE.HEADER.ID"
                   )
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ itemData.item.id }}
                 </div>
               </div>
@@ -288,5 +298,3 @@ defineExpose({
   reload,
 });
 </script>
-
-<style lang="less" scoped></style>

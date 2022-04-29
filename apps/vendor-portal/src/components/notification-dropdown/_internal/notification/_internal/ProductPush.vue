@@ -1,6 +1,6 @@
 <template>
   <slot name="title" v-bind:title="notificationTitle"></slot>
-  <VcHint class="vc-margin-bottom_xs" :style="{ color: variant }">{{
+  <VcHint class="mb-1" :style="{ color: variant }">{{
     notificationDescription
   }}</VcHint>
 </template>
@@ -33,5 +33,3 @@ const notificationDescription = computed(() => {
   )}`;
 });
 </script>
-
-<style lang="less" scoped></style>

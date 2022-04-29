@@ -1,11 +1,11 @@
 <template>
   <slot name="title" v-bind:title="notification.title"></slot>
-  <VcHint class="vc-margin-bottom_xs" v-if="notification.profileName"
+  <VcHint class="mb-1" v-if="notification.profileName"
     >{{ $t("SHELL.NOTIFICATIONS.PROFILE") }}
     <b>{{ notification.profileName }}</b></VcHint
   >
   <div v-if="notification.errors && notification.errors.length">
-    <VcHint class="notification-dropdown__error">
+    <VcHint>
       {{ $t("SHELL.NOTIFICATIONS.ERRORS") }}:
       {{ notification.errors && notification.errors.length }}</VcHint
     >
@@ -29,5 +29,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="less" scoped></style>

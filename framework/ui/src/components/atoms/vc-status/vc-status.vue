@@ -36,9 +36,6 @@ defineProps({
   --status-padding: 4px 14px;
   --status-padding-extended: 12px;
 
-  --status-font-size: var(--font-size-m);
-  --status-font-weight: var(--font-weight-normal);
-
   --status-border-radius: 2px;
   --status-border-radius-extended: 4px;
   --status-border-width: 1px;

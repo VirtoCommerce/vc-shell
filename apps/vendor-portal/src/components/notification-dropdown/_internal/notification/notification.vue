@@ -1,7 +1,7 @@
 <template>
-  <div class="vc-flex">
+  <div class="flex">
     <div
-      class="notification__icon vc-margin-right_l vc-flex vc-flex-align_center vc-flex-justify_center vc-flex-shrink_0"
+      class="w-[41px] h-[41px] rounded-full text-white mr-4 flex items-center justify-center shrink-0"
       :style="{
         'background-color': current.styles.color,
       }"
@@ -9,7 +9,7 @@
       <VcIcon :icon="current.styles.icon" size="l"></VcIcon>
     </div>
 
-    <VcRow class="vc-flex-justify_space-between vc-flex-grow_1">
+    <VcRow class="justify-between grow basis-0">
       <div>
         <component
           :is="current.component"
@@ -18,16 +18,16 @@
         >
           <template v-slot:title="{ title }">
             <p
-              class="notification__title vc-margin_none vc-margin-bottom_xs"
-              :class="{ 'vc-margin-right_l': $isDesktop.value }"
+              class="text-[color:var(--basic-black-color)] text-xl leading-[19px] font-bold m-0 mb-1"
+              :class="{ 'mr-4': $isDesktop.value }"
             >
               {{ title }}
             </p>
           </template>
         </component>
       </div>
-      <div class="vc-flex vc-flex-shrink_0">
-        <p class="notification__time vc-margin_none">
+      <div class="flex shrink-0">
+        <p class="text-s leading-[18px] text-[#8e8e8e] m-0">
           {{ pushTime }}
         </p>
       </div>
@@ -133,27 +133,3 @@ const pushTime = computed(() => {
   return moment(props.notification.created).locale(locale).format("L LT");
 });
 </script>
-
-<style lang="less" scoped>
-.notification {
-  &__icon {
-    width: 41px;
-    height: 41px;
-    border-radius: 50%;
-    color: #fff;
-  }
-
-  &__title {
-    color: var(--basic-black-color);
-    font-size: var(--font-size-xl);
-    line-height: var(--line-height-l);
-    font-weight: var(--font-weight-bold);
-  }
-
-  &__time {
-    font-size: var(--font-size-s);
-    line-height: var(--line-height-m);
-    color: #8e8e8e;
-  }
-}
-</style>

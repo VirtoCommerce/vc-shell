@@ -16,7 +16,7 @@
       <VcRow>
         <VcCol>
           <VcInput
-            class="vc-padding_m"
+            class="p-3"
             :label="
               $t(
                 'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
@@ -38,7 +38,7 @@
             v-model="profileDetails.name"
           ></VcInput>
           <VcSelect
-            class="vc-padding_m"
+            class="p-3"
             :label="
               $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
             "
@@ -58,13 +58,13 @@
           ></VcSelect>
         </VcCol>
       </VcRow>
-      <VcRow class="vc-padding_m" v-if="profileDetails.typeName">
+      <VcRow class="p-3" v-if="profileDetails.typeName">
         <VcCard
           :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
         >
           <VcRow>
             <VcCol>
-              <div class="vc-padding_l">
+              <div class="p-4">
                 <a class="vc-link" :href="sampleTemplateUrl">{{
                   $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
                 }}</a>
@@ -72,7 +72,7 @@
               </div>
 
               <VcDynamicProperty
-                class="vc-padding-left_l vc-padding-right_l vc-padding-bottom_l"
+                class="px-4 pb-4"
                 v-for="(setting, i) in profileDetails.settings"
                 :key="`${profileDetails.id}_${i}`"
                 :property="setting"
@@ -270,5 +270,3 @@ async function deleteProfile() {
   emit("page:close");
 }
 </script>
-
-<style lang="less" scoped></style>

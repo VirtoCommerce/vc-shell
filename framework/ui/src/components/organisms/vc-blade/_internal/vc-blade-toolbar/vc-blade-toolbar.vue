@@ -4,7 +4,9 @@
     class="h-[var(--blade-toolbar-height)] bg-[color:var(--blade-toolbar-background-color)] border-b-[color:#eaedf3] border-solid border-b flex box-border w-full content-center items-stretch shrink-0"
     :class="{ '!h-[var(--blade-toolbar-height-expanded)]': isExpanded }"
   >
-    <div class="grow flex content-start items-center overflow-x-auto px-2">
+    <div
+      class="grow basis-0 flex content-start items-center overflow-x-auto px-2"
+    >
       <template v-for="item in items" :key="item.id">
         <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
@@ -56,7 +58,7 @@ function isToolbarVisible() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --blade-toolbar-height: 36px;
   --blade-toolbar-height-expanded: 50px;

@@ -141,7 +141,9 @@
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
         <div class="flex flex-col">
-          <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+          <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+            {{ itemData.item.name }}
+          </div>
           <VcHint class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
             {{ itemData.item.path }}
           </VcHint>

@@ -80,8 +80,6 @@ function onHeaderClick() {
   --card-box-shadow: 1px 1px 7px rgba(126, 142, 157, 0.15);
   --card-header-background: #f4f8fb;
   --card-header-color: #83a3be;
-  --card-header-font-size: var(--font-size-m);
-  --card-header-font-weight: var(--font-weight-bold);
 
   --card-header-background-success: #e9f7df;
   --card-header-background-danger: #ffe6e6;

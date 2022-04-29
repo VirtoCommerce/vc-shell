@@ -15,7 +15,7 @@
       <!-- Show workspace name when at least one blade is opened -->
       <div
         v-else-if="workspace.length === 1"
-        class="overflow-ellipsis overflow-hidden whitespace-nowrap text-[length:var(--font-size-header)] leading-[var(--line-height-header)]"
+        class="overflow-ellipsis overflow-hidden whitespace-nowrap text-2xl leading-header"
       >
         {{ workspace[0].title }}
       </div>
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Additional spacer -->
-    <div class="grow basis-0"></div>
+    <div class="grow basis-0 basis-0"></div>
 
     <!-- Toolbar container -->
     <div class="flex h-full box-border">

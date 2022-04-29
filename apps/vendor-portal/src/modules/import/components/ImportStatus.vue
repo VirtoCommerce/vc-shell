@@ -71,5 +71,3 @@ const statusText = computed(() => {
   return !props.item.finished && "Cancelled";
 });
 </script>
-
-<style lang="less" scoped></style>

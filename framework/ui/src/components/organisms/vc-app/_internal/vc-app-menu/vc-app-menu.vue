@@ -2,9 +2,9 @@
   <div
     class="relative w-[var(--app-menu-width)] transition duration-100 pt-4"
     :class="{
-      'vc-app-menu_mobile hidden fixed left-0 top-0 w-full bottom-0 z-[9999]':
+      'vc-app-menu_mobile hidden !fixed !left-0 !top-0 !w-full !bottom-0 !z-[9999]':
         $isMobile.value,
-      block: isMobileVisible,
+      '!block': isMobileVisible,
     }"
   >
     <!-- Show backdrop overlay on mobile devices -->
@@ -27,7 +27,7 @@
       </div>
 
       <!-- Show scrollable area with menu items -->
-      <VcContainer :noPadding="true" class="grow">
+      <VcContainer :noPadding="true" class="grow basis-0">
         <div class="gap-[5px] flex flex-col px-4">
           <template
             v-for="(item, index) in mobileMenuItems"

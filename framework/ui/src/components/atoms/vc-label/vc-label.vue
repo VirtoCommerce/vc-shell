@@ -4,7 +4,7 @@
     <span v-if="required" class="text-[color:var(--label-required-color)] ml-1"
       >*</span
     >
-    <span v-if="$slots['tooltip']" class="grow ml-1">
+    <span v-if="$slots['tooltip']" class="grow basis-0 ml-1">
       <VcIcon
         class="text-[color:var(--label-tooltip-color)]"
         :icon="tooltipIcon"

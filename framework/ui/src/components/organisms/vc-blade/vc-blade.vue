@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-blade relative flex shrink-0 flex-col bg-[color:var(--blade-background-color)] rounded-[var(--blade-border-radius)] shadow-[var(--blade-shadow)] m-[var(--blade-margin)] overflow-hidden transition-[width] duration-200"
+    class="vc-blade relative flex shrink-0 flex-col bg-[color:var(--blade-background-color)] rounded-[var(--blade-border-radius)] shadow-[2px_2px_8px_rgba(126,142,157,0.14)] my-4 mx-2 overflow-hidden transition-[width] duration-200"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
     :class="[$attrs.class, { '!w-full shrink': $isMobile.value || expanded }]"
   >
@@ -79,12 +79,9 @@ defineProps({
 :root {
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
-  --blade-shadow: 2px 2px 8px rgba(126, 142, 157, 0.14);
-  --blade-margin: var(--margin-l) var(--margin-s);
 }
 
-.vc-app_mobile {
-  --blade-margin: 0;
-  --blade-border-radius: 0;
+.vc-app_mobile .vc-blade {
+  @apply m-0 rounded-none;
 }
 </style>

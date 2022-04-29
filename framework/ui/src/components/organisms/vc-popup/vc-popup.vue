@@ -1,11 +1,11 @@
 <template>
   <div class="vc-popup" :class="`vc-popup_${variant}`">
     <div class="vc-popup__wrapper">
-      <div class="vc-popup__inner vc-flex vc-flex-column vc-flex-grow_1">
-        <div
-          class="vc-popup__header vc-flex vc-flex-shrink_0 vc-flex-align_center"
-        >
-          <div class="vc-ellipsis vc-flex-grow_1">
+      <div class="vc-popup__inner">
+        <div class="vc-popup__header">
+          <div
+            class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+          >
             <slot name="title">{{ title }}</slot>
           </div>
           <VcIcon
@@ -16,7 +16,7 @@
           ></VcIcon>
         </div>
 
-        <div class="vc-popup__content vc-flex-grow_1">
+        <div class="vc-popup__content grow basis-0">
           <slot></slot>
         </div>
       </div>
@@ -56,7 +56,7 @@ defineEmits(["close"]);
     }
 
     .vc-popup__inner {
-      @apply max-w-[439px] w-full;
+      @apply max-w-[439px] w-full flex flex-col grow basis-0;
     }
   }
 
@@ -89,7 +89,7 @@ defineEmits(["close"]);
   }
 
   &__header {
-    @apply h-[44px] px-4 bg-[#eef5fa];
+    @apply h-[44px] px-4 bg-[#eef5fa] flex shrink-0 items-center;
 
     &-icon {
       @apply cursor-pointer text-[#a1c0d4];

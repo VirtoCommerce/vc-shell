@@ -13,7 +13,7 @@
       :expanded="expanded"
       :empty="empty"
       :notfound="notfound"
-      class="vc-flex-grow_1"
+      class="grow basis-0"
       :multiselect="true"
       :columns="columns"
       :items="offers"
@@ -35,63 +35,69 @@
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
-        <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+        <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+          {{ itemData.item.name }}
+        </div>
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div
-          class="offers-list__mobile-item vc-padding-vertical_m vc-padding-horizontal_l"
-        >
-          <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
+        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
+          <div class="w-full flex justify-evenly">
             <VcImage
-              class="vc-flex-shrink_0"
+              class="shrink-0"
               aspect="1x1"
               size="s"
               :bordered="true"
               :src="itemData.item.imgSrc"
             ></VcImage>
-            <div class="vc-flex-grow_1 vc-margin-left_m">
-              <div class="vc-font-weight_bold vc-font-size_l">
+            <div class="grow basis-0 ml-3">
+              <div class="font-bold text-lg">
                 {{ itemData.item.name }}
               </div>
             </div>
           </div>
-          <div
-            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-          >
-            <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
+          <div class="mt-3 w-full flex justify-between">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+            >
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
-              <div class="vc-ellipsis vc-margin-top_xs">
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{ itemData.item.sku }}
               </div>
             </div>
-            <div class="vc-ellipsis vc-flex-grow_2">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+            >
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</vc-hint>
-              <div class="vc-ellipsis vc-margin-top_xs">
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{ itemData.item.inStockQuantity }}
               </div>
             </div>
           </div>
-          <div
-            class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-          >
-            <div class="vc-ellipsis vc-flex-grow_2 vc-margin-right_s">
+          <div class="mt-3 w-full flex justify-between">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+            >
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</vc-hint>
-              <div class="vc-ellipsis vc-margin-top_xs">
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{
                   itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
                 }}
               </div>
             </div>
-            <div class="vc-ellipsis vc-flex-grow_2 vc-margin-right_s">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+            >
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</vc-hint>
-              <div class="vc-ellipsis vc-margin-top_xs">
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
-            <div class="vc-ellipsis vc-flex-grow_2">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+            >
               <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</vc-hint>
-              <div class="vc-ellipsis vc-margin-top_xs">
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{
                   itemData.item.createdDate &&
                   moment(itemData.item.createdDate).fromNow()
@@ -458,11 +464,3 @@ defineExpose({
   reload,
 });
 </script>
-
-<style lang="less">
-.offers-list {
-  &__mobile-item {
-    border-bottom: 1px solid #e3e7ec;
-  }
-}
-</style>

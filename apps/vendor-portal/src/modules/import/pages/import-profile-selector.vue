@@ -9,19 +9,19 @@
   >
     <VcContainer class="import">
       <!-- Import profile widgets-->
-      <div class="vc-padding_m">
+      <div class="p-3">
         <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
           <template v-slot="{ slide }">
-            <div class="import__widget-wrapper">
+            <div class="relative">
               <VcStatus
                 variant="success"
                 :outline="false"
-                class="import__widget-progress"
+                class="absolute right-0 -top-[10px]"
                 v-if="slide.inProgress"
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
-                class="import__widget"
+                class="w-max"
                 @click="openImporter(slide.id)"
                 icon="fas fa-file-csv"
                 variant="widget"
@@ -36,7 +36,7 @@
       </div>
       <VcCard
         :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
-        class="import__archive vc-margin_m"
+        class="import__archive m-3"
       >
         <VcTable
           :loading="loading"
@@ -52,8 +52,10 @@
         >
           <!-- Override name column template -->
           <template v-slot:item_name="itemData">
-            <div class="vc-flex vc-flex-column">
-              <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+            <div class="flex flex-col">
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+                {{ itemData.item.name }}
+              </div>
             </div>
           </template>
 
@@ -256,31 +258,15 @@ defineExpose({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 .import {
   & .vc-container__inner {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__widget {
-    width: max-content;
-  }
-
-  &__widget-wrapper {
-    position: relative;
-  }
-
-  &__widget-progress {
-    position: absolute;
-    right: 0;
-    top: -10px;
+    @apply flex flex-col;
   }
 
   &__archive {
     & .vc-card__body {
-      display: flex;
-      flex-direction: column;
+      @apply flex flex-col;
     }
   }
 }

@@ -10,10 +10,10 @@
   >
     <VcContainer>
       <VcRow>
-        <VcCol size="1" class="vc-padding_s">
+        <VcCol size="1" class="p-2">
           <VcCard :header="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TITLE')">
-            <VcRow class="vc-padding_s">
-              <VcCol class="vc-padding_s">
+            <VcRow class="p-2">
+              <VcCol class="p-2">
                 <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.ORDER_REF')"
                   :value="order.number"
@@ -32,7 +32,7 @@
                   :value="order.status"
                 />
                 <VcInfoRow
-                  class="orders-edit__row_line"
+                  class="border-t border-solid border-t-[#e5e5e5] mt-[5px] pt-[21px]"
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.SUBTOTAL')"
                   :value="
                     order.subTotal &&
@@ -56,18 +56,21 @@
             </VcRow>
           </VcCard>
         </VcCol>
-        <VcCol size="1" class="vc-padding_s">
+        <VcCol size="1" class="p-2">
           <VcCard :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
-            <VcCol class="vc-padding_s">
+            <VcCol class="p-2">
               <VcCol
-                class="vc-padding_s"
+                class="p-2"
                 v-for="(item, i) in shippingInfo"
                 :key="`${item.label}_${i}`"
               >
                 <VcInfoRow
                   :label="item.label"
                   :value="item.name"
-                  :class="{ 'orders-edit__row_line': i === 1 }"
+                  :class="{
+                    'border-t border-solid border-t-[#e5e5e5] mt-[5px] pt-[21px]':
+                      i === 1,
+                  }"
                 />
                 <VcInfoRow :value="item.address" v-if="item.address" />
                 <VcInfoRow :value="item.phone" v-if="item.phone" />
@@ -79,7 +82,7 @@
       </VcRow>
 
       <VcRow>
-        <VcCol class="vc-padding_s">
+        <VcCol class="p-2">
           <VcCard :header="$t('ORDERS.PAGES.EDIT.ITEMS_LIST.TITLE')">
             <VcTable
               :multiselect="false"
@@ -89,9 +92,9 @@
               :footer="false"
             >
               <template v-slot:item_name="itemData">
-                <div class="vc-flex vc-flex-column">
+                <div class="flex flex-col">
                   <div>{{ itemData.item.name }}</div>
-                  <VcHint class="vc-margin-top_xs"
+                  <VcHint class="mt-1"
                     >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
                     {{ itemData.item.sku }}</VcHint
                   >
@@ -99,51 +102,61 @@
               </template>
 
               <template v-slot:mobile-item="itemData">
-                <div class="vc-padding-vertical_m vc-padding-horizontal_l">
-                  <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
+                <div class="py-3 px-4">
+                  <div class="w-full flex justify-evenly">
                     <VcImage
-                      class="vc-flex-shrink_0"
+                      class="shrink-0"
                       aspect="1x1"
                       size="s"
                       :bordered="true"
                       :src="itemData.item.imageUrl"
                     ></VcImage>
-                    <div class="vc-flex-grow_1 vc-margin-left_m">
-                      <div class="vc-font-weight_bold vc-font-size_l">
+                    <div class="grow basis-0 ml-3">
+                      <div class="font-bold text-lg">
                         {{ itemData.item.name }}
                       </div>
-                      <VcHint class="vc-margin-top_xs">
+                      <VcHint class="mt-1">
                         {{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
                         {{ itemData.item.sku }}
                       </VcHint>
                     </div>
                   </div>
-                  <div
-                    class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-                  >
-                    <div class="vc-ellipsis vc-flex-grow_2">
+                  <div class="mt-3 w-full flex justify-between">
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                    >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
                       }}</VcHint>
-                      <div class="vc-ellipsis vc-margin-top_xs">
+                      <div
+                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      >
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
-                    <div class="vc-ellipsis vc-flex-grow_2">
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                    >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
                       }}</VcHint>
-                      <div class="vc-ellipsis vc-margin-top_xs">
+                      <div
+                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      >
                         {{
                           itemData.item.price && itemData.item.price.toFixed(2)
                         }}
                       </div>
                     </div>
-                    <div class="vc-ellipsis vc-flex-grow_1">
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+                    >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
                       }}</VcHint>
-                      <div class="vc-ellipsis vc-margin-top_xs">
+                      <div
+                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      >
                         {{
                           itemData.item.extendedPrice &&
                           itemData.item.extendedPrice.toFixed(2)
@@ -337,23 +350,3 @@ const columns: ITableColumns[] = [
   },
 ];
 </script>
-
-<style lang="less">
-.orders-edit {
-  &__row {
-    &_line {
-      border-top: 1px solid #e5e5e5;
-      margin-top: 5px;
-      padding-top: 21px;
-    }
-  }
-}
-.orders-totals {
-  background: #fbfdfe;
-  box-shadow: inset 0px 4px 7px rgba(199, 213, 227, 0.3);
-
-  &__counter {
-    color: #83a6c3;
-  }
-}
-</style>

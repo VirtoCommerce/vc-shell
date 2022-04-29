@@ -8,7 +8,7 @@
       </div>
     </template>
     <div class="w-full h-full box-border flex flex-col items-center">
-      <div class="box-border p-5 grow w-full">
+      <div class="box-border p-5 grow basis-0 w-full">
         <div
           class="bg-contain bg-no-repeat bg-center w-full h-full box-border"
           :style="{ backgroundImage: 'url(' + currentImage.url + ')' }"

@@ -5,20 +5,22 @@
     class="import-popup"
     variant="medium"
   >
-    <div class="vc-flex vc-flex-row vc-flex-justify_space-between">
-      <div class="vc-padding_xl vc-flex vc-flex-align_center">
-        <p class="import-popup__description">
+    <div class="flex flex-row justify-between">
+      <div class="p-5 flex items-center">
+        <p class="m-0 text-[color:var(--basic-black-color)] leading-lg">
           {{ t("IMPORT.PAGES.IMPORTING.POPUP.DESCRIPTION") }}
         </p>
       </div>
       <div
-        class="vc-padding_xl vc-flex vc-flex-align_center import-popup__counter"
+        class="p-5 flex items-center border-l border-solid border-l-[#e3e7ec]"
       >
-        <p class="import-popup__count">
+        <p class="text-lg leading-xl text-[color:var(--basic-black-color)] m-0">
           {{ t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_COUNT") }}:
-          <span class="import-popup__digits">{{ items.length }}</span>
+          <span class="text-[color:var(--primary-color)]">{{
+            items.length
+          }}</span>
           {{ t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_OF") }}
-          <span class="import-popup__digits">{{ total }}</span>
+          <span class="text-[color:var(--primary-color)]">{{ total }}</span>
         </p>
       </div>
     </div>
@@ -29,7 +31,7 @@
       :scrolling="true"
       :footer="false"
     ></VcTable>
-    <div class="vc-padding_xl vc-flex vc-flex-justify_space-between">
+    <div class="p-5 flex justify-between">
       <VcButton :outline="true" @click="$emit('close')">{{
         t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
       }}</VcButton>
@@ -67,32 +69,10 @@ defineProps({
 });
 </script>
 
-<style lang="less" scoped>
+<style lang="scss">
 .import-popup {
   :deep(.vc-popup__content) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__description {
-    margin: 0;
-    color: var(--basic-black-color);
-    line-height: var(--line-height-l);
-  }
-
-  &__counter {
-    border-left: 1px solid #e3e7ec;
-  }
-
-  &__count {
-    font-size: var(--font-size-l);
-    line-height: var(--line-height-xl);
-    color: var(--basic-black-color);
-    margin: 0;
-  }
-
-  &__digits {
-    color: var(--primary-color);
+    @apply flex flex-col;
   }
 }
 </style>

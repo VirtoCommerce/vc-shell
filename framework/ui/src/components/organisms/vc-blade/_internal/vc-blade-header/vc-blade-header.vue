@@ -6,7 +6,7 @@
       <VcIcon :icon="icon" size="xxl"></VcIcon>
     </div>
 
-    <div class="overflow-hidden grow">
+    <div class="overflow-hidden grow basis-0">
       <div
         class="text-[color:var(--blade-header-title-color)] text-lg text-ellipsis overflow-hidden whitespace-nowrap"
         :class="{
@@ -108,7 +108,7 @@ function onClose(): void {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --blade-header-height: 50px;
   --blade-header-background-color: #ffffff;

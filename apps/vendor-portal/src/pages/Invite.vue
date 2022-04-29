@@ -40,7 +40,7 @@
           @keyup.enter="acceptInvitation"
         ></VcInput>
         <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+          <span v-if="$isDesktop.value" class="vc-grow basis-0"></span>
           <vc-button
             variant="primary"
             :disabled="loading || !form.tokenIsValid || !form.isValid"

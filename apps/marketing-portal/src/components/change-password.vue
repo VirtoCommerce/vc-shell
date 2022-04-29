@@ -4,11 +4,11 @@
     :title="$t('SHELL.ACCOUNT.CHANGE_PASSWORD')"
     @close="$emit('close')"
   >
-    <div class="vc-padding_m">
+    <div class="p-3">
       <VcForm>
         <VcInput
           ref="passwordField"
-          class="vc-margin-bottom_l vc-margin-top_xs"
+          class="mb-4 mt-1"
           :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
           :placeholder="
             $t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')
@@ -19,7 +19,7 @@
         ></VcInput>
         <VcInput
           ref="newPasswordField"
-          class="vc-margin-bottom_l vc-margin-top_xs"
+          class="mb-4 mt-1"
           :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
           type="password"
@@ -29,7 +29,7 @@
         ></VcInput>
         <VcInput
           ref="confirmPasswordField"
-          class="vc-margin-bottom_l"
+          class="mb-4"
           :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
           :placeholder="
             $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
@@ -39,14 +39,12 @@
           type="password"
           v-model="form.confirmPassword"
         ></VcInput>
-        <div
-          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
-        >
-          <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+        <div class="flex justify-center items-center pt-2">
+          <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <VcButton
             variant="primary"
             :outline="true"
-            class="vc-margin-right_m"
+            class="mr-3"
             @click="$emit('close')"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.CANCEL") }}
@@ -61,8 +59,7 @@
         </div>
 
         <VcHint
-          class="vc-margin-top_m"
-          style="color: #f14e4e"
+          class="mt-3 text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
         >
@@ -119,5 +116,3 @@ async function validate() {
   form.isValid = form.errors.length == 0;
 }
 </script>
-
-<style lang="less" scoped></style>

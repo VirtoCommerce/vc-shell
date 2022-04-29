@@ -46,7 +46,7 @@
       <template v-if="multivalue">
         <div
           ref="dropdownToggleRef"
-          class="vc-multivalue__field vc-multivalue__field_dictionary grow p-2"
+          class="vc-multivalue__field vc-multivalue__field_dictionary grow basis-0 p-2"
         >
           <VcButton small @click="toggleDropdown">Add +</VcButton>
           <teleport to="#app">
@@ -80,7 +80,7 @@
       </template>
       <template v-else>
         <input
-          class="vc-multivalue__field grow pl-3"
+          class="vc-multivalue__field grow basis-0 pl-3"
           :placeholder="placeholder"
           :type="type"
           :value="value"

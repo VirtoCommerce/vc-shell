@@ -10,7 +10,7 @@
   >
     <VcContainer class="import-new">
       <VcCol>
-        <div class="vc-padding_m">
+        <div class="p-3">
           <VcRow>
             <VcCard
               :header="
@@ -23,10 +23,10 @@
             >
               <!-- File upload -->
               <VcCol
-                class="vc-padding_xl"
+                class="p-5"
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
-                <VcRow class="vc-margin-bottom_l">
+                <VcRow class="mb-4">
                   <a class="vc-link" :href="sampleTemplateUrl">{{
                     $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
                   }}</a>
@@ -50,40 +50,43 @@
                     :uploadedFile="uploadedFile"
                     :isUploaded="isValid"
                     :isStarted="importStarted"
-                    class="vc-padding_xl"
+                    class="p-5"
                   >
                   </import-upload-status>
                 </VcRow>
                 <!-- Uploaded file import status -->
                 <VcCol v-if="importStarted">
-                  <VcRow class="import-new__progress" v-if="inProgress">
-                    <VcCol class="import-new__progress-text">
+                  <VcRow
+                    class="relative p-[40px] before:content-[''] before:[background:linear-gradient(180deg,#ecf2f7_0%,rgba(236,242,246,0)_100%)] before:left-0 before:right-0 before:absolute before:h-[21px] before:top-0"
+                    v-if="inProgress"
+                  >
+                    <VcCol class="text-[#a1c0d4]">
                       {{
                         $t(
                           "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS"
                         )
                       }}
                       <VcProgress
-                        class="vc-margin-top_m"
+                        class="mt-3"
                         :value="importStatus.progress"
                         :variant="progressbarVariant"
                         :key="importStatus.progress"
                       ></VcProgress>
                     </VcCol>
                   </VcRow>
-                  <VcRow class="import-new__upload-border">
+                  <VcRow class="border-t border-solid border-t-[#e5e5e5]">
                     <VcCol
                       v-for="(badge, i) in importBadges"
                       :key="i"
-                      class="vc-flex vc-flex-row vc-flex-align_center vc-padding_xl"
+                      class="flex flex-row items-center p-5"
                     >
                       <vc-icon
                         :icon="badge.icon"
                         size="xxl"
                         :style="{ color: badge.color }"
                       ></vc-icon>
-                      <div class="vc-margin-left_m">
-                        <div class="vc-font-weight_medium">
+                      <div class="ml-3">
+                        <div class="font-medium">
                           {{ badge.title }}
                         </div>
                         <vc-hint>{{ badge.description }}</vc-hint>
@@ -92,16 +95,14 @@
                   </VcRow>
                 </VcCol>
               </VcCol>
-              <vc-hint
-                class="vc-padding_m import-new__error"
-                v-if="errorMessage"
-                >{{ errorMessage }}</vc-hint
-              >
+              <vc-hint class="p-3 import-new__error" v-if="errorMessage">{{
+                errorMessage
+              }}</vc-hint>
             </VcCard>
           </VcRow>
         </div>
         <!-- Skipped details table -->
-        <VcCol class="vc-padding_m" v-if="importStarted">
+        <VcCol class="p-3" v-if="importStarted">
           <VcCard
             class="import-new__skipped"
             :fill="true"
@@ -119,12 +120,12 @@
               :items="importStatus.notification.errors"
             >
               <template v-slot:empty>
-                <VcCol class="vc-flex-align_center vc-flex-justify_center">
+                <VcCol class="items-center justify-center">
                   <vc-icon
                     icon="far fa-check-circle"
-                    class="import-new__no-errors-icon"
+                    class="text-[59px] text-[#87b563]"
                   ></vc-icon>
-                  <div class="import-new__no-errors-text vc-margin-top_l">
+                  <div class="text-[#87b563] mt-4">
                     {{
                       $t(
                         "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.NO_ERRORS"
@@ -135,8 +136,10 @@
               </template>
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
-                <div class="vc-flex vc-flex-column">
-                  <div class="vc-ellipsis">{{ itemData.item }}</div>
+                <div class="flex flex-col">
+                  <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+                    {{ itemData.item }}
+                  </div>
                 </div>
               </template>
             </VcTable>
@@ -144,7 +147,7 @@
         </VcCol>
 
         <!-- History-->
-        <VcCol class="vc-padding_m" v-if="!importStarted">
+        <VcCol class="p-3" v-if="!importStarted">
           <VcCard
             :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
             :fill="true"
@@ -162,8 +165,10 @@
             >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
-                <div class="vc-flex vc-flex-column">
-                  <div class="vc-ellipsis">{{ itemData.item.name }}</div>
+                <div class="flex flex-col">
+                  <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+                    {{ itemData.item.name }}
+                  </div>
                 </div>
               </template>
               <!-- Override finished column template -->
@@ -624,50 +629,14 @@ defineExpose({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --color-error: #f14e4e;
 }
 
 .import-new {
   & .vc-container__inner {
-    display: flex;
-    flex-direction: column;
-  }
-
-  &__upload-border {
-    border-top: 1px solid #e5e5e5;
-  }
-
-  &__progress {
-    position: relative;
-    padding: 40px;
-    &:before {
-      content: "";
-      background: linear-gradient(
-        180deg,
-        #ecf2f7 0%,
-        rgba(236, 242, 246, 0) 100%
-      );
-      left: 0;
-      right: 0;
-      position: absolute;
-      height: 21px;
-      top: 0;
-    }
-
-    &-text {
-      color: #a1c0d4;
-    }
-  }
-
-  &__no-errors-icon {
-    font-size: 59px !important;
-    color: #87b563;
-  }
-
-  &__no-errors-text {
-    color: #87b563;
+    @apply flex flex-col;
   }
 
   &__error {
@@ -676,15 +645,13 @@ defineExpose({
 
   &__skipped {
     & .vc-card__body {
-      display: flex;
-      flex-direction: column;
+      @apply flex flex-col;
     }
   }
 
   &__history {
     & .vc-card__body {
-      display: flex;
-      flex-direction: column;
+      @apply flex flex-col;
     }
   }
 }

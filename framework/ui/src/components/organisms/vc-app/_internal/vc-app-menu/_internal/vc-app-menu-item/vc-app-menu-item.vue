@@ -140,8 +140,6 @@ function onMenuItemClick() {
   --app-menu-item-handler-width: 10px;
   --app-menu-item-background-color-hover: #337599;
   --app-menu-item-hover-radius: 4px;
-  --app-menu-item-title-font-size: var(--font-size-l);
-  --app-menu-item-title-padding: var(--padding-m);
   --app-menu-item-title-color: #465769;
   --app-menu-item-title-color-active: #ffffff;
   --app-menu-item-handler-color: #bdd1df;
@@ -181,9 +179,9 @@ function onMenuItemClick() {
 
   &__title {
     @apply text-ellipsis overflow-hidden whitespace-nowrap
-      text-[length:var(--app-menu-item-title-font-size)]
+      text-lg
       font-medium
-      px-[var(--app-menu-item-title-padding)]
+      px-3
       text-[color:var(--app-menu-item-title-color)]
       [transition:color_0.2s_ease] [transition:opacity_0.1s_ease]
       opacity-100 w-full;

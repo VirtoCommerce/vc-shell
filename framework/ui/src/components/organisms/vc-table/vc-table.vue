@@ -1,5 +1,5 @@
 <template>
-  <div class="relative overflow-hidden flex flex-col grow">
+  <div class="relative overflow-hidden flex flex-col grow basis-0">
     <!-- Header slot with filter and searchbar -->
     <slot
       name="header"
@@ -11,14 +11,9 @@
           activeFilterCount)
       "
     >
-      <div
-        class="vc-table__header vc-flex-shrink_0 vc-flex vc-flex-align_center vc-flex-justify_space-between vc-padding_l"
-      >
+      <div class="shrink-0 flex items-center justify-between p-4">
         <!-- Table filter mobile button -->
-        <div
-          v-if="$isMobile.value && $slots['filters']"
-          class="vc-margin-right_m"
-        >
+        <div v-if="$isMobile.value && $slots['filters']" class="mr-3">
           <VcTableFilter :counter="activeFilterCount">
             <slot name="filters"></slot>
           </VcTableFilter>
@@ -26,7 +21,7 @@
 
         <!-- Table search input -->
         <VcInput
-          class="vc-flex-grow_1"
+          class="grow basis-0"
           :placeholder="searchPlaceholder"
           :clearable="true"
           :modelValue="searchValue"
@@ -34,10 +29,7 @@
         ></VcInput>
 
         <!-- Table filter desktop button -->
-        <div
-          v-if="$isDesktop.value && $slots['filters']"
-          class="vc-margin-left_m"
-        >
+        <div v-if="$isDesktop.value && $slots['filters']" class="ml-3">
           <VcTableFilter
             :title="$t('Filters')"
             :counter="activeFilterCount"
@@ -58,13 +50,13 @@
         v-if="items && items.length"
         ref="scrollContainer"
         :noPadding="true"
-        class="vc-flex-grow_1"
+        class="grow basis-0"
         :usePtr="!!$attrs['onScroll:ptr']"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
         <template v-if="$isMobile.value && $slots['mobile-item']">
-          <div class="vc-table-mobile">
+          <div>
             <VcTableMobileItem
               v-for="item in items"
               :key="item.id"
@@ -95,9 +87,7 @@
                 class="h-[42px] bg-[#f9f9f9] !border-0 shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] box-border sticky top-0 select-none overflow-hidden z-[1]"
                 width="50"
               >
-                <div
-                  class="vc-flex vc-flex-justify_center vc-flex-align_center"
-                >
+                <div class="flex justify-center items-center">
                   <VcCheckbox
                     :modelValue="headerCheckbox"
                     @update:modelValue="processHeaderCheckbox"
@@ -116,16 +106,13 @@
                 @click="$emit('headerClick', item)"
               >
                 <div
-                  class="vc-flex vc-flex-align_center vc-flex-nowrap"
-                  :class="`vc-flex-justify_${item.align || 'start'}`"
+                  class="flex items-center flex-nowrap"
+                  :class="tableAlignment[item.align]"
                 >
                   <div>
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>
                   </div>
-                  <div
-                    v-if="sortField === item.id"
-                    class="vc-table__header-cell_sort vc-margin-left_xs"
-                  >
+                  <div v-if="sortField === item.id" class="ml-1">
                     <VcIcon
                       size="xs"
                       :icon="`fas fa-caret-${
@@ -158,10 +145,8 @@
               @mouseover="calculateActions(item)"
               @mouseleave="closeActions"
             >
-              <td v-if="multiselect" class="vc-table__body-cell" width="50">
-                <div
-                  class="vc-flex vc-flex-justify_center vc-flex-align_center"
-                >
+              <td v-if="multiselect" width="50">
+                <div class="flex justify-center items-center">
                   <VcCheckbox
                     :modelValue="checkboxes[item.id]"
                     @update:modelValue="processCheckbox(item.id, $event)"
@@ -454,6 +439,15 @@ const sortField = computed(() => {
   const entry = props.sort?.split(":");
   return entry && entry.length === 2 && entry[0];
 });
+
+const tableAlignment = {
+  start: "justify-start",
+  end: "justify-end",
+  center: "justify-center",
+  between: "justify-between",
+  around: "justify-around",
+  evenly: "justify-evenly",
+};
 
 const headerCheckbox = computed(() =>
   Object.values(checkboxes.value).every((value) => value)

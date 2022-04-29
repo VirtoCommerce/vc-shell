@@ -126,7 +126,6 @@ defineEmits(["itemClick"]);
   --pagination-item-background-color-hover: #dfeef9;
   --pagination-item-background-color-current: #43b0e6;
   --pagination-item-background-color-disabled: #ffffff;
-  --pagination-item-margin: var(--margin-m);
   --pagination-item-border-radius: 3px;
   --pagination-item-border-color: #eaecf2;
   --pagination-item-border-color-hover: #eaecf2;
@@ -144,7 +143,7 @@ defineEmits(["itemClick"]);
     text-[color:var(--pagination-item-color)]
     box-border cursor-pointer
     transition duration-200
-    mr-[var(--pagination-item-margin)] select-none last:mr-0
+    mr-3 select-none last:mr-0
     hover:bg-[color:var(--pagination-item-background-color-hover)]
     hover:text-[color:var(--pagination-item-color-hover)]
     hover:border hover:border-solid

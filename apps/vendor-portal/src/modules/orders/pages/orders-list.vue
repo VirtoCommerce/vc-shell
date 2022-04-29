@@ -9,7 +9,7 @@
   >
     <!-- Blade contents -->
     <VcTable
-      class="vc-flex-grow_1"
+      class="grow basis-0"
       :expanded="expanded"
       :empty="empty"
       :loading="loading"
@@ -37,13 +37,13 @@
         </h2>
         <VcContainer no-padding>
           <VcRow>
-            <VcCol class="filter-col vc-padding_s">
-              <div class="group-title">
+            <VcCol class="filter-col p-2">
+              <div>
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
                 <VcCheckbox
-                  class="vc-margin-bottom_s"
+                  class="mb-2"
                   :modelValue="filter.status === 'Unpaid'"
                   @update:modelValue="
                     filter.status = $event ? 'Unpaid' : undefined
@@ -51,7 +51,7 @@
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS.UNPAID") }}</VcCheckbox
                 >
                 <VcCheckbox
-                  class="vc-margin-bottom_s"
+                  class="mb-2"
                   :modelValue="filter.status === 'Paid'"
                   @update:modelValue="
                     filter.status = $event ? 'Paid' : undefined
@@ -60,7 +60,7 @@
                 >
 
                 <VcCheckbox
-                  class="vc-margin-bottom_s"
+                  class="mb-2"
                   :modelValue="filter.status === 'Accepted'"
                   @update:modelValue="
                     filter.status = $event ? 'Accepted' : undefined
@@ -68,7 +68,7 @@
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS.ACCEPTED") }}</VcCheckbox
                 >
                 <VcCheckbox
-                  class="vc-margin-bottom_s"
+                  class="mb-2"
                   :modelValue="filter.status === 'Shipped'"
                   @update:modelValue="
                     filter.status = $event ? 'Shipped' : undefined
@@ -76,7 +76,7 @@
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS.SHIPPED") }}</VcCheckbox
                 >
                 <VcCheckbox
-                  class="vc-margin-bottom_s"
+                  class="mb-2"
                   :modelValue="filter.status === 'Cancelled'"
                   @update:modelValue="
                     filter.status = $event ? 'Cancelled' : undefined
@@ -85,15 +85,15 @@
                 >
               </div>
             </VcCol>
-            <VcCol class="filter-col vc-padding_s">
-              <div class="group-title">
+            <VcCol class="p-2">
+              <div>
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.START_DATE')"
                   type="date"
-                  class="vc-margin-bottom_m"
+                  class="mb-3"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
                 ></VcInput>
@@ -107,16 +107,11 @@
             </VcCol>
           </VcRow>
           <VcRow>
-            <VcCol class="vc-padding_s">
-              <div class="vc-flex vc-flex-justify_end">
-                <vc-button
-                  outline
-                  class="vc-margin-right_l"
-                  @click="resetFilters"
-                  >{{
-                    $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</vc-button
-                >
+            <VcCol class="p-2">
+              <div class="flex justify-end">
+                <vc-button outline class="mr-4" @click="resetFilters">{{
+                  $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                }}</vc-button>
                 <vc-button @click="applyFilters">{{
                   $t("ORDERS.PAGES.LIST.FILTERS.APPLY")
                 }}</vc-button>
@@ -129,10 +124,10 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="w-full h-full box-border flex flex-col items-center justify-center"
         >
           <img src="/assets/empty-product.png" />
-          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+          <div class="m-4 text-xl font-medium">
             {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.NO_ORDERS") }}
           </div>
           <vc-button @click="resetSearch">{{
@@ -144,10 +139,10 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="w-full h-full box-border flex flex-col items-center justify-center"
         >
           <img src="/assets/empty-product.png" />
-          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+          <div class="m-4 text-xl font-medium">
             {{ $t("ORDERS.PAGES.LIST.EMPTY") }}
           </div>
         </div>
@@ -161,15 +156,13 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="orders-list__mobile-item vc-padding_m">
-          <div class="vc-fill_width vc-flex vc-flex-justify_evenly">
-            <div class="vc-flex-grow_1">
-              <div class="vc-font-weight_bold vc-font-size_l">
+        <div class="p-3">
+          <div class="w-full flex justify-evenly">
+            <div class="grow basis-0">
+              <div class="font-bold text-lg">
                 {{ itemData.item.number }}
               </div>
-              <VcHint class="vc-margin-top_xs">{{
-                itemData.item.customerName
-              }}</VcHint>
+              <VcHint class="mt-1">{{ itemData.item.customerName }}</VcHint>
             </div>
             <div>
               <VcStatus v-bind="statusStyle(itemData.item.status)">
@@ -178,18 +171,24 @@
             </div>
           </div>
           <div>
-            <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-            >
-              <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
+            <div class="mt-3 w-full flex justify-between">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+              >
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1 vc-margin-right_s">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+              >
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{
                     itemData.item.createdDate &&
                     moment(itemData.item.createdDate).fromNow()

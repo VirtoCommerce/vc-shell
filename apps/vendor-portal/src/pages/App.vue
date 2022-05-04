@@ -75,6 +75,7 @@ import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
+import { TeamList } from "../modules/settings";
 
 const {
   t,
@@ -252,6 +253,18 @@ const menuItems = reactive<IMenuItems[]>([
     icon: "fas fa-file-import",
     isVisible: true,
     component: shallowRef(ImportProfileSelector),
+  },
+  {
+    title: computed(() => t("SETTINGS.MENU.TITLE")),
+    icon: "fas fa-sliders-h",
+    isVisible: true,
+    component: shallowRef(),
+    children: [
+      {
+        title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
+        component: shallowRef(TeamList),
+      },
+    ],
   },
   {
     title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),

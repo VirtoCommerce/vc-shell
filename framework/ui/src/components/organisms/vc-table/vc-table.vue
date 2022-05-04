@@ -229,10 +229,10 @@
         >
           <div
             v-if="notfound"
-            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+            class="w-full h-full box-border flex flex-col items-center justify-center"
           >
             <img v-if="notfound.image" :src="notfound.image" />
-            <div class="vc-margin_l vc-table__empty-text">
+            <div class="m-4 vc-table__empty-text">
               {{ notfound.text }}
             </div>
             <VcButton v-if="notfound.action" @click="notfound.clickHandler">
@@ -243,7 +243,7 @@
         <slot v-else name="empty">
           <div
             v-if="empty"
-            class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+            class="w-full h-full box-border flex flex-col items-center justify-center"
           >
             <img v-if="empty.image" :src="empty.image" />
             <div class="m-4 text-xl font-medium">{{ empty.text }}</div>

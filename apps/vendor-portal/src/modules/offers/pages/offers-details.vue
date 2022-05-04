@@ -112,7 +112,7 @@
 
               <div class="p-4">
                 <!-- SKU field -->
-                <div class="mb-4 vc-flex flex-row items-center">
+                <div class="mb-4 flex flex-row items-center">
                   <VcInput
                     class="grow basis-0"
                     :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
@@ -169,7 +169,8 @@
                     :ref="setPriceRefs"
                     :class="[
                       {
-                        'absolute -top-[8px] -right-[8px]': $isMobile.value,
+                        'border border-solid border-[#e0e8ef] box-border rounded-[4px] relative p-2 m-4':
+                          $isMobile.value,
                       },
                     ]"
                     :key="`${item.id}${i}`"

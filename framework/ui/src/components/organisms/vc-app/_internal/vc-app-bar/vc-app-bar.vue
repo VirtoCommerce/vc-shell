@@ -23,7 +23,7 @@
       <!-- Show back link when more than one blade is opened -->
       <VcLink v-else @click="$emit('backlink:click')">
         <VcIcon icon="fas fa-chevron-left" size="s"></VcIcon>
-        <span class="ml-s text-lg">{{ $t("Back") }}</span>
+        <span class="ml-2 text-lg">{{ $t("Back") }}</span>
       </VcLink>
     </template>
 

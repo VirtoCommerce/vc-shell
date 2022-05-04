@@ -21,6 +21,6 @@ app.config.globalProperties.$isTouch =
 
 export const decorators = [
   () => ({
-    template: "<div class='vc-theme_light' style='font-family: \"Roboto\"; font-size: var(--font-size-m); height: 100vh; width: 100%;'><story/></div>",
+    template: "<div class='vc-theme_light font-roboto text-base h-screen w-full'><story/></div>",
   }),
 ];

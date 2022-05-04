@@ -9,7 +9,7 @@
   >
     <VcContainer class="import">
       <!-- Import profile widgets-->
-      <div class="p-3">
+      <div class="p-3" v-if="importProfiles && importProfiles.length">
         <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
           <template v-slot="{ slide }">
             <div class="relative">

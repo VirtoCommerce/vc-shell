@@ -9,7 +9,7 @@
     ]"
   >
     <!-- Editor label -->
-    <VcLabel v-if="label" class="mb-s" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
     </VcLabel>

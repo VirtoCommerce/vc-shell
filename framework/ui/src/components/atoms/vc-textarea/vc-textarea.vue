@@ -7,7 +7,7 @@
     }"
   >
     <!-- Textarea label -->
-    <VcLabel v-if="label" class="mb-s" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -15,9 +15,9 @@
     </VcLabel>
 
     <!-- Textarea field -->
-    <div class="vc-textarea__field-wrapper vc-flex vc-flex-align_stretch">
+    <div class="vc-textarea__field-wrapper">
       <textarea
-        class="vc-textarea__field vc-padding-horizontal_m vc-padding-vertical_s"
+        class="vc-textarea__field"
         :placeholder="placeholder"
         :value="modelValue"
         :disabled="disabled"
@@ -26,7 +26,7 @@
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-textarea__error vc-margin-top_xs">
+      <VcHint class="vc-textarea__error">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -137,7 +137,7 @@ function onInput(e: InputEvent) {
       border-[color:var(--textarea-border-color)]
       rounded-[var(--textarea-border-radius)]
       box-border
-      bg-[color:var(--textarea-background-color)];
+      bg-[color:var(--textarea-background-color)] flex items-stretch;
   }
 
   &_error &__field-wrapper {
@@ -145,11 +145,14 @@ function onInput(e: InputEvent) {
   }
 
   &__error {
-    @apply text-[color:var(--textarea-border-color-error)];
+    @apply text-[color:var(--textarea-border-color-error)] mt-1;
   }
 
   &__field {
-    @apply w-full resize-y box-border border-none outline-none min-h-[var(--textarea-height)] placeholder:text-[color:var(--textarea-placeholder-color)];
+    @apply w-full resize-y box-border border-none outline-none
+    min-h-[var(--textarea-height)]
+    placeholder:text-[color:var(--textarea-placeholder-color)]
+    px-3 py-2;
 
     &::-webkit-input-placeholder {
       @apply text-[color:var(--textarea-placeholder-color)];

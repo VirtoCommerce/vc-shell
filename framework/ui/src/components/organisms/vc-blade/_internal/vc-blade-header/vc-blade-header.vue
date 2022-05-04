@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-flex-shrink_0 h-[var(--blade-header-height)] bg-[color:var(--blade-header-background-color)] flex items-center py-0 px-4 border-solid border-b border-b-[color:#eaedf3]"
+    class="shrink-0 h-[var(--blade-header-height)] bg-[color:var(--blade-header-background-color)] flex items-center py-0 px-4 border-solid border-b border-b-[color:#eaedf3]"
   >
     <div v-if="icon" class="text-[color:var(--blade-header-icon-color)] mr-3">
       <VcIcon :icon="icon" size="xxl"></VcIcon>

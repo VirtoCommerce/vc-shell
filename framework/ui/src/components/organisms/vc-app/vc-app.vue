@@ -62,7 +62,7 @@
           <!-- Else show workspace blades -->
           <div
             v-else
-            class="workspace px-s w-full overflow-hidden flex grow basis-0"
+            class="workspace px-2 w-full overflow-hidden flex grow basis-0"
           >
             <component
               v-for="(blade, index) in workspace"
@@ -83,7 +83,7 @@
           </div>
 
           <div
-            class="[pointer-events:painted] absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-s box-border"
+            class="[pointer-events:painted] absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-2 box-border"
           >
             <slot name="notifications"></slot>
           </div>
@@ -226,6 +226,7 @@ watch(
           (props.menuItems as IMenuItems[]).find((item) =>
             item.children?.find(
               (child) =>
+                (child.componentOptions as Record<string, string>) &&
                 (child.componentOptions as Record<string, string>).url === ws
             )
           ) ||

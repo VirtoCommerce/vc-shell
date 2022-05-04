@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column grow basis-0">
+  <div class="flex flex-col grow basis-0">
     <div class="flex flex-row items-center">
       <div
         class="w-[30px] h-[41px] bg-center bg-no-repeat bg-[image:var(--file-upload-success-img)]"

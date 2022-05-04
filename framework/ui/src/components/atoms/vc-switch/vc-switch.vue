@@ -15,7 +15,7 @@
         />
         <span class="vc-switch__slider"></span>
       </label>
-      <VcHint class="mt-s w-max" v-if="tooltip">
+      <VcHint class="mt-2 w-max" v-if="tooltip">
         {{ tooltip }}
       </VcHint>
     </div>

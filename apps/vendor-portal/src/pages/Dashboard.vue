@@ -347,21 +347,21 @@
       <!--                    flex-->
       <!--                    justify-center-->
       <!--                    mt-2-->
-      <!--                    mb-l-->
+      <!--                    mb-4-->
       <!--                  "-->
       <!--                >-->
       <!--                  <vc-button-->
       <!--                    small-->
       <!--                    :outline="range.orderAvg !== 'day'"-->
       <!--                    @click="range.orderAvg = 'day'"-->
-      <!--                    class="mr-s"-->
+      <!--                    class="mr-2"-->
       <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button-->
       <!--                  >-->
       <!--                  <vc-button-->
       <!--                    small-->
       <!--                    :outline="range.orderAvg !== 'week'"-->
       <!--                    @click="range.orderAvg = 'week'"-->
-      <!--                    class="mr-s"-->
+      <!--                    class="mr-2"-->
       <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button-->
       <!--                  >-->
       <!--                  <vc-button-->

@@ -20,7 +20,7 @@ const Template: Story = (args) => ({
     return { args };
   },
   template:
-    '<vc-blade v-bind="args"><div class="vc-padding_l">Blade Contents</div></vc-blade>',
+    '<vc-blade v-bind="args"><div class="p-4">Blade Contents</div></vc-blade>',
 });
 
 export const Blade = Template.bind({});

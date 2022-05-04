@@ -78,7 +78,7 @@
                     <VcCol
                       v-for="(badge, i) in importBadges"
                       :key="i"
-                      class="flex flex-row items-center p-5"
+                      class="flex !flex-row items-center p-5"
                     >
                       <vc-icon
                         :icon="badge.icon"

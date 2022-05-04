@@ -9,7 +9,7 @@
     @close="$emit('page:close')"
   >
     <!-- Breadcrumbs -->
-    <div class="vc-padding-left_l vc-padding-top_l">
+    <div class="pl-4 pt-4">
       <VcBreadcrumbs :items="breadcrumbs" />
     </div>
     <!-- Blade contents -->

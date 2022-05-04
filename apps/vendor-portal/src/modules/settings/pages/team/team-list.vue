@@ -8,7 +8,7 @@
     @close="$emit('page:close')"
   >
     <VcTable
-      class="vc-flex-grow_1"
+      class="grow basis-0"
       :loading="loading"
       :expanded="expanded"
       :columns="columns"
@@ -24,8 +24,8 @@
     >
       <!-- Override status column template -->
       <template v-slot:item_isLockedOut="itemData">
-        <div class="vc-flex vc-flex-column">
-          <div class="vc-ellipsis">
+        <div class="flex flex-col">
+          <div class="text-ellipsis overflow-hidden whitespace-nowrap">
             {{
               itemData.item.isLockedOut
                 ? $t("SETTINGS.TEAM.PAGES.LIST.TABLE.STATUS.INACTIVE")

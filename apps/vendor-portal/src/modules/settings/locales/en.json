@@ -1,0 +1,31 @@
+{
+  "SETTINGS": {
+    "MENU": {
+      "TITLE": "Settings",
+      "MY_TEAM": "My team"
+    },
+    "TEAM": {
+      "PAGES": {
+        "LIST": {
+          "TITLE": "My team",
+          "TOOLBAR": {
+            "ADD_MEMBER": "Add member"
+          },
+          "TABLE": {
+            "HEADER": {
+              "FIRST_NAME": "First name",
+              "LAST_NAME": "Last name",
+              "EMAIL": "Email",
+              "ROLE": "Role",
+              "STATUS": "Status"
+            },
+            "STATUS": {
+              "ACTIVE": "Active",
+              "INACTIVE": "Inactive"
+            }
+          }
+        }
+      }
+    }
+  }
+}

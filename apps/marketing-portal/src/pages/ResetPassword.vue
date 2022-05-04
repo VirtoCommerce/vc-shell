@@ -37,7 +37,7 @@
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <VcButton
             variant="primary"
-            :disabled="loading || !form.tokenIsValid || !form.isValid"
+            :disabled="loading || (!form.isValid && !form.tokenIsValid)"
             @click="resetPassword"
           >
             {{ $t("SHELL.PASSWORDRESET.SAVE_PASSWORD") }}
@@ -45,8 +45,7 @@
         </div>
 
         <VcHint
-          class="mt-3"
-          style="color: #f14e4e"
+          class="mt-3 text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
         >

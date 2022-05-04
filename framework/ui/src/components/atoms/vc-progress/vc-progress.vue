@@ -1,12 +1,12 @@
 <template>
   <div
     :class="[
-      'border border-[length:var(--progressbar-border-width)] border-[color:var(--progressbar-border-color)] rounded-[var(--progressbar-border-radius)] h-[var(--progressbar-height)] transition duration-200 box-border bg-[color:var(--progressbar-background-color)]',
+      'vc-progress border border-[length:var(--progressbar-border-width)] border-[color:var(--progressbar-border-color)] rounded-[var(--progressbar-border-radius)] h-[var(--progressbar-height)] transition duration-200 box-border bg-[color:var(--progressbar-background-color)]',
       variant,
     ]"
   >
     <div
-      class="bg-[color:var(--progressbar-foreground-color)] transition duration-200 h-full"
+      class="vc-progress__value bg-[color:var(--progressbar-foreground-color)] transition duration-200 h-full"
       :style="`width: ${value}%`"
     ></div>
   </div>

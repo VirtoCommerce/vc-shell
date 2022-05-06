@@ -29,7 +29,7 @@ export class AuthApiBase {
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
-          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://vcmarketplace-platform.dev.govirto.com";
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
   
       /**
@@ -76,7 +76,7 @@ export class AuthApiBase {
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
-          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://vcmarketplace-platform.dev.govirto.com";
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
   
       /**
@@ -934,7 +934,7 @@ export class AuthApiBase {
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
-          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://vcmarketplace-platform.dev.govirto.com";
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
   
       /**
@@ -1400,7 +1400,7 @@ export class AuthApiBase {
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
-          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://vcmarketplace-platform.dev.govirto.com";
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
   
       /**
@@ -1496,7 +1496,7 @@ export class AuthApiBase {
       constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
           super();
           this.http = http ? http : <any>window;
-          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://vcmarketplace-platform.dev.govirto.com";
+          this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
       }
   
       /**
@@ -1661,14 +1661,6 @@ export class AuthApiBase {
               result200 = SellerUser.fromJS(resultData200);
               return result200;
               });
-          } else if (status === 401) {
-              return response.text().then((_responseText) => {
-              return throwException("Unauthorized", status, _responseText, _headers);
-              });
-          } else if (status === 403) {
-              return response.text().then((_responseText) => {
-              return throwException("Forbidden", status, _responseText, _headers);
-              });
           } else if (status !== 200 && status !== 204) {
               return response.text().then((_responseText) => {
               return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1764,20 +1756,50 @@ export class AuthApiBase {
               result200 = SellerUser.fromJS(resultData200);
               return result200;
               });
-          } else if (status === 401) {
-              return response.text().then((_responseText) => {
-              return throwException("Unauthorized", status, _responseText, _headers);
-              });
-          } else if (status === 403) {
-              return response.text().then((_responseText) => {
-              return throwException("Forbidden", status, _responseText, _headers);
-              });
           } else if (status !== 200 && status !== 204) {
               return response.text().then((_responseText) => {
               return throwException("An unexpected server error occurred.", status, _responseText, _headers);
               });
           }
           return Promise.resolve<SellerUser>(<any>null);
+      }
+  
+      /**
+       * @param ids (optional) 
+       * @return Success
+       */
+      deleteSellerUsers(ids: string[] | null | undefined): Promise<void> {
+          let url_ = this.baseUrl + "/api/vcmp/security/seller/users?";
+          if (ids !== undefined && ids !== null)
+              ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
+          url_ = url_.replace(/[?&]$/, "");
+  
+          let options_ = <RequestInit>{
+              method: "DELETE",
+              headers: {
+              }
+          };
+  
+          return this.transformOptions(options_).then(transformedOptions_ => {
+              return this.http.fetch(url_, transformedOptions_);
+          }).then((_response: Response) => {
+              return this.processDeleteSellerUsers(_response);
+          });
+      }
+  
+      protected processDeleteSellerUsers(response: Response): Promise<void> {
+          const status = response.status;
+          let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+          if (status === 200) {
+              return response.text().then((_responseText) => {
+              return;
+              });
+          } else if (status !== 200 && status !== 204) {
+              return response.text().then((_responseText) => {
+              return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+              });
+          }
+          return Promise.resolve<void>(<any>null);
       }
   
       /**
@@ -2463,10 +2485,15 @@ export class AuthApiBase {
       languageCode?: string | undefined;
   }
   
+  /** Represents property validation rules definition */
   export class PropertyValidationRule implements IPropertyValidationRule {
+      /** Uniquie value flag constrain */
       isUnique?: boolean;
+      /** Down chars count border or null if no defined */
       charCountMin?: number | undefined;
+      /** Upper chars count border or null if no defined */
       charCountMax?: number | undefined;
+      /** Custom regular expression */
       regExp?: string | undefined;
       propertyId?: string | undefined;
       id?: string | undefined;
@@ -2510,26 +2537,37 @@ export class AuthApiBase {
       }
   }
   
+  /** Represents property validation rules definition */
   export interface IPropertyValidationRule {
+      /** Uniquie value flag constrain */
       isUnique?: boolean;
+      /** Down chars count border or null if no defined */
       charCountMin?: number | undefined;
+      /** Upper chars count border or null if no defined */
       charCountMax?: number | undefined;
+      /** Custom regular expression */
       regExp?: string | undefined;
       propertyId?: string | undefined;
       id?: string | undefined;
   }
   
   export class Property implements IProperty {
+      /** Gets or sets a value indicating whether user can change property value. */
       isReadOnly?: boolean;
+      /** Gets or sets a value indicating whether user can change property metadata or remove this property. */
       readonly isManageable?: boolean;
+      /** Gets or sets a value indicating whether this instance is new. A new property should be created on server site instead of trying to update it. */
       isNew?: boolean;
+      /** Gets or sets the catalog id that this product belongs to. */
       catalogId?: string | undefined;
+      /** Gets or sets the category id that this product belongs to. */
       categoryId?: string | undefined;
       name?: string | undefined;
       required?: boolean;
       dictionary?: boolean;
       multivalue?: boolean;
       multilanguage?: boolean;
+      /** Gets or sets a value indicating whether this VirtoCommerce.CatalogModule.Core.Model.Property is hidden. */
       hidden?: boolean;
       valueType?: PropertyValueType;
       type?: PropertyType;
@@ -2659,16 +2697,22 @@ export class AuthApiBase {
   }
   
   export interface IProperty {
+      /** Gets or sets a value indicating whether user can change property value. */
       isReadOnly?: boolean;
+      /** Gets or sets a value indicating whether user can change property metadata or remove this property. */
       isManageable?: boolean;
+      /** Gets or sets a value indicating whether this instance is new. A new property should be created on server site instead of trying to update it. */
       isNew?: boolean;
+      /** Gets or sets the catalog id that this product belongs to. */
       catalogId?: string | undefined;
+      /** Gets or sets the category id that this product belongs to. */
       categoryId?: string | undefined;
       name?: string | undefined;
       required?: boolean;
       dictionary?: boolean;
       multivalue?: boolean;
       multilanguage?: boolean;
+      /** Gets or sets a value indicating whether this VirtoCommerce.CatalogModule.Core.Model.Property is hidden. */
       hidden?: boolean;
       valueType?: PropertyValueType;
       type?: PropertyType;
@@ -2728,14 +2772,19 @@ export class AuthApiBase {
   }
   
   export class CategoryLink implements ICategoryLink {
+      /** Entry identifier which this link belongs to */
       readonly entryId?: string | undefined;
       listEntryId?: string | undefined;
+      /** Gets or sets the type of the list entry. E.g. "product", "category" */
       listEntryType?: string | undefined;
+      /** Product order position in virtual catalog */
       priority?: number;
       catalogId?: string | undefined;
       categoryId?: string | undefined;
       category?: Category;
+      /** Gets the Id of either target Catetory or Catalog */
       readonly targetId?: string | undefined;
+      /** Gets the name of either target Catetory or Catalog */
       readonly name?: string | undefined;
   
       constructor(data?: ICategoryLink) {
@@ -2784,27 +2833,40 @@ export class AuthApiBase {
   }
   
   export interface ICategoryLink {
+      /** Entry identifier which this link belongs to */
       entryId?: string | undefined;
       listEntryId?: string | undefined;
+      /** Gets or sets the type of the list entry. E.g. "product", "category" */
       listEntryType?: string | undefined;
+      /** Product order position in virtual catalog */
       priority?: number;
       catalogId?: string | undefined;
       categoryId?: string | undefined;
       category?: Category;
+      /** Gets the Id of either target Catetory or Catalog */
       targetId?: string | undefined;
+      /** Gets the name of either target Catetory or Catalog */
       name?: string | undefined;
   }
   
   export class SeoInfo implements ISeoInfo {
       name?: string | undefined;
+      /** Slug */
       semanticUrl?: string | undefined;
+      /** head title tag content */
       pageTitle?: string | undefined;
+      /** <meta name="description" /> */
       metaDescription?: string | undefined;
       imageAltDescription?: string | undefined;
+      /** <meta name="keywords" /> */
       metaKeywords?: string | undefined;
+      /** Tenant StoreId which SEO defined */
       storeId?: string | undefined;
+      /** SEO related object id */
       objectId?: string | undefined;
+      /** SEO related object type name */
       objectType?: string | undefined;
+      /** Active/Inactive */
       isActive?: boolean;
       languageCode?: string | undefined;
       createdDate?: Date;
@@ -2874,14 +2936,22 @@ export class AuthApiBase {
   
   export interface ISeoInfo {
       name?: string | undefined;
+      /** Slug */
       semanticUrl?: string | undefined;
+      /** head title tag content */
       pageTitle?: string | undefined;
+      /** <meta name="description" /> */
       metaDescription?: string | undefined;
       imageAltDescription?: string | undefined;
+      /** <meta name="keywords" /> */
       metaKeywords?: string | undefined;
+      /** Tenant StoreId which SEO defined */
       storeId?: string | undefined;
+      /** SEO related object id */
       objectId?: string | undefined;
+      /** SEO related object type name */
       objectType?: string | undefined;
+      /** Active/Inactive */
       isActive?: boolean;
       languageCode?: string | undefined;
       createdDate?: Date;
@@ -2966,11 +3036,16 @@ export class AuthApiBase {
       url?: string | undefined;
       description?: string | undefined;
       sortOrder?: number;
+      /** Gets or sets the asset type identifier. */
       typeId?: string | undefined;
+      /** Gets or sets the asset group name. */
       group?: string | undefined;
+      /** Gets or sets the asset name. */
       name?: string | undefined;
       outerId?: string | undefined;
+      /** Gets or sets the asset language. */
       languageCode?: string | undefined;
+      /** System flag used to mark that object was inherited from other */
       readonly isInherited?: boolean;
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
@@ -3060,11 +3135,16 @@ export class AuthApiBase {
       url?: string | undefined;
       description?: string | undefined;
       sortOrder?: number;
+      /** Gets or sets the asset type identifier. */
       typeId?: string | undefined;
+      /** Gets or sets the asset group name. */
       group?: string | undefined;
+      /** Gets or sets the asset name. */
       name?: string | undefined;
       outerId?: string | undefined;
+      /** Gets or sets the asset language. */
       languageCode?: string | undefined;
+      /** System flag used to mark that object was inherited from other */
       isInherited?: boolean;
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
@@ -3075,11 +3155,17 @@ export class AuthApiBase {
       id?: string | undefined;
   }
   
+  /** Represents one outline element: catalog, category or product. */
   export class OutlineItem implements IOutlineItem {
+      /** Object id */
       id?: string | undefined;
+      /** Object type */
       seoObjectType?: string | undefined;
+      /** All SEO records for the object */
       seoInfos?: SeoInfo[] | undefined;
+      /** The name of current item */
       name?: string | undefined;
+      /** True when this object is linked to the virtual parent. */
       hasVirtualParent?: boolean;
   
       constructor(data?: IOutlineItem) {
@@ -3127,15 +3213,23 @@ export class AuthApiBase {
       }
   }
   
+  /** Represents one outline element: catalog, category or product. */
   export interface IOutlineItem {
+      /** Object id */
       id?: string | undefined;
+      /** Object type */
       seoObjectType?: string | undefined;
+      /** All SEO records for the object */
       seoInfos?: SeoInfo[] | undefined;
+      /** The name of current item */
       name?: string | undefined;
+      /** True when this object is linked to the virtual parent. */
       hasVirtualParent?: boolean;
   }
   
+  /** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
   export class Outline implements IOutline {
+      /** Outline parts */
       items?: OutlineItem[] | undefined;
   
       constructor(data?: IOutline) {
@@ -3175,7 +3269,9 @@ export class AuthApiBase {
       }
   }
   
+  /** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
   export interface IOutline {
+      /** Outline parts */
       items?: OutlineItem[] | undefined;
   }
   
@@ -3184,7 +3280,9 @@ export class AuthApiBase {
       parentId?: string | undefined;
       code?: string | undefined;
       name?: string | undefined;
+      /** Category outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
       readonly outline?: string | undefined;
+      /** Category path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
       path?: string | undefined;
       isVirtual?: boolean;
       level?: number;
@@ -3200,9 +3298,11 @@ export class AuthApiBase {
       seoInfos?: SeoInfo[] | undefined;
       enableDescription?: boolean | undefined;
       descriptions?: CategoryDescription[] | undefined;
+      /** Gets the default image */
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
       outlines?: Outline[] | undefined;
+      /** System flag used to mark that object was inherited from other */
       readonly isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
@@ -3356,7 +3456,9 @@ export class AuthApiBase {
       parentId?: string | undefined;
       code?: string | undefined;
       name?: string | undefined;
+      /** Category outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
       outline?: string | undefined;
+      /** Category path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
       path?: string | undefined;
       isVirtual?: boolean;
       level?: number;
@@ -3372,9 +3474,11 @@ export class AuthApiBase {
       seoInfos?: SeoInfo[] | undefined;
       enableDescription?: boolean | undefined;
       descriptions?: CategoryDescription[] | undefined;
+      /** Gets the default image */
       imgSrc?: string | undefined;
       images?: Image[] | undefined;
       outlines?: Outline[] | undefined;
+      /** System flag used to mark that object was inherited from other */
       isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
@@ -3546,11 +3650,16 @@ export class AuthApiBase {
       url?: string | undefined;
       description?: string | undefined;
       sortOrder?: number;
+      /** Gets or sets the asset type identifier. */
       typeId?: string | undefined;
+      /** Gets or sets the asset group name. */
       group?: string | undefined;
+      /** Gets or sets the asset name. */
       name?: string | undefined;
       outerId?: string | undefined;
+      /** Gets or sets the asset language. */
       languageCode?: string | undefined;
+      /** System flag used to mark that object was inherited from other */
       readonly isInherited?: boolean;
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
@@ -3646,11 +3755,16 @@ export class AuthApiBase {
       url?: string | undefined;
       description?: string | undefined;
       sortOrder?: number;
+      /** Gets or sets the asset type identifier. */
       typeId?: string | undefined;
+      /** Gets or sets the asset group name. */
       group?: string | undefined;
+      /** Gets or sets the asset name. */
       name?: string | undefined;
       outerId?: string | undefined;
+      /** Gets or sets the asset language. */
       languageCode?: string | undefined;
+      /** System flag used to mark that object was inherited from other */
       isInherited?: boolean;
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
@@ -3730,14 +3844,21 @@ export class AuthApiBase {
   }
   
   export class ProductAssociation implements IProductAssociation {
+      /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
       type?: string | undefined;
       priority?: number;
       quantity?: number | undefined;
+      /** Is a primary key of associating object */
       itemId?: string | undefined;
+      /** Each link element can have an associated object like Product, Category, etc.
+  Is a primary key of associated object */
       associatedObjectId?: string | undefined;
+      /** Associated object type : 'product', 'category' etc */
       associatedObjectType?: string | undefined;
       outerId?: string | undefined;
+      /** Display name for associated object */
       readonly associatedObjectName?: string | undefined;
+      /** Associated object image URL */
       readonly associatedObjectImg?: string | undefined;
       tags?: string[] | undefined;
       readonly imgSrc?: string | undefined;
@@ -3814,14 +3935,21 @@ export class AuthApiBase {
   }
   
   export interface IProductAssociation {
+      /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
       type?: string | undefined;
       priority?: number;
       quantity?: number | undefined;
+      /** Is a primary key of associating object */
       itemId?: string | undefined;
+      /** Each link element can have an associated object like Product, Category, etc.
+  Is a primary key of associated object */
       associatedObjectId?: string | undefined;
+      /** Associated object type : 'product', 'category' etc */
       associatedObjectType?: string | undefined;
       outerId?: string | undefined;
+      /** Display name for associated object */
       associatedObjectName?: string | undefined;
+      /** Associated object image URL */
       associatedObjectImg?: string | undefined;
       tags?: string[] | undefined;
       imgSrc?: string | undefined;
@@ -3830,13 +3958,17 @@ export class AuthApiBase {
   }
   
   export class Variation implements IVariation {
+      /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
+      /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
       gtin?: string | undefined;
       name?: string | undefined;
       catalogId?: string | undefined;
       categoryId?: string | undefined;
+      /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
       readonly outline?: string | undefined;
+      /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
       readonly path?: string | undefined;
       readonly titularItemId?: string | undefined;
       mainProductId?: string | undefined;
@@ -3846,6 +3978,7 @@ export class AuthApiBase {
       indexingDate?: Date | undefined;
       maxQuantity?: number | undefined;
       minQuantity?: number | undefined;
+      /** Can be Physical, Digital or Subscription. */
       productType?: string | undefined;
       packageType?: string | undefined;
       weightUnit?: string | undefined;
@@ -3855,8 +3988,10 @@ export class AuthApiBase {
       length?: number | undefined;
       width?: number | undefined;
       enableReview?: boolean | undefined;
+      /** re-downloads limit */
       maxNumberOfDownload?: number | undefined;
       downloadExpiration?: Date | undefined;
+      /** DownloadType: {Standard Product, Software, Music} */
       downloadType?: string | undefined;
       hasUserAgreement?: boolean | undefined;
       shippingType?: string | undefined;
@@ -3864,22 +3999,26 @@ export class AuthApiBase {
       vendor?: string | undefined;
       startDate?: Date;
       endDate?: Date | undefined;
+      /** Product order position in catalog */
       priority?: number;
       outerId?: string | undefined;
       properties?: Property[] | undefined;
       excludedProperties?: ExcludedProperty[] | undefined;
       propertyValues?: PropertyValue[] | undefined;
+      /** Gets the default image for the product. */
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
       assets?: Asset[] | undefined;
       links?: CategoryLink[] | undefined;
       variations?: Variation[] | undefined;
+      /** Each descendant type should override this property to use other object type for seo records */
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
       reviews?: EditorialReview[] | undefined;
       associations?: ProductAssociation[] | undefined;
       referencedAssociations?: ProductAssociation[] | undefined;
       outlines?: Outline[] | undefined;
+      /** System flag used to mark that object was inherited from other */
       readonly isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
@@ -4123,13 +4262,17 @@ export class AuthApiBase {
   }
   
   export interface IVariation {
+      /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
+      /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
       gtin?: string | undefined;
       name?: string | undefined;
       catalogId?: string | undefined;
       categoryId?: string | undefined;
+      /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
       outline?: string | undefined;
+      /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
       path?: string | undefined;
       titularItemId?: string | undefined;
       mainProductId?: string | undefined;
@@ -4139,6 +4282,7 @@ export class AuthApiBase {
       indexingDate?: Date | undefined;
       maxQuantity?: number | undefined;
       minQuantity?: number | undefined;
+      /** Can be Physical, Digital or Subscription. */
       productType?: string | undefined;
       packageType?: string | undefined;
       weightUnit?: string | undefined;
@@ -4148,8 +4292,10 @@ export class AuthApiBase {
       length?: number | undefined;
       width?: number | undefined;
       enableReview?: boolean | undefined;
+      /** re-downloads limit */
       maxNumberOfDownload?: number | undefined;
       downloadExpiration?: Date | undefined;
+      /** DownloadType: {Standard Product, Software, Music} */
       downloadType?: string | undefined;
       hasUserAgreement?: boolean | undefined;
       shippingType?: string | undefined;
@@ -4157,22 +4303,26 @@ export class AuthApiBase {
       vendor?: string | undefined;
       startDate?: Date;
       endDate?: Date | undefined;
+      /** Product order position in catalog */
       priority?: number;
       outerId?: string | undefined;
       properties?: Property[] | undefined;
       excludedProperties?: ExcludedProperty[] | undefined;
       propertyValues?: PropertyValue[] | undefined;
+      /** Gets the default image for the product. */
       imgSrc?: string | undefined;
       images?: Image[] | undefined;
       assets?: Asset[] | undefined;
       links?: CategoryLink[] | undefined;
       variations?: Variation[] | undefined;
+      /** Each descendant type should override this property to use other object type for seo records */
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
       reviews?: EditorialReview[] | undefined;
       associations?: ProductAssociation[] | undefined;
       referencedAssociations?: ProductAssociation[] | undefined;
       outlines?: Outline[] | undefined;
+      /** System flag used to mark that object was inherited from other */
       isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
@@ -4182,13 +4332,17 @@ export class AuthApiBase {
   }
   
   export class CatalogProduct implements ICatalogProduct {
+      /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
+      /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
       gtin?: string | undefined;
       name?: string | undefined;
       catalogId?: string | undefined;
       categoryId?: string | undefined;
+      /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
       readonly outline?: string | undefined;
+      /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
       readonly path?: string | undefined;
       readonly titularItemId?: string | undefined;
       mainProductId?: string | undefined;
@@ -4198,6 +4352,7 @@ export class AuthApiBase {
       indexingDate?: Date | undefined;
       maxQuantity?: number | undefined;
       minQuantity?: number | undefined;
+      /** Can be Physical, Digital or Subscription. */
       productType?: string | undefined;
       packageType?: string | undefined;
       weightUnit?: string | undefined;
@@ -4207,8 +4362,10 @@ export class AuthApiBase {
       length?: number | undefined;
       width?: number | undefined;
       enableReview?: boolean | undefined;
+      /** re-downloads limit */
       maxNumberOfDownload?: number | undefined;
       downloadExpiration?: Date | undefined;
+      /** DownloadType: {Standard Product, Software, Music} */
       downloadType?: string | undefined;
       hasUserAgreement?: boolean | undefined;
       shippingType?: string | undefined;
@@ -4216,22 +4373,26 @@ export class AuthApiBase {
       vendor?: string | undefined;
       startDate?: Date;
       endDate?: Date | undefined;
+      /** Product order position in catalog */
       priority?: number;
       outerId?: string | undefined;
       properties?: Property[] | undefined;
       excludedProperties?: ExcludedProperty[] | undefined;
       propertyValues?: PropertyValue[] | undefined;
+      /** Gets the default image for the product. */
       readonly imgSrc?: string | undefined;
       images?: Image[] | undefined;
       assets?: Asset[] | undefined;
       links?: CategoryLink[] | undefined;
       variations?: Variation[] | undefined;
+      /** Each descendant type should override this property to use other object type for seo records */
       readonly seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
       reviews?: EditorialReview[] | undefined;
       associations?: ProductAssociation[] | undefined;
       referencedAssociations?: ProductAssociation[] | undefined;
       outlines?: Outline[] | undefined;
+      /** System flag used to mark that object was inherited from other */
       readonly isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
@@ -4475,13 +4636,17 @@ export class AuthApiBase {
   }
   
   export interface ICatalogProduct {
+      /** SKU code */
       code?: string | undefined;
       manufacturerPartNumber?: string | undefined;
+      /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
       gtin?: string | undefined;
       name?: string | undefined;
       catalogId?: string | undefined;
       categoryId?: string | undefined;
+      /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
       outline?: string | undefined;
+      /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
       path?: string | undefined;
       titularItemId?: string | undefined;
       mainProductId?: string | undefined;
@@ -4491,6 +4656,7 @@ export class AuthApiBase {
       indexingDate?: Date | undefined;
       maxQuantity?: number | undefined;
       minQuantity?: number | undefined;
+      /** Can be Physical, Digital or Subscription. */
       productType?: string | undefined;
       packageType?: string | undefined;
       weightUnit?: string | undefined;
@@ -4500,8 +4666,10 @@ export class AuthApiBase {
       length?: number | undefined;
       width?: number | undefined;
       enableReview?: boolean | undefined;
+      /** re-downloads limit */
       maxNumberOfDownload?: number | undefined;
       downloadExpiration?: Date | undefined;
+      /** DownloadType: {Standard Product, Software, Music} */
       downloadType?: string | undefined;
       hasUserAgreement?: boolean | undefined;
       shippingType?: string | undefined;
@@ -4509,22 +4677,26 @@ export class AuthApiBase {
       vendor?: string | undefined;
       startDate?: Date;
       endDate?: Date | undefined;
+      /** Product order position in catalog */
       priority?: number;
       outerId?: string | undefined;
       properties?: Property[] | undefined;
       excludedProperties?: ExcludedProperty[] | undefined;
       propertyValues?: PropertyValue[] | undefined;
+      /** Gets the default image for the product. */
       imgSrc?: string | undefined;
       images?: Image[] | undefined;
       assets?: Asset[] | undefined;
       links?: CategoryLink[] | undefined;
       variations?: Variation[] | undefined;
+      /** Each descendant type should override this property to use other object type for seo records */
       seoObjectType?: string | undefined;
       seoInfos?: SeoInfo[] | undefined;
       reviews?: EditorialReview[] | undefined;
       associations?: ProductAssociation[] | undefined;
       referencedAssociations?: ProductAssociation[] | undefined;
       outlines?: Outline[] | undefined;
+      /** System flag used to mark that object was inherited from other */
       isInherited?: boolean;
       createdDate?: Date;
       modifiedDate?: Date | undefined;
@@ -4791,6 +4963,7 @@ export class AuthApiBase {
       code?: string | undefined;
       catalogId?: string | undefined;
       catalogIds?: string[] | undefined;
+      /** Parent category id */
       categoryId?: string | undefined;
       searchOnlyInRoot?: boolean;
       responseGroup?: string | undefined;
@@ -4900,6 +5073,7 @@ export class AuthApiBase {
       code?: string | undefined;
       catalogId?: string | undefined;
       catalogIds?: string[] | undefined;
+      /** Parent category id */
       categoryId?: string | undefined;
       searchOnlyInRoot?: boolean;
       responseGroup?: string | undefined;
@@ -5015,10 +5189,16 @@ export class AuthApiBase {
       categoryIds?: string[] | undefined;
   }
   
+  /** Export property information */
   export class ExportedTypePropertyInfo implements IExportedTypePropertyInfo {
+      /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
       fullName?: string | undefined;
+      /** Property group. Properties can be divided into different groups to simplify selection.
+  Group could be used for grouping property infos. */
       group?: string | undefined;
+      /** User-friendly name for this property */
       displayName?: string | undefined;
+      /** * Reserved for future use */
       isRequired?: boolean;
   
       constructor(data?: IExportedTypePropertyInfo) {
@@ -5056,21 +5236,36 @@ export class AuthApiBase {
       }
   }
   
+  /** Export property information */
   export interface IExportedTypePropertyInfo {
+      /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
       fullName?: string | undefined;
+      /** Property group. Properties can be divided into different groups to simplify selection.
+  Group could be used for grouping property infos. */
       group?: string | undefined;
+      /** User-friendly name for this property */
       displayName?: string | undefined;
+      /** * Reserved for future use */
       isRequired?: boolean;
   }
   
+  /** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
   export class ExportDataQuery implements IExportDataQuery {
+      /** This used to instantiate a data query of this type at export start. */
       readonly exportTypeName?: string | undefined;
+      /** Keyword to search data */
       keyword?: string | undefined;
+      /** Object keys to search data */
       objectIds?: string[] | undefined;
+      /** How to sort the dataset matching a query */
       sort?: string | undefined;
+      /** User selected properties to export */
       includedProperties?: ExportedTypePropertyInfo[] | undefined;
+      /** Paging: skip records */
       skip?: number | undefined;
+      /** Paging: records in one page */
       take?: number | undefined;
+      /** True means preview (lightweight) data is queried, false - full version requested */
       isPreview?: boolean;
   
       constructor(data?: IExportDataQuery) {
@@ -5132,18 +5327,28 @@ export class AuthApiBase {
       }
   }
   
+  /** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
   export interface IExportDataQuery {
+      /** This used to instantiate a data query of this type at export start. */
       exportTypeName?: string | undefined;
+      /** Keyword to search data */
       keyword?: string | undefined;
+      /** Object keys to search data */
       objectIds?: string[] | undefined;
+      /** How to sort the dataset matching a query */
       sort?: string | undefined;
+      /** User selected properties to export */
       includedProperties?: ExportedTypePropertyInfo[] | undefined;
+      /** Paging: skip records */
       skip?: number | undefined;
+      /** Paging: records in one page */
       take?: number | undefined;
+      /** True means preview (lightweight) data is queried, false - full version requested */
       isPreview?: boolean;
   }
   
   export class IExportProviderConfiguration implements IIExportProviderConfiguration {
+      /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
       type?: string | undefined;
   
       constructor(data?: IIExportProviderConfiguration) {
@@ -5176,15 +5381,18 @@ export class AuthApiBase {
   }
   
   export interface IIExportProviderConfiguration {
+      /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
       type?: string | undefined;
   }
   
   export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
+      /** Full type name of exportable entity */
       exportTypeName?: string | undefined;
       dataQuery?: ExportDataQuery;
       providerConfig?: IExportProviderConfiguration;
+      /** Selected export provider name */
       providerName?: string | undefined;
   
       constructor(data?: IRunCategoriesExportCommand) {
@@ -5229,9 +5437,11 @@ export class AuthApiBase {
   export interface IRunCategoriesExportCommand {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
+      /** Full type name of exportable entity */
       exportTypeName?: string | undefined;
       dataQuery?: ExportDataQuery;
       providerConfig?: IExportProviderConfiguration;
+      /** Selected export provider name */
       providerName?: string | undefined;
   }
   
@@ -5283,6 +5493,7 @@ export class AuthApiBase {
       results?: SellerProduct[] | undefined;
   }
   
+  /** Search criteria used for search property dictionary items */
   export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionaryItemSearchCriteria {
       propertyIds?: string[] | undefined;
       catalogIds?: string[] | undefined;
@@ -5391,6 +5602,7 @@ export class AuthApiBase {
       }
   }
   
+  /** Search criteria used for search property dictionary items */
   export interface IPropertyDictionaryItemSearchCriteria {
       propertyIds?: string[] | undefined;
       catalogIds?: string[] | undefined;
@@ -7681,10 +7893,14 @@ export class AuthApiBase {
   export class SearchOrdersQuery implements ISearchOrdersQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
+      /** Search orders with flag IsPrototype */
       withPrototypes?: boolean;
+      /** Search only recurring orders created by subscription */
       onlyRecurring?: boolean;
+      /** Search orders with given subscription */
       subscriptionId?: string | undefined;
       subscriptionIds?: string[] | undefined;
+      /** It used to limit search within an operation (customer order for example) */
       operationId?: string | undefined;
       customerId?: string | undefined;
       customerIds?: string[] | undefined;
@@ -7693,8 +7909,10 @@ export class AuthApiBase {
       parentOperationId?: string | undefined;
       employeeId?: string | undefined;
       storeIds?: string[] | undefined;
+      /** Search by status */
       status?: string | undefined;
       statuses?: string[] | undefined;
+      /** Search by numbers */
       number?: string | undefined;
       numbers?: string[] | undefined;
       startDate?: Date | undefined;
@@ -7875,10 +8093,14 @@ export class AuthApiBase {
   export interface ISearchOrdersQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
+      /** Search orders with flag IsPrototype */
       withPrototypes?: boolean;
+      /** Search only recurring orders created by subscription */
       onlyRecurring?: boolean;
+      /** Search orders with given subscription */
       subscriptionId?: string | undefined;
       subscriptionIds?: string[] | undefined;
+      /** It used to limit search within an operation (customer order for example) */
       operationId?: string | undefined;
       customerId?: string | undefined;
       customerIds?: string[] | undefined;
@@ -7887,8 +8109,10 @@ export class AuthApiBase {
       parentOperationId?: string | undefined;
       employeeId?: string | undefined;
       storeIds?: string[] | undefined;
+      /** Search by status */
       status?: string | undefined;
       statuses?: string[] | undefined;
+      /** Search by numbers */
       number?: string | undefined;
       numbers?: string[] | undefined;
       startDate?: Date | undefined;
@@ -8360,15 +8584,24 @@ export class AuthApiBase {
   export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
       amount?: number;
       currencyCode?: string | undefined;
+      /** Flag represent that current transaction is processed */
       isProcessed?: boolean;
+      /** Date when this transaction was handled */
       processedDate?: Date | undefined;
       processError?: string | undefined;
       processAttemptCount?: number;
+      /** Raw request data */
       requestData?: string | undefined;
+      /** Raw response data */
       responseData?: string | undefined;
+      /** Gateway or VC response status code */
       responseCode?: string | undefined;
+      /** Gateway IP address */
       gatewayIpAddress?: string | undefined;
+      /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+  The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
       type?: string | undefined;
+      /** "Active", "Expired", and "Inactive" or other */
       status?: string | undefined;
       note?: string | undefined;
       createdDate?: Date;
@@ -8443,15 +8676,24 @@ export class AuthApiBase {
   export interface IPaymentGatewayTransaction {
       amount?: number;
       currencyCode?: string | undefined;
+      /** Flag represent that current transaction is processed */
       isProcessed?: boolean;
+      /** Date when this transaction was handled */
       processedDate?: Date | undefined;
       processError?: string | undefined;
       processAttemptCount?: number;
+      /** Raw request data */
       requestData?: string | undefined;
+      /** Raw response data */
       responseData?: string | undefined;
+      /** Gateway or VC response status code */
       responseCode?: string | undefined;
+      /** Gateway IP address */
       gatewayIpAddress?: string | undefined;
+      /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+  The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
       type?: string | undefined;
+      /** "Active", "Expired", and "Inactive" or other */
       status?: string | undefined;
       note?: string | undefined;
       createdDate?: Date;
@@ -8854,6 +9096,7 @@ export class AuthApiBase {
   export class PaymentIn implements IPaymentIn {
       orderId?: string | undefined;
       purpose?: string | undefined;
+      /** Payment method (gateway) code */
       gatewayCode?: string | undefined;
       paymentMethod?: PaymentMethod;
       organizationId?: string | undefined;
@@ -8874,6 +9117,7 @@ export class AuthApiBase {
       discountAmount?: number;
       discountAmountWithTax?: number;
       objectType?: string | undefined;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
@@ -8890,6 +9134,7 @@ export class AuthApiBase {
       sum?: number;
       outerId?: string | undefined;
       cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
       isCancelled?: boolean;
       cancelledDate?: Date | undefined;
       cancelReason?: string | undefined;
@@ -9067,6 +9312,7 @@ export class AuthApiBase {
   export interface IPaymentIn {
       orderId?: string | undefined;
       purpose?: string | undefined;
+      /** Payment method (gateway) code */
       gatewayCode?: string | undefined;
       paymentMethod?: PaymentMethod;
       organizationId?: string | undefined;
@@ -9087,6 +9333,7 @@ export class AuthApiBase {
       discountAmount?: number;
       discountAmountWithTax?: number;
       objectType?: string | undefined;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
@@ -9103,6 +9350,7 @@ export class AuthApiBase {
       sum?: number;
       outerId?: string | undefined;
       cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
       isCancelled?: boolean;
       cancelledDate?: Date | undefined;
       cancelReason?: string | undefined;
@@ -9116,23 +9364,29 @@ export class AuthApiBase {
   }
   
   export class OrderLineItem implements IOrderLineItem {
+      /** Price id */
       priceId?: string | undefined;
       currency?: string | undefined;
+      /** unit price without discount and tax */
       price?: number;
       priceWithTax?: number;
+      /** Resulting price with discount for one unit */
       placedPrice?: number;
       placedPriceWithTax?: number;
       extendedPrice?: number;
       extendedPriceWithTax?: number;
+      /** Gets the value of the single qty line item discount amount */
       discountAmount?: number;
       discountAmountWithTax?: number;
       discountTotal?: number;
       discountTotalWithTax?: number;
       fee?: number;
       feeWithTax?: number;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
+      /** Reserve quantity */
       reserveQuantity?: number;
       quantity?: number;
       productId?: string | undefined;
@@ -9322,23 +9576,29 @@ export class AuthApiBase {
   }
   
   export interface IOrderLineItem {
+      /** Price id */
       priceId?: string | undefined;
       currency?: string | undefined;
+      /** unit price without discount and tax */
       price?: number;
       priceWithTax?: number;
+      /** Resulting price with discount for one unit */
       placedPrice?: number;
       placedPriceWithTax?: number;
       extendedPrice?: number;
       extendedPriceWithTax?: number;
+      /** Gets the value of the single qty line item discount amount */
       discountAmount?: number;
       discountAmountWithTax?: number;
       discountTotal?: number;
       discountTotalWithTax?: number;
       fee?: number;
       feeWithTax?: number;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
+      /** Reserve quantity */
       reserveQuantity?: number;
       quantity?: number;
       productId?: string | undefined;
@@ -9630,7 +9890,9 @@ export class AuthApiBase {
       fulfillmentCenterName?: string | undefined;
       employeeId?: string | undefined;
       employeeName?: string | undefined;
+      /** Current shipment method code */
       shipmentMethodCode?: string | undefined;
+      /** Current shipment option code */
       shipmentMethodOption?: string | undefined;
       shippingMethod?: ShippingMethod;
       customerOrderId?: string | undefined;
@@ -9655,6 +9917,7 @@ export class AuthApiBase {
       fee?: number;
       feeWithTax?: number;
       objectType?: string | undefined;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
@@ -9669,6 +9932,7 @@ export class AuthApiBase {
       sum?: number;
       outerId?: string | undefined;
       cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
       isCancelled?: boolean;
       cancelledDate?: Date | undefined;
       cancelReason?: string | undefined;
@@ -9880,7 +10144,9 @@ export class AuthApiBase {
       fulfillmentCenterName?: string | undefined;
       employeeId?: string | undefined;
       employeeName?: string | undefined;
+      /** Current shipment method code */
       shipmentMethodCode?: string | undefined;
+      /** Current shipment option code */
       shipmentMethodOption?: string | undefined;
       shippingMethod?: ShippingMethod;
       customerOrderId?: string | undefined;
@@ -9905,6 +10171,7 @@ export class AuthApiBase {
       fee?: number;
       feeWithTax?: number;
       objectType?: string | undefined;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
@@ -9919,6 +10186,7 @@ export class AuthApiBase {
       sum?: number;
       outerId?: string | undefined;
       cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
       isCancelled?: boolean;
       cancelledDate?: Date | undefined;
       cancelReason?: string | undefined;
@@ -9941,10 +10209,15 @@ export class AuthApiBase {
       organizationName?: string | undefined;
       employeeId?: string | undefined;
       employeeName?: string | undefined;
+      /** The basis shopping cart id of which the order was created */
       shoppingCartId?: string | undefined;
+      /** Flag determines that the order is the prototype */
       isPrototype?: boolean;
+      /** Internal number of order provided by customer */
       purchaseOrderNumber?: string | undefined;
+      /** Number for subscription  associated with this order */
       subscriptionNumber?: string | undefined;
+      /** Identifier for subscription  associated with this order */
       subscriptionId?: string | undefined;
       objectType?: string | undefined;
       addresses?: OrderAddress[] | undefined;
@@ -9952,9 +10225,13 @@ export class AuthApiBase {
       items?: OrderLineItem[] | undefined;
       shipments?: OrderShipment[] | undefined;
       discounts?: Discount[] | undefined;
+      /** When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
+  Therefore, a discount applying to the order  will occur after tax. 
+  For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100). */
       discountAmount?: number;
       taxDetails?: TaxDetail[] | undefined;
       scopes?: string[] | undefined;
+      /** Grand order total */
       total?: number;
       subTotal?: number;
       subTotalWithTax?: number;
@@ -9983,6 +10260,7 @@ export class AuthApiBase {
       feeTotalWithTax?: number;
       handlingTotal?: number;
       handlingTotalWithTax?: number;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
@@ -9997,6 +10275,7 @@ export class AuthApiBase {
       sum?: number;
       outerId?: string | undefined;
       cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
       isCancelled?: boolean;
       cancelledDate?: Date | undefined;
       cancelReason?: string | undefined;
@@ -10267,10 +10546,15 @@ export class AuthApiBase {
       organizationName?: string | undefined;
       employeeId?: string | undefined;
       employeeName?: string | undefined;
+      /** The basis shopping cart id of which the order was created */
       shoppingCartId?: string | undefined;
+      /** Flag determines that the order is the prototype */
       isPrototype?: boolean;
+      /** Internal number of order provided by customer */
       purchaseOrderNumber?: string | undefined;
+      /** Number for subscription  associated with this order */
       subscriptionNumber?: string | undefined;
+      /** Identifier for subscription  associated with this order */
       subscriptionId?: string | undefined;
       objectType?: string | undefined;
       addresses?: OrderAddress[] | undefined;
@@ -10278,9 +10562,13 @@ export class AuthApiBase {
       items?: OrderLineItem[] | undefined;
       shipments?: OrderShipment[] | undefined;
       discounts?: Discount[] | undefined;
+      /** When a discount is applied to the order, the tax calculation has already been applied, and is reflected in the tax.
+  Therefore, a discount applying to the order  will occur after tax. 
+  For instance, if the cart subtotal is $100, and $15 is the tax subtotal, a cart-wide discount of 10% will yield a total of $105 ($100 subtotal – $10 discount + $15 tax on the original $100). */
       discountAmount?: number;
       taxDetails?: TaxDetail[] | undefined;
       scopes?: string[] | undefined;
+      /** Grand order total */
       total?: number;
       subTotal?: number;
       subTotalWithTax?: number;
@@ -10309,6 +10597,7 @@ export class AuthApiBase {
       feeTotalWithTax?: number;
       handlingTotal?: number;
       handlingTotalWithTax?: number;
+      /** Tax category or type */
       taxType?: string | undefined;
       taxTotal?: number;
       taxPercentRate?: number;
@@ -10323,6 +10612,7 @@ export class AuthApiBase {
       sum?: number;
       outerId?: string | undefined;
       cancelledState?: CancelledState;
+      /** Used by payment provides to indicate that cancellation operation has completed */
       isCancelled?: boolean;
       cancelledDate?: Date | undefined;
       cancelReason?: string | undefined;
@@ -10770,7 +11060,7 @@ export class AuthApiBase {
   export class ValidateSellerUserQuery implements IValidateSellerUserQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      userDetails?: SellerUserDetails;
+      sellerUser?: SellerUser;
   
       constructor(data?: IValidateSellerUserQuery) {
           if (data) {
@@ -10785,7 +11075,7 @@ export class AuthApiBase {
           if (_data) {
               this.sellerId = _data["sellerId"];
               this.sellerName = _data["sellerName"];
-              this.userDetails = _data["userDetails"] ? SellerUserDetails.fromJS(_data["userDetails"]) : <any>undefined;
+              this.sellerUser = _data["sellerUser"] ? SellerUser.fromJS(_data["sellerUser"]) : <any>undefined;
           }
       }
   
@@ -10800,7 +11090,7 @@ export class AuthApiBase {
           data = typeof data === 'object' ? data : {};
           data["sellerId"] = this.sellerId;
           data["sellerName"] = this.sellerName;
-          data["userDetails"] = this.userDetails ? this.userDetails.toJSON() : <any>undefined;
+          data["sellerUser"] = this.sellerUser ? this.sellerUser.toJSON() : <any>undefined;
           return data;
       }
   }
@@ -10808,7 +11098,7 @@ export class AuthApiBase {
   export interface IValidateSellerUserQuery {
       sellerId?: string | undefined;
       sellerName?: string | undefined;
-      userDetails?: SellerUserDetails;
+      sellerUser?: SellerUser;
   }
   
   export class UpdateSellerUserCommand implements IUpdateSellerUserCommand {

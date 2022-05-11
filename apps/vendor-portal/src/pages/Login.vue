@@ -70,22 +70,22 @@
         </template>
       </template>
 
-      <vc-hint
+      <VcHint
         v-if="!signInResult.succeeded"
         class="mt-3"
         style="color: #f14e4e"
       >
         <!-- TODO: stylizing-->
         {{ signInResult.error }}
-      </vc-hint>
-      <vc-hint
+      </VcHint>
+      <VcHint
         v-if="!requestPassResult.succeeded"
         class="mt-3"
         style="color: #f14e4e"
       >
         <!-- TODO: stylizing-->
         {{ requestPassResult.error }}
-      </vc-hint>
+      </VcHint>
     </VcForm>
   </VcLoginForm>
 </template>

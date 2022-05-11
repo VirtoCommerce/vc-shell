@@ -185,7 +185,7 @@
                             v-model:optionsValue="offerDetails.currency"
                             :currency="true"
                             :required="true"
-                            :options="currencies"
+                            :options="currencyList"
                             keyProperty="value"
                             displayProperty="title"
                             :optionsTitle="
@@ -212,7 +212,7 @@
                             v-model="item.salePrice"
                             v-model:optionsValue="offerDetails.currency"
                             :currency="true"
-                            :options="currencies"
+                            :options="currencyList"
                             keyProperty="value"
                             displayProperty="title"
                             :optionsTitle="
@@ -337,29 +337,23 @@ const { t } = useI18n();
 const {
   createOffer,
   offerDetails,
+  currencyList,
   fetchProducts,
   offer,
   loadOffer,
   loading,
   selectOfferProduct,
+  getCurrencies,
 } = useOffer();
 const { debounce } = useFunctions();
 const products = ref<IOfferProduct[]>();
-// const currency = { title: "USD", value: "USD" };
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
-const currencies = [
-  { title: "USD", value: "USD" },
-  { title: "EUR", value: "EUR" },
-  { title: "AED", value: "AED" },
-  { title: "AFN", value: "AFN" },
-  { title: "CHF", value: "CHF" },
-  { title: "CNY", value: "CNY" },
-];
 const { validate } = useForm({ validateOnMount: false });
 
 onMounted(async () => {
+  await getCurrencies();
   if (props.param) {
     await loadOffer({ id: props.param });
   } else {

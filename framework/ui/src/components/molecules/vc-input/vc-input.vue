@@ -422,7 +422,7 @@ function onReset() {
   }
 
   &__error {
-    @apply text-[color:var(--input-border-color-error)] mt-1;
+    @apply mt-1 [--hint-color:var(--input-border-color-error)];
   }
 
   &__desc {

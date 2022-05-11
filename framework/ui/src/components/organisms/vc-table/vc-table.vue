@@ -166,12 +166,12 @@
                 </slot>
               </td>
               <td
-                class="box-border overflow-hidden px-3 overflow-visible"
+                class="box-border overflow-hidden px-3"
                 width="44"
                 v-if="itemActionBuilder"
               >
                 <div
-                  class="vc-table__body-actions-container relative !hidden flex justify-center items-center"
+                  class="vc-table__body-actions-container relative !hidden justify-center items-center"
                 >
                   <button
                     class="text-[#319ed4] cursor-pointer border-none bg-transparent disabled:text-[gray]"

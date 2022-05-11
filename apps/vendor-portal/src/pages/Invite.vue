@@ -40,17 +40,17 @@
           @keyup.enter="acceptInvitation"
         ></VcInput>
         <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="vc-grow basis-0"></span>
+          <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button
             variant="primary"
-            :disabled="loading || !form.tokenIsValid || !form.isValid"
+            :disabled="loading || !form.isValid || !form.tokenIsValid"
             @click="acceptInvitation"
           >
             {{ $t("SHELL.INVITATION.ACCEPT_INVITATION") }}
           </vc-button>
         </div>
 
-        <vc-hint
+        <VcHint
           class="mt-3"
           style="color: #f14e4e"
           v-for="error in form.errors"
@@ -58,7 +58,7 @@
         >
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.INVITATION.ERRORS.${error}`) }}
-        </vc-hint>
+        </VcHint>
       </VcForm>
     </VcLoginForm>
   </div>

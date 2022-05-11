@@ -33,19 +33,16 @@
     ></VcTable>
     <div class="p-5 flex justify-between">
       <VcButton :outline="true" @click="$emit('close')">{{
-        t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
+        $t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
       }}</VcButton>
       <VcButton @click="$emit('startImport')" :disabled="disabled">{{
-        t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT")
+        $t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT")
       }}</VcButton>
     </div>
   </VcPopup>
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@virtoshell/core";
-
-const { t } = useI18n();
 defineProps({
   columns: {
     type: Array,
@@ -67,6 +64,7 @@ defineProps({
     default: false,
   },
 });
+defineEmits(["close"]);
 </script>
 
 <style lang="scss">

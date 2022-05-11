@@ -10,6 +10,7 @@ import {
   CreateNewOfferCommand,
   SearchProductsForNewOfferQuery,
 } from "../../../../api_client";
+import { StoreModuleClient } from "@virtoshell/api-client";
 
 export type TExtOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -20,6 +21,7 @@ export type TExtOfferDetails = IOfferDetails & {
 
 interface IUseOffer {
   offer: Ref<IOffer>;
+  currencyList: Ref<string[]>;
   loading: Ref<boolean>;
   offerDetails: TExtOfferDetails;
   loadOffer: (args: { id: string }) => void;
@@ -27,13 +29,22 @@ interface IUseOffer {
   fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
   createOffer: (details: TExtOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
+  getCurrencies: () => void;
+}
+
+interface IStoreSettings {
+  masterCatalogId: string;
+  vendorPortalUrl: string;
+  storeId: string;
 }
 
 export default (): IUseOffer => {
-  const { user } = useUser();
+  const { user, getAccessToken } = useUser();
   const logger = useLogger();
   const offer = ref<IOffer>({});
   const offerDetails = reactive<TExtOfferDetails>(new OfferDetails());
+  const storeSettings = ref<IStoreSettings>();
+  const currencyList = ref([]);
 
   const loading = ref(false);
 
@@ -132,14 +143,47 @@ export default (): IUseOffer => {
     }
   }
 
+  async function getCurrencies() {
+    const token = await getAccessToken();
+    const client = new StoreModuleClient();
+    client.setAuthToken(await getAccessToken());
+
+    if (token) {
+      try {
+        const result = await fetch("/api/vcmp/settings", {
+          method: "GET",
+          headers: {},
+        });
+
+        await result.text().then((response) => {
+          storeSettings.value = JSON.parse(response);
+        });
+
+        const response = await client.getStoreById(
+          storeSettings.value.masterCatalogId
+        );
+
+        currencyList.value = response.currencies.map((currency) => ({
+          title: currency,
+          value: currency,
+        }));
+      } catch (e) {
+        logger.error(e);
+        throw e;
+      }
+    }
+  }
+
   return {
     offer: computed(() => offer.value),
-    offerDetails,
+    currencyList: computed(() => currencyList.value),
     loading: computed(() => loading.value),
+    offerDetails,
     loadOffer,
     selectOfferProduct,
     createOffer,
     fetchProducts,
     deleteOffer,
+    getCurrencies,
   };
 };

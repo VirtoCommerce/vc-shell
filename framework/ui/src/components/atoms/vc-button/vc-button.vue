@@ -35,7 +35,7 @@ const props = defineProps({
 
   variant: {
     type: String,
-    enum: ["primary", "secondary", "special", "danger", "widget"],
+    enum: ["primary", "secondary", "special", "danger", "widget", "onlytext"],
     default: "primary",
   },
 

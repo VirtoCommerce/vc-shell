@@ -19,7 +19,7 @@
                 }}</vc-button>
               </template>
 
-              <vc-table
+              <VcTable
                 class="w-full h-full box-border"
                 :loading="ordersLoading"
                 :items="orders"
@@ -44,7 +44,7 @@
                 <template v-slot:item_items="itemData">
                   {{ calcQty(itemData.item.items) }}
                 </template>
-              </vc-table>
+              </VcTable>
             </VcCard>
           </VcCol>
 
@@ -60,7 +60,7 @@
                 }}</vc-button>
               </template>
 
-              <vc-table
+              <VcTable
                 class="w-full h-full box-border"
                 :loading="productsLoading"
                 :items="products"
@@ -92,11 +92,11 @@
                     >
                       {{ itemData.item.name }}
                     </div>
-                    <vc-hint
+                    <VcHint
                       class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
                     >
                       {{ itemData.item.path }}
-                    </vc-hint>
+                    </VcHint>
                   </div>
                 </template>
 
@@ -107,7 +107,7 @@
                     class="mb-1"
                   />
                 </template>
-              </vc-table>
+              </VcTable>
             </VcCard>
           </VcCol>
         </VcRow>
@@ -386,7 +386,7 @@
       <!--              >-->
       <!--                <div class="h-px bg-[#e3e7ec]"></div>-->
       <!--                <div class="p-4">-->
-      <!--                  <vc-hint>22.02.2021</vc-hint>-->
+      <!--                  <VcHint>22.02.2021</VcHint>-->
       <!--                  <div class="dashboard-review-header">Piers Stephenson</div>-->
       <!--                  <div>-->
       <!--                    My neighbor Victoria has one of these. She works as a professor-->
@@ -411,7 +411,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from "@virtoshell/core";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import {

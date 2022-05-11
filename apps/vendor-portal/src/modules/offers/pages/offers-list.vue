@@ -68,7 +68,7 @@
             <div
               class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
             >
-              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</vc-hint>
+              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{ itemData.item.inStockQuantity }}
               </div>
@@ -78,7 +78,7 @@
             <div
               class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
             >
-              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</vc-hint>
+              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{
                   itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
@@ -88,7 +88,7 @@
             <div
               class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
             >
-              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</vc-hint>
+              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
@@ -96,7 +96,7 @@
             <div
               class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
             >
-              <vc-hint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</vc-hint>
+              <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
                 {{
                   itemData.item.createdDate &&

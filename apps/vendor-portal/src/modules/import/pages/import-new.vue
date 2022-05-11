@@ -89,15 +89,15 @@
                         <div class="font-medium">
                           {{ badge.title }}
                         </div>
-                        <vc-hint>{{ badge.description }}</vc-hint>
+                        <VcHint>{{ badge.description }}</VcHint>
                       </div>
                     </VcCol>
                   </VcRow>
                 </VcCol>
               </VcCol>
-              <vc-hint class="p-3 import-new__error" v-if="errorMessage">{{
+              <VcHint class="p-3 import-new__error" v-if="errorMessage">{{
                 errorMessage
-              }}</vc-hint>
+              }}</VcHint>
             </VcCard>
           </VcRow>
         </div>

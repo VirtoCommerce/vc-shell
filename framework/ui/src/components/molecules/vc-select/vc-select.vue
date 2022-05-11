@@ -189,6 +189,7 @@ watch(
 function closeDropdown() {
   isOpened.value = false;
   popper.value?.destroy();
+  inputFieldWrapRef.value.style.borderRadius = "var(--select-border-radius)";
   emit("close");
 }
 function toggleDropdown() {

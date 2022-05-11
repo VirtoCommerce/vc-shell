@@ -44,14 +44,14 @@
           </vc-button>
         </div>
 
-        <vc-hint
+        <VcHint
           class="mt-3 text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
         >
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.PASSWORDRESET.ERRORS.${error}`) }}
-        </vc-hint>
+        </VcHint>
       </VcForm>
     </VcLoginForm>
   </div>

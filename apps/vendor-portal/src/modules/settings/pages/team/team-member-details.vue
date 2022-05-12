@@ -311,6 +311,8 @@ const isActive = computed({
 onMounted(async () => {
   if (props.param && props.options.user) {
     handleUserDetailsItem(props.options.user);
+  } else {
+    userDetails.value.role = role.value.id;
   }
 });
 

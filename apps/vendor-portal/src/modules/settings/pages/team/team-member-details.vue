@@ -92,7 +92,7 @@
             />
           </VcCol>
         </VcRow>
-        <VcRow v-else>
+        <VcRow>
           <VcCol>
             <VcSelect
               class="p-3"
@@ -104,9 +104,10 @@
               name="role"
               :options="roles"
               v-model="userDetails.role"
-              :initialItem="role"
+              :initialItem="userDetails.role || role"
               keyProperty="id"
               displayProperty="name"
+              :isDisabled="isOwnerReadonly"
             >
             </VcSelect>
           </VcCol>

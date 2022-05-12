@@ -175,6 +175,14 @@ const roles = [
     id: "vcmp-agent-role",
     name: "Agent",
   },
+  {
+    id: "vcmp-owner-role",
+    name: "Owner",
+  },
+  {
+    id: "vcmp-seller-role",
+    name: "Seller",
+  },
 ];
 
 const bladeToolbar = ref<IBladeToolbar[]>([

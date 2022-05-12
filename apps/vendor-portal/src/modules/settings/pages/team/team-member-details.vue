@@ -41,6 +41,7 @@
               "
               :required="true"
               name="name"
+              :disabled="isOwnerReadonly"
               v-model="userDetails.firstName"
             >
             </VcInput>
@@ -56,6 +57,7 @@
               "
               :required="true"
               name="lastName"
+              :disabled="isOwnerReadonly"
               v-model="userDetails.lastName"
             >
             </VcInput>
@@ -86,6 +88,7 @@
               v-model="isActive"
               :true-value="false"
               :false-value="true"
+              :disabled="isOwnerReadonly"
             />
           </VcCol>
         </VcRow>
@@ -191,6 +194,10 @@ const deleteModal = ref(false);
 const sendInviteStatus = ref(false);
 const errorMessage = ref("");
 
+const isOwnerReadonly = computed(
+  () => userDetails.value.role === "vcmp-owner-role"
+);
+
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "invite",
@@ -266,6 +273,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       deleteModal.value = true;
     },
     isVisible: !!props.param,
+    disabled: computed(() => isOwnerReadonly.value),
   },
   {
     id: "resend",
@@ -282,7 +290,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !!props.param,
-    disabled: !!userDetails.value.email,
+    disabled:
+      computed(() => isOwnerReadonly.value) || !!userDetails.value.email,
   },
 ]);
 
@@ -315,6 +324,7 @@ onMounted(async () => {
     handleUserDetailsItem(props.options.user);
   } else {
     userDetails.value.role = role.value.id;
+    handleUserDetailsItem(userDetails.value);
   }
 });
 

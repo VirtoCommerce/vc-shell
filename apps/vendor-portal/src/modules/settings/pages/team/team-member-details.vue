@@ -80,18 +80,7 @@
             </VcInput>
           </VcCol>
         </VcRow>
-        <VcRow v-if="userDetails.id">
-          <VcCol>
-            <VcSwitch
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
-              v-model="isActive"
-              :true-value="false"
-              :false-value="true"
-              :disabled="isOwnerReadonly"
-            />
-          </VcCol>
-        </VcRow>
+
         <VcRow>
           <VcCol>
             <VcSelect
@@ -112,7 +101,19 @@
             </VcSelect>
           </VcCol>
         </VcRow>
-        <VcRow v-if="!userDetails.id">
+        <VcRow v-if="userDetails.id">
+          <VcCol>
+            <VcSwitch
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
+              v-model="isActive"
+              :true-value="false"
+              :false-value="true"
+              :disabled="isOwnerReadonly"
+            />
+          </VcCol>
+        </VcRow>
+        <VcRow v-else>
           <VcCol>
             <VcSwitch
               v-model="sendInviteStatus"

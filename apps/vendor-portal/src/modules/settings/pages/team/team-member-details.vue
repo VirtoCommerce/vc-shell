@@ -208,6 +208,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
+          } else {
+            errorMessage.value = e.message;
           }
         }
       } else {

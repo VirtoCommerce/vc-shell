@@ -21,15 +21,15 @@
               :outline="false"
               :extend="true"
               variant="light-danger"
-              class="w-full h-full box-border mb-5"
+              class="w-full box-border mb-5"
               v-if="statusText"
             >
               <div class="flex flex-row items-center">
-                <vc-icon
+                <VcIcon
                   icon="fas fa-exclamation-circle"
                   class="product-details__decline-icon"
                   size="xxl"
-                ></vc-icon>
+                ></VcIcon>
                 <div>
                   <div class="font-bold">
                     {{ $t("PRODUCTS.PAGES.DETAILS.DECLINE_REASON") }}

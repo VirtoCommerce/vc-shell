@@ -29,7 +29,7 @@
         "DETAILS": {
           "TITLE": "New member",
           "TOOLBAR": {
-            "INVITE": "Send invitation",
+            "CREATE": "Create",
             "SAVE": "Save",
             "RESET": "Reset",
             "DELETE": "Delete",
@@ -55,7 +55,11 @@
             "IS_ACTIVE": {
               "LABEL": "Is active"
             },
-            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
+            "INVITE": {
+              "LABEL": "Send invite"
+            },
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields.",
+            "ERROR": "Error"
           },
           "POPUP": {
             "ALERT": {

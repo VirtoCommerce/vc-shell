@@ -28,7 +28,7 @@
       v-if="menuItems && menuItems.length"
       class="user-dropdown-button__chevron"
     >
-      <vc-icon icon="fas fa-chevron-down" size="xl"></vc-icon>
+      <VcIcon icon="fas fa-chevron-down" size="xl"></VcIcon>
     </div>
     <div
       v-if="menuItems && accountMenuVisible"

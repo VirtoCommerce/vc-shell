@@ -41,7 +41,7 @@
 
       <!-- Override role column template -->
       <template v-slot:item_role="itemData">
-        {{ roleName(itemData.item.role) }}
+        {{ roleName(itemData.item.role) || "N/A" }}
       </template>
 
       <template v-slot:mobile-item="itemData">
@@ -76,7 +76,7 @@
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL")
               }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
-                {{ itemData.item.email }}
+                {{ itemData.item.email || "N/A" }}
               </div>
             </div>
             <div
@@ -174,14 +174,6 @@ const roles = [
   {
     id: "vcmp-agent-role",
     name: "Agent",
-  },
-  {
-    id: "vcmp-seller-role",
-    name: "Seller",
-  },
-  {
-    id: "vcmp-owner-role",
-    name: "Owner",
   },
 ];
 

@@ -3,6 +3,7 @@ import {
   CreateSellerUserCommand,
   ISearchSellerUsersQuery,
   ISellerUser,
+  ISellerUserDetails,
   SearchSellerUsersQuery,
   SearchSellerUsersResult,
   SellerUser,
@@ -24,9 +25,9 @@ interface IUseTeamMembers {
   readonly modified: Ref<boolean>;
   currentPage: Ref<number>;
   searchQuery: Ref<ISearchSellerUsersQuery>;
-  userDetails: Ref<SellerUser>;
+  userDetails: Ref<SellerUserDetails>;
   getTeamMembers: (query: ISearchSellerUsersQuery) => void;
-  createTeamMember: (details: ISellerUser) => void;
+  createTeamMember: (details: ISellerUser, inviteStatus: boolean) => void;
   handleUserDetailsItem: (user: SellerUser) => void;
   resetEntries: () => void;
   deleteTeamMember: (args: { id: string }) => void;
@@ -85,11 +86,15 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     }
   }
 
-  async function createTeamMember(details: ISellerUser) {
+  async function createTeamMember(
+    details: ISellerUserDetails,
+    inviteStatus: boolean
+  ) {
     const client = await getApiClient();
 
     const command = new CreateSellerUserCommand({
       userDetails: new SellerUserDetails(details),
+      sendInvitation: inviteStatus,
     });
 
     try {
@@ -103,8 +108,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
         return;
       }
 
-      const response = await client.createSellerUser(command);
-      await sendTeamMemberInvitation({ id: response.sellerId });
+      await client.createSellerUser(command);
     } catch (e) {
       logger.error(e);
       throwCreationError(e);
@@ -168,7 +172,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   }
 
   async function handleUserDetailsItem(user: SellerUser) {
-    userDetails.value = Object.assign({}, user);
+    userDetails.value = Object.assign({}, new SellerUserDetails(user));
     userDetailsCopy = _cloneDeep(userDetails.value);
   }
 
@@ -187,7 +191,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   }
 
   async function resetEntries() {
-    userDetails.value = Object.assign({}, userDetailsCopy) as SellerUserDetails;
+    userDetails.value = Object.assign({}, userDetailsCopy);
   }
 
   return {

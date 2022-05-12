@@ -9,89 +9,122 @@
     :toolbarItems="bladeToolbar"
   >
     <VcContainer>
-      <VcRow>
-        <VcCol>
-          <VcInput
-            class="p-3"
-            :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
-            :placeholder="
-              $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')
-            "
-            :required="true"
-            name="name"
-            v-model="userDetails.firstName"
-          >
-          </VcInput>
-        </VcCol>
-      </VcRow>
-      <VcRow>
-        <VcCol>
-          <VcInput
-            class="p-3"
-            :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
-            :placeholder="
-              $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')
-            "
-            :required="true"
-            name="lastName"
-            v-model="userDetails.lastName"
-          >
-          </VcInput>
-        </VcCol>
-      </VcRow>
-      <VcRow>
-        <VcCol>
-          <VcInput
-            class="p-3"
-            :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-            :placeholder="
-              $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')
-            "
-            :required="true"
-            name="email"
-            rules="email"
-            :disabled="!!props.param"
-            v-model="userDetails.email"
-          >
-          </VcInput>
-        </VcCol>
-      </VcRow>
-      <VcRow v-if="userDetails.id">
-        <VcCol>
-          <VcSwitch
-            class="p-3"
-            :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
-            v-model="isActive"
-            :true-value="false"
-            :false-value="true"
-          />
-        </VcCol>
-      </VcRow>
-      <VcRow v-else>
-        <VcCol>
-          <VcSelect
-            class="p-3"
-            :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
-            :placeholder="
-              $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')
-            "
-            :isRequired="true"
-            name="role"
-            :options="roles"
-            v-model="userDetails.role"
-            :initialItem="role"
-            keyProperty="id"
-            displayProperty="name"
-          >
-          </VcSelect>
-        </VcCol>
-      </VcRow>
+      <VcStatus
+        :outline="false"
+        :extend="true"
+        variant="light-danger"
+        class="w-full box-border mb-3"
+        v-if="errorMessage"
+      >
+        <div class="flex flex-row items-center">
+          <VcIcon
+            icon="fas fa-exclamation-circle"
+            class="text-[#ff4a4a] mr-3"
+            size="xxl"
+          ></VcIcon>
+          <div>
+            <div class="font-bold">
+              {{ $t("SETTINGS.TEAM.PAGES.DETAILS.FORM.ERROR") }}
+            </div>
+            <div>{{ errorMessage }}</div>
+          </div>
+        </div>
+      </VcStatus>
+      <VcForm>
+        <VcRow>
+          <VcCol>
+            <VcInput
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
+              :placeholder="
+                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')
+              "
+              :required="true"
+              name="name"
+              v-model="userDetails.firstName"
+            >
+            </VcInput>
+          </VcCol>
+        </VcRow>
+        <VcRow>
+          <VcCol>
+            <VcInput
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
+              :placeholder="
+                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')
+              "
+              :required="true"
+              name="lastName"
+              v-model="userDetails.lastName"
+            >
+            </VcInput>
+          </VcCol>
+        </VcRow>
+        <VcRow>
+          <VcCol>
+            <VcInput
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
+              :placeholder="
+                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')
+              "
+              :required="true"
+              name="email"
+              rules="email"
+              :disabled="!!props.param"
+              v-model="userDetails.email"
+            >
+            </VcInput>
+          </VcCol>
+        </VcRow>
+        <VcRow v-if="userDetails.id">
+          <VcCol>
+            <VcSwitch
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
+              v-model="isActive"
+              :true-value="false"
+              :false-value="true"
+            />
+          </VcCol>
+        </VcRow>
+        <VcRow v-else>
+          <VcCol>
+            <VcSelect
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
+              :placeholder="
+                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')
+              "
+              :isRequired="true"
+              name="role"
+              :options="roles"
+              v-model="userDetails.role"
+              :initialItem="role"
+              keyProperty="id"
+              displayProperty="name"
+            >
+            </VcSelect>
+          </VcCol>
+        </VcRow>
+        <VcRow v-if="!userDetails.id">
+          <VcCol>
+            <VcSwitch
+              v-model="sendInviteStatus"
+              class="p-3"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.INVITE.LABEL')"
+            ></VcSwitch>
+          </VcCol>
+        </VcRow>
+      </VcForm>
     </VcContainer>
   </VcBlade>
   <ErrorPopup
     v-if="isEmailExistsModal"
     @close="isEmailExistsModal = false"
     :email="userDetails.email"
+    :message="errorMessage"
   ></ErrorPopup>
   <WarningPopup
     v-if="deleteModal"
@@ -155,17 +188,19 @@ const title = computed(() =>
 
 const isEmailExistsModal = ref(false);
 const deleteModal = ref(false);
+const sendInviteStatus = ref(false);
+const errorMessage = ref("");
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "invite",
-    title: computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.TOOLBAR.INVITE")),
+    title: computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.TOOLBAR.CREATE")),
     icon: "fas fa-paper-plane",
     async clickHandler() {
       const { valid } = await validate();
       if (valid) {
         try {
-          await createTeamMember(userDetails.value);
+          await createTeamMember(userDetails.value, sendInviteStatus.value);
           emit("parent:call", {
             method: "reload",
           });
@@ -236,11 +271,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-paper-plane",
     async clickHandler() {
       if (props.options && props.options.user && props.options.user.sellerId) {
-        await sendTeamMemberInvitation({ id: props.options.user.sellerId });
-        emit("page:close");
+        try {
+          await sendTeamMemberInvitation({ id: props.options.user.id });
+          emit("page:close");
+        } catch (e) {
+          errorMessage.value = e.message;
+        }
       }
     },
     isVisible: !!props.param,
+    disabled: !!userDetails.value.email,
   },
 ]);
 
@@ -253,19 +293,14 @@ const roles = [
     id: "vcmp-agent-role",
     name: "Agent",
   },
-  {
-    id: "vcmp-seller-role",
-    name: "Seller",
-  },
-  {
-    id: "vcmp-owner-role",
-    name: "Owner",
-  },
 ];
 
-const role = computed(() => roles.find((x) => x.id === userDetails.value.role));
+const role = computed(
+  () =>
+    roles.find((x) => x.id === userDetails.value.role) ||
+    roles.find((x) => x.id === "vcmp-agent-role")
+);
 
-// TODO temporary solution
 const isActive = computed({
   get: () => !userDetails.value.isLockedOut,
   set: (val) => {
@@ -280,9 +315,9 @@ onMounted(async () => {
 });
 
 async function removeUser() {
-  if (userDetails.value.id) {
+  if (props.param) {
     deleteModal.value = false;
-    await deleteTeamMember({ id: userDetails.value.id });
+    await deleteTeamMember({ id: props.param });
     emit("parent:call", {
       method: "reload",
     });
@@ -290,5 +325,3 @@ async function removeUser() {
   }
 }
 </script>
-
-<style lang="scss" scoped></style>

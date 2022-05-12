@@ -260,14 +260,14 @@
                         'p-2 mt-4': !$isMobile.value,
                       }"
                     >
-                      <vc-icon
+                      <VcIcon
                         :class="[
                           { 'pt-4': !$isMobile.value },
                           'text-[#41afe6] cursor-pointer hover:text-[#319ed4]',
                         ]"
                         icon="fas fa-times-circle"
                         @click="removePrice(i)"
-                      ></vc-icon>
+                      ></VcIcon>
                     </div>
                   </VcRow>
                 </div>
@@ -458,7 +458,7 @@ function showProductDetails(id: string) {
   &__pricing-delete-btn {
     @apply absolute -top-[8px] -right-[8px];
 
-    .vc-icon {
+    .VcIcon {
       @apply text-[#ff4a4a];
     }
   }

@@ -80,11 +80,11 @@
                       :key="i"
                       class="flex !flex-row items-center p-5"
                     >
-                      <vc-icon
+                      <VcIcon
                         :icon="badge.icon"
                         size="xxl"
                         :style="{ color: badge.color }"
-                      ></vc-icon>
+                      ></VcIcon>
                       <div class="ml-3">
                         <div class="font-medium">
                           {{ badge.title }}
@@ -121,10 +121,10 @@
             >
               <template v-slot:empty>
                 <VcCol class="items-center justify-center">
-                  <vc-icon
+                  <VcIcon
                     icon="far fa-check-circle"
                     class="text-[59px] text-[#87b563]"
-                  ></vc-icon>
+                  ></VcIcon>
                   <div class="text-[#87b563] mt-4">
                     {{
                       $t(

@@ -33,6 +33,7 @@ interface IUseOffer {
 }
 
 interface IStoreSettings {
+  availCurencies: string[];
   masterCatalogId: string;
   vendorPortalUrl: string;
   storeId: string;
@@ -159,14 +160,12 @@ export default (): IUseOffer => {
           storeSettings.value = JSON.parse(response);
         });
 
-        const response = await client.getStoreById(
-          storeSettings.value.masterCatalogId
+        currencyList.value = storeSettings.value.availCurencies.map(
+          (currency) => ({
+            title: currency,
+            value: currency,
+          })
         );
-
-        currencyList.value = response.currencies.map((currency) => ({
-          title: currency,
-          value: currency,
-        }));
       } catch (e) {
         logger.error(e);
         throw e;

@@ -324,6 +324,13 @@ const isActive = computed({
 onMounted(async () => {
   if (props.param && props.options.user) {
     handleUserDetailsItem(props.options.user);
+
+    if (props.options.user.role === "vcmp-owner-role") {
+      roles.push({
+        id: "vcmp-owner-role",
+        name: "Owner",
+      });
+    }
   } else {
     userDetails.value.role = role.value.id;
     handleUserDetailsItem(userDetails.value);

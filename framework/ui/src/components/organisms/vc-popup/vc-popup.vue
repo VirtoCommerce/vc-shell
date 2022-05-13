@@ -1,11 +1,11 @@
 <template>
-  <div class="vc-popup" :class="['vc-popup', `vc-popup_${variant}`]">
+  <div class="vc-popup" :class="`vc-popup_${variant}`">
     <div class="vc-popup__wrapper">
-      <div class="vc-popup__inner vc-flex vc-flex-column vc-flex-grow_1">
-        <div
-          class="vc-popup__header vc-flex vc-flex-shrink_0 vc-flex-align_center"
-        >
-          <div class="vc-ellipsis vc-flex-grow_1">
+      <div class="vc-popup__inner">
+        <div class="vc-popup__header">
+          <div
+            class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+          >
             <slot name="title">{{ title }}</slot>
           </div>
           <VcIcon
@@ -16,7 +16,7 @@
           ></VcIcon>
         </div>
 
-        <div class="vc-popup__content vc-flex-grow_1">
+        <div class="vc-popup__content grow basis-0">
           <slot></slot>
         </div>
       </div>
@@ -46,85 +46,53 @@ defineProps({
 defineEmits(["close"]);
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-popup {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 9999;
-  background: rgba(31, 40, 50, 0.58);
+  @apply fixed top-0 right-0 bottom-0 left-0 z-[9999] bg-[rgba(31,40,50,0.58)];
 
   &_small {
     .vc-popup__wrapper {
-      max-height: fit-content;
-      align-items: center;
-      display: flex;
-      flex: 0 0 auto;
-      flex-direction: inherit;
-      justify-content: center;
+      @apply max-h-fit items-center flex grow-0 shrink-0 basis-auto [flex-direction:inherit] justify-center;
     }
 
     .vc-popup__inner {
-      max-width: 439px;
-      width: 100%;
+      @apply max-w-[439px] w-full flex flex-col grow basis-0;
     }
   }
 
   &_medium {
     .vc-popup__wrapper {
-      max-height: 75vh;
+      @apply max-h-[75vh];
     }
   }
 
   &_fullscreen {
     .vc-popup__wrapper {
-      max-height: 100vh;
+      @apply max-h-[100vh];
     }
   }
 
   &__wrapper {
-    position: fixed;
-    top: 50%;
-    transform: translateY(-50%);
-    right: 0;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex: 1 1 auto;
-    flex-direction: column;
-    height: 100%;
+    @apply fixed top-2/4 -translate-y-2/4 right-0 bottom-0 left-0 flex grow shrink basis-auto flex-col h-full;
 
     .vc-app_phone & {
-      max-height: 100vh;
+      @apply max-h-[100vh];
     }
   }
 
   &__inner {
-    flex: 1 1 auto;
-    margin: 40px;
-    box-sizing: border-box;
-    background: white;
-    border-radius: 5px;
-    overflow: hidden;
-    flex-grow: 1;
-    position: relative;
+    @apply grow shrink basis-auto m-[40px] box-border bg-white rounded-[5px] overflow-hidden relative;
 
     .vc-app_phone & {
-      margin: 0;
-      border-radius: 0;
+      @apply m-0 rounded-none;
     }
   }
 
   &__header {
-    height: 44px;
-    padding: 0 var(--padding-l);
-    background-color: #eef5fa;
+    @apply h-[44px] px-4 bg-[#eef5fa] flex shrink-0 items-center;
 
     &-icon {
-      cursor: pointer;
-      color: #a1c0d4;
+      @apply cursor-pointer text-[#a1c0d4];
     }
   }
 }

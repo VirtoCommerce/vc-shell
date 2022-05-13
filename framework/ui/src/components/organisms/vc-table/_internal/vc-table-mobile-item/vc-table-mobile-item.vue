@@ -1,7 +1,7 @@
 <template>
   <div
-    class="vc-table-mobile__item"
-    :class="{ 'vc-table-mobile__item_moving': isMoving }"
+    class="relative flex flex-nowrap items-stretch transition duration-200"
+    :class="{ 'transition-none': isMoving }"
     :style="`transform: translateX(${offsetX}px)`"
     @click="$emit('click')"
     @touchstart="touchStart"
@@ -11,34 +11,34 @@
   >
     <!-- Left swipe actions-->
     <div
-      class="vc-table-mobile__item-actions"
+      class="flex-shrink-0 w-[80px] flex flex-col [justify-content:stretch] bg-[#a9bfd2]"
       v-if="leftSwipeActions && leftSwipeActions.length"
     >
       <div
-        class="vc-table-mobile__item-action"
+        class="flex grow basis-[1] flex-col justify-center items-center text-white"
         :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].variant}`]"
         @click.stop="leftSwipeActions[0].clickHandler(item)"
       >
         <VcIcon :icon="leftSwipeActions[0].icon"></VcIcon>
-        <div class="vc-table-mobile__item-action-text">
+        <div class="mt-1 text-lg">
           {{ leftSwipeActions[0].title }}
         </div>
       </div>
     </div>
 
-    <div class="vc-table-mobile__item-content">
+    <div class="flex-shrink-0 w-full">
       <!-- Mobile item slot content -->
       <slot></slot>
     </div>
 
     <!-- Item actions -->
     <div
-      class="vc-table-mobile__item-actions"
+      class="flex-shrink-0 w-[80px] flex flex-col [justify-content:stretch] bg-[#a9bfd2]"
       v-if="rightSwipeActions && rightSwipeActions.length"
     >
       <!-- First available action -->
       <div
-        class="vc-table-mobile__item-action"
+        class="flex grow basis-[1] flex-col justify-center items-center text-white"
         :class="[
           `vc-table-mobile__item-action_${rightSwipeActions[0].variant}`,
         ]"
@@ -53,14 +53,14 @@
       <!-- Second available action -->
       <div
         v-if="rightSwipeActions.length === 2"
-        class="vc-table-mobile__item-action"
+        class="flex grow basis-[1] flex-col justify-center items-center text-white"
         :class="[
           `vc-table-mobile__item-action_${rightSwipeActions[1].variant}`,
         ]"
         @click.stop="rightSwipeActions[1].clickHandler(item)"
       >
         <VcIcon :icon="rightSwipeActions[1].icon"></VcIcon>
-        <div class="vc-table-mobile__item-action-text">
+        <div class="mt-1 text-lg">
           {{ rightSwipeActions[1].title }}
         </div>
       </div>
@@ -68,38 +68,44 @@
       <!-- Other available actions -->
       <template v-if="rightSwipeActions.length > 2">
         <div
-          class="vc-table-mobile__item-action"
+          class="flex grow basis-[1] flex-col justify-center items-center text-white"
           @click.stop="isActionsPopupVisible = true"
         >
           <VcIcon icon="fas fa-ellipsis-h"></VcIcon>
-          <div class="vc-table-mobile__item-action-text">More</div>
+          <div class="mt-1 text-lg">More</div>
         </div>
 
         <!-- Actions popup -->
         <teleport to="body" v-if="isActionsPopupVisible">
-          <div class="vc-table-mobile__item-actions-popup">
-            <div class="vc-table-mobile__item-actions-popup-inner">
-              <div class="vc-table-mobile__item-actions-popup-header">
-                <span class="vc-table-mobile__item-actions-popup-title">
+          <div
+            class="absolute left-0 top-0 right-0 bottom-0 bg-[rgba(107,121,135,0.15)] flex items-center justify-center z-[99]"
+          >
+            <div
+              class="bg-white rounded-[6px] overflow-hidden p-5 max-w-[80%] w-[350px] border border-solid border-[#eef0f2] box-border shadow-[1px_1px_22px_rgba(126,142,157,0.2)]"
+            >
+              <div class="flex w-full items-center">
+                <span
+                  class="grow text-[#2e3d4e] text-[19px] font-semibold tracking-[-0.01em]"
+                >
                   {{ $t("All actions") }}
                 </span>
                 <VcIcon
-                  class="vc-table-mobile__item-actions-popup-close"
+                  class="text-[#c2d7e4]"
                   icon="fas fa-times-circle"
                   size="xl"
                   @click="isActionsPopupVisible = false"
                 ></VcIcon>
               </div>
 
-              <div class="vc-table-mobile__item-actions-popup-items">
+              <div class="flex flex-wrap my-5 justify-between">
                 <div
                   v-for="(itemAction, i) in itemActions"
                   :key="i"
-                  class="vc-table-mobile__item-actions-popup-item"
+                  class="flex grow shrink-0 flex-col items-center text-[#319ed4] my-2 box-border p-1 max-w-[80px]"
                   @click="itemAction.clickHandler(item)"
                 >
                   <VcIcon :icon="itemAction.icon" size="xl"></VcIcon>
-                  <div class="vc-table-mobile__item-actions-popup-item-title">
+                  <div class="text-base mt-2 text-center">
                     {{ itemAction.title }}
                   </div>
                 </div>
@@ -247,122 +253,15 @@ function touchCancel(): void {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-table-mobile__item {
-  position: relative;
-  display: flex;
-  flex-wrap: nowrap;
-  align-items: stretch;
-  transition: transform ease 0.2s;
-
-  &_moving {
-    transition: none;
-  }
-
-  &-content {
-    flex-shrink: 0;
-    width: 100%;
-  }
-
-  &-actions {
-    flex-shrink: 0;
-    width: 80px;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    background-color: #a9bfd2;
-
-    &-popup {
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(107, 121, 135, 0.15);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 99;
-
-      &-inner {
-        background: white;
-        border-radius: 6px;
-        overflow: hidden;
-        padding: var(--padding-xl);
-        max-width: 80%;
-        width: 350px;
-        border: 1px solid #eef0f2;
-        box-sizing: border-box;
-        box-shadow: 1px 1px 22px rgba(126, 142, 157, 0.2);
-      }
-
-      &-header {
-        display: flex;
-        width: 100%;
-        align-items: center;
-      }
-
-      &-title {
-        flex-grow: 1;
-        color: #2e3d4e;
-        font-size: 19px;
-        font-weight: 600;
-        letter-spacing: -0.01em;
-      }
-
-      &-close {
-        color: #c2d7e4;
-      }
-
-      &-items {
-        display: flex;
-        flex-wrap: wrap;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        justify-content: space-between;
-      }
-
-      &-item {
-        display: flex;
-        flex-grow: 1;
-        flex-shrink: 0;
-        flex-direction: column;
-        align-items: center;
-        color: #319ed4;
-        margin: 8px 0;
-        box-sizing: border-box;
-        padding: 4px;
-        max-width: 80px;
-
-        &-title {
-          font-size: 13px;
-          margin-top: 8px;
-          text-align: center;
-        }
-      }
-    }
-  }
-
   &-action {
-    display: flex;
-    flex-grow: 1;
-    flex-basis: 1;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-
-    &-text {
-      margin-top: 4px;
-      font-size: 14px;
-    }
-
     &_success {
-      background-color: #87b563;
+      @apply bg-[#87b563];
     }
 
     &_danger {
-      background-color: #ff4a4a;
+      @apply bg-[#ff4a4a];
     }
   }
 }

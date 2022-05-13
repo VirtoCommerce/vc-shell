@@ -1,6 +1,6 @@
 <template>
   <div
-    class="language-selector"
+    class="relative"
     v-click-outside="
       () => {
         isDropActive = false;
@@ -11,15 +11,21 @@
   >
     <div
       :class="[
-        { 'language-selector__button_active': isDropActive },
-        'language-selector__button',
+        {
+          'shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] bg-white z-[10000]':
+            isDropActive,
+        },
+        'relative h-full flex items-center justify-center w-[var(--app-bar-button-width)] border-l border-solid border-l-[color:var(--app-bar-button-border-color)] cursor-pointer text-[color:var(--app-bar-button-color)] bg-[color:var(--app-bar-button-background-color)] transition-[color] duration-200 hover:text-[color:var(--app-bar-button-color-hover)] bg-[color:var(--app-bar-button-background-color-hover)]',
       ]"
     >
       <VcIcon icon="fas fa-globe" size="xl"></VcIcon>
     </div>
-    <div class="language-selector__dropdown" v-if="isDropActive">
+    <div
+      class="absolute right-0 top-[var(--app-bar-height)] bg-white z-[9999] shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] w-min"
+      v-if="isDropActive"
+    >
       <div
-        class="language-selector__dropdown-item"
+        class="p-3 text-lg text-black border-l border-solid border-l-[#eef0f2] border-b border-b-[#eef0f2] white cursor-pointer hover:bg-[#eff7fc]"
         v-for="(lang, i) in languageItems"
         :key="i"
         @click="
@@ -51,59 +57,3 @@ defineProps({
 
 const isDropActive = ref(false);
 </script>
-
-<style lang="less" scoped>
-.language-selector {
-  position: relative;
-
-  &__button {
-    position: relative;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--app-bar-button-width);
-    border-left: 1px solid var(--app-bar-button-border-color);
-    cursor: pointer;
-    color: var(--app-bar-button-color);
-    background-color: var(--app-bar-button-background-color);
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--app-bar-button-color-hover);
-      background-color: var(--app-bar-button-background-color-hover);
-    }
-
-    &_active {
-      box-shadow: 0 -6px 6px white, 1px 1px 22px rgba(126, 142, 157, 0.2);
-      clip-path: inset(0px -20px 0px -20px);
-      background: #ffffff;
-      z-index: 10000;
-    }
-  }
-
-  &__dropdown {
-    position: absolute;
-    right: 0;
-    top: var(--app-bar-height);
-    background: white;
-    z-index: 9999;
-    box-shadow: 0 -6px 6px white, 1px 1px 22px rgba(126, 142, 157, 0.2);
-    width: min-content;
-  }
-
-  &__dropdown-item {
-    padding: var(--padding-m);
-    font-size: var(--font-size-l);
-    color: #000000;
-    border-left: 1px solid #eef0f2;
-    border-bottom: 1px solid #eef0f2;
-    background-color: white;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #eff7fc;
-    }
-  }
-}
-</style>

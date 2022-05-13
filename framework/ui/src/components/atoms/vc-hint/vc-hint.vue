@@ -1,16 +1,11 @@
 <template>
-  <div class="vc-hint">
+  <div class="text-[color:var(--hint-color)] text-xs">
     <slot></slot>
   </div>
 </template>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --hint-color: #a5a5a5;
-}
-
-.vc-hint {
-  color: var(--hint-color);
-  font-size: var(--font-size-xs);
 }
 </style>

@@ -10,11 +10,11 @@
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
-      <div class="vc-flex-grow_1">
-        <div class="vc-padding_l">
+      <div class="grow basis-0">
+        <div class="p-4">
           <VcForm>
             <VcInput
-              class="vc-margin-bottom_l"
+              class="mb-4"
               :required="true"
               v-model="contentItemDetails.name"
               :label="
@@ -32,7 +32,7 @@
             >
             </VcInput>
             <VcTextarea
-              class="vc-margin-bottom_l"
+              class="mb-4"
               v-model="contentItemDetails.description"
               rules="min:3"
               name="description"
@@ -56,7 +56,7 @@
               :optionsGetter="loadDictionaries"
               :getter="getPropertyValue"
               :setter="setPropertyValue"
-              class="vc-margin-bottom_l"
+              class="mb-4"
             ></VcDynamicProperty>
           </VcForm>
         </div>
@@ -274,5 +274,3 @@ defineExpose({
   title,
 });
 </script>
-
-<style lang="less" scoped></style>

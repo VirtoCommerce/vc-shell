@@ -35,13 +35,14 @@ export class AuthApiBase {
       /**
        * @return Success
        */
-      getVcmpSettings(): Promise<void> {
+      getVcmpSettings(): Promise<MarketplaceOptions> {
           let url_ = this.baseUrl + "/api/vcmp/settings";
           url_ = url_.replace(/[?&]$/, "");
   
           let options_ = <RequestInit>{
               method: "GET",
               headers: {
+                  "Accept": "text/plain"
               }
           };
   
@@ -52,19 +53,22 @@ export class AuthApiBase {
           });
       }
   
-      protected processGetVcmpSettings(response: Response): Promise<void> {
+      protected processGetVcmpSettings(response: Response): Promise<MarketplaceOptions> {
           const status = response.status;
           let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
           if (status === 200) {
               return response.text().then((_responseText) => {
-              return;
+              let result200: any = null;
+              let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+              result200 = MarketplaceOptions.fromJS(resultData200);
+              return result200;
               });
           } else if (status !== 200 && status !== 204) {
               return response.text().then((_responseText) => {
               return throwException("An unexpected server error occurred.", status, _responseText, _headers);
               });
           }
-          return Promise.resolve<void>(<any>null);
+          return Promise.resolve<MarketplaceOptions>(<any>null);
       }
   }
   
@@ -1885,6 +1889,62 @@ export class AuthApiBase {
           }
           return Promise.resolve<void>(<any>null);
       }
+  }
+  
+  export class MarketplaceOptions implements IMarketplaceOptions {
+      masterCatalogId!: string;
+      vendorPortalUrl?: string | undefined;
+      availCurencies?: string[] | undefined;
+      storeId!: string;
+  
+      constructor(data?: IMarketplaceOptions) {
+          if (data) {
+              for (var property in data) {
+                  if (data.hasOwnProperty(property))
+                      (<any>this)[property] = (<any>data)[property];
+              }
+          }
+      }
+  
+      init(_data?: any) {
+          if (_data) {
+              this.masterCatalogId = _data["masterCatalogId"];
+              this.vendorPortalUrl = _data["vendorPortalUrl"];
+              if (Array.isArray(_data["availCurencies"])) {
+                  this.availCurencies = [] as any;
+                  for (let item of _data["availCurencies"])
+                      this.availCurencies!.push(item);
+              }
+              this.storeId = _data["storeId"];
+          }
+      }
+  
+      static fromJS(data: any): MarketplaceOptions {
+          data = typeof data === 'object' ? data : {};
+          let result = new MarketplaceOptions();
+          result.init(data);
+          return result;
+      }
+  
+      toJSON(data?: any) {
+          data = typeof data === 'object' ? data : {};
+          data["masterCatalogId"] = this.masterCatalogId;
+          data["vendorPortalUrl"] = this.vendorPortalUrl;
+          if (Array.isArray(this.availCurencies)) {
+              data["availCurencies"] = [];
+              for (let item of this.availCurencies)
+                  data["availCurencies"].push(item);
+          }
+          data["storeId"] = this.storeId;
+          return data;
+      }
+  }
+  
+  export interface IMarketplaceOptions {
+      masterCatalogId: string;
+      vendorPortalUrl?: string | undefined;
+      availCurencies?: string[] | undefined;
+      storeId: string;
   }
   
   export enum SortDirection {
@@ -10814,8 +10874,8 @@ export class AuthApiBase {
   }
   
   export class CreateSellerCommand implements ICreateSellerCommand {
-      name?: string | undefined;
-      outerId?: string | undefined;
+      organizationName?: string | undefined;
+      ownerName?: string | undefined;
       email?: string | undefined;
       categoryIds?: string[] | undefined;
   
@@ -10830,8 +10890,8 @@ export class AuthApiBase {
   
       init(_data?: any) {
           if (_data) {
-              this.name = _data["name"];
-              this.outerId = _data["outerId"];
+              this.organizationName = _data["organizationName"];
+              this.ownerName = _data["ownerName"];
               this.email = _data["email"];
               if (Array.isArray(_data["categoryIds"])) {
                   this.categoryIds = [] as any;
@@ -10850,8 +10910,8 @@ export class AuthApiBase {
   
       toJSON(data?: any) {
           data = typeof data === 'object' ? data : {};
-          data["name"] = this.name;
-          data["outerId"] = this.outerId;
+          data["organizationName"] = this.organizationName;
+          data["ownerName"] = this.ownerName;
           data["email"] = this.email;
           if (Array.isArray(this.categoryIds)) {
               data["categoryIds"] = [];
@@ -10863,8 +10923,8 @@ export class AuthApiBase {
   }
   
   export interface ICreateSellerCommand {
-      name?: string | undefined;
-      outerId?: string | undefined;
+      organizationName?: string | undefined;
+      ownerName?: string | undefined;
       email?: string | undefined;
       categoryIds?: string[] | undefined;
   }

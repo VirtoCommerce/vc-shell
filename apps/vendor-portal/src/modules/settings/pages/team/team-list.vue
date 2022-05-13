@@ -1,14 +1,14 @@
 <template>
   <VcBlade
     :title="$t('SETTINGS.TEAM.PAGES.LIST.TITLE')"
-    width="50%"
+    width="70%"
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
     <VcTable
-      class="vc-flex-grow_1"
+      class="grow basis-0"
       :loading="loading"
       :expanded="expanded"
       :columns="columns"
@@ -18,19 +18,95 @@
       :currentPage="currentPage"
       :totalCount="totalCount"
       @headerClick="onHeaderClick"
+      @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
       :header="false"
+      :selectedItemId="selectedItemId"
     >
       <!-- Override status column template -->
       <template v-slot:item_isLockedOut="itemData">
-        <div class="vc-flex vc-flex-column">
-          <div class="vc-ellipsis">
-            {{
+        <div class="flex">
+          <VcStatus
+            :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
+            :outline="false"
+            >{{
               itemData.item.isLockedOut
                 ? $t("SETTINGS.TEAM.PAGES.LIST.TABLE.STATUS.INACTIVE")
                 : $t("SETTINGS.TEAM.PAGES.LIST.TABLE.STATUS.ACTIVE")
-            }}
+            }}</VcStatus
+          >
+        </div>
+      </template>
+
+      <!-- Override role column template -->
+      <template v-slot:item_role="itemData">
+        {{ roleName(itemData.item.role) || "N/A" }}
+      </template>
+
+      <template v-slot:mobile-item="itemData">
+        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
+          <div class="mt-3 w-full flex justify-between">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+            >
+              <VcHint>{{
+                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")
+              }}</VcHint>
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+                {{ itemData.item.firstName }}
+              </div>
+            </div>
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+            >
+              <VcHint>{{
+                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME")
+              }}</VcHint>
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+                {{ itemData.item.lastName }}
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 w-full flex justify-between">
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+            >
+              <VcHint>{{
+                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL")
+              }}</VcHint>
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+                {{ itemData.item.email || "N/A" }}
+              </div>
+            </div>
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+            >
+              <VcHint>{{
+                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
+              }}</VcHint>
+              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+                {{ itemData.item.role }}
+              </div>
+            </div>
+            <div
+              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+            >
+              <VcHint>{{
+                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.STATUS")
+              }}</VcHint>
+              <div class="mt-1">
+                <VcStatus
+                  :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
+                  :outline="false"
+                  >{{
+                    itemData.item.isLockedOut
+                      ? $t("SETTINGS.TEAM.PAGES.LIST.TABLE.STATUS.INACTIVE")
+                      : $t("SETTINGS.TEAM.PAGES.LIST.TABLE.STATUS.ACTIVE")
+                  }}</VcStatus
+                >
+              </div>
+            </div>
           </div>
         </div>
       </template>
@@ -50,6 +126,8 @@ export default defineComponent({
 import { IBladeToolbar, ITableColumns } from "../../../../types";
 import { useI18n } from "@virtoshell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
+import TeamMemberDetails from "./team-member-details.vue";
+import { SellerUser } from "../../../../api_client";
 
 const props = defineProps({
   expanded: {
@@ -72,7 +150,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close"]);
+const emit = defineEmits(["page:close", "page:open"]);
 
 const { t } = useI18n();
 const {
@@ -86,49 +164,47 @@ const {
 } = useTeamMembers();
 
 const sort = ref("createdDate:DESC");
+const selectedItemId = ref();
+
+const roles = [
+  {
+    id: "vcmp-admin-role",
+    name: "Admin",
+  },
+  {
+    id: "vcmp-agent-role",
+    name: "Agent",
+  },
+  {
+    id: "vcmp-owner-role",
+    name: "Owner",
+  },
+  {
+    id: "vcmp-seller-role",
+    name: "Seller",
+  },
+];
 
 const bladeToolbar = ref<IBladeToolbar[]>([
+  {
+    id: "refresh",
+    title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.REFRESH")),
+    icon: "fas fa-sync-alt",
+    async clickHandler() {
+      await reload();
+    },
+  },
   {
     id: "addMember",
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
+    clickHandler() {
+      emit("page:open", {
+        component: TeamMemberDetails,
+      });
+    },
   },
 ]);
-
-watch(sort, async (value) => {
-  await getTeamMembers({ ...searchQuery.value, sort: value });
-});
-
-onMounted(async () => {
-  await getTeamMembers({
-    ...searchQuery.value,
-    skip: (currentPage.value - 1) * searchQuery.value.take,
-    sort: sort.value,
-  });
-});
-
-const reload = async () => {
-  await getTeamMembers({
-    ...searchQuery.value,
-    skip: (currentPage.value - 1) * searchQuery.value.take,
-    sort: sort.value,
-  });
-};
-
-const onHeaderClick = (item: ITableColumns) => {
-  const sortBy = [":DESC", ":ASC", ""];
-  if (item.sortable) {
-    item.sortDirection = (item.sortDirection ?? 0) + 1;
-    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
-  }
-};
-
-const onPaginationClick = async (page: number) => {
-  await getTeamMembers({
-    ...searchQuery.value,
-    skip: (page - 1) * searchQuery.value.take,
-  });
-};
 
 const columns = ref<ITableColumns[]>([
   {
@@ -161,4 +237,60 @@ const columns = ref<ITableColumns[]>([
     alwaysVisible: true,
   },
 ]);
+
+watch(sort, async (value) => {
+  await getTeamMembers({ ...searchQuery.value, sort: value });
+});
+
+onMounted(async () => {
+  selectedItemId.value = props.param;
+  await reload();
+});
+
+const reload = async () => {
+  await getTeamMembers({
+    ...searchQuery.value,
+    skip: (currentPage.value - 1) * searchQuery.value.take,
+    sort: sort.value,
+  });
+};
+
+const onHeaderClick = (item: ITableColumns) => {
+  const sortBy = [":DESC", ":ASC", ""];
+  if (item.sortable) {
+    item.sortDirection = (item.sortDirection ?? 0) + 1;
+    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+  }
+};
+
+const onPaginationClick = async (page: number) => {
+  await getTeamMembers({
+    ...searchQuery.value,
+    skip: (page - 1) * searchQuery.value.take,
+  });
+};
+
+const onItemClick = (item: SellerUser) => {
+  emit("page:open", {
+    component: TeamMemberDetails,
+    param: item.id,
+    componentOptions: {
+      user: item,
+    },
+    onOpen() {
+      selectedItemId.value = item.id;
+    },
+    onClose() {
+      selectedItemId.value = undefined;
+    },
+  });
+};
+
+const roleName = (roleId: string) => {
+  return roles.find((role) => role.id === roleId)?.name;
+};
+
+defineExpose({
+  reload,
+});
 </script>

@@ -18,13 +18,13 @@ const Template: Story = (args) => ({
     return { args };
   },
   template: `
-    <div class="vc-flex" style="height: 400px; overflow: hidden">
+    <div class="flex h-[400px] overflow-hidden">
       <vc-table v-bind="args">
          <template v-slot:item_img="itemData">
             <vc-image aspect="1x1" size="auto" :bordered="true" :src="itemData.item.img"></vc-image>
          </template>
          <template v-slot:item_name="itemData">
-            <div class="vc-flex vc-flex-column">
+            <div class="flex flex-col">
                <div>{{ itemData.item.name }}</div>
                <vc-hint>{{ itemData.item.description }}</vc-hint>
             </div>
@@ -44,7 +44,7 @@ Table.args = {
       id: "img",
       title: "Pic",
       width: 60,
-      class: "vc-padding-right_none",
+      class: "pr-0",
     },
     {
       id: "name",

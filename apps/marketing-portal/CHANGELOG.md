@@ -3,6 +3,53 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 1.0.0 (2022-05-13)
+
+
+### Features
+
+* tailwind implementation draft ([ef4c860](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ef4c860237da26898bae044df15eabbbf861be18))
+* tailwind implementation draft ([79e413e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/79e413e11b8c6166dbf459282b6fa44921eb1f40))
+* vm-660 ([499fde3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/499fde37f94d727fe4006af84638c8c2ef2a1547))
+
+
+
+## 0.1.16 (2022-04-15)
+
+
+
+## 0.1.10 (2022-04-04)
+
+
+
+## 0.1.4 (2022-03-16)
+
+
+
+## 0.1.2 (2022-03-10)
+
+
+
+## 0.1.1 (2022-03-10)
+
+
+### Bug Fixes
+
+* invalid "global" override ([6575582](https://github.com/VirtoCommerce/platform-manager-sdk/commit/65755822d679c51b9a9fdad1663fc4537b1ecffc))
+
+
+
+## 0.0.123 (2022-03-04)
+
+
+### Features
+
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+
+
+
+
+
 ## 0.1.20 (2022-04-27)
 
 

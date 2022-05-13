@@ -10,12 +10,12 @@
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
-      <div class="vc-flex-grow_1">
-        <div class="vc-padding_l">
+      <div class="grow basis-0">
+        <div class="p-4">
           <VcForm>
             <div>
               <VcInput
-                class="vc-margin-bottom_l"
+                class="mb-4"
                 :label="
                   $t(
                     'DYNAMIC_CONTENT.PAGES.DICTIONARY_VALUES.FORM.INPUTS.ENTRY_NAME.LABEL'
@@ -199,5 +199,3 @@ defineExpose({
   title,
 });
 </script>
-
-<style lang="less" scoped></style>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-select"
+    class="vc-select box-border"
     :class="{
       'vc-select_opened': isOpened,
       'vc-select_error': errorMessage,
@@ -8,7 +8,7 @@
     }"
   >
     <!-- Select label -->
-    <VcLabel v-if="label" class="vc-margin-bottom_s" :required="isRequired">
+    <VcLabel v-if="label" class="mb-2" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -17,15 +17,15 @@
 
     <!-- Select field -->
     <div
-      class="vc-select__field-wrapper vc-flex vc-flex-align_stretch"
+      class="vc-select__field-wrapper relative box-border border border-solid border-[color:var(--select-border-color)] rounded-[var(--select-border-radius)] bg-[color:var(--select-background-color)] flex items-stretch"
       ref="inputFieldWrapRef"
     >
       <div
-        class="vc-select__field vc-padding_m vc-flex vc-flex-align_center vc-fill_width"
+        class="w-full appearance-none border-none outline-none min-h-[var(--select-height)] p-3 flex items-center w-full box-border box-border cursor-pointer invalid:text-[color:var(--select-placeholder-color)]"
         @click="toggleDropdown"
         ref="dropdownToggleRef"
       >
-        <div v-if="!selectedItem" class="vc-select__field-placeholder">
+        <div v-if="!selectedItem" class="text-[#a5a5a5]">
           {{ placeholder }}
         </div>
         <slot
@@ -41,7 +41,7 @@
       <!-- Select chevron -->
       <div
         v-if="!isDisabled"
-        class="vc-select__chevron vc-padding-horizontal_m vc-flex vc-flex-align_center"
+        class="vc-select__chevron absolute right-0 top-0 h-full cursor-pointer px-3 flex items-center text-[color:var(--select-chevron-color)] hover:text-[color:var(--select-chevron-color-hover)]"
         @click="toggleDropdown"
       >
         <VcIcon size="s" icon="fas fa-chevron-down"></VcIcon>
@@ -49,20 +49,20 @@
       <teleport to="#app">
         <div
           v-if="isOpened"
-          class="vc-select__dropdown"
+          class="flex flex-col box-border max-h-[300px] z-10 overflow-hidden absolute bg-[color:var(--select-background-color)] border border-solid border-[color:var(--select-border-color)] border-t-[color:var(--select-background-color)] rounded-b-[var(--select-border-radius)] p-2"
           ref="dropdownRef"
           v-click-outside="closeDropdown"
         >
           <input
             v-if="isSearchable"
             ref="search"
-            class="vc-select__search"
+            class="w-full box-border border border-solid border-[#eaecf2] rounded-[4px] h-[32px] leading-[32px] outline-none mb-3 px-2"
             @input="onSearch"
           />
 
           <VcContainer :no-padding="true">
             <div
-              class="vc-select__item"
+              class="flex items-center min-h-[36px] px-2 rounded-[3px] cursor-pointer hover:bg-[#eff7fc]"
               v-for="(item, i) in options"
               :key="i"
               @click="onItemSelect(item)"
@@ -75,7 +75,7 @@
     </div>
 
     <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-select__error vc-margin-top_xs">
+      <VcHint class="text-[color:var(--select-border-color-error)] mt-1">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -189,6 +189,7 @@ watch(
 function closeDropdown() {
   isOpened.value = false;
   popper.value?.destroy();
+  inputFieldWrapRef.value.style.borderRadius = "var(--select-border-radius)";
   emit("close");
 }
 function toggleDropdown() {
@@ -309,7 +310,7 @@ function onSearch(event: InputEvent) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --select-height: 38px;
   --select-border-radius: 3px;
@@ -323,113 +324,25 @@ function onSearch(event: InputEvent) {
 }
 
 .vc-select {
-  box-sizing: border-box;
-
-  &__field-wrapper {
-    position: relative;
-    box-sizing: border-box;
-    border: 1px solid var(--select-border-color);
-    border-radius: var(--select-border-radius);
-    background-color: var(--select-background-color);
-  }
-
   &_disabled &__field-wrapper,
   &_disabled &__field {
-    background-color: var(--select-background-color-disabled);
-    color: #424242;
+    @apply bg-[color:var(--select-background-color-disabled)] text-[#424242];
   }
 
   &_error &__field-wrapper {
-    border: 1px solid var(--select-border-color-error);
-  }
-
-  &__error {
-    color: var(--select-border-color-error);
-  }
-
-  &__field {
-    width: 100%;
-    appearance: none;
-    border: none;
-    outline: none;
-    min-height: var(--select-height);
-    box-sizing: border-box;
-    cursor: pointer;
-
-    &:invalid {
-      color: var(--select-placeholder-color);
-    }
-
-    &-placeholder {
-      color: #a5a5a5;
-    }
+    @apply border border-solid border-[color:var(--select-border-color-error)];
   }
 
   &_disabled &__field {
-    cursor: auto;
-  }
-
-  &__chevron {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-    cursor: pointer;
-    color: var(--select-chevron-color);
-
-    &:hover {
-      color: var(--select-chevron-color-hover);
-    }
+    @apply cursor-auto;
   }
 
   &_opened &__chevron {
-    transform: rotate(180deg);
+    @apply rotate-180;
   }
 
   &_opened &__field-wrapper {
-    border-radius: var(--select-border-radius) var(--select-border-radius) 0 0;
-  }
-
-  &__dropdown {
-    display: flex;
-    flex-direction: column;
-    box-sizing: border-box;
-    max-height: 300px;
-    z-index: 10;
-    overflow: hidden;
-    position: absolute;
-    background-color: var(--select-background-color);
-    border: 1px solid var(--select-border-color);
-    border-top: 1px solid var(--select-background-color);
-    border-radius: 0 0 var(--select-border-radius) var(--select-border-radius);
-    padding: var(--padding-s);
-  }
-
-  &__search {
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #eaecf2;
-    border-radius: 4px;
-    height: 32px;
-    line-height: 32px;
-    outline: none;
-    margin-bottom: var(--margin-m);
-    padding-left: var(--padding-s);
-    padding-right: var(--padding-s);
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-    min-height: 36px;
-    padding-left: var(--padding-s);
-    padding-right: var(--padding-s);
-    border-radius: 3px;
-    cursor: pointer;
-
-    &:hover {
-      background-color: #eff7fc;
-    }
+    @apply rounded-t-[var(--select-border-radius)];
   }
 }
 </style>

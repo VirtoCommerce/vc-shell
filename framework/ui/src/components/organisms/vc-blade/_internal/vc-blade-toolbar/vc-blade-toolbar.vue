@@ -1,10 +1,12 @@
 <template>
   <div
     v-if="isToolbarVisible()"
-    class="vc-blade-toolbar vc-flex-shrink_0"
-    :class="{ 'vc-blade-toolbar_expanded': isExpanded }"
+    class="h-[var(--blade-toolbar-height)] bg-[color:var(--blade-toolbar-background-color)] border-b-[color:#eaedf3] border-solid border-b flex box-border w-full content-center items-stretch shrink-0"
+    :class="{ '!h-[var(--blade-toolbar-height-expanded)]': isExpanded }"
   >
-    <div class="vc-blade-toolbar__buttons">
+    <div
+      class="grow basis-0 flex content-start items-center overflow-x-auto px-2"
+    >
       <template v-for="item in items" :key="item.id">
         <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
@@ -14,7 +16,7 @@
       </template>
     </div>
     <VcIcon
-      class="vc-blade-toolbar__expand"
+      class="self-center justify-self-center text-[#a1c0d4] cursor-pointer mr-4 hover:text-[#7ea8c4]"
       :icon="`fas fa-chevron-${isExpanded ? 'up' : 'down'}`"
       @click="toggleToolbar"
     ></VcIcon>
@@ -56,46 +58,10 @@ function isToolbarVisible() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --blade-toolbar-height: 36px;
   --blade-toolbar-height-expanded: 50px;
   --blade-toolbar-background-color: #ffffff;
-}
-
-.vc-blade-toolbar {
-  height: var(--blade-toolbar-height);
-  background-color: var(--blade-toolbar-background-color);
-  border-bottom: 1px solid #eaedf3;
-  display: flex;
-  box-sizing: border-box;
-  width: 100%;
-  justify-content: space-between;
-  align-items: stretch;
-
-  &__buttons {
-    flex-grow: 1;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-x: auto;
-    padding: 0 var(--padding-s);
-  }
-
-  &_expanded {
-    height: var(--blade-toolbar-height-expanded);
-  }
-
-  &__expand {
-    align-self: center;
-    justify-self: flex-end;
-    color: #a1c0d4;
-    cursor: pointer;
-    margin-right: var(--margin-l);
-
-    &:hover {
-      color: #7ea8c4;
-    }
-  }
 }
 </style>

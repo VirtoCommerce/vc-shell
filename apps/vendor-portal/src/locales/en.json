@@ -69,7 +69,7 @@
       }
     },
     "INVITATION": {
-      "TITLE": "New seller registration",
+      "TITLE": "New user activation",
       "FIELDS": {
         "USER_NAME": {
           "LABEL": "Username"
@@ -83,7 +83,7 @@
           "PLACEHOLDER": "Confirm password"
         }
       },
-      "ACCEPT_INVITATION": "Accept invitation",
+      "ACCEPT_INVITATION": "Activate",
       "ERRORS": {
         "Repeat-password": "Passwords are not same",
         "Invalid-token": "Token is invalid or expired",

@@ -20,26 +20,26 @@ const Template: Story = (args) => ({
   template: `<vc-login-form v-bind="args">
     <vc-input
         ref="loginField"
-        class="vc-margin-bottom_l vc-margin-top_xs"
+        class="mb-4 mt-1"
         label="Username"
         placeholder="Enter username"
     ></vc-input>
     <vc-input
         ref="passwordField"
-        class="vc-margin-bottom_l"
+        class="mb-4"
         label="Password"
         placeholder="Enter password"
         type="password"
     ></vc-input>
     <div
         class="
-            vc-flex
-            vc-flex-justify_center
-            vc-flex-align_center
-            vc-padding-top_s
+            flex
+            justify-center
+            items-center
+            pt-2
           "
     >
-      <span class="vc-flex-grow_1"></span>
+      <span class="grow basis-0"></span>
       <vc-button variant="primary">
         Submit
       </vc-button>

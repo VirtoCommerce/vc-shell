@@ -31,90 +31,48 @@ defineProps({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --status-padding: 4px 14px;
   --status-padding-extended: 12px;
 
-  --status-font-size: var(--font-size-m);
-  --status-font-weight: var(--font-weight-normal);
-
   --status-border-radius: 2px;
   --status-border-radius-extended: 4px;
   --status-border-width: 1px;
+
+  --status-info-color: #ffffff;
+  --status-info-main-color: #bdd1df;
+
+  --status-warning-color: #ffffff;
+  --status-warning-main-color: #f89406;
+
+  --status-danger-color: #ffffff;
+  --status-danger-main-color: #ef796f;
+
+  --status-success-color: #ffffff;
+  --status-success-main-color: #87b563;
+
+  --status-light-danger-color: #333333;
+  --status-light-danger-main-color: #ffefef;
 }
 
+$variants: info, warning, danger, success, light-danger;
+
 .vc-status {
-  display: inline-block;
-  border-radius: var(--status-border-radius);
-  padding: var(--status-padding);
-  font-size: var(--status-font-size);
-  font-weight: var(--status-font-weight);
-  white-space: nowrap;
+  @apply inline-block rounded-[var(--status-border-radius)] py-1 px-3.5 text-base font-normal whitespace-nowrap;
 
-  &_info {
-    color: white;
-    border: 1px solid #bdd1df;
-    background-color: #bdd1df;
+  @each $variant in $variants {
+    &_#{$variant} {
+      @apply text-[color:var(--status-#{$variant}-color)] border border-solid border-[color:var(--status-#{$variant}-main-color)] bg-[color:var(--status-#{$variant}-main-color)];
 
-    &.vc-status_outline {
-      color: #bdd1df;
-      border: 1px solid #bdd1df;
-      background-color: white;
-    }
-  }
-
-  &_warning {
-    color: white;
-    border: 1px solid #f89406;
-    background-color: #f89406;
-
-    &.vc-status_outline {
-      color: #f89406;
-      border: 1px solid #f89406;
-      background-color: white;
-    }
-  }
-
-  &_danger {
-    color: white;
-    border: 1px solid #ef796f;
-    background-color: #ef796f;
-
-    &.vc-status_outline {
-      color: #ef796f;
-      border: 1px solid #ef796f;
-      background-color: white;
-    }
-  }
-
-  &_success {
-    color: white;
-    border: 1px solid #87b563;
-    background-color: #87b563;
-
-    &.vc-status_outline {
-      color: #87b563;
-      border: 1px solid #87b563;
-      background-color: white;
-    }
-  }
-
-  &_light-danger {
-    color: #333333;
-    border: 1px solid #ffefef;
-    background-color: #ffefef;
-
-    &.vc-status_outline {
-      border: 1px solid #ffefef;
-      background-color: white;
+      &.vc-status_outline {
+        @apply text-[color:var(--status-#{$variant}-main-color)] border border-solid border-[color:var(--status-#{$variant}-main-color)] bg-white;
+      }
     }
   }
 
   &.vc-status_extended {
-    white-space: normal;
-    padding: var(--status-padding-extended);
-    border-radius: var(--status-border-radius-extended);
+    @apply whitespace-normal p-[var(--status-padding-extended)] rounded-[var(--status-border-radius-extended)];
   }
 }
 </style>

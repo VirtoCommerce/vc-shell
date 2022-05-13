@@ -4,7 +4,7 @@
       <template v-if="isLogin">
         <VcInput
           ref="loginField"
-          class="vc-margin-bottom_l vc-margin-top_xs"
+          class="mb-4 mt-1"
           :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
           :required="true"
@@ -12,7 +12,7 @@
         ></VcInput>
         <VcInput
           ref="passwordField"
-          class="vc-margin-bottom_l"
+          class="mb-4"
           :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
           :required="true"
@@ -20,20 +20,13 @@
           type="password"
           @keyup.enter="login"
         ></VcInput>
-        <div
-          class="vc-flex vc-flex-justify_end vc-flex-align_center vc-padding-top_s vc-padding-bottom_m"
-        >
-          <button
-            class="vc-button vc-button_onlytext"
-            @click="togglePassRequest"
-          >
+        <div class="flex justify-end items-center pt-2 pb-3">
+          <VcButton variant="onlytext" @click="togglePassRequest">
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
-          </button>
+          </VcButton>
         </div>
-        <div
-          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
-        >
-          <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+        <div class="flex justify-center items-center pt-2">
+          <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button variant="primary" :disabled="loading" @click="login">
             {{ $t("SHELL.LOGIN.BUTTON") }}
           </vc-button>
@@ -43,16 +36,14 @@
         <template v-if="!forgotPasswordRequestSent">
           <VcInput
             ref="forgotPasswordField"
-            class="vc-margin-bottom_l vc-margin-top_xs"
+            class="mb-4 mt-1"
             :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
             :required="true"
             v-model="forgotPasswordForm.loginOrEmail"
             :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
           ></VcInput>
-          <div
-            class="vc-flex vc-flex-justify_space-between vc-flex-align_center vc-padding-top_s"
-          >
+          <div class="flex justify-between items-center pt-2">
             <vc-button variant="secondary" @click="togglePassRequest">
               {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
             </vc-button>
@@ -66,10 +57,8 @@
           v-if="requestPassResult.succeeded && forgotPasswordRequestSent"
         >
           <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
-          <div
-            class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
-          >
-            <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+          <div class="flex justify-center items-center pt-2">
+            <span v-if="$isDesktop.value" class="grow basis-0"></span>
             <vc-button
               variant="primary"
               :disabled="loading"
@@ -81,22 +70,22 @@
         </template>
       </template>
 
-      <vc-hint
+      <VcHint
         v-if="!signInResult.succeeded"
-        class="vc-margin-top_m"
+        class="mt-3"
         style="color: #f14e4e"
       >
         <!-- TODO: stylizing-->
         {{ signInResult.error }}
-      </vc-hint>
-      <vc-hint
+      </VcHint>
+      <VcHint
         v-if="!requestPassResult.succeeded"
-        class="vc-margin-top_m"
+        class="mt-3"
         style="color: #f14e4e"
       >
         <!-- TODO: stylizing-->
         {{ requestPassResult.error }}
-      </vc-hint>
+      </VcHint>
     </VcForm>
   </VcLoginForm>
 </template>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="notification-dropdown"
+    class="relative flex items-center h-full"
     @click="toggleNotificationsDrop"
     v-click-outside="
       () => {
@@ -11,35 +11,41 @@
   >
     <div
       :class="[
-        'notification-dropdown__button',
+        'relative h-full flex items-center justify-center w-[var(--app-bar-button-width)] border-l border-solid border-l-[color:var(--app-bar-button-border-color)] cursor-pointer text-[color:var(--app-bar-button-color)] bg-[color:var(--app-bar-button-background-color)] transition-[color] duration-200 hover:text-[color:var(--app-bar-button-color-hover)] bg-[color:var(--app-bar-button-background-color-hover)]',
         { 'notification-dropdown__button_accent': isAccent },
-        { 'notification-dropdown__button_active': isDropdownVisible },
+        {
+          'shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] bg-white z-[10000]':
+            isDropdownVisible,
+        },
       ]"
     >
       <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
     </div>
-    <div class="notification-dropdown__drop" v-if="isDropdownVisible">
+    <div
+      class="absolute top-[var(--app-bar-height)] z-[9999] drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] bg-white rounded-b-[6px] w-[439px] max-h-[350px] min-h-[50px] right-0 overflow-hidden flex flex-col"
+      v-if="isDropdownVisible"
+    >
       <VcContainer :noPadding="true">
         <div v-if="populatedList && populatedList.length">
           <div
             @click="handleClick(item.notifyType)"
-            class="notification-dropdown__notification"
+            class="py-[18px] px-[15px] border-b border-solid border-b-[#e3e7ec] cursor-pointer last-of-type:border-b-0"
             v-for="item in populatedList"
             :key="`notification_${item.id}`"
           >
             <VcRow>
               <VcCol size="1">
                 <div
-                  class="notification-dropdown__notification-icon"
+                  class="w-[41px] h-[41px] rounded-full text-white flex items-center justify-center"
                   :style="{ 'background-color': item.params.color }"
                 >
                   <VcIcon :icon="item.params.icon" size="l"></VcIcon>
                 </div>
               </VcCol>
-              <VcCol size="4" class="vc-flex-justify_center">
-                <div class="notification-dropdown__notification-info">
+              <VcCol size="4" class="justify-center">
+                <div>
                   <p
-                    class="notification-dropdown__notification-title vc-margin_none vc-margin-bottom_xs"
+                    class="text-[color:var(--basic-black-color)] text-xl leading-[19px] font-bold m-0 mb-1"
                   >
                     {{ item.title }}
                   </p>
@@ -51,20 +57,15 @@
                   </div>
                 </div>
               </VcCol>
-              <VcCol size="2" class="vc-flex-align_end">
-                <p
-                  class="notification-dropdown__notification-time vc-margin_none"
-                >
+              <VcCol size="2" class="items-end">
+                <p class="text-s leading-[19px] text-[#8e8e8e] m-0">
                   {{ item.params.time }}
                 </p>
               </VcCol>
             </VcRow>
           </div>
         </div>
-        <div
-          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding_l"
-          v-else
-        >
+        <div class="flex justify-center items-center p-4" v-else>
           No notifications yet
         </div>
       </VcContainer>
@@ -184,101 +185,15 @@ const handleClick = (notifyType: string) => {
 };
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --notification-color-error: #f14e4e;
 }
 .notification-dropdown {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 100%;
-
-  &__drop {
-    position: absolute;
-    top: var(--app-bar-height);
-    z-index: 9999;
-    filter: drop-shadow(0px 4px 15px rgba(43, 67, 84, 0.15));
-    background: #ffffff;
-    border-radius: 0 0 6px 6px;
-    width: 439px;
-    max-height: 350px;
-    min-height: 50px;
-    right: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
   &__button {
-    position: relative;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--app-bar-button-width);
-    border-left: 1px solid var(--app-bar-button-border-color);
-    cursor: pointer;
-    color: var(--app-bar-button-color);
-    background-color: var(--app-bar-button-background-color);
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: var(--app-bar-button-color-hover);
-      background-color: var(--app-bar-button-background-color-hover);
-    }
-
     &_accent:before {
-      content: "";
-      display: block;
-      position: absolute;
-      right: 12px;
-      top: 18px;
-      width: 7px;
-      height: 7px;
-      background: #ff4a4a;
-      border-radius: 50%;
-      z-index: 1;
-    }
-
-    &_active {
-      box-shadow: 0 -6px 6px white, 1px 1px 22px rgba(126, 142, 157, 0.2);
-      clip-path: inset(0px -20px 0px -20px);
-      background: #ffffff;
-      z-index: 10000;
-    }
-  }
-
-  &__notification {
-    padding: 18px 15px;
-    border-bottom: 1px solid #e3e7ec;
-    cursor: pointer;
-
-    &:last-of-type {
-      border-bottom: none;
-    }
-
-    &-icon {
-      width: 41px;
-      height: 41px;
-      border-radius: 50%;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    &-title {
-      color: var(--basic-black-color);
-      font-size: var(--font-size-xl);
-      line-height: var(--line-height-l);
-      font-weight: var(--font-weight-bold);
-    }
-
-    &-time {
-      font-size: var(--font-size-s);
-      line-height: var(--line-height-l);
-      color: #8e8e8e;
+      @apply content-[""] block absolute right-[12px] top-[18px]
+        w-[7px] h-[7px] bg-[#ff4a4a] rounded-full z-[1];
     }
   }
 

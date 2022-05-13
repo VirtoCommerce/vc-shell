@@ -2,7 +2,6 @@
   <div class="vc-gallery">
     <VcLabel
       v-if="label"
-      class="vc-gallery__label"
       :tooltip="tooltip"
       :required="required"
       :tooltip-icon="tooltipIcon"
@@ -11,10 +10,10 @@
     </VcLabel>
 
     <template v-if="(images && images.length) || !disabled">
-      <div class="vc-gallery__items-wrap">
+      <div class="flex flex-wrap">
         <draggable
           :list="images"
-          class="vc-gallery__items-wrap"
+          class="flex flex-wrap"
           item-key="sortOrder"
           tag="transition-group"
           v-bind="dragOptions"
@@ -26,7 +25,7 @@
         >
           <template #item="{ element, index }">
             <VcGalleryItem
-              class="vc-margin_s"
+              class="m-2"
               :image="element"
               :readonly="disabled"
               @preview="onPreviewClick(index)"
@@ -37,7 +36,7 @@
           <template #footer>
             <VcFileUpload
               v-if="!disabled"
-              class="vc-margin_s"
+              class="m-2"
               :icon="uploadIcon"
               @upload="onUpload"
               variant="gallery"
@@ -46,7 +45,7 @@
         </draggable>
       </div>
     </template>
-    <div v-else class="vc-flex vc-flex-justify_center vc-padding_xl">
+    <div v-else class="flex justify-center p-5">
       <VcHint>Gallery is empty</VcHint>
     </div>
 
@@ -143,12 +142,3 @@ const updateOrder = () => {
   emit("sort", ref(sortedImgs).value);
 };
 </script>
-
-<style lang="less">
-.vc-gallery {
-  &__items-wrap {
-    display: flex;
-    flex-wrap: wrap;
-  }
-}
-</style>

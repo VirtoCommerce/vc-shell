@@ -58,10 +58,10 @@ export default (): IUseOrders => {
     loading.value = true;
     const client = await getApiClient();
     try {
-      const command = new ChangeOrderStatusCommand();
-      {
-        orderId, newStatus;
-      }
+      const command = new ChangeOrderStatusCommand({
+        orderId,
+        newStatus,
+      });
       await client.updateOrderStatus(command);
     } catch (e) {
       logger.error(e);

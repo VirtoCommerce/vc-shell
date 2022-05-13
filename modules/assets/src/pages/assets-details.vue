@@ -8,19 +8,19 @@
     @close="$emit('page:close')"
   >
     <!-- Blade contents -->
-    <div class="assets-details__inner vc-flex vc-flex-grow_1">
-      <div class="assets-details__content vc-flex-grow_1">
+    <div class="flex grow-1 border-t border-solid border-t-[#eaedf3]">
+      <div class="assets-details__content grow basis-0">
         <VcContainer :no-padding="true">
-          <div class="vc-padding_l">
+          <div class="p-4">
             <VcForm>
               <VcImage
-                class="vc-margin-bottom_l"
+                class="mb-4"
                 :src="localImage.url"
                 size="xl"
                 :bordered="true"
               ></VcImage>
               <VcInput
-                class="vc-margin-bottom_l"
+                class="mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="localImage.name"
                 :clearable="true"
@@ -30,7 +30,7 @@
                 "
               ></VcInput>
               <VcInput
-                class="vc-margin-bottom_l"
+                class="mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
                 v-model="localImage.altText"
                 :clearable="true"
@@ -39,7 +39,7 @@
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
               ></VcInput>
               <VcTextarea
-                class="vc-margin-bottom_l"
+                class="mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="localImage.description"
                 :required="true"
@@ -115,12 +115,3 @@ function mutateImage(remove = false) {
   }
 }
 </script>
-
-<style lang="less">
-.assets-details {
-  &__inner {
-    border-top: 1px solid #eaedf3;
-    overflow: hidden;
-  }
-}
-</style>

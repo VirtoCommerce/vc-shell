@@ -9,7 +9,8 @@
         "LIST": {
           "TITLE": "My team",
           "TOOLBAR": {
-            "ADD_MEMBER": "Add member"
+            "ADD_MEMBER": "Add member",
+            "REFRESH": "Refresh"
           },
           "TABLE": {
             "HEADER": {
@@ -22,6 +23,63 @@
             "STATUS": {
               "ACTIVE": "Active",
               "INACTIVE": "Inactive"
+            }
+          }
+        },
+        "DETAILS": {
+          "TITLE": "New member",
+          "TOOLBAR": {
+            "CREATE": "Create",
+            "SAVE": "Save",
+            "RESET": "Reset",
+            "DELETE": "Delete",
+            "RESEND": "Resend invitation"
+          },
+          "FORM": {
+            "FIRST_NAME": {
+              "LABEL": "First name",
+              "PLACEHOLDER": "Enter first name"
+            },
+            "LAST_NAME": {
+              "LABEL": "Last name",
+              "PLACEHOLDER": "Enter last name"
+              },
+            "EMAIL": {
+              "LABEL": "Email",
+              "PLACEHOLDER": "Enter e-mail address"
+              },
+            "ROLE": {
+              "LABEL": "Role",
+              "PLACEHOLDER": "Select role"
+              },
+            "IS_ACTIVE": {
+              "LABEL": "Is active"
+            },
+            "INVITE": {
+              "LABEL": "Send invite"
+            },
+            "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields.",
+            "ERROR": "Error"
+          },
+          "POPUP": {
+            "ALERT": {
+              "TITLE": "Alert",
+              "MESSAGE": {
+                "USER_DELETE": "This action can not be undone. The user will be deleted and won’t be able to login to the portal."
+              },
+              "BUTTONS": {
+                "DELETE": "Delete",
+                "CANCEL": "Cancel"
+              }
+            },
+            "ERROR": {
+              "TITLE": "Error",
+              "MESSAGE": {
+                "USER_EXIST": "An e-mail address <b>{email}</b> already registered in the system."
+              },
+              "BUTTONS": {
+                "OK": "OK"
+              }
             }
           }
         }

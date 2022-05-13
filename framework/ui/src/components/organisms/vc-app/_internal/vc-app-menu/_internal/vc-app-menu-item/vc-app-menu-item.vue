@@ -20,7 +20,7 @@
       <div class="vc-app-menu-item__title">
         {{ title }}
         <VcIcon
-          class="vc-margin-left_m vc-app-menu-item__title-icon"
+          class="vc-app-menu-item__title-icon"
           icon="fas fa-chevron-down"
           size="xs"
           v-if="children.length"
@@ -131,7 +131,7 @@ function onMenuItemClick() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --app-menu-item-height: 38px;
   --app-menu-item-icon-width: 20px;
@@ -140,152 +140,114 @@ function onMenuItemClick() {
   --app-menu-item-handler-width: 10px;
   --app-menu-item-background-color-hover: #337599;
   --app-menu-item-hover-radius: 4px;
-  --app-menu-item-border-bottom: none;
-  --app-menu-item-title-font-weight: var(--font-weight-medium);
-  --app-menu-item-title-font-weight-active: var(--font-weight-bold);
-  --app-menu-item-title-font-size: var(--font-size-l);
-  --app-menu-item-title-padding: 0 var(--padding-m);
   --app-menu-item-title-color: #465769;
   --app-menu-item-title-color-active: #ffffff;
   --app-menu-item-handler-color: #bdd1df;
 }
 
 .vc-app-menu-item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--app-menu-item-height);
-  border-bottom: var(--app-menu-item-border-bottom);
-  flex-wrap: nowrap;
-  box-sizing: border-box;
-  cursor: pointer;
-  position: relative;
-  text-transform: uppercase;
+  @apply flex items-center w-full h-[var(--app-menu-item-height)]
+    border-none
+    flex-nowrap box-border cursor-pointer relative uppercase;
 
   &_active {
-    background-color: var(--app-menu-item-background-color-hover);
-    border-radius: var(--app-menu-item-hover-radius);
-
-    &:before {
-      opacity: 1;
-    }
-  }
-
-  &_no-hover {
-    &:hover {
-    }
+    @apply bg-[color:var(--app-menu-item-background-color-hover)]
+    rounded-[var(--app-menu-item-hover-radius)]
+    before:opacity-100;
   }
 
   &__handler {
-    width: var(--app-menu-item-handler-width);
-    color: var(--app-menu-item-handler-color);
-    text-align: center;
-    visibility: hidden;
-    flex-shrink: 0;
+    @apply w-[var(--app-menu-item-handler-width)]
+      text-[color:var(--app-menu-item-handler-color)]
+      text-center invisible shrink-0;
 
     &_enabled {
-      cursor: move;
+      @apply cursor-move;
     }
   }
 
   &__icon {
-    width: var(--app-menu-item-icon-width);
-    color: var(--app-menu-item-icon-color);
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: color 0.2s ease;
+    @apply w-[var(--app-menu-item-icon-width)]
+      text-[color:var(--app-menu-item-icon-color)]
+      overflow-hidden flex
+      justify-center shrink-0 transition-[color] duration-200;
   }
 
   &_active &__icon {
-    color: var(--app-menu-item-icon-color-active);
+    @apply text-[color:var(--app-menu-item-icon-color-active)];
   }
 
   &__title {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    font-size: var(--app-menu-item-title-font-size);
-    font-weight: var(--app-menu-item-title-font-weight);
-    padding: var(--app-menu-item-title-padding);
-    color: var(--app-menu-item-title-color);
-    transition: color 0.2s ease, opacity 0.1s ease;
-    opacity: 1;
-    width: 100%;
+    @apply text-ellipsis overflow-hidden whitespace-nowrap
+      text-lg
+      font-medium
+      px-3
+      text-[color:var(--app-menu-item-title-color)]
+      [transition:color_0.2s_ease] [transition:opacity_0.1s_ease]
+      opacity-100 w-full;
   }
 
   &__title-icon {
-    color: var(--app-menu-item-icon-color);
+    @apply text-[color:var(--app-menu-item-icon-color)] ml-3;
   }
 
   &__child {
-    margin-left: 42px;
-    gap: 4px;
-    display: flex;
-    flex-direction: column;
+    @apply ml-[42px] gap-[4px] flex flex-col;
   }
 
   &__child-item {
-    cursor: pointer;
-    width: fit-content;
-    padding: 5px 9px;
-    border-radius: 4px;
+    @apply cursor-pointer w-fit py-[5px] px-[9px] rounded-[4px]
+    hover:bg-[color:var(--app-menu-item-background-color-hover)]
+    hover:text-[color:var(--app-menu-item-title-color-active)];
 
     &_active {
-      background-color: var(--app-menu-item-background-color-hover);
-      color: var(--app-menu-item-title-color-active);
-      font-weight: bold;
-    }
-
-    &:hover {
-      background-color: var(--app-menu-item-background-color-hover);
-      color: var(--app-menu-item-title-color-active);
+      @apply bg-[color:var(--app-menu-item-background-color-hover)]
+        text-[color:var(--app-menu-item-title-color-active)] font-bold;
     }
   }
 
   &_active &__title {
-    color: var(--app-menu-item-title-color-active);
-    font-weight: var(--app-menu-item-title-font-weight-active);
+    @apply text-[color:var(--app-menu-item-title-color-active)]
+      font-bold;
   }
 
   &_active &__title-icon {
-    color: var(--app-menu-item-icon-color-active);
+    @apply text-[color:var(--app-menu-item-icon-color-active)];
   }
 
   &:hover {
-    background-color: var(--app-menu-item-background-color-hover);
-    border-radius: var(--app-menu-item-hover-radius);
+    @apply bg-[color:var(--app-menu-item-background-color-hover)]
+      rounded-[var(--app-menu-item-hover-radius)];
 
     &.vc-app-menu-item_no-hover {
-      background-color: transparent;
+      @apply bg-transparent;
       .vc-app-menu-item__title {
-        color: var(--app-menu-item-title-color);
+        @apply text-[color:var(--app-menu-item-title-color)];
       }
       .vc-app-menu-item__title-icon {
-        color: var(--app-menu-item-icon-color);
+        @apply text-[color:var(--app-menu-item-icon-color)];
       }
       .vc-app-menu-item__icon {
-        color: var(--app-menu-item-icon-color);
+        @apply text-[color:var(--app-menu-item-icon-color)];
       }
     }
   }
 
   &:hover &__title {
-    color: var(--app-menu-item-title-color-active);
+    @apply text-[color:var(--app-menu-item-title-color-active)];
   }
 
   &:hover &__icon {
-    color: var(--app-menu-item-icon-color-active);
+    @apply text-[color:var(--app-menu-item-icon-color-active)];
   }
 
   &:hover &__title-icon {
-    color: var(--app-menu-item-icon-color-active);
+    @apply text-[color:var(--app-menu-item-icon-color-active)];
   }
 
   &:hover &__handler {
     &_enabled {
-      visibility: visible;
+      @apply invisible;
     }
   }
 }

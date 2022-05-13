@@ -10,11 +10,11 @@
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
-      <div class="vc-flex-grow_1">
-        <div class="vc-padding_l">
+      <div class="vc-grow basis-0">
+        <div class="p-4">
           <VcForm>
             <VcInput
-              class="vc-margin-bottom_l"
+              class="mb-4"
               :required="true"
               v-model="contentPlaceDetails.name"
               :label="
@@ -48,10 +48,10 @@
               "
             >
             </VcTextarea>
-            <VcRow class="content-placeholder__image-loader">
-              <div class="content-placeholder__dropbox vc-margin-top_l">
+            <VcRow class="gap-4">
+              <div class="shrink grow basis-auto mt-4">
                 <!-- File upload label -->
-                <VcLabel class="vc-margin-bottom_s">
+                <VcLabel class="mb-2">
                   <span>{{
                     $t(
                       "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE.LABEL"
@@ -64,9 +64,9 @@
                 ></VcFileUpload>
               </div>
 
-              <div class="vc-margin-top_l">
+              <div class="mt-4">
                 <!-- File upload label -->
-                <VcLabel size="1" class="vc-margin-bottom_s">
+                <VcLabel size="1" class="mb-2">
                   <span>{{
                     $t(
                       "DYNAMIC_CONTENT.PAGES.CONTENT_PLACEHOLDER.INPUTS.PLACEHOLDER_IMAGE_DESCRIPTION.LABEL"
@@ -76,7 +76,7 @@
                 <VcImage
                   :src="contentPlaceDetails.imageUrl"
                   size="xxl"
-                  class="content-placeholder__image"
+                  class="rounded-md overflow-hidden"
                 ></VcImage>
               </div>
             </VcRow>
@@ -254,20 +254,3 @@ defineExpose({
   title,
 });
 </script>
-
-<style lang="less" scoped>
-.content-placeholder {
-  &__image {
-    border-radius: 6px;
-    overflow: hidden;
-  }
-
-  &__image-loader {
-    gap: var(--margin-l);
-  }
-
-  &__dropbox {
-    flex: 1 1 auto;
-  }
-}
-</style>

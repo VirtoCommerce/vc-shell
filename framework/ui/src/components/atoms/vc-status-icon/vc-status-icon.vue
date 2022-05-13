@@ -1,16 +1,10 @@
 <template>
-  <div class="vc-status-icon">
+  <div>
     <template v-if="status">
-      <VcIcon
-        icon="fas fa-check-circle"
-        class="vc-status-icon__active"
-      ></VcIcon>
+      <VcIcon icon="fas fa-check-circle" class="text-[color:#87b563]"></VcIcon>
     </template>
     <template v-else>
-      <VcIcon
-        icon="fas fa-times-circle"
-        class="vc-status-icon__disabled"
-      ></VcIcon>
+      <VcIcon icon="fas fa-times-circle" class="text-[color:#bdd1df]"></VcIcon>
     </template>
   </div>
 </template>
@@ -25,15 +19,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="less" scoped>
-.vc-status-icon {
-  &__active {
-    color: #87b563;
-  }
-
-  &__disabled {
-    color: #bdd1df;
-  }
-}
-</style>

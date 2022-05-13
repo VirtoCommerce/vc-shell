@@ -1,15 +1,12 @@
 <template>
   <div
-    class="vc-blade"
+    class="vc-blade relative flex shrink-0 flex-col bg-[color:var(--blade-background-color)] rounded-[var(--blade-border-radius)] shadow-[2px_2px_8px_rgba(126,142,157,0.14)] my-4 mx-2 overflow-hidden transition-[width] duration-200"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
-    :class="[
-      $attrs.class,
-      { 'vc-blade_expanded': $isMobile.value || expanded },
-    ]"
+    :class="[$attrs.class, { '!w-full shrink': $isMobile.value || expanded }]"
   >
     <!-- Init blade header -->
     <VcBladeHeader
-      class="vc-flex-shrink_0"
+      class="shrink-0"
       v-if="!$isMobile.value || closable"
       :expanded="expanded"
       :closable="closable"
@@ -24,10 +21,7 @@
     </VcBladeHeader>
 
     <!-- Set up blade toolbar -->
-    <VcBladeToolbar
-      class="vc-flex-shrink_0"
-      :items="toolbarItems"
-    ></VcBladeToolbar>
+    <VcBladeToolbar class="shrink-0" :items="toolbarItems"></VcBladeToolbar>
 
     <slot></slot>
   </div>
@@ -85,30 +79,9 @@ defineProps({
 :root {
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
-  --blade-shadow: 2px 2px 8px rgba(126, 142, 157, 0.14);
-  --blade-margin: var(--margin-l) var(--margin-s);
 }
 
-.vc-app_mobile {
-  --blade-margin: 0;
-  --blade-border-radius: 0;
-}
-
-.vc-blade {
-  position: relative;
-  display: flex;
-  flex-shrink: 0;
-  flex-direction: column;
-  background: var(--blade-background-color);
-  border-radius: var(--blade-border-radius);
-  box-shadow: var(--blade-shadow);
-  margin: var(--blade-margin);
-  overflow: hidden;
-  transition: width 0.2s ease;
-
-  &_expanded {
-    width: 100% !important;
-    flex-shrink: 1;
-  }
+.vc-app_mobile .vc-blade {
+  @apply m-0 rounded-none;
 }
 </style>

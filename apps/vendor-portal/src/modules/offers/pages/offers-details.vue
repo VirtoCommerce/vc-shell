@@ -14,12 +14,12 @@
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true" ref="container">
-      <div class="offer-details__inner vc-flex-grow_1">
-        <div class="vc-padding_l">
+      <div class="offer-details__inner grow basis-0 overflow-hidden">
+        <div class="p-4">
           <VcForm>
             <!-- Product selector -->
             <VcSelect
-              class="vc-margin-bottom_l"
+              class="mb-4"
               :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
               is-required
               is-searchable
@@ -37,22 +37,30 @@
             >
               <template v-slot:selectedItem="itemData">
                 <div
-                  class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
+                  class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
                 >
                   <VcImage
-                    class="vc-flex-shrink_0"
+                    class="shrink-0"
                     size="xs"
                     :src="itemData.item.imgSrc"
                     :bordered="true"
                   ></VcImage>
-                  <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
-                    <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-                    <VcHint class="vc-ellipsis vc-margin-top_xs">
+                  <div
+                    class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                  >
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap"
+                    >
+                      {{ itemData.item.name }}
+                    </div>
+                    <VcHint
+                      class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                    >
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
                     </VcHint>
                     <div
-                      class="vc-link vc-margin-top_xs"
+                      class="vc-link mt-1"
                       v-if="itemData.item.sellerProductId"
                       @click.stop="
                         showProductDetails(itemData.item.sellerProductId)
@@ -65,17 +73,25 @@
               </template>
               <template v-slot:item="itemData">
                 <div
-                  class="vc-flex vc-flex-align_center vc-padding-vertical_s vc-ellipsis"
+                  class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
                 >
                   <VcImage
-                    class="vc-flex-shrink_0"
+                    class="shrink-0"
                     size="xs"
                     :src="itemData.item.imgSrc"
                     :bordered="true"
                   ></VcImage>
-                  <div class="flex-grow_1 vc-margin-left_l vc-ellipsis">
-                    <div class="vc-ellipsis">{{ itemData.item.name }}</div>
-                    <VcHint class="vc-ellipsis vc-margin-top_xs">
+                  <div
+                    class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                  >
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap"
+                    >
+                      {{ itemData.item.name }}
+                    </div>
+                    <VcHint
+                      class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                    >
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
                     </VcHint>
@@ -86,7 +102,7 @@
 
             <VcCard
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE')"
-              class="vc-margin-bottom_l"
+              class="mb-4"
             >
               <!--              <template v-slot:actions v-if="$isDesktop.value">-->
               <!--                <VcCheckbox>{{-->
@@ -94,13 +110,11 @@
               <!--                }}</VcCheckbox>-->
               <!--              </template>-->
 
-              <div class="vc-padding_l">
+              <div class="p-4">
                 <!-- SKU field -->
-                <div
-                  class="vc-margin-bottom_l vc-flex vc-flex-row vc-flex-align_center"
-                >
+                <div class="mb-4 flex flex-row items-center">
                   <VcInput
-                    class="vc-flex-grow_1"
+                    class="grow basis-0"
                     :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
                     :clearable="true"
                     :required="true"
@@ -124,7 +138,7 @@
 
                 <!-- Quantity in stock field -->
                 <VcInput
-                  class="vc-margin-bottom_l"
+                  class="mb-4"
                   :label="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE')"
                   :clearable="true"
                   :required="true"
@@ -149,21 +163,21 @@
               <template
                 v-if="offerDetails.prices && offerDetails.prices.length"
               >
-                <div :class="{ 'vc-padding_s': $isDesktop.value }">
+                <div :class="{ 'p-2': $isDesktop.value }">
                   <VcRow
                     v-for="(item, i) in offerDetails.prices"
                     :ref="setPriceRefs"
                     :class="[
                       {
-                        'offer-details__pricing-border vc-padding_s vc-margin_l':
+                        'border border-solid border-[#e0e8ef] box-border rounded-[4px] relative p-2 m-4':
                           $isMobile.value,
                       },
                     ]"
                     :key="`${item.id}${i}`"
                   >
                     <VcCol size="2">
-                      <div class="vc-flex">
-                        <VcCol class="vc-padding_s">
+                      <div class="flex">
+                        <VcCol class="p-2">
                           <!-- List price field -->
                           <VcInput
                             :clearable="true"
@@ -171,7 +185,7 @@
                             v-model:optionsValue="offerDetails.currency"
                             :currency="true"
                             :required="true"
-                            :options="currencies"
+                            :options="currencyList"
                             keyProperty="value"
                             displayProperty="title"
                             :optionsTitle="
@@ -191,14 +205,14 @@
                             name="listprice"
                           ></VcInput>
                         </VcCol>
-                        <VcCol class="vc-padding_s">
+                        <VcCol class="p-2">
                           <!-- Sales price field -->
                           <VcInput
                             :clearable="true"
                             v-model="item.salePrice"
                             v-model:optionsValue="offerDetails.currency"
                             :currency="true"
-                            :options="currencies"
+                            :options="currencyList"
                             keyProperty="value"
                             displayProperty="title"
                             :optionsTitle="
@@ -221,7 +235,7 @@
                       </div>
                     </VcCol>
 
-                    <VcCol class="vc-padding_s">
+                    <VcCol class="p-2">
                       <!-- Minimum quantity field -->
                       <VcInput
                         :clearable="true"
@@ -243,22 +257,22 @@
                       style="flex-basis: 20px"
                       :class="{
                         'offer-details__pricing-delete-btn': $isMobile.value,
-                        'vc-padding_s vc-margin-top_l': !$isMobile.value,
+                        'p-2 mt-4': !$isMobile.value,
                       }"
                     >
-                      <vc-icon
+                      <VcIcon
                         :class="[
-                          { 'vc-padding-top_l': !$isMobile.value },
-                          'offer-details__remove-price',
+                          { 'pt-4': !$isMobile.value },
+                          'text-[#41afe6] cursor-pointer hover:text-[#319ed4]',
                         ]"
                         icon="fas fa-times-circle"
                         @click="removePrice(i)"
-                      ></vc-icon>
+                      ></VcIcon>
                     </div>
                   </VcRow>
                 </div>
               </template>
-              <div v-else class="vc-padding_xl vc-flex vc-flex-justify_center">
+              <div v-else class="p-5 flex justify-center">
                 <VcHint>{{
                   $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.EMPTY")
                 }}</VcHint>
@@ -323,29 +337,23 @@ const { t } = useI18n();
 const {
   createOffer,
   offerDetails,
+  currencyList,
   fetchProducts,
   offer,
   loadOffer,
   loading,
   selectOfferProduct,
+  getCurrencies,
 } = useOffer();
 const { debounce } = useFunctions();
 const products = ref<IOfferProduct[]>();
-// const currency = { title: "USD", value: "USD" };
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
-const currencies = [
-  { title: "USD", value: "USD" },
-  { title: "EUR", value: "EUR" },
-  { title: "AED", value: "AED" },
-  { title: "AFN", value: "AFN" },
-  { title: "CHF", value: "CHF" },
-  { title: "CNY", value: "CNY" },
-];
 const { validate } = useForm({ validateOnMount: false });
 
 onMounted(async () => {
+  await getCurrencies();
   if (props.param) {
     await loadOffer({ id: props.param });
   } else {
@@ -441,43 +449,17 @@ function showProductDetails(id: string) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 .offer-details {
-  &__inner {
-    overflow: hidden;
-  }
-
   .vc-app_phone &__inner {
-    flex-direction: column;
-  }
-
-  &__remove-price {
-    color: #41afe6;
-    cursor: pointer;
-
-    &_mobile {
-      position: absolute;
-    }
-
-    &:hover {
-      color: #319ed4;
-    }
-  }
-
-  &__pricing-border {
-    border: 1px solid #e0e8ef;
-    box-sizing: border-box;
-    border-radius: 4px;
-    position: relative;
+    @apply flex-col;
   }
 
   &__pricing-delete-btn {
-    position: absolute;
-    top: -8px;
-    right: -8px;
+    @apply absolute -top-[8px] -right-[8px];
 
-    .vc-icon {
-      color: #ff4a4a;
+    .VcIcon {
+      @apply text-[#ff4a4a];
     }
   }
 }

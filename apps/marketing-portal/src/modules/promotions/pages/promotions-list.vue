@@ -31,8 +31,8 @@
         </h2>
         <VcContainer no-padding>
           <VcRow>
-            <VcCol class="vc-padding_s">
-              <div class="group-title">
+            <VcCol class="p-2">
+              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
                 {{ $t("PROMOTIONS.PAGES.LIST.FILTERS.START_DATE") }}
               </div>
               <div>
@@ -40,7 +40,7 @@
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
                   type="date"
-                  class="vc-margin-bottom_m"
+                  class="mb-3"
                   :label="$t('PROMOTIONS.PAGES.LIST.FILTERS.START_DATE')"
                 ></VcInput>
                 <VcInput
@@ -53,16 +53,11 @@
             </VcCol>
           </VcRow>
           <VcRow>
-            <VcCol class="vc-padding_s">
-              <div class="vc-flex vc-flex-justify_end">
-                <VcButton
-                  outline
-                  class="vc-margin-right_l"
-                  @click="resetFilters"
-                  >{{
-                    $t("PROMOTIONS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</VcButton
-                >
+            <VcCol class="p-2">
+              <div class="flex justify-end">
+                <VcButton outline class="mr-4" @click="resetFilters">{{
+                  $t("PROMOTIONS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                }}</VcButton>
                 <VcButton @click="applyFilters">{{
                   $t("PROMOTIONS.PAGES.LIST.FILTERS.APPLY")
                 }}</VcButton>
@@ -75,10 +70,10 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="w-full h-full box-border flex flex-col items-center justify-center"
         >
           <img src="/assets/empty-product.png" />
-          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+          <div class="m-4 text-xl font-medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.NOT_FOUND") }}
           </div>
           <VcButton @click="resetSearch">
@@ -90,10 +85,10 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center vc-flex-justify_center"
+          class="w-full h-full box-border flex flex-col items-center justify-center"
         >
           <img src="/assets/empty-product.png" />
-          <div class="vc-margin_l vc-font-size_xl vc-font-weight_medium">
+          <div class="m-4 text-xl font-medium">
             {{ $t("PROMOTIONS.PAGES.LIST.TABLE.IS_EMPTY") }}
           </div>
           <VcButton>{{ $t("PROMOTIONS.PAGES.LIST.TABLE.ADD_PROMO") }}</VcButton>
@@ -102,61 +97,75 @@
 
       <!-- Mobile template -->
       <template v-slot:mobile-item="itemData">
-        <div
-          class="products-list__mobile-item vc-padding_m vc-flex vc-flex-nowrap"
-        >
-          <div class="vc-flex-grow_1 vc-margin-left_m">
-            <div class="vc-font-weight_bold vc-font-size_l">
+        <div class="p-3 flex flex-nowrap">
+          <div class="grow basis-0 ml-3">
+            <div class="font-bold text-lg">
               {{ itemData.item.name }}
             </div>
 
-            <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-            >
-              <div class="vc-ellipsis vc-flex-grow_2">
+            <div class="mt-3 w-full flex justify-between">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              >
                 <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.START_DATE")
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ moment(itemData.item.startDate).format("L") }}
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+              >
                 <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.MODIFIED")
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ moment(itemData.item.modified).format("L") }}
                 </div>
               </div>
             </div>
 
-            <div
-              class="vc-margin-top_m vc-fill_width vc-flex vc-flex-justify_space-between"
-            >
-              <div class="vc-ellipsis vc-flex-grow_1">
+            <div class="mt-3 w-full flex justify-between">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+              >
                 <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.IS_ACTIVE")
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   <VcStatusIcon :status="itemData.item.isActive"></VcStatusIcon>
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+              >
                 <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.IS_EXCLUSIVE")
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   <VcStatusIcon
                     :status="itemData.item.isExclusive"
                   ></VcStatusIcon>
                 </div>
               </div>
-              <div class="vc-ellipsis vc-flex-grow_1">
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+              >
                 <VcHint>{{
                   $t("PROMOTIONS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
                 }}</VcHint>
-                <div class="vc-ellipsis vc-margin-top_xs">
+                <div
+                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                >
                   {{ moment(itemData.item.createdDate).format("L") }}
                 </div>
               </div>
@@ -391,12 +400,3 @@ defineExpose({
   reload,
 });
 </script>
-
-<style lang="less" scoped>
-.group-title {
-  margin-bottom: var(--margin-l);
-  color: #a1c0d4;
-  font-weight: var(--font-weight-bold);
-  font-size: 17px;
-}
-</style>

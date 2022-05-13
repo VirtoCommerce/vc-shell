@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-app vc-fill_all vc-flex vc-flex-column vc-margin_none"
+    class="vc-app flex flex-col w-full h-full box-border m-0 overflow-hidden text-base"
     :class="[
       `vc-theme_${theme}`,
       {
@@ -21,7 +21,7 @@
       <template v-else>
         <!-- Init application top bar -->
         <VcAppBar
-          class="vc-flex-shrink_0"
+          class="shrink-0"
           :logo="logo"
           :workspace="workspaceRefs"
           :version="version"
@@ -38,11 +38,11 @@
           </template>
         </VcAppBar>
 
-        <div class="vc-app__inner vc-flex vc-flex-grow_1">
+        <div class="overflow-hidden flex grow basis-0">
           <!-- Init main menu -->
           <VcAppMenu
             ref="menu"
-            class="vc-flex-shrink_0"
+            class="shrink-0"
             :items="menuItems"
             :activeItem="activeMenuItem"
             :activeChildItem="activeChildMenuItem"
@@ -60,7 +60,10 @@
           </slot>
 
           <!-- Else show workspace blades -->
-          <div v-else class="vc-app__workspace vc-flex vc-flex-grow_1">
+          <div
+            v-else
+            class="workspace px-2 w-full overflow-hidden flex grow basis-0"
+          >
             <component
               v-for="(blade, index) in workspace"
               v-show="index >= workspace.length - ($isMobile.value ? 1 : 2)"
@@ -79,10 +82,12 @@
             ></component>
           </div>
 
-          <div class="vc-app__notifications">
+          <div
+            class="[pointer-events:painted] absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-2 box-border"
+          >
             <slot name="notifications"></slot>
           </div>
-          <div class="vc-app__password-change">
+          <div>
             <slot name="passwordChange"></slot>
           </div>
         </div>
@@ -482,45 +487,19 @@ defineExpose({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
     linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
 }
 
 .vc-app {
-  font-size: var(--font-size-m);
   background: var(--app-background);
-  overflow: hidden;
-
-  &__inner {
-    overflow: hidden;
-  }
 
   &__workspace {
-    padding-left: var(--padding-s);
-    padding-right: var(--padding-s);
-    width: 100%;
-    overflow: hidden;
-
     .vc-app_mobile & {
-      padding: 0;
+      @apply p-0;
     }
-  }
-
-  &__notifications {
-    position: absolute;
-    display: flex;
-    z-index: 1000;
-    overflow: hidden;
-    pointer-events: painted;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    flex-direction: column;
-    align-items: center;
-    padding: var(--padding-s);
-    box-sizing: border-box;
   }
 }
 </style>

@@ -10,11 +10,11 @@
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
-      <div class="vc-flex-grow_1">
-        <div class="vc-padding_l">
+      <div class="grow basis-0">
+        <div class="p-4">
           <VcForm>
             <VcInput
-              class="vc-margin-bottom_l"
+              class="mb-4"
               :label="
                 $t(
                   'DYNAMIC_CONTENT.PAGES.CONTENT_MANAGE_PROPERTY.FORM.INPUTS.PROPERTY_NAME.LABEL'
@@ -30,7 +30,7 @@
             >
             </VcInput>
             <VcRow>
-              <VcCol class="vc-margin-bottom_l">
+              <VcCol class="mb-4">
                 <VcSwitch
                   v-model="propertyDetails.isRequired"
                   :label="
@@ -40,7 +40,7 @@
                   "
                 ></VcSwitch>
               </VcCol>
-              <VcCol class="vc-margin-bottom_l">
+              <VcCol class="mb-4">
                 <VcSwitch
                   v-model="propertyDetails.isArray"
                   :label="
@@ -50,7 +50,7 @@
                   "
                 ></VcSwitch>
               </VcCol>
-              <VcCol class="vc-margin-bottom_l">
+              <VcCol class="mb-4">
                 <VcSwitch
                   :disabled="options.item"
                   v-model="propertyDetails.isMultilingual"
@@ -61,7 +61,7 @@
                   "
                 ></VcSwitch>
               </VcCol>
-              <VcCol class="vc-margin-bottom_l">
+              <VcCol class="mb-4">
                 <VcSwitch
                   :disabled="options.item"
                   v-model="propertyDetails.isDictionary"
@@ -79,7 +79,7 @@
                   'DYNAMIC_CONTENT.PAGES.CONTENT_MANAGE_PROPERTY.FORM.VALUE_TYPE'
                 )
               "
-              class="vc-margin-bottom_l"
+              class="mb-4"
               :options="valueOptions"
               :isSearchable="true"
               keyProperty="id"
@@ -89,7 +89,7 @@
             >
             </VcSelect>
             <VcInput
-              class="vc-margin-bottom_l"
+              class="mb-4"
               type="number"
               :label="
                 $t(
@@ -105,7 +105,7 @@
             >
             </VcInput>
             <VcInput
-              class="vc-margin-bottom_l"
+              class="mb-4"
               :label="
                 $t(
                   'DYNAMIC_CONTENT.PAGES.CONTENT_MANAGE_PROPERTY.FORM.INPUTS.DESCRIPTION.LABEL'
@@ -120,7 +120,7 @@
             >
             </VcInput>
             <div>
-              <VcLabel class="vc-margin-bottom_s">
+              <VcLabel class="mb-2">
                 <span>{{
                   $t(
                     "DYNAMIC_CONTENT.PAGES.CONTENT_MANAGE_PROPERTY.FORM.INPUTS.DISPLAY_NAME.LABEL"
@@ -131,7 +131,7 @@
                 v-for="(lang, i) in propertyDetails.displayNames"
                 :key="`${lang.locale}_${i}`"
                 :fieldDescription="lang.locale"
-                class="vc-margin-bottom_l"
+                class="mb-4"
                 v-model="lang.name"
                 :placeholder="
                   $t(
@@ -142,7 +142,7 @@
               </VcInput>
               <VcButton
                 :disabled="!propertyDetails.isDictionary"
-                class="vc-flex vc-flex-justify_center"
+                class="flex justify-center"
                 @click="editDictionaryValues"
                 >Dictionary values</VcButton
               >
@@ -293,5 +293,3 @@ defineExpose({
   title,
 });
 </script>
-
-<style lang="less" scoped></style>

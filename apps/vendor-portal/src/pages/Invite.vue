@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="vc-app vc-fill_all vc-flex vc-flex-column vc-margin_none vc-theme_light"
-  >
+  <div class="vc-app w-full h-full box-border flex flex-col m-0 vc-theme_light">
     <VcLoading v-if="loading" active></VcLoading>
 
     <VcLoginForm
@@ -11,14 +9,14 @@
     >
       <VcForm>
         <VcInput
-          class="vc-margin-bottom_l vc-margin-top_xs"
+          class="mb-4 mt-1"
           :label="$t('SHELL.INVITATION.FIELDS.USER_NAME.LABEL')"
           :modelValue="userName"
           :disabled="true"
         ></VcInput>
         <VcInput
           ref="passwordField"
-          class="vc-margin-bottom_l vc-margin-top_xs"
+          class="mb-4 mt-1"
           :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
           :placeholder="$t('SHELL.INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
           type="password"
@@ -29,7 +27,7 @@
         ></VcInput>
         <VcInput
           ref="confirmPasswordField"
-          class="vc-margin-bottom_l"
+          class="mb-4"
           :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
           :placeholder="
             $t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')
@@ -41,28 +39,26 @@
           @update:modelValue="validate()"
           @keyup.enter="acceptInvitation"
         ></VcInput>
-        <div
-          class="vc-flex vc-flex-justify_center vc-flex-align_center vc-padding-top_s"
-        >
-          <span v-if="$isDesktop.value" class="vc-flex-grow_1"></span>
+        <div class="flex justify-center items-center pt-2">
+          <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button
             variant="primary"
-            :disabled="loading || !form.tokenIsValid || !form.isValid"
+            :disabled="loading || !form.isValid || !form.tokenIsValid"
             @click="acceptInvitation"
           >
             {{ $t("SHELL.INVITATION.ACCEPT_INVITATION") }}
           </vc-button>
         </div>
 
-        <vc-hint
-          class="vc-margin-top_m"
+        <VcHint
+          class="mt-3"
           style="color: #f14e4e"
           v-for="error in form.errors"
           :key="error"
         >
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.INVITATION.ERRORS.${error}`) }}
-        </vc-hint>
+        </VcHint>
       </VcForm>
     </VcLoginForm>
   </div>

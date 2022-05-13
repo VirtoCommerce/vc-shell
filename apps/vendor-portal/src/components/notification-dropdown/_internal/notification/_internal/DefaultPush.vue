@@ -1,6 +1,6 @@
 <template>
   <slot name="title" v-bind:title="notification.title"></slot>
-  <VcHint class="vc-margin-bottom_xs" v-if="notification.description">{{
+  <VcHint class="mb-1" v-if="notification.description">{{
     notification.description
   }}</VcHint>
 </template>
@@ -22,5 +22,3 @@ defineProps({
   },
 });
 </script>
-
-<style lang="less" scoped></style>

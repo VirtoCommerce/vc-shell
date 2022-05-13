@@ -163,7 +163,7 @@ function ease(distance: number) {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --container-scroll-color: #e1eff9;
   --container-scroll-color-hover: #cce4f5;
@@ -174,77 +174,47 @@ function ease(distance: number) {
 }
 
 .vc-container {
-  width: 100%;
-  height: 100%;
-  overflow-y: hidden;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+  @apply w-full h-full overflow-hidden box-border flex flex-col relative;
 
   &_shadow {
-    box-shadow: var(--container-scroll-shadow);
+    @apply shadow-[0_3px_2px_rgba(0,0,0,0.1)_inset];
   }
 
   &__overscroll {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    overflow: hidden;
+    @apply relative w-full flex items-start justify-center overflow-hidden;
 
     &-icon {
-      color: #a1c0d4;
-      animation: infinite 2s linear spin;
+      @apply text-[color:#a1c0d4] animate-spin;
     }
 
     &_passed &-icon {
-      color: #43b0e6;
+      @apply text-[#43b0e6];
     }
   }
 
   &__inner {
-    position: relative;
-    overflow-y: auto;
-    overflow-x: hidden;
-    flex: 1;
-    padding: var(--container-scroll-padding);
-    scrollbar-color: var(--container-scroll-color);
-    scrollbar-width: thin;
-    transition-property: transform;
+    @apply relative overflow-y-auto overflow-x-hidden
+    flex-1 p-[var(--container-scroll-padding)]
+    transition-transform [scrollbar-color:var(--container-scroll-color)] [scrollbar-width:thin];
 
     &::-webkit-scrollbar {
-      width: var(--container-scroll-width);
-      background: transparent;
+      @apply w-[var(--container-scroll-width)] bg-transparent;
     }
 
     &::-webkit-scrollbar-track {
-      background: transparent;
+      @apply bg-transparent;
     }
 
     &::-webkit-scrollbar-thumb {
-      background: var(--container-scroll-color);
-      border-radius: calc(var(--container-scroll-width) / 2);
-      overflow: hidden;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background: var(--container-scroll-color-hover);
+      @apply bg-[color:var(--container-scroll-color)]
+      rounded-[calc(var(--container-scroll-width)/2)]
+      overflow-x-hidden
+      hover:bg-[color:var(--container-scroll-color-hover)];
     }
   }
 
   &_nopadding &__inner {
-    padding: 0;
-  }
-}
-
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+    @apply p-0;
   }
 }
 </style>

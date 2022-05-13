@@ -1,19 +1,21 @@
 <template>
-  <div class="vc-label">
-    <span class="vc-label__text"><slot></slot></span>
-    <span v-if="required" class="vc-label__required vc-margin-left_xs">*</span>
-    <span
-      v-if="$slots['tooltip']"
-      class="vc-label__tooltip-container vc-margin-left_xs"
+  <div class="flex flex-nowrap font-bold">
+    <span><slot></slot></span>
+    <span v-if="required" class="text-[color:var(--label-required-color)] ml-1"
+      >*</span
     >
+    <span v-if="$slots['tooltip']" class="grow basis-0 ml-1">
       <VcIcon
-        class="vc-label__tooltip-icon"
+        class="text-[color:var(--label-tooltip-color)]"
         :icon="tooltipIcon"
         size="s"
         @mouseenter="tooltipVisible = true"
         @mouseleave="tooltipVisible = false"
       ></VcIcon>
-      <span class="vc-label__tooltip-content" v-if="tooltipVisible">
+      <span
+        class="absolute z-10 bg-white border border-solid border-[color:#eef0f2] shadow-[1px_1px_8px_rgba(126,142,157,0.25)] rounded-[3px] text-[color:#8e9daa] font-normal py-1 px-2 ml-4"
+        v-if="tooltipVisible"
+      >
         <slot name="tooltip"></slot>
       </span>
     </span>
@@ -39,43 +41,9 @@ defineProps({
 const tooltipVisible = ref(false);
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
-  --label-font-weight: var(--font-weight-bold);
   --label-required-color: #f14e4e;
   --label-tooltip-color: #d3e0ee;
-}
-
-.vc-label {
-  display: flex;
-  flex-wrap: nowrap;
-  font-weight: var(--label-font-weight);
-
-  &__required {
-    color: var(--label-required-color);
-  }
-
-  &__tooltip {
-    &-icon {
-      color: var(--label-tooltip-color);
-    }
-
-    &-container {
-      flex-grow: 1;
-    }
-
-    &-content {
-      position: absolute;
-      z-index: 10;
-      background-color: #ffffff;
-      border: 1px solid #eef0f2;
-      box-shadow: 1px 1px 8px rgba(126, 142, 157, 0.25);
-      border-radius: 3px;
-      color: #8e9daa;
-      font-weight: var(--font-weight-normal);
-      padding: var(--padding-xs) var(--padding-s);
-      margin-left: var(--margin-l);
-    }
-  }
 }
 </style>

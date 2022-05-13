@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-card vc-flex vc-flex-column"
+    class="vc-card"
     :class="[{ 'vc-card_collapsable': isCollapsable }, `vc-card_${variant}`]"
   >
     <div class="vc-card__header" v-if="header" @click="onHeaderClick">
@@ -73,17 +73,13 @@ function onHeaderClick() {
 }
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --card-background: #ffffff;
-  --card-border: 1px solid #eef0f2;
   --card-border-radius: 6px;
   --card-box-shadow: 1px 1px 7px rgba(126, 142, 157, 0.15);
   --card-header-background: #f4f8fb;
   --card-header-color: #83a3be;
-  --card-header-font-size: var(--font-size-m);
-  --card-header-font-weight: var(--font-weight-bold);
-  --card-header-padding: var(--padding-m) var(--padding-l);
 
   --card-header-background-success: #e9f7df;
   --card-header-background-danger: #ffe6e6;
@@ -92,67 +88,49 @@ function onHeaderClick() {
   --card-header-color-danger: #f34747;
 }
 
+$variants: success, danger;
+
 .vc-card {
-  background: var(--card-background);
-  border: var(--card-border);
-  box-sizing: border-box;
-  box-shadow: var(--card-box-shadow);
-  border-radius: var(--card-border-radius);
-  overflow: hidden;
-  flex-grow: 1;
+  @apply bg-[color:var(--card-background)] border
+  border-[color:#eef0f2] border-solid box-border
+  shadow-[1px_1px_7px_rgba(126,142,157,0.15)]
+  rounded-[var(--card-border-radius)] overflow-hidden
+  flex-grow flex flex-col;
 
   &__header {
-    background: var(--card-header-background);
-    padding: var(--card-header-padding);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    box-sizing: border-box;
+    @apply bg-[color:var(--card-header-background)] px-4 py-3 flex items-center content-between w-full box-border;
   }
 
   &_collapsable &__header {
-    cursor: pointer;
+    @apply cursor-pointer;
   }
 
   &__title {
-    text-transform: uppercase;
-    flex-grow: 1;
-    color: var(--card-header-color);
-    font-size: var(--card-header-font-size);
-    font-weight: var(--card-header-font-weight);
+    @apply uppercase flex-grow
+    text-[color:var(--card-header-color)]
+    text-base font-bold uppercase;
   }
 
   &__icon {
-    color: var(--card-header-color);
-    margin-right: var(--margin-m);
+    @apply text-[color:var(--card-header-color)] mr-3;
   }
 
   &__collapse {
-    color: var(--card-header-color);
-    margin-left: var(--margin-m);
+    @apply text-[color:var(--card-header-color)] ml-3;
   }
 
   &__body {
-    flex-grow: 1;
-    box-sizing: border-box;
+    @apply flex-grow box-border;
   }
 
-  &_success {
-    .vc-card__header {
-      background: var(--card-header-background-success);
-    }
-    .vc-card__title {
-      color: var(--card-header-color-success);
-    }
-  }
-
-  &_danger {
-    .vc-card__header {
-      background: var(--card-header-background-danger);
-    }
-    .vc-card__title {
-      color: var(--card-header-color-danger);
+  @each $variant in $variants {
+    &_#{$variant} {
+      .vc-card__header {
+        @apply bg-[color:var(--card-header-background-#{$variant})];
+      }
+      .vc-card__title {
+        @apply text-[color:var(--card-header-color-#{$variant})];
+      }
     }
   }
 }

@@ -1,11 +1,11 @@
 <template>
-  <div class="vc-slider">
+  <div class="vc-slider relative">
     <swiper-component
       :class="[
         'vc-slider__swiper',
         {
-          'vc-slider__swiper_overflow': overflow,
-          'vc-slider__swiper_navigation': navigation,
+          'overflow-visible': overflow,
+          'px-[40px]': navigation,
         },
       ]"
       :space-between="spaceBetweenSlides"
@@ -19,14 +19,14 @@
     </swiper-component>
     <!-- Navigation buttons-->
     <div v-show="navigation">
-      <div class="vc-slider__prev">
+      <div class="vc-slider__prev left-0">
         <slot name="prevBtn">
           <div class="vc-slider__btn">
             <VcIcon icon="fas fa-chevron-left"></VcIcon>
           </div>
         </slot>
       </div>
-      <div class="vc-slider__next">
+      <div class="vc-slider__next right-0">
         <slot name="nextBtn">
           <div class="vc-slider__btn">
             <VcIcon icon="fas fa-chevron-right"></VcIcon>
@@ -79,54 +79,28 @@ const buttonsList = computed(() => ({
 }));
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .vc-slider {
-  position: relative;
   &__swiper {
-    &_overflow {
-      overflow: visible;
-    }
-
-    &_navigation {
-      padding: 0 40px;
-    }
-
     .swiper-slide {
-      width: auto;
+      @apply w-auto;
     }
   }
 
   &__next,
   &__prev {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 2;
+    @apply absolute top-2/4 -translate-y-2/4 z-[2];
 
     &.swiper-button-disabled .vc-slider__btn {
-      color: #999999;
+      @apply text-[#999999];
     }
   }
 
-  &__next {
-    right: 0;
-  }
-
-  &__prev {
-    left: 0;
-  }
-
   &__btn {
-    background: #ffffff;
-    border: 1px solid #eaecf2;
-    box-sizing: border-box;
-    border-radius: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #43b0e6;
-    width: 30px;
-    height: 30px;
+    @apply bg-white border border-solid border-[#eaecf2]
+      box-border rounded-[3px]
+      flex items-center justify-center
+      text-[#43b0e6] w-[30px] h-[30px];
   }
 }
 </style>

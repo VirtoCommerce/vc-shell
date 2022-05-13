@@ -7,34 +7,34 @@
         <span>)</span>
       </div>
     </template>
-    <div class="vc-fill_all vc-flex vc-flex-column vc-flex-align_center">
-      <div
-        class="vc-gallery-preview__image-container vc-flex-grow_1 vc-fill_width"
-      >
+    <div class="w-full h-full box-border flex flex-col items-center">
+      <div class="box-border p-5 grow basis-0 w-full">
         <div
-          class="vc-gallery-preview__image vc-fill_all"
+          class="bg-contain bg-no-repeat bg-center w-full h-full box-border"
           :style="{ backgroundImage: 'url(' + currentImage.url + ')' }"
         ></div>
         <div
           v-if="localIndex > 0"
-          class="vc-gallery-preview__prev"
+          class="absolute top-2/4 -mt-9 h-[72px] w-[72px] flex items-center justify-center rounded-full bg-[#f1f6fa] cursor-pointer text-[#a1c0d4] [--icon-size-xl: 36px] hover:shadow-[0_0_20px_rgba(31,40,50,0.15)] left-[25px]"
           @click="localIndex--"
         >
           <VcIcon icon="fas fa-arrow-left" size="xl"></VcIcon>
         </div>
         <div
           v-if="localIndex < images.length - 1"
-          class="vc-gallery-preview__next"
+          class="absolute top-2/4 -mt-9 h-[72px] w-[72px] flex items-center justify-center rounded-full bg-[#f1f6fa] cursor-pointer text-[#a1c0d4] [--icon-size-xl: 36px] hover:shadow-[0_0_20px_rgba(31,40,50,0.15)] right-[25px]"
           @click="localIndex++"
         >
           <VcIcon icon="fas fa-arrow-right" size="xl"></VcIcon>
         </div>
       </div>
-      <div class="vc-gallery-preview__images vc-flex-shrink_1 vc-flex">
+      <div
+        class="p-4 pb-[40px] max-w-full overflow-x-auto box-border shrink flex"
+      >
         <div
           v-for="(item, i) in images"
           :key="i"
-          class="vc-gallery-preview__images-item"
+          class="m-1 opacity-60"
           :class="{
             'vc-gallery-preview__images-item_current': i === localIndex,
           }"
@@ -80,75 +80,14 @@ const copyLink = (link: string) => {
 };
 </script>
 
-<style lang="less">
+<style lang="scss">
 .vc-gallery-preview {
-  &__image-container {
-    box-sizing: border-box;
-    padding: var(--padding-xl);
-  }
-
-  &__image {
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-
   &__images {
-    padding: var(--padding-l);
-    padding-bottom: 40px;
-    max-width: 100%;
-    overflow-x: auto;
-    box-sizing: border-box;
-
     &-item {
-      margin: 0 var(--margin-xs);
-      opacity: 0.6;
-
       &_current {
-        position: relative;
-        opacity: 1;
-
-        &::after {
-          content: "";
-          background: #43b0e6;
-          height: 4px;
-          width: 100%;
-          border-radius: 5px;
-          position: absolute;
-          left: 0;
-          bottom: -12px;
-        }
+        @apply relative opacity-100 after:content-[""] after:bg-[#43b0e6] after:h-1 after:w-full after:rounded-[5px] after:absolute after:left-0 after:-bottom-[12px];
       }
     }
-  }
-
-  &__prev,
-  &__next {
-    position: absolute;
-    top: 50%;
-    margin-top: -36px;
-    height: 72px;
-    width: 72px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: #f1f6fa;
-    cursor: pointer;
-    color: #a1c0d4;
-    --icon-size-xl: 36px;
-
-    &:hover {
-      box-shadow: 0 0 20px rgba(31, 40, 50, 0.15);
-    }
-  }
-
-  &__prev {
-    left: 25px;
-  }
-
-  &__next {
-    right: 25px;
   }
 }
 </style>

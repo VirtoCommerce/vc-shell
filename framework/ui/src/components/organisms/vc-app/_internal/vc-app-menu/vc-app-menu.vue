@@ -1,22 +1,23 @@
 <template>
   <div
-    class="vc-app-menu vc-padding-top_l"
+    class="relative w-[var(--app-menu-width)] transition duration-100 pt-4"
     :class="{
-      'vc-app-menu_mobile': $isMobile.value,
-      'vc-app-menu_mobile-visible': isMobileVisible,
+      'vc-app-menu_mobile hidden !fixed !left-0 !top-0 !w-full !bottom-0 !z-[9999]':
+        $isMobile.value,
+      '!block': isMobileVisible,
     }"
   >
     <!-- Show backdrop overlay on mobile devices -->
     <div
       v-if="$isMobile.value"
-      class="vc-app-menu__overlay"
+      class="absolute left-0 top-0 right-0 bottom-0 z-[9998] bg-[#808c99] opacity-60"
       @click="isMobileVisible = false"
     ></div>
-    <div class="vc-app-menu__inner">
+    <div class="vc-app-menu__inner flex flex-col h-full">
       <!-- Show menu close handler on mobile devices -->
       <div
         v-if="$isMobile.value"
-        class="vc-app-menu__mobile-close vc-flex vc-flex-justify_end vc-flex-align_center vc-padding_l"
+        class="text-[#319ed4] flex justify-end items-center p-4"
       >
         <VcIcon
           icon="fas fa-times"
@@ -26,10 +27,8 @@
       </div>
 
       <!-- Show scrollable area with menu items -->
-      <VcContainer :noPadding="true" class="vc-app-menu__content">
-        <div
-          class="vc-flex vc-flex-column vc-app-menu__content-inner vc-padding-left_l vc-padding-right_l"
-        >
+      <VcContainer :noPadding="true" class="grow basis-0">
+        <div class="gap-[5px] flex flex-col px-4">
           <template
             v-for="(item, index) in mobileMenuItems"
             :key="`info_item_${index}`"
@@ -39,7 +38,7 @@
                 v-if="item.component"
                 :is="item.component"
                 v-bind="item.componentOptions"
-                class="vc-padding_none vc-margin-bottom_s vc-fill_width"
+                class="p-0 mb-2 w-full"
               ></component>
             </template>
           </template>
@@ -103,82 +102,15 @@ defineExpose({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --app-menu-width: 230px;
-  --app-menu-width-collapsed: 60px;
   --app-menu-background-color: #ffffff;
 }
 
 .vc-app-menu {
-  position: relative;
-  width: var(--app-menu-width);
-  transition: width 0.1s ease;
-
-  &_collapsed {
-    width: var(--app-menu-width-collapsed);
-
-    .vc-app-menu-item__title {
-      opacity: 0;
-    }
-  }
-
-  &__content {
-    flex-grow: 1;
-  }
-
-  &__content-inner {
-    gap: 5px;
-  }
-
-  &_mobile {
-    display: none;
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    bottom: 0;
-    z-index: 9999;
-
-    &-visible {
-      display: block;
-    }
-  }
-
-  &__overlay {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9998;
-    background: #808c99;
-    opacity: 0.6;
-  }
-
-  &__inner {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
   &_mobile &__inner {
-    position: absolute;
-    z-index: 9999;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 300px;
-    max-width: 60%;
-    background: var(--app-menu-background-color);
-  }
-
-  &__mobile-close {
-    color: #319ed4;
-  }
-
-  &__toggle {
-    --app-menu-item-icon-color: #319ed4;
+    @apply absolute z-[9999] right-0 top-0 bottom-0 w-[300px] max-w-[60%] bg-[color:var(--app-menu-background-color)];
   }
 }
 </style>

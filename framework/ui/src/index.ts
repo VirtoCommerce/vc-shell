@@ -63,7 +63,7 @@ export default {
         return true;
       }
       // Check if email
-      if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,})+$/.test(value)) {
+      if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
         return "This field must be a valid email";
       }
       return true;

@@ -68,6 +68,7 @@ import {
   useI18n,
   useUser,
   useNotifications,
+  useSettings,
 } from "@virtoshell/core";
 import { IBladeToolbar, IMenuItems } from "../types";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
@@ -93,6 +94,7 @@ const {
   dismiss,
   markAsReaded,
 } = useNotifications();
+const { getUiCustomizationSettings, uiSettings } = useSettings();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -109,6 +111,7 @@ signalr.on("Send", (message: PushNotification) => {
 
 onMounted(async () => {
   langInit();
+  await getUiCustomizationSettings();
   await loadUser();
   isReady.value = true;
   if (!isAuthorized.value) {

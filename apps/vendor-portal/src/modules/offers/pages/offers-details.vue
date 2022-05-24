@@ -153,7 +153,10 @@
               </div>
             </VcCard>
 
-            <VcCard :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')">
+            <VcCard
+              class="mb-4"
+              :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
+            >
               <template v-slot:actions>
                 <VcButton v-if="!readonly" small @click="addPrice">
                   {{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
@@ -276,6 +279,32 @@
                 <VcHint>{{
                   $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.EMPTY")
                 }}</VcHint>
+              </div>
+            </VcCard>
+            <VcCard :header="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE')">
+              <div class="p-2">
+                <VcRow>
+                  <VcCol class="p-2">
+                    <VcInput
+                      :label="
+                        $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')
+                      "
+                      type="datetime-local"
+                      :modelValue="offerDetails.startDate"
+                      @update:modelValue="offerDetails.startDate = $event"
+                      :disabled="readonly"
+                    ></VcInput>
+                  </VcCol>
+                  <VcCol class="p-2">
+                    <VcInput
+                      :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
+                      type="datetime-local"
+                      :modelValue="offerDetails.endDate"
+                      @update:modelValue="offerDetails.endDate = $event"
+                      :disabled="readonly"
+                    ></VcInput>
+                  </VcCol>
+                </VcRow>
               </div>
             </VcCard>
           </VcForm>

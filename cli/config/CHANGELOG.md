@@ -3,6 +3,18 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.1 (2022-05-24)
+
+
+
+## 0.1.16 (2022-04-15)
+
+**Note:** Version bump only for package @virtoshell/config-generator
+
+
+
+
+
 # 1.0.0 (2022-05-13)
 
 

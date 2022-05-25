@@ -269,7 +269,7 @@ if (props.modelValue && props.type === "datetime-local") {
 
 // Prepare field-level validation
 const { errorMessage, handleChange, value } = useField(
-  `${instance?.uid || props.name}`,
+  `${props.name === "Field" ? instance?.uid : props.name}`,
   internalRules,
   {
     initialValue,

@@ -293,6 +293,8 @@
                       :modelValue="offerDetails.startDate"
                       @update:modelValue="offerDetails.startDate = $event"
                       :disabled="readonly"
+                      name="startDate"
+                      rules="before:endDate"
                     ></VcInput>
                   </VcCol>
                   <VcCol class="p-2">
@@ -302,6 +304,8 @@
                       :modelValue="offerDetails.endDate"
                       @update:modelValue="offerDetails.endDate = $event"
                       :disabled="readonly"
+                      name="endDate"
+                      rules="after:startDate"
                     ></VcInput>
                   </VcCol>
                 </VcRow>

@@ -399,25 +399,25 @@ const actionBuilder = (
 ): IActionBuilderResult[] => {
   let result = [];
 
-  if (item.status === "Published") {
-    result.push({
-      icon: "fas fa-times",
-      title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
-      variant: "danger",
-      clickHandler() {
-        alert("Unpublish");
-      },
-    });
-  } else {
-    result.push({
-      icon: "fas fa-check",
-      title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
-      variant: "success",
-      clickHandler() {
-        alert("Publish");
-      },
-    });
-  }
+  // if (item.status === "Published") {
+  //   result.push({
+  //     icon: "fas fa-times",
+  //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
+  //     variant: "danger",
+  //     clickHandler() {
+  //       alert("Unpublish");
+  //     },
+  //   });
+  // } else {
+  //   result.push({
+  //     icon: "fas fa-check",
+  //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
+  //     variant: "success",
+  //     clickHandler() {
+  //       alert("Publish");
+  //     },
+  //   });
+  // }
 
   result.push({
     icon: "fas fa-trash",

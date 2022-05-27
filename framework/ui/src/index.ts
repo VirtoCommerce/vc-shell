@@ -121,7 +121,7 @@ export default {
       }
       return true;
     });
-    defineRule("after", (value: string, [target]: string[], ctx) => {
+    defineRule("after", (value: string, [target]: string[]) => {
       // The field is empty so it should pass
       if (!value || !value.length) {
         return true;

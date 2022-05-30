@@ -9,12 +9,6 @@ import {
   SearchProductsResult,
   SellerProductStatus,
 } from "../../../../api_client";
-import {
-  ExportClient,
-  ExportDataQuery,
-  ExportDataRequest,
-  PlatformExportPushNotification,
-} from "@virtoshell/api-client";
 
 interface IUseProducts {
   readonly products: Ref<ISellerProduct[]>;

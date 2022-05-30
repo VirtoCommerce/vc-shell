@@ -211,8 +211,10 @@ function touchMove(e: TouchEvent): void {
 
     if (
       Math.abs(deltaX) > threshold &&
-      (leftSwipeActions.value && leftSwipeActions.value.length
-        ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
+      (rightSwipeActions.value && rightSwipeActions.value.length
+        ? leftSwipeActions.value && leftSwipeActions.value.length
+          ? Math.abs(startOffsetX.value + deltaX) <= maxWidth * 2
+          : Math.abs(startOffsetX.value + deltaX) <= maxWidth
         : Math.abs(startOffsetX.value + deltaX) <= maxWidth) &&
       startOffsetX.value + deltaX < 0
     ) {

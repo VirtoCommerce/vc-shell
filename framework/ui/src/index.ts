@@ -121,35 +121,18 @@ export default {
       }
       return true;
     });
-    defineRule("before", (value: string, [target]: string[], ctx) => {
+    defineRule("after", (value: string, [target]: string[]) => {
       // The field is empty so it should pass
       if (!value || !value.length) {
         return true;
       }
 
       const first_date = new Date(value);
-      const second_date = new Date(ctx.form[target] as string);
-
-      if (first_date.getTime() > 0 && second_date.getTime() > 0) {
-        if (second_date.getTime() < first_date.getTime()) {
-          return "Start date could not be higher than end date";
-        }
-      }
-
-      return true;
-    });
-    defineRule("after", (value: string, [target]: string[], ctx) => {
-      // The field is empty so it should pass
-      if (!value || !value.length) {
-        return true;
-      }
-
-      const first_date = new Date(value);
-      const second_date = new Date(ctx.form[target] as string);
+      const second_date = new Date(target);
 
       if (first_date.getTime() > 0 && second_date.getTime() > 0) {
         if (second_date.getTime() > first_date.getTime()) {
-          return "End date could not be lower than start date";
+          return "End date must be later than start date";
         }
       }
 

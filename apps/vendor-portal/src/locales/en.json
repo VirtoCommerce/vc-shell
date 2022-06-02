@@ -72,8 +72,8 @@
     "INVITATION": {
       "TITLE": "New user activation",
       "FIELDS": {
-        "USER_NAME": {
-          "LABEL": "Username"
+        "EMAIL": {
+          "LABEL": "Email"
         },
         "PASSWORD": {
           "LABEL": "New password",

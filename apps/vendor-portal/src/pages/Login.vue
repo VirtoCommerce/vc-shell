@@ -29,7 +29,11 @@
         </div>
         <div class="flex justify-center items-center pt-2">
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
-          <vc-button variant="primary" :disabled="loading" @click="login">
+          <vc-button
+            variant="primary"
+            :disabled="loading || !form.username || !form.password"
+            @click="login"
+          >
             {{ $t("SHELL.LOGIN.BUTTON") }}
           </vc-button>
         </div>

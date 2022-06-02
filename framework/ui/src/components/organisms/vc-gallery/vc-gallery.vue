@@ -40,6 +40,7 @@
               :icon="uploadIcon"
               @upload="onUpload"
               variant="gallery"
+              :multiple="multiple"
             ></VcFileUpload>
           </template>
         </draggable>
@@ -100,6 +101,11 @@ const props = defineProps({
   uploadIcon: {
     type: String,
     default: "fas fa-upload",
+  },
+
+  multiple: {
+    type: Boolean,
+    default: false,
   },
 });
 

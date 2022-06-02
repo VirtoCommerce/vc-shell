@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, reactive } from "vue";
+import { computed, PropType, reactive, unref } from "vue";
 import { useI18n } from "@virtoshell/core";
 import { Image } from "@virtoshell/api-client";
 
@@ -97,7 +97,13 @@ const bladeToolbar = [
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     clickHandler() {
-      mutateImage(true);
+      if (
+        window.confirm(
+          unref(computed(() => t("ASSETS.PAGES.DETAILS.DELETE_CONFIRMATION")))
+        )
+      ) {
+        mutateImage(true);
+      }
     },
   },
 ];

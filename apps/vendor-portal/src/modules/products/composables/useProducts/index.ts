@@ -10,6 +10,10 @@ import {
   SellerProductStatus,
 } from "../../../../api_client";
 
+type SellerProductStatusApproveExcluded = {
+  [key in Exclude<SellerProductStatus, SellerProductStatus.Approved>]?: string;
+};
+
 interface IUseProducts {
   readonly products: Ref<ISellerProduct[]>;
   readonly totalCount: Ref<number>;
@@ -18,7 +22,7 @@ interface IUseProducts {
   searchQuery: Ref<ISearchProductsQuery>;
   currentPage: Ref<number>;
   loadProducts: (query: ISearchProductsQuery) => void;
-  SellerProductStatus: typeof SellerProductStatus;
+  SellerProductStatus: Ref<SellerProductStatusApproveExcluded>;
   exportCategories: () => void;
 }
 
@@ -43,6 +47,12 @@ export default (options?: IUseProductOptions): IUseProducts => {
   });
   const searchResult = ref<SearchProductsResult>();
   const loading = ref(false);
+  const statuses = computed((): SellerProductStatusApproveExcluded => {
+    const statusKeys = Object.entries(SellerProductStatus).filter(
+      (key) => !key.includes(SellerProductStatus.Approved)
+    );
+    return Object.fromEntries(statusKeys);
+  });
 
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
     const { getAccessToken } = useUser();
@@ -120,6 +130,6 @@ export default (options?: IUseProductOptions): IUseProducts => {
     searchQuery,
     loadProducts,
     exportCategories,
-    SellerProductStatus,
+    SellerProductStatus: computed(() => statuses.value),
   };
 };

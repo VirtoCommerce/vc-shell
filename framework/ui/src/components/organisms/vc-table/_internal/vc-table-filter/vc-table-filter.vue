@@ -42,7 +42,7 @@
             @click="closePanel"
           />
 
-          <slot></slot>
+          <slot :closePanel="closePanel"></slot>
         </div>
       </div>
     </teleport>
@@ -93,9 +93,7 @@ const popper = ref<Instance>();
 watch(
   () => props.parentExpanded,
   () => {
-    useFunctions().delay(() => {
-      popper.value?.update();
-    }, 300);
+    closePanel();
   }
 );
 

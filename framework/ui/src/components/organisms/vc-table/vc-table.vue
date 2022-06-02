@@ -35,7 +35,9 @@
             :counter="activeFilterCount"
             :parentExpanded="expanded"
           >
-            <slot name="filters"></slot>
+            <template v-slot:default="{ closePanel }">
+              <slot name="filters" :closePanel="closePanel"></slot>
+            </template>
           </VcTableFilter>
         </div>
       </div>
@@ -100,7 +102,7 @@
                 :key="item.id"
                 class="h-[42px] bg-[#f9f9f9] !border-0 shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] box-border sticky top-0 select-none overflow-hidden z-[1] px-3"
                 :class="{
-                  'cursor-pointer': item.sortable,
+                  'cursor-pointer group': item.sortable,
                 }"
                 :width="item.width"
                 @click="$emit('headerClick', item)"
@@ -119,6 +121,13 @@
                         sortDirection === 'DESC' ? 'down' : 'up'
                       }`"
                     ></VcIcon>
+                  </div>
+                  <div
+                    class="flex flex-col ml-1 invisible group-hover:visible"
+                    v-else
+                  >
+                    <VcIcon size="xs" icon="fas fa-caret-up"></VcIcon>
+                    <VcIcon size="xs" icon="fas fa-caret-down"></VcIcon>
                   </div>
                 </div>
               </th>

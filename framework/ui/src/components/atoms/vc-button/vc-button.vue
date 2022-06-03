@@ -193,6 +193,7 @@ $variants: primary, secondary, special, danger, widget;
     hover:bg-transparent
     focus:text-[color:var(--button-secondary-text-color-hover)]
     focus:border-[color:var(--button-secondary-border-color-active)]
+    focus:bg-transparent
     disabled:cursor-not-allowed
     disabled:text-[color:var(--button-secondary-text-color-disabled)]
     disabled:border-[color:var(--button-secondary-border-color-disabled)];

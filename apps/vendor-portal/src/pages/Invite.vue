@@ -10,7 +10,7 @@
       <VcForm>
         <VcInput
           class="mb-4 mt-1"
-          :label="$t('SHELL.INVITATION.FIELDS.USER_NAME.LABEL')"
+          :label="$t('SHELL.INVITATION.FIELDS.EMAIL.LABEL')"
           :modelValue="userName"
           :disabled="true"
         ></VcInput>

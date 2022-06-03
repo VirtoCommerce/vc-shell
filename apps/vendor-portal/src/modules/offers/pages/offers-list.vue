@@ -370,7 +370,11 @@ const onHeaderClick = (item: ITableColumns) => {
   const sortBy = [":DESC", ":ASC", ""];
   if (item.sortable) {
     item.sortDirection = (item.sortDirection ?? 0) + 1;
-    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+    if (sortBy[item.sortDirection % 3] === "") {
+      sort.value = `${sortBy[item.sortDirection % 3]}`;
+    } else {
+      sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+    }
   }
 };
 

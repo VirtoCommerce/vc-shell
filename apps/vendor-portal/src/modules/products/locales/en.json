@@ -19,7 +19,7 @@
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
-          "EXPORT_CATEGORIES": "Export categories",
+          "EXPORT_PRODUCTS": "Export products",
           "BULK_DELETE": "Delete"
         },
         "SEARCH": {
@@ -79,7 +79,7 @@
             "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
           },
           "SAVEANDAPPROVE": {
-            "TITLE": "Save & send to approve",
+            "TITLE": "Send changes to approve",
             "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields."
           },
           "CLOSE": "Close",

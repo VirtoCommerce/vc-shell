@@ -21,7 +21,8 @@
             "TITLE": "Meta description",
             "PLACEHOLDER": "Enter meta description"
           }
-        }
+        },
+        "DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
       }
     }
   }

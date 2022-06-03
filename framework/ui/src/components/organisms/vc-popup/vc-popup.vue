@@ -81,7 +81,7 @@ defineEmits(["close"]);
   }
 
   &__inner {
-    @apply grow shrink basis-auto m-[40px] box-border bg-white rounded-[5px] overflow-hidden relative;
+    @apply grow shrink basis-auto m-[40px] box-border bg-white rounded-[5px] overflow-hidden relative flex flex-col grow basis-0;
 
     .vc-app_phone & {
       @apply m-0 rounded-none;

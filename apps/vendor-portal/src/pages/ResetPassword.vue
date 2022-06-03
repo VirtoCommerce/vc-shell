@@ -37,7 +37,12 @@
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button
             variant="primary"
-            :disabled="loading || (!form.isValid && !form.tokenIsValid)"
+            :disabled="
+              loading ||
+              !form.password ||
+              !form.confirmPassword ||
+              (!form.isValid && !form.tokenIsValid)
+            "
             @click="resetPassword"
           >
             {{ $t("SHELL.PASSWORDRESET.SAVE_PASSWORD") }}
@@ -61,6 +66,7 @@
 import { reactive, onMounted } from "vue";
 import { useUser } from "@virtoshell/core";
 import { useRouter } from "vue-router";
+import { useForm } from "@virtoshell/ui";
 
 const props = defineProps({
   userId: {
@@ -84,6 +90,7 @@ const {
   loading,
 } = useUser();
 const router = useRouter();
+const { validate: veeValidate } = useForm({ validateOnMount: false });
 
 const form = reactive({
   isValid: false,
@@ -112,20 +119,23 @@ const validate = async () => {
 };
 
 const resetPassword = async () => {
-  var result = await resetPasswordByToken(
-    props.userId,
-    form.password,
-    props.token
-  );
-  if (result.succeeded) {
-    const result = await signIn(props.userName, form.password);
+  const { valid } = await veeValidate();
+  if (valid) {
+    var result = await resetPasswordByToken(
+      props.userId,
+      form.password,
+      props.token
+    );
     if (result.succeeded) {
-      router.push("/");
+      const result = await signIn(props.userName, form.password);
+      if (result.succeeded) {
+        router.push("/");
+      } else {
+        form.errors = [result.errorCode];
+      }
     } else {
-      form.errors = [result.errorCode];
+      form.errors = result.errors;
     }
-  } else {
-    form.errors = result.errors;
   }
 };
 </script>

@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/ui",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "build": "vite build",
     "watch": "vite build --watch"
@@ -21,8 +21,8 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.0",
-    "@virtoshell/config-generator": "^1.0.2",
-    "@virtoshell/core": "^1.0.2",
+    "@virtoshell/config-generator": "^1.0.3",
+    "@virtoshell/core": "^1.0.3",
     "@vueuse/core": "^6.0.0",
     "@vueuse/integrations": "^6.0.0",
     "moment": "^2.29.1",

@@ -3,7 +3,7 @@
     <template v-slot:title>
       <div>
         <span>{{ currentImage.name }} (</span>
-        <VcLink @click="copyLink(currentImage.src)">copy image link</VcLink>
+        <VcLink @click="copyLink(currentImage.url)">copy image link</VcLink>
         <span>)</span>
       </div>
     </template>

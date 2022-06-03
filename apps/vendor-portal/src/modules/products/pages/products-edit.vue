@@ -135,7 +135,7 @@
                   ></VcTextarea>
 
                   <VcDynamicProperty
-                    v-for="property in productDetails.properties"
+                    v-for="property in noCategoryProps"
                     :key="property.id"
                     :property="property"
                     :optionsGetter="loadDictionaries"
@@ -151,11 +151,12 @@
               <VcCard
                 v-if="param"
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
-                class="my-3"
+                class="my-3 relative"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
+                <VcLoading :active="fileUploading"></VcLoading>
                 <div class="p-2">
                   <VcGallery
                     :images="productDetails.images"
@@ -164,6 +165,7 @@
                     @item:remove="onGalleryImageRemove"
                     :disabled="readonly"
                     @sort="onGallerySort"
+                    :multiple="true"
                   ></VcGallery>
                 </div>
               </VcCard>
@@ -257,7 +259,12 @@ const currentCategory = ref();
 const offersCount = ref(0);
 const categories = ref<ICategory[]>();
 const productLoading = ref(false);
+const fileUploading = ref(false);
 let isOffersOpened = false;
+
+const noCategoryProps = computed(() =>
+  productDetails.properties.filter((x) => x.type !== "Category")
+);
 
 const reload = async (fullReload: boolean) => {
   if (!modified.value && fullReload) {
@@ -421,32 +428,42 @@ const readonly = computed(
 const loading = computed(() => prodLoading.value);
 
 const onGalleryUpload = async (files: FileList) => {
-  const formData = new FormData();
-  formData.append("file", files[0]);
-  const authToken = await getAccessToken();
-  const result = await fetch(
-    `/api/assets?folderUrl=/catalog/${productData.value.id}`,
-    {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${authToken}`,
-      },
+  try {
+    fileUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(
+        `/api/assets?folderUrl=/catalog/${productData.value.id}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        image.createdDate = new Date();
+        if (productDetails.images && productDetails.images.length) {
+          const lastImageSortOrder =
+            productDetails.images[productDetails.images.length - 1].sortOrder;
+          image.sortOrder = lastImageSortOrder + 1;
+        } else {
+          image.sortOrder = 0;
+        }
+        productDetails.images.push(image);
+      }
     }
-  );
-  const response = await result.json();
-  if (response?.length) {
-    const image = new Image(response[0]);
-    image.createdDate = new Date();
-    if (productDetails.images && productDetails.images.length) {
-      const lastImageSortOrder =
-        productDetails.images[productDetails.images.length - 1].sortOrder;
-      image.sortOrder = lastImageSortOrder + 1;
-    } else {
-      image.sortOrder = 0;
-    }
-    productDetails.images.push(image);
+  } catch (e) {
+    console.log(e);
+  } finally {
+    fileUploading.value = false;
   }
+
   files = null;
 };
 

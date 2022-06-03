@@ -12,8 +12,9 @@
           "PLACEHOLDER": "Enter your password"
         },
         "FORGOT_PASSWORD": {
-          "LABEL": "Login or email",
-          "PLACEHOLDER": "Please enter login or email"
+          "TITLE": "Forgot password",
+          "LABEL": "Email",
+          "PLACEHOLDER": "Please enter your email"
         }
       },
       "FORGOT_PASSWORD_BUTTON": "Forgot your password?",
@@ -71,8 +72,8 @@
     "INVITATION": {
       "TITLE": "New user activation",
       "FIELDS": {
-        "USER_NAME": {
-          "LABEL": "Username"
+        "EMAIL": {
+          "LABEL": "Email"
         },
         "PASSWORD": {
           "LABEL": "New password",

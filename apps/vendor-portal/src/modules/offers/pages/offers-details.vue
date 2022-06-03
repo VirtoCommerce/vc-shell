@@ -292,28 +292,35 @@
             </VcCard>
             <VcCard :header="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE')">
               <div class="p-2">
-                <VcRow>
-                  <VcCol class="p-2">
-                    <VcInput
-                      :label="
-                        $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')
-                      "
-                      type="datetime-local"
-                      :modelValue="offerDetails.startDate"
-                      @update:modelValue="offerDetails.startDate = $event"
-                      :disabled="readonly"
-                    ></VcInput>
-                  </VcCol>
-                  <VcCol class="p-2">
-                    <VcInput
-                      :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
-                      type="datetime-local"
-                      :modelValue="offerDetails.endDate"
-                      @update:modelValue="offerDetails.endDate = $event"
-                      :disabled="readonly"
-                    ></VcInput>
-                  </VcCol>
-                </VcRow>
+                <Form>
+                  <VcRow>
+                    <VcCol class="p-2">
+                      <VcInput
+                        :label="
+                          $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')
+                        "
+                        type="datetime-local"
+                        :modelValue="offerDetails.startDate"
+                        @update:modelValue="offerDetails.startDate = $event"
+                        :disabled="readonly"
+                        name="startDate"
+                      ></VcInput>
+                    </VcCol>
+                    <VcCol class="p-2">
+                      <VcInput
+                        :label="
+                          $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')
+                        "
+                        type="datetime-local"
+                        :modelValue="offerDetails.endDate"
+                        @update:modelValue="offerDetails.endDate = $event"
+                        :disabled="readonly"
+                        name="endDate"
+                        rules="after:@startDate"
+                      ></VcInput>
+                    </VcCol>
+                  </VcRow>
+                </Form>
               </div>
             </VcCard>
           </VcForm>
@@ -346,6 +353,7 @@ import { useOffer } from "../composables";
 import { IOfferProduct, OfferPrice } from "../../../api_client";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
+import { Form } from "vee-validate";
 
 const props = defineProps({
   expanded: {

@@ -31,7 +31,10 @@
       @scroll:ptr="reload"
     >
       <!-- Filters -->
-      <template v-slot:filters>
+      <template
+        v-slot:filters="{ closePanel }"
+        v-if="!(options && options.query && options.query.searchFromAllSellers)"
+      >
         <h2 v-if="$isMobile.value">
           {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
@@ -54,6 +57,7 @@
                 >
               </div>
             </VcCol>
+            <!--
             <VcCol class="w-[180px] p-2">
               <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TITLE") }}
@@ -92,6 +96,7 @@
                 ></VcInput>
               </div>
             </VcCol>
+             -->
           </VcRow>
           <VcRow>
             <VcCol class="p-2">
@@ -99,7 +104,7 @@
                 <VcButton outline class="mr-4" @click="resetFilters">{{
                   $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
                 }}</VcButton>
-                <VcButton @click="applyFilters">{{
+                <VcButton @click="applyFilters(closePanel)">{{
                   $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
                 }}</VcButton>
               </div>
@@ -200,6 +205,22 @@
                     itemData.item.createdDate &&
                     moment(itemData.item.createdDate).fromNow()
                   }}
+                </div>
+              </div>
+              <div
+                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+              >
+                <div class="flex flex-col items-center">
+                  <VcHint>{{
+                    $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
+                  }}</VcHint>
+                  <div
+                    class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  >
+                    <VcStatusIcon
+                      :status="itemData.item && itemData.item.isPublished"
+                    ></VcStatusIcon>
+                  </div>
                 </div>
               </div>
             </div>
@@ -334,7 +355,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "export",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_PRODUCTS")),
     icon: "fas fa-file-export",
     async clickHandler() {
       await exportCategories();
@@ -424,7 +445,11 @@ const onHeaderClick = (item: ITableColumns) => {
   const sortBy = [":DESC", ":ASC", ""];
   if (item.sortable) {
     item.sortDirection = (item.sortDirection ?? 0) + 1;
-    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+    if (sortBy[item.sortDirection % 3] === "") {
+      sort.value = `${sortBy[item.sortDirection % 3]}`;
+    } else {
+      sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+    }
   }
 };
 
@@ -510,7 +535,8 @@ function addProduct() {
   });
 }
 
-async function applyFilters() {
+async function applyFilters(filterHandlerFn: () => void) {
+  filterHandlerFn();
   await loadProducts({
     ...searchQuery.value,
     ...filter,

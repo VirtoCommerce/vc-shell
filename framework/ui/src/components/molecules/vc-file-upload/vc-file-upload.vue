@@ -29,6 +29,7 @@
       hidden
       @change="upload"
       :accept="accept"
+      :multiple="multiple"
     />
   </div>
 </template>
@@ -50,6 +51,11 @@ defineProps({
   accept: {
     type: String,
     default: ".jpg, .png, .jpeg",
+  },
+
+  multiple: {
+    type: Boolean,
+    default: false,
   },
 });
 

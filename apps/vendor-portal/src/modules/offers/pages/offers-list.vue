@@ -370,7 +370,11 @@ const onHeaderClick = (item: ITableColumns) => {
   const sortBy = [":DESC", ":ASC", ""];
   if (item.sortable) {
     item.sortDirection = (item.sortDirection ?? 0) + 1;
-    sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+    if (sortBy[item.sortDirection % 3] === "") {
+      sort.value = `${sortBy[item.sortDirection % 3]}`;
+    } else {
+      sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+    }
   }
 };
 
@@ -399,25 +403,25 @@ const actionBuilder = (
 ): IActionBuilderResult[] => {
   let result = [];
 
-  if (item.status === "Published") {
-    result.push({
-      icon: "fas fa-times",
-      title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
-      variant: "danger",
-      clickHandler() {
-        alert("Unpublish");
-      },
-    });
-  } else {
-    result.push({
-      icon: "fas fa-check",
-      title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
-      variant: "success",
-      clickHandler() {
-        alert("Publish");
-      },
-    });
-  }
+  // if (item.status === "Published") {
+  //   result.push({
+  //     icon: "fas fa-times",
+  //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
+  //     variant: "danger",
+  //     clickHandler() {
+  //       alert("Unpublish");
+  //     },
+  //   });
+  // } else {
+  //   result.push({
+  //     icon: "fas fa-check",
+  //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
+  //     variant: "success",
+  //     clickHandler() {
+  //       alert("Publish");
+  //     },
+  //   });
+  // }
 
   result.push({
     icon: "fas fa-trash",

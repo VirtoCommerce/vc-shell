@@ -16,8 +16,10 @@
       class="user-dropdown-button__avatar"
       :style="{ 'background-image': `url(${avatar})` }"
     ></div>
-    <div class="grow basis-0 ml-3">
-      <div class="user-dropdown-button__name">
+    <div class="grow basis-0 ml-3 overflow-hidden">
+      <div
+        class="user-dropdown-button__name text-ellipsis overflow-hidden whitespace-nowrap"
+      >
         {{ name }}
       </div>
       <div class="user-dropdown-button__role">

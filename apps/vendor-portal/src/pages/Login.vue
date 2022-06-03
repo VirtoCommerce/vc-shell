@@ -1,5 +1,5 @@
 <template>
-  <VcLoginForm :logo="logo" :background="background" :title="title">
+  <VcLoginForm :logo="logo" :background="background" :title="computedTitle">
     <VcForm>
       <template v-if="isLogin">
         <VcInput
@@ -8,6 +8,7 @@
           :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
           :required="true"
+          rules="required"
           v-model="form.username"
         ></VcInput>
         <VcInput
@@ -16,6 +17,7 @@
           :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
           :required="true"
+          rules="required"
           v-model="form.password"
           type="password"
           @keyup.enter="login"
@@ -27,7 +29,11 @@
         </div>
         <div class="flex justify-center items-center pt-2">
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
-          <vc-button variant="primary" :disabled="loading" @click="login">
+          <vc-button
+            variant="primary"
+            :disabled="loading || !form.username || !form.password"
+            @click="login"
+          >
             {{ $t("SHELL.LOGIN.BUTTON") }}
           </vc-button>
         </div>
@@ -40,6 +46,7 @@
             :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
             :required="true"
+            rules="required"
             v-model="forgotPasswordForm.loginOrEmail"
             :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
           ></VcInput>
@@ -91,17 +98,20 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, computed } from "vue";
 import {
   useLogger,
   useUser,
   SignInResult,
   RequestPasswordResult,
+  useI18n,
 } from "@virtoshell/core";
 
 import { useLogin } from "../modules/login";
+import { useForm } from "@virtoshell/ui";
+import { useRouter } from "vue-router";
 
-defineProps({
+const props = defineProps({
   logo: {
     type: String,
     default: undefined,
@@ -118,6 +128,9 @@ defineProps({
   },
 });
 const log = useLogger();
+const { t } = useI18n();
+const router = useRouter();
+const { validate } = useForm({ validateOnMount: false });
 const signInResult = ref<SignInResult>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
@@ -132,13 +145,24 @@ const forgotPasswordForm = reactive({
   loginOrEmail: "",
 });
 
+const computedTitle = computed(() =>
+  isLogin.value ? props.title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")
+);
+
 const login = async () => {
-  signInResult.value = await signIn(form.username, form.password);
+  const { valid } = await validate();
+  if (valid) {
+    signInResult.value = await signIn(form.username, form.password);
+    router.push("/");
+  }
 };
 
 const forgot = async () => {
-  await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
-  forgotPasswordRequestSent.value = true;
+  const { valid } = await validate();
+  if (valid) {
+    await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
+    forgotPasswordRequestSent.value = true;
+  }
 };
 
 const togglePassRequest = () => {

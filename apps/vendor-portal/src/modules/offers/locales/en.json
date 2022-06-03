@@ -65,6 +65,16 @@
             "TITLE": "SKU",
             "PLACEHOLDER": "Enter product SKU"
           },
+          "INVENTORY": {
+            "TITLE": "Inventory"
+          },
+          "ALWAYS_IN_STOCK": {
+            "TITLE": "Always in stock"
+          },
+          "QTY": {
+            "TITLE": "Quantity in Stock",
+            "PLACEHOLDER": "Enter product available quantity"
+          },
           "LIST_PRICE": {
             "TITLE": "List price",
             "PLACEHOLDER": "Set list price"
@@ -80,10 +90,6 @@
           "MIN_QTY": {
             "TITLE": "Minimum quantity",
             "PLACEHOLDER": "Enter product minimal quantity in order"
-          },
-          "QTY": {
-            "TITLE": "Quantity in Stock",
-            "PLACEHOLDER": "Enter product available quantity"
           },
           "CONDITION": {
             "TITLE": "Condition",
@@ -102,10 +108,6 @@
             "PLACEHOLDER": ""
           },
           "CODE": "CODE",
-          "INVENTORY": {
-            "TITLE": "Inventory",
-            "TRACK": "Track inventory"
-          },
           "DATES": {
             "TITLE": "Validity dates",
             "VALID_FROM": "Valid from",

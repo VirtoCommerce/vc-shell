@@ -145,7 +145,7 @@
               :key="item.id"
               class="vc-table__body-row h-[60px] bg-white hover:bg-[#dfeef9]"
               :class="{
-                'cursor-pointer hover:bg-[#dfeef9]': $attrs.onItemClick,
+                'cursor-pointer hover:bg-[#dfeef9]': onItemClick,
                 'bg-[#f8f8f8]': i % 2 === 1,
                 'bg-[#dfeef9] hover:bg-[#dfeef9]':
                   item && item.id ? selectedItemId === item.id : false,
@@ -414,6 +414,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+
+  onItemClick: {
+    type: Function,
+    default: undefined,
+  },
 });
 
 const emit = defineEmits([
@@ -422,7 +427,6 @@ const emit = defineEmits([
   "search:change",
   "filter:apply",
   "filter:reset",
-  "itemClick",
 ]);
 
 const checkboxes = ref<Record<string, boolean>>({});

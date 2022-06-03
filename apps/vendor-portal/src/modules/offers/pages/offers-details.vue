@@ -104,12 +104,6 @@
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TITLE')"
               class="mb-4"
             >
-              <!--              <template v-slot:actions v-if="$isDesktop.value">-->
-              <!--                <VcCheckbox>{{-->
-              <!--                  $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")-->
-              <!--                }}</VcCheckbox>-->
-              <!--              </template>-->
-
               <div class="p-4">
                 <!-- SKU field -->
                 <div class="mb-4 flex flex-row items-center">
@@ -126,30 +120,45 @@
                     :disabled="readonly"
                     name="sku"
                   ></VcInput>
-                  <!--                  <div-->
-                  <!--                    class="vc-margin-left_xl vc-margin-top_xl"-->
-                  <!--                    v-if="$isMobile.value"-->
-                  <!--                  >-->
-                  <!--                    <VcCheckbox class="vc-padding-top_s" v-model="isTracked">{{-->
-                  <!--                      $t("OFFERS.PAGES.DETAILS.FIELDS.INVENTORY.TRACK")-->
-                  <!--                    }}</VcCheckbox>-->
-                  <!--                  </div>-->
                 </div>
 
-                <!-- Quantity in stock field -->
-                <VcInput
-                  class="mb-4"
-                  :label="$t('OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE')"
-                  :clearable="true"
-                  :required="true"
-                  v-model="offerDetails.inStockQuantity"
-                  type="number"
-                  :placeholder="
-                    $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
-                  "
-                  :disabled="readonly"
-                  name="qty"
-                ></VcInput>
+                <!-- In stock quantity fields -->
+                <VcLabel class="mb-2" :required="true">
+                  <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE") }}</span>
+                </VcLabel>
+
+                <VcRow>
+                  <VcCol size="1" class="self-center mr-2 my-2">
+                    <!-- Always in stock -->
+                    <VcCheckbox
+                      :modelValue="!offerDetails.trackInventory"
+                      @update:modelValue="
+                        offerDetails.trackInventory = !$event;
+                        offerDetails.inStockQuantity = 0;
+                      "
+                      :disabled="readonly"
+                      name="alwaysinstock"
+                    >
+                      {{
+                        $t("OFFERS.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE")
+                      }}
+                    </VcCheckbox>
+                  </VcCol>
+                  <VcCol size="4" class="justify-center">
+                    <!-- Quantity field -->
+                    <VcInput
+                      :clearable="true"
+                      :required="true"
+                      v-model="offerDetails.inStockQuantity"
+                      type="number"
+                      :placeholder="
+                        $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
+                      "
+                      :disabled="readonly || !offerDetails.trackInventory"
+                      name="instockqty"
+                    ></VcInput>
+                  </VcCol>
+                </VcRow>
               </div>
             </VcCard>
 
@@ -394,6 +403,7 @@ onMounted(async () => {
   if (props.param) {
     await loadOffer({ id: props.param });
   } else {
+    offerDetails.trackInventory = true;
     offerDetails.currency = "USD";
     addPrice();
   }

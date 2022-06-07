@@ -19,4 +19,3 @@ export default {
 
 export * from "./pages";
 export * from "./composables";
-export * from "./components";

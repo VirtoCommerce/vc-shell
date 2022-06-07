@@ -120,6 +120,7 @@ import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { IBladeToolbar, IMenuItems, IPage } from "../../../typings";
+import { usePermissions } from "@virtoshell/core";
 
 interface BladeElement extends ComponentPublicInstance {
   onBeforeClose: () => Promise<boolean>;
@@ -185,6 +186,7 @@ const instance = getCurrentInstance();
 
 const router = useRouter();
 const route = useRoute();
+const { checkPermission } = usePermissions();
 const activeMenuItem = ref<IMenuItems>();
 const activeChildMenuItem = ref<IMenuItems>();
 
@@ -209,7 +211,6 @@ watch(
     if (props.isReady) {
       if (value && value.length) {
         let ws: string;
-
         if (
           value[0].componentOptions &&
           (value[0].componentOptions as Record<string, string>).url
@@ -323,40 +324,57 @@ onMounted(() => {
     const ws = (props.pages as IPage[]).find(
       (item) => item.url === data.workspace
     );
+
     if (ws) {
-      workspace.value.push({
-        component: shallowRef(ws),
-        url: ws.url,
-      });
+      const permissions = ws.permissions;
 
-      activeMenuItem.value =
-        (props.menuItems as IMenuItems[]).find(
-          (item) => item.component?.url === ws.url
-        ) ||
-        (props.menuItems as IMenuItems[]).find((item) =>
-          item.children?.find((child) => child.component?.url === ws.url)
-        );
+      const hasAccess =
+        permissions && permissions.length
+          ? checkPermission({ permissions })
+          : true;
 
-      activeChildMenuItem.value =
-        activeMenuItem.value &&
-        activeMenuItem.value?.children &&
-        activeMenuItem.value?.children.find(
-          (child) => child.component?.url === ws.url
-        );
+      if (hasAccess) {
+        workspace.value.push({
+          component: shallowRef(ws),
+          url: ws.url,
+        });
 
-      if (data.blade) {
-        const blade = (props.pages as IPage[]).find(
-          (item) => item.url === data.blade
-        );
-        if (blade) {
-          if (workspace.value.length) {
-            workspace.value[0].param = data.param;
+        activeMenuItem.value =
+          (props.menuItems as IMenuItems[]).find(
+            (item) => item.component?.url === ws.url
+          ) ||
+          (props.menuItems as IMenuItems[]).find((item) =>
+            item.children?.find((child) => child.component?.url === ws.url)
+          );
+
+        activeChildMenuItem.value =
+          activeMenuItem.value &&
+          activeMenuItem.value?.children &&
+          activeMenuItem.value?.children.find(
+            (child) => child.component?.url === ws.url
+          );
+
+        if (data.blade) {
+          const blade = (props.pages as IPage[]).find(
+            (item) => item.url === data.blade
+          );
+
+          const hasAccess = blade?.permissions
+            ? checkPermission({ permissions: blade?.permissions })
+            : true;
+
+          if (hasAccess) {
+            if (blade) {
+              if (workspace.value.length) {
+                workspace.value[0].param = data.param;
+              }
+              workspace.value.push({
+                component: shallowRef(blade),
+                url: blade.url,
+                param: data.param,
+              });
+            }
           }
-          workspace.value.push({
-            component: shallowRef(blade),
-            url: blade.url,
-            param: data.param,
-          });
         }
       }
     }
@@ -364,6 +382,11 @@ onMounted(() => {
     activeMenuItem.value = props.menuItems[0];
   }
 });
+
+const accessGuard = (bladeComponent: Record<string, unknown>) => {
+  const permissions = bladeComponent.permissions;
+  return permissions ? checkPermission({ permissions }) : true;
+};
 
 const onMenuItemClick = function (item: Record<string, unknown>) {
   console.debug(`vc-app#onMenuItemClick() called.`);
@@ -400,16 +423,21 @@ const openWorkspace = async (page: IPage) => {
 
   // Close all opened pages with onBeforeClose callback
   await onClosePage(0);
-  workspace.value = [
-    {
-      ...page,
-      component: shallowRef(page.component),
-      url:
-        page.url === undefined
-          ? (page.component as Record<string, string>).url
-          : page.url,
-    },
-  ];
+
+  if (accessGuard(page.component as Record<string, unknown>)) {
+    workspace.value = [
+      {
+        ...page,
+        component: shallowRef(page.component),
+        url:
+          page.url === undefined
+            ? (page.component as Record<string, string>).url
+            : page.url,
+      },
+    ];
+  } else {
+    alert("Access restricted");
+  }
 };
 
 const onOpenPage = async (index: number, page: IPage) => {
@@ -419,16 +447,21 @@ const onOpenPage = async (index: number, page: IPage) => {
   if (workspace.value.length > index + 1) {
     await onClosePage(index + 1);
   }
-  workspace.value.push({
-    ...page,
-    component: shallowRef(page.component),
-    url:
-      page.url === undefined
-        ? (page.component as Record<string, string>).url
-        : page.url,
-  });
-  if (typeof page?.onOpen === "function") {
-    page?.onOpen?.();
+
+  if (accessGuard(page.component as Record<string, unknown>)) {
+    workspace.value.push({
+      ...page,
+      component: shallowRef(page.component),
+      url:
+        page.url === undefined
+          ? (page.component as Record<string, string>).url
+          : page.url,
+    });
+    if (typeof page?.onOpen === "function") {
+      page?.onOpen?.();
+    }
+  } else {
+    alert("Access restricted");
   }
 };
 

@@ -119,6 +119,7 @@ import { defineComponent, ref, computed, watch, onMounted } from "vue";
 
 export default defineComponent({
   url: "team",
+  permissions: ["seller:users:manage"],
 });
 </script>
 

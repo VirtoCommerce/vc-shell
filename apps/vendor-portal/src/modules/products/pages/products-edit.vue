@@ -192,6 +192,7 @@ import { defineComponent, computed, onMounted, ref, unref } from "vue";
 
 export default defineComponent({
   url: "product",
+  permissions: ["admin"],
 });
 </script>
 

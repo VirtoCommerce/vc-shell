@@ -19,7 +19,7 @@
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
-          "EXPORT_PRODUCTS": "Export products",
+          "EXPORT_CATEGORIES": "Export categories",
           "BULK_DELETE": "Delete"
         },
         "SEARCH": {

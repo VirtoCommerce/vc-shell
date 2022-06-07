@@ -214,7 +214,7 @@
                               )
                             "
                             :disabled="readonly"
-                            name="listprice"
+                            :name="`listprice_${i}`"
                           ></VcInput>
                         </VcCol>
                         <VcCol class="p-2">
@@ -241,7 +241,7 @@
                               )
                             "
                             :disabled="readonly"
-                            name="saleprice"
+                            :name="`saleprice_${i}`"
                           ></VcInput>
                         </VcCol>
                       </div>
@@ -259,7 +259,7 @@
                           $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                         "
                         :disabled="readonly"
-                        name="minqty"
+                        :name="`minqty_${i}`"
                       ></VcInput>
                     </VcCol>
 
@@ -269,7 +269,7 @@
                       style="flex-basis: 20px"
                       :class="{
                         'offer-details__pricing-delete-btn': $isMobile.value,
-                        'p-2 mt-4': !$isMobile.value,
+                        'p-2 mt-[22px]': !$isMobile.value,
                       }"
                     >
                       <VcIcon

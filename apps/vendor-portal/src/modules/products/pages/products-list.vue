@@ -244,7 +244,6 @@ import {
 
 export default defineComponent({
   url: "products",
-  permissions: ["admin"],
 });
 </script>
 

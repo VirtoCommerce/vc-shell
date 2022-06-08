@@ -71,7 +71,7 @@ import {
   useSettings,
   usePermissions,
 } from "@virtoshell/core";
-import { IBladeToolbar, IMenuItems } from "../types";
+import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
 import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
@@ -262,7 +262,9 @@ const menuItems = reactive<IMenuItems[]>([
   {
     title: computed(() => t("SETTINGS.MENU.TITLE")),
     icon: "fas fa-sliders-h",
-    isVisible: computed(() => checkPermission("seller:users:manage")),
+    isVisible: computed(() =>
+      checkPermission(UserPermissions.SellerUsersManage)
+    ),
     component: shallowRef(),
     children: [
       {

@@ -3,23 +3,23 @@ import { computed, ComputedRef } from "vue";
 
 interface IUsePermissions {
   readonly userPermissions: ComputedRef<string[]>;
-  checkPermission(args: { permissions: string[] }): boolean;
+  checkPermission(permissions: string | string[]): boolean;
 }
 
 export default (): IUsePermissions => {
   const { user } = useUser();
 
-  function checkPermission(args: { permissions: string[] }) {
-    if (args.permissions && args.permissions instanceof Array) {
-      if (args.permissions.length > 0) {
-        const permissionRoles = args.permissions;
-
+  function checkPermission(permissions: string | string[]) {
+    if (permissions || (permissions && permissions instanceof Array)) {
+      if (typeof permissions === "string") {
+        return user.value?.permissions.includes(permissions);
+      } else if (permissions.length > 0) {
         return user.value?.permissions.some((role) => {
-          return permissionRoles.includes(role);
+          return permissions.includes(role);
         });
       }
     } else {
-      console.error("Roles must be an array");
+      console.error("Permissions must be a string or strings array");
     }
   }
 

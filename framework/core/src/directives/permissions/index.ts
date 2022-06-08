@@ -4,7 +4,7 @@ const { checkPermission } = usePermissions();
 
 function checkAndRemove(el: HTMLElement, binding: DirectiveBinding) {
   const { value: permissions } = binding;
-  const result = checkPermission({ permissions });
+  const result = checkPermission(permissions);
   if (result === false) {
     el.parentNode && el.parentNode.removeChild(el);
   }

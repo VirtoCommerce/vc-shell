@@ -329,9 +329,7 @@ onMounted(() => {
       const permissions = ws.permissions;
 
       const hasAccess =
-        permissions && permissions.length
-          ? checkPermission({ permissions })
-          : true;
+        permissions && permissions.length ? checkPermission(permissions) : true;
 
       if (hasAccess) {
         workspace.value.push({
@@ -359,21 +357,15 @@ onMounted(() => {
             (item) => item.url === data.blade
           );
 
-          const hasAccess = blade?.permissions
-            ? checkPermission({ permissions: blade?.permissions })
-            : true;
-
-          if (hasAccess) {
-            if (blade) {
-              if (workspace.value.length) {
-                workspace.value[0].param = data.param;
-              }
-              workspace.value.push({
-                component: shallowRef(blade),
-                url: blade.url,
-                param: data.param,
-              });
+          if (blade && accessGuard(blade)) {
+            if (workspace.value.length) {
+              workspace.value[0].param = data.param;
             }
+            workspace.value.push({
+              component: shallowRef(blade),
+              url: blade.url,
+              param: data.param,
+            });
           }
         }
       }
@@ -383,9 +375,9 @@ onMounted(() => {
   }
 });
 
-const accessGuard = (bladeComponent: Record<string, unknown>) => {
+const accessGuard = (bladeComponent: IPage) => {
   const permissions = bladeComponent.permissions;
-  return permissions ? checkPermission({ permissions }) : true;
+  return permissions ? checkPermission(permissions as string | string[]) : true;
 };
 
 const onMenuItemClick = function (item: Record<string, unknown>) {
@@ -424,7 +416,7 @@ const openWorkspace = async (page: IPage) => {
   // Close all opened pages with onBeforeClose callback
   await onClosePage(0);
 
-  if (accessGuard(page.component as Record<string, unknown>)) {
+  if (accessGuard(page.component as IPage)) {
     workspace.value = [
       {
         ...page,
@@ -448,7 +440,7 @@ const onOpenPage = async (index: number, page: IPage) => {
     await onClosePage(index + 1);
   }
 
-  if (accessGuard(page.component as Record<string, unknown>)) {
+  if (accessGuard(page.component as IPage)) {
     workspace.value.push({
       ...page,
       component: shallowRef(page.component),

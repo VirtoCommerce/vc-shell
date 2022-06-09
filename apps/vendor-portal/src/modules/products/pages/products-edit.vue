@@ -486,14 +486,22 @@ const onGallerySort = (images: Image[]) => {
 };
 
 const onGalleryImageRemove = (image: Image) => {
-  const imageIndex = productDetails.images.findIndex((img) => {
-    if (img.id && image.id) {
-      return img.id === image.id;
-    } else {
-      return img.url === image.url;
-    }
-  });
-  productDetails.images.splice(imageIndex, 1);
+  if (
+    window.confirm(
+      unref(
+        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))
+      )
+    )
+  ) {
+    const imageIndex = productDetails.images.findIndex((img) => {
+      if (img.id && image.id) {
+        return img.id === image.id;
+      } else {
+        return img.url === image.url;
+      }
+    });
+    productDetails.images.splice(imageIndex, 1);
+  }
 };
 
 const setCategory = async (id: string) => {

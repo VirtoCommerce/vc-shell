@@ -25,7 +25,6 @@
         :value="calcValue"
         :disabled="disabled"
         @input="onInput"
-        @change="onInput"
         ref="inputRef"
       />
 
@@ -375,6 +374,7 @@ function onInput(e: InputEvent) {
     const parsed = parse(newValue, { currency: props.optionsValue });
     emit("update:modelValue", parsed);
   } else {
+    console.log(newValue);
     emit("update:modelValue", newValue);
   }
 }

@@ -23,7 +23,7 @@
           :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
           type="password"
-          @update:modelValue="validate()"
+          @update:modelValue="validate"
           :required="true"
           v-model="form.password"
         ></VcInput>
@@ -35,7 +35,7 @@
             $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
           "
           :required="true"
-          @update:modelValue="validate()"
+          @update:modelValue="validate"
           type="password"
           v-model="form.confirmPassword"
         ></VcInput>
@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue";
+import { nextTick, reactive } from "vue";
 import { useUser } from "@virtoshell/core";
 import { IIdentityError } from "@virtoshell/api-client";
 
@@ -107,13 +107,15 @@ async function changePassword() {
   }
 }
 
-async function validate() {
-  if (form.password && form.confirmPassword) {
-    form.errors = (await validatePassword(form.password)).errors;
-    if (form.confirmPassword !== form.password) {
-      form.errors.push({ code: "Repeat-password" });
+function validate() {
+  nextTick(async () => {
+    if (form.password && form.confirmPassword) {
+      form.errors = (await validatePassword(form.password)).errors;
+      if (form.confirmPassword !== form.password) {
+        form.errors.push({ code: "Repeat-password" });
+      }
+      form.isValid = form.errors.length == 0;
     }
-    form.isValid = form.errors.length == 0;
-  }
+  });
 }
 </script>

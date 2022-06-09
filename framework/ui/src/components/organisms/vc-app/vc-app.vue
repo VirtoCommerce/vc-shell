@@ -206,6 +206,15 @@ onBeforeUpdate(() => {
 const urlPattern = new pattern("(/:workspace(/:blade(/:param)))");
 
 watch(
+  () => props.isAuthorized,
+  (value) => {
+    if (!value) {
+      openDashboard();
+    }
+  }
+);
+
+watch(
   () => workspace.value,
   (value) => {
     if (props.isReady) {

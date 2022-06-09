@@ -374,7 +374,6 @@ function onInput(e: InputEvent) {
     const parsed = parse(newValue, { currency: props.optionsValue });
     emit("update:modelValue", parsed);
   } else {
-    console.log(newValue);
     emit("update:modelValue", newValue);
   }
 }

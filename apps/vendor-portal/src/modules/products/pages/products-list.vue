@@ -355,7 +355,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "export",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_PRODUCTS")),
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
     icon: "fas fa-file-export",
     async clickHandler() {
       await exportCategories();

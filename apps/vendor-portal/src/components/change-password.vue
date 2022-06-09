@@ -23,7 +23,7 @@
           :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
           type="password"
-          @update:modelValue="validate"
+          @update:modelValue="validate()"
           :required="true"
           v-model="form.password"
         ></VcInput>
@@ -35,7 +35,7 @@
             $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
           "
           :required="true"
-          @update:modelValue="validate"
+          @update:modelValue="validate()"
           type="password"
           v-model="form.confirmPassword"
         ></VcInput>

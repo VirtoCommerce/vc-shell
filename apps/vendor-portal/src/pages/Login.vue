@@ -54,7 +54,11 @@
             <vc-button variant="secondary" @click="togglePassRequest">
               {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
             </vc-button>
-            <vc-button variant="primary" :disabled="loading" @click="forgot">
+            <vc-button
+              variant="primary"
+              :disabled="loading || !forgotPasswordForm.loginOrEmail"
+              @click="forgot"
+            >
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>

@@ -37,12 +37,7 @@
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button
             variant="primary"
-            :disabled="
-              loading ||
-              !form.password ||
-              !form.confirmPassword ||
-              (!form.isValid && !form.tokenIsValid)
-            "
+            :disabled="disableButton"
             @click="resetPassword"
           >
             {{ $t("SHELL.PASSWORDRESET.SAVE_PASSWORD") }}
@@ -63,7 +58,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue";
+import { reactive, onMounted, computed } from "vue";
 import { useUser } from "@virtoshell/core";
 import { useRouter } from "vue-router";
 import { useForm } from "@virtoshell/ui";
@@ -107,11 +102,20 @@ onMounted(async () => {
   }
 });
 
+const disableButton = computed(() => {
+  return (
+    loading.value ||
+    !form.password ||
+    !form.confirmPassword ||
+    (!form.isValid && form.tokenIsValid)
+  );
+});
+
 const validate = async () => {
   if (form.tokenIsValid) {
     var errors = (await validatePassword(form.password)).errors;
     form.errors = errors.map((x) => x.code);
-    if (form.confirmPassword && form.confirmPassword !== form.password) {
+    if (form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
     }
     form.isValid = form.errors.length == 0;

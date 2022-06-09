@@ -25,6 +25,7 @@
         :value="calcValue"
         :disabled="disabled"
         @input="onInput"
+        @change="onInput"
         ref="inputRef"
       />
 

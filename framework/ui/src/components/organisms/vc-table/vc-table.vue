@@ -105,7 +105,7 @@
                   'cursor-pointer group': item.sortable,
                 }"
                 :width="item.width"
-                @click="$emit('headerClick', item)"
+                @click="handleHeaderClick(item)"
               >
                 <div
                   class="flex items-center flex-nowrap"
@@ -175,7 +175,7 @@
                 </slot>
               </td>
               <td
-                class="box-border overflow-hidden px-3"
+                class="box-border overflow-visible px-3"
                 width="44"
                 v-if="itemActionBuilder"
               >
@@ -184,8 +184,8 @@
                 >
                   <button
                     class="text-[#319ed4] cursor-pointer border-none bg-transparent disabled:text-[gray]"
-                    @click.stop="showActions(item, i)"
-                    :ref="setActionToggleRefs"
+                    @click.stop="showActions(item, item.id)"
+                    :ref="(el) => setActionToggleRefs(el, item.id)"
                     aria-describedby="tooltip"
                     :disabled="!(itemActions && itemActions.length)"
                   >
@@ -195,7 +195,7 @@
                     class="vc-table__body-tooltip bg-white rounded-l-[4px] p-[15px] z-0 absolute right-0 drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
                     v-show="selectedRow === item.id"
                     @mouseleave="closeActions"
-                    :ref="setTooltipRefs"
+                    :ref="(el) => setTooltipRefs(el, item.id)"
                     role="tooltip"
                   >
                     <div
@@ -304,6 +304,11 @@ import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult } from "../../../typings";
+
+interface ITableItemRef {
+  element: HTMLDivElement;
+  id: string;
+}
 
 const props = defineProps({
   columns: {
@@ -427,14 +432,15 @@ const emit = defineEmits([
   "search:change",
   "filter:apply",
   "filter:reset",
+  "headerClick",
 ]);
 
 const checkboxes = ref<Record<string, boolean>>({});
 const selectedRow = ref<string>();
 const tooltip = ref<Instance>();
 const scrollContainer = ref<typeof VcContainer>();
-const actionToggleRefs = ref<HTMLDivElement[]>([]);
-const tooltipRefs = ref<HTMLDivElement[]>([]);
+const actionToggleRefs = ref<ITableItemRef[]>([]);
+const tooltipRefs = ref<ITableItemRef[]>([]);
 const itemActions = ref<IActionBuilderResult[]>([]);
 const mobileSwipeItem = ref<string>();
 
@@ -475,15 +481,21 @@ watch(
   }
 );
 
-function setTooltipRefs(el: HTMLDivElement) {
+function setTooltipRefs(el: HTMLDivElement, id: string) {
   if (el) {
-    tooltipRefs.value.push(el);
+    const isExists = tooltipRefs.value.some((item) => item.id === id);
+    if (!isExists) {
+      tooltipRefs.value.push({ element: el, id });
+    }
   }
 }
 
-function setActionToggleRefs(el: HTMLDivElement) {
+function setActionToggleRefs(el: HTMLDivElement, id: string) {
   if (el) {
-    actionToggleRefs.value.push(el);
+    const isExists = actionToggleRefs.value.some((item) => item.id === id);
+    if (!isExists) {
+      actionToggleRefs.value.push({ element: el, id });
+    }
   }
 }
 
@@ -500,14 +512,15 @@ function processCheckbox(id: string, state: boolean) {
   emit("selectionChanged", checkboxes.value);
 }
 
-function showActions(item: { id: string }, index: number) {
+function showActions(item: { id: string }, index: string) {
   selectedRow.value = item.id;
 
-  nextTick(() => {
-    tooltip.value = createPopper(
-      actionToggleRefs.value[index],
-      tooltipRefs.value[index],
-      {
+  const toggleRef = actionToggleRefs.value.find((item) => item.id === index);
+  const tooltipRef = tooltipRefs.value.find((item) => item.id === index);
+
+  if (toggleRef && tooltipRef) {
+    nextTick(() => {
+      tooltip.value = createPopper(toggleRef.element, tooltipRef.element, {
         placement: "bottom",
         onFirstUpdate: () => tooltip.value?.update(),
         modifiers: [
@@ -518,9 +531,9 @@ function showActions(item: { id: string }, index: number) {
             },
           },
         ],
-      }
-    );
-  });
+      });
+    });
+  }
 }
 
 async function calculateActions(item: { id: string }) {
@@ -537,6 +550,10 @@ function closeActions() {
 function handleSwipe(id: string) {
   mobileSwipeItem.value = id;
 }
+
+function handleHeaderClick(item: Record<string, unknown>) {
+  emit("headerClick", item);
+}
 </script>
 
 <style lang="scss">
@@ -547,6 +564,42 @@ $variants: (
 
 .vc-table {
   &__body {
+    &-tooltip {
+      background: #ffffff;
+      border-radius: 4px 0 0 4px;
+      padding: 15px;
+      z-index: 0;
+      position: absolute;
+      right: 0;
+      filter: drop-shadow(1px 3px 14px rgba(111, 122, 131, 0.25));
+    }
+
+    &-tooltip-arrow,
+    &-tooltip-arrow:before {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: inherit;
+    }
+
+    &-tooltip-arrow {
+      visibility: hidden;
+    }
+
+    &-tooltip-arrow:before {
+      visibility: visible;
+      content: "";
+      transform: rotate(45deg);
+    }
+
+    &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
+      bottom: -5px;
+    }
+
+    &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
+      top: -5px;
+    }
+
     &-row:hover .vc-table__body-actions-container {
       @apply flex #{!important};
     }

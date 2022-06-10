@@ -13,11 +13,9 @@ export default {
         closeHandler();
       }
     };
-    document.addEventListener("mousedown", el._outsideClickHandler);
-    document.addEventListener("touchstart", el._outsideClickHandler);
+    document.addEventListener("click", el._outsideClickHandler);
   },
   unmounted(el: OutsideClickableHTMLElement): void {
-    document.removeEventListener("mousedown", el._outsideClickHandler);
-    document.removeEventListener("touchstart", el._outsideClickHandler);
+    document.removeEventListener("click", el._outsideClickHandler);
   },
 } as Directive;

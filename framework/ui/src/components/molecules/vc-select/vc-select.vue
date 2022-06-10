@@ -22,7 +22,7 @@
     >
       <div
         class="w-full appearance-none border-none outline-none min-h-[var(--select-height)] p-3 flex items-center w-full box-border box-border cursor-pointer invalid:text-[color:var(--select-placeholder-color)]"
-        @click="toggleDropdown"
+        @click.stop="toggleDropdown"
         ref="dropdownToggleRef"
       >
         <div v-if="!selectedItem" class="text-[#a5a5a5]">
@@ -42,7 +42,7 @@
       <div
         v-if="!isDisabled"
         class="vc-select__chevron absolute right-0 top-0 h-full cursor-pointer px-3 flex items-center text-[color:var(--select-chevron-color)] hover:text-[color:var(--select-chevron-color-hover)]"
-        @click="toggleDropdown"
+        @click.stop="toggleDropdown"
       >
         <VcIcon size="s" icon="fas fa-chevron-down"></VcIcon>
       </div>
@@ -192,14 +192,11 @@ function closeDropdown() {
   inputFieldWrapRef.value.style.borderRadius = "var(--select-border-radius)";
   emit("close");
 }
+
 function toggleDropdown() {
   if (!props.isDisabled) {
     if (isOpened.value) {
-      isOpened.value = false;
-      popper.value?.destroy();
-      inputFieldWrapRef.value.style.borderRadius =
-        "var(--select-border-radius)";
-      emit("close");
+      closeDropdown();
     } else {
       isOpened.value = true;
       nextTick(() => {

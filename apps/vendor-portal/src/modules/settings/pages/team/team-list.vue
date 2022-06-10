@@ -86,7 +86,7 @@
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
               }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
-                {{ itemData.item.role }}
+                {{ roleName(itemData.item.role) || "N/A" }}
               </div>
             </div>
             <div
@@ -178,10 +178,6 @@ const roles = [
   {
     id: "vcmp-owner-role",
     name: "Owner",
-  },
-  {
-    id: "vcmp-seller-role",
-    name: "Seller",
   },
 ];
 

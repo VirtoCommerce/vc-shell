@@ -41,7 +41,7 @@
 
       <!-- Override role column template -->
       <template v-slot:item_role="itemData">
-        {{ roleName(itemData.item.role) || "N/A" }}
+        {{ roleName(itemData.item.role) }}
       </template>
 
       <template v-slot:mobile-item="itemData">
@@ -86,7 +86,7 @@
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
               }}</VcHint>
               <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
-                {{ itemData.item.role }}
+                {{ roleName(itemData.item.role) }}
               </div>
             </div>
             <div
@@ -183,10 +183,6 @@ const roles = [
   {
     id: "vcmp-owner-role",
     name: "Owner",
-  },
-  {
-    id: "vcmp-seller-role",
-    name: "Seller",
   },
 ];
 
@@ -296,7 +292,7 @@ const onItemClick = (item: SellerUser) => {
 };
 
 const roleName = (roleId: string) => {
-  return roles.find((role) => role.id === roleId)?.name;
+  return roles.find((role) => role.id === roleId)?.name || "N/A";
 };
 
 defineExpose({

@@ -5,7 +5,7 @@
       'vc-gallery-item_readonly': readonly,
       'vc-gallery-item_hover': hover,
     }"
-    @tap="hover = !hover"
+    @tap.stop="hover = !hover"
     v-click-outside="
       () => {
         hover = false;

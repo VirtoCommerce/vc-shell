@@ -1,7 +1,7 @@
 <template>
   <div
     class="relative flex items-center h-full"
-    @click="toggleNotificationsDrop"
+    @click.stop="toggleNotificationsDrop"
     v-click-outside="
       () => {
         isDropdownVisible = false;

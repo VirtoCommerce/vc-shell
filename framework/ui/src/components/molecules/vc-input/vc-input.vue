@@ -31,7 +31,7 @@
       <!-- Dropdown button -->
       <div v-if="options && options.length" class="vc-input__dropdown-wrap">
         <div
-          @click="showDrop"
+          @click.stop="showDrop"
           aria-describedby="tooltip"
           ref="toggleDropRef"
           :class="[

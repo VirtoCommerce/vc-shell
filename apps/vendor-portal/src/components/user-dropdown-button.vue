@@ -5,7 +5,7 @@
       'user-dropdown-button_active': accountMenuVisible,
       'user-dropdown-button_no-pointer': $isMobile.value,
     }"
-    @click="toggleAccountMenuVisible"
+    @click.stop="toggleAccountMenuVisible"
     v-click-outside="
       () => {
         accountMenuVisible = false;

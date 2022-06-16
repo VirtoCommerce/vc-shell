@@ -7,7 +7,7 @@
       }
     "
     :title="title"
-    @click="isDropActive = !isDropActive"
+    @click.stop="isDropActive = !isDropActive"
   >
     <div
       :class="[

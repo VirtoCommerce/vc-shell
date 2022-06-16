@@ -151,6 +151,7 @@
                       :required="true"
                       v-model="offerDetails.inStockQuantity"
                       type="number"
+                      rules="min_value:0"
                       :placeholder="
                         $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                       "

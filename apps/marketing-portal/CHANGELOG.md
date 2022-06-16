@@ -3,6 +3,51 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.8 (2022-06-16)
+
+
+### Bug Fixes
+
+* vm-724 vm-725 vm-731 vm-729 ([6112f4e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6112f4e504f2e40432b8dfad4e5e19d1dc16527c))
+
+
+
+## 0.1.16 (2022-04-15)
+
+
+
+## 0.1.10 (2022-04-04)
+
+
+
+## 0.1.4 (2022-03-16)
+
+
+
+## 0.1.2 (2022-03-10)
+
+
+
+## 0.1.1 (2022-03-10)
+
+
+### Bug Fixes
+
+* invalid "global" override ([6575582](https://github.com/VirtoCommerce/platform-manager-sdk/commit/65755822d679c51b9a9fdad1663fc4537b1ecffc))
+
+
+
+## 0.0.123 (2022-03-04)
+
+
+### Features
+
+* marketing app skeleton ([f5832ac](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f5832acb5cb5b5ef6b2c4dd0fb942e14ef625eb6))
+
+
+
+
+
 ## 1.0.7 (2022-06-09)
 
 

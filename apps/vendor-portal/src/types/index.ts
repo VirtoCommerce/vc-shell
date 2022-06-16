@@ -1,6 +1,10 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
 import { PushNotification } from "@virtoshell/api-client";
 
+enum UserPermissions {
+  SellerUsersManage = "seller:users:manage",
+}
+
 interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;
 }
@@ -83,3 +87,5 @@ export type {
   IProductPushNotification,
   INewOrderPushNotification,
 };
+
+export { UserPermissions };

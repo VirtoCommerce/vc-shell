@@ -19,7 +19,7 @@
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",
-          "EXPORT_PRODUCTS": "Export products",
+          "EXPORT_CATEGORIES": "Export categories",
           "BULK_DELETE": "Delete"
         },
         "SEARCH": {
@@ -113,7 +113,8 @@
           }
         },
         "ALERTS": {
-          "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
+          "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?",
+          "DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
         }
       }
     }

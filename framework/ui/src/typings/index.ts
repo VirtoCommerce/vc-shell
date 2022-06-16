@@ -40,6 +40,7 @@ export interface IMenuItems extends IBladeToolbar {
 export interface IPage {
   component: Component | unknown;
   componentOptions?: Record<string, unknown> | unknown;
+  permissions?: string[];
   url?: string;
   param?: string;
   onOpen?: () => void;

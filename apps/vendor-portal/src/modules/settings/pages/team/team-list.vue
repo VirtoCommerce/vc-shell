@@ -116,14 +116,19 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch, onMounted } from "vue";
+import {
+  UserPermissions,
+  IBladeToolbar,
+  ITableColumns,
+} from "../../../../types";
 
 export default defineComponent({
   url: "team",
+  permissions: [UserPermissions.SellerUsersManage],
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeToolbar, ITableColumns } from "../../../../types";
 import { useI18n } from "@virtoshell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";

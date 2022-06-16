@@ -68,7 +68,7 @@
                 "USER_DELETE": "This action can not be undone. The user will be deleted and won’t be able to login to the portal."
               },
               "BUTTONS": {
-                "DELETE": "Delete",
+                "CONFIRM": "Confirm",
                 "CANCEL": "Cancel"
               }
             },

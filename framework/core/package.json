@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/core",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "scripts": {
     "build": "vite build"
   },
@@ -14,8 +14,8 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@virtoshell/api-client": "^1.0.6",
-    "@virtoshell/config-generator": "^1.0.6",
+    "@virtoshell/api-client": "^1.0.8",
+    "@virtoshell/config-generator": "^1.0.8",
     "client-oauth2": "^4.3.3",
     "vue-i18n": "^9.1.7",
     "vue-logger-plugin": "^2.1.2",

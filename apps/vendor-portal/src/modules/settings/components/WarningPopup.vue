@@ -24,7 +24,7 @@
             class="mr-5 text-[#FF4A4A]"
             @click="$emit('delete')"
             >{{
-              $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ALERT.BUTTONS.DELETE")
+              $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ALERT.BUTTONS.CONFIRM")
             }}</VcButton
           >
           <VcButton @click="$emit('close')">{{

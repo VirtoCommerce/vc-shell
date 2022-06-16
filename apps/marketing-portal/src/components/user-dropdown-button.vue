@@ -5,7 +5,7 @@
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
     }"
-    @click="toggleAccountMenuVisible"
+    @click.stop="toggleAccountMenuVisible"
     v-click-outside="
       () => {
         accountMenuVisible = false;

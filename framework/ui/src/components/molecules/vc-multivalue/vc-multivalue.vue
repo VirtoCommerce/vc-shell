@@ -48,7 +48,7 @@
           ref="dropdownToggleRef"
           class="vc-multivalue__field vc-multivalue__field_dictionary grow basis-0 p-2"
         >
-          <VcButton small @click="toggleDropdown">Add +</VcButton>
+          <VcButton small @click.stop="toggleDropdown">Add +</VcButton>
           <teleport to="#app">
             <div
               v-if="isOpened"

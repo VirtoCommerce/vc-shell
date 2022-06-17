@@ -22,6 +22,7 @@
         :value="modelValue"
         :disabled="disabled"
         @input="onInput"
+        maxlength="1024"
       ></textarea>
     </div>
 

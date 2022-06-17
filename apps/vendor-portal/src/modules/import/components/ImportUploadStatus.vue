@@ -18,7 +18,7 @@
     </div>
     <div
       class="flex flex-row justify-between mt-5"
-      v-if="filteredActions && filteredActions.length && !isStarted"
+      v-if="filteredActions && filteredActions.length"
     >
       <div>
         <VcButton

@@ -51,6 +51,7 @@
       },
       "DETAILS": {
         "TITLE": "Add offer",
+        "OFFER_DETAILS": "offer details",
         "MORE_INFO": "More info",
         "TOOLBAR": {
           "SAVE": "Save",

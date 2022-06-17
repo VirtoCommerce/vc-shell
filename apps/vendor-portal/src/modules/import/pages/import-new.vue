@@ -38,7 +38,6 @@
                     @upload="uploadCsv"
                     :notification="true"
                     :loading="fileLoading"
-                    accept=".csv"
                   ></VcFileUpload>
                 </VcRow>
               </VcCol>
@@ -117,7 +116,7 @@
               :columns="skippedColumns"
               :header="false"
               :footer="false"
-              :items="importStatus.notification.errors"
+              :items="reversedErrors"
             >
               <template v-slot:empty>
                 <VcCol class="items-center justify-center">
@@ -194,6 +193,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref, watch } from "vue";
+import { cloneDeep as _cloneDeep } from "lodash-es";
 
 export default defineComponent({
   url: "importer",
@@ -438,16 +438,18 @@ const importBadges = computed((): IImportBadges[] => {
 
 const uploadActions = ref<INotificationActions[]>([
   {
-    name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE")),
+    name: computed(() =>
+      importStarted.value
+        ? t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.UPLOAD")
+        : t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE")
+    ),
     clickHandler() {
       clearImport();
       clearErrorMessage();
     },
     outline: true,
     variant: "danger",
-    isVisible: computed(
-      () => !(importStatus.value && importStatus.value.jobId)
-    ),
+    isVisible: computed(() => !inProgress.value),
   },
   {
     name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.PREVIEW")),
@@ -479,7 +481,7 @@ const uploadActions = ref<INotificationActions[]>([
     },
     variant: "primary",
     outline: true,
-    isVisible: computed(() => isValid.value),
+    isVisible: computed(() => isValid.value && !importStarted.value),
   },
   {
     name: computed(() =>
@@ -490,7 +492,7 @@ const uploadActions = ref<INotificationActions[]>([
     },
     outline: false,
     variant: "primary",
-    isVisible: computed(() => isValid.value),
+    isVisible: computed(() => isValid.value && !importStarted.value),
     disabled: computed(
       () =>
         (importStatus.value && importStatus.value.inProgress) ||
@@ -528,8 +530,14 @@ const importStarted = computed(
 
 const previewTotalNum = computed(() => preview.value.totalCount);
 
+const reversedErrors = computed(() => {
+  const errors = _cloneDeep(importStatus.value.notification.errors);
+
+  return errors.reverse();
+});
+
 watch(importStatus, (newVal, oldVal) => {
-  if (!newVal.inProgress && oldVal) {
+  if (newVal && !newVal.inProgress && oldVal) {
     emit("parent:call", { method: "reload" });
   }
 });

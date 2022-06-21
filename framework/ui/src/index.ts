@@ -5,6 +5,14 @@ import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import draggable from "vuedraggable/src/vuedraggable";
 import { defineRule, useForm as _useForm } from "vee-validate";
+import {
+  email,
+  min,
+  max,
+  regex,
+  min_value,
+  max_value,
+} from "@vee-validate/rules";
 
 import "normalize.css";
 import "./styles/index.less";
@@ -57,70 +65,12 @@ export default {
       }
       return true;
     });
-    defineRule("email", (value: string) => {
-      // Field is empty, should pass
-      if (!value || !value.length) {
-        return true;
-      }
-      // Check if email
-      if (!/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-        return "This field must be a valid email";
-      }
-      return true;
-    });
-    defineRule("min", (value: string, [limit]: number[]) => {
-      // The field is empty so it should pass
-      if (!value || !value.length) {
-        return true;
-      }
-      if (value.length < limit) {
-        return `This field must contain at least ${limit} characters`;
-      }
-      return true;
-    });
-    defineRule("max", (value: string, [limit]: number[]) => {
-      // The field is empty so it should pass
-      if (!value || !value.length) {
-        return true;
-      }
-      if (value.length > limit) {
-        return `This field must contain not more than ${limit} characters`;
-      }
-      return true;
-    });
-    defineRule("regex", (value: string, [re]: RegExp[]) => {
-      // Field is empty, should pass
-      if (!value || !value.length) {
-        return true;
-      }
-      // Check if matched
-      if (!re.test(value)) {
-        return "This field must match a given pattern";
-      }
-      return true;
-    });
-    defineRule("min_value", (value: string, [min]: number[]) => {
-      // The field is empty so it should pass
-      if (!value || !value.length) {
-        return true;
-      }
-      const numericValue = Number(value);
-      if (numericValue < min) {
-        return `Value must be greater than ${min}`;
-      }
-      return true;
-    });
-    defineRule("max_value", (value: string, [max]: number[]) => {
-      // The field is empty so it should pass
-      if (!value || !value.length) {
-        return true;
-      }
-      const numericValue = Number(value);
-      if (numericValue > max) {
-        return `Value must be less than ${max}`;
-      }
-      return true;
-    });
+    defineRule("email", email);
+    defineRule("min", min);
+    defineRule("max", max);
+    defineRule("regex", regex);
+    defineRule("min_value", min_value);
+    defineRule("max_value", max_value);
     defineRule("after", (value: string, [target]: string[]) => {
       // The field is empty so it should pass
       if (!value || !value.length) {

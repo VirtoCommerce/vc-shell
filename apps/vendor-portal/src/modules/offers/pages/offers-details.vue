@@ -1,11 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading"
-    :title="
-      param && offerDetails
-        ? offerDetails.sku
-        : $t('OFFERS.PAGES.DETAILS.TITLE')
-    "
+    :title="title"
     width="50%"
     :expanded="expanded"
     :closable="closable"
@@ -426,6 +422,12 @@ onBeforeUpdate(() => {
 });
 
 const readonly = computed(() => !!offer.value?.id);
+
+const title = computed(() => {
+  return props.param && offerDetails && offerDetails.name
+    ? offerDetails.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
+    : t("OFFERS.PAGES.DETAILS.TITLE");
+});
 
 // Process product dropdown search
 const onProductSearch = () =>

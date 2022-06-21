@@ -50,6 +50,14 @@
             "START_DATE": "Start date",
             "END_DATE": "End date"
           },
+          "STATUS": {
+            "None": "None",
+            "Published": "Published",
+            "HasStagedChanges": "Has staged changes",
+            "WaitForApproval": "Wait for approval",
+            "RequiresChanges": "Requires changes",
+            "Rejected": "Rejected"
+          },
           "RESET_FILTERS": "Reset filters",
           "APPLY": "Apply"
         },

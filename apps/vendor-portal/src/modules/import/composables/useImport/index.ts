@@ -15,6 +15,7 @@ import {
   VcmpSellerImportClient,
   ImportRunHistory,
   ISearchImportProfilesHistoryQuery,
+  ObjectSettingEntry,
 } from "../../../../api_client/api-client";
 import { useLogger, useNotifications, useUser } from "@virtoshell/core";
 import { cloneDeep as _cloneDeep } from "lodash-es";
@@ -336,7 +337,12 @@ export default (): IUseImport => {
     newProfile.sellerName = user.value.userName;
     newProfile.sellerId = user.value.id;
     const command = new CreateProfileCommand({
-      importProfile: newProfile,
+      importProfile: new ImportProfile({
+        ...newProfile,
+        settings: newProfile.settings.map(
+          (setting) => new ObjectSettingEntry(setting)
+        ),
+      }),
     });
 
     try {

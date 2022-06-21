@@ -53,7 +53,9 @@
                   @update:modelValue="
                     filter.status = $event ? status : undefined
                   "
-                  >{{ status }}</VcCheckbox
+                  >{{
+                    $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status)
+                  }}</VcCheckbox
                 >
               </div>
             </VcCol>

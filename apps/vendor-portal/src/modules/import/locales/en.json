@@ -97,6 +97,7 @@
         "UPLOADER": {
           "TITLE": "Uploaded",
           "ACTIONS": {
+            "UPLOAD": "Upload",
             "DELETE": "Delete",
             "PREVIEW": "Preview",
             "START_IMPORT": "Start import",

@@ -26,6 +26,7 @@
         :disabled="disabled"
         @input="onInput"
         ref="inputRef"
+        maxlength="1024"
       />
 
       <!-- Dropdown button -->

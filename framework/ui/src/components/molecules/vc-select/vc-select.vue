@@ -72,6 +72,15 @@
           </VcContainer>
         </div>
       </teleport>
+
+      <!-- Input clear button -->
+      <div
+        v-if="clearable && modelValue && !isDisabled"
+        class="vc-select__clear"
+        @click="onReset"
+      >
+        <VcIcon size="s" icon="fas fa-times"></VcIcon>
+      </div>
     </div>
 
     <slot v-if="errorMessage" name="error">
@@ -150,6 +159,11 @@ const props = defineProps({
   name: {
     type: String,
     default: "Field",
+  },
+
+  clearable: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -302,8 +316,14 @@ function onItemSelect(item: { [x: string]: string }) {
   emit("close");
   isOpened.value = false;
 }
+
 function onSearch(event: InputEvent) {
   emit("search", (event.target as HTMLInputElement).value);
+}
+
+// Handle input event to propertly reset value and emit changes
+function onReset() {
+  emit("update:modelValue", "");
 }
 </script>
 
@@ -340,6 +360,10 @@ function onSearch(event: InputEvent) {
 
   &_opened &__field-wrapper {
     @apply rounded-t-[var(--select-border-radius)];
+  }
+
+  &__clear {
+    @apply cursor-pointer text-[color:var(--input-clear-color)] hover:text-[color:var(--input-clear-color-hover)] pr-10 pl-3 flex items-center;
   }
 }
 </style>

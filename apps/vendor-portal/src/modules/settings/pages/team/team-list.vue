@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('SETTINGS.TEAM.PAGES.LIST.TITLE')"
+    :title="title"
     width="70%"
     :expanded="expanded"
     :closable="closable"
@@ -170,6 +170,7 @@ const {
 
 const sort = ref("createdDate:DESC");
 const selectedItemId = ref();
+const title = t("SETTINGS.TEAM.PAGES.LIST.TITLE");
 
 const roles = [
   {
@@ -297,5 +298,6 @@ const roleName = (roleId: string) => {
 
 defineExpose({
   reload,
+  title,
 });
 </script>

@@ -160,7 +160,7 @@ export default (): IUseOffer => {
           storeSettings.value = JSON.parse(response);
         });
 
-        currencyList.value = storeSettings.value.availCurencies.map(
+        currencyList.value = storeSettings.value.availCurencies?.map(
           (currency) => ({
             title: currency,
             value: currency,

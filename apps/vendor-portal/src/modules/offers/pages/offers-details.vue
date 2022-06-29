@@ -430,10 +430,9 @@ const title = computed(() => {
 });
 
 // Process product dropdown search
-const onProductSearch = () =>
-  debounce(async (value: string) => {
-    products.value = await fetchProducts(value);
-  }, 500);
+const onProductSearch = debounce(async (value: string) => {
+  products.value = await fetchProducts(value);
+}, 500);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {

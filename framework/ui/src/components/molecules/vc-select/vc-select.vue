@@ -21,7 +21,7 @@
       ref="inputFieldWrapRef"
     >
       <div
-        class="w-full appearance-none border-none outline-none min-h-[var(--select-height)] p-3 flex items-center w-full box-border box-border cursor-pointer invalid:text-[color:var(--select-placeholder-color)]"
+        class="w-full appearance-none border-none outline-none min-h-[var(--select-height)] px-3 flex items-center w-full box-border box-border cursor-pointer invalid:text-[color:var(--select-placeholder-color)] overflow-hidden"
         @click.stop="toggleDropdown"
         ref="dropdownToggleRef"
       >

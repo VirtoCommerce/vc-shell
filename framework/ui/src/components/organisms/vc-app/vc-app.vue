@@ -62,7 +62,7 @@
           <!-- Else show workspace blades -->
           <div
             v-else
-            class="workspace px-2 w-full overflow-hidden flex grow basis-0"
+            class="vc-app__workspace px-2 w-full overflow-hidden flex grow basis-0"
           >
             <component
               v-for="(blade, index) in workspace"

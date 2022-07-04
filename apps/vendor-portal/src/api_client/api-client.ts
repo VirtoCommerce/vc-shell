@@ -73,6 +73,317 @@ export class VcmpCommonClient extends AuthApiBase {
     }
 }
 
+export class VcmpFeeClient extends AuthApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+    }
+
+    /**
+     * @return Success
+     */
+    getNewFee(): Promise<DynamicCommissionFee> {
+        let url_ = this.baseUrl + "/api/vcmp/fees/new";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetNewFee(_response);
+        });
+    }
+
+    protected processGetNewFee(response: Response): Promise<DynamicCommissionFee> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DynamicCommissionFee.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DynamicCommissionFee>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getFeeById(id: string | null): Promise<CommissionFee> {
+        let url_ = this.baseUrl + "/api/vcmp/fees/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetFeeById(_response);
+        });
+    }
+
+    protected processGetFeeById(response: Response): Promise<CommissionFee> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommissionFee.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CommissionFee>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    createFee(body: CreateFeeCommand | undefined): Promise<CommissionFee> {
+        let url_ = this.baseUrl + "/api/vcmp/fees";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateFee(_response);
+        });
+    }
+
+    protected processCreateFee(response: Response): Promise<CommissionFee> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommissionFee.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CommissionFee>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateFee(body: UpdateFeeCommand | undefined): Promise<CommissionFee> {
+        let url_ = this.baseUrl + "/api/vcmp/fees";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdateFee(_response);
+        });
+    }
+
+    protected processUpdateFee(response: Response): Promise<CommissionFee> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommissionFee.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<CommissionFee>(null as any);
+    }
+
+    /**
+     * @param ids (optional) 
+     * @return Success
+     */
+    deleteFee(ids: string[] | null | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/vcmp/fees?";
+        if (ids !== undefined && ids !== null)
+            ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "DELETE",
+            headers: {
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDeleteFee(_response);
+        });
+    }
+
+    protected processDeleteFee(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    searchFee(body: SearchCommissionFeesQuery | undefined): Promise<SearchCommissionFeesResult> {
+        let url_ = this.baseUrl + "/api/vcmp/fees/search";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSearchFee(_response);
+        });
+    }
+
+    protected processSearchFee(response: Response): Promise<SearchCommissionFeesResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchCommissionFeesResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchCommissionFeesResult>(null as any);
+    }
+}
+
 export class VcmpSellerCatalogClient extends AuthApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -1491,6 +1802,46 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    fulfill(body: FulfillOrderCommand | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/vcmp/orders/fulfill";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processFulfill(_response);
+        });
+    }
+
+    protected processFulfill(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 204) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
 }
 
 export class VcmpSellerSecurityClient extends AuthApiBase {
@@ -1639,6 +1990,56 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
             });
         }
         return Promise.resolve<ValidationFailure[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getSellerById(id: string | null): Promise<Seller> {
+        let url_ = this.baseUrl + "/api/vcmp/security/seller/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetSellerById(_response);
+        });
+    }
+
+    protected processGetSellerById(response: Response): Promise<Seller> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Seller.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Seller>(null as any);
     }
 
     /**
@@ -2153,6 +2554,458 @@ export interface IMarketplaceOptions {
     storeId: string;
 }
 
+export class IConditionTree implements IIConditionTree {
+    readonly id?: string | undefined;
+    /** List of all available children for current tree node (is used in expression designer) */
+    readonly availableChildren?: IConditionTree[] | undefined;
+    readonly children?: IConditionTree[] | undefined;
+
+    constructor(data?: IIConditionTree) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).id = _data["id"];
+            if (Array.isArray(_data["availableChildren"])) {
+                (<any>this).availableChildren = [] as any;
+                for (let item of _data["availableChildren"])
+                    (<any>this).availableChildren!.push(IConditionTree.fromJS(item));
+            }
+            if (Array.isArray(_data["children"])) {
+                (<any>this).children = [] as any;
+                for (let item of _data["children"])
+                    (<any>this).children!.push(IConditionTree.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): IConditionTree {
+        data = typeof data === 'object' ? data : {};
+        let result = new IConditionTree();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.availableChildren)) {
+            data["availableChildren"] = [];
+            for (let item of this.availableChildren)
+                data["availableChildren"].push(item.toJSON());
+        }
+        if (Array.isArray(this.children)) {
+            data["children"] = [];
+            for (let item of this.children)
+                data["children"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IIConditionTree {
+    id?: string | undefined;
+    /** List of all available children for current tree node (is used in expression designer) */
+    availableChildren?: IConditionTree[] | undefined;
+    children?: IConditionTree[] | undefined;
+}
+
+export class DynamicCommissionFeeTree implements IDynamicCommissionFeeTree {
+    all?: boolean;
+    not?: boolean;
+    readonly id?: string | undefined;
+    availableChildren?: IConditionTree[] | undefined;
+    children?: IConditionTree[] | undefined;
+
+    constructor(data?: IDynamicCommissionFeeTree) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.all = _data["all"];
+            this.not = _data["not"];
+            (<any>this).id = _data["id"];
+            if (Array.isArray(_data["availableChildren"])) {
+                this.availableChildren = [] as any;
+                for (let item of _data["availableChildren"])
+                    this.availableChildren!.push(IConditionTree.fromJS(item));
+            }
+            if (Array.isArray(_data["children"])) {
+                this.children = [] as any;
+                for (let item of _data["children"])
+                    this.children!.push(IConditionTree.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): DynamicCommissionFeeTree {
+        data = typeof data === 'object' ? data : {};
+        let result = new DynamicCommissionFeeTree();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["all"] = this.all;
+        data["not"] = this.not;
+        data["id"] = this.id;
+        if (Array.isArray(this.availableChildren)) {
+            data["availableChildren"] = [];
+            for (let item of this.availableChildren)
+                data["availableChildren"].push(item.toJSON());
+        }
+        if (Array.isArray(this.children)) {
+            data["children"] = [];
+            for (let item of this.children)
+                data["children"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IDynamicCommissionFeeTree {
+    all?: boolean;
+    not?: boolean;
+    id?: string | undefined;
+    availableChildren?: IConditionTree[] | undefined;
+    children?: IConditionTree[] | undefined;
+}
+
+export enum TypeCommissionFee {
+    Static = "Static",
+    Dynamic = "Dynamic",
+}
+
+export enum FeeCalculationType {
+    Fixed = "Fixed",
+    Percent = "Percent",
+}
+
+export class DynamicCommissionFee implements IDynamicCommissionFee {
+    isActive?: boolean;
+    expressionTree?: DynamicCommissionFeeTree;
+    name?: string | undefined;
+    description?: string | undefined;
+    type?: TypeCommissionFee;
+    calculationType?: FeeCalculationType;
+    fee?: number;
+    priority?: number;
+    isDefault?: boolean;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+
+    constructor(data?: IDynamicCommissionFee) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isActive = _data["isActive"];
+            this.expressionTree = _data["expressionTree"] ? DynamicCommissionFeeTree.fromJS(_data["expressionTree"]) : <any>undefined;
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.type = _data["type"];
+            this.calculationType = _data["calculationType"];
+            this.fee = _data["fee"];
+            this.priority = _data["priority"];
+            this.isDefault = _data["isDefault"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): DynamicCommissionFee {
+        data = typeof data === 'object' ? data : {};
+        let result = new DynamicCommissionFee();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isActive"] = this.isActive;
+        data["expressionTree"] = this.expressionTree ? this.expressionTree.toJSON() : <any>undefined;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["type"] = this.type;
+        data["calculationType"] = this.calculationType;
+        data["fee"] = this.fee;
+        data["priority"] = this.priority;
+        data["isDefault"] = this.isDefault;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IDynamicCommissionFee {
+    isActive?: boolean;
+    expressionTree?: DynamicCommissionFeeTree;
+    name?: string | undefined;
+    description?: string | undefined;
+    type?: TypeCommissionFee;
+    calculationType?: FeeCalculationType;
+    fee?: number;
+    priority?: number;
+    isDefault?: boolean;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+}
+
+export class CommissionFee implements ICommissionFee {
+    name?: string | undefined;
+    description?: string | undefined;
+    type?: TypeCommissionFee;
+    calculationType?: FeeCalculationType;
+    fee?: number;
+    priority?: number;
+    isDefault?: boolean;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+
+    constructor(data?: ICommissionFee) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.type = _data["type"];
+            this.calculationType = _data["calculationType"];
+            this.fee = _data["fee"];
+            this.priority = _data["priority"];
+            this.isDefault = _data["isDefault"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CommissionFee {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommissionFee();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["type"] = this.type;
+        data["calculationType"] = this.calculationType;
+        data["fee"] = this.fee;
+        data["priority"] = this.priority;
+        data["isDefault"] = this.isDefault;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICommissionFee {
+    name?: string | undefined;
+    description?: string | undefined;
+    type?: TypeCommissionFee;
+    calculationType?: FeeCalculationType;
+    fee?: number;
+    priority?: number;
+    isDefault?: boolean;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+}
+
+export class CommissionFeeDetails implements ICommissionFeeDetails {
+    id?: string | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    type?: TypeCommissionFee;
+    calculationType?: FeeCalculationType;
+    fee?: number;
+    priority?: number;
+    isDefault?: boolean;
+    isActive?: boolean;
+    expressionTree?: DynamicCommissionFeeTree;
+
+    constructor(data?: ICommissionFeeDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.type = _data["type"];
+            this.calculationType = _data["calculationType"];
+            this.fee = _data["fee"];
+            this.priority = _data["priority"];
+            this.isDefault = _data["isDefault"];
+            this.isActive = _data["isActive"];
+            this.expressionTree = _data["expressionTree"] ? DynamicCommissionFeeTree.fromJS(_data["expressionTree"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CommissionFeeDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommissionFeeDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["type"] = this.type;
+        data["calculationType"] = this.calculationType;
+        data["fee"] = this.fee;
+        data["priority"] = this.priority;
+        data["isDefault"] = this.isDefault;
+        data["isActive"] = this.isActive;
+        data["expressionTree"] = this.expressionTree ? this.expressionTree.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICommissionFeeDetails {
+    id?: string | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
+    type?: TypeCommissionFee;
+    calculationType?: FeeCalculationType;
+    fee?: number;
+    priority?: number;
+    isDefault?: boolean;
+    isActive?: boolean;
+    expressionTree?: DynamicCommissionFeeTree;
+}
+
+export class CreateFeeCommand implements ICreateFeeCommand {
+    feeDetails?: CommissionFeeDetails;
+
+    constructor(data?: ICreateFeeCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.feeDetails = _data["feeDetails"] ? CommissionFeeDetails.fromJS(_data["feeDetails"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): CreateFeeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateFeeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["feeDetails"] = this.feeDetails ? this.feeDetails.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ICreateFeeCommand {
+    feeDetails?: CommissionFeeDetails;
+}
+
+export class UpdateFeeCommand implements IUpdateFeeCommand {
+    feeDetails?: CommissionFeeDetails;
+
+    constructor(data?: IUpdateFeeCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.feeDetails = _data["feeDetails"] ? CommissionFeeDetails.fromJS(_data["feeDetails"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UpdateFeeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateFeeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["feeDetails"] = this.feeDetails ? this.feeDetails.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateFeeCommand {
+    feeDetails?: CommissionFeeDetails;
+}
+
 export enum SortDirection {
     Ascending = "Ascending",
     Descending = "Descending",
@@ -2196,6 +3049,162 @@ export class SortInfo implements ISortInfo {
 export interface ISortInfo {
     sortColumn?: string | undefined;
     sortDirection?: SortDirection;
+}
+
+export class SearchCommissionFeesQuery implements ISearchCommissionFeesQuery {
+    type?: TypeCommissionFee;
+    isDefault?: boolean | undefined;
+    responseGroup?: string | undefined;
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    keyword?: string | undefined;
+    searchPhrase?: string | undefined;
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    readonly sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
+
+    constructor(data?: ISearchCommissionFeesQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.type = _data["type"];
+            this.isDefault = _data["isDefault"];
+            this.responseGroup = _data["responseGroup"];
+            this.objectType = _data["objectType"];
+            if (Array.isArray(_data["objectTypes"])) {
+                this.objectTypes = [] as any;
+                for (let item of _data["objectTypes"])
+                    this.objectTypes!.push(item);
+            }
+            if (Array.isArray(_data["objectIds"])) {
+                this.objectIds = [] as any;
+                for (let item of _data["objectIds"])
+                    this.objectIds!.push(item);
+            }
+            this.keyword = _data["keyword"];
+            this.searchPhrase = _data["searchPhrase"];
+            this.languageCode = _data["languageCode"];
+            this.sort = _data["sort"];
+            if (Array.isArray(_data["sortInfos"])) {
+                (<any>this).sortInfos = [] as any;
+                for (let item of _data["sortInfos"])
+                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+            }
+            this.skip = _data["skip"];
+            this.take = _data["take"];
+        }
+    }
+
+    static fromJS(data: any): SearchCommissionFeesQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchCommissionFeesQuery();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
+        data["isDefault"] = this.isDefault;
+        data["responseGroup"] = this.responseGroup;
+        data["objectType"] = this.objectType;
+        if (Array.isArray(this.objectTypes)) {
+            data["objectTypes"] = [];
+            for (let item of this.objectTypes)
+                data["objectTypes"].push(item);
+        }
+        if (Array.isArray(this.objectIds)) {
+            data["objectIds"] = [];
+            for (let item of this.objectIds)
+                data["objectIds"].push(item);
+        }
+        data["keyword"] = this.keyword;
+        data["searchPhrase"] = this.searchPhrase;
+        data["languageCode"] = this.languageCode;
+        data["sort"] = this.sort;
+        if (Array.isArray(this.sortInfos)) {
+            data["sortInfos"] = [];
+            for (let item of this.sortInfos)
+                data["sortInfos"].push(item.toJSON());
+        }
+        data["skip"] = this.skip;
+        data["take"] = this.take;
+        return data;
+    }
+}
+
+export interface ISearchCommissionFeesQuery {
+    type?: TypeCommissionFee;
+    isDefault?: boolean | undefined;
+    responseGroup?: string | undefined;
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    keyword?: string | undefined;
+    searchPhrase?: string | undefined;
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
+}
+
+export class SearchCommissionFeesResult implements ISearchCommissionFeesResult {
+    totalCount?: number;
+    results?: CommissionFee[] | undefined;
+
+    constructor(data?: ISearchCommissionFeesResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(CommissionFee.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): SearchCommissionFeesResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchCommissionFeesResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ISearchCommissionFeesResult {
+    totalCount?: number;
+    results?: CommissionFee[] | undefined;
 }
 
 export class SearchProductsQuery implements ISearchProductsQuery {
@@ -2751,10 +3760,15 @@ export interface IPropertyDisplayName {
     languageCode?: string | undefined;
 }
 
+/** Represents property validation rules definition */
 export class PropertyValidationRule implements IPropertyValidationRule {
+    /** Uniquie value flag constrain */
     isUnique?: boolean;
+    /** Down chars count border or null if no defined */
     charCountMin?: number | undefined;
+    /** Upper chars count border or null if no defined */
     charCountMax?: number | undefined;
+    /** Custom regular expression */
     regExp?: string | undefined;
     propertyId?: string | undefined;
     id?: string | undefined;
@@ -2798,26 +3812,37 @@ export class PropertyValidationRule implements IPropertyValidationRule {
     }
 }
 
+/** Represents property validation rules definition */
 export interface IPropertyValidationRule {
+    /** Uniquie value flag constrain */
     isUnique?: boolean;
+    /** Down chars count border or null if no defined */
     charCountMin?: number | undefined;
+    /** Upper chars count border or null if no defined */
     charCountMax?: number | undefined;
+    /** Custom regular expression */
     regExp?: string | undefined;
     propertyId?: string | undefined;
     id?: string | undefined;
 }
 
 export class Property implements IProperty {
+    /** Gets or sets a value indicating whether user can change property value. */
     isReadOnly?: boolean;
+    /** Gets or sets a value indicating whether user can change property metadata or remove this property. */
     readonly isManageable?: boolean;
+    /** Gets or sets a value indicating whether this instance is new. A new property should be created on server site instead of trying to update it. */
     isNew?: boolean;
+    /** Gets or sets the catalog id that this product belongs to. */
     catalogId?: string | undefined;
+    /** Gets or sets the category id that this product belongs to. */
     categoryId?: string | undefined;
     name?: string | undefined;
     required?: boolean;
     dictionary?: boolean;
     multivalue?: boolean;
     multilanguage?: boolean;
+    /** Gets or sets a value indicating whether this VirtoCommerce.CatalogModule.Core.Model.Property is hidden. */
     hidden?: boolean;
     valueType?: PropertyValueType;
     type?: PropertyType;
@@ -2947,16 +3972,22 @@ export class Property implements IProperty {
 }
 
 export interface IProperty {
+    /** Gets or sets a value indicating whether user can change property value. */
     isReadOnly?: boolean;
+    /** Gets or sets a value indicating whether user can change property metadata or remove this property. */
     isManageable?: boolean;
+    /** Gets or sets a value indicating whether this instance is new. A new property should be created on server site instead of trying to update it. */
     isNew?: boolean;
+    /** Gets or sets the catalog id that this product belongs to. */
     catalogId?: string | undefined;
+    /** Gets or sets the category id that this product belongs to. */
     categoryId?: string | undefined;
     name?: string | undefined;
     required?: boolean;
     dictionary?: boolean;
     multivalue?: boolean;
     multilanguage?: boolean;
+    /** Gets or sets a value indicating whether this VirtoCommerce.CatalogModule.Core.Model.Property is hidden. */
     hidden?: boolean;
     valueType?: PropertyValueType;
     type?: PropertyType;
@@ -3016,14 +4047,19 @@ export interface IExcludedProperty {
 }
 
 export class CategoryLink implements ICategoryLink {
+    /** Entry identifier which this link belongs to */
     readonly entryId?: string | undefined;
     listEntryId?: string | undefined;
+    /** Gets or sets the type of the list entry. E.g. "product", "category" */
     listEntryType?: string | undefined;
+    /** Product order position in virtual catalog */
     priority?: number;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
     category?: Category;
+    /** Gets the Id of either target Catetory or Catalog */
     readonly targetId?: string | undefined;
+    /** Gets the name of either target Catetory or Catalog */
     readonly name?: string | undefined;
 
     constructor(data?: ICategoryLink) {
@@ -3072,27 +4108,40 @@ export class CategoryLink implements ICategoryLink {
 }
 
 export interface ICategoryLink {
+    /** Entry identifier which this link belongs to */
     entryId?: string | undefined;
     listEntryId?: string | undefined;
+    /** Gets or sets the type of the list entry. E.g. "product", "category" */
     listEntryType?: string | undefined;
+    /** Product order position in virtual catalog */
     priority?: number;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
     category?: Category;
+    /** Gets the Id of either target Catetory or Catalog */
     targetId?: string | undefined;
+    /** Gets the name of either target Catetory or Catalog */
     name?: string | undefined;
 }
 
 export class SeoInfo implements ISeoInfo {
     name?: string | undefined;
+    /** Slug */
     semanticUrl?: string | undefined;
+    /** head title tag content */
     pageTitle?: string | undefined;
+    /** <meta name="description" /> */
     metaDescription?: string | undefined;
     imageAltDescription?: string | undefined;
+    /** <meta name="keywords" /> */
     metaKeywords?: string | undefined;
+    /** Tenant StoreId which SEO defined */
     storeId?: string | undefined;
+    /** SEO related object id */
     objectId?: string | undefined;
+    /** SEO related object type name */
     objectType?: string | undefined;
+    /** Active/Inactive */
     isActive?: boolean;
     languageCode?: string | undefined;
     createdDate?: Date;
@@ -3162,14 +4211,22 @@ export class SeoInfo implements ISeoInfo {
 
 export interface ISeoInfo {
     name?: string | undefined;
+    /** Slug */
     semanticUrl?: string | undefined;
+    /** head title tag content */
     pageTitle?: string | undefined;
+    /** <meta name="description" /> */
     metaDescription?: string | undefined;
     imageAltDescription?: string | undefined;
+    /** <meta name="keywords" /> */
     metaKeywords?: string | undefined;
+    /** Tenant StoreId which SEO defined */
     storeId?: string | undefined;
+    /** SEO related object id */
     objectId?: string | undefined;
+    /** SEO related object type name */
     objectType?: string | undefined;
+    /** Active/Inactive */
     isActive?: boolean;
     languageCode?: string | undefined;
     createdDate?: Date;
@@ -3254,11 +4311,16 @@ export class Image implements IImage {
     url?: string | undefined;
     description?: string | undefined;
     sortOrder?: number;
+    /** Gets or sets the asset type identifier. */
     typeId?: string | undefined;
+    /** Gets or sets the asset group name. */
     group?: string | undefined;
+    /** Gets or sets the asset name. */
     name?: string | undefined;
     outerId?: string | undefined;
+    /** Gets or sets the asset language. */
     languageCode?: string | undefined;
+    /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
     readonly seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
@@ -3348,11 +4410,16 @@ export interface IImage {
     url?: string | undefined;
     description?: string | undefined;
     sortOrder?: number;
+    /** Gets or sets the asset type identifier. */
     typeId?: string | undefined;
+    /** Gets or sets the asset group name. */
     group?: string | undefined;
+    /** Gets or sets the asset name. */
     name?: string | undefined;
     outerId?: string | undefined;
+    /** Gets or sets the asset language. */
     languageCode?: string | undefined;
+    /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
     seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
@@ -3363,11 +4430,17 @@ export interface IImage {
     id?: string | undefined;
 }
 
+/** Represents one outline element: catalog, category or product. */
 export class OutlineItem implements IOutlineItem {
+    /** Object id */
     id?: string | undefined;
+    /** Object type */
     seoObjectType?: string | undefined;
+    /** All SEO records for the object */
     seoInfos?: SeoInfo[] | undefined;
+    /** The name of current item */
     name?: string | undefined;
+    /** True when this object is linked to the virtual parent. */
     hasVirtualParent?: boolean;
 
     constructor(data?: IOutlineItem) {
@@ -3415,15 +4488,23 @@ export class OutlineItem implements IOutlineItem {
     }
 }
 
+/** Represents one outline element: catalog, category or product. */
 export interface IOutlineItem {
+    /** Object id */
     id?: string | undefined;
+    /** Object type */
     seoObjectType?: string | undefined;
+    /** All SEO records for the object */
     seoInfos?: SeoInfo[] | undefined;
+    /** The name of current item */
     name?: string | undefined;
+    /** True when this object is linked to the virtual parent. */
     hasVirtualParent?: boolean;
 }
 
+/** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
 export class Outline implements IOutline {
+    /** Outline parts */
     items?: OutlineItem[] | undefined;
 
     constructor(data?: IOutline) {
@@ -3463,7 +4544,9 @@ export class Outline implements IOutline {
     }
 }
 
+/** Represents the path from the catalog to one of the child objects (product or category): catalog/parent-category1/.../parent-categoryN/object */
 export interface IOutline {
+    /** Outline parts */
     items?: OutlineItem[] | undefined;
 }
 
@@ -3472,7 +4555,9 @@ export class Category implements ICategory {
     parentId?: string | undefined;
     code?: string | undefined;
     name?: string | undefined;
+    /** Category outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     readonly outline?: string | undefined;
+    /** Category path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     path?: string | undefined;
     isVirtual?: boolean;
     level?: number;
@@ -3488,9 +4573,11 @@ export class Category implements ICategory {
     seoInfos?: SeoInfo[] | undefined;
     enableDescription?: boolean | undefined;
     descriptions?: CategoryDescription[] | undefined;
+    /** Gets the default image */
     readonly imgSrc?: string | undefined;
     images?: Image[] | undefined;
     outlines?: Outline[] | undefined;
+    /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -3644,7 +4731,9 @@ export interface ICategory {
     parentId?: string | undefined;
     code?: string | undefined;
     name?: string | undefined;
+    /** Category outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     outline?: string | undefined;
+    /** Category path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     path?: string | undefined;
     isVirtual?: boolean;
     level?: number;
@@ -3660,9 +4749,11 @@ export interface ICategory {
     seoInfos?: SeoInfo[] | undefined;
     enableDescription?: boolean | undefined;
     descriptions?: CategoryDescription[] | undefined;
+    /** Gets the default image */
     imgSrc?: string | undefined;
     images?: Image[] | undefined;
     outlines?: Outline[] | undefined;
+    /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -3834,11 +4925,16 @@ export class Asset implements IAsset {
     url?: string | undefined;
     description?: string | undefined;
     sortOrder?: number;
+    /** Gets or sets the asset type identifier. */
     typeId?: string | undefined;
+    /** Gets or sets the asset group name. */
     group?: string | undefined;
+    /** Gets or sets the asset name. */
     name?: string | undefined;
     outerId?: string | undefined;
+    /** Gets or sets the asset language. */
     languageCode?: string | undefined;
+    /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
     readonly seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
@@ -3934,11 +5030,16 @@ export interface IAsset {
     url?: string | undefined;
     description?: string | undefined;
     sortOrder?: number;
+    /** Gets or sets the asset type identifier. */
     typeId?: string | undefined;
+    /** Gets or sets the asset group name. */
     group?: string | undefined;
+    /** Gets or sets the asset name. */
     name?: string | undefined;
     outerId?: string | undefined;
+    /** Gets or sets the asset language. */
     languageCode?: string | undefined;
+    /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
     seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
@@ -4018,14 +5119,21 @@ export interface IEditorialReview {
 }
 
 export class ProductAssociation implements IProductAssociation {
+    /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
     type?: string | undefined;
     priority?: number;
     quantity?: number | undefined;
+    /** Is a primary key of associating object */
     itemId?: string | undefined;
+    /** Each link element can have an associated object like Product, Category, etc.
+Is a primary key of associated object */
     associatedObjectId?: string | undefined;
+    /** Associated object type : 'product', 'category' etc */
     associatedObjectType?: string | undefined;
     outerId?: string | undefined;
+    /** Display name for associated object */
     readonly associatedObjectName?: string | undefined;
+    /** Associated object image URL */
     readonly associatedObjectImg?: string | undefined;
     tags?: string[] | undefined;
     readonly imgSrc?: string | undefined;
@@ -4102,14 +5210,21 @@ export class ProductAssociation implements IProductAssociation {
 }
 
 export interface IProductAssociation {
+    /** Association type (Accessories, Up-Sales, Cross-Sales, Related etc) */
     type?: string | undefined;
     priority?: number;
     quantity?: number | undefined;
+    /** Is a primary key of associating object */
     itemId?: string | undefined;
+    /** Each link element can have an associated object like Product, Category, etc.
+Is a primary key of associated object */
     associatedObjectId?: string | undefined;
+    /** Associated object type : 'product', 'category' etc */
     associatedObjectType?: string | undefined;
     outerId?: string | undefined;
+    /** Display name for associated object */
     associatedObjectName?: string | undefined;
+    /** Associated object image URL */
     associatedObjectImg?: string | undefined;
     tags?: string[] | undefined;
     imgSrc?: string | undefined;
@@ -4118,13 +5233,17 @@ export interface IProductAssociation {
 }
 
 export class Variation implements IVariation {
+    /** SKU code */
     code?: string | undefined;
     manufacturerPartNumber?: string | undefined;
+    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
     name?: string | undefined;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
+    /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     readonly outline?: string | undefined;
+    /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     readonly path?: string | undefined;
     readonly titularItemId?: string | undefined;
     mainProductId?: string | undefined;
@@ -4134,6 +5253,7 @@ export class Variation implements IVariation {
     indexingDate?: Date | undefined;
     maxQuantity?: number | undefined;
     minQuantity?: number | undefined;
+    /** Can be Physical, Digital or Subscription. */
     productType?: string | undefined;
     packageType?: string | undefined;
     weightUnit?: string | undefined;
@@ -4143,8 +5263,10 @@ export class Variation implements IVariation {
     length?: number | undefined;
     width?: number | undefined;
     enableReview?: boolean | undefined;
+    /** re-downloads limit */
     maxNumberOfDownload?: number | undefined;
     downloadExpiration?: Date | undefined;
+    /** DownloadType: {Standard Product, Software, Music} */
     downloadType?: string | undefined;
     hasUserAgreement?: boolean | undefined;
     shippingType?: string | undefined;
@@ -4152,22 +5274,26 @@ export class Variation implements IVariation {
     vendor?: string | undefined;
     startDate?: Date;
     endDate?: Date | undefined;
+    /** Product order position in catalog */
     priority?: number;
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
     propertyValues?: PropertyValue[] | undefined;
+    /** Gets the default image for the product. */
     readonly imgSrc?: string | undefined;
     images?: Image[] | undefined;
     assets?: Asset[] | undefined;
     links?: CategoryLink[] | undefined;
     variations?: Variation[] | undefined;
+    /** Each descendant type should override this property to use other object type for seo records */
     readonly seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
     reviews?: EditorialReview[] | undefined;
     associations?: ProductAssociation[] | undefined;
     referencedAssociations?: ProductAssociation[] | undefined;
     outlines?: Outline[] | undefined;
+    /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -4411,13 +5537,17 @@ export class Variation implements IVariation {
 }
 
 export interface IVariation {
+    /** SKU code */
     code?: string | undefined;
     manufacturerPartNumber?: string | undefined;
+    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
     name?: string | undefined;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
+    /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     outline?: string | undefined;
+    /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     path?: string | undefined;
     titularItemId?: string | undefined;
     mainProductId?: string | undefined;
@@ -4427,6 +5557,7 @@ export interface IVariation {
     indexingDate?: Date | undefined;
     maxQuantity?: number | undefined;
     minQuantity?: number | undefined;
+    /** Can be Physical, Digital or Subscription. */
     productType?: string | undefined;
     packageType?: string | undefined;
     weightUnit?: string | undefined;
@@ -4436,8 +5567,10 @@ export interface IVariation {
     length?: number | undefined;
     width?: number | undefined;
     enableReview?: boolean | undefined;
+    /** re-downloads limit */
     maxNumberOfDownload?: number | undefined;
     downloadExpiration?: Date | undefined;
+    /** DownloadType: {Standard Product, Software, Music} */
     downloadType?: string | undefined;
     hasUserAgreement?: boolean | undefined;
     shippingType?: string | undefined;
@@ -4445,22 +5578,26 @@ export interface IVariation {
     vendor?: string | undefined;
     startDate?: Date;
     endDate?: Date | undefined;
+    /** Product order position in catalog */
     priority?: number;
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
     propertyValues?: PropertyValue[] | undefined;
+    /** Gets the default image for the product. */
     imgSrc?: string | undefined;
     images?: Image[] | undefined;
     assets?: Asset[] | undefined;
     links?: CategoryLink[] | undefined;
     variations?: Variation[] | undefined;
+    /** Each descendant type should override this property to use other object type for seo records */
     seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
     reviews?: EditorialReview[] | undefined;
     associations?: ProductAssociation[] | undefined;
     referencedAssociations?: ProductAssociation[] | undefined;
     outlines?: Outline[] | undefined;
+    /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -4470,13 +5607,17 @@ export interface IVariation {
 }
 
 export class CatalogProduct implements ICatalogProduct {
+    /** SKU code */
     code?: string | undefined;
     manufacturerPartNumber?: string | undefined;
+    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
     name?: string | undefined;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
+    /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     readonly outline?: string | undefined;
+    /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     readonly path?: string | undefined;
     readonly titularItemId?: string | undefined;
     mainProductId?: string | undefined;
@@ -4486,6 +5627,7 @@ export class CatalogProduct implements ICatalogProduct {
     indexingDate?: Date | undefined;
     maxQuantity?: number | undefined;
     minQuantity?: number | undefined;
+    /** Can be Physical, Digital or Subscription. */
     productType?: string | undefined;
     packageType?: string | undefined;
     weightUnit?: string | undefined;
@@ -4495,8 +5637,10 @@ export class CatalogProduct implements ICatalogProduct {
     length?: number | undefined;
     width?: number | undefined;
     enableReview?: boolean | undefined;
+    /** re-downloads limit */
     maxNumberOfDownload?: number | undefined;
     downloadExpiration?: Date | undefined;
+    /** DownloadType: {Standard Product, Software, Music} */
     downloadType?: string | undefined;
     hasUserAgreement?: boolean | undefined;
     shippingType?: string | undefined;
@@ -4504,22 +5648,26 @@ export class CatalogProduct implements ICatalogProduct {
     vendor?: string | undefined;
     startDate?: Date;
     endDate?: Date | undefined;
+    /** Product order position in catalog */
     priority?: number;
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
     propertyValues?: PropertyValue[] | undefined;
+    /** Gets the default image for the product. */
     readonly imgSrc?: string | undefined;
     images?: Image[] | undefined;
     assets?: Asset[] | undefined;
     links?: CategoryLink[] | undefined;
     variations?: Variation[] | undefined;
+    /** Each descendant type should override this property to use other object type for seo records */
     readonly seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
     reviews?: EditorialReview[] | undefined;
     associations?: ProductAssociation[] | undefined;
     referencedAssociations?: ProductAssociation[] | undefined;
     outlines?: Outline[] | undefined;
+    /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -4763,13 +5911,17 @@ export class CatalogProduct implements ICatalogProduct {
 }
 
 export interface ICatalogProduct {
+    /** SKU code */
     code?: string | undefined;
     manufacturerPartNumber?: string | undefined;
+    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
     name?: string | undefined;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
+    /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     outline?: string | undefined;
+    /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     path?: string | undefined;
     titularItemId?: string | undefined;
     mainProductId?: string | undefined;
@@ -4779,6 +5931,7 @@ export interface ICatalogProduct {
     indexingDate?: Date | undefined;
     maxQuantity?: number | undefined;
     minQuantity?: number | undefined;
+    /** Can be Physical, Digital or Subscription. */
     productType?: string | undefined;
     packageType?: string | undefined;
     weightUnit?: string | undefined;
@@ -4788,8 +5941,10 @@ export interface ICatalogProduct {
     length?: number | undefined;
     width?: number | undefined;
     enableReview?: boolean | undefined;
+    /** re-downloads limit */
     maxNumberOfDownload?: number | undefined;
     downloadExpiration?: Date | undefined;
+    /** DownloadType: {Standard Product, Software, Music} */
     downloadType?: string | undefined;
     hasUserAgreement?: boolean | undefined;
     shippingType?: string | undefined;
@@ -4797,22 +5952,26 @@ export interface ICatalogProduct {
     vendor?: string | undefined;
     startDate?: Date;
     endDate?: Date | undefined;
+    /** Product order position in catalog */
     priority?: number;
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
     propertyValues?: PropertyValue[] | undefined;
+    /** Gets the default image for the product. */
     imgSrc?: string | undefined;
     images?: Image[] | undefined;
     assets?: Asset[] | undefined;
     links?: CategoryLink[] | undefined;
     variations?: Variation[] | undefined;
+    /** Each descendant type should override this property to use other object type for seo records */
     seoObjectType?: string | undefined;
     seoInfos?: SeoInfo[] | undefined;
     reviews?: EditorialReview[] | undefined;
     associations?: ProductAssociation[] | undefined;
     referencedAssociations?: ProductAssociation[] | undefined;
     outlines?: Outline[] | undefined;
+    /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5079,6 +6238,7 @@ export class CategorySearchCriteria implements ICategorySearchCriteria {
     code?: string | undefined;
     catalogId?: string | undefined;
     catalogIds?: string[] | undefined;
+    /** Parent category id */
     categoryId?: string | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
@@ -5188,6 +6348,7 @@ export interface ICategorySearchCriteria {
     code?: string | undefined;
     catalogId?: string | undefined;
     catalogIds?: string[] | undefined;
+    /** Parent category id */
     categoryId?: string | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
@@ -5303,10 +6464,16 @@ export interface IDeleteSellerCategoriesCommand {
     categoryIds?: string[] | undefined;
 }
 
+/** Export property information */
 export class ExportedTypePropertyInfo implements IExportedTypePropertyInfo {
+    /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
     fullName?: string | undefined;
+    /** Property group. Properties can be divided into different groups to simplify selection.
+Group could be used for grouping property infos. */
     group?: string | undefined;
+    /** User-friendly name for this property */
     displayName?: string | undefined;
+    /** * Reserved for future use */
     isRequired?: boolean;
 
     constructor(data?: IExportedTypePropertyInfo) {
@@ -5344,21 +6511,36 @@ export class ExportedTypePropertyInfo implements IExportedTypePropertyInfo {
     }
 }
 
+/** Export property information */
 export interface IExportedTypePropertyInfo {
+    /** Property name with the path from the exportable entity (e.g. for entity containing PropertyA with nested properties it could be "PropertyA.PropertyB.PropertyC"). */
     fullName?: string | undefined;
+    /** Property group. Properties can be divided into different groups to simplify selection.
+Group could be used for grouping property infos. */
     group?: string | undefined;
+    /** User-friendly name for this property */
     displayName?: string | undefined;
+    /** * Reserved for future use */
     isRequired?: boolean;
 }
 
+/** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
 export class ExportDataQuery implements IExportDataQuery {
+    /** This used to instantiate a data query of this type at export start. */
     readonly exportTypeName?: string | undefined;
+    /** Keyword to search data */
     keyword?: string | undefined;
+    /** Object keys to search data */
     objectIds?: string[] | undefined;
+    /** How to sort the dataset matching a query */
     sort?: string | undefined;
+    /** User selected properties to export */
     includedProperties?: ExportedTypePropertyInfo[] | undefined;
+    /** Paging: skip records */
     skip?: number | undefined;
+    /** Paging: records in one page */
     take?: number | undefined;
+    /** True means preview (lightweight) data is queried, false - full version requested */
     isPreview?: boolean;
 
     constructor(data?: IExportDataQuery) {
@@ -5420,18 +6602,28 @@ export class ExportDataQuery implements IExportDataQuery {
     }
 }
 
+/** Basic query information for data sources to retrieve exported data: included properties, paging, sorting, etc... Applied data sources expand it by adding certain criteria (for example, additional information for searching) */
 export interface IExportDataQuery {
+    /** This used to instantiate a data query of this type at export start. */
     exportTypeName?: string | undefined;
+    /** Keyword to search data */
     keyword?: string | undefined;
+    /** Object keys to search data */
     objectIds?: string[] | undefined;
+    /** How to sort the dataset matching a query */
     sort?: string | undefined;
+    /** User selected properties to export */
     includedProperties?: ExportedTypePropertyInfo[] | undefined;
+    /** Paging: skip records */
     skip?: number | undefined;
+    /** Paging: records in one page */
     take?: number | undefined;
+    /** True means preview (lightweight) data is queried, false - full version requested */
     isPreview?: boolean;
 }
 
 export class IExportProviderConfiguration implements IIExportProviderConfiguration {
+    /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
     type?: string | undefined;
 
     constructor(data?: IIExportProviderConfiguration) {
@@ -5464,15 +6656,18 @@ export class IExportProviderConfiguration implements IIExportProviderConfigurati
 }
 
 export interface IIExportProviderConfiguration {
+    /** Type discriminator to instantiate proper descendant (e.g. thru the universal PolymorphJsonConverter) */
     type?: string | undefined;
 }
 
 export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
+    /** Full type name of exportable entity */
     exportTypeName?: string | undefined;
     dataQuery?: ExportDataQuery;
     providerConfig?: IExportProviderConfiguration;
+    /** Selected export provider name */
     providerName?: string | undefined;
 
     constructor(data?: IRunCategoriesExportCommand) {
@@ -5517,9 +6712,11 @@ export class RunCategoriesExportCommand implements IRunCategoriesExportCommand {
 export interface IRunCategoriesExportCommand {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
+    /** Full type name of exportable entity */
     exportTypeName?: string | undefined;
     dataQuery?: ExportDataQuery;
     providerConfig?: IExportProviderConfiguration;
+    /** Selected export provider name */
     providerName?: string | undefined;
 }
 
@@ -5571,6 +6768,7 @@ export interface ISearchProductsResult {
     results?: SellerProduct[] | undefined;
 }
 
+/** Search criteria used for search property dictionary items */
 export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionaryItemSearchCriteria {
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
@@ -5679,6 +6877,7 @@ export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionary
     }
 }
 
+/** Search criteria used for search property dictionary items */
 export interface IPropertyDictionaryItemSearchCriteria {
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
@@ -6840,8 +8039,6 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     moduleId?: string | undefined;
     groupName?: string | undefined;
     name?: string | undefined;
-    displayName?: string | undefined;
-    isRequired?: boolean;
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
@@ -6868,8 +8065,6 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
             this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.isRequired = _data["isRequired"];
             this.isHidden = _data["isHidden"];
             this.valueType = _data["valueType"];
             if (Array.isArray(_data["allowedValues"])) {
@@ -6900,8 +8095,6 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
         data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["isRequired"] = this.isRequired;
         data["isHidden"] = this.isHidden;
         data["valueType"] = this.valueType;
         if (Array.isArray(this.allowedValues)) {
@@ -6925,8 +8118,6 @@ export interface IObjectSettingEntry {
     moduleId?: string | undefined;
     groupName?: string | undefined;
     name?: string | undefined;
-    displayName?: string | undefined;
-    isRequired?: boolean;
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
@@ -6937,8 +8128,8 @@ export interface IObjectSettingEntry {
 export class ImportProfile implements IImportProfile {
     name?: string | undefined;
     dataImporterType?: string | undefined;
-    sellerId?: string | undefined;
-    sellerName?: string | undefined;
+    userId?: string | undefined;
+    userName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     readonly typeName?: string | undefined;
     importFileUrl?: string | undefined;
@@ -6962,8 +8153,8 @@ export class ImportProfile implements IImportProfile {
         if (_data) {
             this.name = _data["name"];
             this.dataImporterType = _data["dataImporterType"];
-            this.sellerId = _data["sellerId"];
-            this.sellerName = _data["sellerName"];
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
             if (Array.isArray(_data["settings"])) {
                 this.settings = [] as any;
                 for (let item of _data["settings"])
@@ -6991,8 +8182,8 @@ export class ImportProfile implements IImportProfile {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
         data["dataImporterType"] = this.dataImporterType;
-        data["sellerId"] = this.sellerId;
-        data["sellerName"] = this.sellerName;
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
         if (Array.isArray(this.settings)) {
             data["settings"] = [];
             for (let item of this.settings)
@@ -7013,8 +8204,8 @@ export class ImportProfile implements IImportProfile {
 export interface IImportProfile {
     name?: string | undefined;
     dataImporterType?: string | undefined;
-    sellerId?: string | undefined;
-    sellerName?: string | undefined;
+    userId?: string | undefined;
+    userName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     typeName?: string | undefined;
     importFileUrl?: string | undefined;
@@ -7258,6 +8449,7 @@ export class ImportDataPreview implements IImportDataPreview {
     totalCount?: number;
     fileName?: string | undefined;
     records?: any[] | undefined;
+    errors?: string[] | undefined;
 
     constructor(data?: IImportDataPreview) {
         if (data) {
@@ -7276,6 +8468,11 @@ export class ImportDataPreview implements IImportDataPreview {
                 this.records = [] as any;
                 for (let item of _data["records"])
                     this.records!.push(item);
+            }
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
             }
         }
     }
@@ -7296,6 +8493,11 @@ export class ImportDataPreview implements IImportDataPreview {
             for (let item of this.records)
                 data["records"].push(item);
         }
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
         return data;
     }
 }
@@ -7304,6 +8506,7 @@ export interface IImportDataPreview {
     totalCount?: number;
     fileName?: string | undefined;
     records?: any[] | undefined;
+    errors?: string[] | undefined;
 }
 
 export class SettingDescriptor implements ISettingDescriptor {
@@ -7311,8 +8514,6 @@ export class SettingDescriptor implements ISettingDescriptor {
     moduleId?: string | undefined;
     groupName?: string | undefined;
     name?: string | undefined;
-    displayName?: string | undefined;
-    isRequired?: boolean;
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
@@ -7334,8 +8535,6 @@ export class SettingDescriptor implements ISettingDescriptor {
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
             this.name = _data["name"];
-            this.displayName = _data["displayName"];
-            this.isRequired = _data["isRequired"];
             this.isHidden = _data["isHidden"];
             this.valueType = _data["valueType"];
             if (Array.isArray(_data["allowedValues"])) {
@@ -7361,8 +8560,6 @@ export class SettingDescriptor implements ISettingDescriptor {
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
         data["name"] = this.name;
-        data["displayName"] = this.displayName;
-        data["isRequired"] = this.isRequired;
         data["isHidden"] = this.isHidden;
         data["valueType"] = this.valueType;
         if (Array.isArray(this.allowedValues)) {
@@ -7381,8 +8578,6 @@ export interface ISettingDescriptor {
     moduleId?: string | undefined;
     groupName?: string | undefined;
     name?: string | undefined;
-    displayName?: string | undefined;
-    isRequired?: boolean;
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
@@ -7390,10 +8585,41 @@ export interface ISettingDescriptor {
     isDictionary?: boolean;
 }
 
+export class IAuthorizationRequirement implements IIAuthorizationRequirement {
+
+    constructor(data?: IIAuthorizationRequirement) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+    }
+
+    static fromJS(data: any): IAuthorizationRequirement {
+        data = typeof data === 'object' ? data : {};
+        let result = new IAuthorizationRequirement();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        return data;
+    }
+}
+
+export interface IIAuthorizationRequirement {
+}
+
 export class IDataImporter implements IIDataImporter {
     readonly typeName?: string | undefined;
     readonly metadata?: { [key: string]: string; } | undefined;
     availSettings?: SettingDescriptor[] | undefined;
+    authorizationReqirement?: IAuthorizationRequirement;
 
     constructor(data?: IIDataImporter) {
         if (data) {
@@ -7419,6 +8645,7 @@ export class IDataImporter implements IIDataImporter {
                 for (let item of _data["availSettings"])
                     this.availSettings!.push(SettingDescriptor.fromJS(item));
             }
+            this.authorizationReqirement = _data["authorizationReqirement"] ? IAuthorizationRequirement.fromJS(_data["authorizationReqirement"]) : <any>undefined;
         }
     }
 
@@ -7444,6 +8671,7 @@ export class IDataImporter implements IIDataImporter {
             for (let item of this.availSettings)
                 data["availSettings"].push(item.toJSON());
         }
+        data["authorizationReqirement"] = this.authorizationReqirement ? this.authorizationReqirement.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -7452,6 +8680,7 @@ export interface IIDataImporter {
     typeName?: string | undefined;
     metadata?: { [key: string]: string; } | undefined;
     availSettings?: SettingDescriptor[] | undefined;
+    authorizationReqirement?: IAuthorizationRequirement;
 }
 
 export class CreateProfileCommand implements ICreateProfileCommand {
@@ -7823,8 +9052,8 @@ export interface ISearchImportProfilesHistoryQuery {
 }
 
 export class ImportRunHistory implements IImportRunHistory {
-    sellerId?: string | undefined;
-    sellerName?: string | undefined;
+    userId?: string | undefined;
+    userName?: string | undefined;
     jobId?: string | undefined;
     profileId?: string | undefined;
     profileName?: string | undefined;
@@ -7834,6 +9063,8 @@ export class ImportRunHistory implements IImportRunHistory {
     processedCount?: number;
     errorsCount?: number;
     errors?: string[] | undefined;
+    readonly typeName?: string | undefined;
+    settings?: ObjectSettingEntry[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -7851,8 +9082,8 @@ export class ImportRunHistory implements IImportRunHistory {
 
     init(_data?: any) {
         if (_data) {
-            this.sellerId = _data["sellerId"];
-            this.sellerName = _data["sellerName"];
+            this.userId = _data["userId"];
+            this.userName = _data["userName"];
             this.jobId = _data["jobId"];
             this.profileId = _data["profileId"];
             this.profileName = _data["profileName"];
@@ -7865,6 +9096,12 @@ export class ImportRunHistory implements IImportRunHistory {
                 this.errors = [] as any;
                 for (let item of _data["errors"])
                     this.errors!.push(item);
+            }
+            (<any>this).typeName = _data["typeName"];
+            if (Array.isArray(_data["settings"])) {
+                this.settings = [] as any;
+                for (let item of _data["settings"])
+                    this.settings!.push(ObjectSettingEntry.fromJS(item));
             }
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
@@ -7883,8 +9120,8 @@ export class ImportRunHistory implements IImportRunHistory {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["sellerId"] = this.sellerId;
-        data["sellerName"] = this.sellerName;
+        data["userId"] = this.userId;
+        data["userName"] = this.userName;
         data["jobId"] = this.jobId;
         data["profileId"] = this.profileId;
         data["profileName"] = this.profileName;
@@ -7898,6 +9135,12 @@ export class ImportRunHistory implements IImportRunHistory {
             for (let item of this.errors)
                 data["errors"].push(item);
         }
+        data["typeName"] = this.typeName;
+        if (Array.isArray(this.settings)) {
+            data["settings"] = [];
+            for (let item of this.settings)
+                data["settings"].push(item.toJSON());
+        }
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -7908,8 +9151,8 @@ export class ImportRunHistory implements IImportRunHistory {
 }
 
 export interface IImportRunHistory {
-    sellerId?: string | undefined;
-    sellerName?: string | undefined;
+    userId?: string | undefined;
+    userName?: string | undefined;
     jobId?: string | undefined;
     profileId?: string | undefined;
     profileName?: string | undefined;
@@ -7919,6 +9162,8 @@ export interface IImportRunHistory {
     processedCount?: number;
     errorsCount?: number;
     errors?: string[] | undefined;
+    typeName?: string | undefined;
+    settings?: ObjectSettingEntry[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -7977,10 +9222,14 @@ export interface ISearchImportProfilesHistoryResult {
 export class SearchOrdersQuery implements ISearchOrdersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
+    /** Search orders with flag IsPrototype */
     withPrototypes?: boolean;
+    /** Search only recurring orders created by subscription */
     onlyRecurring?: boolean;
+    /** Search orders with given subscription */
     subscriptionId?: string | undefined;
     subscriptionIds?: string[] | undefined;
+    /** It used to limit search within an operation (customer order for example) */
     operationId?: string | undefined;
     customerId?: string | undefined;
     customerIds?: string[] | undefined;
@@ -7989,8 +9238,10 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
     parentOperationId?: string | undefined;
     employeeId?: string | undefined;
     storeIds?: string[] | undefined;
+    /** Search by status */
     status?: string | undefined;
     statuses?: string[] | undefined;
+    /** Search by numbers */
     number?: string | undefined;
     numbers?: string[] | undefined;
     startDate?: Date | undefined;
@@ -8171,10 +9422,14 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
 export interface ISearchOrdersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
+    /** Search orders with flag IsPrototype */
     withPrototypes?: boolean;
+    /** Search only recurring orders created by subscription */
     onlyRecurring?: boolean;
+    /** Search orders with given subscription */
     subscriptionId?: string | undefined;
     subscriptionIds?: string[] | undefined;
+    /** It used to limit search within an operation (customer order for example) */
     operationId?: string | undefined;
     customerId?: string | undefined;
     customerIds?: string[] | undefined;
@@ -8183,8 +9438,10 @@ export interface ISearchOrdersQuery {
     parentOperationId?: string | undefined;
     employeeId?: string | undefined;
     storeIds?: string[] | undefined;
+    /** Search by status */
     status?: string | undefined;
     statuses?: string[] | undefined;
+    /** Search by numbers */
     number?: string | undefined;
     numbers?: string[] | undefined;
     startDate?: Date | undefined;
@@ -8381,7 +9638,7 @@ export enum PaymentMethodGroupType {
 
 export class PaymentMethod implements IPaymentMethod {
     code?: string | undefined;
-    name?: string | undefined;
+    readonly name?: string | undefined;
     logoUrl?: string | undefined;
     isActive?: boolean;
     priority?: number;
@@ -8394,7 +9651,6 @@ export class PaymentMethod implements IPaymentMethod {
     discountAmount?: number;
     readonly discountAmountWithTax?: number;
     storeId?: string | undefined;
-    description?: string | undefined;
     readonly typeName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     taxType?: string | undefined;
@@ -8417,7 +9673,7 @@ export class PaymentMethod implements IPaymentMethod {
     init(_data?: any) {
         if (_data) {
             this.code = _data["code"];
-            this.name = _data["name"];
+            (<any>this).name = _data["name"];
             this.logoUrl = _data["logoUrl"];
             this.isActive = _data["isActive"];
             this.priority = _data["priority"];
@@ -8430,7 +9686,6 @@ export class PaymentMethod implements IPaymentMethod {
             this.discountAmount = _data["discountAmount"];
             (<any>this).discountAmountWithTax = _data["discountAmountWithTax"];
             this.storeId = _data["storeId"];
-            this.description = _data["description"];
             (<any>this).typeName = _data["typeName"];
             if (Array.isArray(_data["settings"])) {
                 this.settings = [] as any;
@@ -8474,7 +9729,6 @@ export class PaymentMethod implements IPaymentMethod {
         data["discountAmount"] = this.discountAmount;
         data["discountAmountWithTax"] = this.discountAmountWithTax;
         data["storeId"] = this.storeId;
-        data["description"] = this.description;
         data["typeName"] = this.typeName;
         if (Array.isArray(this.settings)) {
             data["settings"] = [];
@@ -8511,7 +9765,6 @@ export interface IPaymentMethod {
     discountAmount?: number;
     discountAmountWithTax?: number;
     storeId?: string | undefined;
-    description?: string | undefined;
     typeName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     taxType?: string | undefined;
@@ -8597,6 +9850,54 @@ export interface IProcessPaymentRequestResult {
     newPaymentStatus?: PaymentStatus;
 }
 
+export class FeeDetail implements IFeeDetail {
+    feeId?: string | undefined;
+    currency?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+
+    constructor(data?: IFeeDetail) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.feeId = _data["feeId"];
+            this.currency = _data["currency"];
+            this.amount = _data["amount"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): FeeDetail {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeeDetail();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["feeId"] = this.feeId;
+        data["currency"] = this.currency;
+        data["amount"] = this.amount;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IFeeDetail {
+    feeId?: string | undefined;
+    currency?: string | undefined;
+    amount?: number;
+    description?: string | undefined;
+}
+
 export class Discount implements IDiscount {
     promotionId?: string | undefined;
     currency?: string | undefined;
@@ -8660,15 +9961,24 @@ export interface IDiscount {
 export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
     amount?: number;
     currencyCode?: string | undefined;
+    /** Flag represent that current transaction is processed */
     isProcessed?: boolean;
+    /** Date when this transaction was handled */
     processedDate?: Date | undefined;
     processError?: string | undefined;
     processAttemptCount?: number;
+    /** Raw request data */
     requestData?: string | undefined;
+    /** Raw response data */
     responseData?: string | undefined;
+    /** Gateway or VC response status code */
     responseCode?: string | undefined;
+    /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
+    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
+    /** "Active", "Expired", and "Inactive" or other */
     status?: string | undefined;
     note?: string | undefined;
     createdDate?: Date;
@@ -8743,15 +10053,24 @@ export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
 export interface IPaymentGatewayTransaction {
     amount?: number;
     currencyCode?: string | undefined;
+    /** Flag represent that current transaction is processed */
     isProcessed?: boolean;
+    /** Date when this transaction was handled */
     processedDate?: Date | undefined;
     processError?: string | undefined;
     processAttemptCount?: number;
+    /** Raw request data */
     requestData?: string | undefined;
+    /** Raw response data */
     responseData?: string | undefined;
+    /** Gateway or VC response status code */
     responseCode?: string | undefined;
+    /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
+    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
+    /** "Active", "Expired", and "Inactive" or other */
     status?: string | undefined;
     note?: string | undefined;
     createdDate?: Date;
@@ -9154,6 +10473,7 @@ export interface IOperationLog {
 export class PaymentIn implements IPaymentIn {
     orderId?: string | undefined;
     purpose?: string | undefined;
+    /** Payment method (gateway) code */
     gatewayCode?: string | undefined;
     paymentMethod?: PaymentMethod;
     organizationId?: string | undefined;
@@ -9174,6 +10494,8 @@ export class PaymentIn implements IPaymentIn {
     discountAmount?: number;
     discountAmountWithTax?: number;
     objectType?: string | undefined;
+    feeDetails?: FeeDetail[] | undefined;
+    /** Tax category or type */
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -9190,6 +10512,7 @@ export class PaymentIn implements IPaymentIn {
     sum?: number;
     outerId?: string | undefined;
     cancelledState?: CancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
     isCancelled?: boolean;
     cancelledDate?: Date | undefined;
     cancelReason?: string | undefined;
@@ -9234,6 +10557,11 @@ export class PaymentIn implements IPaymentIn {
             this.discountAmount = _data["discountAmount"];
             this.discountAmountWithTax = _data["discountAmountWithTax"];
             this.objectType = _data["objectType"];
+            if (Array.isArray(_data["feeDetails"])) {
+                this.feeDetails = [] as any;
+                for (let item of _data["feeDetails"])
+                    this.feeDetails!.push(FeeDetail.fromJS(item));
+            }
             this.taxType = _data["taxType"];
             this.taxTotal = _data["taxTotal"];
             this.taxPercentRate = _data["taxPercentRate"];
@@ -9314,6 +10642,11 @@ export class PaymentIn implements IPaymentIn {
         data["discountAmount"] = this.discountAmount;
         data["discountAmountWithTax"] = this.discountAmountWithTax;
         data["objectType"] = this.objectType;
+        if (Array.isArray(this.feeDetails)) {
+            data["feeDetails"] = [];
+            for (let item of this.feeDetails)
+                data["feeDetails"].push(item.toJSON());
+        }
         data["taxType"] = this.taxType;
         data["taxTotal"] = this.taxTotal;
         data["taxPercentRate"] = this.taxPercentRate;
@@ -9367,6 +10700,7 @@ export class PaymentIn implements IPaymentIn {
 export interface IPaymentIn {
     orderId?: string | undefined;
     purpose?: string | undefined;
+    /** Payment method (gateway) code */
     gatewayCode?: string | undefined;
     paymentMethod?: PaymentMethod;
     organizationId?: string | undefined;
@@ -9387,6 +10721,8 @@ export interface IPaymentIn {
     discountAmount?: number;
     discountAmountWithTax?: number;
     objectType?: string | undefined;
+    feeDetails?: FeeDetail[] | undefined;
+    /** Tax category or type */
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -9403,6 +10739,7 @@ export interface IPaymentIn {
     sum?: number;
     outerId?: string | undefined;
     cancelledState?: CancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
     isCancelled?: boolean;
     cancelledDate?: Date | undefined;
     cancelReason?: string | undefined;
@@ -9416,23 +10753,29 @@ export interface IPaymentIn {
 }
 
 export class OrderLineItem implements IOrderLineItem {
+    /** Price id */
     priceId?: string | undefined;
     currency?: string | undefined;
+    /** unit price without discount and tax */
     price?: number;
     priceWithTax?: number;
+    /** Resulting price with discount for one unit */
     placedPrice?: number;
     placedPriceWithTax?: number;
     extendedPrice?: number;
     extendedPriceWithTax?: number;
+    /** Gets the value of the single qty line item discount amount */
     discountAmount?: number;
     discountAmountWithTax?: number;
     discountTotal?: number;
     discountTotalWithTax?: number;
     fee?: number;
     feeWithTax?: number;
+    /** Tax category or type */
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
+    /** Reserve quantity */
     reserveQuantity?: number;
     quantity?: number;
     productId?: string | undefined;
@@ -9449,6 +10792,7 @@ export class OrderLineItem implements IOrderLineItem {
     fulfillmentCenterId?: string | undefined;
     fulfillmentCenterName?: string | undefined;
     outerId?: string | undefined;
+    feeDetails?: FeeDetail[] | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -9512,6 +10856,11 @@ export class OrderLineItem implements IOrderLineItem {
             this.fulfillmentCenterId = _data["fulfillmentCenterId"];
             this.fulfillmentCenterName = _data["fulfillmentCenterName"];
             this.outerId = _data["outerId"];
+            if (Array.isArray(_data["feeDetails"])) {
+                this.feeDetails = [] as any;
+                for (let item of _data["feeDetails"])
+                    this.feeDetails!.push(FeeDetail.fromJS(item));
+            }
             this.weightUnit = _data["weightUnit"];
             this.weight = _data["weight"];
             this.measureUnit = _data["measureUnit"];
@@ -9587,6 +10936,11 @@ export class OrderLineItem implements IOrderLineItem {
         data["fulfillmentCenterId"] = this.fulfillmentCenterId;
         data["fulfillmentCenterName"] = this.fulfillmentCenterName;
         data["outerId"] = this.outerId;
+        if (Array.isArray(this.feeDetails)) {
+            data["feeDetails"] = [];
+            for (let item of this.feeDetails)
+                data["feeDetails"].push(item.toJSON());
+        }
         data["weightUnit"] = this.weightUnit;
         data["weight"] = this.weight;
         data["measureUnit"] = this.measureUnit;
@@ -9622,23 +10976,29 @@ export class OrderLineItem implements IOrderLineItem {
 }
 
 export interface IOrderLineItem {
+    /** Price id */
     priceId?: string | undefined;
     currency?: string | undefined;
+    /** unit price without discount and tax */
     price?: number;
     priceWithTax?: number;
+    /** Resulting price with discount for one unit */
     placedPrice?: number;
     placedPriceWithTax?: number;
     extendedPrice?: number;
     extendedPriceWithTax?: number;
+    /** Gets the value of the single qty line item discount amount */
     discountAmount?: number;
     discountAmountWithTax?: number;
     discountTotal?: number;
     discountTotalWithTax?: number;
     fee?: number;
     feeWithTax?: number;
+    /** Tax category or type */
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
+    /** Reserve quantity */
     reserveQuantity?: number;
     quantity?: number;
     productId?: string | undefined;
@@ -9655,6 +11015,7 @@ export interface IOrderLineItem {
     fulfillmentCenterId?: string | undefined;
     fulfillmentCenterName?: string | undefined;
     outerId?: string | undefined;
+    feeDetails?: FeeDetail[] | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -9930,7 +11291,9 @@ export class OrderShipment implements IOrderShipment {
     fulfillmentCenterName?: string | undefined;
     employeeId?: string | undefined;
     employeeName?: string | undefined;
+    /** Current shipment method code */
     shipmentMethodCode?: string | undefined;
+    /** Current shipment option code */
     shipmentMethodOption?: string | undefined;
     shippingMethod?: ShippingMethod;
     customerOrderId?: string | undefined;
@@ -9938,6 +11301,7 @@ export class OrderShipment implements IOrderShipment {
     items?: OrderShipmentItem[] | undefined;
     packages?: ShipmentPackage[] | undefined;
     inPayments?: PaymentIn[] | undefined;
+    feeDetails?: FeeDetail[] | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -9954,7 +11318,12 @@ export class OrderShipment implements IOrderShipment {
     discountAmountWithTax?: number;
     fee?: number;
     feeWithTax?: number;
+    /** Tracking information */
+    trackingNumber?: string | undefined;
+    trackingUrl?: string | undefined;
+    deliveryDate?: Date | undefined;
     objectType?: string | undefined;
+    /** Tax category or type */
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -9969,6 +11338,7 @@ export class OrderShipment implements IOrderShipment {
     sum?: number;
     outerId?: string | undefined;
     cancelledState?: CancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
     isCancelled?: boolean;
     cancelledDate?: Date | undefined;
     cancelReason?: string | undefined;
@@ -10017,6 +11387,11 @@ export class OrderShipment implements IOrderShipment {
                 for (let item of _data["inPayments"])
                     this.inPayments!.push(PaymentIn.fromJS(item));
             }
+            if (Array.isArray(_data["feeDetails"])) {
+                this.feeDetails = [] as any;
+                for (let item of _data["feeDetails"])
+                    this.feeDetails!.push(FeeDetail.fromJS(item));
+            }
             this.weightUnit = _data["weightUnit"];
             this.weight = _data["weight"];
             this.measureUnit = _data["measureUnit"];
@@ -10037,6 +11412,9 @@ export class OrderShipment implements IOrderShipment {
             this.discountAmountWithTax = _data["discountAmountWithTax"];
             this.fee = _data["fee"];
             this.feeWithTax = _data["feeWithTax"];
+            this.trackingNumber = _data["trackingNumber"];
+            this.trackingUrl = _data["trackingUrl"];
+            this.deliveryDate = _data["deliveryDate"] ? new Date(_data["deliveryDate"].toString()) : <any>undefined;
             this.objectType = _data["objectType"];
             this.taxType = _data["taxType"];
             this.taxTotal = _data["taxTotal"];
@@ -10112,6 +11490,11 @@ export class OrderShipment implements IOrderShipment {
             for (let item of this.inPayments)
                 data["inPayments"].push(item.toJSON());
         }
+        if (Array.isArray(this.feeDetails)) {
+            data["feeDetails"] = [];
+            for (let item of this.feeDetails)
+                data["feeDetails"].push(item.toJSON());
+        }
         data["weightUnit"] = this.weightUnit;
         data["weight"] = this.weight;
         data["measureUnit"] = this.measureUnit;
@@ -10132,6 +11515,9 @@ export class OrderShipment implements IOrderShipment {
         data["discountAmountWithTax"] = this.discountAmountWithTax;
         data["fee"] = this.fee;
         data["feeWithTax"] = this.feeWithTax;
+        data["trackingNumber"] = this.trackingNumber;
+        data["trackingUrl"] = this.trackingUrl;
+        data["deliveryDate"] = this.deliveryDate ? this.deliveryDate.toISOString() : <any>undefined;
         data["objectType"] = this.objectType;
         data["taxType"] = this.taxType;
         data["taxTotal"] = this.taxTotal;
@@ -10180,7 +11566,9 @@ export interface IOrderShipment {
     fulfillmentCenterName?: string | undefined;
     employeeId?: string | undefined;
     employeeName?: string | undefined;
+    /** Current shipment method code */
     shipmentMethodCode?: string | undefined;
+    /** Current shipment option code */
     shipmentMethodOption?: string | undefined;
     shippingMethod?: ShippingMethod;
     customerOrderId?: string | undefined;
@@ -10188,6 +11576,7 @@ export interface IOrderShipment {
     items?: OrderShipmentItem[] | undefined;
     packages?: ShipmentPackage[] | undefined;
     inPayments?: PaymentIn[] | undefined;
+    feeDetails?: FeeDetail[] | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -10204,7 +11593,12 @@ export interface IOrderShipment {
     discountAmountWithTax?: number;
     fee?: number;
     feeWithTax?: number;
+    /** Tracking information */
+    trackingNumber?: string | undefined;
+    trackingUrl?: string | undefined;
+    deliveryDate?: Date | undefined;
     objectType?: string | undefined;
+    /** Tax category or type */
     taxType?: string | undefined;
     taxTotal?: number;
     taxPercentRate?: number;
@@ -10219,6 +11613,7 @@ export interface IOrderShipment {
     sum?: number;
     outerId?: string | undefined;
     cancelledState?: CancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
     isCancelled?: boolean;
     cancelledDate?: Date | undefined;
     cancelReason?: string | undefined;
@@ -10241,49 +11636,88 @@ export class CustomerOrder implements ICustomerOrder {
     organizationName?: string | undefined;
     employeeId?: string | undefined;
     employeeName?: string | undefined;
+    /** The base shopping cart ID the order was created with */
     shoppingCartId?: string | undefined;
+    /** This checkbox determines whether the order is a prototype */
     isPrototype?: boolean;
+    /** The order internal number provided by customer */
     purchaseOrderNumber?: string | undefined;
+    /** Number of subscription associated with this order */
     subscriptionNumber?: string | undefined;
+    /** The ID of subscription associated with this order */
     subscriptionId?: string | undefined;
     objectType?: string | undefined;
     addresses?: OrderAddress[] | undefined;
     inPayments?: PaymentIn[] | undefined;
     items?: OrderLineItem[] | undefined;
     shipments?: OrderShipment[] | undefined;
+    feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
+    /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
+Therefore, the discount will not be taking tax into account. 
+For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
     scopes?: string[] | undefined;
+    /** Order grand total */
     total?: number;
+    /** Amount of the item prices */
     subTotal?: number;
+    /** Amount of the item prices with tax */
     subTotalWithTax?: number;
+    /** Amount of the item discount total */
     subTotalDiscount?: number;
+    /** Amount of the item discount total with tax */
     subTotalDiscountWithTax?: number;
+    /** Amount of the item tax total */
     subTotalTaxTotal?: number;
+    /** Amount of the shipment total */
     shippingTotal?: number;
+    /** Amount of the shipment total with tax */
     shippingTotalWithTax?: number;
+    /** Amount of the shipment prices */
     shippingSubTotal?: number;
+    /** Amount of the shipment prices with tax */
     shippingSubTotalWithTax?: number;
+    /** Amount of the shipment discount amounts */
     shippingDiscountTotal?: number;
+    /** Amount of the shipment discount amounts with tax */
     shippingDiscountTotalWithTax?: number;
+    /** Reserved for future needs */
     shippingTaxTotal?: number;
+    /** Amount of the payments totals */
     paymentTotal?: number;
+    /** Amount of the payment totals with tax */
     paymentTotalWithTax?: number;
+    /** Amount of the payment prices */
     paymentSubTotal?: number;
+    /** Amount of the payment prices with tax */
     paymentSubTotalWithTax?: number;
+    /** Amount of the payments discount amounts */
     paymentDiscountTotal?: number;
+    /** Amount of the payment discount amounts with tax */
     paymentDiscountTotalWithTax?: number;
+    /** Reserved for future needs */
     paymentTaxTotal?: number;
+    /** Amount of the discount amounts of items, shipments and payments, and the order discount amount */
     discountTotal?: number;
+    /** Amount of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax */
     discountTotalWithTax?: number;
+    /** Any extra fees applied to the order. This value comes from the cart */
     fee?: number;
+    /** Order fee with applied tax factor */
     feeWithTax?: number;
+    /** Amount of the order fee, as well as any item, shipment, and payment fees */
     feeTotal?: number;
+    /** Total fee with applied tax factor */
     feeTotalWithTax?: number;
+    /** Reserved for future needs */
     handlingTotal?: number;
+    /** Reserved for future needs */
     handlingTotalWithTax?: number;
+    /** Tax category or type */
     taxType?: string | undefined;
+    /** Amount of tax totals for items, shipments, and payments without the order discount amount with tax factor applied */
     taxTotal?: number;
     taxPercentRate?: number;
     languageCode?: string | undefined;
@@ -10297,6 +11731,7 @@ export class CustomerOrder implements ICustomerOrder {
     sum?: number;
     outerId?: string | undefined;
     cancelledState?: CancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
     isCancelled?: boolean;
     cancelledDate?: Date | undefined;
     cancelReason?: string | undefined;
@@ -10353,6 +11788,11 @@ export class CustomerOrder implements ICustomerOrder {
                 this.shipments = [] as any;
                 for (let item of _data["shipments"])
                     this.shipments!.push(OrderShipment.fromJS(item));
+            }
+            if (Array.isArray(_data["feeDetails"])) {
+                this.feeDetails = [] as any;
+                for (let item of _data["feeDetails"])
+                    this.feeDetails!.push(FeeDetail.fromJS(item));
             }
             if (Array.isArray(_data["discounts"])) {
                 this.discounts = [] as any;
@@ -10477,6 +11917,11 @@ export class CustomerOrder implements ICustomerOrder {
             for (let item of this.shipments)
                 data["shipments"].push(item.toJSON());
         }
+        if (Array.isArray(this.feeDetails)) {
+            data["feeDetails"] = [];
+            for (let item of this.feeDetails)
+                data["feeDetails"].push(item.toJSON());
+        }
         if (Array.isArray(this.discounts)) {
             data["discounts"] = [];
             for (let item of this.discounts)
@@ -10567,49 +12012,88 @@ export interface ICustomerOrder {
     organizationName?: string | undefined;
     employeeId?: string | undefined;
     employeeName?: string | undefined;
+    /** The base shopping cart ID the order was created with */
     shoppingCartId?: string | undefined;
+    /** This checkbox determines whether the order is a prototype */
     isPrototype?: boolean;
+    /** The order internal number provided by customer */
     purchaseOrderNumber?: string | undefined;
+    /** Number of subscription associated with this order */
     subscriptionNumber?: string | undefined;
+    /** The ID of subscription associated with this order */
     subscriptionId?: string | undefined;
     objectType?: string | undefined;
     addresses?: OrderAddress[] | undefined;
     inPayments?: PaymentIn[] | undefined;
     items?: OrderLineItem[] | undefined;
     shipments?: OrderShipment[] | undefined;
+    feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
+    /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
+Therefore, the discount will not be taking tax into account. 
+For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
     scopes?: string[] | undefined;
+    /** Order grand total */
     total?: number;
+    /** Amount of the item prices */
     subTotal?: number;
+    /** Amount of the item prices with tax */
     subTotalWithTax?: number;
+    /** Amount of the item discount total */
     subTotalDiscount?: number;
+    /** Amount of the item discount total with tax */
     subTotalDiscountWithTax?: number;
+    /** Amount of the item tax total */
     subTotalTaxTotal?: number;
+    /** Amount of the shipment total */
     shippingTotal?: number;
+    /** Amount of the shipment total with tax */
     shippingTotalWithTax?: number;
+    /** Amount of the shipment prices */
     shippingSubTotal?: number;
+    /** Amount of the shipment prices with tax */
     shippingSubTotalWithTax?: number;
+    /** Amount of the shipment discount amounts */
     shippingDiscountTotal?: number;
+    /** Amount of the shipment discount amounts with tax */
     shippingDiscountTotalWithTax?: number;
+    /** Reserved for future needs */
     shippingTaxTotal?: number;
+    /** Amount of the payments totals */
     paymentTotal?: number;
+    /** Amount of the payment totals with tax */
     paymentTotalWithTax?: number;
+    /** Amount of the payment prices */
     paymentSubTotal?: number;
+    /** Amount of the payment prices with tax */
     paymentSubTotalWithTax?: number;
+    /** Amount of the payments discount amounts */
     paymentDiscountTotal?: number;
+    /** Amount of the payment discount amounts with tax */
     paymentDiscountTotalWithTax?: number;
+    /** Reserved for future needs */
     paymentTaxTotal?: number;
+    /** Amount of the discount amounts of items, shipments and payments, and the order discount amount */
     discountTotal?: number;
+    /** Amount of the discount amounts with tax of items, shipments and payments, and the order discount amount with tax */
     discountTotalWithTax?: number;
+    /** Any extra fees applied to the order. This value comes from the cart */
     fee?: number;
+    /** Order fee with applied tax factor */
     feeWithTax?: number;
+    /** Amount of the order fee, as well as any item, shipment, and payment fees */
     feeTotal?: number;
+    /** Total fee with applied tax factor */
     feeTotalWithTax?: number;
+    /** Reserved for future needs */
     handlingTotal?: number;
+    /** Reserved for future needs */
     handlingTotalWithTax?: number;
+    /** Tax category or type */
     taxType?: string | undefined;
+    /** Amount of tax totals for items, shipments, and payments without the order discount amount with tax factor applied */
     taxTotal?: number;
     taxPercentRate?: number;
     languageCode?: string | undefined;
@@ -10623,6 +12107,7 @@ export interface ICustomerOrder {
     sum?: number;
     outerId?: string | undefined;
     cancelledState?: CancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
     isCancelled?: boolean;
     cancelledDate?: Date | undefined;
     cancelReason?: string | undefined;
@@ -10686,8 +12171,8 @@ export interface ICustomerOrderSearchResult {
 export class ChangeOrderStatusCommand implements IChangeOrderStatusCommand {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
-    orderId?: string | undefined;
-    newStatus?: string | undefined;
+    orderId!: string;
+    newStatus!: string;
 
     constructor(data?: IChangeOrderStatusCommand) {
         if (data) {
@@ -10727,12 +12212,225 @@ export class ChangeOrderStatusCommand implements IChangeOrderStatusCommand {
 export interface IChangeOrderStatusCommand {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
-    orderId?: string | undefined;
-    newStatus?: string | undefined;
+    orderId: string;
+    newStatus: string;
+}
+
+export class FulfillOrderDetails implements IFulfillOrderDetails {
+    trackingNumber?: string | undefined;
+    trackingUrl?: string | undefined;
+    deliveryDate?: Date | undefined;
+
+    constructor(data?: IFulfillOrderDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.trackingNumber = _data["trackingNumber"];
+            this.trackingUrl = _data["trackingUrl"];
+            this.deliveryDate = _data["deliveryDate"] ? new Date(_data["deliveryDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): FulfillOrderDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new FulfillOrderDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trackingNumber"] = this.trackingNumber;
+        data["trackingUrl"] = this.trackingUrl;
+        data["deliveryDate"] = this.deliveryDate ? this.deliveryDate.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IFulfillOrderDetails {
+    trackingNumber?: string | undefined;
+    trackingUrl?: string | undefined;
+    deliveryDate?: Date | undefined;
+}
+
+export class FulfillOrderCommand implements IFulfillOrderCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    orderId!: string;
+    fulfillDetails?: FulfillOrderDetails;
+
+    constructor(data?: IFulfillOrderCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sellerId = _data["sellerId"];
+            this.sellerName = _data["sellerName"];
+            this.orderId = _data["orderId"];
+            this.fulfillDetails = _data["fulfillDetails"] ? FulfillOrderDetails.fromJS(_data["fulfillDetails"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): FulfillOrderCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new FulfillOrderCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sellerId"] = this.sellerId;
+        data["sellerName"] = this.sellerName;
+        data["orderId"] = this.orderId;
+        data["fulfillDetails"] = this.fulfillDetails ? this.fulfillDetails.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IFulfillOrderCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    orderId: string;
+    fulfillDetails?: FulfillOrderDetails;
+}
+
+export class CustomerAddress implements ICustomerAddress {
+    addressType?: AddressType;
+    key?: string | undefined;
+    name?: string | undefined;
+    organization?: string | undefined;
+    countryCode?: string | undefined;
+    countryName?: string | undefined;
+    city?: string | undefined;
+    postalCode?: string | undefined;
+    zip?: string | undefined;
+    line1?: string | undefined;
+    line2?: string | undefined;
+    regionId?: string | undefined;
+    regionName?: string | undefined;
+    firstName?: string | undefined;
+    middleName?: string | undefined;
+    lastName?: string | undefined;
+    phone?: string | undefined;
+    email?: string | undefined;
+    outerId?: string | undefined;
+    isDefault?: boolean;
+
+    constructor(data?: ICustomerAddress) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.addressType = _data["addressType"];
+            this.key = _data["key"];
+            this.name = _data["name"];
+            this.organization = _data["organization"];
+            this.countryCode = _data["countryCode"];
+            this.countryName = _data["countryName"];
+            this.city = _data["city"];
+            this.postalCode = _data["postalCode"];
+            this.zip = _data["zip"];
+            this.line1 = _data["line1"];
+            this.line2 = _data["line2"];
+            this.regionId = _data["regionId"];
+            this.regionName = _data["regionName"];
+            this.firstName = _data["firstName"];
+            this.middleName = _data["middleName"];
+            this.lastName = _data["lastName"];
+            this.phone = _data["phone"];
+            this.email = _data["email"];
+            this.outerId = _data["outerId"];
+            this.isDefault = _data["isDefault"];
+        }
+    }
+
+    static fromJS(data: any): CustomerAddress {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustomerAddress();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["addressType"] = this.addressType;
+        data["key"] = this.key;
+        data["name"] = this.name;
+        data["organization"] = this.organization;
+        data["countryCode"] = this.countryCode;
+        data["countryName"] = this.countryName;
+        data["city"] = this.city;
+        data["postalCode"] = this.postalCode;
+        data["zip"] = this.zip;
+        data["line1"] = this.line1;
+        data["line2"] = this.line2;
+        data["regionId"] = this.regionId;
+        data["regionName"] = this.regionName;
+        data["firstName"] = this.firstName;
+        data["middleName"] = this.middleName;
+        data["lastName"] = this.lastName;
+        data["phone"] = this.phone;
+        data["email"] = this.email;
+        data["outerId"] = this.outerId;
+        data["isDefault"] = this.isDefault;
+        return data;
+    }
+}
+
+export interface ICustomerAddress {
+    addressType?: AddressType;
+    key?: string | undefined;
+    name?: string | undefined;
+    organization?: string | undefined;
+    countryCode?: string | undefined;
+    countryName?: string | undefined;
+    city?: string | undefined;
+    postalCode?: string | undefined;
+    zip?: string | undefined;
+    line1?: string | undefined;
+    line2?: string | undefined;
+    regionId?: string | undefined;
+    regionName?: string | undefined;
+    firstName?: string | undefined;
+    middleName?: string | undefined;
+    lastName?: string | undefined;
+    phone?: string | undefined;
+    email?: string | undefined;
+    outerId?: string | undefined;
+    isDefault?: boolean;
 }
 
 export class Seller implements ISeller {
+    registrationId?: string | undefined;
+    logo?: string | undefined;
+    deliveryTime?: string | undefined;
+    commissionFee?: CommissionFee;
     name?: string | undefined;
+    readonly outerId?: string | undefined;
+    readonly addresses?: CustomerAddress[] | undefined;
+    readonly phones?: string[] | undefined;
+    readonly emails?: string[] | undefined;
+    readonly description?: string | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -10750,7 +12448,28 @@ export class Seller implements ISeller {
 
     init(_data?: any) {
         if (_data) {
+            this.registrationId = _data["registrationId"];
+            this.logo = _data["logo"];
+            this.deliveryTime = _data["deliveryTime"];
+            this.commissionFee = _data["commissionFee"] ? CommissionFee.fromJS(_data["commissionFee"]) : <any>undefined;
             this.name = _data["name"];
+            (<any>this).outerId = _data["outerId"];
+            if (Array.isArray(_data["addresses"])) {
+                (<any>this).addresses = [] as any;
+                for (let item of _data["addresses"])
+                    (<any>this).addresses!.push(CustomerAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["phones"])) {
+                (<any>this).phones = [] as any;
+                for (let item of _data["phones"])
+                    (<any>this).phones!.push(item);
+            }
+            if (Array.isArray(_data["emails"])) {
+                (<any>this).emails = [] as any;
+                for (let item of _data["emails"])
+                    (<any>this).emails!.push(item);
+            }
+            (<any>this).description = _data["description"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -10768,7 +12487,28 @@ export class Seller implements ISeller {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["registrationId"] = this.registrationId;
+        data["logo"] = this.logo;
+        data["deliveryTime"] = this.deliveryTime;
+        data["commissionFee"] = this.commissionFee ? this.commissionFee.toJSON() : <any>undefined;
         data["name"] = this.name;
+        data["outerId"] = this.outerId;
+        if (Array.isArray(this.addresses)) {
+            data["addresses"] = [];
+            for (let item of this.addresses)
+                data["addresses"].push(item.toJSON());
+        }
+        if (Array.isArray(this.phones)) {
+            data["phones"] = [];
+            for (let item of this.phones)
+                data["phones"].push(item);
+        }
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item);
+        }
+        data["description"] = this.description;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -10779,7 +12519,16 @@ export class Seller implements ISeller {
 }
 
 export interface ISeller {
+    registrationId?: string | undefined;
+    logo?: string | undefined;
+    deliveryTime?: string | undefined;
+    commissionFee?: CommissionFee;
     name?: string | undefined;
+    outerId?: string | undefined;
+    addresses?: CustomerAddress[] | undefined;
+    phones?: string[] | undefined;
+    emails?: string[] | undefined;
+    description?: string | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -10843,7 +12592,7 @@ export class SellerOwnerDetails implements ISellerOwnerDetails {
     firstName?: string | undefined;
     lastName?: string | undefined;
     userName?: string | undefined;
-    email?: string | undefined;
+    email!: string;
 
     constructor(data?: ISellerOwnerDetails) {
         if (data) {
@@ -10884,13 +12633,14 @@ export interface ISellerOwnerDetails {
     firstName?: string | undefined;
     lastName?: string | undefined;
     userName?: string | undefined;
-    email?: string | undefined;
+    email: string;
 }
 
 export class CreateSellerCommand implements ICreateSellerCommand {
     sellerName?: string | undefined;
     ownerDetails?: SellerOwnerDetails;
     categoryIds?: string[] | undefined;
+    commissionFeeId!: string;
 
     constructor(data?: ICreateSellerCommand) {
         if (data) {
@@ -10910,6 +12660,7 @@ export class CreateSellerCommand implements ICreateSellerCommand {
                 for (let item of _data["categoryIds"])
                     this.categoryIds!.push(item);
             }
+            this.commissionFeeId = _data["commissionFeeId"];
         }
     }
 
@@ -10929,6 +12680,7 @@ export class CreateSellerCommand implements ICreateSellerCommand {
             for (let item of this.categoryIds)
                 data["categoryIds"].push(item);
         }
+        data["commissionFeeId"] = this.commissionFeeId;
         return data;
     }
 }
@@ -10937,11 +12689,105 @@ export interface ICreateSellerCommand {
     sellerName?: string | undefined;
     ownerDetails?: SellerOwnerDetails;
     categoryIds?: string[] | undefined;
+    commissionFeeId: string;
+}
+
+export class SellerDetails implements ISellerDetails {
+    registrationId?: string | undefined;
+    logo?: string | undefined;
+    deliveryTime?: string | undefined;
+    name!: string;
+    outerId?: string | undefined;
+    addresses?: CustomerAddress[] | undefined;
+    phones?: string[] | undefined;
+    emails?: string[] | undefined;
+    description?: string | undefined;
+
+    constructor(data?: ISellerDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.registrationId = _data["registrationId"];
+            this.logo = _data["logo"];
+            this.deliveryTime = _data["deliveryTime"];
+            this.name = _data["name"];
+            this.outerId = _data["outerId"];
+            if (Array.isArray(_data["addresses"])) {
+                this.addresses = [] as any;
+                for (let item of _data["addresses"])
+                    this.addresses!.push(CustomerAddress.fromJS(item));
+            }
+            if (Array.isArray(_data["phones"])) {
+                this.phones = [] as any;
+                for (let item of _data["phones"])
+                    this.phones!.push(item);
+            }
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(item);
+            }
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): SellerDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new SellerDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["registrationId"] = this.registrationId;
+        data["logo"] = this.logo;
+        data["deliveryTime"] = this.deliveryTime;
+        data["name"] = this.name;
+        data["outerId"] = this.outerId;
+        if (Array.isArray(this.addresses)) {
+            data["addresses"] = [];
+            for (let item of this.addresses)
+                data["addresses"].push(item.toJSON());
+        }
+        if (Array.isArray(this.phones)) {
+            data["phones"] = [];
+            for (let item of this.phones)
+                data["phones"].push(item);
+        }
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item);
+        }
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface ISellerDetails {
+    registrationId?: string | undefined;
+    logo?: string | undefined;
+    deliveryTime?: string | undefined;
+    name: string;
+    outerId?: string | undefined;
+    addresses?: CustomerAddress[] | undefined;
+    phones?: string[] | undefined;
+    emails?: string[] | undefined;
+    description?: string | undefined;
 }
 
 export class UpdateSellerCommand implements IUpdateSellerCommand {
     sellerId?: string | undefined;
-    sellerName?: string | undefined;
+    sellerDetails?: SellerDetails;
+    commissionFeeId!: string;
 
     constructor(data?: IUpdateSellerCommand) {
         if (data) {
@@ -10955,7 +12801,8 @@ export class UpdateSellerCommand implements IUpdateSellerCommand {
     init(_data?: any) {
         if (_data) {
             this.sellerId = _data["sellerId"];
-            this.sellerName = _data["sellerName"];
+            this.sellerDetails = _data["sellerDetails"] ? SellerDetails.fromJS(_data["sellerDetails"]) : <any>undefined;
+            this.commissionFeeId = _data["commissionFeeId"];
         }
     }
 
@@ -10969,14 +12816,16 @@ export class UpdateSellerCommand implements IUpdateSellerCommand {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["sellerId"] = this.sellerId;
-        data["sellerName"] = this.sellerName;
+        data["sellerDetails"] = this.sellerDetails ? this.sellerDetails.toJSON() : <any>undefined;
+        data["commissionFeeId"] = this.commissionFeeId;
         return data;
     }
 }
 
 export interface IUpdateSellerCommand {
     sellerId?: string | undefined;
-    sellerName?: string | undefined;
+    sellerDetails?: SellerDetails;
+    commissionFeeId: string;
 }
 
 export class SearchSellersQuery implements ISearchSellersQuery {
@@ -11131,8 +12980,8 @@ export class SellerUserDetails implements ISellerUserDetails {
     firstName?: string | undefined;
     lastName?: string | undefined;
     userName?: string | undefined;
-    email?: string | undefined;
-    role?: string | undefined;
+    email!: string;
+    role!: string;
     isLockedOut?: boolean;
 
     constructor(data?: ISellerUserDetails) {
@@ -11178,8 +13027,8 @@ export interface ISellerUserDetails {
     firstName?: string | undefined;
     lastName?: string | undefined;
     userName?: string | undefined;
-    email?: string | undefined;
-    role?: string | undefined;
+    email: string;
+    role: string;
     isLockedOut?: boolean;
 }
 
@@ -11608,7 +13457,7 @@ export interface IForgotPasswordCommand {
 }
 
 export class ApiException extends Error {
-    override message: string;
+    message: string;
     status: number;
     response: string;
     headers: { [key: string]: any; };

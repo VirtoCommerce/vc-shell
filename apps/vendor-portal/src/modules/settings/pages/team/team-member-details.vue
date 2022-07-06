@@ -95,6 +95,7 @@
               v-model="userDetails.role"
               :initialItem="userDetails.role || role"
               keyProperty="id"
+              :clearable="false"
               displayProperty="name"
               :isDisabled="isOwnerReadonly"
             >

@@ -2,7 +2,8 @@
   "SETTINGS": {
     "MENU": {
       "TITLE": "Settings",
-      "MY_TEAM": "My team"
+      "MY_TEAM": "My team",
+      "MY_ORGANIZATION": "My Organization"
     },
     "TEAM": {
       "PAGES": {
@@ -80,6 +81,86 @@
               "BUTTONS": {
                 "OK": "OK"
               }
+            }
+          }
+        }
+      }
+    },
+    "ORGANIZATION": {
+      "TITLE": "My Organization",
+      "TOOLBAR": {
+        "SAVE": "Save",
+        "RESET": "Reset"
+      },
+      "CARDS": {
+        "INFO": {
+          "TITLE": "Basic info",
+          "FORM": {
+            "COMPANY_NAME": {
+              "LABEL": "Company name",
+              "PLACEHOLDER": "Enter company name"
+            },
+            "COMPANY_REG_NUM": {
+              "LABEL": "Company Registration #",
+              "PLACEHOLDER": "Enter registration number"
+            },
+            "COMPANY_OUTER_ID": {
+              "LABEL": "Company Outer Id",
+              "PLACEHOLDER": "Enter outer Id"
+            },
+            "ABOUT": {
+              "LABEL": "About company",
+              "PLACEHOLDER": "Please enter value"
+            },
+            "DELIVERY": {
+              "LABEL": "Average Delivery Time",
+              "PLACEHOLDER": "Please enter value"
+            },
+            "UPLOAD": {
+              "LABEL": "Organization logo",
+              "DESCRIPTION": "Select image with min height 60px and min width 160px of the PNG, JPEG"
+            }
+          }
+        },
+        "ADDRESS": {
+          "TITLE": "Company address",
+          "FORM": {
+            "COUNTRY": {
+              "LABEL": "Country",
+              "PLACEHOLDER": "Select country"
+            },
+            "ZIP": {
+              "LABEL": "Postal/ZIP code",
+              "PLACEHOLDER": "Enter value"
+            },
+            "STATE": {
+              "LABEL": "State/Province",
+              "PLACEHOLDER": "Enter value"
+            },
+            "CITY": {
+              "LABEL": "City",
+              "PLACEHOLDER": "Enter value"
+            },
+            "ADDRESS_1": {
+              "LABEL": "Address line 1",
+              "PLACEHOLDER": "Enter value"
+            },
+            "ADDRESS_2": {
+              "LABEL": "Address line 2",
+              "PLACEHOLDER": "Enter value"
+            },
+            "LONGLAT": {
+              "LABEL": "Latitude & Longtitude",
+              "PLACEHOLDER": "Enter value",
+              "DESCRIPTION": "Enter longitude and latitude with a space"
+            },
+            "PHONE": {
+              "LABEL": "Contact Phone Number",
+              "PLACEHOLDER": "Enter value"
+            },
+            "EMAIL": {
+              "LABEL": "Contact E-mail Address",
+              "PLACEHOLDER": "Enter value"
             }
           }
         }

@@ -51,7 +51,7 @@
           </VcButton>
           <VcButton
             variant="primary"
-            :disabled="loading || !form.isValid"
+            :disabled="loading || !form.currentPassword || !form.isValid"
             @click="changePassword"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.SAVE") }}
@@ -109,7 +109,7 @@ async function changePassword() {
 
 function validate() {
   nextTick(async () => {
-    if (form.password && form.confirmPassword) {
+    if (form.password || form.confirmPassword) {
       form.errors = (await validatePassword(form.password)).errors;
       if (form.confirmPassword !== form.password) {
         form.errors.push({ code: "Repeat-password" });

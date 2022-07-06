@@ -72,7 +72,8 @@
         },
         "FILE_UPLOAD": {
           "TITLE": "File upload",
-          "TITLE_UPLOADED": "Uploaded"
+          "TITLE_UPLOADED": "Uploaded",
+          "IMPORT_RESULTS": "Import results"
         },
         "UPLOAD_STATUS": {
           "TITLE": "Upload status",
@@ -140,12 +141,15 @@
           "NO": "No"
         }
       }
+    },
+    "CSV": {
+      "DELIMITER": "Delimiter"
     }
   },
-  "Vcmp": {
-    "Import": {
-      "Csv": {
-        "Delimiter": "Delimiter"
+  "VCMP": {
+    "IMPORT": {
+      "CSV": {
+        "CREATEDICTIONARYVALUES": "Create dictionary values"
       }
     }
   }

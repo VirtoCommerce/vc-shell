@@ -77,7 +77,7 @@ import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
-import { TeamList } from "../modules/settings";
+import { MyOrganization, TeamList } from "../modules/settings";
 
 const {
   t,
@@ -96,7 +96,7 @@ const {
   markAsReaded,
 } = useNotifications();
 const { checkPermission } = usePermissions();
-const { getUiCustomizationSettings, uiSettings } = useSettings();
+const { getUiCustomizationSettings } = useSettings();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -270,6 +270,10 @@ const menuItems = reactive<IMenuItems[]>([
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
         component: shallowRef(TeamList),
+      },
+      {
+        title: computed(() => t("SETTINGS.MENU.MY_ORGANIZATION")),
+        component: shallowRef(MyOrganization),
       },
     ],
   },

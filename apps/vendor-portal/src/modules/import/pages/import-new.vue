@@ -14,7 +14,11 @@
           <VcRow>
             <VcCard
               :header="
-                uploadedFile && uploadedFile.url
+                importStarted
+                  ? $t(
+                      'IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.IMPORT_RESULTS'
+                    )
+                  : uploadedFile && uploadedFile.url
                   ? $t(
                       'IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED'
                     )
@@ -37,6 +41,7 @@
                     variant="file-upload"
                     @upload="uploadCsv"
                     :notification="true"
+                    accept="*.*"
                     :loading="fileLoading"
                   ></VcFileUpload>
                 </VcRow>

@@ -91,7 +91,7 @@ function onChange(e: InputEvent) {
 
 .vc-checkbox {
   &__label {
-    @apply inline-flex select-none cursor-pointer text-base;
+    @apply inline-flex select-none cursor-pointer text-base items-center;
   }
 
   &__input {

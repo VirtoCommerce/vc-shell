@@ -12447,6 +12447,7 @@ export class Seller implements ISeller {
     registrationId?: string | undefined;
     logo?: string | undefined;
     deliveryTime?: string | undefined;
+    location?: string | undefined;
     commissionFee?: CommissionFee;
     name?: string | undefined;
     readonly outerId?: string | undefined;
@@ -12474,6 +12475,7 @@ export class Seller implements ISeller {
             this.registrationId = _data["registrationId"];
             this.logo = _data["logo"];
             this.deliveryTime = _data["deliveryTime"];
+            this.location = _data["location"];
             this.commissionFee = _data["commissionFee"] ? CommissionFee.fromJS(_data["commissionFee"]) : <any>undefined;
             this.name = _data["name"];
             (<any>this).outerId = _data["outerId"];
@@ -12513,6 +12515,7 @@ export class Seller implements ISeller {
         data["registrationId"] = this.registrationId;
         data["logo"] = this.logo;
         data["deliveryTime"] = this.deliveryTime;
+        data["location"] = this.location;
         data["commissionFee"] = this.commissionFee ? this.commissionFee.toJSON() : <any>undefined;
         data["name"] = this.name;
         data["outerId"] = this.outerId;
@@ -12545,6 +12548,7 @@ export interface ISeller {
     registrationId?: string | undefined;
     logo?: string | undefined;
     deliveryTime?: string | undefined;
+    location?: string | undefined;
     commissionFee?: CommissionFee;
     name?: string | undefined;
     outerId?: string | undefined;
@@ -12719,6 +12723,7 @@ export class SellerDetails implements ISellerDetails {
     registrationId?: string | undefined;
     logo?: string | undefined;
     deliveryTime?: string | undefined;
+    location?: string | undefined;
     name!: string;
     outerId?: string | undefined;
     addresses?: CustomerAddress[] | undefined;
@@ -12740,6 +12745,7 @@ export class SellerDetails implements ISellerDetails {
             this.registrationId = _data["registrationId"];
             this.logo = _data["logo"];
             this.deliveryTime = _data["deliveryTime"];
+            this.location = _data["location"];
             this.name = _data["name"];
             this.outerId = _data["outerId"];
             if (Array.isArray(_data["addresses"])) {
@@ -12773,6 +12779,7 @@ export class SellerDetails implements ISellerDetails {
         data["registrationId"] = this.registrationId;
         data["logo"] = this.logo;
         data["deliveryTime"] = this.deliveryTime;
+        data["location"] = this.location;
         data["name"] = this.name;
         data["outerId"] = this.outerId;
         if (Array.isArray(this.addresses)) {
@@ -12799,6 +12806,7 @@ export interface ISellerDetails {
     registrationId?: string | undefined;
     logo?: string | undefined;
     deliveryTime?: string | undefined;
+    location?: string | undefined;
     name: string;
     outerId?: string | undefined;
     addresses?: CustomerAddress[] | undefined;

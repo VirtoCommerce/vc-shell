@@ -29,17 +29,21 @@
     </div>
     <!-- Nested menu items -->
     <div class="vc-app-menu-item__child" v-if="isOpened">
-      <div
-        :class="[
-          { 'vc-app-menu-item__child-item_active': activeChildItem === nested },
-          'vc-app-menu-item__child-item',
-        ]"
-        v-for="(nested, i) in children"
-        :key="i"
-        @click="$emit('child:click', nested)"
-      >
-        {{ nested.title }}
-      </div>
+      <template v-for="(nested, i) in children">
+        <div
+          :class="[
+            {
+              'vc-app-menu-item__child-item_active': activeChildItem === nested,
+            },
+            'vc-app-menu-item__child-item',
+          ]"
+          v-if="nested.isVisible === undefined || nested.isVisible"
+          :key="i"
+          @click="$emit('child:click', nested)"
+        >
+          {{ nested.title }}
+        </div>
+      </template>
     </div>
   </div>
 </template>

@@ -16,7 +16,7 @@
     <div class="vc-gallery-item__overlay">
       <div class="flex">
         <VcIcon
-          v-if="!readonly"
+          v-if="!readonly && !disableDrag"
           class="vc-gallery-item__move"
           icon="fas fa-arrows-alt"
           size="s"
@@ -29,7 +29,11 @@
         </div>
       </div>
       <div class="flex grow basis-0 items-center justify-around">
-        <div class="vc-gallery-item__button" @click="$emit('preview', image)">
+        <div
+          class="vc-gallery-item__button"
+          @click="$emit('preview', image)"
+          v-if="actions && actions.preview"
+        >
           <VcIcon
             class="vc-gallery-item__button-icon"
             icon="fas fa-eye"
@@ -37,7 +41,7 @@
           <div class="mt-2">Fullscreen</div>
         </div>
         <div
-          v-if="!readonly"
+          v-if="!readonly && actions && actions.edit"
           class="vc-gallery-item__button"
           @click="$emit('edit', image)"
         >
@@ -48,7 +52,7 @@
           <div class="mt-2">Edit</div>
         </div>
         <div
-          v-if="!readonly"
+          v-if="!readonly && actions && actions.remove"
           class="vc-gallery-item__button"
           @click="$emit('remove', image)"
         >
@@ -74,6 +78,16 @@ defineProps({
   },
 
   readonly: {
+    type: Boolean,
+    default: false,
+  },
+
+  actions: {
+    type: Object,
+    default: () => ({}),
+  },
+
+  disableDrag: {
     type: Boolean,
     default: false,
   },

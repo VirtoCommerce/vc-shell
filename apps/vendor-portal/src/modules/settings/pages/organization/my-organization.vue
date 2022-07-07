@@ -4,10 +4,32 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
+    v-loading="loading"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
     <VcContainer>
+      <VcStatus
+        :outline="false"
+        :extend="true"
+        variant="light-danger"
+        class="w-full box-border mb-3"
+        v-if="errorMessage"
+      >
+        <div class="flex flex-row items-center">
+          <VcIcon
+            icon="fas fa-exclamation-circle"
+            class="text-[#ff4a4a] mr-3"
+            size="xxl"
+          ></VcIcon>
+          <div>
+            <div class="font-bold">
+              {{ $t("SETTINGS.ORGANIZATION.CARDS.ERROR") }}
+            </div>
+            <div>{{ errorMessage }}</div>
+          </div>
+        </div>
+      </VcStatus>
       <VcRow>
         <VcCol class="m-2">
           <VcCard :header="$t('SETTINGS.ORGANIZATION.CARDS.INFO.TITLE')">
@@ -20,11 +42,17 @@
                       'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
                     )
                   "
+                  v-model="sellerDetails.name"
                   :clearable="true"
                   :required="true"
                   :placeholder="
                     $t(
                       'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER'
+                    )
+                  "
+                  :name="
+                    $t(
+                      'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
                     )
                   "
                 >
@@ -38,11 +66,17 @@
                           'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
                         )
                       "
+                      v-model="sellerDetails.registrationId"
                       :clearable="true"
                       :required="true"
                       :placeholder="
                         $t(
                           'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER'
+                        )
+                      "
+                      :name="
+                        $t(
+                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
                         )
                       "
                     >
@@ -54,11 +88,17 @@
                           'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
                         )
                       "
+                      v-model="sellerDetails.outerId"
                       :clearable="true"
                       :required="true"
                       :placeholder="
                         $t(
                           'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER'
+                        )
+                      "
+                      :name="
+                        $t(
+                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
                         )
                       "
                     >
@@ -70,10 +110,24 @@
                         $t("SETTINGS.ORGANIZATION.CARDS.INFO.FORM.UPLOAD.LABEL")
                       }}</span>
                     </VcLabel>
-                    <VcFileUpload
-                      variant="file-upload"
-                      class="h-[100px] flex-row"
-                    ></VcFileUpload>
+                    <div class="relative">
+                      <VcLoading :active="fileUploading"></VcLoading>
+                      <VcGallery
+                        class="my-org__gallery -m-2"
+                        :images="logoHandler"
+                        @upload="onLogoUpload"
+                        variant="file-upload"
+                        :multiple="false"
+                        @item:remove="onLogoRemove"
+                        :itemActions="{
+                          preview: true,
+                          edit: false,
+                          remove: true,
+                        }"
+                        :disableDrag="true"
+                      ></VcGallery>
+                    </div>
+
                     <VcHint class="mt-1">{{
                       $t(
                         "SETTINGS.ORGANIZATION.CARDS.INFO.FORM.UPLOAD.DESCRIPTION"
@@ -86,12 +140,16 @@
                   :label="
                     $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.ABOUT.LABEL')
                   "
+                  v-model="sellerDetails.description"
                   :clearable="true"
                   :required="true"
                   :placeholder="
                     $t(
                       'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.ABOUT.PLACEHOLDER'
                     )
+                  "
+                  :name="
+                    $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.ABOUT.LABEL')
                   "
                 >
                 </VcTextarea>
@@ -102,10 +160,14 @@
                   "
                   :clearable="true"
                   :required="true"
+                  v-model="sellerDetails.deliveryTime"
                   :placeholder="
                     $t(
                       'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER'
                     )
+                  "
+                  :name="
+                    $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.DELIVERY.LABEL')
                   "
                 >
                 </VcTextarea>
@@ -126,10 +188,20 @@
                           'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
                         )
                       "
-                      :clearable="true"
+                      :clearable="false"
                       :placeholder="
                         $t(
                           'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER'
+                        )
+                      "
+                      :options="countriesList"
+                      v-model="sellerDetails.addresses[0].countryCode"
+                      keyProperty="id"
+                      displayProperty="name"
+                      @update:modelValue="setCountry"
+                      :name="
+                        $t(
+                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
                         )
                       "
                     ></VcSelect>
@@ -145,6 +217,10 @@
                         $t(
                           'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
                         )
+                      "
+                      v-model="sellerDetails.addresses[0].postalCode"
+                      :name="
+                        $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ZIP.LABEL')
                       "
                     ></VcInput>
                   </VcCol>
@@ -164,6 +240,12 @@
                           'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.STATE.PLACEHOLDER'
                         )
                       "
+                      v-model="sellerDetails.addresses[0].regionName"
+                      :name="
+                        $t(
+                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.STATE.LABEL'
+                        )
+                      "
                     >
                     </VcInput>
                   </VcCol>
@@ -179,6 +261,12 @@
                       :placeholder="
                         $t(
                           'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER'
+                        )
+                      "
+                      v-model="sellerDetails.addresses[0].city"
+                      :name="
+                        $t(
+                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.CITY.LABEL'
                         )
                       "
                     >
@@ -198,6 +286,12 @@
                       'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER'
                     )
                   "
+                  v-model="sellerDetails.addresses[0].line1"
+                  :name="
+                    $t(
+                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
+                    )
+                  "
                 >
                 </VcInput>
                 <VcInput
@@ -213,6 +307,12 @@
                       'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER'
                     )
                   "
+                  v-model="sellerDetails.addresses[0].line2"
+                  :name="
+                    $t(
+                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
+                    )
+                  "
                 >
                 </VcInput>
                 <div class="m-2 mb-2">
@@ -226,6 +326,12 @@
                     :placeholder="
                       $t(
                         'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER'
+                      )
+                    "
+                    v-model="sellerDetails.location"
+                    :name="
+                      $t(
+                        'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
                       )
                     "
                   >
@@ -251,6 +357,11 @@
                         'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER'
                       )
                     "
+                    type="number"
+                    v-model="sellerDetails.phones[0]"
+                    :name="
+                      $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.PHONE.LABEL')
+                    "
                   >
                   </VcInput>
                 </VcCol>
@@ -267,6 +378,11 @@
                         'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER'
                       )
                     "
+                    :name="
+                      $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.EMAIL.LABEL')
+                    "
+                    rules="email"
+                    v-model="sellerDetails.emails[0]"
                   >
                   </VcInput>
                 </VcCol>
@@ -280,16 +396,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, onMounted, ref, computed, unref } from "vue";
+import { UserPermissions, IBladeToolbar } from "../../../../types";
 
 export default defineComponent({
   url: "organization",
+  permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeToolbar } from "../../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useUser } from "@virtoshell/core";
+import useOrganization from "../../composables/useOrganization";
+import { Image } from "@virtoshell/api-client";
+import { useForm } from "@virtoshell/ui";
 
 defineProps({
   expanded: {
@@ -314,25 +434,123 @@ defineProps({
 });
 defineEmits(["page:close", "page:open"]);
 
+const {
+  getCurrentSeller,
+  getCountries,
+  setCountry,
+  updateSeller,
+  resetEntries,
+  sellerDetails,
+  countriesList,
+  modified,
+  loading,
+} = useOrganization();
+const { getAccessToken, user } = useUser();
+const { validate } = useForm({ validateOnMount: false });
+const errorMessage = ref("");
 const { t } = useI18n();
 const title = t("SETTINGS.ORGANIZATION.TITLE");
+const fileUploading = ref(false);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: computed(() => t("SETTINGS.ORGANIZATION.TOOLBAR.SAVE")),
     icon: "fas fa-save",
+    async clickHandler() {
+      const { valid } = await validate();
+
+      if (valid) {
+        try {
+          await updateSeller(sellerDetails.value);
+        } catch (e) {
+          errorMessage.value = e.message;
+        }
+      } else {
+        alert(
+          unref(computed(() => t("SETTINGS.ORGANIZATION.CARDS.NOT_VALID")))
+        );
+      }
+    },
   },
   {
     id: "reset",
     title: computed(() => t("SETTINGS.ORGANIZATION.TOOLBAR.RESET")),
     icon: "fas fa-undo",
+    disabled: computed(() => !modified.value),
+    clickHandler() {
+      resetEntries();
+    },
   },
 ]);
+
+onMounted(async () => {
+  await getCurrentSeller();
+  await getCountries();
+});
+
+const logoHandler = computed(() =>
+  sellerDetails.value.logo
+    ? [{ url: sellerDetails.value.logo, name: user.value.userName }]
+    : []
+);
+
+async function onLogoUpload(files: FileList) {
+  try {
+    fileUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(
+        `/api/assets?folderUrl=/temp/${user.value.userName}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        image.createdDate = new Date();
+        sellerDetails.value.logo = image.url;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    fileUploading.value = false;
+  }
+
+  files = null;
+}
+
+function onLogoRemove() {
+  if (
+    window.confirm(
+      unref(
+        computed(() =>
+          t("SETTINGS.ORGANIZATION.CARDS.ALERTS.DELETE_CONFIRMATION")
+        )
+      )
+    )
+  ) {
+    sellerDetails.value.logo = undefined;
+  }
+}
 
 defineExpose({
   title,
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss">
+.my-org {
+  &__gallery .vc-file-upload {
+    @apply h-[100px];
+  }
+}
+</style>

@@ -123,7 +123,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     const command = new UpdateSellerUserCommand({
       sellerId: details.sellerId,
       sellerUserId: details.id,
-      userDetails: new SellerUserDetails(details),
+      userDetails: new SellerUserDetails(details as ISellerUserDetails),
     });
 
     try {
@@ -171,8 +171,11 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     }
   }
 
-  async function handleUserDetailsItem(user: SellerUser) {
-    userDetails.value = Object.assign({}, new SellerUserDetails(user));
+  async function handleUserDetailsItem(user: ISellerUser) {
+    userDetails.value = Object.assign(
+      {},
+      new SellerUserDetails(user as ISellerUserDetails)
+    );
     userDetailsCopy = _cloneDeep(userDetails.value);
   }
 

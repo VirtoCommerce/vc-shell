@@ -334,8 +334,8 @@ export default (): IUseImport => {
   async function createImportProfile(newProfile: ImportProfile) {
     const client = await getApiClient();
 
-    newProfile.sellerName = user.value.userName;
-    newProfile.sellerId = user.value.id;
+    newProfile.userName = user.value.userName;
+    newProfile.userId = user.value.id;
     const command = new CreateProfileCommand({
       importProfile: new ImportProfile({
         ...newProfile,

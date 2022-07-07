@@ -12,6 +12,7 @@ import {
   regex,
   min_value,
   max_value,
+  numeric,
 } from "@vee-validate/rules";
 
 import "normalize.css";
@@ -65,6 +66,7 @@ export default {
       }
       return true;
     });
+    defineRule("numeric", numeric);
     defineRule("email", email);
     defineRule("min", min);
     defineRule("max", max);

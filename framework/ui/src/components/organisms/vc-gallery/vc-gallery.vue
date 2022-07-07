@@ -13,7 +13,7 @@
       <div class="flex flex-wrap">
         <draggable
           :list="images"
-          class="flex flex-wrap"
+          class="flex flex-wrap w-full"
           item-key="sortOrder"
           tag="transition-group"
           v-bind="dragOptions"
@@ -31,6 +31,8 @@
               @preview="onPreviewClick(index)"
               @edit="$emit('item:edit', $event)"
               @remove="$emit('item:remove', $event)"
+              :actions="itemActions"
+              :disableDrag="disableDrag"
             ></VcGalleryItem>
           </template>
           <template #footer>
@@ -39,7 +41,7 @@
               class="m-2"
               :icon="uploadIcon"
               @upload="onUpload"
-              variant="gallery"
+              :variant="variant"
               :multiple="multiple"
             ></VcFileUpload>
           </template>
@@ -107,6 +109,25 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+
+  variant: {
+    type: String,
+    default: "gallery",
+  },
+
+  itemActions: {
+    type: Object,
+    default: () => ({
+      preview: true,
+      edit: true,
+      remove: true,
+    }),
+  },
+
+  disableDrag: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const emit = defineEmits([
@@ -124,7 +145,7 @@ const dragOptions = computed(() => {
   return {
     animation: 200,
     group: "description",
-    disabled: false,
+    disabled: props.disableDrag,
   };
 });
 

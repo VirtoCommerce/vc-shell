@@ -263,17 +263,26 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("SETTINGS.MENU.TITLE")),
     icon: "fas fa-sliders-h",
     isVisible: computed(() =>
-      checkPermission(UserPermissions.SellerUsersManage)
+      checkPermission([
+        UserPermissions.SellerUsersManage,
+        UserPermissions.SellerDetailsEdit,
+      ])
     ),
     component: shallowRef(),
     children: [
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
         component: shallowRef(TeamList),
+        isVisible: computed(() =>
+          checkPermission(UserPermissions.SellerUsersManage)
+        ),
       },
       {
         title: computed(() => t("SETTINGS.MENU.MY_ORGANIZATION")),
         component: shallowRef(MyOrganization),
+        isVisible: computed(() =>
+          checkPermission(UserPermissions.SellerDetailsEdit)
+        ),
       },
     ],
   },

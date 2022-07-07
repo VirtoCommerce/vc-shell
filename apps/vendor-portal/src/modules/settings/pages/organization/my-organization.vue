@@ -457,6 +457,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "save",
     title: computed(() => t("SETTINGS.ORGANIZATION.TOOLBAR.SAVE")),
     icon: "fas fa-save",
+    disabled: computed(() => !modified.value),
     async clickHandler() {
       const { valid } = await validate();
 
@@ -494,6 +495,18 @@ const logoHandler = computed(() =>
     ? [{ url: sellerDetails.value.logo, name: user.value.userName }]
     : []
 );
+
+async function onBeforeClose() {
+  if (modified.value) {
+    return confirm(
+      unref(
+        computed(() =>
+          t("SETTINGS.ORGANIZATION.CARDS.ALERTS.CLOSE_CONFIRMATION")
+        )
+      )
+    );
+  }
+}
 
 async function onLogoUpload(files: FileList) {
   try {
@@ -544,6 +557,7 @@ function onLogoRemove() {
 
 defineExpose({
   title,
+  onBeforeClose,
 });
 </script>
 

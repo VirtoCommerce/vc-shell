@@ -237,7 +237,7 @@ const props = defineProps({
 });
 const emit = defineEmits(["parent:call", "page:close", "page:open"]);
 const { t } = useI18n();
-const { validate } = useForm({ validateOnMount: false });
+const { validate, errors } = useForm({ validateOnMount: false });
 const {
   modified,
   product: productData,
@@ -252,7 +252,7 @@ const {
 } = useProduct();
 
 const { searchOffers } = useOffers();
-const { getAccessToken, user } = useUser();
+const { getAccessToken } = useUser();
 const { debounce } = useFunctions();
 
 const currentCategory = ref();
@@ -331,9 +331,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        (props.param &&
+        errors.value.length &&
+        ((props.param &&
           (!productData.value?.canBeModified || !modified.value)) ||
-        (!props.param && !modified.value)
+          (!props.param && !modified.value))
     ),
   },
   {

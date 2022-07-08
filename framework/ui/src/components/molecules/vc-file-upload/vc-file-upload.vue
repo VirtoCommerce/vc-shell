@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative h-[155px] box-border border border-dashed border-[#c8dbea] rounded-[6px] p-2 p-4 flex flex-col items-center justify-center"
+    class="vc-file-upload relative h-[155px] box-border border border-dashed border-[#c8dbea] rounded-[6px] p-2 p-4 flex flex-col items-center justify-center"
     :class="`vc-file-upload_${variant}`"
     @drop.stop.prevent="onDrop"
     @drag.stop.prevent

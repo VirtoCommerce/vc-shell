@@ -1,2 +1,3 @@
 import UseTeamMembers from "./useTeamMembers";
-export { UseTeamMembers };
+import UseOrganization from "./useOrganization";
+export { UseTeamMembers, UseOrganization };

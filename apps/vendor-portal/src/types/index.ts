@@ -3,6 +3,7 @@ import { PushNotification } from "@virtoshell/api-client";
 
 enum UserPermissions {
   SellerUsersManage = "seller:users:manage",
+  SellerDetailsEdit = "seller:details:edit",
 }
 
 interface IComponent extends ComponentPublicInstance {

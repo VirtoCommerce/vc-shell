@@ -42,7 +42,6 @@
             :label="
               $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
             "
-            :clearable="true"
             :isRequired="true"
             :tooltip="
               $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')
@@ -53,6 +52,7 @@
             keyProperty="typeName"
             displayProperty="typeName"
             :isSearchable="true"
+            :clearable="false"
             v-model="profileDetails.typeName"
             @update:modelValue="setImporter"
           ></VcSelect>

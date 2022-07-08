@@ -73,6 +73,7 @@
     :label="
       (property.displayNames && property.displayNames[0].name) ||
       property.displayName ||
+      $t(property.name.toUpperCase()) ||
       property.name
     "
     :modelValue="getter(property)"
@@ -188,6 +189,7 @@
     {{
       (property.displayNames && property.displayNames[0].name) ||
       property.displayName ||
+      $t(property.name.toUpperCase()) ||
       property.name
     }}
   </VcCheckbox>

@@ -24,7 +24,7 @@
           ></VcIcon>
           <div>
             <div class="font-bold">
-              {{ $t("SETTINGS.ORGANIZATION.CARDS.ERROR") }}
+              {{ $t("SETTINGS.SELLER_DETAILS.CARDS.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
           </div>
@@ -32,14 +32,14 @@
       </VcStatus>
       <VcRow>
         <VcCol class="m-2">
-          <VcCard :header="$t('SETTINGS.ORGANIZATION.CARDS.INFO.TITLE')">
+          <VcCard :header="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.TITLE')">
             <div class="p-2">
               <VcForm>
                 <VcInput
-                  class="m-2"
+                  class="p-2"
                   :label="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
                     )
                   "
                   v-model="sellerDetails.name"
@@ -47,14 +47,37 @@
                   :required="true"
                   :placeholder="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER'
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER'
                     )
                   "
                   :name="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
                     )
                   "
+                >
+                </VcInput>
+                <VcInput
+                  class="p-2"
+                  :label="
+                    $t(
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL'
+                    )
+                  "
+                  v-model="computedFee"
+                  :clearable="true"
+                  :required="true"
+                  :placeholder="
+                    $t(
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.PLACEHOLDER'
+                    )
+                  "
+                  :name="
+                    $t(
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL'
+                    )
+                  "
+                  :disabled="true"
                 >
                 </VcInput>
                 <VcRow>
@@ -63,20 +86,20 @@
                       class="m-2"
                       :label="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
                         )
                       "
                       v-model="sellerDetails.registrationId"
                       :clearable="true"
-                      :required="true"
+                      :required="false"
                       :placeholder="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER'
+                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER'
                         )
                       "
                       :name="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
                         )
                       "
                     >
@@ -85,20 +108,20 @@
                       class="m-2"
                       :label="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
                         )
                       "
                       v-model="sellerDetails.outerId"
                       :clearable="true"
-                      :required="true"
+                      :required="false"
                       :placeholder="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER'
+                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER'
                         )
                       "
                       :name="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
                         )
                       "
                     >
@@ -107,7 +130,9 @@
                   <VcCol class="m-2">
                     <VcLabel class="mb-2">
                       <span>{{
-                        $t("SETTINGS.ORGANIZATION.CARDS.INFO.FORM.UPLOAD.LABEL")
+                        $t(
+                          "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.LABEL"
+                        )
                       }}</span>
                     </VcLabel>
                     <div class="relative">
@@ -125,12 +150,19 @@
                           remove: true,
                         }"
                         :disableDrag="true"
+                        :hideAfterUpload="logoHandler.length"
+                        rules="maxdimensions:120,120|size:1024"
+                        :name="
+                          $t(
+                            'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.LABEL'
+                          )
+                        "
                       ></VcGallery>
                     </div>
 
-                    <VcHint class="mt-1">{{
+                    <VcHint class="mt-1" v-if="!logoHandler.length">{{
                       $t(
-                        "SETTINGS.ORGANIZATION.CARDS.INFO.FORM.UPLOAD.DESCRIPTION"
+                        "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.DESCRIPTION"
                       )
                     }}</VcHint>
                   </VcCol>
@@ -138,36 +170,36 @@
                 <VcTextarea
                   class="mb-4 mx-2"
                   :label="
-                    $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.ABOUT.LABEL')
+                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL')
                   "
                   v-model="sellerDetails.description"
                   :clearable="true"
-                  :required="true"
+                  :required="false"
                   :placeholder="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.ABOUT.PLACEHOLDER'
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.PLACEHOLDER'
                     )
                   "
                   :name="
-                    $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.ABOUT.LABEL')
+                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL')
                   "
                 >
                 </VcTextarea>
                 <VcTextarea
                   class="mb-4 mx-2"
                   :label="
-                    $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.DELIVERY.LABEL')
+                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')
                   "
                   :clearable="true"
-                  :required="true"
+                  :required="false"
                   v-model="sellerDetails.deliveryTime"
                   :placeholder="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER'
+                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER'
                     )
                   "
                   :name="
-                    $t('SETTINGS.ORGANIZATION.CARDS.INFO.FORM.DELIVERY.LABEL')
+                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')
                   "
                 >
                 </VcTextarea>
@@ -176,7 +208,7 @@
           </VcCard>
         </VcCol>
         <VcCol class="m-2">
-          <VcCard :header="$t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.TITLE')">
+          <VcCard :header="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.TITLE')">
             <VcForm>
               <div class="p-2">
                 <VcRow>
@@ -185,23 +217,28 @@
                       class="m-2"
                       :label="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
                         )
                       "
                       :clearable="false"
                       :placeholder="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER'
                         )
                       "
-                      :options="countriesList"
+                      :options="filteredCountries"
+                      :initialItem="initialCountry"
                       v-model="sellerDetails.addresses[0].countryCode"
+                      :isSearchable="true"
+                      @search="onCountrySearch"
                       keyProperty="id"
                       displayProperty="name"
                       @update:modelValue="setCountry"
+                      :isRequired="true"
+                      @change="getRegions"
                       :name="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
                         )
                       "
                     ></VcSelect>
@@ -210,63 +247,75 @@
                     <VcInput
                       class="m-2"
                       :label="
-                        $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ZIP.LABEL')
+                        $t(
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL'
+                        )
                       "
                       :clearable="true"
+                      :required="true"
                       :placeholder="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
                         )
                       "
                       v-model="sellerDetails.addresses[0].postalCode"
                       :name="
-                        $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ZIP.LABEL')
+                        $t(
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL'
+                        )
                       "
                     ></VcInput>
                   </VcCol>
                 </VcRow>
                 <VcRow>
                   <VcCol>
-                    <VcInput
+                    <VcSelect
                       class="m-2"
                       :label="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.STATE.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL'
                         )
                       "
-                      :clearable="true"
+                      :clearable="false"
                       :placeholder="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.STATE.PLACEHOLDER'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.PLACEHOLDER'
                         )
                       "
-                      v-model="sellerDetails.addresses[0].regionName"
+                      :options="filteredRegions"
+                      :initialItem="initialRegion"
+                      v-model="sellerDetails.addresses[0].regionId"
+                      :isSearchable="true"
+                      @search="onRegionSearch"
+                      keyProperty="id"
+                      displayProperty="name"
+                      @update:modelValue="setRegion"
                       :name="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.STATE.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL'
                         )
                       "
-                    >
-                    </VcInput>
+                    ></VcSelect>
                   </VcCol>
                   <VcCol>
                     <VcInput
                       class="p-2"
                       :label="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.CITY.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL'
                         )
                       "
                       :clearable="true"
+                      :required="true"
                       :placeholder="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER'
                         )
                       "
                       v-model="sellerDetails.addresses[0].city"
                       :name="
                         $t(
-                          'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.CITY.LABEL'
+                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL'
                         )
                       "
                     >
@@ -277,19 +326,20 @@
                   class="p-2"
                   :label="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
+                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
                     )
                   "
                   :clearable="true"
+                  :required="true"
                   :placeholder="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER'
+                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER'
                     )
                   "
                   v-model="sellerDetails.addresses[0].line1"
                   :name="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
+                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
                     )
                   "
                 >
@@ -298,19 +348,20 @@
                   class="p-2"
                   :label="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
+                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
                     )
                   "
                   :clearable="true"
+                  :required="false"
                   :placeholder="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER'
+                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER'
                     )
                   "
                   v-model="sellerDetails.addresses[0].line2"
                   :name="
                     $t(
-                      'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
+                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
                     )
                   "
                 >
@@ -319,26 +370,31 @@
                   <VcInput
                     :label="
                       $t(
-                        'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
                       )
                     "
                     :clearable="true"
+                    :required="false"
                     :placeholder="
                       $t(
-                        'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER'
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER'
                       )
                     "
                     v-model="sellerDetails.location"
+                    :rules="{
+                      regex:
+                        /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/,
+                    }"
                     :name="
                       $t(
-                        'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
                       )
                     "
                   >
                   </VcInput>
                   <VcHint class="mt-1">{{
                     $t(
-                      "SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION"
+                      "SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION"
                     )
                   }}</VcHint>
                 </div>
@@ -346,21 +402,25 @@
               <VcRow class="border-t-[1px] border-t-[#EAEEF2]">
                 <VcCol class="">
                   <VcInput
-                    class="mt-4 mx-4"
+                    class="mt-4 mx-4 my-org__phone"
                     :label="
-                      $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.PHONE.LABEL')
+                      $t(
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL'
+                      )
                     "
                     :clearable="true"
-                    :required="true"
+                    :required="false"
                     :placeholder="
                       $t(
-                        'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER'
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER'
                       )
                     "
                     type="number"
                     v-model="sellerDetails.phones[0]"
                     :name="
-                      $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.PHONE.LABEL')
+                      $t(
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL'
+                      )
                     "
                   >
                   </VcInput>
@@ -369,17 +429,21 @@
                   <VcInput
                     class="mt-4 mx-4"
                     :label="
-                      $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.EMAIL.LABEL')
+                      $t(
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL'
+                      )
                     "
                     :clearable="true"
-                    :required="true"
+                    :required="false"
                     :placeholder="
                       $t(
-                        'SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER'
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER'
                       )
                     "
                     :name="
-                      $t('SETTINGS.ORGANIZATION.CARDS.ADDRESS.FORM.EMAIL.LABEL')
+                      $t(
+                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL'
+                      )
                     "
                     rules="email"
                     v-model="sellerDetails.emails[0]"
@@ -396,20 +460,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, unref } from "vue";
+import { defineComponent, onMounted, ref, computed, unref, watch } from "vue";
 import { UserPermissions, IBladeToolbar } from "../../../../types";
 
 export default defineComponent({
-  url: "organization",
+  url: "seller-details-edit",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
 
 <script lang="ts" setup>
 import { useI18n, useUser } from "@virtoshell/core";
-import useOrganization from "../../composables/useOrganization";
+import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "@virtoshell/api-client";
 import { useForm } from "@virtoshell/ui";
+import { defineRule } from "vee-validate";
 
 defineProps({
   expanded: {
@@ -440,22 +505,52 @@ const {
   setCountry,
   updateSeller,
   resetEntries,
+  getRegions,
+  setRegion,
   sellerDetails,
   countriesList,
+  regionsList,
   modified,
   loading,
-} = useOrganization();
+} = useSellerDetails();
 const { getAccessToken, user } = useUser();
 const { validate } = useForm({ validateOnMount: false });
 const errorMessage = ref("");
 const { t } = useI18n();
-const title = t("SETTINGS.ORGANIZATION.TITLE");
+const title = t("SETTINGS.SELLER_DETAILS.TITLE");
 const fileUploading = ref(false);
+const filteredCountries = ref([]);
+const filteredRegions = ref([]);
+const initialCountry = computed(() =>
+  countriesList.value.find(
+    (x) => x.id === sellerDetails.value.addresses[0].countryCode
+  )
+);
+const initialRegion = computed(() =>
+  regionsList.value.find(
+    (x) => x.id === sellerDetails.value.addresses[0].regionId
+  )
+);
+const computedFee = computed(() => sellerDetails.value.commissionFee?.fee);
+
+watch(
+  () => countriesList.value,
+  () => {
+    filteredCountries.value = countriesList.value;
+  }
+);
+
+watch(
+  () => regionsList.value,
+  () => {
+    filteredRegions.value = regionsList.value;
+  }
+);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    title: computed(() => t("SETTINGS.ORGANIZATION.TOOLBAR.SAVE")),
+    title: computed(() => t("SETTINGS.SELLER_DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     disabled: computed(() => !modified.value),
     async clickHandler() {
@@ -469,14 +564,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         }
       } else {
         alert(
-          unref(computed(() => t("SETTINGS.ORGANIZATION.CARDS.NOT_VALID")))
+          unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.NOT_VALID")))
         );
       }
     },
   },
   {
     id: "reset",
-    title: computed(() => t("SETTINGS.ORGANIZATION.TOOLBAR.RESET")),
+    title: computed(() => t("SETTINGS.SELLER_DETAILS.TOOLBAR.RESET")),
     icon: "fas fa-undo",
     disabled: computed(() => !modified.value),
     clickHandler() {
@@ -488,6 +583,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 onMounted(async () => {
   await getCurrentSeller();
   await getCountries();
+
+  if (sellerDetails.value?.addresses[0]?.countryCode) {
+    await getRegions(sellerDetails.value?.addresses[0]?.countryCode);
+  }
 });
 
 const logoHandler = computed(() =>
@@ -501,7 +600,7 @@ async function onBeforeClose() {
     return confirm(
       unref(
         computed(() =>
-          t("SETTINGS.ORGANIZATION.CARDS.ALERTS.CLOSE_CONFIRMATION")
+          t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.CLOSE_CONFIRMATION")
         )
       )
     );
@@ -516,7 +615,7 @@ async function onLogoUpload(files: FileList) {
       formData.append("file", files[i]);
       const authToken = await getAccessToken();
       const result = await fetch(
-        `/api/assets?folderUrl=/temp/${user.value.userName}`,
+        `/api/assets?folderUrl=/seller_logos/${user.value.userName}`,
         {
           method: "POST",
           body: formData,
@@ -546,7 +645,7 @@ function onLogoRemove() {
     window.confirm(
       unref(
         computed(() =>
-          t("SETTINGS.ORGANIZATION.CARDS.ALERTS.DELETE_CONFIRMATION")
+          t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.DELETE_CONFIRMATION")
         )
       )
     )
@@ -554,6 +653,18 @@ function onLogoRemove() {
     sellerDetails.value.logo = undefined;
   }
 }
+
+const onCountrySearch = (e: string) => {
+  filteredCountries.value = countriesList.value.filter((x) =>
+    x.name.toLowerCase().includes(e.toLowerCase())
+  );
+};
+
+const onRegionSearch = (e: string) => {
+  filteredRegions.value = regionsList.value.filter((x) =>
+    x.name.toLowerCase().includes(e.toLowerCase())
+  );
+};
 
 defineExpose({
   title,
@@ -565,6 +676,18 @@ defineExpose({
 .my-org {
   &__gallery .vc-file-upload {
     @apply h-[100px];
+  }
+
+  &__phone {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
   }
 }
 </style>

@@ -3,7 +3,7 @@
     "MENU": {
       "TITLE": "Settings",
       "MY_TEAM": "My Team",
-      "MY_ORGANIZATION": "My Organization"
+      "SELLER_DETAILS": "Seller Details"
     },
     "TEAM": {
       "PAGES": {
@@ -86,8 +86,8 @@
         }
       }
     },
-    "ORGANIZATION": {
-      "TITLE": "My Organization",
+    "SELLER_DETAILS": {
+      "TITLE": "Seller Details",
       "TOOLBAR": {
         "SAVE": "Save",
         "RESET": "Reset"
@@ -99,6 +99,10 @@
             "COMPANY_NAME": {
               "LABEL": "Company name",
               "PLACEHOLDER": "Enter company name"
+            },
+            "COMMISSION": {
+              "LABEL": "Commission fee",
+              "PLACEHOLDER": "Select commission fee"
             },
             "COMPANY_REG_NUM": {
               "LABEL": "Company Registration #",

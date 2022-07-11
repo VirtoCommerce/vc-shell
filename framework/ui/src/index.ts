@@ -90,6 +90,88 @@ export default {
 
       return true;
     });
+    defineRule(
+      "maxdimensions",
+      (
+        images: HTMLInputElement,
+        [width, height]: [string | number, string | number]
+      ) => {
+        // The field is empty so it should pass
+        if (!images?.files || !images.files?.length) {
+          return true;
+        }
+
+        const validateImage = (
+          file: File,
+          width: string | number,
+          height: string | number
+        ) => {
+          const URL = window.URL || window.webkitURL;
+          return new Promise((resolve) => {
+            const image = new Image();
+            image.onerror = () => resolve(false);
+            image.onload = () => {
+              const isValid =
+                image.width >= Number(width) && image.height >= Number(height);
+              if (isValid) {
+                resolve(true);
+              } else {
+                resolve(
+                  `Image dimensions must be greater than ${height}*${width}`
+                );
+              }
+            };
+
+            image.src = URL.createObjectURL(file);
+          });
+        };
+        const list = [];
+        const fileList = images.files;
+        for (let i = 0; i < fileList.length; i++) {
+          if (!/\.(jpg|svg|jpeg|png|bmp|gif)$/i.test(fileList[i].name)) {
+            return Promise.resolve("Not image file");
+          }
+
+          list.push(fileList[i]);
+        }
+        return Promise.all(
+          list.map((file) => validateImage(file, width, height))
+        ).then((res) => {
+          const isInvalid = res.find((x) => x !== true);
+          if (isInvalid === false || typeof isInvalid === "string") {
+            return isInvalid;
+          } else {
+            return true;
+          }
+        });
+      }
+    );
+
+    defineRule("size", (file: HTMLInputElement, [size]: [number]) => {
+      if (!file?.files || !file.files?.length) {
+        return true;
+      }
+
+      const maxSize = size * 1000;
+
+      const fileSizeChecker = (file: File) => {
+        return file.size > maxSize;
+      };
+
+      const list = [];
+      for (let i = 0; i < file.files.length; i++) {
+        list.push(file.files[i]);
+      }
+
+      const checker = list.map((x) => fileSizeChecker(x));
+
+      const isInvalid = checker.find((x) => x === true);
+      if (isInvalid) {
+        return `File size must be maximum ${size} kb`;
+      } else {
+        return true;
+      }
+    });
   },
 };
 

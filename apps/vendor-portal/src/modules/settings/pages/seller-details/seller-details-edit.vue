@@ -554,6 +554,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-save",
     disabled: computed(() => !modified.value),
     async clickHandler() {
+      errorMessage.value = undefined;
       const { valid } = await validate();
 
       if (valid) {

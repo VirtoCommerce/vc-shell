@@ -115,7 +115,6 @@ export default (): IUseSellerDetails => {
   async function getCountries() {
     const token = await getAccessToken();
     if (token) {
-      // TODO temporary workaround to get push notifications without base type
       try {
         const result = await fetch("/api/platform/common/countries", {
           method: "GET",
@@ -138,7 +137,6 @@ export default (): IUseSellerDetails => {
   async function getRegions(countryId: string) {
     const token = await getAccessToken();
     if (token) {
-      // TODO temporary workaround to get push notifications without base type
       try {
         const result = await fetch(
           `api/platform/common/countries/${countryId}/regions`,

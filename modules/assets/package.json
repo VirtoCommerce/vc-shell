@@ -1,8 +1,9 @@
 {
   "name": "@virtoshell/mod-assets",
+  "private": true,
   "version": "1.0.12",
   "scripts": {
-    "build": "vite build "
+    "build": "vite build"
   },
   "main": "./dist/mod-assets.cjs.js",
   "types": "./dist/index.d.ts",

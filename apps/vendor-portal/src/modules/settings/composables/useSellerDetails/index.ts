@@ -10,37 +10,42 @@ import {
 } from "../../../../api_client";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
-interface ICountry {
+interface ILocation {
   id: string;
   name: string;
 }
 
-interface IUseOrganization {
-  readonly countriesList: Ref<ICountry[]>;
+interface IUseSellerDetails {
+  readonly countriesList: Ref<ILocation[]>;
+  readonly regionsList: Ref<ILocation[]>;
   readonly modified: Ref<boolean>;
   readonly loading: Ref<boolean>;
   sellerDetails: Ref<ISeller>;
   getCurrentSeller: () => void;
   updateSeller: (seller: ISeller) => void;
   getCountries: () => void;
-  setCountry: (country: ICountry) => void;
+  setCountry: (country: string) => void;
   resetEntries: () => void;
+  getRegions: (countryId: string) => void;
+  setRegion: (regionId: string) => void;
 }
 
-export default (): IUseOrganization => {
-  const loading = ref(false);
+export default (): IUseSellerDetails => {
   const logger = useLogger();
+  const { getAccessToken } = useUser();
   const sellerDetails = ref(
     new SellerDetails({
       name: undefined,
-      phones: [undefined],
-      emails: [undefined],
+      phones: [],
+      emails: [],
       addresses: [new CustomerAddress()],
     })
   );
   let sellerDetailsCopy: ISellerDetails;
-  const countriesList = ref([]);
+  const countriesList = ref<ILocation[]>([]);
+  const regionsList = ref<ILocation[]>([]);
   const modified = ref(false);
+  const loading = ref(false);
 
   watch(
     () => sellerDetails,
@@ -52,7 +57,6 @@ export default (): IUseOrganization => {
   );
 
   async function getApiClient() {
-    const { getAccessToken } = useUser();
     const client = new VcmpSellerSecurityClient();
     client.setAuthToken(await getAccessToken());
     return client;
@@ -66,8 +70,8 @@ export default (): IUseOrganization => {
       const seller = (await client.getCurrentSeller()) as SellerDetails;
       sellerDetails.value = new SellerDetails({
         ...seller,
-        phones: [undefined],
-        emails: [undefined],
+        phones: [],
+        emails: [],
         addresses: [
           new CustomerAddress(
             seller.addresses && seller.addresses.length && seller.addresses[0]
@@ -98,20 +102,19 @@ export default (): IUseOrganization => {
 
     try {
       loading.value = true;
+      modified.value = false;
       await client.updateSeller(command);
     } catch (e) {
       logger.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
   }
 
   async function getCountries() {
-    const { getAccessToken } = useUser();
-
     const token = await getAccessToken();
     if (token) {
-      // TODO temporary workaround to get push notifications without base type
       try {
         const result = await fetch("/api/platform/common/countries", {
           method: "GET",
@@ -131,16 +134,41 @@ export default (): IUseOrganization => {
     }
   }
 
-  function setCountry(country: ICountry) {
-    const countryInfo = countriesList.value.find((x) => x.id === country);
-    const test = new CustomerAddress({
-      countryCode: countryInfo.id,
-      countryName: countryInfo.name,
-    });
+  async function getRegions(countryId: string) {
+    const token = await getAccessToken();
+    if (token) {
+      try {
+        const result = await fetch(
+          `api/platform/common/countries/${countryId}/regions`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json-patch+json",
+              Accept: "application/json",
+              authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    sellerDetails.value.addresses = [test];
+        result.text().then((response) => {
+          regionsList.value = JSON.parse(response);
+        });
+      } catch (e) {
+        logger.error(e);
+      }
+    }
+  }
 
-    console.log(test);
+  function setCountry(countryId: string) {
+    const countryInfo = countriesList.value.find((x) => x.id === countryId);
+    sellerDetails.value.addresses[0].countryCode = countryInfo.id;
+    sellerDetails.value.addresses[0].countryName = countryInfo.name;
+  }
+
+  function setRegion(regionId: string) {
+    const regionInfo = regionsList.value.find((x) => x.id === regionId);
+    sellerDetails.value.addresses[0].regionId = regionInfo.id;
+    sellerDetails.value.addresses[0].regionName = regionInfo.name;
   }
 
   async function resetEntries() {
@@ -152,13 +180,16 @@ export default (): IUseOrganization => {
 
   return {
     countriesList: computed(() => countriesList.value),
+    regionsList: computed(() => regionsList.value),
     modified: computed(() => modified.value),
     loading: computed(() => loading.value),
     sellerDetails,
     getCurrentSeller,
     updateSeller,
     getCountries,
+    getRegions,
     setCountry,
+    setRegion,
     resetEntries,
   };
 };

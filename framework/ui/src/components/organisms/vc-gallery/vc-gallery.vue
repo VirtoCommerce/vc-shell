@@ -37,12 +37,14 @@
           </template>
           <template #footer>
             <VcFileUpload
-              v-if="!disabled"
+              v-if="!disabled && !hideAfterUpload"
               class="m-2"
               :icon="uploadIcon"
               @upload="onUpload"
               :variant="variant"
               :multiple="multiple"
+              :rules="rules"
+              :name="name"
             ></VcFileUpload>
           </template>
         </draggable>
@@ -127,6 +129,20 @@ const props = defineProps({
   disableDrag: {
     type: Boolean,
     default: false,
+  },
+
+  hideAfterUpload: {
+    type: Boolean,
+    default: false,
+  },
+
+  rules: {
+    type: [String, Object],
+  },
+
+  name: {
+    type: String,
+    default: "Gallery",
   },
 });
 

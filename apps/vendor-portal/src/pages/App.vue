@@ -77,7 +77,7 @@ import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
-import { MyOrganization, TeamList } from "../modules/settings";
+import { SellerDetails, TeamList } from "../modules/settings";
 
 const {
   t,
@@ -278,8 +278,8 @@ const menuItems = reactive<IMenuItems[]>([
         ),
       },
       {
-        title: computed(() => t("SETTINGS.MENU.MY_ORGANIZATION")),
-        component: shallowRef(MyOrganization),
+        title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
+        component: shallowRef(SellerDetails),
         isVisible: computed(() =>
           checkPermission(UserPermissions.SellerDetailsEdit)
         ),

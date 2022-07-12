@@ -417,6 +417,7 @@ const openDashboard = async () => {
   // Close all opened pages with onBeforeClose callback
   await onClosePage(0);
   activeMenuItem.value = props.menuItems[0];
+  activeChildMenuItem.value = props.menuItems[0];
 };
 
 const openWorkspace = async (page: IPage) => {

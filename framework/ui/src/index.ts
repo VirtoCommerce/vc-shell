@@ -4,16 +4,7 @@ import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import draggable from "vuedraggable/src/vuedraggable";
-import { defineRule, useForm as _useForm } from "vee-validate";
-import {
-  email,
-  min,
-  max,
-  regex,
-  min_value,
-  max_value,
-  numeric,
-} from "@vee-validate/rules";
+import { useForm as _useForm } from "./config/validation";
 
 import "normalize.css";
 import "./styles/index.less";
@@ -53,43 +44,6 @@ export default {
     app.provide("isMobile", app.config.globalProperties.$isMobile);
     app.provide("isDesktop", app.config.globalProperties.$isDesktop);
     app.provide("pages", app.config.globalProperties.pages);
-
-    // Define global validation rules
-    defineRule("required", (value: string | boolean) => {
-      if (
-        value === null ||
-        value === undefined ||
-        value === false ||
-        value === ""
-      ) {
-        return "This field is required";
-      }
-      return true;
-    });
-    defineRule("numeric", numeric);
-    defineRule("email", email);
-    defineRule("min", min);
-    defineRule("max", max);
-    defineRule("regex", regex);
-    defineRule("min_value", min_value);
-    defineRule("max_value", max_value);
-    defineRule("after", (value: string, [target]: string[]) => {
-      // The field is empty so it should pass
-      if (!value || !value.length) {
-        return true;
-      }
-
-      const first_date = new Date(value);
-      const second_date = new Date(target);
-
-      if (first_date.getTime() > 0 && second_date.getTime() > 0) {
-        if (second_date.getTime() > first_date.getTime()) {
-          return "End date must be later than start date";
-        }
-      }
-
-      return true;
-    });
   },
 };
 

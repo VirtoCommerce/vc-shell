@@ -1,6 +1,5 @@
 {
   "name": "@virtoshell/mod-assets",
-  "private": true,
   "version": "1.0.12",
   "scripts": {
     "build": "vite build"
@@ -22,5 +21,9 @@
     "@virtoshell/core": "^1.0.12",
     "@virtoshell/ui": "^1.0.12",
     "vue": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

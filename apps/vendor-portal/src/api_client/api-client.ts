@@ -9,17 +9,17 @@
 // ReSharper disable InconsistentNaming
 
 export class AuthApiBase {
-    authToken = "";
-    protected constructor() { }
+  authToken = "";
+  protected constructor() {}
 
-    setAuthToken(token: string) {
-        this.authToken = token;
-    }
+  setAuthToken(token: string) {
+    this.authToken = token;
+  }
 
-    protected transformOptions(options: any): Promise<any> {
-        options.headers['authorization'] = `Bearer ${this.authToken}`;
-        return Promise.resolve(options);
-    }
+  protected transformOptions(options: any): Promise<any> {
+    options.headers['authorization'] =  `Bearer ${this.authToken}`;
+    return Promise.resolve(options);
+  }
 }
 
 export class VcmpCommonClient extends AuthApiBase {
@@ -59,14 +59,14 @@ export class VcmpCommonClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = MarketplaceOptions.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = MarketplaceOptions.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<MarketplaceOptions>(null as any);
@@ -110,22 +110,22 @@ export class VcmpFeeClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = DynamicCommissionFee.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DynamicCommissionFee.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<DynamicCommissionFee>(null as any);
@@ -160,29 +160,29 @@ export class VcmpFeeClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CommissionFee.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommissionFee.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CommissionFee>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createFee(body: CreateFeeCommand | undefined): Promise<CommissionFee> {
@@ -212,29 +212,29 @@ export class VcmpFeeClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CommissionFee.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommissionFee.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CommissionFee>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateFee(body: UpdateFeeCommand | undefined): Promise<CommissionFee> {
@@ -264,29 +264,29 @@ export class VcmpFeeClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CommissionFee.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CommissionFee.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CommissionFee>(null as any);
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteFee(ids: string[] | null | undefined): Promise<void> {
@@ -313,26 +313,26 @@ export class VcmpFeeClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchFee(body: SearchCommissionFeesQuery | undefined): Promise<SearchCommissionFeesResult> {
@@ -362,22 +362,22 @@ export class VcmpFeeClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchCommissionFeesResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchCommissionFeesResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchCommissionFeesResult>(null as any);
@@ -396,7 +396,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     massChangeProductsStatus(status: string | null, body: SearchProductsQuery | undefined): Promise<void> {
@@ -428,26 +428,26 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changeProductStatus(body: ChangeRequestStatusCommand | undefined): Promise<void> {
@@ -476,26 +476,26 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchCategories(body: SearchCategoriesQuery | undefined): Promise<CategorySearchResult> {
@@ -525,21 +525,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CategorySearchResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CategorySearchResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CategorySearchResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateProduct(body: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
@@ -569,28 +569,28 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(ValidationFailure.fromJS(item));
-                }
-                else {
-                    result200 = <any>null;
-                }
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ValidationFailure.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ValidationFailure[]>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createSellerCategories(body: CreateSellerCategoriesCommand | undefined): Promise<void> {
@@ -619,26 +619,26 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     deleteSellerCategories(body: DeleteSellerCategoriesCommand | undefined): Promise<void> {
@@ -667,26 +667,26 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     exportSellerCategories(body: RunCategoriesExportCommand | undefined): Promise<void> {
@@ -715,18 +715,18 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchProducts(body: SearchProductsQuery | undefined): Promise<SearchProductsResult> {
@@ -756,21 +756,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchProductsResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchProductsResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchProductsResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchPropertyDictionaryItems(body: PropertyDictionaryItemSearchCriteria | undefined): Promise<PropertyDictionaryItemSearchResult> {
@@ -800,14 +800,14 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = PropertyDictionaryItemSearchResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PropertyDictionaryItemSearchResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<PropertyDictionaryItemSearchResult>(null as any);
@@ -842,21 +842,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SellerProduct.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SellerProduct.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SellerProduct>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createNewProduct(body: CreateNewProductCommand | undefined): Promise<SellerProduct> {
@@ -886,21 +886,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SellerProduct.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SellerProduct.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SellerProduct>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateProductDetails(body: UpdateProductDetailsCommand | undefined): Promise<SellerProduct> {
@@ -930,21 +930,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SellerProduct.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SellerProduct.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SellerProduct>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createNewPublicationRequest(body: CreateNewPublicationRequestCommand | undefined): Promise<ProductPublicationRequest> {
@@ -974,14 +974,14 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ProductPublicationRequest.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProductPublicationRequest.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ProductPublicationRequest>(null as any);
@@ -1016,21 +1016,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ProductPublicationRequest.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProductPublicationRequest.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ProductPublicationRequest>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOffers(body: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
@@ -1060,14 +1060,14 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchOffersResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchOffersResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchOffersResult>(null as any);
@@ -1102,21 +1102,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = Offer.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Offer.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<Offer>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOfferProducts(body: SearchProductsForNewOfferQuery | undefined): Promise<SearchOfferProductsResult> {
@@ -1146,21 +1146,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchOfferProductsResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchOfferProductsResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchOfferProductsResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createNewOffer(body: CreateNewOfferCommand | undefined): Promise<Offer> {
@@ -1190,21 +1190,21 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = Offer.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Offer.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<Offer>(null as any);
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteOffers(ids: string[] | null | undefined): Promise<void> {
@@ -1231,11 +1231,11 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
@@ -1254,7 +1254,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     runImport(body: RunImportCommand | undefined): Promise<ImportPushNotification> {
@@ -1284,21 +1284,21 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ImportPushNotification.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ImportPushNotification.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ImportPushNotification>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     cancelJob(body: ImportCancellationRequest | undefined): Promise<void> {
@@ -1327,26 +1327,26 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     preview(body: PreviewDataQuery | undefined): Promise<ImportDataPreview> {
@@ -1376,22 +1376,22 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ImportDataPreview.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ImportDataPreview.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ImportDataPreview>(null as any);
@@ -1423,29 +1423,29 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(IDataImporter.fromJS(item));
-                }
-                else {
-                    result200 = <any>null;
-                }
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(IDataImporter.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<IDataImporter[]>(null as any);
@@ -1480,21 +1480,21 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ImportProfile.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ImportProfile.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ImportProfile>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createImportProfile(body: CreateProfileCommand | undefined): Promise<ImportProfile> {
@@ -1524,21 +1524,21 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ImportProfile.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ImportProfile.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ImportProfile>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateImportProfile(body: UpdateProfileCommand | undefined): Promise<ImportProfile> {
@@ -1568,21 +1568,21 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = ImportProfile.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ImportProfile.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ImportProfile>(null as any);
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     deleteProfile(id: string | null | undefined): Promise<void> {
@@ -1609,18 +1609,18 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchImportProfiles(body: SearchImportProfilesQuery | undefined): Promise<SearchImportProfilesResult> {
@@ -1650,21 +1650,21 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchImportProfilesResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchImportProfilesResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchImportProfilesResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchImportProfilesHistory(body: SearchImportProfilesHistoryQuery | undefined): Promise<SearchImportProfilesHistoryResult> {
@@ -1694,14 +1694,14 @@ export class VcmpSellerImportClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchImportProfilesHistoryResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchImportProfilesHistoryResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchImportProfilesHistoryResult>(null as any);
@@ -1720,7 +1720,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOrders(body: SearchOrdersQuery | undefined): Promise<CustomerOrderSearchResult> {
@@ -1750,21 +1750,21 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = CustomerOrderSearchResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CustomerOrderSearchResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<CustomerOrderSearchResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateOrderStatus(body: ChangeOrderStatusCommand | undefined): Promise<void> {
@@ -1793,18 +1793,18 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     fulfill(body: FulfillOrderCommand | undefined): Promise<void> {
@@ -1833,11 +1833,11 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 204) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
@@ -1856,7 +1856,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param memberId (optional) 
+     * @param memberId (optional)
      * @return Success
      */
     sendInvitation(memberId: string | null | undefined): Promise<void> {
@@ -1883,18 +1883,18 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     sendUserInvitation(body: SendSellerUserInvitationCommand | undefined): Promise<void> {
@@ -1923,18 +1923,18 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateSeller(body: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
@@ -1964,29 +1964,29 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(ValidationFailure.fromJS(item));
-                }
-                else {
-                    result200 = <any>null;
-                }
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ValidationFailure.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ValidationFailure[]>(null as any);
@@ -2018,21 +2018,21 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = Seller.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Seller.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<Seller>(null as any);
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteSellers(ids: string[] | null | undefined): Promise<void> {
@@ -2059,19 +2059,19 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
@@ -2106,21 +2106,21 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = Seller.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Seller.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<Seller>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createSeller(body: CreateSellerCommand | undefined): Promise<void> {
@@ -2149,26 +2149,26 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateSeller(body: UpdateSellerCommand | undefined): Promise<void> {
@@ -2197,18 +2197,18 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchSellers(body: SearchSellersQuery | undefined): Promise<SearchSellersResult> {
@@ -2238,29 +2238,29 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchSellersResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchSellersResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status === 401) {
             return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
+            return throwException("Unauthorized", status, _responseText, _headers);
             });
         } else if (status === 403) {
             return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
+            return throwException("Forbidden", status, _responseText, _headers);
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchSellersResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createSellerUser(body: CreateSellerUserCommand | undefined): Promise<SellerUser> {
@@ -2290,21 +2290,21 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SellerUser.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SellerUser.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SellerUser>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateUser(body: ValidateSellerUserQuery | undefined): Promise<ValidationFailure[]> {
@@ -2334,28 +2334,28 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(ValidationFailure.fromJS(item));
-                }
-                else {
-                    result200 = <any>null;
-                }
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ValidationFailure.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<ValidationFailure[]>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateSellerUser(body: UpdateSellerUserCommand | undefined): Promise<SellerUser> {
@@ -2385,21 +2385,21 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SellerUser.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SellerUser.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SellerUser>(null as any);
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteSellerUsers(ids: string[] | null | undefined): Promise<void> {
@@ -2426,18 +2426,18 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchSellerUsers(body: SearchSellerUsersQuery | undefined): Promise<SearchSellerUsersResult> {
@@ -2467,21 +2467,21 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = SearchSellerUsersResult.fromJS(resultData200);
-                return result200;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchSellerUsersResult.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<SearchSellerUsersResult>(null as any);
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     forgotPassword(body: ForgotPasswordCommand | undefined): Promise<void> {
@@ -2510,11 +2510,11 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-                return;
+            return;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
         return Promise.resolve<void>(null as any);
@@ -3078,11 +3078,15 @@ export class SearchCommissionFeesQuery implements ISearchCommissionFeesQuery {
     type?: TypeCommissionFee;
     isDefault?: boolean | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -3170,11 +3174,15 @@ export interface ISearchCommissionFeesQuery {
     type?: TypeCommissionFee;
     isDefault?: boolean | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -3242,11 +3250,15 @@ export class SearchProductsQuery implements ISearchProductsQuery {
     isPublished?: boolean | undefined;
     outerIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -3382,11 +3394,15 @@ export interface ISearchProductsQuery {
     isPublished?: boolean | undefined;
     outerIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -3463,11 +3479,15 @@ export class SearchCategoriesQuery implements ISearchCategoriesQuery {
     sellerName?: string | undefined;
     sellerId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -3558,11 +3578,15 @@ export interface ISearchCategoriesQuery {
     sellerName?: string | undefined;
     sellerId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -6265,11 +6289,15 @@ export class CategorySearchCriteria implements ICategorySearchCriteria {
     categoryId?: string | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -6375,11 +6403,15 @@ export interface ICategorySearchCriteria {
     categoryId?: string | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -6796,11 +6828,15 @@ export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionary
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -6905,11 +6941,15 @@ export interface IPropertyDictionaryItemSearchCriteria {
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -7292,11 +7332,15 @@ export class SearchOffersQuery implements ISearchOffersQuery {
     outerIds?: string[] | undefined;
     productId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -7401,11 +7445,15 @@ export interface ISearchOffersQuery {
     outerIds?: string[] | undefined;
     productId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -7661,11 +7709,15 @@ export class SearchProductsForNewOfferQuery implements ISearchProductsForNewOffe
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -7753,11 +7805,15 @@ export interface ISearchProductsForNewOfferQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -8054,18 +8110,29 @@ export enum SettingValueType {
 
 export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
+    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
+    /** Flag indicates the this setting is read only and can't be changed */
     isReadOnly?: string | undefined;
     value?: any | undefined;
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
+    displayName?: string | undefined;
+    isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: IObjectSettingEntry) {
@@ -8088,6 +8155,8 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
             this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isRequired = _data["isRequired"];
             this.isHidden = _data["isHidden"];
             this.valueType = _data["valueType"];
             if (Array.isArray(_data["allowedValues"])) {
@@ -8118,6 +8187,8 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
         data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isRequired"] = this.isRequired;
         data["isHidden"] = this.isHidden;
         data["valueType"] = this.valueType;
         if (Array.isArray(this.allowedValues)) {
@@ -8133,18 +8204,29 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
 
 export interface IObjectSettingEntry {
     itHasValues?: boolean;
+    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
+    /** Flag indicates the this setting is read only and can't be changed */
     isReadOnly?: string | undefined;
     value?: any | undefined;
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
+    displayName?: string | undefined;
+    isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 
@@ -8532,15 +8614,25 @@ export interface IImportDataPreview {
     errors?: string[] | undefined;
 }
 
+/** Represent setting meta description */
 export class SettingDescriptor implements ISettingDescriptor {
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
+    displayName?: string | undefined;
+    isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: ISettingDescriptor) {
@@ -8558,6 +8650,8 @@ export class SettingDescriptor implements ISettingDescriptor {
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
             this.name = _data["name"];
+            this.displayName = _data["displayName"];
+            this.isRequired = _data["isRequired"];
             this.isHidden = _data["isHidden"];
             this.valueType = _data["valueType"];
             if (Array.isArray(_data["allowedValues"])) {
@@ -8583,6 +8677,8 @@ export class SettingDescriptor implements ISettingDescriptor {
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
         data["name"] = this.name;
+        data["displayName"] = this.displayName;
+        data["isRequired"] = this.isRequired;
         data["isHidden"] = this.isHidden;
         data["valueType"] = this.valueType;
         if (Array.isArray(this.allowedValues)) {
@@ -8596,15 +8692,25 @@ export class SettingDescriptor implements ISettingDescriptor {
     }
 }
 
+/** Represent setting meta description */
 export interface ISettingDescriptor {
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
+    displayName?: string | undefined;
+    isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 
@@ -8642,7 +8748,7 @@ export class IDataImporter implements IIDataImporter {
     readonly typeName?: string | undefined;
     readonly metadata?: { [key: string]: string; } | undefined;
     availSettings?: SettingDescriptor[] | undefined;
-    authorizationReqirement?: IAuthorizationRequirement;
+    authorizationRequirement?: IAuthorizationRequirement;
 
     constructor(data?: IIDataImporter) {
         if (data) {
@@ -8668,7 +8774,7 @@ export class IDataImporter implements IIDataImporter {
                 for (let item of _data["availSettings"])
                     this.availSettings!.push(SettingDescriptor.fromJS(item));
             }
-            this.authorizationReqirement = _data["authorizationReqirement"] ? IAuthorizationRequirement.fromJS(_data["authorizationReqirement"]) : <any>undefined;
+            this.authorizationRequirement = _data["authorizationRequirement"] ? IAuthorizationRequirement.fromJS(_data["authorizationRequirement"]) : <any>undefined;
         }
     }
 
@@ -8694,7 +8800,7 @@ export class IDataImporter implements IIDataImporter {
             for (let item of this.availSettings)
                 data["availSettings"].push(item.toJSON());
         }
-        data["authorizationReqirement"] = this.authorizationReqirement ? this.authorizationReqirement.toJSON() : <any>undefined;
+        data["authorizationRequirement"] = this.authorizationRequirement ? this.authorizationRequirement.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -8703,7 +8809,7 @@ export interface IIDataImporter {
     typeName?: string | undefined;
     metadata?: { [key: string]: string; } | undefined;
     availSettings?: SettingDescriptor[] | undefined;
-    authorizationReqirement?: IAuthorizationRequirement;
+    authorizationRequirement?: IAuthorizationRequirement;
 }
 
 export class CreateProfileCommand implements ICreateProfileCommand {
@@ -8803,11 +8909,15 @@ export class SearchImportProfilesQuery implements ISearchImportProfilesQuery {
     sellerName?: string | undefined;
     name?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -8898,11 +9008,15 @@ export interface ISearchImportProfilesQuery {
     sellerName?: string | undefined;
     name?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -8964,11 +9078,15 @@ export class SearchImportProfilesHistoryQuery implements ISearchImportProfilesHi
     profileId?: string | undefined;
     jobId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -9062,11 +9180,15 @@ export interface ISearchImportProfilesHistoryQuery {
     profileId?: string | undefined;
     jobId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -9270,11 +9392,15 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -9470,11 +9596,15 @@ export interface ISearchOrdersQuery {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -9661,7 +9791,7 @@ export enum PaymentMethodGroupType {
 
 export class PaymentMethod implements IPaymentMethod {
     code?: string | undefined;
-    readonly name?: string | undefined;
+    name?: string | undefined;
     logoUrl?: string | undefined;
     isActive?: boolean;
     priority?: number;
@@ -9674,6 +9804,7 @@ export class PaymentMethod implements IPaymentMethod {
     discountAmount?: number;
     readonly discountAmountWithTax?: number;
     storeId?: string | undefined;
+    description?: string | undefined;
     readonly typeName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     taxType?: string | undefined;
@@ -9696,7 +9827,7 @@ export class PaymentMethod implements IPaymentMethod {
     init(_data?: any) {
         if (_data) {
             this.code = _data["code"];
-            (<any>this).name = _data["name"];
+            this.name = _data["name"];
             this.logoUrl = _data["logoUrl"];
             this.isActive = _data["isActive"];
             this.priority = _data["priority"];
@@ -9709,6 +9840,7 @@ export class PaymentMethod implements IPaymentMethod {
             this.discountAmount = _data["discountAmount"];
             (<any>this).discountAmountWithTax = _data["discountAmountWithTax"];
             this.storeId = _data["storeId"];
+            this.description = _data["description"];
             (<any>this).typeName = _data["typeName"];
             if (Array.isArray(_data["settings"])) {
                 this.settings = [] as any;
@@ -9752,6 +9884,7 @@ export class PaymentMethod implements IPaymentMethod {
         data["discountAmount"] = this.discountAmount;
         data["discountAmountWithTax"] = this.discountAmountWithTax;
         data["storeId"] = this.storeId;
+        data["description"] = this.description;
         data["typeName"] = this.typeName;
         if (Array.isArray(this.settings)) {
             data["settings"] = [];
@@ -9788,6 +9921,7 @@ export interface IPaymentMethod {
     discountAmount?: number;
     discountAmountWithTax?: number;
     storeId?: string | undefined;
+    description?: string | undefined;
     typeName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     taxType?: string | undefined;
@@ -9821,6 +9955,7 @@ export class ProcessPaymentRequestResult implements IProcessPaymentRequestResult
     isSuccess?: boolean;
     errorMessage?: string | undefined;
     newPaymentStatus?: PaymentStatus;
+    publicParameters?: { [key: string]: string; } | undefined;
 
     constructor(data?: IProcessPaymentRequestResult) {
         if (data) {
@@ -9840,6 +9975,13 @@ export class ProcessPaymentRequestResult implements IProcessPaymentRequestResult
             this.isSuccess = _data["isSuccess"];
             this.errorMessage = _data["errorMessage"];
             this.newPaymentStatus = _data["newPaymentStatus"];
+            if (_data["publicParameters"]) {
+                this.publicParameters = {} as any;
+                for (let key in _data["publicParameters"]) {
+                    if (_data["publicParameters"].hasOwnProperty(key))
+                        (<any>this.publicParameters)![key] = _data["publicParameters"][key];
+                }
+            }
         }
     }
 
@@ -9859,6 +10001,13 @@ export class ProcessPaymentRequestResult implements IProcessPaymentRequestResult
         data["isSuccess"] = this.isSuccess;
         data["errorMessage"] = this.errorMessage;
         data["newPaymentStatus"] = this.newPaymentStatus;
+        if (this.publicParameters) {
+            data["publicParameters"] = {};
+            for (let key in this.publicParameters) {
+                if (this.publicParameters.hasOwnProperty(key))
+                    (<any>data["publicParameters"])[key] = (<any>this.publicParameters)[key];
+            }
+        }
         return data;
     }
 }
@@ -9871,6 +10020,7 @@ export interface IProcessPaymentRequestResult {
     isSuccess?: boolean;
     errorMessage?: string | undefined;
     newPaymentStatus?: PaymentStatus;
+    publicParameters?: { [key: string]: string; } | undefined;
 }
 
 export class FeeDetail implements IFeeDetail {
@@ -9998,7 +10148,7 @@ export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+    /** The type of payment interaction.The payment can be Capture or CheckReceived.
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -10090,7 +10240,7 @@ export interface IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+    /** The type of payment interaction.The payment can be Capture or CheckReceived.
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -10105,12 +10255,12 @@ The value also includes customer payment interactions such as Website, Call, Sto
 
 export class IOperation implements IIOperation {
     operationType?: string | undefined;
-    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
+    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 
@@ -10126,12 +10276,12 @@ export class IOperation implements IIOperation {
     init(_data?: any) {
         if (_data) {
             this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
             this.number = _data["number"];
             this.isApproved = _data["isApproved"];
             this.status = _data["status"];
             this.comment = _data["comment"];
             this.currency = _data["currency"];
+            this.parentOperationId = _data["parentOperationId"];
             if (Array.isArray(_data["childrenOperations"])) {
                 this.childrenOperations = [] as any;
                 for (let item of _data["childrenOperations"])
@@ -10151,12 +10301,12 @@ export class IOperation implements IIOperation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
         data["number"] = this.number;
         data["isApproved"] = this.isApproved;
         data["status"] = this.status;
         data["comment"] = this.comment;
         data["currency"] = this.currency;
+        data["parentOperationId"] = this.parentOperationId;
         if (Array.isArray(this.childrenOperations)) {
             data["childrenOperations"] = [];
             for (let item of this.childrenOperations)
@@ -10169,12 +10319,12 @@ export class IOperation implements IIOperation {
 
 export interface IIOperation {
     operationType?: string | undefined;
-    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
+    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 }
@@ -10262,6 +10412,7 @@ export interface IDynamicPropertyObjectValue {
 }
 
 export class DynamicPropertyName implements IDynamicPropertyName {
+    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 
@@ -10297,6 +10448,7 @@ export class DynamicPropertyName implements IDynamicPropertyName {
 }
 
 export interface IDynamicPropertyName {
+    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 }
@@ -10305,14 +10457,19 @@ export class DynamicObjectProperty implements IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
+    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
+    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
+    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
+    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
     valueType?: DynamicPropertyValueType;
+    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -10401,14 +10558,19 @@ export interface IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
+    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
+    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
+    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
+    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
     valueType?: DynamicPropertyValueType;
+    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -11677,7 +11839,7 @@ export class CustomerOrder implements ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account. 
+Therefore, the discount will not be taking tax into account.
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -12053,7 +12215,7 @@ export interface ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account. 
+Therefore, the discount will not be taking tax into account.
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -12861,11 +13023,15 @@ export interface IUpdateSellerCommand {
 
 export class SearchSellersQuery implements ISearchSellersQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -12947,11 +13113,15 @@ export class SearchSellersQuery implements ISearchSellersQuery {
 
 export interface ISearchSellersQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -13299,11 +13469,15 @@ export class SearchSellerUsersQuery implements ISearchSellerUsersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -13391,11 +13565,15 @@ export interface ISearchSellerUsersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;

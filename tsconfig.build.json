@@ -4,7 +4,6 @@
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "strict": true,
     "importHelpers": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,
@@ -15,6 +14,22 @@
     "target": "esnext",
     "jsx": "preserve",
     "isolatedModules": true,
-    "useDefineForClassFields": true
-  }
+    "useDefineForClassFields": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": false,
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": ["vite/client"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

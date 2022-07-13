@@ -1,0 +1,13 @@
+{
+  "artifactKey": "ghcr.io/virtocommerce/platform-demo-manager",
+  "deployRepo": "vc-deploy-marketplace",
+  "cmPath": "marketplace-app/resources/kustomization.yaml",
+  "dev": {
+    "deployAppName": "marketplace-app-dev",
+    "deployBranch": "dev",
+    "environmentId": "dev",
+    "environmentName": "Development",
+    "environmentType": "development",
+    "environmentUrl": "https://vendor-portal.dev.govirto.com/"
+  }
+}

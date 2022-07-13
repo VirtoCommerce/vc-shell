@@ -4,39 +4,19 @@
     "baseUrl": ".",
     "rootDir": ".",
     "resolveJsonModule": true,
-    "paths": {
-      "@virtoshell/api-client": [
-        "framework/api-client/src"
-      ],
-      "@virtoshell/core": [
-        "framework/core/src"
-      ],
-      "@virtoshell/ui": [
-        "framework/ui/src"
-      ],
-      "@virtoshell/mod-assets": [
-        "modules/assets/src"
-      ],
-      "@virtoshell/config-generator": [
-        "cli/config/src"
-      ]
-    }
+    "strict": false,
+    "lib": [
+      "esnext",
+      "dom"
+    ]
   },
-  "references": [
-    {
-      "path": "framework/api-client/"
-    },
-    {
-      "path": "framework/core/"
-    },
-    {
-      "path": "framework/ui/"
-    },
-    {
-      "path": "modules/assets/"
-    },
-    {
-      "path": "cli/config/"
-    }
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.json",
+    "src/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }

@@ -35,5 +35,10 @@
     "vue3-ace-editor": "^2.2.2",
     "vue3-touch-events": "^4.1.0",
     "vuedraggable": "^4.1.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
 }

@@ -20,5 +20,10 @@
     "vue-i18n": "^9.1.7",
     "vue-logger-plugin": "^2.1.2",
     "vue-router": "4"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
 }

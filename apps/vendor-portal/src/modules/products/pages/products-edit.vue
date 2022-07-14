@@ -58,6 +58,7 @@
                 v-model="productDetails.categoryId"
                 :isRequired="true"
                 :isSearchable="true"
+                :clearable="false"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
@@ -135,7 +136,7 @@
                   ></VcTextarea>
 
                   <VcDynamicProperty
-                    v-for="property in noCategoryProps"
+                    v-for="property in filteredProps"
                     :key="property.id"
                     :property="property"
                     :optionsGetter="loadDictionaries"
@@ -149,7 +150,7 @@
               </VcCard>
 
               <VcCard
-                v-if="param"
+                v-if="productDetails.categoryId"
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
                 class="my-3 relative"
                 is-collapsable
@@ -262,8 +263,10 @@ const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
 
-const noCategoryProps = computed(() =>
-  productDetails.properties.filter((x) => x.type !== "Category")
+const filterTypes = ["Category", "Variation"];
+
+const filteredProps = computed(() =>
+  productDetails.properties.filter((x) => !filterTypes.includes(x.type))
 );
 
 const reload = async (fullReload: boolean) => {

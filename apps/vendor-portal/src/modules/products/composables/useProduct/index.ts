@@ -49,7 +49,11 @@ export default (): IUseProduct => {
       images: [],
     } as CatalogProduct,
   });
-  const productDetails = reactive<IProductDetails>({});
+  const productDetails = reactive<IProductDetails>(
+    new ProductDetails({
+      images: [],
+    })
+  );
   let productDetailsCopy: IProductDetails;
   const loading = ref(false);
   const modified = ref(false);

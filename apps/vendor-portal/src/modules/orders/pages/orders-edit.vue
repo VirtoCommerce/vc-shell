@@ -47,6 +47,13 @@
                   "
                 />
                 <VcInfoRow
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.COMMISSIONS_TOTAL')"
+                  :value="
+                    order.feeTotal &&
+                    order.feeTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TOTAL')"
                   :value="
                     order.total && order.total.toFixed(2) + ' ' + order.currency
@@ -98,6 +105,30 @@
                     >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
                     {{ itemData.item.sku }}</VcHint
                   >
+                </div>
+              </template>
+
+              <template v-slot:item_fee="itemData">
+                <div
+                  class="flex flex-col"
+                  v-if="itemData.item.feeDetails.length"
+                >
+                  <div>{{ itemData.item.feeDetails[0].description }}</div>
+                  <div>
+                    <span>{{
+                      Math.trunc(Number(itemData.item.feeDetails[0].amount))
+                    }}</span
+                    ><span class="text-[#a5a5a5] text-xs"
+                      >.{{
+                        `${
+                          (Number(itemData.item.feeDetails[0].amount) * 100) %
+                          100
+                        }`
+                          .padEnd(2, "0")
+                          .slice(0, 2)
+                      }}</span
+                    >
+                  </div>
                 </div>
               </template>
 
@@ -323,7 +354,7 @@ const columns: ITableColumns[] = [
     id: "imageUrl",
     title: "Pic",
     width: 60,
-    class: "vc-padding-right_none",
+    class: "pr-0",
     type: "image",
   },
   {
@@ -347,6 +378,11 @@ const columns: ITableColumns[] = [
     title: "Total",
     width: 120,
     type: "money",
+  },
+  {
+    id: "fee",
+    title: "Commission",
+    width: 120,
   },
 ];
 </script>

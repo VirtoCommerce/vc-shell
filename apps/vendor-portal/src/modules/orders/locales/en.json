@@ -63,6 +63,7 @@
           "STORE_TOOLTIP": "Shows store where order was placed",
           "ORDER_STATUS": "Order status",
           "SUBTOTAL": "Subtotal",
+          "COMMISSIONS_TOTAL": "Commissions total",
           "DISCOUNT_TOTAL": "Discount total",
           "TOTAL": "Total"
         },

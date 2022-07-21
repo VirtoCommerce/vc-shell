@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "$(APP_PLATFORM_URL)/docs/VirtoCommerce.$(APP_PLATFORM_MODULE)/swagger.json",
+      "url": "$(APP_PLATFORM_URL)docs/VirtoCommerce.$(APP_PLATFORM_MODULE)/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }

@@ -12,6 +12,11 @@ export class AuthApiBase {
   authToken = "";
   protected constructor() {}
 
+  // Enforce always return empty string as baseUrl
+  getBaseUrl(defaultUrl: string, baseUrl: string) {
+    return "";
+  }
+
   setAuthToken(token: string) {
     this.authToken = token;
   }
@@ -30,7 +35,7 @@ export class OrderModuleClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -983,7 +988,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -1255,7 +1260,7 @@ export class OrderModuleShipmentsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**

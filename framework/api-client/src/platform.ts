@@ -12,6 +12,11 @@ export class AuthApiBase {
   authToken = "";
   protected constructor() {}
 
+  // Enforce always return empty string as baseUrl
+  getBaseUrl(defaultUrl: string, baseUrl: string) {
+    return "";
+  }
+
   setAuthToken(token: string) {
     this.authToken = token;
   }
@@ -30,7 +35,7 @@ export class AuthorizationClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -94,7 +99,7 @@ export class ExternalSignInClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -217,7 +222,7 @@ export class ChangeLogClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -570,7 +575,7 @@ export class DiagnosticsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -676,7 +681,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -1146,7 +1151,7 @@ export class JobsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -1210,7 +1215,7 @@ export class ModulesClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -1687,7 +1692,7 @@ export class OAuthAppsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -1896,7 +1901,7 @@ export class PushNotificationClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -2009,7 +2014,7 @@ export class SecurityClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**
@@ -3761,7 +3766,7 @@ export class SettingClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+        this.baseUrl = this.getBaseUrl("", baseUrl);
     }
 
     /**

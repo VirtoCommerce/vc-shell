@@ -3,6 +3,11 @@ export class AuthApiBase {
   authToken = "";
   protected constructor() {}
 
+  // Enforce always return empty string as baseUrl
+  getBaseUrl(defaultUrl: string, baseUrl: string) {
+    return "";
+  }
+
   setAuthToken(token: string) {
     this.authToken = token;
   }

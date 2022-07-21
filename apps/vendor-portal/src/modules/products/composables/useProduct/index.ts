@@ -18,7 +18,7 @@ import {
   CreateNewPublicationRequestCommand,
   PropertyDictionaryItemSearchCriteria,
   PropertyDictionaryItem,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
   product: Ref<ISellerProduct>;

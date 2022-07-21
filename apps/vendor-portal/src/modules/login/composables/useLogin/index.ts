@@ -1,7 +1,7 @@
 import {
   VcmpSellerSecurityClient,
   ForgotPasswordCommand,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 
 interface IUseLogin {
   forgotPassword: (args: { loginOrEmail: string }) => void;

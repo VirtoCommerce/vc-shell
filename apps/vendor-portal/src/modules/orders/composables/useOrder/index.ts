@@ -4,7 +4,7 @@ import {
   OrderModuleClient,
   CustomerOrder,
   AddressType,
-} from "../../../../api_client/orders-api-client";
+} from "../../../../api_client/orders";
 
 import { IShippingInfo } from "../../../../types";
 

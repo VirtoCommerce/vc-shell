@@ -25,7 +25,7 @@ async function generateApiClient(): Promise<void> {
   for (const platformModule of platformModules) {
     const apiClientPath = resolve(
       apiClientDirectory,
-      `${platformModule.toLowerCase()}-${process.env.APP_API_CLIENT_NAME}`
+      `${platformModule.toLowerCase()}.ts`
     );
 
     spawn(

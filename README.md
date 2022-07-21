@@ -39,6 +39,13 @@ $ yarn build-framework:core
 $ yarn build-framework:api-client
 $ yarn build-apps:vendor-portal
 
+# generate all api clients
+yarn generate-api-client
+
+# or one by one
+yarn generate-api-client:api-client
+yarn generate-api-client:vendor-portal
+
 # start Vendor Portal with hot reload at localhost:8080
 $ yarn serve-apps:vendor-portal
 

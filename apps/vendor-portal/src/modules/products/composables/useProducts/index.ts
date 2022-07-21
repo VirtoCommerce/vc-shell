@@ -8,7 +8,7 @@ import {
   SearchProductsQuery,
   SearchProductsResult,
   SellerProductStatus,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 
 type SellerProductStatusApproveExcluded = {
   [key in Exclude<SellerProductStatus, SellerProductStatus.Approved>]?: string;

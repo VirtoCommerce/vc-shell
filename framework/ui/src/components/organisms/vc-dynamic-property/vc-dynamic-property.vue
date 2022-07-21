@@ -224,7 +224,7 @@ const handleDisplayProperty = computed(() => {
 const handleDisplayName = computed(() => {
   let localized: string;
   const isLocaleExists = props.property.displayNames?.find((x: IDisplayName) =>
-    x.languageCode.toLowerCase().startsWith(locale.value.toLowerCase())
+    x.languageCode.toLowerCase().startsWith(locale.value?.toLowerCase())
   );
   if (isLocaleExists && isLocaleExists.name) {
     localized = isLocaleExists.name;

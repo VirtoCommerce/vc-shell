@@ -106,7 +106,7 @@
           </VcRow>
         </div>
         <!-- Skipped details table -->
-        <VcCol class="p-3" v-if="importStarted">
+        <VcCol class="p-3" v-if="importStarted && reversedErrors.length">
           <VcCard
             class="import-new__skipped"
             :fill="true"
@@ -123,21 +123,6 @@
               :footer="false"
               :items="reversedErrors"
             >
-              <template v-slot:empty>
-                <VcCol class="items-center justify-center">
-                  <VcIcon
-                    icon="far fa-check-circle"
-                    class="text-[59px] text-[#87b563]"
-                  ></VcIcon>
-                  <div class="text-[#87b563] mt-4">
-                    {{
-                      $t(
-                        "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.NO_ERRORS"
-                      )
-                    }}
-                  </div>
-                </VcCol>
-              </template>
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
                 <div class="flex flex-col">

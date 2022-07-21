@@ -18,6 +18,7 @@ import {
   CreateNewPublicationRequestCommand,
   PropertyDictionaryItemSearchCriteria,
   PropertyDictionaryItem,
+  CategorySearchResult,
 } from "../../../../api_client";
 
 interface IUseProduct {
@@ -25,7 +26,11 @@ interface IUseProduct {
   productDetails: IProductDetails;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
-  fetchCategories: (keyword?: string, skip?: number) => Promise<ICategory[]>;
+  fetchCategories: (
+    keyword?: string,
+    skip?: number,
+    ids?: string[]
+  ) => Promise<CategorySearchResult>;
   loadProduct: (args: { id: string }) => void;
   createProduct: (details: IProductDetails) => void;
   updateProductDetails: (
@@ -91,15 +96,17 @@ export default (): IUseProduct => {
 
   async function fetchCategories(
     keyword?: string,
-    skip = 0
-  ): Promise<ICategory[]> {
+    skip = 0,
+    ids?: string[]
+  ): Promise<CategorySearchResult> {
     const client = await getApiClient();
     const result = await client.searchCategories({
+      objectIds: ids,
       keyword,
       skip,
-      take: 20,
+      take: 2,
     } as CategoryIndexedSearchCriteria);
-    return result.results;
+    return result;
   }
 
   async function loadProduct(args: { id: string }) {

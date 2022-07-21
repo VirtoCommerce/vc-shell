@@ -17,6 +17,7 @@
       :style="{
         transform: dist ? `translate3d(0, ${dist}px, 0)` : '',
       }"
+      @scroll="onScroll"
     >
       <div
         class="vc-container__overscroll"
@@ -160,6 +161,13 @@ function ease(distance: number) {
     }
   }
   return Math.round(distance);
+}
+
+function onScroll() {
+  let element = component.value as HTMLElement;
+  if (element.scrollTop + element.clientHeight === element.scrollHeight) {
+    nextTick(() => emit("scroll:infinite"));
+  }
 }
 </script>
 

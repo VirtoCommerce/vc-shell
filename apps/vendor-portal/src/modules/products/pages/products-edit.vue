@@ -52,6 +52,7 @@
                 name="name"
                 :disabled="readonly"
               ></VcInput>
+              <VcSelectNew> </VcSelectNew>
               <VcSelect
                 class="mb-4"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
@@ -68,10 +69,12 @@
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
-                @close="onCategoriesSearch"
+                @close="onSelectClose"
                 @update:modelValue="setCategory"
                 :is-disabled="readonly"
                 name="category"
+                :onInfiniteScroll="onLoadMore"
+                :optionsTotal="categoriesTotal"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -258,10 +261,12 @@ const { debounce } = useFunctions();
 
 const currentCategory = ref();
 const offersCount = ref(0);
-const categories = ref<ICategory[]>();
+const categories = ref<ICategory[]>([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
+const categoriesTotal = ref();
+const category = ref<ICategory>();
 
 const filterTypes = ["Category", "Variation"];
 
@@ -275,8 +280,16 @@ const reload = async (fullReload: boolean) => {
       productLoading.value = true;
       if (props.param) {
         await loadProduct({ id: props.param });
+        const fetchedCategory = await fetchCategories(undefined, 0, [
+          product.value.categoryId,
+        ]);
+        if (fetchedCategory.results && fetchedCategory.results.length) {
+          category.value = fetchedCategory.results[0];
+        }
       }
-      categories.value = await fetchCategories();
+      const searchResult = await fetchCategories();
+      categories.value = searchResult.results;
+      categoriesTotal.value = searchResult.totalCount;
       if (productDetails?.categoryId) {
         currentCategory.value = categories.value?.find(
           (x) => x.id === productDetails.categoryId
@@ -419,9 +432,9 @@ const statusText = computed(() => {
   return null;
 });
 
-const category = computed(() =>
-  categories.value?.find((x) => x.id === productDetails.categoryId)
-);
+// const category = computed(() =>
+//   // categories.value?.find((x) => x.id === productDetails.categoryId)
+// );
 
 const product = computed(() =>
   props.param ? productData.value : productDetails
@@ -533,8 +546,26 @@ async function loadDictionaries(
 }
 
 const onCategoriesSearch = debounce(async (value: string) => {
-  categories.value = await fetchCategories(value);
+  const searchResult = await fetchCategories(value);
+  categories.value = searchResult.results;
 }, 500);
+
+const onSelectClose = async () => {
+  const searchResult = await fetchCategories();
+  categories.value = searchResult.results;
+  if (
+    currentCategory.value &&
+    !categories.value.some((x) => x.id === currentCategory.value.id)
+  ) {
+    categories.value.push(currentCategory.value);
+  }
+};
+
+async function onLoadMore() {
+  const data = await fetchCategories(undefined, 20);
+  categories.value.push(...data.results);
+}
+
 async function openOffers() {
   if (!isOffersOpened) {
     emit("page:open", {

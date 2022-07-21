@@ -60,7 +60,11 @@
             @input="onSearch"
           />
 
-          <VcContainer :no-padding="true">
+          <VcContainer
+            :no-padding="true"
+            @scroll:infinite="onScroll"
+            v-loading="loading"
+          >
             <div
               class="flex items-center min-h-[36px] px-2 rounded-[3px] cursor-pointer hover:bg-[#eff7fc]"
               v-for="(item, i) in options"
@@ -165,6 +169,16 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+
+  optionsTotal: {
+    type: Number,
+    default: 0,
+  },
+
+  onInfiniteScroll: {
+    type: Function,
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "change", "close", "search"]);
@@ -176,6 +190,7 @@ const popper = ref<Instance>();
 const dropdownToggleRef = ref();
 const dropdownRef = ref();
 const inputFieldWrapRef = ref();
+const loading = ref(false);
 
 const selectedItem = computed(
   () =>
@@ -324,6 +339,24 @@ function onSearch(event: InputEvent) {
 // Handle input event to propertly reset value and emit changes
 function onReset() {
   emit("update:modelValue", "");
+}
+
+async function onScroll() {
+  if (
+    props.optionsTotal !== props.options?.length &&
+    props.onInfiniteScroll &&
+    typeof props.onInfiniteScroll === "function"
+  ) {
+    loading.value = true;
+
+    try {
+      await props.onInfiniteScroll();
+    } catch (e) {
+      console.log(e);
+    } finally {
+      loading.value = false;
+    }
+  }
 }
 </script>
 

@@ -39,7 +39,7 @@ $ yarn build-framework:core
 $ yarn build-framework:api-client
 $ yarn build-apps:vendor-portal
 
-# generate all api clients
+# generate all api clients (require .NET Core 6 on Mac OS or Linux)
 yarn generate-api-client
 
 # or one by one

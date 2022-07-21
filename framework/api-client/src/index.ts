@@ -1,1 +1,1 @@
-export * from "./api-client";
+export * from "./platform-api-client";

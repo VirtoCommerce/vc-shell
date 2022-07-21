@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
-    "build": "cross-env APP_ENV=production vite build"
+    "build": "cross-env APP_ENV=production vite build",
+    "generate-api-client": "api-client-generator"
   },
   "devDependencies": {
     "less": "^3.0.4",
@@ -15,7 +16,7 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^1.0.12",
+    "@virtoshell/api-client-generator": "^1.0.0",
     "@virtoshell/config-generator": "^1.0.12",
     "@virtoshell/core": "^1.0.12",
     "@virtoshell/mod-assets": "^1.0.12",

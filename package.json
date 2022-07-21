@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/root",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local && lerna link --force-local",

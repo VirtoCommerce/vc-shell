@@ -1,43 +1,56 @@
 #!/usr/bin/env node
+import { default as chalk } from "chalk";
+import { spawnSync } from "child_process";
 import { resolveConfig } from "vite";
-import { spawn } from "child_process";
-import { resolve } from "path";
+import { Paths } from "./paths/paths";
 
 async function generateApiClient(): Promise<void> {
   await resolveConfig({}, "build");
+
+  const paths = new Paths();
 
   const platformUrl = process.env.APP_PLATFORM_URL;
   const platformModules = JSON.parse(
     process.env.APP_PLATFORM_MODULES
   ) as string[];
 
-  const generatorDirectory = resolve(__dirname, "..");
-  const assetsDirectory = resolve(generatorDirectory, "public", "assets");
-  const configurationPath = resolve(assetsDirectory, "config.nswag");
-  const authApiBasePath = resolve(assetsDirectory, "authApiBase.ts");
-
-  const workingDirectory = process.cwd();
-  const apiClientDirectory = resolve(
-    workingDirectory,
-    process.env.APP_API_CLIENT_DIRECTORY
-  );
-
   for (const platformModule of platformModules) {
-    const apiClientPath = resolve(
-      apiClientDirectory,
-      `${platformModule.toLowerCase()}.ts`
+    const apiClientPaths = paths.resolveApiClientPaths(platformModule);
+
+    console.log(
+      "api-client-generator %s Generating API client for %s environment and %s module",
+      chalk.green("info"),
+      chalk.whiteBright(platformUrl),
+      chalk.whiteBright(platformModule)
     );
 
-    spawn(
+    const nswag = spawnSync(
       "nswag",
       [
         "run",
-        configurationPath,
-        `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${authApiBasePath},APP_API_CLIENT_PATH=${apiClientPath}`,
+        paths.nswagPaths.configuration,
+        `/variables:APP_PLATFORM_URL=${platformUrl},APP_PLATFORM_MODULE=${platformModule},APP_AUTH_API_BASE_PATH=${paths.nswagPaths.authApiBase},APP_API_CLIENT_PATH=${apiClientPaths.nswag}`,
         "/runtime:Net60",
       ],
-      { stdio: "inherit", shell: true }
+      {
+        stdio: "inherit",
+        shell: true,
+      }
     );
+
+    if (nswag.status === 0) {
+      console.log(
+        "api-client-generator %s Successfully generated %s",
+        chalk.greenBright("success"),
+        chalk.whiteBright(apiClientPaths.console)
+      );
+    } else {
+      console.error(
+        "api-client-generator %s Failed to generate %s",
+        chalk.red("error"),
+        chalk.whiteBright(apiClientPaths.console)
+      );
+    }
   }
 }
 

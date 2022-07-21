@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "vite build",
-    "generate-api-client": "api-client-generator"
+    "generate-api-client": "api-client-generator --color"
   },
   "author": "",
   "license": "ISC",

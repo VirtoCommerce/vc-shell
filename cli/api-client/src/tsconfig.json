@@ -11,7 +11,11 @@
     "."
   ],
   "files": [
+    "paths/api-client.ts",
+    "paths/nswag.ts",
+    "paths/paths.ts",
   ],
   "exclude": [
+    "paths/*.ts"
   ]
 }

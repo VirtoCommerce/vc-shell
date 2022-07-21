@@ -6,7 +6,7 @@
     "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
     "build": "cross-env APP_ENV=production vite build",
-    "generate-api-client": "api-client-generator"
+    "generate-api-client": "api-client-generator --color"
   },
   "devDependencies": {
     "less": "^3.0.4",

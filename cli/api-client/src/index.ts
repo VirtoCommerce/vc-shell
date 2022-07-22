@@ -18,10 +18,10 @@ async function generateApiClient(): Promise<void> {
     const apiClientPaths = paths.resolveApiClientPaths(platformModule);
 
     console.log(
-      "api-client-generator %s Generating API client for %s environment and %s module",
+      "api-client-generator %s Generating API client for %s module on %s environment",
       chalk.green("info"),
-      chalk.whiteBright(platformUrl),
-      chalk.whiteBright(platformModule)
+      chalk.whiteBright(platformModule),
+      chalk.whiteBright(platformUrl)
     );
 
     const nswag = spawnSync(
@@ -33,7 +33,7 @@ async function generateApiClient(): Promise<void> {
         "/runtime:Net60",
       ],
       {
-        stdio: "inherit",
+        stdio: ["ignore", "ignore", "inherit"],
         shell: true,
       }
     );
@@ -55,5 +55,3 @@ async function generateApiClient(): Promise<void> {
 }
 
 generateApiClient();
-
-export { generateApiClient };

@@ -3,8 +3,6 @@
   "description": "Tool for API clients generation",
   "version": "1.0.0",
   "bin": "./dist/index.js",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist",
     "public"

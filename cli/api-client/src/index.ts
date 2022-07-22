@@ -33,7 +33,7 @@ async function generateApiClient(): Promise<void> {
         "/runtime:Net60",
       ],
       {
-        stdio: ["ignore", "ignore", "inherit"],
+        stdio: ["ignore", "inherit", "ignore"],
         shell: true,
       }
     );

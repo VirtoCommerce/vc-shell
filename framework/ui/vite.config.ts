@@ -4,9 +4,6 @@ import { getLibraryConfiguration } from "@virtoshell/config-generator";
 export default getLibraryConfiguration(
   {
     plugins: [vue()],
-    optimizeDeps: {
-      include: ["vue-select"],
-    },
     build: {
       rollupOptions: {
         external: [

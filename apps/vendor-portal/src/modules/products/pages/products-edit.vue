@@ -52,7 +52,51 @@
                 name="name"
                 :disabled="readonly"
               ></VcInput>
-              <VcSelectNew> </VcSelectNew>
+              <VcSelectNew
+                class="mb-4"
+                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
+                v-model="productDetails.categoryId"
+                :isRequired="true"
+                :isSearchable="true"
+                :clearable="false"
+                :placeholder="
+                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                "
+                :options="categories"
+                :initialItem="category"
+                keyProperty="id"
+                displayProperty="name"
+                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
+                @search="onCategoriesSearch"
+                @close="onSelectClose"
+                @update:modelValue="setCategory"
+                :is-disabled="readonly"
+                name="category"
+                :onInfiniteScroll="onLoadMore"
+                :optionsTotal="categoriesTotal"
+              >
+                <template v-slot:item="itemData">
+                  <div
+                    class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
+                  >
+                    <div
+                      class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                    >
+                      <div
+                        class="text-ellipsis overflow-hidden whitespace-nowrap"
+                      >
+                        {{ itemData.item.path }}
+                      </div>
+                      <VcHint
+                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      >
+                        {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
+                        {{ itemData.item.code }}
+                      </VcHint>
+                    </div>
+                  </div>
+                </template>
+              </VcSelectNew>
               <VcSelect
                 class="mb-4"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
@@ -562,7 +606,7 @@ const onSelectClose = async () => {
 };
 
 async function onLoadMore() {
-  const data = await fetchCategories(undefined, 20);
+  const data = await fetchCategories(undefined, 2);
   categories.value.push(...data.results);
 }
 

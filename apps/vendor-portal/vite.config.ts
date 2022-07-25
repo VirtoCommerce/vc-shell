@@ -2,6 +2,9 @@ import { getApplicationConfiguration } from "@virtoshell/config-generator";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default getApplicationConfiguration({
+  optimizeDeps: {
+    include: ["vue-select"],
+  },
   plugins: [
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],

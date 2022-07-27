@@ -5,17 +5,18 @@
   "scripts": {
     "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
-    "build": "cross-env APP_ENV=production vite build"
+    "build": "cross-env APP_ENV=production vite build",
+    "generate-api-client": "api-client-generator --color"
   },
   "devDependencies": {
     "less": "^3.0.4",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.2",
+    "@virtoshell/api-client-generator": "^1.0.0"
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/api-client": "^1.0.13",
     "@virtoshell/config-generator": "^1.0.13",
     "@virtoshell/core": "^1.0.13",
     "@virtoshell/mod-assets": "^1.0.13",

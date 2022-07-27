@@ -9,7 +9,7 @@ import {
   OfferDetails,
   CreateNewOfferCommand,
   SearchProductsForNewOfferQuery,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "@virtoshell/api-client";
 
 export type TExtOfferDetails = IOfferDetails & {

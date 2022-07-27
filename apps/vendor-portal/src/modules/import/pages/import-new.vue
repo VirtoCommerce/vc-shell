@@ -213,7 +213,7 @@ import {
   ITableColumns,
 } from "../../../types";
 import useImport from "../composables/useImport";
-import { ImportDataPreview } from "../../../api_client";
+import { ImportDataPreview } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";

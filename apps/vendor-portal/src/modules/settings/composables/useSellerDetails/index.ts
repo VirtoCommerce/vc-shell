@@ -7,7 +7,7 @@ import {
   SellerDetails,
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
 interface ILocation {

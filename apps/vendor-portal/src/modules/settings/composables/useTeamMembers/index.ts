@@ -13,7 +13,7 @@ import {
   ValidateSellerUserQuery,
   ValidationFailure,
   VcmpSellerSecurityClient,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 import { computed, Ref, ref, watch } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 

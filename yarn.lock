@@ -11190,6 +11190,11 @@ nprogress@^0.2.0:
   resolved "https://registry.yarnpkg.com/nprogress/-/nprogress-0.2.0.tgz#cb8f34c53213d895723fcbab907e9422adbcafb1"
   integrity sha1-y480xTIT2JVyP8urkH6UIq28r7E=
 
+nswag@^13.16.1:
+  version "13.16.1"
+  resolved "https://registry.yarnpkg.com/nswag/-/nswag-13.16.1.tgz#3440b6d4a1e1275301fdc13e1a3f7a1377a0069f"
+  integrity sha512-L/ll7TeMaYMVPGTT8T9MrEVP1FjSod8/quRB9WuFPdvgFAsDILBwVuSifghzaX9DXmo1G5C22xmE1/53EPywig==
+
 nth-check@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/nth-check/-/nth-check-2.0.1.tgz#2efe162f5c3da06a28959fbd3db75dbeea9f0fc2"

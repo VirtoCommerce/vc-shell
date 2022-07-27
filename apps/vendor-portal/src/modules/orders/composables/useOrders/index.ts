@@ -7,7 +7,7 @@ import {
   ISearchOrdersQuery,
   ChangeOrderStatusCommand,
   CustomerOrder,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 
 interface IUseOrders {
   readonly orders: Ref<CustomerOrder[]>;

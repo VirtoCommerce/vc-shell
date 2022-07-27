@@ -132,7 +132,7 @@ export default defineComponent({
 import { useI18n } from "@virtoshell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
-import { SellerUser } from "../../../../api_client";
+import { SellerUser } from "../../../../api_client/marketplacevendor";
 
 const props = defineProps({
   expanded: {

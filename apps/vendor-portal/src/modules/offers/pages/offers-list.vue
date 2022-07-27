@@ -138,7 +138,7 @@ import {
   ITableColumns,
   IBladeToolbar,
 } from "../../../types";
-import { IOffer } from "../../../api_client";
+import { IOffer } from "../../../api_client/marketplacevendor";
 
 const props = defineProps({
   expanded: {

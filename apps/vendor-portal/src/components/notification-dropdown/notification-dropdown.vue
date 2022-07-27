@@ -73,7 +73,7 @@ import { PushNotification } from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
 import { IMenuItems } from "@virtoshell/ui";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
-import { ImportPushNotification } from "../../api_client";
+import { ImportPushNotification } from "../../api_client/marketplacevendor";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { ProductsList, ProductsEdit } from "../../modules/products";
 import {

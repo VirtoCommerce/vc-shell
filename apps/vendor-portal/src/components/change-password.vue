@@ -118,6 +118,12 @@ function validate() {
       if (form.confirmPassword !== form.password) {
         form.errors.push({ code: "Repeat-password" });
       }
+      if (
+        form.confirmPassword === form.currentPassword &&
+        form.password === form.currentPassword
+      ) {
+        form.errors.push({ code: "Equal-passwords" });
+      }
       form.isValid = form.errors.length == 0;
     }
   });

@@ -9,9 +9,9 @@
         @change="onChange"
       />
       <span class="vc-checkbox__checkmark"></span>
-      <div v-if="$slots['default']" class="ml-2">
+      <span v-if="$slots['default']" class="ml-2">
         <slot></slot>
-      </div>
+      </span>
       <span
         v-if="required"
         class="text-[color:var(--checkbox-required-color)] ml-1"

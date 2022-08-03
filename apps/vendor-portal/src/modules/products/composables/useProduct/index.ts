@@ -104,7 +104,7 @@ export default (): IUseProduct => {
       objectIds: ids,
       keyword,
       skip,
-      take: 2,
+      take: 10,
     } as CategoryIndexedSearchCriteria);
     return result;
   }

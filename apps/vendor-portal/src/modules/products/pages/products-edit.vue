@@ -51,52 +51,8 @@
                 rules="min:3"
                 name="name"
                 :disabled="readonly"
+                maxchars="64"
               ></VcInput>
-              <VcSelectNew
-                class="mb-4"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="productDetails.categoryId"
-                :isRequired="true"
-                :isSearchable="true"
-                :clearable="false"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                "
-                :options="categories"
-                :initialItem="category"
-                keyProperty="id"
-                displayProperty="name"
-                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-                @search="onCategoriesSearch"
-                @close="onSelectClose"
-                @update:modelValue="setCategory"
-                :is-disabled="readonly"
-                name="category"
-                :onInfiniteScroll="onLoadMore"
-                :optionsTotal="categoriesTotal"
-              >
-                <template v-slot:item="itemData">
-                  <div
-                    class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
-                  >
-                    <div
-                      class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
-                    >
-                      <div
-                        class="text-ellipsis overflow-hidden whitespace-nowrap"
-                      >
-                        {{ itemData.item.path }}
-                      </div>
-                      <VcHint
-                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
-                      >
-                        {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
-                        {{ itemData.item.code }}
-                      </VcHint>
-                    </div>
-                  </div>
-                </template>
-              </VcSelectNew>
               <VcSelect
                 class="mb-4"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
@@ -108,7 +64,7 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
-                :initialItem="category"
+                :initialItem="currentCategory"
                 keyProperty="id"
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
@@ -164,6 +120,7 @@
                     rules="min:3"
                     :disabled="readonly"
                     name="gtin"
+                    maxchars="64"
                   ></VcInput>
                   <VcTextarea
                     class="mb-4"
@@ -303,14 +260,13 @@ const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const { debounce } = useFunctions();
 
-const currentCategory = ref();
+const currentCategory = ref<ICategory>();
 const offersCount = ref(0);
 const categories = ref<ICategory[]>([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
 const categoriesTotal = ref();
-const category = ref<ICategory>();
 
 const filterTypes = ["Category", "Variation"];
 
@@ -324,20 +280,12 @@ const reload = async (fullReload: boolean) => {
       productLoading.value = true;
       if (props.param) {
         await loadProduct({ id: props.param });
-        const fetchedCategory = await fetchCategories(undefined, 0, [
-          product.value.categoryId,
-        ]);
-        if (fetchedCategory.results && fetchedCategory.results.length) {
-          category.value = fetchedCategory.results[0];
-        }
       }
       const searchResult = await fetchCategories();
       categories.value = searchResult.results;
       categoriesTotal.value = searchResult.totalCount;
       if (productDetails?.categoryId) {
-        currentCategory.value = categories.value?.find(
-          (x) => x.id === productDetails.categoryId
-        );
+        await setCategoryItem(product.value.categoryId);
       }
     } finally {
       productLoading.value = false;
@@ -476,10 +424,6 @@ const statusText = computed(() => {
   return null;
 });
 
-// const category = computed(() =>
-//   // categories.value?.find((x) => x.id === productDetails.categoryId)
-// );
-
 const product = computed(() =>
   props.param ? productData.value : productDetails
 );
@@ -567,6 +511,10 @@ const onGalleryImageRemove = (image: Image) => {
 
 const setCategory = async (id: string) => {
   currentCategory.value = categories.value?.find((x) => x.id === id);
+  if (!currentCategory.value) {
+    await setCategoryItem(id);
+  }
+
   const currentProperties = [...(productDetails?.properties || [])];
   productDetails.properties = [...(currentCategory.value.properties || [])];
   productDetails.properties.forEach(async (property) => {
@@ -581,6 +529,13 @@ const setCategory = async (id: string) => {
   });
 };
 
+async function setCategoryItem(id: string) {
+  const fetchedCategory = await fetchCategories(undefined, 0, [id]);
+  if (fetchedCategory.results && fetchedCategory.results.length) {
+    currentCategory.value = fetchedCategory.results[0];
+  }
+}
+
 async function loadDictionaries(
   property: IProperty,
   keyword?: string,
@@ -592,6 +547,7 @@ async function loadDictionaries(
 const onCategoriesSearch = debounce(async (value: string) => {
   const searchResult = await fetchCategories(value);
   categories.value = searchResult.results;
+  categoriesTotal.value = searchResult.totalCount;
 }, 500);
 
 const onSelectClose = async () => {
@@ -606,7 +562,7 @@ const onSelectClose = async () => {
 };
 
 async function onLoadMore() {
-  const data = await fetchCategories(undefined, 2);
+  const data = await fetchCategories(undefined, 10);
   categories.value.push(...data.results);
 }
 

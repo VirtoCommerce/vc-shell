@@ -26,7 +26,7 @@
         :disabled="disabled"
         @input="onInput"
         ref="inputRef"
-        maxlength="1024"
+        :maxlength="maxchars"
       />
 
       <!-- Dropdown button -->
@@ -222,6 +222,11 @@ const props = defineProps({
   fieldDescription: {
     type: String,
     default: "",
+  },
+
+  maxchars: {
+    type: Number,
+    default: 1024,
   },
 });
 

@@ -1,25 +1,22 @@
-import { Ref, ref, computed, watch, reactive } from "vue";
+import { computed, reactive, Ref, ref, watch } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
-import {
-  ICategory,
-  CategoryIndexedSearchCriteria,
-} from "@virtoshell/api-client";
+import { CategoryIndexedSearchCriteria } from "../../../../api_client/catalog";
 
 import {
-  VcmpSellerCatalogClient,
-  ISellerProduct,
   CatalogProduct,
-  IProductDetails,
-  ProductDetails,
-  UpdateProductDetailsCommand,
+  CategorySearchResult,
   CreateNewProductCommand,
   CreateNewPublicationRequestCommand,
-  PropertyDictionaryItemSearchCriteria,
+  IProductDetails,
+  ISellerProduct,
+  ProductDetails,
   PropertyDictionaryItem,
-  CategorySearchResult,
-} from "../../../../api_client";
+  PropertyDictionaryItemSearchCriteria,
+  UpdateProductDetailsCommand,
+  VcmpSellerCatalogClient,
+} from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
   product: Ref<ISellerProduct>;
@@ -100,13 +97,12 @@ export default (): IUseProduct => {
     ids?: string[]
   ): Promise<CategorySearchResult> {
     const client = await getApiClient();
-    const result = await client.searchCategories({
+    return await client.searchCategories({
       objectIds: ids,
       keyword,
       skip,
-      take: 10,
+      take: 20,
     } as CategoryIndexedSearchCriteria);
-    return result;
   }
 
   async function loadProduct(args: { id: string }) {

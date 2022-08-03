@@ -3,7 +3,7 @@
   "defaultVariables": null,
   "documentGenerator": {
     "fromDocument": {
-      "url": "http://localhost:10645/docs/PlatformUI/swagger.json",
+      "url": "$(APP_PLATFORM_URL)docs/VirtoCommerce.$(APP_PLATFORM_MODULE)/swagger.json",
       "output": null,
       "newLineBehavior": "Auto"
     }
@@ -47,7 +47,7 @@
       "useLeafType": false,
       "classTypes": [],
       "extendedClasses": [],
-      "extensionCode": "src/authApiBase.ts",
+      "extensionCode": "$(APP_AUTH_API_BASE_PATH)",
       "generateDefaultValues": true,
       "excludedTypeNames": [],
       "excludedParameterNames": [],
@@ -55,8 +55,7 @@
       "generateConstructorInterface": true,
       "convertConstructorInterfaceData": false,
       "importRequiredTypes": true,
-      "useGetBaseUrlMethod": false,
-      "baseUrlTokenName": "API_BASE_URL",
+      "useGetBaseUrlMethod": true,
       "queryNullValue": "",
       "useAbortSignal": false,
       "inlineNamedDictionaries": false,
@@ -68,7 +67,7 @@
       "checksumCacheEnabled": false,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": null,
+      "output": "$(APP_API_CLIENT_PATH)",
       "newLineBehavior": "Auto"
     }
   }

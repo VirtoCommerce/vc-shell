@@ -347,7 +347,10 @@ export default defineComponent({
 import { useForm } from "@virtoshell/ui";
 import { useFunctions, useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
-import { IOfferProduct, OfferPrice } from "../../../api_client";
+import {
+  IOfferProduct,
+  OfferPrice,
+} from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form } from "vee-validate";

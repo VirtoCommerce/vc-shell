@@ -16,7 +16,7 @@ import {
   ImportRunHistory,
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
-} from "../../../../api_client/api-client";
+} from "../../../../api_client/marketplacevendor";
 import { useLogger, useNotifications, useUser } from "@virtoshell/core";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 

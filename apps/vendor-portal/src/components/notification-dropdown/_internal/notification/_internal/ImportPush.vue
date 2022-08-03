@@ -20,7 +20,7 @@ export default defineComponent({
 });
 </script>
 <script lang="ts" setup>
-import { ImportPushNotification } from "../../../../../api_client";
+import { ImportPushNotification } from "../../../../../api_client/marketplacevendor";
 
 defineProps({
   notification: {

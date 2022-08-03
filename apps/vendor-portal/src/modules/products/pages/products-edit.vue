@@ -212,7 +212,7 @@ import {
   IPropertyValue,
   PropertyValue,
   PropertyDictionaryItem,
-} from "@virtoshell/api-client";
+} from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
@@ -562,7 +562,7 @@ const onSelectClose = async () => {
 };
 
 async function onLoadMore() {
-  const data = await fetchCategories(undefined, 10);
+  const data = await fetchCategories(undefined, 20);
   categories.value.push(...data.results);
 }
 

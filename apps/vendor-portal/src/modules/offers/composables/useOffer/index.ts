@@ -10,7 +10,7 @@ import {
   CreateNewOfferCommand,
   SearchProductsForNewOfferQuery,
 } from "../../../../api_client/marketplacevendor";
-import { StoreModuleClient } from "@virtoshell/api-client";
+import { StoreModuleClient } from "../../../../api_client/store";
 
 export type TExtOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -117,7 +117,7 @@ export default (): IUseOffer => {
 
     try {
       loading.value = true;
-      offer.value = (await client.getOfferById(args.id)) as IOffer;
+      offer.value = (await client.getOfferByIdGET(args.id)) as IOffer;
 
       Object.assign(offerDetails, offer.value);
     } catch (e) {

@@ -3,13 +3,19 @@ import { computed, ComputedRef } from "vue";
 
 interface IUsePermissions {
   readonly userPermissions: ComputedRef<string[]>;
-  checkPermission(permissions: string | string[]): boolean;
+  checkPermission(permissions: string | string[]): Promise<boolean>;
 }
 
 export default (): IUsePermissions => {
-  const { user } = useUser();
+  const { user, loadUser } = useUser();
 
-  function checkPermission(permissions: string | string[]) {
+  async function checkPermission(
+    permissions: string | string[]
+  ): Promise<boolean> {
+    if (!user.value) {
+      await loadUser();
+    }
+
     if (permissions || (permissions && permissions instanceof Array)) {
       if (typeof permissions === "string") {
         return user.value?.permissions.includes(permissions);

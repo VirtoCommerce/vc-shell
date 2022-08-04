@@ -6,6 +6,62 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## 1.0.13 (2022-08-04)
 
 
+### Features
+
+* version up ([85d5ab5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
+
+
+
+## 1.0.13 (2022-07-14)
+
+
+### Features
+
+* npm publish configuration ([41e3ff8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/41e3ff8c04eccff1ed9a934c5a3457aec26a32dc))
+
+
+
+## 1.0.11 (2022-07-08)
+
+
+
+## 0.1.16 (2022-04-15)
+
+
+
+
+
+# 1.1.0 (2022-08-04)
+
+
+### Features
+
+* version up ([85d5ab5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
+
+
+
+## 1.0.13 (2022-07-14)
+
+
+### Features
+
+* npm publish configuration ([41e3ff8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/41e3ff8c04eccff1ed9a934c5a3457aec26a32dc))
+
+
+
+## 1.0.11 (2022-07-08)
+
+
+
+## 0.1.16 (2022-04-15)
+
+
+
+
+
+## 1.0.13 (2022-08-04)
+
+
 
 ## 1.0.13 (2022-07-14)
 

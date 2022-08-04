@@ -51,7 +51,7 @@
             "END_DATE": "End date"
           },
           "STATUS": {
-            "None": "None",
+            "None": "New",
             "Published": "Published",
             "HasStagedChanges": "Has staged changes",
             "WaitForApproval": "Wait for approval",

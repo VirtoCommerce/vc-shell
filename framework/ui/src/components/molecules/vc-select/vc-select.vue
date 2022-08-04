@@ -69,6 +69,9 @@
             >
               <slot name="item" :item="item">{{ item[displayProperty] }}</slot>
             </div>
+            <div v-show="hasNextPage" ref="load" class="text-center">
+              Loading...
+            </div>
           </VcContainer>
         </div>
       </teleport>
@@ -165,6 +168,16 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+
+  optionsTotal: {
+    type: Number,
+    default: 0,
+  },
+
+  onInfiniteScroll: {
+    type: Function,
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "change", "close", "search"]);
@@ -176,6 +189,9 @@ const popper = ref<Instance>();
 const dropdownToggleRef = ref();
 const dropdownRef = ref();
 const inputFieldWrapRef = ref();
+const loading = ref(false);
+const load = ref();
+const observer = new IntersectionObserver(infiniteScroll);
 
 const selectedItem = computed(
   () =>
@@ -183,6 +199,10 @@ const selectedItem = computed(
       (item) => item[props.keyProperty] === props.modelValue
     ) || props.initialItem
 );
+
+const hasNextPage = computed(() => {
+  return props.options.length < props.optionsTotal;
+});
 
 // Prepare field-level validation
 const { errorMessage, handleChange } = useField(
@@ -201,19 +221,24 @@ watch(
 );
 
 function closeDropdown() {
+  observer.disconnect();
   isOpened.value = false;
   popper.value?.destroy();
   inputFieldWrapRef.value.style.borderRadius = "var(--select-border-radius)";
   emit("close");
 }
 
-function toggleDropdown() {
+async function toggleDropdown() {
   if (!props.isDisabled) {
     if (isOpened.value) {
       closeDropdown();
     } else {
       isOpened.value = true;
-      nextTick(() => {
+      if (hasNextPage.value) {
+        await nextTick();
+        observer.observe(load.value);
+      }
+      await nextTick(() => {
         search?.value?.focus();
         popper.value = createPopper(
           dropdownToggleRef.value,
@@ -324,6 +349,22 @@ function onSearch(event: InputEvent) {
 // Handle input event to propertly reset value and emit changes
 function onReset() {
   emit("update:modelValue", "");
+}
+
+async function infiniteScroll([
+  { isIntersecting, target },
+]: IntersectionObserverEntry[]) {
+  if (
+    isIntersecting &&
+    props.onInfiniteScroll &&
+    typeof props.onInfiniteScroll === "function"
+  ) {
+    const ul = (target as HTMLElement).offsetParent as Element;
+    const scrollTop = (target as HTMLElement).offsetParent?.scrollTop;
+    await props.onInfiniteScroll();
+    await nextTick();
+    ul.scrollTop = scrollTop as number;
+  }
 }
 </script>
 

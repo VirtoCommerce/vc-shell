@@ -1,23 +1,21 @@
-import { Ref, ref, computed, watch, reactive } from "vue";
+import { computed, reactive, Ref, ref, watch } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
-import {
-  ICategory,
-  CategoryIndexedSearchCriteria,
-} from "@virtoshell/api-client";
+import { CategoryIndexedSearchCriteria } from "../../../../api_client/catalog";
 
 import {
-  VcmpSellerCatalogClient,
-  ISellerProduct,
   CatalogProduct,
-  IProductDetails,
-  ProductDetails,
-  UpdateProductDetailsCommand,
+  CategorySearchResult,
   CreateNewProductCommand,
   CreateNewPublicationRequestCommand,
-  PropertyDictionaryItemSearchCriteria,
+  IProductDetails,
+  ISellerProduct,
+  ProductDetails,
   PropertyDictionaryItem,
+  PropertyDictionaryItemSearchCriteria,
+  UpdateProductDetailsCommand,
+  VcmpSellerCatalogClient,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
@@ -25,7 +23,11 @@ interface IUseProduct {
   productDetails: IProductDetails;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
-  fetchCategories: (keyword?: string, skip?: number) => Promise<ICategory[]>;
+  fetchCategories: (
+    keyword?: string,
+    skip?: number,
+    ids?: string[]
+  ) => Promise<CategorySearchResult>;
   loadProduct: (args: { id: string }) => void;
   createProduct: (details: IProductDetails) => void;
   updateProductDetails: (
@@ -91,15 +93,16 @@ export default (): IUseProduct => {
 
   async function fetchCategories(
     keyword?: string,
-    skip = 0
-  ): Promise<ICategory[]> {
+    skip = 0,
+    ids?: string[]
+  ): Promise<CategorySearchResult> {
     const client = await getApiClient();
-    const result = await client.searchCategories({
+    return await client.searchCategories({
+      objectIds: ids,
       keyword,
       skip,
       take: 20,
     } as CategoryIndexedSearchCriteria);
-    return result.results;
   }
 
   async function loadProduct(args: { id: string }) {

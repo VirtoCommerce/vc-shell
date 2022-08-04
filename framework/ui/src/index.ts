@@ -7,7 +7,7 @@ import draggable from "vuedraggable/src/vuedraggable";
 import { useForm as _useForm } from "./config/validation";
 
 import "normalize.css";
-import "./styles/index.less";
+import "./styles/index.scss";
 
 export default {
   install(app: App): void {

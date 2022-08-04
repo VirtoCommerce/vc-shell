@@ -224,13 +224,13 @@ const handleDisplayProperty = computed(() => {
 const handleDisplayName = computed(() => {
   let localized: string;
   const isLocaleExists = props.property.displayNames?.find((x: IDisplayName) =>
-    x.languageCode.toLowerCase().startsWith(locale.value.toLowerCase())
+    x.languageCode?.toLowerCase().startsWith(locale.value?.toLowerCase())
   );
   if (isLocaleExists && isLocaleExists.name) {
     localized = isLocaleExists.name;
   } else {
     const fallback = props.property.displayNames?.find((x: IDisplayName) =>
-      x.languageCode.toLowerCase().includes(props.culture?.toLowerCase())
+      x.languageCode?.toLowerCase().includes(props.culture?.toLowerCase())
     );
     localized = fallback && fallback.name ? fallback.name : props.property.name;
   }

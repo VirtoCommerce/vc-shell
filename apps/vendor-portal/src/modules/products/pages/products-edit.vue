@@ -51,6 +51,7 @@
                 rules="min:3"
                 name="name"
                 :disabled="readonly"
+                maxchars="64"
               ></VcInput>
               <VcSelect
                 class="mb-4"
@@ -63,15 +64,17 @@
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
-                :initialItem="category"
+                :initialItem="currentCategory"
                 keyProperty="id"
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
-                @close="onCategoriesSearch"
+                @close="onSelectClose"
                 @update:modelValue="setCategory"
                 :is-disabled="readonly"
                 name="category"
+                :onInfiniteScroll="onLoadMore"
+                :optionsTotal="categoriesTotal"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -117,6 +120,7 @@
                     rules="min:3"
                     :disabled="readonly"
                     name="gtin"
+                    maxchars="64"
                   ></VcInput>
                   <VcTextarea
                     class="mb-4"
@@ -208,7 +212,7 @@ import {
   IPropertyValue,
   PropertyValue,
   PropertyDictionaryItem,
-} from "@virtoshell/api-client";
+} from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
@@ -256,12 +260,13 @@ const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const { debounce } = useFunctions();
 
-const currentCategory = ref();
+const currentCategory = ref<ICategory>();
 const offersCount = ref(0);
-const categories = ref<ICategory[]>();
+const categories = ref<ICategory[]>([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
+const categoriesTotal = ref();
 
 const filterTypes = ["Category", "Variation"];
 
@@ -276,11 +281,11 @@ const reload = async (fullReload: boolean) => {
       if (props.param) {
         await loadProduct({ id: props.param });
       }
-      categories.value = await fetchCategories();
+      const searchResult = await fetchCategories();
+      categories.value = searchResult.results;
+      categoriesTotal.value = searchResult.totalCount;
       if (productDetails?.categoryId) {
-        currentCategory.value = categories.value?.find(
-          (x) => x.id === productDetails.categoryId
-        );
+        await setCategoryItem(product.value.categoryId);
       }
     } finally {
       productLoading.value = false;
@@ -419,10 +424,6 @@ const statusText = computed(() => {
   return null;
 });
 
-const category = computed(() =>
-  categories.value?.find((x) => x.id === productDetails.categoryId)
-);
-
 const product = computed(() =>
   props.param ? productData.value : productDetails
 );
@@ -510,6 +511,10 @@ const onGalleryImageRemove = (image: Image) => {
 
 const setCategory = async (id: string) => {
   currentCategory.value = categories.value?.find((x) => x.id === id);
+  if (!currentCategory.value) {
+    await setCategoryItem(id);
+  }
+
   const currentProperties = [...(productDetails?.properties || [])];
   productDetails.properties = [...(currentCategory.value.properties || [])];
   productDetails.properties.forEach(async (property) => {
@@ -524,6 +529,13 @@ const setCategory = async (id: string) => {
   });
 };
 
+async function setCategoryItem(id: string) {
+  const fetchedCategory = await fetchCategories(undefined, 0, [id]);
+  if (fetchedCategory.results && fetchedCategory.results.length) {
+    currentCategory.value = fetchedCategory.results[0];
+  }
+}
+
 async function loadDictionaries(
   property: IProperty,
   keyword?: string,
@@ -533,8 +545,27 @@ async function loadDictionaries(
 }
 
 const onCategoriesSearch = debounce(async (value: string) => {
-  categories.value = await fetchCategories(value);
+  const searchResult = await fetchCategories(value);
+  categories.value = searchResult.results;
+  categoriesTotal.value = searchResult.totalCount;
 }, 500);
+
+const onSelectClose = async () => {
+  const searchResult = await fetchCategories();
+  categories.value = searchResult.results;
+  if (
+    currentCategory.value &&
+    !categories.value.some((x) => x.id === currentCategory.value.id)
+  ) {
+    categories.value.push(currentCategory.value);
+  }
+};
+
+async function onLoadMore() {
+  const data = await fetchCategories(undefined, 20);
+  categories.value.push(...data.results);
+}
+
 async function openOffers() {
   if (!isOffersOpened) {
     emit("page:open", {

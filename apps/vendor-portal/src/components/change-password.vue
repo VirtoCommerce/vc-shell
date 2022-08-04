@@ -15,6 +15,7 @@
           "
           type="password"
           :required="true"
+          rules="min:6"
           v-model="form.currentPassword"
         ></VcInput>
         <VcInput
@@ -25,6 +26,7 @@
           type="password"
           @update:modelValue="validate"
           :required="true"
+          rules="min:6"
           v-model="form.password"
         ></VcInput>
         <VcInput
@@ -35,6 +37,7 @@
             $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
           "
           :required="true"
+          rules="min:6"
           @update:modelValue="validate"
           type="password"
           v-model="form.confirmPassword"
@@ -104,6 +107,7 @@ async function changePassword() {
     emit("close");
   } else {
     form.errors = result.errors;
+    form.isValid = form.errors.length == 0;
   }
 }
 
@@ -113,6 +117,12 @@ function validate() {
       form.errors = (await validatePassword(form.password)).errors;
       if (form.confirmPassword !== form.password) {
         form.errors.push({ code: "Repeat-password" });
+      }
+      if (
+        form.confirmPassword === form.currentPassword &&
+        form.password === form.currentPassword
+      ) {
+        form.errors.push({ code: "Equal-passwords" });
       }
       form.isValid = form.errors.length == 0;
     }

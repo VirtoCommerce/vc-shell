@@ -11,9 +11,9 @@ import {
 import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
 const VC_AUTH_DATA_KEY = "vc-auth-data";
 
-const user: Ref<UserDetail | null> = ref(null);
+const user: Ref<UserDetail> = ref();
 const loading: Ref<boolean> = ref(false);
-const authData: Ref<AuthData | null> = ref(null);
+const authData: Ref<AuthData> = ref();
 const authClient = new ClientOAuth2({
   accessTokenUri: `/connect/token`,
   scopes: ["offline_access"],
@@ -113,8 +113,8 @@ export default (): IUseUser => {
 
   async function signOut(): Promise<void> {
     console.debug(`[@virtoshell/core#useUser:signOut] - Entry point`);
-    user.value = null;
-    authData.value = null;
+    user.value = undefined;
+    authData.value = undefined;
     storeAuthData({});
     //todo
   }

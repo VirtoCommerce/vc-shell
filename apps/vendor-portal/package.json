@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/app-vendor-portal",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "private": true,
   "scripts": {
     "serve": "cross-env APP_ENV=development vite",
@@ -9,7 +9,7 @@
     "generate-api-client": "api-client-generator --color"
   },
   "devDependencies": {
-    "@virtoshell/api-client-generator": "^1.0.14",
+    "@virtoshell/api-client-generator": "^1.0.15",
     "less": "^3.0.4",
     "typescript": "^4.6.2"
   },
@@ -17,10 +17,10 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
     "@quangdao/vue-signalr": "^0.0.8",
-    "@virtoshell/config-generator": "^1.0.14",
-    "@virtoshell/core": "^1.0.14",
-    "@virtoshell/mod-assets": "^1.0.14",
-    "@virtoshell/ui": "^1.0.14",
+    "@virtoshell/config-generator": "^1.0.15",
+    "@virtoshell/core": "^1.0.15",
+    "@virtoshell/mod-assets": "^1.0.15",
+    "@virtoshell/ui": "^1.0.15",
     "moment": "^2.29.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.5.5",

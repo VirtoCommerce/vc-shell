@@ -3,7 +3,7 @@
   "version": "1.0.16",
   "private": true,
   "scripts": {
-    "bootstrap": "lerna bootstrap --force-local && lerna link --force-local",
+    "bootstrap": "lerna bootstrap",
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",

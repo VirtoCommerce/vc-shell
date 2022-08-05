@@ -5,7 +5,7 @@ import {
   MarketingModulePromotionClient,
   PromotionSearchCriteria,
   PromotionSearchResult,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/marketing";
 
 export interface IUsePromotions {
   readonly promotions: Ref<PromotionSearchResult[]>;

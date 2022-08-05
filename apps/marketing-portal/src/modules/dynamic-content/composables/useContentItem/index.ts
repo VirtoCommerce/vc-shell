@@ -1,12 +1,14 @@
 import { useLogger, useUser } from "@virtoshell/core";
 import {
-  DynamicContentItem,
   DynamicObjectProperty,
   DynamicPropertyObjectValue,
-  IDynamicContentItem,
   IDynamicObjectProperty,
-  MarketingModuleDynamicContentClient,
 } from "@virtoshell/api-client";
+import {
+  DynamicContentItem,
+  IDynamicContentItem,
+  MarketingModuleDynamicContentClient,
+} from "../../../../api_client/marketing";
 import { computed, Ref, ref, watch } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 import useDynamicProperties from "../useDynamicProperties";

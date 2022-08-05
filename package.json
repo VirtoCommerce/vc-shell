@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/root",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap --force-local && lerna link --force-local",
@@ -22,6 +22,7 @@
     "build-cli:api-client": "lerna run build --scope @virtoshell/api-client-generator",
     "generate-api-client:api-client": "lerna run generate-api-client --scope=@virtoshell/api-client --stream --no-prefix",
     "generate-api-client:vendor-portal": "lerna run generate-api-client --scope=@virtoshell/app-vendor-portal --stream --no-prefix",
+    "generate-api-client:marketing-portal": "lerna run generate-api-client --scope=@virtoshell/app-marketing-portal --stream --no-prefix",
     "generate-api-client": "lerna run generate-api-client --stream --no-prefix",
     "build-apps:vendor-portal": "lerna run build --scope @virtoshell/app-vendor-portal",
     "serve-apps:vendor-portal": "cd apps/vendor-portal && yarn serve",

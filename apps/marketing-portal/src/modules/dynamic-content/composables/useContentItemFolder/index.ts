@@ -3,7 +3,7 @@ import {
   DynamicContentFolder,
   IDynamicContentFolder,
   MarketingModuleDynamicContentClient,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/marketing";
 import { computed, Ref, ref, watch } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 

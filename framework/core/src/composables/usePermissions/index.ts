@@ -7,15 +7,11 @@ interface IUsePermissions {
 }
 
 export default (): IUsePermissions => {
-  const { user, loadUser } = useUser();
+  const { user } = useUser();
 
   async function checkPermission(
     permissions: string | string[]
   ): Promise<boolean> {
-    if (!user.value) {
-      await loadUser();
-    }
-
     if (permissions || (permissions && permissions instanceof Array)) {
       if (typeof permissions === "string") {
         return user.value?.permissions.includes(permissions);

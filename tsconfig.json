@@ -19,9 +19,6 @@
       ],
       "@virtoshell/config-generator": [
         "cli/config/src"
-      ],
-      "@virtoshell/api-client-generator": [
-        "cli/api-client/src"
       ]
     }
   },
@@ -40,9 +37,6 @@
     },
     {
       "path": "cli/config/"
-    },
-    {
-      "path": "cli/api-client/"
     }
   ]
 }

@@ -4,7 +4,7 @@ import {
   DynamicContentPlaceSearchCriteria,
   IDynamicContentPlaceSearchCriteria,
   MarketingModuleDynamicContentClient,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/marketing";
 import { useLogger, useUser } from "@virtoshell/core";
 import { computed, Ref, ref } from "vue";
 

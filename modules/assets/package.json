@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/mod-assets",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "scripts": {
     "build": "vite build"
   },
@@ -16,10 +16,10 @@
     "typescript": "^4.6.2"
   },
   "dependencies": {
-    "@virtoshell/api-client": "^1.0.17",
-    "@virtoshell/config-generator": "^1.0.17",
-    "@virtoshell/core": "^1.0.17",
-    "@virtoshell/ui": "^1.0.17",
+    "@virtoshell/api-client": "^1.0.18",
+    "@virtoshell/config-generator": "^1.0.18",
+    "@virtoshell/core": "^1.0.18",
+    "@virtoshell/ui": "^1.0.18",
     "vue": "^3.0.0"
   },
   "publishConfig": {

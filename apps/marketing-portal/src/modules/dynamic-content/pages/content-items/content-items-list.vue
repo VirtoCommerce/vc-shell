@@ -194,7 +194,7 @@ import ContentItemFolder from "./content-item-folder.vue";
 import {
   DynamicContentFolder,
   DynamicContentItem,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/marketing";
 import ContentItem from "./content-item.vue";
 
 interface IContentType {

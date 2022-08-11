@@ -75,17 +75,14 @@
 
 <script lang="ts" setup>
 import { onMounted, PropType, ref, watch } from "vue";
-import {
-  BulkActionPushNotification,
-  PushNotification,
-} from "@virtoshell/api-client";
+import { PushNotification } from "@virtoshell/api-client";
 import { useNotifications } from "@virtoshell/core";
 import moment from "moment";
 import { IMenuItems } from "@virtoshell/ui";
 
-interface INotificationParams
-  extends PushNotification,
-    BulkActionPushNotification {
+interface INotificationParams extends PushNotification {
+  finished?: boolean;
+  errors?: string[];
   params: {
     icon: string;
     time: string;

@@ -7,8 +7,8 @@
   "main": "./dist/core.cjs.js",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist/*",
+    "src/**/*.vue"
   ],
   "devDependencies": {
     "typescript": "^4.6.2"

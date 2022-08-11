@@ -68,12 +68,12 @@ import { computed, PropType, ref } from "vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { Image } from "@virtoshell/api-client";
+import { IImage } from "../../../typings";
 import VcFileUpload from "../../molecules/vc-file-upload/vc-file-upload.vue";
 
 const props = defineProps({
   images: {
-    type: Array as PropType<Image[]>,
+    type: Array as PropType<IImage[]>,
     default: () => [],
   },
 

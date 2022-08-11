@@ -58,7 +58,7 @@
 <script lang="ts" setup>
 import { computed, PropType, reactive, unref } from "vue";
 import { useI18n } from "@virtoshell/core";
-import { Image } from "@virtoshell/api-client";
+import { Image } from "../typings";
 
 const props = defineProps({
   expanded: {
@@ -110,11 +110,10 @@ const bladeToolbar = [
 
 function mutateImage(remove = false) {
   const images = props.options.images;
-  const image = new Image(localImage);
   if (images.length) {
     const imageIndex = images.findIndex((img) => img.id === localImage.id);
 
-    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = localImage);
 
     emit("parent:call", { method: "editImages", args: images });
     emit("page:close");

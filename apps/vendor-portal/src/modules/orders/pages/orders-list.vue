@@ -223,7 +223,7 @@ import { useOrders } from "../composables";
 import { useFunctions, useI18n } from "@virtoshell/core";
 import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
-import { CustomerOrder } from "@virtoshell/api-client";
+import { CustomerOrder } from "../../../api_client/orders";
 import {
   IActionBuilderResult,
   ITableColumns,

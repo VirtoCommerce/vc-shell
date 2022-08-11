@@ -194,7 +194,7 @@ import moment from "moment";
 import {
   DynamicContentFolder,
   DynamicContentItem,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/marketing";
 import ContentItemFolder from "../content-items/content-item-folder.vue";
 import ContentPlaceholder from "./content-placeholder.vue";
 

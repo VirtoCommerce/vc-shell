@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 import { useUser } from "@virtoshell/core";
-import { AssetEntryClient, AssetEntry } from "@virtoshell/api-client";
+import { AssetEntryClient, AssetEntry } from "../../api_client/assets";
 
 export default () => {
   const loading = ref(false);

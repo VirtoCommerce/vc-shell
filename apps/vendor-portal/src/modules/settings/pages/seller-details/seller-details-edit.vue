@@ -472,9 +472,8 @@ export default defineComponent({
 <script lang="ts" setup>
 import { useI18n, useUser } from "@virtoshell/core";
 import useSellerDetails from "../../composables/useSellerDetails";
-import { Image } from "@virtoshell/api-client";
+import { Image } from "../../../../api_client/marketplacevendor";
 import { useForm } from "@virtoshell/ui";
-import { defineRule } from "vee-validate";
 
 defineProps({
   expanded: {

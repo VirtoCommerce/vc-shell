@@ -234,7 +234,8 @@ const handleDisplayName = computed(() => {
     const fallback = props.property.displayNames?.find((x: IDisplayName) =>
       x.languageCode?.toLowerCase().includes(props.culture?.toLowerCase())
     );
-    localized = fallback && fallback.name ? fallback.name : props.property.name;
+    localized =
+      fallback && fallback?.name ? fallback.name : props.property.name;
   }
 
   return localized && te(localized.toUpperCase())

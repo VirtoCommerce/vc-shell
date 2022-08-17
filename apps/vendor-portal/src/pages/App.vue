@@ -306,9 +306,11 @@ const menuItems = reactive<IMenuItems[]>([
 ]);
 
 function langInit() {
-  try {
-    currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS");
-  } catch (err) {
+  const lang = localStorage.getItem("VC_LANGUAGE_SETTINGS");
+
+  if (lang) {
+    currentLocale.value = lang;
+  } else {
     currentLocale.value = "en";
   }
 }

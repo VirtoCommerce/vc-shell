@@ -16,7 +16,6 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
-    "@quangdao/vue-signalr": "^0.0.8",
     "@virtoshell/config-generator": "^1.0.18",
     "@virtoshell/core": "^1.0.18",
     "@virtoshell/mod-assets": "^1.0.18",

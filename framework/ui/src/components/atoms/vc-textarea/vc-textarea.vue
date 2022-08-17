@@ -22,7 +22,7 @@
         :value="modelValue"
         :disabled="disabled"
         @input="onInput"
-        maxlength="1024"
+        :maxlength="maxchars"
       ></textarea>
     </div>
 
@@ -78,6 +78,11 @@ const props = defineProps({
 
   rules: {
     type: [String, Object],
+  },
+
+  maxchars: {
+    type: Number,
+    default: 1024,
   },
 });
 

@@ -4,7 +4,6 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    v-loading="loading"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >

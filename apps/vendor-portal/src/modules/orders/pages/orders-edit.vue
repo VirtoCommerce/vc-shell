@@ -107,6 +107,11 @@
                   >
                 </div>
               </template>
+              <template v-slot:item_quantity="itemData">
+                <div class="flex flex-col">
+                  <div>{{ itemData.item.quantity }}</div>
+                </div>
+              </template>
 
               <template v-slot:item_fee="itemData">
                 <div
@@ -364,25 +369,24 @@ const columns: ITableColumns[] = [
   {
     id: "quantity",
     title: "Quantity",
-    width: 120,
+    width: 100,
     type: "number",
   },
   {
     id: "price",
     title: "Unit price",
-    width: 120,
+    width: 100,
     type: "money",
   },
   {
     id: "extendedPrice",
     title: "Total",
-    width: 120,
+    width: 100,
     type: "money",
   },
   {
     id: "fee",
     title: "Commission",
-    width: 120,
   },
 ];
 </script>

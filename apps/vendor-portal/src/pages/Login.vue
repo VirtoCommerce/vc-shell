@@ -8,7 +8,6 @@
           :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
           :required="true"
-          rules="required"
           v-model="form.username"
         ></VcInput>
         <VcInput
@@ -17,7 +16,6 @@
           :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
           :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
           :required="true"
-          rules="required"
           v-model="form.password"
           type="password"
           @keyup.enter="login"
@@ -31,7 +29,7 @@
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button
             variant="primary"
-            :disabled="loading || !form.username || !form.password"
+            :disabled="loading || !isValid"
             @click="login"
           >
             {{ $t("SHELL.LOGIN.BUTTON") }}
@@ -46,7 +44,6 @@
             :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
             :required="true"
-            rules="required"
             v-model="forgotPasswordForm.loginOrEmail"
             :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
           ></VcInput>
@@ -56,7 +53,7 @@
             </vc-button>
             <vc-button
               variant="primary"
-              :disabled="loading || !forgotPasswordForm.loginOrEmail"
+              :disabled="loading || !isValid"
               @click="forgot"
             >
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
@@ -114,6 +111,7 @@ import {
 import { useLogin } from "../modules/login";
 import { useForm } from "@virtoshell/ui";
 import { useRouter } from "vue-router";
+import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
   logo: {
@@ -134,13 +132,15 @@ const props = defineProps({
 const log = useLogger();
 const { t } = useI18n();
 const router = useRouter();
-const { validate } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+
 const signInResult = ref<SignInResult>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading } = useUser();
 const { forgotPassword } = useLogin();
 const isLogin = ref(true);
+const isValid = useIsFormValid();
 const form = reactive({
   username: "",
   password: "",
@@ -154,16 +154,14 @@ const computedTitle = computed(() =>
 );
 
 const login = async () => {
-  const { valid } = await validate();
-  if (valid) {
+  if (isValid.value) {
     signInResult.value = await signIn(form.username, form.password);
     router.push("/");
   }
 };
 
 const forgot = async () => {
-  const { valid } = await validate();
-  if (valid) {
+  if (isValid.value) {
     await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
     forgotPasswordRequestSent.value = true;
   }

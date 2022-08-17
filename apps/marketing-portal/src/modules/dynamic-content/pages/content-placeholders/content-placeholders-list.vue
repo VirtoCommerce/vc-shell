@@ -4,7 +4,6 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    v-loading="loading"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
@@ -444,7 +443,6 @@ async function resetSearch() {
 }
 
 const onItemClick = async (item: DynamicContentFolder | DynamicContentItem) => {
-  console.log(item);
   if (item.objectType === "DynamicContentFolder") {
     contentType.value.folderId = item.id;
     const isBreadcrumbExist = breadcrumbs.value.find((x) => x.id === item.id);

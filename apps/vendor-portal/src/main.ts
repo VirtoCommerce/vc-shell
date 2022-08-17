@@ -1,5 +1,4 @@
 import { createApp, resolveComponent, h } from "vue";
-import { VueSignalR } from "@quangdao/vue-signalr";
 import VirtoShellUi from "@virtoshell/ui";
 import VirtoShellCore from "@virtoshell/core";
 import ModAssets from "@virtoshell/mod-assets";
@@ -9,6 +8,7 @@ import ModOffers from "./modules/offers";
 import ModImport from "./modules/import";
 import ModSettings from "./modules/settings";
 import router from "./router";
+import PushHub from "./config/push-hub";
 
 import * as locales from "./locales";
 
@@ -19,9 +19,7 @@ import "roboto-fontface/css/roboto/roboto-fontface.css";
 const app = createApp({
   render: () => h(resolveComponent("router-view")),
 })
-  .use(VueSignalR, {
-    url: "/pushNotificationHub",
-  })
+  .use(PushHub)
   .use(VirtoShellUi)
   .use(VirtoShellCore)
   .use(ModAssets)

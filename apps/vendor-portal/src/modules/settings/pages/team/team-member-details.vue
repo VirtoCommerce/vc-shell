@@ -142,7 +142,7 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useUser } from "@virtoshell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
@@ -172,6 +172,7 @@ const props = defineProps({
 
 const emit = defineEmits(["page:close", "parent:call"]);
 const { validate } = useForm({ validateOnMount: false });
+const { user } = useUser();
 
 const { t } = useI18n();
 const {
@@ -276,7 +277,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       deleteModal.value = true;
     },
     isVisible: !!props.param,
-    disabled: computed(() => isOwnerReadonly.value),
+    disabled: computed(
+      () =>
+        isOwnerReadonly.value ||
+        user.value.userName === props.options.user.userName
+    ),
   },
   {
     id: "resend",

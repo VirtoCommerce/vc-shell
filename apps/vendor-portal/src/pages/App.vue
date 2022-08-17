@@ -73,11 +73,11 @@ import {
 } from "@virtoshell/core";
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
-import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
 import { SellerDetails, TeamList } from "../modules/settings";
+import { HubConnection } from "@microsoft/signalr";
 
 const {
   t,
@@ -86,7 +86,6 @@ const {
   getLocaleMessage,
 } = useI18n();
 const log = useLogger();
-const signalr = useSignalR();
 const { user, loadUser, signOut } = useUser();
 const {
   popupNotifications,
@@ -103,18 +102,19 @@ const isAuthorized = ref(false);
 const isReady = ref(false);
 const isChangePasswordActive = ref(false);
 const pages = inject("pages");
+const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 
-signalr.on("Send", (message: PushNotification) => {
+signalR.on("Send", (message: PushNotification) => {
   addNotification(message);
 });
 
 onMounted(async () => {
+  await loadUser();
   langInit();
   await getUiCustomizationSettings();
-  await loadUser();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");

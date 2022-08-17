@@ -518,7 +518,7 @@ const importStarted = computed(
   () => !!(importStatus.value && importStatus.value.jobId)
 );
 
-const previewTotalNum = computed(() => preview.value.totalCount);
+const previewTotalNum = computed(() => preview.value?.totalCount);
 
 const reversedErrors = computed(() => {
   const errors = _cloneDeep(importStatus.value.notification.errors);

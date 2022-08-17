@@ -154,9 +154,9 @@
               "PLACEHOLDER": "Enter value"
             },
             "LONGLAT": {
-              "LABEL": "Latitude & Longtitude",
+              "LABEL": "Location (latitude & longitude)",
               "PLACEHOLDER": "Enter value",
-              "DESCRIPTION": "Enter longitude and latitude with a space"
+              "DESCRIPTION": "Enter longitude and latitude separated by comma, eg: 34.059761, -118.276802"
             },
             "PHONE": {
               "LABEL": "Contact Phone Number",

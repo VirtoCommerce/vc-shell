@@ -217,14 +217,16 @@ const { locale, te, t } = useI18n();
 const rules: IValidationRules = {};
 const items = ref([]);
 const handleDisplayProperty = computed(() => {
-  return items?.value.some((x: { alias: string }) => x.alias)
+  return items.value?.some((x: { alias: string }) => x.alias)
     ? "alias"
     : "name";
 });
 const handleDisplayName = computed(() => {
   let localized: string;
   const isLocaleExists = props.property.displayNames?.find((x: IDisplayName) =>
-    x.languageCode?.toLowerCase().startsWith(locale.value?.toLowerCase())
+    x.languageCode
+      ?.toLowerCase()
+      .startsWith((locale.value as string)?.toLowerCase())
   );
   if (isLocaleExists && isLocaleExists.name) {
     localized = isLocaleExists.name;

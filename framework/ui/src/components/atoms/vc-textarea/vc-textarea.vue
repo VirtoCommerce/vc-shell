@@ -81,8 +81,8 @@ const props = defineProps({
   },
 
   maxchars: {
-    type: Number,
-    default: 1024,
+    type: String,
+    default: "1024",
   },
 });
 

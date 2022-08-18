@@ -474,7 +474,7 @@ function setFilterDate(key: string, value: string) {
 function getFilterDate(key: string) {
   const date = filter[key] as Date;
   if (date) {
-    return moment(date);
+    return moment(date).format("YYYY-MM-DD");
   }
   return undefined;
 }

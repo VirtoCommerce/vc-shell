@@ -27,6 +27,7 @@
         @input="onInput"
         ref="inputRef"
         :maxlength="maxchars"
+        max="9999-12-31"
       />
 
       <!-- Dropdown button -->
@@ -225,8 +226,8 @@ const props = defineProps({
   },
 
   maxchars: {
-    type: Number,
-    default: 1024,
+    type: String,
+    default: "1024",
   },
 });
 

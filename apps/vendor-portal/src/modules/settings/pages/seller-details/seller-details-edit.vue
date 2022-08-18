@@ -126,7 +126,7 @@
                           remove: true,
                         }"
                         :disableDrag="true"
-                        :hideAfterUpload="logoHandler.length"
+                        :hideAfterUpload="!!logoHandler.length"
                         rules="maxdimensions:120,120|size:1024"
                         name="logo"
                       ></VcGallery>
@@ -222,6 +222,7 @@
                           'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
                         )
                       "
+                      type="number"
                       rules="numeric"
                       v-model="sellerDetails.addresses[0].postalCode"
                       name="zip"
@@ -364,6 +365,7 @@
                         'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER'
                       )
                     "
+                    type="number"
                     rules="numeric"
                     v-model="sellerDetails.phones[0]"
                     name="phone"

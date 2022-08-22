@@ -75,7 +75,7 @@ defineProps({
 });
 </script>
 
-<style lang="less">
+<style lang="scss">
 :root {
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;

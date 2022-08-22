@@ -353,7 +353,7 @@ import {
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
-import { Form } from "vee-validate";
+import { Form, useIsFormValid } from "vee-validate";
 
 const props = defineProps({
   expanded: {
@@ -396,7 +396,8 @@ const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
-const { validate } = useForm({ validateOnMount: false });
+const { errors, validate } = useForm({ validateOnMount: false });
+const isFormValid = useIsFormValid();
 
 onMounted(async () => {
   await getCurrencies();
@@ -462,7 +463,12 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     isVisible: !props.param,
     disabled: computed(
-      () => !(offerDetails.prices && offerDetails.prices.length)
+      () =>
+        !(
+          offerDetails.prices &&
+          offerDetails.prices.length &&
+          isFormValid.value
+        )
     ),
   },
 ]);

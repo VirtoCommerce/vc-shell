@@ -4,7 +4,6 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    v-loading="loading"
     :toolbarItems="bladeToolbar"
     @close="$emit('page:close')"
   >
@@ -194,7 +193,7 @@ import moment from "moment";
 import {
   DynamicContentFolder,
   DynamicContentItem,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/marketing";
 import ContentItemFolder from "../content-items/content-item-folder.vue";
 import ContentPlaceholder from "./content-placeholder.vue";
 
@@ -444,7 +443,6 @@ async function resetSearch() {
 }
 
 const onItemClick = async (item: DynamicContentFolder | DynamicContentItem) => {
-  console.log(item);
   if (item.objectType === "DynamicContentFolder") {
     contentType.value.folderId = item.id;
     const isBreadcrumbExist = breadcrumbs.value.find((x) => x.id === item.id);

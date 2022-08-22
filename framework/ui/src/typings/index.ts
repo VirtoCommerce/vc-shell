@@ -54,3 +54,7 @@ export interface IActionBuilderResult {
   leftActions?: boolean;
   clickHandler(): void;
 }
+
+export interface IImage {
+  sortOrder?: number;
+}

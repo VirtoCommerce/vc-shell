@@ -15,7 +15,9 @@
         <!-- Table filter mobile button -->
         <div v-if="$isMobile.value && $slots['filters']" class="mr-3">
           <VcTableFilter :counter="activeFilterCount">
-            <slot name="filters"></slot>
+            <template v-slot:default="{ closePanel }">
+              <slot name="filters" :closePanel="closePanel"></slot>
+            </template>
           </VcTableFilter>
         </div>
 

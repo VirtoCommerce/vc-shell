@@ -196,7 +196,8 @@ $variants: primary, secondary, special, danger, widget;
     focus:bg-transparent
     disabled:cursor-not-allowed
     disabled:text-[color:var(--button-secondary-text-color-disabled)]
-    disabled:border-[color:var(--button-secondary-border-color-disabled)];
+    disabled:border-[color:var(--button-secondary-border-color-disabled)]
+    disabled:bg-transparent;
   }
 
   &_onlytext {

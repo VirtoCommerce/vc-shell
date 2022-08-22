@@ -54,7 +54,7 @@
           </VcButton>
           <VcButton
             variant="primary"
-            :disabled="loading || !form.currentPassword || !form.isValid"
+            :disabled="loading || !form.isValid || !isValid"
             @click="changePassword"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.SAVE") }}
@@ -82,6 +82,8 @@
 import { nextTick, reactive } from "vue";
 import { useUser } from "@virtoshell/core";
 import { IIdentityError } from "@virtoshell/api-client";
+import { useIsFormValid } from "vee-validate";
+import { useForm } from "@virtoshell/ui";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -93,6 +95,8 @@ interface IChangePassForm {
 
 const emit = defineEmits(["close"]);
 const { changeUserPassword, loading, validatePassword } = useUser();
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const form = reactive<IChangePassForm>({
   isValid: false,
   errors: [],

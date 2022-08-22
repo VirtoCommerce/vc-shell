@@ -52,7 +52,7 @@ const props = defineProps({
     default: false,
   },
 });
-const emit = defineEmits(["scroll:ptr"]);
+const emit = defineEmits(["scroll:ptr", "scroll:infinite"]);
 const component = ref<HTMLElement>();
 const scroll = ref(false);
 const startY = ref(0);

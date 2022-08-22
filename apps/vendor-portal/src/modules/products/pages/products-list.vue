@@ -61,12 +61,20 @@
           <VcRow>
             <VcCol class="p-2">
               <div class="flex justify-end">
-                <VcButton outline class="mr-4" @click="resetFilters">{{
-                  $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                }}</VcButton>
-                <VcButton @click="applyFilters(closePanel)">{{
-                  $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
-                }}</VcButton>
+                <VcButton
+                  outline
+                  class="mr-4"
+                  @click="resetFilters"
+                  :disabled="applyFiltersReset"
+                  >{{
+                    $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                  }}</VcButton
+                >
+                <VcButton
+                  @click="applyFilters(closePanel)"
+                  :disabled="applyFiltersDisable"
+                  >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY") }}</VcButton
+                >
               </div>
             </VcCol>
           </VcRow>
@@ -264,6 +272,18 @@ const appliedFilter = ref({});
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref();
+const applyFiltersDisable = computed(() => {
+  const activeFilters = Object.values(filter).filter(
+    (x) => x !== undefined && Array.isArray(x) && !!x.length
+  );
+  return !activeFilters.length;
+});
+const applyFiltersReset = computed(() => {
+  const activeFilters = Object.values(appliedFilter.value).filter(
+    (x) => x !== undefined
+  );
+  return !activeFilters.length;
+});
 
 watch(sort, async (value) => {
   await loadProducts({ ...searchQuery.value, sort: value });

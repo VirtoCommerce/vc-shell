@@ -31,62 +31,31 @@
       @selectionChanged="onSelectionChanged"
     >
       <!-- Filters -->
-      <template v-slot:filters>
+      <template v-slot:filters="{ closePanel }">
         <h2 v-if="$isMobile.value" class="my-4 text-[19px] font-bold">
           {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
         <VcContainer no-padding>
           <VcRow>
             <VcCol class="filter-col p-2">
-              <div>
+              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
                 <VcCheckbox
                   class="mb-2"
-                  :modelValue="filter.status === 'Unpaid'"
+                  v-for="status in PaymentStatus"
+                  :key="status"
+                  :modelValue="filter.status === status"
                   @update:modelValue="
-                    filter.status = $event ? 'Unpaid' : undefined
+                    filter.status = $event ? status : undefined
                   "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.UNPAID") }}</VcCheckbox
-                >
-                <VcCheckbox
-                  class="mb-2"
-                  :modelValue="filter.status === 'Paid'"
-                  @update:modelValue="
-                    filter.status = $event ? 'Paid' : undefined
-                  "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.PAID") }}</VcCheckbox
-                >
-
-                <VcCheckbox
-                  class="mb-2"
-                  :modelValue="filter.status === 'Accepted'"
-                  @update:modelValue="
-                    filter.status = $event ? 'Accepted' : undefined
-                  "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.ACCEPTED") }}</VcCheckbox
-                >
-                <VcCheckbox
-                  class="mb-2"
-                  :modelValue="filter.status === 'Shipped'"
-                  @update:modelValue="
-                    filter.status = $event ? 'Shipped' : undefined
-                  "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.SHIPPED") }}</VcCheckbox
-                >
-                <VcCheckbox
-                  class="mb-2"
-                  :modelValue="filter.status === 'Cancelled'"
-                  @update:modelValue="
-                    filter.status = $event ? 'Cancelled' : undefined
-                  "
-                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.CANCELLED") }}</VcCheckbox
-                >
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS." + status.toUpperCase()) }}
+                </VcCheckbox>
               </div>
             </VcCol>
             <VcCol class="p-2">
-              <div>
+              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
@@ -109,12 +78,20 @@
           <VcRow>
             <VcCol class="p-2">
               <div class="flex justify-end">
-                <vc-button outline class="mr-4" @click="resetFilters">{{
-                  $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                }}</vc-button>
-                <vc-button @click="applyFilters">{{
-                  $t("ORDERS.PAGES.LIST.FILTERS.APPLY")
-                }}</vc-button>
+                <vc-button
+                  outline
+                  class="mr-4"
+                  @click="resetFilters"
+                  :disabled="applyFiltersReset"
+                  >{{
+                    $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                  }}</vc-button
+                >
+                <vc-button
+                  @click="applyFilters(closePanel)"
+                  :disabled="applyFiltersDisable"
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.APPLY") }}</vc-button
+                >
               </div>
             </VcCol>
           </VcRow>
@@ -223,7 +200,7 @@ import { useOrders } from "../composables";
 import { useFunctions, useI18n } from "@virtoshell/core";
 import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
-import { CustomerOrder } from "@virtoshell/api-client";
+import { CustomerOrder } from "../../../api_client/orders";
 import {
   IActionBuilderResult,
   ITableColumns,
@@ -260,6 +237,7 @@ const {
   currentPage,
   totalCount,
   changeOrderStatus,
+  PaymentStatus,
 } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n();
@@ -269,6 +247,16 @@ const searchValue = ref();
 const selectedItemId = ref();
 const selectedOrdersIds = ref([]);
 const sort = ref("createdDate:DESC");
+const applyFiltersDisable = computed(() => {
+  const activeFilters = Object.values(filter).filter((x) => x !== undefined);
+  return !activeFilters.length;
+});
+const applyFiltersReset = computed(() => {
+  const activeFilters = Object.values(appliedFilter.value).filter(
+    (x) => x !== undefined
+  );
+  return !activeFilters.length;
+});
 
 onMounted(async () => {
   selectedItemId.value = props.param;
@@ -476,9 +464,11 @@ const columns = computed(() => {
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 function setFilterDate(key: string, value: string) {
-  const date = new Date(value);
+  const date = moment(value).toDate();
   if (date instanceof Date && !isNaN(date.valueOf())) {
     filter[key] = date;
+  } else {
+    filter[key] = undefined;
   }
 }
 function getFilterDate(key: string) {
@@ -500,7 +490,8 @@ async function resetSearch() {
 const activeFilterCount = computed(
   () => Object.values(appliedFilter.value).filter((item) => !!item).length
 );
-async function applyFilters() {
+async function applyFilters(closePanel: () => void) {
+  closePanel();
   await loadOrders({
     ...filter,
   });

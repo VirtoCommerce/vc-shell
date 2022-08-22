@@ -218,6 +218,7 @@ import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
+import { IImage } from "../../../api_client/marketplacevendor";
 
 const props = defineProps({
   expanded: {
@@ -478,9 +479,22 @@ const onGalleryItemEdit = (item: Image) => {
     componentOptions: {
       editableAsset: item,
       images: productDetails.images,
+      sortHandler: sortImage,
     },
   });
 };
+
+function sortImage(remove = false, localImage: IImage) {
+  const images = productDetails.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+    editImages(images);
+  }
+}
 
 const editImages = (args: Image[]) => {
   productDetails.images = args;

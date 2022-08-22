@@ -42,15 +42,6 @@
           "IMPORTER": {
             "TITLE": "Importer",
             "TOOLTIP": "Select importer type"
-          },
-          "DYNAMIC": {
-            "Vcmp": {
-              "Import": {
-                "Csv": {
-                  "Delimiter": "Delimiter"
-                }
-              }
-            }
           }
         },
         "PROFILE_SETTINGS": {

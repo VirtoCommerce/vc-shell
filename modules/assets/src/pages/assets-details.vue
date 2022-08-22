@@ -56,9 +56,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, reactive, unref } from "vue";
+import { computed, reactive, unref } from "vue";
 import { useI18n } from "@virtoshell/core";
-import { Image } from "@virtoshell/api-client";
 
 const props = defineProps({
   expanded: {
@@ -72,10 +71,7 @@ const props = defineProps({
   },
 
   options: {
-    type: Object as PropType<{
-      editableAsset: Image;
-      images: Image[];
-    }>,
+    type: Object,
     default: () => ({}),
   },
 });
@@ -89,7 +85,13 @@ const bladeToolbar = [
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "fas fa-save",
     clickHandler() {
-      mutateImage();
+      if (
+        props.options.sortHandler &&
+        typeof props.options.sortHandler === "function"
+      ) {
+        props.options.sortHandler(false, localImage);
+        emit("page:close");
+      }
     },
   },
   {
@@ -102,22 +104,15 @@ const bladeToolbar = [
           unref(computed(() => t("ASSETS.PAGES.DETAILS.DELETE_CONFIRMATION")))
         )
       ) {
-        mutateImage(true);
+        if (
+          props.options.sortHandler &&
+          typeof props.options.sortHandler === "function"
+        ) {
+          props.options.sortHandler(true, localImage);
+          emit("page:close");
+        }
       }
     },
   },
 ];
-
-function mutateImage(remove = false) {
-  const images = props.options.images;
-  const image = new Image(localImage);
-  if (images.length) {
-    const imageIndex = images.findIndex((img) => img.id === localImage.id);
-
-    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
-
-    emit("parent:call", { method: "editImages", args: images });
-    emit("page:close");
-  }
-}
 </script>

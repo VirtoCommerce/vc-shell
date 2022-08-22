@@ -3,7 +3,7 @@
     "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "importHelpers": true,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,

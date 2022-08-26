@@ -24,7 +24,7 @@ const notifications = ref<PushNotification[]>([]);
 const popupNotifications = ref<PushNotification[]>([]);
 
 export default (): INotifications => {
-  const { getAccessToken, user } = useUser();
+  const { getAccessToken } = useUser();
   const logger = useLogger();
 
   async function loadFromHistory(take = 10) {

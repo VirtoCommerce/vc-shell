@@ -1,6 +1,6 @@
 import { computed, reactive, Ref, ref, watch } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
-import { cloneDeep as _cloneDeep } from "lodash-es";
+import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 import { CategoryIndexedSearchCriteria } from "../../../../api_client/catalog";
 
@@ -63,8 +63,7 @@ export default (): IUseProduct => {
   watch(
     () => productDetails,
     (state) => {
-      modified.value =
-        JSON.stringify(productDetailsCopy) !== JSON.stringify(state);
+      modified.value = !isEqual(productDetailsCopy, state);
     },
     { deep: true }
   );

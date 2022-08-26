@@ -185,7 +185,7 @@
                       </div>
                     </div>
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
@@ -197,6 +197,32 @@
                           itemData.item.extendedPrice &&
                           itemData.item.extendedPrice.toFixed(2)
                         }}
+                      </div>
+                    </div>
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                      v-if="itemData.item.feeDetails.length"
+                    >
+                      <VcHint>{{
+                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION")
+                      }}</VcHint>
+
+                      <div
+                        class="mt-1 text-ellipsis overflow-hidden whitespace-nowrap"
+                      >
+                        <div
+                          class="text-ellipsis overflow-hidden whitespace-nowrap"
+                        >
+                          {{ itemData.item.feeDetails[0].description }}
+                          <br /><span
+                            class="text-ellipsis overflow-hidden whitespace-nowrap"
+                          >
+                            {{
+                              itemData.item.feeDetails[0].amount &&
+                              itemData.item.feeDetails[0].amount.toFixed(2)
+                            }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>

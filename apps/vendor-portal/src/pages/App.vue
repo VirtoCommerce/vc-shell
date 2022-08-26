@@ -1,4 +1,5 @@
 <template>
+  <VcLoading v-if="!isReady" active class="app__loader"></VcLoading>
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -8,6 +9,7 @@
     logo="/assets/logo.svg"
     :version="version"
     :pages="pages"
+    v-else
   >
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
@@ -379,6 +381,8 @@ textarea {
 .vc-app.vc-theme_light {
   --background-color: #f2f2f2;
   --top-bar-color: #ffffff;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
+    linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
   --app-bar-background-color: #ffffff;
   --app-bar-divider-color: #ffffff;
   --app-bar-toolbar-item-width: 50px;
@@ -387,5 +391,11 @@ textarea {
   --app-bar-toolbar-icon-background-hover: #ffffff;
   --app-bar-account-info-name-color: #161d25;
   --app-bar-account-info-role-color: #7e8e9d;
+}
+
+.app {
+  &__loader {
+    background: var(--app-background);
+  }
 }
 </style>

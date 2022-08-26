@@ -151,7 +151,7 @@ function onInput(e: InputEvent) {
   }
 
   &__error {
-    @apply text-[color:var(--textarea-border-color-error)] mt-1;
+    @apply text-[color:var(--textarea-border-color-error)] mt-1 #{!important};
   }
 
   &__field {

@@ -16,6 +16,7 @@
           type="password"
           :required="true"
           rules="min:6"
+          name="current"
           v-model="form.currentPassword"
         ></VcInput>
         <VcInput
@@ -27,6 +28,7 @@
           @update:modelValue="validate"
           :required="true"
           rules="min:6"
+          name="new_pass"
           v-model="form.password"
         ></VcInput>
         <VcInput
@@ -40,6 +42,7 @@
           rules="min:6"
           @update:modelValue="validate"
           type="password"
+          name="confirm_pass"
           v-model="form.confirmPassword"
         ></VcInput>
         <div class="flex justify-center items-center pt-2">

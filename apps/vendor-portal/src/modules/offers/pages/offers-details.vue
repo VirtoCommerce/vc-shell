@@ -28,8 +28,7 @@
               keyProperty="id"
               displayProperty="name"
               @search="onProductSearch"
-              @close="onSelectClose"
-              @update:modelValue="setCategory"
+              :is-disabled="readonly"
               name="product"
               :clearable="false"
               :onInfiniteScroll="onLoadMore"
@@ -117,6 +116,7 @@
                       $t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')
                     "
                     rules="min:3"
+                    :disabled="readonly"
                     name="sku"
                   ></VcInput>
                 </div>
@@ -135,6 +135,7 @@
                         offerDetails.trackInventory = !$event;
                         offerDetails.inStockQuantity = 0;
                       "
+                      :disabled="readonly"
                       name="alwaysinstock"
                     >
                       {{
@@ -153,7 +154,7 @@
                       :placeholder="
                         $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
                       "
-                      :disabled="!offerDetails.trackInventory"
+                      :disabled="readonly || !offerDetails.trackInventory"
                       name="instockqty"
                     ></VcInput>
                   </VcCol>
@@ -231,6 +232,7 @@
                                 'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER'
                               )
                             "
+                            :disabled="readonly"
                             :name="`listprice_${i}`"
                           ></VcInput>
                         </VcCol>
@@ -257,6 +259,7 @@
                                 'OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER'
                               )
                             "
+                            :disabled="readonly"
                             :name="`saleprice_${i}`"
                           ></VcInput>
                         </VcCol>
@@ -274,13 +277,14 @@
                         :placeholder="
                           $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')
                         "
+                        :disabled="readonly"
                         :name="`minqty_${i}`"
                       ></VcInput>
                     </VcCol>
 
                     <!-- Price remove button -->
                     <div
-                      v-if="offerDetails.prices.length > 1"
+                      v-if="!readonly && offerDetails.prices.length > 1"
                       style="flex-basis: 20px"
                       :class="{
                         'offer-details__pricing-delete-btn': $isMobile.value,

@@ -186,7 +186,7 @@
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
             >
               <template v-slot:actions>
-                <VcButton small @click="addPrice">
+                <VcButton v-if="!readonly" small @click="addPrice">
                   {{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
                 </VcButton>
               </template>
@@ -321,6 +321,7 @@
                         type="datetime-local"
                         :modelValue="getFilterDate('startDate')"
                         @update:modelValue="setFilterDate('startDate', $event)"
+                        :disabled="readonly"
                         name="startDate"
                         max="9999-12-31T23:59"
                       ></VcInput>
@@ -333,6 +334,7 @@
                         type="datetime-local"
                         :modelValue="getFilterDate('endDate')"
                         @update:modelValue="setFilterDate('endDate', $event)"
+                        :disabled="readonly"
                         name="endDate"
                         rules="after:@startDate"
                         max="9999-12-31T23:59"
@@ -457,6 +459,8 @@ onBeforeUpdate(() => {
   priceRefs.value = [];
 });
 
+const readonly = computed(() => !!offer.value?.id);
+
 const title = computed(() => {
   return props.param && offerDetails && offerDetails.name
     ? offerDetails.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
@@ -492,6 +496,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
     },
+    isVisible: !props.param,
     disabled: computed(
       () =>
         !(

@@ -26,6 +26,7 @@
           class="grow basis-0"
           :placeholder="searchPlaceholder"
           :clearable="true"
+          name="table_search"
           :modelValue="searchValue"
           @update:modelValue="$emit('search:change', $event)"
         ></VcInput>

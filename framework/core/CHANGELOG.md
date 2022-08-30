@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/core@1.1.0...@virtoshell/core@1.0.19) (2022-08-30)
+
+
+### Features
+
+* vm-741 893 1005 1019 1021 513 978 914 920 828 963 755 ([b8b2cda](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8b2cdaedf32128b35c04d85689eb3203057b7d0))
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+### Bug Fixes
+
+* permissions fix ([d53c3c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+
+
+
+
 ## [1.0.18](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/core@1.1.0...@virtoshell/core@1.0.18) (2022-08-08)
 
 

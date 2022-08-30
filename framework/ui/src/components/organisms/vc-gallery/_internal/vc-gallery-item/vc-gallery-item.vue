@@ -6,11 +6,7 @@
       'vc-gallery-item_hover': hover,
     }"
     @tap.stop="hover = !hover"
-    v-click-outside="
-      () => {
-        hover = false;
-      }
-    "
+    v-click-outside="onClose"
   >
     <VcImage aspect="1x1" :src="image.url"></VcImage>
     <div class="vc-gallery-item__overlay">
@@ -96,6 +92,10 @@ defineProps({
 defineEmits(["preview", "edit", "remove"]);
 
 const hover = ref(false);
+
+function onClose() {
+  hover.value = false;
+}
 </script>
 
 <style lang="scss">

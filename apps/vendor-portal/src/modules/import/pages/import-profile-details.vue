@@ -122,6 +122,7 @@ import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { ObjectSettingEntry } from "../../../api_client/marketplacevendor";
 import { useForm } from "@virtoshell/ui";
+import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
   expanded: {
@@ -159,7 +160,8 @@ const {
   fetchDataImporters,
   setImporter,
 } = useImport();
-const { validate } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const showConfirmation = ref(false);
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -167,8 +169,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           if (props.param) {
             await updateImportProfile(profileDetails);
@@ -189,7 +190,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(() => {
       return (
-        (props.param && !modified.value) || (!props.param && !modified.value)
+        !isValid.value ||
+        (props.param && !modified.value) ||
+        (!props.param && !modified.value)
       );
     }),
   },

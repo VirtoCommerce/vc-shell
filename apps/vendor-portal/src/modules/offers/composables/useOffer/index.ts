@@ -1,14 +1,15 @@
-import { Ref, ref, computed, reactive } from "vue";
+import { computed, reactive, Ref, ref } from "vue";
 import { useLogger, useUser } from "@virtoshell/core";
 
 import {
-  VcmpSellerCatalogClient,
+  CreateNewOfferCommand,
   IOffer,
   IOfferDetails,
   IOfferProduct,
   OfferDetails,
-  CreateNewOfferCommand,
+  SearchOfferProductsResult,
   SearchProductsForNewOfferQuery,
+  VcmpSellerCatalogClient,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
 
@@ -26,7 +27,11 @@ interface IUseOffer {
   offerDetails: TExtOfferDetails;
   loadOffer: (args: { id: string }) => void;
   selectOfferProduct: (args: { id: string }) => void;
-  fetchProducts: (keyword?: string, skip?: number) => Promise<IOfferProduct[]>;
+  fetchProducts: (
+    keyword?: string,
+    skip?: number,
+    ids?: string[]
+  ) => Promise<SearchOfferProductsResult>;
   createOffer: (details: TExtOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
   getCurrencies: () => void;
@@ -58,15 +63,16 @@ export default (): IUseOffer => {
   }
   async function fetchProducts(
     keyword?: string,
-    skip = 0
-  ): Promise<IOfferProduct[]> {
+    skip = 0,
+    ids?: string[]
+  ): Promise<SearchOfferProductsResult> {
     const client = await getApiClient();
-    const result = await client.searchOfferProducts({
+    return await client.searchOfferProducts({
+      objectIds: ids,
       keyword,
       skip,
       take: 20,
     } as SearchProductsForNewOfferQuery);
-    return result.results;
   }
 
   async function createOffer(details: TExtOfferDetails) {

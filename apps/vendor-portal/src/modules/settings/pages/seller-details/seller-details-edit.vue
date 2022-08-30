@@ -335,9 +335,6 @@
                       regex:
                         /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/,
                     }"
-                    :mask="
-                      /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/
-                    "
                     name="long_lat"
                     maxchars="512"
                   >
@@ -419,6 +416,7 @@ import { useI18n, useUser } from "@virtoshell/core";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useForm } from "@virtoshell/ui";
+import { useIsFormValid } from "vee-validate";
 
 defineProps({
   expanded: {
@@ -458,7 +456,8 @@ const {
   loading,
 } = useSellerDetails();
 const { getAccessToken, user } = useUser();
-const { validate } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const errorMessage = ref("");
 const { t } = useI18n();
 const title = t("SETTINGS.SELLER_DETAILS.TITLE");
@@ -507,12 +506,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "save",
     title: computed(() => t("SETTINGS.SELLER_DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
-    disabled: computed(() => !modified.value),
+    disabled: computed(() => !isValid.value || !modified.value),
     async clickHandler() {
       errorMessage.value = undefined;
-      const { valid } = await validate();
-
-      if (valid) {
+      if (isValid.value) {
         try {
           await updateSeller(sellerDetails.value);
         } catch (e) {

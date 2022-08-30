@@ -10,9 +10,7 @@
         },
         'relative',
       ]"
-      :style="{
-        background: src ? `url(${src}) center / cover no-repeat` : undefined,
-      }"
+      :style="imageHandler"
       @click="onClick"
     >
       <div
@@ -26,6 +24,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
+
 const props = defineProps({
   aspect: {
     type: String,
@@ -59,6 +59,13 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["click"]);
+
+const imageHandler = computed(() => {
+  if (props.src) {
+    return `background: url(${encodeURI(props.src)}) center / cover no-repeat`;
+  }
+  return undefined;
+});
 
 function onClick(): void {
   if (props.clickable) {

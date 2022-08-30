@@ -26,8 +26,9 @@
         :disabled="disabled"
         @input="onInput"
         ref="inputRef"
+        :max="max"
+        :name="name"
         :maxlength="maxchars"
-        max="9999-12-31"
       />
 
       <!-- Dropdown button -->
@@ -229,6 +230,11 @@ const props = defineProps({
     type: String,
     default: "1024",
   },
+
+  max: {
+    type: String,
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(["update:modelValue", "update:optionsValue"]);
@@ -263,16 +269,6 @@ if (props.required) {
 }
 
 let initialValue = unref(props.modelValue);
-if (props.modelValue && props.type === "datetime-local") {
-  const date = new Date(props.modelValue);
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  const hour = date.getHours().toString().padStart(2, "0");
-  const minute = date.getMinutes().toString().padStart(2, "0");
-  const seconds = date.getSeconds().toString().padStart(2, "0");
-  initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
-}
 
 // Prepare field-level validation
 const { errorMessage, handleChange, value } = useField(
@@ -325,16 +321,15 @@ watch(
   () => props.modelValue,
   (value) => {
     let initialValue = unref(value);
-    if (value && props.type === "datetime-local") {
-      const date = new Date(value);
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const day = date.getDate().toString().padStart(2, "0");
-      const hour = date.getHours().toString().padStart(2, "0");
-      const minute = date.getMinutes().toString().padStart(2, "0");
-      const seconds = date.getSeconds().toString().padStart(2, "0");
-      initialValue = `${year}-${month}-${day}T${hour}:${minute}:${seconds}`;
+    if (
+      initialValue &&
+      initialValue.toString().length >= parseInt(props.maxchars)
+    ) {
+      initialValue.toString().slice(0, parseInt(props.maxchars));
+
+      return;
     }
+
     handleChange(initialValue);
   }
 );
@@ -372,12 +367,10 @@ function onItemSelect(item: { [x: string]: string }) {
   closeDrop();
 }
 
-// Handle input event to propertly validate value and emit changes
+// Handle input event to properly validate value and emit changes
 function onInput(e: InputEvent) {
   const newValue = (e.target as HTMLInputElement).value;
-  if (newValue && props.type === "datetime-local") {
-    emit("update:modelValue", new Date(newValue));
-  } else if (newValue && props.currency) {
+  if (newValue && props.currency) {
     const parsed = parse(newValue, { currency: props.optionsValue });
     emit("update:modelValue", parsed);
   } else {
@@ -390,7 +383,7 @@ function onReset() {
   if (props.currency) {
     currencyConverter && currencyConverter.setValue(null);
   }
-  emit("update:modelValue", "");
+  emit("update:modelValue", undefined);
 }
 </script>
 
@@ -453,6 +446,11 @@ function onReset() {
 
     &::placeholder {
       @apply text-[color:var(--input-placeholder-color)];
+    }
+
+    &::-ms-reveal,
+    &::-ms-clear {
+      @apply hidden;
     }
   }
 

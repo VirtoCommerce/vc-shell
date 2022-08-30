@@ -6,11 +6,7 @@
       'user-dropdown-button_no-pointer': $isMobile.value,
     }"
     @click.stop="toggleAccountMenuVisible"
-    v-click-outside="
-      () => {
-        accountMenuVisible = false;
-      }
-    "
+    v-click-outside="onClose"
   >
     <div
       class="user-dropdown-button__avatar"
@@ -76,10 +72,15 @@ const props = defineProps({
 });
 
 const accountMenuVisible = ref(false);
+
 const toggleAccountMenuVisible = () => {
   if (props.menuItems && props.menuItems.length) {
     accountMenuVisible.value = !accountMenuVisible.value;
   }
+};
+
+const onClose = () => {
+  accountMenuVisible.value = false;
 };
 </script>
 

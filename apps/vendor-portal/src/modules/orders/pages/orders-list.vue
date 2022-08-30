@@ -65,12 +65,14 @@
                   class="mb-3"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
+                  max="9999-12-31"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
+                  max="9999-12-31"
                 ></VcInput>
               </div>
             </VcCol>
@@ -471,6 +473,7 @@ function setFilterDate(key: string, value: string) {
     filter[key] = undefined;
   }
 }
+
 function getFilterDate(key: string) {
   const date = filter[key] as Date;
   if (date) {
@@ -478,6 +481,7 @@ function getFilterDate(key: string) {
   }
   return undefined;
 }
+
 async function resetSearch() {
   searchValue.value = "";
   Object.keys(filter).forEach((key: string) => (filter[key] = undefined));

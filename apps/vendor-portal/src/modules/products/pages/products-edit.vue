@@ -219,6 +219,7 @@ import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
 import { IImage } from "../../../api_client/marketplacevendor";
+import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
   expanded: {
@@ -243,7 +244,8 @@ const props = defineProps({
 });
 const emit = defineEmits(["parent:call", "page:close", "page:open"]);
 const { t } = useI18n();
-const { validate, errors } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const {
   modified,
   product: productData,
@@ -313,8 +315,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
     icon: "fas fa-save",
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           if (props.param) {
             await updateProductDetails(productData.value.id, productDetails);
@@ -340,10 +341,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        errors.value.length &&
-        ((props.param &&
-          (!productData.value?.canBeModified || !modified.value)) ||
-          (!props.param && !modified.value))
+        !isValid.value ||
+        (props.param &&
+          !(productData.value?.canBeModified || modified.value)) ||
+        (!props.param && !modified.value)
     ),
   },
   {
@@ -354,8 +355,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-share-square",
     isVisible: computed(() => !!props.param),
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           await updateProductDetails(
             productData.value.id,
@@ -383,6 +383,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
+        !isValid.value ||
         !(
           productData.value?.canBeModified &&
           (productData.value?.hasStagedChanges || modified.value)
@@ -441,7 +442,9 @@ const onGalleryUpload = async (files: FileList) => {
       formData.append("file", files[i]);
       const authToken = await getAccessToken();
       const result = await fetch(
-        `/api/assets?folderUrl=/catalog/${productData.value.id}`,
+        `/api/assets?folderUrl=/catalog/${
+          productData.value.id || productData.value.categoryId
+        }`,
         {
           method: "POST",
           body: formData,

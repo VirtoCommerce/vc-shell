@@ -1,3 +1,5 @@
 <template>
-  <slot>vc-form</slot>
+  <form>
+    <slot>vc-form</slot>
+  </form>
 </template>

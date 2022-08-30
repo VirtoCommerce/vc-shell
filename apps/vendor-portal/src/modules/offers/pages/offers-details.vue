@@ -24,12 +24,15 @@
                 $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
               "
               :options="products"
-              :initialItem="offerDetails.product"
+              :initialItem="currentProduct"
               keyProperty="id"
               displayProperty="name"
               @search="onProductSearch"
               :is-disabled="readonly"
               name="product"
+              :clearable="false"
+              :onInfiniteScroll="onLoadMore"
+              :optionsTotal="categoriesTotal"
             >
               <template v-slot:selectedItem="itemData">
                 <div
@@ -158,6 +161,25 @@
                 </VcRow>
               </div>
             </VcCard>
+
+            <!--              <VcCard-->
+            <!--                      :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"-->
+            <!--                      v-if="offerDetails.productId"-->
+            <!--              >-->
+            <!--                  <div class="p-4">-->
+            <!--                      <VcDynamicProperty-->
+            <!--                              v-for="property in filteredProps"-->
+            <!--                              :key="property.id"-->
+            <!--                              :property="property"-->
+            <!--                              :optionsGetter="loadDictionaries"-->
+            <!--                              :getter="getPropertyValue"-->
+            <!--                              :setter="setPropertyValue"-->
+            <!--                              class="mb-4"-->
+            <!--                              -->
+            <!--                      >-->
+            <!--                      </VcDynamicProperty>-->
+            <!--                  </div>-->
+            <!--              </VcCard>-->
 
             <VcCard
               class="mb-4"
@@ -297,10 +319,11 @@
                           $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')
                         "
                         type="datetime-local"
-                        :modelValue="offerDetails.startDate"
-                        @update:modelValue="offerDetails.startDate = $event"
+                        :modelValue="getFilterDate('startDate')"
+                        @update:modelValue="setFilterDate('startDate', $event)"
                         :disabled="readonly"
                         name="startDate"
+                        max="9999-12-31T23:59"
                       ></VcInput>
                     </VcCol>
                     <VcCol class="p-2">
@@ -309,11 +332,12 @@
                           $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')
                         "
                         type="datetime-local"
-                        :modelValue="offerDetails.endDate"
-                        @update:modelValue="offerDetails.endDate = $event"
+                        :modelValue="getFilterDate('endDate')"
+                        @update:modelValue="setFilterDate('endDate', $event)"
                         :disabled="readonly"
                         name="endDate"
                         rules="after:@startDate"
+                        max="9999-12-31T23:59"
                       ></VcInput>
                     </VcCol>
                   </VcRow>
@@ -354,6 +378,8 @@ import {
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid } from "vee-validate";
+import moment from "moment/moment";
+// import { PropertyValue } from "../../../api_client/catalog";
 
 const props = defineProps({
   expanded: {
@@ -392,12 +418,14 @@ const {
   getCurrencies,
 } = useOffer();
 const { debounce } = useFunctions();
+useForm({ validateOnMount: false });
+const isFormValid = useIsFormValid();
 const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
-const { errors, validate } = useForm({ validateOnMount: false });
-const isFormValid = useIsFormValid();
+const categoriesTotal = ref();
+const currentProduct = ref<IOfferProduct>();
 
 onMounted(async () => {
   await getCurrencies();
@@ -418,7 +446,13 @@ onMounted(async () => {
         props.options?.sellerProduct?.publishedProductDataId,
     });
   }
-  products.value = await fetchProducts();
+  const searchResult = await fetchProducts();
+  products.value = searchResult.results;
+  categoriesTotal.value = searchResult.totalCount;
+
+  if (offerDetails?.productId) {
+    await setProductItem(offer.value.productId);
+  }
 });
 
 onBeforeUpdate(() => {
@@ -435,7 +469,9 @@ const title = computed(() => {
 
 // Process product dropdown search
 const onProductSearch = debounce(async (value: string) => {
-  products.value = await fetchProducts(value);
+  const searchResult = await fetchProducts(value);
+  products.value = searchResult.results;
+  categoriesTotal.value = searchResult.totalCount;
 }, 500);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -444,8 +480,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("OFFERS.PAGES.DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isFormValid.value) {
         try {
           await createOffer({
             ...offerDetails,
@@ -505,6 +540,53 @@ function showProductDetails(id: string) {
     param: id,
   });
 }
+
+function setFilterDate(key: string, value: string) {
+  const date = moment(value).toDate();
+  if (date instanceof Date && !isNaN(date.valueOf())) {
+    offerDetails[key] = date;
+  } else {
+    offerDetails[key] = undefined;
+  }
+}
+
+function getFilterDate(key: string) {
+  const date = offerDetails[key] as Date;
+  if (date) {
+    return moment(date).format("YYYY-MM-DDTHH:mm");
+  }
+  return undefined;
+}
+
+async function onLoadMore() {
+  const data = await fetchProducts(undefined, 20);
+  products.value.push(...data.results);
+}
+
+async function setProductItem(id: string) {
+  const fetchedProduct = await fetchProducts(undefined, 0, [id]);
+  if (fetchedProduct.results && fetchedProduct.results.length) {
+    currentProduct.value = fetchedProduct.results[0];
+  }
+}
+
+const setCategory = async (id: string) => {
+  currentProduct.value = products.value?.find((x) => x.id === id);
+  if (!currentProduct.value) {
+    await setProductItem(id);
+  }
+};
+
+const onSelectClose = async () => {
+  const searchResult = await fetchProducts();
+  products.value = searchResult.results;
+  if (
+    currentProduct.value &&
+    !products.value.some((x) => x.id === currentProduct.value.id)
+  ) {
+    products.value.push(currentProduct.value);
+  }
+};
 </script>
 
 <style lang="scss">

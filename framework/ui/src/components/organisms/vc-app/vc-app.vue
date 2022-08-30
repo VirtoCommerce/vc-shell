@@ -10,88 +10,81 @@
       },
     ]"
   >
-    <VcLoading v-if="!isReady" active></VcLoading>
+    <!-- Show login form for unauthorized users -->
+    <slot v-if="!isAuthorized" name="login">
+      Error: Login form is not defined.
+    </slot>
+
+    <!-- Show main app layout for authorized users -->
     <template v-else>
-      <!-- Show login form for unauthorized users -->
-      <slot v-if="!isAuthorized" name="login">
-        Error: Login form is not defined.
-      </slot>
+      <!-- Init application top bar -->
+      <VcAppBar
+        class="shrink-0"
+        :logo="logo"
+        :workspace="workspaceRefs"
+        :version="version"
+        :buttons="toolbarItems"
+        @toolbarbutton:click="onToolbarButtonClick"
+        @menubutton:click="$refs.menu.isMobileVisible = true"
+        @backlink:click="onClosePage(workspace.length - 1)"
+        :openPage="onOpenPage"
+        :closePage="onClosePage"
+        @logo:click="openDashboard"
+      >
+        <template v-slot:productName v-if="$slots['productName']">
+          <slot name="productName"></slot>
+        </template>
+      </VcAppBar>
 
-      <!-- Show main app layout for authorized users -->
-      <template v-else>
-        <!-- Init application top bar -->
-        <VcAppBar
+      <div class="overflow-hidden flex grow basis-0">
+        <!-- Init main menu -->
+        <VcAppMenu
+          ref="menu"
           class="shrink-0"
-          :logo="logo"
-          :workspace="workspaceRefs"
-          :version="version"
-          :buttons="toolbarItems"
-          @toolbarbutton:click="onToolbarButtonClick"
-          @menubutton:click="$refs.menu.isMobileVisible = true"
-          @backlink:click="onClosePage(workspace.length - 1)"
-          :openPage="onOpenPage"
-          :closePage="onClosePage"
-          @logo:click="openDashboard"
+          :items="menuItems"
+          :activeItem="activeMenuItem"
+          :activeChildItem="activeChildMenuItem"
+          :mobileMenuItems="mobileMenuItems"
+          @item:click="onMenuItemClick"
+        ></VcAppMenu>
+
+        <!-- If no workspace active then show dashboard -->
+        <slot v-if="!workspace.length" name="dashboard" :openPage="onOpenPage">
+          Dashboard is not defined
+        </slot>
+
+        <!-- Else show workspace blades -->
+        <div
+          v-else
+          class="vc-app__workspace px-2 w-full overflow-hidden flex grow basis-0"
         >
-          <template v-slot:productName v-if="$slots['productName']">
-            <slot name="productName"></slot>
-          </template>
-        </VcAppBar>
-
-        <div class="overflow-hidden flex grow basis-0">
-          <!-- Init main menu -->
-          <VcAppMenu
-            ref="menu"
-            class="shrink-0"
-            :items="menuItems"
-            :activeItem="activeMenuItem"
-            :activeChildItem="activeChildMenuItem"
-            :mobileMenuItems="mobileMenuItems"
-            @item:click="onMenuItemClick"
-          ></VcAppMenu>
-
-          <!-- If no workspace active then show dashboard -->
-          <slot
-            v-if="!workspace.length"
-            name="dashboard"
-            :openPage="onOpenPage"
-          >
-            Dashboard is not defined
-          </slot>
-
-          <!-- Else show workspace blades -->
-          <div
-            v-else
-            class="vc-app__workspace px-2 w-full overflow-hidden flex grow basis-0"
-          >
-            <component
-              v-for="(blade, index) in workspace"
-              v-show="index >= workspace.length - ($isMobile.value ? 1 : 2)"
-              :key="index"
-              :is="blade.component"
-              :ref="setWorkspaceRef"
-              :param="blade.param"
-              :closable="index > 0"
-              :expanded="index === workspace.length - 1"
-              :options="blade.componentOptions"
-              @page:open="onOpenPage(index, $event)"
-              @page:close="onClosePage(index, $event)"
-              @page:closeChildren="onClosePage(index + 1, $event)"
-              @parent:call="onParentCall(index, $event)"
-              @notification:show="onShowNotification(index, $event)"
-            ></component>
-          </div>
-
-          <div
-            class="[pointer-events:painted] absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-2 box-border"
-          >
-            <slot name="notifications"></slot>
-          </div>
-          <div>
-            <slot name="passwordChange"></slot>
-          </div>
+          <component
+            v-for="(blade, index) in workspace"
+            v-show="index >= workspace.length - ($isMobile.value ? 1 : 2)"
+            :key="index"
+            :is="blade.component"
+            :ref="setWorkspaceRef"
+            :param="blade.param"
+            :closable="index > 0"
+            :expanded="index === workspace.length - 1"
+            :options="blade.componentOptions"
+            @page:open="onOpenPage(index, $event)"
+            @page:close="onClosePage(index, $event)"
+            @page:closeChildren="onClosePage(index + 1, $event)"
+            @parent:call="onParentCall(index, $event)"
+            @notification:show="onShowNotification(index, $event)"
+          ></component>
         </div>
-      </template>
+
+        <div
+          class="[pointer-events:painted] absolute flex z-[1000] overflow-hidden top-0 left-2/4 -translate-x-2/4 flex-col items-center p-2 box-border"
+        >
+          <slot name="notifications"></slot>
+        </div>
+        <div>
+          <slot name="passwordChange"></slot>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -391,7 +384,6 @@ const accessGuard = (bladeComponent: IPage) => {
 
 const onMenuItemClick = function (item: Record<string, unknown>) {
   console.debug(`vc-app#onMenuItemClick() called.`);
-  activeMenuItem.value = item;
 
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);

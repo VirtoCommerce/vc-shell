@@ -408,6 +408,7 @@ const { t } = useI18n();
 
 const {
   createOffer,
+  updateOffer,
   offerDetails,
   currencyList,
   fetchProducts,
@@ -459,7 +460,7 @@ onBeforeUpdate(() => {
   priceRefs.value = [];
 });
 
-const readonly = computed(() => !!offer.value?.id);
+const readonly = false; //computed(() => !!offer.value?.id);
 
 const title = computed(() => {
   return props.param && offerDetails && offerDetails.name
@@ -482,9 +483,15 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (isFormValid.value) {
         try {
-          await createOffer({
-            ...offerDetails,
-          });
+          if (offerDetails.id) {
+            await updateOffer({
+              ...offerDetails,
+            });
+          } else {
+            await createOffer({
+              ...offerDetails,
+            });
+          }
           emit("parent:call", {
             method: "reload",
           });
@@ -496,7 +503,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
     },
-    isVisible: !props.param,
+    isVisible: true, //!props.param,
     disabled: computed(
       () =>
         !(

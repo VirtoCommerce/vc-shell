@@ -1292,6 +1292,50 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
+     updateOffer(body: UpdateOfferCommand | undefined): Promise<Offer> {
+      let url_ = this.baseUrl + "/api/vcmp/seller/offers";
+      url_ = url_.replace(/[?&]$/, "");
+
+      const content_ = JSON.stringify(body);
+
+      let options_: RequestInit = {
+          body: content_,
+          method: "POST",
+          headers: {
+              "Content-Type": "application/json-patch+json",
+              "Accept": "text/plain"
+          }
+      };
+
+      return this.transformOptions(options_).then(transformedOptions_ => {
+          return this.http.fetch(url_, transformedOptions_);
+      }).then((_response: Response) => {
+          return this.processUpdateOffer(_response);
+      });
+  }
+
+  protected processUpdateOffer(response: Response): Promise<Offer> {
+      const status = response.status;
+      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+      if (status === 200) {
+          return response.text().then((_responseText) => {
+          let result200: any = null;
+          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+          result200 = Offer.fromJS(resultData200);
+          return result200;
+          });
+      } else if (status !== 200 && status !== 204) {
+          return response.text().then((_responseText) => {
+          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+          });
+      }
+      return Promise.resolve<Offer>(null as any);
+  }
+
+  /**
+     * @param body (optional) 
+     * @return Success
+     */
     changeOfferState(body: ChangeOfferStateCommand | undefined): Promise<Offer> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers/state";
         url_ = url_.replace(/[?&]$/, "");
@@ -7899,7 +7943,7 @@ export interface ISearchOfferProductsResult {
 export class OfferDetails implements IOfferDetails {
     productId?: string | undefined;
     isActive?: boolean;
-    outerId?: string | undefined;
+     outerId?: string | undefined;
     name?: string | undefined;
     sku!: string;
     currency!: string;
@@ -7909,6 +7953,7 @@ export class OfferDetails implements IOfferDetails {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     estimatedDeliveryDate?: string | undefined;
+    imgSrc?: string | undefined;
 
     constructor(data?: IOfferDetails) {
         if (data) {
@@ -7937,6 +7982,7 @@ export class OfferDetails implements IOfferDetails {
             this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.estimatedDeliveryDate = _data["estimatedDeliveryDate"];
+            this.imgSrc = _data["imgSrc"];
         }
     }
 
@@ -7965,6 +8011,7 @@ export class OfferDetails implements IOfferDetails {
         data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["estimatedDeliveryDate"] = this.estimatedDeliveryDate;
+        data["imgSrc"] = this.imgSrc;
         return data;
     }
 }
@@ -7982,6 +8029,7 @@ export interface IOfferDetails {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     estimatedDeliveryDate?: string | undefined;
+    imgSrc?: string | undefined;
 }
 
 export class CreateNewOfferCommand implements ICreateNewOfferCommand {
@@ -8093,6 +8141,57 @@ export interface IChangeOfferStateCommand {
     sellerName?: string | undefined;
     offerId: string;
     isActive: boolean;
+}
+
+export class UpdateOfferCommand implements IUpdateOfferCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    offerId?: string | undefined;
+    offerDetails!: OfferDetails;
+
+    constructor(data?: IUpdateOfferCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.offerDetails = new OfferDetails();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sellerId = _data["sellerId"];
+            this.sellerName = _data["sellerName"];
+            this.offerId = _data["offerId"];
+            this.offerDetails = _data["offerDetails"] ? OfferDetails.fromJS(_data["offerDetails"]) : new OfferDetails();
+        }
+    }
+
+    static fromJS(data: any): UpdateOfferCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateOfferCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sellerId"] = this.sellerId;
+        data["sellerName"] = this.sellerName;
+        data["offerId"] = this.offerId;
+        data["offerDetails"] = this.offerDetails ? this.offerDetails.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateOfferCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    offerId?: string | undefined;
+    offerDetails: OfferDetails;
 }
 
 export enum SettingValueType {

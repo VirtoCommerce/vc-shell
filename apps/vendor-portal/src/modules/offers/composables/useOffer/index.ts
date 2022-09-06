@@ -3,6 +3,7 @@ import { useLogger, useUser } from "@virtoshell/core";
 
 import {
   CreateNewOfferCommand,
+  UpdateOfferCommand,
   IOffer,
   IOfferDetails,
   IOfferProduct,
@@ -18,6 +19,7 @@ export type TExtOfferDetails = IOfferDetails & {
   salePrice?: number;
   listPrice?: number;
   minQuantity?: number;
+  id?: string;
 };
 
 interface IUseOffer {
@@ -33,6 +35,7 @@ interface IUseOffer {
     ids?: string[]
   ) => Promise<SearchOfferProductsResult>;
   createOffer: (details: TExtOfferDetails) => void;
+  updateOffer: (details: TExtOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
   getCurrencies: () => void;
 }
@@ -88,6 +91,27 @@ export default (): IUseOffer => {
     try {
       loading.value = true;
       offer.value = await client.createNewOffer(command);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function updateOffer(details: TExtOfferDetails) {
+    logger.info(`update offer`, details);
+
+    const client = await getApiClient();
+    const command = new UpdateOfferCommand({
+      sellerName: user.value.userName,
+      offerId: details.id,
+      offerDetails: new OfferDetails(details),
+    });
+
+    try {
+      loading.value = true;
+      offer.value = await client.updateOffer(command);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -187,6 +211,7 @@ export default (): IUseOffer => {
     loadOffer,
     selectOfferProduct,
     createOffer,
+    updateOffer,
     fetchProducts,
     deleteOffer,
     getCurrencies,

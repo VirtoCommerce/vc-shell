@@ -344,6 +344,35 @@
                 </Form>
               </div>
             </VcCard>
+            <VcCard
+              v-if="offerDetails.id"
+              :header="$t('OFFERS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
+              class="my-3 relative"
+              is-collapsable
+              :is-collapsed="restoreCollapsed('offer_gallery')"
+              @state:collapsed="handleCollapsed('offer_gallery', $event)"
+            >
+              <VcLoading :active="fileUploading"></VcLoading>
+              <div class="p-2">
+                <VcGallery
+                  class="my-org__gallery -m-2"
+                  :images="imgHandler"
+                  @upload="onImageUpload"
+                  variant="file-upload"
+                  :multiple="false"
+                  @item:remove="onImageRemove"
+                  :itemActions="{
+                    preview: false,
+                    edit: false,
+                    remove: true,
+                  }"
+                  :disableDrag="true"
+                  :hideAfterUpload="!!imgHandler.length"
+                  name="offerImage"
+                >
+                </VcGallery>
+              </div>
+            </VcCard>
           </VcForm>
         </div>
       </div>
@@ -369,11 +398,12 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useForm } from "@virtoshell/ui";
-import { useFunctions, useI18n } from "@virtoshell/core";
+import { useFunctions, useI18n, useUser } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import {
   IOfferProduct,
   OfferPrice,
+  Image,
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
@@ -408,6 +438,7 @@ const { t } = useI18n();
 
 const {
   createOffer,
+  updateOffer,
   offerDetails,
   currencyList,
   fetchProducts,
@@ -420,12 +451,14 @@ const {
 const { debounce } = useFunctions();
 useForm({ validateOnMount: false });
 const isFormValid = useIsFormValid();
+const { getAccessToken } = useUser();
 const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
 const categoriesTotal = ref();
 const currentProduct = ref<IOfferProduct>();
+const fileUploading = ref(false);
 
 onMounted(async () => {
   await getCurrencies();
@@ -459,7 +492,7 @@ onBeforeUpdate(() => {
   priceRefs.value = [];
 });
 
-const readonly = computed(() => !!offer.value?.id);
+const readonly = false; //computed(() => !!offer.value?.id);
 
 const title = computed(() => {
   return props.param && offerDetails && offerDetails.name
@@ -482,9 +515,15 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (isFormValid.value) {
         try {
-          await createOffer({
-            ...offerDetails,
-          });
+          if (offerDetails.id) {
+            await updateOffer({
+              ...offerDetails,
+            });
+          } else {
+            await createOffer({
+              ...offerDetails,
+            });
+          }
           emit("parent:call", {
             method: "reload",
           });
@@ -496,7 +535,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
     },
-    isVisible: !props.param,
+    isVisible: true, //!props.param,
     disabled: computed(
       () =>
         !(
@@ -568,6 +607,61 @@ async function setProductItem(id: string) {
   if (fetchedProduct.results && fetchedProduct.results.length) {
     currentProduct.value = fetchedProduct.results[0];
   }
+}
+
+const imgHandler = computed(() =>
+  offerDetails.imgSrc ? [{ url: offerDetails.imgSrc }] : []
+);
+
+async function onImageUpload(files: FileList) {
+  try {
+    fileUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(
+        `/api/assets?folderUrl=/offers/${offerDetails.id}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        image.createdDate = new Date();
+        offerDetails.imgSrc = image.url;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    fileUploading.value = false;
+  }
+
+  files = null;
+}
+
+function onImageRemove() {
+  if (
+    window.confirm(
+      unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION")))
+    )
+  ) {
+    offerDetails.imgSrc = undefined;
+  }
+}
+
+function handleCollapsed(key: string, value: boolean): void {
+  localStorage?.setItem(key, `${value}`);
+}
+
+function restoreCollapsed(key: string): boolean {
+  return localStorage?.getItem(key) === "true";
 }
 
 const setCategory = async (id: string) => {

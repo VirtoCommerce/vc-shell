@@ -3,6 +3,40 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.20](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-vendor-portal@1.1.0...@virtoshell/app-vendor-portal@1.0.20) (2022-09-06)
+
+
+### Bug Fixes
+
+* remove redundant changes ([0b4d4e9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0b4d4e954d61d8e99426c01a090e4e689ab2c7ab))
+
+
+### Features
+
+* edit offer ([#127](https://github.com/VirtoCommerce/platform-manager-sdk/issues/127)) ([de06358](https://github.com/VirtoCommerce/platform-manager-sdk/commit/de06358d7ebf0cb40cb41d36f6471bd96fd1b555))
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+### Bug Fixes
+
+* permissions fix ([d53c3c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+
+
+
+
+
 ## [1.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-vendor-portal@1.1.0...@virtoshell/app-vendor-portal@1.0.19) (2022-08-30)
 
 

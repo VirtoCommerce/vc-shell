@@ -3,6 +3,27 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.20](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/config-generator@1.1.0...@virtoshell/config-generator@1.0.20) (2022-09-06)
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+**Note:** Version bump only for package @virtoshell/config-generator
+
+
+
+
+
+
 ## [1.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/config-generator@1.1.0...@virtoshell/config-generator@1.0.19) (2022-08-30)
 
 

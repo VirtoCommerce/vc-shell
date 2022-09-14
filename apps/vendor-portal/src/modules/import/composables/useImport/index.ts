@@ -377,8 +377,8 @@ export default (): IUseImport => {
     }) as ImportPushNotification;
 
     if (job && !job.finished) {
-      importStarted.value = true;
       updateStatus(job);
+      importStarted.value = true;
     }
   }
 

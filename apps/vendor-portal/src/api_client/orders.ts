@@ -1580,6 +1580,7 @@ export class OrderAddress implements IOrderAddress {
     email?: string | undefined;
     outerId?: string | undefined;
     isDefault?: boolean;
+    description?: string | undefined;
 
     constructor(data?: IOrderAddress) {
         if (data) {
@@ -1612,6 +1613,7 @@ export class OrderAddress implements IOrderAddress {
             this.email = _data["email"];
             this.outerId = _data["outerId"];
             this.isDefault = _data["isDefault"];
+            this.description = _data["description"];
         }
     }
 
@@ -1644,6 +1646,7 @@ export class OrderAddress implements IOrderAddress {
         data["email"] = this.email;
         data["outerId"] = this.outerId;
         data["isDefault"] = this.isDefault;
+        data["description"] = this.description;
         return data;
     }
 }
@@ -1669,6 +1672,7 @@ export interface IOrderAddress {
     email?: string | undefined;
     outerId?: string | undefined;
     isDefault?: boolean;
+    description?: string | undefined;
 }
 
 export enum SettingValueType {
@@ -1687,8 +1691,9 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
     objectId?: string | undefined;
     objectType?: string | undefined;
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;
@@ -1717,6 +1722,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             this.objectType = _data["objectType"];
             this.isReadOnly = _data["isReadOnly"];
             this.value = _data["value"];
+            this.id = _data["id"];
             this.restartRequired = _data["restartRequired"];
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
@@ -1749,6 +1755,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         data["objectType"] = this.objectType;
         data["isReadOnly"] = this.isReadOnly;
         data["value"] = this.value;
+        data["id"] = this.id;
         data["restartRequired"] = this.restartRequired;
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
@@ -1772,8 +1779,9 @@ export interface IObjectSettingEntry {
     itHasValues?: boolean;
     objectId?: string | undefined;
     objectType?: string | undefined;
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;

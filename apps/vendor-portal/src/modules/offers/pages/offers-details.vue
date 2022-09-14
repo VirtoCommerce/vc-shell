@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    v-loading="loading"
+    v-loading="loading || productLoading || offerLoading"
     :title="title"
     width="50%"
     :expanded="expanded"
@@ -33,6 +33,7 @@
               :clearable="false"
               :onInfiniteScroll="onLoadMore"
               :optionsTotal="categoriesTotal"
+              @change="getProductItem"
             >
               <template v-slot:selectedItem="itemData">
                 <div
@@ -159,27 +160,35 @@
                     ></VcInput>
                   </VcCol>
                 </VcRow>
+                <VcRow v-if="param">
+                  <VcCol size="1" class="self-center mr-2 my-2">
+                    {{ $t("OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE") }}
+                  </VcCol>
+                  <VcCol size="4" class="justify-center">
+                    {{ offerDetails.availQuantity }}
+                  </VcCol>
+                </VcRow>
               </div>
             </VcCard>
 
-            <!--              <VcCard-->
-            <!--                      :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"-->
-            <!--                      v-if="offerDetails.productId"-->
-            <!--              >-->
-            <!--                  <div class="p-4">-->
-            <!--                      <VcDynamicProperty-->
-            <!--                              v-for="property in filteredProps"-->
-            <!--                              :key="property.id"-->
-            <!--                              :property="property"-->
-            <!--                              :optionsGetter="loadDictionaries"-->
-            <!--                              :getter="getPropertyValue"-->
-            <!--                              :setter="setPropertyValue"-->
-            <!--                              class="mb-4"-->
-            <!--                              -->
-            <!--                      >-->
-            <!--                      </VcDynamicProperty>-->
-            <!--                  </div>-->
-            <!--              </VcCard>-->
+            <VcCard
+              class="mb-4"
+              :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
+              v-if="filteredProps"
+            >
+              <div class="p-4">
+                <VcDynamicProperty
+                  v-for="property in filteredProps"
+                  :key="property.id"
+                  :property="property"
+                  :optionsGetter="loadDictionaries"
+                  :getter="getPropertyValue"
+                  :setter="setPropertyValue"
+                  class="mb-4"
+                >
+                </VcDynamicProperty>
+              </div>
+            </VcCard>
 
             <VcCard
               class="mb-4"
@@ -409,6 +418,13 @@ import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid } from "vee-validate";
 import moment from "moment/moment";
+import {
+  IProperty,
+  IPropertyValue,
+  PropertyDictionaryItem,
+  PropertyValue,
+} from "../../../api_client/catalog";
+import { useProduct } from "../../products";
 // import { PropertyValue } from "../../../api_client/catalog";
 
 const props = defineProps({
@@ -445,10 +461,10 @@ const {
   offer,
   loadOffer,
   loading,
-  selectOfferProduct,
   getCurrencies,
 } = useOffer();
 const { debounce } = useFunctions();
+const { searchDictionaryItems } = useProduct();
 useForm({ validateOnMount: false });
 const isFormValid = useIsFormValid();
 const { getAccessToken } = useUser();
@@ -459,32 +475,38 @@ const container = ref();
 const categoriesTotal = ref();
 const currentProduct = ref<IOfferProduct>();
 const fileUploading = ref(false);
+const offerLoading = ref(false);
+const productLoading = ref(false);
+
+const filterTypes = ["Variation"];
+
+const filteredProps = computed(() => {
+  return offerDetails?.properties?.filter((x) => filterTypes.includes(x.type));
+});
 
 onMounted(async () => {
-  await getCurrencies();
-  if (props.param) {
-    await loadOffer({ id: props.param });
-  } else {
-    offerDetails.trackInventory = true;
-    offerDetails.currency = "USD";
-    addPrice();
-  }
-  if (
-    offer.value.productId ||
-    props.options?.sellerProduct?.publishedProductDataId
-  ) {
-    await selectOfferProduct({
-      id:
-        offer.value.productId ||
-        props.options?.sellerProduct?.publishedProductDataId,
-    });
-  }
-  const searchResult = await fetchProducts();
-  products.value = searchResult.results;
-  categoriesTotal.value = searchResult.totalCount;
+  try {
+    offerLoading.value = true;
+    await getCurrencies();
+    if (props.param) {
+      await loadOffer({ id: props.param });
+    } else {
+      offerDetails.trackInventory = true;
+      offerDetails.currency = "USD";
+      addPrice();
+    }
+    const searchResult = await fetchProducts();
+    products.value = searchResult.results;
+    categoriesTotal.value = searchResult.totalCount;
 
-  if (offerDetails?.productId) {
-    await setProductItem(offer.value.productId);
+    if (
+      offer.value.productId ||
+      props.options?.sellerProduct?.publishedProductDataId
+    ) {
+      await setProductItem(offer.value.productId);
+    }
+  } finally {
+    offerLoading.value = false;
   }
 });
 
@@ -603,9 +625,18 @@ async function onLoadMore() {
 }
 
 async function setProductItem(id: string) {
-  const fetchedProduct = await fetchProducts(undefined, 0, [id]);
-  if (fetchedProduct.results && fetchedProduct.results.length) {
-    currentProduct.value = fetchedProduct.results[0];
+  try {
+    productLoading.value = true;
+    const fetchedProduct = await fetchProducts(undefined, 0, [id]);
+    if (fetchedProduct.results && fetchedProduct.results.length) {
+      currentProduct.value = fetchedProduct.results[0];
+
+      if (!props.param) {
+        offerDetails.properties = currentProduct.value.properties;
+      }
+    }
+  } finally {
+    productLoading.value = false;
   }
 }
 
@@ -664,23 +695,98 @@ function restoreCollapsed(key: string): boolean {
   return localStorage?.getItem(key) === "true";
 }
 
-const setCategory = async (id: string) => {
-  currentProduct.value = products.value?.find((x) => x.id === id);
-  if (!currentProduct.value) {
-    await setProductItem(id);
+function getProductItem() {
+  if (offerDetails.productId) {
+    setProductItem(offerDetails.productId);
   }
-};
+}
 
-const onSelectClose = async () => {
-  const searchResult = await fetchProducts();
-  products.value = searchResult.results;
+async function loadDictionaries(
+  property: IProperty,
+  keyword?: string,
+  skip?: number
+) {
+  return await searchDictionaryItems([property.id], keyword, skip);
+}
+
+function setPropertyValue(
+  property: IProperty,
+  value: IPropertyValue,
+  dictionary?: PropertyDictionaryItem[]
+) {
   if (
-    currentProduct.value &&
-    !products.value.some((x) => x.id === currentProduct.value.id)
+    typeof value === "object" &&
+    Object.prototype.hasOwnProperty.call(value, "length")
   ) {
-    products.value.push(currentProduct.value);
+    if (dictionary && dictionary.length) {
+      property.values = (value as IPropertyValue[]).map((item) => {
+        const handledValue = handleDictionaryValue(
+          property,
+          item.valueId,
+          dictionary
+        );
+        return new PropertyValue(handledValue);
+      });
+    } else {
+      property.values = (value as IPropertyValue[]).map(
+        (item) => new PropertyValue(item)
+      );
+    }
+  } else {
+    if (dictionary && dictionary.length) {
+      const handledValue = handleDictionaryValue(
+        property,
+        value as string,
+        dictionary
+      );
+      property.values[0] = new PropertyValue({
+        ...handledValue,
+        isInherited: false,
+      });
+    } else {
+      if (property.values[0]) {
+        property.values[0].value = value;
+      } else {
+        property.values[0] = new PropertyValue({
+          value,
+          isInherited: false,
+        });
+      }
+    }
   }
-};
+}
+
+function getPropertyValue(
+  property: IProperty,
+  isDictionary?: boolean
+): Record<string, unknown> {
+  if (isDictionary) {
+    return (
+      property.values[0] &&
+      (property.values[0].valueId as unknown as Record<string, unknown>)
+    );
+  }
+  return property.values[0] && property.values[0].value;
+}
+
+function handleDictionaryValue(
+  property: IProperty,
+  valueId: string,
+  dictionary: PropertyDictionaryItem[]
+) {
+  let valueName;
+  const dictionaryItem = dictionary.find((x) => x.id === valueId);
+  if (dictionaryItem) {
+    valueName = dictionaryItem.alias;
+  } else {
+    valueName = property.name;
+  }
+
+  return {
+    value: valueName,
+    valueId,
+  };
+}
 </script>
 
 <style lang="scss">

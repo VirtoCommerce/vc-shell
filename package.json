@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "bootstrap-link": "lerna bootstrap --force-local && lerna link --force-local",
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",

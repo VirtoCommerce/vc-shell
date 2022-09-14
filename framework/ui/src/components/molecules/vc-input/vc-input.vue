@@ -370,11 +370,15 @@ function onItemSelect(item: { [x: string]: string }) {
 // Handle input event to properly validate value and emit changes
 function onInput(e: InputEvent) {
   const newValue = (e.target as HTMLInputElement).value;
-  if (newValue && props.currency) {
-    const parsed = parse(newValue, { currency: props.optionsValue });
-    emit("update:modelValue", parsed);
+  if (newValue) {
+    if (props.currency) {
+      const parsed = parse(newValue, { currency: props.optionsValue });
+      emit("update:modelValue", parsed);
+    } else {
+      emit("update:modelValue", newValue);
+    }
   } else {
-    emit("update:modelValue", newValue);
+    emit("update:modelValue", null);
   }
 }
 
@@ -383,7 +387,7 @@ function onReset() {
   if (props.currency) {
     currencyConverter && currencyConverter.setValue(null);
   }
-  emit("update:modelValue", undefined);
+  emit("update:modelValue", null);
 }
 </script>
 

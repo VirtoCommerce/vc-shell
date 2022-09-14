@@ -319,6 +319,13 @@ const tableColumns = ref<ITableColumns[]>([
     sortable: true,
     type: "number",
   },
+  {
+    id: "availQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.AVAIL_QTY")),
+    width: 80,
+    sortable: true,
+    type: "number",
+  },
 ]);
 
 const empty = reactive({

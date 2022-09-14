@@ -976,8 +976,9 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
     objectId?: string | undefined;
     objectType?: string | undefined;
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;
@@ -1006,6 +1007,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             this.objectType = _data["objectType"];
             this.isReadOnly = _data["isReadOnly"];
             this.value = _data["value"];
+            this.id = _data["id"];
             this.restartRequired = _data["restartRequired"];
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
@@ -1038,6 +1040,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         data["objectType"] = this.objectType;
         data["isReadOnly"] = this.isReadOnly;
         data["value"] = this.value;
+        data["id"] = this.id;
         data["restartRequired"] = this.restartRequired;
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
@@ -1061,8 +1064,9 @@ export interface IObjectSettingEntry {
     itHasValues?: boolean;
     objectId?: string | undefined;
     objectType?: string | undefined;
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;

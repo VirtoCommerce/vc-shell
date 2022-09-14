@@ -8,7 +8,7 @@
     @tap.stop="hover = !hover"
     v-click-outside="onClose"
   >
-    <VcImage aspect="1x1" :src="image.url"></VcImage>
+    <VcImage aspect="1x1" :src="image.url" background="contain"></VcImage>
     <div class="vc-gallery-item__overlay">
       <div class="flex">
         <VcIcon

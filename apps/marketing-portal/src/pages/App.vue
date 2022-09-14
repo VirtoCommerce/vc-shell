@@ -31,7 +31,7 @@
         :key="item.id"
         :timeout="5000"
         @dismiss="dismiss(item)"
-        @expired="markAsReaded(item)"
+        @expired="markAsRead(item)"
       >
         {{ item.title }}
       </VcNotification>
@@ -87,7 +87,7 @@ const {
   notifications,
   addNotification,
   dismiss,
-  markAsReaded,
+  markAsRead,
 } = useNotifications();
 const router = useRouter();
 const isAuthorized = ref(false);

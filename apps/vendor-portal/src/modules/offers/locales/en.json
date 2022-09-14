@@ -25,7 +25,8 @@
             "SALE_PRICE": "Sale price",
             "LIST_PRICE": "List price",
             "MIN_QTY": "Min. Quantity",
-            "QTY": "Quantity in Stock"
+            "QTY": "Initial Quantity",
+            "AVAIL_QTY": "Current Quantity"
           },
           "EMPTY": {
             "TITLE": "There are no offers yet",
@@ -75,6 +76,10 @@
           "QTY": {
             "TITLE": "Quantity in Stock",
             "PLACEHOLDER": "Enter product available quantity"
+          },
+          "AVAIL_QTY": {
+            "TITLE": "Current Quantity",
+            "PLACEHOLDER": "Product current quantity"
           },
           "LIST_PRICE": {
             "TITLE": "List price",

@@ -64,6 +64,7 @@ const emit = defineEmits(["click"]);
 
 function onClick(e: Event): void {
   if (!props.disabled) {
+    e.preventDefault();
     emit("click", e);
   }
 }

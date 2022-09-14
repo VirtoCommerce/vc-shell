@@ -31,7 +31,7 @@
         :key="item.id"
         :timeout="5000"
         @dismiss="dismiss(item)"
-        @expired="markAsReaded(item)"
+        @expired="markAsRead(item)"
       >
         {{ item.title }}
       </VcNotification>
@@ -72,6 +72,7 @@ import {
   useNotifications,
   useSettings,
   usePermissions,
+  useFunctions,
 } from "@virtoshell/core";
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
@@ -94,10 +95,11 @@ const {
   notifications,
   addNotification,
   dismiss,
-  markAsReaded,
+  markAsRead,
 } = useNotifications();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
+const { delay } = useFunctions();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -110,7 +112,7 @@ const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 
 signalR.on("Send", (message: PushNotification) => {
-  addNotification(message);
+  delay(() => addNotification(message), 100);
 });
 
 onMounted(async () => {

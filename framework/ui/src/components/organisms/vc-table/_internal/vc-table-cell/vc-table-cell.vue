@@ -30,7 +30,13 @@
 
   <!-- Image cell -->
   <div v-else-if="cell.type === 'image'">
-    <VcImage :bordered="true" size="s" aspect="1x1" :src="value" />
+    <VcImage
+      :bordered="true"
+      size="s"
+      aspect="1x1"
+      :src="value"
+      background="contain"
+    />
   </div>
 
   <!-- Status cell -->

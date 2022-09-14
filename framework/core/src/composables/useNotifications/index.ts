@@ -14,7 +14,7 @@ interface INotifications {
   readonly popupNotifications: ComputedRef<Readonly<PushNotification[]>>;
   loadFromHistory(take?: number): void;
   addNotification(message: PushNotification): void;
-  markAsReaded(sage: PushNotification): void;
+  markAsRead(message: PushNotification): void;
   dismiss(message: PushNotification): void;
   dismissAll(): void;
   markAllAsRead(): void;
@@ -70,7 +70,7 @@ export default (): INotifications => {
     }
   }
 
-  function markAsReaded(message: PushNotification) {
+  function markAsRead(message: PushNotification) {
     message.isNew = false;
     _.remove(popupNotifications.value, (x) => x.id == message.id);
   }
@@ -113,7 +113,7 @@ export default (): INotifications => {
     addNotification,
     dismissAll,
     dismiss,
-    markAsReaded,
+    markAsRead,
     markAllAsRead,
   };
 };

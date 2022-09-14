@@ -56,13 +56,20 @@ const props = defineProps({
     type: String,
     default: "auto",
   },
+
+  background: {
+    type: String,
+    default: "cover",
+  },
 });
 
 const emit = defineEmits(["click"]);
 
 const imageHandler = computed(() => {
   if (props.src) {
-    return `background: url(${encodeURI(props.src)}) center / cover no-repeat`;
+    return `background: url(${encodeURI(props.src)}) center / ${
+      props.background
+    } no-repeat`;
   }
   return undefined;
 });
@@ -84,27 +91,27 @@ function onClick(): void {
   --image-size-xxl: 145px;
 }
 
-$paddings: (
+$aspects: (
   1x1: 100%,
   16x9: 56.25%,
   4x3: 75%,
   3x2: 66.66%,
 );
 
-$aspects: xs, s, m, l, xl, xxl;
+$paddings: xs, s, m, l, xl, xxl;
 
 .vc-image {
   @apply inline-block relative;
 
-  @each $name, $padding in $paddings {
+  @each $name, $aspect in $aspects {
     &_#{$name} {
-      @apply pb-[#{$padding}];
+      @apply pb-[#{$aspect}];
     }
   }
 
-  @each $aspect in $aspects {
-    &_#{$aspect} {
-      @apply w-[var(--image-size-#{$aspect})];
+  @each $padding in $paddings {
+    &_#{$padding} {
+      @apply w-[var(--image-size-#{$padding})];
     }
   }
 

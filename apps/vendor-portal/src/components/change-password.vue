@@ -18,6 +18,7 @@
           rules="min:6"
           name="current"
           v-model="form.currentPassword"
+          @update:modelValue="validate"
         ></VcInput>
         <VcInput
           ref="newPasswordField"

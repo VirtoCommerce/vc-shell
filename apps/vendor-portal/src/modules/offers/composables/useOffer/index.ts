@@ -3,6 +3,7 @@ import { useLogger, useUser } from "@virtoshell/core";
 
 import {
   CreateNewOfferCommand,
+  UpdateOfferCommand,
   IOffer,
   IOfferDetails,
   IOfferProduct,
@@ -10,29 +11,33 @@ import {
   SearchOfferProductsResult,
   SearchProductsForNewOfferQuery,
   VcmpSellerCatalogClient,
+  Property,
+  PropertyValue,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
 
-export type TExtOfferDetails = IOfferDetails & {
+export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
   salePrice?: number;
   listPrice?: number;
   minQuantity?: number;
+  id?: string;
+  properties?: Property[];
 };
 
 interface IUseOffer {
   offer: Ref<IOffer>;
   currencyList: Ref<string[]>;
   loading: Ref<boolean>;
-  offerDetails: TExtOfferDetails;
+  offerDetails: TextOfferDetails;
   loadOffer: (args: { id: string }) => void;
-  selectOfferProduct: (args: { id: string }) => void;
   fetchProducts: (
     keyword?: string,
     skip?: number,
     ids?: string[]
   ) => Promise<SearchOfferProductsResult>;
-  createOffer: (details: TExtOfferDetails) => void;
+  createOffer: (details: TextOfferDetails) => void;
+  updateOffer: (details: TextOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
   getCurrencies: () => void;
 }
@@ -48,7 +53,7 @@ export default (): IUseOffer => {
   const { user, getAccessToken } = useUser();
   const logger = useLogger();
   const offer = ref<IOffer>({});
-  const offerDetails = reactive<TExtOfferDetails>(new OfferDetails());
+  const offerDetails = reactive<TextOfferDetails>(new OfferDetails());
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
 
@@ -75,14 +80,23 @@ export default (): IUseOffer => {
     } as SearchProductsForNewOfferQuery);
   }
 
-  async function createOffer(details: TExtOfferDetails) {
+  async function createOffer(details: TextOfferDetails) {
     logger.info(`create new  offer`, details);
 
     const client = await getApiClient();
     const command = new CreateNewOfferCommand({
       sellerName: user.value.userName,
       productId: details.productId,
-      details: new OfferDetails(details),
+      details: new OfferDetails({
+        ...details,
+        properties: details.properties.map(
+          (x) =>
+            new Property({
+              ...x,
+              values: x.values.map((v) => new PropertyValue(v)),
+            })
+        ),
+      }),
     });
 
     try {
@@ -96,24 +110,25 @@ export default (): IUseOffer => {
     }
   }
 
-  async function selectOfferProduct(args: { id: string }) {
-    logger.info(`selectOfferProduct  ${args}`);
-    offerDetails.product = await getOfferProductById({
-      id: args.id,
-    });
-    if (offerDetails.product) {
-      offerDetails.productId = args.id;
-    }
-  }
-  async function getOfferProductById(args: {
-    id: string;
-  }): Promise<IOfferProduct> {
+  async function updateOffer(details: TextOfferDetails) {
+    logger.info(`update offer`, details);
+
     const client = await getApiClient();
-    const result = await client.searchOfferProducts({
-      objectIds: [args.id],
-      take: 1,
-    } as SearchProductsForNewOfferQuery);
-    return result.results[0];
+    const command = new UpdateOfferCommand({
+      sellerName: user.value.userName,
+      offerId: (details as IOffer).id,
+      offerDetails: new OfferDetails(details),
+    });
+
+    try {
+      loading.value = true;
+      offer.value = await client.updateOffer(command);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
   }
 
   async function loadOffer(args: { id: string }) {
@@ -185,8 +200,8 @@ export default (): IUseOffer => {
     loading: computed(() => loading.value),
     offerDetails,
     loadOffer,
-    selectOfferProduct,
     createOffer,
+    updateOffer,
     fetchProducts,
     deleteOffer,
     getCurrencies,

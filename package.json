@@ -1,9 +1,10 @@
 {
   "name": "@virtoshell/root",
-  "version": "1.0.18",
+  "version": "1.0.20",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
+    "bootstrap-link": "lerna bootstrap --force-local && lerna link --force-local",
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",

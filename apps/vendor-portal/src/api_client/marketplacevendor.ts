@@ -1333,6 +1333,50 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional) 
+     * @return Success
+     */
+    updateOffer(body: UpdateOfferCommand | undefined): Promise<Offer> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/offers";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processUpdateOffer(_response);
+        });
+    }
+
+    protected processUpdateOffer(response: Response): Promise<Offer> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = Offer.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<Offer>(null as any);
+    }
+
+    /**
      * @param ids (optional) 
      * @return Success
      */
@@ -2685,6 +2729,172 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 }
 
+export class VcmpSyncClient extends AuthApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = this.getBaseUrl("https://vcmarketplace-platform.dev.govirto.com", baseUrl);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    runSynchronization(body: SyncContext | undefined): Promise<SyncPushNotification> {
+        let url_ = this.baseUrl + "/api/vcmp/sync/run";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processRunSynchronization(_response);
+        });
+    }
+
+    protected processRunSynchronization(response: Response): Promise<SyncPushNotification> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SyncPushNotification.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SyncPushNotification>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    cancelJob(body: SyncJobCancellationRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/vcmp/sync/cancel";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCancelJob(_response);
+        });
+    }
+
+    protected processCancelJob(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getSyncClients(): Promise<ISyncClient[]> {
+        let url_ = this.baseUrl + "/api/vcmp/sync/clients";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetSyncClients(_response);
+        });
+    }
+
+    protected processGetSyncClients(response: Response): Promise<ISyncClient[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ISyncClient.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ISyncClient[]>(null as any);
+    }
+}
+
 export class MarketplaceOptions implements IMarketplaceOptions {
     masterCatalogId!: string;
     vendorPortalUrl?: string | undefined;
@@ -3397,6 +3607,8 @@ export interface ISearchCommissionFeesResult {
 }
 
 export class SearchProductsQuery implements ISearchProductsQuery {
+    minModifiedDate?: Date | undefined;
+    maxModifiedDate?: Date | undefined;
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     publishedProductsIds?: string[] | undefined;
@@ -3428,6 +3640,8 @@ export class SearchProductsQuery implements ISearchProductsQuery {
 
     init(_data?: any) {
         if (_data) {
+            this.minModifiedDate = _data["minModifiedDate"] ? new Date(_data["minModifiedDate"].toString()) : <any>undefined;
+            this.maxModifiedDate = _data["maxModifiedDate"] ? new Date(_data["maxModifiedDate"].toString()) : <any>undefined;
             this.sellerId = _data["sellerId"];
             this.sellerName = _data["sellerName"];
             if (Array.isArray(_data["publishedProductsIds"])) {
@@ -3483,6 +3697,8 @@ export class SearchProductsQuery implements ISearchProductsQuery {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["minModifiedDate"] = this.minModifiedDate ? this.minModifiedDate.toISOString() : <any>undefined;
+        data["maxModifiedDate"] = this.maxModifiedDate ? this.maxModifiedDate.toISOString() : <any>undefined;
         data["sellerId"] = this.sellerId;
         data["sellerName"] = this.sellerName;
         if (Array.isArray(this.publishedProductsIds)) {
@@ -3531,6 +3747,8 @@ export class SearchProductsQuery implements ISearchProductsQuery {
 }
 
 export interface ISearchProductsQuery {
+    minModifiedDate?: Date | undefined;
+    maxModifiedDate?: Date | undefined;
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     publishedProductsIds?: string[] | undefined;
@@ -7453,6 +7671,7 @@ export interface IOfferPrice {
 }
 
 export class Offer implements IOffer {
+    isSuspended?: boolean;
     isActive?: boolean;
     outerId?: string | undefined;
     sellerId?: string | undefined;
@@ -7469,6 +7688,7 @@ export class Offer implements IOffer {
     salePrice?: number | undefined;
     minQuantity?: number;
     prices?: OfferPrice[] | undefined;
+    properties?: Property[] | undefined;
     inStockQuantity?: number;
     readonly availQuantity?: number;
     trackInventory?: boolean;
@@ -7496,6 +7716,7 @@ export class Offer implements IOffer {
 
     init(_data?: any) {
         if (_data) {
+            this.isSuspended = _data["isSuspended"];
             this.isActive = _data["isActive"];
             this.outerId = _data["outerId"];
             this.sellerId = _data["sellerId"];
@@ -7515,6 +7736,11 @@ export class Offer implements IOffer {
                 this.prices = [] as any;
                 for (let item of _data["prices"])
                     this.prices!.push(OfferPrice.fromJS(item));
+            }
+            if (Array.isArray(_data["properties"])) {
+                this.properties = [] as any;
+                for (let item of _data["properties"])
+                    this.properties!.push(Property.fromJS(item));
             }
             this.inStockQuantity = _data["inStockQuantity"];
             (<any>this).availQuantity = _data["availQuantity"];
@@ -7543,6 +7769,7 @@ export class Offer implements IOffer {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["isSuspended"] = this.isSuspended;
         data["isActive"] = this.isActive;
         data["outerId"] = this.outerId;
         data["sellerId"] = this.sellerId;
@@ -7562,6 +7789,11 @@ export class Offer implements IOffer {
             data["prices"] = [];
             for (let item of this.prices)
                 data["prices"].push(item.toJSON());
+        }
+        if (Array.isArray(this.properties)) {
+            data["properties"] = [];
+            for (let item of this.properties)
+                data["properties"].push(item.toJSON());
         }
         data["inStockQuantity"] = this.inStockQuantity;
         data["availQuantity"] = this.availQuantity;
@@ -7583,6 +7815,7 @@ export class Offer implements IOffer {
 }
 
 export interface IOffer {
+    isSuspended?: boolean;
     isActive?: boolean;
     outerId?: string | undefined;
     sellerId?: string | undefined;
@@ -7599,6 +7832,7 @@ export interface IOffer {
     salePrice?: number | undefined;
     minQuantity?: number;
     prices?: OfferPrice[] | undefined;
+    properties?: Property[] | undefined;
     inStockQuantity?: number;
     availQuantity?: number;
     trackInventory?: boolean;
@@ -7779,6 +8013,7 @@ export class OfferProduct implements IOfferProduct {
     imgSrc?: string | undefined;
     categoryId?: string | undefined;
     path?: string | undefined;
+    properties?: Property[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -7802,6 +8037,11 @@ export class OfferProduct implements IOfferProduct {
             this.imgSrc = _data["imgSrc"];
             this.categoryId = _data["categoryId"];
             this.path = _data["path"];
+            if (Array.isArray(_data["properties"])) {
+                this.properties = [] as any;
+                for (let item of _data["properties"])
+                    this.properties!.push(Property.fromJS(item));
+            }
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -7825,6 +8065,11 @@ export class OfferProduct implements IOfferProduct {
         data["imgSrc"] = this.imgSrc;
         data["categoryId"] = this.categoryId;
         data["path"] = this.path;
+        if (Array.isArray(this.properties)) {
+            data["properties"] = [];
+            for (let item of this.properties)
+                data["properties"].push(item.toJSON());
+        }
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -7841,6 +8086,7 @@ export interface IOfferProduct {
     imgSrc?: string | undefined;
     categoryId?: string | undefined;
     path?: string | undefined;
+    properties?: Property[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -7909,6 +8155,8 @@ export class OfferDetails implements IOfferDetails {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     estimatedDeliveryDate?: string | undefined;
+    imgSrc?: string | undefined;
+    properties?: Property[] | undefined;
 
     constructor(data?: IOfferDetails) {
         if (data) {
@@ -7937,6 +8185,12 @@ export class OfferDetails implements IOfferDetails {
             this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.estimatedDeliveryDate = _data["estimatedDeliveryDate"];
+            this.imgSrc = _data["imgSrc"];
+            if (Array.isArray(_data["properties"])) {
+                this.properties = [] as any;
+                for (let item of _data["properties"])
+                    this.properties!.push(Property.fromJS(item));
+            }
         }
     }
 
@@ -7965,6 +8219,12 @@ export class OfferDetails implements IOfferDetails {
         data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["estimatedDeliveryDate"] = this.estimatedDeliveryDate;
+        data["imgSrc"] = this.imgSrc;
+        if (Array.isArray(this.properties)) {
+            data["properties"] = [];
+            for (let item of this.properties)
+                data["properties"].push(item.toJSON());
+        }
         return data;
     }
 }
@@ -7982,6 +8242,8 @@ export interface IOfferDetails {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     estimatedDeliveryDate?: string | undefined;
+    imgSrc?: string | undefined;
+    properties?: Property[] | undefined;
 }
 
 export class CreateNewOfferCommand implements ICreateNewOfferCommand {
@@ -8095,6 +8357,57 @@ export interface IChangeOfferStateCommand {
     isActive: boolean;
 }
 
+export class UpdateOfferCommand implements IUpdateOfferCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    offerId?: string | undefined;
+    offerDetails!: OfferDetails;
+
+    constructor(data?: IUpdateOfferCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+        if (!data) {
+            this.offerDetails = new OfferDetails();
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sellerId = _data["sellerId"];
+            this.sellerName = _data["sellerName"];
+            this.offerId = _data["offerId"];
+            this.offerDetails = _data["offerDetails"] ? OfferDetails.fromJS(_data["offerDetails"]) : new OfferDetails();
+        }
+    }
+
+    static fromJS(data: any): UpdateOfferCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateOfferCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sellerId"] = this.sellerId;
+        data["sellerName"] = this.sellerName;
+        data["offerId"] = this.offerId;
+        data["offerDetails"] = this.offerDetails ? this.offerDetails.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IUpdateOfferCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    offerId?: string | undefined;
+    offerDetails: OfferDetails;
+}
+
 export enum SettingValueType {
     ShortText = "ShortText",
     LongText = "LongText",
@@ -8111,8 +8424,9 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
     objectId?: string | undefined;
     objectType?: string | undefined;
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;
@@ -8141,6 +8455,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             this.objectType = _data["objectType"];
             this.isReadOnly = _data["isReadOnly"];
             this.value = _data["value"];
+            this.id = _data["id"];
             this.restartRequired = _data["restartRequired"];
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
@@ -8173,6 +8488,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         data["objectType"] = this.objectType;
         data["isReadOnly"] = this.isReadOnly;
         data["value"] = this.value;
+        data["id"] = this.id;
         data["restartRequired"] = this.restartRequired;
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
@@ -8196,8 +8512,9 @@ export interface IObjectSettingEntry {
     itHasValues?: boolean;
     objectId?: string | undefined;
     objectType?: string | undefined;
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;
@@ -8596,6 +8913,7 @@ export interface IImportDataPreview {
 }
 
 export class SettingDescriptor implements ISettingDescriptor {
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;
@@ -8619,6 +8937,7 @@ export class SettingDescriptor implements ISettingDescriptor {
 
     init(_data?: any) {
         if (_data) {
+            this.id = _data["id"];
             this.restartRequired = _data["restartRequired"];
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
@@ -8646,6 +8965,7 @@ export class SettingDescriptor implements ISettingDescriptor {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["restartRequired"] = this.restartRequired;
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
@@ -8666,6 +8986,7 @@ export class SettingDescriptor implements ISettingDescriptor {
 }
 
 export interface ISettingDescriptor {
+    id?: string | undefined;
     restartRequired?: boolean;
     moduleId?: string | undefined;
     groupName?: string | undefined;
@@ -9569,6 +9890,7 @@ export class OrderAddress implements IOrderAddress {
     email?: string | undefined;
     outerId?: string | undefined;
     isDefault?: boolean;
+    description?: string | undefined;
 
     constructor(data?: IOrderAddress) {
         if (data) {
@@ -9601,6 +9923,7 @@ export class OrderAddress implements IOrderAddress {
             this.email = _data["email"];
             this.outerId = _data["outerId"];
             this.isDefault = _data["isDefault"];
+            this.description = _data["description"];
         }
     }
 
@@ -9633,6 +9956,7 @@ export class OrderAddress implements IOrderAddress {
         data["email"] = this.email;
         data["outerId"] = this.outerId;
         data["isDefault"] = this.isDefault;
+        data["description"] = this.description;
         return data;
     }
 }
@@ -9658,6 +9982,7 @@ export interface IOrderAddress {
     email?: string | undefined;
     outerId?: string | undefined;
     isDefault?: boolean;
+    description?: string | undefined;
 }
 
 export class TaxDetail implements ITaxDetail {
@@ -12307,6 +12632,7 @@ export class CustomerAddress implements ICustomerAddress {
     email?: string | undefined;
     outerId?: string | undefined;
     isDefault?: boolean;
+    description?: string | undefined;
 
     constructor(data?: ICustomerAddress) {
         if (data) {
@@ -12339,6 +12665,7 @@ export class CustomerAddress implements ICustomerAddress {
             this.email = _data["email"];
             this.outerId = _data["outerId"];
             this.isDefault = _data["isDefault"];
+            this.description = _data["description"];
         }
     }
 
@@ -12371,6 +12698,7 @@ export class CustomerAddress implements ICustomerAddress {
         data["email"] = this.email;
         data["outerId"] = this.outerId;
         data["isDefault"] = this.isDefault;
+        data["description"] = this.description;
         return data;
     }
 }
@@ -12396,6 +12724,7 @@ export interface ICustomerAddress {
     email?: string | undefined;
     outerId?: string | undefined;
     isDefault?: boolean;
+    description?: string | undefined;
 }
 
 export class Seller implements ISeller {
@@ -12403,6 +12732,8 @@ export class Seller implements ISeller {
     logo?: string | undefined;
     deliveryTime?: string | undefined;
     location?: string | undefined;
+    isActive?: boolean;
+    approvalPolicy?: string | undefined;
     commissionFee?: CommissionFee;
     name?: string | undefined;
     readonly outerId?: string | undefined;
@@ -12432,6 +12763,8 @@ export class Seller implements ISeller {
             this.logo = _data["logo"];
             this.deliveryTime = _data["deliveryTime"];
             this.location = _data["location"];
+            this.isActive = _data["isActive"];
+            this.approvalPolicy = _data["approvalPolicy"];
             this.commissionFee = _data["commissionFee"] ? CommissionFee.fromJS(_data["commissionFee"]) : <any>undefined;
             this.name = _data["name"];
             (<any>this).outerId = _data["outerId"];
@@ -12477,6 +12810,8 @@ export class Seller implements ISeller {
         data["logo"] = this.logo;
         data["deliveryTime"] = this.deliveryTime;
         data["location"] = this.location;
+        data["isActive"] = this.isActive;
+        data["approvalPolicy"] = this.approvalPolicy;
         data["commissionFee"] = this.commissionFee ? this.commissionFee.toJSON() : <any>undefined;
         data["name"] = this.name;
         data["outerId"] = this.outerId;
@@ -12515,6 +12850,8 @@ export interface ISeller {
     logo?: string | undefined;
     deliveryTime?: string | undefined;
     location?: string | undefined;
+    isActive?: boolean;
+    approvalPolicy?: string | undefined;
     commissionFee?: CommissionFee;
     name?: string | undefined;
     outerId?: string | undefined;
@@ -12702,6 +13039,8 @@ export class SellerDetails implements ISellerDetails {
     logo?: string | undefined;
     deliveryTime?: string | undefined;
     location?: string | undefined;
+    isActive?: boolean | undefined;
+    approvalPolicy?: string | undefined;
     name!: string;
     outerId?: string | undefined;
     addresses?: CustomerAddress[] | undefined;
@@ -12724,6 +13063,8 @@ export class SellerDetails implements ISellerDetails {
             this.logo = _data["logo"];
             this.deliveryTime = _data["deliveryTime"];
             this.location = _data["location"];
+            this.isActive = _data["isActive"];
+            this.approvalPolicy = _data["approvalPolicy"];
             this.name = _data["name"];
             this.outerId = _data["outerId"];
             if (Array.isArray(_data["addresses"])) {
@@ -12758,6 +13099,8 @@ export class SellerDetails implements ISellerDetails {
         data["logo"] = this.logo;
         data["deliveryTime"] = this.deliveryTime;
         data["location"] = this.location;
+        data["isActive"] = this.isActive;
+        data["approvalPolicy"] = this.approvalPolicy;
         data["name"] = this.name;
         data["outerId"] = this.outerId;
         if (Array.isArray(this.addresses)) {
@@ -12785,6 +13128,8 @@ export interface ISellerDetails {
     logo?: string | undefined;
     deliveryTime?: string | undefined;
     location?: string | undefined;
+    isActive?: boolean | undefined;
+    approvalPolicy?: string | undefined;
     name: string;
     outerId?: string | undefined;
     addresses?: CustomerAddress[] | undefined;
@@ -13475,6 +13820,310 @@ export class ForgotPasswordCommand implements IForgotPasswordCommand {
 
 export interface IForgotPasswordCommand {
     loginOrEmail: string;
+}
+
+export class SyncContext implements ISyncContext {
+    clientTypes?: string[] | undefined;
+
+    constructor(data?: ISyncContext) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["clientTypes"])) {
+                this.clientTypes = [] as any;
+                for (let item of _data["clientTypes"])
+                    this.clientTypes!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): SyncContext {
+        data = typeof data === 'object' ? data : {};
+        let result = new SyncContext();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.clientTypes)) {
+            data["clientTypes"] = [];
+            for (let item of this.clientTypes)
+                data["clientTypes"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface ISyncContext {
+    clientTypes?: string[] | undefined;
+}
+
+export class SyncItemStats implements ISyncItemStats {
+    itemType?: string | undefined;
+    totalCount?: number;
+    processedCount?: number;
+    errorsCount?: number;
+
+    constructor(data?: ISyncItemStats) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.itemType = _data["itemType"];
+            this.totalCount = _data["totalCount"];
+            this.processedCount = _data["processedCount"];
+            this.errorsCount = _data["errorsCount"];
+        }
+    }
+
+    static fromJS(data: any): SyncItemStats {
+        data = typeof data === 'object' ? data : {};
+        let result = new SyncItemStats();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["itemType"] = this.itemType;
+        data["totalCount"] = this.totalCount;
+        data["processedCount"] = this.processedCount;
+        data["errorsCount"] = this.errorsCount;
+        return data;
+    }
+}
+
+export interface ISyncItemStats {
+    itemType?: string | undefined;
+    totalCount?: number;
+    processedCount?: number;
+    errorsCount?: number;
+}
+
+export class SyncPushNotification implements ISyncPushNotification {
+    jobId?: string | undefined;
+    finished?: Date | undefined;
+    totalCount?: number;
+    processedCount?: number;
+    readonly errorCount?: number;
+    errors?: string[] | undefined;
+    importStats?: SyncItemStats[] | undefined;
+    exportStats?: SyncItemStats[] | undefined;
+    serverId?: string | undefined;
+    creator?: string | undefined;
+    created?: Date;
+    isNew?: boolean;
+    notifyType?: string | undefined;
+    description?: string | undefined;
+    title?: string | undefined;
+    repeatCount?: number;
+    id?: string | undefined;
+
+    constructor(data?: ISyncPushNotification) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobId = _data["jobId"];
+            this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
+            this.totalCount = _data["totalCount"];
+            this.processedCount = _data["processedCount"];
+            (<any>this).errorCount = _data["errorCount"];
+            if (Array.isArray(_data["errors"])) {
+                this.errors = [] as any;
+                for (let item of _data["errors"])
+                    this.errors!.push(item);
+            }
+            if (Array.isArray(_data["importStats"])) {
+                this.importStats = [] as any;
+                for (let item of _data["importStats"])
+                    this.importStats!.push(SyncItemStats.fromJS(item));
+            }
+            if (Array.isArray(_data["exportStats"])) {
+                this.exportStats = [] as any;
+                for (let item of _data["exportStats"])
+                    this.exportStats!.push(SyncItemStats.fromJS(item));
+            }
+            this.serverId = _data["serverId"];
+            this.creator = _data["creator"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.isNew = _data["isNew"];
+            this.notifyType = _data["notifyType"];
+            this.description = _data["description"];
+            this.title = _data["title"];
+            this.repeatCount = _data["repeatCount"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): SyncPushNotification {
+        data = typeof data === 'object' ? data : {};
+        let result = new SyncPushNotification();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobId"] = this.jobId;
+        data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
+        data["totalCount"] = this.totalCount;
+        data["processedCount"] = this.processedCount;
+        data["errorCount"] = this.errorCount;
+        if (Array.isArray(this.errors)) {
+            data["errors"] = [];
+            for (let item of this.errors)
+                data["errors"].push(item);
+        }
+        if (Array.isArray(this.importStats)) {
+            data["importStats"] = [];
+            for (let item of this.importStats)
+                data["importStats"].push(item.toJSON());
+        }
+        if (Array.isArray(this.exportStats)) {
+            data["exportStats"] = [];
+            for (let item of this.exportStats)
+                data["exportStats"].push(item.toJSON());
+        }
+        data["serverId"] = this.serverId;
+        data["creator"] = this.creator;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["isNew"] = this.isNew;
+        data["notifyType"] = this.notifyType;
+        data["description"] = this.description;
+        data["title"] = this.title;
+        data["repeatCount"] = this.repeatCount;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ISyncPushNotification {
+    jobId?: string | undefined;
+    finished?: Date | undefined;
+    totalCount?: number;
+    processedCount?: number;
+    errorCount?: number;
+    errors?: string[] | undefined;
+    importStats?: SyncItemStats[] | undefined;
+    exportStats?: SyncItemStats[] | undefined;
+    serverId?: string | undefined;
+    creator?: string | undefined;
+    created?: Date;
+    isNew?: boolean;
+    notifyType?: string | undefined;
+    description?: string | undefined;
+    title?: string | undefined;
+    repeatCount?: number;
+    id?: string | undefined;
+}
+
+export class SyncJobCancellationRequest implements ISyncJobCancellationRequest {
+    jobId?: string | undefined;
+
+    constructor(data?: ISyncJobCancellationRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.jobId = _data["jobId"];
+        }
+    }
+
+    static fromJS(data: any): SyncJobCancellationRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new SyncJobCancellationRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["jobId"] = this.jobId;
+        return data;
+    }
+}
+
+export interface ISyncJobCancellationRequest {
+    jobId?: string | undefined;
+}
+
+export class ISyncClient implements IISyncClient {
+    readonly typeName?: string | undefined;
+    readonly displayName?: string | undefined;
+    readonly isActive?: boolean;
+    readonly lastSyncDate?: Date | undefined;
+    readonly lastSyncError?: string | undefined;
+
+    constructor(data?: IISyncClient) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).typeName = _data["typeName"];
+            (<any>this).displayName = _data["displayName"];
+            (<any>this).isActive = _data["isActive"];
+            (<any>this).lastSyncDate = _data["lastSyncDate"] ? new Date(_data["lastSyncDate"].toString()) : <any>undefined;
+            (<any>this).lastSyncError = _data["lastSyncError"];
+        }
+    }
+
+    static fromJS(data: any): ISyncClient {
+        data = typeof data === 'object' ? data : {};
+        let result = new ISyncClient();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["typeName"] = this.typeName;
+        data["displayName"] = this.displayName;
+        data["isActive"] = this.isActive;
+        data["lastSyncDate"] = this.lastSyncDate ? this.lastSyncDate.toISOString() : <any>undefined;
+        data["lastSyncError"] = this.lastSyncError;
+        return data;
+    }
+}
+
+export interface IISyncClient {
+    typeName?: string | undefined;
+    displayName?: string | undefined;
+    isActive?: boolean;
+    lastSyncDate?: Date | undefined;
+    lastSyncError?: string | undefined;
 }
 
 export class ApiException extends Error {

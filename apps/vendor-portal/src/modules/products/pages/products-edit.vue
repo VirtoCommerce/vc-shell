@@ -22,7 +22,7 @@
               :extend="true"
               variant="light-danger"
               class="w-full box-border mb-5"
-              v-if="statusText"
+              v-if="statusText && product.status != 'Published'"
             >
               <div class="flex flex-row items-center">
                 <VcIcon

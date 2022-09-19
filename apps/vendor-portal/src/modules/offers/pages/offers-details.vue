@@ -364,22 +364,14 @@
               <VcLoading :active="fileUploading"></VcLoading>
               <div class="p-2">
                 <VcGallery
-                  class="my-org__gallery -m-2"
-                  :images="imgHandler"
-                  @upload="onImageUpload"
-                  variant="file-upload"
-                  :multiple="false"
-                  @item:remove="onImageRemove"
-                  :itemActions="{
-                    preview: false,
-                    edit: false,
-                    remove: true,
-                  }"
-                  :disableDrag="true"
-                  :hideAfterUpload="!!imgHandler.length"
-                  name="offerImage"
-                >
-                </VcGallery>
+                  :images="offerDetails.images"
+                  @upload="onGalleryUpload"
+                  @item:edit="onGalleryItemEdit"
+                  @item:remove="onGalleryImageRemove"
+                  :disabled="readonly"
+                  @sort="onGallerySort"
+                  :multiple="true"
+                ></VcGallery>
               </div>
             </VcCard>
           </VcForm>
@@ -413,6 +405,7 @@ import {
   IOfferProduct,
   OfferPrice,
   Image,
+  IImage,
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
@@ -425,6 +418,7 @@ import {
   PropertyValue,
 } from "../../../api_client/catalog";
 import { useProduct } from "../../products";
+import { AssetsDetails } from "@virtoshell/mod-assets";
 // import { PropertyValue } from "../../../api_client/catalog";
 
 const props = defineProps({
@@ -640,11 +634,7 @@ async function setProductItem(id: string) {
   }
 }
 
-const imgHandler = computed(() =>
-  offerDetails.imgSrc ? [{ url: offerDetails.imgSrc }] : []
-);
-
-async function onImageUpload(files: FileList) {
+const onGalleryUpload = async (files: FileList) => {
   try {
     fileUploading.value = true;
     for (let i = 0; i < files.length; i++) {
@@ -665,7 +655,14 @@ async function onImageUpload(files: FileList) {
       if (response?.length) {
         const image = new Image(response[0]);
         image.createdDate = new Date();
-        offerDetails.imgSrc = image.url;
+        if (offerDetails.images && offerDetails.images.length) {
+          const lastImageSortOrder =
+            offerDetails.images[offerDetails.images.length - 1].sortOrder;
+          image.sortOrder = lastImageSortOrder + 1;
+        } else {
+          image.sortOrder = 0;
+        }
+        offerDetails.images.push(image);
       }
     }
   } catch (e) {
@@ -675,17 +672,55 @@ async function onImageUpload(files: FileList) {
   }
 
   files = null;
+};
+
+const onGalleryItemEdit = (item: Image) => {
+  emit("page:open", {
+    component: AssetsDetails,
+    componentOptions: {
+      editableAsset: item,
+      images: offerDetails.images,
+      sortHandler: sortImage,
+    },
+  });
+};
+
+function sortImage(remove = false, localImage: IImage) {
+  const images = offerDetails.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+    editImages(images);
+  }
 }
 
-function onImageRemove() {
+const editImages = (args: Image[]) => {
+  offerDetails.images = args;
+};
+
+const onGallerySort = (images: Image[]) => {
+  offerDetails.images = images;
+};
+
+const onGalleryImageRemove = (image: Image) => {
   if (
     window.confirm(
       unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION")))
     )
   ) {
-    offerDetails.imgSrc = undefined;
+    const imageIndex = offerDetails.images.findIndex((img) => {
+      if (img.id && image.id) {
+        return img.id === image.id;
+      } else {
+        return img.url === image.url;
+      }
+    });
+    offerDetails.images.splice(imageIndex, 1);
   }
-}
+};
 
 function handleCollapsed(key: string, value: boolean): void {
   localStorage?.setItem(key, `${value}`);

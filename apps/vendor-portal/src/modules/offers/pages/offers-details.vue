@@ -361,7 +361,7 @@
               :is-collapsed="restoreCollapsed('offer_gallery')"
               @state:collapsed="handleCollapsed('offer_gallery', $event)"
             >
-              <VcLoading :active="fileUploading"></VcLoading>
+              <VcLoading :active="imageUploading"></VcLoading>
               <div class="p-2">
                 <VcGallery
                   :images="offerDetails.images"
@@ -404,8 +404,6 @@ import { useOffer } from "../composables";
 import {
   IOfferProduct,
   OfferPrice,
-  Image,
-  IImage,
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
@@ -418,7 +416,6 @@ import {
   PropertyValue,
 } from "../../../api_client/catalog";
 import { useProduct } from "../../products";
-import { AssetsDetails } from "@virtoshell/mod-assets";
 // import { PropertyValue } from "../../../api_client/catalog";
 
 const props = defineProps({
@@ -456,19 +453,22 @@ const {
   loadOffer,
   loading,
   getCurrencies,
+  imageUploading,
+  onGalleryUpload,
+  onGalleryItemEdit,
+  onGallerySort,
+  onGalleryImageRemove,
 } = useOffer();
 const { debounce } = useFunctions();
 const { searchDictionaryItems } = useProduct();
 useForm({ validateOnMount: false });
 const isFormValid = useIsFormValid();
-const { getAccessToken } = useUser();
 const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
 const categoriesTotal = ref();
 const currentProduct = ref<IOfferProduct>();
-const fileUploading = ref(false);
 const offerLoading = ref(false);
 const productLoading = ref(false);
 
@@ -633,94 +633,6 @@ async function setProductItem(id: string) {
     productLoading.value = false;
   }
 }
-
-const onGalleryUpload = async (files: FileList) => {
-  try {
-    fileUploading.value = true;
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData();
-      formData.append("file", files[i]);
-      const authToken = await getAccessToken();
-      const result = await fetch(
-        `/api/assets?folderUrl=/offers/${offerDetails.id}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const response = await result.json();
-      if (response?.length) {
-        const image = new Image(response[0]);
-        image.createdDate = new Date();
-        if (offerDetails.images && offerDetails.images.length) {
-          const lastImageSortOrder =
-            offerDetails.images[offerDetails.images.length - 1].sortOrder;
-          image.sortOrder = lastImageSortOrder + 1;
-        } else {
-          image.sortOrder = 0;
-        }
-        offerDetails.images.push(image);
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  } finally {
-    fileUploading.value = false;
-  }
-
-  files = null;
-};
-
-const onGalleryItemEdit = (item: Image) => {
-  emit("page:open", {
-    component: AssetsDetails,
-    componentOptions: {
-      editableAsset: item,
-      images: offerDetails.images,
-      sortHandler: sortImage,
-    },
-  });
-};
-
-function sortImage(remove = false, localImage: IImage) {
-  const images = offerDetails.images;
-  const image = new Image(localImage);
-  if (images.length) {
-    const imageIndex = images.findIndex((img) => img.id === localImage.id);
-
-    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
-
-    editImages(images);
-  }
-}
-
-const editImages = (args: Image[]) => {
-  offerDetails.images = args;
-};
-
-const onGallerySort = (images: Image[]) => {
-  offerDetails.images = images;
-};
-
-const onGalleryImageRemove = (image: Image) => {
-  if (
-    window.confirm(
-      unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION")))
-    )
-  ) {
-    const imageIndex = offerDetails.images.findIndex((img) => {
-      if (img.id && image.id) {
-        return img.id === image.id;
-      } else {
-        return img.url === image.url;
-      }
-    });
-    offerDetails.images.splice(imageIndex, 1);
-  }
-};
 
 function handleCollapsed(key: string, value: boolean): void {
   localStorage?.setItem(key, `${value}`);

@@ -361,25 +361,17 @@
               :is-collapsed="restoreCollapsed('offer_gallery')"
               @state:collapsed="handleCollapsed('offer_gallery', $event)"
             >
-              <VcLoading :active="fileUploading"></VcLoading>
+              <VcLoading :active="imageUploading"></VcLoading>
               <div class="p-2">
                 <VcGallery
-                  class="my-org__gallery -m-2"
-                  :images="imgHandler"
-                  @upload="onImageUpload"
-                  variant="file-upload"
-                  :multiple="false"
-                  @item:remove="onImageRemove"
-                  :itemActions="{
-                    preview: false,
-                    edit: false,
-                    remove: true,
-                  }"
-                  :disableDrag="true"
-                  :hideAfterUpload="!!imgHandler.length"
-                  name="offerImage"
-                >
-                </VcGallery>
+                  :images="offerDetails.images"
+                  @upload="onGalleryUpload"
+                  @item:edit="onGalleryItemEdit"
+                  @item:remove="onGalleryImageRemove"
+                  :disabled="readonly"
+                  @sort="onGallerySort"
+                  :multiple="true"
+                ></VcGallery>
               </div>
             </VcCard>
           </VcForm>
@@ -412,7 +404,6 @@ import { useOffer } from "../composables";
 import {
   IOfferProduct,
   OfferPrice,
-  Image,
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
@@ -462,19 +453,22 @@ const {
   loadOffer,
   loading,
   getCurrencies,
+  imageUploading,
+  onGalleryUpload,
+  onGalleryItemEdit,
+  onGallerySort,
+  onGalleryImageRemove,
 } = useOffer();
 const { debounce } = useFunctions();
 const { searchDictionaryItems } = useProduct();
 useForm({ validateOnMount: false });
 const isFormValid = useIsFormValid();
-const { getAccessToken } = useUser();
 const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
 const priceRefs = ref([]);
 const container = ref();
 const categoriesTotal = ref();
 const currentProduct = ref<IOfferProduct>();
-const fileUploading = ref(false);
 const offerLoading = ref(false);
 const productLoading = ref(false);
 
@@ -637,53 +631,6 @@ async function setProductItem(id: string) {
     }
   } finally {
     productLoading.value = false;
-  }
-}
-
-const imgHandler = computed(() =>
-  offerDetails.imgSrc ? [{ url: offerDetails.imgSrc }] : []
-);
-
-async function onImageUpload(files: FileList) {
-  try {
-    fileUploading.value = true;
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData();
-      formData.append("file", files[i]);
-      const authToken = await getAccessToken();
-      const result = await fetch(
-        `/api/assets?folderUrl=/offers/${offerDetails.id}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const response = await result.json();
-      if (response?.length) {
-        const image = new Image(response[0]);
-        image.createdDate = new Date();
-        offerDetails.imgSrc = image.url;
-      }
-    }
-  } catch (e) {
-    console.log(e);
-  } finally {
-    fileUploading.value = false;
-  }
-
-  files = null;
-}
-
-function onImageRemove() {
-  if (
-    window.confirm(
-      unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION")))
-    )
-  ) {
-    offerDetails.imgSrc = undefined;
   }
 }
 

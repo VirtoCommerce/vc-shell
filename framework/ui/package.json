@@ -29,12 +29,15 @@
     "moment": "^2.29.1",
     "normalize.css": "^8.0.1",
     "swiper": "^6.7.5",
-    "vee-validate": "^4.5.5",
-    "vue": "^3.0.0",
     "vue-currency-input": "^2.2.0",
     "vue3-ace-editor": "^2.2.2",
     "vue3-touch-events": "^4.1.0",
     "vuedraggable": "^4.1.0"
+  },
+  "peerDependencies": {
+    "vee-validate": "^4.5.5",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.12"
   },
   "publishConfig": {
     "access": "public",

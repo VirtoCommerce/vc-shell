@@ -124,7 +124,7 @@ const onClose = () => {
   }
 
   &__menu {
-    @apply absolute -left-px right-0 top-[var(--app-bar-height)] bg-white z-[9999] shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
+    @apply absolute -left-px right-0 top-[var(--app-bar-height)] bg-white z-[10000] shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
 
     &-item {
       @apply p-3 text-lg text-black border-l border-solid border-l-[#eef0f2] border-b border-b-[#eef0f2] bg-white hover:bg-[#eff7fc];

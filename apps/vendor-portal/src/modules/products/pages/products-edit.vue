@@ -579,7 +579,7 @@ const onSelectClose = async () => {
 };
 
 async function onLoadMore() {
-  const data = await fetchCategories(undefined, 20);
+  const data = await fetchCategories(undefined, categories.value.length);
   categories.value.push(...data.results);
 }
 

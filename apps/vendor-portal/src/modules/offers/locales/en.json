@@ -123,7 +123,10 @@
             "TITLE": "Pricing",
             "ADD_PRICE": "Add price",
             "CHOOSE_CURRENCY": "Choose currency",
-            "EMPTY": "No prices for this offer"
+            "EMPTY": "No prices for this offer",
+            "ERRORS": {
+              "SIMILAR": "Offer prices and min quantity can't be the same"
+            }
           },
           "IMAGES": {
             "TITLE": "Offer image"

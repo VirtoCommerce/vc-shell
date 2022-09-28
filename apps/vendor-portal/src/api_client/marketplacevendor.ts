@@ -7680,7 +7680,8 @@ export class Offer implements IOffer {
     storeName?: string | undefined;
     name?: string | undefined;
     sku?: string | undefined;
-    imgSrc?: string | undefined;
+    readonly imgSrc?: string | undefined;
+    images?: Image[] | undefined;
     categoryId?: string | undefined;
     path?: string | undefined;
     currency?: string | undefined;
@@ -7725,8 +7726,13 @@ export class Offer implements IOffer {
             this.storeName = _data["storeName"];
             this.name = _data["name"];
             this.sku = _data["sku"];
-            this.imgSrc = _data["imgSrc"];
-            this.categoryId = _data["categoryId"];
+            (<any>this).imgSrc = _data["imgSrc"];
+            if (Array.isArray(_data["images"])) {
+              this.images = [] as any;
+              for (let item of _data["images"])
+                  this.images!.push(Image.fromJS(item));
+          }
+          this.categoryId = _data["categoryId"];
             this.path = _data["path"];
             this.currency = _data["currency"];
             this.listPrice = _data["listPrice"];
@@ -7779,6 +7785,11 @@ export class Offer implements IOffer {
         data["name"] = this.name;
         data["sku"] = this.sku;
         data["imgSrc"] = this.imgSrc;
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item.toJSON());
+        }
         data["categoryId"] = this.categoryId;
         data["path"] = this.path;
         data["currency"] = this.currency;
@@ -7825,6 +7836,7 @@ export interface IOffer {
     name?: string | undefined;
     sku?: string | undefined;
     imgSrc?: string | undefined;
+    images?: Image[] | undefined;
     categoryId?: string | undefined;
     path?: string | undefined;
     currency?: string | undefined;
@@ -8155,7 +8167,7 @@ export class OfferDetails implements IOfferDetails {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     estimatedDeliveryDate?: string | undefined;
-    imgSrc?: string | undefined;
+    images?: Image[] | undefined;
     properties?: Property[] | undefined;
 
 
@@ -8186,7 +8198,11 @@ export class OfferDetails implements IOfferDetails {
             this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
             this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.estimatedDeliveryDate = _data["estimatedDeliveryDate"];
-            this.imgSrc = _data["imgSrc"];
+            if (Array.isArray(_data["images"])) {
+                this.images = [] as any;
+                for (let item of _data["images"])
+                    this.images!.push(Image.fromJS(item));
+            }
             if (Array.isArray(_data["properties"])) {
                 this.properties = [] as any;
                 for (let item of _data["properties"])
@@ -8220,7 +8236,11 @@ export class OfferDetails implements IOfferDetails {
         data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
         data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["estimatedDeliveryDate"] = this.estimatedDeliveryDate;
-        data["imgSrc"] = this.imgSrc;
+        if (Array.isArray(this.images)) {
+            data["images"] = [];
+            for (let item of this.images)
+                data["images"].push(item.toJSON());
+        }
         if (Array.isArray(this.properties)) {
             data["properties"] = [];
             for (let item of this.properties)
@@ -8243,7 +8263,7 @@ export interface IOfferDetails {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     estimatedDeliveryDate?: string | undefined;
-    imgSrc?: string | undefined;
+    images?: Image[] | undefined;
     properties?: Property[] | undefined;
 }
 

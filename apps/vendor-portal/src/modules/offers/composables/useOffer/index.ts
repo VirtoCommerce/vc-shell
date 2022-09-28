@@ -1,5 +1,5 @@
-import { computed, reactive, Ref, ref } from "vue";
-import { useLogger, useUser } from "@virtoshell/core";
+import { computed, reactive, Ref, ref, unref, defineEmits } from "vue";
+import { useLogger, useUser, useI18n } from "@virtoshell/core";
 
 import {
   CreateNewOfferCommand,
@@ -13,8 +13,11 @@ import {
   VcmpSellerCatalogClient,
   Property,
   PropertyValue,
+  Image,
+  IImage,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
+import { AssetsDetails } from "@virtoshell/mod-assets";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -40,6 +43,11 @@ interface IUseOffer {
   updateOffer: (details: TextOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
   getCurrencies: () => void;
+  imageUploading: Ref<boolean>;
+  onGalleryUpload: (files: FileList) => void;
+  onGalleryItemEdit: (item: Image) => void;
+  onGallerySort: (images: Image[]) => void;
+  onGalleryImageRemove: (image: Image) => void;
 }
 
 interface IStoreSettings {
@@ -56,6 +64,9 @@ export default (): IUseOffer => {
   const offerDetails = reactive<TextOfferDetails>(new OfferDetails());
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
+  const imageUploading = ref(false);
+  const emit = defineEmits(["page:open"]);
+  const { t } = useI18n();
 
   const loading = ref(false);
 
@@ -194,6 +205,96 @@ export default (): IUseOffer => {
     }
   }
 
+  const onGalleryUpload = async (files: FileList) => {
+    try {
+      imageUploading.value = true;
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append("file", files[i]);
+        const authToken = await getAccessToken();
+        const result = await fetch(
+          `/api/assets?folderUrl=/offers/${offerDetails.id}`,
+          {
+            method: "POST",
+            body: formData,
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        const response = await result.json();
+        if (response?.length) {
+          const image = new Image(response[0]);
+          image.createdDate = new Date();
+          if (offerDetails.images && offerDetails.images.length) {
+            const lastImageSortOrder =
+              offerDetails.images[offerDetails.images.length - 1].sortOrder;
+            image.sortOrder = lastImageSortOrder + 1;
+          } else {
+            image.sortOrder = 0;
+          }
+          offerDetails.images.push(image);
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    } finally {
+      imageUploading.value = false;
+    }
+
+    files = null;
+  };
+
+  const onGalleryItemEdit = (item: Image) => {
+    emit("page:open", {
+      component: AssetsDetails,
+      componentOptions: {
+        editableAsset: item,
+        images: offerDetails.images,
+        sortHandler: sortImage,
+      },
+    });
+  };
+
+  function sortImage(remove = false, localImage: IImage) {
+    const images = offerDetails.images;
+    const image = new Image(localImage);
+    if (images.length) {
+      const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+      remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+      editImages(images);
+    }
+  }
+
+  const editImages = (args: Image[]) => {
+    offerDetails.images = args;
+  };
+
+  const onGallerySort = (images: Image[]) => {
+    offerDetails.images = images;
+  };
+
+  const onGalleryImageRemove = (image: Image) => {
+    if (
+      window.confirm(
+        unref(
+          computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))
+        )
+      )
+    ) {
+      const imageIndex = offerDetails.images.findIndex((img) => {
+        if (img.id && image.id) {
+          return img.id === image.id;
+        } else {
+          return img.url === image.url;
+        }
+      });
+      offerDetails.images.splice(imageIndex, 1);
+    }
+  };
+
   return {
     offer: computed(() => offer.value),
     currencyList: computed(() => currencyList.value),
@@ -205,5 +306,10 @@ export default (): IUseOffer => {
     fetchProducts,
     deleteOffer,
     getCurrencies,
+    imageUploading,
+    onGalleryUpload,
+    onGalleryItemEdit,
+    onGallerySort,
+    onGalleryImageRemove,
   };
 };

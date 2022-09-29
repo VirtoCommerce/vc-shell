@@ -4,7 +4,8 @@ import {
   OrderModuleClient,
   CustomerOrder,
   AddressType,
-} from "@virtoshell/api-client";
+} from "../../../../api_client/orders";
+
 import { IShippingInfo } from "../../../../types";
 
 interface IUseOrder {

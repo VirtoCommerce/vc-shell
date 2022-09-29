@@ -15,7 +15,10 @@
           "
           type="password"
           :required="true"
+          rules="min:6"
+          name="current"
           v-model="form.currentPassword"
+          @update:modelValue="validate"
         ></VcInput>
         <VcInput
           ref="newPasswordField"
@@ -25,6 +28,8 @@
           type="password"
           @update:modelValue="validate"
           :required="true"
+          rules="min:6"
+          name="new_pass"
           v-model="form.password"
         ></VcInput>
         <VcInput
@@ -35,8 +40,10 @@
             $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
           "
           :required="true"
+          rules="min:6"
           @update:modelValue="validate"
           type="password"
+          name="confirm_pass"
           v-model="form.confirmPassword"
         ></VcInput>
         <div class="flex justify-center items-center pt-2">
@@ -51,7 +58,7 @@
           </VcButton>
           <VcButton
             variant="primary"
-            :disabled="loading || !form.currentPassword || !form.isValid"
+            :disabled="loading || !form.isValid || !isValid"
             @click="changePassword"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.SAVE") }}
@@ -79,6 +86,8 @@
 import { nextTick, reactive } from "vue";
 import { useUser } from "@virtoshell/core";
 import { IIdentityError } from "@virtoshell/api-client";
+import { useIsFormValid } from "vee-validate";
+import { useForm } from "@virtoshell/ui";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -90,6 +99,8 @@ interface IChangePassForm {
 
 const emit = defineEmits(["close"]);
 const { changeUserPassword, loading, validatePassword } = useUser();
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const form = reactive<IChangePassForm>({
   isValid: false,
   errors: [],
@@ -104,6 +115,7 @@ async function changePassword() {
     emit("close");
   } else {
     form.errors = result.errors;
+    form.isValid = form.errors.length == 0;
   }
 }
 
@@ -113,6 +125,12 @@ function validate() {
       form.errors = (await validatePassword(form.password)).errors;
       if (form.confirmPassword !== form.password) {
         form.errors.push({ code: "Repeat-password" });
+      }
+      if (
+        form.confirmPassword === form.currentPassword &&
+        form.password === form.currentPassword
+      ) {
+        form.errors.push({ code: "Equal-passwords" });
       }
       form.isValid = form.errors.length == 0;
     }

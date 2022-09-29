@@ -138,7 +138,7 @@ import {
   ITableColumns,
   IBladeToolbar,
 } from "../../../types";
-import { IOffer } from "../../../api_client";
+import { IOffer } from "../../../api_client/marketplacevendor";
 
 const props = defineProps({
   expanded: {
@@ -315,6 +315,13 @@ const tableColumns = ref<ITableColumns[]>([
   {
     id: "inStockQuantity",
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
+    width: 80,
+    sortable: true,
+    type: "number",
+  },
+  {
+    id: "availQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.AVAIL_QTY")),
     width: 80,
     sortable: true,
     type: "number",

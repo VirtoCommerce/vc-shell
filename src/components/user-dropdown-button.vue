@@ -6,11 +6,7 @@
       'user-dropdown-button_no-pointer': $isMobile.value,
     }"
     @click.stop="toggleAccountMenuVisible"
-    v-click-outside="
-      () => {
-        accountMenuVisible = false;
-      }
-    "
+    v-click-outside="onClose"
   >
     <div
       class="user-dropdown-button__avatar"
@@ -76,10 +72,15 @@ const props = defineProps({
 });
 
 const accountMenuVisible = ref(false);
+
 const toggleAccountMenuVisible = () => {
   if (props.menuItems && props.menuItems.length) {
     accountMenuVisible.value = !accountMenuVisible.value;
   }
+};
+
+const onClose = () => {
+  accountMenuVisible.value = false;
 };
 </script>
 
@@ -123,7 +124,7 @@ const toggleAccountMenuVisible = () => {
   }
 
   &__menu {
-    @apply absolute -left-px right-0 top-[var(--app-bar-height)] bg-white z-[9999] shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
+    @apply absolute -left-px right-0 top-[var(--app-bar-height)] bg-white z-[10000] shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
 
     &-item {
       @apply p-3 text-lg text-black border-l border-solid border-l-[#eef0f2] border-b border-b-[#eef0f2] bg-white hover:bg-[#eff7fc];

@@ -4,11 +4,12 @@ import {
   CustomerAddress,
   ISeller,
   ISellerDetails,
+  Seller,
   SellerDetails,
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
-} from "../../../../api_client";
-import { cloneDeep as _cloneDeep } from "lodash-es";
+} from "../../../../api_client/marketplacevendor";
+import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 interface ILocation {
   id: string;
@@ -34,14 +35,14 @@ export default (): IUseSellerDetails => {
   const logger = useLogger();
   const { getAccessToken } = useUser();
   const sellerDetails = ref(
-    new SellerDetails({
+    new Seller({
       name: undefined,
       phones: [],
       emails: [],
       addresses: [new CustomerAddress()],
     })
   );
-  let sellerDetailsCopy: ISellerDetails;
+  let sellerDetailsCopy: Seller;
   const countriesList = ref<ILocation[]>([]);
   const regionsList = ref<ILocation[]>([]);
   const modified = ref(false);
@@ -50,8 +51,7 @@ export default (): IUseSellerDetails => {
   watch(
     () => sellerDetails,
     (state) => {
-      modified.value =
-        JSON.stringify(sellerDetailsCopy) !== JSON.stringify(state.value);
+      modified.value = !isEqual(sellerDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -67,11 +67,9 @@ export default (): IUseSellerDetails => {
 
     try {
       loading.value = true;
-      const seller = (await client.getCurrentSeller()) as SellerDetails;
-      sellerDetails.value = new SellerDetails({
+      const seller = await client.getCurrentSeller();
+      sellerDetails.value = new Seller({
         ...seller,
-        phones: [],
-        emails: [],
         addresses: [
           new CustomerAddress(
             seller.addresses && seller.addresses.length && seller.addresses[0]
@@ -104,6 +102,7 @@ export default (): IUseSellerDetails => {
       loading.value = true;
       modified.value = false;
       await client.updateSeller(command);
+      sellerDetailsCopy = _cloneDeep(sellerDetails.value);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -172,10 +171,7 @@ export default (): IUseSellerDetails => {
   }
 
   async function resetEntries() {
-    sellerDetails.value = Object.assign(
-      {},
-      new SellerDetails(sellerDetailsCopy)
-    );
+    sellerDetails.value = _cloneDeep(sellerDetailsCopy) as SellerDetails;
   }
 
   return {

@@ -47,6 +47,13 @@
                   "
                 />
                 <VcInfoRow
+                  :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.COMMISSIONS_TOTAL')"
+                  :value="
+                    order.feeTotal &&
+                    order.feeTotal.toFixed(2) + ' ' + order.currency
+                  "
+                />
+                <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TOTAL')"
                   :value="
                     order.total && order.total.toFixed(2) + ' ' + order.currency
@@ -100,6 +107,35 @@
                   >
                 </div>
               </template>
+              <template v-slot:item_quantity="itemData">
+                <div class="flex flex-col">
+                  <div>{{ itemData.item.quantity }}</div>
+                </div>
+              </template>
+
+              <template v-slot:item_fee="itemData">
+                <div
+                  class="flex flex-col"
+                  v-if="itemData.item.feeDetails.length"
+                >
+                  <div>{{ itemData.item.feeDetails[0].description }}</div>
+                  <div>
+                    <span>{{
+                      Math.trunc(Number(itemData.item.feeDetails[0].amount))
+                    }}</span
+                    ><span class="text-[#a5a5a5] text-xs"
+                      >.{{
+                        `${
+                          (Number(itemData.item.feeDetails[0].amount) * 100) %
+                          100
+                        }`
+                          .padEnd(2, "0")
+                          .slice(0, 2)
+                      }}</span
+                    >
+                  </div>
+                </div>
+              </template>
 
               <template v-slot:mobile-item="itemData">
                 <div class="py-3 px-4">
@@ -149,7 +185,7 @@
                       </div>
                     </div>
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
@@ -161,6 +197,32 @@
                           itemData.item.extendedPrice &&
                           itemData.item.extendedPrice.toFixed(2)
                         }}
+                      </div>
+                    </div>
+                    <div
+                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                      v-if="itemData.item.feeDetails.length"
+                    >
+                      <VcHint>{{
+                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION")
+                      }}</VcHint>
+
+                      <div
+                        class="mt-1 text-ellipsis overflow-hidden whitespace-nowrap"
+                      >
+                        <div
+                          class="text-ellipsis overflow-hidden whitespace-nowrap"
+                        >
+                          {{ itemData.item.feeDetails[0].description }}
+                          <br /><span
+                            class="text-ellipsis overflow-hidden whitespace-nowrap"
+                          >
+                            {{
+                              itemData.item.feeDetails[0].amount &&
+                              itemData.item.feeDetails[0].amount.toFixed(2)
+                            }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -323,7 +385,7 @@ const columns: ITableColumns[] = [
     id: "imageUrl",
     title: "Pic",
     width: 60,
-    class: "vc-padding-right_none",
+    class: "pr-0",
     type: "image",
   },
   {
@@ -333,20 +395,24 @@ const columns: ITableColumns[] = [
   {
     id: "quantity",
     title: "Quantity",
-    width: 120,
+    width: 100,
     type: "number",
   },
   {
     id: "price",
     title: "Unit price",
-    width: 120,
+    width: 100,
     type: "money",
   },
   {
     id: "extendedPrice",
     title: "Total",
-    width: 120,
+    width: 100,
     type: "money",
+  },
+  {
+    id: "fee",
+    title: "Commission",
   },
 ];
 </script>

@@ -8,18 +8,18 @@
     <div class="flex flex-row justify-between">
       <div class="p-5 flex items-center">
         <p class="m-0 text-[color:var(--basic-black-color)] leading-lg">
-          {{ t("IMPORT.PAGES.IMPORTING.POPUP.DESCRIPTION") }}
+          {{ $t("IMPORT.PAGES.IMPORTING.POPUP.DESCRIPTION") }}
         </p>
       </div>
       <div
         class="p-5 flex items-center border-l border-solid border-l-[#e3e7ec]"
       >
         <p class="text-lg leading-xl text-[color:var(--basic-black-color)] m-0">
-          {{ t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_COUNT") }}:
+          {{ $t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_COUNT") }}:
           <span class="text-[color:var(--primary-color)]">{{
             items.length
           }}</span>
-          {{ t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_OF") }}
+          {{ $t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_OF") }}
           <span class="text-[color:var(--primary-color)]">{{ total }}</span>
         </p>
       </div>
@@ -69,7 +69,7 @@ defineEmits(["close"]);
 
 <style lang="scss">
 .import-popup {
-  :deep(.vc-popup__content) {
+  .vc-popup__content {
     @apply flex flex-col;
   }
 }

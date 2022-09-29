@@ -23,7 +23,7 @@
           :required="true"
           :disabled="!form.tokenIsValid"
           v-model="form.password"
-          @update:modelValue="validate()"
+          @update:modelValue="validate"
         ></VcInput>
         <VcInput
           ref="confirmPasswordField"
@@ -36,7 +36,7 @@
           :disabled="!form.tokenIsValid"
           v-model="form.confirmPassword"
           type="password"
-          @update:modelValue="validate()"
+          @update:modelValue="validate"
           @keyup.enter="acceptInvitation"
         ></VcInput>
         <div class="flex justify-center items-center pt-2">
@@ -68,6 +68,10 @@
 import { reactive, onMounted } from "vue";
 import { useUser } from "@virtoshell/core";
 import { useRouter } from "vue-router";
+import { useIsFormValid } from "vee-validate";
+import { useForm } from "@virtoshell/ui";
+
+useForm({ validateOnMount: false });
 
 const props = defineProps({
   userId: {
@@ -91,6 +95,7 @@ const {
   loading,
 } = useUser();
 const router = useRouter();
+const isFormValid = useIsFormValid();
 
 const form = reactive({
   isValid: false,
@@ -114,7 +119,7 @@ const validate = async () => {
     if (form.confirmPassword && form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
     }
-    form.isValid = form.errors.length == 0;
+    form.isValid = form.errors.length == 0 && isFormValid.value;
   }
 };
 

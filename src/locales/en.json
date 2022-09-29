@@ -57,6 +57,7 @@
       "SAVE": "Update",
       "ERRORS": {
         "Repeat-password": "Passwords are not same",
+        "Equal-passwords": "The new password must not match the old one",
         "Invalid-token": "Token is invalid or expired",
         "Password-too-weak": "New password does not comply one or more password security policies:",
         "PasswordTooShort": "Passwords too short",

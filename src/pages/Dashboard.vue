@@ -420,7 +420,7 @@ import {
   useProducts,
   MpProductStatus,
 } from "../modules/products";
-import { OrderLineItem } from "@virtoshell/api-client";
+import { OrderLineItem } from "../api_client/orders";
 import { ITableColumns } from "../types";
 import { useRouter } from "vue-router";
 

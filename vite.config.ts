@@ -2,9 +2,6 @@ import { getApplicationConfiguration } from "@virtoshell/config-generator";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default getApplicationConfiguration({
-  resolve: {
-    alias: null,
-  },
   plugins: [
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
@@ -40,4 +37,9 @@ export default getApplicationConfiguration({
       },
     }),
   ],
+  resolve: {
+    alias: {
+      "vue-router": "vue-router/dist/vue-router.cjs",
+    },
+  },
 });

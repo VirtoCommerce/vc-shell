@@ -49,66 +49,32 @@
                   v-for="status in SellerProductStatus"
                   :key="status"
                   class="mb-2"
-                  :modelValue="filter.status === status"
-                  @update:modelValue="
-                    filter.status = $event ? status : undefined
-                  "
+                  :modelValue="isItemSelected(status)"
+                  @update:modelValue="selectFilterItem($event, status)"
                   >{{
                     $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status)
                   }}</VcCheckbox
                 >
               </div>
             </VcCol>
-            <!--
-            <VcCol class="w-[180px] p-2">
-              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
-                {{ $t("PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TITLE") }}
-              </div>
-              <div>
-                <VcInput
-                  :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.FROM')"
-                  class="mb-3"
-                  :modelValue="filter.priceStart"
-                  @update:modelValue="filter.priceStart = $event"
-                ></VcInput>
-                <VcInput
-                  :label="$t('PRODUCTS.PAGES.LIST.FILTERS.PRICE_BETWEEN.TO')"
-                  :modelValue="filter.priceEnd"
-                  @update:modelValue="filter.priceEnd = $event"
-                ></VcInput>
-              </div>
-            </VcCol>
-            <VcCol class="w-[180px] p-2">
-              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
-                {{ $t("PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.TITLE") }}
-              </div>
-              <div>
-                <VcInput
-                  :label="
-                    $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.START_DATE')
-                  "
-                  type="date"
-                  class="mb-3"
-                ></VcInput>
-                <VcInput
-                  :label="
-                    $t('PRODUCTS.PAGES.LIST.FILTERS.CREATED_DATE.END_DATE')
-                  "
-                  type="date"
-                ></VcInput>
-              </div>
-            </VcCol>
-             -->
           </VcRow>
           <VcRow>
             <VcCol class="p-2">
               <div class="flex justify-end">
-                <VcButton outline class="mr-4" @click="resetFilters">{{
-                  $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                }}</VcButton>
-                <VcButton @click="applyFilters(closePanel)">{{
-                  $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY")
-                }}</VcButton>
+                <VcButton
+                  outline
+                  class="mr-4"
+                  @click="resetFilters(closePanel)"
+                  :disabled="applyFiltersReset"
+                  >{{
+                    $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                  }}</VcButton
+                >
+                <VcButton
+                  @click="applyFilters(closePanel)"
+                  :disabled="applyFiltersDisable"
+                  >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY") }}</VcButton
+                >
               </div>
             </VcCol>
           </VcRow>
@@ -260,7 +226,7 @@ import {
   ITableColumns,
   IBladeToolbar,
 } from "../../../types";
-import { ISellerProduct } from "../../../api_client";
+import { ISellerProduct } from "../../../api_client/marketplacevendor";
 
 const props = defineProps({
   expanded: {
@@ -299,15 +265,25 @@ const {
   exportCategories,
 } = useProducts(props.options.query);
 const filter = reactive<{
-  status?: string;
-  priceStart?: string;
-  priceEnd?: string;
-}>({});
+  status?: string[];
+}>({ status: [] });
 const appliedFilter = ref({});
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref();
+const applyFiltersDisable = computed(() => {
+  const activeFilters = Object.values(filter).filter(
+    (x) => x !== undefined && Array.isArray(x) && !!x.length
+  );
+  return !activeFilters.length;
+});
+const applyFiltersReset = computed(() => {
+  const activeFilters = Object.values(appliedFilter.value).filter(
+    (x) => x !== undefined
+  );
+  return !activeFilters.length;
+});
 
 watch(sort, async (value) => {
   await loadProducts({ ...searchQuery.value, sort: value });
@@ -547,13 +523,32 @@ async function applyFilters(filterHandlerFn: () => void) {
     ...filter,
   };
 }
-async function resetFilters() {
+async function resetFilters(filterHandlerFn: () => void) {
+  filterHandlerFn();
   Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
   await loadProducts({
     ...searchQuery.value,
     ...filter,
   });
   appliedFilter.value = {};
+}
+
+function selectFilterItem(e: boolean, status: string) {
+  const isSelected = filter.status?.includes(status);
+
+  if (!Array.isArray(filter.status)) {
+    filter.status = [];
+  }
+
+  if (e && !isSelected) {
+    filter.status?.push(status);
+  } else if (!e && isSelected) {
+    filter.status = filter.status.filter((x) => x !== status);
+  }
+}
+
+function isItemSelected(status: string) {
+  return filter.status?.find((x) => x === status);
 }
 
 defineExpose({

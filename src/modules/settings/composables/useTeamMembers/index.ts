@@ -13,9 +13,9 @@ import {
   ValidateSellerUserQuery,
   ValidationFailure,
   VcmpSellerSecurityClient,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 import { computed, Ref, ref, watch } from "vue";
-import { cloneDeep as _cloneDeep } from "lodash-es";
+import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 interface IUseTeamMembers {
   readonly loading: Ref<boolean>;
@@ -26,6 +26,7 @@ interface IUseTeamMembers {
   currentPage: Ref<number>;
   searchQuery: Ref<ISearchSellerUsersQuery>;
   userDetails: Ref<SellerUserDetails>;
+  userDetailsCopy: Ref<SellerUserDetails>;
   getTeamMembers: (query: ISearchSellerUsersQuery) => void;
   createTeamMember: (details: ISellerUser, inviteStatus: boolean) => void;
   handleUserDetailsItem: (user: SellerUser) => void;
@@ -56,8 +57,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   watch(
     () => userDetails,
     (state) => {
-      modified.value =
-        JSON.stringify(userDetailsCopy) !== JSON.stringify(state.value);
+      modified.value = !isEqual(userDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -109,6 +109,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       }
 
       await client.createSellerUser(command);
+      modified.value = false;
     } catch (e) {
       logger.error(e);
       throwCreationError(e);
@@ -204,6 +205,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     currentPage: computed(
       () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
     ),
+    userDetailsCopy: computed(() => userDetailsCopy),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
     modified: computed(() => modified.value),
     userDetails,

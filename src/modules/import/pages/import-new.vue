@@ -106,7 +106,7 @@
           </VcRow>
         </div>
         <!-- Skipped details table -->
-        <VcCol class="p-3" v-if="importStarted">
+        <VcCol class="p-3" v-if="importStarted && reversedErrors.length">
           <VcCard
             class="import-new__skipped"
             :fill="true"
@@ -123,21 +123,6 @@
               :footer="false"
               :items="reversedErrors"
             >
-              <template v-slot:empty>
-                <VcCol class="items-center justify-center">
-                  <VcIcon
-                    icon="far fa-check-circle"
-                    class="text-[59px] text-[#87b563]"
-                  ></VcIcon>
-                  <div class="text-[#87b563] mt-4">
-                    {{
-                      $t(
-                        "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.NO_ERRORS"
-                      )
-                    }}
-                  </div>
-                </VcCol>
-              </template>
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
                 <div class="flex flex-col">
@@ -213,7 +198,7 @@ import {
   ITableColumns,
 } from "../../../types";
 import useImport from "../composables/useImport";
-import { ImportDataPreview } from "../../../api_client";
+import { ImportDataPreview } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
@@ -533,7 +518,7 @@ const importStarted = computed(
   () => !!(importStatus.value && importStatus.value.jobId)
 );
 
-const previewTotalNum = computed(() => preview.value.totalCount);
+const previewTotalNum = computed(() => preview.value?.totalCount);
 
 const reversedErrors = computed(() => {
   const errors = _cloneDeep(importStatus.value.notification.errors);

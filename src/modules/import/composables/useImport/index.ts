@@ -16,9 +16,9 @@ import {
   ImportRunHistory,
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
-} from "../../../../api_client/api-client";
+} from "../../../../api_client/marketplacevendor";
 import { useLogger, useNotifications, useUser } from "@virtoshell/core";
-import { cloneDeep as _cloneDeep } from "lodash-es";
+import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
 
@@ -137,8 +137,7 @@ export default (): IUseImport => {
   watch(
     () => profileDetails,
     (state) => {
-      modified.value =
-        JSON.stringify(profileDetailsCopy) !== JSON.stringify(state);
+      modified.value = !isEqual(profileDetailsCopy, state);
     },
     { deep: true }
   );
@@ -283,9 +282,7 @@ export default (): IUseImport => {
     try {
       loading.value = true;
 
-      profile.value = (await client.getImportProfileById(
-        args.id
-      )) as ExtProfile;
+      profile.value = await client.getImportProfileById(args.id);
 
       profile.value.importer = dataImporters.value.find(
         (x) => x.typeName === profile.value.dataImporterType
@@ -377,8 +374,8 @@ export default (): IUseImport => {
     }) as ImportPushNotification;
 
     if (job && !job.finished) {
-      importStarted.value = true;
       updateStatus(job);
+      importStarted.value = true;
     }
   }
 

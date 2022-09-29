@@ -1,4 +1,5 @@
 <template>
+  <VcLoading v-if="!isReady" active class="app__loader"></VcLoading>
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -8,6 +9,7 @@
     logo="/assets/logo.svg"
     :version="version"
     :pages="pages"
+    v-else
   >
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
@@ -29,7 +31,7 @@
         :key="item.id"
         :timeout="5000"
         @dismiss="dismiss(item)"
-        @expired="markAsReaded(item)"
+        @expired="markAsRead(item)"
       >
         {{ item.title }}
       </VcNotification>
@@ -70,14 +72,15 @@ import {
   useNotifications,
   useSettings,
   usePermissions,
+  useFunctions,
 } from "@virtoshell/core";
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
-import { useSignalR } from "@quangdao/vue-signalr";
 import { PushNotification } from "@virtoshell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
 import { SellerDetails, TeamList } from "../modules/settings";
+import { HubConnection } from "@microsoft/signalr";
 
 const {
   t,
@@ -86,35 +89,36 @@ const {
   getLocaleMessage,
 } = useI18n();
 const log = useLogger();
-const signalr = useSignalR();
 const { user, loadUser, signOut } = useUser();
 const {
   popupNotifications,
   notifications,
   addNotification,
   dismiss,
-  markAsReaded,
+  markAsRead,
 } = useNotifications();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
+const { delay } = useFunctions();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const isChangePasswordActive = ref(false);
 const pages = inject("pages");
+const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 
-signalr.on("Send", (message: PushNotification) => {
-  addNotification(message);
+signalR.on("Send", (message: PushNotification) => {
+  delay(() => addNotification(message), 100);
 });
 
 onMounted(async () => {
+  await loadUser();
   langInit();
   await getUiCustomizationSettings();
-  await loadUser();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");
@@ -306,9 +310,11 @@ const menuItems = reactive<IMenuItems[]>([
 ]);
 
 function langInit() {
-  try {
-    currentLocale.value = localStorage.getItem("VC_LANGUAGE_SETTINGS");
-  } catch (err) {
+  const lang = localStorage.getItem("VC_LANGUAGE_SETTINGS");
+
+  if (lang) {
+    currentLocale.value = lang;
+  } else {
     currentLocale.value = "en";
   }
 }
@@ -377,6 +383,8 @@ textarea {
 .vc-app.vc-theme_light {
   --background-color: #f2f2f2;
   --top-bar-color: #ffffff;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
+    linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
   --app-bar-background-color: #ffffff;
   --app-bar-divider-color: #ffffff;
   --app-bar-toolbar-item-width: 50px;
@@ -385,5 +393,11 @@ textarea {
   --app-bar-toolbar-icon-background-hover: #ffffff;
   --app-bar-account-info-name-color: #161d25;
   --app-bar-account-info-role-color: #7e8e9d;
+}
+
+.app {
+  &__loader {
+    background: var(--app-background);
+  }
 }
 </style>

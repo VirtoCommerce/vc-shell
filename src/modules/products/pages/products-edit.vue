@@ -22,7 +22,7 @@
               :extend="true"
               variant="light-danger"
               class="w-full box-border mb-5"
-              v-if="statusText"
+              v-if="statusText && product.status != 'Published'"
             >
               <div class="flex flex-row items-center">
                 <VcIcon
@@ -51,6 +51,7 @@
                 rules="min:3"
                 name="name"
                 :disabled="readonly"
+                maxchars="64"
               ></VcInput>
               <VcSelect
                 class="mb-4"
@@ -58,19 +59,22 @@
                 v-model="productDetails.categoryId"
                 :isRequired="true"
                 :isSearchable="true"
+                :clearable="false"
                 :placeholder="
                   $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
-                :initialItem="category"
+                :initialItem="currentCategory"
                 keyProperty="id"
                 displayProperty="name"
                 :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
-                @close="onCategoriesSearch"
+                @close="onSelectClose"
                 @update:modelValue="setCategory"
                 :is-disabled="readonly"
                 name="category"
+                :onInfiniteScroll="onLoadMore"
+                :optionsTotal="categoriesTotal"
               >
                 <template v-slot:item="itemData">
                   <div
@@ -116,6 +120,7 @@
                     rules="min:3"
                     :disabled="readonly"
                     name="gtin"
+                    maxchars="64"
                   ></VcInput>
                   <VcTextarea
                     class="mb-4"
@@ -135,7 +140,7 @@
                   ></VcTextarea>
 
                   <VcDynamicProperty
-                    v-for="property in noCategoryProps"
+                    v-for="property in filteredProps"
                     :key="property.id"
                     :property="property"
                     :optionsGetter="loadDictionaries"
@@ -149,7 +154,7 @@
               </VcCard>
 
               <VcCard
-                v-if="param"
+                v-if="productDetails.categoryId"
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
                 class="my-3 relative"
                 is-collapsable
@@ -207,12 +212,14 @@ import {
   IPropertyValue,
   PropertyValue,
   PropertyDictionaryItem,
-} from "@virtoshell/api-client";
+} from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
+import { IImage } from "../../../api_client/marketplacevendor";
+import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
   expanded: {
@@ -237,7 +244,8 @@ const props = defineProps({
 });
 const emit = defineEmits(["parent:call", "page:close", "page:open"]);
 const { t } = useI18n();
-const { validate, errors } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const {
   modified,
   product: productData,
@@ -255,15 +263,18 @@ const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const { debounce } = useFunctions();
 
-const currentCategory = ref();
+const currentCategory = ref<ICategory>();
 const offersCount = ref(0);
-const categories = ref<ICategory[]>();
+const categories = ref<ICategory[]>([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
+const categoriesTotal = ref();
 
-const noCategoryProps = computed(() =>
-  productDetails.properties.filter((x) => x.type !== "Category")
+const filterTypes = ["Category", "Variation"];
+
+const filteredProps = computed(() =>
+  productDetails.properties.filter((x) => !filterTypes.includes(x.type))
 );
 
 const reload = async (fullReload: boolean) => {
@@ -273,11 +284,11 @@ const reload = async (fullReload: boolean) => {
       if (props.param) {
         await loadProduct({ id: props.param });
       }
-      categories.value = await fetchCategories();
+      const searchResult = await fetchCategories();
+      categories.value = searchResult.results;
+      categoriesTotal.value = searchResult.totalCount;
       if (productDetails?.categoryId) {
-        currentCategory.value = categories.value?.find(
-          (x) => x.id === productDetails.categoryId
-        );
+        await setCategoryItem(product.value.categoryId);
       }
     } finally {
       productLoading.value = false;
@@ -304,8 +315,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
     icon: "fas fa-save",
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           if (props.param) {
             await updateProductDetails(productData.value.id, productDetails);
@@ -331,10 +341,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        errors.value.length &&
-        ((props.param &&
-          (!productData.value?.canBeModified || !modified.value)) ||
-          (!props.param && !modified.value))
+        !isValid.value ||
+        (props.param &&
+          !(productData.value?.canBeModified || modified.value)) ||
+        (!props.param && !modified.value)
     ),
   },
   {
@@ -345,8 +355,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-share-square",
     isVisible: computed(() => !!props.param),
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           await updateProductDetails(
             productData.value.id,
@@ -374,6 +383,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
+        !isValid.value ||
         !(
           productData.value?.canBeModified &&
           (productData.value?.hasStagedChanges || modified.value)
@@ -416,10 +426,6 @@ const statusText = computed(() => {
   return null;
 });
 
-const category = computed(() =>
-  categories.value?.find((x) => x.id === productDetails.categoryId)
-);
-
 const product = computed(() =>
   props.param ? productData.value : productDetails
 );
@@ -436,7 +442,9 @@ const onGalleryUpload = async (files: FileList) => {
       formData.append("file", files[i]);
       const authToken = await getAccessToken();
       const result = await fetch(
-        `/api/assets?folderUrl=/catalog/${productData.value.id}`,
+        `/api/assets?folderUrl=/catalog/${
+          productData.value.id || productData.value.categoryId
+        }`,
         {
           method: "POST",
           body: formData,
@@ -474,9 +482,22 @@ const onGalleryItemEdit = (item: Image) => {
     componentOptions: {
       editableAsset: item,
       images: productDetails.images,
+      sortHandler: sortImage,
     },
   });
 };
+
+function sortImage(remove = false, localImage: IImage) {
+  const images = productDetails.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+    editImages(images);
+  }
+}
 
 const editImages = (args: Image[]) => {
   productDetails.images = args;
@@ -507,6 +528,10 @@ const onGalleryImageRemove = (image: Image) => {
 
 const setCategory = async (id: string) => {
   currentCategory.value = categories.value?.find((x) => x.id === id);
+  if (!currentCategory.value) {
+    await setCategoryItem(id);
+  }
+
   const currentProperties = [...(productDetails?.properties || [])];
   productDetails.properties = [...(currentCategory.value.properties || [])];
   productDetails.properties.forEach(async (property) => {
@@ -521,6 +546,13 @@ const setCategory = async (id: string) => {
   });
 };
 
+async function setCategoryItem(id: string) {
+  const fetchedCategory = await fetchCategories(undefined, 0, [id]);
+  if (fetchedCategory.results && fetchedCategory.results.length) {
+    currentCategory.value = fetchedCategory.results[0];
+  }
+}
+
 async function loadDictionaries(
   property: IProperty,
   keyword?: string,
@@ -530,8 +562,27 @@ async function loadDictionaries(
 }
 
 const onCategoriesSearch = debounce(async (value: string) => {
-  categories.value = await fetchCategories(value);
+  const searchResult = await fetchCategories(value);
+  categories.value = searchResult.results;
+  categoriesTotal.value = searchResult.totalCount;
 }, 500);
+
+const onSelectClose = async () => {
+  const searchResult = await fetchCategories();
+  categories.value = searchResult.results;
+  if (
+    currentCategory.value &&
+    !categories.value.some((x) => x.id === currentCategory.value.id)
+  ) {
+    categories.value.push(currentCategory.value);
+  }
+};
+
+async function onLoadMore() {
+  const data = await fetchCategories(undefined, categories.value.length);
+  categories.value.push(...data.results);
+}
+
 async function openOffers() {
   if (!isOffersOpened) {
     emit("page:open", {

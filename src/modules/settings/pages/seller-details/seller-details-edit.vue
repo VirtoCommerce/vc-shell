@@ -50,36 +50,18 @@
                       'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER'
                     )
                   "
-                  :name="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
-                    )
-                  "
+                  name="company_name"
+                  maxchars="254"
                 >
                 </VcInput>
-                <VcInput
-                  class="p-2"
-                  :label="
+                <div class="p-2">
+                  <VcLabel class="mb-2">{{
                     $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL'
+                      "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL"
                     )
-                  "
-                  v-model="computedFee"
-                  :clearable="true"
-                  :required="true"
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.PLACEHOLDER'
-                    )
-                  "
-                  :name="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL'
-                    )
-                  "
-                  :disabled="true"
-                >
-                </VcInput>
+                  }}</VcLabel>
+                  <p>{{ computedFee }}</p>
+                </div>
                 <VcRow>
                   <VcCol>
                     <VcInput
@@ -97,11 +79,8 @@
                           'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER'
                         )
                       "
-                      :name="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
-                        )
-                      "
+                      name="company_reg_num"
+                      maxchars="128"
                     >
                     </VcInput>
                     <VcInput
@@ -119,11 +98,8 @@
                           'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER'
                         )
                       "
-                      :name="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
-                        )
-                      "
+                      name="company_outer_id"
+                      maxchars="128"
                     >
                     </VcInput>
                   </VcCol>
@@ -150,13 +126,9 @@
                           remove: true,
                         }"
                         :disableDrag="true"
-                        :hideAfterUpload="logoHandler.length"
+                        :hideAfterUpload="!!logoHandler.length"
                         rules="maxdimensions:120,120|size:1024"
-                        :name="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.LABEL'
-                          )
-                        "
+                        name="logo"
                       ></VcGallery>
                     </div>
 
@@ -180,9 +152,7 @@
                       'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.PLACEHOLDER'
                     )
                   "
-                  :name="
-                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL')
-                  "
+                  name="about"
                 >
                 </VcTextarea>
                 <VcTextarea
@@ -198,9 +168,7 @@
                       'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER'
                     )
                   "
-                  :name="
-                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')
-                  "
+                  name="delivery_time"
                 >
                 </VcTextarea>
               </VcForm>
@@ -236,16 +204,12 @@
                       @update:modelValue="setCountry"
                       :isRequired="true"
                       @change="getRegions"
-                      :name="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
-                        )
-                      "
+                      name="country"
                     ></VcSelect>
                   </VcCol>
                   <VcCol>
                     <VcInput
-                      class="m-2"
+                      class="m-2 my-org__num-field"
                       :label="
                         $t(
                           'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL'
@@ -258,12 +222,11 @@
                           'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
                         )
                       "
+                      type="number"
+                      rules="numeric"
                       v-model="sellerDetails.addresses[0].postalCode"
-                      :name="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL'
-                        )
-                      "
+                      name="zip"
+                      maxchars="32"
                     ></VcInput>
                   </VcCol>
                 </VcRow>
@@ -290,11 +253,7 @@
                       keyProperty="id"
                       displayProperty="name"
                       @update:modelValue="setRegion"
-                      :name="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL'
-                        )
-                      "
+                      name="state"
                     ></VcSelect>
                   </VcCol>
                   <VcCol>
@@ -313,11 +272,8 @@
                         )
                       "
                       v-model="sellerDetails.addresses[0].city"
-                      :name="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL'
-                        )
-                      "
+                      name="city"
+                      maxchars="128"
                     >
                     </VcInput>
                   </VcCol>
@@ -337,11 +293,8 @@
                     )
                   "
                   v-model="sellerDetails.addresses[0].line1"
-                  :name="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
-                    )
-                  "
+                  name="address_first"
+                  maxchars="128"
                 >
                 </VcInput>
                 <VcInput
@@ -359,11 +312,8 @@
                     )
                   "
                   v-model="sellerDetails.addresses[0].line2"
-                  :name="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
-                    )
-                  "
+                  name="address_second"
+                  maxchars="128"
                 >
                 </VcInput>
                 <div class="m-2 mb-2">
@@ -385,11 +335,8 @@
                       regex:
                         /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/,
                     }"
-                    :name="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
-                      )
-                    "
+                    name="long_lat"
+                    maxchars="512"
                   >
                   </VcInput>
                   <VcHint class="mt-1">{{
@@ -402,7 +349,7 @@
               <VcRow class="border-t-[1px] border-t-[#EAEEF2]">
                 <VcCol class="">
                   <VcInput
-                    class="mt-4 mx-4 my-org__phone"
+                    class="mt-4 mx-4 my-org__num-field"
                     :label="
                       $t(
                         'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL'
@@ -416,12 +363,10 @@
                       )
                     "
                     type="number"
+                    rules="numeric"
                     v-model="sellerDetails.phones[0]"
-                    :name="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL'
-                      )
-                    "
+                    name="phone"
+                    maxchars="64"
                   >
                   </VcInput>
                 </VcCol>
@@ -440,13 +385,10 @@
                         'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER'
                       )
                     "
-                    :name="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL'
-                      )
-                    "
+                    name="email"
                     rules="email"
                     v-model="sellerDetails.emails[0]"
+                    maxchars="256"
                   >
                   </VcInput>
                 </VcCol>
@@ -472,9 +414,9 @@ export default defineComponent({
 <script lang="ts" setup>
 import { useI18n, useUser } from "@virtoshell/core";
 import useSellerDetails from "../../composables/useSellerDetails";
-import { Image } from "@virtoshell/api-client";
+import { Image } from "../../../../api_client/marketplacevendor";
 import { useForm } from "@virtoshell/ui";
-import { defineRule } from "vee-validate";
+import { useIsFormValid } from "vee-validate";
 
 defineProps({
   expanded: {
@@ -514,7 +456,8 @@ const {
   loading,
 } = useSellerDetails();
 const { getAccessToken, user } = useUser();
-const { validate } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const errorMessage = ref("");
 const { t } = useI18n();
 const title = t("SETTINGS.SELLER_DETAILS.TITLE");
@@ -531,7 +474,18 @@ const initialRegion = computed(() =>
     (x) => x.id === sellerDetails.value.addresses[0].regionId
   )
 );
-const computedFee = computed(() => sellerDetails.value.commissionFee?.fee);
+const computedFee = computed(() => {
+  if (sellerDetails.value.commissionFee) {
+    return `${sellerDetails.value.commissionFee?.name} (${
+      sellerDetails.value.commissionFee?.fee
+    } ${
+      sellerDetails.value.commissionFee?.calculationType === "Percent"
+        ? "%"
+        : "Fixed"
+    })`;
+  }
+  return "";
+});
 
 watch(
   () => countriesList.value,
@@ -552,12 +506,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "save",
     title: computed(() => t("SETTINGS.SELLER_DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
-    disabled: computed(() => !modified.value),
+    disabled: computed(() => !isValid.value || !modified.value),
     async clickHandler() {
       errorMessage.value = undefined;
-      const { valid } = await validate();
-
-      if (valid) {
+      if (isValid.value) {
         try {
           await updateSeller(sellerDetails.value);
         } catch (e) {
@@ -679,7 +631,7 @@ defineExpose({
     @apply h-[100px];
   }
 
-  &__phone {
+  &__num-field {
     input::-webkit-outer-spin-button,
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;

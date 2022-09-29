@@ -142,11 +142,12 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n, useUser } from "@virtoshell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useForm } from "@virtoshell/ui";
+import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
   expanded: {
@@ -171,7 +172,8 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["page:close", "parent:call"]);
-const { validate } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
+const { user } = useUser();
 
 const { t } = useI18n();
 const {
@@ -187,7 +189,7 @@ const {
 } = useTeamMembers();
 
 const title = computed(() =>
-  userDetails.value.firstName && userDetails.value.lastName
+  props.param
     ? userDetails.value.firstName + " " + userDetails.value.lastName
     : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE")
 );
@@ -196,6 +198,7 @@ const isEmailExistsModal = ref(false);
 const deleteModal = ref(false);
 const sendInviteStatus = ref(false);
 const errorMessage = ref("");
+const isValid = useIsFormValid();
 
 const isOwnerReadonly = computed(
   () => userDetails.value.role === "vcmp-owner-role"
@@ -207,8 +210,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.TOOLBAR.CREATE")),
     icon: "fas fa-paper-plane",
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           await createTeamMember(userDetails.value, sendInviteStatus.value);
           emit("parent:call", {
@@ -229,15 +231,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !props.param,
-    disabled: computed(() => !modified.value),
+    disabled: computed(() => !(isValid.value && modified.value)),
   },
   {
     id: "save",
     title: computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
-      const { valid } = await validate();
-      if (valid) {
+      if (isValid.value) {
         try {
           await updateTeamMember(userDetails.value);
           emit("parent:call", {
@@ -256,7 +257,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !!props.param,
-    disabled: computed(() => props.param && !modified.value),
+    disabled: computed(() => props.param && !(isValid.value && modified.value)),
   },
   {
     id: "reset",
@@ -276,7 +277,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       deleteModal.value = true;
     },
     isVisible: !!props.param,
-    disabled: computed(() => isOwnerReadonly.value),
+    disabled: computed(
+      () =>
+        isOwnerReadonly.value ||
+        user.value.userName === props.options.user.userName
+    ),
   },
   {
     id: "resend",

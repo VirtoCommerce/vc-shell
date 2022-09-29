@@ -24,7 +24,7 @@ import {
   ISearchOffersQuery,
   SearchOffersQuery,
   SearchOffersResult,
-} from "../../../../api_client";
+} from "../../../../api_client/marketplacevendor";
 
 export default (options?: IUseOffersOptions): IUseOffers => {
   const logger = useLogger();

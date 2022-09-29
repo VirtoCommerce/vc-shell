@@ -1,7 +1,7 @@
 <template>
   <VcLoginForm :logo="logo" :background="background" :title="computedTitle">
-    <VcForm>
-      <template v-if="isLogin">
+    <template v-if="isLogin">
+      <VcForm @submit.prevent="login">
         <VcInput
           ref="loginField"
           class="mb-4 mt-1"
@@ -21,7 +21,7 @@
           @keyup.enter="login"
         ></VcInput>
         <div class="flex justify-end items-center pt-2 pb-3">
-          <VcButton variant="onlytext" @click="togglePassRequest">
+          <VcButton variant="onlytext" @click="togglePassRequest" type="button">
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
@@ -35,9 +35,11 @@
             {{ $t("SHELL.LOGIN.BUTTON") }}
           </vc-button>
         </div>
-      </template>
-      <template v-else>
-        <template v-if="!forgotPasswordRequestSent">
+      </VcForm>
+    </template>
+    <template v-else>
+      <template v-if="!forgotPasswordRequestSent">
+        <VcForm @submit.prevent="forgot">
           <VcInput
             ref="forgotPasswordField"
             class="mb-4 mt-1"
@@ -48,7 +50,11 @@
             :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
           ></VcInput>
           <div class="flex justify-between items-center pt-2">
-            <vc-button variant="secondary" @click="togglePassRequest">
+            <vc-button
+              variant="secondary"
+              type="button"
+              @click="togglePassRequest"
+            >
               {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
             </vc-button>
             <vc-button
@@ -59,42 +65,36 @@
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>
-        </template>
-
-        <template
-          v-if="requestPassResult.succeeded && forgotPasswordRequestSent"
-        >
-          <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
-          <div class="flex justify-center items-center pt-2">
-            <span v-if="$isDesktop.value" class="grow basis-0"></span>
-            <vc-button
-              variant="primary"
-              :disabled="loading"
-              @click="togglePassRequest"
-            >
-              {{ $t("SHELL.LOGIN.BUTTON_OK") }}
-            </vc-button>
-          </div>
-        </template>
+        </VcForm>
       </template>
 
-      <VcHint
-        v-if="!signInResult.succeeded"
-        class="mt-3"
-        style="color: #f14e4e"
-      >
-        <!-- TODO: stylizing-->
-        {{ signInResult.error }}
-      </VcHint>
-      <VcHint
-        v-if="!requestPassResult.succeeded"
-        class="mt-3"
-        style="color: #f14e4e"
-      >
-        <!-- TODO: stylizing-->
-        {{ requestPassResult.error }}
-      </VcHint>
-    </VcForm>
+      <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
+        <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
+        <div class="flex justify-center items-center pt-2">
+          <span v-if="$isDesktop.value" class="grow basis-0"></span>
+          <vc-button
+            variant="primary"
+            :disabled="loading"
+            @click="togglePassRequest"
+          >
+            {{ $t("SHELL.LOGIN.BUTTON_OK") }}
+          </vc-button>
+        </div>
+      </template>
+    </template>
+
+    <VcHint v-if="!signInResult.succeeded" class="mt-3" style="color: #f14e4e">
+      <!-- TODO: stylizing-->
+      {{ signInResult.error }}
+    </VcHint>
+    <VcHint
+      v-if="!requestPassResult.succeeded"
+      class="mt-3"
+      style="color: #f14e4e"
+    >
+      <!-- TODO: stylizing-->
+      {{ requestPassResult.error }}
+    </VcHint>
   </VcLoginForm>
 </template>
 

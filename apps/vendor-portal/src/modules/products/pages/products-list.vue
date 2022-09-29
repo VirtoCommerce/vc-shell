@@ -64,7 +64,7 @@
                 <VcButton
                   outline
                   class="mr-4"
-                  @click="resetFilters"
+                  @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
                   >{{
                     $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
@@ -523,7 +523,8 @@ async function applyFilters(filterHandlerFn: () => void) {
     ...filter,
   };
 }
-async function resetFilters() {
+async function resetFilters(filterHandlerFn: () => void) {
+  filterHandlerFn();
   Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
   await loadProducts({
     ...searchQuery.value,

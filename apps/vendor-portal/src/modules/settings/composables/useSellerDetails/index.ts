@@ -4,6 +4,7 @@ import {
   CustomerAddress,
   ISeller,
   ISellerDetails,
+  Seller,
   SellerDetails,
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
@@ -34,14 +35,14 @@ export default (): IUseSellerDetails => {
   const logger = useLogger();
   const { getAccessToken } = useUser();
   const sellerDetails = ref(
-    new SellerDetails({
+    new Seller({
       name: undefined,
       phones: [],
       emails: [],
       addresses: [new CustomerAddress()],
     })
   );
-  let sellerDetailsCopy: ISellerDetails;
+  let sellerDetailsCopy: Seller;
   const countriesList = ref<ILocation[]>([]);
   const regionsList = ref<ILocation[]>([]);
   const modified = ref(false);
@@ -66,8 +67,8 @@ export default (): IUseSellerDetails => {
 
     try {
       loading.value = true;
-      const seller = (await client.getCurrentSeller()) as SellerDetails;
-      sellerDetails.value = new SellerDetails({
+      const seller = await client.getCurrentSeller();
+      sellerDetails.value = new Seller({
         ...seller,
         addresses: [
           new CustomerAddress(

@@ -12,7 +12,7 @@
       <VcIcon
         v-if="isCollapsable"
         class="vc-card__collapse"
-        :icon="`fas fa-chevron-${isCollapsedInternal ? 'up' : 'down'}`"
+        :icon="`fas fa-chevron-${isCollapsedInternal ? 'down' : 'up'}`"
         size="s"
       ></VcIcon>
     </div>

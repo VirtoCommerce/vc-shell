@@ -443,16 +443,19 @@ const onOpenPage = async (index: number, page: IPage) => {
   }
 
   if (accessGuard(page.component as IPage)) {
-    workspace.value.push({
-      ...page,
-      component: shallowRef(page.component),
-      url:
-        page.url === undefined
-          ? (page.component as Record<string, string>).url
-          : page.url,
-    });
-    if (typeof page?.onOpen === "function") {
-      page?.onOpen?.();
+    const isPageInWorkspace = workspace.value.some((x) => x.url === page.url);
+    if (!isPageInWorkspace) {
+      workspace.value.push({
+        ...page,
+        component: shallowRef(page.component),
+        url:
+          page.url === undefined
+            ? (page.component as Record<string, string>).url
+            : page.url,
+      });
+      if (typeof page?.onOpen === "function") {
+        page?.onOpen?.();
+      }
     }
   } else {
     alert("Access restricted");

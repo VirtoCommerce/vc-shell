@@ -83,7 +83,7 @@
                 <vc-button
                   outline
                   class="mr-4"
-                  @click="resetFilters"
+                  @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
                   >{{
                     $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS")
@@ -503,7 +503,8 @@ async function applyFilters(closePanel: () => void) {
     ...filter,
   };
 }
-async function resetFilters() {
+async function resetFilters(closePanel: () => void) {
+  closePanel();
   Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
   await loadOrders({
     ...filter,

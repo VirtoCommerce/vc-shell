@@ -44,6 +44,7 @@
                     size="xs"
                     :src="itemData.item.imgSrc"
                     :bordered="true"
+                    background="contain"
                   ></VcImage>
                   <div
                     class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
@@ -80,6 +81,7 @@
                     size="xs"
                     :src="itemData.item.imgSrc"
                     :bordered="true"
+                    background="contain"
                   ></VcImage>
                   <div
                     class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
@@ -279,7 +281,7 @@
                       <!-- Minimum quantity field -->
                       <VcInput
                         :clearable="true"
-                        v-model="item.minQuantity"
+                        v-model.number="item.minQuantity"
                         type="number"
                         :required="true"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
@@ -310,6 +312,12 @@
                       ></VcIcon>
                     </div>
                   </VcRow>
+                  <VcHint class="px-2 text-[#f14e4e]" v-if="!!errors.length">
+                    <!-- TODO: stylizing-->
+                    {{
+                      $t(`OFFERS.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`)
+                    }}
+                  </VcHint>
                 </div>
               </template>
               <div v-else class="p-5 flex justify-center">
@@ -390,6 +398,7 @@ import {
   onBeforeUpdate,
   nextTick,
   unref,
+  watch,
 } from "vue";
 
 export default defineComponent({
@@ -399,7 +408,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useForm } from "@virtoshell/ui";
-import { useFunctions, useI18n, useUser } from "@virtoshell/core";
+import { useFunctions, useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import {
   IOfferProduct,
@@ -416,7 +425,6 @@ import {
   PropertyValue,
 } from "../../../api_client/catalog";
 import { useProduct } from "../../products";
-// import { PropertyValue } from "../../../api_client/catalog";
 
 const props = defineProps({
   expanded: {
@@ -461,7 +469,7 @@ const {
 } = useOffer();
 const { debounce } = useFunctions();
 const { searchDictionaryItems } = useProduct();
-useForm({ validateOnMount: false });
+const { setErrors } = useForm({ validateOnMount: false });
 const isFormValid = useIsFormValid();
 const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
@@ -471,6 +479,7 @@ const categoriesTotal = ref();
 const currentProduct = ref<IOfferProduct>();
 const offerLoading = ref(false);
 const productLoading = ref(false);
+const errors = ref<Record<string, string>[]>([]);
 
 const filterTypes = ["Variation"];
 
@@ -495,9 +504,13 @@ onMounted(async () => {
 
     if (
       offer.value.productId ||
+      offerDetails.productId ||
       props.options?.sellerProduct?.publishedProductDataId
     ) {
-      await setProductItem(offer.value.productId);
+      await setProductItem(
+        offer.value.productId ||
+          props.options?.sellerProduct?.publishedProductDataId
+      );
     }
   } finally {
     offerLoading.value = false;
@@ -561,7 +574,72 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         )
     ),
   },
+  {
+    id: "enable",
+    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.ENABLE"),
+    icon: "fa fa-eye",
+    async clickHandler() {
+      if (offerDetails.id) {
+        offerDetails.isActive = true;
+        await updateOffer({
+          ...offerDetails,
+        });
+      }
+    },
+    isVisible: computed(
+      () => !!props.param && !offerLoading.value && !offerDetails.isActive
+    ),
+  },
+  {
+    id: "disable",
+    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DISABLE"),
+    icon: "fa fa-eye-slash",
+    async clickHandler() {
+      if (offerDetails.id) {
+        offerDetails.isActive = false;
+        await updateOffer({
+          ...offerDetails,
+        });
+      }
+    },
+    isVisible: computed(
+      () => !!props.param && !offerLoading.value && offerDetails.isActive
+    ),
+  },
 ]);
+
+watch(
+  () => offerDetails.prices,
+  (newVal) => {
+    nextTick(() => {
+      const duplicates = newVal
+        .map((o, idx) => {
+          if (
+            newVal.some((o2, idx2) => {
+              return (
+                idx !== idx2 &&
+                o.listPrice &&
+                o2.listPrice &&
+                o.minQuantity &&
+                o2.minQuantity &&
+                o.listPrice === o2.listPrice &&
+                o.minQuantity === o2.minQuantity
+              );
+            })
+          ) {
+            return {
+              [`minqty_${idx}`]: "Invalid input",
+              [`listprice_${idx}`]: "Invalid input",
+            };
+          }
+        })
+        .filter((x) => x !== undefined);
+      errors.value = duplicates;
+      setErrors(Object.assign({}, ...duplicates));
+    });
+  },
+  { deep: true }
+);
 
 function scrollToLastPrice() {
   nextTick(() => {
@@ -614,7 +692,7 @@ function getFilterDate(key: string) {
 }
 
 async function onLoadMore() {
-  const data = await fetchProducts(undefined, 20);
+  const data = await fetchProducts(undefined, products.value.length);
   products.value.push(...data.results);
 }
 

@@ -84,6 +84,9 @@
             }
           }
         }
+      },
+      "ALERTS": {
+        "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
       }
     },
     "SELLER_DETAILS": {

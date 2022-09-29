@@ -8170,6 +8170,7 @@ export class OfferDetails implements IOfferDetails {
     images?: Image[] | undefined;
     properties?: Property[] | undefined;
 
+
     constructor(data?: IOfferDetails) {
         if (data) {
             for (var property in data) {

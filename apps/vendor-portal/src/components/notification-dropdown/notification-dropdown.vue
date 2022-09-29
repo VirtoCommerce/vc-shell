@@ -30,7 +30,7 @@
       @click.stop="toggleNotificationsDrop"
     ></div>
     <div
-      class="absolute top-[var(--app-bar-height)] z-[9999] drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] bg-white rounded-b-[6px] w-[439px] max-h-[350px] min-h-[50px] right-0 overflow-hidden flex flex-col"
+      class="absolute top-[var(--app-bar-height)] z-[9999] drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] bg-white rounded-b-[6px] w-[439px] max-h-[350px] min-h-[50px] right-0 overflow-hidden flex flex-col z-[10000]"
       v-if="isDropdownVisible"
       :class="{
         'hidden !fixed !right-0 !top-0 !max-h-full !max-w-[300px] !w-full !bottom-0 !z-[9999] !border-0':

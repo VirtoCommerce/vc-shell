@@ -109,6 +109,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       }
 
       await client.createSellerUser(command);
+      modified.value = false;
     } catch (e) {
       logger.error(e);
       throwCreationError(e);

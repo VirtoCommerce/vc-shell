@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/core",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "scripts": {
     "build": "vite build"
   },
@@ -11,7 +11,7 @@
     "src"
   ],
   "devDependencies": {
-    "@virtoshell/config-generator": "^1.0.28",
+    "@virtoshell/config-generator": "^1.0.29",
     "typescript": "^4.6.2"
   },
   "dependencies": {

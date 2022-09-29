@@ -1,7 +1,7 @@
 {
   "name": "@virtoshell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "1.0.28",
+  "version": "1.0.29",
   "bin": "./dist/index.js",
   "files": [
     "dist",

@@ -56,7 +56,9 @@
         "MORE_INFO": "More info",
         "TOOLBAR": {
           "SAVE": "Save",
-          "CLOSE": "Close"
+          "CLOSE": "Close",
+          "ENABLE": "Enable",
+          "DISABLE": "Disable"
         },
         "FIELDS": {
           "PRODUCT": {

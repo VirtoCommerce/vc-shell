@@ -281,7 +281,7 @@
                       <!-- Minimum quantity field -->
                       <VcInput
                         :clearable="true"
-                        v-model="item.minQuantity"
+                        v-model.number="item.minQuantity"
                         type="number"
                         :required="true"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
@@ -408,7 +408,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useForm } from "@virtoshell/ui";
-import { useFunctions, useI18n, useUser } from "@virtoshell/core";
+import { useFunctions, useI18n } from "@virtoshell/core";
 import { useOffer } from "../composables";
 import {
   IOfferProduct,
@@ -425,7 +425,6 @@ import {
   PropertyValue,
 } from "../../../api_client/catalog";
 import { useProduct } from "../../products";
-import { isEqual } from "lodash-es";
 
 const props = defineProps({
   expanded: {
@@ -575,6 +574,38 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         )
     ),
   },
+  {
+    id: "enable",
+    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.ENABLE"),
+    icon: "fa fa-eye",
+    async clickHandler() {
+      if (offerDetails.id) {
+        offerDetails.isActive = true;
+        await updateOffer({
+          ...offerDetails,
+        });
+      }
+    },
+    isVisible: computed(
+      () => !!props.param && !offerLoading.value && !offerDetails.isActive
+    ),
+  },
+  {
+    id: "disable",
+    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DISABLE"),
+    icon: "fa fa-eye-slash",
+    async clickHandler() {
+      if (offerDetails.id) {
+        offerDetails.isActive = false;
+        await updateOffer({
+          ...offerDetails,
+        });
+      }
+    },
+    isVisible: computed(
+      () => !!props.param && !offerLoading.value && offerDetails.isActive
+    ),
+  },
 ]);
 
 watch(
@@ -585,7 +616,15 @@ watch(
         .map((o, idx) => {
           if (
             newVal.some((o2, idx2) => {
-              return idx !== idx2 && isEqual(o, o2);
+              return (
+                idx !== idx2 &&
+                o.listPrice &&
+                o2.listPrice &&
+                o.minQuantity &&
+                o2.minQuantity &&
+                o.listPrice === o2.listPrice &&
+                o.minQuantity === o2.minQuantity
+              );
             })
           ) {
             return {
@@ -595,10 +634,8 @@ watch(
           }
         })
         .filter((x) => x !== undefined);
-      if (duplicates.length) {
-        errors.value = duplicates;
-        setErrors(Object.assign({}, ...duplicates));
-      }
+      errors.value = duplicates;
+      setErrors(Object.assign({}, ...duplicates));
     });
   },
   { deep: true }

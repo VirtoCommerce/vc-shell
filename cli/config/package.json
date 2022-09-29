@@ -1,7 +1,7 @@
 {
   "name": "@virtoshell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [

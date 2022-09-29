@@ -13,6 +13,8 @@ import PushHub from "./config/push-hub";
 import * as locales from "./locales";
 
 // Load required CSS
+import "./styles/index.scss";
+import "@virtoshell/ui/dist/style.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 

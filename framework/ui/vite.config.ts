@@ -6,18 +6,13 @@ export default getLibraryConfiguration(
     plugins: [vue()],
     build: {
       rollupOptions: {
-        external: [
-          "@virtoshell/core",
-          "@virtoshell/api-client",
-          "vue",
-          "vue-router",
-        ],
+        external: ["@virtoshell/core", "vue", "vue-router", "vee-validate"],
         output: {
           globals: {
             vue: "Vue",
             "vue-router": "vue-router",
             "@virtoshell/core": "@virtoshell/core",
-            "@virtoshell/api-client": "@virtoshell/api-client",
+            "vee-validate": "vee-validate",
           },
         },
       },

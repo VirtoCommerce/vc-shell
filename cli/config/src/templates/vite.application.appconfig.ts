@@ -27,11 +27,11 @@ export default {
   mode,
   resolve: {
     preserveSymlinks: true,
-    alias: {
-      "@virtoshell/ui": "@virtoshell/ui/src/index.ts",
-      "@virtoshell/core": "@virtoshell/core/src/index.ts",
-      "@virtoshell/mod-assets": "@virtoshell/mod-assets/src/index.ts",
-    },
+    // alias: {
+    //   "@virtoshell/ui": "@virtoshell/ui/src/index.ts",
+    //   "@virtoshell/core": "@virtoshell/core/src/index.ts",
+    //   "@virtoshell/mod-assets": "@virtoshell/mod-assets/src/index.ts",
+    // },
   },
   envPrefix: "APP_",
   plugins: [vue()],
@@ -64,21 +64,21 @@ export default {
     include: [
       "vue",
       "vue-router",
-      "@virtoshell/core",
-      "@virtoshell/api-client",
-      "@virtoshell/ui",
-      "@virtoshell/mod-assets",
+      // "@virtoshell/core",
+      // "@virtoshell/api-client",
+      // "@virtoshell/ui",
+      // "@virtoshell/mod-assets",
       "url-pattern",
-      "vee-validate",
+      // "vee-validate",
       "ace-builds",
     ],
   },
   build: {
     sourcemap: true,
     emptyOutDir: true,
-    commonjsOptions: {
-      include: [/^@virtoshell(\/.+)?$/, /node_modules/],
-    },
+    // commonjsOptions: {
+    //   include: [/^@virtoshell(\/.+)?$/, /node_modules/],
+    // },
     rollupOptions: {
       plugins: [
         typescript({

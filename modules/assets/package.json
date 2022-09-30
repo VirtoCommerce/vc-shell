@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/mod-assets",
-  "version": "1.0.30",
+  "version": "1.0.22",
   "scripts": {
     "build": "vite build",
     "generate-api-client": "api-client-generator --color"

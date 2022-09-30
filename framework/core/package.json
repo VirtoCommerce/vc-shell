@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/core",
-  "version": "1.0.30",
+  "version": "1.0.22",
   "scripts": {
     "build": "vite build"
   },
@@ -11,7 +11,7 @@
     "src"
   ],
   "devDependencies": {
-    "@virtoshell/config-generator": "^1.0.30",
+    "@virtoshell/config-generator": "^1.0.22",
     "typescript": "^4.6.2"
   },
   "dependencies": {
@@ -20,7 +20,7 @@
     "vue-logger-plugin": "^2.1.2"
   },
   "peerDependencies": {
-    "@virtoshell/api-client": "^1.0.22"
+    "@virtoshell/api-client": "^1.0.30"
   },
   "publishConfig": {
     "access": "public",

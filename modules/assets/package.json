@@ -1,6 +1,6 @@
 {
   "name": "@virtoshell/mod-assets",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "scripts": {
     "build": "vite build",
     "generate-api-client": "api-client-generator --color"
@@ -13,15 +13,15 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@virtoshell/api-client-generator": "^1.0.22",
-    "@virtoshell/config-generator": "^1.0.22",
+    "@virtoshell/api-client": "^1.0.23",
+    "@virtoshell/api-client-generator": "^1.0.23",
+    "@virtoshell/config-generator": "^1.0.23",
+    "@virtoshell/core": "^1.0.23",
+    "@virtoshell/ui": "^1.0.23",
     "sass": "^1.49.0",
     "typescript": "^4.6.2"
   },
   "peerDependencies": {
-    "@virtoshell/api-client": "^1.0.30",
-    "@virtoshell/core": "^1.0.30",
-    "@virtoshell/ui": "^1.0.30",
     "vue": "^3.0.0"
   },
   "publishConfig": {

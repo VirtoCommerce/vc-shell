@@ -3,6 +3,71 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.23](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-marketing-portal@1.1.0...@virtoshell/app-marketing-portal@1.0.23) (2022-09-30)
+
+
+
+## 1.0.30 (2022-09-29)
+
+
+
+## 1.0.29 (2022-09-29)
+
+
+
+## 1.0.28 (2022-09-29)
+
+
+
+## 1.0.27 (2022-09-29)
+
+
+
+## 1.0.26 (2022-09-29)
+
+
+
+## 1.0.25 (2022-09-29)
+
+
+
+## 1.0.24 (2022-09-29)
+
+
+
+## 1.0.23 (2022-09-29)
+
+
+### Bug Fixes
+
+* remove redundant changes ([0b4d4e9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0b4d4e954d61d8e99426c01a090e4e689ab2c7ab))
+
+
+### Features
+
+* vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+### Bug Fixes
+
+* permissions fix ([d53c3c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+
+
+
+
 ## [1.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-marketing-portal@1.1.0...@virtoshell/app-marketing-portal@1.0.22) (2022-09-30)
 
 

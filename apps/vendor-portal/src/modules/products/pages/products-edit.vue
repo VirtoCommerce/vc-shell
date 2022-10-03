@@ -201,7 +201,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useUser } from "@virtoshell/core";
+import { useFunctions, useI18n, useUser, useAutosave } from "@virtoshell/core";
 import { useForm } from "@virtoshell/ui";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
@@ -218,7 +218,7 @@ import { AssetsDetails } from "@virtoshell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
-import { IImage } from "../../../api_client/marketplacevendor";
+import { IImage, IProductDetails } from "../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
@@ -258,7 +258,11 @@ const {
   revertStagedChanges,
   searchDictionaryItems,
 } = useProduct();
-
+const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
+  productDetails,
+  modified,
+  props.param ?? "productsEdit"
+);
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const { debounce } = useFunctions();
@@ -274,7 +278,7 @@ const categoriesTotal = ref();
 const filterTypes = ["Category", "Variation"];
 
 const filteredProps = computed(() =>
-  productDetails.properties.filter((x) => !filterTypes.includes(x.type))
+  productDetails.value.properties.filter((x) => !filterTypes.includes(x.type))
 );
 
 const reload = async (fullReload: boolean) => {
@@ -284,10 +288,16 @@ const reload = async (fullReload: boolean) => {
       if (props.param) {
         await loadProduct({ id: props.param });
       }
+      loadAutosaved();
+
+      if (savedValue.value) {
+        productDetails.value = savedValue.value as IProductDetails;
+      }
+
       const searchResult = await fetchCategories();
       categories.value = searchResult.results;
       categoriesTotal.value = searchResult.totalCount;
-      if (productDetails?.categoryId) {
+      if (productDetails.value?.categoryId) {
         await setCategoryItem(product.value.categoryId);
       }
     } finally {
@@ -318,10 +328,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           if (props.param) {
-            await updateProductDetails(productData.value.id, productDetails);
+            await updateProductDetails(
+              productData.value.id,
+              productDetails.value
+            );
           } else {
-            await createProduct(productDetails);
+            await createProduct(productDetails.value);
           }
+          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -359,9 +373,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         try {
           await updateProductDetails(
             productData.value.id,
-            { ...productDetails },
+            { ...productDetails.value },
             true
           );
+          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -397,6 +412,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       await revertStagedChanges(productData.value.id);
+      resetAutosaved();
       emit("parent:call", {
         method: "reload",
       });
@@ -427,7 +443,7 @@ const statusText = computed(() => {
 });
 
 const product = computed(() =>
-  props.param ? productData.value : productDetails
+  props.param ? productData.value : productDetails.value
 );
 const readonly = computed(
   () => props.param && !productData.value?.canBeModified
@@ -457,14 +473,15 @@ const onGalleryUpload = async (files: FileList) => {
       if (response?.length) {
         const image = new Image(response[0]);
         image.createdDate = new Date();
-        if (productDetails.images && productDetails.images.length) {
+        if (productDetails.value.images && productDetails.value.images.length) {
           const lastImageSortOrder =
-            productDetails.images[productDetails.images.length - 1].sortOrder;
+            productDetails.value.images[productDetails.value.images.length - 1]
+              .sortOrder;
           image.sortOrder = lastImageSortOrder + 1;
         } else {
           image.sortOrder = 0;
         }
-        productDetails.images.push(image);
+        productDetails.value.images.push(image);
       }
     }
   } catch (e) {
@@ -481,14 +498,14 @@ const onGalleryItemEdit = (item: Image) => {
     component: AssetsDetails,
     componentOptions: {
       editableAsset: item,
-      images: productDetails.images,
+      images: productDetails.value.images,
       sortHandler: sortImage,
     },
   });
 };
 
 function sortImage(remove = false, localImage: IImage) {
-  const images = productDetails.images;
+  const images = productDetails.value.images;
   const image = new Image(localImage);
   if (images.length) {
     const imageIndex = images.findIndex((img) => img.id === localImage.id);
@@ -500,11 +517,11 @@ function sortImage(remove = false, localImage: IImage) {
 }
 
 const editImages = (args: Image[]) => {
-  productDetails.images = args;
+  productDetails.value.images = args;
 };
 
 const onGallerySort = (images: Image[]) => {
-  productDetails.images = images;
+  productDetails.value.images = images;
 };
 
 const onGalleryImageRemove = (image: Image) => {
@@ -515,14 +532,14 @@ const onGalleryImageRemove = (image: Image) => {
       )
     )
   ) {
-    const imageIndex = productDetails.images.findIndex((img) => {
+    const imageIndex = productDetails.value.images.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;
       } else {
         return img.url === image.url;
       }
     });
-    productDetails.images.splice(imageIndex, 1);
+    productDetails.value.images.splice(imageIndex, 1);
   }
 };
 
@@ -532,9 +549,11 @@ const setCategory = async (id: string) => {
     await setCategoryItem(id);
   }
 
-  const currentProperties = [...(productDetails?.properties || [])];
-  productDetails.properties = [...(currentCategory.value.properties || [])];
-  productDetails.properties.forEach(async (property) => {
+  const currentProperties = [...(productDetails.value?.properties || [])];
+  productDetails.value.properties = [
+    ...(currentCategory.value.properties || []),
+  ];
+  productDetails.value.properties.forEach(async (property) => {
     const previousPropertyValue = currentProperties?.find(
       (item) => item.id === property.id
     );
@@ -603,11 +622,15 @@ async function openOffers() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
+    const confirmationStatus = confirm(
       unref(
         computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
       )
     );
+    if (confirmationStatus) {
+      resetAutosaved();
+    }
+    return confirmationStatus;
   }
 }
 

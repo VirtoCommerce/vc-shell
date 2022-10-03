@@ -142,12 +142,13 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n, useUser } from "@virtoshell/core";
+import { useI18n, useUser, useAutosave } from "@virtoshell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useForm } from "@virtoshell/ui";
 import { useIsFormValid } from "vee-validate";
+import { SellerUserDetails } from "../../../../api_client/marketplacevendor";
 
 const props = defineProps({
   expanded: {
@@ -187,7 +188,11 @@ const {
   updateTeamMember,
   sendTeamMemberInvitation,
 } = useTeamMembers();
-
+const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
+  userDetails,
+  modified,
+  props.param ?? "teamMembers"
+);
 const title = computed(() =>
   props.param
     ? userDetails.value.firstName + " " + userDetails.value.lastName
@@ -213,6 +218,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           await createTeamMember(userDetails.value, sendInviteStatus.value);
+          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -241,6 +247,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           await updateTeamMember(userDetails.value);
+          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -341,6 +348,11 @@ onMounted(async () => {
     userDetails.value.role = role.value.id;
     handleUserDetailsItem(userDetails.value);
   }
+  loadAutosaved();
+
+  if (savedValue.value) {
+    userDetails.value = savedValue.value as SellerUserDetails;
+  }
 });
 
 async function removeUser() {
@@ -353,4 +365,20 @@ async function removeUser() {
     emit("page:close");
   }
 }
+
+async function onBeforeClose() {
+  if (modified.value) {
+    const confirmationStatus = confirm(
+      unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION")))
+    );
+    if (confirmationStatus) {
+      resetAutosaved();
+    }
+    return confirmationStatus;
+  }
+}
+
+defineExpose({
+  onBeforeClose,
+});
 </script>

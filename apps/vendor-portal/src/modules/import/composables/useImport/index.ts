@@ -62,7 +62,7 @@ interface IUseImport {
   readonly totalHistoryCount: Ref<number>;
   readonly historyPages: Ref<number>;
   readonly currentPage: Ref<number>;
-  profileDetails: ImportProfile;
+  profileDetails: Ref<ImportProfile>;
   setFile(file: IUploadedFile): void;
   setImporter(typeName: string): void;
   fetchDataImporters(): Promise<IDataImporter[]>;
@@ -89,7 +89,9 @@ export default (): IUseImport => {
   const historySearchResult = ref<SearchImportProfilesHistoryResult>();
   const profileSearchResult = ref<ISearchProfile>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
-  const profileDetails = reactive<ImportProfile>(new ImportProfile());
+  const profileDetails = ref<ImportProfile>(
+    new ImportProfile({ settings: [new ObjectSettingEntry()] })
+  );
   let profileDetailsCopy: ImportProfile;
   const dataImporters = ref<IDataImporter[]>([]);
   const modified = ref(false);
@@ -137,7 +139,7 @@ export default (): IUseImport => {
   watch(
     () => profileDetails,
     (state) => {
-      modified.value = !isEqual(profileDetailsCopy, state);
+      modified.value = !isEqual(profileDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -288,9 +290,9 @@ export default (): IUseImport => {
         (x) => x.typeName === profile.value.dataImporterType
       );
 
-      Object.assign(profileDetails, profile.value);
+      Object.assign(profileDetails.value, profile.value);
 
-      profileDetailsCopy = _cloneDeep(profileDetails);
+      profileDetailsCopy = _cloneDeep(profileDetails.value);
     } catch (e) {
       logger.error(e);
       throw e;
@@ -303,8 +305,11 @@ export default (): IUseImport => {
     const importer = dataImporters.value.find(
       (importer) => importer.typeName === typeName
     );
-    profileDetails.dataImporterType = typeName;
-    profileDetails.settings = [...(importer.availSettings || [])];
+    console.log(importer);
+    profileDetails.value.dataImporterType = typeName;
+    profileDetails.value.settings = [
+      ...(importer.availSettings.map((x) => new ObjectSettingEntry(x)) || []),
+    ];
   }
 
   async function updateImportProfile(updatedProfile: ImportProfile) {

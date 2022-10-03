@@ -584,6 +584,7 @@ watch(
       });
 
       duplicates.value = dupes;
+      pricingEqual.value = !!dupes.length;
     });
   },
   { deep: true }

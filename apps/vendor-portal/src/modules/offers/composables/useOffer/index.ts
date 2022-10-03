@@ -65,7 +65,6 @@ export default (): IUseOffer => {
   const { user, getAccessToken } = useUser();
   const logger = useLogger();
   const offer = ref<IOffer>({});
-  // const offerDetails = reactive<TextOfferDetails>(new OfferDetails());
   const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
   let offerDetailsCopy: TextOfferDetails;
   const storeSettings = ref<IStoreSettings>();

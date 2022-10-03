@@ -127,6 +127,7 @@ export default (): IUseOffer => {
     try {
       loading.value = true;
       offer.value = await client.createNewOffer(command);
+      modified.value = false;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -148,6 +149,7 @@ export default (): IUseOffer => {
     try {
       loading.value = true;
       offer.value = await client.updateOffer(command);
+      modified.value = false;
     } catch (e) {
       logger.error(e);
       throw e;

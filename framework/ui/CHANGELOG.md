@@ -5,44 +5,6 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [1.0.23](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/ui@1.1.0...@virtoshell/ui@1.0.23) (2022-10-03)
 
-
-### Bug Fixes
-
-* versions revert ([6d57acd](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d57acdef986ae8d7bd1aa3282f1739359e4644d))
-
-
-
-## 1.0.30 (2022-09-29)
-
-
-
-## 1.0.29 (2022-09-29)
-
-
-
-## 1.0.28 (2022-09-29)
-
-
-
-## 1.0.27 (2022-09-29)
-
-
-
-## 1.0.26 (2022-09-29)
-
-
-
-## 1.0.25 (2022-09-29)
-
-
-
-## 1.0.24 (2022-09-29)
-
-
-
-## 1.0.23 (2022-09-29)
-
-
 ### Bug Fixes
 
 * vm-1029 1056 987 1018 912 1057 1062 ([799e2a1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/799e2a1141e922ad4e31243c0656e1da27e246a9))

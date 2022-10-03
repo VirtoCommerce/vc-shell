@@ -6,50 +6,10 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## [1.0.23](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/core@1.1.0...@virtoshell/core@1.0.23) (2022-10-03)
 
 
-### Bug Fixes
-
-* versions revert ([6d57acd](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d57acdef986ae8d7bd1aa3282f1739359e4644d))
-
 
 ### Features
 
 * autosave and fixes ([d80fa96](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d80fa96083bcf483a7dd36a9a98961959cc13960))
-
-
-
-## 1.0.30 (2022-09-29)
-
-
-
-## 1.0.29 (2022-09-29)
-
-
-
-## 1.0.28 (2022-09-29)
-
-
-
-## 1.0.27 (2022-09-29)
-
-
-
-## 1.0.26 (2022-09-29)
-
-
-
-## 1.0.25 (2022-09-29)
-
-
-
-## 1.0.24 (2022-09-29)
-
-
-
-## 1.0.23 (2022-09-29)
-
-
-### Features
-
 * vm-741 893 1005 1019 1021 513 978 914 920 828 963 755 ([b8b2cda](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8b2cdaedf32128b35c04d85689eb3203057b7d0))
 * vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
 

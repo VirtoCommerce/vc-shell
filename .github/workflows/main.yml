@@ -99,3 +99,16 @@ jobs:
     - name: CI results
       run: |
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM, $ARTIFACT_URL_UK and $ARTIFACT_URL_M"
+
+  CD_Demo_manager:
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+    needs: CI
+    uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
+    with:
+      argoServer: 'argo.govirto.com'
+      artifactUrl: ${{ needs.CI.outputs.managerArtifactUrl }}
+      matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/demoManager/argoDeploy-marketplace.json"}]}'
+    secrets:
+      envPAT: ${{ secrets.REPO_TOKEN }}
+      argoLogin: ${{ secrets.ARGOCD_LOGIN }}
+      argoPassword: ${{ secrets.ARGOCD_PASSWORD }}

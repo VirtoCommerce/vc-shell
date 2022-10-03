@@ -305,7 +305,6 @@ export default (): IUseImport => {
     const importer = dataImporters.value.find(
       (importer) => importer.typeName === typeName
     );
-    console.log(importer);
     profileDetails.value.dataImporterType = typeName;
     profileDetails.value.settings = [
       ...(importer.availSettings.map((x) => new ObjectSettingEntry(x)) || []),

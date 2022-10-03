@@ -3,6 +3,89 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [1.0.24](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-vendor-portal@1.1.0...@virtoshell/app-vendor-portal@1.0.24) (2022-10-03)
+
+
+### Bug Fixes
+
+* versions revert ([6d57acd](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d57acdef986ae8d7bd1aa3282f1739359e4644d))
+
+
+### Features
+
+* autosave and fixes ([d80fa96](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d80fa96083bcf483a7dd36a9a98961959cc13960))
+
+
+
+## 1.0.30 (2022-09-29)
+
+
+
+## 1.0.29 (2022-09-29)
+
+
+
+## 1.0.28 (2022-09-29)
+
+
+
+## 1.0.27 (2022-09-29)
+
+
+
+## 1.0.26 (2022-09-29)
+
+
+
+## 1.0.25 (2022-09-29)
+
+
+
+## 1.0.24 (2022-09-29)
+
+
+
+## 1.0.23 (2022-09-29)
+
+
+### Bug Fixes
+
+* corrected decline reason badge ([#128](https://github.com/VirtoCommerce/platform-manager-sdk/issues/128)) ([bcef755](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bcef755f2ffd8b4a14f0edb5062ccfc12721de45))
+* offers-details revert changes ([af2fdb7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/af2fdb72c44295417a92c63a11f7ae0443a9feea))
+* offers-details revert changes ([d7cf91f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d7cf91f03f573985fe486955dac5f1a5d7ce2699))
+* remove redundant changes ([0b4d4e9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/0b4d4e954d61d8e99426c01a090e4e689ab2c7ab))
+* vm-1029 1056 987 1018 912 1057 1062 ([799e2a1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/799e2a1141e922ad4e31243c0656e1da27e246a9))
+
+
+### Features
+
+* edit offer ([#127](https://github.com/VirtoCommerce/platform-manager-sdk/issues/127)) ([de06358](https://github.com/VirtoCommerce/platform-manager-sdk/commit/de06358d7ebf0cb40cb41d36f6471bd96fd1b555))
+* multiple images in offer ([#131](https://github.com/VirtoCommerce/platform-manager-sdk/issues/131)) ([dbb8ac2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dbb8ac2ba954cc82b361362a434c5da7b1a3d98c))
+* vm-1058 ([3b385e1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3b385e102ef10ce625e7dbfea2032efb43e33899))
+* vm-741 893 1005 1019 1021 513 978 914 920 828 963 755 ([b8b2cda](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8b2cdaedf32128b35c04d85689eb3203057b7d0))
+* vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+### Bug Fixes
+
+* permissions fix ([d53c3c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+
+
+
+
 ## 1.0.23 (2022-09-29)
 
 

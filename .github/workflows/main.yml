@@ -107,36 +107,7 @@ jobs:
     with:
       argoServer: 'argo.govirto.com'
       artifactUrl: ${{ needs.CI.outputs.managerArtifactUrl }}
-      matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/demoManager/argoDeploy-marketplace.json"},{"envName": "prod", "confPath": ".deployment/demoManager/argoDeploy-platform-dev.json"}]}'
-
-    secrets:
-      envPAT: ${{ secrets.REPO_TOKEN }}
-      argoLogin: ${{ secrets.ARGOCD_LOGIN }}
-      argoPassword: ${{ secrets.ARGOCD_PASSWORD }}
-
-  CD_UI_kit:
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-    needs: CI
-    uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
-    with:
-      argoServer: 'argo.govirto.com'
-      artifactUrl: ${{ needs.CI.outputs.UIKitArtifactUrl }}
-      matrix: '{"include":[{"envName": "prod", "confPath": ".deployment/UIKit/argoDeploy-platform-dev.json"}]}'
-
-    secrets:
-      envPAT: ${{ secrets.REPO_TOKEN }}
-      argoLogin: ${{ secrets.ARGOCD_LOGIN }}
-      argoPassword: ${{ secrets.ARGOCD_PASSWORD }}
-
-  CD_Marketing:
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-    needs: CI
-    uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
-    with:
-      argoServer: 'argo.govirto.com'
-      artifactUrl: ${{ needs.CI.outputs.marketingArtifactUrl }}
-      matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/marketing/argoDeploy-platform-dev.json"}]}'
-
+      matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/demoManager/argoDeploy-marketplace.json"}]}'
     secrets:
       envPAT: ${{ secrets.REPO_TOKEN }}
       argoLogin: ${{ secrets.ARGOCD_LOGIN }}

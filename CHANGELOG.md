@@ -1,6 +1,5 @@
 ## [0.0.29](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.10...v0.0.29) (2021-08-20)
 
-
 ### Bug Fixes
 
 * **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
@@ -133,9 +132,4 @@
 * conventional changelog ([fd83ac2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fd83ac23191b903859275df9758d62d518a0f2e5))
 * root package version sync ([8e9de3b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8e9de3bf47993c5e713bac56c8dce23b6fa546fe))
 
-
-
 ## 0.0.3 (2021-07-20)
-
-
-

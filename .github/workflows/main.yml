@@ -1,11 +1,12 @@
-# v1.0.0
-name: CI
+# v2.0.0
+name: Demo manager CI
 
 on:
   workflow_dispatch:
   push:
     paths-ignore:
       - '.github/**'
+      - '.deployment/**'
       - 'docs/**'
       - 'README.md'
       - 'LICENSE'
@@ -17,25 +18,35 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
-      VERSION_SUFFIX: ""
-      ARTIFACT_URL: ""
-      PACKAGE_SERVER: "ghcr.io"
-      DEMO_MANAGER_CONTAINER: "platform-demo-manager"
-      UI_KIT_CONTAINER: "platform-ui-kit"
+      VERSION_SUFFIX: ''
+      ARTIFACT_URL: ''
+      GITHUB_USER: '${{ github.repository_owner }}'
+      PACKAGE_SERVER: 'ghcr.io'
+      DEMO_MANAGER_CONTAINER: 'platform-demo-manager'
+      UI_KIT_CONTAINER: 'platform-ui-kit'
+      MARKETING_CONTAINER: 'platform-marketing'
+
+    outputs:
+      managerArtifactUrl: '${{ env.ARTIFACT_URL_DM }}'
+      marketingArtifactUrl: '${{ env.ARTIFACT_URL_M }}'
+      UiKitArtifactUrl: '${{ env.ARTIFACT_URL_UK }}'
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
+    - name: Set GITHUB_USER to lowercase
+      run: |
+        echo "GITHUB_USER=${GITHUB_USER,,}" >> $GITHUB_ENV
 
-    - name: Use Node.js 14.x
-      uses: actions/setup-node@v1
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js 16.x
+      uses: actions/setup-node@v2
       with:
-        node-version: 14.x
+        node-version: '16.x'
+        cache: 'yarn'
 
     - name: Install dependencies
       run: |
-        npm install
+        yarn
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master
       id: image
@@ -54,18 +65,17 @@ jobs:
       if: ${{ github.event_name == 'pull_request' }}
       run: |
         echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
-    - name: Set ARTIFACT_URL_DM
+    - name: Set ARTIFACT_URLs
       run: |
-        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}/virtocommerce/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-    - name: Set ARTIFACT_URL_UK
+        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+        echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+        echo "ARTIFACT_URL_M=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.MARKETING_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+    - name: Build virto-shell
       run: |
-        echo "ARTIFACT_URL_UK=${{ env.PACKAGE_SERVER }}/virtocommerce/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-    - name: Build platform-manager-demo
-      run: |
-        npm run build
+        yarn build
     - name: Build platform-manager-ui docs
       run: |
-        npm run storybook-build
+        yarn storybook-build
     - name: Docker Login
       uses: azure/docker-login@v1
       with:
@@ -81,22 +91,24 @@ jobs:
       run: |
           docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_UK }} -f .dockerfiles/platform-manager-ui/Dockerfile.demo
           docker push ${{ env.ARTIFACT_URL_UK }}
+    - name: Build and Publish Docker Image For Platform Marketing
+      run: |
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_M }} -f .dockerfiles/platform-manager-marketing/Dockerfile.demo
+          docker push ${{ env.ARTIFACT_URL_M }}
+
     - name: CI results
       run: |
-          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM and $ARTIFACT_URL_UK"
+          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM, $ARTIFACT_URL_UK and $ARTIFACT_URL_M"
 
-    - name: Invoke VC image deployment workflow for UI Kit
-      if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-      uses: benc-uk/workflow-dispatch@v1
-      with:
-        workflow: VC deployment
-        token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.UI_KIT_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployUIKit.json" }'
-
-    - name: Invoke VC image deployment workflow for Demo manager
-      if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
-      uses: benc-uk/workflow-dispatch@v1
-      with:
-        workflow: VC deployment
-        token: ${{ secrets.REPO_TOKEN }}
-        inputs: '{ "artifactUrl": "${{ env.PACKAGE_SERVER }}/${{ github.repository }}/${{ env.DEMO_MANAGER_CONTAINER }}:${{ env.VERSION_SUFFIX }}", "deployConfigPath":".github/deploy/argoDeployDemoManager.json" }'
+  CD_Demo_manager:
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+    needs: CI
+    uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
+    with:
+      argoServer: 'argo.govirto.com'
+      artifactUrl: ${{ needs.CI.outputs.managerArtifactUrl }}
+      matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/demoManager/argoDeploy-marketplace.json"}]}'
+    secrets:
+      envPAT: ${{ secrets.REPO_TOKEN }}
+      argoLogin: ${{ secrets.ARGOCD_LOGIN }}
+      argoPassword: ${{ secrets.ARGOCD_PASSWORD }}

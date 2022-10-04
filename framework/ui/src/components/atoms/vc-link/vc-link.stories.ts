@@ -18,12 +18,13 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template: '<vc-link v-bind="args">This is link</vc-link>',
+  template: '<vc-link v-bind="args">This is a link</vc-link>',
 });
 
 export const Link = Template.bind({});
 Link.storyName = "vc-link";
 Link.args = {
-  to: "/",
+  to: undefined,
+  active: false,
   disabled: false,
 };

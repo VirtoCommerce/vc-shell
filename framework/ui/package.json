@@ -1,36 +1,47 @@
 {
   "name": "@virtoshell/ui",
-  "version": "0.0.14",
+  "version": "1.0.22",
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --formats commonjs --target lib --name ui ./src/index.ts",
-    "storybook:build": "vue-cli-service storybook:build -c config/storybook",
-    "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook"
+    "build": "vite build",
+    "watch": "vite build --watch"
   },
-  "main": "./dist/ui.common.js",
+  "main": "./dist/ui.cjs.js",
   "types": "./dist/index.d.ts",
+  "style": "./dist/style.css",
   "files": [
     "dist/*",
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@storybook/addon-controls": "^6.3.4",
-    "@storybook/addon-docs": "^6.3.4",
-    "@storybook/core": "^6.3.4",
-    "@storybook/vue3": "^6.3.4",
-    "@virtoshell/ui-theme-light": "^0.0.14",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-typescript": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0",
-    "babel-loader": "^8.2.2",
-    "core-js": "^3.6.5",
-    "css-loader": "^5.0.0",
-    "less": "^3.0.4",
-    "less-loader": "^5.0.0",
-    "style-loader": "^2.0.0",
-    "typescript": "^4.3.5",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@rollup/plugin-commonjs": "^21.0.2",
+    "sass": "^1.49.0",
+    "typescript": "^4.6.2",
+    "url-pattern": "^1.0.3"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.0",
+    "@vee-validate/rules": "^4.5.5",
+    "@virtoshell/config-generator": "^1.0.22",
+    "@virtoshell/core": "^1.0.22",
+    "@vueuse/core": "^6.0.0",
+    "@vueuse/integrations": "^6.0.0",
+    "moment": "^2.29.1",
+    "normalize.css": "^8.0.1",
+    "swiper": "^6.7.5",
+    "vue-currency-input": "^2.2.0",
+    "vue3-ace-editor": "^2.2.2",
+    "vue3-touch-events": "^4.1.0",
+    "vuedraggable": "^4.1.0"
+  },
+  "peerDependencies": {
+    "vee-validate": "^4.5.5",
     "vue": "^3.0.0",
-    "vue-cli-plugin-storybook": "~2.1.0"
-  }
+    "vue-router": "^4.0.12"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
 }

@@ -1,4 +1,7 @@
-export { default as useLogger } from "./logger";
-export { default as useI18n } from "./i18n";
-export { default as useRouter } from "./router";
-export { default as useFunctions } from "./functions";
+export { default as useFunctions } from "./useFunctions";
+export { default as useI18n } from "./useI18n";
+export { default as useLogger } from "./useLogger";
+export { default as useUser } from "./useUser";
+export { default as useNotifications } from "./useNotifications";
+export { default as useSettings } from "./useSettings";
+export { default as usePermissions } from "./usePermissions";

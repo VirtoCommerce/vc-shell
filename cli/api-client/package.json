@@ -1,0 +1,26 @@
+{
+  "name": "@virtoshell/api-client-generator",
+  "description": "Tool for API clients generation",
+  "version": "1.0.22",
+  "bin": "./dist/index.js",
+  "files": [
+    "dist",
+    "public"
+  ],
+  "scripts": {
+    "build": "tsc -p src"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "nswag": "^13.16.1",
+    "vite": "^2.8.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
+}

@@ -1,15 +1,33 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": true,
-    "strictNullChecks": true,
-    "target": "es5", 
-    "outDir": "dist",
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "declarationMap": true,
     "sourceMap": true,
-    "lib": ["es2015", "dom"],
-    "rootDir": "src"
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "jsx": "preserve",
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "strict": false,
+    "lib": [
+      "esnext",
+      "dom"
+    ]
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

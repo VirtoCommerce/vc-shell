@@ -20,13 +20,13 @@ const Template: Story = (args) => ({
     return { args };
   },
   template:
-    '<vc-blade v-bind="args"><div class="vc-padding_l">Blade Contents</div></vc-blade>',
+    '<vc-blade v-bind="args"><div class="p-4">Blade Contents</div></vc-blade>',
 });
 
 export const Blade = Template.bind({});
 Blade.storyName = "vc-blade";
 Blade.args = {
-  icon: "star",
+  icon: "fas fa-star",
   title: "My Awesome Blade",
   subtitle: "Optional Subtitle",
   width: 700,
@@ -34,29 +34,13 @@ Blade.args = {
   searchable: false,
 
   toolbarItems: [
-    { id: 1, icon: "sync-alt", title: "Refresh" },
-    { id: 2, icon: "plus", title: "Add" },
-    { id: 3, icon: "trash", title: "Delete", disabled: true },
-    { id: 4, icon: "download", title: "Import" },
-    { id: 5, icon: "upload", title: "Export" },
-    { id: 6, icon: "cut", title: "Cut", disabled: true },
-    { id: 7, icon: "paste", title: "Paste", disabled: true },
-    { id: 8, icon: "cubes", title: "Bulk export", disabled: true },
-  ],
-
-  breadcrumbs: [
-    {
-      id: 0,
-      title: "Back",
-      icon: "arrow-left",
-    },
-    {
-      id: 1,
-      title: "Electronics",
-    },
-    {
-      id: 2,
-      title: "Desktop",
-    },
+    { id: 1, icon: "fas fa-sync-alt", title: "Refresh" },
+    { id: 2, icon: "fas fa-plus", title: "Add" },
+    { id: 3, icon: "fas fa-trash", title: "Delete", disabled: true },
+    { id: 4, icon: "fas fa-download", title: "Import" },
+    { id: 5, icon: "fas fa-upload", title: "Export" },
+    { id: 6, icon: "fas fa-cut", title: "Cut", disabled: true },
+    { id: 7, icon: "fas fa-paste", title: "Paste", disabled: true },
+    { id: 8, icon: "fas fa-cubes", title: "Bulk export", disabled: true },
   ],
 };

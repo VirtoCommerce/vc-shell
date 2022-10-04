@@ -1,0 +1,177 @@
+{
+  "language_name": "English",
+  "SHELL": {
+    "LOGIN": {
+      "FIELDS": {
+        "LOGIN": {
+          "LABEL": "Username",
+          "PLACEHOLDER": "Enter your seller login"
+        },
+        "PASSWORD": {
+          "LABEL": "Password",
+          "PLACEHOLDER": "Enter your password"
+        },
+        "FORGOT_PASSWORD": {
+          "TITLE": "Forgot password",
+          "LABEL": "Email",
+          "PLACEHOLDER": "Please enter your email"
+        }
+      },
+      "FORGOT_PASSWORD_BUTTON": "Forgot your password?",
+      "BUTTON": "Log in",
+      "FORGOT_BUTTON": "Submit",
+      "BACK_BUTTON": "Back",
+      "BUTTON_OK": "Ok",
+      "RESET_EMAIL_TEXT": "We will send you an email with instructions on how to reset your password.",
+      "RESET_EMAIL_SENT": "Email with instructions has been sent to you."
+    },
+    "MENU": {
+      "DASHBOARD": "Home"
+    },
+    "TOOLBAR": {
+      "LOGIN": "Log In",
+      "SETTINGS": "Settings",
+      "HELP": "Help",
+      "NOTIFICATIONS": "Notifications",
+      "LANGUAGE": "Language selector"
+    },
+    "ACCOUNT": {
+      "CHANGE_PASSWORD": "Change password",
+      "PROFILE": "Profile",
+      "LOGOUT": "Log Out"
+    },
+    "CHANGE_PASSWORD": {
+      "CURRENT_PASSWORD": {
+        "LABEL": "Current password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "New password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirm password",
+        "PLACEHOLDER": "Confirm password"
+      },
+      "CANCEL": "Cancel",
+      "SAVE": "Update",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Equal-passwords": "The new password must not match the old one",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "Incorrect password.": "You entered an incorrect password",
+        "You have used this password in the past. Choose another one.": "You have used this password in the past. Choose another one."
+      }
+    },
+    "INVITATION": {
+      "TITLE": "New user activation",
+      "FIELDS": {
+        "EMAIL": {
+          "LABEL": "Email"
+        },
+        "PASSWORD": {
+          "LABEL": "New password",
+          "PLACEHOLDER": "Enter password"
+        },
+        "CONFIRM_PASSWORD": {
+          "LABEL": "Confirm password",
+          "PLACEHOLDER": "Confirm password"
+        }
+      },
+      "ACCEPT_INVITATION": "Activate",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "recentPasswordUsed": "You have used this password in the past. Choose another one."
+      }
+    },
+    "PASSWORDRESET": {
+      "TITLE": "Password reset",
+      "FIELDS": {
+        "PASSWORD": {
+          "LABEL": "New password",
+          "PLACEHOLDER": "Enter password"
+        },
+        "CONFIRM_PASSWORD": {
+          "LABEL": "Confirm password",
+          "PLACEHOLDER": "Confirm password"
+        }
+      },
+      "SAVE_PASSWORD": "Save",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "recentPasswordUsed": "You have used this password in the past. Choose another one."
+      }
+    },
+    "NOTIFICATIONS": {
+      "EMPTY": "No notifications yet",
+      "ERRORS": "Errors",
+      "PROFILE": "Profile:",
+      "TITLE": {
+        "PRODUCT": {
+          "TITLE": "Product",
+          "UPDATE": "status update",
+          "MORE_DETAILS": "Click the notification to see details"
+        }
+      }
+    },
+    "DASHBOARD": {
+      "TITLE": "Dashboard",
+      "ORDERS": {
+        "TITLE": "Orders",
+        "ALL": "All orders",
+        "EMPTY": "There are no orders yet"
+      },
+      "PRODUCTS": {
+        "TITLE": "Products",
+        "ALL": "All products",
+        "EMPTY": "There are no products yet",
+        "ADD": "Add product"
+      },
+      "OFFERS": {
+        "TITLE": "Offers",
+        "ADD": "Add offer",
+        "ALL": "All offers",
+        "EMPTY": "There are no offers yet",
+        "ENDING": "Offers ending soon",
+        "LOW_STOCK": "Low stock",
+        "OUT_STOCK": "Out of stock"
+      },
+      "COUNTERS": {
+        "REVENUE": "Revenue, USD",
+        "DAY": "Day",
+        "WEEK": "Week",
+        "MONTH": "Month",
+        "YEAR": "Year",
+        "PURCHASED": "Items purchased",
+        "AVERAGE_ORDER": "Average order, USD"
+      },
+      "REVIEWS": {
+        "TITLE": "Latest review",
+        "MORE": "More reviews"
+      }
+    }
+  }
+}

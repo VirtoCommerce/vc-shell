@@ -1,0 +1,31 @@
+{
+  "name": "@virtoshell/mod-assets",
+  "version": "1.0.22",
+  "scripts": {
+    "build": "vite build",
+    "generate-api-client": "api-client-generator --color"
+  },
+  "main": "./dist/mod-assets.cjs.js",
+  "types": "./dist/index.d.ts",
+  "style": "./dist/style.css",
+  "files": [
+    "dist/*",
+    "src/**/*.vue"
+  ],
+  "devDependencies": {
+    "@virtoshell/api-client-generator": "^1.0.22",
+    "sass": "^1.49.0",
+    "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "@virtoshell/api-client": "^1.0.22",
+    "@virtoshell/config-generator": "^1.0.22",
+    "@virtoshell/core": "^1.0.22",
+    "@virtoshell/ui": "^1.0.22",
+    "vue": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

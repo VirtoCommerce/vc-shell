@@ -1,0 +1,138 @@
+{
+  "SHELL": {
+    "LOGIN": {
+      "FIELDS": {
+        "LOGIN": {
+          "LABEL": "Username",
+          "PLACEHOLDER": "Enter your login"
+        },
+        "PASSWORD": {
+          "LABEL": "Password",
+          "PLACEHOLDER": "Enter your password"
+        },
+        "FORGOT_PASSWORD": {
+          "LABEL": "Login or email",
+          "PLACEHOLDER": "Please enter login or email"
+        }
+      },
+      "FORGOT_PASSWORD_BUTTON": "Forgot your password?",
+      "BUTTON": "Log in",
+      "FORGOT_BUTTON": "Submit",
+      "BACK_BUTTON": "Back",
+      "BUTTON_OK": "Ok"
+    },
+    "MENU": {
+      "DASHBOARD": "Dashboard",
+      "PROMOTIONS": "Promotions",
+      "DYNAMIC_CONTENT": {
+        "TITLE": "Dynamic content",
+        "CHILDREN": {
+          "CONTENT_ITEMS": {
+            "TITLE": "Content items"
+          },
+          "CONTENT_PLACEHOLDERS": {
+            "TITLE": "Content placeholders"
+          },
+          "CONTENT_PUBLISHING": {
+            "TITLE": "Content publishing"
+          }
+        }
+      }
+    },
+    "TOOLBAR": {
+      "LOGIN": "Log In",
+      "SETTINGS": "Settings",
+      "HELP": "Help",
+      "NOTIFICATIONS": "Notifications"
+    },
+    "ACCOUNT": {
+      "CHANGE_PASSWORD": "Change password",
+      "PROFILE": "Profile",
+      "LOGOUT": "Log Out"
+    },
+    "CHANGE_PASSWORD": {
+      "CURRENT_PASSWORD": {
+        "LABEL": "Current password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "NEW_PASSWORD": {
+        "LABEL": "New password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirm password",
+        "PLACEHOLDER": "Confirm password"
+      },
+      "CANCEL": "Cancel",
+      "SAVE": "Update",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "Incorrect password.": "You entered an incorrect password",
+        "You have used this password in the past. Choose another one.": "You have used this password in the past. Choose another one."
+      }
+    },
+    "INVITATION": {
+      "TITLE": "New user registration",
+      "FIELDS": {
+        "USER_NAME": {
+          "LABEL": "Username"
+        },
+        "PASSWORD": {
+          "LABEL": "New password",
+          "PLACEHOLDER": "Enter password"
+        },
+        "CONFIRM_PASSWORD": {
+          "LABEL": "Confirm password",
+          "PLACEHOLDER": "Confirm password"
+        }
+      },
+      "ACCEPT_INVITATION": "Accept invitation",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "recentPasswordUsed": "You have used this password in the past. Choose another one."
+      }
+    },
+    "PASSWORDRESET": {
+      "TITLE": "Password reset",
+      "FIELDS": {
+        "PASSWORD": {
+          "LABEL": "New password",
+          "PLACEHOLDER": "Enter password"
+        },
+        "CONFIRM_PASSWORD": {
+          "LABEL": "Confirm password",
+          "PLACEHOLDER": "Confirm password"
+        }
+      },
+      "SAVE_PASSWORD": "Save",
+      "ERRORS": {
+        "Repeat-password": "Passwords are not same",
+        "Invalid-token": "Token is invalid or expired",
+        "Password-too-weak": "New password does not comply one or more password security policies:",
+        "PasswordTooShort": "Passwords too short",
+        "PasswordRequiresUniqueChars": "Passwords must use different characters",
+        "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+        "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+        "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+        "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+        "recentPasswordUsed": "You have used this password in the past. Choose another one."
+      }
+    }
+  }
+}

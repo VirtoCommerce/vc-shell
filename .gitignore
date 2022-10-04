@@ -39,7 +39,7 @@ coverage/
 # compiled output
 dist/
 storybook-static
-
+*.tsbuildinfo
 
 # IDEs and editors
 /.idea
@@ -58,3 +58,6 @@ storybook-static
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/*
+
+# Temporary
+package-lock.json

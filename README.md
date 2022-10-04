@@ -1,4 +1,4 @@
-# VC Platform Manager SDK
+# VirtoShell: VirtoCommerce Vue3 Frontend for specialized back-office applications
 
 The project is originated to create a replacement of the current vc-platform manager concept.
 
@@ -15,31 +15,43 @@ The project is originated to create a replacement of the current vc-platform man
 - **webpack** based on `vue-cli-service` for easy build and deployment.
 - **storybook** for interactive documentation.
 
+## Demo
+
+- [Demo Manager](https://demo-manager.govirto.com/)
+- [UI Kit Storybook](https://ui-kit.govirto.com/)
+
 ## Getting started
 
 ```bash
 # install and relocate root and packages dependencies
 # this will also install and configure package dependencies and git hooks
-$ npm install
+$ yarn
 
 # reinstall or refresh packages dependencies
-$ npm run bootstrap
+$ yarn bootstrap
 
 # build all packages
-$ npm run build
+$ yarn build
 
 # or one by one
-$ npm run build:ui
-$ npm run build:core
-$ npm run build:rest-client
-$ npm run build:demo
+$ yarn build-framework:ui
+$ yarn build-framework:core
+$ yarn build-framework:api-client
+$ yarn build-apps:vendor-portal
 
-# start  Platform Manager Demo with hot reload at localhost:8080
-$ npm run serve:demo
+# generate all api clients (require .NET Core 6 on Mac OS or Linux)
+yarn generate-api-client
 
-# run interactive documentation for Platform Manager UI
-$ npm run storybook-serve:ui
+# or one by one
+yarn generate-api-client:api-client
+yarn generate-api-client:vendor-portal
+
+# start Vendor Portal with hot reload at localhost:8080
+$ yarn serve-apps:vendor-portal
+
+# run interactive documentation
+$ yarn storybook-serve
 
 # or build it
-$ npm run storybook-build:ui
+$ yarn storybook-build
 ```

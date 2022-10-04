@@ -1,0 +1,21 @@
+{
+  "name": "@virtoshell/config-generator",
+  "description": "Generate Vite configurations",
+  "version": "1.0.22",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p src"
+  },
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
+}

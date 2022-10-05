@@ -1,5 +1,5 @@
 {
-  "name": "@virtoshell/api-client-generator",
+  "name": "@virto-shell/api-client-generator",
   "description": "Tool for API clients generation",
   "version": "1.0.22",
   "bin": "./dist/index.js",

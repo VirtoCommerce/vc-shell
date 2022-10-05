@@ -59,7 +59,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { createPopper, Instance } from "@popperjs/core";
-import { useFunctions } from "@virtoshell/core";
+import { useFunctions } from "@virto-shell/core";
 
 const props = defineProps({
   items: {

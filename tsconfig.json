@@ -5,22 +5,22 @@
     "rootDir": ".",
     "resolveJsonModule": true,
     "paths": {
-      "@virtoshell/api-client": [
+      "@virto-shell/api-client": [
         "framework/api-client/src"
       ],
-      "@virtoshell/core": [
+      "@virto-shell/core": [
         "framework/core/src"
       ],
-      "@virtoshell/ui": [
+      "@virto-shell/ui": [
         "framework/ui/src"
       ],
-      "@virtoshell/mod-assets": [
+      "@virto-shell/mod-assets": [
         "modules/assets/src"
       ],
-      "@virtoshell/config-generator": [
+      "@virto-shell/config-generator": [
         "cli/config/src"
       ],
-      "@virtoshell/api-client-generator": [
+      "@virto-shell/api-client-generator": [
         "cli/api-client/src"
       ]
     }

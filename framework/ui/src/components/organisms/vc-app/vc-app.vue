@@ -113,7 +113,7 @@ import pattern from "url-pattern";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { IBladeToolbar, IMenuItems, IPage } from "../../../typings";
-import { usePermissions } from "@virtoshell/core";
+import { usePermissions } from "@virto-shell/core";
 
 interface BladeElement extends ComponentPublicInstance {
   onBeforeClose: () => Promise<boolean>;

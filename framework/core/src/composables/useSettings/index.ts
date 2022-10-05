@@ -1,7 +1,7 @@
 import useUser from "../useUser";
 import useLogger from "../useLogger";
 import { computed, Ref, ref } from "vue";
-import { SettingClient } from "@virtoshell/api-client";
+import { SettingClient } from "@virto-shell/api-client";
 
 interface IUseSettings {
   readonly uiSettings: Ref<Record<string, string>>;

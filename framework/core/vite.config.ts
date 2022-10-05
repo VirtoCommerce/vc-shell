@@ -1,4 +1,4 @@
-import { getLibraryConfiguration } from "@virtoshell/config-generator";
+import { getLibraryConfiguration } from "@virto-shell/config-generator";
 import vue from "@vitejs/plugin-vue";
 
 export default getLibraryConfiguration(
@@ -6,11 +6,11 @@ export default getLibraryConfiguration(
     plugins: [vue()],
     build: {
       rollupOptions: {
-        external: ["@virtoshell/api-client", "vue"],
+        external: ["@virto-shell/api-client", "vue"],
         output: {
           globals: {
             vue: "Vue",
-            "@virtoshell/api-client": "@virtoshell/api-client",
+            "@virto-shell/api-client": "@virto-shell/api-client",
           },
         },
       },

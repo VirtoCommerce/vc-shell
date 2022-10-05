@@ -7,7 +7,7 @@ const init = [initLogger, initI18n];
 
 export default {
   install(app: App): void {
-    console.debug(`[@virtoshell/core] - Install plugin`);
+    console.debug(`[@virto-shell/core] - Install plugin`);
 
     // Init all children
     init.forEach((fn) => fn(app));

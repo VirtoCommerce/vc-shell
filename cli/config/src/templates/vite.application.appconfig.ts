@@ -28,9 +28,9 @@ export default {
   resolve: {
     preserveSymlinks: true,
     alias: {
-      "@virtoshell/ui": "@virtoshell/ui/src/index.ts",
-      "@virtoshell/core": "@virtoshell/core/src/index.ts",
-      "@virtoshell/mod-assets": "@virtoshell/mod-assets/src/index.ts",
+      "@virto-shell/ui": "@virto-shell/ui/src/index.ts",
+      "@virto-shell/core": "@virto-shell/core/src/index.ts",
+      "@virto-shell/mod-assets": "@virto-shell/mod-assets/src/index.ts",
     },
   },
   envPrefix: "APP_",
@@ -44,7 +44,7 @@ export default {
   },
   server: {
     watch: {
-      ignored: ["!**/node_modules/@virtoshell/**"],
+      ignored: ["!**/node_modules/@virto-shell/**"],
     },
     host: "0.0.0.0",
     port: 8080,
@@ -64,10 +64,10 @@ export default {
     include: [
       "vue",
       "vue-router",
-      "@virtoshell/core",
-      "@virtoshell/api-client",
-      "@virtoshell/ui",
-      "@virtoshell/mod-assets",
+      "@virto-shell/core",
+      "@virto-shell/api-client",
+      "@virto-shell/ui",
+      "@virto-shell/mod-assets",
       "url-pattern",
       "vee-validate",
       "ace-builds",
@@ -77,7 +77,7 @@ export default {
     sourcemap: true,
     emptyOutDir: true,
     commonjsOptions: {
-      include: [/^@virtoshell(\/.+)?$/, /node_modules/],
+      include: [/^@virto-shell(\/.+)?$/, /node_modules/],
     },
     rollupOptions: {
       plugins: [

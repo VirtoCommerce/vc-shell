@@ -165,7 +165,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { useI18n } from "@virtoshell/core";
+import { useI18n } from "@virto-shell/core";
 interface IValidationRules {
   required?: boolean;
   min?: number;

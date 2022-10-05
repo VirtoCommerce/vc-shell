@@ -1,5 +1,5 @@
 {
-  "name": "@virtoshell/ui",
+  "name": "@virto-shell/ui",
   "version": "1.0.22",
   "scripts": {
     "build": "vite build",
@@ -22,8 +22,8 @@
   "dependencies": {
     "@popperjs/core": "^2.11.0",
     "@vee-validate/rules": "^4.5.5",
-    "@virtoshell/config-generator": "^1.0.22",
-    "@virtoshell/core": "^1.0.22",
+    "@virto-shell/config-generator": "^1.0.22",
+    "@virto-shell/core": "^1.0.22",
     "@vueuse/core": "^6.0.0",
     "@vueuse/integrations": "^6.0.0",
     "moment": "^2.29.1",

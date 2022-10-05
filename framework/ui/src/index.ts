@@ -11,7 +11,7 @@ import "./styles/index.scss";
 
 export default {
   install(app: App): void {
-    console.debug(`[@virtoshell/ui] - Install plugin`);
+    console.debug(`[@virto-shell/ui] - Install plugin`);
 
     app.use(Vue3TouchEvents);
     app.component("draggable", draggable);

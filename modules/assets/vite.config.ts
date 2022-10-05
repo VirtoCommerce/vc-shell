@@ -1,5 +1,5 @@
 import vue from "@vitejs/plugin-vue";
-import { getLibraryConfiguration } from "@virtoshell/config-generator";
+import { getLibraryConfiguration } from "@virto-shell/config-generator";
 import { PreRenderedAsset } from "rollup";
 
 export default getLibraryConfiguration(
@@ -8,17 +8,17 @@ export default getLibraryConfiguration(
     build: {
       rollupOptions: {
         external: [
-          "@virtoshell/ui",
-          "@virtoshell/core",
-          "@virtoshell/api-client",
+          "@virto-shell/ui",
+          "@virto-shell/core",
+          "@virto-shell/api-client",
           "vue",
         ],
         output: {
           globals: {
             vue: "Vue",
-            "@virtoshell/ui": "@virtoshell/ui",
-            "@virtoshell/core": "@virtoshell/core",
-            "@virtoshell/api-client": "@virtoshell/api-client",
+            "@virto-shell/ui": "@virto-shell/ui",
+            "@virto-shell/core": "@virto-shell/core",
+            "@virto-shell/api-client": "@virto-shell/api-client",
           },
         },
       },

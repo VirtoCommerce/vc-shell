@@ -1,5 +1,5 @@
 # v2.0.0
-name: Demo manager CI
+name: Virto-shell CI
 
 on:
   workflow_dispatch:

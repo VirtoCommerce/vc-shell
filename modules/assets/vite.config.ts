@@ -11,6 +11,7 @@ export default getLibraryConfiguration(
           "@virto-shell/ui",
           "@virto-shell/core",
           "@virto-shell/api-client",
+          "@virto-shell/config-generator",
           "vue",
         ],
         output: {
@@ -19,6 +20,7 @@ export default getLibraryConfiguration(
             "@virto-shell/ui": "@virto-shell/ui",
             "@virto-shell/core": "@virto-shell/core",
             "@virto-shell/api-client": "@virto-shell/api-client",
+            "@virto-shell/config-generator": "@virto-shell/config-generator",
           },
         },
       },

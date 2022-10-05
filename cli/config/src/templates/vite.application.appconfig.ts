@@ -27,11 +27,6 @@ export default {
   mode,
   resolve: {
     preserveSymlinks: true,
-    alias: {
-      "@virto-shell/ui": "@virto-shell/ui/src/index.ts",
-      "@virto-shell/core": "@virto-shell/core/src/index.ts",
-      "@virto-shell/mod-assets": "@virto-shell/mod-assets/src/index.ts",
-    },
   },
   envPrefix: "APP_",
   plugins: [vue()],
@@ -61,24 +56,11 @@ export default {
     },
   },
   optimizeDeps: {
-    include: [
-      "vue",
-      "vue-router",
-      "@virto-shell/core",
-      "@virto-shell/api-client",
-      "@virto-shell/ui",
-      "@virto-shell/mod-assets",
-      "url-pattern",
-      "vee-validate",
-      "ace-builds",
-    ],
+    include: ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {
     sourcemap: true,
     emptyOutDir: true,
-    commonjsOptions: {
-      include: [/^@virto-shell(\/.+)?$/, /node_modules/],
-    },
     rollupOptions: {
       plugins: [
         typescript({

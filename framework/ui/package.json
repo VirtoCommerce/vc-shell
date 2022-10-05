@@ -10,11 +10,13 @@
   "style": "./dist/style.css",
   "files": [
     "dist/*",
-    "src/**/*.vue"
+    "src/**/*.vue",
+    "tailwind.config.js"
   ],
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rollup/plugin-commonjs": "^21.0.2",
+    "@virto-shell/config-generator": "^1.0.22",
     "sass": "^1.49.0",
     "typescript": "^4.6.2",
     "url-pattern": "^1.0.3"
@@ -22,7 +24,6 @@
   "dependencies": {
     "@popperjs/core": "^2.11.0",
     "@vee-validate/rules": "^4.5.5",
-    "@virto-shell/config-generator": "^1.0.22",
     "@virto-shell/core": "^1.0.22",
     "@vueuse/core": "^6.0.0",
     "@vueuse/integrations": "^6.0.0",

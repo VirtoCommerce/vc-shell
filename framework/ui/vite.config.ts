@@ -11,6 +11,7 @@ export default getLibraryConfiguration(
           "@virto-shell/api-client",
           "vue",
           "vue-router",
+          "vee-validate",
         ],
         output: {
           globals: {
@@ -18,6 +19,7 @@ export default getLibraryConfiguration(
             "vue-router": "vue-router",
             "@virto-shell/core": "@virto-shell/core",
             "@virto-shell/api-client": "@virto-shell/api-client",
+            "vee-validate": "vee-validate",
           },
         },
       },

@@ -13,11 +13,11 @@
     "src/**/*.vue"
   ],
   "devDependencies": {
-    "@virtoshell/api-client": "^1.0.22",
-    "@virtoshell/api-client-generator": "^1.0.22",
-    "@virtoshell/config-generator": "^1.0.22",
-    "@virtoshell/core": "^1.0.22",
-    "@virtoshell/ui": "^1.0.22",
+    "@virto-shell/api-client": "^1.0.22",
+    "@virto-shell/api-client-generator": "^1.0.22",
+    "@virto-shell/config-generator": "^1.0.22",
+    "@virto-shell/core": "^1.0.22",
+    "@virto-shell/ui": "^1.0.22",
     "sass": "^1.49.0",
     "typescript": "^4.6.2"
   },

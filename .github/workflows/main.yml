@@ -89,7 +89,7 @@ jobs:
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
 
   CD:
-    if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: CI
     uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
     with:

@@ -19,21 +19,22 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
       VERSION_SUFFIX: ''
       ARTIFACT_URL: ''
-      GITHUB_USER: '${{ github.repository_owner }}' 
+      GITHUB_USER: '${{ github.repository_owner }}'
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+   
     steps:
+    - uses: actions/checkout@v3
+    # Setup .npmrc file to publish to GitHub Packages
+    - uses: actions/setup-node@v3
+      with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'yarn'
+
     - name: Set GITHUB_USER to lowercase
       run: |
         echo "GITHUB_USER=${GITHUB_USER,,}" >> $GITHUB_ENV
-
-    - uses: actions/checkout@v3
-
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16.x'
-        registry-url: 'https://registry.npmjs.org'
-        cache: 'yarn'
 
     - name: Install dependencies
       run: |
@@ -65,4 +66,4 @@ jobs:
     - name: Publish virto-shell npm
       run: npm publish --access public
       env:
-         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -9,6 +9,7 @@ export default getLibraryConfiguration(
         external: [
           "@vc-shell/core",
           "@vc-shell/api-client",
+            "@vc-shell/config-generator",
           "vue",
           "vue-router",
           "vee-validate",
@@ -19,6 +20,7 @@ export default getLibraryConfiguration(
             "vue-router": "vue-router",
             "@vc-shell/core": "@vc-shell/core",
             "@vc-shell/api-client": "@vc-shell/api-client",
+              "@vc-shell/config-generator": "@vc-shell/config-generator",
             "vee-validate": "vee-validate",
           },
         },

@@ -64,6 +64,6 @@ jobs:
         yarn build
 
     - name: Publish virto-shell npm
-      run: npm publish --access public
+      run: lerna publish --registry=https://registry.npmjs.org
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

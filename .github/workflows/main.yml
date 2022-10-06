@@ -25,7 +25,7 @@ jobs:
       VENDOR_PORTAL_CONTAINER: 'vendor-portal'
 
     outputs:
-      artifactUrl: '${{ env.ARTIFACT_URL }}'
+      appArtifactUrl: '${{ env.ARTIFACT_URL }}'
 
     steps:
     - name: Set GITHUB_USER to lowercase
@@ -94,7 +94,7 @@ jobs:
     uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
     with:
       argoServer: 'argo.govirto.com'
-      artifactUrl: ${{ needs.CI.outputs.artifactUrl }}
+      artifactUrl: ${{ needs.CI.outputs.appArtifactUrl }}
       matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/argoDeploy.json"}]}'
 
     secrets:

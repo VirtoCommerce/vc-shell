@@ -25,7 +25,7 @@ jobs:
       VENDOR_PORTAL_CONTAINER: 'vendor-portal'
 
     outputs:
-      artifactUrl: '${{ env.ARTIFACT_URL_DM }}'
+      artifactUrl: '${{ env.ARTIFACT_URL }}'
 
     steps:
     - name: Set GITHUB_USER to lowercase
@@ -66,7 +66,7 @@ jobs:
 
     - name: Set ARTIFACT_URLs
       run: |
-        echo "ARTIFACT_URL_DM=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.VENDOR_PORTAL_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
+        echo "ARTIFACT_URL=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.VENDOR_PORTAL_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
 
     - name: Build vendor-portal
       run: |
@@ -81,12 +81,12 @@ jobs:
 
     - name: Build and Publish Docker Image For Vendor Portal
       run: |
-          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL_DM }} -f .dockerfiles/Dockerfile
-          docker push ${{ env.ARTIFACT_URL_DM }}
+          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL }} -f .dockerfiles/Dockerfile
+          docker push ${{ env.ARTIFACT_URL }}
 
     - name: CI results
       run: |
-          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL_DM, $ARTIFACT_URL_UK and $ARTIFACT_URL_M"
+          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
 
   CD:
     if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'workflow_dispatch' }}

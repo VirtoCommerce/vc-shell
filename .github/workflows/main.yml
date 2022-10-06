@@ -22,7 +22,7 @@ jobs:
       ARTIFACT_URL: ''
       GITHUB_USER: '${{ github.repository_owner }}'
       PACKAGE_SERVER: 'ghcr.io'
-      VENDOR_PORTAL_CONTAINER: 'vendor-portal'
+      VENDOR_PORTAL_CONTAINER: 'platform-demo-manager'
 
     outputs:
       appArtifactUrl: '${{ env.ARTIFACT_URL }}'

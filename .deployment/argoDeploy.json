@@ -1,5 +1,5 @@
 {
-  "artifactKey": "ghcr.io/virtocommerce/vendor-portal",
+  "artifactKey": "ghcr.io/virtocommerce/platform-demo-manager",
   "deployRepo": "vc-deploy-marketplace",
   "cmPath": "marketplace-app/resources/kustomization.yaml",
   "dev": {

@@ -16,7 +16,7 @@
       <DashboardPage v-bind="scope" />
     </template>
 
-    <!-- Set up login form -->
+    <!-- Set up login form  -->
     <template v-slot:login>
       <LoginPage
         logo="/assets/logo-white.svg"

@@ -1483,42 +1483,42 @@
   resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.6.6.tgz#b9753ee665612d4ecad2bdab63f6d8b7d8814384"
   integrity sha512-zK4HH5GSTN8Wc8QZ1HAqB6wxHMPPlDhNP3mVOTmhxwxFhNGSwRkRQMRKkqKB3CWppp2d3q2jLm6ePNuhXvJQBw==
 
-"@virtoshell/api-client-generator@^1.0.30":
+"@vc-shell/api-client-generator@^1.0.30":
   version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@virtoshell/api-client-generator/-/api-client-generator-1.0.30.tgz#1f03267a530a1fc3ac3eb687c9f18c265f46a66d"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client-generator/-/api-client-generator-1.0.30.tgz#1f03267a530a1fc3ac3eb687c9f18c265f46a66d"
   integrity sha512-axICRfWv2doZgBWVf4oNezyYhAScmKTl8oeacpiJuEAyK+Q/4hNkYTd8JUJCTgmots85wy1NV1Q76heFBuV29w==
   dependencies:
     chalk "^2.4.2"
     nswag "^13.16.1"
     vite "^2.8.3"
 
-"@virtoshell/api-client@^1.0.30":
+"@vc-shell/api-client@^1.0.30":
   version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@virtoshell/api-client/-/api-client-1.0.30.tgz#2ac46d92ca7bcf344ca0dd77f552b3691336f571"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client/-/api-client-1.0.30.tgz#2ac46d92ca7bcf344ca0dd77f552b3691336f571"
   integrity sha512-uUb9DyLIKyZPQtDt5lnznYfb7Z6vT1FU0HDngBrOIfdRviYWHTcvIBuT14c8XIzCx6Tv6I9XpyRXFFgXnB2RKQ==
 
-"@virtoshell/config-generator@^1.0.30":
+"@vc-shell/config-generator@^1.0.30":
   version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@virtoshell/config-generator/-/config-generator-1.0.30.tgz#bc47bc72d9facb101e508ccccc8b8405d6b0e54f"
+  resolved "https://registry.yarnpkg.com/@vc-shell/config-generator/-/config-generator-1.0.30.tgz#bc47bc72d9facb101e508ccccc8b8405d6b0e54f"
   integrity sha512-JPSZ86mcWqVK60sEyIy6gy1rLKwwYmZI17whcfUc9W6bTfk5EHStlpgalqg8IFjRkUDjfTns8yklhLw9XdaaiA==
 
-"@virtoshell/core@^1.0.30":
+"@vc-shell/core@^1.0.30":
   version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@virtoshell/core/-/core-1.0.30.tgz#2c6f17277364c60477faaa131fbd12c24aa208bd"
+  resolved "https://registry.yarnpkg.com/@vc-shell/core/-/core-1.0.30.tgz#2c6f17277364c60477faaa131fbd12c24aa208bd"
   integrity sha512-PnNkqY+MZrdAHPQrv14c7u4TJi9Iw5gkurjArM99xIqUgOo77mt5gJA3qSqTwOP2f50LbhZBlWXbkNZrehMlVA==
   dependencies:
     client-oauth2 "^4.3.3"
     vue-i18n "^9.1.7"
     vue-logger-plugin "^2.1.2"
 
-"@virtoshell/mod-assets@^1.0.30":
+"@vc-shell/mod-assets@^1.0.30":
   version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@virtoshell/mod-assets/-/mod-assets-1.0.30.tgz#99756f836044423217cc7f99f6ea2333021ec18e"
+  resolved "https://registry.yarnpkg.com/@vc-shell/mod-assets/-/mod-assets-1.0.30.tgz#99756f836044423217cc7f99f6ea2333021ec18e"
   integrity sha512-+0lGpwfOVUuCiGIY/1Ug85IU76AMdnTrDyM8IftgREy3CvMqubgU4C0gdFryRwPz99BKTCBIEpQ1ldKqDLhtVQ==
 
-"@virtoshell/ui@^1.0.30":
+"@vc-shell/ui@^1.0.30":
   version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@virtoshell/ui/-/ui-1.0.30.tgz#484400155bce55db2ad3a68cf1da3a00a0ea8209"
+  resolved "https://registry.yarnpkg.com/@vc-shell/ui/-/ui-1.0.30.tgz#484400155bce55db2ad3a68cf1da3a00a0ea8209"
   integrity sha512-AOZBO794MC/g47zKFXGR0zRZusQSO+ssH1MAUMSrXaquoV4t7QB4T8aULwiKqL4dUcOK5L16LGZlhroUf+VinQ==
   dependencies:
     "@popperjs/core" "^2.11.0"

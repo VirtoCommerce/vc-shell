@@ -106,10 +106,10 @@ import {
   SignInResult,
   RequestPasswordResult,
   useI18n,
-} from "@virtoshell/core";
+} from "@vc-shell/core";
 
 import { useLogin } from "../modules/login";
-import { useForm } from "@virtoshell/ui";
+import { useForm } from "@vc-shell/ui";
 import { useRouter } from "vue-router";
 import { useIsFormValid } from "vee-validate";
 

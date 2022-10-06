@@ -1,4 +1,4 @@
-import { getApplicationConfiguration } from "@virtoshell/config-generator";
+import { getApplicationConfiguration } from "@vc-shell/config-generator";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default getApplicationConfiguration({

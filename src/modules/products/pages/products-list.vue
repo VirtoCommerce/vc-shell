@@ -216,7 +216,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useLogger, useFunctions } from "@virtoshell/core";
+import { useI18n, useLogger, useFunctions } from "@vc-shell/core";
 import { useProducts } from "../composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import ProductsEdit from "./products-edit.vue";

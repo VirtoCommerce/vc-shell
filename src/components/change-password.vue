@@ -84,10 +84,10 @@
 
 <script lang="ts" setup>
 import { nextTick, reactive } from "vue";
-import { useUser } from "@virtoshell/core";
-import { IIdentityError } from "@virtoshell/api-client";
+import { useUser } from "@vc-shell/core";
+import { IIdentityError } from "@vc-shell/api-client";
 import { useIsFormValid } from "vee-validate";
-import { useForm } from "@virtoshell/ui";
+import { useForm } from "@vc-shell/ui";
 
 interface IChangePassForm {
   isValid: boolean;

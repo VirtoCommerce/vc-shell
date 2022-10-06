@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { computed, PropType } from "vue";
 import { ImportRunHistory } from "../../../api_client/marketplacevendor";
-import { camelToSnake } from "@virtoshell/core";
+import { camelToSnake } from "@vc-shell/core";
 
 const props = defineProps({
   item: {

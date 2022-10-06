@@ -1,7 +1,7 @@
 import { createApp, resolveComponent, h } from "vue";
-import VirtoShellUi from "@virtoshell/ui";
-import VirtoShellCore from "@virtoshell/core";
-import ModAssets from "@virtoshell/mod-assets";
+import VirtoShellUi from "@vc-shell/ui";
+import VirtoShellCore from "@vc-shell/core";
+import ModAssets from "@vc-shell/mod-assets";
 import ModOrders from "./modules/orders";
 import ModProducts from "./modules/products";
 import ModOffers from "./modules/offers";
@@ -16,7 +16,7 @@ import * as locales from "./locales";
 import "./styles/index.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
-import "@virtoshell/ui/dist/style.css";
+import "@vc-shell/ui/dist/style.css";
 
 const app = createApp({
   render: () => h(resolveComponent("router-view")),

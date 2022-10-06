@@ -410,7 +410,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@virtoshell/core";
+import { useI18n } from "@vc-shell/core";
 import { computed, onMounted, ref } from "vue";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";

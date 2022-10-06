@@ -201,8 +201,8 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useUser } from "@virtoshell/core";
-import { useForm } from "@virtoshell/ui";
+import { useFunctions, useI18n, useUser } from "@vc-shell/core";
+import { useForm } from "@vc-shell/ui";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
@@ -214,7 +214,7 @@ import {
   PropertyDictionaryItem,
 } from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
-import { AssetsDetails } from "@virtoshell/mod-assets";
+import { AssetsDetails } from "@vc-shell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";

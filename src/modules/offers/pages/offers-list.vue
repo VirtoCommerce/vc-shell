@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useFunctions, useLogger } from "@virtoshell/core";
+import { useI18n, useFunctions, useLogger } from "@vc-shell/core";
 import { useOffers } from "../composables";
 import moment from "moment";
 import OffersDetails from "./offers-details.vue";

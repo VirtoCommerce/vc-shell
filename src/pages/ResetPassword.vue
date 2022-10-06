@@ -59,9 +59,9 @@
 
 <script lang="ts" setup>
 import { reactive, onMounted, computed } from "vue";
-import { useUser } from "@virtoshell/core";
+import { useUser } from "@vc-shell/core";
 import { useRouter } from "vue-router";
-import { useForm } from "@virtoshell/ui";
+import { useForm } from "@vc-shell/ui";
 
 const props = defineProps({
   userId: {

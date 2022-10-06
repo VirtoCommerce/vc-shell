@@ -199,7 +199,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useOrders } from "../composables";
-import { useFunctions, useI18n } from "@virtoshell/core";
+import { useFunctions, useI18n } from "@vc-shell/core";
 import moment from "moment";
 import OrdersDetails from "./orders-edit.vue";
 import { CustomerOrder } from "../../../api_client/orders";

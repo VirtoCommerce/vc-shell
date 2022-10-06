@@ -117,11 +117,11 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { IBladeToolbar } from "../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n } from "@vc-shell/core";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { ObjectSettingEntry } from "../../../api_client/marketplacevendor";
-import { useForm } from "@virtoshell/ui";
+import { useForm } from "@vc-shell/ui";
 import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({

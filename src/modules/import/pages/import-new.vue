@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser } from "@virtoshell/core";
+import { useI18n, useUser } from "@vc-shell/core";
 import {
   IBladeToolbar,
   INotificationActions,

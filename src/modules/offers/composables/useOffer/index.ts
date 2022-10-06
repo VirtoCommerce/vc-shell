@@ -1,5 +1,5 @@
 import { computed, reactive, Ref, ref, unref, defineEmits } from "vue";
-import { useLogger, useUser, useI18n } from "@virtoshell/core";
+import { useLogger, useUser, useI18n } from "@vc-shell/core";
 
 import {
   CreateNewOfferCommand,
@@ -17,7 +17,7 @@ import {
   IImage,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import { AssetsDetails } from "@virtoshell/mod-assets";
+import { AssetsDetails } from "@vc-shell/mod-assets";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;

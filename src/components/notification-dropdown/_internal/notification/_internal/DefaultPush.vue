@@ -13,7 +13,7 @@ export default defineComponent({
 });
 </script>
 <script lang="ts" setup>
-import { PushNotification } from "@virtoshell/api-client";
+import { PushNotification } from "@vc-shell/api-client";
 
 defineProps({
   notification: {

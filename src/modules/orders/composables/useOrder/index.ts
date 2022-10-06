@@ -1,5 +1,5 @@
 import { computed, Ref, ref } from "vue";
-import { useUser, useLogger } from "@virtoshell/core";
+import { useUser, useLogger } from "@vc-shell/core";
 import {
   OrderModuleClient,
   CustomerOrder,

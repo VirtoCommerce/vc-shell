@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@virtoshell/core";
+import { useI18n } from "@vc-shell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { SellerUser } from "../../../../api_client/marketplacevendor";

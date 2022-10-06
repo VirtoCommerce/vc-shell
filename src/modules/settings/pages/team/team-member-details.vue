@@ -142,11 +142,11 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n, useUser } from "@virtoshell/core";
+import { useI18n, useUser } from "@vc-shell/core";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@virtoshell/ui";
+import { useForm } from "@vc-shell/ui";
 import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({

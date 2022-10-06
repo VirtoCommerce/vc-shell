@@ -249,7 +249,7 @@ import moment from "moment";
 
 import { useOrder } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n } from "@vc-shell/core";
 
 const props = defineProps({
   expanded: {

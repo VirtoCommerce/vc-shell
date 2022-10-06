@@ -73,10 +73,10 @@ import {
   useSettings,
   usePermissions,
   useFunctions,
-} from "@virtoshell/core";
+} from "@vc-shell/core";
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
-import { PushNotification } from "@virtoshell/api-client";
+import { PushNotification } from "@vc-shell/api-client";
 import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
 import { SellerDetails, TeamList } from "../modules/settings";

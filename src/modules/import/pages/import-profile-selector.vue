@@ -79,7 +79,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@virtoshell/core";
+import { useI18n } from "@vc-shell/core";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";

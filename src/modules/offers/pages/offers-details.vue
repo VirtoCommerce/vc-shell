@@ -407,8 +407,8 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useForm } from "@virtoshell/ui";
-import { useFunctions, useI18n } from "@virtoshell/core";
+import { useForm } from "@vc-shell/ui";
+import { useFunctions, useI18n } from "@vc-shell/core";
 import { useOffer } from "../composables";
 import {
   IOfferProduct,

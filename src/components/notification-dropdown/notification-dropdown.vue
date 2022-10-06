@@ -69,9 +69,9 @@
 
 <script lang="ts" setup>
 import { onMounted, PropType, ref } from "vue";
-import { PushNotification } from "@virtoshell/api-client";
-import { useNotifications } from "@virtoshell/core";
-import { IMenuItems } from "@virtoshell/ui";
+import { PushNotification } from "@vc-shell/api-client";
+import { useNotifications } from "@vc-shell/core";
+import { IMenuItems } from "@vc-shell/ui";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client/marketplacevendor";
 import NotificationItem from "./_internal/notification/notification.vue";

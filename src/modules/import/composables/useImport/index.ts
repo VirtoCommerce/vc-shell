@@ -17,7 +17,7 @@ import {
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
-import { useLogger, useNotifications, useUser } from "@virtoshell/core";
+import { useLogger, useNotifications, useUser } from "@vc-shell/core";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;

@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@virtoshell/core";
+import { useLogger, useUser } from "@vc-shell/core";
 import {
   CreateSellerUserCommand,
   ISearchSellerUsersQuery,

@@ -1,5 +1,5 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
-import { PushNotification } from "@virtoshell/api-client";
+import { PushNotification } from "@vc-shell/api-client";
 
 enum UserPermissions {
   SellerUsersManage = "seller:users:manage",

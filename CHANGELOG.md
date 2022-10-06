@@ -37223,7 +37223,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.48](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.48) (2021-10-06)
+## [0.0.48](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.48) (2021-10-06)
 
 
 
@@ -37319,7 +37319,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.47](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.47) (2021-10-06)
+## [0.0.47](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.47) (2021-10-06)
 
 
 ### Features
@@ -37411,7 +37411,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.46](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.46) (2021-09-30)
+## [0.0.46](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.46) (2021-09-30)
 
 
 ### Bug Fixes
@@ -37494,7 +37494,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.45](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.45) (2021-09-30)
+## [0.0.45](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.45) (2021-09-30)
 
 
 ### Bug Fixes
@@ -37568,7 +37568,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.44](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.44) (2021-09-29)
+## [0.0.44](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.44) (2021-09-29)
 
 
 ### Bug Fixes
@@ -37638,7 +37638,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.43](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.43) (2021-09-24)
+## [0.0.43](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.43) (2021-09-24)
 
 
 ### Features
@@ -37689,7 +37689,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.42) (2021-09-23)
+## [0.0.42](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.42) (2021-09-23)
 
 
 ### Bug Fixes
@@ -37719,7 +37719,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.41) (2021-09-23)
+## [0.0.41](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.41) (2021-09-23)
 
 
 ### Features
@@ -37739,7 +37739,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.40](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.40...@virtoshell/app-demo-manager@0.0.40) (2021-09-23)
+## [0.0.40](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.40...@vc-shell/app-demo-manager@0.0.40) (2021-09-23)
 
 
 ### Reverts
@@ -37751,7 +37751,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.39](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.39) (2021-09-13)
+## [0.0.39](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.39) (2021-09-13)
 
 
 ### Features
@@ -37810,7 +37810,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.38](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.38) (2021-09-09)
+## [0.0.38](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.38) (2021-09-09)
 
 
 ### Features
@@ -37866,7 +37866,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.37](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.37) (2021-09-07)
+## [0.0.37](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.37) (2021-09-07)
 
 
 ### Features
@@ -37912,7 +37912,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.36](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.36) (2021-09-07)
+## [0.0.36](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.36) (2021-09-07)
 
 
 ### Features
@@ -37949,7 +37949,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.35](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.35) (2021-09-07)
+## [0.0.35](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.35) (2021-09-07)
 
 
 ### Features
@@ -37977,7 +37977,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.34](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.34) (2021-09-07)
+## [0.0.34](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.34) (2021-09-07)
 
 
 ### Features
@@ -38004,7 +38004,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.33](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.33) (2021-09-02)
+## [0.0.33](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.33) (2021-09-02)
 
 
 ### Features
@@ -38027,7 +38027,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.32](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.32) (2021-08-31)
+## [0.0.32](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.32) (2021-08-31)
 
 
 ### Features
@@ -38047,7 +38047,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [0.0.31](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virtoshell/app-demo-manager@0.0.30...@virtoshell/app-demo-manager@0.0.31) (2021-08-30)
+## [0.0.31](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/app-demo-manager@0.0.30...@vc-shell/app-demo-manager@0.0.31) (2021-08-30)
 
 
 ### Features
@@ -38463,7 +38463,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.12](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.11...v0.0.12) (2021-08-05)
 
-**Note:** Version bump only for package @virtoshell/app-demo-manager
+**Note:** Version bump only for package @vc-shell/app-demo-manager
 
 
 
@@ -38483,7 +38483,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## [0.0.10](https://github.com/VirtoCommerce/platform-manager-sdk/compare/v0.0.9...v0.0.10) (2021-08-04)
 
-**Note:** Version bump only for package @virtoshell/app-demo-manager
+**Note:** Version bump only for package @vc-shell/app-demo-manager
 
 
 

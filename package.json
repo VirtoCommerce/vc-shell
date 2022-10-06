@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -23,7 +23,6 @@
     "build-cli:api-client": "lerna run build --scope @vc-shell/api-client-generator",
     "generate-api-client:api-client": "lerna run generate-api-client --scope=@vc-shell/api-client --stream --no-prefix",
     "generate-api-client": "lerna run generate-api-client --stream --no-prefix",
-  
     "storybook-build": "cross-env APP_ENV=production build-storybook -s .storybook/assets",
     "storybook-serve": "start-storybook -s .storybook/assets -p 6006"
   },

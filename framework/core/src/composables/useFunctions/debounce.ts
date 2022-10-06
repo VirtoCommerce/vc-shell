@@ -2,7 +2,7 @@ export default function debounce(
   func: (...args: unknown[]) => void,
   delay: number
 ): (...args: unknown[]) => void {
-  console.debug(`[@virto-shell/core#useFunctions:debounce] - Entry point`);
+  console.debug(`[@vc-shell/core#useFunctions:debounce] - Entry point`);
   let timer: number | null = null;
 
   return function (...args: unknown[]): void {

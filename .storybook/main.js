@@ -15,7 +15,7 @@ module.exports = {
           resolve: {
               preserveSymlinks: true,
               alias: {
-                  "@virto-shell/core": "@virto-shell/core/src/index.ts",
+                  "@vc-shell/core": "@vc-shell/core/src/index.ts",
               },
           },
 

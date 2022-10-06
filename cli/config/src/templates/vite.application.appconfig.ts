@@ -39,7 +39,7 @@ export default {
   },
   server: {
     watch: {
-      ignored: ["!**/node_modules/@virto-shell/**"],
+      ignored: ["!**/node_modules/@vc-shell/**"],
     },
     host: "0.0.0.0",
     port: 8080,

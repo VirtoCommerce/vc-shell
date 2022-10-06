@@ -7,7 +7,7 @@ import {
   SecurityResult,
   ValidatePasswordResetTokenRequest,
   IdentityResult,
-} from "@virto-shell/api-client";
+} from "@vc-shell/api-client";
 import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
 const VC_AUTH_DATA_KEY = "vc-auth-data";
 
@@ -81,7 +81,7 @@ export default (): IUseUser => {
     username: string,
     password: string
   ): Promise<SignInResult> {
-    console.debug(`[@virto-shell/core#useUser:signIn] - Entry point`);
+    console.debug(`[@vc-shell/core#useUser:signIn] - Entry point`);
     let token = undefined;
     try {
       loading.value = true;
@@ -112,7 +112,7 @@ export default (): IUseUser => {
   }
 
   async function signOut(): Promise<void> {
-    console.debug(`[@virto-shell/core#useUser:signOut] - Entry point`);
+    console.debug(`[@vc-shell/core#useUser:signOut] - Entry point`);
     user.value = undefined;
     authData.value = undefined;
     storeAuthData({});
@@ -120,7 +120,7 @@ export default (): IUseUser => {
   }
 
   async function loadUser(): Promise<UserDetail> {
-    console.debug(`[@virto-shell/core#useUser:loadUser] - Entry point`);
+    console.debug(`[@vc-shell/core#useUser:loadUser] - Entry point`);
     const token = await getAccessToken();
     if (token) {
       securityClient.setAuthToken(token);
@@ -139,7 +139,7 @@ export default (): IUseUser => {
   }
 
   async function getAccessToken(): Promise<string | null> {
-    console.debug(`[@virto-shell/core#useUser:getAccessToken] - Entry point`);
+    console.debug(`[@vc-shell/core#useUser:getAccessToken] - Entry point`);
     if (!authData.value) {
       authData.value = readAuthData();
     }

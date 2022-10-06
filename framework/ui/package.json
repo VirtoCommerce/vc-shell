@@ -1,5 +1,5 @@
 {
-  "name": "@virto-shell/ui",
+  "name": "@vc-shell/ui",
   "version": "1.0.22",
   "scripts": {
     "build": "vite build",
@@ -16,7 +16,7 @@
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rollup/plugin-commonjs": "^21.0.2",
-    "@virto-shell/config-generator": "^1.0.22",
+    "@vc-shell/config-generator": "^1.0.22",
     "sass": "^1.49.0",
     "typescript": "^4.6.2",
     "url-pattern": "^1.0.3"
@@ -24,7 +24,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.0",
     "@vee-validate/rules": "^4.5.5",
-    "@virto-shell/core": "^1.0.22",
+    "@vc-shell/core": "^1.0.22",
     "@vueuse/core": "^6.0.0",
     "@vueuse/integrations": "^6.0.0",
     "moment": "^2.29.1",
@@ -44,5 +44,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
+  "gitHead": "38112513d908cc59089c150f339c6253e7c23b61"
 }

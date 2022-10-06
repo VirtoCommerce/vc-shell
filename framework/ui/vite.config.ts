@@ -1,5 +1,5 @@
 import vue from "@vitejs/plugin-vue";
-import { getLibraryConfiguration } from "@virto-shell/config-generator";
+import { getLibraryConfiguration } from "@vc-shell/config-generator";
 
 export default getLibraryConfiguration(
   {
@@ -7,8 +7,8 @@ export default getLibraryConfiguration(
     build: {
       rollupOptions: {
         external: [
-          "@virto-shell/core",
-          "@virto-shell/api-client",
+          "@vc-shell/core",
+          "@vc-shell/api-client",
           "vue",
           "vue-router",
           "vee-validate",
@@ -17,8 +17,8 @@ export default getLibraryConfiguration(
           globals: {
             vue: "Vue",
             "vue-router": "vue-router",
-            "@virto-shell/core": "@virto-shell/core",
-            "@virto-shell/api-client": "@virto-shell/api-client",
+            "@vc-shell/core": "@vc-shell/core",
+            "@vc-shell/api-client": "@vc-shell/api-client",
             "vee-validate": "vee-validate",
           },
         },

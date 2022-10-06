@@ -1,7 +1,7 @@
 import {
   PushNotification,
   PushNotificationClient,
-} from "@virto-shell/api-client";
+} from "@vc-shell/api-client";
 import useUser from "../useUser";
 import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";

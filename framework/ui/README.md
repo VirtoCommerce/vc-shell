@@ -37,7 +37,7 @@ Connect as Vue plugin to whole App to auto register all UI components:
 ```typescript
 import { createApp } from "vue";
 import App from "./App.vue";
-import UI from "@virto-shell/ui";
+import UI from "@vc-shell/ui";
 
 createApp(App)
   .use(UI)
@@ -48,7 +48,7 @@ or use components individually:
 
 ```typescript
 import { defineComponent } from "vue";
-import { VcButton } from "@virto-shell/ui";
+import { VcButton } from "@vc-shell/ui";
 
 export default defineComponent({
   name: "MyAwesomeComponent",

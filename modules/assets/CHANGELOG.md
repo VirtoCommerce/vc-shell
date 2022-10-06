@@ -3,7 +3,7 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
-## [1.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.22) (2022-09-28)
+## [1.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.22) (2022-09-28)
 
 
 ### Features
@@ -26,7 +26,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.0.21](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.21) (2022-09-14)
+## [1.0.21](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.21) (2022-09-14)
 
 
 ### Features
@@ -49,7 +49,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.0.20](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.20) (2022-09-06)
+## [1.0.20](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.20) (2022-09-06)
 
 
 
@@ -63,34 +63,14 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 1.0.14 (2022-08-04)
 
-**Note:** Version bump only for package @virto-shell/mod-assets
+**Note:** Version bump only for package @vc-shell/mod-assets
 
 
 
 
 
 
-## [1.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.19) (2022-08-30)
-
-
-
-## 1.0.17 (2022-08-05)
-
-
-
-## 1.0.16 (2022-08-05)
-
-
-
-## 1.0.14 (2022-08-04)
-
-**Note:** Version bump only for package @virto-shell/mod-assets
-
-
-
-
-
-## [1.0.18](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.18) (2022-08-08)
+## [1.0.19](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.19) (2022-08-30)
 
 
 
@@ -104,13 +84,17 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 1.0.14 (2022-08-04)
 
-**Note:** Version bump only for package @virto-shell/mod-assets
+**Note:** Version bump only for package @vc-shell/mod-assets
 
 
 
 
 
-## [1.0.17](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.17) (2022-08-05)
+## [1.0.18](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.18) (2022-08-08)
+
+
+
+## 1.0.17 (2022-08-05)
 
 
 
@@ -120,39 +104,55 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ## 1.0.14 (2022-08-04)
 
-**Note:** Version bump only for package @virto-shell/mod-assets
+**Note:** Version bump only for package @vc-shell/mod-assets
 
 
 
 
 
-## [1.0.16](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.16) (2022-08-05)
+## [1.0.17](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.17) (2022-08-05)
 
 
 
-## 1.0.14 (2022-08-04)
-
-**Note:** Version bump only for package @virto-shell/mod-assets
-
-
-
-
-
-## [1.0.15](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.15) (2022-08-04)
+## 1.0.16 (2022-08-05)
 
 
 
 ## 1.0.14 (2022-08-04)
 
-**Note:** Version bump only for package @virto-shell/mod-assets
+**Note:** Version bump only for package @vc-shell/mod-assets
 
 
 
 
 
-## [1.0.14](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@virto-shell/mod-assets@1.1.0...@virto-shell/mod-assets@1.0.14) (2022-08-04)
+## [1.0.16](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.16) (2022-08-05)
 
-**Note:** Version bump only for package @virto-shell/mod-assets
+
+
+## 1.0.14 (2022-08-04)
+
+**Note:** Version bump only for package @vc-shell/mod-assets
+
+
+
+
+
+## [1.0.15](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.15) (2022-08-04)
+
+
+
+## 1.0.14 (2022-08-04)
+
+**Note:** Version bump only for package @vc-shell/mod-assets
+
+
+
+
+
+## [1.0.14](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/mod-assets@1.1.0...@vc-shell/mod-assets@1.0.14) (2022-08-04)
+
+**Note:** Version bump only for package @vc-shell/mod-assets
 
 
 

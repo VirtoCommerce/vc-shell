@@ -1,5 +1,5 @@
 import { computed, ref } from "vue";
-import { useUser } from "@virto-shell/core";
+import { useUser } from "@vc-shell/core";
 import { AssetEntryClient, AssetEntry } from "../../api_client/assets";
 
 export default () => {

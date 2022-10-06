@@ -4185,7 +4185,7 @@
     "@vue/compiler-dom" "3.2.31"
     "@vue/shared" "3.2.31"
 
-"@vue/devtools-api@^6.0.0", "@vue/devtools-api@^6.0.0-beta.7":
+"@vue/devtools-api@^6.0.0-beta.7":
   version "6.0.13"
   resolved "https://registry.yarnpkg.com/@vue/devtools-api/-/devtools-api-6.0.13.tgz#33f8debe2d0239903b6fc8af10ace45ed3a4fab1"
   integrity sha512-T34EjcArVqzANedEZe2kXQ+AZsld2z1ptJlkOGm87+blk+s6udnP4ze/NYqV8lz1o9AIivimN0xxteLlWiWQdg==
@@ -15185,13 +15185,6 @@ vue-logger-plugin@^2.1.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/vue-logger-plugin/-/vue-logger-plugin-2.2.2.tgz#e49b8aef21263e054ffe96e39e9e8f4bcde3e073"
   integrity sha512-he5TODpSYWtqv1es4BhDUrSZ5YLl13f2W/Ycu8/30q3uMpPF4uEh/iotOP1DTW90tJR//Wc3JC+6gLntrBpEpg==
-
-vue-router@4:
-  version "4.0.13"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.0.13.tgz#47f06e2f8ff6120bfff3c27ade1356cc9de7d870"
-  integrity sha512-LmXrC+BkDRLak+d5xTMgUYraT3Nj0H/vCbP+7usGvIl9Viqd1UP6AsP0i69pSbn9O0dXK/xCdp4yPw21HqV9Jw==
-  dependencies:
-    "@vue/devtools-api" "^6.0.0"
 
 vue-tsc@^0.32.0:
   version "0.32.1"

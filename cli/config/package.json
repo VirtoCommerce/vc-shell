@@ -1,5 +1,5 @@
 {
-  "name": "@virto-shell/config-generator",
+  "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
   "version": "1.0.22",
   "main": "./dist/index.js",
@@ -17,5 +17,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "gitHead": "8565955909b9729984919acc38a1fbd0023e54bd"
+  "gitHead": "38112513d908cc59089c150f339c6253e7c23b61"
 }

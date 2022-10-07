@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "private": true,
   "scripts": {
     "bootstrap": "lerna bootstrap",

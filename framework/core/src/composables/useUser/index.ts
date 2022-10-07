@@ -98,7 +98,7 @@ export default (): IUseUser => {
 
     if (token) {
       authData.value = {
-        accessToken: token.accessToken,
+        accessToken: token.token,
         refreshToken: token.refreshToken,
         expiresAt: addOffsetToCurrentDate(Number(token.data["expires_in"])),
         userName: username,
@@ -149,12 +149,12 @@ export default (): IUseUser => {
 
     if (authData.value && Date.now() >= (authData.value.expiresAt ?? 0)) {
       const token = authClient.createToken(
-        authData.value.accessToken ?? "",
+        authData.value.accessToken ?? authData.value.token ?? "",
         authData.value.refreshToken ?? "",
         {}
       );
       console.log(
-        "[userUsers]: an access token is expired, using refresh token to recieve a new"
+        "[userUsers]: an access token is expired, using refresh token to receive a new"
       );
       try {
         const newToken = await token.refresh();
@@ -162,6 +162,7 @@ export default (): IUseUser => {
           authData.value = {
             ...authData.value,
             accessToken: newToken.accessToken,
+            token: newToken.accessToken,
             refreshToken: newToken.refreshToken,
             expiresAt: addOffsetToCurrentDate(
               Number(newToken.data["expires_in"])
@@ -174,7 +175,7 @@ export default (): IUseUser => {
       }
     }
 
-    return authData.value?.accessToken || null;
+    return authData.value?.accessToken ?? authData.value?.token;
   }
 
   function storeAuthData(authData: AuthData) {

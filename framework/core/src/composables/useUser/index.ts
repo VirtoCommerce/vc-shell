@@ -9,7 +9,10 @@ import {
   IdentityResult,
 } from "@vc-shell/api-client";
 import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
-const VC_AUTH_DATA_KEY = "vc-auth-data";
+//The Platform Manager uses the same key to store authorization data in the
+//local storage, so we can exchange authorization data between the Platform Manager
+//and the user application that is hosted in the same domain as the sub application.
+const VC_AUTH_DATA_KEY = "authenticationData";
 
 const user: Ref<UserDetail> = ref();
 const loading: Ref<boolean> = ref(false);

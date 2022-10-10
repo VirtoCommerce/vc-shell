@@ -98,7 +98,7 @@ export default (): IUseUser => {
 
     if (token) {
       authData.value = {
-        accessToken: token.token,
+        accessToken: token.accessToken,
         refreshToken: token.refreshToken,
         expiresAt: addOffsetToCurrentDate(Number(token.data["expires_in"])),
         userName: username,

@@ -1,19 +1,17 @@
 import { computed, isRef, Ref, ref, unref, watch } from "vue";
 
-interface IData {
-  id?: string;
-}
-
 interface IUseAutosave {
-  savedValue: Ref<IData>;
+  savedValue: Ref<any>;
   loadAutosaved: () => void;
   resetAutosaved: () => void;
 }
 
-export default (data, modified): IUseAutosave => {
+export default (data, modified, defaultName: string): IUseAutosave => {
   const rawValue = computed(() => (isRef(data) ? unref(data) : data));
-  const isModified = computed(() => unref(modified));
-  const savedValue = ref<IData>();
+  const isModified = computed(() =>
+    isRef(modified) ? unref(modified) : modified
+  );
+  const savedValue = ref();
 
   const isSaving = ref(false);
 
@@ -37,25 +35,18 @@ export default (data, modified): IUseAutosave => {
   );
 
   function saveToStorage() {
-    if (rawValue.value.id) {
-      localStorage.setItem(
-        rawValue.value.id,
-        JSON.stringify(rawValue.value, (k, v) => {
-          return v === undefined ? null : v;
-        })
-      );
-    }
+    localStorage.setItem(defaultName, JSON.stringify(rawValue.value));
   }
 
   function loadAutosaved() {
-    const savedData = JSON.parse(localStorage.getItem(rawValue.value.id));
+    const savedData = JSON.parse(localStorage.getItem(defaultName));
     if (savedData) {
       savedValue.value = savedData;
     }
   }
 
   function resetAutosaved() {
-    localStorage.removeItem(rawValue.value.id);
+    localStorage.removeItem(defaultName);
   }
 
   return {

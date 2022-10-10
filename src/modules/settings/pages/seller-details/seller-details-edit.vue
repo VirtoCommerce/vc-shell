@@ -412,13 +412,13 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser } from "@vc-shell/core";
+import { useI18n, useUser, useAutosave } from "@vc-shell/core";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useForm } from "@vc-shell/ui";
 import { useIsFormValid } from "vee-validate";
 
-defineProps({
+const props = defineProps({
   expanded: {
     type: Boolean,
     default: true,
@@ -455,6 +455,11 @@ const {
   modified,
   loading,
 } = useSellerDetails();
+const { resetAutosaved, loadAutosaved, savedValue } = useAutosave(
+  sellerDetails,
+  modified,
+  props.param ?? "sellerDetails"
+);
 const { getAccessToken, user } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
@@ -535,12 +540,20 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 onMounted(async () => {
   await getCurrentSeller();
+  loadSave();
   await getCountries();
 
   if (sellerDetails.value?.addresses[0]?.countryCode) {
     await getRegions(sellerDetails.value?.addresses[0]?.countryCode);
   }
 });
+
+function loadSave() {
+  loadAutosaved();
+  if (savedValue.value) {
+    sellerDetails.value = Object.assign({}, savedValue.value);
+  }
+}
 
 const logoHandler = computed(() =>
   sellerDetails.value.logo
@@ -550,13 +563,17 @@ const logoHandler = computed(() =>
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
+    const confirmationStatus = confirm(
       unref(
         computed(() =>
           t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.CLOSE_CONFIRMATION")
         )
       )
     );
+    if (confirmationStatus) {
+      resetAutosaved();
+    }
+    return confirmationStatus;
   }
 }
 

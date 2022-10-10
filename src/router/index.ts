@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import {createRouter, createWebHashHistory, createWebHistory} from "vue-router";
 import App from "../pages/App.vue";
 import Invite from "../pages/Invite.vue";
 import ResetPassword from "../pages/ResetPassword.vue";
@@ -31,6 +31,6 @@ const routes = [
 ];
 
 export const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.APP_BASE_PATH),
   routes,
 });

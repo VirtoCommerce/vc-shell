@@ -108,7 +108,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from "vue";
+import { defineComponent, computed, onMounted, ref, unref } from "vue";
 
 export default defineComponent({
   url: "import-profile-details",
@@ -117,10 +117,13 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { IBladeToolbar } from "../../../types";
-import { useI18n } from "@vc-shell/core";
+import { useI18n, useAutosave } from "@vc-shell/core";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
-import { ObjectSettingEntry } from "../../../api_client/marketplacevendor";
+import {
+  ImportProfile,
+  ObjectSettingEntry,
+} from "../../../api_client/marketplacevendor";
 import { useForm } from "@vc-shell/ui";
 import { useIsFormValid } from "vee-validate";
 
@@ -160,6 +163,11 @@ const {
   fetchDataImporters,
   setImporter,
 } = useImport();
+const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
+  profileDetails,
+  modified,
+  props.param ?? "importProfile"
+);
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const showConfirmation = ref(false);
@@ -172,16 +180,17 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           if (props.param) {
-            await updateImportProfile(profileDetails);
+            await updateImportProfile(profileDetails.value);
             emit("parent:call", {
               method: "reloadParent",
             });
           } else {
-            await createImportProfile(profileDetails);
+            await createImportProfile(profileDetails.value);
             emit("parent:call", {
               method: "reload",
             });
           }
+          resetAutosaved();
           emit("page:close");
         } catch (err) {
           alert(err.message);
@@ -201,6 +210,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL")),
     icon: "fas fa-ban",
     clickHandler() {
+      resetAutosaved();
       emit("page:close");
     },
     isVisible: computed(() => !props.param),
@@ -211,6 +221,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "far fa-trash-alt",
     isVisible: computed(() => !!props.param),
     clickHandler() {
+      resetAutosaved();
       showConfirmation.value = true;
     },
   },
@@ -218,7 +229,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 const sampleTemplateUrl = computed(() => {
   const importer = dataImporters.value.find(
-    (x) => x.typeName === profileDetails.typeName
+    (x) => x.typeName === profileDetails.value.typeName
   );
   return profile.value.importer
     ? profile.value.importer.metadata &&
@@ -240,6 +251,11 @@ onMounted(async () => {
   await fetchDataImporters();
   if (props.param) {
     await loadImportProfile({ id: props.param });
+  }
+
+  loadAutosaved();
+  if (savedValue.value) {
+    profileDetails.value = savedValue.value as ImportProfile;
   }
 });
 
@@ -272,4 +288,24 @@ async function deleteProfile() {
   });
   emit("page:close");
 }
+
+async function onBeforeClose() {
+  if (modified.value) {
+    const confirmationStatus = confirm(
+      unref(
+        computed(() =>
+          t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION")
+        )
+      )
+    );
+    if (confirmationStatus) {
+      resetAutosaved();
+    }
+    return confirmationStatus;
+  }
+}
+
+defineExpose({
+  onBeforeClose,
+});
 </script>

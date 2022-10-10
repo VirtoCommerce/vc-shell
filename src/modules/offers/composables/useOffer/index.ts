@@ -1,4 +1,4 @@
-import { computed, reactive, Ref, ref, unref, defineEmits } from "vue";
+import {computed, reactive, Ref, ref, unref, defineEmits, watch} from "vue";
 import { useLogger, useUser, useI18n } from "@vc-shell/core";
 
 import {
@@ -18,6 +18,7 @@ import {
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
 import { AssetsDetails } from "@vc-shell/mod-assets";
+import { isEqual, cloneDeep } from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -32,7 +33,8 @@ interface IUseOffer {
   offer: Ref<IOffer>;
   currencyList: Ref<string[]>;
   loading: Ref<boolean>;
-  offerDetails: TextOfferDetails;
+  modified: Ref<boolean>;
+  offerDetails: Ref<TextOfferDetails>;
   loadOffer: (args: { id: string }) => void;
   fetchProducts: (
     keyword?: string,
@@ -48,6 +50,7 @@ interface IUseOffer {
   onGalleryItemEdit: (item: Image) => void;
   onGallerySort: (images: Image[]) => void;
   onGalleryImageRemove: (image: Image) => void;
+  makeCopy: () => void;
 }
 
 interface IStoreSettings {
@@ -61,14 +64,24 @@ export default (): IUseOffer => {
   const { user, getAccessToken } = useUser();
   const logger = useLogger();
   const offer = ref<IOffer>({});
-  const offerDetails = reactive<TextOfferDetails>(new OfferDetails());
+  const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
+  let offerDetailsCopy: TextOfferDetails;
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
   const imageUploading = ref(false);
   const emit = defineEmits(["page:open"]);
   const { t } = useI18n();
+  const modified = ref(false);
 
   const loading = ref(false);
+
+  watch(
+    () => offerDetails,
+    (state) => {
+      modified.value = !isEqual(offerDetailsCopy, state.value);
+    },
+    { deep: true }
+  );
 
   //TODO: move to utils
   async function getApiClient(): Promise<VcmpSellerCatalogClient> {
@@ -113,6 +126,7 @@ export default (): IUseOffer => {
     try {
       loading.value = true;
       offer.value = await client.createNewOffer(command);
+      modified.value = false;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -134,6 +148,7 @@ export default (): IUseOffer => {
     try {
       loading.value = true;
       offer.value = await client.updateOffer(command);
+      modified.value = false;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -151,13 +166,19 @@ export default (): IUseOffer => {
       loading.value = true;
       offer.value = (await client.getOfferByIdGET(args.id)) as IOffer;
 
-      Object.assign(offerDetails, offer.value);
+      offerDetails.value = offer.value as IOfferDetails;
     } catch (e) {
       logger.error(e);
       throw e;
     } finally {
       loading.value = false;
     }
+
+    makeCopy();
+  }
+
+  function makeCopy() {
+    offerDetailsCopy = cloneDeep(offerDetails.value);
   }
 
   async function deleteOffer(args: { id: string }) {
@@ -213,7 +234,7 @@ export default (): IUseOffer => {
         formData.append("file", files[i]);
         const authToken = await getAccessToken();
         const result = await fetch(
-          `/api/assets?folderUrl=/offers/${offerDetails.id}`,
+          `/api/assets?folderUrl=/offers/${offerDetails.value.id}`,
           {
             method: "POST",
             body: formData,
@@ -226,14 +247,15 @@ export default (): IUseOffer => {
         if (response?.length) {
           const image = new Image(response[0]);
           image.createdDate = new Date();
-          if (offerDetails.images && offerDetails.images.length) {
+          if (offerDetails.value.images && offerDetails.value.images.length) {
             const lastImageSortOrder =
-              offerDetails.images[offerDetails.images.length - 1].sortOrder;
+              offerDetails.value.images[offerDetails.value.images.length - 1]
+                .sortOrder;
             image.sortOrder = lastImageSortOrder + 1;
           } else {
             image.sortOrder = 0;
           }
-          offerDetails.images.push(image);
+          offerDetails.value.images.push(image);
         }
       }
     } catch (e) {
@@ -250,14 +272,14 @@ export default (): IUseOffer => {
       component: AssetsDetails,
       componentOptions: {
         editableAsset: item,
-        images: offerDetails.images,
+        images: offerDetails.value.images,
         sortHandler: sortImage,
       },
     });
   };
 
   function sortImage(remove = false, localImage: IImage) {
-    const images = offerDetails.images;
+    const images = offerDetails.value.images;
     const image = new Image(localImage);
     if (images.length) {
       const imageIndex = images.findIndex((img) => img.id === localImage.id);
@@ -269,11 +291,11 @@ export default (): IUseOffer => {
   }
 
   const editImages = (args: Image[]) => {
-    offerDetails.images = args;
+    offerDetails.value.images = args;
   };
 
   const onGallerySort = (images: Image[]) => {
-    offerDetails.images = images;
+    offerDetails.value.images = images;
   };
 
   const onGalleryImageRemove = (image: Image) => {
@@ -284,14 +306,14 @@ export default (): IUseOffer => {
         )
       )
     ) {
-      const imageIndex = offerDetails.images.findIndex((img) => {
+      const imageIndex = offerDetails.value.images.findIndex((img) => {
         if (img.id && image.id) {
           return img.id === image.id;
         } else {
           return img.url === image.url;
         }
       });
-      offerDetails.images.splice(imageIndex, 1);
+      offerDetails.value.images.splice(imageIndex, 1);
     }
   };
 
@@ -299,6 +321,7 @@ export default (): IUseOffer => {
     offer: computed(() => offer.value),
     currencyList: computed(() => currencyList.value),
     loading: computed(() => loading.value),
+    modified: computed(() => modified.value),
     offerDetails,
     loadOffer,
     createOffer,
@@ -311,5 +334,6 @@ export default (): IUseOffer => {
     onGalleryItemEdit,
     onGallerySort,
     onGalleryImageRemove,
+    makeCopy,
   };
 };

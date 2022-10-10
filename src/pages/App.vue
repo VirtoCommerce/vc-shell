@@ -6,7 +6,7 @@
     :toolbarItems="toolbarItems"
     :isReady="isReady"
     :isAuthorized="isAuthorized"
-    logo="/assets/logo.svg"
+    :logo="getLogoImage"
     :version="version"
     :pages="pages"
     v-else
@@ -19,8 +19,8 @@
     <!-- Set up login form  -->
     <template v-slot:login>
       <LoginPage
-        logo="/assets/logo-white.svg"
-        background="/assets/background.jpg"
+        :logo="getWhiteLogoImage"
+        :background="getBgImage"
         title="Vendor Portal"
       ></LoginPage>
     </template>
@@ -169,7 +169,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
     componentOptions: {
-      avatar: "/assets/avatar.jpg",
+      avatar: new URL("/assets/avatar.jpg", import.meta.url).href,
       name: computed(() => user.value?.userName),
       role: computed(() =>
         user.value?.isAdministrator ? "Administrator" : "Seller account"
@@ -198,7 +198,7 @@ const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
     componentOptions: {
-      avatar: "/assets/avatar.jpg",
+      avatar: new URL("/assets/avatar.jpg", import.meta.url).href,
       name: computed(() => user.value?.userName),
       role: computed(() =>
         user.value?.isAdministrator ? "Administrator" : "Seller account"
@@ -318,6 +318,18 @@ function langInit() {
     currentLocale.value = "en";
   }
 }
+
+const getLogoImage = computed(() => {
+  return new URL("/assets/logo.svg", import.meta.url).href;
+});
+
+const getWhiteLogoImage = computed(() => {
+  return new URL("/assets/logo-white.svg", import.meta.url).href;
+});
+
+const getBgImage = computed(() => {
+  return new URL("/assets/background.jpg", import.meta.url).href;
+});
 </script>
 
 <style lang="scss">

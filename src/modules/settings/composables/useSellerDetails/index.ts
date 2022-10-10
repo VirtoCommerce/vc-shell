@@ -138,7 +138,7 @@ export default (): IUseSellerDetails => {
     if (token) {
       try {
         const result = await fetch(
-          `api/platform/common/countries/${countryId}/regions`,
+          `/api/platform/common/countries/${countryId}/regions`,
           {
             method: "GET",
             headers: {

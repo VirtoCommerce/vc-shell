@@ -20,7 +20,7 @@ import {
 
 interface IUseProduct {
   product: Ref<ISellerProduct>;
-  productDetails: IProductDetails;
+  productDetails: Ref<IProductDetails>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
   fetchCategories: (
@@ -51,7 +51,7 @@ export default (): IUseProduct => {
       images: [],
     } as CatalogProduct,
   });
-  const productDetails = reactive<IProductDetails>(
+  const productDetails = ref<IProductDetails>(
     new ProductDetails({
       images: [],
     })
@@ -63,7 +63,7 @@ export default (): IUseProduct => {
   watch(
     () => productDetails,
     (state) => {
-      modified.value = !isEqual(productDetailsCopy, state);
+      modified.value = !isEqual(productDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -113,15 +113,15 @@ export default (): IUseProduct => {
       loading.value = true;
       product.value = await client.getProductById(args.id);
       //TODO: use mapping insead this ugly assignments
-      Object.assign(productDetails, {
+      productDetails.value = {
         name: product.value.name,
         images: product.value.productData?.images,
         categoryId: product.value.categoryId,
         gtin: product.value.productData?.gtin,
         properties: product.value.productData?.properties,
         description: product.value.productData?.reviews[0]?.content,
-      } as ProductDetails);
-      productDetailsCopy = _cloneDeep(productDetails);
+      };
+      productDetailsCopy = _cloneDeep(productDetails.value);
     } catch (e) {
       logger.error(e);
       throw e;

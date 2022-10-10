@@ -330,7 +330,7 @@ const tableColumns = ref<ITableColumns[]>([
 ]);
 
 const empty = reactive({
-  image: "/assets/empty-product.png",
+  image: new URL("/assets/empty-product.png", import.meta.url).href,
   text: computed(() => t("ORDERS.PAGES.EMPTY")),
 });
 

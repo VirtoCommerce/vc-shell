@@ -1478,50 +1478,47 @@
     "@typescript-eslint/types" "5.33.1"
     eslint-visitor-keys "^3.3.0"
 
-"@vee-validate/rules@^4.5.5":
-  version "4.6.6"
-  resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.6.6.tgz#b9753ee665612d4ecad2bdab63f6d8b7d8814384"
-  integrity sha512-zK4HH5GSTN8Wc8QZ1HAqB6wxHMPPlDhNP3mVOTmhxwxFhNGSwRkRQMRKkqKB3CWppp2d3q2jLm6ePNuhXvJQBw==
-
-"@vc-shell/api-client-generator@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@vc-shell/api-client-generator/-/api-client-generator-1.0.30.tgz#1f03267a530a1fc3ac3eb687c9f18c265f46a66d"
-  integrity sha512-axICRfWv2doZgBWVf4oNezyYhAScmKTl8oeacpiJuEAyK+Q/4hNkYTd8JUJCTgmots85wy1NV1Q76heFBuV29w==
+"@vc-shell/api-client-generator@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client-generator/-/api-client-generator-1.0.28.tgz#1adef8a2970c2be39a56ee64704c1476b273efd1"
+  integrity sha512-K13PQCMNik5mWNIb0SSHEjapt2DfxcwE/tszLDlzRmwG1gi7W/2Ag7xs5vvA1PJYq3sMli4VZKIkcvYV0EZ4Hg==
   dependencies:
     chalk "^2.4.2"
     nswag "^13.16.1"
     vite "^2.8.3"
 
-"@vc-shell/api-client@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@vc-shell/api-client/-/api-client-1.0.30.tgz#2ac46d92ca7bcf344ca0dd77f552b3691336f571"
-  integrity sha512-uUb9DyLIKyZPQtDt5lnznYfb7Z6vT1FU0HDngBrOIfdRviYWHTcvIBuT14c8XIzCx6Tv6I9XpyRXFFgXnB2RKQ==
+"@vc-shell/api-client@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client/-/api-client-1.0.28.tgz#4dcac7b96f6c802367b4e6ccbf76555fbb6efb6f"
+  integrity sha512-z+r433eBOiClCaBhRjQTKpyjAPXJ+0W+9r/FpVg5nyVeHk1pBa4XA9JbU536h++9O3NxdI/BpQwqU9+ficYSfA==
 
-"@vc-shell/config-generator@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@vc-shell/config-generator/-/config-generator-1.0.30.tgz#bc47bc72d9facb101e508ccccc8b8405d6b0e54f"
-  integrity sha512-JPSZ86mcWqVK60sEyIy6gy1rLKwwYmZI17whcfUc9W6bTfk5EHStlpgalqg8IFjRkUDjfTns8yklhLw9XdaaiA==
+"@vc-shell/config-generator@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@vc-shell/config-generator/-/config-generator-1.0.28.tgz#2f2ffb3b7a3d0ef5e092b22d306c0755bb493905"
+  integrity sha512-LmmXfzKb0S0nuWnpG6KcJWyktIqk+C6T+MnnQGeRIc5i07AqwxGd/133gVPHYG/TyVOYj0KcuJl4wTlPqO4JEw==
 
-"@vc-shell/core@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@vc-shell/core/-/core-1.0.30.tgz#2c6f17277364c60477faaa131fbd12c24aa208bd"
-  integrity sha512-PnNkqY+MZrdAHPQrv14c7u4TJi9Iw5gkurjArM99xIqUgOo77mt5gJA3qSqTwOP2f50LbhZBlWXbkNZrehMlVA==
+"@vc-shell/core@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@vc-shell/core/-/core-1.0.28.tgz#09847dbe5bec6974d2759535ab4c79c77a183b14"
+  integrity sha512-zM6LFmwp+j/e2fYXZUT3WJ7FzutBJjOY4jb3tu3r8lKWyakozcbZINlvhtzHoP51ysO+XT+cPmk18D1BN29/3Q==
   dependencies:
+    "@vc-shell/api-client" "^1.0.28"
     client-oauth2 "^4.3.3"
     vue-i18n "^9.1.7"
     vue-logger-plugin "^2.1.2"
 
-"@vc-shell/mod-assets@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@vc-shell/mod-assets/-/mod-assets-1.0.30.tgz#99756f836044423217cc7f99f6ea2333021ec18e"
-  integrity sha512-+0lGpwfOVUuCiGIY/1Ug85IU76AMdnTrDyM8IftgREy3CvMqubgU4C0gdFryRwPz99BKTCBIEpQ1ldKqDLhtVQ==
+"@vc-shell/mod-assets@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@vc-shell/mod-assets/-/mod-assets-1.0.28.tgz#06cf92f33087cb54e89724651547944dbb9d951d"
+  integrity sha512-g9mijKffST/0wUVF38TfWioI7d87Mz8IF3pVcNZhBZ59du2TnuJO1DfnOobBlb9taQh5+tVaeQoinpa0lZLpVg==
 
-"@vc-shell/ui@^1.0.30":
-  version "1.0.30"
-  resolved "https://registry.yarnpkg.com/@vc-shell/ui/-/ui-1.0.30.tgz#484400155bce55db2ad3a68cf1da3a00a0ea8209"
-  integrity sha512-AOZBO794MC/g47zKFXGR0zRZusQSO+ssH1MAUMSrXaquoV4t7QB4T8aULwiKqL4dUcOK5L16LGZlhroUf+VinQ==
+"@vc-shell/ui@^1.0.28":
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/@vc-shell/ui/-/ui-1.0.28.tgz#23eb25a318e258ad23329e5d5e6a24c9b5685e53"
+  integrity sha512-2CFk+BGVPwVx3HpQ+W1plREV2f6GbiWziSwujNgZXeH65N0KSiQp3baHRE6+C3dwWNmZT7OnDEoiUfJUVhXS8g==
   dependencies:
     "@popperjs/core" "^2.11.0"
+    "@vc-shell/core" "^1.0.28"
     "@vee-validate/rules" "^4.5.5"
     "@vueuse/core" "^6.0.0"
     "@vueuse/integrations" "^6.0.0"
@@ -1532,6 +1529,11 @@
     vue3-ace-editor "^2.2.2"
     vue3-touch-events "^4.1.0"
     vuedraggable "^4.1.0"
+
+"@vee-validate/rules@^4.5.5":
+  version "4.6.6"
+  resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.6.6.tgz#b9753ee665612d4ecad2bdab63f6d8b7d8814384"
+  integrity sha512-zK4HH5GSTN8Wc8QZ1HAqB6wxHMPPlDhNP3mVOTmhxwxFhNGSwRkRQMRKkqKB3CWppp2d3q2jLm6ePNuhXvJQBw==
 
 "@vitejs/plugin-vue@^2.2.0":
   version "2.3.4"
@@ -5972,10 +5974,10 @@ vue-logger-plugin@^2.1.2:
   resolved "https://registry.yarnpkg.com/vue-logger-plugin/-/vue-logger-plugin-2.2.3.tgz#ed6ba748af8d46622f7ff2f80dbe4e3a30543fc8"
   integrity sha512-PGGwFarWpReyJc8XONuNBb86mpfLqYO6+MWjkFnCDWcagjM2BLY7rskLTgn3eT3skq0qu+2K2roiIAgiXJDXSQ==
 
-vue-router@^4.0.12:
-  version "4.1.3"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.1.3.tgz#f8dc7931a2253cc5aa9b740f8b98969d08ca283c"
-  integrity sha512-XvK81bcYglKiayT7/vYAg/f36ExPC4t90R/HIpzrZ5x+17BOWptXLCrEPufGgZeuq68ww4ekSIMBZY1qdUdfjA==
+vue-router@^4.1.5:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-4.1.5.tgz#256f597e3f5a281a23352a6193aa6e342c8d9f9a"
+  integrity sha512-IsvoF5D2GQ/EGTs/Th4NQms9gd2NSqV+yylxIyp/OYp8xOwxmU8Kj/74E9DTSYAyH5LX7idVUngN3JSj1X4xcQ==
   dependencies:
     "@vue/devtools-api" "^6.1.4"
 

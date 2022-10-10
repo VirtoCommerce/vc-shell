@@ -329,7 +329,7 @@ const tableColumns = ref<ITableColumns[]>([
 ]);
 
 const empty = reactive({
-  image: "/assets/empty-product.png",
+  image: new URL("/assets/empty-product.png", import.meta.url).href,
   text: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.TITLE")),
   action: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.ACTION")),
   clickHandler: () => {
@@ -338,7 +338,7 @@ const empty = reactive({
 });
 
 const notfound = reactive({
-  image: "/assets/empty-product.png",
+  image: new URL("/assets/empty-product.png", import.meta.url).href,
   text: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.TITLE")),
   action: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.ACTION")),
   clickHandler: async () => {

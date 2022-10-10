@@ -48,17 +48,17 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
-    "@vc-shell/api-client": "^1.0.27",
-    "@vc-shell/api-client-generator": "^1.0.27",
-    "@vc-shell/config-generator": "^1.0.27",
-    "@vc-shell/core": "^1.0.27",
-    "@vc-shell/mod-assets": "^1.0.27",
-    "@vc-shell/ui": "^1.0.27",
+    "@vc-shell/api-client": "^1.0.28",
+    "@vc-shell/api-client-generator": "^1.0.28",
+    "@vc-shell/config-generator": "^1.0.28",
+    "@vc-shell/core": "^1.0.28",
+    "@vc-shell/mod-assets": "^1.0.28",
+    "@vc-shell/ui": "^1.0.28",
     "moment": "^2.29.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.5.5",
     "vue": "^3.0.0",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.1.5"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"

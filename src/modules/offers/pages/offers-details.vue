@@ -197,7 +197,7 @@
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
             >
               <template v-slot:actions>
-                <VcButton v-if="!readonly" small @click="addPrice">
+                <VcButton v-if="!readonly" small @click="addPrice(true)">
                   {{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
                 </VcButton>
               </template>
@@ -312,7 +312,7 @@
                       ></VcIcon>
                     </div>
                   </VcRow>
-                  <VcHint class="px-2 text-[#f14e4e]" v-if="!!errors.length">
+                  <VcHint class="px-2 !text-[#f14e4e]" v-if="pricingEqual">
                     <!-- TODO: stylizing-->
                     {{
                       $t(`OFFERS.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`)
@@ -408,9 +408,10 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useForm } from "@vc-shell/ui";
-import { useFunctions, useI18n } from "@vc-shell/core";
+import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
 import { useOffer } from "../composables";
 import {
+  IOfferDetails,
   IOfferProduct,
   OfferPrice,
 } from "../../../api_client/marketplacevendor";
@@ -460,16 +461,25 @@ const {
   offer,
   loadOffer,
   loading,
+  modified,
   getCurrencies,
   imageUploading,
   onGalleryUpload,
   onGalleryItemEdit,
   onGallerySort,
   onGalleryImageRemove,
+  makeCopy,
 } = useOffer();
+const { resetAutosaved, loadAutosaved, savedValue } = useAutosave(
+  offerDetails,
+  modified,
+  props.param ?? "offersDetails"
+);
 const { debounce } = useFunctions();
 const { searchDictionaryItems } = useProduct();
-const { setErrors } = useForm({ validateOnMount: false });
+const { setFieldError } = useForm({
+  validateOnMount: false,
+});
 const isFormValid = useIsFormValid();
 const products = ref<IOfferProduct[]>();
 // const isTracked = ref(false);
@@ -479,12 +489,15 @@ const categoriesTotal = ref();
 const currentProduct = ref<IOfferProduct>();
 const offerLoading = ref(false);
 const productLoading = ref(false);
-const errors = ref<Record<string, string>[]>([]);
+const pricingEqual = ref(false);
+const duplicates = ref([]);
 
 const filterTypes = ["Variation"];
 
 const filteredProps = computed(() => {
-  return offerDetails?.properties?.filter((x) => filterTypes.includes(x.type));
+  return offerDetails.value?.properties?.filter((x) =>
+    filterTypes.includes(x.type)
+  );
 });
 
 onMounted(async () => {
@@ -494,9 +507,16 @@ onMounted(async () => {
     if (props.param) {
       await loadOffer({ id: props.param });
     } else {
-      offerDetails.trackInventory = true;
-      offerDetails.currency = "USD";
+      offerDetails.value.trackInventory = true;
+      offerDetails.value.currency = "USD";
       addPrice();
+      makeCopy();
+    }
+
+    loadAutosaved();
+
+    if (savedValue.value) {
+      offerDetails.value = Object.assign({}, savedValue.value as IOfferDetails);
     }
     const searchResult = await fetchProducts();
     products.value = searchResult.results;
@@ -504,7 +524,7 @@ onMounted(async () => {
 
     if (
       offer.value.productId ||
-      offerDetails.productId ||
+      offerDetails.value.productId ||
       props.options?.sellerProduct?.publishedProductDataId
     ) {
       await setProductItem(
@@ -524,8 +544,8 @@ onBeforeUpdate(() => {
 const readonly = false; //computed(() => !!offer.value?.id);
 
 const title = computed(() => {
-  return props.param && offerDetails && offerDetails.name
-    ? offerDetails.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
+  return props.param && offerDetails.value && offerDetails.value.name
+    ? offerDetails.value.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
     : t("OFFERS.PAGES.DETAILS.TITLE");
 });
 
@@ -536,6 +556,45 @@ const onProductSearch = debounce(async (value: string) => {
   categoriesTotal.value = searchResult.totalCount;
 }, 500);
 
+watch(offerDetails.value.prices, () => {
+  scrollToLastPrice();
+});
+
+watch(
+  () => offerDetails.value.prices,
+  (newVal) => {
+    nextTick(() => {
+      const dupes = [];
+      newVal.forEach((o, idx) => {
+        if (
+          newVal.some((o2, idx2) => {
+            return (
+              idx !== idx2 &&
+              o.listPrice &&
+              o2.listPrice &&
+              o.minQuantity &&
+              o2.minQuantity &&
+              o.listPrice === o2.listPrice &&
+              o.minQuantity === o2.minQuantity
+            );
+          })
+        ) {
+          dupes.push(`minqty_${idx}`, `listprice_${idx}`);
+        }
+      });
+
+      duplicates.value = dupes;
+      pricingEqual.value = !!dupes.length;
+    });
+  },
+  { deep: true }
+);
+
+watch(duplicates, (newVal, oldVal) => {
+  Object.values(oldVal).forEach((x) => setFieldError(x, undefined));
+  Object.values(newVal).forEach((x) => setFieldError(x, "Invalid value"));
+});
+
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
@@ -544,15 +603,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (isFormValid.value) {
         try {
-          if (offerDetails.id) {
+          if (offerDetails.value.id) {
             await updateOffer({
-              ...offerDetails,
+              ...offerDetails.value,
             });
           } else {
             await createOffer({
-              ...offerDetails,
+              ...offerDetails.value,
             });
           }
+          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -568,8 +628,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     disabled: computed(
       () =>
         !(
-          offerDetails.prices &&
-          offerDetails.prices.length &&
+          offerDetails.value.prices &&
+          offerDetails.value.prices.length &&
           isFormValid.value
         )
     ),
@@ -579,15 +639,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("OFFERS.PAGES.DETAILS.TOOLBAR.ENABLE"),
     icon: "fa fa-eye",
     async clickHandler() {
-      if (offerDetails.id) {
-        offerDetails.isActive = true;
+      if (offerDetails.value.id) {
+        offerDetails.value.isActive = true;
         await updateOffer({
-          ...offerDetails,
+          ...offerDetails.value,
         });
       }
+      resetAutosaved();
     },
     isVisible: computed(
-      () => !!props.param && !offerLoading.value && !offerDetails.isActive
+      () => !!props.param && !offerLoading.value && !offerDetails.value.isActive
     ),
   },
   {
@@ -595,51 +656,19 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DISABLE"),
     icon: "fa fa-eye-slash",
     async clickHandler() {
-      if (offerDetails.id) {
-        offerDetails.isActive = false;
+      if (offerDetails.value.id) {
+        offerDetails.value.isActive = false;
         await updateOffer({
-          ...offerDetails,
+          ...offerDetails.value,
         });
       }
+      resetAutosaved();
     },
     isVisible: computed(
-      () => !!props.param && !offerLoading.value && offerDetails.isActive
+      () => !!props.param && !offerLoading.value && offerDetails.value.isActive
     ),
   },
 ]);
-
-watch(
-  () => offerDetails.prices,
-  (newVal) => {
-    nextTick(() => {
-      const duplicates = newVal
-        .map((o, idx) => {
-          if (
-            newVal.some((o2, idx2) => {
-              return (
-                idx !== idx2 &&
-                o.listPrice &&
-                o2.listPrice &&
-                o.minQuantity &&
-                o2.minQuantity &&
-                o.listPrice === o2.listPrice &&
-                o.minQuantity === o2.minQuantity
-              );
-            })
-          ) {
-            return {
-              [`minqty_${idx}`]: "Invalid input",
-              [`listprice_${idx}`]: "Invalid input",
-            };
-          }
-        })
-        .filter((x) => x !== undefined);
-      errors.value = duplicates;
-      setErrors(Object.assign({}, ...duplicates));
-    });
-  },
-  { deep: true }
-);
 
 function scrollToLastPrice() {
   nextTick(() => {
@@ -649,16 +678,19 @@ function scrollToLastPrice() {
   });
 }
 
-function addPrice() {
-  if (!offerDetails.prices) {
-    offerDetails.prices = [];
+function addPrice(scroll = false) {
+  if (!offerDetails.value.prices) {
+    offerDetails.value.prices = [];
   }
-  offerDetails.prices.push(new OfferPrice());
-  scrollToLastPrice();
+  offerDetails.value.prices.push(new OfferPrice());
+  if (scroll) {
+    scrollToLastPrice();
+  }
 }
 
 function removePrice(idx: number) {
-  offerDetails.prices.splice(idx, 1);
+  offerDetails.value.prices.splice(idx, 1);
+  priceRefs.value.splice(idx, 1);
 }
 
 function setPriceRefs(el: HTMLDivElement) {
@@ -677,14 +709,14 @@ function showProductDetails(id: string) {
 function setFilterDate(key: string, value: string) {
   const date = moment(value).toDate();
   if (date instanceof Date && !isNaN(date.valueOf())) {
-    offerDetails[key] = date;
+    offerDetails.value[key] = date;
   } else {
-    offerDetails[key] = undefined;
+    offerDetails.value[key] = undefined;
   }
 }
 
 function getFilterDate(key: string) {
-  const date = offerDetails[key] as Date;
+  const date = offerDetails.value[key] as Date;
   if (date) {
     return moment(date).format("YYYY-MM-DDTHH:mm");
   }
@@ -704,7 +736,7 @@ async function setProductItem(id: string) {
       currentProduct.value = fetchedProduct.results[0];
 
       if (!props.param) {
-        offerDetails.properties = currentProduct.value.properties;
+        offerDetails.value.properties = currentProduct.value.properties;
       }
     }
   } finally {
@@ -721,8 +753,8 @@ function restoreCollapsed(key: string): boolean {
 }
 
 function getProductItem() {
-  if (offerDetails.productId) {
-    setProductItem(offerDetails.productId);
+  if (offerDetails.value.productId) {
+    setProductItem(offerDetails.value.productId);
   }
 }
 
@@ -812,6 +844,22 @@ function handleDictionaryValue(
     valueId,
   };
 }
+
+async function onBeforeClose() {
+  if (modified.value) {
+    const confirmationStatus = confirm(
+      unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION")))
+    );
+    if (confirmationStatus) {
+      resetAutosaved();
+    }
+    return confirmationStatus;
+  }
+}
+
+defineExpose({
+  onBeforeClose,
+});
 </script>
 
 <style lang="scss">

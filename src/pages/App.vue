@@ -6,7 +6,7 @@
     :toolbarItems="toolbarItems"
     :isReady="isReady"
     :isAuthorized="isAuthorized"
-    :logo="getLogoImage"
+    :logo="logoImage"
     :version="version"
     :pages="pages"
     v-else
@@ -19,8 +19,8 @@
     <!-- Set up login form  -->
     <template v-slot:login>
       <LoginPage
-        :logo="getWhiteLogoImage"
-        :background="getBgImage"
+        :logo="whiteLogoImage"
+        :background="bgImage"
         title="Vendor Portal"
       ></LoginPage>
     </template>
@@ -81,6 +81,9 @@ import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
 import { SellerDetails, TeamList } from "../modules/settings";
 import { HubConnection } from "@microsoft/signalr";
+import logoImage from "/assets/logo.svg";
+import whiteLogoImage from "/assets/logo-white.svg";
+import bgImage from "/assets/background.jpg";
 
 const {
   t,
@@ -318,18 +321,6 @@ function langInit() {
     currentLocale.value = "en";
   }
 }
-
-const getLogoImage = computed(() => {
-  return new URL("/assets/logo.svg", import.meta.url).href;
-});
-
-const getWhiteLogoImage = computed(() => {
-  return new URL("/assets/logo-white.svg", import.meta.url).href;
-});
-
-const getBgImage = computed(() => {
-  return new URL("/assets/background.jpg", import.meta.url).href;
-});
 </script>
 
 <style lang="scss">

@@ -26,6 +26,7 @@ jobs:
 
     outputs:
       appArtifactUrl: '${{ env.ARTIFACT_URL }}'
+      tag: '${{ env.VERSION_SUFFIX }}'
 
     steps:
     - name: Set GITHUB_USER to lowercase

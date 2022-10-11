@@ -8,6 +8,6 @@
     "environmentId": "dev",
     "environmentName": "Development",
     "environmentType": "development",
-    "environmentUrl": "https://vcmp-dep.paas.govirto.com/"
+    "environmentUrl": "https://vcmp-dev.paas.govirto.com/"
   }
 }

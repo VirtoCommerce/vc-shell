@@ -127,7 +127,7 @@
             "CHOOSE_CURRENCY": "Choose currency",
             "EMPTY": "No prices for this offer",
             "ERRORS": {
-              "SIMILAR": "Offer prices and min quantity can't be the same"
+              "SIMILAR": "Min quantity can't be the same"
             }
           },
           "IMAGES": {

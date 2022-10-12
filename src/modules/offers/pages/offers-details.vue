@@ -570,16 +570,13 @@ watch(
           newVal.some((o2, idx2) => {
             return (
               idx !== idx2 &&
-              o.listPrice &&
-              o2.listPrice &&
               o.minQuantity &&
               o2.minQuantity &&
-              o.listPrice === o2.listPrice &&
               o.minQuantity === o2.minQuantity
             );
           })
         ) {
-          dupes.push(`minqty_${idx}`, `listprice_${idx}`);
+          dupes.push(`minqty_${idx}`);
         }
       });
 
@@ -630,7 +627,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         !(
           offerDetails.value.prices &&
           offerDetails.value.prices.length &&
-          isFormValid.value
+          isFormValid.value &&
+          modified.value
         )
     ),
   },
@@ -641,11 +639,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (offerDetails.value.id) {
         offerDetails.value.isActive = true;
-        await updateOffer({
-          ...offerDetails.value,
-        });
       }
-      resetAutosaved();
     },
     isVisible: computed(
       () => !!props.param && !offerLoading.value && !offerDetails.value.isActive
@@ -658,11 +652,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (offerDetails.value.id) {
         offerDetails.value.isActive = false;
-        await updateOffer({
-          ...offerDetails.value,
-        });
       }
-      resetAutosaved();
     },
     isVisible: computed(
       () => !!props.param && !offerLoading.value && offerDetails.value.isActive
@@ -771,45 +761,54 @@ function setPropertyValue(
   value: IPropertyValue,
   dictionary?: PropertyDictionaryItem[]
 ) {
-  if (
-    typeof value === "object" &&
-    Object.prototype.hasOwnProperty.call(value, "length")
-  ) {
-    if (dictionary && dictionary.length) {
-      property.values = (value as IPropertyValue[]).map((item) => {
+  if (value) {
+    if (
+      typeof value === "object" &&
+      Object.prototype.hasOwnProperty.call(value, "length")
+    ) {
+      if (dictionary && dictionary.length) {
+        property.values = (value as IPropertyValue[]).map((item) => {
+          const handledValue = handleDictionaryValue(
+            property,
+            item.valueId,
+            dictionary
+          );
+          return new PropertyValue(handledValue);
+        });
+      } else {
+        property.values = (value as IPropertyValue[]).map(
+          (item) => new PropertyValue(item)
+        );
+      }
+    } else {
+      if (dictionary && dictionary.length) {
         const handledValue = handleDictionaryValue(
           property,
-          item.valueId,
+          value as string,
           dictionary
         );
-        return new PropertyValue(handledValue);
-      });
-    } else {
-      property.values = (value as IPropertyValue[]).map(
-        (item) => new PropertyValue(item)
-      );
-    }
-  } else {
-    if (dictionary && dictionary.length) {
-      const handledValue = handleDictionaryValue(
-        property,
-        value as string,
-        dictionary
-      );
-      property.values[0] = new PropertyValue({
-        ...handledValue,
-        isInherited: false,
-      });
-    } else {
-      if (property.values[0]) {
-        property.values[0].value = value;
-      } else {
         property.values[0] = new PropertyValue({
-          value,
+          ...handledValue,
           isInherited: false,
         });
+      } else {
+        if (property.values[0]) {
+          property.values[0].value = value;
+        } else {
+          property.values[0] = new PropertyValue({
+            value,
+            isInherited: false,
+          });
+        }
       }
     }
+  } else {
+    offerDetails.value.properties = offerDetails.value.properties.map((x) => {
+      if (x.id === property.id) {
+        x.values = [];
+      }
+      return x;
+    });
   }
 }
 

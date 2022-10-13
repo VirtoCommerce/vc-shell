@@ -3,7 +3,7 @@
   "version": "1.0.28",
   "private": true,
   "scripts": {
-    "vendor-portal-app-init": "mkdir ./apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git",
+    "vendor-portal-app-init": "mkdir ./apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && lerna bootstrap && yarn run build",
     "bootstrap": "lerna bootstrap",
     "bootstrap-link": "lerna bootstrap --force-local && lerna link --force-local",
     "prepare": "yarn run bootstrap",

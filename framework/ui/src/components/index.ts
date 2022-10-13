@@ -19,6 +19,7 @@ export { default as VcTextarea } from "./atoms/vc-textarea/vc-textarea.vue";
 export { default as VcWidget } from "./atoms/vc-widget/vc-widget.vue";
 export { default as VcInfoRow } from "./atoms/vc-info-row/vc-info-row.vue";
 export { default as VcStatusIcon } from "./atoms/vc-status-icon/vc-status-icon.vue";
+export { default as VcRating } from "./atoms/vc-rating/vc-rating.vue";
 
 /* Molecules */
 export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcrumbs.vue";

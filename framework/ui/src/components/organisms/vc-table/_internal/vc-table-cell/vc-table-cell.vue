@@ -1,6 +1,6 @@
 <template>
   <!-- Money cell -->
-  <div v-if="cell.type === 'money'">
+  <template v-if="cell.type === 'money'">
     <template v-if="value > 0">
       <span>{{ Math.trunc(Number(value)) }}</span
       ><span class="text-[#a5a5a5] text-xs"
@@ -12,24 +12,24 @@
     <template v-else>
       <span>N/A</span>
     </template>
-  </div>
+  </template>
 
   <!-- Date ago cell -->
-  <div v-else-if="cell.type === 'date-ago'" class="text-[#a5a5a5]">
+  <span v-else-if="cell.type === 'date-ago'" class="text-[#a5a5a5]">
     {{ moment(value).fromNow() }}
-  </div>
+  </span>
 
   <!-- Date exact cell -->
-  <div v-else-if="cell.type === 'date'" class="text-[#a5a5a5]">
+  <span v-else-if="cell.type === 'date'" class="text-[#a5a5a5]">
     {{
       cell.format
         ? moment(value).locale(locale).format(cell.format)
         : value.toLocaleDateString()
     }}
-  </div>
+  </span>
 
   <!-- Image cell -->
-  <div v-else-if="cell.type === 'image'">
+  <template v-else-if="cell.type === 'image'">
     <VcImage
       :bordered="true"
       size="s"
@@ -37,12 +37,12 @@
       :src="value"
       background="contain"
     />
-  </div>
+  </template>
 
   <!-- Status cell -->
-  <div v-else-if="cell.type === 'status'">
+  <template v-else-if="cell.type === 'status'">
     <VcStatus>{{ value }}</VcStatus>
-  </div>
+  </template>
 
   <!-- Status icon cell -->
   <div v-else-if="cell.type === 'status-icon'" class="flex justify-center">
@@ -50,19 +50,19 @@
   </div>
 
   <!-- Number cell -->
-  <div v-else-if="cell.type === 'number'" class="text-right">
+  <span v-else-if="cell.type === 'number'" class="text-right">
     {{ Number(value).toFixed(0) }}
-  </div>
+  </span>
 
   <!-- Link cell -->
-  <div v-else-if="cell.type === 'link'">
+  <template v-else-if="cell.type === 'link'">
     <VcLink>{{ value }}</VcLink>
-  </div>
+  </template>
 
   <!-- Default cell -->
-  <div v-else>
+  <span v-else>
     {{ value }}
-  </div>
+  </span>
 </template>
 
 <script lang="ts" setup>

@@ -3,16 +3,14 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  icon: {
-    type: String,
-    default: "fas fa-square-full",
-  },
+export interface Props {
+  icon?: string;
+  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl";
+}
 
-  size: {
-    type: String,
-    default: "m",
-  },
+withDefaults(defineProps<Props>(), {
+  icon: "fas fa-square-full",
+  size: "m",
 });
 </script>
 

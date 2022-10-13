@@ -41,8 +41,8 @@
 </template>
 
 <script lang="ts" setup>
-import VcLabel from "./../vc-label/vc-label.vue";
-import VcIcon from "./../vc-icon/vc-icon.vue";
+import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import VcLabel from "../../atoms/vc-label/vc-label.vue";
 
 export interface Props {
   label?: string;

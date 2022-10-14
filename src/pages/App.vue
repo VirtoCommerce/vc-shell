@@ -47,43 +47,45 @@
 </template>
 
 <script lang="ts" setup>
+import { HubConnection } from "@microsoft/signalr";
+import { PushNotification } from "@vc-shell/api-client";
+import {
+  useFunctions,
+  useI18n,
+  useLogger,
+  useNotifications,
+  usePermissions,
+  useSettings,
+  useUser,
+} from "@vc-shell/core";
 import {
   computed,
-  onMounted,
-  ref,
-  watch,
-  reactive,
   inject,
-  shallowRef,
+  onMounted,
+  reactive,
+  ref,
   Ref,
+  shallowRef,
+  watch,
 } from "vue";
-import LoginPage from "./Login.vue";
-import DashboardPage from "./Dashboard.vue";
-import UserDropdownButton from "../components/user-dropdown-button.vue";
-import ChangePassword from "../components/change-password.vue";
-import { OrdersList } from "../modules/orders";
-import { OffersList } from "../modules/offers";
-import { ProductsList } from "../modules/products";
-import { ImportProfileSelector } from "../modules/import";
-import {
-  useLogger,
-  useI18n,
-  useUser,
-  useNotifications,
-  useSettings,
-  usePermissions,
-  useFunctions,
-} from "@vc-shell/core";
-import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
-import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
-import { PushNotification } from "@vc-shell/api-client";
-import LanguageSelector from "../components/language-selector.vue";
 import { useRoute, useRouter } from "vue-router";
+import ChangePassword from "../components/change-password.vue";
+import LanguageSelector from "../components/language-selector.vue";
+import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
+import UserDropdownButton from "../components/user-dropdown-button.vue";
+import { ImportProfileSelector } from "../modules/import";
+import { OffersList } from "../modules/offers";
+import { OrdersList } from "../modules/orders";
+import { ProductsList } from "../modules/products";
+import { ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList } from "../modules/settings";
-import { HubConnection } from "@microsoft/signalr";
-import logoImage from "/assets/logo.svg";
-import whiteLogoImage from "/assets/logo-white.svg";
+import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
+import DashboardPage from "./Dashboard.vue";
+import LoginPage from "./Login.vue";
+import avatarImage from "/assets/avatar.jpg";
 import bgImage from "/assets/background.jpg";
+import whiteLogoImage from "/assets/logo-white.svg";
+import logoImage from "/assets/logo.svg";
 
 const {
   t,
@@ -172,7 +174,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
     componentOptions: {
-      avatar: new URL("/assets/avatar.jpg", import.meta.url).href,
+      avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
         user.value?.isAdministrator ? "Administrator" : "Seller account"
@@ -201,7 +203,7 @@ const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
     componentOptions: {
-      avatar: new URL("/assets/avatar.jpg", import.meta.url).href,
+      avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
         user.value?.isAdministrator ? "Administrator" : "Seller account"
@@ -265,6 +267,12 @@ const menuItems = reactive<IMenuItems[]>([
     icon: "fas fa-file-import",
     isVisible: true,
     component: shallowRef(ImportProfileSelector),
+  },
+  {
+    title: computed(() => t("RATING.MENU.TITLE")),
+    icon: "fas fa-star",
+    isVisible: true,
+    component: shallowRef(ReviewList),
   },
   {
     title: computed(() => t("SETTINGS.MENU.TITLE")),

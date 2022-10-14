@@ -105,7 +105,7 @@
         <div
           class="w-full h-full box-border flex flex-col items-center justify-center"
         >
-          <img src="/assets/empty-product.png" />
+          <img :src="emptyImage" />
           <div class="m-4 text-xl font-medium">
             {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.NO_ORDERS") }}
           </div>
@@ -120,7 +120,7 @@
         <div
           class="w-full h-full box-border flex flex-col items-center justify-center"
         >
-          <img src="/assets/empty-product.png" />
+          <img :src="emptyImage" />
           <div class="m-4 text-xl font-medium">
             {{ $t("ORDERS.PAGES.LIST.EMPTY") }}
           </div>
@@ -184,8 +184,8 @@
 
 <script lang="ts">
 import {
-  defineComponent,
   computed,
+  defineComponent,
   onMounted,
   reactive,
   ref,
@@ -198,16 +198,16 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useOrders } from "../composables";
 import { useFunctions, useI18n } from "@vc-shell/core";
 import moment from "moment";
-import OrdersDetails from "./orders-edit.vue";
 import { CustomerOrder } from "../../../api_client/orders";
 import {
   IActionBuilderResult,
-  ITableColumns,
   IBladeToolbar,
+  ITableColumns,
 } from "../../../types";
+import { useOrders } from "../composables";
+import OrdersDetails from "./orders-edit.vue";
 
 const props = defineProps({
   expanded: {
@@ -330,7 +330,7 @@ const tableColumns = ref<ITableColumns[]>([
 ]);
 
 const empty = reactive({
-  image: new URL("/assets/empty-product.png", import.meta.url).href,
+  image: emptyImage,
   text: computed(() => t("ORDERS.PAGES.EMPTY")),
 });
 

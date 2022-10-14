@@ -5,11 +5,12 @@
     </div>
 
     <VcRow>
-      <VcCol size="10" v-if="$isDesktop.value">
+      <VcCol size="10">
         <VcRow>
           <!-- Latest orders block -->
           <VcCol size="3" class="p-2">
             <VcCard
+              v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
             >
@@ -33,7 +34,7 @@
                   <div
                     class="w-full h-full box-border flex flex-col items-center justify-center p-5"
                   >
-                    <img src="/assets/empty-product.png" />
+                    <img src="/assets/empty.png" />
                     <div class="m-4 text-xl font-medium">
                       {{ $t("SHELL.DASHBOARD.ORDERS.EMPTY") }}
                     </div>
@@ -46,11 +47,29 @@
                 </template>
               </VcTable>
             </VcCard>
+            <VcCard
+              v-else
+              class="mb-4"
+              :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
+              icon="fas fa-file-alt"
+              @click="open('orders-list')"
+            >
+              <div class="h-px bg-[#e3e7ec]"></div>
+              <div class="my-4 dashboard-counters__value">3,334</div>
+            </VcCard>
           </VcCol>
 
-          <!-- Latest products block -->
+          <!-- Rating & Reviews block -->
           <VcCol size="4" class="p-2">
+            <RatingDashboardCard :open-page="openPage"></RatingDashboardCard>
+          </VcCol>
+        </VcRow>
+
+        <VcRow>
+          <!-- Latest products block -->
+          <VcCol size="3" class="p-2">
             <VcCard
+              v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
             >
@@ -74,7 +93,7 @@
                   <div
                     class="w-full h-full box-border flex flex-col items-center justify-center p-5"
                   >
-                    <img src="/assets/empty-product.png" />
+                    <img src="/assets/empty.png" />
                     <div class="m-4 text-xl font-medium">
                       {{ $t("SHELL.DASHBOARD.PRODUCTS.EMPTY") }}
                     </div>
@@ -109,13 +128,22 @@
                 </template>
               </VcTable>
             </VcCard>
-          </VcCol>
-        </VcRow>
-
-        <VcRow>
-          <!-- Offers block -->
-          <VcCol class="p-2">
             <VcCard
+              v-else
+              class="mb-4"
+              :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
+              icon="fas fa-box-open"
+              @click="open('products-list')"
+            >
+              <div class="h-px bg-[#e3e7ec]"></div>
+              <div class="my-4 dashboard-counters__value">49</div>
+            </VcCard>
+          </VcCol>
+
+          <!-- Offers block -->
+          <VcCol size="4" class="p-2">
+            <VcCard
+              v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
             >
@@ -144,7 +172,7 @@
                       <div
                         class="w-full h-full box-border flex flex-col items-center justify-center p-5"
                       >
-                        <img src="/assets/empty-product.png" />
+                        <img src="/assets/empty.png" />
                         <div class="m-4 text-xl font-medium">
                           {{ $t("SHELL.DASHBOARD.OFFERS.EMPTY") }}
                         </div>
@@ -155,296 +183,47 @@
                     </template>
                   </vc-table>
                 </VcCol>
-                <!--                                <VcCol size="0" class="basis-[180px]">-->
-                <!--                                  <div class="dashboard-offers__counter">-->
-                <!--                                    <div-->
-                <!--                                      class="-->
-                <!--                                        dashboard-offers__counter-value-->
-                <!--                                        dashboard-offers__counter-value_warning-->
-                <!--                                      "-->
-                <!--                                    >-->
-                <!--                                      25-->
-                <!--                                    </div>-->
-                <!--                                    <div class="dashboard-offers__counter-title">-->
-                <!--                                      {{ $t("SHELL.DASHBOARD.OFFERS.ENDING") }}-->
-                <!--                                    </div>-->
-                <!--                                  </div>-->
-                <!--                                  <div class="dashboard-offers__counter">-->
-                <!--                                    <div-->
-                <!--                                      class="-->
-                <!--                                        dashboard-offers__counter-value-->
-                <!--                                        dashboard-offers__counter-value_warning-->
-                <!--                                      "-->
-                <!--                                    >-->
-                <!--                                      7-->
-                <!--                                    </div>-->
-                <!--                                    <div class="dashboard-offers__counter-title">-->
-                <!--                                      {{ $t("SHELL.DASHBOARD.OFFERS.LOW_STOCK") }}-->
-                <!--                                    </div>-->
-                <!--                                  </div>-->
-                <!--                                  <div class="dashboard-offers__counter">-->
-                <!--                                    <div-->
-                <!--                                      class="-->
-                <!--                                        dashboard-offers__counter-value-->
-                <!--                                        dashboard-offers__counter-value_error-->
-                <!--                                      "-->
-                <!--                                    >-->
-                <!--                                      11-->
-                <!--                                    </div>-->
-                <!--                                    <div class="dashboard-offers__counter-title">-->
-                <!--                                      {{ $t("SHELL.DASHBOARD.OFFERS.OUT_STOCK") }}-->
-                <!--                                    </div>-->
-                <!--                                  </div>-->
-                <!--                                </VcCol>-->
               </VcRow>
+            </VcCard>
+            <VcCard
+              v-else
+              class="mb-4"
+              :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
+              icon="fas fa-file-invoice"
+              @click="open('offers-list')"
+            >
+              <div class="h-px bg-[#e3e7ec]"></div>
+              <div class="my-4 dashboard-counters__value">206</div>
             </VcCard>
           </VcCol>
         </VcRow>
       </VcCol>
-
-      <VcCol v-else class="p-2">
-        <div class="flex">
-          <VcCol class="mr-2">
-            <VcCard
-              class="mb-4"
-              :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
-              icon="fas fa-file-alt"
-              @click="open('orders-list')"
-            >
-              <div class="h-px bg-[#e3e7ec]"></div>
-              <div class="my-4 dashboard-counters__value">3,334</div>
-            </VcCard>
-          </VcCol>
-          <VcCol class="ml-2">
-            <VcCard
-              class="mb-4"
-              :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
-              icon="fas fa-box-open"
-              @click="open('products-list')"
-            >
-              <div class="h-px bg-[#e3e7ec]"></div>
-              <div class="my-4 dashboard-counters__value">49</div>
-            </VcCard>
-          </VcCol>
-        </div>
-        <VcCard
-          :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
-          icon="fas fa-file-invoice"
-          @click="open('offers-list')"
-        >
-          <div class="h-px bg-[#e3e7ec]"></div>
-          <div class="my-4 dashboard-counters__value">206</div>
-        </VcCard>
-      </VcCol>
-
-      <!--       Counters block-->
-      <!--            <VcCol class="dashboard-counters p-2">-->
-      <!--              <VcCard-->
-      <!--                class="mb-4"-->
-      <!--                :header="$t('SHELL.DASHBOARD.COUNTERS.REVENUE')"-->
-      <!--                icon="fas fa-hand-holding-usd"-->
-      <!--              >-->
-      <!--                <div class="h-px bg-[#e3e7ec]"></div>-->
-      <!--                <div class="my-4 dashboard-counters__value">-->
-      <!--                  {{ counters.revenue[range.revenue] }}-->
-      <!--                </div>-->
-      <!--                <div-->
-      <!--                  class="-->
-      <!--                    flex-->
-      <!--                    justify-center-->
-      <!--                    mt-2-->
-      <!--                    mb-4-->
-      <!--                  "-->
-      <!--                >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.revenue !== 'day'"-->
-      <!--                    @click="range.revenue = 'day'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.revenue !== 'week'"-->
-      <!--                    @click="range.revenue = 'week'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.revenue !== 'month'"-->
-      <!--                    @click="range.revenue = 'month'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.MONTH") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.revenue !== 'year'"-->
-      <!--                    @click="range.revenue = 'year'"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
-      <!--                  >-->
-      <!--                </div>-->
-      <!--              </VcCard>-->
-
-      <!--              <VcCard-->
-      <!--                class="mb-4"-->
-      <!--                :header="$t('SHELL.DASHBOARD.COUNTERS.PURCHASED')"-->
-      <!--                icon="fas fa-boxes"-->
-      <!--              >-->
-      <!--                <div class="h-px bg-[#e3e7ec]"></div>-->
-      <!--                <div class="my-4 dashboard-counters__value">-->
-      <!--                  {{ counters.purchased[range.purchased] }}-->
-      <!--                </div>-->
-      <!--                <div-->
-      <!--                  class="-->
-      <!--                    flex-->
-      <!--                    justify-center-->
-      <!--                    mt-2-->
-      <!--                    mb-4-->
-      <!--                  "-->
-      <!--                >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.purchased !== 'day'"-->
-      <!--                    @click="range.purchased = 'day'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.purchased !== 'week'"-->
-      <!--                    @click="range.purchased = 'week'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.purchased !== 'month'"-->
-      <!--                    @click="range.purchased = 'month'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.MONTH") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.purchased !== 'year'"-->
-      <!--                    @click="range.purchased = 'year'"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
-      <!--                  >-->
-      <!--                </div>-->
-      <!--              </VcCard>-->
-
-      <!--              <VcCard-->
-      <!--                class="mb-4"-->
-      <!--                :header="$t('SHELL.DASHBOARD.COUNTERS.AVERAGE_ORDER')"-->
-      <!--                icon="fas fa-dollar-sign"-->
-      <!--              >-->
-      <!--                <div class="h-px bg-[#e3e7ec]"></div>-->
-      <!--                <div class="my-4 dashboard-counters__value">-->
-      <!--                  {{ counters.orderAvg[range.orderAvg] }}-->
-      <!--                </div>-->
-      <!--                <div-->
-      <!--                  class="-->
-      <!--                    flex-->
-      <!--                    justify-center-->
-      <!--                    mt-2-->
-      <!--                    mb-4-->
-      <!--                  "-->
-      <!--                >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.orderAvg !== 'day'"-->
-      <!--                    @click="range.orderAvg = 'day'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.DAY") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.orderAvg !== 'week'"-->
-      <!--                    @click="range.orderAvg = 'week'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.WEEK") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.orderAvg !== 'month'"-->
-      <!--                    @click="range.orderAvg = 'month'"-->
-      <!--                    class="mr-2"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.MONTH") }}</vc-button-->
-      <!--                  >-->
-      <!--                  <vc-button-->
-      <!--                    small-->
-      <!--                    :outline="range.orderAvg !== 'year'"-->
-      <!--                    @click="range.orderAvg = 'year'"-->
-      <!--                    >{{ $t("SHELL.DASHBOARD.COUNTERS.YEAR") }}</vc-button-->
-      <!--                  >-->
-      <!--                </div>-->
-      <!--              </VcCard>-->
-
-      <!--              <VcCard-->
-      <!--                :header="$t('SHELL.DASHBOARD.REVIEWS.TITLE')"-->
-      <!--                icon="fas fa-comment-dots"-->
-      <!--              >-->
-      <!--                <div class="h-px bg-[#e3e7ec]"></div>-->
-      <!--                <div class="p-4">-->
-      <!--                  <VcHint>22.02.2021</VcHint>-->
-      <!--                  <div class="dashboard-review-header">Piers Stephenson</div>-->
-      <!--                  <div>-->
-      <!--                    My neighbor Victoria has one of these. She works as a professor-->
-      <!--                    and she says it looks menthol. I saw one of these in Bhutan and I-->
-      <!--                    bought one. My jaguar loves to play with it. I use it daily when-->
-      <!--                    i'm in my outhouse. Heard about this on compas radio, decided to-->
-      <!--                    give it a try. Heard about this on instrumental country radio,-->
-      <!--                    decided to give it a try. My tyrannosaurus rex loves to play with-->
-      <!--                    it. Talk about... remorse!!!-->
-      <!--                  </div>-->
-      <!--                  <div class="flex justify-center mt-4">-->
-      <!--                    <vc-button small outline>{{-->
-      <!--                      $t("SHELL.DASHBOARD.REVIEWS.MORE")-->
-      <!--                    }}</vc-button>-->
-      <!--                  </div>-->
-      <!--                </div>-->
-      <!--              </VcCard>-->
-      <!--            </VcCol>-->
     </VcRow>
   </VcContainer>
 </template>
 
 <script lang="ts" setup>
 import { useI18n } from "@vc-shell/core";
+import { IPage } from "@vc-shell/ui";
 import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
+import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import {
+  MpProductStatus,
   ProductsEdit,
   ProductsList,
   useProducts,
-  MpProductStatus,
 } from "../modules/products";
-import { OrderLineItem } from "../api_client/orders";
+import { RatingDashboardCard } from "../modules/rating";
 import { ITableColumns } from "../types";
-import { useRouter } from "vue-router";
 
-/*
-interface ITermDefinition {
-  day: string;
-  week: string;
-  month: string;
-  year: string;
+export interface Props {
+  openPage: (index: number, page: IPage) => void;
 }
 
-interface ICounters {
-  revenue: ITermDefinition;
-  purchased: ITermDefinition;
-  orderAvg: ITermDefinition;
-}
- */
-
-const props = defineProps({
-  openPage: {
-    type: Function,
-    default: undefined,
-  },
-});
+const props = defineProps<Props>();
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();
 const { orders, loadOrders, loading: ordersLoading } = useOrders();
@@ -517,7 +296,7 @@ const offersColumns = ref<ITableColumns[]>([
   {
     id: "createdDate",
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-    width: 140,
+    width: 100,
     type: "date-ago",
   },
   {
@@ -550,33 +329,6 @@ const offersColumns = ref<ITableColumns[]>([
     type: "number",
   },
 ]);
-
-// const counters = reactive<ICounters>({
-//   revenue: {
-//     day: "1,230.09",
-//     week: "13,445.75",
-//     month: "490,314.81",
-//     year: "3,553,165.94",
-//   },
-//   purchased: {
-//     day: "17",
-//     week: "993",
-//     month: "31,230",
-//     year: "1,151,202",
-//   },
-//   orderAvg: {
-//     day: "515.04",
-//     week: "792.45",
-//     month: "620.01",
-//     year: "593.10",
-//   },
-// });
-//
-// const range = reactive({
-//   revenue: "day",
-//   purchased: "day",
-//   orderAvg: "day",
-// });
 
 onMounted(async () => {
   router.push("/");
@@ -665,6 +417,12 @@ function calcQty(items: OrderLineItem[]) {
 
   &-header {
     @apply text-[25px] text-[#333333] my-3 px-2;
+  }
+
+  .vc-row {
+    .vc-app_mobile & {
+      @apply flex;
+    }
   }
 
   &-counters {

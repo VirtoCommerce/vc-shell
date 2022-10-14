@@ -1,14 +1,15 @@
-import { createApp, resolveComponent, h } from "vue";
-import VirtoShellUi from "@vc-shell/ui";
 import VirtoShellCore from "@vc-shell/core";
-import ModAssets from "@vc-shell/mod-assets";
-import ModOrders from "./modules/orders";
-import ModProducts from "./modules/products";
-import ModOffers from "./modules/offers";
-import ModImport from "./modules/import";
-import ModSettings from "./modules/settings";
-import { router } from "./router";
+import AssetsModule from "@vc-shell/mod-assets";
+import VirtoShellUi from "@vc-shell/ui";
+import { createApp, h, resolveComponent } from "vue";
 import PushHub from "./config/push-hub";
+import ImportModule from "./modules/import";
+import OffersModule from "./modules/offers";
+import OrdersModule from "./modules/orders";
+import ProductsModule from "./modules/products";
+import RatingModule from "./modules/rating";
+import SettingsModule from "./modules/settings";
+import { router } from "./router";
 
 import * as locales from "./locales";
 
@@ -25,12 +26,13 @@ const app = createApp({
   .use(router)
   .use(VirtoShellUi)
   .use(VirtoShellCore)
-  .use(ModAssets)
-  .use(ModOrders)
-  .use(ModProducts)
-  .use(ModOffers)
-  .use(ModImport)
-  .use(ModSettings);
+  .use(AssetsModule)
+  .use(OrdersModule)
+  .use(ProductsModule)
+  .use(OffersModule)
+  .use(ImportModule)
+  .use(RatingModule)
+  .use(SettingsModule);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

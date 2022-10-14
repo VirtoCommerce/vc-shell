@@ -86,7 +86,7 @@
         <div
           class="w-full h-full box-border flex flex-col items-center justify-center"
         >
-          <img src="/assets/empty-product.png" />
+          <img :src="emptyImage" />
           <div class="m-4 text-xl font-medium">
             {{ $t("PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
@@ -101,7 +101,7 @@
         <div
           class="w-full h-full box-border flex flex-col items-center justify-center"
         >
-          <img src="/assets/empty-product.png" />
+          <img :src="emptyImage" />
           <div class="m-4 text-xl font-medium">
             {{ $t("PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
@@ -201,13 +201,12 @@
 
 <script lang="ts">
 import {
-  defineComponent,
-  ref,
-  onMounted,
   computed,
-  watch,
+  defineComponent,
+  onMounted,
   reactive,
-  getCurrentInstance,
+  ref,
+  watch,
 } from "vue";
 
 export default defineComponent({
@@ -216,17 +215,18 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useLogger, useFunctions } from "@vc-shell/core";
-import { useProducts } from "../composables";
-import MpProductStatus from "../components/MpProductStatus.vue";
-import ProductsEdit from "./products-edit.vue";
+import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
 import moment from "moment";
+import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import {
   IActionBuilderResult,
-  ITableColumns,
   IBladeToolbar,
+  ITableColumns,
 } from "../../../types";
-import { ISellerProduct } from "../../../api_client/marketplacevendor";
+import MpProductStatus from "../components/MpProductStatus.vue";
+import { useProducts } from "../composables";
+import ProductsEdit from "./products-edit.vue";
+import emptyImage from "/assets/empty.png";
 
 const props = defineProps({
   expanded: {

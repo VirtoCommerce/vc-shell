@@ -1,0 +1,61 @@
+{
+  "RATING": {
+    "MENU": {
+      "TITLE": "Rating & Reviews"
+    },
+    "RATING": {
+      "EMPTY": "No rating yet",
+      "REVIEWS": "({ count } reviews)"
+    },
+    "DASHBOARD_CARD": {
+      "TITLE": "Rating & Reviews",
+      "ALL_REVIEWS": "All reviews"
+    },
+    "REVIEW_TABLE": {
+      "EMPTY": "There is no rating left for you yet",
+      "TOTALS": "Total:",
+      "HEADER": {
+        "TITLE": "Title",
+        "REVIEW": "Review",
+        "RATING": "Rating",
+        "STATUS": "Status",
+        "CREATEDDATE": "Created date",
+        "CREATEDBY": "Created by"
+      }
+    },
+    "PAGES": {
+      "REVIEW_LIST": {
+        "TITLE": "Rating & Reviews",
+        "TOOLBAR": {
+          "REFRESH": "Refresh"
+        }
+      },
+      "REVIEW_DETAILS": {
+        "TITLE": "Review Details",
+        "FORM": {
+          "CREATEDBY": {
+            "LABEL": "Created by"
+          },
+          "CREATEDDATE": {
+            "LABEL": "Created date"
+          },
+          "RATING": {
+            "LABEL": "Rating",
+            "PLACEHOLDER": "No rating"
+          },
+          "ORDER": {
+            "LABEL": "Order"
+          },
+          "TITLE": {
+            "LABEL": "Title",
+            "PLACEHOLDER": "No title"
+          },
+          "REVIEW": {
+            "LABEL": "Review",
+            "PLACEHOLDER": "No review"
+          }
+        }
+      }
+    }
+  }
+}

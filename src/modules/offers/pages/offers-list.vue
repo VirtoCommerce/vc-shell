@@ -113,14 +113,14 @@
 
 <script lang="ts">
 import {
-  defineComponent,
-  watch,
-  onMounted,
-  ref,
   computed,
-  reactive,
-  unref,
+  defineComponent,
   inject,
+  onMounted,
+  reactive,
+  ref,
+  unref,
+  watch,
 } from "vue";
 
 export default defineComponent({
@@ -129,16 +129,17 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useFunctions, useLogger } from "@vc-shell/core";
-import { useOffers } from "../composables";
+import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
 import moment from "moment";
-import OffersDetails from "./offers-details.vue";
+import { IOffer } from "../../../api_client/marketplacevendor";
 import {
   IActionBuilderResult,
-  ITableColumns,
   IBladeToolbar,
+  ITableColumns,
 } from "../../../types";
-import { IOffer } from "../../../api_client/marketplacevendor";
+import { useOffers } from "../composables";
+import OffersDetails from "./offers-details.vue";
+import emptyImage from "/assets/empty.png";
 
 const props = defineProps({
   expanded: {
@@ -329,7 +330,7 @@ const tableColumns = ref<ITableColumns[]>([
 ]);
 
 const empty = reactive({
-  image: new URL("/assets/empty-product.png", import.meta.url).href,
+  image: emptyImage,
   text: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.TITLE")),
   action: computed(() => t("OFFERS.PAGES.LIST.TABLE.EMPTY.ACTION")),
   clickHandler: () => {
@@ -338,7 +339,7 @@ const empty = reactive({
 });
 
 const notfound = reactive({
-  image: new URL("/assets/empty-product.png", import.meta.url).href,
+  image: emptyImage,
   text: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.TITLE")),
   action: computed(() => t("OFFERS.PAGES.LIST.TABLE.NOT_FOUND.ACTION")),
   clickHandler: async () => {

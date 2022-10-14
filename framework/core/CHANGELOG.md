@@ -429,6 +429,431 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
+## 1.0.29 (2022-10-14)
+
+
+### Bug Fixes
+
+* build ([6be999b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6be999b2f13aa8a040374f668b8b71450e7c8c6b))
+* fix sharing auth data ([6493fc1](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6493fc1691925e9dc91061428f42c3e8fbfbe35a))
+* local storage auth key ([5d999d6](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5d999d60cf465bca29db559a9ea9312857f9ecb2))
+* rename virto-shell -> virtocommerce ([ba74f8f](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ba74f8fb7fcb61744f2348e8521dfae77775418b))
+* signIn issue ([c54ae9a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c54ae9aacbab57b5c650304bb2aa9bbb40b85227))
+
+
+### Features
+
+* merge autosave ([8cb20db](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8cb20dbd45e990cadcf8eb3b28e4bf463135c397))
+* share auth data between platform manager and custom apps ([c466d00](https://github.com/VirtoCommerce/platform-manager-sdk/commit/c466d00b341e8e3d9dc7d6861449daad64d9b1c7))
+* vm-741 893 1005 1019 1021 513 978 914 920 828 963 755 ([b8b2cda](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8b2cdaedf32128b35c04d85689eb3203057b7d0))
+* vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([bfdda26](https://github.com/VirtoCommerce/platform-manager-sdk/commit/bfdda2630a86d545e5800a3508a77c0fb377fd82))
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+### Bug Fixes
+
+* permissions fix ([d53c3c3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d53c3c39196e9a8aa5dac6b223bbfb81b5a5f54c))
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+
+### Features
+
+* version up ([85d5ab5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
+
+
+
+## 1.0.13 (2022-07-14)
+
+
+### Features
+
+* npm publish configuration ([41e3ff8](https://github.com/VirtoCommerce/platform-manager-sdk/commit/41e3ff8c04eccff1ed9a934c5a3457aec26a32dc))
+
+
+
+## 1.0.11 (2022-07-08)
+
+
+
+## 0.1.16 (2022-04-15)
+
+
+
+## 0.1.10 (2022-04-04)
+
+
+
+## 0.1.4 (2022-03-16)
+
+
+
+## 0.1.2 (2022-03-10)
+
+
+
+## 0.1.1 (2022-03-10)
+
+
+
+## 0.0.123 (2022-03-04)
+
+
+
+## 0.0.95 (2021-12-07)
+
+
+
+## 0.0.90 (2021-12-02)
+
+
+
+## 0.0.89 (2021-12-02)
+
+
+
+## 0.0.88 (2021-12-02)
+
+
+
+## 0.0.87 (2021-12-01)
+
+
+
+## 0.0.86 (2021-12-01)
+
+
+
+## 0.0.85 (2021-12-01)
+
+
+
+## 0.0.84 (2021-11-26)
+
+
+
+## 0.0.83 (2021-11-24)
+
+
+
+## 0.0.82 (2021-11-24)
+
+
+
+## 0.0.81 (2021-11-23)
+
+
+
+## 0.0.80 (2021-11-22)
+
+
+
+## 0.0.79 (2021-11-22)
+
+
+
+## 0.0.78 (2021-11-22)
+
+
+
+## 0.0.77 (2021-11-18)
+
+
+
+## 0.0.76 (2021-11-18)
+
+
+
+## 0.0.75 (2021-11-18)
+
+
+
+## 0.0.74 (2021-11-12)
+
+
+
+## 0.0.73 (2021-11-11)
+
+
+### Features
+
+* tier prices for offer ([1531a61](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1531a6152ff1023a41c92f84ceb6cf01e8d1b115))
+
+
+
+## 0.0.71 (2021-11-11)
+
+
+
+## 0.0.70 (2021-11-08)
+
+
+
+## 0.0.69 (2021-11-03)
+
+
+
+## 0.0.68 (2021-11-02)
+
+
+
+## 0.0.67 (2021-11-02)
+
+
+
+## 0.0.66 (2021-11-02)
+
+
+
+## 0.0.65 (2021-11-01)
+
+
+
+## 0.0.64 (2021-10-28)
+
+
+
+## 0.0.63 (2021-10-28)
+
+
+
+## 0.0.62 (2021-10-28)
+
+
+
+## 0.0.61 (2021-10-26)
+
+
+
+## 0.0.60 (2021-10-22)
+
+
+### Features
+
+* order details page ([b8fe53d](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8fe53d7282a6e0381af5eedbf272001a63b3ba9))
+
+
+
+## 0.0.59 (2021-10-20)
+
+
+### Features
+
+* seller accept invitation form ([8f5d5b9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8f5d5b9cae6a0c057b1831a48fc41fae13792f00))
+
+
+
+## 0.0.58 (2021-10-20)
+
+
+
+## 0.0.57 (2021-10-15)
+
+
+
+## 0.0.56 (2021-10-13)
+
+
+
+## 0.0.55 (2021-10-13)
+
+
+
+## 0.0.54 (2021-10-13)
+
+
+
+## 0.0.53 (2021-10-13)
+
+
+
+## 0.0.52 (2021-10-13)
+
+
+
+## 0.0.51 (2021-10-13)
+
+
+
+## 0.0.50 (2021-10-12)
+
+
+
+## 0.0.49 (2021-10-12)
+
+
+
+## 0.0.48 (2021-10-06)
+
+
+
+## 0.0.47 (2021-10-06)
+
+
+### Features
+
+* filters and swipe actions ([a463ad5](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a463ad59519925ea5fd1ee2f90d45e85d5ef2008))
+
+
+
+## 0.0.46 (2021-09-30)
+
+
+
+## 0.0.45 (2021-09-30)
+
+
+### Bug Fixes
+
+* deepClone for product ([d587e39](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d587e39345fcca9a28f8290ba9761e0325e933de))
+
+
+### Features
+
+* blade navigation improvements ([5dd0a7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5dd0a7e745c04684de702e780e978e580800d476))
+* validation ([43a7ab9](https://github.com/VirtoCommerce/platform-manager-sdk/commit/43a7ab96c5dd302f5960a6b2e55f5460a547d82c))
+
+
+
+## 0.0.43 (2021-09-24)
+
+
+
+## 0.0.42 (2021-09-23)
+
+
+### Features
+
+* basic mobile UI/UX ([77be3a4](https://github.com/VirtoCommerce/platform-manager-sdk/commit/77be3a414e842500e6ca9fded1ffadd4eccb68ed))
+
+
+
+## 0.0.41 (2021-09-23)
+
+
+### Features
+
+* apply new statuses matrix ([31f2ab0](https://github.com/VirtoCommerce/platform-manager-sdk/commit/31f2ab0fa9ee28491cb43d993a56be2a86ff835e))
+
+
+
+## 0.0.40 (2021-09-23)
+
+
+### Features
+
+* routing update ([d7ec6ef](https://github.com/VirtoCommerce/platform-manager-sdk/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([9e60760](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9e607601cfed4e10d4cc33ceb81a408967b82eee))
+
+
+
+## 0.0.39 (2021-09-13)
+
+
+### Features
+
+* naming standarts ([45a4eae](https://github.com/VirtoCommerce/platform-manager-sdk/commit/45a4eae642d1f7d67efe8551ea7e3a37d6d47abb))
+
+
+
+## 0.0.37 (2021-09-07)
+
+
+### Features
+
+* vm-20 offers list ([ebafb36](https://github.com/VirtoCommerce/platform-manager-sdk/commit/ebafb36bb151f28f4415e5ebb4223d029514e90a))
+
+
+
+## 0.0.36 (2021-09-07)
+
+
+### Features
+
+* vm-97 extended products ([496db62](https://github.com/VirtoCommerce/platform-manager-sdk/commit/496db62414726df80561945f80d8957c543c00c3))
+
+
+
+## 0.0.35 (2021-09-07)
+
+
+### Bug Fixes
+
+* watching fix ([f65ba67](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f65ba67b68d6082d22bb00885ac4ef82baca6ce1))
+
+
+### Features
+
+* **core:** routing update (WIP) ([47a8ab2](https://github.com/VirtoCommerce/platform-manager-sdk/commit/47a8ab274f610820a1e91f63d99995601e898961))
+* **core:** webpack config for [@vueuse](https://github.com/vueuse) submodules ([79aeef7](https://github.com/VirtoCommerce/platform-manager-sdk/commit/79aeef71c838bbe46eacdeaf37a079756a2e2c41))
+* signIn/signOut ([3493066](https://github.com/VirtoCommerce/platform-manager-sdk/commit/3493066c28b34359c1c89c695c33c6a264d10398))
+* store access toke in cookies (does not compile) ([fd75285](https://github.com/VirtoCommerce/platform-manager-sdk/commit/fd75285c62f9b9136f77ac4f79d2ae388682ae54))
+* typescript watching ([dc6a43a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/dc6a43a4ce9c3cc5b0ab694ad8b637d86849b3c6))
+* vm-97 extended products ([b617328](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b617328ccac90cf84b59d7f31f901b51ad2f41ff))
+* vm-97 extended products ([1b6e54a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/1b6e54a2ecddc95944b5885b1c4821a939b8c038))
+* yarn migration and cleanup ([5c0fc1b](https://github.com/VirtoCommerce/platform-manager-sdk/commit/5c0fc1b02515fada99be5c2e5d4db8ce3c47a36e))
+
+
+
+## 0.0.29 (2021-08-20)
+
+
+### Bug Fixes
+
+* **app-demo-manager:** add missed changes after merging ([2d6be5e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/2d6be5e40526d3dccb1933384f5fb86cde4ce4b1))
+
+
+### Features
+
+* **app-demo-manager:**  connect to platform api ([9198c70](https://github.com/VirtoCommerce/platform-manager-sdk/commit/9198c700acafa4ad233c62f59539c476bb89a2ca))
+* **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/platform-manager-sdk/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
+
+
+
+## 0.0.10 (2021-08-04)
+
+
+
+## 0.0.9 (2021-08-03)
+
+
+### Features
+
+* core composables ([57d84af](https://github.com/VirtoCommerce/platform-manager-sdk/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
+* core composables ([7713230](https://github.com/VirtoCommerce/platform-manager-sdk/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
+* demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/platform-manager-sdk/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
+
+
+
+## 0.0.8 (2021-08-02)
+
+
+### Features
+
+* new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
+
+
+
+
 ## 1.0.28 (2022-10-10)
 
 

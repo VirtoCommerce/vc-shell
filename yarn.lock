@@ -1478,47 +1478,47 @@
     "@typescript-eslint/types" "5.33.1"
     eslint-visitor-keys "^3.3.0"
 
-"@vc-shell/api-client-generator@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/@vc-shell/api-client-generator/-/api-client-generator-1.0.28.tgz#1adef8a2970c2be39a56ee64704c1476b273efd1"
-  integrity sha512-K13PQCMNik5mWNIb0SSHEjapt2DfxcwE/tszLDlzRmwG1gi7W/2Ag7xs5vvA1PJYq3sMli4VZKIkcvYV0EZ4Hg==
+"@vc-shell/api-client-generator@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client-generator/-/api-client-generator-1.0.30.tgz#18fc23651bcf2b7925d9176c74baf40a53b91109"
+  integrity sha512-3zHXzxTV8MigGhceC/B4Lucw7r+Wf4zqDi9DeJUcrNZvWoMwOIep1QDrMqVgCDhW4JVa/RT5l9WoFFfJANsOEw==
   dependencies:
     chalk "^2.4.2"
     nswag "^13.16.1"
     vite "^2.8.3"
 
-"@vc-shell/api-client@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/@vc-shell/api-client/-/api-client-1.0.28.tgz#4dcac7b96f6c802367b4e6ccbf76555fbb6efb6f"
-  integrity sha512-z+r433eBOiClCaBhRjQTKpyjAPXJ+0W+9r/FpVg5nyVeHk1pBa4XA9JbU536h++9O3NxdI/BpQwqU9+ficYSfA==
+"@vc-shell/api-client@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client/-/api-client-1.0.30.tgz#c0bc5a5c44adfdc34befbb981f12195f53f7d188"
+  integrity sha512-Px0kxgdG1h1ias6BmCWpolQm4cuL3IUaThI5KOLJCangCKZLeFDJ2qIGO4zq2crgsmRNnb2AeD0XXPhFx1JHgw==
 
-"@vc-shell/config-generator@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/@vc-shell/config-generator/-/config-generator-1.0.28.tgz#2f2ffb3b7a3d0ef5e092b22d306c0755bb493905"
-  integrity sha512-LmmXfzKb0S0nuWnpG6KcJWyktIqk+C6T+MnnQGeRIc5i07AqwxGd/133gVPHYG/TyVOYj0KcuJl4wTlPqO4JEw==
+"@vc-shell/config-generator@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@vc-shell/config-generator/-/config-generator-1.0.30.tgz#09880e998410e87ef9d29c188d49ee00a46ba39f"
+  integrity sha512-cIy/AP7abDc6wjIJmUp8cBMPgx+t+74G72R3AzxC8Cq7H7je5tCJd8r//fURoBembQbr8ET/7RHurvIG5AWhLg==
 
-"@vc-shell/core@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/@vc-shell/core/-/core-1.0.28.tgz#09847dbe5bec6974d2759535ab4c79c77a183b14"
-  integrity sha512-zM6LFmwp+j/e2fYXZUT3WJ7FzutBJjOY4jb3tu3r8lKWyakozcbZINlvhtzHoP51ysO+XT+cPmk18D1BN29/3Q==
+"@vc-shell/core@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@vc-shell/core/-/core-1.0.30.tgz#d9726cfc12981531d0ad205b1311908715d2275c"
+  integrity sha512-YDPGRQvanEq6wiNTnLnaqLRFMF+mjoqyK+hI2KdeHIjuAwoFtt9RoTSwrtCQUNQIOF/7HYLGDDTbub/efWzviQ==
   dependencies:
-    "@vc-shell/api-client" "^1.0.28"
+    "@vc-shell/api-client" "^1.0.30"
     client-oauth2 "^4.3.3"
     vue-i18n "^9.1.7"
     vue-logger-plugin "^2.1.2"
 
-"@vc-shell/mod-assets@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/@vc-shell/mod-assets/-/mod-assets-1.0.28.tgz#06cf92f33087cb54e89724651547944dbb9d951d"
-  integrity sha512-g9mijKffST/0wUVF38TfWioI7d87Mz8IF3pVcNZhBZ59du2TnuJO1DfnOobBlb9taQh5+tVaeQoinpa0lZLpVg==
+"@vc-shell/mod-assets@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@vc-shell/mod-assets/-/mod-assets-1.0.30.tgz#3dbe9f9b16cea5d24ef516230e498976278687b9"
+  integrity sha512-Pr4idicw9x4kXkXfTCPya8imy8mSD8PtnGb14/CJscE+IBxK31TJvrkCbRzUQEaQW2YJbnQlcvmqxwzQ7skBWA==
 
-"@vc-shell/ui@^1.0.28":
-  version "1.0.28"
-  resolved "https://registry.yarnpkg.com/@vc-shell/ui/-/ui-1.0.28.tgz#23eb25a318e258ad23329e5d5e6a24c9b5685e53"
-  integrity sha512-2CFk+BGVPwVx3HpQ+W1plREV2f6GbiWziSwujNgZXeH65N0KSiQp3baHRE6+C3dwWNmZT7OnDEoiUfJUVhXS8g==
+"@vc-shell/ui@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.yarnpkg.com/@vc-shell/ui/-/ui-1.0.30.tgz#039c7bed1820043781d05588ce5319269a61f0bd"
+  integrity sha512-KZDouv3fFUOmSjYduRjClmtT1gFPEjDjtX3tgNypUvBa8AraKcEzqLe5Zg/KuIWxHEyfgImNg+QG2MHIIdzbZQ==
   dependencies:
     "@popperjs/core" "^2.11.0"
-    "@vc-shell/core" "^1.0.28"
+    "@vc-shell/core" "^1.0.30"
     "@vee-validate/rules" "^4.5.5"
     "@vueuse/core" "^6.0.0"
     "@vueuse/integrations" "^6.0.0"

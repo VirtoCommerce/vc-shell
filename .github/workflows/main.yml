@@ -88,21 +88,7 @@ jobs:
     - name: CI results
       run: |
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
-
-  CD:
-    if: ${{ github.ref == 'refs/heads/main' }}
-    needs: CI
-    uses: VirtoCommerce/.github/.github/workflows/deploy.yml@v0.1
-    with:
-      argoServer: 'argo.govirto.com'
-      artifactUrl: ${{ needs.CI.outputs.appArtifactUrl }}
-      matrix: '{"include":[{"envName": "dev", "confPath": ".deployment/argoDeploy.json"}]}'
-
-    secrets:
-      envPAT: ${{ secrets.REPO_TOKEN }}
-      argoLogin: ${{ secrets.ARGOCD_LOGIN }}
-      argoPassword: ${{ secrets.ARGOCD_PASSWORD }}
-
+          
   deploy-cloud:
     if: ${{ ((github.ref == 'refs/heads/master') ||
         (github.ref == 'refs/heads/dev')) &&

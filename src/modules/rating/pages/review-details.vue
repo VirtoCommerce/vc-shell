@@ -87,7 +87,6 @@ import {
   VcForm,
   VcLabel,
   VcTextarea,
-  VcLink,
   VcRating,
   VcRow,
   IPage,
@@ -95,7 +94,6 @@ import {
 import moment from "moment";
 import { computed, onMounted } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
-import { OrdersEdit } from "../../orders/pages";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 
@@ -121,7 +119,7 @@ const props = withDefaults(defineProps<Props>(), {
   options: () => ({}),
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 
 onMounted(async () => {
   if (props.param && props.options.review) {
@@ -145,11 +143,4 @@ const createdDate = computed(() => {
   const date = new Date(customerReview.value?.createdDate);
   return moment(date).locale(locale).format("L LT");
 });
-
-const onOrderClick = () => {
-  emit("page:open", {
-    component: OrdersEdit,
-    param: null,
-  });
-};
 </script>

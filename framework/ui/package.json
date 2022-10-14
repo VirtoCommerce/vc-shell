@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/ui",
-  "version": "1.0.29",
+  "version": "1.0.30",
   "scripts": {
     "build": "vite build",
     "watch": "vite build --watch"
@@ -16,14 +16,14 @@
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rollup/plugin-commonjs": "^21.0.2",
-    "@vc-shell/config-generator": "^1.0.29",
+    "@vc-shell/config-generator": "^1.0.30",
     "sass": "^1.49.0",
     "typescript": "^4.6.2",
     "url-pattern": "^1.0.3"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.0",
-    "@vc-shell/core": "^1.0.29",
+    "@vc-shell/core": "^1.0.30",
     "@vee-validate/rules": "^4.5.5",
     "@vueuse/core": "^6.0.0",
     "@vueuse/integrations": "^6.0.0",

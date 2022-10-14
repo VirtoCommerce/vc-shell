@@ -15,6 +15,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * pseudo-monorepo ([a7f7a4a](https://github.com/VirtoCommerce/platform-manager-sdk/commit/a7f7a4a8b09739e1755d0cf065fd798c9d66f3aa))
+* rating component ([#136](https://github.com/VirtoCommerce/platform-manager-sdk/issues/136)) ([f3ea347](https://github.com/VirtoCommerce/platform-manager-sdk/commit/f3ea3478eecd2e5f4bcc058c9569597b6c5c77ff))
 * vm-741 893 1005 1019 1021 513 978 914 920 828 963 755 ([b8b2cda](https://github.com/VirtoCommerce/platform-manager-sdk/commit/b8b2cdaedf32128b35c04d85689eb3203057b7d0))
 * vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/platform-manager-sdk/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
 
@@ -645,6 +646,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ### Features
 
 * new folder structure ([caa6712](https://github.com/VirtoCommerce/platform-manager-sdk/commit/caa67129423a8cde15212961ee0cbfed9ac08b53))
+
 
 
 

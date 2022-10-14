@@ -25,7 +25,7 @@ const status = computed(() => {
       status = "success";
       break;
     case CustomerReviewStatus.Rejected:
-      status = "dranger";
+      status = "danger";
       break;
   }
   return status;

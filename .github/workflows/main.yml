@@ -90,7 +90,7 @@ jobs:
           echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
           
   deploy-cloud:
-    if: ${{ ((github.ref == 'refs/heads/master') ||
+    if: ${{ ((github.ref == 'refs/heads/main') ||
         (github.ref == 'refs/heads/dev'))}}
     needs: ci
     uses: VirtoCommerce/.github/.github/workflows/deploy-cloud.yml@v3.200.21

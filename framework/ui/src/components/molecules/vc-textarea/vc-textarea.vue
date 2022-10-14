@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { unref, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
-import VcLabel from "..//vc-label/vc-label.vue";
+import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
 
 const props = defineProps({

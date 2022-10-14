@@ -1,3 +1,4 @@
+/** @type { import('tailwindcss').Config } */
 module.exports = {
   content: ["./src/components/**/*.{vue,js,ts,jsx,tsx}"],
     theme: {
@@ -5,12 +6,12 @@ module.exports = {
             roboto: ["Roboto", "sans-serif"],
         },
         fontSize: {
-            "xs": "11px",
-            "sm": "12px",
-            "base": "13px",
-            "lg": "14px",
-            "xl": "16px",
-            "2xl": "23px",
+            "xs": ["11px", "14px"],
+            "sm": ["12px", "16px"],
+            "base": ["13px", "18px"],
+            "lg": ["14px", "19px"],
+            "xl": ["16px", "22px"],
+            "2xl": ["23px", "28px"],
         },
         lineHeight: {
             "xs": "14px",
@@ -18,6 +19,7 @@ module.exports = {
             "base": "18px",
             "lg": "19px",
             "xl": "22px",
+            "2xl": "28px",
             "header": "28px"
         },
         extend: {

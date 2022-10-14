@@ -64,7 +64,6 @@ export default {
         alias: mode === 'development' ? {
             "@vc-shell/ui/dist/style.css": "@vc-shell/ui/dist/style.css",
             "@vc-shell/ui": "@vc-shell/ui/src/index.ts",
-            "@vc-shell/core": "@vc-shell/core/src/index.ts",
             "@vc-shell/mod-assets": "@vc-shell/mod-assets/src/index.ts",
             "vue-router": "vue-router/dist/vue-router.cjs.js",
         } : {
@@ -101,16 +100,14 @@ export default {
         },
     },
     optimizeDeps: {
-        include: [
+        include: mode === 'development' ? [
             "vue",
             "vue-router",
             "url-pattern",
             "ace-builds",
-            "@vc-shell/core",
-            "@vc-shell/api-client",
             "@vc-shell/ui",
             "@vc-shell/mod-assets",
-        ],
+        ] : ["vue", "vue-router", "url-pattern", "ace-builds"],
     },
     build: {
         sourcemap: true,

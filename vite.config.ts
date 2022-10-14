@@ -61,11 +61,13 @@ export default {
     ],
     resolve: {
         preserveSymlinks: true,
-        alias: {
+        alias: mode === 'development' ? {
             "@vc-shell/ui/dist/style.css": "@vc-shell/ui/dist/style.css",
             "@vc-shell/ui": "@vc-shell/ui/src/index.ts",
             "@vc-shell/core": "@vc-shell/core/src/index.ts",
             "@vc-shell/mod-assets": "@vc-shell/mod-assets/src/index.ts",
+            "vue-router": "vue-router/dist/vue-router.cjs.js",
+        } : {
             "vue-router": "vue-router/dist/vue-router.cjs.js",
         },
     },

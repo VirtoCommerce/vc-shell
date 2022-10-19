@@ -7,7 +7,8 @@
     "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
     "build": "cross-env APP_ENV=production vite build",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "generate-api-client": "api-client-generator --color"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",
@@ -18,6 +19,7 @@
     "@types/lodash-es": "^4.17.6",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
+    "@vc-shell/api-client-generator": "^1.0.31",
     "@vitejs/plugin-vue": "^2.2.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^10.0.0",
@@ -49,7 +51,6 @@
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
     "@vc-shell/api-client": "^1.0.31",
-    "@vc-shell/api-client-generator": "^1.0.31",
     "@vc-shell/config-generator": "^1.0.31",
     "@vc-shell/core": "^1.0.31",
     "@vc-shell/mod-assets": "^1.0.31",

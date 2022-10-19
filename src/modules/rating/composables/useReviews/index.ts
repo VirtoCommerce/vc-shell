@@ -1,6 +1,5 @@
 import { useLogger, useUser } from "@vc-shell/core";
-import { computed } from "@vue/reactivity";
-import { ref, Ref } from "vue";
+import { computed, ref, Ref } from "vue";
 import {
   CustomerReview,
   SearchCustomerReviewsQuery,

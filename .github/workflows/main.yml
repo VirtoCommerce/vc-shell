@@ -15,89 +15,11 @@ on:
 jobs:
   CI:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-      BLOB_SAS: ${{ secrets.BLOB_TOKEN }}
-      VERSION_SUFFIX: ''
-      ARTIFACT_URL: ''
-      GITHUB_USER: '${{ github.repository_owner }}'
-      PACKAGE_SERVER: 'ghcr.io'
-      VENDOR_PORTAL_CONTAINER: 'vendor-portal'
-
-    outputs:
-      appArtifactUrl: '${{ env.ARTIFACT_URL }}'
-      tag: '${{ env.VERSION_SUFFIX }}'
 
     steps:
-    - name: Set GITHUB_USER to lowercase
-      run: |
-        echo "GITHUB_USER=${GITHUB_USER,,}" >> $GITHUB_ENV
-
-    - uses: actions/checkout@v2
-
-    - name: Use Node.js 16.x
-      uses: actions/setup-node@v2
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
       with:
-        node-version: '16.x'
-        cache: 'yarn'
-
-    - name: Install dependencies
-      run: |
-        yarn
-    - name: Get Image Version
-      uses: VirtoCommerce/vc-github-actions/get-image-version@master
-      id: image
-      with:
-        projectType: theme
-
-    - name: Set release variables
-      if: ${{ github.ref == 'refs/heads/main' }}
-      run: |
-        echo "VERSION_SUFFIX=${{ steps.image.outputs.prefix }}" >> $GITHUB_ENV
-
-    - name: Set release-alpha variables
-      if: ${{ github.event_name == 'workflow_dispatch' }}
-      run: |
-        echo "VERSION_SUFFIX=${{ steps.image.outputs.fullVersion }}" >> $GITHUB_ENV
-
-    - name: Set PR variables
-      if: ${{ github.event_name == 'pull_request' }}
-      run: |
-        echo "VERSION_SUFFIX=${{ steps.image.outputs.taggedVersion }}" >> $GITHUB_ENV
-
-    - name: Set ARTIFACT_URLs
-      run: |
-        echo "ARTIFACT_URL=${{ env.PACKAGE_SERVER }}/${{ env.GITHUB_USER }}/${{ env.VENDOR_PORTAL_CONTAINER }}:${{ env.VERSION_SUFFIX }}" >> $GITHUB_ENV
-
-    - name: Build vendor-portal
-      run: |
-        yarn build
-
-    - name: Docker Login
-      uses: azure/docker-login@v1
-      with:
-        login-server: ${{ env.PACKAGE_SERVER }}
-        username: $GITHUB_ACTOR
-        password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Build and Publish Docker Image For Vendor Portal
-      run: |
-          docker build ${{ github.workspace }} --tag ${{ env.ARTIFACT_URL }} -f .dockerfiles/Dockerfile
-          docker push ${{ env.ARTIFACT_URL }}
-
-    - name: CI results
-      run: |
-          echo "Project $GITHUB_REPOSITORY successfully build and published to $ARTIFACT_URL"
-          
-  deploy-cloud:
-    if: ${{ ((github.ref == 'refs/heads/main') ||
-        (github.ref == 'refs/heads/dev'))}}
-    needs: ci
-    uses: VirtoCommerce/.github/.github/workflows/deploy-cloud.yml@v3.200.21
-    with:
-      releaseSource: customApp
-      platformTag: ${{ needs.ci.outputs.tag }}
-      jiraKeys: ''
-      argoServer: 'argo.virtocommerce.cloud'
-      matrix: '{"include": [{"envName":"dev","confPath":".deployment/cloudDeploy.json","forceCommit":"true","releaseType":"AzureBlob"}]}'
-    secrets: inherit
+        token: ${{ secrets.REPO_TOKEN }}
+        repository: VirtoCommerce/vc-module-marketplace-vendor
+        event-type: ci

@@ -35,7 +35,7 @@ export class AuthorizationClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
@@ -99,7 +99,7 @@ export class ExternalSignInClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
@@ -222,11 +222,10 @@ export class ChangeLogClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * Force set changes last modified date
      * @param scope (optional) 
      * @return Success
      */
@@ -316,8 +315,6 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * Get last modified date for given scope
-    Used for signal of what something changed and for cache invalidation in external platform clients
      * @param scope (optional) 
      * @return Success
      */
@@ -575,7 +572,7 @@ export class DiagnosticsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
@@ -626,7 +623,6 @@ export class DiagnosticsClient extends AuthApiBase {
     }
 
     /**
-     * Get installed modules with errors
      * @return Success
      */
     getModulesErrors(): Promise<ModuleDescriptor[]> {
@@ -681,11 +677,10 @@ export class DynamicPropertiesClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * Get object types which support dynamic properties
      * @return Success
      */
     getObjectTypes(): Promise<string[]> {
@@ -740,7 +735,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Get dynamic properties registered for object type
      * @param body (optional) 
      * @return Success
      */
@@ -793,7 +787,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Add new dynamic property
      * @param body (optional) 
      * @return Success
      */
@@ -846,7 +839,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Update existing dynamic property
      * @param body (optional) 
      * @return Success
      */
@@ -895,7 +887,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Delete dynamic property
      * @param propertyIds (optional) 
      * @return Success
      */
@@ -942,7 +933,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Does nothing. Just a way to expose DynamicObjectProperty thru Swagger.
      * @return Success
      */
     exposeDynamicObjectProperty(): Promise<DynamicObjectProperty> {
@@ -994,7 +984,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Get dictionary items
      * @param body (optional) 
      * @return Success
      */
@@ -1047,7 +1036,6 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Add or update dictionary items
      * @param body (optional) 
      * @return Success
      */
@@ -1096,8 +1084,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * Delete dictionary items
-     * @param ids (optional) IDs of dictionary items to delete.
+     * @param ids (optional) 
      * @return Success
      */
     deleteDictionaryItem(ids: string[] | null | undefined): Promise<void> {
@@ -1151,12 +1138,10 @@ export class JobsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * Get background job status
-     * @param id Job ID.
      * @return Success
      */
     getStatus(id: string | null): Promise<Job> {
@@ -1215,11 +1200,10 @@ export class ModulesClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * Reload  modules
      * @return Success
      */
     reloadModules(): Promise<void> {
@@ -1263,7 +1247,6 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Get installed modules
      * @return Success
      */
     getModules(): Promise<ModuleDescriptor[]> {
@@ -1318,8 +1301,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Get all dependent modules for module
-     * @param body (optional) modules descriptors
+     * @param body (optional) 
      * @return Success
      */
     getDependingModules(body: ModuleDescriptor[] | null | undefined): Promise<ModuleDescriptor[]> {
@@ -1378,8 +1360,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Returns a flat expanded  list of modules that depend on passed modules
-     * @param body (optional) modules descriptors
+     * @param body (optional) 
      * @return Success
      */
     getMissingDependencies(body: ModuleDescriptor[] | null | undefined): Promise<ModuleDescriptor[]> {
@@ -1438,7 +1419,6 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Upload module package for installation or update
      * @return Success
      */
     uploadModuleArchive(): Promise<ModuleDescriptor> {
@@ -1486,8 +1466,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Install modules
-     * @param body (optional) modules for install
+     * @param body (optional) 
      * @return Success
      */
     installModules(body: ModuleDescriptor[] | null | undefined): Promise<ModulePushNotification> {
@@ -1539,8 +1518,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Uninstall module
-     * @param body (optional) modules
+     * @param body (optional) 
      * @return Success
      */
     uninstallModule(body: ModuleDescriptor[] | null | undefined): Promise<ModulePushNotification> {
@@ -1592,7 +1570,6 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Restart web application
      * @return Success
      */
     restart(): Promise<void> {
@@ -1636,7 +1613,6 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * Auto-install modules with specified groups
      * @return Success
      */
     tryToAutoInstallModules(): Promise<ModuleAutoInstallPushNotification> {
@@ -1692,7 +1668,7 @@ export class OAuthAppsClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
@@ -1901,12 +1877,11 @@ export class PushNotificationClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * SearchAsync push notifications
-     * @param body (optional) SearchAsync parameters.
+     * @param body (optional) 
      * @return Success
      */
     searchPushNotification(body: PushNotificationSearchCriteria | undefined): Promise<PushNotificationSearchResult> {
@@ -1958,7 +1933,6 @@ export class PushNotificationClient extends AuthApiBase {
     }
 
     /**
-     * Mark all notifications as read
      * @return Success
      */
     markAllAsRead(): Promise<PushNotificationSearchResult> {
@@ -2014,12 +1988,11 @@ export class SecurityClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * Sign in with user name and password
-     * @param body (optional) Login request.
+     * @param body (optional) 
      * @return Success
      */
     login(body: LoginRequest | undefined): Promise<SignInResult> {
@@ -2063,7 +2036,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Sign out
      * @return Success
      */
     logout(): Promise<void> {
@@ -2107,7 +2079,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get current user details
      * @return Success
      */
     getCurrentUser(): Promise<UserDetail> {
@@ -2209,7 +2180,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get all registered permissions
      * @return Success
      */
     getAllRegisteredPermissions(): Promise<Permission[]> {
@@ -2264,8 +2234,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * SearchAsync roles by keyword
-     * @param body (optional) SearchAsync parameters.
+     * @param body (optional) 
      * @return Success
      */
     searchRoles(body: RoleSearchCriteria | undefined): Promise<RoleSearchResult> {
@@ -2317,7 +2286,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get role by ID
      * @return Success
      */
     getRole(roleName: string | null): Promise<Role> {
@@ -2368,8 +2336,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Delete roles by ID
-     * @param ids (optional) An array of role IDs.
+     * @param ids (optional) 
      * @return Success
      */
     deleteRoles(ids: string[] | null | undefined): Promise<void> {
@@ -2415,7 +2382,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Update an existing role or create new
      * @param body (optional) 
      * @return Success
      */
@@ -2468,8 +2434,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * SearchAsync users by keyword
-     * @param body (optional) Search criteria.
+     * @param body (optional) 
      * @return Success
      */
     searchUsers(body: UserSearchCriteria | undefined): Promise<UserSearchResult> {
@@ -2521,7 +2486,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get user details by user name
      * @return Success
      */
     getUserByName(userName: string | null): Promise<ApplicationUser> {
@@ -2572,7 +2536,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get user details by user ID
      * @return Success
      */
     getUserById(id: string | null): Promise<ApplicationUser> {
@@ -2623,7 +2586,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get user details by user email
      * @return Success
      */
     getUserByEmail(email: string | null): Promise<ApplicationUser> {
@@ -2674,7 +2636,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get user details by external login provider
      * @return Success
      */
     getUserByLogin(loginProvider: string | null, providerKey: string | null): Promise<ApplicationUser> {
@@ -2728,7 +2689,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Create new user
      * @param body (optional) 
      * @return Success
      */
@@ -2781,8 +2741,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Change password for current user.
-     * @param body (optional) Old and new passwords.
+     * @param body (optional) 
      * @return Success
      */
     changeCurrentUserPassword(body: ChangePasswordRequest | undefined): Promise<SecurityResult> {
@@ -2838,9 +2797,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Change password
-     * @param userName user name
-     * @param body (optional) Old and new passwords.
+     * @param body (optional) 
      * @return Success
      */
     changePassword(userName: string | null, body: ChangePasswordRequest | undefined): Promise<SecurityResult> {
@@ -2899,8 +2856,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Reset password confirmation
-     * @param body (optional) Password reset information containing new password.
+     * @param body (optional) 
      * @return Success
      */
     resetPassword(userName: string | null, body: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
@@ -2955,8 +2911,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Reset password confirmation
-     * @param body (optional) New password.
+     * @param body (optional) 
      * @return Success
      */
     resetPasswordByToken(userId: string | null, body: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
@@ -3003,7 +2958,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Validate password reset token
      * @param body (optional) 
      * @return Success
      */
@@ -3052,7 +3006,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Send email with instructions on how to reset user password.
      * @return Success
      */
     requestPasswordReset(loginOrEmail: string | null): Promise<void> {
@@ -3187,8 +3140,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Update user details by user ID
-     * @param body (optional) User details.
+     * @param body (optional) 
      * @return Success
      */
     update(body: ApplicationUser | undefined): Promise<SecurityResult> {
@@ -3240,8 +3192,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Delete users by name
-     * @param names (optional) An array of user names.
+     * @param names (optional) 
      * @return Success
      */
     delete(names: string[] | null | undefined): Promise<void> {
@@ -3287,8 +3238,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Checks if user locked
-     * @param id User id
      * @return Success
      */
     isUserLocked(id: string | null): Promise<UserLockedResult> {
@@ -3339,8 +3288,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Lock user
-     * @param id >User id
      * @return Success
      */
     lockUser(id: string | null): Promise<SecurityResult> {
@@ -3391,8 +3338,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Unlock user
-     * @param id >User id
      * @return Success
      */
     unlockUser(id: string | null): Promise<SecurityResult> {
@@ -3675,7 +3620,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Get allowed login types
      * @return Success
      */
     getLoginTypes(): Promise<void> {
@@ -3711,7 +3655,6 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * Verify user email
      * @return Success
      */
     sendVerificationEmail(userId: string | null): Promise<void> {
@@ -3766,11 +3709,10 @@ export class SettingClient extends AuthApiBase {
     constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
         super();
         this.http = http ? http : window as any;
-        this.baseUrl = this.getBaseUrl("", baseUrl);
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
     }
 
     /**
-     * Get all settings
      * @return Success
      */
     getAllGlobalSettings(): Promise<ObjectSettingEntry> {
@@ -3818,7 +3760,6 @@ export class SettingClient extends AuthApiBase {
     }
 
     /**
-     * Update settings values
      * @param body (optional) 
      * @return Success
      */
@@ -3867,8 +3808,6 @@ export class SettingClient extends AuthApiBase {
     }
 
     /**
-     * Get settings registered by specific module
-     * @param id Module ID.
      * @return Success
      */
     getGlobalModuleSettings(id: string | null): Promise<ObjectSettingEntry[]> {
@@ -3926,8 +3865,6 @@ export class SettingClient extends AuthApiBase {
     }
 
     /**
-     * Get setting details by name
-     * @param name Setting system name.
      * @return Success
      */
     getGlobalSetting(name: string | null): Promise<ObjectSettingEntry> {
@@ -3978,7 +3915,6 @@ export class SettingClient extends AuthApiBase {
     }
 
     /**
-     * Get UI customization setting
      * @return Success
      */
     getUICustomizationSetting(): Promise<ObjectSettingEntry> {
@@ -4336,15 +4272,11 @@ export class ChangeLogSearchCriteria implements IChangeLogSearchCriteria {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -4443,15 +4375,11 @@ export interface IChangeLogSearchCriteria {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -4628,11 +4556,8 @@ export interface ILicense {
 }
 
 export class SemanticVersion implements ISemanticVersion {
-    /** Major version X (X.y.z) */
     readonly major?: number;
-    /** Minor version Y (x.Y.z) */
     readonly minor?: number;
-    /** Patch version Z (x.y.Z) */
     readonly patch?: number;
     readonly prerelease?: string | undefined;
 
@@ -4672,11 +4597,8 @@ export class SemanticVersion implements ISemanticVersion {
 }
 
 export interface ISemanticVersion {
-    /** Major version X (X.y.z) */
     major?: number;
-    /** Minor version Y (x.Y.z) */
     minor?: number;
-    /** Patch version Z (x.y.Z) */
     patch?: number;
     prerelease?: string | undefined;
 }
@@ -4940,15 +4862,11 @@ export interface ISystemInfo {
 export class DynamicPropertySearchCriteria implements IDynamicPropertySearchCriteria {
     readonly typeName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -5033,15 +4951,11 @@ export class DynamicPropertySearchCriteria implements IDynamicPropertySearchCrit
 export interface IDynamicPropertySearchCriteria {
     typeName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -5062,7 +4976,6 @@ export enum DynamicPropertyValueType {
 }
 
 export class DynamicPropertyName implements IDynamicPropertyName {
-    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 
@@ -5098,26 +5011,20 @@ export class DynamicPropertyName implements IDynamicPropertyName {
 }
 
 export interface IDynamicPropertyName {
-    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 }
 
 export class DynamicProperty implements IDynamicProperty {
     name?: string | undefined;
-    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
-    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
-    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
-    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
     valueType?: DynamicPropertyValueType;
-    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5192,19 +5099,14 @@ export class DynamicProperty implements IDynamicProperty {
 
 export interface IDynamicProperty {
     name?: string | undefined;
-    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
-    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
-    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
-    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
     valueType?: DynamicPropertyValueType;
-    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5329,19 +5231,14 @@ export class DynamicObjectProperty implements IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
-    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
-    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
-    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
-    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
     valueType?: DynamicPropertyValueType;
-    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5430,19 +5327,14 @@ export interface IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
-    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
-    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
-    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
-    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
     valueType?: DynamicPropertyValueType;
-    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5454,15 +5346,11 @@ export interface IDynamicObjectProperty {
 export class DynamicPropertyDictionaryItemSearchCriteria implements IDynamicPropertyDictionaryItemSearchCriteria {
     propertyId?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -5547,15 +5435,11 @@ export class DynamicPropertyDictionaryItemSearchCriteria implements IDynamicProp
 export interface IDynamicPropertyDictionaryItemSearchCriteria {
     propertyId?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -5564,7 +5448,6 @@ export interface IDynamicPropertyDictionaryItemSearchCriteria {
 }
 
 export class DynamicPropertyDictionaryItemName implements IDynamicPropertyDictionaryItemName {
-    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 
@@ -5600,7 +5483,6 @@ export class DynamicPropertyDictionaryItemName implements IDynamicPropertyDictio
 }
 
 export interface IDynamicPropertyDictionaryItemName {
-    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 }
@@ -5608,7 +5490,6 @@ export interface IDynamicPropertyDictionaryItemName {
 export class DynamicPropertyDictionaryItem implements IDynamicPropertyDictionaryItem {
     propertyId?: string | undefined;
     name?: string | undefined;
-    /** Item names for different languages. */
     displayNames?: DynamicPropertyDictionaryItemName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5670,7 +5551,6 @@ export class DynamicPropertyDictionaryItem implements IDynamicPropertyDictionary
 export interface IDynamicPropertyDictionaryItem {
     propertyId?: string | undefined;
     name?: string | undefined;
-    /** Item names for different languages. */
     displayNames?: DynamicPropertyDictionaryItemName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5822,7 +5702,6 @@ export class ModulePushNotification implements IModulePushNotification {
     started?: Date | undefined;
     finished?: Date | undefined;
     progressLog?: ProgressMessage[] | undefined;
-    /** Gets the count of errors during processing. */
     readonly errorCount?: number;
     serverId?: string | undefined;
     creator?: string | undefined;
@@ -5899,7 +5778,6 @@ export interface IModulePushNotification {
     started?: Date | undefined;
     finished?: Date | undefined;
     progressLog?: ProgressMessage[] | undefined;
-    /** Gets the count of errors during processing. */
     errorCount?: number;
     serverId?: string | undefined;
     creator?: string | undefined;
@@ -5916,7 +5794,6 @@ export class ModuleAutoInstallPushNotification implements IModuleAutoInstallPush
     started?: Date | undefined;
     finished?: Date | undefined;
     progressLog?: ProgressMessage[] | undefined;
-    /** Gets the count of errors during processing. */
     readonly errorCount?: number;
     serverId?: string | undefined;
     creator?: string | undefined;
@@ -5993,7 +5870,6 @@ export interface IModuleAutoInstallPushNotification {
     started?: Date | undefined;
     finished?: Date | undefined;
     progressLog?: ProgressMessage[] | undefined;
-    /** Gets the count of errors during processing. */
     errorCount?: number;
     serverId?: string | undefined;
     creator?: string | undefined;
@@ -6187,15 +6063,11 @@ export interface IOpenIddictApplicationDescriptor {
 
 export class OAuthAppSearchCriteria implements IOAuthAppSearchCriteria {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -6277,15 +6149,11 @@ export class OAuthAppSearchCriteria implements IOAuthAppSearchCriteria {
 
 export interface IOAuthAppSearchCriteria {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -6347,15 +6215,11 @@ export class PushNotificationSearchCriteria implements IPushNotificationSearchCr
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -6457,15 +6321,11 @@ export interface IPushNotificationSearchCriteria {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -6898,11 +6758,8 @@ export interface IClaim {
 }
 
 export class PermissionScope implements IPermissionScope {
-    /** Scope type name */
     type?: string | undefined;
-    /** Display label for particular scope value used only for  representation */
     label?: string | undefined;
-    /** Represent string scope value */
     scope?: string | undefined;
 
     constructor(data?: IPermissionScope) {
@@ -6939,20 +6796,15 @@ export class PermissionScope implements IPermissionScope {
 }
 
 export interface IPermissionScope {
-    /** Scope type name */
     type?: string | undefined;
-    /** Display label for particular scope value used only for  representation */
     label?: string | undefined;
-    /** Represent string scope value */
     scope?: string | undefined;
 }
 
 export class Permission implements IPermission {
     id?: string | undefined;
     name?: string | undefined;
-    /** Id of the module which has registered this permission. */
     moduleId?: string | undefined;
-    /** Display name of the group to which this permission belongs. The '|' character is used to separate Child and parent groups. */
     groupName?: string | undefined;
     assignedScopes?: PermissionScope[] | undefined;
     readonly availableScopes?: PermissionScope[] | undefined;
@@ -7015,9 +6867,7 @@ export class Permission implements IPermission {
 export interface IPermission {
     id?: string | undefined;
     name?: string | undefined;
-    /** Id of the module which has registered this permission. */
     moduleId?: string | undefined;
-    /** Display name of the group to which this permission belongs. The '|' character is used to separate Child and parent groups. */
     groupName?: string | undefined;
     assignedScopes?: PermissionScope[] | undefined;
     availableScopes?: PermissionScope[] | undefined;
@@ -7025,15 +6875,11 @@ export interface IPermission {
 
 export class RoleSearchCriteria implements IRoleSearchCriteria {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -7115,15 +6961,11 @@ export class RoleSearchCriteria implements IRoleSearchCriteria {
 
 export interface IRoleSearchCriteria {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -7349,15 +7191,11 @@ export class UserSearchCriteria implements IUserSearchCriteria {
     modifiedSinceDate?: Date | undefined;
     roles?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -7467,15 +7305,11 @@ export interface IUserSearchCriteria {
     modifiedSinceDate?: Date | undefined;
     roles?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -7483,7 +7317,6 @@ export interface IUserSearchCriteria {
     take?: number;
 }
 
-/** Obsolete. Left due to compatibility issues. Will be removed. Instead of, use: ApplicationUser.EmailConfirmed, ApplicationUser.LockoutEnd. */
 export enum AccountState {
     PendingApproval = "PendingApproval",
     Approved = "Approved",
@@ -7531,7 +7364,6 @@ export interface IApplicationUserLogin {
 }
 
 export class ApplicationUser implements IApplicationUser {
-    /** Tenant id */
     storeId?: string | undefined;
     memberId?: string | undefined;
     isAdministrator?: boolean;
@@ -7544,18 +7376,12 @@ export class ApplicationUser implements IApplicationUser {
     createdBy?: string | undefined;
     modifiedBy?: string | undefined;
     roles?: Role[] | undefined;
-    /** Obsolete. Use LockoutEnd. DateTime in UTC when lockout ends, any time in the past is considered not locked out. */
     lockoutEndDateUtc?: Date | undefined;
     userState?: AccountState;
-    /** Obsolete. All permissions from assigned roles. */
     permissions?: string[] | undefined;
-    /** External provider logins. */
     logins?: ApplicationUserLogin[] | undefined;
-    /** Indicates that the password for this user is expired and must be changed. */
     passwordExpired?: boolean;
-    /** The last date when the password was changed */
     lastPasswordChangedDate?: Date | undefined;
-    /** The last date when the requested password change. */
     lastPasswordChangeRequestDate?: Date | undefined;
     id?: string | undefined;
     userName?: string | undefined;
@@ -7693,7 +7519,6 @@ export class ApplicationUser implements IApplicationUser {
 }
 
 export interface IApplicationUser {
-    /** Tenant id */
     storeId?: string | undefined;
     memberId?: string | undefined;
     isAdministrator?: boolean;
@@ -7706,18 +7531,12 @@ export interface IApplicationUser {
     createdBy?: string | undefined;
     modifiedBy?: string | undefined;
     roles?: Role[] | undefined;
-    /** Obsolete. Use LockoutEnd. DateTime in UTC when lockout ends, any time in the past is considered not locked out. */
     lockoutEndDateUtc?: Date | undefined;
     userState?: AccountState;
-    /** Obsolete. All permissions from assigned roles. */
     permissions?: string[] | undefined;
-    /** External provider logins. */
     logins?: ApplicationUserLogin[] | undefined;
-    /** Indicates that the password for this user is expired and must be changed. */
     passwordExpired?: boolean;
-    /** The last date when the password was changed */
     lastPasswordChangedDate?: Date | undefined;
-    /** The last date when the requested password change. */
     lastPasswordChangeRequestDate?: Date | undefined;
     id?: string | undefined;
     userName?: string | undefined;
@@ -8126,29 +7945,21 @@ export enum SettingValueType {
 
 export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
-    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
-    /** Flag indicates the this setting is read only and can't be changed */
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
+    id?: string | undefined;
     restartRequired?: boolean;
-    /** The module id which setting belong to */
     moduleId?: string | undefined;
-    /** Setting group name */
     groupName?: string | undefined;
-    /** Setting name */
     name?: string | undefined;
-    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: IObjectSettingEntry) {
@@ -8167,6 +7978,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
             this.objectType = _data["objectType"];
             this.isReadOnly = _data["isReadOnly"];
             this.value = _data["value"];
+            this.id = _data["id"];
             this.restartRequired = _data["restartRequired"];
             this.moduleId = _data["moduleId"];
             this.groupName = _data["groupName"];
@@ -8199,6 +8011,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
         data["objectType"] = this.objectType;
         data["isReadOnly"] = this.isReadOnly;
         data["value"] = this.value;
+        data["id"] = this.id;
         data["restartRequired"] = this.restartRequired;
         data["moduleId"] = this.moduleId;
         data["groupName"] = this.groupName;
@@ -8220,29 +8033,21 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
 
 export interface IObjectSettingEntry {
     itHasValues?: boolean;
-    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
-    /** Flag indicates the this setting is read only and can't be changed */
-    isReadOnly?: string | undefined;
+    isReadOnly?: boolean;
     value?: any | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
+    id?: string | undefined;
     restartRequired?: boolean;
-    /** The module id which setting belong to */
     moduleId?: string | undefined;
-    /** Setting group name */
     groupName?: string | undefined;
-    /** Setting name */
     name?: string | undefined;
-    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 

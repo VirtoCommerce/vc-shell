@@ -208,6 +208,7 @@ import {
 } from "../../../types";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
+import emptyImage from "/assets/empty.png";
 
 const props = defineProps({
   expanded: {

@@ -1,14 +1,16 @@
-import { computed, Ref, ref, ComputedRef } from "vue";
+import { computed, Ref, ref, ComputedRef, inject } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
-  SecurityClient,
-  ResetPasswordConfirmRequest,
   SecurityResult,
-  ValidatePasswordResetTokenRequest,
   IdentityResult,
 } from "@vc-shell/api-client";
-import { AuthData, RequestPasswordResult, SignInResult } from "../../types";
+import {
+  AuthData,
+  IUseUserFactoryParams,
+  RequestPasswordResult,
+  SignInResult,
+} from "../../types";
 //The Platform Manager uses the same key to store authorization data in the
 //local storage, so we can exchange authorization data between the Platform Manager
 //and the user application that is hosted in the same domain as the sub application.
@@ -21,7 +23,6 @@ const authClient = new ClientOAuth2({
   accessTokenUri: `/connect/token`,
   scopes: ["offline_access"],
 });
-const securityClient = new SecurityClient();
 
 interface IUseUser {
   user: ComputedRef<UserDetail | null>;
@@ -47,6 +48,7 @@ interface IUseUser {
 }
 
 export default (): IUseUser => {
+  const useUserFactory = inject<IUseUserFactoryParams>("useUserFactory");
   async function validateToken(
     userId: string,
     token: string
@@ -54,9 +56,7 @@ export default (): IUseUser => {
     let result = false;
     try {
       loading.value = true;
-      result = await securityClient.validatePasswordResetToken(userId, {
-        token,
-      } as ValidatePasswordResetTokenRequest);
+      result = await useUserFactory.validateToken(userId, token);
     } catch (e) {
       //TODO: log error
     } finally {
@@ -66,7 +66,7 @@ export default (): IUseUser => {
   }
 
   async function validatePassword(password: string): Promise<IdentityResult> {
-    return securityClient.validatePassword(password);
+    return useUserFactory.validatePassword(password);
   }
 
   async function resetPasswordByToken(
@@ -74,10 +74,7 @@ export default (): IUseUser => {
     password: string,
     token: string
   ): Promise<SecurityResult> {
-    return securityClient.resetPasswordByToken(userId, {
-      newPassword: password,
-      token,
-    } as ResetPasswordConfirmRequest);
+    return useUserFactory.resetPasswordByToken(userId, password, token);
   }
 
   async function signIn(
@@ -126,10 +123,10 @@ export default (): IUseUser => {
     console.debug(`[@vc-shell/core#useUser:loadUser] - Entry point`);
     const token = await getAccessToken();
     if (token) {
-      securityClient.setAuthToken(token);
+      useUserFactory.setAuthToken(token);
       try {
         loading.value = true;
-        user.value = await securityClient.getCurrentUser();
+        user.value = await useUserFactory.getCurrentUser();
         console.log("[userUsers]: an user details has been loaded", user.value);
       } catch (e) {
         console.dir(e);
@@ -199,7 +196,7 @@ export default (): IUseUser => {
   ): Promise<RequestPasswordResult> {
     try {
       loading.value = true;
-      await securityClient.requestPasswordReset(loginOrEmail);
+      await useUserFactory.requestPasswordReset(loginOrEmail);
       return { succeeded: true };
     } catch (e) {
       //TODO: log error
@@ -220,26 +217,11 @@ export default (): IUseUser => {
     if (token) {
       try {
         loading.value = true;
-        const res = await fetch(
-          "/api/platform/security/currentuser/changepassword",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json-patch+json",
-              Accept: "text/plain",
-              authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              oldPassword,
-              newPassword,
-            }),
-          }
+        result = await useUserFactory.changeUserPassword(
+          oldPassword,
+          newPassword,
+          token
         );
-        if (res.status !== 500) {
-          result = await res.text().then((response) => {
-            return JSON.parse(response);
-          });
-        }
       } catch (e) {
         return { succeeded: false, errors: [e.message] } as SecurityResult;
       } finally {

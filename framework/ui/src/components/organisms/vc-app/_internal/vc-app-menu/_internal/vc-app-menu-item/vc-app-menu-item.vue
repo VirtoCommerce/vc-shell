@@ -225,13 +225,13 @@ function onMenuItemClick() {
 
     &.vc-app-menu-item_no-hover {
       @apply bg-transparent;
-      > .vc-app-menu-item__title {
+      .vc-app-menu-item__title {
         @apply text-[color:var(--app-menu-item-title-color)];
       }
-      > .vc-app-menu-item__title-icon {
+      .vc-app-menu-item__title-icon {
         @apply text-[color:var(--app-menu-item-icon-color)];
       }
-      > .vc-app-menu-item__icon {
+      .vc-app-menu-item__icon {
         @apply text-[color:var(--app-menu-item-icon-color)];
       }
     }

@@ -161,6 +161,7 @@ const dragOptions = computed(() => {
     animation: 200,
     group: "description",
     disabled: props.disableDrag,
+    ghostClass: "ghost",
   };
 });
 

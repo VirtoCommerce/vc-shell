@@ -20,7 +20,6 @@
           @change="updateOrder"
           :component-data="{
             tag: 'div',
-            type: 'transition-group',
           }"
         >
           <template #item="{ element, index }">
@@ -162,6 +161,7 @@ const dragOptions = computed(() => {
     animation: 200,
     group: "description",
     disabled: props.disableDrag,
+    ghostClass: "ghost",
   };
 });
 

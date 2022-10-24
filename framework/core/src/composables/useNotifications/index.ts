@@ -1,14 +1,11 @@
 import {
   PushNotification,
-  // PushNotificationClient,
 } from "@vc-shell/api-client";
 import useUser from "../useUser";
 import { computed, ComputedRef, inject, readonly, ref } from "vue";
 import useLogger from "../useLogger";
 import _ from "lodash-es";
 import { IUseNotificationsFactoryParams } from "../../types";
-
-// const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
   readonly notifications: ComputedRef<Readonly<PushNotification[]>>;

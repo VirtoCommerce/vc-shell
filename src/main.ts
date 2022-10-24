@@ -9,6 +9,7 @@ import OrdersModule from "./modules/orders";
 import ProductsModule from "./modules/products";
 import RatingModule from "./modules/rating";
 import SettingsModule from "./modules/settings";
+import ApiLayer from "./plugins/api";
 import { router } from "./router";
 
 import * as locales from "./locales";
@@ -22,6 +23,7 @@ import "@vc-shell/ui/dist/style.css";
 const app = createApp({
   render: () => h(resolveComponent("router-view")),
 })
+  .use(ApiLayer)
   .use(PushHub)
   .use(router)
   .use(VirtoShellUi)

@@ -31,6 +31,6 @@ const routes = [
 ];
 
 export const router = createRouter({
-  history: createWebHashHistory(import.meta.env.APP_BASE_PATH),
+  history: createWebHashHistory(import.meta.env.APP_BASE_PATH as string),
   routes,
 });

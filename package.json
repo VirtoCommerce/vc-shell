@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "husky install",
-    "serve": "cross-env APP_ENV=development vite --debug",
+    "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
     "build": "cross-env APP_ENV=production vite build",
     "lint-staged": "lint-staged",

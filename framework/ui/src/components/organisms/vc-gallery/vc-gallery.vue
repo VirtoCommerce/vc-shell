@@ -20,7 +20,6 @@
           @change="updateOrder"
           :component-data="{
             tag: 'div',
-            type: 'transition-group',
           }"
         >
           <template #item="{ element, index }">

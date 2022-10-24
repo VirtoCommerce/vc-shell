@@ -9,9 +9,10 @@ const securityClient = new SecurityClient();
 
 const useUserFactory = (): IUseUserFactoryParams => {
   const validateToken = async (userId: string, token: string) => {
-    return securityClient.validatePasswordResetToken(userId, {
-      token,
-    } as ValidatePasswordResetTokenRequest);
+    return securityClient.validatePasswordResetToken(
+      userId,
+      new ValidatePasswordResetTokenRequest({ token })
+    );
   };
 
   const validatePassword = async (password: string) => {
@@ -23,10 +24,10 @@ const useUserFactory = (): IUseUserFactoryParams => {
     password: string,
     token: string
   ) => {
-    return securityClient.resetPasswordByToken(userId, {
-      newPassword: password,
-      token,
-    } as ResetPasswordConfirmRequest);
+    return securityClient.resetPasswordByToken(
+      userId,
+      new ResetPasswordConfirmRequest({ newPassword: password, token })
+    );
   };
 
   const loadUser = async () => {

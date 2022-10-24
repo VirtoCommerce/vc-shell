@@ -6,6 +6,11 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 ## 1.0.33 (2022-10-24)
 
 
+### Features
+
+* request refactoring ([415131a](https://github.com/VirtoCommerce/vc-shell/commit/415131a5874ed14886ffb6398e2cad9606162fbf))
+
+
 
 ## 1.0.31 (2022-10-14)
 

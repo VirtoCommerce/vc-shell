@@ -8,8 +8,13 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 ### Bug Fixes
 
-* vuedraggable fix ([cbeeaae](https://github.com/VirtoCommerce/vc-shell/commit/cbeeaae13805b4b933b1bdb696585eb208aed445))
-* vuedraggable fix ([cac509c](https://github.com/VirtoCommerce/vc-shell/commit/cac509c2a3fa5cfbd1cf532e5cc8ec0e0d85ea15))
+* vuedraggable fix ([e5a78c1](https://github.com/VirtoCommerce/vc-shell/commit/e5a78c19a6581c7e545163731a13b16b7bbf104d))
+* vuedraggable fix ([f449489](https://github.com/VirtoCommerce/vc-shell/commit/f4494896149c50c2ef27bca82f87b45266e36807))
+
+
+### Features
+
+* request refactoring ([415131a](https://github.com/VirtoCommerce/vc-shell/commit/415131a5874ed14886ffb6398e2cad9606162fbf))
 
 
 

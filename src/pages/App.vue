@@ -78,7 +78,11 @@ import { OffersList } from "../modules/offers";
 import { OrdersList } from "../modules/orders";
 import { ProductsList } from "../modules/products";
 import { ReviewList } from "../modules/rating";
-import { SellerDetails, TeamList } from "../modules/settings";
+import {
+  SellerDetails,
+  TeamList,
+  FulfillmentCenters,
+} from "../modules/settings";
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import DashboardPage from "./Dashboard.vue";
 import LoginPage from "./Login.vue";
@@ -288,6 +292,13 @@ const menuItems = reactive<IMenuItems[]>([
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
         component: shallowRef(TeamList),
+        isVisible: computed(() =>
+          checkPermission(UserPermissions.SellerUsersManage)
+        ),
+      },
+      {
+        title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
+        component: shallowRef(FulfillmentCenters),
         isVisible: computed(() =>
           checkPermission(UserPermissions.SellerUsersManage)
         ),

@@ -3,6 +3,7 @@
     "MENU": {
       "TITLE": "Settings",
       "MY_TEAM": "My Team",
+      "FULFILLMENT_CENTERS": "Fulfillment Centers",
       "SELLER_DETAILS": "Seller Details"
     },
     "TEAM": {
@@ -89,6 +90,41 @@
         "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
       }
     },
+    "FULFILLMENT_CENTERS":{
+      "PAGES":{
+        "LIST":{
+          "TITLE": "Fulfillment Centers",
+          "TABLE":{
+            "HEADER":{
+              "NAME": "Name"
+            }
+          },
+          "TOOLBAR":{
+            "REFRESH": "Refresh",
+            "ADD_FULFILLMENT_CENTER": "Add Fulfillment Center"
+          }
+        },
+        "DETAILS":{
+          "TITLE": "Fulfillment Center",
+          "TOOLBAR":{
+            "SAVE":"Save",
+            "RESET":"Reset",
+            "DELETE":"Delete"
+          },
+          "FORM":{
+            "ERROR": "Error",
+            "NAME":{
+              "LABEL": "Name",
+              "PLACEHOLDER": "Enter fulfillment center name"
+            },
+            "NOT_VALID":"Form is not valid.\nPlease, check highlighted fields."
+          }
+        }
+      },
+      "ALERTS":{
+        "CLOSE_CONFIRMATION":"You have unsaved changes\nClose anyway?"
+      }
+  },
     "SELLER_DETAILS": {
       "TITLE": "Seller Details",
       "TOOLBAR": {

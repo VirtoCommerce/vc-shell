@@ -136,7 +136,9 @@
                       :modelValue="!offerDetails.trackInventory"
                       @update:modelValue="
                         offerDetails.trackInventory = !$event;
-                        offerDetails.inStockQuantity = 0;
+                        offerDetails.inventory.forEach(
+                          (x) => (x.inStockQuantity = 0)
+                        );
                       "
                       :disabled="readonly"
                       name="alwaysinstock"
@@ -146,30 +148,73 @@
                       }}
                     </VcCheckbox>
                   </VcCol>
-                  <VcCol size="4" class="justify-center">
-                    <!-- Quantity field -->
-                    <VcInput
-                      :clearable="true"
-                      :required="true"
-                      v-model="offerDetails.inStockQuantity"
-                      type="number"
-                      rules="min_value:0"
-                      :placeholder="
-                        $t('OFFERS.PAGES.DETAILS.FIELDS.QTY.PLACEHOLDER')
-                      "
-                      :disabled="readonly || !offerDetails.trackInventory"
-                      name="instockqty"
-                    ></VcInput>
-                  </VcCol>
                 </VcRow>
-                <VcRow v-if="param">
-                  <VcCol size="1" class="self-center mr-2 my-2">
-                    {{ $t("OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE") }}
-                  </VcCol>
-                  <VcCol size="4" class="justify-center">
-                    {{ offerDetails.availQuantity }}
-                  </VcCol>
-                </VcRow>
+
+                <template
+                  v-if="offerDetails.inventory && offerDetails.inventory.length"
+                >
+                  <div>
+                    <VcRow>
+                      <VcCol size="2">
+                        <VcLabel class="my-2">
+                          <span>{{
+                            $t(
+                              "OFFERS.PAGES.DETAILS.FIELDS.FULFILLMENT_CENTER.TITLE"
+                            )
+                          }}</span>
+                        </VcLabel>
+                      </VcCol>
+                      <VcCol size="2">
+                        <VcLabel class="my-2" :required="true">
+                          <span>{{
+                            $t("OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE")
+                          }}</span>
+                        </VcLabel>
+                      </VcCol>
+                    </VcRow>
+                    <VcRow
+                      v-for="(item, i) in offerDetails.inventory"
+                      :class="[
+                        {
+                          'border border-solid border-[#e0e8ef] box-border rounded-[4px] relative p-2 m-4':
+                            $isMobile.value,
+                        },
+                      ]"
+                      :key="`${item.id}${i}`"
+                    >
+                      <VcCol size="2">
+                        <div class="flex">
+                          <VcCol>
+                            <!-- Fulfillment center label -->
+                            <VcLabel class="py-4">
+                              <span class="font-normal">{{
+                                item.fulfillmentCenterName
+                              }}</span>
+                            </VcLabel>
+                          </VcCol>
+                          <VcCol class="py-2">
+                            <!-- In stock qty field -->
+                            <VcInput
+                              :clearable="true"
+                              v-model="item.inStockQuantity"
+                              type="number"
+                              :required="true"
+                              :placeholder="
+                                $t(
+                                  'OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER'
+                                )
+                              "
+                              :disabled="
+                                readonly || !offerDetails.trackInventory
+                              "
+                              :name="`availqty_${i}`"
+                            ></VcInput>
+                          </VcCol>
+                        </div>
+                      </VcCol>
+                    </VcRow>
+                  </div>
+                </template>
               </div>
             </VcCard>
 
@@ -407,13 +452,14 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useForm } from "@vc-shell/ui";
+import { useForm, VcRow } from "@vc-shell/ui";
 import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
 import { useOffer } from "../composables";
 import {
   IOfferDetails,
   IOfferProduct,
   OfferPrice,
+  InventoryInfo,
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
@@ -426,6 +472,7 @@ import {
   PropertyValue,
 } from "../../../api_client/catalog";
 import { useProduct } from "../../products";
+import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
 
 const props = defineProps({
   expanded: {
@@ -500,6 +547,9 @@ const filteredProps = computed(() => {
   );
 });
 
+const { fulfillmentCentersList, searchFulfillmentCenters } =
+  useFulfillmentCenters();
+
 onMounted(async () => {
   try {
     offerLoading.value = true;
@@ -509,11 +559,10 @@ onMounted(async () => {
     } else {
       offerDetails.value.trackInventory = true;
       offerDetails.value.currency = "USD";
+      await addEmptyInventory();
       addPrice();
       makeCopy();
     }
-
-    loadAutosaved();
 
     if (savedValue.value) {
       offerDetails.value = Object.assign({}, savedValue.value as IOfferDetails);
@@ -559,6 +608,18 @@ const onProductSearch = debounce(async (value: string) => {
 watch(offerDetails.value.prices, () => {
   scrollToLastPrice();
 });
+
+watch(
+  () => offerDetails.value.inventory,
+  (newVal) => {
+    offerDetails.value.inventory.forEach((x) => {
+      if (!x.inStockQuantity) {
+        x.inStockQuantity = 0;
+      }
+    });
+  },
+  { deep: true }
+);
 
 watch(
   () => offerDetails.value.prices,
@@ -667,6 +728,21 @@ function scrollToLastPrice() {
     container.value.$el.firstChild.scrollTo({ top, behavior: "smooth" });
   });
 }
+
+const addEmptyInventory = async () => {
+  offerDetails.value.inventory = [];
+  await searchFulfillmentCenters({});
+  fulfillmentCentersList.value.forEach((x) => {
+    let inventoryInfo = new InventoryInfo();
+    inventoryInfo.id = x.name;
+    inventoryInfo.fulfillmentCenter = x;
+    inventoryInfo.fulfillmentCenterId = x.id;
+    inventoryInfo.fulfillmentCenterName = x.name;
+    inventoryInfo.inStockQuantity = 0;
+    inventoryInfo.createdDate = new Date();
+    offerDetails.value.inventory.push(inventoryInfo);
+  });
+};
 
 function addPrice(scroll = false) {
   if (!offerDetails.value.prices) {

@@ -75,6 +75,9 @@
           "ALWAYS_IN_STOCK": {
             "TITLE": "Always in stock"
           },
+          "FULFILLMENT_CENTER": {
+            "TITLE": "Fulfillment Center"
+          },
           "QTY": {
             "TITLE": "Quantity in Stock",
             "PLACEHOLDER": "Enter product available quantity"

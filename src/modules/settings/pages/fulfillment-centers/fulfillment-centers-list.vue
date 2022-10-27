@@ -54,7 +54,7 @@ import {
 
 export default defineComponent({
   url: "fulfillment-centers-list",
-  permissions: [UserPermissions.SellerUsersManage],
+  permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
 

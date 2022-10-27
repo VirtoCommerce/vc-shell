@@ -448,7 +448,6 @@ import {
 
 export default defineComponent({
   url: "offer",
-  components: { VcRow },
 });
 </script>
 

@@ -31,6 +31,9 @@
         :closePage="onClosePage"
         @logo:click="openDashboard"
       >
+          <template v-slot:appSwitcher>
+              <slot name="appSwitcher"></slot>
+          </template>
         <template v-slot:productName v-if="$slots['productName']">
           <slot name="productName"></slot>
         </template>

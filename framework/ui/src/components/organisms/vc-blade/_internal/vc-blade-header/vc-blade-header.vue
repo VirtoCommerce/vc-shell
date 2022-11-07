@@ -8,7 +8,7 @@
 
     <div class="overflow-hidden grow basis-0">
       <div
-        class="text-[color:var(--blade-header-title-color)] text-lg text-ellipsis overflow-hidden whitespace-nowrap"
+        class="text-[color:var(--blade-header-title-color)] text-lg truncate"
         :class="{
           '!text-[length:var(--blade-header-title-font-size)] font-medium':
             !subtitle,

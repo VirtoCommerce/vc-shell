@@ -4,7 +4,7 @@
       <div class="vc-popup__inner">
         <div class="vc-popup__header">
           <div
-            class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0"
+            class="truncate grow basis-0"
           >
             <slot name="title">{{ title }}</slot>
           </div>

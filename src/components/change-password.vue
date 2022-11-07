@@ -87,7 +87,14 @@ import { nextTick, reactive } from "vue";
 import { useUser } from "@vc-shell/core";
 import { IIdentityError } from "@vc-shell/api-client";
 import { useIsFormValid } from "vee-validate";
-import { useForm } from "@vc-shell/ui";
+import {
+  useForm,
+  VcInput,
+  VcHint,
+  VcButton,
+  VcPopup,
+  VcForm,
+} from "@vc-shell/ui";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -97,7 +104,11 @@ interface IChangePassForm {
   confirmPassword: string;
 }
 
-const emit = defineEmits(["close"]);
+interface Emits {
+    (event: 'close'): void;
+}
+
+const emit = defineEmits<Emits>();
 const { changeUserPassword, loading, validatePassword } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();

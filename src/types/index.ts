@@ -77,6 +77,14 @@ interface INewOrderPushNotification extends PushNotification {
   orderId?: string;
 }
 
+interface IAppSwitcherItem {
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    permission?: string;
+}
+
 export type {
   IComponent,
   ITableColumns,
@@ -87,6 +95,7 @@ export type {
   INotificationActions,
   IProductPushNotification,
   INewOrderPushNotification,
+    IAppSwitcherItem
 };
 
 export { UserPermissions };

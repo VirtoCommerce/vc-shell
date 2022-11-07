@@ -126,7 +126,7 @@
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
                 <div class="flex flex-col">
-                  <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+                  <div class="truncate">
                     {{ itemData.item }}
                   </div>
                 </div>
@@ -155,7 +155,7 @@
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
                 <div class="flex flex-col">
-                  <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+                  <div class="truncate">
                     {{ itemData.item.name }}
                   </div>
                 </div>

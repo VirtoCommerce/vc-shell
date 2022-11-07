@@ -11,6 +11,10 @@
     :pages="pages"
     v-else
   >
+    <!-- App Switcher -->
+    <template v-slot:appSwitcher>
+      <AppSwitcher :switcherItems="switcherData" />
+    </template>
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
       <DashboardPage v-bind="scope" />
@@ -83,8 +87,9 @@ import {
   TeamList,
   FulfillmentCenters,
 } from "../modules/settings";
-import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
+import {IAppSwitcherItem, IBladeToolbar, IMenuItems, UserPermissions} from "../types";
 import DashboardPage from "./Dashboard.vue";
+import AppSwitcher from "./../components/app-switcher.vue";
 import LoginPage from "./Login.vue";
 import avatarImage from "/assets/avatar.jpg";
 import bgImage from "/assets/background.jpg";
@@ -119,6 +124,24 @@ const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
+
+// temporary mock for switcher
+const switcherData: IAppSwitcherItem[] = [
+  {
+    id: "123",
+    name: "Vendor Portal",
+    description: "mock",
+    icon: "/img/icons/apple-touch-icon.png",
+    permission: "",
+  },
+  {
+    id: "321",
+    name: "Test Portal 2",
+    description: undefined,
+      icon: "/img/icons/apple-touch-icon.png",
+    permission: "",
+  },
+];
 
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);

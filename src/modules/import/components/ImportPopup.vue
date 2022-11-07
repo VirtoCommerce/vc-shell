@@ -43,28 +43,28 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  columns: {
-    type: Array,
-    default: () => [],
-  },
+import { VcTable, VcButton, VcPopup } from "@vc-shell/ui";
+import { ITableColumns } from "../../../types";
 
-  items: {
-    type: Array,
-    default: () => [],
-  },
+interface Props {
+  columns: ITableColumns[];
+  items: Record<string, unknown>[];
+  total: number;
+  disabled: boolean;
+}
 
-  total: {
-    type: Number,
-    default: 0,
-  },
+interface Emits {
+  (event: "close"): void;
+}
 
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+withDefaults(defineProps<Props>(), {
+  columns: () => [],
+  items: () => [],
+  total: 0,
+  disabled: false,
 });
-defineEmits(["close"]);
+
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

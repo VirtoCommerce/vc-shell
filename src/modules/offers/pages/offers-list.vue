@@ -35,7 +35,7 @@
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
-        <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+        <div class="truncate">
           {{ itemData.item.name }}
         </div>
       </template>
@@ -58,46 +58,46 @@
           </div>
           <div class="mt-3 w-full flex justify-between">
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+              class="truncate grow basis-0 mr-2"
             >
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ itemData.item.sku }}
               </div>
             </div>
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              class="truncate grow-[2] basis-0"
             >
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ itemData.item.inStockQuantity }}
               </div>
             </div>
           </div>
           <div class="mt-3 w-full flex justify-between">
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+              class="truncate grow-[2] basis-0 mr-2"
             >
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{
                   itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
                 }}
               </div>
             </div>
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+              class="truncate grow-[2] basis-0 mr-2"
             >
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              class="truncate grow-[2] basis-0"
             >
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{
                   itemData.item.createdDate &&
                   moment(itemData.item.createdDate).fromNow()

@@ -30,13 +30,13 @@ import { useI18n } from "@vc-shell/core";
 
 // Page
 
-export interface Props {
+interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
 }
 
-export interface Emits {
+interface Emits {
   (event: "page:close"): void;
   (event: "page:open", page: IPage): void;
 }

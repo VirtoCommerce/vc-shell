@@ -39,20 +39,19 @@
 </template>
 
 <script lang="ts" setup>
+import { VcIcon } from "@vc-shell/ui";
 import { ref } from "vue";
-defineProps({
-  title: {
-    type: String,
-    default: "",
-  },
-  value: {
-    type: String,
-    default: "",
-  },
-  languageItems: {
-    type: Array,
-    default: () => [],
-  },
+
+interface Props {
+  title: string;
+  value: string;
+  languageItems: { lang: string; title: string; clickHandler: () => void }[];
+}
+
+withDefaults(defineProps<Props>(), {
+  title: "",
+  value: "",
+  languageItems: () => [],
 });
 
 const isDropActive = ref(false);

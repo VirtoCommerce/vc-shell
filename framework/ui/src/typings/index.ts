@@ -1,5 +1,10 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
 
+// Type instead of interface here is workaround for:
+// https://github.com/microsoft/TypeScript/issues/15300
+// (index signature is missing for interfaces in Typescript,
+// i.e. interface N { key: value } can't be casted to Record<TKey,TValue>
+// while it satisfies requirements
 export type IValidationRules = {
   required?: boolean;
   numberic?: boolean;

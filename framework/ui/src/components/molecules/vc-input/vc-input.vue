@@ -169,6 +169,11 @@ export interface Props {
   max?: string | number;
 }
 
+export interface Emits {
+  (event: "update:modelValue", value: ValueType): void;
+  (event: "update:optionsValue", value: string): void;
+}
+
 const props = withDefaults(defineProps<Props>(), {
   placeholder: "",
   modelValue: null,
@@ -187,7 +192,8 @@ const props = withDefaults(defineProps<Props>(), {
   maxchars: "1024",
 });
 
-const emit = defineEmits(["update:modelValue", "update:optionsValue"]);
+const emit = defineEmits<Emits>();
+
 let currencyConverter: UseCurrencyInput | undefined = undefined;
 const internalType = ref(unref(props.type));
 const toggleDropRef = ref();

@@ -123,12 +123,11 @@ import {
   getCurrentInstance,
   nextTick,
   onMounted,
-  PropType,
   ref,
   unref,
   watch,
 } from "vue";
-import { useField } from "vee-validate";
+import { GenericValidateFunction, useField } from "vee-validate";
 import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
 import VcLabel from "../../atoms/vc-label/vc-label.vue";
 import { IValidationRules } from "../../../typings";
@@ -140,101 +139,52 @@ import {
   CurrencyDisplay,
 } from "vue-currency-input";
 import { clickOutside as vClickOutside } from "../../../directives";
+import { required as requiredRule } from "../../../validation";
 
-const props = defineProps({
-  placeholder: {
-    type: String,
-    default: "",
-  },
+export type ValueType = string | number | Date | null;
 
-  modelValue: {
-    type: [String, Number, Date],
-    default: null,
-  },
+export interface Props {
+  placeholder?: string;
+  modelValue?: ValueType;
+  clearable?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  type?: string;
+  label?: string;
+  tooltip?: string;
+  name?: string;
+  rules?:
+    | string
+    | IValidationRules
+    | GenericValidateFunction<ValueType>
+    | GenericValidateFunction<ValueType>[];
+  currency?: boolean;
+  options?: Record<string, string>[];
+  optionsTitle?: string;
+  optionsValue?: string;
+  keyProperty?: string;
+  displayProperty?: string;
+  fieldDescription?: string;
+  maxchars?: string;
+  max?: string | number;
+}
 
-  clearable: {
-    type: Boolean,
-    default: false,
-  },
-
-  required: {
-    type: Boolean,
-    default: false,
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  type: {
-    type: String,
-    default: "text",
-  },
-
-  label: {
-    type: String,
-    default: undefined,
-  },
-
-  tooltip: {
-    type: String,
-    default: undefined,
-  },
-
-  name: {
-    type: String,
-    default: "Field",
-  },
-
-  rules: {
-    type: [String, Object],
-  },
-
-  currency: {
-    type: Boolean,
-    default: false,
-  },
-
-  options: {
-    type: Array as PropType<Record<string, string>[]>,
-    default: () => [],
-  },
-
-  optionsTitle: {
-    type: String,
-    default: "Select",
-  },
-
-  optionsValue: {
-    type: String,
-    default: "",
-  },
-
-  keyProperty: {
-    type: String,
-    default: "id",
-  },
-
-  displayProperty: {
-    type: String,
-    default: "title",
-  },
-
-  fieldDescription: {
-    type: String,
-    default: "",
-  },
-
-  maxchars: {
-    type: String,
-    default: "1024",
-  },
-
-  max: {
-    type: String,
-    default: undefined,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  placeholder: "",
+  modelValue: null,
+  clearable: false,
+  required: false,
+  disabled: false,
+  type: "text",
+  name: "Field",
+  currency: false,
+  options: () => [],
+  optionsTitle: "Select",
+  optionsValue: "",
+  keyProperty: "id",
+  displayProperty: "title",
+  fieldDescription: "",
+  maxchars: "1024",
 });
 
 const emit = defineEmits(["update:modelValue", "update:optionsValue"]);
@@ -256,22 +206,32 @@ const calcValue = computed(() => {
 });
 
 // Prepare validation rules using required and rules props combination
-let internalRules = unref(props.rules) || "";
+let internalRules = unref(props.rules);
 if (props.required) {
-  if (typeof internalRules === "string") {
-    (internalRules as string) = `required|${internalRules}`.replace(
-      /(\|)+$/,
-      ""
-    );
-  } else {
-    (internalRules as IValidationRules).required = true;
+  switch (typeof internalRules) {
+    case "undefined":
+      internalRules = "required";
+      break;
+    case "string":
+      internalRules = `required|${internalRules as string}`;
+      break;
+    case "function":
+      internalRules = [requiredRule, internalRules];
+      break;
+    case "object":
+      if (Array.isArray(internalRules)) {
+        internalRules.unshift(requiredRule);
+      } else {
+        (internalRules as IValidationRules).required = true;
+      }
+      break;
   }
 }
 
 let initialValue = unref(props.modelValue);
 
 // Prepare field-level validation
-const { errorMessage, handleChange, value } = useField(
+const { errorMessage, handleChange, value } = useField<ValueType>(
   `${props.name === "Field" ? instance?.uid : props.name}`,
   internalRules,
   {
@@ -368,7 +328,7 @@ function onItemSelect(item: { [x: string]: string }) {
 }
 
 // Handle input event to properly validate value and emit changes
-function onInput(e: InputEvent) {
+function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
   if (newValue) {
     if (props.currency) {

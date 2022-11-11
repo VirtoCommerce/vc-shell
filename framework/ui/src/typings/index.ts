@@ -1,11 +1,18 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
 
-export interface IValidationRules {
+export type IValidationRules = {
   required?: boolean;
+  numberic?: boolean;
+  email?: boolean;
   min?: number;
   max?: number;
   regex?: RegExp;
-}
+  min_value?: number;
+  max_value: number;
+  after?: string;
+  maxdimensions?: [string | number, string | number];
+  size?: number;
+};
 
 export interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;

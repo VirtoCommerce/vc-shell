@@ -2,7 +2,8 @@
   "name": "@vc-shell/core",
   "version": "1.0.33",
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "watch": "vite build --watch"
   },
   "main": "./dist/core.cjs.js",
   "types": "./dist/index.d.ts",

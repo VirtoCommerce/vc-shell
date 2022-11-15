@@ -150,7 +150,7 @@
               :class="{
                 'cursor-pointer hover:bg-[#dfeef9]': onItemClick,
                 'bg-[#f8f8f8]': i % 2 === 1,
-                'bg-[#dfeef9] hover:bg-[#dfeef9]':
+                '!bg-[#dfeef9] hover:bg-[#dfeef9]':
                   item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"

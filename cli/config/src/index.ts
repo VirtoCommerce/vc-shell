@@ -18,7 +18,11 @@ export function getApplicationConfiguration(options = {}) {
   return getConfiguration(applicationConfiguration, options);
 }
 
-function getConfiguration(configuration, options = {}, name?: string) {
+function getConfiguration(
+  configuration: UserConfigExport,
+  options = {},
+  name?: string
+) {
   return merge(
     configuration,
     name ? { build: { lib: { name } } } : {},

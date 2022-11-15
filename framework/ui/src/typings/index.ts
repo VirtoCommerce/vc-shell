@@ -11,17 +11,24 @@ export interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;
 }
 
+export type BladeComponent = Component & {
+  url?: string;
+  permissions?: string | string[];
+  idx?: number;
+  onBeforeClose?: () => Promise<boolean>;
+};
+
 export interface IBladeToolbar {
   id?: string;
   icon?: string;
   title?: string | ComputedRef<string>;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
-  component?: Component & { url?: string };
-  componentOptions?: Record<string, unknown> | unknown;
+  component?: BladeComponent;
+  bladeOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
   dropdownItems?: IBladeDropdownItem[];
-  clickHandler?(): void;
+  clickHandler?(app: Record<string, unknown> | unknown): void;
 }
 
 export interface IBladeDropdownItem {
@@ -33,14 +40,14 @@ export interface IBladeDropdownItem {
 
 export interface IMenuItems extends IBladeToolbar {
   clickHandler?(app?: IComponent): void;
-  componentOptions?: Record<string, unknown> | unknown;
+  bladeOptions?: Record<string, unknown> | unknown;
   children?: IMenuItems[];
 }
 
 export interface IPage {
-  component: Component | unknown;
-  componentOptions?: Record<string, unknown> | unknown;
-  permissions?: string[];
+  component: BladeComponent | unknown;
+  bladeOptions?: Record<string, unknown> | unknown;
+  permissions?: string | string[];
   url?: string;
   param?: string;
   onOpen?: () => void;

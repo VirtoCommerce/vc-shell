@@ -37,7 +37,7 @@
               <component
                 v-if="item.component"
                 :is="item.component"
-                v-bind="item.componentOptions"
+                v-bind="item.bladeOptions"
                 class="p-0 mb-2 w-full"
               ></component>
             </template>
@@ -46,14 +46,10 @@
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
-              :isActive="item === activeItem"
+              :isActive="$route.path.includes(item.url)"
               :activeChildItem="activeChildItem"
               @click="
                 $emit('item:click', item);
-                isMobileVisible = false;
-              "
-              @child:click="
-                $emit('item:click', $event);
                 isMobileVisible = false;
               "
             />

@@ -9,8 +9,10 @@ interface IUsePermissions {
 export default (): IUsePermissions => {
   const { user } = useUser();
 
-  function checkPermission(permissions: string | string[]) {
-    if (permissions || (permissions && permissions instanceof Array)) {
+  function checkPermission(permissions: string | string[] | undefined) {
+    if (!permissions) {
+      return true;
+    } else if (permissions || (permissions && permissions instanceof Array)) {
       if (typeof permissions === "string") {
         return user.value?.permissions.includes(permissions);
       } else if (permissions.length > 0) {

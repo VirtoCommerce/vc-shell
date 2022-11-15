@@ -6,18 +6,18 @@
     <template v-if="$isMobile.value">
       <!-- Show logo on mobile dashboard -->
       <img
-        v-if="workspace.length === 0"
+        v-if="blades.length === 0"
         class="h-3/6 cursor-pointer"
         :src="logo"
         @click="$emit('logo:click')"
       />
 
-      <!-- Show workspace name when at least one blade is opened -->
+      <!-- Show blades name when at least one blade is opened -->
       <div
-        v-else-if="workspace.length === 1"
+        v-else-if="blades.length === 1"
         class="overflow-ellipsis overflow-hidden whitespace-nowrap text-2xl leading-header"
       >
-        {{ workspace[0].title }}
+        {{ blades[0].title }}
       </div>
 
       <!-- Show back link when more than one blade is opened -->
@@ -61,7 +61,7 @@
           <component
             v-if="item.component"
             :is="item.component"
-            v-bind="item.componentOptions"
+            v-bind="item.bladeOptions"
             :isAccent="item.isAccent"
             :openPage="openPage"
             :closePage="closePage"
@@ -111,7 +111,7 @@ defineProps({
     default: "",
   },
 
-  workspace: {
+  blades: {
     type: Array as PropType<IPage[]>,
     default: () => [],
   },

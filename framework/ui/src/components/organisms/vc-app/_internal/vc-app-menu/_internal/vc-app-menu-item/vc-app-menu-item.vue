@@ -1,137 +1,91 @@
 <template>
   <div>
-    <div
-      class="vc-app-menu-item"
-      :class="[
-        { 'vc-app-menu-item_active': isActive && !children.length },
-        { 'vc-app-menu-item_no-hover': children.length },
-      ]"
-      @click="onMenuItemClick"
-    >
-      <div
-        class="vc-app-menu-item__handler"
-        :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
-      >
-        <VcIcon icon="fas fa-ellipsis-v" size="m" />
+    <template v-if="component && component.url">
+      <router-link :to="component.url" v-slot="{ isActive, navigate }">
+        <vc-app-menu-link
+          v-bind="props"
+          :isActive="isActive"
+          @onClick="onMenuItemClick(navigate)"
+        />
+      </router-link>
+    </template>
+    <template v-else>
+      <vc-app-menu-link v-bind="props" @onClick="onMenuItemClick" />
+
+      <!-- Nested menu items -->
+      <div class="vc-app-menu-item__child" v-if="isOpened">
+        <template v-for="(nested, i) in children" :key="i">
+          <router-link
+            :to="nested.component.url"
+            v-slot="{ isActive, navigate }"
+          >
+            <div
+              :class="[
+                {
+                  'vc-app-menu-item__child-item_active': isActive,
+                },
+                'vc-app-menu-item__child-item',
+              ]"
+              v-if="nested.isVisible === undefined || nested.isVisible"
+              :key="i"
+              @click="navigate"
+            >
+              {{ nested.title }}
+            </div>
+          </router-link>
+        </template>
       </div>
-      <div v-if="icon" class="vc-app-menu-item__icon">
-        <VcIcon :icon="icon" size="m" />
-      </div>
-      <div class="vc-app-menu-item__title">
-        {{ title }}
-        <VcIcon
-          class="vc-app-menu-item__title-icon"
-          icon="fas fa-chevron-down"
-          size="xs"
-          v-if="children.length"
-        ></VcIcon>
-      </div>
-    </div>
-    <!-- Nested menu items -->
-    <div class="vc-app-menu-item__child" v-if="isOpened">
-      <template v-for="(nested, i) in children">
-        <div
-          :class="[
-            {
-              'vc-app-menu-item__child-item_active': activeChildItem === nested,
-            },
-            'vc-app-menu-item__child-item',
-          ]"
-          v-if="nested.isVisible === undefined || nested.isVisible"
-          :key="i"
-          @click="$emit('child:click', nested)"
-        >
-          {{ nested.title }}
-        </div>
-      </template>
-    </div>
+    </template>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref, watch } from "vue";
-import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
-import { IBladeToolbar, IMenuItems } from "../../../../../../../typings";
+import { ref } from "vue";
+import {
+  BladeComponent,
+  IBladeToolbar,
+  IMenuItems,
+} from "../../../../../../../typings";
+import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 
-const props = defineProps({
-  sticky: {
-    type: Boolean,
-    default: true,
-  },
+interface Props {
+  sticky: boolean;
+  isVisible: boolean;
+  activeChildItem: IMenuItems;
+  component: BladeComponent;
+  bladeOptions: Record<string, unknown>;
+  clickHandler: () => void;
+  icon: string;
+  title: string;
+  children: IBladeToolbar[];
+  isCollapsed: boolean;
+}
 
-  isVisible: {
-    type: Boolean,
-    default: false,
-  },
-
-  isActive: {
-    type: Boolean,
-    default: false,
-  },
-
-  activeChildItem: {
-    type: Object as PropType<IMenuItems>,
-    default: undefined,
-  },
-
-  component: {
-    type: Object as PropType<IMenuItems>,
-    default: undefined,
-  },
-
-  componentOptions: {
-    type: Object,
-    default: () => ({}),
-  },
-
-  clickHandler: {
-    type: Function,
-    default: undefined,
-  },
-
-  icon: {
-    type: String,
-    default: "",
-  },
-
-  title: {
-    type: String,
-    default: "",
-  },
-
-  children: {
-    type: Array as PropType<IBladeToolbar[]>,
-    default: () => [],
-  },
-
-  isCollapsed: {
-    type: Boolean,
-    default: true,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  sticky: true,
+  isVisible: false,
+  activeChildItem: undefined,
+  component: undefined,
+  bladeOptions: () => ({}),
+  clickHandler: undefined,
+  icon: "",
+  title: "",
+  children: () => [],
+  isCollapsed: true,
 });
 
-const emit = defineEmits(["click", "child:click"]);
+const emit = defineEmits(["click"]);
 
 const isOpened = ref(false);
 
-watch(
-  () => props.isActive,
-  (newVal) => {
-    isOpened.value = !!(
-      newVal &&
-      props.children &&
-      props.children.some((child) => child === props.activeChildItem)
-    );
-  },
-  { immediate: true }
-);
-
-function onMenuItemClick() {
-  if (!props.children?.length) {
-    emit("click");
+function onMenuItemClick(navigate?: () => void) {
+  if (navigate && typeof navigate === "function" && !props.children?.length) {
+    navigate();
   } else {
     isOpened.value = !isOpened.value;
   }
+
+  emit("click");
 }
 </script>
 
@@ -148,53 +102,7 @@ function onMenuItemClick() {
   --app-menu-item-title-color-active: #ffffff;
   --app-menu-item-handler-color: #bdd1df;
 }
-
 .vc-app-menu-item {
-  @apply flex items-center w-full h-[var(--app-menu-item-height)]
-    border-none
-    flex-nowrap box-border cursor-pointer relative uppercase;
-
-  &_active {
-    @apply bg-[color:var(--app-menu-item-background-color-hover)]
-    rounded-[var(--app-menu-item-hover-radius)]
-    before:opacity-100;
-  }
-
-  &__handler {
-    @apply w-[var(--app-menu-item-handler-width)]
-      text-[color:var(--app-menu-item-handler-color)]
-      text-center invisible shrink-0;
-
-    &_enabled {
-      @apply cursor-move;
-    }
-  }
-
-  &__icon {
-    @apply w-[var(--app-menu-item-icon-width)]
-      text-[color:var(--app-menu-item-icon-color)]
-      overflow-hidden flex
-      justify-center shrink-0 transition-[color] duration-200;
-  }
-
-  &_active &__icon {
-    @apply text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  &__title {
-    @apply text-ellipsis overflow-hidden whitespace-nowrap
-      text-lg
-      font-medium
-      px-3
-      text-[color:var(--app-menu-item-title-color)]
-      [transition:color_0.2s_ease] [transition:opacity_0.1s_ease]
-      opacity-100 w-full;
-  }
-
-  &__title-icon {
-    @apply text-[color:var(--app-menu-item-icon-color)] ml-3;
-  }
-
   &__child {
     @apply ml-[42px] gap-[4px] flex flex-col;
   }
@@ -206,52 +114,7 @@ function onMenuItemClick() {
 
     &_active {
       @apply bg-[color:var(--app-menu-item-background-color-hover)]
-        text-[color:var(--app-menu-item-title-color-active)] font-bold;
-    }
-  }
-
-  &_active &__title {
-    @apply text-[color:var(--app-menu-item-title-color-active)]
-      font-bold;
-  }
-
-  &_active &__title-icon {
-    @apply text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  &:hover {
-    @apply bg-[color:var(--app-menu-item-background-color-hover)]
-      rounded-[var(--app-menu-item-hover-radius)];
-
-    &.vc-app-menu-item_no-hover {
-      @apply bg-transparent;
-      .vc-app-menu-item__title {
-        @apply text-[color:var(--app-menu-item-title-color)];
-      }
-      .vc-app-menu-item__title-icon {
-        @apply text-[color:var(--app-menu-item-icon-color)];
-      }
-      .vc-app-menu-item__icon {
-        @apply text-[color:var(--app-menu-item-icon-color)];
-      }
-    }
-  }
-
-  &:hover &__title {
-    @apply text-[color:var(--app-menu-item-title-color-active)];
-  }
-
-  &:hover &__icon {
-    @apply text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  &:hover &__title-icon {
-    @apply text-[color:var(--app-menu-item-icon-color-active)];
-  }
-
-  &:hover &__handler {
-    &_enabled {
-      @apply invisible;
+      text-[color:var(--app-menu-item-title-color-active)] font-bold;
     }
   }
 }

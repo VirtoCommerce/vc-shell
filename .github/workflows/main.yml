@@ -39,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn bootstrap -- --frozen-lockfile
+        yarn bootstrap
 
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master

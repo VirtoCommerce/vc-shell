@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn bootstrap && yarn run build",
-    "bootstrap": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap -- --frozen-lockfile",
     "bootstrap-link": "lerna bootstrap --force-local && lerna link --force-local",
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",

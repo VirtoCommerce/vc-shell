@@ -1,11 +1,11 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.33",
+  "version": "1.0.35",
   "private": true,
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn bootstrap && yarn run build",
-    "bootstrap": "lerna bootstrap",
-    "bootstrap-link": "lerna bootstrap --force-local && lerna link --force-local",
+    "bootstrap": "lerna bootstrap -- --frozen-lockfile",
+    "bootstrap-link": "lerna bootstrap --force-local -- --frozen-lockfile && lerna link --force-local",
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",
@@ -53,7 +53,6 @@
     "@storybook/theming": "^6.3.8",
     "@storybook/vue3": "^6.3.8",
     "@types/lodash-es": "^4.17.6",
-    "@types/react": "file:stub/types__react",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "@vitejs/plugin-vue": "^2.2.0",
@@ -92,5 +91,8 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
+  },
+  "resolutions": {
+    "@types/react": "file:stub/@types/react"
   }
 }

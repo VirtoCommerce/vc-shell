@@ -4,7 +4,6 @@ import * as directives from "./directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import draggable from "vuedraggable/src/vuedraggable";
-import { useForm as _useForm } from "./config/validation";
 
 import "normalize.css";
 import "./styles/index.scss";
@@ -49,4 +48,4 @@ export default {
 
 export * from "./components";
 export * from "./typings";
-export const useForm = _useForm;
+export * from "./validation";

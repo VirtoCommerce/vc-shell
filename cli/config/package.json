@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.33",
+  "version": "1.0.35",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -16,6 +16,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "gitHead": "38112513d908cc59089c150f339c6253e7c23b61"
+  }
 }

@@ -1,11 +1,23 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
 
-export interface IValidationRules {
+// Type instead of interface here is workaround for:
+// https://github.com/microsoft/TypeScript/issues/15300
+// (index signature is missing for interfaces in Typescript,
+// i.e. interface N { key: value } can't be casted to Record<TKey,TValue>
+// while it satisfies requirements
+export type IValidationRules = {
   required?: boolean;
+  numberic?: boolean;
+  email?: boolean;
   min?: number;
   max?: number;
   regex?: RegExp;
-}
+  min_value?: number;
+  max_value: number;
+  after?: string;
+  maxdimensions?: [string | number, string | number];
+  size?: number;
+};
 
 export interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;

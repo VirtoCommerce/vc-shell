@@ -10,14 +10,19 @@ interface IComponent extends ComponentPublicInstance {
   openDashboard(): void;
 }
 
+type BladeComponent = Component & {
+  url?: string;
+  permissions?: string | string[];
+};
+
 interface IBladeToolbar {
   id?: string;
   icon?: string;
   title?: string | ComputedRef<string>;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
-  component?: Component & { url?: string };
-  componentOptions?: Record<string, unknown> | unknown;
+  component?: BladeComponent;
+  bladeOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
   clickHandler?(): void;
 }

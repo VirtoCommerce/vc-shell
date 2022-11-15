@@ -1,5 +1,5 @@
 <template>
-  <VcLoading v-if="!isReady" active class="app__loader"></VcLoading>
+  <VcLoading v-if="!isReady" active class="app__loader" />
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -11,20 +11,6 @@
     :pages="pages"
     v-else
   >
-    <!-- Set up dashboard page -->
-    <template v-slot:dashboard="scope">
-      <DashboardPage v-bind="scope" />
-    </template>
-
-    <!-- Set up login form  -->
-    <template v-slot:login>
-      <LoginPage
-        :logo="whiteLogoImage"
-        :background="bgImage"
-        title="Vendor Portal"
-      ></LoginPage>
-    </template>
-
     <template v-slot:notifications>
       <VcNotification
         v-for="item in popupNotifications"
@@ -77,14 +63,11 @@ import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
 import { OrdersList } from "../modules/orders";
 import { ProductsList } from "../modules/products";
+import {MpProductsList} from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList } from "../modules/settings";
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
-import DashboardPage from "./Dashboard.vue";
-import LoginPage from "./Login.vue";
 import avatarImage from "/assets/avatar.jpg";
-import bgImage from "/assets/background.jpg";
-import whiteLogoImage from "/assets/logo-white.svg";
 import logoImage from "/assets/logo.svg";
 
 const {
@@ -139,7 +122,7 @@ log.debug(`Initializing App`);
 const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(LanguageSelector),
-    componentOptions: {
+    bladeOptions: {
       value: computed(() => currentLocale.value),
       title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
       languageItems: computed(() =>
@@ -167,13 +150,13 @@ const toolbarItems = ref<IBladeToolbar[]>([
         .length;
     }),
     component: shallowRef(NotificationDropdown),
-    componentOptions: {
+    bladeOptions: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
     },
   },
   {
     component: shallowRef(UserDropdownButton),
-    componentOptions: {
+    bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -188,7 +171,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
         },
         {
           title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-          async clickHandler() {
+          clickHandler() {
             signOut();
             router.push("/login");
           },
@@ -202,7 +185,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
 const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
-    componentOptions: {
+    bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -220,7 +203,6 @@ const menuItems = reactive<IMenuItems[]>([
     isVisible: true,
     clickHandler(app) {
       app.openDashboard();
-      router.push("/");
     },
   },
   {
@@ -233,26 +215,17 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("PRODUCTS.MENU.TITLE")),
     icon: "fas fa-box-open",
     isVisible: true,
-    component: shallowRef(),
     children: [
       {
         title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
-        component: shallowRef(ProductsList),
-        componentOptions: {
-          url: "all-products",
+        component: shallowRef(MpProductsList),
+        bladeOptions: {
           readonly: true,
-          query: {
-            isPublished: true,
-            searchFromAllSellers: true,
-          },
         },
       },
       {
         title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
         component: shallowRef(ProductsList),
-        componentOptions: {
-          url: "products",
-        },
       },
     ],
   },
@@ -283,7 +256,6 @@ const menuItems = reactive<IMenuItems[]>([
         UserPermissions.SellerDetailsEdit,
       ])
     ),
-    component: shallowRef(),
     children: [
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),

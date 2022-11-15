@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -172,7 +172,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits(["close", "parent:call"]);
 useForm({ validateOnMount: false });
 const { user } = useUser();
 
@@ -222,7 +222,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
@@ -251,7 +251,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
@@ -298,7 +298,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (props.options && props.options.user && props.options.user.sellerId) {
         try {
           await sendTeamMemberInvitation({ id: props.options.user.id });
-          emit("page:close");
+          emit("close");
         } catch (e) {
           errorMessage.value = e.message;
         }
@@ -362,7 +362,7 @@ async function removeUser() {
     emit("parent:call", {
       method: "reload",
     });
-    emit("page:close");
+    emit("close");
   }
 }
 

@@ -61,7 +61,7 @@
 
           <!-- Rating & Reviews block -->
           <VcCol size="4" class="p-2">
-            <RatingDashboardCard :open-page="openPage"></RatingDashboardCard>
+            <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
           </VcCol>
         </VcRow>
 
@@ -204,8 +204,7 @@
 
 <script lang="ts" setup>
 import { useI18n } from "@vc-shell/core";
-import { IPage } from "@vc-shell/ui";
-import { computed, onMounted, ref } from "vue";
+import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRouter } from "vue-router";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
@@ -218,17 +217,14 @@ import {
 } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
 import { ITableColumns } from "../types";
+import useBladeNavigation from "@vc-shell/core/src/composables/useBladeNavigation/index";
 
-export interface Props {
-  openPage: (index: number, page: IPage) => void;
-}
-
-const props = defineProps<Props>();
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();
 const { orders, loadOrders, loading: ordersLoading } = useOrders();
 const { offers, loadOffers, loading: offersLoading } = useOffers();
 const router = useRouter();
+const { openBlade } = useBladeNavigation();
 
 const productsColumns = ref<ITableColumns[]>([
   {
@@ -340,70 +336,109 @@ onMounted(async () => {
 function open(key: string): void {
   switch (key) {
     case "orders-list":
-      props.openPage(0, {
-        component: OrdersList,
-      });
+      openBlade(
+        {
+          initialBlade: shallowRef(OrdersList),
+        },
+        0
+      );
       break;
     case "products-list":
-      props.openPage(0, {
-        component: ProductsList,
-      });
+      openBlade(
+        {
+          initialBlade: shallowRef(ProductsList),
+        },
+        0
+      );
       break;
     case "products-add":
-      props.openPage(0, {
-        component: ProductsList,
-      });
-      props.openPage(1, {
-        component: ProductsEdit,
-      });
+      openBlade(
+        {
+          initialBlade: shallowRef(ProductsList),
+        },
+        0
+      );
+      openBlade(
+        {
+          initialBlade: shallowRef(ProductsEdit),
+        },
+        1
+      );
       break;
     case "offers-list":
-      props.openPage(0, {
-        component: OffersList,
-      });
+      openBlade(
+        {
+          initialBlade: shallowRef(OffersList),
+        },
+        0
+      );
       break;
     case "offers-add":
-      props.openPage(0, {
-        component: OffersList,
-      });
-      props.openPage(1, {
-        component: OffersDetails,
-      });
+      openBlade(
+        {
+          initialBlade: shallowRef(OffersList),
+        },
+        0
+      );
+      openBlade(
+        {
+          component: shallowRef(OffersDetails),
+        },
+        1
+      );
       break;
   }
 }
 
 function ordersClick(item: { id: string }): void {
-  props.openPage(0, {
-    component: OrdersList,
-    param: item.id,
-  });
-  props.openPage(1, {
-    component: OrdersEdit,
-    param: item.id,
-  });
+  openBlade(
+    {
+      initialBlade: shallowRef(OrdersList),
+      param: item.id,
+    },
+    0
+  );
+  openBlade(
+    {
+      initialBlade: shallowRef(OrdersEdit),
+      param: item.id,
+    },
+    1
+  );
 }
 
 function productsClick(item: { id: string }): void {
-  props.openPage(0, {
-    component: ProductsList,
-    param: item.id,
-  });
-  props.openPage(1, {
-    component: ProductsEdit,
-    param: item.id,
-  });
+  openBlade(
+    {
+      initialBlade: shallowRef(ProductsList),
+      param: item.id,
+    },
+    0
+  );
+  openBlade(
+    {
+      initialBlade: shallowRef(ProductsEdit),
+      param: item.id,
+    },
+    1
+  );
 }
 
 function offersClick(item: { id: string }): void {
-  props.openPage(0, {
-    component: OffersList,
-    param: item.id,
-  });
-  props.openPage(1, {
-    component: OffersDetails,
-    param: item.id,
-  });
+  openBlade(
+    {
+      initialBlade: shallowRef(OffersList),
+      param: item.id,
+    },
+    0
+  );
+  openBlade(
+    {
+      initialBlade: shallowRef(OffersDetails),
+      param: item.id,
+    },
+    1
+  );
 }
 
 function calcQty(items: OrderLineItem[]) {

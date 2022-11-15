@@ -8,7 +8,7 @@
     "
     width="50%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
     :closable="closable"
     :expanded="expanded"
   >
@@ -111,7 +111,7 @@
 import { defineComponent, computed, onMounted, ref, unref } from "vue";
 
 export default defineComponent({
-  url: "import-profile-details",
+   url: "/import-profile-details",
 });
 </script>
 
@@ -148,7 +148,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits(["close", "parent:call"]);
 const { t } = useI18n();
 const {
   dataImporters,
@@ -191,7 +191,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             });
           }
           resetAutosaved();
-          emit("page:close");
+          emit("close");
         } catch (err) {
           alert(err.message);
         }
@@ -211,7 +211,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-ban",
     clickHandler() {
       resetAutosaved();
-      emit("page:close");
+      emit("close");
     },
     isVisible: computed(() => !props.param),
   },

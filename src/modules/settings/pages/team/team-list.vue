@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <VcTable
       class="grow basis-0"
@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
 import {
   UserPermissions,
   IBladeToolbar,
@@ -123,7 +123,7 @@ import {
 } from "../../../../types";
 
 export default defineComponent({
-  url: "team",
+   url: "/team",
   permissions: [UserPermissions.SellerUsersManage],
 });
 </script>
@@ -155,7 +155,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "page:open"]);
+const emit = defineEmits(["close", "open"]);
 
 const { t } = useI18n();
 const {
@@ -201,8 +201,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("page:open", {
-        component: TeamMemberDetails,
+      emit("open", {
+        component: shallowRef(TeamMemberDetails),
       });
     },
   },
@@ -277,10 +277,10 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: SellerUser) => {
-  emit("page:open", {
-    component: TeamMemberDetails,
+  emit("open", {
+    component: shallowRef(TeamMemberDetails),
     param: item.id,
-    componentOptions: {
+    bladeOptions: {
       user: item,
     },
     onOpen() {

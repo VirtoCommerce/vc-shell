@@ -5,14 +5,14 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <ReviewTable :expanded="expanded" @itemClick="onItemClick"></ReviewTable>
   </VcBlade>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, shallowRef } from "vue";
 import { VcBlade, IPage } from "@vc-shell/ui";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
@@ -21,7 +21,7 @@ import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 
 export default defineComponent({
-  url: "reviews",
+   url: "/reviews",
 });
 </script>
 
@@ -37,8 +37,8 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "page:close"): void;
-  (event: "page:open", page: IPage): void;
+  (event: "close"): void;
+  (event: "open", page: IPage): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -74,10 +74,10 @@ const onItemClick = (
   onSelect: () => void,
   onDeselect: () => void
 ) => {
-  emit("page:open", {
-    component: ReviewDetails,
+  emit("open", {
+    component: shallowRef(ReviewDetails),
     param: item.id,
-    componentOptions: {
+    bladeOptions: {
       review: item,
     },
     onOpen: onSelect,

@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -121,15 +121,23 @@ import {
   ref,
   unref,
   watch,
+  shallowRef,
+  ShallowRef,
+  Component
 } from "vue";
 
 export default defineComponent({
-  url: "offers",
+  url: "/offers",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
+import {
+  useFunctions,
+  useI18n,
+  useLogger,
+  usePermissions,
+} from "@vc-shell/core";
 import moment from "moment";
 import { IOffer } from "../../../api_client/marketplacevendor";
 import {
@@ -140,32 +148,21 @@ import {
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 import emptyImage from "/assets/empty.png";
+import { useRouter } from "vue-router";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options: Record<string, unknown>
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-  /**
-   * Blade options params
-   * @param {ISellerProduct} sellerProduct
-   */
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["parent:call", "page:closeChildren", "page:open"]);
+
+const emit = defineEmits(["parent:call", "close:children", "open"]);
 
 const { t } = useI18n();
 const logger = useLogger();
@@ -181,10 +178,11 @@ const {
   loading,
   deleteOffers,
 } = useOffers();
+const { checkPermission } = usePermissions();
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
-const selectedItemId = ref();
+const selectedItemId = ref<string>();
 const selectedOfferIds = ref([]);
 const isDesktop = inject("isDesktop");
 
@@ -253,7 +251,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           )
         )
       ) {
-        emit("page:closeChildren");
+        emit("close:children");
         await deleteOffers({ ids: selectedOfferIds.value });
         await reload();
       }
@@ -362,8 +360,8 @@ const columns = computed(() => {
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
-    component: OffersDetails,
+  emit("open", {
+    component: shallowRef(OffersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -386,10 +384,10 @@ const onHeaderClick = (item: ITableColumns) => {
   }
 };
 
-const addOffer = async () => {
-  emit("page:open", {
-    component: OffersDetails,
-    componentOptions: props.options,
+const addOffer = () => {
+  emit("open", {
+    component: shallowRef(OffersDetails),
+    bladeOptions: props.options,
   });
 };
 
@@ -457,7 +455,7 @@ async function removeOffers() {
       })
     )
   ) {
-    emit("page:closeChildren");
+    emit("close:children");
     await deleteOffers({ ids: selectedOfferIds.value });
     await reload();
   }

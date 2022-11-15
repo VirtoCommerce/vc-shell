@@ -70,10 +70,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from "vue";
+import { defineComponent, computed, onMounted, ref, shallowRef } from "vue";
 
 export default defineComponent({
-  url: "import",
+  url: "/import",
 });
 </script>
 
@@ -86,28 +86,22 @@ import ImportNew from "./import-new.vue";
 import { ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    importJobId?: string;
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["page:open"]);
+
+const emit = defineEmits(["open"]);
+
 const { t } = useI18n();
 const {
   importHistory,
@@ -199,8 +193,9 @@ async function reload() {
 
 function newProfile() {
   bladeWidth.value = 70;
-  emit("page:open", {
-    component: ImportProfileDetails,
+
+  emit("open", {
+    component: shallowRef(ImportProfileDetails),
   });
 }
 
@@ -211,10 +206,10 @@ function openImporter(profileId: string) {
     (profile) => profile.id === profileId
   );
 
-  emit("page:open", {
-    component: ImportNew,
+  emit("open", {
+    component: shallowRef(ImportNew),
     param: profileId,
-    componentOptions: {
+    bladeOptions: {
       importJobId: profile && profile.inProgress ? profile.jobId : undefined,
     },
     onOpen() {
@@ -228,11 +223,11 @@ function openImporter(profileId: string) {
 
 function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
-  selectedProfileId.value = item.profileId;
-  emit("page:open", {
-    component: ImportNew,
+
+  emit("open", {
+    component: shallowRef(ImportNew),
     param: item.profileId,
-    componentOptions: {
+    bladeOptions: {
       importJobId: item.jobId,
       title: item.profileName,
     },

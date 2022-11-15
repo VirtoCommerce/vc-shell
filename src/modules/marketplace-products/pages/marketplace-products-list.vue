@@ -211,7 +211,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-  url: "/products",
+  url: "/all-products",
 });
 </script>
 
@@ -226,7 +226,7 @@ import {
 } from "../../../types";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
-import ProductsEdit from "./products-edit.vue";
+import MpProductsEdit from "./marketplace-products-edit.vue";
 import emptyImage from "/assets/empty.png";
 import { useRoute } from "vue-router";
 
@@ -267,7 +267,7 @@ const {
   searchQuery,
   SellerProductStatus,
   exportCategories,
-} = useProducts(props.options.query);
+} = useProducts({ isPublished: true, searchFromAllSellers: true });
 const filter = reactive<{
   status?: string[];
 }>({ status: [] });
@@ -331,7 +331,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     async clickHandler() {
       emit("open", {
-        component: shallowRef(ProductsEdit),
+        component: shallowRef(MpProductsEdit),
       });
     },
   },
@@ -412,7 +412,7 @@ const activeFilterCount = computed(
 
 const onItemClick = (item: { id: string }) => {
   emit("open", {
-      component: shallowRef(ProductsEdit),
+    component: shallowRef(MpProductsEdit),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -513,7 +513,7 @@ async function resetSearch() {
 }
 function addProduct() {
   emit("open", {
-      component: shallowRef(ProductsEdit),
+    component: shallowRef(MpProductsEdit),
   });
 }
 

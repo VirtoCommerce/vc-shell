@@ -5,6 +5,7 @@ const version = JSON.parse(packageJson.toString()).version || 0;
 import vue from "@vitejs/plugin-vue";
 import { loadEnv } from "vite";
 import typescript from "@rollup/plugin-typescript";
+import * as path from "path";
 
 // Build configuration for the application
 const mode = process.env.APP_ENV as string;
@@ -66,12 +67,13 @@ export default {
         ? {
             "@vc-shell/ui/dist/style.css": "@vc-shell/ui/dist/style.css",
             "@vc-shell/ui": "@vc-shell/ui/src/index.ts",
-            "@vc-shell/core": "@vc-shell/core",
+            // "@vc-shell/core": "@vc-shell/core/src/index.ts",
+          '@vc-shell/core/src/composables/useBladeNavigation/index': path.resolve('./../../framework/core/src/composables/useBladeNavigation'),
             "@vc-shell/mod-assets": "@vc-shell/mod-assets/src/index.ts",
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
+            //"vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
+            //"vue-router": "vue-router/dist/vue-router.cjs.js",
           },
   },
   base: process.env.APP_BASE_PATH,
@@ -112,7 +114,7 @@ export default {
             "url-pattern",
             "ace-builds",
             "@vc-shell/ui",
-            "@vc-shell/core",
+            // "@vc-shell/core",
             "@vc-shell/mod-assets",
           ]
         : ["vue", "vue-router", "url-pattern", "ace-builds"],

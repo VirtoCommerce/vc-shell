@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true" ref="container">
@@ -402,7 +402,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-  url: "offer",
+  url: "/offer",
 });
 </script>
 
@@ -411,6 +411,7 @@ import { useForm } from "@vc-shell/ui";
 import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
 import { useOffer } from "../composables";
 import {
+  CustomerReview,
   IOfferDetails,
   IOfferProduct,
   OfferPrice,
@@ -425,31 +426,23 @@ import {
   PropertyDictionaryItem,
   PropertyValue,
 } from "../../../api_client/catalog";
-import { useProduct } from "../../products";
+import { ProductsList, useProduct } from "../../products";
+import { useRoute, useRouter } from "vue-router";
+import { OffersDetails, OffersList } from "./index";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: Record<string, Record<string, unknown> | unknown>;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
 
-const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+const emit = defineEmits(["parent:call", "close", "open"]);
 const { t } = useI18n();
 
 const {
@@ -613,7 +606,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close");
         } catch (err) {
           alert(err.message);
         }
@@ -689,11 +682,20 @@ function setPriceRefs(el: HTMLDivElement) {
   }
 }
 
-function showProductDetails(id: string) {
-  emit("page:open", {
+
+async function showProductDetails(id: string) {
+  emit("open", {
     component: ProductsEdit,
     param: id,
   });
+}
+
+function getParentRouterPath(instance) {
+  try {
+    return instance.parent.ctx.route ?? "/";
+  } catch (e) {
+    return "";
+  }
 }
 
 function setFilterDate(key: string, value: string) {

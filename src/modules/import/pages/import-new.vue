@@ -1,12 +1,12 @@
 <template>
   <VcBlade
     v-loading="bladeLoading"
-    :title="param && profileDetails?.name ? profileDetails.name : options.title"
+    :title="param && profileDetails?.name ? profileDetails.name : props.title"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <VcContainer class="import-new">
       <VcCol>
@@ -182,11 +182,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  watch,
+  shallowRef,
+} from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
 export default defineComponent({
-  url: "importer",
+  url: "/importer",
 });
 </script>
 
@@ -204,6 +211,7 @@ import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
+import ImportNew from "./import-new.vue";
 
 interface IImportBadges {
   id: string;
@@ -213,28 +221,22 @@ interface IImportBadges {
   description?: string;
 }
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    importJobId?: string;
+    title?: string;
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["page:open", "page:close", "parent:call"]);
+
+const emit = defineEmits(["open", "close", "parent:call"]);
 const { t } = useI18n();
 const { getAccessToken } = useUser();
 const {
@@ -258,6 +260,7 @@ const {
   updateStatus,
   getLongRunning,
 } = useImport();
+
 const locale = window.navigator.language;
 const fileLoading = ref(false);
 const preview = ref<ImportDataPreview>();
@@ -272,8 +275,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
     icon: "fas fa-pencil-alt",
     clickHandler() {
-      emit("page:open", {
-        component: ImportProfileDetails,
+      emit("open", {
+        component: shallowRef(ImportProfileDetails),
         param: profile.value.id,
       });
     },
@@ -541,7 +544,7 @@ onMounted(async () => {
       jobId: props.options.importJobId,
     });
   }
-  if (props.options && props.options.importJobId) {
+  if (props.options.importJobId) {
     const historyItem =
       importHistory.value &&
       importHistory.value.find((x) => x.jobId === props.options.importJobId);
@@ -604,7 +607,7 @@ function reloadParent() {
   emit("parent:call", {
     method: "reload",
   });
-  emit("page:close");
+  emit("close");
 }
 
 const sampleTemplateUrl = computed(() => {

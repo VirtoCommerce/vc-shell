@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, PropType, ref } from "vue";
+import { onMounted, PropType, ref, shallowRef } from "vue";
 import { PushNotification } from "@vc-shell/api-client";
 import { useNotifications } from "@vc-shell/core";
 import { IMenuItems } from "@vc-shell/ui";
@@ -135,21 +135,17 @@ const handleClick = async (
   // TODO need to discuss on arch meeting
   if (low.includes("import") && "profileId" in notification) {
     await props.closePage(0);
-    await props.closePage(1);
-    props.openPage(0, {
-      component: ImportProfileSelector,
-      param: notification.profileId,
-      componentOptions: {
-        importJobId: notification.jobId,
+    props.openPage(
+      {
+        initialBlade: shallowRef(ImportProfileSelector),
+        component: shallowRef(ImportNew),
+        param: notification.profileId,
+        bladeOptions: {
+          importJobId: notification.jobId,
+        },
       },
-    });
-    props.openPage(1, {
-      component: ImportNew,
-      param: notification.profileId,
-      componentOptions: {
-        importJobId: notification.jobId,
-      },
-    });
+      1
+    );
   } else if (
     (low.includes("product") ||
       notification.notifyType ===
@@ -157,30 +153,28 @@ const handleClick = async (
     "productId" in notification
   ) {
     await props.closePage(0);
-    await props.closePage(1);
-    props.openPage(0, {
-      component: ProductsList,
-      param: notification.productId,
-    });
-    props.openPage(1, {
-      component: ProductsEdit,
-      param: notification.productId,
-    });
+    props.openPage(
+      {
+        initialBlade: shallowRef(ProductsList),
+        component: shallowRef(ProductsEdit),
+        param: notification.productId,
+      },
+      1
+    );
   } else if (
     (low.includes("order") ||
       notification.notifyType === "OrderCreatedEventHandler") &&
     "orderId" in notification
   ) {
     await props.closePage(0);
-    await props.closePage(1);
-    props.openPage(0, {
-      component: OrdersList,
-      param: notification.orderId,
-    });
-    props.openPage(1, {
-      component: OrdersEdit,
-      param: notification.orderId,
-    });
+    props.openPage(
+      {
+        initialBlade: shallowRef(OrdersList),
+        component: shallowRef(OrdersEdit),
+        param: notification.orderId,
+      },
+      1
+    );
   }
 };
 </script>

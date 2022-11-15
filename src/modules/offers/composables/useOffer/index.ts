@@ -69,7 +69,7 @@ export default (): IUseOffer => {
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
   const imageUploading = ref(false);
-  const emit = defineEmits(["page:open"]);
+  const emit = defineEmits(["open"]);
   const { t } = useI18n();
   const modified = ref(false);
 
@@ -268,9 +268,9 @@ export default (): IUseOffer => {
   };
 
   const onGalleryItemEdit = (item: Image) => {
-    emit("page:open", {
+    emit("open", {
       component: AssetsDetails,
-      componentOptions: {
+      bladeOptions: {
         editableAsset: item,
         images: offerDetails.value.images,
         sortHandler: sortImage,

@@ -6,7 +6,7 @@
     :closable="closable"
     width="70%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <VcContainer>
       <VcRow>
@@ -240,7 +240,7 @@
 import { defineComponent, computed, onMounted, ref } from "vue";
 
 export default defineComponent({
-  url: "order",
+  url: "/order",
 });
 </script>
 

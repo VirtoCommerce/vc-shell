@@ -5,7 +5,7 @@
     :closable="closable"
     width="30%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -193,7 +193,7 @@ import {
 } from "vue";
 
 export default defineComponent({
-  url: "orders",
+  url: "/orders",
 });
 </script>
 
@@ -231,7 +231,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:open"]);
+const emit = defineEmits(["open"]);
 const {
   orders,
   loadOrders,
@@ -336,7 +336,7 @@ const empty = reactive({
 });
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
+  emit("open", {
     component: OrdersDetails,
     param: item.id,
     onOpen() {

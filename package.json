@@ -53,7 +53,6 @@
     "@storybook/theming": "^6.3.8",
     "@storybook/vue3": "^6.3.8",
     "@types/lodash-es": "^4.17.6",
-    "@types/react": "file:stub/types__react",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
     "@vitejs/plugin-vue": "^2.2.0",
@@ -92,5 +91,8 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
+  },
+  "resolutions": {
+    "@types/react": "file:stub/@types/react"
   }
 }

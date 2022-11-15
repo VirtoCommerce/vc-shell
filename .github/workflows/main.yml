@@ -22,7 +22,7 @@ jobs:
       GITHUB_USER: '${{ github.repository_owner }}'
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-   
+
     steps:
     - uses: actions/checkout@v3
     # Setup .npmrc file to publish to GitHub Packages
@@ -45,7 +45,7 @@ jobs:
       id: image
       with:
         projectType: theme
- 
+
     - name: Set release variables
       if: ${{ github.ref == 'refs/heads/main' }}
       run: |
@@ -64,6 +64,6 @@ jobs:
         yarn build
 
     - name: Publish virto-shell npm
-      run: lerna publish  from-package --registry=https://registry.npmjs.org --no-git-reset --ignore-scripts --yes --no-verify-access
+      run: lerna publish from-package --registry=https://registry.npmjs.org --yes
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -15,7 +15,10 @@ import {
   PropertyDictionaryItem,
   PropertyDictionaryItemSearchCriteria,
   UpdateProductDetailsCommand,
+  SellerProduct,
+  ValidateProductQuery,
   VcmpSellerCatalogClient,
+  ValidationFailure,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
@@ -29,6 +32,7 @@ interface IUseProduct {
     ids?: string[]
   ) => Promise<CategorySearchResult>;
   loadProduct: (args: { id: string }) => void;
+  validateProduct: (product: ISellerProduct) => Promise<ValidationFailure[]>;
   createProduct: (details: IProductDetails) => void;
   updateProductDetails: (
     productId: string,
@@ -162,6 +166,23 @@ export default (): IUseProduct => {
     }
   }
 
+  async function validateProduct(
+    product: ISellerProduct
+  ): Promise<ValidationFailure[]> {
+    const client = await getApiClient();
+
+    const query = new ValidateProductQuery({
+      sellerProduct: new SellerProduct(product),
+    });
+
+    try {
+      return await client.validateProduct(query);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
+  }
+
   async function createProduct(details: IProductDetails) {
     logger.info(`create new  product`, details);
 
@@ -201,9 +222,10 @@ export default (): IUseProduct => {
 
   return {
     product: computed(() => product.value),
-    modified: computed(() => modified.value),
     productDetails,
     loading: computed(() => loading.value),
+    modified: computed(() => modified.value),
+    validateProduct,
     loadProduct,
     updateProductDetails,
     fetchCategories,

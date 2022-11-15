@@ -31,6 +31,7 @@ jobs:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
           cache: 'yarn'
+          always-auth: true
 
     - name: Set GITHUB_USER to lowercase
       run: |
@@ -38,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn install --frozen-lockfile
+        yarn bootstrap -- --frozen-lockfile
 
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master

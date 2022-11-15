@@ -5,7 +5,10 @@ import ResetPassword from "../pages/ResetPassword.vue";
 import { OrdersEdit, OrdersList } from "../modules/orders";
 import { ProductsList, ProductsEdit } from "../modules/products";
 import { OffersDetails, OffersList } from "../modules/offers";
-import { MpProductsList, MpProductsEdit } from "../modules/marketplace-products";
+import {
+  MpProductsList,
+  MpProductsEdit,
+} from "../modules/marketplace-products";
 import Login from "./../pages/Login.vue";
 import App from "./../pages/App.vue";
 import {
@@ -14,7 +17,7 @@ import {
   ImportProfileSelector,
 } from "../modules/import";
 import { ReviewDetails, ReviewList } from "../modules/rating";
-import { SellerDetails, TeamList } from "../modules/settings";
+import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
 import { usePermissions, useUser } from "@vc-shell/core";
 import whiteLogoImage from "/assets/logo-white.svg";
 import bgImage from "/assets/background.jpg";
@@ -112,14 +115,18 @@ const routes = [
         component: ReviewDetails,
         props: true,
       },
-
       {
         name: "SellerDetailsEdit",
         path: "seller-details-edit",
         component: SellerDetails,
         props: true,
       },
-
+      {
+        name: "FulfillmentCentersList",
+        path: "fulfillment-centers-list",
+        component: FulfillmentCenters,
+        props: true,
+      },
       {
         name: "Team",
         path: "team",

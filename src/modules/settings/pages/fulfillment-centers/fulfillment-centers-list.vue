@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close')"
   >
     <VcTable
       class="grow basis-0"
@@ -53,7 +53,7 @@ import {
 } from "../../../../types";
 
 export default defineComponent({
-  url: "fulfillment-centers-list",
+  url: "/fulfillment-centers-list",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
@@ -86,7 +86,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "page:open"]);
+const emit = defineEmits(["close", "open"]);
 
 const { t } = useI18n();
 const {
@@ -123,7 +123,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     ),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("page:open", {
+      emit("open", {
         component: shallowRef(FulfillmentCenterDetails),
       });
     },
@@ -178,7 +178,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: FulfillmentCenter) => {
-  emit("page:open", {
+  emit("open", {
     component: shallowRef(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {

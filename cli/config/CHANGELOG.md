@@ -3,6 +3,76 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 1.0.35 (2022-11-15)
+
+
+
+## 1.0.34 (2022-11-15)
+
+
+
+## 1.0.33 (2022-10-24)
+
+
+
+## 1.0.31 (2022-10-14)
+
+
+### Bug Fixes
+
+* build ([6be999b](https://github.com/VirtoCommerce/vc-shell/commit/6be999b2f13aa8a040374f668b8b71450e7c8c6b))
+* rename virto-shell -> virtocommerce ([ba74f8f](https://github.com/VirtoCommerce/vc-shell/commit/ba74f8fb7fcb61744f2348e8521dfae77775418b))
+
+
+### Features
+
+* full lib content to npm ([28cc487](https://github.com/VirtoCommerce/vc-shell/commit/28cc4874abb7806e073c976cd12baf1f8bd22f1a))
+* vm-801 1042 800 569 1043 914 814 1054 920 1019 ([8bf48a3](https://github.com/VirtoCommerce/vc-shell/commit/8bf48a32989c1b64b2aac4a5bc96b9bdcf7f995a))
+
+
+### Reverts
+
+* Revert "chore: %s publish" ([bfdda26](https://github.com/VirtoCommerce/vc-shell/commit/bfdda2630a86d545e5800a3508a77c0fb377fd82))
+
+
+
+## 1.0.17 (2022-08-05)
+
+
+
+## 1.0.16 (2022-08-05)
+
+
+
+## 1.0.14 (2022-08-04)
+
+
+### Features
+
+* version up ([85d5ab5](https://github.com/VirtoCommerce/vc-shell/commit/85d5ab59926cc4fe8c2e6464a0d6cb1e849c975d))
+
+
+
+## 1.0.13 (2022-07-14)
+
+
+### Features
+
+* npm publish configuration ([41e3ff8](https://github.com/VirtoCommerce/vc-shell/commit/41e3ff8c04eccff1ed9a934c5a3457aec26a32dc))
+
+
+
+## 1.0.11 (2022-07-08)
+
+
+
+## 0.1.16 (2022-04-15)
+
+
+
+
+
+
 ## 1.0.34 (2022-11-15)
 
 

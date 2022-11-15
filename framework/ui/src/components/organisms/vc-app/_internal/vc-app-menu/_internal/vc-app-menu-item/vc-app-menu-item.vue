@@ -3,14 +3,23 @@
     <template v-if="component && component.url">
       <router-link :to="component.url" v-slot="{ isActive, navigate }">
         <vc-app-menu-link
-          v-bind="props"
           :isActive="isActive"
+          :children="children"
+          :sticky="sticky"
+          :icon="icon"
+          :title="title"
           @onClick="onMenuItemClick(navigate)"
         />
       </router-link>
     </template>
     <template v-else>
-      <vc-app-menu-link v-bind="props" @onClick="onMenuItemClick" />
+      <vc-app-menu-link
+        :children="children"
+        :sticky="sticky"
+        :icon="icon"
+        :title="title"
+        @onClick="onMenuItemClick"
+      />
 
       <!-- Nested menu items -->
       <div class="vc-app-menu-item__child" v-if="isOpened">
@@ -40,31 +49,26 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import {
-  BladeComponent,
-  IBladeToolbar,
-  IMenuItems,
-} from "../../../../../../../typings";
+import { onMounted, ref } from "vue";
+import { BladeComponent, IBladeToolbar } from "../../../../../../../typings";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
+import { useRoute } from "vue-router";
 
 interface Props {
-  sticky: boolean;
-  isVisible: boolean;
-  activeChildItem: IMenuItems;
-  component: BladeComponent;
-  bladeOptions: Record<string, unknown>;
-  clickHandler: () => void;
+  sticky?: boolean;
+  isVisible?: boolean;
+  component?: BladeComponent;
+  bladeOptions?: Record<string, unknown>;
+  clickHandler?: () => void;
   icon: string;
   title: string;
-  children: IBladeToolbar[];
-  isCollapsed: boolean;
+  children?: IBladeToolbar[];
+  isCollapsed?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   sticky: true,
   isVisible: false,
-  activeChildItem: undefined,
   component: undefined,
   bladeOptions: () => ({}),
   clickHandler: undefined,
@@ -74,9 +78,21 @@ const props = withDefaults(defineProps<Props>(), {
   isCollapsed: true,
 });
 
+const route = useRoute();
+
 const emit = defineEmits(["click"]);
 
 const isOpened = ref(false);
+
+onMounted(() => {
+  if (
+    props.children &&
+    props.children.length &&
+    props.children.find((x) => x.component?.url === route.path)
+  ) {
+    isOpened.value = true;
+  }
+});
 
 function onMenuItemClick(navigate?: () => void) {
   if (navigate && typeof navigate === "function" && !props.children?.length) {

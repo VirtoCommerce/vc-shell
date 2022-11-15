@@ -31,9 +31,9 @@
 import { BladeComponent } from "../../../../../../../../typings";
 
 interface Props {
-  isActive: boolean;
-  children: BladeComponent;
-  sticky: boolean;
+  isActive?: boolean;
+  children?: BladeComponent;
+  sticky?: boolean;
   icon: string;
   title: string;
 }

@@ -117,7 +117,7 @@
                       $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                     "
                     :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
-                    rules="min:3"
+                    :rules="validateGtin"
                     :disabled="readonly"
                     name="gtin"
                     maxchars="64"
@@ -209,7 +209,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { useFunctions, useI18n, useUser, useAutosave } from "@vc-shell/core";
-import { useForm } from "@vc-shell/ui";
+import { useForm, min, VcInput } from "@vc-shell/ui";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
@@ -225,7 +225,11 @@ import { AssetsDetails } from "@vc-shell/mod-assets";
 import { OffersList } from "../../offers";
 import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
-import { IImage, IProductDetails } from "../../../api_client/marketplacevendor";
+import {
+  IImage,
+  IProductDetails,
+  ISellerProduct,
+} from "../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
@@ -254,10 +258,11 @@ const { t } = useI18n();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const {
-  modified,
   product: productData,
   productDetails,
   loading: prodLoading,
+  modified,
+  validateProduct,
   loadProduct,
   createProduct,
   updateProductDetails,
@@ -456,6 +461,39 @@ const readonly = computed(
   () => props.param && !productData.value?.canBeModified
 );
 const loading = computed(() => prodLoading.value);
+
+const validateGtin = [
+  (value: string): string | boolean => {
+    return min(value, [3]);
+  },
+  async (value: string): Promise<string | boolean> =>
+    await validate("gtin", value),
+];
+
+const validate = async (
+  fieldName: string,
+  value: string
+): Promise<string | boolean> => {
+  const sellerProduct = {
+    ...product.value,
+    [fieldName]: value,
+  } as ISellerProduct;
+  const productErrors = await validateProduct(sellerProduct);
+  const errors = productErrors?.filter(
+    (error) => error.propertyName.toLowerCase() === fieldName.toLowerCase()
+  );
+  return (
+    !errors ||
+    errors.length === 0 ||
+    errors
+      .map((error) =>
+        t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+          value: error?.attemptedValue,
+        })
+      )
+      .join("\n")
+  );
+};
 
 const onGalleryUpload = async (files: FileList) => {
   try {

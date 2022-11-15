@@ -456,7 +456,6 @@ import { useForm } from "@vc-shell/ui";
 import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
 import { useOffer } from "../composables";
 import {
-  CustomerReview,
   IOfferDetails,
   IOfferProduct,
   OfferPrice,
@@ -471,11 +470,9 @@ import {
   PropertyDictionaryItem,
   PropertyValue,
 } from "../../../api_client/catalog";
-import { ProductsList, useProduct } from "../../products";
-import { useRoute, useRouter } from "vue-router";
-import { OffersDetails, OffersList } from "./index";
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
+import {shallowRef} from "vue";
 
 export interface Props {
   expanded: boolean;
@@ -761,7 +758,7 @@ function setPriceRefs(el: HTMLDivElement) {
 
 async function showProductDetails(id: string) {
   emit("open", {
-    component: ProductsEdit,
+    component: shallowRef(ProductsEdit),
     param: id,
   });
 }

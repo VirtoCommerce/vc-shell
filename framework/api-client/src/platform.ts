@@ -214,6 +214,64 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 }
 
+export class AppsClient extends AuthApiBase {
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = this.getBaseUrl("https://vcmp-dev.paas.govirto.com", baseUrl);
+    }
+
+    /**
+     * @return Success
+     */
+    getApps(): Promise<AppDescriptor[]> {
+        let url_ = this.baseUrl + "/api/platform/apps";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetApps(_response);
+        });
+    }
+
+    protected processGetApps(response: Response): Promise<AppDescriptor[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AppDescriptor.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AppDescriptor[]>(null as any);
+    }
+}
+
 export class ChangeLogClient extends AuthApiBase {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -360,7 +418,7 @@ export class ChangeLogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    getChangedEntities(body: ChangedEntitiesRequest | undefined): Promise<ChangedEntitiesResponse> {
+    getChangedEntities(body: ChangedEntitiesRequest | null | undefined): Promise<ChangedEntitiesResponse> {
         let url_ = this.baseUrl + "/api/changes/changed-entities";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -452,7 +510,7 @@ export class ChangeLogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchChanges(body: ChangeLogSearchCriteria | undefined): Promise<ChangeLogSearchResult> {
+    searchChanges(body: ChangeLogSearchCriteria | null | undefined): Promise<ChangeLogSearchResult> {
         let url_ = this.baseUrl + "/api/platform/changelog/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -738,7 +796,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchDynamicProperties(body: DynamicPropertySearchCriteria | undefined): Promise<DynamicPropertySearchResult> {
+    searchDynamicProperties(body: DynamicPropertySearchCriteria | null | undefined): Promise<DynamicPropertySearchResult> {
         let url_ = this.baseUrl + "/api/platform/dynamic/properties/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -790,7 +848,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createProperty(body: DynamicProperty | undefined): Promise<DynamicProperty> {
+    createProperty(body: DynamicProperty | null | undefined): Promise<DynamicProperty> {
         let url_ = this.baseUrl + "/api/platform/dynamic/properties";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -842,7 +900,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateProperty(body: DynamicProperty | undefined): Promise<void> {
+    updateProperty(body: DynamicProperty | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/platform/dynamic/properties";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -987,7 +1045,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchDictionaryItems(body: DynamicPropertyDictionaryItemSearchCriteria | undefined): Promise<DynamicPropertyDictionaryItemSearchResult> {
+    searchDictionaryItems(body: DynamicPropertyDictionaryItemSearchCriteria | null | undefined): Promise<DynamicPropertyDictionaryItemSearchResult> {
         let url_ = this.baseUrl + "/api/platform/dynamic/dictionaryitems/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1722,7 +1780,7 @@ export class OAuthAppsClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    save(body: OpenIddictApplicationDescriptor | undefined): Promise<OpenIddictApplicationDescriptor> {
+    save(body: OpenIddictApplicationDescriptor | null | undefined): Promise<OpenIddictApplicationDescriptor> {
         let url_ = this.baseUrl + "/api/platform/oauthapps";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1820,7 +1878,7 @@ export class OAuthAppsClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    search(body: OAuthAppSearchCriteria | undefined): Promise<OAuthAppSearchResult> {
+    search(body: OAuthAppSearchCriteria | null | undefined): Promise<OAuthAppSearchResult> {
         let url_ = this.baseUrl + "/api/platform/oauthapps/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1884,7 +1942,7 @@ export class PushNotificationClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchPushNotification(body: PushNotificationSearchCriteria | undefined): Promise<PushNotificationSearchResult> {
+    searchPushNotification(body: PushNotificationSearchCriteria | null | undefined): Promise<PushNotificationSearchResult> {
         let url_ = this.baseUrl + "/api/platform/pushnotifications";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1995,7 +2053,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    login(body: LoginRequest | undefined): Promise<SignInResult> {
+    login(body: LoginRequest | null | undefined): Promise<SignInResult> {
         let url_ = this.baseUrl + "/api/platform/security/login";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2237,7 +2295,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchRoles(body: RoleSearchCriteria | undefined): Promise<RoleSearchResult> {
+    searchRoles(body: RoleSearchCriteria | null | undefined): Promise<RoleSearchResult> {
         let url_ = this.baseUrl + "/api/platform/security/roles/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2385,7 +2443,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateRole(body: Role | undefined): Promise<SecurityResult> {
+    updateRole(body: Role | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/roles";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2437,7 +2495,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchUsers(body: UserSearchCriteria | undefined): Promise<UserSearchResult> {
+    searchUsers(body: UserSearchCriteria | null | undefined): Promise<UserSearchResult> {
         let url_ = this.baseUrl + "/api/platform/security/users/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2692,7 +2750,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    create(body: ApplicationUser | undefined): Promise<SecurityResult> {
+    create(body: ApplicationUser | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/users/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2744,7 +2802,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    changeCurrentUserPassword(body: ChangePasswordRequest | undefined): Promise<SecurityResult> {
+    changeCurrentUserPassword(body: ChangePasswordRequest | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/currentuser/changepassword";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2800,7 +2858,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    changePassword(userName: string | null, body: ChangePasswordRequest | undefined): Promise<SecurityResult> {
+    changePassword(userName: string | null, body: ChangePasswordRequest | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/users/{userName}/changepassword";
         if (userName === undefined || userName === null)
             throw new Error("The parameter 'userName' must be defined.");
@@ -2859,7 +2917,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    resetPassword(userName: string | null, body: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
+    resetPassword(userName: string | null, body: ResetPasswordConfirmRequest | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/users/{userName}/resetpassword";
         if (userName === undefined || userName === null)
             throw new Error("The parameter 'userName' must be defined.");
@@ -2914,7 +2972,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    resetPasswordByToken(userId: string | null, body: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
+    resetPasswordByToken(userId: string | null, body: ResetPasswordConfirmRequest | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/users/{userId}/resetpasswordconfirm";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
@@ -2961,7 +3019,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    validatePasswordResetToken(userId: string | null, body: ValidatePasswordResetTokenRequest | undefined): Promise<boolean> {
+    validatePasswordResetToken(userId: string | null, body: ValidatePasswordResetTokenRequest | null | undefined): Promise<boolean> {
         let url_ = this.baseUrl + "/api/platform/security/users/{userId}/validatepasswordresettoken";
         if (userId === undefined || userId === null)
             throw new Error("The parameter 'userId' must be defined.");
@@ -3091,7 +3149,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    validateUserPassword(body: ChangePasswordRequest | undefined): Promise<IdentityResult> {
+    validateUserPassword(body: ChangePasswordRequest | null | undefined): Promise<IdentityResult> {
         let url_ = this.baseUrl + "/api/platform/security/validateuserpassword";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3143,7 +3201,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    update(body: ApplicationUser | undefined): Promise<SecurityResult> {
+    update(body: ApplicationUser | null | undefined): Promise<SecurityResult> {
         let url_ = this.baseUrl + "/api/platform/security/users";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3448,7 +3506,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    saveUserApiKey(body: UserApiKey | undefined): Promise<UserApiKey[]> {
+    saveUserApiKey(body: UserApiKey | null | undefined): Promise<UserApiKey[]> {
         let url_ = this.baseUrl + "/api/platform/security/users/apikeys";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3507,7 +3565,7 @@ export class SecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateUserApiKey(body: UserApiKey | undefined): Promise<UserApiKey[]> {
+    updateUserApiKey(body: UserApiKey | null | undefined): Promise<UserApiKey[]> {
         let url_ = this.baseUrl + "/api/platform/security/users/apikeys";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -4042,6 +4100,62 @@ export interface IOpenIddictResponse {
     count?: number;
 }
 
+export class AppDescriptor implements IAppDescriptor {
+    title?: string | undefined;
+    description?: string | undefined;
+    iconUrl?: string | undefined;
+    relativeUrl?: string | undefined;
+    permission?: string | undefined;
+    id?: string | undefined;
+
+    constructor(data?: IAppDescriptor) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.title = _data["title"];
+            this.description = _data["description"];
+            this.iconUrl = _data["iconUrl"];
+            this.relativeUrl = _data["relativeUrl"];
+            this.permission = _data["permission"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): AppDescriptor {
+        data = typeof data === 'object' ? data : {};
+        let result = new AppDescriptor();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["title"] = this.title;
+        data["description"] = this.description;
+        data["iconUrl"] = this.iconUrl;
+        data["relativeUrl"] = this.relativeUrl;
+        data["permission"] = this.permission;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface IAppDescriptor {
+    title?: string | undefined;
+    description?: string | undefined;
+    iconUrl?: string | undefined;
+    relativeUrl?: string | undefined;
+    permission?: string | undefined;
+    id?: string | undefined;
+}
+
 export class LastModifiedResponse implements ILastModifiedResponse {
     scope?: string | undefined;
     lastModifiedDate?: Date;
@@ -4229,7 +4343,7 @@ export enum SortDirection {
 
 export class SortInfo implements ISortInfo {
     sortColumn?: string | undefined;
-    sortDirection?: SortDirection;
+    sortDirection?: SortInfoSortDirection;
 
     constructor(data?: ISortInfo) {
         if (data) {
@@ -4264,7 +4378,7 @@ export class SortInfo implements ISortInfo {
 
 export interface ISortInfo {
     sortColumn?: string | undefined;
-    sortDirection?: SortDirection;
+    sortDirection?: SortInfoSortDirection;
 }
 
 export class ChangeLogSearchCriteria implements IChangeLogSearchCriteria {
@@ -4390,7 +4504,7 @@ export interface IChangeLogSearchCriteria {
 export class OperationLog implements IOperationLog {
     objectType?: string | undefined;
     objectId?: string | undefined;
-    operationType?: EntryState;
+    operationType?: OperationLogOperationType;
     detail?: string | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -4446,7 +4560,7 @@ export class OperationLog implements IOperationLog {
 export interface IOperationLog {
     objectType?: string | undefined;
     objectId?: string | undefined;
-    operationType?: EntryState;
+    operationType?: OperationLogOperationType;
     detail?: string | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -4605,7 +4719,7 @@ export interface ISemanticVersion {
 
 export class ModuleIdentity implements IModuleIdentity {
     id?: string | undefined;
-    version?: SemanticVersion;
+    version?: SemanticVersion | undefined;
 
     constructor(data?: IModuleIdentity) {
         if (data) {
@@ -4640,7 +4754,7 @@ export class ModuleIdentity implements IModuleIdentity {
 
 export interface IModuleIdentity {
     id?: string | undefined;
-    version?: SemanticVersion;
+    version?: SemanticVersion | undefined;
 }
 
 export class ModuleDescriptor implements IModuleDescriptor {
@@ -4662,7 +4776,7 @@ export class ModuleDescriptor implements IModuleDescriptor {
     validationErrors?: string[] | undefined;
     isRemovable?: boolean;
     isInstalled?: boolean;
-    installedVersion?: ModuleIdentity;
+    installedVersion?: ModuleIdentity | undefined;
     id?: string | undefined;
 
     constructor(data?: IModuleDescriptor) {
@@ -4791,13 +4905,13 @@ export interface IModuleDescriptor {
     validationErrors?: string[] | undefined;
     isRemovable?: boolean;
     isInstalled?: boolean;
-    installedVersion?: ModuleIdentity;
+    installedVersion?: ModuleIdentity | undefined;
     id?: string | undefined;
 }
 
 export class SystemInfo implements ISystemInfo {
     platformVersion?: string | undefined;
-    license?: License;
+    license?: License | undefined;
     installedModules?: ModuleDescriptor[] | undefined;
     version?: string | undefined;
     is64BitOperatingSystem?: boolean;
@@ -4852,7 +4966,7 @@ export class SystemInfo implements ISystemInfo {
 
 export interface ISystemInfo {
     platformVersion?: string | undefined;
-    license?: License;
+    license?: License | undefined;
     installedModules?: ModuleDescriptor[] | undefined;
     version?: string | undefined;
     is64BitOperatingSystem?: boolean;
@@ -5024,7 +5138,7 @@ export class DynamicProperty implements IDynamicProperty {
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
-    valueType?: DynamicPropertyValueType;
+    valueType?: DynamicPropertyValueType2;
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5106,7 +5220,7 @@ export interface IDynamicProperty {
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
-    valueType?: DynamicPropertyValueType;
+    valueType?: DynamicPropertyValueType2;
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5169,7 +5283,7 @@ export class DynamicPropertyObjectValue implements IDynamicPropertyObjectValue {
     locale?: string | undefined;
     value?: any | undefined;
     valueId?: string | undefined;
-    valueType?: DynamicPropertyValueType;
+    valueType?: DynamicPropertyObjectValueValueType;
     propertyId?: string | undefined;
     propertyName?: string | undefined;
 
@@ -5222,7 +5336,7 @@ export interface IDynamicPropertyObjectValue {
     locale?: string | undefined;
     value?: any | undefined;
     valueId?: string | undefined;
-    valueType?: DynamicPropertyValueType;
+    valueType?: DynamicPropertyObjectValueValueType;
     propertyId?: string | undefined;
     propertyName?: string | undefined;
 }
@@ -5238,7 +5352,7 @@ export class DynamicObjectProperty implements IDynamicObjectProperty {
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
-    valueType?: DynamicPropertyValueType;
+    valueType?: DynamicObjectPropertyValueType;
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5334,7 +5448,7 @@ export interface IDynamicObjectProperty {
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
-    valueType?: DynamicPropertyValueType;
+    valueType?: DynamicObjectPropertyValueType;
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -5660,7 +5774,7 @@ export enum ProgressMessageLevel {
 
 export class ProgressMessage implements IProgressMessage {
     message?: string | undefined;
-    level?: ProgressMessageLevel;
+    level?: ProgressMessageLevel2;
 
     constructor(data?: IProgressMessage) {
         if (data) {
@@ -5695,7 +5809,7 @@ export class ProgressMessage implements IProgressMessage {
 
 export interface IProgressMessage {
     message?: string | undefined;
-    level?: ProgressMessageLevel;
+    level?: ProgressMessageLevel2;
 }
 
 export class ModulePushNotification implements IModulePushNotification {
@@ -5894,7 +6008,7 @@ export enum JsonValueKind {
 }
 
 export class JsonElement implements IJsonElement {
-    valueKind?: JsonValueKind;
+    readonly valueKind?: JsonElementValueKind;
 
     constructor(data?: IJsonElement) {
         if (data) {
@@ -5907,7 +6021,7 @@ export class JsonElement implements IJsonElement {
 
     init(_data?: any) {
         if (_data) {
-            this.valueKind = _data["valueKind"];
+            (<any>this).valueKind = _data["valueKind"];
         }
     }
 
@@ -5926,7 +6040,7 @@ export class JsonElement implements IJsonElement {
 }
 
 export interface IJsonElement {
-    valueKind?: JsonValueKind;
+    valueKind?: JsonElementValueKind;
 }
 
 export class OpenIddictApplicationDescriptor implements IOpenIddictApplicationDescriptor {
@@ -6612,7 +6726,7 @@ export interface IUserDetail {
 export class ClaimsIdentity implements IClaimsIdentity {
     authenticationType?: string | undefined;
     readonly isAuthenticated?: boolean;
-    actor?: ClaimsIdentity;
+    actor?: ClaimsIdentity | undefined;
     bootstrapContext?: any | undefined;
     claims?: Claim[] | undefined;
     label?: string | undefined;
@@ -6676,7 +6790,7 @@ export class ClaimsIdentity implements IClaimsIdentity {
 export interface IClaimsIdentity {
     authenticationType?: string | undefined;
     isAuthenticated?: boolean;
-    actor?: ClaimsIdentity;
+    actor?: ClaimsIdentity | undefined;
     bootstrapContext?: any | undefined;
     claims?: Claim[] | undefined;
     label?: string | undefined;
@@ -6689,7 +6803,7 @@ export class Claim implements IClaim {
     issuer?: string | undefined;
     originalIssuer?: string | undefined;
     readonly properties?: { [key: string]: string; } | undefined;
-    subject?: ClaimsIdentity;
+    subject?: ClaimsIdentity | undefined;
     type?: string | undefined;
     value?: string | undefined;
     valueType?: string | undefined;
@@ -6751,7 +6865,7 @@ export interface IClaim {
     issuer?: string | undefined;
     originalIssuer?: string | undefined;
     properties?: { [key: string]: string; } | undefined;
-    subject?: ClaimsIdentity;
+    subject?: ClaimsIdentity | undefined;
     type?: string | undefined;
     value?: string | undefined;
     valueType?: string | undefined;
@@ -7377,7 +7491,7 @@ export class ApplicationUser implements IApplicationUser {
     modifiedBy?: string | undefined;
     roles?: Role[] | undefined;
     lockoutEndDateUtc?: Date | undefined;
-    userState?: AccountState;
+    userState?: ApplicationUserUserState;
     permissions?: string[] | undefined;
     logins?: ApplicationUserLogin[] | undefined;
     passwordExpired?: boolean;
@@ -7532,7 +7646,7 @@ export interface IApplicationUser {
     modifiedBy?: string | undefined;
     roles?: Role[] | undefined;
     lockoutEndDateUtc?: Date | undefined;
-    userState?: AccountState;
+    userState?: ApplicationUserUserState;
     permissions?: string[] | undefined;
     logins?: ApplicationUserLogin[] | undefined;
     passwordExpired?: boolean;
@@ -7957,7 +8071,7 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
     displayName?: string | undefined;
     isRequired?: boolean;
     isHidden?: boolean;
-    valueType?: SettingValueType;
+    valueType?: ObjectSettingEntryValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
@@ -8045,7 +8159,7 @@ export interface IObjectSettingEntry {
     displayName?: string | undefined;
     isRequired?: boolean;
     isHidden?: boolean;
-    valueType?: SettingValueType;
+    valueType?: ObjectSettingEntryValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
     isDictionary?: boolean;
@@ -8097,6 +8211,91 @@ export interface IBody {
     scope?: string;
     username?: string;
     password?: string;
+}
+
+export enum SortInfoSortDirection {
+    Ascending = "Ascending",
+    Descending = "Descending",
+}
+
+export enum OperationLogOperationType {
+    Detached = "Detached",
+    Unchanged = "Unchanged",
+    Added = "Added",
+    Deleted = "Deleted",
+    Modified = "Modified",
+}
+
+export enum DynamicPropertyValueType2 {
+    Undefined = "Undefined",
+    ShortText = "ShortText",
+    LongText = "LongText",
+    Integer = "Integer",
+    Decimal = "Decimal",
+    DateTime = "DateTime",
+    Boolean = "Boolean",
+    Html = "Html",
+    Image = "Image",
+}
+
+export enum DynamicPropertyObjectValueValueType {
+    Undefined = "Undefined",
+    ShortText = "ShortText",
+    LongText = "LongText",
+    Integer = "Integer",
+    Decimal = "Decimal",
+    DateTime = "DateTime",
+    Boolean = "Boolean",
+    Html = "Html",
+    Image = "Image",
+}
+
+export enum DynamicObjectPropertyValueType {
+    Undefined = "Undefined",
+    ShortText = "ShortText",
+    LongText = "LongText",
+    Integer = "Integer",
+    Decimal = "Decimal",
+    DateTime = "DateTime",
+    Boolean = "Boolean",
+    Html = "Html",
+    Image = "Image",
+}
+
+export enum ProgressMessageLevel2 {
+    Info = "Info",
+    Warning = "Warning",
+    Debug = "Debug",
+    Error = "Error",
+}
+
+export enum JsonElementValueKind {
+    Undefined = "Undefined",
+    Object = "Object",
+    Array = "Array",
+    String = "String",
+    Number = "Number",
+    True = "True",
+    False = "False",
+    Null = "Null",
+}
+
+export enum ApplicationUserUserState {
+    PendingApproval = "PendingApproval",
+    Approved = "Approved",
+    Rejected = "Rejected",
+}
+
+export enum ObjectSettingEntryValueType {
+    ShortText = "ShortText",
+    LongText = "LongText",
+    Integer = "Integer",
+    Decimal = "Decimal",
+    DateTime = "DateTime",
+    Boolean = "Boolean",
+    SecureString = "SecureString",
+    Json = "Json",
+    PositiveInteger = "PositiveInteger",
 }
 
 export class ApiException extends Error {

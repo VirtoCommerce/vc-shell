@@ -2,8 +2,7 @@
   "name": "@vc-shell/mod-assets",
   "version": "1.0.35",
   "scripts": {
-    "build": "vite build",
-    "generate-api-client": "api-client-generator --color"
+    "build": "vite build"
   },
   "main": "./dist/mod-assets.cjs.js",
   "types": "./dist/index.d.ts",
@@ -13,8 +12,6 @@
     "src"
   ],
   "devDependencies": {
-    "@vc-shell/api-client": "^1.0.35",
-    "@vc-shell/api-client-generator": "^1.0.35",
     "@vc-shell/config-generator": "^1.0.35",
     "@vc-shell/core": "^1.0.35",
     "@vc-shell/ui": "^1.0.35",

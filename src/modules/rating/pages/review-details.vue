@@ -5,7 +5,7 @@
     v-loading="false"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <template v-slot:actions>
       <Status :review-status="customerReview.reviewStatus"></Status>
@@ -109,8 +109,8 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "close"): void;
-  (event: "open", page: IPage): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", page: IPage): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

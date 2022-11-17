@@ -100,7 +100,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits(["open"]);
+const emit = defineEmits(["open:blade"]);
 
 const { t } = useI18n();
 const {
@@ -194,7 +194,7 @@ async function reload() {
 function newProfile() {
   bladeWidth.value = 70;
 
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(ImportProfileDetails),
   });
 }
@@ -206,7 +206,7 @@ function openImporter(profileId: string) {
     (profile) => profile.id === profileId
   );
 
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(ImportNew),
     param: profileId,
     bladeOptions: {
@@ -224,7 +224,7 @@ function openImporter(profileId: string) {
 function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
 
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(ImportNew),
     param: item.profileId,
     bladeOptions: {

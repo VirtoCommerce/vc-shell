@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, PropType, ref, shallowRef } from "vue";
+import {inject, onMounted, PropType, ref, shallowRef} from "vue";
 import { PushNotification } from "@vc-shell/api-client";
 import { useNotifications } from "@vc-shell/core";
 import { IMenuItems } from "@vc-shell/ui";
@@ -97,19 +97,12 @@ const props = defineProps({
     type: Array as PropType<IMenuItems[]>,
     default: () => [],
   },
-
-  openPage: {
-    type: Function,
-    default: undefined,
-  },
-
-  closePage: {
-    type: Function,
-    default: undefined,
-  },
 });
 const isDropdownVisible = ref(false);
 const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
+const openBlade = inject<() => void>("openBlade");
+const closeBlade = inject<() => void>("closeBlade");
+
 
 onMounted(async () => {
   await loadFromHistory();
@@ -134,10 +127,10 @@ const handleClick = async (
 
   // TODO need to discuss on arch meeting
   if (low.includes("import") && "profileId" in notification) {
-    await props.closePage(0);
-    props.openPage(
+    await closeBlade(0);
+    openBlade(
       {
-        initialBlade: shallowRef(ImportProfileSelector),
+        parentBlade: shallowRef(ImportProfileSelector),
         component: shallowRef(ImportNew),
         param: notification.profileId,
         bladeOptions: {
@@ -152,10 +145,10 @@ const handleClick = async (
         "PublicationRequestStatusChangedDomainEvent") &&
     "productId" in notification
   ) {
-    await props.closePage(0);
-    props.openPage(
+    await closeBlade(0);
+    openBlade(
       {
-        initialBlade: shallowRef(ProductsList),
+        parentBlade: shallowRef(ProductsList),
         component: shallowRef(ProductsEdit),
         param: notification.productId,
       },
@@ -166,10 +159,10 @@ const handleClick = async (
       notification.notifyType === "OrderCreatedEventHandler") &&
     "orderId" in notification
   ) {
-    await props.closePage(0);
-    props.openPage(
+    await closeBlade(0);
+    openBlade(
       {
-        initialBlade: shallowRef(OrdersList),
+        parentBlade: shallowRef(OrdersList),
         component: shallowRef(OrdersEdit),
         param: notification.orderId,
       },

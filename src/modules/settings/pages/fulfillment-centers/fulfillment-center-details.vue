@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -92,7 +92,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["close", "parent:call"]);
+const emit = defineEmits(["close:blade", "parent:call"]);
 useForm({ validateOnMount: false });
 
 const { t } = useI18n();
@@ -134,7 +134,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("close");
+          emit("close:blade");
         } catch (e) {
           logger.error(e);
         }
@@ -194,7 +194,7 @@ async function removeFulfillmentCenter() {
     emit("parent:call", {
       method: "reload",
     });
-    emit("close");
+    emit("close:blade");
   }
 }
 

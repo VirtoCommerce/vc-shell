@@ -5,7 +5,7 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <ReviewTable :expanded="expanded" @itemClick="onItemClick"></ReviewTable>
   </VcBlade>
@@ -37,8 +37,8 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "close"): void;
-  (event: "open", page: IPage): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", page: IPage): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -74,7 +74,7 @@ const onItemClick = (
   onSelect: () => void,
   onDeselect: () => void
 ) => {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(ReviewDetails),
     param: item.id,
     bladeOptions: {

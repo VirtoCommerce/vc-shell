@@ -1,5 +1,5 @@
 {
-  "PRODUCTS": {
+  "MP-PRODUCTS": {
     "STATUSES": {
       "REQUIRES_CHANGES": "Requires changes",
       "WAIT_FOR_APPROVAL": "Wait for approval",
@@ -15,7 +15,7 @@
     },
     "PAGES": {
       "LIST": {
-        "TITLE": "Products",
+        "TITLE": "Marketplace Products",
         "TOOLBAR": {
           "REFRESH": "Refresh",
           "ADD": "Add",

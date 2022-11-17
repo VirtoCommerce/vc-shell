@@ -107,32 +107,15 @@ import {
   RequestPasswordResult,
   useI18n,
 } from "@vc-shell/core";
-
 import { useLogin } from "../modules/login";
 import { useForm } from "@vc-shell/ui";
 import {useRoute, useRouter} from "vue-router";
 import { useIsFormValid } from "vee-validate";
 
-// const props = defineProps({
-//   logo: {
-//     type: String,
-//     default: undefined,
-//   },
-//
-//   background: {
-//     type: String,
-//     default: undefined,
-//   },
-//
-//   title: {
-//     type: String,
-//     default: undefined,
-//   },
-// });
 const log = useLogger();
 const { t } = useI18n();
 const router = useRouter();
-const route=  useRoute()
+const route = useRoute()
 useForm({ validateOnMount: false });
 const {logo, background, title} = route.meta
 

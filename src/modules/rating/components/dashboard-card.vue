@@ -54,7 +54,7 @@ const props = defineProps<Props>();
 const openAllReviews = () => {
   props.openPage(
     {
-      initialBlade: ReviewList,
+      parentBlade: ReviewList,
     },
     0
   );

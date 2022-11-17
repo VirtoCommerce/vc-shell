@@ -338,7 +338,7 @@ function open(key: string): void {
     case "orders-list":
       openBlade(
         {
-          initialBlade: shallowRef(OrdersList),
+          parentBlade: shallowRef(OrdersList),
         },
         0
       );
@@ -346,7 +346,7 @@ function open(key: string): void {
     case "products-list":
       openBlade(
         {
-          initialBlade: shallowRef(ProductsList),
+          parentBlade: shallowRef(ProductsList),
         },
         0
       );
@@ -354,13 +354,13 @@ function open(key: string): void {
     case "products-add":
       openBlade(
         {
-          initialBlade: shallowRef(ProductsList),
+          parentBlade: shallowRef(ProductsList),
         },
         0
       );
       openBlade(
         {
-          initialBlade: shallowRef(ProductsEdit),
+          parentBlade: shallowRef(ProductsEdit),
         },
         1
       );
@@ -368,7 +368,7 @@ function open(key: string): void {
     case "offers-list":
       openBlade(
         {
-          initialBlade: shallowRef(OffersList),
+          parentBlade: shallowRef(OffersList),
         },
         0
       );
@@ -376,7 +376,7 @@ function open(key: string): void {
     case "offers-add":
       openBlade(
         {
-          initialBlade: shallowRef(OffersList),
+          parentBlade: shallowRef(OffersList),
         },
         0
       );
@@ -393,14 +393,14 @@ function open(key: string): void {
 function ordersClick(item: { id: string }): void {
   openBlade(
     {
-      initialBlade: shallowRef(OrdersList),
+      parentBlade: shallowRef(OrdersList),
       param: item.id,
     },
     0
   );
   openBlade(
     {
-      initialBlade: shallowRef(OrdersEdit),
+      parentBlade: shallowRef(OrdersEdit),
       param: item.id,
     },
     1
@@ -410,14 +410,14 @@ function ordersClick(item: { id: string }): void {
 function productsClick(item: { id: string }): void {
   openBlade(
     {
-      initialBlade: shallowRef(ProductsList),
+      parentBlade: shallowRef(ProductsList),
       param: item.id,
     },
     0
   );
   openBlade(
     {
-      initialBlade: shallowRef(ProductsEdit),
+      parentBlade: shallowRef(ProductsEdit),
       param: item.id,
     },
     1
@@ -427,14 +427,14 @@ function productsClick(item: { id: string }): void {
 function offersClick(item: { id: string }): void {
   openBlade(
     {
-      initialBlade: shallowRef(OffersList),
+      parentBlade: shallowRef(OffersList),
       param: item.id,
     },
     0
   );
   openBlade(
     {
-      initialBlade: shallowRef(OffersDetails),
+      parentBlade: shallowRef(OffersDetails),
       param: item.id,
     },
     1

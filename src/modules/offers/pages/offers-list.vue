@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -148,13 +148,12 @@ import {
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 import emptyImage from "/assets/empty.png";
-import { useRouter } from "vue-router";
 
 export interface Props {
-  expanded: boolean;
-  closable: boolean;
+  expanded?: boolean;
+  closable?: boolean;
   param?: string;
-  options: Record<string, unknown>
+  options?: Record<string, unknown>
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -162,7 +161,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits(["parent:call", "close:children", "open"]);
+const emit = defineEmits(["parent:call", "close:children", "open:blade"]);
 
 const { t } = useI18n();
 const logger = useLogger();
@@ -360,7 +359,7 @@ const columns = computed(() => {
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(OffersDetails),
     param: item.id,
     onOpen() {
@@ -385,7 +384,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const addOffer = () => {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(OffersDetails),
     bladeOptions: props.options,
   });

@@ -6,7 +6,7 @@
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer class="import-new">
       <VcCol>
@@ -236,7 +236,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits(["open", "close", "parent:call"]);
+const emit = defineEmits(["open:blade", "close:blade", "parent:call"]);
 const { t } = useI18n();
 const { getAccessToken } = useUser();
 const {
@@ -275,7 +275,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
     icon: "fas fa-pencil-alt",
     clickHandler() {
-      emit("open", {
+      emit("open:blade", {
         component: shallowRef(ImportProfileDetails),
         param: profile.value.id,
       });
@@ -607,7 +607,7 @@ function reloadParent() {
   emit("parent:call", {
     method: "reload",
   });
-  emit("close");
+  emit("close:blade");
 }
 
 const sampleTemplateUrl = computed(() => {

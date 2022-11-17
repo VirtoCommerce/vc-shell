@@ -69,7 +69,7 @@ export default (): IUseOffer => {
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
   const imageUploading = ref(false);
-  const emit = defineEmits(["open"]);
+  const emit = defineEmits(["open:blade"]);
   const { t } = useI18n();
   const modified = ref(false);
 
@@ -268,7 +268,7 @@ export default (): IUseOffer => {
   };
 
   const onGalleryItemEdit = (item: Image) => {
-    emit("open", {
+    emit("open:blade", {
       component: shallowRef(AssetsDetails),
       bladeOptions: {
         editableAsset: item,

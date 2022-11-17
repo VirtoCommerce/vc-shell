@@ -6,7 +6,7 @@
     :closable="closable"
     v-loading="loading"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer>
       <VcStatus
@@ -439,7 +439,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-defineEmits(["close", "open"]);
+defineEmits(["close:blade", "open:blade"]);
 
 const {
   getCurrentSeller,

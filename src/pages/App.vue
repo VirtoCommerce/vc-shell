@@ -9,8 +9,23 @@
     :logo="logoImage"
     :version="version"
     :pages="pages"
+    :blades="bladesRefs"
+    @backlink:click="closeBlade($event)"
+    @onOpen="(e) => openBlade({ parentBlade: e.parentBlade }, e.id)"
+    @onClose="closeBlade($event)"
     v-else
   >
+    <template v-slot:bladeNavigation>
+      <VcBladeNavigation
+        @onOpen="(e) => openBlade(e.blade, e.id)"
+        @onClose="closeBlade($event)"
+        @onParentCall="(e) => onParentCall(e.id, e.cb)"
+        :blades="blades"
+        :parentBladeOptions="parentBladeOptions"
+        :parentBladeParam="parentBladeParam"
+        ref="bladeNavigationRefs"
+      ></VcBladeNavigation>
+    </template>
     <template v-slot:notifications>
       <VcNotification
         v-for="item in popupNotifications"
@@ -45,6 +60,7 @@ import {
   useUser,
 } from "@vc-shell/core";
 import {
+  ComponentPublicInstance,
   computed,
   inject,
   onMounted,
@@ -53,6 +69,7 @@ import {
   Ref,
   shallowRef,
   watch,
+  provide,
 } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ChangePassword from "../components/change-password.vue";
@@ -63,7 +80,7 @@ import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
 import { OrdersList } from "../modules/orders";
 import { ProductsList } from "../modules/products";
-import {MpProductsList} from "../modules/marketplace-products";
+import { MpProductsList } from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
 import {
   SellerDetails,
@@ -73,6 +90,13 @@ import {
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
+import { VcBladeNavigation } from "@vc-shell/ui";
+import useBladeNavigation from "../../../../framework/core/src/composables/useBladeNavigation";
+
+interface BladeElement extends ComponentPublicInstance {
+  onBeforeClose?: () => Promise<boolean>;
+  [x: string]: unknown;
+}
 
 const {
   t,
@@ -92,6 +116,16 @@ const {
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
 const { delay } = useFunctions();
+const {
+  blades,
+  bladesRefs,
+  parentBladeOptions,
+  parentBladeParam,
+  openBlade,
+  closeBlade,
+  onParentCall,
+} = useBladeNavigation();
+
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -102,6 +136,7 @@ const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
+const bladeNavigationRefs = ref();
 
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);
@@ -120,6 +155,14 @@ onMounted(async () => {
 watch(user, (value) => {
   isAuthorized.value = !!value?.userName;
 });
+
+watch(
+  () => bladeNavigationRefs.value?.bladesRefs,
+  (newVal) => {
+    bladesRefs.value = newVal;
+  },
+  { deep: true }
+);
 
 log.debug(`Initializing App`);
 

@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <VcTable
       class="grow basis-0"
@@ -155,7 +155,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["close", "open"]);
+const emit = defineEmits(["close:blade", "open:blade"]);
 
 const { t } = useI18n();
 const {
@@ -201,7 +201,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("open", {
+      emit("open:blade", {
         component: shallowRef(TeamMemberDetails),
       });
     },
@@ -277,7 +277,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: SellerUser) => {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(TeamMemberDetails),
     param: item.id,
     bladeOptions: {

@@ -21,7 +21,7 @@ import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings
 import { usePermissions, useUser } from "@vc-shell/core";
 import whiteLogoImage from "/assets/logo-white.svg";
 import bgImage from "/assets/background.jpg";
-import { BladeComponent, IPage } from "@vc-shell/ui";
+import { BladeComponent } from "@vc-shell/ui";
 
 const { checkPermission } = usePermissions();
 
@@ -63,13 +63,13 @@ const routes = [
       },
       {
         name: "MpProducts",
-        path: "all-products",
+        path: "mp-products",
         props: true,
         component: MpProductsList,
       },
       {
         name: "MpProductsEdit",
-        path: "product/:param?",
+        path: "mp-product/:param?",
         component: MpProductsEdit,
         props: true,
       },
@@ -80,7 +80,7 @@ const routes = [
         props: true,
       },
       {
-        name: "OfferDetails",
+        name: "OrderDetails",
         path: "order/:param?",
         props: true,
         component: OrdersEdit,

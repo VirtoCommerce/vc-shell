@@ -5,7 +5,7 @@
     :closable="closable"
     width="30%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -232,7 +232,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["open"]);
+const emit = defineEmits(["open:blade"]);
 const {
   orders,
   loadOrders,
@@ -337,7 +337,7 @@ const empty = reactive({
 });
 
 const onItemClick = (item: { id: string }) => {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(OrdersDetails),
     param: item.id,
     onOpen() {

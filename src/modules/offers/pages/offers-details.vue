@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true" ref="container">
@@ -444,6 +444,7 @@ import {
   nextTick,
   unref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
@@ -459,6 +460,7 @@ import {
   IOfferDetails,
   IOfferProduct,
   OfferPrice,
+  InventoryInfo,
 } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
@@ -472,13 +474,16 @@ import {
 } from "../../../api_client/catalog";
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
-import {shallowRef} from "vue";
 
 export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
-  options?: Record<string, Record<string, unknown> | unknown>;
+  options?: {
+    sellerProduct: {
+      publishedProductDataId: string;
+    };
+  };
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -486,7 +491,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits(["parent:call", "close", "open"]);
+const emit = defineEmits(["parent:call", "close:blade", "open:blade"]);
 const { t } = useI18n();
 
 const {
@@ -664,7 +669,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("close");
+          emit("close:blade");
         } catch (err) {
           alert(err.message);
         }
@@ -755,20 +760,11 @@ function setPriceRefs(el: HTMLDivElement) {
   }
 }
 
-
 async function showProductDetails(id: string) {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(ProductsEdit),
     param: id,
   });
-}
-
-function getParentRouterPath(instance) {
-  try {
-    return instance.parent.ctx.route ?? "/";
-  } catch (e) {
-    return "";
-  }
 }
 
 function setFilterDate(key: string, value: string) {

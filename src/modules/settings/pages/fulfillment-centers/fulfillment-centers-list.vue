@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <VcTable
       class="grow basis-0"
@@ -86,7 +86,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["close", "open"]);
+const emit = defineEmits(["close:blade", "open:blade"]);
 
 const { t } = useI18n();
 const {
@@ -123,7 +123,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     ),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("open", {
+      emit("open:blade", {
         component: shallowRef(FulfillmentCenterDetails),
       });
     },
@@ -178,7 +178,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: FulfillmentCenter) => {
-  emit("open", {
+  emit("open:blade", {
     component: shallowRef(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {

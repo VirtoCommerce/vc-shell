@@ -5,7 +5,7 @@
     :closable="closable"
     width="50%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -251,7 +251,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["close", "open"]);
+const emit = defineEmits(["close:blade", "open:blade"]);
 const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
@@ -330,7 +330,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     async clickHandler() {
-      emit("open", {
+      emit("open:blade", {
         component: shallowRef(ProductsEdit),
       });
     },
@@ -411,7 +411,7 @@ const activeFilterCount = computed(
 );
 
 const onItemClick = (item: { id: string }) => {
-  emit("open", {
+  emit("open:blade", {
       component: shallowRef(ProductsEdit),
     param: item.id,
     onOpen() {
@@ -512,7 +512,7 @@ async function resetSearch() {
   appliedFilter.value = {};
 }
 function addProduct() {
-  emit("open", {
+  emit("open:blade", {
       component: shallowRef(ProductsEdit),
   });
 }

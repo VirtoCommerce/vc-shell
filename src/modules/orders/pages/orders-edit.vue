@@ -6,7 +6,7 @@
     :closable="closable"
     width="70%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer>
       <VcRow>

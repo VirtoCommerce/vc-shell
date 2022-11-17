@@ -1,5 +1,5 @@
 {
-  "MP-PRODUCTS": {
+  "MP_PRODUCTS": {
     "STATUSES": {
       "REQUIRES_CHANGES": "Requires changes",
       "WAIT_FOR_APPROVAL": "Wait for approval",

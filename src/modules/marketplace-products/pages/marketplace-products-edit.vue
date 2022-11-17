@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading || productLoading"
-    :title="param ? productDetails?.name : $t('MP-PRODUCTS.PAGES.DETAILS.TITLE')"
+    :title="param ? productDetails?.name : $t('MP_PRODUCTS.PAGES.DETAILS.TITLE')"
     width="50%"
     :expanded="expanded"
     :closable="closable"
@@ -32,7 +32,7 @@
                 ></VcIcon>
                 <div>
                   <div class="font-bold">
-                    {{ $t("MP-PRODUCTS.PAGES.DETAILS.DECLINE_REASON") }}
+                    {{ $t("MP_PRODUCTS.PAGES.DETAILS.DECLINE_REASON") }}
                   </div>
                   <div>{{ statusText }}</div>
                 </div>
@@ -41,12 +41,12 @@
             <VcForm>
               <VcInput
                 class="mb-4"
-                :label="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="productDetails.name"
                 :clearable="true"
                 :required="true"
                 :placeholder="
-                  $t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                  $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
                 rules="min:3"
                 name="name"
@@ -55,19 +55,19 @@
               ></VcInput>
               <VcSelect
                 class="mb-4"
-                :label="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
+                :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 v-model="productDetails.categoryId"
                 :isRequired="true"
                 :isSearchable="true"
                 :clearable="false"
                 :placeholder="
-                  $t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                  $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                 "
                 :options="categories"
                 :initialItem="currentCategory"
                 keyProperty="id"
                 displayProperty="name"
-                :tooltip="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
+                :tooltip="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                 @search="onCategoriesSearch"
                 @close="onSelectClose"
                 @update:modelValue="setCategory"
@@ -91,7 +91,7 @@
                       <VcHint
                         class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
                       >
-                        {{ $t("MP-PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
+                        {{ $t("MP_PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
                         {{ itemData.item.code }}
                       </VcHint>
                     </div>
@@ -100,7 +100,7 @@
               </VcSelect>
 
               <VcCard
-                :header="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
+                :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
                 v-if="product.id || currentCategory"
@@ -109,14 +109,14 @@
                 <div class="p-4">
                   <VcInput
                     class="mb-4"
-                    :label="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
+                    :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                     v-model="productDetails.gtin"
                     :clearable="true"
                     :required="true"
                     :placeholder="
-                      $t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                     "
-                    :tooltip="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
+                    :tooltip="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
                     :rules="validateGtin"
                     :disabled="readonly"
                     name="gtin"
@@ -125,13 +125,13 @@
                   <VcTextarea
                     class="mb-4"
                     :label="
-                      $t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
+                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
                     "
                     v-model="productDetails.description"
                     :required="true"
                     :placeholder="
                       $t(
-                        'MP-PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
+                        'MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
                       )
                     "
                     rules="min:3"
@@ -155,7 +155,7 @@
 
               <VcCard
                 v-if="productDetails.categoryId"
-                :header="$t('MP-PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
+                :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
                 class="my-3 relative"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_gallery')"
@@ -334,7 +334,7 @@ onMounted(async () => {
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    title: computed(() => t("MP-PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.TITLE")),
     icon: "fas fa-save",
     async clickHandler() {
       if (isValid.value) {
@@ -360,7 +360,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       } else {
         alert(
           unref(
-            computed(() => t("MP-PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))
+            computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))
           )
         );
       }
@@ -376,7 +376,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "saveAndSendToApprove",
     title: computed(() =>
-      t("MP-PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
+      t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
     ),
     icon: "fas fa-share-square",
     isVisible: computed(() => !!props.param),
@@ -402,7 +402,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         alert(
           unref(
             computed(() =>
-              t("MP-PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
+              t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
             )
           )
         );
@@ -419,7 +419,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "revertStagedChanges",
-    title: computed(() => t("MP-PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.REVERT")),
     icon: "fas fa-undo",
     isVisible: computed(() => !!props.param),
     async clickHandler() {
@@ -487,7 +487,7 @@ const validate = async (
     errors.length === 0 ||
     errors
       .map((error) =>
-        t(`MP-PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+        t(`MP_PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
           value: error?.attemptedValue,
         })
       )
@@ -573,7 +573,7 @@ const onGalleryImageRemove = (image: Image) => {
   if (
     window.confirm(
       unref(
-        computed(() => t("MP-PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))
+        computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))
       )
     )
   ) {
@@ -668,7 +668,7 @@ async function onBeforeClose() {
   if (modified.value) {
     const confirmationStatus = confirm(
       unref(
-        computed(() => t("MP-PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
+        computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
       )
     );
     if (confirmationStatus) {

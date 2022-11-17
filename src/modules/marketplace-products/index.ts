@@ -11,6 +11,7 @@ export default {
 
     // Load locales
     Object.entries(locales).forEach(([key, message]) => {
+        console.log(message)
       app.config.globalProperties.$mergeLocaleMessage(key, message);
     });
   },

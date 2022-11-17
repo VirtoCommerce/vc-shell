@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('MP-PRODUCTS.PAGES.LIST.TITLE')"
+    :title="$t('MP_PRODUCTS.PAGES.LIST.TITLE')"
     :expanded="expanded"
     :closable="closable"
     width="50%"
@@ -18,8 +18,8 @@
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
-      :searchPlaceholder="$t('MP-PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('MP-PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :searchPlaceholder="$t('MP_PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :totalLabel="$t('MP_PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
       :searchValue="searchValue"
       :activeFilterCount="activeFilterCount"
       :selectedItemId="selectedItemId"
@@ -36,13 +36,13 @@
         v-if="!($route && $route.query && $route.query.searchFromAllSellers)"
       >
         <h2 v-if="$isMobile.value">
-          {{ $t("MP-PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
+          {{ $t("MP_PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
         <VcContainer no-padding>
           <VcRow>
             <VcCol class="w-[180px] p-2">
               <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
-                {{ $t("MP-PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
+                {{ $t("MP_PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
                 <VcCheckbox
@@ -52,7 +52,7 @@
                   :modelValue="isItemSelected(status)"
                   @update:modelValue="selectFilterItem($event, status)"
                   >{{
-                    $t("MP-PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status)
+                    $t("MP_PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status)
                   }}</VcCheckbox
                 >
               </div>
@@ -67,13 +67,13 @@
                   @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
                   >{{
-                    $t("MP-PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
+                    $t("MP_PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
                   }}</VcButton
                 >
                 <VcButton
                   @click="applyFilters(closePanel)"
                   :disabled="applyFiltersDisable"
-                  >{{ $t("MP-PRODUCTS.PAGES.LIST.FILTERS.APPLY") }}</VcButton
+                  >{{ $t("MP_PRODUCTS.PAGES.LIST.FILTERS.APPLY") }}</VcButton
                 >
               </div>
             </VcCol>
@@ -88,10 +88,10 @@
         >
           <img :src="emptyImage" />
           <div class="m-4 text-xl font-medium">
-            {{ $t("MP-PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
+            {{ $t("MP_PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
           <VcButton @click="resetSearch">{{
-            $t("MP-PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
+            $t("MP_PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
           }}</VcButton>
         </div>
       </template>
@@ -103,10 +103,10 @@
         >
           <img :src="emptyImage" />
           <div class="m-4 text-xl font-medium">
-            {{ $t("MP-PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
+            {{ $t("MP_PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
           <VcButton @click="addProduct">{{
-            $t("MP-PRODUCTS.PAGES.LIST.EMPTY.ADD")
+            $t("MP_PRODUCTS.PAGES.LIST.EMPTY.ADD")
           }}</VcButton>
         </div>
       </template>
@@ -153,7 +153,7 @@
               <div
                 class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
               >
-                <VcHint>{{ $t("MP-PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
+                <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div
                   class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
                 >
@@ -165,7 +165,7 @@
               <div
                 class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
               >
-                <VcHint>{{ $t("MP-PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
+                <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
                 <div
                   class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
                 >
@@ -180,7 +180,7 @@
               >
                 <div class="flex flex-col items-center">
                   <VcHint>{{
-                    $t("MP-PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
+                    $t("MP_PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
                   <div
                     class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
@@ -319,7 +319,7 @@ const onSearchList = debounce(async (keyword: string) => {
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.REFRESH")),
     icon: "fas fa-sync-alt",
     async clickHandler() {
       await reload();
@@ -327,7 +327,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "add",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     async clickHandler() {
       emit("open:blade", {
@@ -337,7 +337,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "export",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
     icon: "fas fa-file-export",
     async clickHandler() {
       await exportCategories();
@@ -345,7 +345,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "batchDelete",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
     icon: "fas fa-trash",
     isVisible: false,
     async clickHandler() {
@@ -357,27 +357,27 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 const tableColumns = ref<ITableColumns[]>([
   {
     id: "imgSrc",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
     width: 60,
     alwaysVisible: true,
     type: "image",
   },
   {
     id: "name",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
     alwaysVisible: true,
   },
   {
     id: "createdDate",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
     width: 140,
     sortable: true,
     type: "date-ago",
   },
   {
     id: "isPublished",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
     type: "status-icon",
     width: 180,
     align: "center",
@@ -385,14 +385,14 @@ const tableColumns = ref<ITableColumns[]>([
   },
   {
     id: "status",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
     width: 180,
     sortable: true,
   },
   {
     id: "gtin",
     field: "productData.gtin",
-    title: computed(() => t("MP-PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
+    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
     width: 180,
     alwaysVisible: true,
   },
@@ -405,7 +405,7 @@ const columns = computed(() => {
     return tableColumns.value.filter((item) => item.alwaysVisible === true);
   }
 });
-const title = computed(() => t("MP-PRODUCTS.PAGES.LIST.TITLE"));
+const title = computed(() => t("MP_PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(
   () => Object.values(appliedFilter.value).filter((item) => !!item).length
 );
@@ -451,7 +451,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
   /*if (statuses.includes("Published")) {
         result.push({
           icon: "fas fa-times",
-          title: computed(() => t("MP-PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
+          title: computed(() => t("MP_PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
           variant: "danger",
           clickHandler() {
             alert("Unpublish");
@@ -460,7 +460,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
       } else {
         result.push({
           icon: "fas fa-check",
-          title: computed(() => t("MP-PRODUCTS.PAGES.LIST.ACTIONS.PUBLISH")),
+          title: computed(() => t("MP_PRODUCTS.PAGES.LIST.ACTIONS.PUBLISH")),
           variant: "success",
           clickHandler() {
             alert("Publish");

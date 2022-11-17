@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "1.0.33",
+  "version": "1.0.35",
   "bin": "./dist/index.js",
   "files": [
     "dist",
@@ -21,6 +21,5 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "gitHead": "38112513d908cc59089c150f339c6253e7c23b61"
+  }
 }

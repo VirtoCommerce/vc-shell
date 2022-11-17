@@ -16,16 +16,22 @@
 
   <!-- Date ago cell -->
   <span v-else-if="cell.type === 'date-ago'" class="text-[#a5a5a5]">
-    {{ moment(value).fromNow() }}
+    <template v-if="value">
+      {{ moment(value).fromNow() }}
+    </template>
+    <template v-else>N/A</template>
   </span>
 
   <!-- Date exact cell -->
   <span v-else-if="cell.type === 'date'" class="text-[#a5a5a5]">
-    {{
-      cell.format
-        ? moment(value).locale(locale).format(cell.format)
-        : value.toLocaleDateString()
-    }}
+    <template v-if="value">
+      {{
+        cell.format
+          ? moment(value).locale(locale).format(cell.format)
+          : value.toLocaleDateString()
+      }}
+    </template>
+    <template v-else>N/A</template>
   </span>
 
   <!-- Image cell -->

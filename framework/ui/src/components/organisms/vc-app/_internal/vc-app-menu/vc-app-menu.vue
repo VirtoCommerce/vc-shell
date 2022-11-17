@@ -46,8 +46,6 @@
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
-              :isActive="$route.path.includes(item.url)"
-              :activeChildItem="activeChildItem"
               @click="
                 $emit('item:click', item);
                 isMobileVisible = false;

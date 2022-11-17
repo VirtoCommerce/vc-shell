@@ -1,14 +1,14 @@
 <template>
   <div>
     <template v-if="component && component.url">
-      <router-link :to="component.url" v-slot="{ isActive, navigate }">
+      <router-link :to="component.url" v-slot="{ isActive }">
         <vc-app-menu-link
           :isActive="isActive"
           :children="children"
           :sticky="sticky"
           :icon="icon"
           :title="title"
-          @onClick="onMenuItemClick(navigate)"
+          @onClick="onMenuItemClick"
         />
       </router-link>
     </template>
@@ -94,14 +94,12 @@ onMounted(() => {
   }
 });
 
-function onMenuItemClick(navigate?: () => void) {
-  if (navigate && typeof navigate === "function" && !props.children?.length) {
-    navigate();
-  } else {
-    isOpened.value = !isOpened.value;
-  }
-
-  emit("click");
+function onMenuItemClick() {
+    if (!props.children?.length) {
+        emit("click");
+    } else {
+        isOpened.value = !isOpened.value;
+    }
 }
 </script>
 

@@ -27,8 +27,13 @@ export type BladeComponent = Component & {
   url?: string;
   permissions?: string | string[];
   idx?: number;
-  onBeforeClose?: () => Promise<boolean>;
 };
+
+export interface BladeElement extends ComponentPublicInstance {
+  onBeforeClose: () => Promise<boolean>;
+  title?: string;
+  [x: string]: unknown;
+}
 
 export interface IBladeToolbar {
   id?: string;

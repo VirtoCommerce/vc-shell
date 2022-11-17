@@ -14,14 +14,12 @@
     <VcAppBar
       class="shrink-0"
       :logo="logo"
-      :blades="bladeRefs"
+      :blades="blades"
       :version="version"
       :buttons="toolbarItems"
       @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="$refs.menu.isMobileVisible = true"
-      @backlink:click="closeBlade(blades.length - 1)"
-      :openPage="openBlade"
-      :closePage="closeBlade"
+      @backlink:click="$emit('backlink:click', blades.length - 1)"
       @logo:click="openDashboard"
     >
       <template v-slot:productName v-if="$slots['productName']">
@@ -43,7 +41,7 @@
       <div
         class="vc-app__workspace px-2 w-full overflow-hidden flex grow basis-0"
       >
-        <VcBladeNavigation />
+        <slot name="bladeNavigation"></slot>
       </div>
 
       <div
@@ -59,17 +57,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onBeforeUpdate,
-  ref,
-  getCurrentInstance,
-  ComponentPublicInstance,
-  watch,
-  onMounted,
-  shallowRef,
-  PropType,
-} from "vue";
+import { defineComponent, getCurrentInstance } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -84,10 +72,8 @@ import {
   BladeComponent,
   IBladeToolbar,
   IMenuItems,
-  IPage,
+  BladeElement,
 } from "../../../typings";
-import VcBladeNavigation from "../vc-blade-navigation/vc-blade-navigation.vue";
-import useBladeNavigation from "@vc-shell/core/src/composables/useBladeNavigation/index";
 
 export interface Props {
   pages: BladeComponent[];
@@ -99,6 +85,7 @@ export interface Props {
   logo: string;
   version: string;
   theme?: "light" | "dark";
+  blades: BladeElement[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,18 +100,20 @@ const props = withDefaults(defineProps<Props>(), {
   theme: "light",
 });
 
+const emit = defineEmits(["onOpen", "onClose", 'backlink:click']);
+
 console.debug("vc-app: Init vc-app");
 
 const instance = getCurrentInstance();
 
 const router = useRouter();
 
-const { openBlade, closeBlade, bladeRefs, blades } = useBladeNavigation();
-
 const onMenuItemClick = function (item: IBladeToolbar) {
   console.debug(`vc-app#onMenuItemClick() called.`);
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);
+  } else {
+    emit("onOpen", { parentBlade: item.component, id: 0 });
   }
 };
 
@@ -140,7 +129,7 @@ const openDashboard = async () => {
   console.debug(`openDashboard() called.`);
 
   // Close all opened pages with onBeforeClose callback
-  await closeBlade(0);
+  await emit("onClose", 0);
 
   router.push("/");
 };

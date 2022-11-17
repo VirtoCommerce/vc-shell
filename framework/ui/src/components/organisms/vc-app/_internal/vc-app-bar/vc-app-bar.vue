@@ -63,8 +63,6 @@
             :is="item.component"
             v-bind="item.bladeOptions"
             :isAccent="item.isAccent"
-            :openPage="openPage"
-            :closePage="closePage"
           ></component>
 
           <!-- Otherwise draw default toolbar button -->
@@ -96,40 +94,21 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from "vue";
 import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
-import { IBladeToolbar, IPage } from "../../../../../typings";
+import { BladeElement, IBladeToolbar } from "../../../../../typings";
 
-defineProps({
-  logo: {
-    type: String,
-    default: "",
-  },
+export interface Props {
+  logo: string;
+  version: string;
+  blades: BladeElement[];
+  buttons: IBladeToolbar[];
+}
 
-  version: {
-    type: String,
-    default: "",
-  },
-
-  blades: {
-    type: Array as PropType<IPage[]>,
-    default: () => [],
-  },
-
-  buttons: {
-    type: Array as PropType<IBladeToolbar[]>,
-    default: () => [],
-  },
-
-  openPage: {
-    type: Function,
-    default: undefined,
-  },
-
-  closePage: {
-    type: Function,
-    default: undefined,
-  },
+withDefaults(defineProps<Props>(), {
+  logo: "",
+  version: "",
+  blades: () => [],
+  buttons: () => [],
 });
 
 defineEmits([

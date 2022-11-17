@@ -59,7 +59,6 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { createPopper, Instance } from "@popperjs/core";
-import { useFunctions } from "@vc-shell/core";
 
 const props = defineProps({
   items: {

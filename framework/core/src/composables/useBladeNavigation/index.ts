@@ -21,19 +21,19 @@ interface IBladeContainer {
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;
-  readonly bladeRefs: Ref<Record<string, unknown>[]>;
-  readonly initialBladeOptions: Ref<Record<string, unknown>>;
-  readonly initialBladeParam: Ref<string>;
+  readonly parentBladeOptions: Ref<Record<string, unknown>>;
+  readonly parentBladeParam: Ref<string>;
+  bladesRefs: Ref<Record<string, unknown>[]>;
   openBlade: (
     {
-      initialBlade,
+      parentBlade,
       component: blade,
       param,
       bladeOptions,
       onOpen,
       onClose,
     }: {
-      initialBlade?: BladeComponent;
+      parentBlade?: BladeComponent;
       component?: BladeComponent;
       param?: string;
       bladeOptions?: Record<string, unknown>;
@@ -47,9 +47,9 @@ interface IUseBladeNavigation {
 }
 
 const blades = ref<IBladeContainer[]>([]);
-const bladeRefs = ref([]);
-const initialBladeOptions = ref<Record<string, unknown>>();
-const initialBladeParam = ref<string>();
+const bladesRefs = ref<Record<string, unknown>[]>([]);
+const parentBladeOptions = ref<Record<string, unknown>>();
+const parentBladeParam = ref<string>();
 
 export default (): IUseBladeNavigation => {
   const router = useRouter();
@@ -76,14 +76,14 @@ export default (): IUseBladeNavigation => {
 
   async function openBlade(
     {
-      initialBlade,
+      parentBlade,
       component: blade,
       param,
       bladeOptions,
       onOpen,
       onClose,
     }: {
-      initialBlade?: BladeComponent;
+      parentBlade?: BladeComponent;
       component?: BladeComponent;
       param?: string;
       bladeOptions?: Record<string, unknown>;
@@ -94,14 +94,14 @@ export default (): IUseBladeNavigation => {
   ) {
     console.debug(`openBlade(${1}) called.`);
 
-    const parent = unref(initialBlade);
+    const parent = unref(parentBlade);
     const child = unref(blade);
     const existingChild = findBlade(child);
 
     if (parent && parent.url) {
       await closeBlade(0);
       await router.push(parent.url);
-      initialBladeOptions.value = bladeOptions;
+      parentBladeOptions.value = bladeOptions;
     }
 
     if (child) {
@@ -181,11 +181,11 @@ export default (): IUseBladeNavigation => {
     console.debug(
       `vc-app#onParentCall(${index}, { method: ${args.method} }) called.`
     );
+
     if (index >= 0) {
-      const previous = blades.value[index - 1];
-      const currentParent = previous
-        ? previous
-        : unref(bladeRefs.value[bladeRefs.value.length - 1]);
+      const currentParent = unref(
+        bladesRefs.value[bladesRefs.value.length - 2]
+      );
 
       if (currentParent) {
         if (args.method && typeof currentParent[args.method] === "function") {
@@ -214,9 +214,9 @@ export default (): IUseBladeNavigation => {
 
   return {
     blades: computed(() => blades.value),
-    bladeRefs: computed(() => bladeRefs.value),
-    initialBladeOptions: computed(() => initialBladeOptions.value),
-    initialBladeParam: computed(() => initialBladeParam.value),
+    parentBladeOptions: computed(() => parentBladeOptions.value),
+    parentBladeParam: computed(() => parentBladeParam.value),
+    bladesRefs,
     openBlade,
     closeBlade,
     onParentCall,

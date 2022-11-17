@@ -4,11 +4,11 @@
       :is="Component"
       :closable="false"
       v-show="$isMobile.value ? !blades.length : blades.length <= 1"
-      @open="openBlade($event, 0)"
-      :ref="setBladeRef"
-      :options="initialBladeOptions"
+      @open:blade="$emit('onOpen', { blade: $event, id: 0 })"
+      :options="parentBladeOptions"
       :param="resolveParam"
       :key="route"
+      ref="parentRef"
     >
     </component>
   </router-view>
@@ -21,47 +21,71 @@
     :closable="i >= 0"
     :expanded="i === blades.length - 1"
     :options="blade.options"
-    @open="openBlade($event, blade.idx)"
-    @close="closeBlade(i)"
-    @close:children="closeBlade(i + 1)"
-    @parent:call="onParentCall(i, $event)"
-    :ref="setBladeRef"
+    @open:blade="$emit('onOpen', { blade: $event, id: blade.idx })"
+    @close:blade="$emit('onClose', i)"
+    @close:children="$emit('onClose', i + 1)"
+    @parent:call="$emit('onParentCall', { id: i, cb: $event })"
+    :ref="setBladesRef"
   ></component>
 </template>
 
 <script lang="ts" setup>
-import useBladeNavigation from "@vc-shell/core/src/composables/useBladeNavigation/index";
-import { onBeforeUpdate, ComponentPublicInstance, computed } from "vue";
+import {
+  ComponentPublicInstance,
+  computed,
+  onBeforeUpdate,
+  ref,
+} from "vue";
 import { useRoute } from "vue-router";
+import { BladeComponent } from "../../../typings";
+
+interface IBladeContainer {
+  blades: BladeComponent;
+  options: Record<string, unknown>;
+  param: string;
+  onOpen: () => void;
+  onClose: () => void;
+  idx: number;
+}
+
+interface Props {
+  blades: IBladeContainer[];
+  parentBladeOptions: Record<string, unknown>;
+  parentBladeParam: string;
+}
 
 interface BladeElement extends ComponentPublicInstance {
   onBeforeClose: () => Promise<boolean>;
   [x: string]: unknown;
 }
 
-const {
-  blades,
-  bladeRefs,
-  initialBladeOptions,
-  initialBladeParam,
-  openBlade,
-  closeBlade,
-  onParentCall,
-} = useBladeNavigation();
+const emit = defineEmits(["onOpen", "onClose"]);
+
+const props = withDefaults(defineProps<Props>(), {
+  blades: () => [],
+  parentBladeOptions: () => ({}),
+  parentBladeParam: "",
+});
 
 const route = useRoute();
+const bladesRefs = ref<Record<string, unknown>[]>([]);
+const parentRef = ref();
 
 onBeforeUpdate(() => {
-  bladeRefs.value = [];
+  bladesRefs.value = [parentRef.value];
 });
 
-const resolveParam = computed(() => {
-  return initialBladeParam.value ? initialBladeParam.value : route.params.param;
-});
-
-const setBladeRef = (el: BladeElement) => {
+const setBladesRef = (el: BladeElement) => {
   if (el && Object.keys(el).length) {
-    bladeRefs.value.push(el);
+    bladesRefs.value.push(el);
   }
 };
+
+const resolveParam = computed(() => {
+  return props.parentBladeParam ? props.parentBladeParam : route.params.param;
+});
+
+defineExpose({
+  bladesRefs,
+});
 </script>

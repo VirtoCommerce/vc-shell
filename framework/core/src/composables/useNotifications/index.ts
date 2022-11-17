@@ -1,11 +1,13 @@
 import {
   PushNotification,
+  PushNotificationClient,
 } from "@vc-shell/api-client";
 import useUser from "../useUser";
-import { computed, ComputedRef, inject, readonly, ref } from "vue";
+import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";
 import _ from "lodash-es";
-import { IUseNotificationsFactoryParams } from "../../types";
+
+const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
   readonly notifications: ComputedRef<Readonly<PushNotification[]>>;
@@ -22,9 +24,6 @@ const notifications = ref<PushNotification[]>([]);
 const popupNotifications = ref<PushNotification[]>([]);
 
 export default (): INotifications => {
-  const useNotificationsFactory = inject<IUseNotificationsFactoryParams>(
-    "useNotificationsFactory"
-  );
   const { getAccessToken } = useUser();
   const logger = useLogger();
 
@@ -33,10 +32,21 @@ export default (): INotifications => {
     if (token) {
       // TODO temporary workaround to get push notifications without base type
       try {
-        useNotificationsFactory.setAuthToken(token);
+        notificationsClient.setAuthToken(token);
+        const result = await fetch("/api/platform/pushnotifications", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json-patch+json",
+            Accept: "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ take }),
+        });
 
-        notifications.value =
-          await useNotificationsFactory.getPushNotifications(token, take);
+        result.text().then((response) => {
+          notifications.value =
+            <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
+        });
       } catch (e) {
         logger.error(e);
         throw e;
@@ -78,9 +88,9 @@ export default (): INotifications => {
   async function markAllAsRead() {
     const token = await getAccessToken();
     if (token) {
-      useNotificationsFactory.setAuthToken(token);
+      notificationsClient.setAuthToken(token);
       try {
-        await useNotificationsFactory.markAllAsRead();
+        await notificationsClient.markAllAsRead();
         notifications.value = notifications.value.map((x) => {
           if (x.isNew) {
             x.isNew = false;

@@ -1,7 +1,7 @@
 import useUser from "../useUser";
 import useLogger from "../useLogger";
-import { computed, inject, Ref, ref } from "vue";
-import { IUseSettingsFactoryParams } from "../../types/factories";
+import { computed, Ref, ref } from "vue";
+import { SettingClient } from "@vc-shell/api-client";
 
 interface IUseSettings {
   readonly uiSettings: Ref<Record<string, string>>;
@@ -10,12 +10,13 @@ interface IUseSettings {
 
 const uiSettings = ref<Record<string, string>>();
 export default (): IUseSettings => {
-  const useSettingsFactory = inject<IUseSettingsFactoryParams>("useSettingsFactory");
   const { getAccessToken } = useUser();
   const logger = useLogger();
 
   async function getApiClient() {
-    return useSettingsFactory.getApiClient(await getAccessToken());
+    const client = new SettingClient();
+    client.setAuthToken(await getAccessToken());
+    return client;
   }
 
   async function getUiCustomizationSettings() {

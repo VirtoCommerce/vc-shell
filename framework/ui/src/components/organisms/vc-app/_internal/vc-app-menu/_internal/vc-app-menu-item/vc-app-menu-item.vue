@@ -24,10 +24,7 @@
       <!-- Nested menu items -->
       <div class="vc-app-menu-item__child" v-if="isOpened">
         <template v-for="(nested, i) in children" :key="i">
-          <router-link
-            :to="nested.component.url"
-            v-slot="{ isActive, navigate }"
-          >
+          <router-link :to="nested.component.url" v-slot="{ isActive }">
             <div
               :class="[
                 {
@@ -37,7 +34,7 @@
               ]"
               v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
-              @click="navigate"
+              @click="$emit('child:click', nested)"
             >
               {{ nested.title }}
             </div>
@@ -95,11 +92,11 @@ onMounted(() => {
 });
 
 function onMenuItemClick() {
-    if (!props.children?.length) {
-        emit("click");
-    } else {
-        isOpened.value = !isOpened.value;
-    }
+  if (!props.children?.length) {
+    emit("click");
+  } else {
+    isOpened.value = !isOpened.value;
+  }
 }
 </script>
 

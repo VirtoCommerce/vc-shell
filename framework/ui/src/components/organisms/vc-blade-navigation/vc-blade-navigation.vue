@@ -59,7 +59,7 @@ interface BladeElement extends ComponentPublicInstance {
   [x: string]: unknown;
 }
 
-const emit = defineEmits(["onOpen", "onClose"]);
+const emit = defineEmits(["onOpen", "onClose", "onParentCall"]);
 
 const props = withDefaults(defineProps<Props>(), {
   blades: () => [],

@@ -50,6 +50,10 @@
                 $emit('item:click', item);
                 isMobileVisible = false;
               "
+              @child:click="
+                $emit('item:click', $event);
+                isMobileVisible = false;
+              "
             />
           </template>
         </div>

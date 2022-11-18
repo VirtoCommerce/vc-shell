@@ -1,4 +1,4 @@
-import {computed, reactive, Ref, ref, unref, defineEmits, watch} from "vue";
+import {computed, Ref, ref, unref, defineEmits, watch} from "vue";
 import { useLogger, useUser, useI18n } from "@vc-shell/core";
 
 import {
@@ -22,9 +22,6 @@ import { isEqual, cloneDeep } from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
-  salePrice?: number;
-  listPrice?: number;
-  minQuantity?: number;
   id?: string;
   properties?: Property[];
 };

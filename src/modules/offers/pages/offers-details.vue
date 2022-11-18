@@ -269,7 +269,7 @@
                           <VcInput
                             :clearable="true"
                             v-model="item.listPrice"
-                            v-model:optionsValue="offerDetails.currency"
+                            v-model:optionsValue="item.currency"
                             :currency="true"
                             :required="true"
                             :options="currencyList"
@@ -297,7 +297,7 @@
                           <VcInput
                             :clearable="true"
                             v-model="item.salePrice"
-                            v-model:optionsValue="offerDetails.currency"
+                            v-model:optionsValue="item.currency"
                             :currency="true"
                             :options="currencyList"
                             keyProperty="value"
@@ -452,7 +452,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useForm, VcRow } from "@vc-shell/ui";
+import { useForm } from "@vc-shell/ui";
 import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
 import { useOffer } from "../composables";
 import {
@@ -517,7 +517,7 @@ const {
   onGalleryImageRemove,
   makeCopy,
 } = useOffer();
-const { resetAutosaved, loadAutosaved, savedValue } = useAutosave(
+const { resetAutosaved, savedValue } = useAutosave(
   offerDetails,
   modified,
   props.param ?? "offersDetails"
@@ -558,7 +558,6 @@ onMounted(async () => {
       await loadOffer({ id: props.param });
     } else {
       offerDetails.value.trackInventory = true;
-      offerDetails.value.currency = "USD";
       await addEmptyInventory();
       addPrice();
       makeCopy();
@@ -611,7 +610,7 @@ watch(offerDetails.value.prices, () => {
 
 watch(
   () => offerDetails.value.inventory,
-  (newVal) => {
+  () => {
     offerDetails.value.inventory.forEach((x) => {
       if (!x.inStockQuantity) {
         x.inStockQuantity = 0;
@@ -633,7 +632,8 @@ watch(
               idx !== idx2 &&
               o.minQuantity &&
               o2.minQuantity &&
-              o.minQuantity === o2.minQuantity
+              o.minQuantity === o2.minQuantity &&
+              o.currency === o2.currency
             );
           })
         ) {
@@ -748,7 +748,13 @@ function addPrice(scroll = false) {
   if (!offerDetails.value.prices) {
     offerDetails.value.prices = [];
   }
-  offerDetails.value.prices.push(new OfferPrice());
+  offerDetails.value.prices.push(
+    new OfferPrice({
+      currency: "USD",
+      listPrice: undefined,
+      minQuantity: undefined,
+    })
+  );
   if (scroll) {
     scrollToLastPrice();
   }

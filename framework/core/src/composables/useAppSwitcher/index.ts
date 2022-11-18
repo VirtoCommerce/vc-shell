@@ -25,6 +25,7 @@ export default (): IUseAppSwitcher => {
 
     try {
       appsList.value = await client.getApps();
+
     } catch (e) {
       logger.error(e);
       throw e;

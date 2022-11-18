@@ -22,12 +22,12 @@
           :key="item.id"
           @click="switchApp(item)"
           class="flex flex-row items-center cursor-pointer group"
-          :class="{ '[&>p]:font-extrabold': item.name === 'Vendor Portal' }"
+          :class="{ '[&>p]:font-extrabold': locationHandler(item.relativeUrl) }"
         >
           <img
             :src="imageUrl(item.iconUrl)"
             :alt="`icon_${item.id}`"
-            class="w-5 h-5 mr-2.5"
+            class="w-5 h-5 mr-2 shrink-0"
           />
           <p
             class="font-normal text-sm text-[#727C87] truncate group-hover:opacity-80"
@@ -62,6 +62,15 @@ const emit = defineEmits<Emits>();
 const isVisible = ref(false);
 
 const imageUrl = (url: string) => window.location.origin + url;
+
+const locationHandler = (url: string) => {
+  const cleanUrl = window.location.pathname.replace(/\/+$/, "");
+  const match = url.match(cleanUrl);
+  if (match) {
+    return match[0];
+  }
+  return null;
+};
 
 const switchApp = (app: AppDescriptor) => {
   emit("onClick", app);

@@ -32,6 +32,7 @@ export { default as VcRating } from "./molecules/vc-rating/vc-rating.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
 export { default as VcSlider } from "./molecules/vc-slider/vc-slider.vue";
 export { default as VcTextarea } from "./molecules/vc-textarea/vc-textarea.vue";
+export { default as VcAppSwitcher } from "./molecules/vc-app-switcher/vc-app-switcher.vue";
 
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";

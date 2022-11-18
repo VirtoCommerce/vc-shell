@@ -14,7 +14,7 @@
 
     <div
       v-if="isVisible && appsList && appsList.length"
-      class="px-4 py-3.5 bg-white drop-shadow-[4px_4px_20px_rgba(47,86,108,0.25)] absolute z-[10000] rounded top-[var(--app-bar-height)] left-0 max-w-[200px] w-max"
+      class="px-4 py-3.5 bg-white drop-shadow-[4px_4px_20px_rgba(47,86,108,0.25)] absolute z-[10000] rounded top-[var(--app-bar-height)] left-0"
     >
       <ul class="flex flex-col gap-3 overflow-hidden">
         <li

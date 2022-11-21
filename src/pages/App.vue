@@ -13,8 +13,9 @@
   >
     <!-- App Switcher -->
     <template v-slot:appSwitcher>
-      <AppSwitcher :switcherItems="switcherData" />
+      <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
     </template>
+
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
       <DashboardPage v-bind="scope" />
@@ -52,8 +53,9 @@
 
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
-import { PushNotification } from "@vc-shell/api-client";
+import { AppDescriptor, PushNotification } from "@vc-shell/api-client";
 import {
+  useAppSwitcher,
   useFunctions,
   useI18n,
   useLogger,
@@ -87,9 +89,8 @@ import {
   TeamList,
   FulfillmentCenters,
 } from "../modules/settings";
-import {IAppSwitcherItem, IBladeToolbar, IMenuItems, UserPermissions} from "../types";
+import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import DashboardPage from "./Dashboard.vue";
-import AppSwitcher from "./../components/app-switcher.vue";
 import LoginPage from "./Login.vue";
 import avatarImage from "/assets/avatar.jpg";
 import bgImage from "/assets/background.jpg";
@@ -114,6 +115,7 @@ const {
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
 const { delay } = useFunctions();
+const { getApps, switchApp, appsList } = useAppSwitcher();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -125,24 +127,6 @@ const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 
-// temporary mock for switcher
-const switcherData: IAppSwitcherItem[] = [
-  {
-    id: "123",
-    name: "Vendor Portal",
-    description: "mock",
-    icon: "/img/icons/apple-touch-icon.png",
-    permission: "",
-  },
-  {
-    id: "321",
-    name: "Test Portal 2",
-    description: undefined,
-      icon: "/img/icons/apple-touch-icon.png",
-    permission: "",
-  },
-];
-
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);
 });
@@ -151,6 +135,7 @@ onMounted(async () => {
   await loadUser();
   langInit();
   await getUiCustomizationSettings();
+  await getApps();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");

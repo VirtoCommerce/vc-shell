@@ -42,7 +42,7 @@
 import { VcIcon } from "@vc-shell/ui";
 import { ref } from "vue";
 
-interface Props {
+export interface Props {
   title: string;
   value: string;
   languageItems: { lang: string; title: string; clickHandler: () => void }[];

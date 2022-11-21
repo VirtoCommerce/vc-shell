@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 import { VcPopup, VcButton } from "@vc-shell/ui";
 
-interface Props {
+export interface Props {
   title: string;
 }
 

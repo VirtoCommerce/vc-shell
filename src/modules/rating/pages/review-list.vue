@@ -30,7 +30,7 @@ import { useI18n } from "@vc-shell/core";
 
 // Page
 
-interface Props {
+export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;

@@ -49,7 +49,7 @@
 import { ref } from "vue";
 import { IMenuItems } from "../types";
 
-interface Props {
+export interface Props {
   avatar: string;
   name: string;
   role: string;

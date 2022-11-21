@@ -46,7 +46,7 @@
 import { VcTable, VcButton, VcPopup } from "@vc-shell/ui";
 import { ITableColumns } from "../../../types";
 
-interface Props {
+export interface Props {
   columns: ITableColumns[];
   items: Record<string, unknown>[];
   total: number;

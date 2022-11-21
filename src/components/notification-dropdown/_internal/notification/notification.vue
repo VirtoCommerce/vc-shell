@@ -50,7 +50,7 @@ interface IExtendedPush extends IPushNotification {
   newStatus: string;
 }
 
-interface Props {
+export interface Props {
   notification: PushNotification | IExtendedPush;
 }
 

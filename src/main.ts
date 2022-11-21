@@ -23,7 +23,6 @@ import "@vc-shell/ui/dist/style.css";
 const app = createApp({
   render: () => h(resolveComponent("router-view")),
 })
-  .use(ApiLayer)
   .use(PushHub)
   .use(router)
   .use(VirtoShellUi)

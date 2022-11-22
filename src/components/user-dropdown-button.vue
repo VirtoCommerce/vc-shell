@@ -13,9 +13,7 @@
       :style="{ 'background-image': `url(${avatar})` }"
     ></div>
     <div class="grow basis-0 ml-3 overflow-hidden">
-      <div
-        class="user-dropdown-button__name text-ellipsis overflow-hidden whitespace-nowrap"
-      >
+      <div class="user-dropdown-button__name truncate">
         {{ name }}
       </div>
       <div class="user-dropdown-button__role">
@@ -49,26 +47,19 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-const props = defineProps({
-  avatar: {
-    type: String,
-    default: undefined,
-  },
+import { IMenuItems } from "../types";
 
-  name: {
-    type: String,
-    default: undefined,
-  },
-
-  role: {
-    type: String,
-    default: undefined,
-  },
-
-  menuItems: {
-    type: Array,
-    default: () => [],
-  },
+export interface Props {
+  avatar: string;
+  name: string;
+  role: string;
+  menuItems: IMenuItems[];
+}
+const props = withDefaults(defineProps<Props>(), {
+  avatar: undefined,
+  name: undefined,
+  role: undefined,
+  menuItems: () => [],
 });
 
 const accountMenuVisible = ref(false);

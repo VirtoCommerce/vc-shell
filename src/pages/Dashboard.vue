@@ -107,12 +107,12 @@
                 <template v-slot:item_name="itemData">
                   <div class="flex flex-col">
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap"
+                      class="truncate"
                     >
                       {{ itemData.item.name }}
                     </div>
                     <VcHint
-                      class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      class="truncate mt-1"
                     >
                       {{ itemData.item.path }}
                     </VcHint>

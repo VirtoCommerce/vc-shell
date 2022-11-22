@@ -78,18 +78,18 @@
               >
                 <template v-slot:item="itemData">
                   <div
-                    class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
+                    class="flex items-center py-2 truncate"
                   >
                     <div
-                      class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                      class="grow basis-0 ml-4 truncate"
                     >
                       <div
-                        class="text-ellipsis overflow-hidden whitespace-nowrap"
+                        class="truncate"
                       >
                         {{ itemData.item.path }}
                       </div>
                       <VcHint
-                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                        class="truncate mt-1"
                       >
                         {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
                         {{ itemData.item.code }}

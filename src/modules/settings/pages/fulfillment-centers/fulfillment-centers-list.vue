@@ -28,12 +28,12 @@
         <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
           <div class="mt-3 w-full flex justify-between">
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+              class="truncate grow basis-0 mr-2"
             >
               <VcHint>{{
                 $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
               }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ itemData.item.name }}
               </div>
             </div>

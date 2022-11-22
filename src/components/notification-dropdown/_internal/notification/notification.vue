@@ -37,17 +37,27 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, shallowRef, watch } from "vue";
+import { VcRow, VcIcon } from "@vc-shell/ui";
 import ImportPush from "./_internal/ImportPush.vue";
 import DefaultPush from "./_internal/DefaultPush.vue";
 import ProductPush from "./_internal/ProductPush.vue";
 import moment from "moment";
+import { IPushNotification, PushNotification } from "@vc-shell/api-client";
 
-const props = defineProps({
-  notification: {
-    type: Object,
-    default: () => ({}),
-  },
+interface IExtendedPush extends IPushNotification {
+  finished: Date;
+  errors: string[];
+  newStatus: string;
+}
+
+export interface Props {
+  notification: PushNotification | IExtendedPush;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  notification: undefined,
 });
+
 const locale = window.navigator.language;
 const current = ref();
 const pushComponents = reactive({
@@ -55,11 +65,12 @@ const pushComponents = reactive({
     component: shallowRef(ImportPush),
     styles: {
       color: computed(() => {
-        return props.notification.finished &&
-          !(props.notification.errors && props.notification.errors.length)
+        const notification = props.notification as IExtendedPush;
+        return notification.finished &&
+          !(notification.errors && notification.errors.length)
           ? "#87b563"
-          : !(props.notification.errors && props.notification.errors.length) &&
-            !props.notification.finished
+          : !(notification.errors && notification.errors.length) &&
+            !notification.finished
           ? "#A9BCCD"
           : "#F14E4E";
       }),
@@ -84,7 +95,7 @@ const pushComponents = reactive({
     component: shallowRef(ProductPush),
     styles: {
       color: computed(() => {
-        switch (props.notification.newStatus) {
+        switch ((props.notification as IExtendedPush).newStatus) {
           case "RequestChanges":
             return "#F14E4E";
           case "Approved":

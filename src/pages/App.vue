@@ -11,6 +11,11 @@
     :pages="pages"
     v-else
   >
+    <!-- App Switcher -->
+    <template v-slot:appSwitcher>
+      <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
+    </template>
+
     <!-- Set up dashboard page -->
     <template v-slot:dashboard="scope">
       <DashboardPage v-bind="scope" />
@@ -48,8 +53,9 @@
 
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
-import { PushNotification } from "@vc-shell/api-client";
+import { AppDescriptor, PushNotification } from "@vc-shell/api-client";
 import {
+  useAppSwitcher,
   useFunctions,
   useI18n,
   useLogger,
@@ -109,6 +115,7 @@ const {
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
 const { delay } = useFunctions();
+const { getApps, switchApp, appsList } = useAppSwitcher();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -128,6 +135,7 @@ onMounted(async () => {
   await loadUser();
   langInit();
   await getUiCustomizationSettings();
+  await getApps();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");

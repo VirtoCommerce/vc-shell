@@ -159,25 +159,25 @@
                   </div>
                   <div class="mt-3 w-full flex justify-between">
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                      class="truncate grow-[2] basis-0"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
                       }}</VcHint>
                       <div
-                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                        class="truncate mt-1"
                       >
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                      class="truncate grow-[2] basis-0"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
                       }}</VcHint>
                       <div
-                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                        class="truncate mt-1"
                       >
                         {{
                           itemData.item.price && itemData.item.price.toFixed(2)
@@ -185,13 +185,13 @@
                       </div>
                     </div>
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                      class="truncate grow-[2] basis-0"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
                       }}</VcHint>
                       <div
-                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                        class="truncate mt-1"
                       >
                         {{
                           itemData.item.extendedPrice &&
@@ -200,7 +200,7 @@
                       </div>
                     </div>
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+                      class="truncate grow-[2] basis-0"
                       v-if="itemData.item.feeDetails.length"
                     >
                       <VcHint>{{
@@ -208,14 +208,14 @@
                       }}</VcHint>
 
                       <div
-                        class="mt-1 text-ellipsis overflow-hidden whitespace-nowrap"
+                        class="mt-1 truncate"
                       >
                         <div
-                          class="text-ellipsis overflow-hidden whitespace-nowrap"
+                          class="truncate"
                         >
                           {{ itemData.item.feeDetails[0].description }}
                           <br /><span
-                            class="text-ellipsis overflow-hidden whitespace-nowrap"
+                            class="truncate"
                           >
                             {{
                               itemData.item.feeDetails[0].amount &&

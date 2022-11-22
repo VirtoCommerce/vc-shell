@@ -36,7 +36,7 @@ export interface Props {
   param?: string;
 }
 
-export interface Emits {
+interface Emits {
   (event: "page:close"): void;
   (event: "page:open", page: IPage): void;
 }

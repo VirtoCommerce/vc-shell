@@ -152,21 +152,21 @@
           <div>
             <div class="mt-3 w-full flex justify-between">
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.createdDate &&

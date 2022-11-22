@@ -48,49 +48,49 @@
         <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
           <div class="mt-3 w-full flex justify-between">
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+              class="truncate grow basis-0 mr-2"
             >
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")
               }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ itemData.item.firstName }}
               </div>
             </div>
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              class="truncate grow-[2] basis-0"
             >
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME")
               }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ itemData.item.lastName }}
               </div>
             </div>
           </div>
           <div class="mt-3 w-full flex justify-between">
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+              class="truncate grow-[2] basis-0 mr-2"
             >
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL")
               }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ itemData.item.email || "N/A" }}
               </div>
             </div>
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0 mr-2"
+              class="truncate grow-[2] basis-0 mr-2"
             >
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
               }}</VcHint>
-              <div class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+              <div class="truncate mt-1">
                 {{ roleName(itemData.item.role) }}
               </div>
             </div>
             <div
-              class="text-ellipsis overflow-hidden whitespace-nowrap grow-[2] basis-0"
+              class="truncate grow-[2] basis-0"
             >
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.STATUS")

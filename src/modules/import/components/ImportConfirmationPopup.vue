@@ -24,10 +24,13 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  title: {
-    type: String,
-    default: "",
-  },
+import { VcPopup, VcButton } from "@vc-shell/ui";
+
+export interface Props {
+  title: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  title: "",
 });
 </script>

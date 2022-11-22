@@ -37,7 +37,7 @@
             >
               <template v-slot:selectedItem="itemData">
                 <div
-                  class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
+                  class="flex items-center py-2 truncate"
                 >
                   <VcImage
                     class="shrink-0"
@@ -47,15 +47,15 @@
                     background="contain"
                   ></VcImage>
                   <div
-                    class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                    class="grow basis-0 ml-4 truncate"
                   >
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap"
+                      class="truncate"
                     >
                       {{ itemData.item.name }}
                     </div>
                     <VcHint
-                      class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      class="truncate mt-1"
                     >
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
@@ -74,7 +74,7 @@
               </template>
               <template v-slot:item="itemData">
                 <div
-                  class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
+                  class="flex items-center py-2 truncate"
                 >
                   <VcImage
                     class="shrink-0"
@@ -84,15 +84,15 @@
                     background="contain"
                   ></VcImage>
                   <div
-                    class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                    class="grow basis-0 ml-4 truncate"
                   >
                     <div
-                      class="text-ellipsis overflow-hidden whitespace-nowrap"
+                      class="truncate"
                     >
                       {{ itemData.item.name }}
                     </div>
                     <VcHint
-                      class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                      class="truncate mt-1"
                     >
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
@@ -516,6 +516,7 @@ const {
   onGallerySort,
   onGalleryImageRemove,
   makeCopy,
+  deleteOffer,
 } = useOffer();
 const { resetAutosaved, savedValue } = useAutosave(
   offerDetails,
@@ -718,6 +719,25 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(
       () => !!props.param && !offerLoading.value && offerDetails.value.isActive
     ),
+  },
+  {
+    id: "delete",
+    title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DELETE"),
+    icon: "fas fa-trash",
+    async clickHandler() {
+      if (
+        window.confirm(
+          unref(computed(() => t("OFFERS.PAGES.ALERTS.DELETE_OFFER")))
+        )
+      ) {
+        await deleteOffer({ id: props.param });
+        emit("parent:call", {
+          method: "reload",
+        });
+        emit("page:close");
+      }
+    },
+    isVisible: computed(() => !!props.param && !offerLoading.value),
   },
 ]);
 

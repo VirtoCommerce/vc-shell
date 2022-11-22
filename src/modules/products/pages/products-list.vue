@@ -114,10 +114,10 @@
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
         <div class="flex flex-col">
-          <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+          <div class="truncate">
             {{ itemData.item.name }}
           </div>
-          <VcHint class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+          <VcHint class="truncate mt-1">
             {{ itemData.item.path }}
           </VcHint>
         </div>
@@ -151,11 +151,11 @@
 
             <div class="mt-3 w-full flex justify-between">
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -163,11 +163,11 @@
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.createdDate &&
@@ -176,14 +176,14 @@
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <div class="flex flex-col items-center">
                   <VcHint>{{
                     $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
                   <div
-                    class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                    class="truncate mt-1"
                   >
                     <VcStatusIcon
                       :status="itemData.item && itemData.item.isPublished"

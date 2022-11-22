@@ -1,9 +1,3 @@
-import {
-  IUseUserFactoryParams,
-  IUseNotificationsFactoryParams,
-  IUseSettingsFactoryParams,
-} from "./factories";
-
 export interface AuthData {
   accessToken?: string;
   //alias for accessToken is used by platform and is required for sharing auth data between platform and custom apps
@@ -24,9 +18,3 @@ export interface RequestPasswordResult {
   error?: string;
   errorCode?: string;
 }
-
-export type {
-  IUseUserFactoryParams,
-  IUseNotificationsFactoryParams,
-  IUseSettingsFactoryParams,
-};

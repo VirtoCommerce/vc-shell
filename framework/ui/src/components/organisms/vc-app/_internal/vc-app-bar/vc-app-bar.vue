@@ -2,6 +2,7 @@
   <div
     class="relative flex items-center content-between h-[var(--app-bar-height)] bg-[color:var(--app-bar-background-color)] pl-4"
   >
+    <slot name="appSwitcher"></slot>
     <!-- Logo container for mobile devices -->
     <template v-if="$isMobile.value">
       <!-- Show logo on mobile dashboard -->

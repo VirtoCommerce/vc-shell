@@ -18,7 +18,7 @@
           size="s"
         ></VcIcon>
         <div
-          class="text-ellipsis overflow-hidden whitespace-nowrap"
+          class="truncate"
           :title="image.name"
         >
           {{ image.name }}

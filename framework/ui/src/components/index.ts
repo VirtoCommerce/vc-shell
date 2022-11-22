@@ -41,3 +41,4 @@ export { default as VcGallery } from "./organisms/vc-gallery/vc-gallery.vue";
 export { default as VcLoginForm } from "./organisms/vc-login-form/vc-login-form.vue";
 export { default as VcPopup } from "./organisms/vc-popup/vc-popup.vue";
 export { default as VcTable } from "./organisms/vc-table/vc-table.vue";
+export { default as VcAppSwitcher } from "./organisms/vc-app-switcher/vc-app-switcher.vue";

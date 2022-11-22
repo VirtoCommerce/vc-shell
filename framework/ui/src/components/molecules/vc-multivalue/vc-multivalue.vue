@@ -25,7 +25,7 @@
       >
         <div class="vc-multivalue__field-value">
           <span
-            class="text-ellipsis overflow-hidden whitespace-nowrap"
+            class="truncate"
             :title="
               type === 'number' ? Number(item.value).toFixed(3) : item.value
             "

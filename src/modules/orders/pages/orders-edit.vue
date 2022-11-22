@@ -6,7 +6,7 @@
     :closable="closable"
     width="70%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer>
       <VcRow>
@@ -249,7 +249,7 @@ import moment from "moment";
 
 import { useOrder } from "../composables";
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 
 const props = defineProps({
   expanded: {

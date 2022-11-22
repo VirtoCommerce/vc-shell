@@ -43,8 +43,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
-import { VcRating, VcTable } from "@vc-shell/ui";
+import { useI18n } from "@vc-shell/framework";
+import { VcRating, VcTable } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ITableColumns } from "../../../types";

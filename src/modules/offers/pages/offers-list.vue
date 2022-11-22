@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
+import { useFunctions, useI18n, useLogger } from "@vc-shell/framework";
 import moment from "moment";
 import { IOffer } from "../../../api_client/marketplacevendor";
 import {
@@ -165,7 +165,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["parent:call", "page:closeChildren", "page:open"]);
+const emit = defineEmits(["parent:call", "close:bladeChildren", "open:blade"]);
 
 const { t } = useI18n();
 const logger = useLogger();
@@ -253,7 +253,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           )
         )
       ) {
-        emit("page:closeChildren");
+        emit("close:bladeChildren");
         await deleteOffers({ ids: selectedOfferIds.value });
         await reload();
       }
@@ -362,7 +362,7 @@ const columns = computed(() => {
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: OffersDetails,
     param: item.id,
     onOpen() {
@@ -387,7 +387,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const addOffer = async () => {
-  emit("page:open", {
+  emit("open:blade", {
     component: OffersDetails,
     componentOptions: props.options,
   });
@@ -457,7 +457,7 @@ async function removeOffers() {
       })
     )
   ) {
-    emit("page:closeChildren");
+    emit("close:bladeChildren");
     await deleteOffers({ ids: selectedOfferIds.value });
     await reload();
   }

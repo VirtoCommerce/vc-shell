@@ -7,7 +7,7 @@
 
 <script lang="ts" setup>
 import { computed, PropType } from "vue";
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 import { IProductPushNotification } from "../../../../../types";
 
 const props = defineProps({

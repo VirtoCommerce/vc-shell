@@ -84,8 +84,8 @@
 
 <script lang="ts" setup>
 import { nextTick, reactive } from "vue";
-import { useUser } from "@vc-shell/core";
-import { IIdentityError } from "@vc-shell/api-client";
+import { useUser } from "@vc-shell/framework";
+import { IIdentityError } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 import {
   useForm,
@@ -94,7 +94,7 @@ import {
   VcButton,
   VcPopup,
   VcForm,
-} from "@vc-shell/ui";
+} from "@vc-shell/framework";
 
 interface IChangePassForm {
   isValid: boolean;

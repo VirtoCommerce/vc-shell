@@ -8,7 +8,7 @@
     "
     width="50%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
   >
@@ -117,14 +117,14 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { IBladeToolbar } from "../../../types";
-import { useI18n, useAutosave } from "@vc-shell/core";
+import { useI18n, useAutosave } from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import {
   ImportProfile,
   ObjectSettingEntry,
 } from "../../../api_client/marketplacevendor";
-import { useForm } from "@vc-shell/ui";
+import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
@@ -148,7 +148,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits(["close:blade", "parent:call"]);
 const { t } = useI18n();
 const {
   dataImporters,
@@ -191,7 +191,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             });
           }
           resetAutosaved();
-          emit("page:close");
+          emit("close:blade");
         } catch (err) {
           alert(err.message);
         }
@@ -211,7 +211,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-ban",
     clickHandler() {
       resetAutosaved();
-      emit("page:close");
+      emit("close:blade");
     },
     isVisible: computed(() => !props.param),
   },
@@ -286,7 +286,7 @@ async function deleteProfile() {
   emit("parent:call", {
     method: "reloadParent",
   });
-  emit("page:close");
+  emit("close:blade");
 }
 
 async function onBeforeClose() {

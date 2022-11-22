@@ -1,5 +1,5 @@
 import { computed, reactive, Ref, ref, watch } from "vue";
-import { useLogger, useUser } from "@vc-shell/core";
+import { useLogger, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 import { CategoryIndexedSearchCriteria } from "../../../../api_client/catalog";

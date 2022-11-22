@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/core";
+import { useLogger, useUser } from "@vc-shell/framework";
 import { computed, ref, Ref } from "vue";
 import {
   CustomerReview,

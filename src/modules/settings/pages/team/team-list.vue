@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcTable
       class="grow basis-0"
@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { SellerUser } from "../../../../api_client/marketplacevendor";
@@ -155,7 +155,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "page:open"]);
+const emit = defineEmits(["close:blade", "open:blade"]);
 
 const { t } = useI18n();
 const {
@@ -201,7 +201,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("page:open", {
+      emit("open:blade", {
         component: TeamMemberDetails,
       });
     },
@@ -277,7 +277,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: SellerUser) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: TeamMemberDetails,
     param: item.id,
     componentOptions: {

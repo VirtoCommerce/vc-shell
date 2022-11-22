@@ -5,7 +5,7 @@
     v-loading="false"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <template v-slot:actions>
       <Status :review-status="customerReview.reviewStatus"></Status>
@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 import {
   VcBlade,
   VcCol,
@@ -90,7 +90,7 @@ import {
   VcRating,
   VcRow,
   IPage,
-} from "@vc-shell/ui";
+} from "@vc-shell/framework";
 import moment from "moment";
 import { computed, onMounted } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
@@ -109,8 +109,8 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "page:close"): void;
-  (event: "page:open", page: IPage): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", page: IPage): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

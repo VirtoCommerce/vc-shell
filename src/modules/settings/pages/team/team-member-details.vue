@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -142,11 +142,11 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n, useUser, useAutosave } from "@vc-shell/core";
+import { useI18n, useUser, useAutosave } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@vc-shell/ui";
+import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 import { SellerUserDetails } from "../../../../api_client/marketplacevendor";
 
@@ -172,7 +172,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits(["close:blade", "parent:call"]);
 useForm({ validateOnMount: false });
 const { user } = useUser();
 
@@ -222,7 +222,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
@@ -251,7 +251,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
@@ -298,7 +298,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (props.options && props.options.user && props.options.user.sellerId) {
         try {
           await sendTeamMemberInvitation({ id: props.options.user.id });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           errorMessage.value = e.message;
         }
@@ -362,7 +362,7 @@ async function removeUser() {
     emit("parent:call", {
       method: "reload",
     });
-    emit("page:close");
+    emit("close:blade");
   }
 }
 

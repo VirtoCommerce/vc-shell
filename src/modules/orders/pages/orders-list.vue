@@ -5,7 +5,7 @@
     :closable="closable"
     width="30%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -198,7 +198,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n } from "@vc-shell/core";
+import { useFunctions, useI18n } from "@vc-shell/framework";
 import moment from "moment";
 import { CustomerOrder } from "../../../api_client/orders";
 import {
@@ -231,7 +231,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:open"]);
+const emit = defineEmits(["open:blade"]);
 const {
   orders,
   loadOrders,
@@ -336,7 +336,7 @@ const empty = reactive({
 });
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: OrdersDetails,
     param: item.id,
     onOpen() {

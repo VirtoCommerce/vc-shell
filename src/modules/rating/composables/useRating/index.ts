@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/core";
+import { useLogger, useUser } from "@vc-shell/framework";
 import { VcmpSellerRatingAndReviewsClient } from "../../../../api_client/marketplacevendor";
 import { ref, Ref } from "vue";
 

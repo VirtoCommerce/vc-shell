@@ -6,7 +6,7 @@
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer class="import-new">
       <VcCol>
@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser } from "@vc-shell/core";
+import { useI18n, useUser } from "@vc-shell/framework";
 import {
   IBladeToolbar,
   INotificationActions,
@@ -234,7 +234,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:open", "page:close", "parent:call"]);
+const emit = defineEmits(["open:blade", "close:blade", "parent:call"]);
 const { t } = useI18n();
 const { getAccessToken } = useUser();
 const {
@@ -272,7 +272,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
     icon: "fas fa-pencil-alt",
     clickHandler() {
-      emit("page:open", {
+      emit("open:blade", {
         component: ImportProfileDetails,
         param: profile.value.id,
       });
@@ -604,7 +604,7 @@ function reloadParent() {
   emit("parent:call", {
     method: "reload",
   });
-  emit("page:close");
+  emit("close:blade");
 }
 
 const sampleTemplateUrl = computed(() => {

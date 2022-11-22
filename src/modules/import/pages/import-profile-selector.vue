@@ -79,7 +79,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
@@ -107,7 +107,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:open"]);
+const emit = defineEmits(["open:blade"]);
 const { t } = useI18n();
 const {
   importHistory,
@@ -199,7 +199,7 @@ async function reload() {
 
 function newProfile() {
   bladeWidth.value = 70;
-  emit("page:open", {
+  emit("open:blade", {
     component: ImportProfileDetails,
   });
 }
@@ -211,7 +211,7 @@ function openImporter(profileId: string) {
     (profile) => profile.id === profileId
   );
 
-  emit("page:open", {
+  emit("open:blade", {
     component: ImportNew,
     param: profileId,
     componentOptions: {
@@ -229,7 +229,7 @@ function openImporter(profileId: string) {
 function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
   selectedProfileId.value = item.profileId;
-  emit("page:open", {
+  emit("open:blade", {
     component: ImportNew,
     param: item.profileId,
     componentOptions: {

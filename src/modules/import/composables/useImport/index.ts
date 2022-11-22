@@ -1,4 +1,4 @@
-import { computed, reactive, Ref, ref, watch } from "vue";
+import { computed, Ref, ref, watch } from "vue";
 import {
   CreateProfileCommand,
   IDataImporter,
@@ -17,7 +17,7 @@ import {
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
-import { useLogger, useNotifications, useUser } from "@vc-shell/core";
+import { useLogger, useNotifications, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;

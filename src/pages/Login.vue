@@ -103,13 +103,12 @@ import { ref, reactive, computed } from "vue";
 import {
   useLogger,
   useUser,
+  useForm,
   SignInResult,
   RequestPasswordResult,
   useI18n,
-} from "@vc-shell/core";
-
+} from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
-import { useForm } from "@vc-shell/ui";
 import { useRouter } from "vue-router";
 import { useIsFormValid } from "vee-validate";
 

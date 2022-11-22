@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -63,10 +63,10 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n, useLogger } from "@vc-shell/core";
+import { useI18n, useLogger } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@vc-shell/ui";
+import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 
@@ -92,7 +92,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits(["close:blade", "parent:call"]);
 useForm({ validateOnMount: false });
 
 const { t } = useI18n();
@@ -134,7 +134,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           logger.error(e);
         }
@@ -194,7 +194,7 @@ async function removeFulfillmentCenter() {
     emit("parent:call", {
       method: "reload",
     });
-    emit("page:close");
+    emit("close:blade");
   }
 }
 

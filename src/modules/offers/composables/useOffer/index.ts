@@ -1,5 +1,5 @@
 import {computed, reactive, Ref, ref, unref, defineEmits, watch} from "vue";
-import { useLogger, useUser, useI18n } from "@vc-shell/core";
+import { useLogger, useUser, useI18n } from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -69,7 +69,7 @@ export default (): IUseOffer => {
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
   const imageUploading = ref(false);
-  const emit = defineEmits(["page:open"]);
+  const emit = defineEmits(["open:blade"]);
   const { t } = useI18n();
   const modified = ref(false);
 
@@ -268,7 +268,7 @@ export default (): IUseOffer => {
   };
 
   const onGalleryItemEdit = (item: Image) => {
-    emit("page:open", {
+    emit("open:blade", {
       component: AssetsDetails,
       componentOptions: {
         editableAsset: item,

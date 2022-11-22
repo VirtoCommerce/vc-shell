@@ -5,7 +5,7 @@
     :closable="closable"
     width="50%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -215,7 +215,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
+import { useFunctions, useI18n, useLogger } from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import {
@@ -249,7 +249,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "page:open"]);
+const emit = defineEmits(["close:blade", "open:blade"]);
 const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
@@ -326,7 +326,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     async clickHandler() {
-      emit("page:open", {
+      emit("open:blade", {
         component: ProductsEdit,
       });
     },
@@ -407,7 +407,7 @@ const activeFilterCount = computed(
 );
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: ProductsEdit,
     param: item.id,
     onOpen() {
@@ -508,7 +508,7 @@ async function resetSearch() {
   appliedFilter.value = {};
 }
 function addProduct() {
-  emit("page:open", {
+  emit("open:blade", {
     component: ProductsEdit,
   });
 }

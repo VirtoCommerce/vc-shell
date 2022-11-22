@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcTable
       class="grow basis-0"
@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { FulfillmentCenter } from "../../../../api_client/marketplacevendor";
@@ -85,7 +85,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["page:close", "page:open"]);
+const emit = defineEmits(["close:blade", "open:blade"]);
 
 const { t } = useI18n();
 const {
@@ -122,7 +122,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     ),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("page:open", {
+      emit("open:blade", {
         component: FulfillmentCenterDetails,
       });
     },
@@ -177,7 +177,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: FulfillmentCenter) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: FulfillmentCenterDetails,
     param: item.id,
     onOpen() {

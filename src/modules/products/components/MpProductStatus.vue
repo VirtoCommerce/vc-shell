@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { camelToSnake } from "@vc-shell/core";
+import { camelToSnake } from "@vc-shell/framework";
 
 const props = defineProps({
   status: {

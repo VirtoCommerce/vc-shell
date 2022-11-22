@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <template v-slot:actions>
       <mp-product-status :status="product.status"></mp-product-status>
@@ -201,8 +201,8 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useUser, useAutosave } from "@vc-shell/core";
-import { useForm } from "@vc-shell/ui";
+import { useFunctions, useI18n, useUser, useAutosave } from "@vc-shell/framework";
+import { useForm } from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
@@ -242,7 +242,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+const emit = defineEmits(["parent:call", "close:blade", "open:blade"]);
 const { t } = useI18n();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
@@ -340,7 +340,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             method: "reload",
           });
           if (!props.param) {
-            emit("page:close");
+            emit("close:blade");
           }
         } catch (err) {
           alert(err.message);
@@ -381,7 +381,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             method: "reload",
           });
           if (!props.param) {
-            emit("page:close");
+            emit("close:blade");
           }
         } catch (err) {
           alert(err.message);
@@ -494,7 +494,7 @@ const onGalleryUpload = async (files: FileList) => {
 };
 
 const onGalleryItemEdit = (item: Image) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: AssetsDetails,
     componentOptions: {
       editableAsset: item,
@@ -604,7 +604,7 @@ async function onLoadMore() {
 
 async function openOffers() {
   if (!isOffersOpened) {
-    emit("page:open", {
+    emit("open:blade", {
       component: OffersList,
       componentOptions: {
         sellerProduct: productData.value,

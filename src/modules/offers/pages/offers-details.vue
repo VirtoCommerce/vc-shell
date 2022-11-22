@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true" ref="container">
@@ -452,8 +452,8 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useForm, VcRow } from "@vc-shell/ui";
-import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
+import { useForm, VcRow } from "@vc-shell/framework";
+import { useFunctions, useI18n, useAutosave } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IOfferDetails,
@@ -496,7 +496,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+const emit = defineEmits(["parent:call", "close:blade", "open:blade"]);
 const { t } = useI18n();
 
 const {
@@ -675,7 +675,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (err) {
           alert(err.message);
         }
@@ -734,7 +734,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         emit("parent:call", {
           method: "reload",
         });
-        emit("page:close");
+        emit("close:blade");
       }
     },
     isVisible: computed(() => !!props.param && !offerLoading.value),
@@ -786,7 +786,7 @@ function setPriceRefs(el: HTMLDivElement) {
 }
 
 function showProductDetails(id: string) {
-  emit("page:open", {
+  emit("open:blade", {
     component: ProductsEdit,
     param: id,
   });

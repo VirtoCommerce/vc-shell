@@ -1,5 +1,5 @@
 import { computed, Ref, ref } from "vue";
-import { useUser, useLogger } from "@vc-shell/core";
+import { useUser, useLogger } from "@vc-shell/framework";
 import {
   OrderModuleClient,
   CustomerOrder,

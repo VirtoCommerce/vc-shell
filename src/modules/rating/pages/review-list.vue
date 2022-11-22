@@ -5,7 +5,7 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <ReviewTable :expanded="expanded" @itemClick="onItemClick"></ReviewTable>
   </VcBlade>
@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { VcBlade, IPage } from "@vc-shell/ui";
+import { VcBlade, IPage, useI18n } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { IBladeToolbar } from "../../../types";
@@ -26,8 +26,6 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
-
 // Page
 
 export interface Props {
@@ -37,8 +35,8 @@ export interface Props {
 }
 
 interface Emits {
-  (event: "page:close"): void;
-  (event: "page:open", page: IPage): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", page: IPage): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -74,7 +72,7 @@ const onItemClick = (
   onSelect: () => void,
   onDeselect: () => void
 ) => {
-  emit("page:open", {
+  emit("open:blade", {
     component: ReviewDetails,
     param: item.id,
     componentOptions: {

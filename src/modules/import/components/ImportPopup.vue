@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcTable, VcButton, VcPopup } from "@vc-shell/ui";
+import { VcTable, VcButton, VcPopup } from "@vc-shell/framework";
 import { ITableColumns } from "../../../types";
 
 export interface Props {

@@ -13,7 +13,7 @@ export default defineComponent({
 });
 </script>
 <script lang="ts" setup>
-import { PushNotification } from "@vc-shell/api-client";
+import { PushNotification } from "@vc-shell/framework";
 
 defineProps({
   notification: {

@@ -6,7 +6,7 @@
     :closable="closable"
     v-loading="loading"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer>
       <VcStatus
@@ -412,10 +412,10 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser, useAutosave } from "@vc-shell/core";
+import { useI18n, useUser, useAutosave } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
-import { useForm } from "@vc-shell/ui";
+import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 
 const props = defineProps({
@@ -439,7 +439,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-defineEmits(["page:close", "page:open"]);
+defineEmits(["close:blade", "open:blade"]);
 
 const {
   getCurrentSeller,

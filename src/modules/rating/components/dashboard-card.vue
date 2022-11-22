@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { IPage, VcButton, VcCard } from "@vc-shell/ui";
+import { IPage, VcButton, VcCard } from "@vc-shell/framework";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Rating, ReviewTable } from "../components";
 import { ReviewDetails, ReviewList } from "../pages";

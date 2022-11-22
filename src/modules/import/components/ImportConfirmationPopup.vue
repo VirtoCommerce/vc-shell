@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcPopup, VcButton } from "@vc-shell/ui";
+import { VcPopup, VcButton } from "@vc-shell/framework";
 
 export interface Props {
   title: string;

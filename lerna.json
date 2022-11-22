@@ -2,7 +2,7 @@
   "npmClient": "yarn",
   "packages": [
     "apps/*",
-    "framework/*",
+    "framework",
     "modules/*",
     "cli/*"
   ],

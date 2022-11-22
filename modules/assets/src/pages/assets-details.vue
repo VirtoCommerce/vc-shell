@@ -57,7 +57,7 @@
 
 <script lang="ts" setup>
 import { computed, reactive, unref } from "vue";
-import { useI18n } from "@vc-shell/core";
+import { useI18n } from "@vc-shell/framework";
 
 const props = defineProps({
   expanded: {

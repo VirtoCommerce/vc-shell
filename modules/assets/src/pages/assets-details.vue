@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <div class="flex grow-1 border-t border-solid border-t-[#eaedf3]">
@@ -75,7 +75,7 @@ const props = defineProps({
     default: () => ({}),
   },
 });
-const emit = defineEmits(["parent:call", "page:close"]);
+const emit = defineEmits(["parent:call", "close:blade"]);
 const { t } = useI18n();
 const localImage = reactive({ ...props.options.editableAsset });
 
@@ -90,7 +90,7 @@ const bladeToolbar = [
         typeof props.options.sortHandler === "function"
       ) {
         props.options.sortHandler(false, localImage);
-        emit("page:close");
+        emit("close:blade");
       }
     },
   },
@@ -109,7 +109,7 @@ const bladeToolbar = [
           typeof props.options.sortHandler === "function"
         ) {
           props.options.sortHandler(true, localImage);
-          emit("page:close");
+          emit("close:blade");
         }
       }
     },

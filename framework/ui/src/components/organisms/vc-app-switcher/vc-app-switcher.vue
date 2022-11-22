@@ -33,7 +33,6 @@
             class="font-normal text-sm text-[#727C87] truncate group-hover:opacity-80"
           >
             {{ item.title }}
-            {{ item.description ? `(${item.description})` : "" }}
           </p>
         </li>
       </ul>

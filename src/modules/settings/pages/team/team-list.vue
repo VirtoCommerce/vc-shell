@@ -115,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
 import {
   UserPermissions,
   IBladeToolbar,
@@ -123,7 +123,7 @@ import {
 } from "../../../../types";
 
 export default defineComponent({
-  url: "team",
+   url: "/team",
   permissions: [UserPermissions.SellerUsersManage],
 });
 </script>
@@ -202,7 +202,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     clickHandler() {
       emit("open:blade", {
-        component: TeamMemberDetails,
+        component: shallowRef(TeamMemberDetails),
       });
     },
   },
@@ -278,9 +278,9 @@ const onPaginationClick = async (page: number) => {
 
 const onItemClick = (item: SellerUser) => {
   emit("open:blade", {
-    component: TeamMemberDetails,
+    component: shallowRef(TeamMemberDetails),
     param: item.id,
-    componentOptions: {
+    bladeOptions: {
       user: item,
     },
     onOpen() {

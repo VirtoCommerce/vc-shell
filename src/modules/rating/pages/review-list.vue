@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, shallowRef } from "vue";
 import { VcBlade, IPage, useI18n } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
@@ -21,7 +21,7 @@ import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 
 export default defineComponent({
-  url: "reviews",
+   url: "/reviews",
 });
 </script>
 
@@ -34,7 +34,7 @@ export interface Props {
   param?: string;
 }
 
-interface Emits {
+export interface Emits {
   (event: "close:blade"): void;
   (event: "open:blade", page: IPage): void;
 }
@@ -73,9 +73,9 @@ const onItemClick = (
   onDeselect: () => void
 ) => {
   emit("open:blade", {
-    component: ReviewDetails,
+    component: shallowRef(ReviewDetails),
     param: item.id,
-    componentOptions: {
+    bladeOptions: {
       review: item,
     },
     onOpen: onSelect,

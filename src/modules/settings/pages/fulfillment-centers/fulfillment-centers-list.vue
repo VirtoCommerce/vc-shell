@@ -53,7 +53,7 @@ import {
 } from "../../../../types";
 
 export default defineComponent({
-  url: "fulfillment-centers-list",
+  url: "/fulfillment-centers-list",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
@@ -63,6 +63,7 @@ import { useI18n } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { FulfillmentCenter } from "../../../../api_client/marketplacevendor";
+import {shallowRef} from "vue";
 
 const props = defineProps({
   expanded: {
@@ -123,7 +124,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     clickHandler() {
       emit("open:blade", {
-        component: FulfillmentCenterDetails,
+        component: shallowRef(FulfillmentCenterDetails),
       });
     },
   },
@@ -178,7 +179,7 @@ const onPaginationClick = async (page: number) => {
 
 const onItemClick = (item: FulfillmentCenter) => {
   emit("open:blade", {
-    component: FulfillmentCenterDetails,
+    component: shallowRef(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

@@ -15,10 +15,10 @@
     @onClose="closeBlade($event)"
     v-else
   >
-    <!-- App Switcher -->
-    <template v-slot:appSwitcher>
-      <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
-    </template>
+      <!-- App Switcher -->
+      <template v-slot:appSwitcher>
+          <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
+      </template>
 
     <template v-slot:bladeNavigation>
       <VcBladeNavigation
@@ -55,17 +55,20 @@
 
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
+import { PushNotification } from "@vc-shell/api-client";
 import {
-  useAppSwitcher,
-  useFunctions,
-  useI18n,
-  useLogger,
-  useNotifications,
-  usePermissions,
-  useSettings,
-  useUser,
-  PushNotification,
-  VcAppSwitcher,
+    useAppSwitcher,
+    useFunctions,
+    useI18n,
+    useLogger,
+    useNotifications,
+    usePermissions,
+    useSettings,
+    useUser,
+    PushNotification,
+    VcAppSwitcher,
+    useBladeNavigation,
+    VcBladeNavigation,
     useBladeNavigation
 } from "@vc-shell/framework";
 import {
@@ -97,12 +100,7 @@ import {
 import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
 import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
-import { VcBladeNavigation } from "@vc-shell/ui";
 
-interface BladeElement extends ComponentPublicInstance {
-  onBeforeClose?: () => Promise<boolean>;
-  [x: string]: unknown;
-}
 const {
   t,
   locale: currentLocale,
@@ -121,16 +119,16 @@ const {
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
 const { delay } = useFunctions();
-const { getApps, switchApp, appsList } = useAppSwitcher();
 const {
-    blades,
-    bladesRefs,
-    parentBladeOptions,
-    parentBladeParam,
-    openBlade,
-    closeBlade,
-    onParentCall,
+  blades,
+  bladesRefs,
+  parentBladeOptions,
+  parentBladeParam,
+  openBlade,
+  closeBlade,
+  onParentCall,
 } = useBladeNavigation();
+
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -142,6 +140,7 @@ const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 const bladeNavigationRefs = ref();
+
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);
 });
@@ -150,7 +149,6 @@ onMounted(async () => {
   await loadUser();
   langInit();
   await getUiCustomizationSettings();
-  await getApps();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");

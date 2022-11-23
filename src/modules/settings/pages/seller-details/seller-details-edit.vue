@@ -406,7 +406,7 @@ import { defineComponent, onMounted, ref, computed, unref, watch } from "vue";
 import { UserPermissions, IBladeToolbar } from "../../../../types";
 
 export default defineComponent({
-  url: "seller-details-edit",
+   url: "/seller-details-edit",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>

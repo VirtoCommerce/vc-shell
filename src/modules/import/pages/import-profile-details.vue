@@ -111,7 +111,7 @@
 import { defineComponent, computed, onMounted, ref, unref } from "vue";
 
 export default defineComponent({
-  url: "import-profile-details",
+   url: "/import-profile-details",
 });
 </script>
 

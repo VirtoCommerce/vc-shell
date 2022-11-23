@@ -190,10 +190,11 @@ import {
   reactive,
   ref,
   watch,
+    shallowRef
 } from "vue";
 
 export default defineComponent({
-  url: "orders",
+  url: "/orders",
 });
 </script>
 
@@ -337,7 +338,7 @@ const empty = reactive({
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-    component: OrdersDetails,
+    component: shallowRef(OrdersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

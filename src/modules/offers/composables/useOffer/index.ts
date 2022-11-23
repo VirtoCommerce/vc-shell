@@ -1,4 +1,4 @@
-import {computed, reactive, Ref, ref, unref, defineEmits, watch} from "vue";
+import {computed, reactive, Ref, ref, unref, defineEmits, watch, shallowRef} from "vue";
 import { useLogger, useUser, useI18n } from "@vc-shell/framework";
 
 import {
@@ -269,8 +269,8 @@ export default (): IUseOffer => {
 
   const onGalleryItemEdit = (item: Image) => {
     emit("open:blade", {
-      component: AssetsDetails,
-      componentOptions: {
+      component: shallowRef(AssetsDetails),
+      bladeOptions: {
         editableAsset: item,
         images: offerDetails.value.images,
         sortHandler: sortImage,

@@ -240,7 +240,7 @@
 import { defineComponent, computed, onMounted, ref } from "vue";
 
 export default defineComponent({
-  url: "order",
+  url: "/order",
 });
 </script>
 

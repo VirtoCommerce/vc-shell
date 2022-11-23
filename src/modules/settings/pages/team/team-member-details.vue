@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('close:blade')"
+    @close="$emit('close')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -142,11 +142,10 @@
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
 import { IBladeToolbar } from "../../../../types";
-import { useI18n, useUser, useAutosave } from "@vc-shell/framework";
+import { useI18n, useUser, useAutosave, useForm } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 import { SellerUserDetails } from "../../../../api_client/marketplacevendor";
 

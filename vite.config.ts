@@ -5,6 +5,7 @@ const version = JSON.parse(packageJson.toString()).version || 0;
 import vue from "@vitejs/plugin-vue";
 import { loadEnv } from "vite";
 import typescript from "@rollup/plugin-typescript";
+import * as path from "path";
 
 // Build configuration for the application
 const mode = process.env.APP_ENV as string;
@@ -64,16 +65,15 @@ export default {
     alias:
       mode === "development"
         ? {
-            "@vc-shell/framework/dist/style.css":
-              "@vc-shell/framework/dist/style.css",
-            // "@vc-shell/framework": "@vc-shell/framework/index.ts",
+            "@vc-shell/ui/dist/style.css": "@vc-shell/ui/dist/style.css",
+            "@vc-shell/ui": "@vc-shell/ui/src/index.ts",
+            // "@vc-shell/core": "@vc-shell/core/src/index.ts",
+          '@vc-shell/core/src/composables/useBladeNavigation/index': path.resolve('./../../framework/core/src/composables/useBladeNavigation'),
             "@vc-shell/mod-assets": "@vc-shell/mod-assets/src/index.ts",
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
-            "vee-validate": "vee-validate/dist/vee-validate.js",
+            //"vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
-            "vee-validate": "vee-validate/dist/vee-validate.js",
+            //"vue-router": "vue-router/dist/vue-router.cjs.js",
           },
   },
   base: process.env.APP_BASE_PATH,

@@ -61,7 +61,7 @@
 
           <!-- Rating & Reviews block -->
           <VcCol size="4" class="p-2">
-            <RatingDashboardCard :open-page="openPage"></RatingDashboardCard>
+            <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
           </VcCol>
         </VcRow>
 
@@ -217,13 +217,7 @@ import {
 } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
 import { ITableColumns } from "../types";
-
-export interface Props {
-  openPage: (index: number, page: IPage) => void;
-}
-
-const props = defineProps<Props>();
-
+import useBladeNavigation from "@vc-shell/core/src/composables/useBladeNavigation/index";
 
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();

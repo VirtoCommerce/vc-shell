@@ -452,8 +452,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useForm, VcRow } from "@vc-shell/framework";
-import { useFunctions, useI18n, useAutosave } from "@vc-shell/framework";
+import { useForm, VcRow, useFunctions, useI18n, useAutosave } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IOfferDetails,
@@ -474,26 +473,20 @@ import {
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    sellerProduct: {
+      publishedProductDataId: string;
+    };
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
 
 const emit = defineEmits(["parent:call", "close:blade", "open:blade"]);
@@ -785,9 +778,9 @@ function setPriceRefs(el: HTMLDivElement) {
   }
 }
 
-function showProductDetails(id: string) {
+async function showProductDetails(id: string) {
   emit("open:blade", {
-    component: ProductsEdit,
+    component: shallowRef(ProductsEdit),
     param: id,
   });
 }

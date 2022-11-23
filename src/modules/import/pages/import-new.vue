@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="bladeLoading"
-    :title="param && profileDetails?.name ? profileDetails.name : options.title"
+    :title="param && profileDetails?.name ? profileDetails.name : props.title"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
@@ -182,16 +182,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  watch,
+  shallowRef,
+} from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
 export default defineComponent({
-  url: "importer",
+  url: "/importer",
 });
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser } from "@vc-shell/framework";
+import { useI18n, useUser } from "@vc-shell/core";
 import {
   IBladeToolbar,
   INotificationActions,
@@ -204,6 +211,7 @@ import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
+import ImportNew from "./import-new.vue";
 
 interface IImportBadges {
   id: string;
@@ -213,27 +221,21 @@ interface IImportBadges {
   description?: string;
 }
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    importJobId?: string;
+    title?: string;
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
+
 const emit = defineEmits(["open:blade", "close:blade", "parent:call"]);
 const { t } = useI18n();
 const { getAccessToken } = useUser();
@@ -273,7 +275,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-pencil-alt",
     clickHandler() {
       emit("open:blade", {
-        component: ImportProfileDetails,
+        component: shallowRef(ImportProfileDetails),
         param: profile.value.id,
       });
     },

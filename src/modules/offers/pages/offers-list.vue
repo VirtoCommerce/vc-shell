@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/framework";
+import { useFunctions, useI18n, useLogger, usePermissions } from "@vc-shell/framework";
 import moment from "moment";
 import { IOffer } from "../../../api_client/marketplacevendor";
 import {
@@ -141,31 +141,19 @@ import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 import emptyImage from "/assets/empty.png";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, unknown>
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  param: {
-    type: String,
-    default: undefined,
-  },
-  /**
-   * Blade options params
-   * @param {ISellerProduct} sellerProduct
-   */
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["parent:call", "close:bladeChildren", "open:blade"]);
+
+const emit = defineEmits(["parent:call", "close:children", "open:blade"]);
 
 const { t } = useI18n();
 const logger = useLogger();
@@ -181,10 +169,11 @@ const {
   loading,
   deleteOffers,
 } = useOffers();
+const { checkPermission } = usePermissions();
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
-const selectedItemId = ref();
+const selectedItemId = ref<string>();
 const selectedOfferIds = ref([]);
 const isDesktop = inject("isDesktop");
 
@@ -253,7 +242,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           )
         )
       ) {
-        emit("close:bladeChildren");
+        emit("close:children");
         await deleteOffers({ ids: selectedOfferIds.value });
         await reload();
       }
@@ -363,7 +352,7 @@ const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-    component: OffersDetails,
+    component: shallowRef(OffersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -386,10 +375,10 @@ const onHeaderClick = (item: ITableColumns) => {
   }
 };
 
-const addOffer = async () => {
+const addOffer = () => {
   emit("open:blade", {
-    component: OffersDetails,
-    componentOptions: props.options,
+    component: shallowRef(OffersDetails),
+    bladeOptions: props.options,
   });
 };
 
@@ -457,7 +446,7 @@ async function removeOffers() {
       })
     )
   ) {
-    emit("close:bladeChildren");
+    emit("close:children");
     await deleteOffers({ ids: selectedOfferIds.value });
     await reload();
   }

@@ -1,7 +1,8 @@
-import vue from "@vitejs/plugin-vue";
-import { loadEnv } from "vite";
 import typescript from "@rollup/plugin-typescript";
+import vue from "@vitejs/plugin-vue";
 import * as fs from "fs";
+import { loadEnv } from "vite";
+import mkcert from "vite-plugin-mkcert";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -23,13 +24,22 @@ if (mode !== "production") {
   _define.global = {};
 }
 
+const getProxy = (target, options = {}) => {
+  const dontTrustSelfSignedCertificate = false;
+  return {
+    target,
+    secure: dontTrustSelfSignedCertificate,
+    ...options,
+  };
+};
+
 export default {
   mode,
   resolve: {
     preserveSymlinks: true,
   },
   envPrefix: "APP_",
-  plugins: [vue()],
+  plugins: [mkcert({ hosts: ["localhost", "127.0.0.1"] }), vue()],
   define: {
     ..._define,
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
@@ -43,16 +53,16 @@ export default {
     },
     host: "0.0.0.0",
     port: 8080,
+    https: true,
     proxy: {
-      "/api": `${process.env.APP_PLATFORM_URL}`,
-      "/connect/token": `${process.env.APP_PLATFORM_URL}`,
-      "/pushNotificationHub": `${process.env.APP_PLATFORM_URL}`,
-      "^/pushNotificationHub": {
-        target: `${process.env.APP_PLATFORM_URL}`,
+      "/api": getProxy(`${process.env.APP_PLATFORM_URL}`),
+      "/connect/token": getProxy(`${process.env.APP_PLATFORM_URL}`),
+      "/pushNotificationHub": getProxy(`${process.env.APP_PLATFORM_URL}`),
+      "^/pushNotificationHub": getProxy(`${process.env.APP_PLATFORM_URL}`, {
         changeOrigin: true,
         ws: true,
-      },
-      "/Modules": `${process.env.APP_PLATFORM_URL}`,
+      }),
+      "/Modules": getProxy(`${process.env.APP_PLATFORM_URL}`),
     },
   },
   optimizeDeps: {

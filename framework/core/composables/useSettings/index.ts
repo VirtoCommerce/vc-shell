@@ -1,7 +1,6 @@
-import useUser from "../useUser";
-import useLogger from "../useLogger";
+import {useUser, useLogger} from "@composables";
 import { computed, Ref, ref } from "vue";
-import { SettingClient } from "../../api";
+import { SettingClient } from "@api";
 
 interface IUseSettings {
   readonly uiSettings: Ref<Record<string, string>>;

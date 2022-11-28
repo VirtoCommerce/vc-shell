@@ -1,2 +1,14 @@
-export { default as useAppSwitcher } from "./composables/useAppSwitcher";
-export { default as VcAppSwitcher } from "./components/vc-app-switcher/vc-app-switcher.vue";
+import { App } from "vue";
+import * as components from './components'
+
+export default {
+  install(app: App): void {
+    // Register exported components
+    Object.entries(components).forEach(([componentName, component]) => {
+      app.component(componentName, component);
+    });
+  },
+};
+
+export * from './composables'
+export * from './components'

@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import VcIcon from "../vc-icon/vc-icon.vue";
+import { VcIcon } from "@components";
 
 defineProps({
   status: {

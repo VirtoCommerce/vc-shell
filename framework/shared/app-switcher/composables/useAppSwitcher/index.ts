@@ -1,10 +1,10 @@
 import { computed, Ref, ref } from "vue";
-import { AppDescriptor, AppsClient } from "../../../../core/api";
+import { AppDescriptor, AppsClient } from "@api";
 import {
   useLogger,
   useUser,
   usePermissions,
-} from "../../../../core/composables";
+} from "@composables";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
@@ -36,7 +36,7 @@ export default (): IUseAppSwitcher => {
   }
 
   function switchApp(app: AppDescriptor) {
-    if (app.permission && checkPermission(app.permission)) {
+    if (checkPermission(app.permission)) {
       if (app.relativeUrl) {
         window.location.href = window.location.origin + app.relativeUrl;
       }

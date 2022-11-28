@@ -92,7 +92,7 @@
 </template>
 
 <script lang="ts" setup>
-import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
+import { VcIcon } from "@components";
 
 defineProps({
   expanded: {

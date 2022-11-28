@@ -120,26 +120,28 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { IActionBuilderResult } from "../../../../../core/types";
+import { IActionBuilderResult } from "@types";
+import { VcIcon } from "@components";
 
-const props = defineProps({
+export interface Props {
   item: {
-    type: Object,
-    default: () => ({}),
-  },
+    id: string;
+  };
+  actionBuilder?: (item: { id: string }) => IActionBuilderResult[];
+  swipingItem?: string;
+}
 
-  actionBuilder: {
-    type: Function,
-    default: undefined,
-  },
+export interface Emits {
+  (event: "swipeStart", id: string): void;
+}
 
-  swipingItem: {
-    type: String,
-    default: null,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  item: undefined,
+  actionBuilder: undefined,
+  swipingItem: null,
 });
 
-const emit = defineEmits(["swipeStart"]);
+const emit = defineEmits<Emits>();
 const offsetX = ref(0);
 const startX = ref(0);
 const startY = ref(0);
@@ -196,7 +198,7 @@ async function touchStart(e: TouchEvent): Promise<void> {
 
   if (!itemActions.value.length) {
     if (typeof props.actionBuilder === "function") {
-      itemActions.value = await props.actionBuilder(props.item);
+      itemActions.value = props.actionBuilder(props.item);
 
       handleOffset();
     }

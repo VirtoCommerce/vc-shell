@@ -17,10 +17,7 @@
           icon="fas fa-arrows-alt"
           size="s"
         ></VcIcon>
-        <div
-          class="truncate"
-          :title="image.name"
-        >
+        <div class="truncate" :title="image.name">
           {{ image.name }}
         </div>
       </div>
@@ -65,7 +62,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { clickOutside as vClickOutside } from "../../../../../core/directives";
+import { clickOutside as vClickOutside } from "@directives";
 
 defineProps({
   image: {

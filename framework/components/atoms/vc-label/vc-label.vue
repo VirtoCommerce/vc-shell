@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import VcIcon from "../vc-icon/vc-icon.vue";
+import { VcIcon } from "@components";
 import { ref } from "vue";
 
 defineProps({

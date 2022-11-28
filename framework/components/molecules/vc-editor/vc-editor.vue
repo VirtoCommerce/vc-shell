@@ -37,7 +37,7 @@ import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
 import { getCurrentInstance, ref, unref, watch } from "vue";
 import { useField } from "vee-validate";
-import { IValidationRules } from "../../../core/types";
+import { IValidationRules } from "@types";
 
 const props = defineProps({
   placeholder: {

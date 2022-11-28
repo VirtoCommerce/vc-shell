@@ -57,25 +57,45 @@
 
 <script lang="ts" setup>
 import { computed, reactive, unref } from "vue";
-import { useI18n } from "@vc-shell/framework";
+import { useI18n } from "@composables";
+import { IParentCallArgs } from "@shared";
+import {
+  VcBlade,
+  VcContainer,
+  VcForm,
+  VcImage,
+  VcInput,
+  VcTextarea,
+} from "@components";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+interface ILocalImage {
+  url: string;
+  name: string;
+  altText: string;
+  description: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  options?: {
+    editableAsset?: ILocalImage;
+    sortHandler?: (remove: boolean, localImage: ILocalImage) => void;
+  };
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  options: () => ({}),
 });
-const emit = defineEmits(["parent:call", "close:blade"]);
+
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const localImage = reactive({ ...props.options.editableAsset });
 

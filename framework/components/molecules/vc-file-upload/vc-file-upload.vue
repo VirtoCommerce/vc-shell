@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
-import { defineRule, useField } from "vee-validate";
+import { useField } from "vee-validate";
 
 const props = defineProps({
   variant: {

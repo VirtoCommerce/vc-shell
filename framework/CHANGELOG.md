@@ -9837,7 +9837,7 @@ See [Conventional Commits](https://conventionalcommits.org) for commit guideline
 
 
 
-## [1.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/ui@1.1.0...@vc-shell/ui@1.0.22) (2022-09-28)
+## [1.0.22](https://github.com/VirtoCommerce/platform-manager-sdk/compare/@vc-shell/framework@1.1.0...@vc-shell/ui@1.0.22) (2022-09-28)
 
 
 ### Bug Fixes

@@ -88,17 +88,17 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import moment from "moment";
+import { ITableColumns } from "@types";
+import { VcImage, VcStatus, VcStatusIcon, VcLink } from "@components";
 
-const props = defineProps({
-  cell: {
-    type: Object,
-    default: () => ({}),
-  },
+export interface Props {
+  cell: ITableColumns;
+  item: Record<string, unknown>;
+}
 
-  item: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  cell: undefined,
+  item: undefined,
 });
 
 const locale = window.navigator.language;

@@ -54,7 +54,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import VcPopup from "../../../vc-popup/vc-popup.vue";
+import { VcPopup } from "@components";
 
 const props = defineProps({
   images: {

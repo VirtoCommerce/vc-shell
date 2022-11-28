@@ -46,13 +46,15 @@
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
-              @click="
-                $emit('item:click', item);
-                isMobileVisible = false;
+              @click="(navigationCb) => {
+                  $emit('item:click', {item, navigationCb})
+                  isMobileVisible = false
+                }
               "
-              @child:click="
-                $emit('item:click', $event);
-                isMobileVisible = false;
+              @child:click="({item: blade, navigationCb}) => {
+                $emit('item:click', {item: blade, navigationCb})
+                isMobileVisible = false
+              }
               "
             />
           </template>
@@ -63,35 +65,30 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType, ref } from "vue";
+import { ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
-import VcContainer from "../../../../atoms/vc-container/vc-container.vue";
-import { IBladeToolbar, IMenuItems } from "../../../../../core/types";
+import { VcContainer } from "@components";
+import { IMenuItems } from "@types";
+import {IMenuClickEvent} from "@shared";
 
-defineProps({
-  // Array of menu items
-  items: {
-    type: Array as PropType<IMenuItems[]>,
-    default: () => [],
-  },
+export interface Props {
+    items?: IMenuItems[];
+    mobileMenuItems?: IMenuItems[]
 
-  mobileMenuItems: {
-    type: Array as PropType<IBladeToolbar[]>,
-    default: () => [],
-  },
+}
 
-  activeItem: {
-    type: Object as PropType<IMenuItems>,
-    default: undefined,
-  },
+export interface Emits {
+    (event: 'item:click', {
+      item, navigationCb
+    }:IMenuClickEvent): void
+}
 
-  activeChildItem: {
-    type: Object as PropType<IMenuItems>,
-    default: undefined,
-  },
+withDefaults(defineProps<Props>(), {
+    items: () => [],
+    mobileMenuItems: () => []
 });
 
-defineEmits(["item:click"]);
+defineEmits<Emits>();
 
 const isMobileVisible = ref(false);
 

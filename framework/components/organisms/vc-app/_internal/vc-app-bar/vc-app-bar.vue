@@ -95,30 +95,13 @@
 </template>
 
 <script lang="ts" setup>
-import { PropType } from "vue";
-import VcIcon from "../../../../atoms/vc-icon/vc-icon.vue";
-import { IBladeToolbar, BladeElement } from "../../../../../core/types";
-
-defineProps({
-  logo: {
-    type: String,
-    default: "",
-  },
-
-  version: {
-    type: String,
-    default: "",
-  },
-
-  workspace: {
-    type: Array as PropType<IPage[]>,
-    default: () => [],
-  },
+import { VcIcon } from "@components";
+import { IBladeToolbar, IBladeElement } from "@types";
 
 export interface Props {
   logo: string;
   version: string;
-  blades: BladeElement[];
+  blades: IBladeElement[];
   buttons: IBladeToolbar[];
 }
 

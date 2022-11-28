@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, nextTick, PropType } from "vue";
+import { defineComponent, nextTick, PropType, ref } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -49,9 +49,9 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import VcIcon from "../../../../../../atoms/vc-icon/vc-icon.vue";
+import { VcIcon } from "@components";
 import { createPopper, Instance } from "@popperjs/core";
-import { IBladeDropdownItem } from "../../../../../../../core/types";
+import { IBladeDropdownItem } from "@types";
 
 const props = defineProps({
   disabled: {

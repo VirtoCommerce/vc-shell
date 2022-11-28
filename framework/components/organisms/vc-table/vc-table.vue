@@ -295,18 +295,20 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, PropType, ref, watch, onBeforeUpdate } from "vue";
-import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
-import VcCheckbox from "../../atoms/vc-checkbox/vc-checkbox.vue";
-import VcContainer from "../../atoms/vc-container/vc-container.vue";
-import VcInput from "../../molecules/vc-input/vc-input.vue";
-import VcPagination from "../../molecules/vc-pagination/vc-pagination.vue";
-import VcLoading from "../../atoms/vc-loading/vc-loading.vue";
+import {
+  VcIcon,
+  VcLoading,
+  VcCheckbox,
+  VcContainer,
+  VcInput,
+  VcPagination,
+} from "@components";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
-import { IActionBuilderResult } from "../../../core/types";
+import { IActionBuilderResult } from "@types";
 
 interface ITableItemRef {
   element: HTMLDivElement;

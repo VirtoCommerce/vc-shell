@@ -14,14 +14,18 @@
     <VcAppBar
       class="shrink-0"
       :logo="logo"
-      :blades="blades"
+      :blades="bladesRefs"
       :version="version"
       :buttons="toolbarItems"
       @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="$refs.menu.isMobileVisible = true"
-      @backlink:click="$emit('backlink:click', blades.length - 1)"
+      @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
       @logo:click="openDashboard"
     >
+      <template v-slot:appSwitcher>
+        <slot name="appSwitcher"></slot>
+      </template>
+
       <template v-slot:productName v-if="$slots['productName']">
         <slot name="productName"></slot>
       </template>
@@ -65,10 +69,30 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
+import {useRouter} from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { IBladeToolbar, IMenuItems, IPage, BladeElement, } from "../../../core/types";
+import { IBladeToolbar, IMenuItems } from "@types";
+import {IBladeElement, ExtendedComponent, IMenuClickEvent, IOpenBlade} from "@shared";
+
+export interface Props {
+  pages: ExtendedComponent[];
+  menuItems: IMenuItems[];
+  mobileMenuItems: IMenuItems[];
+  toolbarItems: IBladeToolbar[];
+  isReady: boolean;
+  isAuthorized: boolean;
+  logo: string;
+  version: string;
+  theme?: "light" | "dark";
+  bladesRefs: IBladeElement[];
+}
+
+export interface Emits {
+    (event: 'onOpen', args: IOpenBlade): void
+    (event: 'onClose', index: number): void
+    (event: 'backlink:click', index: number):void
+}
 
 const props = withDefaults(defineProps<Props>(), {
   pages: () => [],
@@ -80,9 +104,10 @@ const props = withDefaults(defineProps<Props>(), {
   logo: undefined,
   version: undefined,
   theme: "light",
+  bladesRefs: () => [],
 });
 
-const emit = defineEmits(["onOpen", "onClose", 'backlink:click']);
+const emit = defineEmits<Emits>();
 
 console.debug("vc-app: Init vc-app");
 
@@ -90,12 +115,12 @@ const instance = getCurrentInstance();
 
 const router = useRouter();
 
-const onMenuItemClick = function (item: IBladeToolbar) {
+const onMenuItemClick = function ({item, navigationCb}: IMenuClickEvent) {
   console.debug(`vc-app#onMenuItemClick() called.`);
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);
   } else {
-    emit("onOpen", { parentBlade: item.component, id: 0 });
+    emit("onOpen", { parentBlade: item.component, id: 0, navigationCb });
   }
 };
 

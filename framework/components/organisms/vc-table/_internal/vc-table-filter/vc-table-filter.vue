@@ -59,30 +59,19 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { createPopper, Instance } from "@popperjs/core";
+import { VcIcon } from "@components";
 
-const props = defineProps({
-  items: {
-    type: Array,
-    default: () => [],
-  },
+export interface Props {
+  title: string;
+  counter: number;
+  parentExpanded?: boolean;
+}
 
-  title: {
-    type: String,
-    default: undefined,
-  },
-
-  counter: {
-    type: Number,
-    default: 0,
-  },
-
-  parentExpanded: {
-    type: Boolean,
-    default: true,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  title: undefined,
+  counter: 0,
+  parentExpanded: true,
 });
-
-defineEmits(["apply", "reset"]);
 
 const isPanelVisible = ref(false);
 const filterToggle = ref();

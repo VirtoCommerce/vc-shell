@@ -1,4 +1,5 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
+import {IBladeElement, ExtendedComponent} from "@shared";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -19,29 +20,13 @@ export type IValidationRules = {
   size?: number;
 };
 
-export interface IComponent extends ComponentPublicInstance {
-  openDashboard(): void;
-}
-
-export type BladeComponent = Component & {
-  url?: string;
-  permissions?: string | string[];
-  idx?: number;
-};
-
-export interface BladeElement extends ComponentPublicInstance {
-  onBeforeClose: () => Promise<boolean>;
-  title?: string;
-  [x: string]: unknown;
-}
-
 export interface IBladeToolbar {
   id?: string;
   icon?: string;
   title?: string | ComputedRef<string>;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
-  component?: BladeComponent;
+  component?: ExtendedComponent;
   bladeOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
   dropdownItems?: IBladeDropdownItem[];
@@ -56,19 +41,7 @@ export interface IBladeDropdownItem {
 }
 
 export interface IMenuItems extends IBladeToolbar {
-  clickHandler?(app?: IComponent): void;
-  bladeOptions?: Record<string, unknown> | unknown;
   children?: IMenuItems[];
-}
-
-export interface IPage {
-  component: BladeComponent | unknown;
-  bladeOptions?: Record<string, unknown> | unknown;
-  permissions?: string | string[];
-  url?: string;
-  param?: string;
-  onOpen?: () => void;
-  onClose?: () => void;
 }
 
 export interface IActionBuilderResult {
@@ -102,4 +75,18 @@ export interface RequestPasswordResult {
   succeeded: boolean;
   error?: string;
   errorCode?: string;
+}
+
+export interface ITableColumns {
+    id: string;
+    title: string | ComputedRef<string>;
+    width?: number;
+    field?: string;
+    alwaysVisible?: boolean;
+    type?: string;
+    sortable?: boolean;
+    sortDirection?: number;
+    class?: string;
+    format?: string;
+    align?: string;
 }

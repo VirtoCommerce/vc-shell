@@ -3,9 +3,7 @@
     <div class="vc-popup__wrapper">
       <div class="vc-popup__inner">
         <div class="vc-popup__header">
-          <div
-            class="truncate grow basis-0"
-          >
+          <div class="truncate grow basis-0">
             <slot name="title">{{ title }}</slot>
           </div>
           <VcIcon

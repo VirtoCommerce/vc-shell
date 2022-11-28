@@ -1,7 +1,7 @@
 import { computed, isRef, Ref, ref, unref, watch } from "vue";
 
 interface IUseAutosave {
-  savedValue: Ref<any>;
+  savedValue: Ref<Record<string, unknown>>;
   loadAutosaved: () => void;
   resetAutosaved: () => void;
 }

@@ -1,14 +1,14 @@
 <template>
   <div>
     <template v-if="component && component.url">
-      <router-link :to="component.url" v-slot="{ isActive }">
+      <router-link :to="component.url" custom v-slot="{ isActive, navigate }">
         <vc-app-menu-link
           :isActive="isActive"
           :children="children"
           :sticky="sticky"
           :icon="icon"
           :title="title"
-          @onClick="onMenuItemClick"
+          @onClick="onMenuItemClick(navigate)"
         />
       </router-link>
     </template>
@@ -18,13 +18,13 @@
         :sticky="sticky"
         :icon="icon"
         :title="title"
-        @onClick="onMenuItemClick"
+        @onClick="onMenuItemClick($event)"
       />
 
       <!-- Nested menu items -->
       <div class="vc-app-menu-item__child" v-if="isOpened">
         <template v-for="(nested, i) in children" :key="i">
-          <router-link :to="nested.component.url" v-slot="{ isActive }">
+          <router-link :to="nested.component.url" custom v-slot="{ isActive, navigate }">
             <div
               :class="[
                 {
@@ -34,7 +34,7 @@
               ]"
               v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
-              @click="$emit('child:click', nested)"
+              @click="$emit('child:click', {item: nested, navigationCb: navigate})"
             >
               {{ nested.title }}
             </div>
@@ -47,20 +47,25 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { BladeComponent, IBladeToolbar } from "../../../../../../../core/types";
+import { ExtendedComponent, IMenuItems } from "@types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
-import { useRoute } from "vue-router";
+import {NavigationFailure, useRoute} from "vue-router";
 
-interface Props {
+export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
-  component?: BladeComponent;
+  component?: ExtendedComponent;
   bladeOptions?: Record<string, unknown>;
   clickHandler?: () => void;
   icon: string;
   title: string;
-  children?: IBladeToolbar[];
+  children?: IMenuItems[];
   isCollapsed?: boolean;
+}
+
+export interface Emits {
+    (event: 'click', navigationCb: () => Promise<void | NavigationFailure>): void
+    (event: 'child:click', {item, navigationCb}:{item: IMenuItems, navigationCb: () => Promise<void | NavigationFailure>}): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -77,7 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const route = useRoute();
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
 
@@ -85,15 +90,15 @@ onMounted(() => {
   if (
     props.children &&
     props.children.length &&
-    props.children.find((x) => x.component?.url === route.path)
+    props.children.find((x) => x.component?.url === route?.path)
   ) {
     isOpened.value = true;
   }
 });
 
-function onMenuItemClick() {
+function onMenuItemClick(navigationCb?: () => Promise<void | NavigationFailure> ) {
   if (!props.children?.length) {
-    emit("click");
+    emit("click", navigationCb);
   } else {
     isOpened.value = !isOpened.value;
   }

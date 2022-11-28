@@ -16,9 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import VcLabel from "../vc-label/vc-label.vue";
-import VcRow from "../vc-row/vc-row.vue";
-import VcCol from "../vc-col/vc-col.vue";
+import { VcLabel, VcRow, VcCol } from "@components";
 
 defineProps({
   label: {

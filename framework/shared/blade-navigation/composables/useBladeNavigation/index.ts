@@ -1,53 +1,32 @@
 import { computed, ref, unref, watch, Ref } from "vue";
 import { isEqual } from "lodash-es";
-import { useRouter, useRoute } from "vue-router";
-import usePermissions from "../usePermissions";
-import { BladeComponent } from "@vc-shell/ui";
-
-interface IParentCallArgs {
-  method: string;
-  args?: unknown;
-  callback?: (args: unknown) => void;
-}
-
-interface IBladeContainer {
-  blade: BladeComponent;
-  options: Record<string, unknown>;
-  param: string;
-  onOpen: () => void;
-  onClose: () => void;
-  idx: number;
-}
+import {useRouter, useRoute, NavigationFailure} from "vue-router";
+import {usePermissions} from "@composables";
+import {ExtendedComponent, IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs} from "@shared";
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;
   readonly parentBladeOptions: Ref<Record<string, unknown>>;
   readonly parentBladeParam: Ref<string>;
-  bladesRefs: Ref<Record<string, unknown>[]>;
+  bladesRefs: Ref<IBladeElement[]>;
   openBlade: (
     {
       parentBlade,
-      component: blade,
+      component,
       param,
       bladeOptions,
       onOpen,
       onClose,
-    }: {
-      parentBlade?: BladeComponent;
-      component?: BladeComponent;
-      param?: string;
-      bladeOptions?: Record<string, unknown>;
-      onOpen?: () => void;
-      onClose?: () => void;
-    },
-    index?: number
+    }: IBladeEvent,
+    index?: number,
+    navigationCb?: () => Promise<void | NavigationFailure>
   ) => void;
   closeBlade: (index: number) => void;
   onParentCall: (index: number, args: IParentCallArgs) => void;
 }
 
 const blades = ref<IBladeContainer[]>([]);
-const bladesRefs = ref<Record<string, unknown>[]>([]);
+const bladesRefs = ref<IBladeElement[]>([]);
 const parentBladeOptions = ref<Record<string, unknown>>();
 const parentBladeParam = ref<string>();
 
@@ -55,17 +34,18 @@ export default (): IUseBladeNavigation => {
   const router = useRouter();
   const route = useRoute();
   const { checkPermission } = usePermissions();
+  let isPrevented = ref(false)
 
   watch(
     () => blades.value,
     (newVal) => {
       const lastBlade = newVal[newVal.length - 1];
 
-      if (lastBlade && lastBlade.blade.url) {
+      if (lastBlade && lastBlade.component.url) {
         if (lastBlade.param) {
-          addEntryToLocation(lastBlade.blade.url + "/" + lastBlade.param);
+          addEntryToLocation(lastBlade.component.url + "/" + lastBlade.param);
         } else {
-          addEntryToLocation(lastBlade.blade.url);
+          addEntryToLocation(lastBlade.component.url);
         }
       } else if (!lastBlade) {
         addEntryToLocation(route.path);
@@ -82,15 +62,9 @@ export default (): IUseBladeNavigation => {
       bladeOptions,
       onOpen,
       onClose,
-    }: {
-      parentBlade?: BladeComponent;
-      component?: BladeComponent;
-      param?: string;
-      bladeOptions?: Record<string, unknown>;
-      onOpen?: () => void;
-      onClose?: () => void;
-    },
-    index?: number
+    }: IBladeEvent,
+    index?: number,
+    navigationCb?: () => Promise<void | NavigationFailure>
   ) {
     console.debug(`openBlade(${1}) called.`);
 
@@ -100,8 +74,18 @@ export default (): IUseBladeNavigation => {
 
     if (parent && parent.url) {
       await closeBlade(0);
-      await router.push(parent.url);
-      parentBladeOptions.value = bladeOptions;
+
+      if (!isPrevented.value) {
+          if (navigationCb && typeof navigationCb === 'function') {
+              try {
+                  await navigationCb()
+                  //await router.push(parent.url);
+                  parentBladeOptions.value = bladeOptions;
+              } catch (e) {
+                throw 'Navigation failure'
+              }
+          }
+      }
     }
 
     if (child) {
@@ -114,28 +98,28 @@ export default (): IUseBladeNavigation => {
         child.idx = existingChild.idx;
       }
 
-      addBlade(child, param, bladeOptions, onOpen, onClose, index);
+      await addBlade(child, param, bladeOptions, onOpen, onClose, index);
     }
   }
 
   async function closeBlade(index: number) {
-    if (index < blades.value.length) {
-      const children = blades.value.slice(index).reverse();
+    if (index < bladesRefs.value.length) {
+      const children = bladesRefs.value.slice(index).reverse();
 
-      let isPrevented = false;
+      isPrevented.value = false;
       for (let i = 0; i < children.length; i++) {
         if (
-          children[i]?.blade.onBeforeClose &&
-          typeof children[i].blade.onBeforeClose === "function"
+          children[i]?.onBeforeClose &&
+          typeof children[i].onBeforeClose === "function"
         ) {
-          const result = await children[i].blade.onBeforeClose();
+          const result = await children[i].onBeforeClose();
           if (result === false) {
-            isPrevented = true;
+            isPrevented.value = true;
             break;
           }
         }
       }
-      if (!isPrevented) {
+      if (!isPrevented.value) {
         if (typeof blades.value[index]?.onClose === "function") {
           blades.value[index]?.onClose?.();
         }
@@ -147,7 +131,7 @@ export default (): IUseBladeNavigation => {
   }
 
   async function addBlade(
-    blade: BladeComponent,
+    blade: ExtendedComponent,
     param: string,
     bladeOptions: Record<string, unknown>,
     onOpen: () => void,
@@ -160,8 +144,8 @@ export default (): IUseBladeNavigation => {
 
     if (blade && checkPermission(blade.permissions)) {
       blades.value.push({
-        blade,
-        options: bladeOptions,
+        component: blade,
+        bladeOptions,
         param,
         onOpen,
         onClose,
@@ -208,8 +192,8 @@ export default (): IUseBladeNavigation => {
     history.pushState({}, null, "#" + params);
   }
 
-  function findBlade(blade: BladeComponent) {
-    return blades.value.find((x) => isEqual(x.blade, blade));
+  function findBlade(blade: ExtendedComponent) {
+    return blades.value.find((x) => isEqual(x.component, blade));
   }
 
   return {

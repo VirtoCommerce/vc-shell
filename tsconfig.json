@@ -8,9 +8,6 @@
       "@vc-shell/framework": [
         "framework"
       ],
-      "@vc-shell/mod-assets": [
-        "modules/assets/src"
-      ],
       "@vc-shell/config-generator": [
         "cli/config/src"
       ],
@@ -22,9 +19,6 @@
   "references": [
     {
       "path": "framework/"
-    },
-    {
-      "path": "modules/assets/"
     },
     {
       "path": "cli/config/"

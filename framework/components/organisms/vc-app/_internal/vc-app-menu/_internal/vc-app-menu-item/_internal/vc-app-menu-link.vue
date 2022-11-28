@@ -28,14 +28,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { BladeComponent } from "../../../../../../../../typings";
+import { ExtendedComponent } from "@shared";
 
-interface Props {
+export interface Props {
   isActive?: boolean;
-  children?: BladeComponent;
+  children?: ExtendedComponent;
   sticky?: boolean;
   icon: string;
   title: string;
+}
+
+export interface Emits {
+    (event: 'onClick'): void
 }
 
 withDefaults(defineProps<Props>(), {
@@ -45,6 +49,8 @@ withDefaults(defineProps<Props>(), {
   icon: "",
   title: "",
 });
+
+defineEmits<Emits>()
 </script>
 
 <style lang="scss">

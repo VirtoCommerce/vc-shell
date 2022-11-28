@@ -128,18 +128,16 @@ import {
   watch,
 } from "vue";
 import { GenericValidateFunction, useField } from "vee-validate";
-import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
-import VcLabel from "../../atoms/vc-label/vc-label.vue";
-import { IValidationRules } from "../../../core/types";
+import { VcIcon, VcLabel } from "@components";
+import { IValidationRules } from "@types";
 import { createPopper, Instance } from "@popperjs/core";
 import {
   useCurrencyInput,
   UseCurrencyInput,
-  parse,
   CurrencyDisplay,
 } from "vue-currency-input";
-import { clickOutside as vClickOutside } from "../../../core/directives";
-import { required as requiredRule } from "../../../core/plugins/validation";
+import { clickOutside as vClickOutside } from "@directives";
+import { required as requiredRule } from "@plugins";
 
 export type ValueType = string | number | Date | null;
 
@@ -248,8 +246,7 @@ const { errorMessage, handleChange, value } = useField<ValueType>(
 // Init currency composable if input type === currency (created hook)
 if (props.currency) {
   currencyConverter = useCurrencyInput({
-    currency: props.optionsValue,
-    autoSign: false,
+    currency: props.optionsValue || "USD",
     currencyDisplay: CurrencyDisplay.hidden,
   });
 }
@@ -267,7 +264,6 @@ watch(
     currencyConverter &&
       currencyConverter.setOptions({
         currency: newVal,
-        autoSign: false,
         currencyDisplay: CurrencyDisplay.hidden,
       });
   }
@@ -338,8 +334,9 @@ function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
   if (newValue) {
     if (props.currency) {
-      const parsed = parse(newValue, { currency: props.optionsValue });
+      const parsed = currencyConverter.numberValue.value;
       emit("update:modelValue", parsed);
+      console.log(parsed);
     } else {
       emit("update:modelValue", newValue);
     }

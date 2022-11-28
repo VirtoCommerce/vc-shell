@@ -1,5 +1,5 @@
 import { Directive, DirectiveBinding } from "vue";
-import { usePermissions } from "../../composables";
+import { usePermissions } from "@composables";
 const { checkPermission } = usePermissions();
 
 function checkAndRemove(el: HTMLElement, binding: DirectiveBinding) {

@@ -1,7 +1,7 @@
 import {
   PushNotification,
   PushNotificationClient,
-} from "../../api";
+} from "@api";
 import useUser from "../useUser";
 import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";

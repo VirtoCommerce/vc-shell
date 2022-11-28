@@ -14,7 +14,6 @@
         <draggable
           :list="images"
           class="flex flex-wrap w-full"
-          item-key="sortOrder"
           tag="transition-group"
           v-bind="dragOptions"
           @change="updateOrder"
@@ -25,6 +24,7 @@
           <template #item="{ element, index }">
             <VcGalleryItem
               class="m-2"
+              :key="element.sortOrder"
               :image="element"
               :readonly="disabled"
               @preview="onPreviewClick(index)"
@@ -64,11 +64,10 @@
 
 <script lang="ts" setup>
 import { computed, PropType, ref } from "vue";
-import VcLabel from "../../atoms/vc-label/vc-label.vue";
+import { VcLabel, VcFileUpload } from "@components";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { IImage } from "../../../core/types";
-import VcFileUpload from "../../molecules/vc-file-upload/vc-file-upload.vue";
+import { IImage } from "@types";
 
 const props = defineProps({
   images: {

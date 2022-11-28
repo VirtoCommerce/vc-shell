@@ -10,16 +10,14 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  label: {
-    type: String,
-    default: "Total",
-  },
+export interface Props {
+  label: string;
+  value: number;
+}
 
-  value: {
-    type: Number,
-    default: 0,
-  },
+withDefaults(defineProps<Props>(), {
+  label: "Total",
+  value: 0,
 });
 </script>
 

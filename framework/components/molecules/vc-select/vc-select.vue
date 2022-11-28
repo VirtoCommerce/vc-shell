@@ -97,11 +97,9 @@
 <script lang="ts" setup>
 import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
 import { useField } from "vee-validate";
-import VcIcon from "../../atoms/vc-icon/vc-icon.vue";
-import VcLabel from "../../atoms/vc-label/vc-label.vue";
-import VcContainer from "../../atoms/vc-container/vc-container.vue";
+import { VcIcon, VcLabel, VcContainer } from "@components";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { clickOutside as vClickOutside } from "../../../core/directives";
+import { clickOutside as vClickOutside } from "@directives";
 
 const props = defineProps({
   modelValue: {

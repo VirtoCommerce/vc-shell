@@ -16,11 +16,11 @@
     v-for="(blade, i) in blades"
     v-show="i >= blades.length - ($isMobile.value ? 1 : 2)"
     :key="`blade_${i}`"
-    :is="blade.blade"
+    :is="blade.component"
     :param="blade.param"
     :closable="i >= 0"
     :expanded="i === blades.length - 1"
-    :options="blade.options"
+    :options="blade.bladeOptions"
     @open:blade="$emit('onOpen', { blade: $event, id: blade.idx })"
     @close:blade="$emit('onClose', i)"
     @close:children="$emit('onClose', i + 1)"
@@ -30,36 +30,28 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ComponentPublicInstance,
-  computed,
-  onBeforeUpdate,
-  ref,
-} from "vue";
+import { computed, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
-import { BladeComponent } from "../../../typings";
+import {
+  IBladeContainer,
+  IBladeElement,
+  IBladeEvent,
+  IParentCallArgs,
+} from "@shared";
 
-interface IBladeContainer {
-  blades: BladeComponent;
-  options: Record<string, unknown>;
-  param: string;
-  onOpen: () => void;
-  onClose: () => void;
-  idx: number;
-}
-
-interface Props {
+export interface Props {
   blades: IBladeContainer[];
   parentBladeOptions: Record<string, unknown>;
   parentBladeParam: string;
 }
 
-interface BladeElement extends ComponentPublicInstance {
-  onBeforeClose: () => Promise<boolean>;
-  [x: string]: unknown;
+export interface Emits {
+  (event: "onOpen", blade: { blade: IBladeEvent; id: number }): void;
+  (event: "onClose", index: number): void;
+  (event: "onParentCall", args: { id: number; args: IParentCallArgs }): void;
 }
 
-const emit = defineEmits(["onOpen", "onClose", "onParentCall"]);
+const emit = defineEmits<Emits>();
 
 const props = withDefaults(defineProps<Props>(), {
   blades: () => [],
@@ -68,17 +60,19 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const route = useRoute();
-const bladesRefs = ref<Record<string, unknown>[]>([]);
+const bladesRefs = ref([]);
 const parentRef = ref();
 
 onBeforeUpdate(() => {
   bladesRefs.value = [parentRef.value];
 });
 
-const setBladesRef = (el: BladeElement) => {
+const setBladesRef = (el: IBladeElement) => {
   if (el && Object.keys(el).length) {
     bladesRefs.value.push(el);
   }
+  console.log(props.blades);
+  console.log(el, bladesRefs.value);
 };
 
 const resolveParam = computed(() => {

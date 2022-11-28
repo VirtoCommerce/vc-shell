@@ -13,7 +13,7 @@ declare module '@vue/runtime-core' {
         $isTablet: Ref<boolean>;
         $isMobile: Ref<boolean>;
         $isDesktop: Ref<boolean>;
-        $isTouch: Ref<boolean>;
+        $isTouch: boolean;
     }
 }
 

@@ -37,12 +37,11 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, shallowRef, watch } from "vue";
-import { VcRow, VcIcon } from "@vc-shell/framework";
+import { VcRow, VcIcon, IPushNotification, PushNotification } from "@vc-shell/framework";
 import ImportPush from "./_internal/ImportPush.vue";
 import DefaultPush from "./_internal/DefaultPush.vue";
 import ProductPush from "./_internal/ProductPush.vue";
 import moment from "moment";
-import { IPushNotification, PushNotification } from "@vc-shell/framework";
 
 interface IExtendedPush extends IPushNotification {
   finished: Date;

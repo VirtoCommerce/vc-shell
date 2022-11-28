@@ -158,41 +158,29 @@
                     </div>
                   </div>
                   <div class="mt-3 w-full flex justify-between">
-                    <div
-                      class="truncate grow-[2] basis-0"
-                    >
+                    <div class="truncate grow-[2] basis-0">
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
                       }}</VcHint>
-                      <div
-                        class="truncate mt-1"
-                      >
+                      <div class="truncate mt-1">
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
-                    <div
-                      class="truncate grow-[2] basis-0"
-                    >
+                    <div class="truncate grow-[2] basis-0">
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
                       }}</VcHint>
-                      <div
-                        class="truncate mt-1"
-                      >
+                      <div class="truncate mt-1">
                         {{
                           itemData.item.price && itemData.item.price.toFixed(2)
                         }}
                       </div>
                     </div>
-                    <div
-                      class="truncate grow-[2] basis-0"
-                    >
+                    <div class="truncate grow-[2] basis-0">
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
                       }}</VcHint>
-                      <div
-                        class="truncate mt-1"
-                      >
+                      <div class="truncate mt-1">
                         {{
                           itemData.item.extendedPrice &&
                           itemData.item.extendedPrice.toFixed(2)
@@ -207,16 +195,10 @@
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION")
                       }}</VcHint>
 
-                      <div
-                        class="mt-1 truncate"
-                      >
-                        <div
-                          class="truncate"
-                        >
+                      <div class="mt-1 truncate">
+                        <div class="truncate">
                           {{ itemData.item.feeDetails[0].description }}
-                          <br /><span
-                            class="truncate"
-                          >
+                          <br /><span class="truncate">
                             {{
                               itemData.item.feeDetails[0].amount &&
                               itemData.item.feeDetails[0].amount.toFixed(2)
@@ -246,34 +228,26 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import moment from "moment";
-
 import { useOrder } from "../composables";
-import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@vc-shell/framework";
+import {IBladeToolbar, IParentCallArgs, useI18n, ITableColumns} from "@vc-shell/framework";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'parent:call', args: IParentCallArgs): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
-const emit = defineEmits(["parent:call"]);
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const { loading, order, changeOrderStatus, loadOrder, loadPdf, shippingInfo } =
   useOrder();

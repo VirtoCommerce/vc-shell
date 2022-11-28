@@ -79,18 +79,14 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/framework";
-import {
-  VcBlade,
-  VcCol,
-  VcContainer,
-  VcForm,
-  VcLabel,
-  VcTextarea,
-  VcRating,
-  VcRow,
-  IPage,
-} from "@vc-shell/framework";
+import {useI18n, VcBlade,
+    VcCol,
+    VcContainer,
+    VcForm,
+    VcLabel,
+    VcTextarea,
+    VcRating,
+    VcRow} from "@vc-shell/framework";
 import moment from "moment";
 import { computed, onMounted } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
@@ -110,7 +106,6 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
-  (event: "open:blade", page: IPage): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -12,13 +12,14 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { camelToSnake } from "@vc-shell/core";
+import { camelToSnake } from "@vc-shell/framework";
 
-const props = defineProps({
-  status: {
-    type: String,
-    default: "None",
-  },
+export interface Props {
+  status: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  status: "None",
 });
 
 const statusStyles = {

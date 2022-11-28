@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -15,10 +15,11 @@ export default defineComponent({
 <script lang="ts" setup>
 import { PushNotification } from "@vc-shell/framework";
 
-defineProps({
-  notification: {
-    type: Object as PropType<PushNotification>,
-    default: () => ({}),
-  },
+export interface Props {
+  notification: PushNotification;
+}
+
+withDefaults(defineProps<Props>(), {
+  notification: undefined,
 });
 </script>

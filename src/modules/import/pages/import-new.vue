@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="bladeLoading"
-    :title="param && profileDetails?.name ? profileDetails.name : props.title"
+    :title="param && profileDetails?.name ? profileDetails.name : options.title"
     width="70%"
     :toolbarItems="bladeToolbar"
     :closable="closable"
@@ -198,20 +198,34 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser } from "@vc-shell/core";
 import {
-  IBladeToolbar,
+    IBladeEvent,
+    IParentCallArgs,
+    useI18n,
+    useUser,
+    VcContainer,
+    VcCol,
+    VcRow,
+    VcBlade,
+    VcCard,
+    VcFileUpload,
+    VcProgress,
+    VcIcon,
+    VcHint,
+    VcTable,
+    IBladeToolbar,
+    ITableColumns
+} from "@vc-shell/framework";
+import {
   INotificationActions,
-  ITableColumns,
 } from "../../../types";
 import useImport from "../composables/useImport";
-import { ImportDataPreview } from "../../../api_client/marketplacevendor";
+import {IDataImporter, ImportDataPreview} from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
-import ImportNew from "./import-new.vue";
 
 interface IImportBadges {
   id: string;
@@ -219,6 +233,12 @@ interface IImportBadges {
   color: string;
   title?: string | number;
   description?: string;
+}
+
+type IBladeOptions = IBladeEvent & {
+    bladeOptions: {
+        importer: IDataImporter
+    }
 }
 
 export interface Props {
@@ -231,12 +251,18 @@ export interface Props {
   };
 }
 
+export interface Emits {
+    (event: 'open:blade', blade: IBladeOptions): void
+    (event: 'close:blade'): void
+    (event: 'parent:call', args: IParentCallArgs): void
+}
+
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
 });
 
-const emit = defineEmits(["open:blade", "close:blade", "parent:call"]);
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const { getAccessToken } = useUser();
 const {
@@ -276,6 +302,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       emit("open:blade", {
         component: shallowRef(ImportProfileDetails),
+          bladeOptions: {
+            importer: profileDetails.value.importer
+          },
         param: profile.value.id,
       });
     },

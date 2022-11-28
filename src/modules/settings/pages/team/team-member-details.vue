@@ -141,37 +141,36 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { IBladeToolbar } from "../../../../types";
-import { useI18n, useUser, useAutosave, useForm } from "@vc-shell/framework";
+import {useI18n, useUser, useAutosave, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid } from "vee-validate";
-import { SellerUserDetails } from "../../../../api_client/marketplacevendor";
+import {SellerUser, SellerUserDetails} from "../../../../api_client/marketplacevendor";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: {
+      user?: SellerUser
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'parent:call', args: IParentCallArgs): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: () => ({}),
 });
 
-const emit = defineEmits(["close:blade", "parent:call"]);
+const emit = defineEmits<Emits>();
+
 useForm({ validateOnMount: false });
 const { user } = useUser();
 
@@ -350,7 +349,7 @@ onMounted(async () => {
   loadAutosaved();
 
   if (savedValue.value) {
-    userDetails.value = savedValue.value as SellerUserDetails;
+    userDetails.value = savedValue.value as unknown as SellerUserDetails;
   }
 });
 

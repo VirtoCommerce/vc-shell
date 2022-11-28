@@ -68,10 +68,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, PropType, ref, shallowRef, inject } from "vue";
-import { PushNotification } from "@vc-shell/api-client";
-import { useNotifications } from "@vc-shell/core";
-import { IMenuItems } from "@vc-shell/ui";
+import {onMounted, ref, shallowRef } from "vue";
+import {PushNotification, useBladeNavigation} from "@vc-shell/framework";
+import { useNotifications } from "@vc-shell/framework";
+import { IMenuItems } from "@vc-shell/framework";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client/marketplacevendor";
 import NotificationItem from "./_internal/notification/notification.vue";
@@ -82,27 +82,21 @@ import {
 } from "../../types";
 import { OrdersEdit, OrdersList } from "../../modules/orders";
 
-const props = defineProps({
-  isAccent: {
-    type: Boolean,
-    default: false,
-  },
+export interface Props {
+    isAccent: boolean,
+    title: string,
+    items?: IMenuItems[]
+}
 
-  title: {
-    type: String,
-    default: "",
-  },
+const props = withDefaults(defineProps<Props>(), {
+    isAccent: false,
+    title: '',
+    items: () => []
+})
 
-  items: {
-    type: Array as PropType<IMenuItems[]>,
-    default: () => [],
-  },
-});
 const isDropdownVisible = ref(false);
 const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
-const openBlade = inject<() => void>("openBlade");
-const closeBlade = inject<() => void>("closeBlade");
-
+const {openBlade, closeBlade} = useBladeNavigation()
 
 onMounted(async () => {
   await loadFromHistory();

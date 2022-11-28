@@ -13,10 +13,9 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, shallowRef } from "vue";
-import { VcBlade, IPage, useI18n } from "@vc-shell/framework";
+import { VcBlade, useI18n } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
-import { IBladeToolbar } from "../../../types";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 
@@ -28,15 +27,24 @@ export default defineComponent({
 <script lang="ts" setup>
 // Page
 
+import {IBladeEvent, IBladeToolbar} from "@vc-shell/framework";
+import {CustomerReview} from "../../../api_client/marketplacevendor";
+
 export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
 }
 
+type IBladeOptions = IBladeEvent & {
+    bladeOptions?: {
+      review?: CustomerReview
+    }
+}
+
 export interface Emits {
   (event: "close:blade"): void;
-  (event: "open:blade", page: IPage): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 withDefaults(defineProps<Props>(), {

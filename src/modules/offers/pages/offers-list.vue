@@ -57,17 +57,13 @@
             </div>
           </div>
           <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow basis-0 mr-2"
-            >
+            <div class="truncate grow basis-0 mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
               <div class="truncate mt-1">
                 {{ itemData.item.sku }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="truncate grow-[2] basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
               <div class="truncate mt-1">
                 {{ itemData.item.inStockQuantity }}
@@ -75,9 +71,7 @@
             </div>
           </div>
           <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+            <div class="truncate grow-[2] basis-0 mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="truncate mt-1">
                 {{
@@ -85,17 +79,13 @@
                 }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+            <div class="truncate grow-[2] basis-0 mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
               <div class="truncate mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="truncate grow-[2] basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
               <div class="truncate mt-1">
                 {{
@@ -121,22 +111,26 @@ import {
   ref,
   unref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "offers",
+  url: "/offers",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger, usePermissions } from "@vc-shell/framework";
-import moment from "moment";
-import { IOffer } from "../../../api_client/marketplacevendor";
 import {
-  IActionBuilderResult,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../types";
+    IBladeEvent, IBladeToolbar,
+    IParentCallArgs,
+    useFunctions,
+    useI18n,
+    useLogger,
+    IActionBuilderResult,
+    ITableColumns,
+} from "@vc-shell/framework";
+import moment from "moment";
+import {IOffer, SellerProduct} from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 import emptyImage from "/assets/empty.png";
@@ -145,7 +139,21 @@ export interface Props {
   expanded?: boolean;
   closable?: boolean;
   param?: string;
-  options?: Record<string, unknown>
+  options?: {
+      sellerProduct?: SellerProduct
+  };
+}
+
+type IBladeOptions = IBladeEvent & {
+    bladeOptions?: {
+        sellerProduct?: SellerProduct
+    }
+}
+
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:children"): void;
+  (event: "open:blade", blade: IBladeOptions);
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -153,7 +161,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits(["parent:call", "close:children", "open:blade"]);
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const logger = useLogger();
@@ -169,7 +177,6 @@ const {
   loading,
   deleteOffers,
 } = useOffers();
-const { checkPermission } = usePermissions();
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();

@@ -104,7 +104,7 @@ import {
   useLogger,
   useUser,
   useForm,
-  SignInResult,
+  SignInResults,
   RequestPasswordResult,
   useI18n,
 } from "@vc-shell/framework";
@@ -115,11 +115,11 @@ import { useIsFormValid } from "vee-validate";
 const log = useLogger();
 const { t } = useI18n();
 const router = useRouter();
-const route = useRoute()
+const route = useRoute();
 useForm({ validateOnMount: false });
-const {logo, background, title} = route.meta
+const { logo, background, title } = route.meta;
 
-const signInResult = ref<SignInResult>({ succeeded: true });
+const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading } = useUser();

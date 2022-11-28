@@ -5,20 +5,20 @@ import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 import { CategoryIndexedSearchCriteria } from "../../../../api_client/catalog";
 
 import {
-  CatalogProduct,
-  CategorySearchResult,
-  CreateNewProductCommand,
-  CreateNewPublicationRequestCommand,
-  IProductDetails,
-  ISellerProduct,
-  ProductDetails,
-  PropertyDictionaryItem,
-  PropertyDictionaryItemSearchCriteria,
-  UpdateProductDetailsCommand,
-  SellerProduct,
-  ValidateProductQuery,
-  VcmpSellerCatalogClient,
-  ValidationFailure,
+    CatalogProduct,
+    CategorySearchResult,
+    CreateNewProductCommand,
+    CreateNewPublicationRequestCommand,
+    IProductDetails,
+    ISellerProduct,
+    ProductDetails,
+    PropertyDictionaryItem,
+    PropertyDictionaryItemSearchCriteria,
+    UpdateProductDetailsCommand,
+    SellerProduct,
+    ValidateProductQuery,
+    VcmpSellerCatalogClient,
+    ValidationFailure, SearchCategoriesQuery,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
@@ -100,12 +100,12 @@ export default (): IUseProduct => {
     ids?: string[]
   ): Promise<CategorySearchResult> {
     const client = await getApiClient();
-    return await client.searchCategories({
-      objectIds: ids,
-      keyword,
-      skip,
-      take: 20,
-    } as CategoryIndexedSearchCriteria);
+      return await client.searchCategories(new SearchCategoriesQuery({
+          objectIds: ids,
+          keyword,
+          skip,
+          take: 20,
+      }));
   }
 
   async function loadProduct(args: { id: string }) {

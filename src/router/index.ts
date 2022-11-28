@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../pages/Dashboard.vue";
 import Invite from "../pages/Invite.vue";
 import ResetPassword from "../pages/ResetPassword.vue";
@@ -17,15 +17,18 @@ import {
   ImportProfileSelector,
 } from "../modules/import";
 import { ReviewDetails, ReviewList } from "../modules/rating";
-import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { usePermissions, useUser } from "@vc-shell/core";
+import {
+  SellerDetails,
+  TeamList,
+  FulfillmentCenters,
+} from "../modules/settings";
+import { usePermissions, useUser, ExtendedComponent } from "@vc-shell/framework";
 import whiteLogoImage from "/assets/logo-white.svg";
 import bgImage from "/assets/background.jpg";
-import { BladeComponent } from "@vc-shell/ui";
 
 const { checkPermission } = usePermissions();
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: App,
@@ -178,11 +181,11 @@ export const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const bladeComponent: BladeComponent =
-    to.matched[to.matched.length - 1]?.components?.default;
+  const ExtendedComponent = to.matched[to.matched.length - 1]?.components
+    ?.default as ExtendedComponent;
 
-  if (bladeComponent && bladeComponent.permissions) {
-    if (checkPermission(bladeComponent.permissions)) {
+  if (ExtendedComponent && ExtendedComponent.permissions) {
+    if (checkPermission(ExtendedComponent.permissions)) {
       next();
     } else {
       if (!from.matched.length) {

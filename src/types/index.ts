@@ -6,54 +6,6 @@ enum UserPermissions {
   SellerDetailsEdit = "seller:details:edit",
 }
 
-interface IComponent extends ComponentPublicInstance {
-  openDashboard(): void;
-}
-
-type BladeComponent = Component & {
-  url?: string;
-  permissions?: string | string[];
-};
-
-interface IBladeToolbar {
-  id?: string;
-  icon?: string;
-  title?: string | ComputedRef<string>;
-  isVisible?: boolean | unknown;
-  isAccent?: boolean | ComputedRef<boolean>;
-  component?: BladeComponent;
-  bladeOptions?: Record<string, unknown> | unknown;
-  disabled?: boolean | ComputedRef<boolean>;
-  clickHandler?(): void;
-}
-
-interface IMenuItems extends IBladeToolbar {
-  clickHandler?(app?: IComponent): void;
-  children?: IMenuItems[];
-}
-
-interface ITableColumns {
-  id: string;
-  title: string | ComputedRef<string>;
-  width?: number;
-  field?: string;
-  alwaysVisible?: boolean;
-  type?: string;
-  sortable?: boolean;
-  sortDirection?: number;
-  class?: string;
-  format?: string;
-  align?: string;
-}
-
-interface IActionBuilderResult {
-  icon: string;
-  title: string;
-  variant: string;
-  leftActions?: boolean;
-  clickHandler(): void;
-}
-
 interface IShippingInfo {
   label: string;
   name?: string;
@@ -83,11 +35,6 @@ interface INewOrderPushNotification extends PushNotification {
 }
 
 export type {
-  IComponent,
-  ITableColumns,
-  IActionBuilderResult,
-  IBladeToolbar,
-  IMenuItems,
   IShippingInfo,
   INotificationActions,
   IProductPushNotification,

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -22,10 +22,11 @@ export default defineComponent({
 <script lang="ts" setup>
 import { ImportPushNotification } from "../../../../../api_client/marketplacevendor";
 
-defineProps({
-  notification: {
-    type: Object as PropType<ImportPushNotification>,
-    default: () => ({}),
-  },
+export interface Props {
+  notification: ImportPushNotification;
+}
+
+withDefaults(defineProps<Props>(), {
+  notification: undefined,
 });
 </script>

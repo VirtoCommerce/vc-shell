@@ -11,16 +11,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType } from "vue";
+import { computed } from "vue";
 import { ImportRunHistory } from "../../../api_client/marketplacevendor";
 import { camelToSnake } from "@vc-shell/framework";
 
-const props = defineProps({
-  item: {
-    type: Object as PropType<ImportRunHistory>,
-    default: () => ({}),
-  },
+export interface Props {
+  item: ImportRunHistory;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  item: undefined,
 });
+
 const statusStyles = computed(() => {
   if (
     props.item.finished &&

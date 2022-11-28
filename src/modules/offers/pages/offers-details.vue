@@ -36,9 +36,7 @@
               @change="getProductItem"
             >
               <template v-slot:selectedItem="itemData">
-                <div
-                  class="flex items-center py-2 truncate"
-                >
+                <div class="flex items-center py-2 truncate">
                   <VcImage
                     class="shrink-0"
                     size="xs"
@@ -46,17 +44,11 @@
                     :bordered="true"
                     background="contain"
                   ></VcImage>
-                  <div
-                    class="grow basis-0 ml-4 truncate"
-                  >
-                    <div
-                      class="truncate"
-                    >
+                  <div class="grow basis-0 ml-4 truncate">
+                    <div class="truncate">
                       {{ itemData.item.name }}
                     </div>
-                    <VcHint
-                      class="truncate mt-1"
-                    >
+                    <VcHint class="truncate mt-1">
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
                     </VcHint>
@@ -73,9 +65,7 @@
                 </div>
               </template>
               <template v-slot:item="itemData">
-                <div
-                  class="flex items-center py-2 truncate"
-                >
+                <div class="flex items-center py-2 truncate">
                   <VcImage
                     class="shrink-0"
                     size="xs"
@@ -83,17 +73,11 @@
                     :bordered="true"
                     background="contain"
                   ></VcImage>
-                  <div
-                    class="grow basis-0 ml-4 truncate"
-                  >
-                    <div
-                      class="truncate"
-                    >
+                  <div class="grow basis-0 ml-4 truncate">
+                    <div class="truncate">
                       {{ itemData.item.name }}
                     </div>
-                    <VcHint
-                      class="truncate mt-1"
-                    >
+                    <VcHint class="truncate mt-1">
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
                     </VcHint>
@@ -269,7 +253,7 @@
                           <VcInput
                             :clearable="true"
                             v-model="item.listPrice"
-                            v-model:optionsValue="offerDetails.currency"
+                            v-model:optionsValue="item.currency"
                             :currency="true"
                             :required="true"
                             :options="currencyList"
@@ -297,7 +281,7 @@
                           <VcInput
                             :clearable="true"
                             v-model="item.salePrice"
-                            v-model:optionsValue="offerDetails.currency"
+                            v-model:optionsValue="item.currency"
                             :currency="true"
                             :options="currencyList"
                             keyProperty="value"
@@ -444,23 +428,29 @@ import {
   nextTick,
   unref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "offer",
+  url: "/offer",
 });
 </script>
 
 <script lang="ts" setup>
-import { useForm, VcRow, useFunctions, useI18n, useAutosave } from "@vc-shell/framework";
+import {
+    useForm,
+    VcRow,
+    useFunctions,
+    useI18n,
+    useAutosave, IParentCallArgs, IBladeEvent, IBladeToolbar,
+} from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
-  IOfferDetails,
-  IOfferProduct,
-  OfferPrice,
-  InventoryInfo,
+    IOfferDetails,
+    IOfferProduct,
+    OfferPrice,
+    InventoryInfo, SellerProduct,
 } from "../../../api_client/marketplacevendor";
-import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid } from "vee-validate";
 import moment from "moment/moment";
@@ -478,10 +468,14 @@ export interface Props {
   closable: boolean;
   param?: string;
   options?: {
-    sellerProduct: {
-      publishedProductDataId: string;
-    };
+    sellerProduct?: SellerProduct
   };
+}
+
+export interface Emits {
+    (event: 'parent:call', args: IParentCallArgs): void
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeEvent): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -489,7 +483,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits(["parent:call", "close:blade", "open:blade"]);
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 
 const {
@@ -552,14 +546,13 @@ onMounted(async () => {
       await loadOffer({ id: props.param });
     } else {
       offerDetails.value.trackInventory = true;
-      offerDetails.value.currency = "USD";
       await addEmptyInventory();
       addPrice();
       makeCopy();
     }
 
     if (savedValue.value) {
-      offerDetails.value = Object.assign({}, savedValue.value as IOfferDetails);
+      offerDetails.value = Object.assign({}, savedValue.value as unknown as IOfferDetails);
     }
     const searchResult = await fetchProducts();
     products.value = searchResult.results;
@@ -584,7 +577,7 @@ onBeforeUpdate(() => {
   priceRefs.value = [];
 });
 
-const readonly = false; //computed(() => !!offer.value?.id);
+const readonly = false;
 
 const title = computed(() => {
   return props.param && offerDetails.value && offerDetails.value.name
@@ -605,7 +598,7 @@ watch(offerDetails.value.prices, () => {
 
 watch(
   () => offerDetails.value.inventory,
-  (newVal) => {
+  () => {
     offerDetails.value.inventory.forEach((x) => {
       if (!x.inStockQuantity) {
         x.inStockQuantity = 0;
@@ -627,7 +620,8 @@ watch(
               idx !== idx2 &&
               o.minQuantity &&
               o2.minQuantity &&
-              o.minQuantity === o2.minQuantity
+              o.minQuantity === o2.minQuantity &&
+              o.currency === o2.currency
             );
           })
         ) {
@@ -676,7 +670,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
     },
-    isVisible: true, //!props.param,
+    isVisible: true,
     disabled: computed(
       () =>
         !(
@@ -761,7 +755,13 @@ function addPrice(scroll = false) {
   if (!offerDetails.value.prices) {
     offerDetails.value.prices = [];
   }
-  offerDetails.value.prices.push(new OfferPrice());
+  offerDetails.value.prices.push(
+    new OfferPrice({
+      currency: "USD",
+      listPrice: undefined,
+      minQuantity: undefined,
+    })
+  );
   if (scroll) {
     scrollToLastPrice();
   }

@@ -1,5 +1,4 @@
 import VirtoShellFramework from "@vc-shell/framework";
-import AssetsModule from "@vc-shell/mod-assets";
 import { createApp, h, resolveComponent } from "vue";
 import PushHub from "./config/push-hub";
 import ImportModule from "./modules/import";
@@ -24,7 +23,6 @@ const app = createApp(EmptyRouterView)
   .use(router)
   .use(PushHub)
   .use(VirtoShellFramework)
-  .use(AssetsModule)
   .use(OrdersModule)
   .use(ProductsModule)
   .use(MpProductsModule)

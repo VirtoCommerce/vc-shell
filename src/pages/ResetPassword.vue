@@ -59,9 +59,8 @@
 
 <script lang="ts" setup>
 import { reactive, onMounted, computed } from "vue";
-import { useUser } from "@vc-shell/framework";
 import { useRouter } from "vue-router";
-import { useForm } from "@vc-shell/framework";
+import { useForm, useUser } from "@vc-shell/framework";
 
 const props = defineProps({
   userId: {

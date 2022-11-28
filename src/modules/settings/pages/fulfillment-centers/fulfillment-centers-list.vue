@@ -27,9 +27,7 @@
       <template v-slot:mobile-item="itemData">
         <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
           <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow basis-0 mr-2"
-            >
+            <div class="truncate grow basis-0 mr-2">
               <VcHint>{{
                 $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
               }}</VcHint>
@@ -45,11 +43,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  watch,
+  onMounted,
+  shallowRef,
+} from "vue";
 import {
   UserPermissions,
-  IBladeToolbar,
-  ITableColumns,
 } from "../../../../types";
 
 export default defineComponent({
@@ -59,34 +62,29 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/framework";
+import {IBladeEvent, IBladeToolbar, ITableColumns, useI18n} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { FulfillmentCenter } from "../../../../api_client/marketplacevendor";
-import {shallowRef} from "vue";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeEvent): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
-const emit = defineEmits(["close:blade", "open:blade"]);
+
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const {

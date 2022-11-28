@@ -215,46 +215,38 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/framework";
+import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, useLogger, IActionBuilderResult,
+    ITableColumns} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
-import {
-  IActionBuilderResult,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../types";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
 import ProductsEdit from "./products-edit.vue";
 import emptyImage from "/assets/empty.png";
-import { useRoute } from "vue-router";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+    expanded?: boolean;
+    closable?: boolean;
+    param?: string;
+    options?: Record<string, unknown>;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeEvent): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+    expanded: true,
+    closable: true,
+    param: undefined,
+    options: () => ({}),
 });
-const emit = defineEmits(["close:blade", "open:blade"]);
+
+const emit = defineEmits<Emits>();
 const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
-const route = useRoute();
 
 const {
   products,

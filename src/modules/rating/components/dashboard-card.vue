@@ -36,15 +36,16 @@
 </template>
 
 <script lang="ts" setup>
-import { BladeComponent, VcButton, VcCard } from "@vc-shell/framework";
+import { ExtendedComponent, VcButton, VcCard } from "@vc-shell/framework";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Rating, ReviewTable } from "../components";
 import { ReviewDetails, ReviewList } from "../pages";
+import { shallowRef } from "vue";
 
 // Component
 
 export interface Props {
-  openPage: (page: BladeComponent, index: number) => void;
+  openPage: (page: ExtendedComponent, index: number) => void;
 }
 
 const props = defineProps<Props>();
@@ -54,7 +55,7 @@ const props = defineProps<Props>();
 const openAllReviews = () => {
   props.openPage(
     {
-      parentBlade: ReviewList,
+      parentBlade: shallowRef(ReviewList),
     },
     0
   );
@@ -67,13 +68,13 @@ const onItemClick = (
 ) => {
   props.openPage(
     {
-      component: ReviewList,
+      component: shallowRef(ReviewList),
     },
     0
   );
   props.openPage(
     {
-      component: ReviewDetails,
+      component: shallowRef(ReviewDetails),
       param: item.id,
       bladeOptions: {
         review: item,

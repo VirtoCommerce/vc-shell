@@ -30,57 +30,6 @@
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
     >
-      <!-- Filters -->
-      <template
-        v-slot:filters="{ closePanel }"
-        v-if="!($route && $route.query && $route.query.searchFromAllSellers)"
-      >
-        <h2 v-if="$isMobile.value">
-          {{ $t("MP_PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
-        </h2>
-        <VcContainer no-padding>
-          <VcRow>
-            <VcCol class="w-[180px] p-2">
-              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
-                {{ $t("MP_PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
-              </div>
-              <div>
-                <VcCheckbox
-                  v-for="status in SellerProductStatus"
-                  :key="status"
-                  class="mb-2"
-                  :modelValue="isItemSelected(status)"
-                  @update:modelValue="selectFilterItem($event, status)"
-                  >{{
-                    $t("MP_PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status)
-                  }}</VcCheckbox
-                >
-              </div>
-            </VcCol>
-          </VcRow>
-          <VcRow>
-            <VcCol class="p-2">
-              <div class="flex justify-end">
-                <VcButton
-                  outline
-                  class="mr-4"
-                  @click="resetFilters(closePanel)"
-                  :disabled="applyFiltersReset"
-                  >{{
-                    $t("MP_PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</VcButton
-                >
-                <VcButton
-                  @click="applyFilters(closePanel)"
-                  :disabled="applyFiltersDisable"
-                  >{{ $t("MP_PRODUCTS.PAGES.LIST.FILTERS.APPLY") }}</VcButton
-                >
-              </div>
-            </VcCol>
-          </VcRow>
-        </VcContainer>
-      </template>
-
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
@@ -216,46 +165,36 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
+import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, useLogger,   IActionBuilderResult,
+    ITableColumns} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
-import {
-  IActionBuilderResult,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../types";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
 import MpProductsEdit from "./marketplace-products-edit.vue";
 import emptyImage from "/assets/empty.png";
-import { useRoute } from "vue-router";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+    expanded?: boolean;
+    closable?: boolean;
+    param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeEvent): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+    expanded: true,
+    closable: true,
+    param: undefined,
 });
-const emit = defineEmits(["close:blade", "open:blade"]);
+
+const emit = defineEmits<Emits>();
 const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
-const route = useRoute();
 
 const {
   products,
@@ -265,7 +204,6 @@ const {
   loadProducts,
   loading,
   searchQuery,
-  SellerProductStatus,
   exportCategories,
 } = useProducts({ isPublished: true, searchFromAllSellers: true });
 const filter = reactive<{
@@ -276,18 +214,6 @@ const appliedFilter = ref({});
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref();
-const applyFiltersDisable = computed(() => {
-  const activeFilters = Object.values(filter).filter(
-    (x) => x !== undefined && Array.isArray(x) && !!x.length
-  );
-  return !activeFilters.length;
-});
-const applyFiltersReset = computed(() => {
-  const activeFilters = Object.values(appliedFilter.value).filter(
-    (x) => x !== undefined
-  );
-  return !activeFilters.length;
-});
 
 watch(sort, async (value) => {
   await loadProducts({ ...searchQuery.value, sort: value });
@@ -511,48 +437,11 @@ async function resetSearch() {
   });
   appliedFilter.value = {};
 }
+
 function addProduct() {
   emit("open:blade", {
     component: shallowRef(MpProductsEdit),
   });
-}
-
-async function applyFilters(filterHandlerFn: () => void) {
-  filterHandlerFn();
-  await loadProducts({
-    ...searchQuery.value,
-    ...filter,
-  });
-  appliedFilter.value = {
-    ...filter,
-  };
-}
-async function resetFilters(filterHandlerFn: () => void) {
-  filterHandlerFn();
-  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
-  await loadProducts({
-    ...searchQuery.value,
-    ...filter,
-  });
-  appliedFilter.value = {};
-}
-
-function selectFilterItem(e: boolean, status: string) {
-  const isSelected = filter.status?.includes(status);
-
-  if (!Array.isArray(filter.status)) {
-    filter.status = [];
-  }
-
-  if (e && !isSelected) {
-    filter.status?.push(status);
-  } else if (!e && isSelected) {
-    filter.status = filter.status.filter((x) => x !== status);
-  }
-}
-
-function isItemSelected(status: string) {
-  return filter.status?.find((x) => x === status);
 }
 
 defineExpose({

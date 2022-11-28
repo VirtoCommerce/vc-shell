@@ -62,37 +62,30 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { IBladeToolbar } from "../../../../types";
-import { useI18n, useLogger } from "@vc-shell/framework";
+import {useI18n, useLogger, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'parent:call', args: IParentCallArgs): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
-const emit = defineEmits(["close:blade", "parent:call"]);
+const emit = defineEmits<Emits>();
 useForm({ validateOnMount: false });
 
 const { t } = useI18n();

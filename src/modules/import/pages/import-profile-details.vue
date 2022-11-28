@@ -111,44 +111,43 @@
 import { defineComponent, computed, onMounted, ref, unref } from "vue";
 
 export default defineComponent({
-   url: "/import-profile-details",
+  url: "/import-profile-details",
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeToolbar } from "../../../types";
-import { useI18n, useAutosave } from "@vc-shell/framework";
+import {useI18n, useAutosave, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import {
-  ImportProfile,
-  ObjectSettingEntry,
+    IDataImporter,
+    ImportProfile,
+    ObjectSettingEntry,
 } from "../../../api_client/marketplacevendor";
-import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: {
+      importer: IDataImporter
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: "parent:call", args: IParentCallArgs): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: undefined,
 });
-const emit = defineEmits(["close:blade", "parent:call"]);
+
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const {
   dataImporters,
@@ -239,7 +238,6 @@ const sampleTemplateUrl = computed(() => {
     : "#";
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() =>
   props.options.importer
     ? props.options.importer.typeName
@@ -255,7 +253,7 @@ onMounted(async () => {
 
   loadAutosaved();
   if (savedValue.value) {
-    profileDetails.value = savedValue.value as ImportProfile;
+    profileDetails.value = savedValue.value as unknown as ImportProfile;
   }
 });
 
@@ -307,5 +305,6 @@ async function onBeforeClose() {
 
 defineExpose({
   onBeforeClose,
+  title,
 });
 </script>

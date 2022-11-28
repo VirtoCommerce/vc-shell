@@ -17,7 +17,7 @@ import {
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
-import { useLogger, useNotifications, useUser } from "@vc-shell/framework";
+import {IObjectSettingEntry, useLogger, useNotifications, useUser} from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
@@ -307,7 +307,7 @@ export default (): IUseImport => {
     );
     profileDetails.value.dataImporterType = typeName;
     profileDetails.value.settings = [
-      ...(importer.availSettings.map((x) => new ObjectSettingEntry(x)) || []),
+      ...(importer.availSettings.map((x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)) || []),
     ];
   }
 

@@ -55,27 +55,20 @@
 import { computed, PropType } from "vue";
 import { INotificationActions } from "../../../types";
 
-const props = defineProps({
-  uploadActions: {
-    type: Array as PropType<INotificationActions[]>,
-    default: () => [],
-  },
+export interface Props {
+  uploadActions: INotificationActions[];
+  uploadedFile: object;
+  isUploaded: boolean;
+  isStarted: boolean;
+}
 
-  uploadedFile: {
-    type: Object,
-    default: () => ({}),
-  },
-
-  isUploaded: {
-    type: Boolean,
-    default: false,
-  },
-
-  isStarted: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  uploadActions: () => [],
+  uploadedFile: undefined,
+  isUploaded: false,
+  isStarted: false,
 });
+
 const filteredActions = computed(() =>
   props.uploadActions.filter((action) => action.isVisible)
 );

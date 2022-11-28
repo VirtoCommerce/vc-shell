@@ -47,9 +47,7 @@
       <template v-slot:mobile-item="itemData">
         <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
           <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow basis-0 mr-2"
-            >
+            <div class="truncate grow basis-0 mr-2">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")
               }}</VcHint>
@@ -57,9 +55,7 @@
                 {{ itemData.item.firstName }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="truncate grow-[2] basis-0">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME")
               }}</VcHint>
@@ -69,9 +65,7 @@
             </div>
           </div>
           <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+            <div class="truncate grow-[2] basis-0 mr-2">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL")
               }}</VcHint>
@@ -79,9 +73,7 @@
                 {{ itemData.item.email || "N/A" }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+            <div class="truncate grow-[2] basis-0 mr-2">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
               }}</VcHint>
@@ -89,9 +81,7 @@
                 {{ roleName(itemData.item.role) }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="truncate grow-[2] basis-0">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.STATUS")
               }}</VcHint>
@@ -115,47 +105,56 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  watch,
+  onMounted,
+  shallowRef,
+} from "vue";
 import {
   UserPermissions,
-  IBladeToolbar,
-  ITableColumns,
 } from "../../../../types";
 
 export default defineComponent({
-   url: "/team",
+  url: "/team",
   permissions: [UserPermissions.SellerUsersManage],
 });
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/framework";
+import {IBladeEvent, IBladeToolbar, ITableColumns, useI18n} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { SellerUser } from "../../../../api_client/marketplacevendor";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, unknown>;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+    bladeOptions?: {
+        user?: SellerUser
+    }
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeOptions): void
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: () => ({}),
 });
-const emit = defineEmits(["close:blade", "open:blade"]);
+
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const {

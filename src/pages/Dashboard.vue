@@ -181,6 +181,13 @@
                         }}</vc-button>
                       </div>
                     </template>
+
+                    <!-- Override alwaysInStock column template -->
+                    <template v-slot:item_alwaysInStock="itemData">
+                      <div class="flex justify-center">
+                        <VcStatusIcon :status="!itemData"></VcStatusIcon>
+                      </div>
+                    </template>
                   </vc-table>
                 </VcCol>
               </VcRow>
@@ -203,7 +210,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n, useBladeNavigation, IPage } from "@vc-shell/framework";
+import { useI18n, useBladeNavigation, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRouter } from "vue-router";
 import { OrderLineItem } from "../api_client/orders";
@@ -216,8 +223,6 @@ import {
   useProducts,
 } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
-import { ITableColumns } from "../types";
-import useBladeNavigation from "@vc-shell/core/src/composables/useBladeNavigation/index";
 
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();
@@ -301,20 +306,9 @@ const offersColumns = ref<ITableColumns[]>([
     width: 120,
   },
   {
-    id: "salePrice",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
-    width: 100,
-    type: "money",
-  },
-  {
-    id: "listPrice",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
-    width: 100,
-    type: "money",
-  },
-  {
-    id: "minQuantity",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
+    id: "alwaysInStock",
+    field: "trackInventory",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.ALWAYS_IN_STOCK")),
     width: 80,
     type: "number",
   },
@@ -323,6 +317,27 @@ const offersColumns = ref<ITableColumns[]>([
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.QTY")),
     width: 80,
     type: "number",
+  },
+  {
+    id: "availQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.AVAIL_QTY")),
+    width: 80,
+    sortable: true,
+    type: "number",
+  },
+  {
+    id: "validFrom",
+    field: "startDate",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.VALID_FROM")),
+    width: 100,
+    type: "date-time",
+  },
+  {
+    id: "validTo",
+    field: "endDate",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.VALID_TO")),
+    width: 100,
+    type: "date-time",
   },
 ]);
 

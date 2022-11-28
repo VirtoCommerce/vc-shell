@@ -9,20 +9,20 @@
     :logo="logoImage"
     :version="version"
     :pages="pages"
-    :blades="bladesRefs"
+    :bladesRefs="bladesRefs"
     @backlink:click="closeBlade($event)"
-    @onOpen="(e) => openBlade({ parentBlade: e.parentBlade }, e.id)"
+    @onOpen="onOpen"
     @onClose="closeBlade($event)"
     v-else
   >
-      <!-- App Switcher -->
-      <template v-slot:appSwitcher>
-          <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
-      </template>
+    <!-- App Switcher -->
+    <template v-slot:appSwitcher>
+      <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
+    </template>
 
     <template v-slot:bladeNavigation>
       <VcBladeNavigation
-        @onOpen="(e) => openBlade(e.blade, e.id)"
+        @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
         @onParentCall="(e) => onParentCall(e.id, e.cb)"
         :blades="blades"
@@ -55,8 +55,10 @@
 
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
-import { PushNotification } from "@vc-shell/api-client";
 import {
+    PushNotification,
+    IBladeToolbar,
+    IMenuItems,
     useAppSwitcher,
     useFunctions,
     useI18n,
@@ -65,11 +67,9 @@ import {
     usePermissions,
     useSettings,
     useUser,
-    PushNotification,
     VcAppSwitcher,
     useBladeNavigation,
-    VcBladeNavigation,
-    useBladeNavigation
+    VcBladeNavigation, IOpenBlade
 } from "@vc-shell/framework";
 import {
   computed,
@@ -97,7 +97,7 @@ import {
   TeamList,
   FulfillmentCenters,
 } from "../modules/settings";
-import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
+import { UserPermissions } from "../types";
 import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
 
@@ -128,6 +128,7 @@ const {
   closeBlade,
   onParentCall,
 } = useBladeNavigation();
+const { appsList, switchApp, getApps } = useAppSwitcher();
 
 const route = useRoute();
 const router = useRouter();
@@ -147,6 +148,7 @@ signalR.on("Send", (message: PushNotification) => {
 
 onMounted(async () => {
   await loadUser();
+  await getApps();
   langInit();
   await getUiCustomizationSettings();
   isReady.value = true;
@@ -252,6 +254,7 @@ const menuItems = reactive<IMenuItems[]>([
     icon: "fas fa-home",
     isVisible: true,
     clickHandler(app) {
+        console.log(app)
       app.openDashboard();
     },
   },
@@ -357,6 +360,10 @@ function langInit() {
   } else {
     currentLocale.value = "en";
   }
+}
+
+function onOpen(args: IOpenBlade) {
+    openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb)
 }
 </script>
 

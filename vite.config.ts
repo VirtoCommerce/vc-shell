@@ -65,15 +65,12 @@ export default {
     alias:
       mode === "development"
         ? {
-            "@vc-shell/ui/dist/style.css": "@vc-shell/ui/dist/style.css",
-            "@vc-shell/ui": "@vc-shell/ui/src/index.ts",
-            // "@vc-shell/core": "@vc-shell/core/src/index.ts",
-          '@vc-shell/core/src/composables/useBladeNavigation/index': path.resolve('./../../framework/core/src/composables/useBladeNavigation'),
-            "@vc-shell/mod-assets": "@vc-shell/mod-assets/src/index.ts",
-            //"vue-router": "vue-router/dist/vue-router.cjs.js",
+            "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+            // "@vc-shell/framework": "@vc-shell/framework/index.ts",
+              "vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
-            //"vue-router": "vue-router/dist/vue-router.cjs.js",
+            "vue-router": "vue-router/dist/vue-router.cjs.js",
           },
   },
   base: process.env.APP_BASE_PATH,
@@ -113,9 +110,9 @@ export default {
             "vue-router",
             "url-pattern",
             "ace-builds",
-            "@vc-shell/mod-assets",
             "vue-logger-plugin",
             "client-oauth2",
+          "vue-currency-input"
           ]
         : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },

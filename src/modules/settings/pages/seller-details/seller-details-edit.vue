@@ -6,7 +6,6 @@
     :closable="closable"
     v-loading="loading"
     :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
   >
     <VcContainer>
       <VcStatus
@@ -403,7 +402,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref, computed, unref, watch } from "vue";
-import { UserPermissions, IBladeToolbar } from "../../../../types";
+import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
    url: "/seller-details-edit",
@@ -412,34 +411,28 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser, useAutosave } from "@vc-shell/framework";
+import {useI18n, useUser, useAutosave, useForm, IBladeToolbar} from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
-import { useForm } from "@vc-shell/framework";
 import { useIsFormValid } from "vee-validate";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+    expanded?: boolean;
+    closable?: boolean;
+    param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+    expanded: true,
+    closable: true,
+    param: undefined,
 });
-defineEmits(["close:blade", "open:blade"]);
+
+defineEmits<Emits>();
 
 const {
   getCurrentSeller,

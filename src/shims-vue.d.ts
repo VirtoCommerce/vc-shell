@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {Ref} from "vue";
+import {MixedSchema} from "yup/es/mixed";
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
@@ -14,6 +15,14 @@ declare module '@vue/runtime-core' {
         $isMobile: Ref<boolean>;
         $isDesktop: Ref<boolean>;
         $isTouch: boolean;
+    }
+}
+
+declare module 'yup' {
+    interface StringSchema<T> {
+        sequence(
+            funcList: (() => MixedSchema)[],
+        ): StringSchema<T>;
     }
 }
 

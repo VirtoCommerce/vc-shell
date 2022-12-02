@@ -55,6 +55,7 @@
     "moment": "^2.29.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.7.3",
+    "yup": "^0.32.11",
     "vue": "^3.0.0",
     "vue-router": "^4.1.6"
   },

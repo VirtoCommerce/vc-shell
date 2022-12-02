@@ -176,6 +176,11 @@ const props = defineProps({
     type: Function,
     default: undefined,
   },
+
+  errorMessage: {
+    type: String,
+    default: undefined
+  }
 });
 
 const emit = defineEmits(["update:modelValue", "change", "close", "search"]);
@@ -202,21 +207,21 @@ const hasNextPage = computed(() => {
   return props.options.length < props.optionsTotal;
 });
 
-// Prepare field-level validation
-const { errorMessage, handleChange } = useField(
-  `${props.name || instance?.uid}`,
-  props.isRequired ? "required" : "",
-  {
-    initialValue: props.modelValue,
-  }
-);
-
-watch(
-  () => props.modelValue,
-  (value) => {
-    handleChange(value);
-  }
-);
+// // Prepare field-level validation
+// const { errorMessage, handleChange } = useField(
+//   `${props.name || instance?.uid}`,
+//   props.isRequired ? "required" : "",
+//   {
+//     initialValue: props.modelValue,
+//   }
+// );
+//
+// watch(
+//   () => props.modelValue,
+//   (value) => {
+//     handleChange(value);
+//   }
+// );
 
 function closeDropdown() {
   observer.disconnect();

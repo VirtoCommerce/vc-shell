@@ -25,13 +25,16 @@ export { default as VcEditor } from "./molecules/vc-editor/vc-editor.vue";
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
 export { default as VcFileUpload } from "./molecules/vc-file-upload/vc-file-upload.vue";
 export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
+export { default as VcInput2 } from "./molecules/vc-input/vc-input2.vue";
 export { default as VcMultivalue } from "./molecules/vc-multivalue/vc-multivalue.vue";
 export { default as VcNotification } from "./molecules/vc-notification/vc-notification.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcRating } from "./molecules/vc-rating/vc-rating.vue";
 export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
+export { default as VcSelect2 } from "./molecules/vc-select/vc-select2.vue";
 export { default as VcSlider } from "./molecules/vc-slider/vc-slider.vue";
 export { default as VcTextarea } from "./molecules/vc-textarea/vc-textarea.vue";
+export { default as VcTextarea2 } from "./molecules/vc-textarea/vc-textarea2.vue";
 
 /* Organisms */
 export { default as VcApp } from "./organisms/vc-app/vc-app.vue";

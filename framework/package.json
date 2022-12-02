@@ -39,6 +39,7 @@
     "url-pattern": "^1.0.3"
   },
   "peerDependencies": {
+    "yup": "^0.32.11",
     "vee-validate": "^4.7.3",
     "vue": "^3.0.0",
     "vue-router": "^4.1.6"

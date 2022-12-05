@@ -39,21 +39,21 @@
               </div>
             </VcStatus>
             <VcForm>
-                <Field name="name" rules="min:3|required" v-slot="{field, errorMessage}">
-                    <VcInput2
-                      v-bind="field"
-                      class="mb-4"
-                      :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                      v-model="productDetails.name"
-                      :clearable="true"
-                      :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
-                      name="name"
-                      :disabled="readonly"
-                      maxchars="64"
-                      is-required
-                      :error-message="errorMessage"
-                    ></VcInput2>
-                </Field>
+              <Field name="name" rules="min:3|required" v-slot="{field, errorMessage}">
+                  <VcInput2
+                    v-bind="field"
+                    class="mb-4"
+                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                    v-model="productDetails.name"
+                    :clearable="true"
+                    :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
+                    name="name"
+                    :disabled="readonly"
+                    maxchars="64"
+                    is-required
+                    :error-message="errorMessage"
+                  ></VcInput2>
+              </Field>
               <Field name="categoryId" rules="required" v-slot="{field, errorMessage}">
                   <VcSelect2
                     v-bind="field"
@@ -226,6 +226,7 @@ import {
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
 import {debounce} from 'lodash-es'
+import * as yup from 'yup'
 
 export interface Props {
   expanded?: boolean;
@@ -305,15 +306,19 @@ const readonly = computed(
 );
 
 const validateGtin = [
-    (value: string): string | boolean => {
-        return min(value, [3]);
+    async (value: string): Promise<boolean | string> => {
+      try {
+          const res = await yup.string().label(t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')).required().nullable().min(3).validate(value)
+          if (res) {
+              return true
+          }
+      } catch(e) {
+          return e.errors.join("\n")
+      }
     },
-    (value: string): string | boolean => {
-        return required(value);
-    },
-    async (value: string): Promise<string | boolean> =>
-        await validate("gtin", value)
-
+    async (value: string): Promise<string | boolean> => {
+        return await validate("gtin", value)
+    }
 ];
 
 const validate = debounce(async (
@@ -340,7 +345,6 @@ const validate = debounce(async (
             .join("\n")
     );
 }, 1000, {leading: true, trailing: false})
-
 
 const reload = async (fullReload: boolean) => {
   if (!modified.value && fullReload) {

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcStatus } from "@vc-shell/ui";
+import { VcStatus } from "@vc-shell/framework";
 import { computed } from "vue";
 import { CustomerReviewStatus } from "../../../api_client/marketplacevendor";
 

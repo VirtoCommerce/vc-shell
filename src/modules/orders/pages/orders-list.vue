@@ -5,7 +5,7 @@
     :closable="closable"
     width="30%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -151,23 +151,15 @@
           </div>
           <div>
             <div class="mt-3 w-full flex justify-between">
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+              <div class="truncate grow basis-0 mr-2">
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
-                <div
-                  class="truncate mt-1"
-                >
+                <div class="truncate mt-1">
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+              <div class="truncate grow basis-0 mr-2">
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
-                <div
-                  class="truncate mt-1"
-                >
+                <div class="truncate mt-1">
                   {{
                     itemData.item.createdDate &&
                     moment(itemData.item.createdDate).fromNow()
@@ -190,48 +182,39 @@ import {
   reactive,
   ref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "orders",
+  url: "/orders",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n } from "@vc-shell/core";
+import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, ITableColumns, IActionBuilderResult} from "@vc-shell/framework";
 import moment from "moment";
 import { CustomerOrder } from "../../../api_client/orders";
-import {
-  IActionBuilderResult,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../types";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
 import emptyImage from "/assets/empty.png";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'open:blade', blade: IBladeEvent): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
-const emit = defineEmits(["page:open"]);
+
+const emit = defineEmits<Emits>();
 const {
   orders,
   loadOrders,
@@ -336,8 +319,8 @@ const empty = reactive({
 });
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
-    component: OrdersDetails,
+  emit("open:blade", {
+    component: shallowRef(OrdersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

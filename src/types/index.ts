@@ -1,52 +1,9 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
-import { PushNotification } from "@vc-shell/api-client";
+import { PushNotification } from "@vc-shell/framework";
 
 enum UserPermissions {
   SellerUsersManage = "seller:users:manage",
   SellerDetailsEdit = "seller:details:edit",
-}
-
-interface IComponent extends ComponentPublicInstance {
-  openDashboard(): void;
-}
-
-interface IBladeToolbar {
-  id?: string;
-  icon?: string;
-  title?: string | ComputedRef<string>;
-  isVisible?: boolean | unknown;
-  isAccent?: boolean | ComputedRef<boolean>;
-  component?: Component & { url?: string };
-  componentOptions?: Record<string, unknown> | unknown;
-  disabled?: boolean | ComputedRef<boolean>;
-  clickHandler?(): void;
-}
-
-interface IMenuItems extends IBladeToolbar {
-  clickHandler?(app?: IComponent): void;
-  children?: IMenuItems[];
-}
-
-interface ITableColumns {
-  id: string;
-  title: string | ComputedRef<string>;
-  width?: number;
-  field?: string;
-  alwaysVisible?: boolean;
-  type?: string;
-  sortable?: boolean;
-  sortDirection?: number;
-  class?: string;
-  format?: string;
-  align?: string;
-}
-
-interface IActionBuilderResult {
-  icon: string;
-  title: string;
-  variant: string;
-  leftActions?: boolean;
-  clickHandler(): void;
 }
 
 interface IShippingInfo {
@@ -78,11 +35,6 @@ interface INewOrderPushNotification extends PushNotification {
 }
 
 export type {
-  IComponent,
-  ITableColumns,
-  IActionBuilderResult,
-  IBladeToolbar,
-  IMenuItems,
   IShippingInfo,
   INotificationActions,
   IProductPushNotification,

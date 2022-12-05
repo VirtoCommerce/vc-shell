@@ -103,38 +103,23 @@ import { ref, reactive, computed } from "vue";
 import {
   useLogger,
   useUser,
-  SignInResult,
+  useForm,
+  SignInResults,
   RequestPasswordResult,
   useI18n,
-} from "@vc-shell/core";
-
+} from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
-import { useForm } from "@vc-shell/ui";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useIsFormValid } from "vee-validate";
 
-const props = defineProps({
-  logo: {
-    type: String,
-    default: undefined,
-  },
-
-  background: {
-    type: String,
-    default: undefined,
-  },
-
-  title: {
-    type: String,
-    default: undefined,
-  },
-});
 const log = useLogger();
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
 useForm({ validateOnMount: false });
+const { logo, background, title } = route.meta;
 
-const signInResult = ref<SignInResult>({ succeeded: true });
+const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading } = useUser();
@@ -150,7 +135,7 @@ const forgotPasswordForm = reactive({
 });
 
 const computedTitle = computed(() =>
-  isLogin.value ? props.title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")
+  isLogin.value ? title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")
 );
 
 const login = async () => {

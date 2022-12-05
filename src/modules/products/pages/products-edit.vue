@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <template v-slot:actions>
       <mp-product-status :status="product.status"></mp-product-status>
@@ -22,7 +22,7 @@
               :extend="true"
               variant="light-danger"
               class="w-full box-border mb-5"
-              v-if="statusText && product.status != 'Published'"
+              v-if="statusText && product.status !== 'Published'"
             >
               <div class="flex flex-row items-center">
                 <VcIcon
@@ -77,20 +77,12 @@
                 :optionsTotal="categoriesTotal"
               >
                 <template v-slot:item="itemData">
-                  <div
-                    class="flex items-center py-2 truncate"
-                  >
-                    <div
-                      class="grow basis-0 ml-4 truncate"
-                    >
-                      <div
-                        class="truncate"
-                      >
+                  <div class="flex items-center py-2 truncate">
+                    <div class="grow basis-0 ml-4 truncate">
+                      <div class="truncate">
                         {{ itemData.item.path }}
                       </div>
-                      <VcHint
-                        class="truncate mt-1"
-                      >
+                      <VcHint class="truncate mt-1">
                         {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
                         {{ itemData.item.code }}
                       </VcHint>
@@ -193,20 +185,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  unref,
+  shallowRef,
+} from "vue";
 
 export default defineComponent({
-  url: "product",
+  url: "/product",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useUser, useAutosave } from "@vc-shell/core";
-import { useForm, min, VcInput } from "@vc-shell/ui";
+import {
+    useFunctions,
+    useI18n,
+    useUser,
+    useAutosave,
+    useForm,
+    min, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails
+} from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
-  ICategory,
   Image,
   IProperty,
   IPropertyValue,
@@ -214,39 +218,45 @@ import {
   PropertyDictionaryItem,
 } from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
-import { AssetsDetails } from "@vc-shell/mod-assets";
 import { OffersList } from "../../offers";
-import { IBladeToolbar } from "../../../types";
 import _ from "lodash-es";
 import {
   IImage,
   IProductDetails,
   ISellerProduct,
+    Category
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+    bladeOptions: {
+        editableAsset?: Image;
+        images?: Image[];
+        sortHandler?: (remove: boolean, localImage: IImage) => void;
+        sellerProduct?: ISellerProduct;
+    };
+};
 
-  param: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+    (event: "parent:call", args: IParentCallArgs): void;
+    (event: "close:blade"): void;
+    (event: "open:blade", blade: IBladeOptions): void;
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
-const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+
+const emit = defineEmits<Emits>();
+
 const { t } = useI18n();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
@@ -272,9 +282,9 @@ const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const { debounce } = useFunctions();
 
-const currentCategory = ref<ICategory>();
+const currentCategory = ref<Category>();
 const offersCount = ref(0);
-const categories = ref<ICategory[]>([]);
+const categories = ref<Category[]>([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
@@ -345,7 +355,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             method: "reload",
           });
           if (!props.param) {
-            emit("page:close");
+            emit("close:blade");
           }
         } catch (err) {
           alert(err.message);
@@ -386,7 +396,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             method: "reload",
           });
           if (!props.param) {
-            emit("page:close");
+            emit("close:blade");
           }
         } catch (err) {
           alert(err.message);
@@ -532,9 +542,9 @@ const onGalleryUpload = async (files: FileList) => {
 };
 
 const onGalleryItemEdit = (item: Image) => {
-  emit("page:open", {
-    component: AssetsDetails,
-    componentOptions: {
+  emit("open:blade", {
+    component: shallowRef(AssetsDetails),
+    bladeOptions: {
       editableAsset: item,
       images: productDetails.value.images,
       sortHandler: sortImage,
@@ -591,7 +601,7 @@ const setCategory = async (id: string) => {
   productDetails.value.properties = [
     ...(currentCategory.value.properties || []),
   ];
-  productDetails.value.properties.forEach(async (property) => {
+  productDetails.value.properties.forEach((property) => {
     const previousPropertyValue = currentProperties?.find(
       (item) => item.id === property.id
     );
@@ -642,12 +652,11 @@ async function onLoadMore() {
 
 async function openOffers() {
   if (!isOffersOpened) {
-    emit("page:open", {
-      component: OffersList,
-      componentOptions: {
+    emit("open:blade", {
+      component: shallowRef(OffersList),
+      bladeOptions: {
         sellerProduct: productData.value,
       },
-      url: null,
       onOpen() {
         isOffersOpened = true;
       },

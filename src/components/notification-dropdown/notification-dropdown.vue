@@ -68,10 +68,10 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, PropType, ref } from "vue";
-import { PushNotification } from "@vc-shell/api-client";
-import { useNotifications } from "@vc-shell/core";
-import { IMenuItems, VcIcon, VcContainer, VcCol } from "@vc-shell/ui";
+import {onMounted, ref, shallowRef } from "vue";
+import {PushNotification, useBladeNavigation} from "@vc-shell/framework";
+import { useNotifications } from "@vc-shell/framework";
+import { IMenuItems } from "@vc-shell/framework";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client/marketplacevendor";
 import NotificationItem from "./_internal/notification/notification.vue";
@@ -82,34 +82,19 @@ import {
 } from "../../types";
 import { OrdersEdit, OrdersList } from "../../modules/orders";
 
-const props = defineProps({
-  isAccent: {
-    type: Boolean,
-    default: false,
-  },
+export interface Props {
+    isAccent: boolean,
+    title: string,
+}
 
-  title: {
-    type: String,
-    default: "",
-  },
+const props = withDefaults(defineProps<Props>(), {
+    isAccent: false,
+    title: '',
+})
 
-  items: {
-    type: Array as PropType<IMenuItems[]>,
-    default: () => [],
-  },
-
-  openPage: {
-    type: Function,
-    default: undefined,
-  },
-
-  closePage: {
-    type: Function,
-    default: undefined,
-  },
-});
 const isDropdownVisible = ref(false);
 const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
+const {openBlade, closeBlade} = useBladeNavigation()
 
 onMounted(async () => {
   await loadFromHistory();
@@ -134,53 +119,47 @@ const handleClick = async (
 
   // TODO need to discuss on arch meeting
   if (low.includes("import") && "profileId" in notification) {
-    await props.closePage(0);
-    await props.closePage(1);
-    props.openPage(0, {
-      component: ImportProfileSelector,
-      param: notification.profileId,
-      componentOptions: {
-        importJobId: notification.jobId,
+    await closeBlade(0);
+    openBlade(
+      {
+        parentBlade: shallowRef(ImportProfileSelector),
+        component: shallowRef(ImportNew),
+        param: notification.profileId,
+        bladeOptions: {
+          importJobId: notification.jobId,
+        },
       },
-    });
-    props.openPage(1, {
-      component: ImportNew,
-      param: notification.profileId,
-      componentOptions: {
-        importJobId: notification.jobId,
-      },
-    });
+      1
+    );
   } else if (
     (low.includes("product") ||
       notification.notifyType ===
         "PublicationRequestStatusChangedDomainEvent") &&
     "productId" in notification
   ) {
-    await props.closePage(0);
-    await props.closePage(1);
-    props.openPage(0, {
-      component: ProductsList,
-      param: notification.productId,
-    });
-    props.openPage(1, {
-      component: ProductsEdit,
-      param: notification.productId,
-    });
+    await closeBlade(0);
+    openBlade(
+      {
+        parentBlade: shallowRef(ProductsList),
+        component: shallowRef(ProductsEdit),
+        param: notification.productId,
+      },
+      1
+    );
   } else if (
     (low.includes("order") ||
       notification.notifyType === "OrderCreatedEventHandler") &&
     "orderId" in notification
   ) {
-    await props.closePage(0);
-    await props.closePage(1);
-    props.openPage(0, {
-      component: OrdersList,
-      param: notification.orderId,
-    });
-    props.openPage(1, {
-      component: OrdersEdit,
-      param: notification.orderId,
-    });
+    await closeBlade(0);
+    openBlade(
+      {
+        parentBlade: shallowRef(OrdersList),
+        component: shallowRef(OrdersEdit),
+        param: notification.orderId,
+      },
+      1
+    );
   }
 };
 </script>

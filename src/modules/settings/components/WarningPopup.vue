@@ -37,5 +37,9 @@
 </template>
 
 <script lang="ts" setup>
-defineEmits(["close", "delete"]);
+export interface Emits {
+    (event: 'close'): void
+    (event: 'delete'): void;
+}
+defineEmits<Emits>();
 </script>

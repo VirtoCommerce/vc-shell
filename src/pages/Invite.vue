@@ -66,10 +66,9 @@
 
 <script lang="ts" setup>
 import { reactive, onMounted } from "vue";
-import { useUser } from "@vc-shell/core";
+import { useUser, useForm } from "@vc-shell/framework";
 import { useRouter } from "vue-router";
 import { useIsFormValid } from "vee-validate";
-import { useForm } from "@vc-shell/ui";
 
 useForm({ validateOnMount: false });
 

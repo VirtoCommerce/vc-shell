@@ -6,7 +6,7 @@
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcContainer class="import-new">
       <VcCol>
@@ -182,23 +182,45 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  watch,
+  shallowRef,
+} from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 
 export default defineComponent({
-  url: "importer",
+  url: "/importer",
 });
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser } from "@vc-shell/core";
 import {
-  IBladeToolbar,
+    IBladeEvent,
+    IParentCallArgs,
+    useI18n,
+    useUser,
+    VcContainer,
+    VcCol,
+    VcRow,
+    VcBlade,
+    VcCard,
+    VcFileUpload,
+    VcProgress,
+    VcIcon,
+    VcHint,
+    VcTable,
+    IBladeToolbar,
+    ITableColumns
+} from "@vc-shell/framework";
+import {
   INotificationActions,
-  ITableColumns,
 } from "../../../types";
 import useImport from "../composables/useImport";
-import { ImportDataPreview } from "../../../api_client/marketplacevendor";
+import {IDataImporter, ImportDataPreview} from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
@@ -213,28 +235,34 @@ interface IImportBadges {
   description?: string;
 }
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+    bladeOptions: {
+        importer: IDataImporter
+    }
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    importJobId?: string;
+    title?: string;
+  };
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+    (event: 'open:blade', blade: IBladeOptions): void
+    (event: 'close:blade'): void
+    (event: 'parent:call', args: IParentCallArgs): void
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["page:open", "page:close", "parent:call"]);
+
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const { getAccessToken } = useUser();
 const {
@@ -272,8 +300,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
     icon: "fas fa-pencil-alt",
     clickHandler() {
-      emit("page:open", {
-        component: ImportProfileDetails,
+      emit("open:blade", {
+        component: shallowRef(ImportProfileDetails),
+          bladeOptions: {
+            importer: profileDetails.value.importer
+          },
         param: profile.value.id,
       });
     },
@@ -604,7 +635,7 @@ function reloadParent() {
   emit("parent:call", {
     method: "reload",
   });
-  emit("page:close");
+  emit("close:blade");
 }
 
 const sampleTemplateUrl = computed(() => {

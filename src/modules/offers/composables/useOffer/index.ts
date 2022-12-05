@@ -1,5 +1,5 @@
-import {computed, Ref, ref, unref, defineEmits, watch} from "vue";
-import { useLogger, useUser, useI18n } from "@vc-shell/core";
+import {computed, Ref, ref, unref, defineEmits, watch, shallowRef} from "vue";
+import {useLogger, useUser, useI18n, AssetsDetails, IBladeEvent} from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -17,11 +17,13 @@ import {
   IImage,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import { AssetsDetails } from "@vc-shell/mod-assets";
 import { isEqual, cloneDeep } from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
+  salePrice?: number;
+  listPrice?: number;
+  minQuantity?: number;
   id?: string;
   properties?: Property[];
 };
@@ -57,6 +59,18 @@ interface IStoreSettings {
   storeId: string;
 }
 
+interface IBladeOptions extends IBladeEvent{
+    bladeOptions?: {
+        editableAsset: Image,
+        images: Image[],
+        sortHandler: (remove: boolean, localImage: IImage) => void
+    }
+}
+
+export interface Emits {
+    (event: 'open:blade', blade: IBladeOptions): void
+}
+
 export default (): IUseOffer => {
   const { user, getAccessToken } = useUser();
   const logger = useLogger();
@@ -66,7 +80,7 @@ export default (): IUseOffer => {
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
   const imageUploading = ref(false);
-  const emit = defineEmits(["page:open"]);
+  const emit = defineEmits<Emits>();
   const { t } = useI18n();
   const modified = ref(false);
 
@@ -265,9 +279,9 @@ export default (): IUseOffer => {
   };
 
   const onGalleryItemEdit = (item: Image) => {
-    emit("page:open", {
-      component: AssetsDetails,
-      componentOptions: {
+    emit("open:blade", {
+      component: shallowRef(AssetsDetails),
+      bladeOptions: {
         editableAsset: item,
         images: offerDetails.value.images,
         sortHandler: sortImage,

@@ -5,7 +5,7 @@
     :closable="closable"
     width="50%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -33,7 +33,6 @@
       <!-- Filters -->
       <template
         v-slot:filters="{ closePanel }"
-        v-if="!(options && options.query && options.query.searchFromAllSellers)"
       >
         <h2 v-if="$isMobile.value">
           {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
@@ -207,52 +206,48 @@ import {
   reactive,
   ref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "products",
+  url: "/products",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
+import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, useLogger, IActionBuilderResult,
+    ITableColumns} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
-import {
-  IActionBuilderResult,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../types";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
 import ProductsEdit from "./products-edit.vue";
 import emptyImage from "/assets/empty.png";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+    expanded?: boolean;
+    closable?: boolean;
+    param?: string;
+    options?: Record<string, unknown>;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeEvent): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+    expanded: true,
+    closable: true,
+    param: undefined,
+    options: () => ({}),
 });
-const emit = defineEmits(["page:close", "page:open"]);
+
+const emit = defineEmits<Emits>();
 const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
+
 const {
   products,
   totalCount,
@@ -326,8 +321,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     async clickHandler() {
-      emit("page:open", {
-        component: ProductsEdit,
+      emit("open:blade", {
+        component: shallowRef(ProductsEdit),
       });
     },
   },
@@ -407,8 +402,8 @@ const activeFilterCount = computed(
 );
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
-    component: ProductsEdit,
+  emit("open:blade", {
+      component: shallowRef(ProductsEdit),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -508,8 +503,8 @@ async function resetSearch() {
   appliedFilter.value = {};
 }
 function addProduct() {
-  emit("page:open", {
-    component: ProductsEdit,
+  emit("open:blade", {
+      component: shallowRef(ProductsEdit),
   });
 }
 

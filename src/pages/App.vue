@@ -1,5 +1,5 @@
 <template>
-  <VcLoading v-if="!isReady" active class="app__loader"></VcLoading>
+  <VcLoading v-if="!isReady" active class="app__loader" />
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -9,6 +9,10 @@
     :logo="logoImage"
     :version="version"
     :pages="pages"
+    :bladesRefs="bladesRefs"
+    @backlink:click="closeBlade($event)"
+    @onOpen="onOpen"
+    @onClose="closeBlade($event)"
     v-else
   >
     <!-- App Switcher -->
@@ -16,18 +20,16 @@
       <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
     </template>
 
-    <!-- Set up dashboard page -->
-    <template v-slot:dashboard="scope">
-      <DashboardPage v-bind="scope" />
-    </template>
-
-    <!-- Set up login form  -->
-    <template v-slot:login>
-      <LoginPage
-        :logo="whiteLogoImage"
-        :background="bgImage"
-        title="Vendor Portal"
-      ></LoginPage>
+    <template v-slot:bladeNavigation>
+      <VcBladeNavigation
+        @onOpen="openBlade($event.blade, $event.id)"
+        @onClose="closeBlade($event)"
+        @onParentCall="(e) => onParentCall(e.id, e.cb)"
+        :blades="blades"
+        :parentBladeOptions="parentBladeOptions"
+        :parentBladeParam="parentBladeParam"
+        ref="bladeNavigationRefs"
+      ></VcBladeNavigation>
     </template>
 
     <template v-slot:notifications>
@@ -53,17 +55,24 @@
 
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
-import { AppDescriptor, PushNotification } from "@vc-shell/api-client";
 import {
-  useAppSwitcher,
-  useFunctions,
-  useI18n,
-  useLogger,
-  useNotifications,
-  usePermissions,
-  useSettings,
-  useUser,
-} from "@vc-shell/core";
+    PushNotification,
+    IBladeToolbar,
+    IMenuItems,
+    useAppSwitcher,
+    useFunctions,
+    useI18n,
+    useLogger,
+    useNotifications,
+    usePermissions,
+    useSettings,
+    useUser,
+    VcAppSwitcher,
+    useBladeNavigation,
+    VcBladeNavigation,
+    IOpenBlade,
+    IBladeElement
+} from "@vc-shell/framework";
 import {
   computed,
   inject,
@@ -83,18 +92,15 @@ import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
 import { OrdersList } from "../modules/orders";
 import { ProductsList } from "../modules/products";
+import { MpProductsList } from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
 import {
   SellerDetails,
   TeamList,
   FulfillmentCenters,
 } from "../modules/settings";
-import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
-import DashboardPage from "./Dashboard.vue";
-import LoginPage from "./Login.vue";
+import { UserPermissions } from "../types";
 import avatarImage from "/assets/avatar.jpg";
-import bgImage from "/assets/background.jpg";
-import whiteLogoImage from "/assets/logo-white.svg";
 import logoImage from "/assets/logo.svg";
 
 const {
@@ -115,7 +121,17 @@ const {
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
 const { delay } = useFunctions();
-const { getApps, switchApp, appsList } = useAppSwitcher();
+const {
+  blades,
+  bladesRefs,
+  parentBladeOptions,
+  parentBladeParam,
+  openBlade,
+  closeBlade,
+  onParentCall,
+} = useBladeNavigation();
+const { appsList, switchApp, getApps } = useAppSwitcher();
+
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -126,6 +142,7 @@ const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
+const bladeNavigationRefs = ref();
 
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);
@@ -133,9 +150,9 @@ signalR.on("Send", (message: PushNotification) => {
 
 onMounted(async () => {
   await loadUser();
+  await getApps();
   langInit();
   await getUiCustomizationSettings();
-  await getApps();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");
@@ -146,12 +163,20 @@ watch(user, (value) => {
   isAuthorized.value = !!value?.userName;
 });
 
+watch(
+  () => bladeNavigationRefs.value?.bladesRefs,
+  (newVal) => {
+    bladesRefs.value = newVal;
+  },
+  { deep: true }
+);
+
 log.debug(`Initializing App`);
 
 const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(LanguageSelector),
-    componentOptions: {
+    bladeOptions: {
       value: computed(() => currentLocale.value),
       title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
       languageItems: computed(() =>
@@ -179,13 +204,13 @@ const toolbarItems = ref<IBladeToolbar[]>([
         .length;
     }),
     component: shallowRef(NotificationDropdown),
-    componentOptions: {
+    bladeOptions: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
     },
   },
   {
     component: shallowRef(UserDropdownButton),
-    componentOptions: {
+    bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -200,7 +225,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
         },
         {
           title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-          async clickHandler() {
+          clickHandler() {
             signOut();
             router.push("/login");
           },
@@ -214,7 +239,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
 const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
-    componentOptions: {
+    bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -230,9 +255,8 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("SHELL.MENU.DASHBOARD")),
     icon: "fas fa-home",
     isVisible: true,
-    clickHandler(app) {
+    clickHandler(app: IBladeElement) {
       app.openDashboard();
-      router.push("/");
     },
   },
   {
@@ -245,26 +269,17 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("PRODUCTS.MENU.TITLE")),
     icon: "fas fa-box-open",
     isVisible: true,
-    component: shallowRef(),
     children: [
       {
         title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
-        component: shallowRef(ProductsList),
-        componentOptions: {
-          url: "all-products",
+        component: shallowRef(MpProductsList),
+        bladeOptions: {
           readonly: true,
-          query: {
-            isPublished: true,
-            searchFromAllSellers: true,
-          },
         },
       },
       {
         title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
         component: shallowRef(ProductsList),
-        componentOptions: {
-          url: "products",
-        },
       },
     ],
   },
@@ -295,7 +310,6 @@ const menuItems = reactive<IMenuItems[]>([
         UserPermissions.SellerDetailsEdit,
       ])
     ),
-    component: shallowRef(),
     children: [
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
@@ -347,6 +361,10 @@ function langInit() {
   } else {
     currentLocale.value = "en";
   }
+}
+
+function onOpen(args: IOpenBlade) {
+    openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb)
 }
 </script>
 

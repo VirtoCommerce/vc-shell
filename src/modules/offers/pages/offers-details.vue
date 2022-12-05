@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcContainer :no-padding="true" ref="container">
@@ -36,9 +36,7 @@
               @change="getProductItem"
             >
               <template v-slot:selectedItem="itemData">
-                <div
-                  class="flex items-center py-2 truncate"
-                >
+                <div class="flex items-center py-2 truncate">
                   <VcImage
                     class="shrink-0"
                     size="xs"
@@ -46,17 +44,11 @@
                     :bordered="true"
                     background="contain"
                   ></VcImage>
-                  <div
-                    class="grow basis-0 ml-4 truncate"
-                  >
-                    <div
-                      class="truncate"
-                    >
+                  <div class="grow basis-0 ml-4 truncate">
+                    <div class="truncate">
                       {{ itemData.item.name }}
                     </div>
-                    <VcHint
-                      class="truncate mt-1"
-                    >
+                    <VcHint class="truncate mt-1">
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
                     </VcHint>
@@ -73,9 +65,7 @@
                 </div>
               </template>
               <template v-slot:item="itemData">
-                <div
-                  class="flex items-center py-2 truncate"
-                >
+                <div class="flex items-center py-2 truncate">
                   <VcImage
                     class="shrink-0"
                     size="xs"
@@ -83,17 +73,11 @@
                     :bordered="true"
                     background="contain"
                   ></VcImage>
-                  <div
-                    class="grow basis-0 ml-4 truncate"
-                  >
-                    <div
-                      class="truncate"
-                    >
+                  <div class="grow basis-0 ml-4 truncate">
+                    <div class="truncate">
                       {{ itemData.item.name }}
                     </div>
-                    <VcHint
-                      class="truncate mt-1"
-                    >
+                    <VcHint class="truncate mt-1">
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.CODE") }}:
                       {{ itemData.item.sku }}
                     </VcHint>
@@ -444,24 +428,29 @@ import {
   nextTick,
   unref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "offer",
+  url: "/offer",
 });
 </script>
 
 <script lang="ts" setup>
-import { useForm } from "@vc-shell/ui";
-import { useFunctions, useI18n, useAutosave } from "@vc-shell/core";
+import {
+    useForm,
+    VcRow,
+    useFunctions,
+    useI18n,
+    useAutosave, IParentCallArgs, IBladeEvent, IBladeToolbar,
+} from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
-  IOfferDetails,
-  IOfferProduct,
-  OfferPrice,
-  InventoryInfo,
+    IOfferDetails,
+    IOfferProduct,
+    OfferPrice,
+    InventoryInfo, SellerProduct,
 } from "../../../api_client/marketplacevendor";
-import { IBladeToolbar } from "../../../types";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid } from "vee-validate";
 import moment from "moment/moment";
@@ -474,29 +463,27 @@ import {
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    sellerProduct?: SellerProduct
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+    (event: 'parent:call', args: IParentCallArgs): void
+    (event: 'close:blade'): void
+    (event: 'open:blade', blade: IBladeEvent): void
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
 
-const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 
 const {
@@ -518,7 +505,7 @@ const {
   makeCopy,
   deleteOffer,
 } = useOffer();
-const { resetAutosaved, savedValue } = useAutosave(
+const { resetAutosaved, loadAutosaved, savedValue } = useAutosave(
   offerDetails,
   modified,
   props.param ?? "offersDetails"
@@ -565,7 +552,7 @@ onMounted(async () => {
     }
 
     if (savedValue.value) {
-      offerDetails.value = Object.assign({}, savedValue.value as IOfferDetails);
+      offerDetails.value = Object.assign({}, savedValue.value as unknown as IOfferDetails);
     }
     const searchResult = await fetchProducts();
     products.value = searchResult.results;
@@ -590,7 +577,7 @@ onBeforeUpdate(() => {
   priceRefs.value = [];
 });
 
-const readonly = false; //computed(() => !!offer.value?.id);
+const readonly = false;
 
 const title = computed(() => {
   return props.param && offerDetails.value && offerDetails.value.name
@@ -675,7 +662,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (err) {
           alert(err.message);
         }
@@ -683,7 +670,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
     },
-    isVisible: true, //!props.param,
+    isVisible: true,
     disabled: computed(
       () =>
         !(
@@ -734,7 +721,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         emit("parent:call", {
           method: "reload",
         });
-        emit("page:close");
+        emit("close:blade");
       }
     },
     isVisible: computed(() => !!props.param && !offerLoading.value),
@@ -791,9 +778,9 @@ function setPriceRefs(el: HTMLDivElement) {
   }
 }
 
-function showProductDetails(id: string) {
-  emit("page:open", {
-    component: ProductsEdit,
+async function showProductDetails(id: string) {
+  emit("open:blade", {
+    component: shallowRef(ProductsEdit),
     param: id,
   });
 }

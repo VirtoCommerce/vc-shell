@@ -30,11 +30,13 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  email: {
-    type: String,
-    default: "",
-  },
-});
+
+export interface Props {
+    email: string
+}
+
+withDefaults(defineProps<Props>(), {
+    email: ''
+})
 defineEmits(["close"]);
 </script>

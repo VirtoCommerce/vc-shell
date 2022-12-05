@@ -187,7 +187,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createFee(body: CreateFeeCommand | null | undefined): Promise<CommissionFee> {
@@ -239,7 +239,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateFee(body: UpdateFeeCommand | null | undefined): Promise<CommissionFee> {
@@ -291,7 +291,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteFee(ids: string[] | null | undefined): Promise<void> {
@@ -337,7 +337,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchFee(body: SearchCommissionFeesQuery | null | undefined): Promise<SearchCommissionFeesResult> {
@@ -401,7 +401,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     massChangeProductsStatus(status: string | null, body: SearchProductsQuery | null | undefined): Promise<void> {
@@ -452,7 +452,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changeProductStatus(body: ChangeRequestStatusCommand | null | undefined): Promise<void> {
@@ -500,7 +500,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchCategories(body: SearchCategoriesQuery | null | undefined): Promise<CategorySearchResult> {
@@ -544,7 +544,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateProduct(body: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
@@ -595,7 +595,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createSellerCategories(body: CreateSellerCategoriesCommand | null | undefined): Promise<void> {
@@ -643,7 +643,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     deleteSellerCategories(body: DeleteSellerCategoriesCommand | null | undefined): Promise<void> {
@@ -691,7 +691,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     exportSellerCategories(body: RunCategoriesExportCommand | null | undefined): Promise<void> {
@@ -731,7 +731,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchProducts(body: SearchProductsQuery | null | undefined): Promise<SearchProductsResult> {
@@ -775,7 +775,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchPropertyDictionaryItems(body: PropertyDictionaryItemSearchCriteria | null | undefined): Promise<PropertyDictionaryItemSearchResult> {
@@ -861,7 +861,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createNewProduct(body: CreateNewProductCommand | null | undefined): Promise<SellerProduct> {
@@ -905,7 +905,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateProductDetails(body: UpdateProductDetailsCommand | null | undefined): Promise<SellerProduct> {
@@ -949,7 +949,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteProducts(ids: string[] | null | undefined): Promise<void> {
@@ -987,7 +987,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createNewPublicationRequest(body: CreateNewPublicationRequestCommand | null | undefined): Promise<ProductPublicationRequest> {
@@ -1073,7 +1073,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOffers(body: SearchOffersQuery | null | undefined): Promise<SearchOffersResult> {
@@ -1201,7 +1201,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOfferProducts(body: SearchProductsForNewOfferQuery | null | undefined): Promise<SearchOfferProductsResult> {
@@ -1245,7 +1245,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createNewOffer(body: CreateNewOfferCommand | null | undefined): Promise<Offer> {
@@ -1289,7 +1289,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changeOfferState(body: ChangeOfferStateCommand | null | undefined): Promise<Offer> {
@@ -1333,7 +1333,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateOffer(body: UpdateOfferCommand | null | undefined): Promise<Offer> {
@@ -1377,7 +1377,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteOffers(ids: string[] | null | undefined): Promise<void> {
@@ -1415,7 +1415,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchFulfillmentCenters(body: SearchFulfillmentCentersQuery | null | undefined): Promise<SearchFulfillmentCentersResult> {
@@ -1501,7 +1501,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateFulfillmentCenter(body: UpdateFulfillmentCenterCommand | null | undefined): Promise<FulfillmentCenter> {
@@ -1545,7 +1545,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteFulfillmentCenter(ids: string[] | null | undefined): Promise<void> {
@@ -1595,7 +1595,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     runImport(body: RunImportCommand | null | undefined): Promise<ImportPushNotification> {
@@ -1639,7 +1639,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     cancelJob(body: ImportCancellationRequest | null | undefined): Promise<void> {
@@ -1687,7 +1687,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     preview(body: PreviewDataQuery | null | undefined): Promise<ImportDataPreview> {
@@ -1835,7 +1835,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createImportProfile(body: CreateProfileCommand | null | undefined): Promise<ImportProfile> {
@@ -1879,7 +1879,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateImportProfile(body: UpdateProfileCommand | null | undefined): Promise<ImportProfile> {
@@ -1923,7 +1923,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param id (optional) 
+     * @param id (optional)
      * @return Success
      */
     deleteProfile(id: string | null | undefined): Promise<void> {
@@ -1961,7 +1961,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchImportProfiles(body: SearchImportProfilesQuery | null | undefined): Promise<SearchImportProfilesResult> {
@@ -2005,7 +2005,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchImportProfilesHistory(body: SearchImportProfilesHistoryQuery | null | undefined): Promise<SearchImportProfilesHistoryResult> {
@@ -2096,7 +2096,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOrders(body: SearchOrdersQuery | null | undefined): Promise<CustomerOrderSearchResult> {
@@ -2140,7 +2140,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateOrderStatus(body: ChangeOrderStatusCommand | null | undefined): Promise<void> {
@@ -2180,7 +2180,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     fulfill(body: FulfillOrderCommand | null | undefined): Promise<void> {
@@ -2271,7 +2271,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchCustomerReviews(body: SearchCustomerReviewsQuery | null | undefined): Promise<SearchCustomerReviewsResult> {
@@ -2327,7 +2327,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param memberId (optional) 
+     * @param memberId (optional)
      * @return Success
      */
     sendInvitation(memberId: string | null | undefined): Promise<void> {
@@ -2365,7 +2365,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     sendUserInvitation(body: SendSellerUserInvitationCommand | null | undefined): Promise<void> {
@@ -2405,7 +2405,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateSeller(body: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
@@ -2503,7 +2503,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteSellers(ids: string[] | null | undefined): Promise<void> {
@@ -2591,7 +2591,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createSeller(body: CreateSellerCommand | null | undefined): Promise<void> {
@@ -2639,7 +2639,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateSeller(body: UpdateSellerCommand | null | undefined): Promise<void> {
@@ -2679,7 +2679,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchSellers(body: SearchSellersQuery | null | undefined): Promise<SearchSellersResult> {
@@ -2731,7 +2731,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createSellerUser(body: CreateSellerUserCommand | null | undefined): Promise<SellerUser> {
@@ -2775,7 +2775,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateUser(body: ValidateSellerUserQuery | null | undefined): Promise<ValidationFailure[]> {
@@ -2826,7 +2826,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateSellerUser(body: UpdateSellerUserCommand | null | undefined): Promise<SellerUser> {
@@ -2870,7 +2870,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteSellerUsers(ids: string[] | null | undefined): Promise<void> {
@@ -2908,7 +2908,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchSellerUsers(body: SearchSellerUsersQuery | null | undefined): Promise<SearchSellerUsersResult> {
@@ -2952,7 +2952,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     forgotPassword(body: ForgotPasswordCommand | null | undefined): Promise<void> {
@@ -3004,7 +3004,7 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     runSynchronization(body: SyncContext | null | undefined): Promise<SyncPushNotification> {
@@ -3056,7 +3056,7 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     cancelJob(body: SyncJobCancellationRequest | null | undefined): Promise<void> {
@@ -11562,7 +11562,7 @@ export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+    /** The type of payment interaction.The payment can be Capture or CheckReceived.
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -11654,7 +11654,7 @@ export interface IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
+    /** The type of payment interaction.The payment can be Capture or CheckReceived.
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -13263,7 +13263,7 @@ export class CustomerOrder implements ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account. 
+Therefore, the discount will not be taking tax into account.
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -13640,7 +13640,7 @@ export interface ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account. 
+Therefore, the discount will not be taking tax into account.
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;

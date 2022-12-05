@@ -5,30 +5,30 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <ReviewTable :expanded="expanded" @itemClick="onItemClick"></ReviewTable>
   </VcBlade>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import { VcBlade, IPage } from "@vc-shell/ui";
+import { computed, defineComponent, ref, shallowRef } from "vue";
+import { VcBlade, useI18n } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
-import { IBladeToolbar } from "../../../types";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 
 export default defineComponent({
-  url: "reviews",
+   url: "/reviews",
 });
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
-
 // Page
+
+import {IBladeEvent, IBladeToolbar} from "@vc-shell/framework";
+import {CustomerReview} from "../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded: boolean;
@@ -36,9 +36,15 @@ export interface Props {
   param?: string;
 }
 
-interface Emits {
-  (event: "page:close"): void;
-  (event: "page:open", page: IPage): void;
+type IBladeOptions = IBladeEvent & {
+    bladeOptions?: {
+      review?: CustomerReview
+    }
+}
+
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -74,10 +80,10 @@ const onItemClick = (
   onSelect: () => void,
   onDeselect: () => void
 ) => {
-  emit("page:open", {
-    component: ReviewDetails,
+  emit("open:blade", {
+    component: shallowRef(ReviewDetails),
     param: item.id,
-    componentOptions: {
+    bladeOptions: {
       review: item,
     },
     onOpen: onSelect,

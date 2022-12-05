@@ -36,15 +36,16 @@
 </template>
 
 <script lang="ts" setup>
-import { IPage, VcButton, VcCard } from "@vc-shell/ui";
+import { ExtendedComponent, VcButton, VcCard } from "@vc-shell/framework";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Rating, ReviewTable } from "../components";
 import { ReviewDetails, ReviewList } from "../pages";
+import { shallowRef } from "vue";
 
 // Component
 
 export interface Props {
-  openPage: (index: number, page: IPage) => void;
+  openPage: (page: ExtendedComponent, index: number) => void;
 }
 
 const props = defineProps<Props>();
@@ -52,9 +53,12 @@ const props = defineProps<Props>();
 // Card
 
 const openAllReviews = () => {
-  props.openPage(0, {
-    component: ReviewList,
-  });
+  props.openPage(
+    {
+      parentBlade: shallowRef(ReviewList),
+    },
+    0
+  );
 };
 
 const onItemClick = (
@@ -62,17 +66,23 @@ const onItemClick = (
   onSelect: () => void,
   onDeselect: () => void
 ) => {
-  props.openPage(0, {
-    component: ReviewList,
-  });
-  props.openPage(1, {
-    component: ReviewDetails,
-    param: item.id,
-    componentOptions: {
-      review: item,
+  props.openPage(
+    {
+      component: shallowRef(ReviewList),
     },
-    onOpen: onSelect,
-    onClose: onDeselect,
-  });
+    0
+  );
+  props.openPage(
+    {
+      component: shallowRef(ReviewDetails),
+      param: item.id,
+      bladeOptions: {
+        review: item,
+      },
+      onOpen: onSelect,
+      onClose: onDeselect,
+    },
+    1
+  );
 };
 </script>

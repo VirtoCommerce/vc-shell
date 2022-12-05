@@ -310,7 +310,6 @@ const offersColumns = ref<ITableColumns[]>([
     field: "trackInventory",
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.ALWAYS_IN_STOCK")),
     width: 80,
-    type: "number",
   },
   {
     id: "inStockQuantity",

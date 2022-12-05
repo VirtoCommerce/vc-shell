@@ -254,7 +254,6 @@ const menuItems = reactive<IMenuItems[]>([
     icon: "fas fa-home",
     isVisible: true,
     clickHandler(app) {
-        console.log(app)
       app.openDashboard();
     },
   },

@@ -22,11 +22,11 @@
             "CREATED_DATE": "Created",
             "STATUS": "Status",
             "SKU": "SKU#",
-            "SALE_PRICE": "Sale price",
-            "LIST_PRICE": "List price",
-            "MIN_QTY": "Min. Quantity",
+            "ALWAYS_IN_STOCK": "Always in stock",
             "QTY": "Initial Quantity",
-            "AVAIL_QTY": "Current Quantity"
+            "AVAIL_QTY": "Current Quantity",
+            "VALID_FROM": "Valid from",
+            "VALID_TO": "Valid to"
           },
           "EMPTY": {
             "TITLE": "There are no offers yet",

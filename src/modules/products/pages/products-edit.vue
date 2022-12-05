@@ -715,7 +715,6 @@ function setPropertyValue(
   value: IPropertyValue,
   dictionary?: PropertyDictionaryItem[]
 ) {
-    console.log(property, value, dictionary)
   if (
     typeof value === "object" &&
     Object.prototype.hasOwnProperty.call(value, "length")

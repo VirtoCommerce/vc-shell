@@ -85,13 +85,11 @@ import { OrdersEdit, OrdersList } from "../../modules/orders";
 export interface Props {
     isAccent: boolean,
     title: string,
-    items?: IMenuItems[]
 }
 
 const props = withDefaults(defineProps<Props>(), {
     isAccent: false,
     title: '',
-    items: () => []
 })
 
 const isDropdownVisible = ref(false);

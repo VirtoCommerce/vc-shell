@@ -18,7 +18,7 @@
         :sticky="sticky"
         :icon="icon"
         :title="title"
-        @onClick="onMenuItemClick($event)"
+        @onClick="onMenuItemClick"
       />
 
       <!-- Nested menu items -->

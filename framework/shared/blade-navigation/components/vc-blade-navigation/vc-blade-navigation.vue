@@ -71,8 +71,6 @@ const setBladesRef = (el: IBladeElement) => {
   if (el && Object.keys(el).length) {
     bladesRefs.value.push(el);
   }
-  console.log(props.blades);
-  console.log(el, bladesRefs.value);
 };
 
 const resolveParam = computed(() => {

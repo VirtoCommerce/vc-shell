@@ -1,5 +1,5 @@
 /* eslint-disable */
-import "@vc-shell/ui/dist/style.css";
+import "@vc-shell/framework/dist/style.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { app } from '@storybook/vue3';
 import { useBreakpoints } from "@vueuse/core";

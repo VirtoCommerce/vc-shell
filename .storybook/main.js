@@ -15,7 +15,7 @@ module.exports = {
           resolve: {
               preserveSymlinks: true,
               alias: {
-                  "@vc-shell/core": "@vc-shell/core/src/index.ts",
+                  "@vc-shell/framework": "@vc-shell/framework/index.ts",
               },
           },
 

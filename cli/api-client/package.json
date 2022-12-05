@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "1.0.37",
+  "version": "1.0.38",
   "bin": "./dist/index.js",
   "files": [
     "dist",
@@ -16,7 +16,7 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "nswag": "^13.16.1",
-    "vite": "^2.8.3"
+    "vite": "^3.2.4"
   },
   "publishConfig": {
     "access": "public",

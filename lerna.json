@@ -2,8 +2,7 @@
   "npmClient": "yarn",
   "packages": [
     "apps/*",
-    "framework/*",
-    "modules/*",
+    "framework",
     "cli/*"
   ],
   "useWorkspaces": true,

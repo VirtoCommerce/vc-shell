@@ -336,7 +336,6 @@ function onInput(e: Event) {
     if (props.currency) {
       const parsed = currencyConverter.numberValue.value;
       emit("update:modelValue", parsed);
-      console.log(parsed);
     } else {
       emit("update:modelValue", newValue);
     }

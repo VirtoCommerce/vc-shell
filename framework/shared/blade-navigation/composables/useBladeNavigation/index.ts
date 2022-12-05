@@ -76,14 +76,15 @@ export default (): IUseBladeNavigation => {
       await closeBlade(0);
 
       if (!isPrevented.value) {
+          parentBladeOptions.value = bladeOptions;
           if (navigationCb && typeof navigationCb === 'function') {
               try {
-                  await navigationCb()
-                  //await router.push(parent.url);
-                  parentBladeOptions.value = bladeOptions;
+                await navigationCb()
               } catch (e) {
                 throw 'Navigation failure'
               }
+          } else if (!navigationCb) {
+              await router.push(parent.url);
           }
       }
     }

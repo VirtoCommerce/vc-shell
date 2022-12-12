@@ -129,8 +129,8 @@ import {
   watch,
 } from "vue";
 import { GenericValidateFunction } from "vee-validate";
-import { VcIcon, VcLabel } from "@components";
-import { IValidationRules } from "@types";
+import { VcIcon, VcLabel } from "@/components";
+import { IValidationRules } from "@/core/types";
 import { createPopper, Instance } from "@popperjs/core";
 import {
   useCurrencyInput,
@@ -138,7 +138,7 @@ import {
   parse,
   CurrencyDisplay,
 } from "vue-currency-input";
-import { clickOutside as vClickOutside } from "@directives";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 export type ValueType = string | number | Date | null;
 
@@ -215,7 +215,7 @@ const calcValue = computed(() => {
 // Init currency composable if input type === currency (created hook)
 if (props.currency) {
   currencyConverter = useCurrencyInput({
-    currency: props.optionsValue,
+    currency: props.optionsValue || "USD",
     autoSign: false,
     currencyDisplay: CurrencyDisplay.hidden,
   });

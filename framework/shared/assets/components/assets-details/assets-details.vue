@@ -57,8 +57,8 @@
 
 <script lang="ts" setup>
 import { computed, reactive, unref } from "vue";
-import { useI18n } from "@composables";
-import { IParentCallArgs } from "@shared";
+import { useI18n } from "@/core/composables";
+import { IParentCallArgs } from "@/shared";
 import {
   VcBlade,
   VcContainer,
@@ -66,7 +66,7 @@ import {
   VcImage,
   VcInput,
   VcTextarea,
-} from "@components";
+} from "@/components";
 
 interface ILocalImage {
   url: string;

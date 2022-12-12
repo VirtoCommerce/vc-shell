@@ -1,8 +1,14 @@
 import { computed, ref, unref, watch, Ref } from "vue";
 import { isEqual } from "lodash-es";
-import {useRouter, useRoute, NavigationFailure} from "vue-router";
-import {usePermissions} from "@composables";
-import {ExtendedComponent, IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs} from "@shared";
+import { useRouter, useRoute, NavigationFailure } from "vue-router";
+import { usePermissions } from "@/core/composables";
+import {
+  ExtendedComponent,
+  IBladeContainer,
+  IBladeElement,
+  IBladeEvent,
+  IParentCallArgs,
+} from "@/shared";
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;
@@ -34,7 +40,7 @@ export default (): IUseBladeNavigation => {
   const router = useRouter();
   const route = useRoute();
   const { checkPermission } = usePermissions();
-  let isPrevented = ref(false)
+  const isPrevented = ref(false);
 
   watch(
     () => blades.value,
@@ -76,16 +82,17 @@ export default (): IUseBladeNavigation => {
       await closeBlade(0);
 
       if (!isPrevented.value) {
-          parentBladeOptions.value = bladeOptions;
-          if (navigationCb && typeof navigationCb === 'function') {
-              try {
-                await navigationCb()
-              } catch (e) {
-                throw 'Navigation failure'
-              }
-          } else if (!navigationCb) {
-              await router.push(parent.url);
+        parentBladeOptions.value = unref(bladeOptions);
+        parentBladeParam.value = unref(param);
+        if (navigationCb && typeof navigationCb === "function") {
+          try {
+            await navigationCb();
+          } catch (e) {
+            throw "Navigation failure";
           }
+        } else if (!navigationCb) {
+          await router.push(parent.url);
+        }
       }
     }
 

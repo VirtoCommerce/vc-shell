@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import {VAceEditor} from "vue3-ace-editor";
+import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
 import {ref, unref, watch} from "vue";

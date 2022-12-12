@@ -64,10 +64,10 @@
 
 <script lang="ts" setup>
 import { computed, PropType, ref } from "vue";
-import { VcLabel, VcFileUpload } from "@components";
+import { VcLabel, VcFileUpload } from "@/components";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { IImage } from "@types";
+import { IImage } from "@/core/types";
 
 const props = defineProps({
   images: {

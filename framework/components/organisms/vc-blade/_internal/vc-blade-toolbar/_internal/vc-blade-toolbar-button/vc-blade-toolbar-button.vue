@@ -49,9 +49,9 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { VcIcon } from "@components";
+import { VcIcon } from "@/components";
 import { createPopper, Instance } from "@popperjs/core";
-import { IBladeDropdownItem } from "@types";
+import { IBladeDropdownItem } from "@/core/types";
 
 const props = defineProps({
   disabled: {

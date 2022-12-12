@@ -1,10 +1,10 @@
 import { computed, Ref, ref } from "vue";
-import { AppDescriptor, AppsClient } from "@api";
+import { AppDescriptor, AppsClient } from "@/core/api";
 import {
   useLogger,
   useUser,
   usePermissions,
-} from "@composables";
+} from "@/core/composables";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;

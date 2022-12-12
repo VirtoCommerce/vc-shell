@@ -46,15 +46,17 @@
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
-              @click="(navigationCb) => {
-                  $emit('item:click', {item, navigationCb})
-                  isMobileVisible = false
+              @click="
+                (navigationCb) => {
+                  $emit('item:click', { item, navigationCb });
+                  isMobileVisible = false;
                 }
               "
-              @child:click="({item: blade, navigationCb}) => {
-                $emit('item:click', {item: blade, navigationCb})
-                isMobileVisible = false
-              }
+              @child:click="
+                ({ item: blade, navigationCb }) => {
+                  $emit('item:click', { item: blade, navigationCb });
+                  isMobileVisible = false;
+                }
               "
             />
           </template>
@@ -67,25 +69,22 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
-import { VcContainer } from "@components";
-import { IMenuItems } from "@types";
-import {IMenuClickEvent} from "@shared";
+import { VcContainer } from "@/components";
+import { IMenuItems } from "@/core/types";
+import { IMenuClickEvent } from "@/shared";
 
 export interface Props {
-    items?: IMenuItems[];
-    mobileMenuItems?: IMenuItems[]
-
+  items?: IMenuItems[];
+  mobileMenuItems?: IMenuItems[];
 }
 
 export interface Emits {
-    (event: 'item:click', {
-      item, navigationCb
-    }:IMenuClickEvent): void
+  (event: "item:click", { item, navigationCb }: IMenuClickEvent): void;
 }
 
 withDefaults(defineProps<Props>(), {
-    items: () => [],
-    mobileMenuItems: () => []
+  items: () => [],
+  mobileMenuItems: () => [],
 });
 
 defineEmits<Emits>();

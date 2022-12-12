@@ -302,13 +302,13 @@ import {
   VcContainer,
   VcInput,
   VcPagination,
-} from "@components";
+} from "@/components";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
-import { IActionBuilderResult } from "@types";
+import { IActionBuilderResult } from "@/core/types";
 
 interface ITableItemRef {
   element: HTMLDivElement;

@@ -95,10 +95,10 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, getCurrentInstance, watch } from "vue";
-import { VcIcon, VcLabel, VcContainer } from "@components";
+import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
+import { VcIcon, VcLabel, VcContainer } from "@/components";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { clickOutside as vClickOutside } from "@directives";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 const props = defineProps({
   modelValue: {
@@ -191,7 +191,6 @@ const popper = ref<Instance>();
 const dropdownToggleRef = ref();
 const dropdownRef = ref();
 const inputFieldWrapRef = ref();
-const loading = ref(false);
 const load = ref();
 const observer = new IntersectionObserver(infiniteScroll);
 

@@ -28,7 +28,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ExtendedComponent } from "@shared";
+import { ExtendedComponent } from "@/shared";
 
 export interface Props {
   isActive?: boolean;
@@ -39,7 +39,7 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'onClick'): void
+  (event: "onClick"): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -50,7 +50,7 @@ withDefaults(defineProps<Props>(), {
   title: "",
 });
 
-defineEmits<Emits>()
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

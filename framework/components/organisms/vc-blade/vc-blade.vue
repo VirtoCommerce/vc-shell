@@ -38,7 +38,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { IBladeToolbar } from "@types";
+import { IBladeToolbar } from "@/core/types";
 
 defineProps({
   icon: {

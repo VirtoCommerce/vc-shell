@@ -62,7 +62,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { clickOutside as vClickOutside } from "@directives";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 defineProps({
   image: {

@@ -69,11 +69,16 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { IBladeToolbar, IMenuItems } from "@types";
-import {IBladeElement, ExtendedComponent, IMenuClickEvent, IOpenBlade} from "@shared";
+import { IBladeToolbar, IMenuItems } from "@/core/types";
+import {
+  IBladeElement,
+  ExtendedComponent,
+  IMenuClickEvent,
+  IOpenBlade,
+} from "@/shared";
 
 export interface Props {
   pages: ExtendedComponent[];
@@ -89,12 +94,12 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'onOpen', args: IOpenBlade): void
-    (event: 'onClose', index: number): void
-    (event: 'backlink:click', index: number):void
+  (event: "onOpen", args: IOpenBlade): void;
+  (event: "onClose", index: number): void;
+  (event: "backlink:click", index: number): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   pages: () => [],
   menuItems: () => [],
   mobileMenuItems: () => [],
@@ -115,7 +120,7 @@ const instance = getCurrentInstance();
 
 const router = useRouter();
 
-const onMenuItemClick = function ({item, navigationCb}: IMenuClickEvent) {
+const onMenuItemClick = function ({ item, navigationCb }: IMenuClickEvent) {
   console.debug(`vc-app#onMenuItemClick() called.`);
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);

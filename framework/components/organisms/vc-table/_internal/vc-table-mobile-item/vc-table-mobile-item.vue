@@ -120,8 +120,8 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { IActionBuilderResult } from "@types";
-import { VcIcon } from "@components";
+import { IActionBuilderResult } from "@/core/types";
+import { VcIcon } from "@/components";
 
 export interface Props {
   item: {

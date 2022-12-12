@@ -95,8 +95,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
-import { useField } from "vee-validate";
+import { nextTick, ref, computed, getCurrentInstance, watch } from "vue";
 import { VcIcon, VcLabel, VcContainer } from "@components";
 import { createPopper, Instance, State } from "@popperjs/core";
 import { clickOutside as vClickOutside } from "@directives";
@@ -176,6 +175,11 @@ const props = defineProps({
     type: Function,
     default: undefined,
   },
+
+  errorMessage: {
+    type: String,
+    default: undefined
+  }
 });
 
 const emit = defineEmits(["update:modelValue", "change", "close", "search"]);
@@ -202,20 +206,11 @@ const hasNextPage = computed(() => {
   return props.options.length < props.optionsTotal;
 });
 
-// Prepare field-level validation
-const { errorMessage, handleChange } = useField(
-  `${props.name || instance?.uid}`,
-  props.isRequired ? "required" : "",
-  {
-    initialValue: props.modelValue,
-  }
-);
-
 watch(
-  () => props.modelValue,
-  (value) => {
-    handleChange(value);
-  }
+    () => props.modelValue,
+    (value) => {
+        emit("update:modelValue", value);
+    }
 );
 
 function closeDropdown() {

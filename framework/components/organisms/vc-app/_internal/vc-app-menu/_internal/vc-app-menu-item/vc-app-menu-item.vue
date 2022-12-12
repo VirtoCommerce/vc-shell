@@ -19,6 +19,7 @@
         :icon="icon"
         :title="title"
         @onClick="onMenuItemClick"
+        :isActive="isHomePage"
       />
 
       <!-- Nested menu items -->
@@ -46,8 +47,9 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { ExtendedComponent, IMenuItems } from "@types";
+import {computed, onMounted, ref} from "vue";
+import { IMenuItems } from "@types";
+import {ExtendedComponent} from '@shared';
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import {NavigationFailure, useRoute} from "vue-router";
 
@@ -85,6 +87,8 @@ const route = useRoute();
 const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
+
+const isHomePage = computed(() => route.path === '/')
 
 onMounted(() => {
   if (

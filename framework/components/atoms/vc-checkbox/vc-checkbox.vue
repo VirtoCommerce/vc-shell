@@ -28,8 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useField } from "vee-validate";
-import { watch, getCurrentInstance } from "vue";
+import { watch } from "vue";
 
 const props = defineProps({
   modelValue: {
@@ -51,23 +50,18 @@ const props = defineProps({
     type: String,
     default: "Field",
   },
+
+  errorMessage: {
+    type: String,
+    default: undefined
+  }
 });
 const emit = defineEmits(["update:modelValue"]);
-const instance = getCurrentInstance();
-
-// Prepare field-level validation
-const { errorMessage, handleChange } = useField(
-  `${instance?.uid || props.name}`,
-  props.required ? "required" : "",
-  {
-    initialValue: props.modelValue,
-  }
-);
 
 watch(
   () => props.modelValue,
   (value) => {
-    handleChange(value);
+    emit("update:modelValue", value);
   }
 );
 

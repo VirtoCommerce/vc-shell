@@ -24,7 +24,7 @@
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="localImage.name"
                 :clearable="true"
-                :required="true"
+                is-required
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
@@ -34,9 +34,9 @@
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
                 v-model="localImage.altText"
                 :clearable="true"
-                :required="true"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
+                is-required
               ></VcInput>
               <VcTextarea
                 class="mb-4"

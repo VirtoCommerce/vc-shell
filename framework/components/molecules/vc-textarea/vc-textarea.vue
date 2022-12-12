@@ -76,48 +76,24 @@ const props = defineProps({
     default: "Field",
   },
 
-  rules: {
-    type: [String, Object],
-  },
-
   maxchars: {
     type: String,
     default: "1024",
   },
+
+  errorMessage: {
+    type: String,
+    default: undefined
+  }
 });
 
 const emit = defineEmits(["update:modelValue"]);
 
-const instance = getCurrentInstance();
-
-// Prepare validation rules using required and rules props combination
-let internalRules = unref(props.rules) || "";
-if (props.required) {
-  if (typeof internalRules === "string") {
-    (internalRules as string) = `required|${internalRules}`.replace(
-      /(\|)+$/,
-      ""
-    );
-  } else {
-    (internalRules as IValidationRules).required = true;
-  }
-}
-
-// Prepare field-level validation
-const { errorMessage, handleChange } = useField(
-  `${props.name || instance?.uid}`,
-  internalRules,
-  {
-    initialValue: props.modelValue,
-    label: props.label,
-  }
-);
-
 watch(
-  () => props.modelValue,
-  (value) => {
-    handleChange(value);
-  }
+    () => props.modelValue,
+    (value) => {
+        emit("update:modelValue", value);
+    }
 );
 
 // Handle input event to propertly validate value and emit changes

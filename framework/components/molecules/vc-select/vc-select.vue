@@ -96,10 +96,9 @@
 
 <script lang="ts" setup>
 import { nextTick, ref, computed, watch, getCurrentInstance } from "vue";
-import { useField } from "vee-validate";
-import { VcIcon, VcLabel, VcContainer } from "@components";
+import { VcIcon, VcLabel, VcContainer } from "@/components";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { clickOutside as vClickOutside } from "@directives";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 const props = defineProps({
   modelValue: {
@@ -176,6 +175,11 @@ const props = defineProps({
     type: Function,
     default: undefined,
   },
+
+  errorMessage: {
+    type: String,
+    default: undefined
+  }
 });
 
 const emit = defineEmits(["update:modelValue", "change", "close", "search"]);
@@ -187,7 +191,6 @@ const popper = ref<Instance>();
 const dropdownToggleRef = ref();
 const dropdownRef = ref();
 const inputFieldWrapRef = ref();
-const loading = ref(false);
 const load = ref();
 const observer = new IntersectionObserver(infiniteScroll);
 
@@ -202,20 +205,11 @@ const hasNextPage = computed(() => {
   return props.options.length < props.optionsTotal;
 });
 
-// Prepare field-level validation
-const { errorMessage, handleChange } = useField(
-  `${instance?.uid || props.name}`,
-  props.isRequired ? "required" : "",
-  {
-    initialValue: props.modelValue,
-  }
-);
-
 watch(
-  () => props.modelValue,
-  (value) => {
-    handleChange(value);
-  }
+    () => props.modelValue,
+    (value) => {
+        emit("update:modelValue", value);
+    }
 );
 
 function closeDropdown() {

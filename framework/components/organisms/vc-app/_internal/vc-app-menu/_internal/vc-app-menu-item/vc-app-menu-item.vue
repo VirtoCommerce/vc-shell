@@ -19,12 +19,17 @@
         :icon="icon"
         :title="title"
         @onClick="onMenuItemClick"
+        :isActive="isHomePage"
       />
 
       <!-- Nested menu items -->
       <div class="vc-app-menu-item__child" v-if="isOpened">
         <template v-for="(nested, i) in children" :key="i">
-          <router-link :to="nested.component.url" custom v-slot="{ isActive, navigate }">
+          <router-link
+            :to="nested.component.url"
+            custom
+            v-slot="{ isActive, navigate }"
+          >
             <div
               :class="[
                 {
@@ -34,7 +39,9 @@
               ]"
               v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
-              @click="$emit('child:click', {item: nested, navigationCb: navigate})"
+              @click="
+                $emit('child:click', { item: nested, navigationCb: navigate })
+              "
             >
               {{ nested.title }}
             </div>
@@ -46,8 +53,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
-import { ExtendedComponent, IMenuItems } from "@types";
+import { onMounted, ref, computed } from "vue";
+import { ExtendedComponent, IMenuItems } from "@/core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import {NavigationFailure, useRoute} from "vue-router";
 
@@ -64,8 +71,17 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'click', navigationCb: () => Promise<void | NavigationFailure>): void
-    (event: 'child:click', {item, navigationCb}:{item: IMenuItems, navigationCb: () => Promise<void | NavigationFailure>}): void
+  (event: "click", navigationCb: () => Promise<void | NavigationFailure>): void;
+  (
+    event: "child:click",
+    {
+      item,
+      navigationCb,
+    }: {
+      item: IMenuItems;
+      navigationCb: () => Promise<void | NavigationFailure>;
+    }
+  ): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -86,6 +102,8 @@ const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
 
+const isHomePage = computed(() => route.path === '/')
+
 onMounted(() => {
   if (
     props.children &&
@@ -96,7 +114,9 @@ onMounted(() => {
   }
 });
 
-function onMenuItemClick(navigationCb?: () => Promise<void | NavigationFailure> ) {
+function onMenuItemClick(
+  navigationCb?: () => Promise<void | NavigationFailure>
+) {
   if (!props.children?.length) {
     emit("click", navigationCb);
   } else {

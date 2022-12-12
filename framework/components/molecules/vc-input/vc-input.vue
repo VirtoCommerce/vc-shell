@@ -11,7 +11,7 @@
     ]"
   >
     <!-- Input label -->
-    <VcLabel v-if="label" class="mb-2" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
     </VcLabel>
@@ -25,6 +25,7 @@
         :value="calcValue"
         :disabled="disabled"
         @input="onInput"
+        @blur="$emit('blur')"
         ref="inputRef"
         :max="max"
         :name="name"
@@ -127,67 +128,69 @@ import {
   unref,
   watch,
 } from "vue";
-import { GenericValidateFunction, useField } from "vee-validate";
-import { VcIcon, VcLabel } from "@components";
-import { IValidationRules } from "@types";
+import { GenericValidateFunction } from "vee-validate";
+import { VcIcon, VcLabel } from "@/components";
+import { IValidationRules } from "@/core/types";
 import { createPopper, Instance } from "@popperjs/core";
 import {
   useCurrencyInput,
   UseCurrencyInput,
+  parse,
   CurrencyDisplay,
 } from "vue-currency-input";
-import { clickOutside as vClickOutside } from "@directives";
-import { required as requiredRule } from "@plugins";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 export type ValueType = string | number | Date | null;
 
 export interface Props {
-  placeholder?: string;
-  modelValue?: ValueType;
-  clearable?: boolean;
-  required?: boolean;
-  disabled?: boolean;
-  type?: string;
-  label?: string;
-  tooltip?: string;
-  name?: string;
-  rules?:
-    | string
-    | IValidationRules
-    | GenericValidateFunction<ValueType>
-    | GenericValidateFunction<ValueType>[];
-  currency?: boolean;
-  options?: Record<string, string>[];
-  optionsTitle?: string;
-  optionsValue?: string;
-  keyProperty?: string;
-  displayProperty?: string;
-  fieldDescription?: string;
-  maxchars?: string;
-  max?: string | number;
+    placeholder?: string;
+    modelValue?: ValueType;
+    clearable?: boolean;
+    isRequired?: boolean;
+    disabled?: boolean;
+    type?: string;
+    label?: string;
+    tooltip?: string;
+    name?: string;
+    rules?:
+        | string
+        | IValidationRules
+        | GenericValidateFunction<ValueType>
+        | GenericValidateFunction<ValueType>[];
+    currency?: boolean;
+    options?: Record<string, string>[];
+    optionsTitle?: string;
+    optionsValue?: string;
+    keyProperty?: string;
+    displayProperty?: string;
+    fieldDescription?: string;
+    maxchars?: string;
+    max?: string | number;
+    errorMessage?: string;
 }
 
 export interface Emits {
-  (event: "update:modelValue", value: ValueType): void;
-  (event: "update:optionsValue", value: string): void;
+    (event: "update:modelValue", value: ValueType): void;
+    (event: "update:optionsValue", value: string): void;
+    (event: 'blur'): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  placeholder: "",
-  modelValue: null,
-  clearable: false,
-  required: false,
-  disabled: false,
-  type: "text",
-  name: "Field",
-  currency: false,
-  options: () => [],
-  optionsTitle: "Select",
-  optionsValue: "",
-  keyProperty: "id",
-  displayProperty: "title",
-  fieldDescription: "",
-  maxchars: "1024",
+    placeholder: "",
+    modelValue: null,
+    clearable: false,
+    isRequired: false,
+    disabled: false,
+    type: "text",
+    name: "Field",
+    currency: false,
+    options: () => [],
+    optionsTitle: "Select",
+    optionsValue: "",
+    keyProperty: "id",
+    displayProperty: "title",
+    fieldDescription: "",
+    maxchars: "1024",
 });
 
 const emit = defineEmits<Emits>();
@@ -202,59 +205,26 @@ const popper = ref<Instance>();
 const search = ref("");
 const searchInput = ref();
 const calcValue = computed(() => {
-  if (props.currency) {
-    return currencyConverter?.formattedValue.value;
-  } else {
-    return value.value;
-  }
+    if (props.currency) {
+        return currencyConverter?.formattedValue.value;
+    } else {
+        return props.modelValue;
+    }
 });
-
-// Prepare validation rules using required and rules props combination
-let internalRules = unref(props.rules);
-if (props.required) {
-  switch (typeof internalRules) {
-    case "undefined":
-      internalRules = "required";
-      break;
-    case "string":
-      internalRules = `required|${internalRules as string}`;
-      break;
-    case "function":
-      internalRules = [requiredRule, internalRules];
-      break;
-    case "object":
-      if (Array.isArray(internalRules)) {
-        internalRules.unshift(requiredRule);
-      } else {
-        (internalRules as IValidationRules).required = true;
-      }
-      break;
-  }
-}
-
-let initialValue = unref(props.modelValue);
-
-// Prepare field-level validation
-const { errorMessage, handleChange, value } = useField<ValueType>(
-  `${props.name === "Field" ? instance?.uid : props.name}`,
-  internalRules,
-  {
-    initialValue,
-  }
-);
 
 // Init currency composable if input type === currency (created hook)
 if (props.currency) {
   currencyConverter = useCurrencyInput({
     currency: props.optionsValue || "USD",
+    autoSign: false,
     currencyDisplay: CurrencyDisplay.hidden,
   });
 }
 
 onMounted(() => {
-  if (!value.value && props.currency) {
-    currencyConverter && currencyConverter.setValue(null);
-  }
+    if (!props.modelValue && props.currency) {
+        currencyConverter && currencyConverter.setValue(null);
+    }
 });
 
 // Change currency settings
@@ -264,69 +234,70 @@ watch(
     currencyConverter &&
       currencyConverter.setOptions({
         currency: newVal,
+        autoSign: false,
         currencyDisplay: CurrencyDisplay.hidden,
       });
   }
 );
 
 const searchFilter = computed(() => {
-  return props.options.filter((opt) =>
-    opt[props.displayProperty]
-      .toLowerCase()
-      .includes(search.value.toLowerCase())
-  );
+    return props.options.filter((opt) =>
+        opt[props.displayProperty]
+            .toLowerCase()
+            .includes(search.value.toLowerCase())
+    );
 });
 
 const inputRef = currencyConverter && currencyConverter.inputRef;
 
 watch(
-  () => props.modelValue,
-  (value) => {
-    let initialValue = unref(value);
-    if (
-      initialValue &&
-      initialValue.toString().length >= parseInt(props.maxchars)
-    ) {
-      initialValue.toString().slice(0, parseInt(props.maxchars));
+    () => props.modelValue,
+    (value) => {
+        let initialValue = unref(value);
+        if (
+            initialValue &&
+            initialValue.toString().length >= parseInt(props.maxchars)
+        ) {
+            initialValue.toString().slice(0, parseInt(props.maxchars));
 
-      return;
+            return;
+        }
+
+        emit("update:modelValue", initialValue);
     }
-
-    handleChange(initialValue);
-  }
 );
 
 function showDrop() {
-  if (!dropActive.value && !props.disabled) {
-    dropActive.value = true;
-    nextTick(() => {
-      searchInput.value.focus();
-      popper.value = createPopper(toggleDropRef.value, dropRef.value, {
-        placement: "bottom-end",
-        modifiers: [
-          {
-            name: "offset",
-            options: {
-              offset: [13, 15],
-            },
-          },
-        ],
-      });
-    });
-  } else {
-    closeDrop();
-  }
+    if (!dropActive.value && !props.disabled) {
+        dropActive.value = true;
+        nextTick(() => {
+            searchInput.value.focus();
+            popper.value = createPopper(toggleDropRef.value, dropRef.value, {
+                placement: "bottom-end",
+                modifiers: [
+                    {
+                        name: "offset",
+                        options: {
+                            offset: [13, 15],
+                        },
+                    },
+                ],
+            });
+        });
+    } else {
+        closeDrop();
+    }
 }
 
 function closeDrop() {
-  dropActive.value = false;
-  search.value = "";
-  popper.value?.destroy();
+    dropActive.value = false;
+    search.value = "";
+    popper.value?.destroy();
 }
 
 function onItemSelect(item: { [x: string]: string }) {
-  emit("update:optionsValue", item[props.keyProperty]);
-  closeDrop();
+    emit("update:optionsValue", item[props.keyProperty]);
+    closeDrop();
 }
 
 // Handle input event to properly validate value and emit changes
@@ -334,7 +305,7 @@ function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
   if (newValue) {
     if (props.currency) {
-      const parsed = currencyConverter.numberValue.value;
+      const parsed = parse(newValue, { currency: props.optionsValue });
       emit("update:modelValue", parsed);
     } else {
       emit("update:modelValue", newValue);
@@ -346,10 +317,10 @@ function onInput(e: Event) {
 
 // Handle input event to propertly reset value and emit changes
 function onReset() {
-  if (props.currency) {
-    currencyConverter && currencyConverter.setValue(null);
-  }
-  emit("update:modelValue", null);
+    if (props.currency) {
+        currencyConverter && currencyConverter.setValue(null);
+    }
+    emit("update:modelValue", null);
 }
 </script>
 

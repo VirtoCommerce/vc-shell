@@ -6,6 +6,7 @@
       v-show="$isMobile.value ? !blades.length : blades.length <= 1"
       @open:blade="$emit('onOpen', { blade: $event, id: 0 })"
       :options="parentBladeOptions"
+      :expanded="blades.length === 0"
       :param="resolveParam"
       :key="route"
       ref="parentRef"
@@ -37,7 +38,7 @@ import {
   IBladeElement,
   IBladeEvent,
   IParentCallArgs,
-} from "@shared";
+} from "@/shared";
 
 export interface Props {
   blades: IBladeContainer[];
@@ -51,12 +52,12 @@ export interface Emits {
   (event: "onParentCall", args: { id: number; args: IParentCallArgs }): void;
 }
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 
 const props = withDefaults(defineProps<Props>(), {
   blades: () => [],
   parentBladeOptions: () => ({}),
-  parentBladeParam: "",
+  parentBladeParam: undefined,
 });
 
 const route = useRoute();

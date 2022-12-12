@@ -17,31 +17,26 @@
     "useDefineForClassFields": true,
     "outDir": "dist",
     "strict": false,
+    "composite": true,
     "lib": [
       "esnext",
       "dom",
       "dom.iterable",
       "scripthost"
     ],
+    "types": ["vite/client"],
     "paths": {
-      "@api": ["./core/api"],
-      "@components": ["./components"],
-      "@composables":  ["./core/composables"],
-      "@directives": ["./core/directives"],
-      "@plugins": ["./core/plugins"],
-      "@types": ["./core/types"],
-      "@utilities":  ["./core/utilities"],
-      "@shared":  ["./shared"]
+      "@/*": ["*"],
     }
   },
   "include": [
     "*.ts",
     "core/**/*.ts",
+    "core/api/*.ts",
     "components/**/*.vue",
     "components/**/*.ts",
     "shared/**/*.vue",
     "shared/**/*.ts",
-    "core/api"
   ],
   "exclude": [
     "node_modules",

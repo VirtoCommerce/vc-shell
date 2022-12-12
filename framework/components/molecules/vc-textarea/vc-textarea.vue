@@ -7,7 +7,7 @@
     }"
   >
     <!-- Textarea label -->
-    <VcLabel v-if="label" class="mb-2" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -35,10 +35,8 @@
 </template>
 
 <script lang="ts" setup>
-import { unref, watch, getCurrentInstance } from "vue";
-import { useField } from "vee-validate";
-import { VcLabel } from "@components";
-import { IValidationRules } from "@types";
+import { watch } from "vue";
+import { VcLabel } from "@/components";
 
 const props = defineProps({
   placeholder: {
@@ -51,7 +49,7 @@ const props = defineProps({
     default: undefined,
   },
 
-  required: {
+  isRequired: {
     type: Boolean,
     default: false,
   },
@@ -76,47 +74,23 @@ const props = defineProps({
     default: "Field",
   },
 
-  rules: {
-    type: [String, Object],
-  },
-
   maxchars: {
     type: String,
     default: "1024",
+  },
+
+  errorMessage: {
+    type: String,
+    default: undefined,
   },
 });
 
 const emit = defineEmits(["update:modelValue"]);
 
-const instance = getCurrentInstance();
-
-// Prepare validation rules using required and rules props combination
-let internalRules = unref(props.rules) || "";
-if (props.required) {
-  if (typeof internalRules === "string") {
-    (internalRules as string) = `required|${internalRules}`.replace(
-      /(\|)+$/,
-      ""
-    );
-  } else {
-    (internalRules as IValidationRules).required = true;
-  }
-}
-
-// Prepare field-level validation
-const { errorMessage, handleChange } = useField(
-  `${instance?.uid || props.name}`,
-  internalRules,
-  {
-    initialValue: props.modelValue,
-    label: props.label,
-  }
-);
-
 watch(
   () => props.modelValue,
   (value) => {
-    handleChange(value);
+    emit("update:modelValue", value);
   }
 );
 

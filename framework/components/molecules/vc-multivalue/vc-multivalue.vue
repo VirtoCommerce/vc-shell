@@ -6,7 +6,7 @@
       {
         'vc-multivalue_opened': isOpened,
         'vc-multivalue_error': errorMessage,
-        'vc-multivalue_disabled': disabled,
+        'vc-multivalue_disabled': disabled
       },
     ]"
   >
@@ -102,10 +102,10 @@
 import { unref, getCurrentInstance, nextTick, ref, computed } from "vue";
 
 import { useField } from "vee-validate";
-import { VcLabel, VcIcon } from "@components";
-import { IValidationRules } from "@types";
+import { VcLabel, VcIcon } from "@/components";
+import { IValidationRules } from "@/core/types";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { clickOutside as vClickOutside } from "@directives";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 const props = defineProps({
   placeholder: {
@@ -148,10 +148,6 @@ const props = defineProps({
     default: "Field",
   },
 
-  rules: {
-    type: [String, Object],
-  },
-
   options: {
     type: Array,
     default: () => [],
@@ -171,6 +167,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+
+  errorMessage: {
+    type: String,
+    default: undefined
+  }
 });
 
 const emit = defineEmits(["update:modelValue", "search", "close"]);
@@ -182,25 +183,6 @@ const dropdownRef = ref();
 const inputFieldWrapRef = ref();
 const isOpened = ref(false);
 const search = ref();
-
-// Prepare validation rules using required and rules props combination
-let internalRules = unref(props.rules) || "";
-if (props.required) {
-  if (typeof internalRules === "string") {
-    (internalRules as string) = `required|${internalRules}`.replace(
-      /(\|)+$/,
-      ""
-    );
-  } else {
-    (internalRules as IValidationRules).required = true;
-  }
-}
-
-// Prepare field-level validation
-const { errorMessage, handleChange, value } = useField(
-  `${instance?.uid || props.name}`,
-  internalRules
-);
 
 const slicedDictionary = computed(() => {
   return props.options?.filter((x) => {
@@ -215,7 +197,7 @@ const slicedDictionary = computed(() => {
 function onInput(e: InputEvent) {
   const newValue = (e.target as HTMLInputElement).value;
   emit("update:modelValue", [...props.modelValue, { value: newValue }]);
-  handleChange("");
+  // handleChange("");
 }
 
 function onItemSelect(item: { [x: string]: string }) {

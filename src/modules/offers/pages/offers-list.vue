@@ -121,18 +121,20 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-    IBladeEvent, IBladeToolbar,
-    IParentCallArgs,
-    useFunctions,
-    useI18n,
-    useLogger,
-    IActionBuilderResult,
-    ITableColumns,
+  IBladeEvent,
+  IBladeToolbar,
+  IParentCallArgs,
+  useFunctions,
+  useI18n,
+  useLogger,
+  IActionBuilderResult,
+  ITableColumns,
 } from "@vc-shell/framework";
 import moment from "moment";
-import {IOffer, SellerProduct} from "../../../api_client/marketplacevendor";
+import { IOffer, SellerProduct } from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 export interface Props {
@@ -140,15 +142,15 @@ export interface Props {
   closable?: boolean;
   param?: string;
   options?: {
-      sellerProduct?: SellerProduct
+    sellerProduct?: SellerProduct;
   };
 }
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions?: {
-        sellerProduct?: SellerProduct
-    }
-}
+  bladeOptions?: {
+    sellerProduct?: SellerProduct;
+  };
+};
 
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;

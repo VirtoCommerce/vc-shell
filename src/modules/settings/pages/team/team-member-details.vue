@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -33,73 +33,77 @@
       <VcForm>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')
-              "
-              :required="true"
-              name="name"
-              :disabled="isOwnerReadonly"
-              v-model="userDetails.firstName"
-            >
-            </VcInput>
+              <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.firstName" name="name" rules="required">
+                  <VcInput
+                    v-bind="field"
+                    class="p-3"
+                    :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
+                    :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')"
+                    :disabled="isOwnerReadonly"
+                    v-model="userDetails.firstName"
+                    is-required
+                    :error-message="errorMessage"
+                    @update:modelValue="handleChange"
+                  />
+              </Field>
           </VcCol>
         </VcRow>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')
-              "
-              :required="true"
-              name="lastName"
-              :disabled="isOwnerReadonly"
-              v-model="userDetails.lastName"
-            >
-            </VcInput>
+              <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.lastName" name="lastName" rules="required">
+                  <VcInput
+                    v-bind="field"
+                    class="p-3"
+                    :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
+                    :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')"
+                    :disabled="isOwnerReadonly"
+                    v-model="userDetails.lastName"
+                    is-required
+                    :error-message="errorMessage"
+                    @update:modelValue="handleChange"
+                  />
+              </Field>
           </VcCol>
         </VcRow>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')
-              "
-              :required="true"
-              name="email"
-              rules="email"
-              :disabled="!!props.param"
-              v-model="userDetails.email"
-            >
-            </VcInput>
+              <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.email" name="email" rules="required|email">
+                  <VcInput
+                    v-bind="field"
+                    class="p-3"
+                    :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
+                    :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
+                    :disabled="!!props.param"
+                    v-model="userDetails.email"
+                    is-required
+                    :error-message="errorMessage"
+                    @update:modelValue="handleChange"
+                  />
+              </Field>
+
           </VcCol>
         </VcRow>
 
         <VcRow>
           <VcCol>
-            <VcSelect
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')
-              "
-              :isRequired="true"
-              name="role"
-              :options="roles"
-              v-model="userDetails.role"
-              :initialItem="userDetails.role || role"
-              keyProperty="id"
-              :clearable="false"
-              displayProperty="name"
-              :isDisabled="isOwnerReadonly"
-            >
-            </VcSelect>
+              <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.role" name="role" rules="required">
+                  <VcSelect
+                          v-bind="field"
+                          class="p-3"
+                          :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
+                          :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')"
+                          :options="roles"
+                          v-model="userDetails.role"
+                          :initialItem="userDetails.role || role"
+                          keyProperty="id"
+                          :clearable="false"
+                          displayProperty="name"
+                          :isDisabled="isOwnerReadonly"
+                          is-required
+                          :error-message="errorMessage"
+                          @update:modelValue="handleChange"
+                  />
+              </Field>
           </VcCol>
         </VcRow>
         <VcRow v-if="userDetails.id">
@@ -141,11 +145,11 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import {useI18n, useUser, useAutosave, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
+import {useI18n, useUser, useAutosave, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field, useForm } from "vee-validate";
 import {SellerUser, SellerUserDetails} from "../../../../api_client/marketplacevendor";
 
 export interface Props {

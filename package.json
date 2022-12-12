@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.41",
+  "version": "1.0.42",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -19,14 +19,14 @@
     "@types/lodash-es": "^4.17.6",
     "@typescript-eslint/eslint-plugin": "^5.10.1",
     "@typescript-eslint/parser": "^5.10.1",
-    "@vc-shell/api-client-generator": "^1.0.38",
+    "@vc-shell/api-client-generator": "^1.0.39",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vue/eslint-config-prettier": "^7.0.0",
     "@vue/eslint-config-typescript": "^10.0.0",
     "autoprefixer": "^10.4.4",
     "conventional-changelog-cli": "^2.1.1",
     "cross-env": "^7.0.3",
-    "eslint": "^8.7.0",
+    "eslint": "~8.22.0",
     "eslint-import-resolver-typescript": "^2.5.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-prettier": "^4.0.0",
@@ -50,13 +50,14 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
     "@microsoft/signalr": "^5.0.7",
-    "@vc-shell/config-generator": "^1.0.38",
-    "@vc-shell/framework": "^1.0.38",
+    "@vc-shell/config-generator": "^1.0.39",
+    "@vc-shell/framework": "^1.0.39",
     "moment": "^2.29.1",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.7.3",
     "vue": "^3.0.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "yup": "^0.32.11"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"

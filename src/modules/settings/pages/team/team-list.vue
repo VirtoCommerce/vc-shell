@@ -113,9 +113,7 @@ import {
   onMounted,
   shallowRef,
 } from "vue";
-import {
-  UserPermissions,
-} from "../../../../types";
+import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
   url: "/team",
@@ -124,7 +122,12 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, ITableColumns, useI18n} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  ITableColumns,
+  useI18n,
+} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { SellerUser } from "../../../../api_client/marketplacevendor";
@@ -137,14 +140,14 @@ export interface Props {
 }
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions?: {
-        user?: SellerUser
-    }
-}
+  bladeOptions?: {
+    user?: SellerUser;
+  };
+};
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'open:blade', blade: IBladeOptions): void
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

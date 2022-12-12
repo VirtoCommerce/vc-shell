@@ -16,11 +16,11 @@
     v-else
   >
     <!-- App Switcher -->
-    <template v-slot:appSwitcher>
+    <template v-slot:appSwitcher v-if="appsList && appsList.length">
       <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
     </template>
 
-    <template v-slot:bladeNavigation>
+    <template v-slot:bladeNavigation v-if="isAuthorized">
       <VcBladeNavigation
         @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
@@ -56,22 +56,22 @@
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
 import {
-    PushNotification,
-    IBladeToolbar,
-    IMenuItems,
-    useAppSwitcher,
-    useFunctions,
-    useI18n,
-    useLogger,
-    useNotifications,
-    usePermissions,
-    useSettings,
-    useUser,
-    VcAppSwitcher,
-    useBladeNavigation,
-    VcBladeNavigation,
-    IOpenBlade,
-    IBladeElement
+  PushNotification,
+  IBladeToolbar,
+  IMenuItems,
+  useAppSwitcher,
+  useFunctions,
+  useI18n,
+  useLogger,
+  useNotifications,
+  usePermissions,
+  useSettings,
+  useUser,
+  VcAppSwitcher,
+  useBladeNavigation,
+  VcBladeNavigation,
+  IOpenBlade,
+  IBladeElement,
 } from "@vc-shell/framework";
 import {
   computed,
@@ -100,9 +100,10 @@ import {
   FulfillmentCenters,
 } from "../modules/settings";
 import { UserPermissions } from "../types";
+// eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
+// eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
-
 const {
   t,
   locale: currentLocale,
@@ -180,9 +181,10 @@ const toolbarItems = ref<IBladeToolbar[]>([
       value: computed(() => currentLocale.value),
       title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
       languageItems: computed(() =>
-        availableLocales.map((locale) => ({
+        availableLocales.map((locale: string) => ({
           lang: locale,
-          title: getLocaleMessage(locale).language_name,
+          title: (getLocaleMessage(locale) as { language_name: string })
+            .language_name,
           clickHandler(lang: string) {
             currentLocale.value = lang;
             localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
@@ -226,8 +228,9 @@ const toolbarItems = ref<IBladeToolbar[]>([
         {
           title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
           clickHandler() {
+            closeBlade(0);
             signOut();
-            router.push("/login");
+            router.push({ name: "Login" });
           },
         },
       ],
@@ -364,7 +367,7 @@ function langInit() {
 }
 
 function onOpen(args: IOpenBlade) {
-    openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb)
+  openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb);
 }
 </script>
 

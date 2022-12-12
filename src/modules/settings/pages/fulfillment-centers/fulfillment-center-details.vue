@@ -33,21 +33,19 @@
       <VcForm>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="
-                $t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')
-              "
-              :placeholder="
-                $t(
-                  'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER'
-                )
-              "
-              :required="true"
-              name="name"
-              v-model="fulfillmentCenterDetails.name"
-            >
-            </VcInput>
+              <Field v-slot="{field, errorMessage, handleChange}" name="name" rules="required" :modelValue="fulfillmentCenterDetails.name">
+                  <VcInput
+                          v-slot="field"
+                          class="p-3"
+                          :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
+                          :placeholder="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
+                          v-model="fulfillmentCenterDetails.name"
+                          is-required
+                          :error-message="errorMessage"
+                          @update:modelValue="handleChange"
+                  >
+                  </VcInput>
+              </Field>
           </VcCol>
         </VcRow>
       </VcForm>
@@ -61,11 +59,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, unref } from "vue";
-import {useI18n, useLogger, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
+import {computed, onMounted, ref, unref} from "vue";
+import {IBladeToolbar, IParentCallArgs, useForm, useI18n, useLogger} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useIsFormValid } from "vee-validate";
+import {Field, useIsFormValid} from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 
 export interface Props {
@@ -193,14 +191,13 @@ async function removeFulfillmentCenter() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(
-      unref(
-        computed(() =>
-          t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION")
+      return confirm(
+        unref(
+            computed(() =>
+                t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION")
+            )
         )
-      )
     );
-    return confirmationStatus;
   }
 }
 

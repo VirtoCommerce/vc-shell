@@ -106,14 +106,10 @@
                 <!-- Override name column template -->
                 <template v-slot:item_name="itemData">
                   <div class="flex flex-col">
-                    <div
-                      class="truncate"
-                    >
+                    <div class="truncate">
                       {{ itemData.item.name }}
                     </div>
-                    <VcHint
-                      class="truncate mt-1"
-                    >
+                    <VcHint class="truncate mt-1">
                       {{ itemData.item.path }}
                     </VcHint>
                   </div>
@@ -210,7 +206,11 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n, useBladeNavigation, ITableColumns } from "@vc-shell/framework";
+import {
+  useI18n,
+  useBladeNavigation,
+  ITableColumns,
+} from "@vc-shell/framework";
 import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRouter } from "vue-router";
 import { OrderLineItem } from "../api_client/orders";
@@ -341,7 +341,6 @@ const offersColumns = ref<ITableColumns[]>([
 ]);
 
 onMounted(async () => {
-  router.push("/");
   loadOrders({ take: 5 });
   loadProducts({ take: 5 });
   loadOffers({ take: 5 });
@@ -374,7 +373,7 @@ function open(key: string): void {
       );
       openBlade(
         {
-          parentBlade: shallowRef(ProductsEdit),
+          component: shallowRef(ProductsEdit),
         },
         1
       );
@@ -414,7 +413,7 @@ function ordersClick(item: { id: string }): void {
   );
   openBlade(
     {
-      parentBlade: shallowRef(OrdersEdit),
+      component: shallowRef(OrdersEdit),
       param: item.id,
     },
     1
@@ -431,7 +430,7 @@ function productsClick(item: { id: string }): void {
   );
   openBlade(
     {
-      parentBlade: shallowRef(ProductsEdit),
+      component: shallowRef(ProductsEdit),
       param: item.id,
     },
     1
@@ -448,7 +447,7 @@ function offersClick(item: { id: string }): void {
   );
   openBlade(
     {
-      parentBlade: shallowRef(OffersDetails),
+      component: shallowRef(OffersDetails),
       param: item.id,
     },
     1

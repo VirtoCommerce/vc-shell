@@ -191,11 +191,19 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, ITableColumns, IActionBuilderResult} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useFunctions,
+  useI18n,
+  ITableColumns,
+  IActionBuilderResult,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { CustomerOrder } from "../../../api_client/orders";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 export interface Props {
@@ -205,7 +213,7 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'open:blade', blade: IBladeEvent): void
+  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -312,6 +320,14 @@ const tableColumns = ref<ITableColumns[]>([
     type: "date-ago",
   },
 ]);
+
+const columns = computed(() => {
+  if (props.expanded) {
+    return tableColumns.value;
+  } else {
+    return tableColumns.value.filter((item) => item.alwaysVisible === true);
+  }
+});
 
 const empty = reactive({
   image: emptyImage,
@@ -440,13 +456,6 @@ const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
     .map(([id, isChecked]) => id);
 };
 
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 function setFilterDate(key: string, value: string) {

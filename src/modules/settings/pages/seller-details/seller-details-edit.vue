@@ -34,25 +34,20 @@
           <VcCard :header="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.TITLE')">
             <div class="p-2">
               <VcForm>
-                <VcInput
-                  class="p-2"
-                  :label="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
-                    )
-                  "
-                  v-model="sellerDetails.name"
-                  :clearable="true"
-                  :required="true"
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER'
-                    )
-                  "
-                  name="company_name"
-                  maxchars="254"
-                >
-                </VcInput>
+                  <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.name" name="company_name" rules="required">
+                      <VcInput
+                              v-bind="field"
+                              class="p-2"
+                              :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL')"
+                              v-model="sellerDetails.name"
+                              :clearable="true"
+                              :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER')"
+                              maxchars="254"
+                              is-required
+                              :error-message="errorMessage"
+                              @update:modelValue="handleChange"
+                      />
+                  </Field>
                 <div class="p-2">
                   <VcLabel class="mb-2">{{
                     $t(
@@ -72,7 +67,6 @@
                       "
                       v-model="sellerDetails.registrationId"
                       :clearable="true"
-                      :required="false"
                       :placeholder="
                         $t(
                           'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER'
@@ -91,7 +85,6 @@
                       "
                       v-model="sellerDetails.outerId"
                       :clearable="true"
-                      :required="false"
                       :placeholder="
                         $t(
                           'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER'
@@ -145,7 +138,6 @@
                   "
                   v-model="sellerDetails.description"
                   :clearable="true"
-                  :required="false"
                   :placeholder="
                     $t(
                       'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.PLACEHOLDER'
@@ -160,7 +152,6 @@
                     $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')
                   "
                   :clearable="true"
-                  :required="false"
                   v-model="sellerDetails.deliveryTime"
                   :placeholder="
                     $t(
@@ -180,53 +171,43 @@
               <div class="p-2">
                 <VcRow>
                   <VcCol>
-                    <VcSelect
-                      class="m-2"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
-                        )
-                      "
-                      :clearable="false"
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER'
-                        )
-                      "
-                      :options="filteredCountries"
-                      :initialItem="initialCountry"
-                      v-model="sellerDetails.addresses[0].countryCode"
-                      :isSearchable="true"
-                      @search="onCountrySearch"
-                      keyProperty="id"
-                      displayProperty="name"
-                      @update:modelValue="setCountry"
-                      :isRequired="true"
-                      @change="getRegions"
-                      name="country"
-                    ></VcSelect>
+                      <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].countryCode" name="country" rules="required">
+                          <VcSelect
+                                  v-bind="field"
+                                  class="m-2"
+                                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL')"
+                                  :clearable="false"
+                                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER')"
+                                  :options="filteredCountries"
+                                  :initialItem="initialCountry"
+                                  v-model="sellerDetails.addresses[0].countryCode"
+                                  :isSearchable="true"
+                                  @search="onCountrySearch"
+                                  keyProperty="id"
+                                  displayProperty="name"
+                                  @update:modelValue="(e) => {handleChange(e); setCountry(e)}"
+                                  @change="getRegions"
+                                  is-required
+                                  :error-message="errorMessage"
+                          ></VcSelect>
+                      </Field>
                   </VcCol>
                   <VcCol>
-                    <VcInput
-                      class="m-2 my-org__num-field"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL'
-                        )
-                      "
-                      :clearable="true"
-                      :required="true"
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
-                        )
-                      "
-                      type="number"
-                      rules="numeric"
-                      v-model="sellerDetails.addresses[0].postalCode"
-                      name="zip"
-                      maxchars="32"
-                    ></VcInput>
+                      <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].postalCode" name="zip" rules="required">
+                          <VcInput
+                                  v-bind="field"
+                                  class="m-2 my-org__num-field"
+                                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL')"
+                                  :clearable="true"
+                                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER')"
+                                  type="number"
+                                  v-model="sellerDetails.addresses[0].postalCode"
+                                  maxchars="32"
+                                  is-required
+                                  :error-message="errorMessage"
+                                  @update:modelValue="handleChange"
+                          ></VcInput>
+                      </Field>
                   </VcCol>
                 </VcRow>
                 <VcRow>
@@ -256,88 +237,68 @@
                     ></VcSelect>
                   </VcCol>
                   <VcCol>
-                    <VcInput
-                      class="p-2"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL'
-                        )
-                      "
-                      :clearable="true"
-                      :required="true"
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER'
-                        )
-                      "
-                      v-model="sellerDetails.addresses[0].city"
-                      name="city"
-                      maxchars="128"
-                    >
-                    </VcInput>
+                      <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].city" name="city" rules="required">
+                          <VcInput
+                                  v-bind="field"
+                                  class="p-2"
+                                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL')"
+                                  :clearable="true"
+                                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER')"
+                                  v-model="sellerDetails.addresses[0].city"
+                                  maxchars="128"
+                                  is-required
+                                  :error-message="errorMessage"
+                                  @update:modelValue="handleChange"
+                          >
+                          </VcInput>
+                      </Field>
                   </VcCol>
                 </VcRow>
+                  <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].line1" name="address_first" rules="required">
+                      <VcInput
+                              v-bind="field"
+                              class="p-2"
+                              :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL')"
+                              :clearable="true"
+                              :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER')"
+                              v-model="sellerDetails.addresses[0].line1"
+                              name="address_first"
+                              maxchars="128"
+                              is-required
+                              :error-message="errorMessage"
+                              @update:modelValue="handleChange"
+                      >
+                      </VcInput>
+                  </Field>
                 <VcInput
                   class="p-2"
-                  :label="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
-                    )
-                  "
+                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL')"
                   :clearable="true"
-                  :required="true"
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER'
-                    )
-                  "
-                  v-model="sellerDetails.addresses[0].line1"
-                  name="address_first"
-                  maxchars="128"
-                >
-                </VcInput>
-                <VcInput
-                  class="p-2"
-                  :label="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
-                    )
-                  "
-                  :clearable="true"
-                  :required="false"
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER'
-                    )
-                  "
+                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER')"
                   v-model="sellerDetails.addresses[0].line2"
                   name="address_second"
                   maxchars="128"
                 >
                 </VcInput>
                 <div class="m-2 mb-2">
-                  <VcInput
-                    :label="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
-                      )
-                    "
-                    :clearable="true"
-                    :required="false"
-                    :placeholder="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER'
-                      )
-                    "
-                    v-model="sellerDetails.location"
-                    :rules="{
+                    <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.location" name="long_lat" :rules="{
                       regex:
                         /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/,
-                    }"
-                    name="long_lat"
-                    maxchars="512"
-                  >
-                  </VcInput>
+                    }">
+                        <VcInput
+                                v-bind="field"
+                                :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL')"
+                                :clearable="true"
+                                :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER')"
+                                v-model="sellerDetails.location"
+                                name="long_lat"
+                                maxchars="512"
+                                :error-message="errorMessage"
+                                @update:modelValue="handleChange"
+                        >
+                        </VcInput>
+                    </Field>
+
                   <VcHint class="mt-1">{{
                     $t(
                       "SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION"
@@ -346,50 +307,38 @@
                 </div>
               </div>
               <VcRow class="border-t-[1px] border-t-[#EAEEF2]">
-                <VcCol class="">
-                  <VcInput
-                    class="mt-4 mx-4 my-org__num-field"
-                    :label="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL'
-                      )
-                    "
-                    :clearable="true"
-                    :required="false"
-                    :placeholder="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER'
-                      )
-                    "
-                    type="number"
-                    rules="numeric"
-                    v-model="sellerDetails.phones[0]"
-                    name="phone"
-                    maxchars="64"
-                  >
-                  </VcInput>
+                <VcCol>
+                    <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.phones[0]" name="phone" rules="numeric">
+                        <VcInput
+                                v-bind="field"
+                                class="mt-4 mx-4 my-org__num-field"
+                                :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL')"
+                                :clearable="true"
+                                :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER')"
+                                type="number"
+                                v-model="sellerDetails.phones[0]"
+                                maxchars="64"
+                                :error-message="errorMessage"
+                                @update:modelValue="handleChange"
+                        >
+                        </VcInput>
+                    </Field>
                 </VcCol>
-                <VcCol class="">
-                  <VcInput
-                    class="mt-4 mx-4"
-                    :label="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL'
-                      )
-                    "
-                    :clearable="true"
-                    :required="false"
-                    :placeholder="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER'
-                      )
-                    "
-                    name="email"
-                    rules="email"
-                    v-model="sellerDetails.emails[0]"
-                    maxchars="256"
-                  >
-                  </VcInput>
+                <VcCol>
+                    <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.emails[0]" name="email" rules="email">
+                        <VcInput
+                                v-bind="field"
+                                class="mt-4 mx-4"
+                                :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL')"
+                                :clearable="true"
+                                :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER')"
+                                v-model="sellerDetails.emails[0]"
+                                maxchars="256"
+                                :error-message="errorMessage"
+                                @update:modelValue="handleChange"
+                        >
+                        </VcInput>
+                    </Field>
                 </VcCol>
               </VcRow>
             </VcForm>
@@ -405,31 +354,38 @@ import { defineComponent, onMounted, ref, computed, unref, watch } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
-   url: "/seller-details-edit",
+  url: "/seller-details-edit",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
 
 <script lang="ts" setup>
-import {useI18n, useUser, useAutosave, useForm, IBladeToolbar} from "@vc-shell/framework";
+import {
+  useI18n,
+  useUser,
+  useAutosave,
+  useForm,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field } from "vee-validate";
+import * as yup from 'yup'
 
 export interface Props {
-    expanded?: boolean;
-    closable?: boolean;
-    param?: string;
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    expanded: true,
-    closable: true,
-    param: undefined,
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
 defineEmits<Emits>();
@@ -462,11 +418,13 @@ const title = t("SETTINGS.SELLER_DETAILS.TITLE");
 const fileUploading = ref(false);
 const filteredCountries = ref([]);
 const filteredRegions = ref([]);
+
 const initialCountry = computed(() =>
   countriesList.value.find(
     (x) => x.id === sellerDetails.value.addresses[0].countryCode
   )
 );
+
 const initialRegion = computed(() =>
   regionsList.value.find(
     (x) => x.id === sellerDetails.value.addresses[0].regionId

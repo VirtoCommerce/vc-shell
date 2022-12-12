@@ -15,47 +15,38 @@
     <VcContainer>
       <VcRow>
         <VcCol>
-          <VcInput
-            class="p-3"
-            :label="
-              $t(
-                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
-              )
-            "
-            :placeholder="
-              $t(
-                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER'
-              )
-            "
-            :clearable="true"
-            :required="true"
-            :tooltip="
-              $t(
-                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP'
-              )
-            "
-            name="name"
-            v-model="profileDetails.name"
-          ></VcInput>
-          <VcSelect
-            class="p-3"
-            :label="
-              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
-            "
-            :isRequired="true"
-            :tooltip="
-              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')
-            "
-            name="importer"
-            :options="dataImporters"
-            :initialItem="importer"
-            keyProperty="typeName"
-            displayProperty="typeName"
-            :isSearchable="true"
-            :clearable="false"
-            v-model="profileDetails.typeName"
-            @update:modelValue="setImporter"
-          ></VcSelect>
+            <Field v-slot="{field, errorMessage, handleChange}" rules="required" name="profile_name">
+                <VcInput
+                  v-bind="field"
+                  class="p-3"
+                  :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
+                  :placeholder="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER')"
+                  :clearable="true"
+                  :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP')"
+                  v-model="profileDetails.name"
+                  :error-message="errorMessage"
+                  is-required
+                  @update:modelValue="handleChange"
+                ></VcInput>
+            </Field>
+            <Field v-slot="{field, errorMessage, handleChange}" rules="required" name="importer">
+                <VcSelect
+                  v-bind="field"
+                  class="p-3"
+                  :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
+                  :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
+                  name="importer"
+                  :options="dataImporters"
+                  :initialItem="importer"
+                  keyProperty="typeName"
+                  displayProperty="typeName"
+                  :isSearchable="true"
+                  :clearable="false"
+                  v-model="profileDetails.typeName"
+                  @update:modelValue="(e) => {handleChange(e); setImporter(e)}"
+                  is-required
+                ></VcSelect>
+            </Field>
         </VcCol>
       </VcRow>
       <VcRow class="p-3" v-if="profileDetails.typeName">
@@ -116,7 +107,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {useI18n, useAutosave, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
+import {useI18n, useAutosave, IParentCallArgs, IBladeToolbar, VcInput, VcSelect, VcBlade, VcContainer, VcRow, VcCol, VcDynamicProperty} from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import {
@@ -124,7 +115,7 @@ import {
     ImportProfile,
     ObjectSettingEntry,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid } from "vee-validate";
+import {useIsFormValid, Field, useForm} from "vee-validate";
 
 export interface Props {
   expanded?: boolean;

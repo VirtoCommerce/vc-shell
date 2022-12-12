@@ -68,10 +68,12 @@
 </template>
 
 <script lang="ts" setup>
-import {onMounted, ref, shallowRef } from "vue";
-import {PushNotification, useBladeNavigation} from "@vc-shell/framework";
-import { useNotifications } from "@vc-shell/framework";
-import { IMenuItems } from "@vc-shell/framework";
+import { onMounted, ref, shallowRef } from "vue";
+import {
+  PushNotification,
+  useBladeNavigation,
+  useNotifications,
+} from "@vc-shell/framework";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client/marketplacevendor";
 import NotificationItem from "./_internal/notification/notification.vue";
@@ -83,18 +85,18 @@ import {
 import { OrdersEdit, OrdersList } from "../../modules/orders";
 
 export interface Props {
-    isAccent: boolean,
-    title: string,
+  isAccent: boolean;
+  title: string;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-    isAccent: false,
-    title: '',
-})
+withDefaults(defineProps<Props>(), {
+  isAccent: false,
+  title: "",
+});
 
 const isDropdownVisible = ref(false);
 const { loadFromHistory, notifications, markAllAsRead } = useNotifications();
-const {openBlade, closeBlade} = useBladeNavigation()
+const { openBlade, closeBlade } = useBladeNavigation();
 
 onMounted(async () => {
   await loadFromHistory();

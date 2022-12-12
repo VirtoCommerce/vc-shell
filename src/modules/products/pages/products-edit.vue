@@ -39,58 +39,80 @@
               </div>
             </VcStatus>
             <VcForm>
-              <VcInput
-                class="mb-4"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="productDetails.name"
-                :clearable="true"
-                :required="true"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                "
-                rules="min:3"
+              <Field
                 name="name"
-                :disabled="readonly"
-                maxchars="64"
-              ></VcInput>
-              <VcSelect
-                class="mb-4"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="productDetails.categoryId"
-                :isRequired="true"
-                :isSearchable="true"
-                :clearable="false"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                "
-                :options="categories"
-                :initialItem="currentCategory"
-                keyProperty="id"
-                displayProperty="name"
-                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-                @search="onCategoriesSearch"
-                @close="onSelectClose"
-                @update:modelValue="setCategory"
-                :is-disabled="readonly"
-                name="category"
-                :onInfiniteScroll="onLoadMore"
-                :optionsTotal="categoriesTotal"
+                rules="required|min:3"
+                :modelValue="productDetails.name"
+                v-slot="{ field, errorMessage, handleChange }"
               >
-                <template v-slot:item="itemData">
-                  <div class="flex items-center py-2 truncate">
-                    <div class="grow basis-0 ml-4 truncate">
-                      <div class="truncate">
-                        {{ itemData.item.path }}
+                <VcInput
+                  v-bind="field"
+                  class="mb-4"
+                  :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                  v-model="productDetails.name"
+                  :clearable="true"
+                  :placeholder="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                  "
+                  :disabled="readonly"
+                  maxchars="64"
+                  is-required
+                  :error-message="errorMessage"
+                  @update:modelValue="handleChange"
+                ></VcInput>
+              </Field>
+              <Field
+                name="categoryId"
+                rules="required"
+                :modelValue="productDetails.categoryId"
+                v-slot="{ field, errorMessage, handleChange }"
+              >
+                <VcSelect
+                  v-bind="field"
+                  class="mb-4"
+                  :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
+                  v-model="productDetails.categoryId"
+                  :isSearchable="true"
+                  :clearable="false"
+                  :placeholder="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                  "
+                  :options="categories"
+                  :initialItem="currentCategory"
+                  keyProperty="id"
+                  displayProperty="name"
+                  :tooltip="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
+                  "
+                  @search="onCategoriesSearch"
+                  @close="onSelectClose"
+                  @update:modelValue="
+                    (e) => {
+                      handleChange(e);
+                      setCategory(e);
+                    }
+                  "
+                  :is-disabled="readonly"
+                  :onInfiniteScroll="onLoadMore"
+                  :optionsTotal="categoriesTotal"
+                  is-required
+                  :error-message="errorMessage"
+                >
+                  <template v-slot:item="itemData">
+                    <div class="flex items-center py-2 truncate">
+                      <div class="grow basis-0 ml-4 truncate">
+                        <div class="truncate">
+                          {{ itemData.item.path }}
+                        </div>
+                        <VcHint class="truncate mt-1">
+                          {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
+                          {{ itemData.item.code }}
+                        </VcHint>
                       </div>
-                      <VcHint class="truncate mt-1">
-                        {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
-                        {{ itemData.item.code }}
-                      </VcHint>
                     </div>
-                  </div>
-                </template>
-              </VcSelect>
-
+                  </template>
+                </VcSelect>
+              </Field>
               <VcCard
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
@@ -99,37 +121,55 @@
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="p-4">
-                  <VcInput
-                    class="mb-4"
-                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                    v-model="productDetails.gtin"
-                    :clearable="true"
-                    :required="true"
-                    :placeholder="
-                      $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                    "
-                    :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
-                    :rules="validateGtin"
-                    :disabled="readonly"
+                  <Field
                     name="gtin"
-                    maxchars="64"
-                  ></VcInput>
-                  <VcTextarea
-                    class="mb-4"
-                    :label="
-                      $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
-                    "
-                    v-model="productDetails.description"
-                    :required="true"
-                    :placeholder="
-                      $t(
-                        'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
-                      )
-                    "
-                    rules="min:3"
-                    :disabled="readonly"
+                    :rules="validateGtin"
+                    :modelValue="productDetails.gtin"
+                    v-slot="{ field, errorMessage, handleChange }"
+                  >
+                    <VcInput
+                      v-bind="field"
+                      class="mb-4"
+                      :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
+                      v-model="productDetails.gtin"
+                      :clearable="true"
+                      :placeholder="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                      "
+                      :tooltip="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
+                      "
+                      :disabled="readonly"
+                      maxchars="64"
+                      is-required
+                      :error-message="errorMessage"
+                      @update:modelValue="handleChange"
+                    ></VcInput>
+                  </Field>
+                  <Field
                     name="description"
-                  ></VcTextarea>
+                    rules="min:3|required"
+                    v-slot="{ field, errorMessage, handleChange }"
+                  >
+                    <VcTextarea
+                      v-bind="field"
+                      class="mb-4"
+                      :label="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
+                      "
+                      v-model="productDetails.description"
+                      :placeholder="
+                        $t(
+                          'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
+                        )
+                      "
+                      :disabled="readonly"
+                      name="description"
+                      is-required
+                      :error-message="errorMessage"
+                      @update:modelValue="handleChange"
+                    ></VcTextarea>
+                  </Field>
 
                   <VcDynamicProperty
                     v-for="property in filteredProps"
@@ -201,17 +241,21 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-    useFunctions,
-    useI18n,
-    useUser,
-    useAutosave,
-    useForm,
-    min, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails
+  useI18n,
+  useUser,
+  useAutosave,
+  useForm,
+  min,
+  required,
+  IParentCallArgs,
+  IBladeEvent,
+  IBladeToolbar,
+  AssetsDetails,
+  VcInput,
 } from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
-  Image,
   IProperty,
   IPropertyValue,
   PropertyValue,
@@ -219,14 +263,16 @@ import {
 } from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
-import _ from "lodash-es";
+import { debounce, orderBy } from "lodash-es";
 import {
   IImage,
   IProductDetails,
   ISellerProduct,
-    Category
+  Category,
+  Image,
+  Property,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
@@ -235,18 +281,18 @@ export interface Props {
 }
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions: {
-        editableAsset?: Image;
-        images?: Image[];
-        sortHandler?: (remove: boolean, localImage: IImage) => void;
-        sellerProduct?: ISellerProduct;
-    };
+  bladeOptions: {
+    editableAsset?: Image;
+    images?: Image[];
+    sortHandler?: (remove: boolean, localImage: IImage) => void;
+    sellerProduct?: ISellerProduct;
+  };
 };
 
 export interface Emits {
-    (event: "parent:call", args: IParentCallArgs): void;
-    (event: "close:blade"): void;
-    (event: "open:blade", blade: IBladeOptions): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -258,12 +304,10 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
-useForm({ validateOnMount: false });
-const isValid = useIsFormValid();
 const {
   product: productData,
   productDetails,
-  loading: prodLoading,
+  loading,
   modified,
   validateProduct,
   loadProduct,
@@ -280,8 +324,8 @@ const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
 );
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
-const { debounce } = useFunctions();
-
+const { setValues } = useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const currentCategory = ref<Category>();
 const offersCount = ref(0);
 const categories = ref<Category[]>([]);
@@ -296,6 +340,51 @@ const filteredProps = computed(() =>
   productDetails.value.properties.filter((x) => !filterTypes.includes(x.type))
 );
 
+const product = computed(() =>
+  props.param ? productData.value : productDetails.value
+);
+
+const readonly = computed(
+  () => props.param && !productData.value?.canBeModified
+);
+
+const validateGtin = [
+  (value: string): string | boolean => {
+    return min(value, [3]);
+  },
+  (value: string): string | boolean => {
+    return required(value);
+  },
+  async (value: string): Promise<string | boolean> =>
+    await validate("gtin", value),
+];
+
+const validate = debounce(
+  async (fieldName: string, value: string): Promise<string | boolean> => {
+    const sellerProduct = {
+      ...product.value,
+      [fieldName]: value,
+    } as ISellerProduct;
+    const productErrors = await validateProduct(sellerProduct);
+    const errors = productErrors?.filter(
+      (error) => error.propertyName.toLowerCase() === fieldName.toLowerCase()
+    );
+    return (
+      !errors ||
+      errors.length === 0 ||
+      errors
+        .map((error) =>
+          t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+            value: error?.attemptedValue,
+          })
+        )
+        .join("\n")
+    );
+  },
+  1000,
+  { leading: true, trailing: false }
+);
+
 const reload = async (fullReload: boolean) => {
   if (!modified.value && fullReload) {
     try {
@@ -307,6 +396,7 @@ const reload = async (fullReload: boolean) => {
 
       if (savedValue.value) {
         productDetails.value = savedValue.value as IProductDetails;
+        setValues({ ...productDetails.value });
       }
 
       const searchResult = await fetchCategories();
@@ -448,7 +538,7 @@ const statusText = computed(() => {
     productData.value.publicationRequests &&
     productData.value.publicationRequests.length
   ) {
-    return _.orderBy(
+    return orderBy(
       productData.value.publicationRequests,
       ["createdDate"],
       ["desc"]
@@ -456,47 +546,6 @@ const statusText = computed(() => {
   }
   return null;
 });
-
-const product = computed(() =>
-  props.param ? productData.value : productDetails.value
-);
-const readonly = computed(
-  () => props.param && !productData.value?.canBeModified
-);
-const loading = computed(() => prodLoading.value);
-
-const validateGtin = [
-  (value: string): string | boolean => {
-    return min(value, [3]);
-  },
-  async (value: string): Promise<string | boolean> =>
-    await validate("gtin", value),
-];
-
-const validate = async (
-  fieldName: string,
-  value: string
-): Promise<string | boolean> => {
-  const sellerProduct = {
-    ...product.value,
-    [fieldName]: value,
-  } as ISellerProduct;
-  const productErrors = await validateProduct(sellerProduct);
-  const errors = productErrors?.filter(
-    (error) => error.propertyName.toLowerCase() === fieldName.toLowerCase()
-  );
-  return (
-    !errors ||
-    errors.length === 0 ||
-    errors
-      .map((error) =>
-        t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
-          value: error?.attemptedValue,
-        })
-      )
-      .join("\n")
-  );
-};
 
 const onGalleryUpload = async (files: FileList) => {
   try {
@@ -599,7 +648,9 @@ const setCategory = async (id: string) => {
 
   const currentProperties = [...(productDetails.value?.properties || [])];
   productDetails.value.properties = [
-    ...(currentCategory.value.properties || []),
+    ...(currentCategory.value?.properties?.map(
+      (prop) => new Property({ ...prop, isReadOnly: false })
+    ) || []),
   ];
   productDetails.value.properties.forEach((property) => {
     const previousPropertyValue = currentProperties?.find(

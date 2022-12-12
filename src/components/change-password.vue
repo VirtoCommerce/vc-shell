@@ -6,46 +6,48 @@
   >
     <div class="p-3">
       <VcForm>
-        <VcInput
-          ref="passwordField"
-          class="mb-4 mt-1"
-          :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
-          :placeholder="
-            $t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')
-          "
-          type="password"
-          :required="true"
-          rules="min:6"
-          name="current"
-          v-model="form.currentPassword"
-          @update:modelValue="validate"
-        ></VcInput>
-        <VcInput
-          ref="newPasswordField"
-          class="mb-4 mt-1"
-          :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
-          :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
-          type="password"
-          @update:modelValue="validate"
-          :required="true"
-          rules="min:6"
-          name="new_pass"
-          v-model="form.password"
-        ></VcInput>
-        <VcInput
-          ref="confirmPasswordField"
-          class="mb-4"
-          :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
-          :placeholder="
-            $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
-          "
-          :required="true"
-          rules="min:6"
-          @update:modelValue="validate"
-          type="password"
-          name="confirm_pass"
-          v-model="form.confirmPassword"
-        ></VcInput>
+          <Field name="current" rules="required|min:6" :modelValue="form.currentPassword" v-slot="{field, errorMessage, handleChange}">
+              <VcInput
+                    v-bind="field"
+                    ref="passwordField"
+                    class="mb-4 mt-1"
+                    :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
+                    :placeholder="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
+                    type="password"
+                    v-model="form.currentPassword"
+                    @update:modelValue="validate"
+                    is-required
+                    :error-message="errorMessage"
+              ></VcInput>
+          </Field>
+          <Field name="new_pass" rules="required|min:6" :modelValue="form.password" v-slot="{field, errorMessage}">
+              <VcInput
+                      v-bind="field"
+                      ref="newPasswordField"
+                      class="mb-4 mt-1"
+                      :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
+                      :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
+                      type="password"
+                      @update:modelValue="validate"
+                      v-model="form.password"
+                      is-required
+                      :error-message="errorMessage"
+              ></VcInput>
+          </Field>
+          <Field name="confirm_pass" rules="required|min:6" :modelValue="form.confirmPassword" v-slot="{field, errorMessage}">
+              <VcInput
+                      v-bind="field"
+                      ref="confirmPasswordField"
+                      class="mb-4"
+                      :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
+                      :placeholder="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
+                      @update:modelValue="validate"
+                      type="password"
+                      v-model="form.confirmPassword"
+                      is-required
+                      :error-message="errorMessage"
+              ></VcInput>
+          </Field>
         <div class="flex justify-center items-center pt-2">
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <VcButton
@@ -84,7 +86,7 @@
 
 <script lang="ts" setup>
 import { nextTick, reactive } from "vue";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field } from "vee-validate";
 import {
   useForm,
   VcInput,
@@ -92,7 +94,8 @@ import {
   VcButton,
   VcPopup,
   VcForm,
-    IIdentityError, useUser
+  IIdentityError,
+  useUser,
 } from "@vc-shell/framework";
 
 interface IChangePassForm {
@@ -104,7 +107,7 @@ interface IChangePassForm {
 }
 
 interface Emits {
-    (event: 'close'): void;
+  (event: "close"): void;
 }
 
 const emit = defineEmits<Emits>();

@@ -63,10 +63,10 @@
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
         <div class="flex flex-col">
-          <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+          <div class="truncate">
             {{ itemData.item.name }}
           </div>
-          <VcHint class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+          <VcHint class="truncate mt-1">
             {{ itemData.item.path }}
           </VcHint>
         </div>
@@ -100,11 +100,13 @@
 
             <div class="mt-3 w-full flex justify-between">
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
-                <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
+                <VcHint>{{
+                  $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
+                }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -112,11 +114,13 @@
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
-                <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
+                <VcHint>{{
+                  $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED")
+                }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.createdDate &&
@@ -125,14 +129,14 @@
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <div class="flex flex-col items-center">
                   <VcHint>{{
                     $t("MP_PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
                   <div
-                    class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                    class="truncate mt-1"
                   >
                     <VcStatusIcon
                       :status="itemData.item && itemData.item.isPublished"
@@ -165,30 +169,38 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, useLogger,   IActionBuilderResult,
-    ITableColumns} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useFunctions,
+  useI18n,
+  useLogger,
+  IActionBuilderResult,
+  ITableColumns,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
 import MpProductsEdit from "./marketplace-products-edit.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 export interface Props {
-    expanded?: boolean;
-    closable?: boolean;
-    param?: string;
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'open:blade', blade: IBladeEvent): void
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    expanded: true,
-    closable: true,
-    param: undefined,
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
 const emit = defineEmits<Emits>();
@@ -263,7 +275,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "export",
-    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
+    title: computed(() =>
+      t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")
+    ),
     icon: "fas fa-file-export",
     async clickHandler() {
       await exportCategories();
@@ -285,18 +299,20 @@ const tableColumns = ref<ITableColumns[]>([
     id: "imgSrc",
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
     width: 60,
-    alwaysVisible: true,
     type: "image",
   },
   {
     id: "name",
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
+    width: 100,
     alwaysVisible: true,
   },
   {
     id: "createdDate",
-    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    title: computed(() =>
+      t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
+    ),
     width: 140,
     sortable: true,
     type: "date-ago",
@@ -314,6 +330,7 @@ const tableColumns = ref<ITableColumns[]>([
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
     width: 180,
     sortable: true,
+    alwaysVisible: true,
   },
   {
     id: "gtin",
@@ -331,6 +348,7 @@ const columns = computed(() => {
     return tableColumns.value.filter((item) => item.alwaysVisible === true);
   }
 });
+
 const title = computed(() => t("MP_PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(
   () => Object.values(appliedFilter.value).filter((item) => !!item).length

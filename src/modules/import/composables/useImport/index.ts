@@ -302,13 +302,17 @@ export default (): IUseImport => {
   }
 
   async function setImporter(typeName: string) {
-    const importer = dataImporters.value.find(
-      (importer) => importer.typeName === typeName
-    );
-    profileDetails.value.dataImporterType = typeName;
-    profileDetails.value.settings = [
-      ...(importer.availSettings.map((x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)) || []),
-    ];
+      if (typeName) {
+          const importer = dataImporters.value.find(
+              (importer) => importer.typeName === typeName
+          );
+          if (importer) {
+              profileDetails.value.dataImporterType = typeName;
+              profileDetails.value.settings = [
+                  ...(importer?.availSettings.map((x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)) || []),
+              ];
+          }
+      }
   }
 
   async function updateImportProfile(updatedProfile: ImportProfile) {

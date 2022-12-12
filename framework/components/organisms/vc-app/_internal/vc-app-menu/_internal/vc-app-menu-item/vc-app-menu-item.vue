@@ -24,7 +24,11 @@
       <!-- Nested menu items -->
       <div class="vc-app-menu-item__child" v-if="isOpened">
         <template v-for="(nested, i) in children" :key="i">
-          <router-link :to="nested.component.url" custom v-slot="{ isActive, navigate }">
+          <router-link
+            :to="nested.component.url"
+            custom
+            v-slot="{ isActive, navigate }"
+          >
             <div
               :class="[
                 {
@@ -34,7 +38,9 @@
               ]"
               v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
-              @click="$emit('child:click', {item: nested, navigationCb: navigate})"
+              @click="
+                $emit('child:click', { item: nested, navigationCb: navigate })
+              "
             >
               {{ nested.title }}
             </div>
@@ -47,9 +53,9 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { ExtendedComponent, IMenuItems } from "@types";
+import { ExtendedComponent, IMenuItems } from "@/core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
-import {NavigationFailure, useRoute} from "vue-router";
+import { NavigationFailure, useRoute } from "vue-router";
 
 export interface Props {
   sticky?: boolean;
@@ -64,8 +70,17 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'click', navigationCb: () => Promise<void | NavigationFailure>): void
-    (event: 'child:click', {item, navigationCb}:{item: IMenuItems, navigationCb: () => Promise<void | NavigationFailure>}): void
+  (event: "click", navigationCb: () => Promise<void | NavigationFailure>): void;
+  (
+    event: "child:click",
+    {
+      item,
+      navigationCb,
+    }: {
+      item: IMenuItems;
+      navigationCb: () => Promise<void | NavigationFailure>;
+    }
+  ): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -96,7 +111,9 @@ onMounted(() => {
   }
 });
 
-function onMenuItemClick(navigationCb?: () => Promise<void | NavigationFailure> ) {
+function onMenuItemClick(
+  navigationCb?: () => Promise<void | NavigationFailure>
+) {
   if (!props.children?.length) {
     emit("click", navigationCb);
   } else {

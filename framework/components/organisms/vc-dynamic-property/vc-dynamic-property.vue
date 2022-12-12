@@ -165,7 +165,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { useI18n } from "@composables";
+import { useI18n } from "@/core/composables";
 interface IValidationRules {
   required?: boolean;
   min?: number;

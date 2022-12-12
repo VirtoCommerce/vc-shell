@@ -1,5 +1,5 @@
 import { App } from "vue";
-import * as components from './components'
+import * as components from "./components";
 
 export default {
   install(app: App): void {
@@ -10,5 +10,5 @@ export default {
   },
 };
 
-export * from './composables'
-export * from './components'
+export * from "./composables";
+export * from "./components";

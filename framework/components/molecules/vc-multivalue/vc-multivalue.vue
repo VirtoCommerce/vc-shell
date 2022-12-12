@@ -102,10 +102,10 @@
 import { unref, getCurrentInstance, nextTick, ref, computed } from "vue";
 
 import { useField } from "vee-validate";
-import { VcLabel, VcIcon } from "@components";
-import { IValidationRules } from "@types";
+import { VcLabel, VcIcon } from "@/components";
+import { IValidationRules } from "@/core/types";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { clickOutside as vClickOutside } from "@directives";
+import { clickOutside as vClickOutside } from "@/core/directives";
 
 const props = defineProps({
   placeholder: {

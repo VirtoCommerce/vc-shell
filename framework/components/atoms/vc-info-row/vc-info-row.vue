@@ -16,7 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcLabel, VcRow, VcCol } from "@components";
+import { VcLabel, VcRow, VcCol } from "@/components";
 
 defineProps({
   label: {

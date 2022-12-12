@@ -1,11 +1,8 @@
-import {
-  PushNotification,
-  PushNotificationClient,
-} from "@api";
+import { PushNotification, PushNotificationClient } from "@/core/api";
 import useUser from "../useUser";
 import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";
-import _ from "lodash-es";
+import { orderBy, remove } from "lodash-es";
 
 const notificationsClient = new PushNotificationClient();
 
@@ -72,12 +69,12 @@ export default (): INotifications => {
 
   function markAsRead(message: PushNotification) {
     message.isNew = false;
-    _.remove(popupNotifications.value, (x) => x.id == message.id);
+    remove(popupNotifications.value, (x) => x.id == message.id);
   }
 
   function dismiss(message: PushNotification) {
-    _.remove(popupNotifications.value, (x) => x.id == message.id);
-    _.remove(notifications.value, (x) => x.id == message.id);
+    remove(popupNotifications.value, (x) => x.id == message.id);
+    remove(notifications.value, (x) => x.id == message.id);
   }
 
   function dismissAll() {
@@ -106,7 +103,7 @@ export default (): INotifications => {
 
   return {
     notifications: computed(() =>
-      readonly(_.orderBy(notifications.value, ["created"], ["desc"]))
+      readonly(orderBy(notifications.value, ["created"], ["desc"]))
     ),
     popupNotifications: computed(() => readonly(popupNotifications.value)),
     loadFromHistory,

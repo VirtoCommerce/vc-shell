@@ -95,8 +95,8 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@components";
-import { IBladeToolbar, IBladeElement } from "@types";
+import { VcIcon } from "@/components";
+import { IBladeToolbar, IBladeElement } from "@/core/types";
 
 export interface Props {
   logo: string;

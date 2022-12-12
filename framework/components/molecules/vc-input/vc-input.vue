@@ -128,16 +128,16 @@ import {
   watch,
 } from "vue";
 import { GenericValidateFunction, useField } from "vee-validate";
-import { VcIcon, VcLabel } from "@components";
-import { IValidationRules } from "@types";
+import { VcIcon, VcLabel } from "@/components";
+import { IValidationRules } from "@/core/types";
 import { createPopper, Instance } from "@popperjs/core";
 import {
   useCurrencyInput,
   UseCurrencyInput,
   CurrencyDisplay,
 } from "vue-currency-input";
-import { clickOutside as vClickOutside } from "@directives";
-import { required as requiredRule } from "@plugins";
+import { clickOutside as vClickOutside } from "@/core/directives";
+import { required as requiredRule } from "@/core/plugins";
 
 export type ValueType = string | number | Date | null;
 

@@ -6,8 +6,10 @@
   "style": "./dist/style.css",
   "files": [
     "dist/*",
-    "src",
-    "tailwind.config.js"
+    "tailwind.config.js",
+    "components",
+    "core",
+    "shared"
   ],
   "scripts": {
     "build": "vite build",

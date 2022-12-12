@@ -1,5 +1,5 @@
 import {Component, ComponentPublicInstance} from "vue";
-import {IMenuItems} from "@types";
+import {IMenuItems} from "@/core/types";
 import {NavigationFailure} from "vue-router";
 
 /* onParentCall event interface */

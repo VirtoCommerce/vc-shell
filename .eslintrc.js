@@ -4,7 +4,7 @@ module.exports = {
     node: true,
     'vue/setup-compiler-macros': true
   },
-  ignorePatterns: ["**/*.cjs.js"],
+  ignorePatterns: ["**/*.js"],
   plugins: ['@typescript-eslint', 'vue'],
   extends: ["plugin:vue/vue3-essential", "eslint:recommended", "plugin:import/recommended", "plugin:import/typescript", "@vue/typescript/recommended", "@vue/prettier", "@vue/eslint-config-typescript/recommended"],
   parser: "vue-eslint-parser",
@@ -17,5 +17,5 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "vue/multi-word-component-names": 'off'
-  }
+  },
 };

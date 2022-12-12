@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { AppDescriptor } from "@api";
+import { AppDescriptor } from "@/core/api";
 
 export interface Props {
   appsList: AppDescriptor[];

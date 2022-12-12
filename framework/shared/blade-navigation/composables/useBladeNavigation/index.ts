@@ -85,7 +85,13 @@ export default (): IUseBladeNavigation => {
         parentBladeOptions.value = unref(bladeOptions);
         parentBladeParam.value = unref(param);
         if (navigationCb && typeof navigationCb === "function") {
-          await navigationCb();
+          try {
+            await navigationCb();
+          } catch (e) {
+            console.log(e);
+          } finally {
+            console.debug(`Navigated to: ${parent.url}`);
+          }
         } else if (!navigationCb) {
           await router.push(parent.url);
         }

@@ -78,7 +78,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useI18n, ITableColumns} from "@vc-shell/framework";
+import {IBladeEvent, IBladeToolbar, useI18n, ITableColumns, VcBlade, VcContainer, VcSlider, VcStatus, VcButton, VcCard, VcTable} from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";

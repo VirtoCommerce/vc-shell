@@ -2,24 +2,35 @@
   <VcLoginForm :logo="logo" :background="background" :title="computedTitle">
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
-        <VcInput
-          ref="loginField"
-          class="mb-4 mt-1"
-          :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
-          :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
-          :required="true"
-          v-model="form.username"
-        ></VcInput>
-        <VcInput
-          ref="passwordField"
-          class="mb-4"
-          :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
-          :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
-          :required="true"
-          v-model="form.password"
-          type="password"
-          @keyup.enter="login"
-        ></VcInput>
+          <Field name="username" v-slot="{field, errorMessage, handleChange}" :modelValue="form.username" rules="required">
+              <VcInput
+                  v-bind="field"
+                  ref="loginField"
+                  class="mb-4 mt-1"
+                  :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
+                  :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+                  v-model="form.username"
+                  @update:modelValue="handleChange"
+                  is-required
+                  :error-message="errorMessage"
+              />
+          </Field>
+          <Field name="password" v-slot="{field, errorMessage, handleChange}" :modelValue="form.password" rules="required">
+              <VcInput
+                  v-bind="field"
+                  ref="passwordField"
+                  class="mb-4"
+                  :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
+                  :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
+                  v-model="form.password"
+                  type="password"
+                  @keyup.enter="login"
+                  @update:modelValue="handleChange"
+                  is-required
+                  :error-message="errorMessage"
+              />
+          </Field>
+
         <div class="flex justify-end items-center pt-2 pb-3">
           <VcButton variant="onlytext" @click="togglePassRequest" type="button">
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
@@ -40,15 +51,20 @@
     <template v-else>
       <template v-if="!forgotPasswordRequestSent">
         <VcForm @submit.prevent="forgot">
-          <VcInput
-            ref="forgotPasswordField"
-            class="mb-4 mt-1"
-            :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
-            :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
-            :required="true"
-            v-model="forgotPasswordForm.loginOrEmail"
-            :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
-          ></VcInput>
+            <Field name="loginOrEmail" v-slot="{field, errorMessage, handleChange}" :modelValue="forgotPasswordForm.loginOrEmail" rules="required">
+                <VcInput
+                        v-bind="field"
+                        ref="forgotPasswordField"
+                        class="mb-4 mt-1"
+                        :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+                        :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
+                        v-model="forgotPasswordForm.loginOrEmail"
+                        :fieldDescription="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
+                        is-required
+                        :error-message="errorMessage"
+                        @update:modelValue="handleChange"
+                ></VcInput>
+            </Field>
           <div class="flex justify-between items-center pt-2">
             <vc-button
               variant="secondary"
@@ -110,7 +126,8 @@ import {
 } from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field } from "vee-validate";
+import * as yup from 'yup'
 
 const log = useLogger();
 const { t } = useI18n();
@@ -130,6 +147,7 @@ const form = reactive({
   username: "",
   password: "",
 });
+
 const forgotPasswordForm = reactive({
   loginOrEmail: "",
 });

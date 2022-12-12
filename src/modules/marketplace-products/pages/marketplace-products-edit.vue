@@ -41,67 +41,73 @@
               </div>
             </VcStatus>
             <VcForm>
-              <VcInput
-                class="mb-4"
-                :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="productDetails.name"
-                :clearable="true"
-                :required="true"
-                :placeholder="
-                  $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                "
-                rules="min:3"
-                name="name"
-                :disabled="readonly"
-                maxchars="64"
-              ></VcInput>
-              <VcSelect
-                class="mb-4"
-                :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="productDetails.categoryId"
-                :isRequired="true"
-                :isSearchable="true"
-                :clearable="false"
-                :placeholder="
-                  $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                "
-                :options="categories"
-                :initialItem="currentCategory"
-                keyProperty="id"
-                displayProperty="name"
-                :tooltip="
-                  $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
-                "
-                @search="onCategoriesSearch"
-                @close="onSelectClose"
-                @update:modelValue="setCategory"
-                :is-disabled="readonly"
-                name="category"
-                :onInfiniteScroll="onLoadMore"
-                :optionsTotal="categoriesTotal"
-              >
-                <template v-slot:item="itemData">
-                  <div
-                    class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
+                <Field name="name" rules="required|min:3" :modelValue="productDetails.name" v-slot="{field, errorMessage, handleChange}">
+                  <VcInput
+                    v-bind="field"
+                    class="mb-4"
+                    :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                    v-model="productDetails.name"
+                    :clearable="true"
+                    :placeholder="
+                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                    "
+                    :disabled="readonly"
+                    maxchars="64"
+                    is-required
+                    :error-message="errorMessage"
+                    @update:modelValue="handleChange"
+                  ></VcInput>
+                </Field>
+                <Field name="category" rules="required" :modelValue="productDetails.categoryId" v-slot="{field, errorMessage, handleChange}">
+                  <VcSelect
+                    v-bind="field"
+                    class="mb-4"
+                    :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
+                    v-model="productDetails.categoryId"
+                    :isSearchable="true"
+                    :clearable="false"
+                    :placeholder="
+                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                    "
+                    :options="categories"
+                    :initialItem="currentCategory"
+                    keyProperty="id"
+                    displayProperty="name"
+                    :tooltip="
+                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
+                    "
+                    @search="onCategoriesSearch"
+                    @close="onSelectClose"
+                    @update:modelValue="(e) => {handleChange(e); setCategory(e)}"
+                    :is-disabled="readonly"
+                    :onInfiniteScroll="onLoadMore"
+                    :optionsTotal="categoriesTotal"
+                    is-required
+                    :error-message="errorMessage"
                   >
-                    <div
-                      class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
-                    >
+                    <template v-slot:item="itemData">
                       <div
-                        class="text-ellipsis overflow-hidden whitespace-nowrap"
+                        class="flex items-center py-2 text-ellipsis overflow-hidden whitespace-nowrap"
                       >
-                        {{ itemData.item.path }}
+                        <div
+                          class="grow basis-0 ml-4 text-ellipsis overflow-hidden whitespace-nowrap"
+                        >
+                          <div
+                            class="text-ellipsis overflow-hidden whitespace-nowrap"
+                          >
+                            {{ itemData.item.path }}
+                          </div>
+                          <VcHint
+                            class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                          >
+                            {{ $t("MP_PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
+                            {{ itemData.item.code }}
+                          </VcHint>
+                        </div>
                       </div>
-                      <VcHint
-                        class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
-                      >
-                        {{ $t("MP_PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
-                        {{ itemData.item.code }}
-                      </VcHint>
-                    </div>
-                  </div>
-                </template>
-              </VcSelect>
+                    </template>
+                  </VcSelect>
+                </Field>
 
               <VcCard
                 :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
@@ -111,39 +117,47 @@
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="p-4">
-                  <VcInput
-                    class="mb-4"
-                    :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                    v-model="productDetails.gtin"
-                    :clearable="true"
-                    :required="true"
-                    :placeholder="
-                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                    "
-                    :tooltip="
-                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
-                    "
-                    :rules="validateGtin"
-                    :disabled="readonly"
-                    name="gtin"
-                    maxchars="64"
-                  ></VcInput>
-                  <VcTextarea
-                    class="mb-4"
-                    :label="
-                      $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
-                    "
-                    v-model="productDetails.description"
-                    :required="true"
-                    :placeholder="
-                      $t(
-                        'MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
-                      )
-                    "
-                    rules="min:3"
-                    :disabled="readonly"
-                    name="description"
-                  ></VcTextarea>
+                    <Field name="gtin" :rules="validateGtin" :modelValue="productDetails.gtin" v-slot="{field, errorMessage, handleChange}">
+                      <VcInput
+                        v-bind="field"
+                        class="mb-4"
+                        :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
+                        v-model="productDetails.gtin"
+                        :clearable="true"
+                        :placeholder="
+                          $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                        "
+                        :tooltip="
+                          $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
+                        "
+                        :disabled="readonly"
+                        name="gtin"
+                        maxchars="64"
+                        is-required
+                        :error-message="errorMessage"
+                        @update:modelValue="handleChange"
+                      ></VcInput>
+                    </Field>
+                    <Field name="description" rules="min:3|required" v-slot="{field, errorMessage, handleChange}">
+                      <VcTextarea
+                        v-bind="field"
+                        class="mb-4"
+                        :label="
+                          $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
+                        "
+                        v-model="productDetails.description"
+                        :placeholder="
+                          $t(
+                            'MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
+                          )
+                        "
+                        :disabled="readonly"
+                        name="description"
+                        is-required
+                        :error-message="errorMessage"
+                        @update:modelValue="handleChange"
+                      ></VcTextarea>
+                    </Field>
 
                   <VcDynamicProperty
                     v-for="property in filteredProps"
@@ -221,6 +235,7 @@ import {
     useAutosave,
     useForm,
     min,
+    required,
     VcInput,
     IParentCallArgs,
     IBladeEvent,
@@ -240,13 +255,13 @@ import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
 import _ from "lodash-es";
 import {
-  IImage,
-  IProductDetails,
-  ISellerProduct,
+    IImage,
+    IProductDetails,
+    ISellerProduct,
     Category,
-
+    Property,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field } from "vee-validate";
 import { Ref } from "vue";
 
 export interface Props {
@@ -492,6 +507,9 @@ const validateGtin = [
   (value: string): string | boolean => {
     return min(value, [3]);
   },
+    (value: string): string | boolean => {
+        return required(value);
+    },
   async (value: string): Promise<string | boolean> =>
     await validate("gtin", value),
 ];
@@ -617,25 +635,25 @@ const onGalleryImageRemove = (image: Image) => {
 };
 
 const setCategory = async (id: string) => {
-  currentCategory.value = categories.value?.find((x) => x.id === id);
-  if (!currentCategory.value) {
-    await setCategoryItem(id);
-  }
-
-  const currentProperties = [...(productDetails.value?.properties || [])];
-  productDetails.value.properties = [
-    ...(currentCategory.value.properties || []),
-  ];
-  productDetails.value.properties.forEach((property) => {
-    const previousPropertyValue = currentProperties?.find(
-      (item) => item.id === property.id
-    );
-    if (previousPropertyValue) {
-      property.values = previousPropertyValue.values.map(
-        (item) => item
-      );
+    currentCategory.value = categories.value?.find((x) => x.id === id);
+    if (!currentCategory.value) {
+        await setCategoryItem(id);
     }
-  });
+
+    const currentProperties = [...(productDetails.value?.properties || [])];
+    productDetails.value.properties = [
+        ...(currentCategory.value?.properties?.map(prop => new Property({...prop, isReadOnly: false})) || []),
+    ];
+    productDetails.value.properties.forEach((property) => {
+        const previousPropertyValue = currentProperties?.find(
+            (item) => item.id === property.id
+        );
+        if (previousPropertyValue) {
+            property.values = previousPropertyValue.values.map(
+                (item) => new PropertyValue(item)
+            );
+        }
+    });
 };
 
 async function setCategoryItem(id: string) {

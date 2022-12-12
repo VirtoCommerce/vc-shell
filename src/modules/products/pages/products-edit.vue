@@ -39,23 +39,23 @@
               </div>
             </VcStatus>
             <VcForm>
-              <Field name="name" rules="min:3|required" v-slot="{field, errorMessage}">
-                  <VcInput2
+              <Field name="name" rules="required|min:3" :modelValue="productDetails.name" v-slot="{field, errorMessage, handleChange}">
+                  <VcInput
                     v-bind="field"
                     class="mb-4"
                     :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                     v-model="productDetails.name"
                     :clearable="true"
                     :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
-                    name="name"
                     :disabled="readonly"
                     maxchars="64"
                     is-required
                     :error-message="errorMessage"
-                  ></VcInput2>
+                    @update:modelValue="handleChange"
+                  ></VcInput>
               </Field>
-              <Field name="categoryId" rules="required" v-slot="{field, errorMessage}">
-                  <VcSelect2
+              <Field name="categoryId" rules="required" :modelValue="productDetails.categoryId" v-slot="{field, errorMessage, handleChange}">
+                  <VcSelect
                     v-bind="field"
                     class="mb-4"
                     :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
@@ -70,9 +70,8 @@
                     :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                     @search="onCategoriesSearch"
                     @close="onSelectClose"
-                    @update:modelValue="setCategory"
+                    @update:modelValue="(e) => {handleChange(e); setCategory(e)}"
                     :is-disabled="readonly"
-                    name="categoryId"
                     :onInfiniteScroll="onLoadMore"
                     :optionsTotal="categoriesTotal"
                     is-required
@@ -91,7 +90,7 @@
                               </div>
                           </div>
                       </template>
-                  </VcSelect2>
+                  </VcSelect>
               </Field>
               <VcCard
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
@@ -101,8 +100,8 @@
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="p-4">
-                    <Field name="gtin" :rules="validateGtin" v-slot="{field, errorMessage}">
-                        <VcInput2
+                    <Field name="gtin" :rules="validateGtin" :modelValue="productDetails.gtin" v-slot="{field, errorMessage, handleChange}">
+                        <VcInput
                           v-bind="field"
                           class="mb-4"
                           :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
@@ -111,14 +110,14 @@
                           :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')"
                           :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
                           :disabled="readonly"
-                          name="gtin"
                           maxchars="64"
                           is-required
                           :error-message="errorMessage"
-                        ></VcInput2>
+                          @update:modelValue="handleChange"
+                        ></VcInput>
                     </Field>
-                    <Field name="description" rules="min:3|required" v-slot="{field, errorMessage}">
-                        <VcTextarea2
+                    <Field name="description" rules="min:3|required" v-slot="{field, errorMessage, handleChange}">
+                        <VcTextarea
                           v-bind="field"
                           class="mb-4"
                           :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
@@ -128,7 +127,8 @@
                           :disabled="readonly"
                           name="description"
                           :error-message="errorMessage"
-                        ></VcTextarea2>
+                          @update:modelValue="handleChange"
+                        ></VcTextarea>
                     </Field>
 
                   <VcDynamicProperty
@@ -205,15 +205,15 @@ import {
     useUser,
     useAutosave,
     useForm,
-    min, required, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails, VcInput2
+    min, required, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails, VcInput
 } from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
-  IProperty,
-  IPropertyValue,
-  PropertyValue,
-  PropertyDictionaryItem,
+    IProperty,
+    IPropertyValue,
+    PropertyValue,
+    PropertyDictionaryItem,
 } from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
@@ -222,7 +222,9 @@ import {
     IImage,
     IProductDetails,
     ISellerProduct,
-    Category, Image,
+    Category,
+    Image,
+    Property
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
 import {debounce} from 'lodash-es'
@@ -280,7 +282,7 @@ const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const {setValues} = useForm({validateOnMount: false})
-
+useForm({ validateOnMount: false });
 const currentCategory = ref<Category>();
 const offersCount = ref(0);
 const categories = ref<Category[]>([]);
@@ -306,19 +308,15 @@ const readonly = computed(
 );
 
 const validateGtin = [
-    async (value: string): Promise<boolean | string> => {
-      try {
-          const res = await yup.string().label(t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')).required().nullable().min(3).validate(value)
-          if (res) {
-              return true
-          }
-      } catch(e) {
-          return e.errors.join("\n")
-      }
+    (value: string): string | boolean => {
+        return min(value, [3]);
     },
-    async (value: string): Promise<string | boolean> => {
-        return await validate("gtin", value)
-    }
+    (value: string): string | boolean => {
+        return required(value);
+    },
+    async (value: string): Promise<string | boolean> =>
+        await validate("gtin", value)
+
 ];
 
 const validate = debounce(async (
@@ -609,7 +607,7 @@ const setCategory = async (id: string) => {
 
   const currentProperties = [...(productDetails.value?.properties || [])];
   productDetails.value.properties = [
-    ...(currentCategory.value.properties || []),
+    ...(currentCategory.value?.properties?.map(prop => new Property({...prop, isReadOnly: false})) || []),
   ];
   productDetails.value.properties.forEach((property) => {
     const previousPropertyValue = currentProperties?.find(

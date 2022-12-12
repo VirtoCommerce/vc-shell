@@ -8,31 +8,37 @@
       :title="$t('SHELL.PASSWORDRESET.TITLE')"
     >
       <VcForm>
-        <VcInput
-          ref="passwordField"
-          class="mb-4 mt-1"
-          :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
-          :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
-          type="password"
-          :required="true"
-          :disabled="!form.tokenIsValid"
-          v-model="form.password"
-          @update:modelValue="validate()"
-        ></VcInput>
-        <VcInput
-          ref="confirmPasswordField"
-          class="mb-4"
-          :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
-          :placeholder="
-            $t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')
-          "
-          :required="true"
-          :disabled="!form.tokenIsValid"
-          v-model="form.confirmPassword"
-          type="password"
-          @update:modelValue="validate()"
-          @keyup.enter="resetPassword"
-        ></VcInput>
+        <Field name="password" v-slot="{field, errorMessage, handleChange}" :modelValue="form.password" rules="required">
+          <VcInput
+            v-bind="field"
+            ref="passwordField"
+            class="mb-4 mt-1"
+            :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
+            :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
+            type="password"
+            :disabled="!form.tokenIsValid"
+            v-model="form.password"
+            @update:modelValue="(e) => {handleChange(e); validate()}"
+            is-required
+            :error-message="errorMessage"
+          />
+        </Field>
+        <Field name="confirm_password" v-slot="{field, errorMessage, handleChange}" :modelValue="form.confirmPassword" rules="required">
+          <VcInput
+            v-bind="field"
+            ref="confirmPasswordField"
+            class="mb-4"
+            :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
+            :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
+            :disabled="!form.tokenIsValid"
+            v-model="form.confirmPassword"
+            type="password"
+            @update:modelValue="(e) => {handleChange(e); validate()}"
+            @keyup.enter="resetPassword"
+            is-required
+            :error-message="errorMessage"
+          />
+        </Field>
         <div class="flex justify-center items-center pt-2">
           <span v-if="$isDesktop.value" class="grow basis-0"></span>
           <vc-button
@@ -45,7 +51,7 @@
         </div>
 
         <VcHint
-          class="mt-3 text-[#f14e4e]"
+          class="mt-3 !text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
         >
@@ -60,7 +66,9 @@
 <script lang="ts" setup>
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import { useForm, useUser } from "@vc-shell/framework";
+import {useForm, useI18n, useUser} from "@vc-shell/framework";
+import {Field} from 'vee-validate'
+import * as yup from 'yup'
 
 const props = defineProps({
   userId: {
@@ -84,6 +92,7 @@ const {
   loading,
 } = useUser();
 const router = useRouter();
+const { t } = useI18n();
 const { validate: veeValidate } = useForm({ validateOnMount: false });
 
 const form = reactive({

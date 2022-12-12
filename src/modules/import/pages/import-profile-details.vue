@@ -116,13 +116,19 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {useI18n, useAutosave, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
+import {
+  useI18n,
+  useAutosave,
+  useForm,
+  IParentCallArgs,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import {
-    IDataImporter,
-    ImportProfile,
-    ObjectSettingEntry,
+  IDataImporter,
+  ImportProfile,
+  ObjectSettingEntry,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
 
@@ -131,13 +137,13 @@ export interface Props {
   closable?: boolean;
   param?: string;
   options?: {
-      importer: IDataImporter
+    importer: IDataImporter;
   };
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

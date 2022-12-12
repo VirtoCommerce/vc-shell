@@ -26,7 +26,10 @@
             "QTY": "Initial Quantity",
             "AVAIL_QTY": "Current Quantity",
             "VALID_FROM": "Valid from",
-            "VALID_TO": "Valid to"
+            "VALID_TO": "Valid to",
+            "SALE_PRICE": "Sale price",
+            "LIST_PRICE": "List price",
+            "MIN_QTY": "Min quantity"
           },
           "EMPTY": {
             "TITLE": "There are no offers yet",

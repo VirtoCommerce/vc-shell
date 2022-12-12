@@ -62,7 +62,13 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import {useI18n, useLogger, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
+import {
+  useI18n,
+  useLogger,
+  useForm,
+  IParentCallArgs,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid } from "vee-validate";
@@ -75,8 +81,8 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'parent:call', args: IParentCallArgs): void
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

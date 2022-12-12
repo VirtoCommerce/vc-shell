@@ -201,12 +201,16 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-    useFunctions,
-    useI18n,
-    useUser,
-    useAutosave,
-    useForm,
-    min, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails
+  useFunctions,
+  useI18n,
+  useUser,
+  useAutosave,
+  useForm,
+  min,
+  IParentCallArgs,
+  IBladeEvent,
+  IBladeToolbar,
+  AssetsDetails,
 } from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
@@ -224,7 +228,7 @@ import {
   IImage,
   IProductDetails,
   ISellerProduct,
-    Category
+  Category,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
 
@@ -235,18 +239,18 @@ export interface Props {
 }
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions: {
-        editableAsset?: Image;
-        images?: Image[];
-        sortHandler?: (remove: boolean, localImage: IImage) => void;
-        sellerProduct?: ISellerProduct;
-    };
+  bladeOptions: {
+    editableAsset?: Image;
+    images?: Image[];
+    sortHandler?: (remove: boolean, localImage: IImage) => void;
+    sellerProduct?: ISellerProduct;
+  };
 };
 
 export interface Emits {
-    (event: "parent:call", args: IParentCallArgs): void;
-    (event: "close:blade"): void;
-    (event: "open:blade", blade: IBladeOptions): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

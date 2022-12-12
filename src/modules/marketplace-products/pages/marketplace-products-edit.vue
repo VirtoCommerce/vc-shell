@@ -206,6 +206,7 @@ import {
   ref,
   unref,
   shallowRef,
+  Ref,
 } from "vue";
 
 export default defineComponent({
@@ -215,17 +216,17 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-    useFunctions,
-    useI18n,
-    useUser,
-    useAutosave,
-    useForm,
-    min,
-    VcInput,
-    IParentCallArgs,
-    IBladeEvent,
-    IBladeToolbar,
-    AssetsDetails
+  useFunctions,
+  useI18n,
+  useUser,
+  useAutosave,
+  useForm,
+  min,
+  VcInput,
+  IParentCallArgs,
+  IBladeEvent,
+  IBladeToolbar,
+  AssetsDetails,
 } from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
@@ -234,7 +235,7 @@ import {
   IProperty,
   IPropertyValue,
   PropertyDictionaryItem,
-    PropertyValue,
+  PropertyValue,
 } from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
@@ -243,11 +244,9 @@ import {
   IImage,
   IProductDetails,
   ISellerProduct,
-    Category,
-
+  Category,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
-import { Ref } from "vue";
 
 export interface Props {
   expanded?: boolean;
@@ -631,9 +630,7 @@ const setCategory = async (id: string) => {
       (item) => item.id === property.id
     );
     if (previousPropertyValue) {
-      property.values = previousPropertyValue.values.map(
-        (item) => item
-      );
+      property.values = previousPropertyValue.values.map((item) => item);
     }
   });
 };

@@ -405,31 +405,37 @@ import { defineComponent, onMounted, ref, computed, unref, watch } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
-   url: "/seller-details-edit",
+  url: "/seller-details-edit",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
 
 <script lang="ts" setup>
-import {useI18n, useUser, useAutosave, useForm, IBladeToolbar} from "@vc-shell/framework";
+import {
+  useI18n,
+  useUser,
+  useAutosave,
+  useForm,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useIsFormValid } from "vee-validate";
 
 export interface Props {
-    expanded?: boolean;
-    closable?: boolean;
-    param?: string;
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    expanded: true,
-    closable: true,
-    param: undefined,
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
 defineEmits<Emits>();

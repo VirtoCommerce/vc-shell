@@ -30,13 +30,12 @@
 </template>
 
 <script lang="ts" setup>
-
 export interface Props {
-    email: string
+  email: string;
 }
 
 withDefaults(defineProps<Props>(), {
-    email: ''
-})
+  email: "",
+});
 defineEmits(["close"]);
 </script>

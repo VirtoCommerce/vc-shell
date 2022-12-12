@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType } from "vue";
+import { computed } from "vue";
 import { INotificationActions } from "../../../types";
 
 export interface Props {

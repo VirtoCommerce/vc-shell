@@ -78,7 +78,12 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useI18n, ITableColumns} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useI18n,
+  ITableColumns,
+} from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
@@ -86,11 +91,11 @@ import { ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions?: {
-        importJobId?: string,
-        title?: string
-    }
-}
+  bladeOptions?: {
+    importJobId?: string;
+    title?: string;
+  };
+};
 
 export interface Props {
   expanded: boolean;
@@ -102,7 +107,7 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'open:blade', blade: IBladeOptions): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -151,7 +156,6 @@ const columns = ref<ITableColumns[]>([
   {
     id: "profileName", // temp
     title: computed(() => t("IMPORT.PAGES.LIST.TABLE.HEADER.PROFILE_NAME")),
-    alwaysVisible: true,
     width: 147,
   },
   {

@@ -3,7 +3,7 @@
     class="grow basis-0"
     :loading="loading"
     :expanded="expanded"
-    :columns="columns"
+    :columns="tableColumns"
     :header="false"
     :footer="footer"
     :items="reviews"
@@ -48,6 +48,7 @@ import { computed, onMounted, ref, watch } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 // Component
@@ -87,13 +88,6 @@ const { loading, reviews, totalCount, pages, currentPage, sort, loadReviews } =
 
 // Table
 
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
 const tableColumns = ref<ITableColumns[]>([
   {
     id: "title",

@@ -13,22 +13,24 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, shallowRef } from "vue";
-import { VcBlade, useI18n } from "@vc-shell/framework";
+import {
+  VcBlade,
+  useI18n,
+  IBladeEvent,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 
 export default defineComponent({
-   url: "/reviews",
+  url: "/reviews",
 });
 </script>
 
 <script lang="ts" setup>
 // Page
-
-import {IBladeEvent, IBladeToolbar} from "@vc-shell/framework";
-import {CustomerReview} from "../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded: boolean;
@@ -37,10 +39,10 @@ export interface Props {
 }
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions?: {
-      review?: CustomerReview
-    }
-}
+  bladeOptions?: {
+    review?: CustomerReview;
+  };
+};
 
 export interface Emits {
   (event: "close:blade"): void;

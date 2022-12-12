@@ -102,7 +102,9 @@
               <div
                 class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
               >
-                <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
+                <VcHint>{{
+                  $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
+                }}</VcHint>
                 <div
                   class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
                 >
@@ -114,7 +116,9 @@
               <div
                 class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
               >
-                <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
+                <VcHint>{{
+                  $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED")
+                }}</VcHint>
                 <div
                   class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
                 >
@@ -165,30 +169,38 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, useLogger,   IActionBuilderResult,
-    ITableColumns} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useFunctions,
+  useI18n,
+  useLogger,
+  IActionBuilderResult,
+  ITableColumns,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
 import MpProductsEdit from "./marketplace-products-edit.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 export interface Props {
-    expanded?: boolean;
-    closable?: boolean;
-    param?: string;
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'open:blade', blade: IBladeEvent): void
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    expanded: true,
-    closable: true,
-    param: undefined,
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
 const emit = defineEmits<Emits>();
@@ -263,7 +275,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "export",
-    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")),
+    title: computed(() =>
+      t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.EXPORT_CATEGORIES")
+    ),
     icon: "fas fa-file-export",
     async clickHandler() {
       await exportCategories();
@@ -296,7 +310,9 @@ const tableColumns = ref<ITableColumns[]>([
   },
   {
     id: "createdDate",
-    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
+    title: computed(() =>
+      t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")
+    ),
     width: 140,
     sortable: true,
     type: "date-ago",
@@ -331,6 +347,7 @@ const columns = computed(() => {
     return tableColumns.value.filter((item) => item.alwaysVisible === true);
   }
 });
+
 const title = computed(() => t("MP_PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(
   () => Object.values(appliedFilter.value).filter((item) => !!item).length

@@ -22,8 +22,14 @@ import {
   TeamList,
   FulfillmentCenters,
 } from "../modules/settings";
-import { usePermissions, useUser, ExtendedComponent } from "@vc-shell/framework";
+import {
+  usePermissions,
+  useUser,
+  ExtendedComponent,
+} from "@vc-shell/framework";
+// eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
+// eslint-disable-next-line import/no-unresolved
 import bgImage from "/assets/background.jpg";
 
 const { checkPermission } = usePermissions();
@@ -180,9 +186,22 @@ export const router = createRouter({
   routes,
 });
 
+let popStateDetected = false;
+window.addEventListener("popstate", () => {
+  popStateDetected = true;
+});
+
 router.beforeEach((to, from, next) => {
   const ExtendedComponent = to.matched[to.matched.length - 1]?.components
     ?.default as ExtendedComponent;
+
+  const browserBackButtonClick = popStateDetected;
+  popStateDetected = false;
+
+  if (browserBackButtonClick) {
+    next(false);
+    return;
+  }
 
   if (ExtendedComponent && ExtendedComponent.permissions) {
     if (checkPermission(ExtendedComponent.permissions)) {

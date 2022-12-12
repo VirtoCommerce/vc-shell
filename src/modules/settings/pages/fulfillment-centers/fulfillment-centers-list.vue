@@ -51,9 +51,7 @@ import {
   onMounted,
   shallowRef,
 } from "vue";
-import {
-  UserPermissions,
-} from "../../../../types";
+import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
   url: "/fulfillment-centers-list",
@@ -62,7 +60,12 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, ITableColumns, useI18n} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  ITableColumns,
+  useI18n,
+} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { FulfillmentCenter } from "../../../../api_client/marketplacevendor";
@@ -74,8 +77,8 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'open:blade', blade: IBladeEvent): void
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -134,7 +137,6 @@ const columns = ref<ITableColumns[]>([
     title: computed(() =>
       t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
     ),
-    alwaysVisible: true,
     sortable: true,
   },
 ]);

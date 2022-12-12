@@ -141,25 +141,35 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import {useI18n, useUser, useAutosave, useForm, IParentCallArgs, IBladeToolbar} from "@vc-shell/framework";
+import {
+  useI18n,
+  useUser,
+  useAutosave,
+  useForm,
+  IParentCallArgs,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid } from "vee-validate";
-import {SellerUser, SellerUserDetails} from "../../../../api_client/marketplacevendor";
+import {
+  SellerUser,
+  SellerUserDetails,
+} from "../../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
   param?: string;
   options?: {
-      user?: SellerUser
+    user?: SellerUser;
   };
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'parent:call', args: IParentCallArgs): void
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

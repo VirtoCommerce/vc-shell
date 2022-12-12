@@ -47,7 +47,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { IMenuItems } from "../types";
+import { IMenuItems } from "@vc-shell/framework";
 
 export interface Props {
   avatar: string;

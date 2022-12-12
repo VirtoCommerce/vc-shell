@@ -229,7 +229,12 @@ export default defineComponent({
 <script lang="ts" setup>
 import moment from "moment";
 import { useOrder } from "../composables";
-import {IBladeToolbar, IParentCallArgs, useI18n, ITableColumns} from "@vc-shell/framework";
+import {
+  IBladeToolbar,
+  IParentCallArgs,
+  useI18n,
+  ITableColumns,
+} from "@vc-shell/framework";
 
 export interface Props {
   expanded?: boolean;
@@ -238,7 +243,7 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'parent:call', args: IParentCallArgs): void;
+  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

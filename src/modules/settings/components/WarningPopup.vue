@@ -38,8 +38,8 @@
 
 <script lang="ts" setup>
 export interface Emits {
-    (event: 'close'): void
-    (event: 'delete'): void;
+  (event: "close"): void;
+  (event: "delete"): void;
 }
 defineEmits<Emits>();
 </script>

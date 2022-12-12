@@ -94,7 +94,8 @@ import {
   VcButton,
   VcPopup,
   VcForm,
-    IIdentityError, useUser
+  IIdentityError,
+  useUser,
 } from "@vc-shell/framework";
 
 interface IChangePassForm {
@@ -106,7 +107,7 @@ interface IChangePassForm {
 }
 
 interface Emits {
-    (event: 'close'): void;
+  (event: "close"): void;
 }
 
 const emit = defineEmits<Emits>();

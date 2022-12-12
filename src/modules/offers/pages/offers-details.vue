@@ -427,18 +427,22 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-    useForm,
-    VcRow,
-    useFunctions,
-    useI18n,
-    useAutosave, IParentCallArgs, IBladeEvent, IBladeToolbar,
+  useForm,
+  VcRow,
+  useFunctions,
+  useI18n,
+  useAutosave,
+  IParentCallArgs,
+  IBladeEvent,
+  IBladeToolbar,
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
-    IOfferDetails,
-    IOfferProduct,
-    OfferPrice,
-    InventoryInfo, SellerProduct,
+  IOfferDetails,
+  IOfferProduct,
+  OfferPrice,
+  InventoryInfo,
+  SellerProduct,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field } from "vee-validate";
@@ -457,14 +461,14 @@ export interface Props {
   closable: boolean;
   param?: string;
   options?: {
-    sellerProduct?: SellerProduct
+    sellerProduct?: SellerProduct;
   };
 }
 
 export interface Emits {
-    (event: 'parent:call', args: IParentCallArgs): void
-    (event: 'close:blade'): void
-    (event: 'open:blade', blade: IBladeEvent): void
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -494,7 +498,7 @@ const {
   makeCopy,
   deleteOffer,
 } = useOffer();
-const { resetAutosaved, loadAutosaved, savedValue } = useAutosave(
+const { resetAutosaved, savedValue } = useAutosave(
   offerDetails,
   modified,
   props.param ?? "offersDetails"
@@ -541,7 +545,10 @@ onMounted(async () => {
     }
 
     if (savedValue.value) {
-      offerDetails.value = Object.assign({}, savedValue.value as unknown as IOfferDetails);
+      offerDetails.value = Object.assign(
+        {},
+        savedValue.value as unknown as IOfferDetails
+      );
     }
     const searchResult = await fetchProducts();
     products.value = searchResult.results;

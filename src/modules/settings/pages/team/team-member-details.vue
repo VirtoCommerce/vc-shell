@@ -151,7 +151,6 @@ import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import {SellerUser, SellerUserDetails} from "../../../../api_client/marketplacevendor";
-import * as yup from 'yup'
 
 export interface Props {
   expanded?: boolean;
@@ -175,8 +174,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
 useForm({ validateOnMount: false });
 const { user } = useUser();
+
 const { t } = useI18n();
 const {
   userDetails,
@@ -194,7 +195,6 @@ const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
   modified,
   props.param ?? "teamMembers"
 );
-
 const title = computed(() =>
   props.param
     ? userDetails.value.firstName + " " + userDetails.value.lastName

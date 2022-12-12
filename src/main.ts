@@ -1,5 +1,5 @@
 import VirtoShellFramework from "@vc-shell/framework";
-import { createApp, h, resolveComponent } from "vue";
+import { createApp } from "vue";
 import PushHub from "./config/push-hub";
 import ImportModule from "./modules/import";
 import OffersModule from "./modules/offers";

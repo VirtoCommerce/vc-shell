@@ -5,7 +5,6 @@ const version = JSON.parse(packageJson.toString()).version || 0;
 import vue from "@vitejs/plugin-vue";
 import { loadEnv } from "vite";
 import typescript from "@rollup/plugin-typescript";
-import * as path from "path";
 
 // Build configuration for the application
 const mode = process.env.APP_ENV as string;
@@ -65,9 +64,10 @@ export default {
     alias:
       mode === "development"
         ? {
-            "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+            "@vc-shell/framework/dist/style.css":
+              "@vc-shell/framework/dist/style.css",
             // "@vc-shell/framework": "@vc-shell/framework/index.ts",
-              "vue-router": "vue-router/dist/vue-router.cjs.js",
+            "vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
             "vue-router": "vue-router/dist/vue-router.cjs.js",
@@ -112,7 +112,7 @@ export default {
             "ace-builds",
             "vue-logger-plugin",
             "client-oauth2",
-          "vue-currency-input"
+            "vue-currency-input",
           ]
         : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },

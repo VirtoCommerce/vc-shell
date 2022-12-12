@@ -116,7 +116,6 @@ import {
     ObjectSettingEntry,
 } from "../../../api_client/marketplacevendor";
 import {useIsFormValid, Field, useForm} from "vee-validate";
-import * as yup from 'yup'
 
 export interface Props {
   expanded?: boolean;
@@ -159,10 +158,9 @@ const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
   modified,
   props.param ?? "importProfile"
 );
-useForm({validateOnMount: false})
+useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const showConfirmation = ref(false);
-
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",

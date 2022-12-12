@@ -140,7 +140,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: true,
-    disabled: computed(() => !(isValid.value && modified.value)),
+    disabled: computed(() => props.param && !(isValid.value && modified.value)),
   },
   {
     id: "reset",

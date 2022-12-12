@@ -31,9 +31,7 @@
       @scroll:ptr="reload"
     >
       <!-- Filters -->
-      <template
-        v-slot:filters="{ closePanel }"
-      >
+      <template v-slot:filters="{ closePanel }">
         <h2 v-if="$isMobile.value">
           {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
@@ -149,41 +147,29 @@
             </div>
 
             <div class="mt-3 w-full flex justify-between">
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+              <div class="truncate grow basis-0 mr-2">
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
-                <div
-                  class="truncate mt-1"
-                >
+                <div class="truncate mt-1">
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
                   }}
                 </div>
               </div>
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+              <div class="truncate grow basis-0 mr-2">
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
-                <div
-                  class="truncate mt-1"
-                >
+                <div class="truncate mt-1">
                   {{
                     itemData.item.createdDate &&
                     moment(itemData.item.createdDate).fromNow()
                   }}
                 </div>
               </div>
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+              <div class="truncate grow basis-0 mr-2">
                 <div class="flex flex-col items-center">
                   <VcHint>{{
                     $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
-                  <div
-                    class="truncate mt-1"
-                  >
+                  <div class="truncate mt-1">
                     <VcStatusIcon
                       :status="itemData.item && itemData.item.isPublished"
                     ></VcStatusIcon>
@@ -215,32 +201,40 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useFunctions, useI18n, useLogger, IActionBuilderResult,
-    ITableColumns} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useFunctions,
+  useI18n,
+  useLogger,
+  IActionBuilderResult,
+  ITableColumns,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
 import ProductsEdit from "./products-edit.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 export interface Props {
-    expanded?: boolean;
-    closable?: boolean;
-    param?: string;
-    options?: Record<string, unknown>;
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, unknown>;
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'open:blade', blade: IBladeEvent): void
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    expanded: true,
-    closable: true,
-    param: undefined,
-    options: () => ({}),
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: () => ({}),
 });
 
 const emit = defineEmits<Emits>();
@@ -350,13 +344,13 @@ const tableColumns = ref<ITableColumns[]>([
     id: "imgSrc",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
     width: 60,
-    alwaysVisible: true,
     type: "image",
   },
   {
     id: "name",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
+    width: 100,
     alwaysVisible: true,
   },
   {
@@ -379,12 +373,13 @@ const tableColumns = ref<ITableColumns[]>([
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
     width: 180,
     sortable: true,
+    alwaysVisible: true,
   },
   {
     id: "gtin",
     field: "productData.gtin",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
-    width: 180,
+    width: 160,
     alwaysVisible: true,
   },
 ]);
@@ -396,6 +391,7 @@ const columns = computed(() => {
     return tableColumns.value.filter((item) => item.alwaysVisible === true);
   }
 });
+
 const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(
   () => Object.values(appliedFilter.value).filter((item) => !!item).length
@@ -403,7 +399,7 @@ const activeFilterCount = computed(
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-      component: shallowRef(ProductsEdit),
+    component: shallowRef(ProductsEdit),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -504,7 +500,7 @@ async function resetSearch() {
 }
 function addProduct() {
   emit("open:blade", {
-      component: shallowRef(ProductsEdit),
+    component: shallowRef(ProductsEdit),
   });
 }
 

@@ -228,7 +228,6 @@ import {
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
 import {debounce} from 'lodash-es'
-import * as yup from 'yup'
 
 export interface Props {
   expanded?: boolean;
@@ -260,7 +259,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
-
 const {
   product: productData,
   productDetails,
@@ -281,8 +279,9 @@ const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
 );
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
+const { debounce } = useFunctions();
 const {setValues} = useForm({validateOnMount: false})
-useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const currentCategory = ref<Category>();
 const offersCount = ref(0);
 const categories = ref<Category[]>([]);
@@ -290,7 +289,6 @@ const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
 const categoriesTotal = ref();
-const isValid = useIsFormValid();
 
 const loading = computed(() => prodLoading.value);
 const filterTypes = ["Category", "Variation"];

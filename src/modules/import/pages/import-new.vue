@@ -199,28 +199,29 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-    IBladeEvent,
-    IParentCallArgs,
-    useI18n,
-    useUser,
-    VcContainer,
-    VcCol,
-    VcRow,
-    VcBlade,
-    VcCard,
-    VcFileUpload,
-    VcProgress,
-    VcIcon,
-    VcHint,
-    VcTable,
-    IBladeToolbar,
-    ITableColumns
+  IBladeEvent,
+  IParentCallArgs,
+  useI18n,
+  useUser,
+  VcContainer,
+  VcCol,
+  VcRow,
+  VcBlade,
+  VcCard,
+  VcFileUpload,
+  VcProgress,
+  VcIcon,
+  VcHint,
+  VcTable,
+  IBladeToolbar,
+  ITableColumns,
 } from "@vc-shell/framework";
-import {
-  INotificationActions,
-} from "../../../types";
+import { INotificationActions } from "../../../types";
 import useImport from "../composables/useImport";
-import {IDataImporter, ImportDataPreview} from "../../../api_client/marketplacevendor";
+import {
+  IDataImporter,
+  ImportDataPreview,
+} from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
@@ -236,10 +237,10 @@ interface IImportBadges {
 }
 
 type IBladeOptions = IBladeEvent & {
-    bladeOptions: {
-        importer: IDataImporter
-    }
-}
+  bladeOptions: {
+    importer: IDataImporter;
+  };
+};
 
 export interface Props {
   expanded: boolean;
@@ -252,9 +253,9 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'open:blade', blade: IBladeOptions): void
-    (event: 'close:blade'): void
-    (event: 'parent:call', args: IParentCallArgs): void
+  (event: "open:blade", blade: IBladeOptions): void;
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -302,9 +303,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       emit("open:blade", {
         component: shallowRef(ImportProfileDetails),
-          bladeOptions: {
-            importer: profileDetails.value.importer
-          },
+        bladeOptions: {
+          importer: profileDetails.value.importer,
+        },
         param: profile.value.id,
       });
     },

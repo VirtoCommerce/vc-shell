@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.38",
+  "version": "1.0.39",
   "main": "./dist/framework.js",
   "types": "./dist/index.d.ts",
   "style": "./dist/style.css",
@@ -34,17 +34,17 @@
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rollup/plugin-commonjs": "^21.0.2",
-    "@vc-shell/api-client-generator": "^1.0.38",
-    "@vc-shell/config-generator": "^1.0.38",
+    "@vc-shell/api-client-generator": "^1.0.39",
+    "@vc-shell/config-generator": "^1.0.39",
     "sass": "^1.49.0",
     "typescript": "^4.6.2",
     "url-pattern": "^1.0.3"
   },
   "peerDependencies": {
-    "yup": "^0.32.11",
     "vee-validate": "^4.7.3",
     "vue": "^3.0.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "yup": "^0.32.11"
   },
   "publishConfig": {
     "access": "public",

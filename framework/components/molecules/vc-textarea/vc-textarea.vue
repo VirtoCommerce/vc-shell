@@ -7,7 +7,7 @@
     }"
   >
     <!-- Textarea label -->
-    <VcLabel v-if="label" class="mb-2" :required="required">
+    <VcLabel v-if="label" class="mb-2" :required="isRequired">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -35,10 +35,8 @@
 </template>
 
 <script lang="ts" setup>
-import { unref, watch, getCurrentInstance } from "vue";
-import { useField } from "vee-validate";
+import { watch } from "vue";
 import { VcLabel } from "@/components";
-import { IValidationRules } from "@/core/types";
 
 const props = defineProps({
   placeholder: {
@@ -51,7 +49,7 @@ const props = defineProps({
     default: undefined,
   },
 
-  required: {
+  isRequired: {
     type: Boolean,
     default: false,
   },
@@ -83,17 +81,17 @@ const props = defineProps({
 
   errorMessage: {
     type: String,
-    default: undefined
-  }
+    default: undefined,
+  },
 });
 
 const emit = defineEmits(["update:modelValue"]);
 
 watch(
-    () => props.modelValue,
-    (value) => {
-        emit("update:modelValue", value);
-    }
+  () => props.modelValue,
+  (value) => {
+    emit("update:modelValue", value);
+  }
 );
 
 // Handle input event to propertly validate value and emit changes

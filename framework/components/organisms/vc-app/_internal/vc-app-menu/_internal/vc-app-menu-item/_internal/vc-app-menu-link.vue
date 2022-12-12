@@ -100,7 +100,7 @@ defineEmits<Emits>();
   }
 
   &__title {
-    @apply text-ellipsis overflow-hidden whitespace-nowrap
+    @apply truncate
     text-lg
     font-medium
     px-3

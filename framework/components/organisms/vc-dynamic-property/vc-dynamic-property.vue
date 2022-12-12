@@ -130,7 +130,7 @@
                 :label="handleDisplayName"
                 :modelValue="getter(property)"
                 @update:modelValue="(e) => {handleChange(e); setter(property, e)}"
-                :required="property.required || property.isRequired"
+                :isRequired="property.required || property.isRequired"
                 :placeholder="handleDisplayName || property.defaultValue"
                 :disabled="disabled"
         ></VcTextarea>

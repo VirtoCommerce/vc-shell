@@ -42,10 +42,10 @@
                 class="mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="localImage.description"
-                :required="true"
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
+                is-required
               ></VcTextarea>
             </VcForm>
           </div>

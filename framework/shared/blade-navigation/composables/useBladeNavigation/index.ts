@@ -85,11 +85,7 @@ export default (): IUseBladeNavigation => {
         parentBladeOptions.value = unref(bladeOptions);
         parentBladeParam.value = unref(param);
         if (navigationCb && typeof navigationCb === "function") {
-          try {
-            await navigationCb();
-          } catch (e) {
-            throw "Navigation failure";
-          }
+          await navigationCb();
         } else if (!navigationCb) {
           await router.push(parent.url);
         }

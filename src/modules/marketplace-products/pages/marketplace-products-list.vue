@@ -63,10 +63,10 @@
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
         <div class="flex flex-col">
-          <div class="text-ellipsis overflow-hidden whitespace-nowrap">
+          <div class="truncate">
             {{ itemData.item.name }}
           </div>
-          <VcHint class="text-ellipsis overflow-hidden whitespace-nowrap mt-1">
+          <VcHint class="truncate mt-1">
             {{ itemData.item.path }}
           </VcHint>
         </div>
@@ -100,13 +100,13 @@
 
             <div class="mt-3 w-full flex justify-between">
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <VcHint>{{
                   $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
                 }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -114,13 +114,13 @@
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <VcHint>{{
                   $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED")
                 }}</VcHint>
                 <div
-                  class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                  class="truncate mt-1"
                 >
                   {{
                     itemData.item.createdDate &&
@@ -129,14 +129,14 @@
                 </div>
               </div>
               <div
-                class="text-ellipsis overflow-hidden whitespace-nowrap grow basis-0 mr-2"
+                class="truncate grow basis-0 mr-2"
               >
                 <div class="flex flex-col items-center">
                   <VcHint>{{
                     $t("MP_PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
                   <div
-                    class="text-ellipsis overflow-hidden whitespace-nowrap mt-1"
+                    class="truncate mt-1"
                   >
                     <VcStatusIcon
                       :status="itemData.item && itemData.item.isPublished"
@@ -299,13 +299,13 @@ const tableColumns = ref<ITableColumns[]>([
     id: "imgSrc",
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
     width: 60,
-    alwaysVisible: true,
     type: "image",
   },
   {
     id: "name",
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
+    width: 100,
     alwaysVisible: true,
   },
   {
@@ -330,6 +330,7 @@ const tableColumns = ref<ITableColumns[]>([
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
     width: 180,
     sortable: true,
+    alwaysVisible: true,
   },
   {
     id: "gtin",

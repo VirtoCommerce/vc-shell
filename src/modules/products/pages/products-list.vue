@@ -222,7 +222,6 @@ export interface Props {
   expanded?: boolean;
   closable?: boolean;
   param?: string;
-  options?: Record<string, unknown>;
 }
 
 export interface Emits {
@@ -234,7 +233,6 @@ const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
   param: undefined,
-  options: () => ({}),
 });
 
 const emit = defineEmits<Emits>();
@@ -252,7 +250,7 @@ const {
   searchQuery,
   SellerProductStatus,
   exportCategories,
-} = useProducts(props.options.query);
+} = useProducts();
 const filter = reactive<{
   status?: string[];
 }>({ status: [] });
@@ -379,7 +377,7 @@ const tableColumns = ref<ITableColumns[]>([
     id: "gtin",
     field: "productData.gtin",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
-    width: 160,
+    width: 180,
     alwaysVisible: true,
   },
 ]);

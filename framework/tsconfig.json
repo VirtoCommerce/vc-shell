@@ -24,17 +24,24 @@
       "dom.iterable",
       "scripthost"
     ],
-    "types": ["vite/client"],
+    "types": ["vite/client", "unplugin-vue-macros/macros-global"],
     "paths": {
       "@/*": ["*"],
     }
+  },
+  "vueCompilerOptions": {
+    "target": 3,
+    "plugins": [
+      "@vue-macros/volar/define-props"
+    ]
   },
   "include": [
     "*.ts",
     "core/**/*.ts",
     "core/api/*.ts",
-    "components/**/*.vue",
-    "components/**/*.ts",
+    "ui/components/**/*.vue",
+    "ui/components/**/*.ts",
+    "ui/types/*.ts",
     "shared/**/*.vue",
     "shared/**/*.ts",
   ],

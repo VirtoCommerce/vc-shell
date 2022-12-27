@@ -1,10 +1,11 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  },  
+  },
   "files.eol": "\r\n",
   "eslint.validate": [
     "vue",
     "javascript"
-  ]
+  ],
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": false
 }

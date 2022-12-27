@@ -1,5 +1,5 @@
 import { App } from "vue";
-import * as components from "./components";
+import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
@@ -8,6 +8,8 @@ import { init as initLogger } from "./core/composables/useLogger";
 import { init as initI18n } from "./core/composables/useI18n";
 import { init as initShared } from "./shared";
 
+import { Money3Directive } from "v-money3";
+
 const init = [initLogger, initI18n, initShared];
 
 import "normalize.css";
@@ -15,6 +17,8 @@ import "./assets/styles/index.scss";
 
 export default {
   install(app: App): void {
+    app.directive("money", Money3Directive);
+
     // Init all children and shared components
     init.forEach((fn) => fn(app));
 
@@ -53,8 +57,13 @@ export default {
   },
 };
 
-export * from "./components";
+export * from "./ui/components";
+
+// eslint-disable-next-line import/export
+export * from "./ui/types";
+
 export * from "./core/composables";
+export * from "./core/directives";
 export * from "./core/types";
 export * from "./core/plugins/validation";
 export * from "./core/api";

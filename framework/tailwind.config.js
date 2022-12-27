@@ -1,6 +1,7 @@
 /** @type { import('tailwindcss').Config } */
 module.exports = {
-  content: ["./components/**/*.{vue,js,ts,jsx,tsx}"],
+  prefix: 'tw-',
+  content: ["./ui/components/**/*.{vue,js,ts,jsx,tsx}"],
     theme: {
         fontFamily: {
             roboto: ["Roboto", "sans-serif"],
@@ -37,12 +38,12 @@ module.exports = {
                     to: {
                         "background-position": '30px 0, left'
                     }
-                }
+                },
             },
             animation: {
                 loadingMarker: "loadingMarker 3s infinite",
                 loadingMarkers: "loadingMarkers 3s infinite",
-                loadingProgress: "loadingProgress 1s linear infinite"
+                loadingProgress: "loadingProgress 1s linear infinite",
             }
         },
     },

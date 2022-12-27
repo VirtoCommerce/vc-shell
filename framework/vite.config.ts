@@ -2,16 +2,24 @@ import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import { LibraryOptions } from "vite";
 import * as path from "path";
+import VueMacros from "unplugin-vue-macros/vite";
 
 export default getLibraryConfiguration(
   {
-    plugins: [vue()],
+    plugins: [
+      VueMacros({
+        plugins: {
+          vue: vue(),
+        },
+      }),
+    ],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./"),
       },
     },
     build: {
+      target: "esnext",
       lib: {
         entry: "/index.ts",
       } as LibraryOptions,
@@ -30,6 +38,11 @@ export default getLibraryConfiguration(
             "vee-validate": "vee-validate",
           },
         },
+      },
+    },
+    optimizeDeps: {
+      esbuildOptions: {
+        target: ["es2020", "safari14"],
       },
     },
   },

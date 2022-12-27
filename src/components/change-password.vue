@@ -4,13 +4,13 @@
     :title="$t('SHELL.ACCOUNT.CHANGE_PASSWORD')"
     @close="$emit('close')"
   >
-    <div class="p-3">
+    <div class="tw-p-3">
       <VcForm>
           <Field name="current" rules="required|min:6" :modelValue="form.currentPassword" v-slot="{field, errorMessage, handleChange}">
               <VcInput
                     v-bind="field"
                     ref="passwordField"
-                    class="mb-4 mt-1"
+                    class="tw-mb-4 tw-mt-1"
                     :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
                     :placeholder="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
                     type="password"
@@ -24,7 +24,7 @@
               <VcInput
                       v-bind="field"
                       ref="newPasswordField"
-                      class="mb-4 mt-1"
+                      class="tw-mb-4 tw-mt-1"
                       :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
                       :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
                       type="password"
@@ -38,7 +38,7 @@
               <VcInput
                       v-bind="field"
                       ref="confirmPasswordField"
-                      class="mb-4"
+                      class="tw-mb-4"
                       :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
                       :placeholder="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
                       @update:modelValue="validate"
@@ -48,12 +48,12 @@
                       :error-message="errorMessage"
               ></VcInput>
           </Field>
-        <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="grow basis-0"></span>
+        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <VcButton
             variant="primary"
             :outline="true"
-            class="mr-3"
+            class="tw-mr-3"
             @click="$emit('close')"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.CANCEL") }}
@@ -68,7 +68,7 @@
         </div>
 
         <VcHint
-          class="mt-3 !text-[#f14e4e]"
+          class="tw-mt-3 !tw-text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
         >

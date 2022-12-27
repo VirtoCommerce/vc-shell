@@ -4,15 +4,15 @@
     @close="$emit('close')"
     variant="small"
   >
-    <div class="flex flex-col">
-      <div class="px-[40px] py-[28px] flex flex-row items-center">
+    <div class= "tw-flex tw-flex-col">
+      <div class="tw-px-[40px] tw-py-[28px] tw-flex tw-flex-row tw-items-center">
         <VcIcon
           icon="fas fa-exclamation-circle"
           size="xxl"
-          class="text-[#FF4A4A]"
+          class="tw-text-[#FF4A4A]"
         ></VcIcon>
         <div
-          class="ml-3"
+          class="tw-ml-3"
           v-html="
             $t('SETTINGS.TEAM.PAGES.DETAILS.POPUP.ERROR.MESSAGE.USER_EXIST', {
               email: email,
@@ -20,8 +20,8 @@
           "
         ></div>
       </div>
-      <div class="flex my-4 mx-5">
-        <VcButton class="ml-auto" @click="$emit('close')">{{
+      <div class= "tw-flex tw-my-4 tw-mx-5">
+        <VcButton class="tw-ml-auto" @click="$emit('close')">{{
           $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ERROR.BUTTONS.OK")
         }}</VcButton>
       </div>

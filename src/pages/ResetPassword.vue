@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-app w-full h-full box-border flex flex-col m-0 vc-theme_light">
+  <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
     <VcLoading v-if="loading" active></VcLoading>
 
     <VcLoginForm
@@ -12,7 +12,7 @@
           <VcInput
             v-bind="field"
             ref="passwordField"
-            class="mb-4 mt-1"
+            class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
             :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
@@ -27,7 +27,7 @@
           <VcInput
             v-bind="field"
             ref="confirmPasswordField"
-            class="mb-4"
+            class="tw-mb-4"
             :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
@@ -39,8 +39,8 @@
             :error-message="errorMessage"
           />
         </Field>
-        <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="grow basis-0"></span>
+        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <vc-button
             variant="primary"
             :disabled="disableButton"
@@ -51,7 +51,7 @@
         </div>
 
         <VcHint
-          class="mt-3 !text-[#f14e4e]"
+          class="tw-mt-3 !tw-text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
         >
@@ -68,7 +68,6 @@ import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import {useForm, useI18n, useUser} from "@vc-shell/framework";
 import {Field} from 'vee-validate'
-import * as yup from 'yup'
 
 const props = defineProps({
   userId: {

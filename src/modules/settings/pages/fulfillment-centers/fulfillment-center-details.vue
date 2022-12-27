@@ -13,17 +13,17 @@
         :outline="false"
         :extend="true"
         variant="light-danger"
-        class="w-full box-border mb-3"
+        class="tw-w-full tw-box-border tw-mb-3"
         v-if="errorMessage"
       >
-        <div class="flex flex-row items-center">
+        <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
             icon="fas fa-exclamation-circle"
-            class="text-[#ff4a4a] mr-3"
+            class="tw-text-[#ff4a4a] tw-mr-3"
             size="xxl"
           ></VcIcon>
           <div>
-            <div class="font-bold">
+            <div class="tw-font-bold">
               {{ $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
@@ -36,7 +36,7 @@
               <Field v-slot="{field, errorMessage, handleChange}" name="name" rules="required" :modelValue="fulfillmentCenterDetails.name">
                   <VcInput
                           v-slot="field"
-                          class="p-3"
+                          class="tw-p-3"
                           :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
                           :placeholder="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
                           v-model="fulfillmentCenterDetails.name"

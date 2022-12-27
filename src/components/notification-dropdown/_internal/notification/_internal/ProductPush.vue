@@ -1,6 +1,6 @@
 <template>
   <slot name="title" v-bind:title="notificationTitle"></slot>
-  <VcHint class="mb-1" :style="{ color: variant }">{{
+  <VcHint class="tw-mb-1" :style="{ color: variant }">{{
     notificationDescription
   }}</VcHint>
 </template>

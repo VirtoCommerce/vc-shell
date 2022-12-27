@@ -18,7 +18,7 @@
             <Field v-slot="{field, errorMessage, handleChange}" rules="required" name="profile_name">
                 <VcInput
                   v-bind="field"
-                  class="p-3"
+                  class="tw-p-3"
                   :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
                   :placeholder="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER')"
                   :clearable="true"
@@ -32,7 +32,7 @@
             <Field v-slot="{field, errorMessage, handleChange}" rules="required" name="importer">
                 <VcSelect
                   v-bind="field"
-                  class="p-3"
+                  class="tw-p-3"
                   :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
                   :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
                   name="importer"
@@ -49,13 +49,13 @@
             </Field>
         </VcCol>
       </VcRow>
-      <VcRow class="p-3" v-if="profileDetails.typeName">
+      <VcRow class="tw-p-3" v-if="profileDetails.typeName">
         <VcCard
           :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
         >
           <VcRow>
             <VcCol>
-              <div class="p-4">
+              <div class="tw-p-4">
                 <a class="vc-link" :href="sampleTemplateUrl">{{
                   $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
                 }}</a>
@@ -63,7 +63,7 @@
               </div>
 
               <VcDynamicProperty
-                class="px-4 pb-4"
+                class="tw-px-4 tw-pb-4"
                 v-for="(setting, i) in profileDetails.settings"
                 :key="`${profileDetails.id}_${i}`"
                 :property="setting"

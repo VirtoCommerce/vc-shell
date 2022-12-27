@@ -12,8 +12,8 @@
       class="user-dropdown-button__avatar"
       :style="{ 'background-image': `url(${avatar})` }"
     ></div>
-    <div class="grow basis-0 ml-3 overflow-hidden">
-      <div class="user-dropdown-button__name truncate">
+    <div class="tw-grow tw-basis-0 tw-ml-3 tw-overflow-hidden">
+      <div class="user-dropdown-button__name tw-truncate">
         {{ name }}
       </div>
       <div class="user-dropdown-button__role">
@@ -77,48 +77,48 @@ const onClose = () => {
 
 <style lang="scss">
 .user-dropdown-button {
-  @apply w-[240px] border-l border-solid border-l-[color:var(--app-bar-divider-color)] px-4 mr-4 cursor-pointer
-    relative flex justify-between items-center h-full;
+  @apply tw-w-[240px] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-divider-color)] tw-px-4 tw-mr-4 tw-cursor-pointer
+    tw-relative tw-flex tw-justify-between tw-items-center tw-h-full;
 
   &_no-pointer {
-    @apply cursor-default;
+    @apply tw-cursor-default;
   }
 
   &:hover,
   &_active {
-    @apply bg-[color:var(--app-bar-toolbar-icon-background-hover)];
+    @apply tw-bg-[color:var(--app-bar-toolbar-icon-background-hover)];
   }
 
   &__avatar {
-    @apply rounded-full overflow-hidden w-[34px] h-[34px] bg-[color:var(--app-bar-account-info-role-color)]
-      bg-cover bg-center shrink-0;
+    @apply tw-rounded-full tw-overflow-hidden tw-w-[34px] tw-h-[34px] tw-bg-[color:var(--app-bar-account-info-role-color)]
+      tw-bg-cover tw-bg-center tw-shrink-0;
   }
 
   &__name {
-    @apply text-base text-[color:var(--app-bar-account-info-name-color)];
+    @apply tw-text-base tw-text-[color:var(--app-bar-account-info-name-color)];
   }
 
   &__role {
-    @apply text-base text-[color:var(--app-bar-account-info-role-color)];
+    @apply tw-text-base tw-text-[color:var(--app-bar-account-info-role-color)];
   }
 
   &__chevron {
-    @apply text-[#7e8e9d] [transition:transform_0.2s_ease] [transition:color_0.2s_ease];
+    @apply tw-text-[#7e8e9d] [transition:transform_0.2s_ease] [transition:color_0.2s_ease];
   }
 
   &:hover &__chevron {
-    @apply text-[color:#34414f];
+    @apply tw-text-[color:#34414f];
   }
 
   &_active &__chevron {
-    @apply -scale-y-100;
+    @apply -tw-scale-y-100;
   }
 
   &__menu {
-    @apply absolute -left-px right-0 top-[var(--app-bar-height)] bg-white z-[10000] shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
+    @apply tw-absolute -tw-left-px tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-z-[10000] tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)];
 
     &-item {
-      @apply p-3 text-lg text-black border-l border-solid border-l-[#eef0f2] border-b border-b-[#eef0f2] bg-white hover:bg-[#eff7fc];
+      @apply tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-bg-white hover:tw-bg-[#eff7fc];
     }
   }
 }

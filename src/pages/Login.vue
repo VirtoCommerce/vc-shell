@@ -6,7 +6,7 @@
               <VcInput
                   v-bind="field"
                   ref="loginField"
-                  class="mb-4 mt-1"
+                  class="tw-mb-4 tw-mt-1"
                   :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
                   :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
                   v-model="form.username"
@@ -19,7 +19,7 @@
               <VcInput
                   v-bind="field"
                   ref="passwordField"
-                  class="mb-4"
+                  class="tw-mb-4"
                   :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
                   :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
                   v-model="form.password"
@@ -31,13 +31,13 @@
               />
           </Field>
 
-        <div class="flex justify-end items-center pt-2 pb-3">
+        <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
           <VcButton variant="onlytext" @click="togglePassRequest" type="button">
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
-        <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="grow basis-0"></span>
+        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <vc-button
             variant="primary"
             :disabled="loading || !isValid"
@@ -55,7 +55,7 @@
                 <VcInput
                         v-bind="field"
                         ref="forgotPasswordField"
-                        class="mb-4 mt-1"
+                        class="tw-mb-4 tw-mt-1"
                         :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
                         :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
                         v-model="forgotPasswordForm.loginOrEmail"
@@ -65,7 +65,7 @@
                         @update:modelValue="handleChange"
                 ></VcInput>
             </Field>
-          <div class="flex justify-between items-center pt-2">
+          <div class= "tw-flex tw-justify-between tw-items-center tw-pt-2">
             <vc-button
               variant="secondary"
               type="button"
@@ -86,8 +86,8 @@
 
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
         <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
-        <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="grow basis-0"></span>
+        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <vc-button
             variant="primary"
             :disabled="loading"
@@ -99,13 +99,13 @@
       </template>
     </template>
 
-    <VcHint v-if="!signInResult.succeeded" class="mt-3" style="color: #f14e4e">
+    <VcHint v-if="!signInResult.succeeded" class="tw-mt-3" style="color: #f14e4e">
       <!-- TODO: stylizing-->
       {{ signInResult.error }}
     </VcHint>
     <VcHint
       v-if="!requestPassResult.succeeded"
-      class="mt-3"
+      class="tw-mt-3"
       style="color: #f14e4e"
     >
       <!-- TODO: stylizing-->
@@ -127,7 +127,6 @@ import {
 import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
-import * as yup from 'yup'
 
 const log = useLogger();
 const { t } = useI18n();

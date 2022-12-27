@@ -10,7 +10,6 @@ import SettingsModule from "./modules/settings";
 import MpProductsModule from "./modules/marketplace-products";
 import EmptyRouterView from "./pages/EmptyRouterView.vue";
 import { router } from "./router";
-
 import * as locales from "./locales";
 
 // Load required CSS

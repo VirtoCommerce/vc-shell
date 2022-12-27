@@ -1,23 +1,23 @@
 <template>
-  <div class="flex flex-col grow basis-0">
-    <div class="flex flex-row items-center">
+  <div class= "tw-flex tw-flex-col tw-grow tw-basis-0">
+    <div class= "tw-flex tw-flex-row tw-items-center">
       <div
-        class="w-[30px] h-[41px] bg-center bg-no-repeat bg-[image:var(--file-upload-success-img)]"
+        class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-success-img)]"
         v-if="isUploaded"
       ></div>
       <div
-        class="w-[30px] h-[41px] bg-center bg-no-repeat bg-[image:var(--file-upload-error-img)]"
+        class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-error-img)]"
         v-else
       ></div>
-      <div class="flex flex-col grow basis-0 ml-3">
-        <div class="font-normal text-lg">
+      <div class= "tw-flex tw-flex-col tw-grow tw-basis-0 tw-ml-3">
+        <div class="tw-font-normal tw-text-lg">
           {{ uploadedFile.name }}
         </div>
         <VcHint> {{ uploadedFile.size }} Mb </VcHint>
       </div>
     </div>
     <div
-      class="flex flex-row justify-between mt-5"
+      class= "tw-flex tw-flex-row tw-justify-between tw-mt-5"
       v-if="filteredActions && filteredActions.length"
     >
       <div>
@@ -33,7 +33,7 @@
           {{ action.name }}
         </VcButton>
       </div>
-      <div class="ml-auto">
+      <div class="tw-ml-auto">
         <VcButton
           v-for="(action, i) in filteredActions.slice(1, 3)"
           :key="i"
@@ -42,7 +42,7 @@
           :outline="action.outline"
           :small="true"
           :disabled="action.disabled"
-          class="ml-3"
+          class="tw-ml-3"
         >
           {{ action.name }}
         </VcButton>

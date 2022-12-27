@@ -1,5 +1,5 @@
 <template>
-  <div class="vc-app w-full h-full box-border flex flex-col m-0 vc-theme_light">
+  <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
     <VcLoading v-if="loading" active></VcLoading>
 
     <VcLoginForm
@@ -9,7 +9,7 @@
     >
       <VcForm>
           <VcInput
-            class="mb-4 mt-1"
+            class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.INVITATION.FIELDS.EMAIL.LABEL')"
             :modelValue="userName"
             :disabled="true"
@@ -19,7 +19,7 @@
               <VcInput
                 v-bind="field"
                 ref="passwordField"
-                class="mb-4 mt-1"
+                class="tw-mb-4 tw-mt-1"
                 :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
                 :placeholder="$t('SHELL.INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
                 type="password"
@@ -34,7 +34,7 @@
               <VcInput
                 v-bind="field"
                 ref="confirmPasswordField"
-                class="mb-4"
+                class="tw-mb-4"
                 :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
                 :placeholder="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
                 :required="true"
@@ -46,8 +46,8 @@
                :error-message="errorMessage"
               ></VcInput>
           </Field>
-        <div class="flex justify-center items-center pt-2">
-          <span v-if="$isDesktop.value" class="grow basis-0"></span>
+        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <vc-button
             variant="primary"
             :disabled="loading || !form.isValid || !form.tokenIsValid"
@@ -58,7 +58,7 @@
         </div>
 
         <VcHint
-          class="mt-3"
+          class="tw-mt-3"
           style="color: #f14e4e"
           v-for="error in form.errors"
           :key="error"
@@ -76,7 +76,6 @@ import { reactive, onMounted } from "vue";
 import {useUser, useForm, useI18n} from "@vc-shell/framework";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
-import * as yup from 'yup'
 
 useForm({ validateOnMount: false });
 

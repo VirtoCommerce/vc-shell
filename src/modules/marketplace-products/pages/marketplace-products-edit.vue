@@ -18,22 +18,22 @@
     <VcContainer :no-padding="true">
       <div v-if="productDetails" class="product-details__inner">
         <div class="product-details__content">
-          <div class="p-4">
+          <div class="tw-p-4">
             <VcStatus
               :outline="false"
               :extend="true"
               variant="light-danger"
-              class="w-full box-border mb-5"
+              class="tw-w-full tw-box-border tw-mb-5"
               v-if="statusText && product.status !== 'Published'"
             >
-              <div class="flex flex-row items-center">
+              <div class="tw-flex tw-flex-row tw-items-center">
                 <VcIcon
                   icon="fas fa-exclamation-circle"
                   class="product-details__decline-icon"
                   size="xxl"
                 ></VcIcon>
                 <div>
-                  <div class="font-bold">
+                  <div class="tw-font-bold">
                     {{ $t("MP_PRODUCTS.PAGES.DETAILS.DECLINE_REASON") }}
                   </div>
                   <div>{{ statusText }}</div>
@@ -49,7 +49,7 @@
               >
                 <VcInput
                   v-bind="field"
-                  class="mb-4"
+                  class="tw-mb-4"
                   :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                   v-model="productDetails.name"
                   :clearable="true"
@@ -71,7 +71,7 @@
               >
                 <VcSelect
                   v-bind="field"
-                  class="mb-4"
+                  class="tw-mb-4"
                   :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                   v-model="productDetails.categoryId"
                   :isSearchable="true"
@@ -101,12 +101,12 @@
                   :error-message="errorMessage"
                 >
                   <template v-slot:item="itemData">
-                    <div class="flex items-center py-2 truncate">
-                      <div class="grow basis-0 ml-4 truncate">
-                        <div class="truncate">
+                    <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
+                      <div class="tw-grow tw-basis-0 tw-ml-4 tw-truncate">
+                        <div class="tw-truncate">
                           {{ itemData.item.path }}
                         </div>
-                        <VcHint class="truncate mt-1">
+                        <VcHint class="tw-truncate tw-mt-1">
                           {{ $t("MP_PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
                           {{ itemData.item.code }}
                         </VcHint>
@@ -123,7 +123,7 @@
                 v-if="product.id || currentCategory"
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
-                <div class="p-4">
+                <div class="tw-p-4">
                   <Field
                     name="gtin"
                     :rules="validateGtin"
@@ -132,7 +132,7 @@
                   >
                     <VcInput
                       v-bind="field"
-                      class="mb-4"
+                      class="tw-mb-4"
                       :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                       v-model="productDetails.gtin"
                       :clearable="true"
@@ -157,7 +157,7 @@
                   >
                     <VcTextarea
                       v-bind="field"
-                      class="mb-4"
+                      class="tw-mb-4"
                       :label="
                         $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
                       "
@@ -182,7 +182,7 @@
                     :optionsGetter="loadDictionaries"
                     :getter="getPropertyValue"
                     :setter="setPropertyValue"
-                    class="mb-4"
+                    class="tw-mb-4"
                     :disabled="readonly"
                   >
                   </VcDynamicProperty>
@@ -192,13 +192,13 @@
               <VcCard
                 v-if="productDetails.categoryId"
                 :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
-                class="my-3 relative"
+                class="tw-my-3 tw-relative"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
                 <VcLoading :active="fileUploading"></VcLoading>
-                <div class="p-2">
+                <div class="tw-p-2">
                   <VcGallery
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
@@ -837,27 +837,27 @@ defineExpose({
 <style lang="scss">
 .product-details {
   &__inner {
-    @apply overflow-hidden min-h-full flex grow basis-0;
+    @apply tw-overflow-hidden tw-min-h-full tw-flex tw-grow tw-basis-0;
   }
 
   &__content {
-    @apply border-r border-solid border-r-[#eaedf3] overflow-hidden grow basis-0;
+    @apply tw-border-r tw-border-solid tw-border-r-[#eaedf3] tw-overflow-hidden tw-grow tw-basis-0;
   }
 
   &__decline-icon {
-    @apply text-[#ff4a4a] mr-3;
+    @apply tw-text-[#ff4a4a] tw-mr-3;
   }
 
   .vc-app_phone &__inner {
-    @apply flex-col;
+    @apply tw-flex-col;
   }
 
   .vc-app_phone &__content {
-    @apply border-r-0 border-b border-solid border-b-[#eaedf3] overflow-visible;
+    @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[#eaedf3] tw-overflow-visible;
   }
 
   .vc-app_phone &__widgets {
-    @apply flex flex-row;
+    @apply tw-flex tw-flex-row;
   }
 }
 </style>

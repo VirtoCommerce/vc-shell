@@ -399,11 +399,11 @@ function onOpen(args: IOpenBlade) {
 html,
 body,
 #app {
-  @apply font-roboto h-full w-full m-0 fixed overflow-hidden overscroll-y-none;
+  @apply tw-font-roboto tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
 }
 
 body {
-  @apply text-base;
+  @apply tw-text-base;
 }
 
 h1,
@@ -416,19 +416,19 @@ button,
 input,
 select,
 textarea {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 ::-webkit-input-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 :-moz-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 ::-moz-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 :-ms-input-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 
 .vc-app.vc-theme_light {

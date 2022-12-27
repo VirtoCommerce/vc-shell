@@ -9,19 +9,19 @@
   >
     <VcContainer class="import">
       <!-- Import profile widgets-->
-      <div class="p-3" v-if="importProfiles && importProfiles.length">
+      <div class="tw-p-3" v-if="importProfiles && importProfiles.length">
         <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
           <template v-slot="{ slide }">
-            <div class="relative">
+            <div class="tw-relative">
               <VcStatus
                 variant="success"
                 :outline="false"
-                class="absolute right-0 -top-[10px]"
+                class="tw-absolute tw-right-0 -tw-top-[10px]"
                 v-if="slide.inProgress"
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
-                class="w-max"
+                class="tw-w-max"
                 @click="openImporter(slide.id)"
                 icon="fas fa-file-csv"
                 variant="widget"
@@ -36,7 +36,7 @@
       </div>
       <VcCard
         :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
-        class="import__archive m-3"
+        class="import__archive tw-m-3"
       >
         <VcTable
           :loading="loading"
@@ -52,8 +52,8 @@
         >
           <!-- Override name column template -->
           <template v-slot:item_name="itemData">
-            <div class="flex flex-col">
-              <div class="truncate">
+            <div class="tw-flex tw-flex-col">
+              <div class="tw-truncate">
                 {{ itemData.item.name }}
               </div>
             </div>
@@ -266,12 +266,12 @@ defineExpose({
 <style lang="scss">
 .import {
   & .vc-container__inner {
-    @apply flex flex-col;
+    @apply tw-flex tw-flex-col;
   }
 
   &__archive {
     & .vc-card__body {
-      @apply flex flex-col;
+      @apply tw-flex tw-flex-col;
     }
   }
 }

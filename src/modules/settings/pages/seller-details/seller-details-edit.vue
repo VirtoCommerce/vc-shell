@@ -12,17 +12,17 @@
         :outline="false"
         :extend="true"
         variant="light-danger"
-        class="w-full box-border mb-3"
+        class="tw-w-full tw-box-border tw-mb-3"
         v-if="errorMessage"
       >
-        <div class="flex flex-row items-center">
+        <div class= "tw-flex tw-flex-row tw-items-center">
           <VcIcon
             icon="fas fa-exclamation-circle"
-            class="text-[#ff4a4a] mr-3"
+            class="tw-text-[#ff4a4a] tw-mr-3"
             size="xxl"
           ></VcIcon>
           <div>
-            <div class="font-bold">
+            <div class="tw-font-bold">
               {{ $t("SETTINGS.SELLER_DETAILS.CARDS.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
@@ -30,14 +30,14 @@
         </div>
       </VcStatus>
       <VcRow>
-        <VcCol class="m-2">
+        <VcCol class="tw-m-2">
           <VcCard :header="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.TITLE')">
-            <div class="p-2">
+            <div class="tw-p-2">
               <VcForm>
                   <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.name" name="company_name" rules="required">
                       <VcInput
                               v-bind="field"
-                              class="p-2"
+                              class="tw-p-2"
                               :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL')"
                               v-model="sellerDetails.name"
                               :clearable="true"
@@ -48,8 +48,8 @@
                               @update:modelValue="handleChange"
                       />
                   </Field>
-                <div class="p-2">
-                  <VcLabel class="mb-2">{{
+                <div class="tw-p-2">
+                  <VcLabel class="tw-mb-2">{{
                     $t(
                       "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL"
                     )
@@ -59,7 +59,7 @@
                 <VcRow>
                   <VcCol>
                     <VcInput
-                      class="m-2"
+                      class="tw-m-2"
                       :label="
                         $t(
                           'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
@@ -77,7 +77,7 @@
                     >
                     </VcInput>
                     <VcInput
-                      class="m-2"
+                      class="tw-m-2"
                       :label="
                         $t(
                           'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
@@ -95,18 +95,18 @@
                     >
                     </VcInput>
                   </VcCol>
-                  <VcCol class="m-2">
-                    <VcLabel class="mb-2">
+                  <VcCol class="tw-m-2">
+                    <VcLabel class="tw-mb-2">
                       <span>{{
                         $t(
                           "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.LABEL"
                         )
                       }}</span>
                     </VcLabel>
-                    <div class="relative">
+                    <div class="tw-relative">
                       <VcLoading :active="fileUploading"></VcLoading>
                       <VcGallery
-                        class="my-org__gallery -m-2"
+                        class="tw-my-org__gallery -tw-m-2"
                         :images="logoHandler"
                         @upload="onLogoUpload"
                         variant="file-upload"
@@ -124,7 +124,7 @@
                       ></VcGallery>
                     </div>
 
-                    <VcHint class="mt-1" v-if="!logoHandler.length">{{
+                    <VcHint class="tw-mt-1" v-if="!logoHandler.length">{{
                       $t(
                         "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.DESCRIPTION"
                       )
@@ -132,7 +132,7 @@
                   </VcCol>
                 </VcRow>
                 <VcTextarea
-                  class="mb-4 mx-2"
+                  class="tw-mb-4 tw-mx-2"
                   :label="
                     $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL')
                   "
@@ -147,7 +147,7 @@
                 >
                 </VcTextarea>
                 <VcTextarea
-                  class="mb-4 mx-2"
+                  class="tw-mb-4 tw-mx-2"
                   :label="
                     $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')
                   "
@@ -165,16 +165,16 @@
             </div>
           </VcCard>
         </VcCol>
-        <VcCol class="m-2">
+        <VcCol class="tw-m-2">
           <VcCard :header="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.TITLE')">
             <VcForm>
-              <div class="p-2">
+              <div class="tw-p-2">
                 <VcRow>
                   <VcCol>
                       <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].countryCode" name="country" rules="required">
                           <VcSelect
                                   v-bind="field"
-                                  class="m-2"
+                                  class="tw-m-2"
                                   :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL')"
                                   :clearable="false"
                                   :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER')"
@@ -196,7 +196,7 @@
                       <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].postalCode" name="zip" rules="required">
                           <VcInput
                                   v-bind="field"
-                                  class="m-2 my-org__num-field"
+                                  class="tw-m-2 tw-my-org__num-field"
                                   :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL')"
                                   :clearable="true"
                                   :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER')"
@@ -213,7 +213,7 @@
                 <VcRow>
                   <VcCol>
                     <VcSelect
-                      class="m-2"
+                      class="tw-m-2"
                       :label="
                         $t(
                           'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL'
@@ -240,7 +240,7 @@
                       <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].city" name="city" rules="required">
                           <VcInput
                                   v-bind="field"
-                                  class="p-2"
+                                  class="tw-p-2"
                                   :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL')"
                                   :clearable="true"
                                   :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER')"
@@ -257,7 +257,7 @@
                   <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.addresses[0].line1" name="address_first" rules="required">
                       <VcInput
                               v-bind="field"
-                              class="p-2"
+                              class="tw-p-2"
                               :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL')"
                               :clearable="true"
                               :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER')"
@@ -271,7 +271,7 @@
                       </VcInput>
                   </Field>
                 <VcInput
-                  class="p-2"
+                  class="tw-p-2"
                   :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL')"
                   :clearable="true"
                   :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER')"
@@ -280,7 +280,7 @@
                   maxchars="128"
                 >
                 </VcInput>
-                <div class="m-2 mb-2">
+                <div class="tw-m-2 tw-mb-2">
                     <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.location" name="long_lat" :rules="{
                       regex:
                         /^([-+]?(?:[1-8]?\d(?:\.\d+)?|90(?:\.0+)?)),\s*([-+]?(?:180(?:\.0+)?|(?:(?:1[0-7]\d)|(?:[1-9]?\d))(?:\.\d+)?))$/,
@@ -299,19 +299,19 @@
                         </VcInput>
                     </Field>
 
-                  <VcHint class="mt-1">{{
+                  <VcHint class="tw-mt-1">{{
                     $t(
                       "SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION"
                     )
                   }}</VcHint>
                 </div>
               </div>
-              <VcRow class="border-t-[1px] border-t-[#EAEEF2]">
+              <VcRow class="tw-border-t-[1px] tw-border-t-[#EAEEF2]">
                 <VcCol>
                     <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.phones[0]" name="phone" rules="numeric">
                         <VcInput
                                 v-bind="field"
-                                class="mt-4 mx-4 my-org__num-field"
+                                class="tw-mt-4 tw-mx-4 tw-my-org__num-field"
                                 :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL')"
                                 :clearable="true"
                                 :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER')"
@@ -328,7 +328,7 @@
                     <Field v-slot="{field, errorMessage, handleChange}" :modelValue="sellerDetails.emails[0]" name="email" rules="email">
                         <VcInput
                                 v-bind="field"
-                                class="mt-4 mx-4"
+                                class="tw-mt-4 tw-mx-4"
                                 :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL')"
                                 :clearable="true"
                                 :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER')"
@@ -370,7 +370,6 @@ import {
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
-import * as yup from 'yup'
 
 export interface Props {
   expanded?: boolean;
@@ -594,9 +593,9 @@ defineExpose({
 </script>
 
 <style lang="scss">
-.my-org {
+.tw-my-org {
   &__gallery .vc-file-upload {
-    @apply h-[100px];
+    @apply tw-h-[100px];
   }
 
   &__num-field {

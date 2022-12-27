@@ -5,9 +5,9 @@
     icon="fas fa-star"
   >
     <template v-slot:actions>
-      <div class="flex items-center">
+      <div class= "tw-flex tw-items-center">
         <div class="vc-card__title">
-          <Rating class="mr-5" :variant="'star-and-text'"></Rating>
+          <Rating class="tw-mr-5" :variant="'star-and-text'"></Rating>
         </div>
         <vc-button small outline @click="openAllReviews()">{{
           $t("RATING.DASHBOARD_CARD.ALL_REVIEWS")
@@ -23,13 +23,13 @@
   </VcCard>
   <VcCard
     v-else
-    class="mb-4"
+    class="tw-mb-4"
     :header="$t('RATING.DASHBOARD_CARD.TITLE')"
     icon="fas fa-star"
     @click="openAllReviews()"
   >
-    <div class="h-px bg-[#e3e7ec]"></div>
-    <div class="my-4 dashboard-counters__value">
+    <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
+    <div class="tw-my-4 dashboard-counters__value">
       <Rating :variant="'text'"></Rating>
     </div>
   </VcCard>

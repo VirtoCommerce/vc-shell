@@ -9,7 +9,7 @@
   >
     <!-- Blade contents -->
     <VcTable
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :loading="loading"
       :expanded="expanded"
       :columns="columns"
@@ -33,10 +33,10 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="w-full h-full box-border flex flex-col items-center justify-center"
+          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
         >
           <img :src="emptyImage" />
-          <div class="m-4 text-xl font-medium">
+          <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("MP_PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
           <VcButton @click="resetSearch">{{
@@ -48,10 +48,10 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="w-full h-full box-border flex flex-col items-center justify-center"
+          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
         >
           <img :src="emptyImage" />
-          <div class="m-4 text-xl font-medium">
+          <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("MP_PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
           <VcButton @click="addProduct">{{
@@ -62,11 +62,11 @@
 
       <!-- Override name column template -->
       <template v-slot:item_name="itemData">
-        <div class="flex flex-col">
-          <div class="truncate">
+        <div class="tw-flex tw-flex-col">
+          <div class="tw-truncate">
             {{ itemData.item.name }}
           </div>
-          <VcHint class="truncate mt-1">
+          <VcHint class="tw-truncate tw-mt-1">
             {{ itemData.item.path }}
           </VcHint>
         </div>
@@ -74,39 +74,39 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <mp-product-status :status="itemData.item.status" class="mb-1" />
+        <mp-product-status :status="itemData.item.status" class="tw-mb-1" />
       </template>
 
       <template v-slot:mobile-item="itemData">
         <div
-          class="border-b border-solid border-b-[#e3e7ec] p-3 flex flex-nowrap"
+          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap"
         >
           <VcImage
-            class="shrink-0"
+            class="tw-shrink-0"
             aspect="1x1"
             size="m"
             :bordered="true"
             :src="itemData.item.imgSrc"
           />
-          <div class="grow basis-0 ml-3">
-            <div class="font-bold text-lg">
+          <div class="tw-grow tw-basis-0 tw-ml-3">
+            <div class="tw-font-bold tw-text-lg">
               {{ itemData.item.name }}
             </div>
-            <VcHint class="mt-1">{{ itemData.item.path }}</VcHint>
+            <VcHint class="tw-mt-1">{{ itemData.item.path }}</VcHint>
 
-            <div class="mt-2 mb-3">
-              <mp-product-status class="mt-3" :status="itemData.item.status" />
+            <div class="tw-mt-2 tw-mb-3">
+              <mp-product-status class="tw-mt-3" :status="itemData.item.status" />
             </div>
 
-            <div class="mt-3 w-full flex justify-between">
+            <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
               <div
-                class="truncate grow basis-0 mr-2"
+                class="tw-truncate tw-grow tw-basis-0 tw-mr-2"
               >
                 <VcHint>{{
                   $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
                 }}</VcHint>
                 <div
-                  class="truncate mt-1"
+                  class="tw-truncate tw-mt-1"
                 >
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
@@ -114,13 +114,13 @@
                 </div>
               </div>
               <div
-                class="truncate grow basis-0 mr-2"
+                class="tw-truncate tw-grow tw-basis-0 tw-mr-2"
               >
                 <VcHint>{{
                   $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED")
                 }}</VcHint>
                 <div
-                  class="truncate mt-1"
+                  class="tw-truncate tw-mt-1"
                 >
                   {{
                     itemData.item.createdDate &&
@@ -129,14 +129,14 @@
                 </div>
               </div>
               <div
-                class="truncate grow basis-0 mr-2"
+                class="tw-truncate tw-grow tw-basis-0 tw-mr-2"
               >
-                <div class="flex flex-col items-center">
+                <div class="tw-flex tw-flex-col tw-items-center">
                   <VcHint>{{
                     $t("MP_PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
                   <div
-                    class="truncate mt-1"
+                    class="tw-truncate tw-mt-1"
                   >
                     <VcStatusIcon
                       :status="itemData.item && itemData.item.isPublished"

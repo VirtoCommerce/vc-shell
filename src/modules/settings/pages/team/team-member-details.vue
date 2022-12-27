@@ -13,17 +13,17 @@
         :outline="false"
         :extend="true"
         variant="light-danger"
-        class="w-full box-border mb-3"
+        class="tw-w-full tw-box-border tw-mb-3"
         v-if="errorMessage"
       >
-        <div class="flex flex-row items-center">
+        <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
             icon="fas fa-exclamation-circle"
-            class="text-[#ff4a4a] mr-3"
+            class="tw-text-[#ff4a4a] tw-mr-3"
             size="xxl"
           ></VcIcon>
           <div>
-            <div class="font-bold">
+            <div class="tw-font-bold">
               {{ $t("SETTINGS.TEAM.PAGES.DETAILS.FORM.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
@@ -36,7 +36,7 @@
               <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.firstName" name="name" rules="required">
                   <VcInput
                     v-bind="field"
-                    class="p-3"
+                    class="tw-p-3"
                     :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
                     :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')"
                     :disabled="isOwnerReadonly"
@@ -53,7 +53,7 @@
               <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.lastName" name="lastName" rules="required">
                   <VcInput
                     v-bind="field"
-                    class="p-3"
+                    class="tw-p-3"
                     :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
                     :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')"
                     :disabled="isOwnerReadonly"
@@ -70,7 +70,7 @@
               <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.email" name="email" rules="required|email">
                   <VcInput
                     v-bind="field"
-                    class="p-3"
+                    class="tw-p-3"
                     :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
                     :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
                     :disabled="!!props.param"
@@ -89,7 +89,7 @@
               <Field v-slot="{field, errorMessage, handleChange}" :modelValue="userDetails.role" name="role" rules="required">
                   <VcSelect
                           v-bind="field"
-                          class="p-3"
+                          class="tw-p-3"
                           :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
                           :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')"
                           :options="roles"
@@ -109,7 +109,7 @@
         <VcRow v-if="userDetails.id">
           <VcCol>
             <VcSwitch
-              class="p-3"
+              class="tw-p-3"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
               v-model="isActive"
               :true-value="false"
@@ -122,7 +122,7 @@
           <VcCol>
             <VcSwitch
               v-model="sendInviteStatus"
-              class="p-3"
+              class="tw-p-3"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.INVITE.LABEL')"
             ></VcSwitch>
           </VcCol>

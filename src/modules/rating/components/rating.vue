@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="tw-relative">
     <VcLoading :active="loading"></VcLoading>
     <VcRating v-if="rating" :rating="rating" :variant="variant">
       <template v-slot:details>

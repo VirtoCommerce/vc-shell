@@ -10,10 +10,10 @@
   >
     <VcContainer>
       <VcRow>
-        <VcCol size="1" class="p-2">
+        <VcCol size="1" class="tw-p-2">
           <VcCard :header="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TITLE')">
-            <VcRow class="p-2">
-              <VcCol class="p-2">
+            <VcRow class="tw-p-2">
+              <VcCol class="tw-p-2">
                 <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.ORDER_REF')"
                   :value="order.number"
@@ -32,7 +32,7 @@
                   :value="order.status"
                 />
                 <VcInfoRow
-                  class="border-t border-solid border-t-[#e5e5e5] mt-[5px] pt-[21px]"
+                  class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5] tw-mt-[5px] tw-pt-[21px]"
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.SUBTOTAL')"
                   :value="
                     order.subTotal &&
@@ -63,11 +63,11 @@
             </VcRow>
           </VcCard>
         </VcCol>
-        <VcCol size="1" class="p-2">
+        <VcCol size="1" class="tw-p-2">
           <VcCard :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
-            <VcCol class="p-2">
+            <VcCol class="tw-p-2">
               <VcCol
-                class="p-2"
+                class="tw-p-2"
                 v-for="(item, i) in shippingInfo"
                 :key="`${item.label}_${i}`"
               >
@@ -75,7 +75,7 @@
                   :label="item.label"
                   :value="item.name"
                   :class="{
-                    'border-t border-solid border-t-[#e5e5e5] mt-[5px] pt-[21px]':
+                    'tw-border-t tw-border-solid tw-border-t-[#e5e5e5] tw-mt-[5px] tw-pt-[21px]':
                       i === 1,
                   }"
                 />
@@ -89,7 +89,7 @@
       </VcRow>
 
       <VcRow>
-        <VcCol class="p-2">
+        <VcCol class="tw-p-2">
           <VcCard :header="$t('ORDERS.PAGES.EDIT.ITEMS_LIST.TITLE')">
             <VcTable
               :multiselect="false"
@@ -99,23 +99,23 @@
               :footer="false"
             >
               <template v-slot:item_name="itemData">
-                <div class="flex flex-col">
+                <div class= "tw-flex tw-flex-col">
                   <div>{{ itemData.item.name }}</div>
-                  <VcHint class="mt-1"
+                  <VcHint class="tw-mt-1"
                     >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
                     {{ itemData.item.sku }}</VcHint
                   >
                 </div>
               </template>
               <template v-slot:item_quantity="itemData">
-                <div class="flex flex-col">
+                <div class= "tw-flex tw-flex-col">
                   <div>{{ itemData.item.quantity }}</div>
                 </div>
               </template>
 
               <template v-slot:item_fee="itemData">
                 <div
-                  class="flex flex-col"
+                  class= "tw-flex tw-flex-col"
                   v-if="itemData.item.feeDetails.length"
                 >
                   <div>{{ itemData.item.feeDetails[0].description }}</div>
@@ -123,7 +123,7 @@
                     <span>{{
                       Math.trunc(Number(itemData.item.feeDetails[0].amount))
                     }}</span
-                    ><span class="text-[#a5a5a5] text-xs"
+                    ><span class="tw-text-[#a5a5a5] tw-text-xs"
                       >.{{
                         `${
                           (Number(itemData.item.feeDetails[0].amount) * 100) %
@@ -138,49 +138,49 @@
               </template>
 
               <template v-slot:mobile-item="itemData">
-                <div class="py-3 px-4">
-                  <div class="w-full flex justify-evenly">
+                <div class="tw-py-3 tw-px-4">
+                  <div class="tw-w-full tw-flex tw-justify-evenly">
                     <VcImage
-                      class="shrink-0"
+                      class="tw-shrink-0"
                       aspect="1x1"
                       size="s"
                       :bordered="true"
                       :src="itemData.item.imageUrl"
                     ></VcImage>
-                    <div class="grow basis-0 ml-3">
-                      <div class="font-bold text-lg">
+                    <div class="tw-grow tw-basis-0 tw-ml-3">
+                      <div class="tw-font-bold tw-text-lg">
                         {{ itemData.item.name }}
                       </div>
-                      <VcHint class="mt-1">
+                      <VcHint class="tw-mt-1">
                         {{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
                         {{ itemData.item.sku }}
                       </VcHint>
                     </div>
                   </div>
-                  <div class="mt-3 w-full flex justify-between">
-                    <div class="truncate grow-[2] basis-0">
+                  <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+                    <div class="tw-truncate tw-grow-[2] tw-basis-0">
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
                       }}</VcHint>
-                      <div class="truncate mt-1">
+                      <div class="tw-truncate tw-mt-1">
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
-                    <div class="truncate grow-[2] basis-0">
+                    <div class="tw-truncate tw-grow-[2] tw-basis-0">
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
                       }}</VcHint>
-                      <div class="truncate mt-1">
+                      <div class="tw-truncate tw-mt-1">
                         {{
                           itemData.item.price && itemData.item.price.toFixed(2)
                         }}
                       </div>
                     </div>
-                    <div class="truncate grow-[2] basis-0">
+                    <div class="tw-truncate tw-grow-[2] tw-basis-0">
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
                       }}</VcHint>
-                      <div class="truncate mt-1">
+                      <div class="tw-truncate tw-mt-1">
                         {{
                           itemData.item.extendedPrice &&
                           itemData.item.extendedPrice.toFixed(2)
@@ -188,17 +188,17 @@
                       </div>
                     </div>
                     <div
-                      class="truncate grow-[2] basis-0"
+                      class="tw-truncate tw-grow-[2] tw-basis-0"
                       v-if="itemData.item.feeDetails.length"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION")
                       }}</VcHint>
 
-                      <div class="mt-1 truncate">
-                        <div class="truncate">
+                      <div class="tw-mt-1 tw-truncate">
+                        <div class="tw-truncate">
                           {{ itemData.item.feeDetails[0].description }}
-                          <br /><span class="truncate">
+                          <br /><span class="tw-truncate">
                             {{
                               itemData.item.feeDetails[0].amount &&
                               itemData.item.feeDetails[0].amount.toFixed(2)

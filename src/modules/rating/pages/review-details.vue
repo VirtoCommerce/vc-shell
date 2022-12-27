@@ -14,16 +14,16 @@
       <VcForm>
         <VcRow>
           <VcCol size="2">
-            <div class="p-3">
-              <VcLabel class="mb-2">
+            <div class="tw-p-3">
+              <VcLabel class="tw-mb-2">
                 {{ $t("RATING.PAGES.REVIEW_DETAILS.FORM.CREATEDBY.LABEL") }}
               </VcLabel>
               {{ customerReview.createdBy }}
             </div>
           </VcCol>
           <VcCol size="3">
-            <div class="p-3">
-              <VcLabel class="mb-2">
+            <div class="tw-p-3">
+              <VcLabel class="tw-mb-2">
                 {{ $t("RATING.PAGES.REVIEW_DETAILS.FORM.CREATEDDATE.LABEL") }}
               </VcLabel>
               {{ createdDate }}
@@ -32,8 +32,8 @@
         </VcRow>
         <VcRow>
           <VcCol>
-            <div class="p-3">
-              <VcLabel class="mb-2">
+            <div class="tw-p-3">
+              <VcLabel class="tw-mb-2">
                 {{ $t("RATING.PAGES.REVIEW_DETAILS.FORM.TITLE.LABEL") }}
               </VcLabel>
               <template v-if="customerReview.title">
@@ -48,7 +48,7 @@
         <VcRow>
           <VcCol size="2">
             <VcRating
-              class="p-3"
+              class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.LABEL')"
               :placeholder="
                 $t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.PLACEHOLDER')
@@ -61,7 +61,7 @@
         <VcRow>
           <VcCol>
             <VcTextarea
-              class="p-3"
+              class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.LABEL')"
               :placeholder="
                 $t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.PLACEHOLDER')

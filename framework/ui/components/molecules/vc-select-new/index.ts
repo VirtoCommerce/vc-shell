@@ -1,6 +1,6 @@
 import { ComponentPublicInstance } from "vue";
 import { VcSelectProps } from "./vc-select-new-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { ComponentConstructor } from "@/ui/types/ts-helpers";
 import VcSelect from "./vc-select-new.vue";
 
 export interface IVcSelectNew extends ComponentPublicInstance<VcSelectProps> {

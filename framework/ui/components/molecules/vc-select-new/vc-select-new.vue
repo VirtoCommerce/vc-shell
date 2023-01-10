@@ -4,7 +4,7 @@
     :class="{
       'vc-select_opened': isOpened,
       'vc-select_error': error,
-      'vc-select_disabled': readonly,
+      'vc-select_disabled': disabled,
       'tw-pb-[20px]': error || hint,
     }"
   >
@@ -81,21 +81,14 @@
                         ></slot>
                       </template>
                       <template v-else>
-                        <!--                            <div  v-for="(item, i) in innerValuesArr"-->
-                        <!--                                  class="tw-border tw-border-solid tw-border-[color:var(&#45;&#45;multivalue-border-color)] tw-rounded-[var(&#45;&#45;multivalue-border-radius)] tw-bg-[color:var(&#45;&#45;multivalue-background-color)] tw-items-center tw-flex tw-flex-wrap"-->
-                        <!--                                  v-bind="item"-->
-                        <!--                                  :key="i">-->
-                        <!--                                {{ item }}-->
-                        <!--                            </div>-->
-
-                        <div class="tw-flex tw-flex-wrap gap-1 py-1">
+                        <div class="tw-flex tw-flex-wrap tw-gap-1 tw-py-1">
                           <div
                             v-for="(item, i) in selectedScope"
                             v-bind="item"
                             :key="i"
                             class="tw-flex tw-items-center"
                           >
-                            <template v-if="useChips && multiple">
+                            <template v-if="multiple">
                               <div
                                 class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                               >
@@ -103,7 +96,7 @@
                                   getEmittingOptionValue(item.opt)
                                 }}</span>
                                 <VcIcon
-                                  v-if="!readonly"
+                                  v-if="!disabled"
                                   class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
                                   icon="fas fa-times"
                                   size="s"
@@ -111,13 +104,10 @@
                                 ></VcIcon>
                               </div>
                             </template>
-                            <template v-else-if="!useChips && !multiple">
+                            <template v-else-if="!multiple">
                               {{ getEmittingOptionValue(item.opt) }}
                             </template>
                           </div>
-                          <template v-if="!useChips && multiple">
-                            {{ selectedString }}
-                          </template>
                         </div>
                       </template>
                     </template>
@@ -129,7 +119,7 @@
                     {{ suffix }}
                   </div>
                   <div
-                    v-if="clearable && hasValue && !readonly"
+                    v-if="clearable && hasValue && !disabled"
                     class="tw-cursor-pointer tw-flex tw-items-center tw-pl-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)]"
                     @click="onReset"
                   >
@@ -145,7 +135,7 @@
                 <!-- Loading-->
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
-                  v-if="loading"
+                  v-if="loading || listLoading"
                 >
                   <VcIcon
                     icon="fas fa-spinner tw-animate-spin"
@@ -155,7 +145,7 @@
                 <!-- Select chevron-->
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
-                  v-if="!readonly"
+                  v-if="!disabled"
                 >
                   <div
                     class="vc-select__chevron tw-cursor-pointer tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
@@ -218,7 +208,7 @@
 
           <VcContainer :no-padding="true">
             <div
-              v-if="!(options && options.length)"
+              v-if="!(optionsList && optionsList.length)"
               class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
             >
               <slot name="no-options">
@@ -244,25 +234,33 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, watch } from "vue";
+import { nextTick, ref, computed, watch, toRefs } from "vue";
 import { VcIcon, VcLabel, VcContainer } from "@/ui/components";
 import { clickOutside as vClickOutside } from "@/core/directives";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { VcSelectEmits, VcSelectProps } from "./vc-select-new-model";
+import {
+  VcSelectEmits,
+  VcSelectProps,
+  OptionProp,
+} from "./vc-select-new-model";
 import { isEqual } from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 
 const props = withDefaults(defineProps<VcSelectProps>(), {
   optionValue: "id",
   optionLabel: "title",
-  filterDebounce: 500,
+  debounce: 500,
   clearable: true,
   name: "Field",
   searchable: false,
   required: false,
   autofocus: true,
+  emitValue: true,
+  mapOptions: true,
 });
 const emit = defineEmits<VcSelectEmits>();
+
+const { modelValue, options } = toRefs(props);
 
 const isOpened = ref(false);
 
@@ -272,20 +270,88 @@ const dropdownToggleRef = ref();
 const dropdownRef = ref();
 const inputFieldWrapRef = ref();
 const el = ref();
+const listLoading = ref(false);
+
+const filterString = ref();
+
+const defaultValue = ref([]);
+
+const optionsList = ref([]);
+
+const isOptionsFunc = props.options && typeof props.options === "function";
 
 let emitValueFn;
 let emitTimer;
-let innerValueCache;
+let innerValueCache: Record<string, unknown>[] | string[];
 
 useIntersectionObserver(
   el,
   ([{ isIntersecting }]) => {
     if (isIntersecting) {
-      emit("scroll");
+      onLoadMore();
     }
   },
   { threshold: 0.5 }
 );
+
+watch(
+  modelValue,
+  async (newVal, oldVal) => {
+    if (newVal && !oldVal) {
+      const initial = optionsList.value.find(
+        (x) => x[props.optionLabel as string] === props.modelValue
+      );
+
+      if (initial) {
+        defaultValue.value = initial;
+      } else {
+        if (isOptionsFunc) {
+          defaultValue.value = (
+            await props.options(
+              undefined,
+              undefined,
+              Array.isArray(props.modelValue)
+                ? props.modelValue
+                : [props.modelValue]
+            )
+          ).filter((x) => x[props.optionValue as string] === props.modelValue);
+        } else if (props.options && Array.isArray(props.options)) {
+          defaultValue.value = props.options.filter(
+            (x) => x[props.optionValue as string] === props.modelValue
+          );
+        }
+      }
+    }
+  },
+  { immediate: true }
+);
+
+watch(
+  options,
+  async () => {
+    if (isOptionsFunc) {
+      optionsList.value = await props.options();
+    } else if (props.options && Array.isArray(props.options)) {
+      optionsList.value = props.options;
+    }
+  },
+  { immediate: true }
+);
+
+async function onLoadMore() {
+  if (isOptionsFunc) {
+    try {
+      listLoading.value = true;
+      const data = await props.options(
+        filterString.value,
+        optionsList.value.length
+      );
+      optionsList.value.push(...data);
+    } finally {
+      listLoading.value = false;
+    }
+  }
+}
 
 const getOptionValue = computed(() =>
   getPropValueFn(props.optionValue, "value")
@@ -295,10 +361,10 @@ const getOptionLabel = computed(() =>
   getPropValueFn(props.optionLabel, "label")
 );
 
-const innerValue = computed(() => {
+const innerValue = computed((): Record<string, unknown>[] | string[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
-  const val =
+  const val: Record<string, unknown>[] | string[] =
     props.modelValue !== undefined &&
     (props.modelValue !== null || mapNull === true)
       ? props.multiple === true && Array.isArray(props.modelValue)
@@ -306,7 +372,7 @@ const innerValue = computed(() => {
         : [props.modelValue]
       : [];
 
-  if (props.mapOptions === true && Array.isArray(props.options) === true) {
+  if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
     const cache =
       props.mapOptions === true && innerValueCache !== undefined
         ? innerValueCache
@@ -330,10 +396,6 @@ watch(
   { immediate: true }
 );
 
-const selectedString = computed(() =>
-  innerValue.value.map((opt) => getEmittingOptionValue(opt)).join(", ")
-);
-
 const selectedScope = computed(() => {
   return innerValue.value.map((opt, i) => ({
     index: i,
@@ -351,7 +413,7 @@ const innerOptionsValue = computed(() =>
 );
 
 const optionScope = computed(() => {
-  return props.options.map((opt, i) => {
+  return optionsList.value.map((opt, i) => {
     return {
       index: i,
       opt,
@@ -362,7 +424,7 @@ const optionScope = computed(() => {
   });
 });
 
-function getPropValueFn(propValue, defaultVal) {
+function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
   const val = propValue !== undefined ? propValue : defaultVal;
 
   return typeof val === "function"
@@ -371,26 +433,34 @@ function getPropValueFn(propValue, defaultVal) {
         opt !== null && typeof opt === "object" && val in opt ? opt[val] : opt;
 }
 
-function getOption(value, valueCache) {
+function getOption(
+  value: Record<string, unknown> | string,
+  valueCache: Array<Record<string, unknown> | string>
+) {
   const fn = (opt) => isEqual(getOptionValue.value(opt), value);
-  return props.options.find(fn) || valueCache.find(fn) || value;
+  return (
+    defaultValue.value.find(fn) ||
+    optionsList.value.find(fn) ||
+    valueCache.find(fn) ||
+    value
+  );
 }
 
-function fieldValueIsFilled(val) {
+function fieldValueIsFilled(val: Record<string, unknown>[] | unknown[]) {
   return val !== undefined && val !== null && ("" + val).length > 0;
 }
 
-function getEmittingOptionValue(opt) {
+function getEmittingOptionValue(opt: Record<string, unknown>) {
   return props.emitValue === true
     ? getOptionLabel.value(opt)
     : getOptionValue.value(opt);
 }
 
-function removeAtIndex(index) {
+function removeAtIndex(index: number) {
   if (index > -1 && index < innerValue.value.length) {
     if (props.multiple === true) {
       const model = props.modelValue.slice();
-      emit("remove", { index, value: model.splice(index, 1)[0] });
+      model.splice(index, 1);
       emit("update:modelValue", model);
     } else {
       emit("update:modelValue", null);
@@ -398,7 +468,7 @@ function removeAtIndex(index) {
   }
 }
 
-function isOptionSelected(opt) {
+function isOptionSelected(opt: Record<string, unknown>) {
   const val = getOptionValue.value(opt);
   return innerOptionsValue.value.find((v) => isEqual(v, val)) !== void 0;
 }
@@ -408,14 +478,27 @@ function closeDropdown() {
   popper.value?.destroy();
   inputFieldWrapRef.value.style.borderRadius = "var(--select-border-radius)";
   emit("close");
+
+  onDropdownClose();
 }
 
+const onDropdownClose = async () => {
+  if (isOptionsFunc) {
+    optionsList.value = await props.options();
+  } else {
+    optionsList.value = props.options as Record<string, unknown>[];
+  }
+
+  filterString.value = undefined;
+};
+
 async function toggleDropdown() {
-  if (!props.readonly) {
+  if (!props.disabled) {
     if (isOpened.value) {
       closeDropdown();
     } else {
       isOpened.value = true;
+
       await nextTick(() => {
         searchRef?.value?.focus();
         popper.value = createPopper(
@@ -533,7 +616,6 @@ function toggleOption(opt: { [x: string]: string }) {
 
   if (innerValue.value.length === 0) {
     const val = props.emitValue === true ? optValue : opt;
-    emit("add", { index: 0, value: val });
     emit("update:modelValue", props.multiple === true ? [val] : val);
     return;
   }
@@ -542,11 +624,9 @@ function toggleOption(opt: { [x: string]: string }) {
   const index = innerOptionsValue.value.findIndex((v) => isEqual(v, optValue));
 
   if (index > -1) {
-    emit("remove", { index, value: model.splice(index, 1)[0] });
+    model.splice(index, 1);
   } else {
     const val = props.emitValue === true ? optValue : opt;
-
-    emit("add", { index: model.length, value: val });
     model.push(val);
   }
 
@@ -554,6 +634,18 @@ function toggleOption(opt: { [x: string]: string }) {
 
   if (isOpened.value) {
     popper.value.update();
+  }
+}
+
+async function onSearch(value: string) {
+  if (isOptionsFunc) {
+    filterString.value = value;
+    try {
+      listLoading.value = true;
+      optionsList.value = await props.options(filterString.value);
+    } finally {
+      listLoading.value = false;
+    }
   }
 }
 
@@ -566,15 +658,16 @@ function onInput(e: Event) {
   emitValue(newValue);
 }
 
-function emitValue(val) {
+function emitValue(val: string) {
   emitValueFn = () => {
-    emit("filter", val);
+    emit("search", val);
+    onSearch(val);
     emitValueFn = undefined;
   };
 
-  if (props.filterDebounce !== undefined) {
+  if (props.debounce !== undefined) {
     clearTimeout(emitTimer);
-    emitTimer = setTimeout(emitValueFn, +props.filterDebounce);
+    emitTimer = setTimeout(emitValueFn, +props.debounce);
   } else {
     emitValueFn();
   }
@@ -582,7 +675,6 @@ function emitValue(val) {
 
 function onReset() {
   emit("update:modelValue", null);
-  emit("click:clear", props.modelValue);
 }
 
 defineExpose({

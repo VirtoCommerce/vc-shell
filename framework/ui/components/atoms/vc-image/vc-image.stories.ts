@@ -33,7 +33,7 @@ export const Image = Template.bind({});
 Image.storyName = "vc-image";
 Image.args = {
   aspect: "1x1",
-  tw-rounded: false,
+  rounded: false,
   clickable: false,
   src: "https://placekitten.com/800/600",
   size: "auto",

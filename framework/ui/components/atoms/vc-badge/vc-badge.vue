@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-inline-block tw-rounded-[var(--badge-border-radius)] tw-py-1 tw-px-2 tw-text-base tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition  tw-duration-200"
+    class="tw-inline-block tw-rounded-[var(--badge-border-radius)] tw-py-1 tw-px-2 tw-text-base tw-font-normal tw-bg-[color:var(--badge-background-color)] tw-text-[color:var(--badge-text-color)] tw-border tw-border-solid tw-border-[color:var(--badge-border-color)] tw-transition tw-duration-200"
     :class="{
       'tw-bg-[color:var(--badge-background-color-active)] tw-text-[color:var(--badge-text-color-active)] tw-border-[color:var(--badge-border-color-active)]':
         active,
@@ -11,7 +11,7 @@
     }"
     @click="onClick"
   >
-    <slot></slot>
+    <slot name="default"></slot>
   </div>
 </template>
 

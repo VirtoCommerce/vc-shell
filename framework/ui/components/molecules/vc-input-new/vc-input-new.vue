@@ -6,7 +6,7 @@
       {
         'vc-input2_clearable': clearable,
         'vc-input2_error': error,
-        'vc-input2_disabled': readonly,
+        'vc-input2_disabled': disabled,
         'tw-pb-[20px]': error || hint,
       },
     ]"
@@ -45,7 +45,7 @@
                 </div>
                 <slot
                   name="control"
-                  :editable="readonly"
+                  :editable="disabled"
                   :focused="autofocus"
                   :modelValue="temp"
                   :emitValue="onInput"
@@ -54,10 +54,8 @@
                     :placeholder="placeholder"
                     :type="internalType"
                     v-model="temp"
-                    :disabled="readonly"
+                    :disabled="disabled"
                     @input="onInput"
-                    @blur="$emit('blur', $event)"
-                    @focus="$emit('focus', $event)"
                     ref="inputRef"
                     :name="name"
                     :maxlength="maxlength"
@@ -73,7 +71,7 @@
                 </div>
                 <div
                   v-if="
-                    clearable && modelValue && !readonly && type !== 'password'
+                    clearable && modelValue && !disabled && type !== 'password'
                   "
                   class="vc-input2__clear"
                   @click="onReset"
@@ -157,7 +155,7 @@ const props = withDefaults(defineProps<VcInputProps>(), {
   modelValue: null,
   clearable: false,
   required: false,
-  readonly: false,
+  disabled: false,
   type: "text",
   name: "Field",
   maxlength: "1024",
@@ -213,7 +211,6 @@ function emitValue(val) {
 function onReset() {
   temp.value = null;
   emit("update:modelValue", null);
-  emit("click:clear", props.modelValue);
 }
 
 function focus() {

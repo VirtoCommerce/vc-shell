@@ -1,5 +1,10 @@
 import { VNode } from "vue";
 
+export type OptionProp =
+  | ((option: string | Record<string, unknown>) => string)
+  | string
+  | undefined;
+
 export interface VcSelectProps {
   /**
    * Name of select
@@ -11,6 +16,7 @@ export interface VcSelectProps {
   modelValue: any;
   /**
    * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
+   * Default value: true
    */
   mapOptions?: boolean | undefined;
   /**
@@ -47,9 +53,9 @@ export interface VcSelectProps {
    */
   clearable?: boolean | undefined;
   /**
-   * Put component in readonly mode
+   * Put component in disabled mode
    */
-  readonly?: boolean | undefined;
+  disabled?: boolean | undefined;
   /**
    * Allow multiple selection; Model must be Array
    */
@@ -58,38 +64,37 @@ export interface VcSelectProps {
    * Available options that the user can select from.
    * Default value: []
    */
-  options?: readonly any[] | undefined;
+  options?:
+    | ((
+        keyword?: string,
+        skip?: number,
+        ids?: string[]
+      ) => Promise<Record<string, unknown>[]>)
+    | readonly any[]
+    | undefined;
   /**
    * Property of option which holds the 'value'
    * Default value: id
    * @param option The current option being processed
    * @returns Value of the current option
    */
-  optionValue?: ((option: string | any) => any) | string | undefined;
+  optionValue?: OptionProp;
   /**
    * Property of option which holds the 'label'
    * Default value: title
    * @param option The current option being processed
    * @returns Label of the current option
    */
-  optionLabel?: ((option: string | any) => string) | string | undefined;
-  /**
-   * Hides selection;
-   */
-  hideSelected?: boolean | undefined;
-  /**
-   * Use chip to show what is currently selected
-   */
-  useChips?: boolean | undefined;
+  optionLabel?: OptionProp;
   /**
    * Update model with the value of the selected option instead of the whole option
    */
   emitValue?: boolean | undefined;
   /**
-   * Debounce the filter update with an amount of milliseconds
+   * Debounce the search input update with an amount of milliseconds
    * Default value: 500
    */
-  filterDebounce?: number | string | undefined;
+  debounce?: number | string | undefined;
   /**
    * Input placeholder text
    */
@@ -109,113 +114,55 @@ export interface VcSelectProps {
 }
 export interface VcSelectEmits {
   /**
-   * Emitted when scrolled to bottom of options list
-   * @param event Emitted event name
-   */
-  (event: "scroll"): void;
-  /**
-   * When using the 'clearable' property, this event is emitted when the clear icon is clicked
-   * @param event Emitted event name
-   * @param value The previous value before clearing it
-   */
-  (event: "click:clear", value: any): void;
-  /**
    * Emitted when the component needs to change the model; Is also used by v-model
    * @param event Emitted event name
    * @param value New model value
    */
   (event: "update:modelValue", value: any): void;
   /**
-   * Emitted when an option is removed from selection
-   * @param event Emitted event name
-   * @param details Removal details
-   */
-  (
-    event: "remove",
-    details: {
-      /**
-       * Model index at which removal took place
-       */
-      index: number;
-      /**
-       * The actual value that was removed
-       */
-      value: any;
-    }
-  ): void;
-  /**
-   * Emitted when an option is added to the selection
-   * @param event Emitted event name
-   * @param details Addition details
-   */
-  (
-    event: "add",
-    details: {
-      /**
-       * Model index at which addition took place
-       */
-      index: number;
-      /**
-       * The actual value that was added
-       */
-      value: any;
-    }
-  ): void;
-  /**
    * Emitted when user wants to filter a value
    * @param event Emitted event name
    * @param inputValue What the user typed
    */
-  (event: "filter", inputValue: string): void;
+  (event: "search", inputValue: string): void;
   /**
-   * Emitted when the select options menu or dialog is shown.
+   * Emitted when the select options list is hidden
    * @param event Emitted event name
    */
-  (event: "open"): void;
-  /**
-   * Emitted when the select options menu or dialog is hidden.
-   * @param event Emitted event name
-   */
-  (event: "close");
-  void;
+  (event: "close"): void;
 }
 export interface VcSelectSlots {
   /**
-   * Prepend inner field; Suggestions: QIcon, QBtn
+   * Prepend inner field
    */
   "prepend-inner": () => VNode[];
   /**
-   * Append to inner field; Suggestions: QIcon, QBtn
+   * Append to inner field
    */
   "append-inner": () => VNode[];
   /**
-   * Prepend outer field; Suggestions: QIcon, QBtn
+   * Prepend outer field
    */
   prepend: () => VNode[];
   /**
-   * Append outer field; Suggestions: QIcon, QBtn
+   * Append outer field
    */
   append: () => VNode[];
   /**
-   * What should the menu display after filtering options and none are left to be displayed; Suggestion: <div>
+   * What should the menu display after filtering options and none are left to be displayed
    * @param scope
    */
-  "no-option": (scope: {
-    /**
-     * Input textfield value, if any (not QSelect model)
-     */
-    inputValue: string;
-  }) => VNode[];
+  "no-option": () => VNode[];
   /**
-   * Slot for errors; Enabled only if 'bottom-slots' prop is used; Suggestion: <div>
+   * Slot for errors
    */
   error: () => VNode[];
   /**
-   * Slot for hint text; Enabled only if 'bottom-slots' prop is used; Suggestion: <div>
+   * Slot for hint text
    */
   hint: () => VNode[];
   /**
-   * Override default selection slot; Suggestion: QChip
+   * Override default selection slot
    * @param scope
    */
   "selected-item": (scope: {
@@ -228,7 +175,7 @@ export interface VcSelectSlots {
      */
     opt: any;
     /**
-     * Always true -- passed down as prop to QItem (when using QItem)
+     * Always true -- passed as prop
      */
     selected: boolean;
     /**

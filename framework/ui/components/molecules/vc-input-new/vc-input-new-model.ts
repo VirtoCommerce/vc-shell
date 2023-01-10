@@ -57,9 +57,9 @@ export interface VcInputProps {
    */
   debounce?: string | number | undefined;
   /**
-   * Put component in readonly mode
+   * Put component in disabled mode
    */
-  readonly?: boolean | undefined;
+  disabled?: boolean | undefined;
   /**
    * Focus field on initial component render
    */
@@ -88,29 +88,11 @@ export interface VcInputProps {
 }
 export interface VcInputEmits {
   /**
-   * This event is emitted when the clear icon is clicked when using the 'clearable' prop
-   * @param event Emitted event name
-   * @param value The previous value before clearing it
-   */
-  (event: "click:clear", value: string | number | Date | null): void;
-  /**
    * Emitted when the component needs to change the model; Is also used by v-model
    * @param event Emitted event name
    * @param value New model value
    */
   (event: "update:modelValue", value: string | number | Date | null): void;
-  /**
-   * Emitted when component loses focus
-   * @param event Emitted event name
-   * @param evt JS event object
-   */
-  (event: "blur", evt: FocusEvent): void;
-  /**
-   * Emitted when component gets focused
-   * @param event Emitted event name
-   * @param evt JS event object
-   */
-  (event: "focus", evt: FocusEvent): void;
 }
 export interface VcInputSlots {
   /**

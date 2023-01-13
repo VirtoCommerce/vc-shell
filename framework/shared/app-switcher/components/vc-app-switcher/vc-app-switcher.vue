@@ -1,36 +1,36 @@
 <template>
   <div
-    class="relative h-full flex items-center justify-center ml-2 mr-[15px] shrink-0"
+    class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-ml-2 tw-mr-[15px] tw-shrink-0"
     v-click-outside="onClose"
   >
     <button
-      class="hover:[&>img] hover:[&_div]:bg-[color:var(--app-bar-button-color-hover)]"
+      class="hover:[&>img] hover:[&_div]:tw-bg-[color:var(--app-bar-button-color-hover)]"
       @click.stop="toggleAppSwitch"
     >
       <div
-        class="h-[22px] w-[22px] [mask:url(/assets/app-select.svg)] bg-[color:var(--app-bar-button-color)] duration-200"
+        class="tw-h-[22px] tw-w-[22px] [mask:url(/assets/app-select.svg)] tw-bg-[color:var(--app-bar-button-color)] tw-duration-200"
       />
     </button>
 
     <div
       v-if="isVisible && appsList && appsList.length"
-      class="px-4 py-3.5 bg-white drop-shadow-[4px_4px_20px_rgba(47,86,108,0.25)] absolute z-[10000] rounded top-[var(--app-bar-height)] left-0"
+      class="tw-px-4 tw-py-3.5 tw-bg-white tw-drop-shadow-[4px_4px_20px_rgba(47,86,108,0.25)] tw-absolute tw-z-[10000] tw-rounded tw-top-[var(--app-bar-height)] tw-left-0"
     >
-      <ul class="flex flex-col gap-3 overflow-hidden">
+      <ul class="tw-flex tw-flex-col tw-gap-3 tw-overflow-hidden">
         <li
           v-for="item in appsList"
           :key="item.id"
           @click="switchApp(item)"
-          class="flex flex-row items-center cursor-pointer group"
-          :class="{ '[&>p]:font-extrabold': locationHandler(item.relativeUrl) }"
+          class="tw-flex tw-flex-row tw-items-center tw-cursor-pointer tw-group"
+          :class="{ '[&>p]:tw-font-extrabold': locationHandler(item.relativeUrl) }"
         >
           <img
             :src="imageUrl(item.iconUrl)"
             :alt="`icon_${item.id}`"
-            class="w-5 h-5 mr-2 shrink-0"
+            class="tw-w-5 tw-h-5 tw-mr-2 tw-shrink-0"
           />
           <p
-            class="font-normal text-sm text-[#727C87] truncate group-hover:opacity-80"
+            class="tw-font-normal tw-text-sm tw-text-[#727C87] tw-truncate group-hover:tw-opacity-80"
           >
             {{ item.title }}
           </p>

@@ -177,9 +177,7 @@ export default (): IUseBladeNavigation => {
     );
 
     if (index >= 0) {
-      const currentParent = unref(
-        bladesRefs.value[bladesRefs.value.length - 2]
-      );
+      const currentParent = unref(bladesRefs.value[index]);
 
       if (currentParent) {
         if (args.method && typeof currentParent[args.method] === "function") {

@@ -1,6 +1,5 @@
 /* eslint-disable */
 import {Ref} from "vue";
-import {MixedSchema} from "yup/es/mixed";
 
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'

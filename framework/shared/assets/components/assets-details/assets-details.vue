@@ -8,38 +8,38 @@
     @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
-    <div class="flex grow-1 border-t border-solid border-t-[#eaedf3]">
-      <div class="assets-details__content grow basis-0">
+    <div class= "tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
+      <div class="assets-details__content tw-grow tw-basis-0">
         <VcContainer :no-padding="true">
-          <div class="p-4">
+          <div class="tw-p-4">
             <VcForm>
               <VcImage
-                class="mb-4"
+                class="tw-mb-4"
                 :src="localImage.url"
                 size="xl"
                 :bordered="true"
               ></VcImage>
               <VcInput
-                class="mb-4"
+                class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="localImage.name"
-                :clearable="true"
-                is-required
+                clearable
+                required
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
               ></VcInput>
               <VcInput
-                class="mb-4"
+                class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
                 v-model="localImage.altText"
-                :clearable="true"
+                clearable
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
-                is-required
+                required
               ></VcInput>
               <VcTextarea
-                class="mb-4"
+                class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="localImage.description"
                 :placeholder="
@@ -66,7 +66,7 @@ import {
   VcImage,
   VcInput,
   VcTextarea,
-} from "@/components";
+} from "@/ui/components";
 
 interface ILocalImage {
   url: string;

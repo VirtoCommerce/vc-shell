@@ -4,24 +4,24 @@
     @close="$emit('close')"
     variant="small"
   >
-    <div class="flex flex-col">
-      <div class="px-[40px] py-[28px] flex flex-row items-center">
+    <div class= "tw-flex tw-flex-col">
+      <div class="tw-px-[40px] tw-py-[28px] tw-flex tw-flex-row tw-items-center">
         <VcIcon
           icon="fas fa-exclamation-triangle"
           size="xxl"
-          class="text-[#FFBB0D]"
+          class="tw-text-[#FFBB0D]"
         ></VcIcon>
-        <div class="ml-3">
+        <div class="tw-ml-3">
           {{
             $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ALERT.MESSAGE.USER_DELETE")
           }}
         </div>
       </div>
-      <div class="flex my-4 mx-5">
-        <div class="ml-auto">
+      <div class= "tw-flex tw-my-4 tw-mx-5">
+        <div class="tw-ml-auto">
           <VcButton
             variant="onlytext"
-            class="mr-5 text-[#FF4A4A]"
+            class="tw-mr-5 tw-text-[#FF4A4A]"
             @click="$emit('delete')"
             >{{
               $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ALERT.BUTTONS.CONFIRM")

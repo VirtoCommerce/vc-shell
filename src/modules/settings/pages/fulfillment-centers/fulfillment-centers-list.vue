@@ -8,7 +8,7 @@
     @close="$emit('close:blade')"
   >
     <VcTable
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :loading="loading"
       :expanded="expanded"
       :columns="columns"
@@ -25,13 +25,13 @@
       :selectedItemId="selectedItemId"
     >
       <template v-slot:mobile-item="itemData">
-        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
-          <div class="mt-3 w-full flex justify-between">
-            <div class="truncate grow basis-0 mr-2">
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>{{
                 $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
               }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.name }}
               </div>
             </div>

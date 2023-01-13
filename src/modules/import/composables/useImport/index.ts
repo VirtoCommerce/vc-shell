@@ -17,7 +17,12 @@ import {
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
-import {IObjectSettingEntry, useLogger, useNotifications, useUser} from "@vc-shell/framework";
+import {
+  IObjectSettingEntry,
+  useLogger,
+  useNotifications,
+  useUser,
+} from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
@@ -302,17 +307,18 @@ export default (): IUseImport => {
   }
 
   async function setImporter(typeName: string) {
-      if (typeName) {
-          const importer = dataImporters.value.find(
-              (importer) => importer.typeName === typeName
-          );
-          if (importer) {
-              profileDetails.value.dataImporterType = typeName;
-              profileDetails.value.settings = [
-                  ...(importer?.availSettings.map((x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)) || []),
-              ];
-          }
+    if (typeName) {
+      const importer = dataImporters.value.find(
+        (importer) => importer.typeName === typeName
+      );
+      if (importer) {
+        profileDetails.value.settings = [
+          ...(importer?.availSettings.map(
+            (x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)
+          ) || []),
+        ];
       }
+    }
   }
 
   async function updateImportProfile(updatedProfile: ImportProfile) {

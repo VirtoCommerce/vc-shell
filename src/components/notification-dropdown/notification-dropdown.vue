@@ -1,6 +1,6 @@
 <template>
   <div
-    class="relative flex items-center h-full"
+    class="tw-relative tw-flex tw-items-center tw-h-full"
     @click.stop="toggleNotificationsDrop"
     v-click-outside="
       () => {
@@ -11,13 +11,13 @@
   >
     <div
       :class="[
-        'relative h-full flex items-center justify-center w-[var(--app-bar-button-width)] border-l border-solid border-l-[color:var(--app-bar-button-border-color)] cursor-pointer text-[color:var(--app-bar-button-color)] bg-[color:var(--app-bar-button-background-color)] transition-[color] duration-200 hover:text-[color:var(--app-bar-button-color-hover)] hover:bg-[color:var(--app-bar-button-background-color-hover)]',
+        'tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color:var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)]  tw-transition-[color]  tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]',
         {
-          'before:content-[``] before:block before:absolute before:right-[12px] before:top-[18px] before:w-[7px] before:h-[7px] before:bg-[#ff4a4a] before:rounded-full before:z-[1]':
+          'before:tw-content-[``] before:tw-block before:tw-absolute before:tw-right-[12px] before:tw-top-[18px] before:tw-w-[7px] before:tw-h-[7px] before:tw-bg-[#ff4a4a] before:tw-rounded-full before:tw-z-[1]':
             isAccent,
         },
         {
-          'shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] bg-white z-[10000]':
+          'tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] tw-bg-white tw-z-[10000]':
             isDropdownVisible && !$isMobile.value,
         },
       ]"
@@ -26,21 +26,21 @@
     </div>
     <div
       v-if="$isMobile.value && isDropdownVisible"
-      class="fixed left-0 top-0 right-0 bottom-0 z-[9999] bg-[#808c99] opacity-60"
+      class="tw-fixed tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-z-[9999] tw-bg-[#808c99] tw-opacity-60"
       @click.stop="toggleNotificationsDrop"
     ></div>
     <div
-      class="absolute top-[var(--app-bar-height)] z-[9999] drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] bg-white rounded-b-[6px] w-[439px] max-h-[350px] min-h-[50px] right-0 overflow-hidden flex flex-col z-[10000]"
+      class="tw-absolute tw-top-[var(--app-bar-height)] tw-z-[9999] tw-drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] tw-bg-white tw-rounded-b-[6px] tw-w-[439px] tw-max-h-[350px] tw-min-h-[50px] tw-right-0 tw-overflow-hidden tw-flex tw-flex-col"
       v-if="isDropdownVisible"
       :class="{
-        'hidden !fixed !right-0 !top-0 !max-h-full !max-w-[300px] !w-full !bottom-0 !z-[9999] !border-0':
+        'tw-hidden !tw-fixed !tw-right-0 !tw-top-0 !tw-max-h-full !tw-max-w-[300px] !tw-w-full !tw-bottom-0 !tw-z-[9999] !tw-border-0':
           $isMobile.value,
-        '!flex': $isMobile.value && isDropdownVisible,
+        '!tw-flex': $isMobile.value && isDropdownVisible,
       }"
     >
       <div
         v-if="$isMobile.value"
-        class="text-[#319ed4] flex justify-end items-center p-4"
+        class="tw-text-[#319ed4] tw-flex tw-justify-end tw-items-center tw-p-4"
       >
         <VcIcon
           icon="fas fa-times"
@@ -52,14 +52,14 @@
         <VcCol v-if="notifications && notifications.length">
           <div
             @click="handleClick(item)"
-            class="py-[18px] px-[15px] border-b border-solid border-b-[#e3e7ec] cursor-pointer last-of-type:border-b-0"
+            class="tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-cursor-pointer last-of-type:tw-border-b-0"
             v-for="item in notifications"
             :key="`notification_${item.id}`"
           >
             <NotificationItem :notification="item"></NotificationItem>
           </div>
         </VcCol>
-        <div class="flex justify-center items-center p-4" v-else>
+        <div class="tw-flex tw-justify-center tw-items-center tw-p-4" v-else>
           {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
         </div>
       </VcContainer>

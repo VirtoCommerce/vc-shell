@@ -13,7 +13,7 @@
       :expanded="expanded"
       :empty="empty"
       :notfound="notfound"
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :multiselect="true"
       :columns="columns"
       :items="offers"
@@ -35,59 +35,59 @@
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
-        <div class="truncate">
+        <div class="tw-truncate">
           {{ itemData.item.name }}
         </div>
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
-          <div class="w-full flex justify-evenly">
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+          <div class="tw-w-full tw-flex tw-justify-evenly">
             <VcImage
-              class="shrink-0"
+              class="tw-shrink-0"
               aspect="1x1"
               size="s"
               :bordered="true"
               :src="itemData.item.imgSrc"
             ></VcImage>
-            <div class="grow basis-0 ml-3">
-              <div class="font-bold text-lg">
+            <div class="tw-grow tw-basis-0 tw-ml-3">
+              <div class="tw-font-bold tw-text-lg">
                 {{ itemData.item.name }}
               </div>
             </div>
           </div>
-          <div class="mt-3 w-full flex justify-between">
-            <div class="truncate grow basis-0 mr-2">
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.sku }}
               </div>
             </div>
-            <div class="truncate grow-[2] basis-0">
+            <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.inStockQuantity }}
               </div>
             </div>
           </div>
-          <div class="mt-3 w-full flex justify-between">
-            <div class="truncate grow-[2] basis-0 mr-2">
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{
                   itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
                 }}
               </div>
             </div>
-            <div class="truncate grow-[2] basis-0 mr-2">
+            <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
-            <div class="truncate grow-[2] basis-0">
+            <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{
                   itemData.item.createdDate &&
                   moment(itemData.item.createdDate).fromNow()

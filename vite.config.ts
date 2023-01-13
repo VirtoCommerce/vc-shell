@@ -5,6 +5,7 @@ const version = JSON.parse(packageJson.toString()).version || 0;
 import vue from "@vitejs/plugin-vue";
 import { loadEnv } from "vite";
 import typescript from "@rollup/plugin-typescript";
+import VueMacros from "unplugin-vue-macros/vite";
 
 // Build configuration for the application
 const mode = process.env.APP_ENV as string;
@@ -24,7 +25,11 @@ if (mode !== "production") {
 
 export default {
   plugins: [
-    vue(),
+    VueMacros({
+      plugins: {
+        vue: vue(),
+      },
+    }),
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
@@ -66,7 +71,6 @@ export default {
         ? {
             "@vc-shell/framework/dist/style.css":
               "@vc-shell/framework/dist/style.css",
-            // "@vc-shell/framework": "@vc-shell/framework/index.ts",
             "vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
@@ -103,6 +107,9 @@ export default {
     },
   },
   optimizeDeps: {
+    esbuildOptions: {
+      target: ["es2020", "safari14"],
+    },
     include:
       mode === "development"
         ? [
@@ -117,6 +124,7 @@ export default {
         : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {
+    target: "esnext",
     sourcemap: true,
     emptyOutDir: true,
     commonjsOptions: {

@@ -13,17 +13,17 @@
         :outline="false"
         :extend="true"
         variant="light-danger"
-        class="w-full box-border mb-3"
+        class="tw-w-full tw-box-border tw-mb-3"
         v-if="errorMessage"
       >
-        <div class="flex flex-row items-center">
+        <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
             icon="fas fa-exclamation-circle"
-            class="text-[#ff4a4a] mr-3"
+            class="tw-text-[#ff4a4a] tw-mr-3"
             size="xxl"
           ></VcIcon>
           <div>
-            <div class="font-bold">
+            <div class="tw-font-bold">
               {{ $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
@@ -33,19 +33,33 @@
       <VcForm>
         <VcRow>
           <VcCol>
-              <Field v-slot="{field, errorMessage, handleChange}" name="name" rules="required" :modelValue="fulfillmentCenterDetails.name">
-                  <VcInput
-                          v-slot="field"
-                          class="p-3"
-                          :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
-                          :placeholder="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
-                          v-model="fulfillmentCenterDetails.name"
-                          is-required
-                          :error-message="errorMessage"
-                          @update:modelValue="handleChange"
-                  >
-                  </VcInput>
-              </Field>
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              name="name"
+              rules="required"
+              :modelValue="fulfillmentCenterDetails.name"
+            >
+              <VcInput
+                v-bind="field"
+                class="tw-p-3"
+                :label="
+                  $t(
+                    'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL'
+                  )
+                "
+                :placeholder="
+                  $t(
+                    'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER'
+                  )
+                "
+                v-model="fulfillmentCenterDetails.name"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:modelValue="handleChange"
+              >
+              </VcInput>
+            </Field>
           </VcCol>
         </VcRow>
       </VcForm>
@@ -59,11 +73,17 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref, unref} from "vue";
-import {IBladeToolbar, IParentCallArgs, useForm, useI18n, useLogger} from "@vc-shell/framework";
+import { computed, onMounted, ref, unref } from "vue";
+import {
+  IBladeToolbar,
+  IParentCallArgs,
+  useForm,
+  useI18n,
+  useLogger,
+} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
-import {Field, useIsFormValid} from "vee-validate";
+import { Field, useIsFormValid } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 
 export interface Props {
@@ -73,8 +93,8 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'close:blade'): void
-    (event: 'parent:call', args: IParentCallArgs): void
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -191,12 +211,12 @@ async function removeFulfillmentCenter() {
 
 async function onBeforeClose() {
   if (modified.value) {
-      return confirm(
-        unref(
-            computed(() =>
-                t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION")
-            )
+    return confirm(
+      unref(
+        computed(() =>
+          t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION")
         )
+      )
     );
   }
 }

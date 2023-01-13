@@ -10,7 +10,7 @@
   >
     <VcContainer class="import-new">
       <VcCol>
-        <div class="p-3">
+        <div class="tw-p-3">
           <VcRow>
             <VcCard
               :header="
@@ -27,10 +27,10 @@
             >
               <!-- File upload -->
               <VcCol
-                class="p-5"
+                class="tw-p-5"
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
-                <VcRow class="mb-4">
+                <VcRow class="tw-mb-4">
                   <a class="vc-link" :href="sampleTemplateUrl">{{
                     $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
                   }}</a>
@@ -54,43 +54,43 @@
                     :uploadedFile="uploadedFile"
                     :isUploaded="isValid"
                     :isStarted="importStarted"
-                    class="p-5"
+                    class="tw-p-5"
                   >
                   </import-upload-status>
                 </VcRow>
                 <!-- Uploaded file import status -->
                 <VcCol v-if="importStarted">
                   <VcRow
-                    class="relative p-[40px] before:content-[''] before:[background:linear-gradient(180deg,#ecf2f7_0%,rgba(236,242,246,0)_100%)] before:left-0 before:right-0 before:absolute before:h-[21px] before:top-0"
+                    class="tw-relative tw-p-[40px] before:tw-content-[''] before:[background:linear-gradient(180deg,#ecf2f7_0%,rgba(236,242,246,0)_100%)] before:tw-left-0 before:tw-right-0 before:tw-absolute before:h-[21px] before:tw-top-0"
                     v-if="inProgress"
                   >
-                    <VcCol class="text-[#a1c0d4]">
+                    <VcCol class="tw-text-[#a1c0d4]">
                       {{
                         $t(
                           "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS"
                         )
                       }}
                       <VcProgress
-                        class="mt-3"
+                        class="tw-mt-3"
                         :value="importStatus.progress"
                         :variant="progressbarVariant"
                         :key="importStatus.progress"
                       ></VcProgress>
                     </VcCol>
                   </VcRow>
-                  <VcRow class="border-t border-solid border-t-[#e5e5e5]">
+                  <VcRow class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5]">
                     <VcCol
                       v-for="(badge, i) in importBadges"
                       :key="i"
-                      class="flex !flex-row items-center p-5"
+                      class="tw-flex !tw-flex-row tw-items-center tw-p-5"
                     >
                       <VcIcon
                         :icon="badge.icon"
                         size="xxl"
                         :style="{ color: badge.color }"
                       ></VcIcon>
-                      <div class="ml-3">
-                        <div class="font-medium">
+                      <div class="tw-ml-3">
+                        <div class="tw-font-medium">
                           {{ badge.title }}
                         </div>
                         <VcHint>{{ badge.description }}</VcHint>
@@ -99,14 +99,14 @@
                   </VcRow>
                 </VcCol>
               </VcCol>
-              <VcHint class="p-3 import-new__error" v-if="errorMessage">{{
+              <VcHint class="tw-p-3 import-new__error" v-if="errorMessage">{{
                 errorMessage
               }}</VcHint>
             </VcCard>
           </VcRow>
         </div>
         <!-- Skipped details table -->
-        <VcCol class="p-3" v-if="importStarted && reversedErrors.length">
+        <VcCol class="tw-p-3" v-if="importStarted && reversedErrors.length">
           <VcCard
             class="import-new__skipped"
             :fill="true"
@@ -125,8 +125,8 @@
             >
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
-                <div class="flex flex-col">
-                  <div class="truncate">
+                <div class="tw-flex tw-flex-col">
+                  <div class="tw-truncate">
                     {{ itemData.item }}
                   </div>
                 </div>
@@ -136,7 +136,7 @@
         </VcCol>
 
         <!-- History-->
-        <VcCol class="p-3" v-if="!importStarted">
+        <VcCol class="tw-p-3" v-if="!importStarted">
           <VcCard
             :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
             :fill="true"
@@ -154,8 +154,8 @@
             >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">
-                <div class="flex flex-col">
-                  <div class="truncate">
+                <div class="tw-flex tw-flex-col">
+                  <div class="tw-truncate">
                     {{ itemData.item.name }}
                   </div>
                 </div>
@@ -666,7 +666,7 @@ defineExpose({
 
 .import-new {
   & .vc-container__inner {
-    @apply flex flex-col;
+    @apply tw-flex tw-flex-col;
   }
 
   &__error {
@@ -675,13 +675,13 @@ defineExpose({
 
   &__skipped {
     & .vc-card__body {
-      @apply flex flex-col;
+      @apply tw-flex tw-flex-col;
     }
   }
 
   &__history {
     & .vc-card__body {
-      @apply flex flex-col;
+      @apply tw-flex tw-flex-col;
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <VcTable
-    class="grow basis-0"
+    class="tw-grow tw-basis-0"
     :loading="loading"
     :expanded="expanded"
     :columns="tableColumns"
@@ -21,10 +21,10 @@
     <!-- Empty -->
     <template v-slot:empty>
       <div
-        class="w-full h-full box-border flex flex-col items-center justify-center p-5"
+        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
       >
         <img :src="emptyImage" />
-        <div class="m-4 text-xl font-medium">
+        <div class="tw-m-4 tw-text-xl tw-font-medium">
           {{ $t("RATING.REVIEW_TABLE.EMPTY") }}
         </div>
       </div>
@@ -93,13 +93,13 @@ const tableColumns = ref<ITableColumns[]>([
     id: "title",
     title: computed(() => t("RATING.REVIEW_TABLE.HEADER.TITLE")),
     alwaysVisible: true,
-    class: "truncate",
+    class: "tw-truncate",
   },
   {
     id: "review",
     title: computed(() => t("RATING.REVIEW_TABLE.HEADER.REVIEW")),
     alwaysVisible: false,
-    class: "truncate",
+    class: "tw-truncate",
   },
   {
     id: "rating",

@@ -1,6 +1,6 @@
 <template>
   <slot name="title" v-bind:title="notification.title"></slot>
-  <VcHint class="mb-1" v-if="notification.profileName"
+  <VcHint class="tw-mb-1" v-if="notification.profileName"
     >{{ $t("SHELL.NOTIFICATIONS.PROFILE") }}
     <b>{{ notification.profileName }}</b></VcHint
   >

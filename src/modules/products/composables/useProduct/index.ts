@@ -1,12 +1,10 @@
-import { computed, reactive, Ref, ref, watch } from "vue";
+import { computed, Ref, ref, watch } from "vue";
 import { useLogger, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
-import { CategoryIndexedSearchCriteria } from "../../../../api_client/catalog";
-
 import {
     CatalogProduct,
-    CategorySearchResult,
+    Category,
     CreateNewProductCommand,
     CreateNewPublicationRequestCommand,
     IProductDetails,
@@ -18,7 +16,8 @@ import {
     SellerProduct,
     ValidateProductQuery,
     VcmpSellerCatalogClient,
-    ValidationFailure, SearchCategoriesQuery,
+    ValidationFailure,
+    SearchCategoriesQuery, CategorySearchResult,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
@@ -100,12 +99,14 @@ export default (): IUseProduct => {
     ids?: string[]
   ): Promise<CategorySearchResult> {
     const client = await getApiClient();
-      return await client.searchCategories(new SearchCategoriesQuery({
-          objectIds: ids,
-          keyword,
-          skip,
-          take: 20,
-      }));
+    return await client.searchCategories(
+      new SearchCategoriesQuery({
+        objectIds: ids,
+        keyword,
+        skip,
+        take: 20,
+      })
+    );
   }
 
   async function loadProduct(args: { id: string }) {

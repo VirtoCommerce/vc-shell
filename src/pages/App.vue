@@ -160,9 +160,13 @@ onMounted(async () => {
   }
 });
 
-watch(user, (value) => {
-  isAuthorized.value = !!value?.userName;
-});
+watch(
+  user,
+  (value) => {
+    isAuthorized.value = !!value?.userName;
+  },
+  { immediate: true }
+);
 
 watch(
   () => bladeNavigationRefs.value?.bladesRefs,

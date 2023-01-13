@@ -1,5 +1,7 @@
 <template>
-  <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
+  <div
+    class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light"
+  >
     <VcLoading v-if="loading" active></VcLoading>
 
     <VcLoginForm
@@ -8,7 +10,12 @@
       :title="$t('SHELL.PASSWORDRESET.TITLE')"
     >
       <VcForm>
-        <Field name="password" v-slot="{field, errorMessage, handleChange}" :modelValue="form.password" rules="required">
+        <Field
+          name="password"
+          v-slot="{ field, errorMessage, handleChange, errors }"
+          :modelValue="form.password"
+          rules="required"
+        >
           <VcInput
             v-bind="field"
             ref="passwordField"
@@ -18,28 +25,48 @@
             type="password"
             :disabled="!form.tokenIsValid"
             v-model="form.password"
-            @update:modelValue="(e) => {handleChange(e); validate()}"
-            is-required
+            @update:modelValue="
+              (e) => {
+                handleChange(e);
+                validate();
+              }
+            "
+            required
+            :error="!!errors.length"
             :error-message="errorMessage"
           />
         </Field>
-        <Field name="confirm_password" v-slot="{field, errorMessage, handleChange}" :modelValue="form.confirmPassword" rules="required">
+        <Field
+          name="confirm_password"
+          v-slot="{ field, errorMessage, handleChange, errors }"
+          :modelValue="form.confirmPassword"
+          rules="required"
+        >
           <VcInput
             v-bind="field"
             ref="confirmPasswordField"
             class="tw-mb-4"
             :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
+            :placeholder="
+              $t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')
+            "
             :disabled="!form.tokenIsValid"
             v-model="form.confirmPassword"
             type="password"
-            @update:modelValue="(e) => {handleChange(e); validate()}"
+            @update:modelValue="
+              (e) => {
+                handleChange(e);
+                validate();
+              }
+            "
             @keyup.enter="resetPassword"
-            is-required
+            required
+            :error="!!errors.length"
             :error-message="errorMessage"
-          />
+          >
+          </VcInput>
         </Field>
-        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
           <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <vc-button
             variant="primary"
@@ -66,8 +93,8 @@
 <script lang="ts" setup>
 import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import {useForm, useI18n, useUser} from "@vc-shell/framework";
-import {Field} from 'vee-validate'
+import { useForm, useUser } from "@vc-shell/framework";
+import { Field } from "vee-validate";
 
 const props = defineProps({
   userId: {
@@ -91,7 +118,6 @@ const {
   loading,
 } = useUser();
 const router = useRouter();
-const { t } = useI18n();
 const { validate: veeValidate } = useForm({ validateOnMount: false });
 
 const form = reactive({
@@ -120,7 +146,7 @@ const disableButton = computed(() => {
 
 const validate = async () => {
   if (form.tokenIsValid) {
-    var errors = (await validatePassword(form.password)).errors;
+    const errors = (await validatePassword(form.password)).errors;
     form.errors = errors.map((x) => x.code);
     if (form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
@@ -132,7 +158,7 @@ const validate = async () => {
 const resetPassword = async () => {
   const { valid } = await veeValidate();
   if (valid) {
-    var result = await resetPasswordByToken(
+    const result = await resetPasswordByToken(
       props.userId,
       form.password,
       props.token

@@ -6,7 +6,7 @@
   >
     <div class="tw-p-3">
       <VcForm>
-          <Field name="current" rules="required|min:6" :modelValue="form.currentPassword" v-slot="{field, errorMessage, handleChange}">
+          <Field name="current" rules="required|min:6" :modelValue="form.currentPassword" v-slot="{field, errorMessage, errors}">
               <VcInput
                     v-bind="field"
                     ref="passwordField"
@@ -16,11 +16,12 @@
                     type="password"
                     v-model="form.currentPassword"
                     @update:modelValue="validate"
-                    is-required
+                    required
+                    :error="!!errors.length"
                     :error-message="errorMessage"
               ></VcInput>
           </Field>
-          <Field name="new_pass" rules="required|min:6" :modelValue="form.password" v-slot="{field, errorMessage}">
+          <Field name="new_pass" rules="required|min:6" :modelValue="form.password" v-slot="{field, errorMessage, errors}">
               <VcInput
                       v-bind="field"
                       ref="newPasswordField"
@@ -30,11 +31,12 @@
                       type="password"
                       @update:modelValue="validate"
                       v-model="form.password"
-                      is-required
+                      required
+                      :error="!!errors.length"
                       :error-message="errorMessage"
               ></VcInput>
           </Field>
-          <Field name="confirm_pass" rules="required|min:6" :modelValue="form.confirmPassword" v-slot="{field, errorMessage}">
+          <Field name="confirm_pass" rules="required|min:6" :modelValue="form.confirmPassword" v-slot="{field, errorMessage, errors}">
               <VcInput
                       v-bind="field"
                       ref="confirmPasswordField"
@@ -44,11 +46,12 @@
                       @update:modelValue="validate"
                       type="password"
                       v-model="form.confirmPassword"
-                      is-required
+                      required
+                      :error="!!errors.length"
                       :error-message="errorMessage"
               ></VcInput>
           </Field>
-        <div class= "tw-flex tw-justify-center tw-items-center tw-pt-2">
+        <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
           <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <VcButton
             variant="primary"

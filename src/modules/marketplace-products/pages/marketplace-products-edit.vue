@@ -45,70 +45,71 @@
                 name="name"
                 rules="required|min:3"
                 :modelValue="productDetails.name"
-                v-slot="{ field, errorMessage, handleChange }"
+                v-slot="{ field, errorMessage, handleChange, errors }"
               >
                 <VcInput
                   v-bind="field"
                   class="tw-mb-4"
                   :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                   v-model="productDetails.name"
-                  :clearable="true"
                   :placeholder="
                     $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                   "
-                  :disabled="readonly"
-                  maxchars="64"
-                  is-required
+                  :disabled="disabled"
+                  maxlength="64"
+                  required
+                  clearable
+                  :error="!!errors.length"
                   :error-message="errorMessage"
                   @update:modelValue="handleChange"
                 ></VcInput>
               </Field>
               <Field
-                name="category"
+                name="categoryId"
                 rules="required"
                 :modelValue="productDetails.categoryId"
-                v-slot="{ field, errorMessage, handleChange }"
+                v-slot="{ field, errorMessage, handleChange, errors }"
               >
                 <VcSelect
                   v-bind="field"
                   class="tw-mb-4"
                   :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                  v-model="productDetails.categoryId"
-                  :isSearchable="true"
-                  :clearable="false"
+                  :model-value="productDetails.categoryId"
+                  searchable
                   :placeholder="
                     $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
                   "
-                  :options="categories"
-                  :initialItem="currentCategory"
-                  keyProperty="id"
-                  displayProperty="name"
+                  :options="fetchCategories"
+                  option-value="id"
+                  option-label="name"
                   :tooltip="
                     $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
                   "
-                  @search="onCategoriesSearch"
-                  @close="onSelectClose"
                   @update:modelValue="
                     (e) => {
-                      handleChange(e);
+                      handleChange(e.categoryId);
                       setCategory(e);
                     }
                   "
-                  :is-disabled="readonly"
-                  :onInfiniteScroll="onLoadMore"
-                  :optionsTotal="categoriesTotal"
-                  is-required
+                  :disabled="disabled"
+                  required
+                  :error="!!errors.length"
                   :error-message="errorMessage"
+                  :clearable="false"
                 >
-                  <template v-slot:item="itemData">
+                  <template
+                    v-for="item in ['option', 'selected-item']"
+                    v-slot:[item]="scope"
+                    :key="item"
+                  >
                     <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
                       <div class="tw-grow tw-basis-0 tw-ml-4 tw-truncate">
                         <div class="tw-truncate">
-                          {{ itemData.item.path }}
+                          {{ scope.opt.path }}
                         </div>
                         <VcHint class="tw-truncate tw-mt-1">
                           {{ $t("MP_PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
-                          {{ itemData.item.code }}
+                          {{ scope.opt.code }}
                         </VcHint>
                       </div>
                     </div>
@@ -128,24 +129,24 @@
                     name="gtin"
                     :rules="validateGtin"
                     :modelValue="productDetails.gtin"
-                    v-slot="{ field, errorMessage, handleChange }"
+                    v-slot="{ field, errorMessage, handleChange, errors }"
                   >
                     <VcInput
                       v-bind="field"
                       class="tw-mb-4"
                       :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                       v-model="productDetails.gtin"
-                      :clearable="true"
                       :placeholder="
                         $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
                       "
                       :tooltip="
                         $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
                       "
-                      :disabled="readonly"
-                      name="gtin"
-                      maxchars="64"
-                      is-required
+                      :disabled="disabled"
+                      maxlength="64"
+                      required
+                      clearable
+                      :error="!!errors.length"
                       :error-message="errorMessage"
                       @update:modelValue="handleChange"
                     ></VcInput>
@@ -167,7 +168,7 @@
                           'MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
                         )
                       "
-                      :disabled="readonly"
+                      :disabled="disabled"
                       name="description"
                       is-required
                       :error-message="errorMessage"
@@ -183,7 +184,7 @@
                     :getter="getPropertyValue"
                     :setter="setPropertyValue"
                     class="tw-mb-4"
-                    :disabled="readonly"
+                    :disabled="disabled"
                   >
                   </VcDynamicProperty>
                 </div>
@@ -204,7 +205,7 @@
                     @upload="onGalleryUpload"
                     @item:edit="onGalleryItemEdit"
                     @item:remove="onGalleryImageRemove"
-                    :disabled="readonly"
+                    :disabled="disabled"
                     @sort="onGallerySort"
                     :multiple="true"
                   ></VcGallery>
@@ -248,11 +249,9 @@ export default defineComponent({
 import {
   useI18n,
   useUser,
-  useAutosave,
   useForm,
   min,
   required,
-  VcInput,
   IParentCallArgs,
   IBladeEvent,
   IBladeToolbar,
@@ -271,7 +270,6 @@ import { OffersList } from "../../offers";
 import { debounce, orderBy } from "lodash-es";
 import {
   IImage,
-  IProductDetails,
   ISellerProduct,
   Category,
   Image,
@@ -322,22 +320,17 @@ const {
   revertStagedChanges,
   searchDictionaryItems,
 } = useProduct();
-const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
-  productDetails,
-  modified,
-  props.param ?? "productsEdit"
-);
+
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 const { setValues } = useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
-const currentCategory = ref<Category>();
 const offersCount = ref(0);
-const categories: Ref<Category[]> = ref([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
-const categoriesTotal = ref<number>();
+const categoryLoading = ref(false);
+const currentCategory = ref<Category>();
 
 const filterTypes = ["Category", "Variation"];
 
@@ -349,7 +342,7 @@ const product = computed(() =>
   props.param ? productData.value : productDetails.value
 );
 
-const readonly = computed(
+const disabled = computed(
   () => props.param && !productData.value?.canBeModified
 );
 
@@ -397,21 +390,9 @@ const reload = async (fullReload: boolean) => {
       if (props.param) {
         await loadProduct({ id: props.param });
       }
-      loadAutosaved();
-
-      if (savedValue.value) {
-        productDetails.value = savedValue.value as IProductDetails;
-        setValues({ ...productDetails.value });
-      }
-
-      const searchResult = await fetchCategories();
-      categories.value = searchResult.results;
-      categoriesTotal.value = searchResult.totalCount;
-      if (productDetails.value?.categoryId) {
-        await setCategoryItem(product.value.categoryId);
-      }
     } finally {
       productLoading.value = false;
+      categoryLoading.value = false;
     }
   }
   //Load offers count to populate widget
@@ -445,7 +426,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           } else {
             await createProduct(productDetails.value);
           }
-          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -488,7 +468,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             { ...productDetails.value },
             true
           );
-          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -524,7 +503,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       await revertStagedChanges(productData.value.id);
-      resetAutosaved();
       emit("parent:call", {
         method: "reload",
       });
@@ -649,15 +627,12 @@ const onGalleryImageRemove = (image: Image) => {
   }
 };
 
-const setCategory = async (id: string) => {
-  currentCategory.value = categories.value?.find((x) => x.id === id);
-  if (!currentCategory.value) {
-    await setCategoryItem(id);
-  }
-
+const setCategory = async (selectedCategory: Category) => {
+  currentCategory.value = selectedCategory;
+    productDetails.value.categoryId = selectedCategory.id;
   const currentProperties = [...(productDetails.value?.properties || [])];
   productDetails.value.properties = [
-    ...(currentCategory.value?.properties?.map(
+    ...(selectedCategory.properties?.map(
       (prop) => new Property({ ...prop, isReadOnly: false })
     ) || []),
   ];
@@ -673,41 +648,12 @@ const setCategory = async (id: string) => {
   });
 };
 
-async function setCategoryItem(id: string) {
-  const fetchedCategory = await fetchCategories(undefined, 0, [id]);
-  if (fetchedCategory.results && fetchedCategory.results.length) {
-    currentCategory.value = fetchedCategory.results[0];
-  }
-}
-
 async function loadDictionaries(
   property: IProperty,
   keyword?: string,
   skip?: number
 ) {
   return await searchDictionaryItems([property.id], keyword, skip);
-}
-
-const onCategoriesSearch = debounce(async (value: string) => {
-  const searchResult = await fetchCategories(value);
-  categories.value = searchResult.results;
-  categoriesTotal.value = searchResult.totalCount;
-}, 500);
-
-const onSelectClose = async () => {
-  const searchResult = await fetchCategories();
-  categories.value = searchResult.results;
-  if (
-    currentCategory.value &&
-    !categories.value.some((x) => x.id === currentCategory.value.id)
-  ) {
-    categories.value.push(currentCategory.value);
-  }
-};
-
-async function onLoadMore() {
-  const data = await fetchCategories(undefined, categories.value.length);
-  categories.value.push(...data.results);
 }
 
 async function openOffers() {
@@ -729,15 +675,11 @@ async function openOffers() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(
+    return confirm(
       unref(
         computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
       )
     );
-    if (confirmationStatus) {
-      resetAutosaved();
-    }
-    return confirmationStatus;
   }
 }
 

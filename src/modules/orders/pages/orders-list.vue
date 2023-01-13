@@ -65,14 +65,12 @@
                   class="tw-mb-3"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
-                  max="9999-12-31"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
-                  max="9999-12-31"
                 ></VcInput>
               </div>
             </VcCol>

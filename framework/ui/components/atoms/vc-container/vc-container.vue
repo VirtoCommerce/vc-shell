@@ -82,9 +82,6 @@ const scrollTop = () => {
     component.value.scroll(0, 0);
   }
 };
-defineExpose({
-  scrollTop,
-});
 
 function touchStart(e: TouchEvent): void {
   if (!touchable.value) {
@@ -161,6 +158,11 @@ function ease(distance: number) {
   }
   return Math.round(distance);
 }
+
+defineExpose({
+    scrollTop,
+    component,
+});
 </script>
 
 <style lang="scss">

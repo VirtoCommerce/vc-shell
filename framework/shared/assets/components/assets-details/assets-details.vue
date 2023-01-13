@@ -23,8 +23,8 @@
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 v-model="localImage.name"
-                :clearable="true"
-                is-required
+                clearable
+                required
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
                 "
@@ -33,10 +33,10 @@
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
                 v-model="localImage.altText"
-                :clearable="true"
+                clearable
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
-                is-required
+                required
               ></VcInput>
               <VcTextarea
                 class="tw-mb-4"

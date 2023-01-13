@@ -69,8 +69,11 @@ export interface VcSelectProps {
         keyword?: string,
         skip?: number,
         ids?: string[]
-      ) => Promise<Record<string, unknown>[]>)
-    | readonly any[]
+      ) => Promise<{
+        results?: Record<string, unknown>[];
+        totalCount?: number;
+      }>)
+    | any[]
     | undefined;
   /**
    * Property of option which holds the 'value'
@@ -132,6 +135,10 @@ export interface VcSelectEmits {
   (event: "close"): void;
 }
 export interface VcSelectSlots {
+  /**
+   * Custom select control
+   */
+  control: (scope: { toggleHandler: () => void }) => VNode[];
   /**
    * Prepend inner field
    */

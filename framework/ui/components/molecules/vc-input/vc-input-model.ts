@@ -26,6 +26,7 @@ export interface VcInputProps {
     | "url"
     | "time"
     | "date"
+    | "datetime-local"
     | undefined;
   /**
    * Input description (hint) text below input component
@@ -117,6 +118,10 @@ export interface VcInputSlots {
      * @param value Value to be emitted
      */
     emitValue: (value: string | number | Date | null) => void;
+    /**
+     * Field placeholder text
+     */
+    placeholder?: string | undefined;
   }) => VNode[];
   /**
    * Prepend outer field

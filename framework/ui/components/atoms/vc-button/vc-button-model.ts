@@ -1,10 +1,10 @@
 import { VNode } from "vue";
 
-export interface VcBadgeProps {
+export interface VcButtonProps {
   /**
    * Badge active state
    * */
-  active?: boolean | undefined;
+  icon?: string | undefined;
   /**
    * Put component in disabled state
    * */
@@ -15,14 +15,14 @@ export interface VcBadgeProps {
   clickable?: boolean | undefined;
 }
 
-export interface VcBadgeEmits {
+export interface VcButtonEmits {
   /**
    * Emitted when component is clicked
    * */
   (event: "click"): void;
 }
 
-export interface VcBadgeSlots {
+export interface VcButtonSlots {
   /**
    * Slot for component content
    * */

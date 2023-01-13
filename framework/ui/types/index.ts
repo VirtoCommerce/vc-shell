@@ -3,21 +3,31 @@ import {
   VcInputEmits,
   VcInputProps,
   VcInputSlots,
-} from "../components/molecules/vc-input-new/vc-input-new-model";
+} from "../components/molecules/vc-input/vc-input-model";
 import {
   VcSelectEmits,
   VcSelectProps,
   VcSelectSlots,
-} from "../components/molecules/vc-select-new/vc-select-new-model";
+} from "../components/molecules/vc-select/vc-select-model";
+import {
+  VcInputCurrencyProps,
+  VcInputCurrencyEmits,
+  VcInputCurrencySlots,
+} from "@/ui/components/molecules/vc-input-currency/vc-input-currency-model";
 
 declare module "@vue/runtime-core" {
   interface GlobalComponents {
-    VcInputNew: GlobalComponentConstructor<
+    VcInput: GlobalComponentConstructor<
       VcInputProps,
       VcInputSlots,
       VcInputEmits
     >;
-    VcSelectNew: GlobalComponentConstructor<
+    VcInputCurrency: GlobalComponentConstructor<
+      VcInputCurrencyProps,
+      VcInputCurrencySlots,
+      VcInputCurrencyEmits
+    >;
+    VcSelect: GlobalComponentConstructor<
       VcSelectProps,
       VcSelectSlots,
       VcSelectEmits

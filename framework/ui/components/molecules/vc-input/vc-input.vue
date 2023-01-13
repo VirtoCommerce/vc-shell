@@ -5,150 +5,219 @@
       `vc-input_${type}`,
       {
         'vc-input_clearable': clearable,
-        'vc-input_error': errorMessage,
+        'vc-input_error': error,
         'vc-input_disabled': disabled,
+        'tw-pb-[20px]': error || hint,
       },
     ]"
   >
     <!-- Input label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="isRequired">
+    <VcLabel v-if="label" class="tw-mb-2" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
     </VcLabel>
 
-    <!-- Input field -->
-    <div class="vc-input__field-wrapper">
-      <input
-        class="vc-input__field"
-        :placeholder="placeholder"
-        :type="internalType"
-        :value="modelValue"
-        :disabled="disabled"
-        @input="onInput"
-        @blur="$emit('blur')"
-        ref="inputRef"
-        :max="max"
-        :name="name"
-        :maxlength="maxchars"
-      />
+    <div class="tw-flex tw-flex-nowrap tw-items-start">
+      <div class="tw-relative tw-flex tw-flex-auto tw-text-left">
+        <div
+          class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
+          v-if="$slots['prepend']"
+        >
+          <slot name="prepend"></slot>
+        </div>
+        <div
+          class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative"
+        >
+          <div class="vc-input__field-wrapper">
+            <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full">
+              <div
+                class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
+                v-if="$slots['prepend-inner']"
+              >
+                <slot name="prepend-inner"></slot>
+              </div>
+              <div class="vc-input__field">
+                <div
+                  class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
+                  v-if="prefix"
+                >
+                  {{ prefix }}
+                </div>
+                <slot
+                  name="control"
+                  :editable="disabled"
+                  :focused="autofocus"
+                  :modelValue="temp"
+                  :emitValue="emitValue"
+                  :placeholder="placeholder"
+                >
+                  <input
+                    :placeholder="placeholder"
+                    :type="internalType"
+                    v-model="temp"
+                    :disabled="disabled"
+                    @input="onInput"
+                    ref="inputRef"
+                    :name="name"
+                    :maxlength="maxlength"
+                    :autofocus="autofocus"
+                    :max="maxDate"
+                    class="vc-input__input"
+                  />
+                </slot>
+                <div
+                  class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
+                  v-if="suffix"
+                >
+                  {{ suffix }}
+                </div>
+                <div
+                  v-if="
+                    clearable && modelValue && !disabled && type !== 'password'
+                  "
+                  class="vc-input__clear"
+                  @click="onReset"
+                >
+                  <VcIcon size="s" icon="fas fa-times"></VcIcon>
+                </div>
 
-      <!-- Input clear button -->
-      <div
-        v-if="clearable && modelValue && !disabled && type !== 'password'"
-        class="vc-input__clear"
-        @click="onReset"
-      >
-        <VcIcon size="s" icon="fas fa-times"></VcIcon>
-      </div>
+                <div
+                  class="vc-input__showhide"
+                  v-if="type === 'password' && internalType === 'password'"
+                  @click="internalType = 'text'"
+                >
+                  <VcIcon size="s" icon="fas fa-eye-slash"></VcIcon>
+                </div>
 
-      <div
-        class="vc-input__showhide"
-        v-if="type === 'password' && internalType === 'password'"
-        @click="internalType = 'text'"
-      >
-        <VcIcon size="s" icon="fas fa-eye-slash"></VcIcon>
-      </div>
+                <div
+                  class="vc-input__showhide"
+                  v-if="type === 'password' && internalType === 'text'"
+                  @click="internalType = 'password'"
+                >
+                  <VcIcon size="s" icon="fas fa-eye"></VcIcon>
+                </div>
+              </div>
 
-      <div
-        class="vc-input__showhide"
-        v-if="type === 'password' && internalType === 'text'"
-        @click="internalType = 'password'"
-      >
-        <VcIcon size="s" icon="fas fa-eye"></VcIcon>
+              <div
+                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
+                v-if="$slots['append-inner']"
+              >
+                <slot name="append-inner"></slot>
+              </div>
+              <div
+                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
+                v-if="loading"
+              >
+                <VcIcon
+                  icon="fas fa-spinner tw-animate-spin"
+                  class="tw-text-[var(--input-clear-color)]"
+                  size="m"
+                ></VcIcon>
+              </div>
+            </div>
+          </div>
+          <div
+            class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]"
+          >
+            <Transition name="slide-up" mode="out-in">
+              <div v-if="error">
+                <slot name="error">
+                  <VcHint class="vc-input__error" v-if="errorMessage">
+                    {{ errorMessage }}
+                  </VcHint>
+                </slot>
+              </div>
+              <div v-else>
+                <slot name="hint">
+                  <VcHint class="vc-input__desc" v-if="hint">
+                    {{ hint }}
+                  </VcHint>
+                </slot>
+              </div>
+            </Transition>
+          </div>
+        </div>
+
+        <div
+          class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
+          v-if="$slots['append']"
+        >
+          <slot name="append"></slot>
+        </div>
       </div>
     </div>
-
-    <slot v-if="errorMessage" name="error">
-      <VcHint class="vc-input__error">
-        {{ errorMessage }}
-      </VcHint>
-    </slot>
-    <slot v-if="fieldDescription" name="error">
-      <VcHint class="vc-input__desc">
-        {{ fieldDescription }}
-      </VcHint>
-    </slot>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, unref, watch } from "vue";
-import { VcIcon, VcLabel } from "@/ui/components";
+import { computed, ref, unref, watch } from "vue";
+import { VcInputProps, VcInputEmits } from "./vc-input-model";
 
-export type ValueType = string | number | Date | null;
-
-export interface Props {
-  placeholder?: string;
-  modelValue?: ValueType;
-  clearable?: boolean;
-  isRequired?: boolean;
-  disabled?: boolean;
-  type?: "";
-  label?: string;
-  tooltip?: string;
-  name?: string;
-  fieldDescription?: string;
-  maxchars?: string;
-  max?: string | number;
-  errorMessage?: string;
-}
-
-export interface Emits {
-  (event: "update:modelValue", value: ValueType): void;
-  (event: "update:optionsValue", value: string): void;
-  (event: "blur"): void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  placeholder: "",
+const props = withDefaults(defineProps<VcInputProps>(), {
   modelValue: null,
   clearable: false,
-  isRequired: false,
+  required: false,
   disabled: false,
   type: "text",
   name: "Field",
-  fieldDescription: "",
-  maxchars: "1024",
+  maxlength: "1024",
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<VcInputEmits>();
+
+let emitTimer;
+let emitValueFn;
+const temp = ref();
+const inputRef = ref();
 
 const internalType = ref(unref(props.type));
 
+const maxDate = computed(() => props.type === "date" && "9999-12-31");
+
 watch(
   () => props.modelValue,
-  (value) => {
-    let initialValue = unref(value);
-    if (
-      initialValue &&
-      initialValue.toString().length >= parseInt(props.maxchars)
-    ) {
-      initialValue.toString().slice(0, parseInt(props.maxchars));
-
-      return;
+  () => {
+    if (temp.value !== props.modelValue) {
+      temp.value = props.modelValue;
     }
-
-    emit("update:modelValue", initialValue);
-  }
+  },
+  { immediate: true }
 );
 
-// Handle input event to properly validate value and emit changes
+// Handle input event and emit changes
 function onInput(e: Event) {
+  if (!e || !e.target) {
+    return;
+  }
+
   const newValue = (e.target as HTMLInputElement).value;
-  if (newValue) {
-    emit("update:modelValue", newValue);
+  emitValue(newValue);
+}
+
+function emitValue(val) {
+  emitValueFn = () => {
+    if (props.modelValue !== val) {
+      emit("update:modelValue", val);
+    }
+    emitValueFn = undefined;
+  };
+
+  if (props.debounce !== undefined) {
+    clearTimeout(emitTimer);
+    emitTimer = setTimeout(emitValueFn, +props.debounce);
   } else {
-    emit("update:modelValue", null);
+    emitValueFn();
   }
 }
 
-// Handle input event to propertly reset value and emit changes
+// Handle input event to properly reset value and emit changes
 function onReset() {
+  temp.value = null;
   emit("update:modelValue", null);
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 :root {
   --input-height: 38px;
   --input-border-radius: 3px;
@@ -165,17 +234,13 @@ function onReset() {
 
   &_date,
   &_datetime-local {
-    @apply tw-max-w-[220px];
-
     .vc-app_mobile & {
       @apply tw-max-w-full;
     }
   }
 
   &__field-wrapper {
-    @apply tw-border tw-border-solid tw-border-[color:var(--input-border-color)]
-    tw-rounded-[var(--input-border-radius)]
-    tw-bg-[color:var(--input-background-color)] tw-flex tw-items-stretch;
+    @apply tw-px-3 tw-relative tw-flex tw-flex-nowrap tw-w-full tw-outline-none tw-h-[var(--input-height)] tw-min-w-0 tw-box-border tw-grow tw-border tw-border-solid tw-border-[color:var(--input-border-color)] tw-rounded-[var(--input-border-radius)] tw-bg-[color:var(--input-background-color)];
   }
 
   &_error &__field-wrapper {
@@ -187,45 +252,73 @@ function onReset() {
   }
 
   &__desc {
-    @apply tw-text-[color:var(--multivalue-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
+    @apply tw-text-[color:var(--input-placeholder-color)] tw-mt-1 tw-break-words tw-p-0;
+  }
+
+  &__input {
+    &:-webkit-autofill,
+    &:-webkit-autofill:focus {
+      transition: background-color 600000s 0s, color 600000s 0s;
+    }
+    &[data-autocompleted] {
+      background-color: transparent !important;
+    }
   }
 
   &__field {
-    @apply tw-border-none tw-outline-none tw-h-[var(--input-height)] tw-min-w-0 tw-box-border tw-grow tw-pl-3;
+    @apply tw-w-auto tw-min-w-0 tw-max-w-full tw-relative tw-flex tw-flex-row tw-flex-auto tw-flex-nowrap [height:inherit];
+    input {
+      @apply tw-border-none tw-outline-none tw-h-full tw-min-w-0 tw-w-full tw-box-border tw-grow;
 
-    &::-webkit-input-placeholder {
-      @apply tw-text-[color:var(--input-placeholder-color)];
-    }
+      &::-webkit-input-placeholder {
+        @apply tw-text-[color:var(--input-placeholder-color)];
+      }
 
-    &::-moz-placeholder {
-      @apply tw-text-[color:var(--input-placeholder-color)];
-    }
+      &::-moz-placeholder {
+        @apply tw-text-[color:var(--input-placeholder-color)];
+      }
 
-    &::-ms-placeholder {
-      @apply tw-text-[color:var(--input-placeholder-color)];
-    }
+      &::-ms-placeholder {
+        @apply tw-text-[color:var(--input-placeholder-color)];
+      }
 
-    &::placeholder {
-      @apply tw-text-[color:var(--input-placeholder-color)];
-    }
+      &::placeholder {
+        @apply tw-text-[color:var(--input-placeholder-color)];
+      }
 
-    &::-ms-reveal,
-    &::-ms-clear {
-      @apply tw-hidden;
+      &::-ms-reveal,
+      &::-ms-clear {
+        @apply tw-hidden;
+      }
     }
   }
 
   &__clear {
-    @apply tw-cursor-pointer tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-px-3 tw-flex tw-items-center;
+    @apply tw-cursor-pointer tw-text-[color:var(--input-clear-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-flex tw-items-center tw-pl-3;
   }
 
   &__showhide {
-    @apply tw-cursor-pointer tw-text-[color:var(--input-placeholder-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-px-3 tw-flex tw-items-center;
+    @apply tw-cursor-pointer tw-text-[color:var(--input-placeholder-color)] hover:tw-text-[color:var(--input-clear-color-hover)] tw-pl-3 tw-flex tw-items-center;
   }
 
   &_disabled &__field-wrapper,
   &_disabled &__field {
     @apply tw-bg-[#fafafa] tw-text-[#424242];
   }
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.25s ease-out;
+}
+
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(5px);
+}
+
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-5px);
 }
 </style>

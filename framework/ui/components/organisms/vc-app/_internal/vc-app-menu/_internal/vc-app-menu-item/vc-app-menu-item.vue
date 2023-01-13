@@ -8,7 +8,7 @@
           :sticky="sticky"
           :icon="icon"
           :title="title"
-          @onClick="onMenuItemClick(navigate)"
+          @onClick="onMenuItemClick(() => navigate($event))"
         />
       </router-link>
     </template>
@@ -56,7 +56,7 @@
 import { onMounted, ref, computed } from "vue";
 import { ExtendedComponent, IMenuItems } from "@/core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
-import {NavigationFailure, useRoute} from "vue-router";
+import { NavigationFailure, useRoute } from "vue-router";
 
 export interface Props {
   sticky?: boolean;
@@ -102,7 +102,7 @@ const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
 
-const isHomePage = computed(() => route.path === '/')
+const isHomePage = computed(() => route.path === "/");
 
 onMounted(() => {
   if (

@@ -25,7 +25,7 @@
         <VcInput
           class="tw-grow tw-basis-0"
           :placeholder="searchPlaceholder"
-          :clearable="true"
+          clearable
           name="table_search"
           :modelValue="searchValue"
           @update:modelValue="$emit('search:change', $event)"

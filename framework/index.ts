@@ -8,8 +8,6 @@ import { init as initLogger } from "./core/composables/useLogger";
 import { init as initI18n } from "./core/composables/useI18n";
 import { init as initShared } from "./shared";
 
-import { Money3Directive } from "v-money3";
-
 const init = [initLogger, initI18n, initShared];
 
 import "normalize.css";
@@ -17,8 +15,6 @@ import "./assets/styles/index.scss";
 
 export default {
   install(app: App): void {
-    app.directive("money", Money3Directive);
-
     // Init all children and shared components
     init.forEach((fn) => fn(app));
 

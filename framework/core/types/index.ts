@@ -1,5 +1,5 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
-import {IBladeElement, ExtendedComponent} from "@/shared";
+import { IBladeElement, ExtendedComponent } from "@/shared";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -78,15 +78,15 @@ export interface RequestPasswordResult {
 }
 
 export interface ITableColumns {
-    id: string;
-    title: string | ComputedRef<string>;
-    width?: number;
-    field?: string;
-    alwaysVisible?: boolean;
-    type?: string;
-    sortable?: boolean;
-    sortDirection?: number;
-    class?: string;
-    format?: string;
-    align?: string;
+  id: string;
+  title: string | ComputedRef<string>;
+  width?: number;
+  field?: string;
+  alwaysVisible?: boolean;
+  type?: string;
+  sortable?: boolean;
+  sortDirection?: number;
+  class?: string;
+  format?: string;
+  align?: string;
 }

@@ -1,5 +1,5 @@
 /* Atoms */
-export { default as VcBadge } from "./atoms/vc-badge/vc-badge.vue";
+export { VcBadge } from "./atoms/vc-badge";
 export { default as VcButton } from "./atoms/vc-button/vc-button.vue";
 export { default as VcCard } from "./atoms/vc-card/vc-card.vue";
 export { default as VcCheckbox } from "./atoms/vc-checkbox/vc-checkbox.vue";
@@ -24,14 +24,13 @@ export { default as VcBreadcrumbs } from "./molecules/vc-breadcrumbs/vc-breadcru
 export { default as VcEditor } from "./molecules/vc-editor/vc-editor.vue";
 export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
 export { default as VcFileUpload } from "./molecules/vc-file-upload/vc-file-upload.vue";
-export { default as VcInput } from "./molecules/vc-input/vc-input.vue";
-export { VcInputNew } from "./molecules/vc-input-new";
+export { VcInput } from "./molecules/vc-input";
+export { VcInputCurrency } from "./molecules/vc-input-currency";
 export { default as VcMultivalue } from "./molecules/vc-multivalue/vc-multivalue.vue";
 export { default as VcNotification } from "./molecules/vc-notification/vc-notification.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcRating } from "./molecules/vc-rating/vc-rating.vue";
-export { default as VcSelect } from "./molecules/vc-select/vc-select.vue";
-export { VcSelectNew } from "./molecules/vc-select-new";
+export { VcSelect } from "./molecules/vc-select";
 export { default as VcSlider } from "./molecules/vc-slider/vc-slider.vue";
 export { default as VcTextarea } from "./molecules/vc-textarea/vc-textarea.vue";
 

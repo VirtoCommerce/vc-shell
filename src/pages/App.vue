@@ -6,7 +6,8 @@
     :toolbarItems="toolbarItems"
     :isReady="isReady"
     :isAuthorized="isAuthorized"
-    :logo="logoImage"
+    :logo="uiSettings.logo"
+    :title="uiSettings.title"
     :version="version"
     :pages="pages"
     :bladesRefs="bladesRefs"
@@ -104,6 +105,7 @@ import { UserPermissions } from "../types";
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
+import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 const {
   t,
   locale: currentLocale,
@@ -120,7 +122,7 @@ const {
   markAsRead,
 } = useNotifications();
 const { checkPermission } = usePermissions();
-const { getUiCustomizationSettings } = useSettings();
+const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { delay } = useFunctions();
 const {
   blades,
@@ -132,7 +134,7 @@ const {
   onParentCall,
 } = useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
-
+const { sellerDetails, getCurrentSeller } = useSellerDetails();
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -153,7 +155,8 @@ onMounted(async () => {
   await loadUser();
   await getApps();
   langInit();
-  await getUiCustomizationSettings();
+  await customizationHandler();
+
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");
@@ -372,6 +375,28 @@ function langInit() {
 
 function onOpen(args: IOpenBlade) {
   openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb);
+}
+
+async function customizationHandler() {
+  await getCurrentSeller();
+
+  if (sellerDetails.value) {
+    if ("logo" in sellerDetails.value) {
+      applySettings({ logo: sellerDetails.value.logo });
+    }
+    if ("name" in sellerDetails.value) {
+      applySettings({ title: sellerDetails.value.name });
+    }
+  } else {
+    await getUiCustomizationSettings();
+
+    if (!uiSettings.value.logo) {
+      applySettings({ logo: logoImage });
+    }
+    if (!uiSettings.value.title) {
+      applySettings({ title: undefined });
+    }
+  }
 }
 </script>
 

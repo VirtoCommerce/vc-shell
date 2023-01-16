@@ -1,13 +1,23 @@
-import {useUser, useLogger} from "@/core/composables";
+import { useUser, useLogger } from "@/core/composables";
 import { computed, Ref, ref } from "vue";
-import { SettingClient } from "@/core/api";
+import { ObjectSettingEntry, SettingClient } from "@/core/api";
 
-interface IUseSettings {
-  readonly uiSettings: Ref<Record<string, string>>;
-  getUiCustomizationSettings: () => void;
+interface IUISetting {
+  contrast_logo?: string;
+  logo?: string;
+  title?: string;
 }
 
-const uiSettings = ref<Record<string, string>>();
+interface IUseSettings {
+  readonly uiSettings: Ref<IUISetting>;
+  getUiCustomizationSettings: () => void;
+  applySettings: (args: { logo?: string; title?: string }) => void;
+}
+
+const uiSettings = ref<IUISetting>({
+  logo: undefined,
+  title: undefined,
+});
 export default (): IUseSettings => {
   const { getAccessToken } = useUser();
   const logger = useLogger();
@@ -29,8 +39,18 @@ export default (): IUseSettings => {
     }
   }
 
+  function applySettings(args: { logo?: string; title?: string }) {
+    if (args.logo) {
+      uiSettings.value.logo = args.logo;
+    }
+    if (args.title) {
+      uiSettings.value.title = args.title;
+    }
+  }
+
   return {
     uiSettings: computed(() => uiSettings.value),
     getUiCustomizationSettings,
+    applySettings,
   };
 };

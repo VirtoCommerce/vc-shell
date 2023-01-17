@@ -1,6 +1,5 @@
 import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
-import { LibraryOptions } from "vite";
 import * as path from "path";
 import VueMacros from "unplugin-vue-macros/vite";
 
@@ -21,8 +20,8 @@ export default getLibraryConfiguration(
     build: {
       target: "esnext",
       lib: {
-        entry: "/index.ts",
-      } as LibraryOptions,
+        entry: path.resolve(__dirname, "/index.ts"),
+      },
       rollupOptions: {
         external: [
           "vue",

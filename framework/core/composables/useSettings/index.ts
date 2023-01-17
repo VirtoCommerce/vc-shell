@@ -30,10 +30,16 @@ export default (): IUseSettings => {
 
   async function getUiCustomizationSettings() {
     const client = await getApiClient();
+    const base = window.location.origin;
 
     try {
       const result = await client.getUICustomizationSetting();
-      uiSettings.value = JSON.parse(result.defaultValue);
+      const settings = JSON.parse(result.defaultValue);
+      uiSettings.value = {
+        contrast_logo: base + settings.contrast_logo,
+        logo: base + settings.logo,
+        title: settings.title,
+      };
     } catch (e) {
       logger.error(e);
     }

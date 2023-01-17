@@ -1,10 +1,10 @@
 import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
+import VueMacros from "unplugin-vue-macros/vite";
 import { loadEnv } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
-import VueMacros from "unplugin-vue-macros/vite";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");

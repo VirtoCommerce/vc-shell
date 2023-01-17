@@ -5,17 +5,8 @@
     "rootDir": ".",
     "resolveJsonModule": true,
     "paths": {
-      "@vc-shell/api-client": [
-        "framework/api-client/src"
-      ],
-      "@vc-shell/core": [
-        "framework/core/src"
-      ],
-      "@vc-shell/ui": [
-        "framework/ui/src"
-      ],
-      "@vc-shell/mod-assets": [
-        "modules/assets/src"
+      "@vc-shell/framework": [
+        "framework"
       ],
       "@vc-shell/config-generator": [
         "cli/config/src"
@@ -27,16 +18,7 @@
   },
   "references": [
     {
-      "path": "framework/api-client/"
-    },
-    {
-      "path": "framework/core/"
-    },
-    {
-      "path": "framework/ui/"
-    },
-    {
-      "path": "modules/assets/"
+      "path": "framework/"
     },
     {
       "path": "cli/config/"

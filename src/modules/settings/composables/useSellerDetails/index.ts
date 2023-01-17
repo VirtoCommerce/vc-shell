@@ -159,23 +159,23 @@ export default (): IUseSellerDetails => {
   }
 
   function setCountry(countryId: string) {
-      if (countryId) {
-          const countryInfo = countriesList.value.find((x) => x.id === countryId);
-          if (countryInfo) {
-              sellerDetails.value.addresses[0].countryCode = countryInfo.id;
-              sellerDetails.value.addresses[0].countryName = countryInfo.name;
-          }
+    if (countryId) {
+      const countryInfo = countriesList.value.find((x) => x.id === countryId);
+      if (countryInfo) {
+        sellerDetails.value.addresses[0].countryCode = countryInfo.id;
+        sellerDetails.value.addresses[0].countryName = countryInfo.name;
       }
+    }
   }
 
   function setRegion(regionId: string) {
-      if (regionId) {
-          const regionInfo = regionsList.value.find((x) => x.id === regionId);
-          if (regionInfo) {
-              sellerDetails.value.addresses[0].regionId = regionInfo.id;
-              sellerDetails.value.addresses[0].regionName = regionInfo.name;
-          }
+    if (regionId) {
+      const regionInfo = regionsList.value.find((x) => x.id === regionId);
+      if (regionInfo) {
+        sellerDetails.value.addresses[0].regionId = regionInfo.id;
+        sellerDetails.value.addresses[0].regionName = regionInfo.name;
       }
+    }
   }
 
   async function resetEntries() {

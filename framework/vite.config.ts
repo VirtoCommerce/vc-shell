@@ -20,7 +20,7 @@ export default getLibraryConfiguration(
     build: {
       target: "esnext",
       lib: {
-        entry: path.resolve(__dirname, "/index.ts"),
+        entry: path.resolve(__dirname, "index.ts"),
       },
       rollupOptions: {
         external: [

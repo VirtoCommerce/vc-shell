@@ -381,10 +381,10 @@ async function customizationHandler() {
   await getCurrentSeller();
 
   if (sellerDetails.value) {
-    if ("logo" in sellerDetails.value) {
+    if (sellerDetails.value.logo) {
       applySettings({ logo: sellerDetails.value.logo });
     }
-    if ("name" in sellerDetails.value) {
+    if (sellerDetails.value.name) {
       applySettings({ title: sellerDetails.value.name });
     }
   } else {

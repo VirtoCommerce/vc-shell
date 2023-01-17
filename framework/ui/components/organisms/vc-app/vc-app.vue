@@ -21,13 +21,10 @@
       @menubutton:click="$refs.menu.isMobileVisible = true"
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
       @logo:click="openDashboard"
+      :title="title"
     >
       <template v-slot:appSwitcher>
         <slot name="appSwitcher"></slot>
-      </template>
-
-      <template v-slot:productName v-if="$slots['productName']">
-        <slot name="productName"></slot>
       </template>
     </VcAppBar>
 
@@ -91,6 +88,7 @@ export interface Props {
   version: string;
   theme?: "light" | "dark";
   bladesRefs: IBladeElement[];
+  title?: string;
 }
 
 export interface Emits {

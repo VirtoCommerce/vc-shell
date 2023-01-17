@@ -5,7 +5,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -13,7 +13,7 @@
       :expanded="expanded"
       :empty="empty"
       :notfound="notfound"
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :multiselect="true"
       :columns="columns"
       :items="offers"
@@ -35,69 +35,59 @@
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">
-        <div class="truncate">
+        <div class="tw-truncate">
           {{ itemData.item.name }}
         </div>
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
-          <div class="w-full flex justify-evenly">
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+          <div class="tw-w-full tw-flex tw-justify-evenly">
             <VcImage
-              class="shrink-0"
+              class="tw-shrink-0"
               aspect="1x1"
               size="s"
               :bordered="true"
               :src="itemData.item.imgSrc"
             ></VcImage>
-            <div class="grow basis-0 ml-3">
-              <div class="font-bold text-lg">
+            <div class="tw-grow tw-basis-0 tw-ml-3">
+              <div class="tw-font-bold tw-text-lg">
                 {{ itemData.item.name }}
               </div>
             </div>
           </div>
-          <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow basis-0 mr-2"
-            >
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SKU") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.sku }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.QUANTITY") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.inStockQuantity }}
               </div>
             </div>
           </div>
-          <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{
                   itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
                 }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+            <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{
                   itemData.item.createdDate &&
                   moment(itemData.item.createdDate).fromNow()
@@ -105,13 +95,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </template>
-
-      <!-- Override alwaysInStock column template -->
-      <template v-slot:item_alwaysInStock="itemData">
-        <div class="flex justify-center">
-          <VcStatusIcon :status="!itemData"></VcStatusIcon>
         </div>
       </template>
     </VcTable>
@@ -128,51 +111,59 @@ import {
   ref,
   unref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "offers",
+  url: "/offers",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useLogger } from "@vc-shell/core";
-import moment from "moment";
-import { IOffer } from "../../../api_client/marketplacevendor";
 import {
-  IActionBuilderResult,
+  IBladeEvent,
   IBladeToolbar,
+  IParentCallArgs,
+  useFunctions,
+  useI18n,
+  useLogger,
+  IActionBuilderResult,
   ITableColumns,
-} from "../../../types";
+} from "@vc-shell/framework";
+import moment from "moment";
+import { IOffer, SellerProduct } from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: {
+    sellerProduct?: SellerProduct;
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+  bladeOptions?: {
+    sellerProduct?: SellerProduct;
+  };
+};
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-  /**
-   * Blade options params
-   * @param {ISellerProduct} sellerProduct
-   */
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:children"): void;
+  (event: "open:blade", blade: IBladeOptions);
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["parent:call", "page:closeChildren", "page:open"]);
+
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const logger = useLogger();
@@ -191,7 +182,7 @@ const {
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
-const selectedItemId = ref();
+const selectedItemId = ref<string>();
 const selectedOfferIds = ref([]);
 const isDesktop = inject("isDesktop");
 
@@ -260,7 +251,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           )
         )
       ) {
-        emit("page:closeChildren");
+        emit("close:children");
         await deleteOffers({ ids: selectedOfferIds.value });
         await reload();
       }
@@ -300,10 +291,25 @@ const tableColumns = ref<ITableColumns[]>([
     alwaysVisible: true,
   },
   {
-    id: "alwaysInStock",
-    field: "trackInventory",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.ALWAYS_IN_STOCK")),
+    id: "salePrice",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
+    width: 100,
+    sortable: true,
+    type: "money",
+  },
+  {
+    id: "listPrice",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
+    width: 100,
+    sortable: true,
+    type: "money",
+  },
+  {
+    id: "minQuantity",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.MIN_QTY")),
     width: 80,
+    sortable: true,
+    type: "number",
   },
   {
     id: "inStockQuantity",
@@ -319,23 +325,7 @@ const tableColumns = ref<ITableColumns[]>([
     sortable: true,
     type: "number",
   },
-  {
-    id: "validFrom",
-    field: "startDate",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.VALID_FROM")),
-    width: 100,
-    type: "date-time",
-  },
-  {
-    id: "validTo",
-    field: "endDate",
-    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.VALID_TO")),
-    width: 100,
-    type: "date-time",
-  },
 ]);
-
-const tm = moment().localeData();
 
 const empty = reactive({
   image: emptyImage,
@@ -370,8 +360,8 @@ const columns = computed(() => {
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
-    component: OffersDetails,
+  emit("open:blade", {
+    component: shallowRef(OffersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -394,10 +384,10 @@ const onHeaderClick = (item: ITableColumns) => {
   }
 };
 
-const addOffer = async () => {
-  emit("page:open", {
-    component: OffersDetails,
-    componentOptions: props.options,
+const addOffer = () => {
+  emit("open:blade", {
+    component: shallowRef(OffersDetails),
+    bladeOptions: props.options,
   });
 };
 
@@ -465,7 +455,7 @@ async function removeOffers() {
       })
     )
   ) {
-    emit("page:closeChildren");
+    emit("close:children");
     await deleteOffers({ ids: selectedOfferIds.value });
     await reload();
   }

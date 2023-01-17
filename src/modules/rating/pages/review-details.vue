@@ -5,7 +5,7 @@
     v-loading="false"
     :expanded="expanded"
     :closable="closable"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <template v-slot:actions>
       <Status :review-status="customerReview.reviewStatus"></Status>
@@ -14,16 +14,16 @@
       <VcForm>
         <VcRow>
           <VcCol size="2">
-            <div class="p-3">
-              <VcLabel class="mb-2">
+            <div class="tw-p-3">
+              <VcLabel class="tw-mb-2">
                 {{ $t("RATING.PAGES.REVIEW_DETAILS.FORM.CREATEDBY.LABEL") }}
               </VcLabel>
               {{ customerReview.createdBy }}
             </div>
           </VcCol>
           <VcCol size="3">
-            <div class="p-3">
-              <VcLabel class="mb-2">
+            <div class="tw-p-3">
+              <VcLabel class="tw-mb-2">
                 {{ $t("RATING.PAGES.REVIEW_DETAILS.FORM.CREATEDDATE.LABEL") }}
               </VcLabel>
               {{ createdDate }}
@@ -32,8 +32,8 @@
         </VcRow>
         <VcRow>
           <VcCol>
-            <div class="p-3">
-              <VcLabel class="mb-2">
+            <div class="tw-p-3">
+              <VcLabel class="tw-mb-2">
                 {{ $t("RATING.PAGES.REVIEW_DETAILS.FORM.TITLE.LABEL") }}
               </VcLabel>
               <template v-if="customerReview.title">
@@ -48,7 +48,7 @@
         <VcRow>
           <VcCol size="2">
             <VcRating
-              class="p-3"
+              class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.LABEL')"
               :placeholder="
                 $t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.PLACEHOLDER')
@@ -61,7 +61,7 @@
         <VcRow>
           <VcCol>
             <VcTextarea
-              class="p-3"
+              class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.LABEL')"
               :placeholder="
                 $t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.PLACEHOLDER')
@@ -79,8 +79,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
 import {
+  useI18n,
   VcBlade,
   VcCol,
   VcContainer,
@@ -89,8 +89,7 @@ import {
   VcTextarea,
   VcRating,
   VcRow,
-  IPage,
-} from "@vc-shell/ui";
+} from "@vc-shell/framework";
 import moment from "moment";
 import { computed, onMounted } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
@@ -109,8 +108,7 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "page:close"): void;
-  (event: "page:open", page: IPage): void;
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

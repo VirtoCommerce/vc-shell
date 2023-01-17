@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -13,17 +13,17 @@
         :outline="false"
         :extend="true"
         variant="light-danger"
-        class="w-full box-border mb-3"
+        class="tw-w-full tw-box-border tw-mb-3"
         v-if="errorMessage"
       >
-        <div class="flex flex-row items-center">
+        <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
             icon="fas fa-exclamation-circle"
-            class="text-[#ff4a4a] mr-3"
+            class="tw-text-[#ff4a4a] tw-mr-3"
             size="xxl"
           ></VcIcon>
           <div>
-            <div class="font-bold">
+            <div class="tw-font-bold">
               {{ $t("SETTINGS.TEAM.PAGES.DETAILS.FORM.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
@@ -33,79 +33,113 @@
       <VcForm>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')
-              "
-              :required="true"
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :modelValue="userDetails.firstName"
               name="name"
-              :disabled="isOwnerReadonly"
-              v-model="userDetails.firstName"
+              rules="required"
             >
-            </VcInput>
+              <VcInput
+                v-bind="field"
+                class="tw-p-3"
+                :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
+                :placeholder="
+                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')
+                "
+                :disabled="isOwnerReadonly"
+                v-model="userDetails.firstName"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:modelValue="handleChange"
+              />
+            </Field>
           </VcCol>
         </VcRow>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')
-              "
-              :required="true"
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :modelValue="userDetails.lastName"
               name="lastName"
-              :disabled="isOwnerReadonly"
-              v-model="userDetails.lastName"
+              rules="required"
             >
-            </VcInput>
+              <VcInput
+                v-bind="field"
+                class="tw-p-3"
+                :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
+                :placeholder="
+                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')
+                "
+                :disabled="isOwnerReadonly"
+                v-model="userDetails.lastName"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:modelValue="handleChange"
+              />
+            </Field>
           </VcCol>
         </VcRow>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')
-              "
-              :required="true"
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :modelValue="userDetails.email"
               name="email"
-              rules="email"
-              :disabled="!!props.param"
-              v-model="userDetails.email"
+              rules="required|email"
             >
-            </VcInput>
+              <VcInput
+                v-bind="field"
+                class="tw-p-3"
+                :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
+                :placeholder="
+                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')
+                "
+                :disabled="!!props.param"
+                v-model="userDetails.email"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:modelValue="handleChange"
+              />
+            </Field>
           </VcCol>
         </VcRow>
 
         <VcRow>
           <VcCol>
-            <VcSelect
-              class="p-3"
-              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
-              :placeholder="
-                $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')
-              "
-              :isRequired="true"
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
+              :modelValue="userDetails.role"
               name="role"
-              :options="roles"
-              v-model="userDetails.role"
-              :initialItem="userDetails.role || role"
-              keyProperty="id"
-              :clearable="false"
-              displayProperty="name"
-              :isDisabled="isOwnerReadonly"
+              rules="required"
             >
-            </VcSelect>
+              <VcSelect
+                v-bind="field"
+                class="tw-p-3"
+                :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
+                :placeholder="
+                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')
+                "
+                :options="roles"
+                v-model="userDetails.role"
+                option-value="id"
+                option-label="name"
+                :disabled="isOwnerReadonly"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:modelValue="handleChange"
+                :clearable="false"
+              />
+            </Field>
           </VcCol>
         </VcRow>
         <VcRow v-if="userDetails.id">
           <VcCol>
             <VcSwitch
-              class="p-3"
+              class="tw-p-3"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
               v-model="isActive"
               :true-value="false"
@@ -118,7 +152,7 @@
           <VcCol>
             <VcSwitch
               v-model="sendInviteStatus"
-              class="p-3"
+              class="tw-p-3"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.INVITE.LABEL')"
             ></VcSwitch>
           </VcCol>
@@ -141,38 +175,45 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { IBladeToolbar } from "../../../../types";
-import { useI18n, useUser, useAutosave } from "@vc-shell/core";
+import {
+  useI18n,
+  useUser,
+  useAutosave,
+  IParentCallArgs,
+  IBladeToolbar,
+} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@vc-shell/ui";
-import { useIsFormValid } from "vee-validate";
-import { SellerUserDetails } from "../../../../api_client/marketplacevendor";
+import { useIsFormValid, Field, useForm } from "vee-validate";
+import {
+  SellerUser,
+  SellerUserDetails,
+} from "../../../../api_client/marketplacevendor";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: {
+    user?: SellerUser;
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: () => ({}),
 });
 
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits<Emits>();
+
 useForm({ validateOnMount: false });
 const { user } = useUser();
 
@@ -222,7 +263,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
@@ -251,7 +292,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
             isEmailExistsModal.value = true;
@@ -298,7 +339,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (props.options && props.options.user && props.options.user.sellerId) {
         try {
           await sendTeamMemberInvitation({ id: props.options.user.id });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           errorMessage.value = e.message;
         }
@@ -351,7 +392,7 @@ onMounted(async () => {
   loadAutosaved();
 
   if (savedValue.value) {
-    userDetails.value = savedValue.value as SellerUserDetails;
+    userDetails.value = savedValue.value as unknown as SellerUserDetails;
   }
 });
 
@@ -362,7 +403,7 @@ async function removeUser() {
     emit("parent:call", {
       method: "reload",
     });
-    emit("page:close");
+    emit("close:blade");
   }
 }
 

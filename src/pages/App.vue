@@ -1,5 +1,5 @@
 <template>
-  <VcLoading v-if="!isReady" active class="app__loader"></VcLoading>
+  <VcLoading v-if="!isReady" active class="app__loader" />
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -9,25 +9,27 @@
     :logo="logoImage"
     :version="version"
     :pages="pages"
+    :bladesRefs="bladesRefs"
+    @backlink:click="closeBlade($event)"
+    @onOpen="onOpen"
+    @onClose="closeBlade($event)"
     v-else
   >
     <!-- App Switcher -->
-    <template v-slot:appSwitcher>
+    <template v-slot:appSwitcher v-if="appsList && appsList.length">
       <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
     </template>
 
-    <!-- Set up dashboard page -->
-    <template v-slot:dashboard="scope">
-      <DashboardPage v-bind="scope" />
-    </template>
-
-    <!-- Set up login form  -->
-    <template v-slot:login>
-      <LoginPage
-        :logo="whiteLogoImage"
-        :background="bgImage"
-        title="Vendor Portal"
-      ></LoginPage>
+    <template v-slot:bladeNavigation v-if="isAuthorized">
+      <VcBladeNavigation
+        @onOpen="openBlade($event.blade, $event.id)"
+        @onClose="closeBlade($event)"
+        @onParentCall="(e) => onParentCall(e.id, e.cb)"
+        :blades="blades"
+        :parentBladeOptions="parentBladeOptions"
+        :parentBladeParam="parentBladeParam"
+        ref="bladeNavigationRefs"
+      ></VcBladeNavigation>
     </template>
 
     <template v-slot:notifications>
@@ -53,8 +55,10 @@
 
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
-import { AppDescriptor, PushNotification } from "@vc-shell/api-client";
 import {
+  PushNotification,
+  IBladeToolbar,
+  IMenuItems,
   useAppSwitcher,
   useFunctions,
   useI18n,
@@ -63,7 +67,12 @@ import {
   usePermissions,
   useSettings,
   useUser,
-} from "@vc-shell/core";
+  VcAppSwitcher,
+  useBladeNavigation,
+  VcBladeNavigation,
+  IOpenBlade,
+  IBladeElement,
+} from "@vc-shell/framework";
 import {
   computed,
   inject,
@@ -83,20 +92,18 @@ import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
 import { OrdersList } from "../modules/orders";
 import { ProductsList } from "../modules/products";
+import { MpProductsList } from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
 import {
   SellerDetails,
   TeamList,
   FulfillmentCenters,
 } from "../modules/settings";
-import { IBladeToolbar, IMenuItems, UserPermissions } from "../types";
-import DashboardPage from "./Dashboard.vue";
-import LoginPage from "./Login.vue";
+import { UserPermissions } from "../types";
+// eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
-import bgImage from "/assets/background.jpg";
-import whiteLogoImage from "/assets/logo-white.svg";
+// eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
-
 const {
   t,
   locale: currentLocale,
@@ -115,7 +122,17 @@ const {
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings } = useSettings();
 const { delay } = useFunctions();
-const { getApps, switchApp, appsList } = useAppSwitcher();
+const {
+  blades,
+  bladesRefs,
+  parentBladeOptions,
+  parentBladeParam,
+  openBlade,
+  closeBlade,
+  onParentCall,
+} = useBladeNavigation();
+const { appsList, switchApp, getApps } = useAppSwitcher();
+
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
@@ -126,6 +143,7 @@ const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
+const bladeNavigationRefs = ref();
 
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);
@@ -133,31 +151,44 @@ signalR.on("Send", (message: PushNotification) => {
 
 onMounted(async () => {
   await loadUser();
+  await getApps();
   langInit();
   await getUiCustomizationSettings();
-  await getApps();
   isReady.value = true;
   if (!isAuthorized.value) {
     router.push("/login");
   }
 });
 
-watch(user, (value) => {
-  isAuthorized.value = !!value?.userName;
-});
+watch(
+  user,
+  (value) => {
+    isAuthorized.value = !!value?.userName;
+  },
+  { immediate: true }
+);
+
+watch(
+  () => bladeNavigationRefs.value?.bladesRefs,
+  (newVal) => {
+    bladesRefs.value = newVal;
+  },
+  { deep: true }
+);
 
 log.debug(`Initializing App`);
 
 const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(LanguageSelector),
-    componentOptions: {
+    bladeOptions: {
       value: computed(() => currentLocale.value),
       title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
       languageItems: computed(() =>
-        availableLocales.map((locale) => ({
+        availableLocales.map((locale: string) => ({
           lang: locale,
-          title: getLocaleMessage(locale).language_name,
+          title: (getLocaleMessage(locale) as { language_name: string })
+            .language_name,
           clickHandler(lang: string) {
             currentLocale.value = lang;
             localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
@@ -179,13 +210,13 @@ const toolbarItems = ref<IBladeToolbar[]>([
         .length;
     }),
     component: shallowRef(NotificationDropdown),
-    componentOptions: {
+    bladeOptions: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
     },
   },
   {
     component: shallowRef(UserDropdownButton),
-    componentOptions: {
+    bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -200,9 +231,10 @@ const toolbarItems = ref<IBladeToolbar[]>([
         },
         {
           title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-          async clickHandler() {
+          clickHandler() {
+            closeBlade(0);
             signOut();
-            router.push("/login");
+            router.push({ name: "Login" });
           },
         },
       ],
@@ -214,7 +246,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
 const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
-    componentOptions: {
+    bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() =>
@@ -230,9 +262,8 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("SHELL.MENU.DASHBOARD")),
     icon: "fas fa-home",
     isVisible: true,
-    clickHandler(app) {
+    clickHandler(app: IBladeElement) {
       app.openDashboard();
-      router.push("/");
     },
   },
   {
@@ -245,26 +276,17 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("PRODUCTS.MENU.TITLE")),
     icon: "fas fa-box-open",
     isVisible: true,
-    component: shallowRef(),
     children: [
       {
         title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
-        component: shallowRef(ProductsList),
-        componentOptions: {
-          url: "all-products",
+        component: shallowRef(MpProductsList),
+        bladeOptions: {
           readonly: true,
-          query: {
-            isPublished: true,
-            searchFromAllSellers: true,
-          },
         },
       },
       {
         title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
         component: shallowRef(ProductsList),
-        componentOptions: {
-          url: "products",
-        },
       },
     ],
   },
@@ -295,7 +317,6 @@ const menuItems = reactive<IMenuItems[]>([
         UserPermissions.SellerDetailsEdit,
       ])
     ),
-    component: shallowRef(),
     children: [
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
@@ -348,6 +369,10 @@ function langInit() {
     currentLocale.value = "en";
   }
 }
+
+function onOpen(args: IOpenBlade) {
+  openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb);
+}
 </script>
 
 <style lang="scss">
@@ -378,11 +403,11 @@ function langInit() {
 html,
 body,
 #app {
-  @apply font-roboto h-full w-full m-0 fixed overflow-hidden overscroll-y-none;
+  @apply tw-font-roboto tw-h-full tw-w-full tw-m-0 tw-fixed tw-overflow-hidden tw-overscroll-y-none;
 }
 
 body {
-  @apply text-base;
+  @apply tw-text-base;
 }
 
 h1,
@@ -395,19 +420,19 @@ button,
 input,
 select,
 textarea {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 ::-webkit-input-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 :-moz-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 ::-moz-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 :-ms-input-placeholder {
-  @apply font-roboto;
+  @apply tw-font-roboto;
 }
 
 .vc-app.vc-theme_light {

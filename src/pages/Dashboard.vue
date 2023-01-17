@@ -1,5 +1,5 @@
 <template>
-  <VcContainer class="dashboard w-full h-full box-border">
+  <VcContainer class="dashboard tw-w-full tw-h-full tw-box-border">
     <div class="dashboard-header" v-if="$isDesktop.value">
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
@@ -8,7 +8,7 @@
       <VcCol size="10">
         <VcRow>
           <!-- Latest orders block -->
-          <VcCol size="3" class="p-2">
+          <VcCol size="3" class="tw-p-2">
             <VcCard
               v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
@@ -21,7 +21,7 @@
               </template>
 
               <VcTable
-                class="w-full h-full box-border"
+                class="tw-w-full tw-h-full tw-box-border"
                 :loading="ordersLoading"
                 :items="orders"
                 :columns="ordersColumns"
@@ -32,10 +32,10 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="w-full h-full box-border flex flex-col items-center justify-center p-5"
+                    class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
                   >
                     <img src="/assets/empty.png" />
-                    <div class="m-4 text-xl font-medium">
+                    <div class="tw-m-4 tw-text-xl tw-font-medium">
                       {{ $t("SHELL.DASHBOARD.ORDERS.EMPTY") }}
                     </div>
                   </div>
@@ -49,25 +49,25 @@
             </VcCard>
             <VcCard
               v-else
-              class="mb-4"
+              class="tw-mb-4"
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
               @click="open('orders-list')"
             >
-              <div class="h-px bg-[#e3e7ec]"></div>
-              <div class="my-4 dashboard-counters__value">3,334</div>
+              <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
+              <div class="tw-my-4 dashboard-counters__value">3,334</div>
             </VcCard>
           </VcCol>
 
           <!-- Rating & Reviews block -->
-          <VcCol size="4" class="p-2">
-            <RatingDashboardCard :open-page="openPage"></RatingDashboardCard>
+          <VcCol size="4" class="tw-p-2">
+            <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
           </VcCol>
         </VcRow>
 
         <VcRow>
           <!-- Latest products block -->
-          <VcCol size="3" class="p-2">
+          <VcCol size="3" class="tw-p-2">
             <VcCard
               v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
@@ -80,7 +80,7 @@
               </template>
 
               <VcTable
-                class="w-full h-full box-border"
+                class="tw-w-full tw-h-full tw-box-border"
                 :loading="productsLoading"
                 :items="products"
                 :columns="productsColumns"
@@ -91,10 +91,10 @@
                 <!-- Empty template -->
                 <template v-slot:empty>
                   <div
-                    class="w-full h-full box-border flex flex-col items-center justify-center p-5"
+                    class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
                   >
                     <img src="/assets/empty.png" />
-                    <div class="m-4 text-xl font-medium">
+                    <div class="tw-m-4 tw-text-xl tw-font-medium">
                       {{ $t("SHELL.DASHBOARD.PRODUCTS.EMPTY") }}
                     </div>
                     <vc-button @click="open('products-add')">{{
@@ -105,15 +105,11 @@
 
                 <!-- Override name column template -->
                 <template v-slot:item_name="itemData">
-                  <div class="flex flex-col">
-                    <div
-                      class="truncate"
-                    >
+                  <div class="tw-flex tw-flex-col">
+                    <div class="tw-truncate">
                       {{ itemData.item.name }}
                     </div>
-                    <VcHint
-                      class="truncate mt-1"
-                    >
+                    <VcHint class="tw-truncate tw-mt-1">
                       {{ itemData.item.path }}
                     </VcHint>
                   </div>
@@ -123,32 +119,32 @@
                 <template v-slot:item_status="itemData">
                   <mp-product-status
                     :status="itemData.item.status"
-                    class="mb-1"
+                    class="tw-mb-1"
                   />
                 </template>
               </VcTable>
             </VcCard>
             <VcCard
               v-else
-              class="mb-4"
+              class="tw-mb-4"
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
               @click="open('products-list')"
             >
-              <div class="h-px bg-[#e3e7ec]"></div>
-              <div class="my-4 dashboard-counters__value">49</div>
+              <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
+              <div class="tw-my-4 dashboard-counters__value">49</div>
             </VcCard>
           </VcCol>
 
           <!-- Offers block -->
-          <VcCol size="4" class="p-2">
+          <VcCol size="4" class="tw-p-2">
             <VcCard
               v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
             >
               <template v-slot:actions>
-                <vc-button small class="mr-3" @click="open('offers-add')">{{
+                <vc-button small class="tw-mr-3" @click="open('offers-add')">{{
                   $t("SHELL.DASHBOARD.OFFERS.ADD")
                 }}</vc-button>
                 <vc-button small outline @click="open('offers-list')">{{
@@ -159,7 +155,7 @@
               <VcRow>
                 <VcCol style="display: block">
                   <vc-table
-                    class="w-full h-full box-border"
+                    class="tw-w-full tw-h-full tw-box-border"
                     :loading="offersLoading"
                     :items="offers"
                     :columns="offersColumns"
@@ -170,10 +166,10 @@
                     <!-- Empty template -->
                     <template v-slot:empty>
                       <div
-                        class="w-full h-full box-border flex flex-col items-center justify-center p-5"
+                        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
                       >
                         <img src="/assets/empty.png" />
-                        <div class="m-4 text-xl font-medium">
+                        <div class="tw-m-4 tw-text-xl tw-font-medium">
                           {{ $t("SHELL.DASHBOARD.OFFERS.EMPTY") }}
                         </div>
                         <vc-button @click="open('offers-add')">{{
@@ -184,7 +180,7 @@
 
                     <!-- Override alwaysInStock column template -->
                     <template v-slot:item_alwaysInStock="itemData">
-                      <div class="flex justify-center">
+                      <div class= "tw-flex tw-justify-center">
                         <VcStatusIcon :status="!itemData"></VcStatusIcon>
                       </div>
                     </template>
@@ -194,13 +190,13 @@
             </VcCard>
             <VcCard
               v-else
-              class="mb-4"
+              class="tw-mb-4"
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
               @click="open('offers-list')"
             >
-              <div class="h-px bg-[#e3e7ec]"></div>
-              <div class="my-4 dashboard-counters__value">206</div>
+              <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
+              <div class="tw-my-4 dashboard-counters__value">206</div>
             </VcCard>
           </VcCol>
         </VcRow>
@@ -210,9 +206,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
-import { IPage } from "@vc-shell/ui";
-import { computed, onMounted, ref } from "vue";
+import {
+  useI18n,
+  useBladeNavigation,
+  ITableColumns,
+} from "@vc-shell/framework";
+import { computed, onMounted, ref, shallowRef } from "vue";
 import { useRouter } from "vue-router";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
@@ -224,18 +223,13 @@ import {
   useProducts,
 } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
-import { ITableColumns } from "../types";
 
-export interface Props {
-  openPage: (index: number, page: IPage) => void;
-}
-
-const props = defineProps<Props>();
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();
 const { orders, loadOrders, loading: ordersLoading } = useOrders();
 const { offers, loadOffers, loading: offersLoading } = useOffers();
 const router = useRouter();
+const { openBlade } = useBladeNavigation();
 
 const productsColumns = ref<ITableColumns[]>([
   {
@@ -347,7 +341,6 @@ const offersColumns = ref<ITableColumns[]>([
 ]);
 
 onMounted(async () => {
-  router.push("/");
   loadOrders({ take: 5 });
   loadProducts({ take: 5 });
   loadOffers({ take: 5 });
@@ -356,70 +349,109 @@ onMounted(async () => {
 function open(key: string): void {
   switch (key) {
     case "orders-list":
-      props.openPage(0, {
-        component: OrdersList,
-      });
+      openBlade(
+        {
+          parentBlade: shallowRef(OrdersList),
+        },
+        0
+      );
       break;
     case "products-list":
-      props.openPage(0, {
-        component: ProductsList,
-      });
+      openBlade(
+        {
+          parentBlade: shallowRef(ProductsList),
+        },
+        0
+      );
       break;
     case "products-add":
-      props.openPage(0, {
-        component: ProductsList,
-      });
-      props.openPage(1, {
-        component: ProductsEdit,
-      });
+      openBlade(
+        {
+          parentBlade: shallowRef(ProductsList),
+        },
+        0
+      );
+      openBlade(
+        {
+          component: shallowRef(ProductsEdit),
+        },
+        1
+      );
       break;
     case "offers-list":
-      props.openPage(0, {
-        component: OffersList,
-      });
+      openBlade(
+        {
+          parentBlade: shallowRef(OffersList),
+        },
+        0
+      );
       break;
     case "offers-add":
-      props.openPage(0, {
-        component: OffersList,
-      });
-      props.openPage(1, {
-        component: OffersDetails,
-      });
+      openBlade(
+        {
+          parentBlade: shallowRef(OffersList),
+        },
+        0
+      );
+      openBlade(
+        {
+          component: shallowRef(OffersDetails),
+        },
+        1
+      );
       break;
   }
 }
 
 function ordersClick(item: { id: string }): void {
-  props.openPage(0, {
-    component: OrdersList,
-    param: item.id,
-  });
-  props.openPage(1, {
-    component: OrdersEdit,
-    param: item.id,
-  });
+  openBlade(
+    {
+      parentBlade: shallowRef(OrdersList),
+      param: item.id,
+    },
+    0
+  );
+  openBlade(
+    {
+      component: shallowRef(OrdersEdit),
+      param: item.id,
+    },
+    1
+  );
 }
 
 function productsClick(item: { id: string }): void {
-  props.openPage(0, {
-    component: ProductsList,
-    param: item.id,
-  });
-  props.openPage(1, {
-    component: ProductsEdit,
-    param: item.id,
-  });
+  openBlade(
+    {
+      parentBlade: shallowRef(ProductsList),
+      param: item.id,
+    },
+    0
+  );
+  openBlade(
+    {
+      component: shallowRef(ProductsEdit),
+      param: item.id,
+    },
+    1
+  );
 }
 
 function offersClick(item: { id: string }): void {
-  props.openPage(0, {
-    component: OffersList,
-    param: item.id,
-  });
-  props.openPage(1, {
-    component: OffersDetails,
-    param: item.id,
-  });
+  openBlade(
+    {
+      parentBlade: shallowRef(OffersList),
+      param: item.id,
+    },
+    0
+  );
+  openBlade(
+    {
+      component: shallowRef(OffersDetails),
+      param: item.id,
+    },
+    1
+  );
 }
 
 function calcQty(items: OrderLineItem[]) {
@@ -432,63 +464,63 @@ function calcQty(items: OrderLineItem[]) {
   --card-header-background: transparent;
 
   &-header {
-    @apply text-[25px] text-[#333333] my-3 px-2;
+    @apply tw-text-[25px] tw-text-[#333333] tw-my-3 tw-px-2;
   }
 
   .vc-row {
     .vc-app_mobile & {
-      @apply flex;
+      @apply tw-flex;
     }
   }
 
   &-counters {
-    @apply grow-0 basis-[280px] #{!important};
+    @apply tw-grow-0 tw-basis-[280px] #{!important};
 
     .vc-app_mobile & {
-      @apply grow basis-0 #{!important};
+      @apply tw-grow tw-basis-0 #{!important};
     }
 
     &__title {
-      @apply text-[14px] font-medium text-[#a9bfd2]
-        text-center mt-2;
+      @apply tw-text-[14px] tw-font-medium tw-text-[#a9bfd2]
+        tw-text-center tw-mt-2;
     }
 
     &__value {
-      @apply text-[26px] font-medium text-[#319ed4] text-center;
+      @apply tw-text-[26px] tw-font-medium tw-text-[#319ed4] tw-text-center;
     }
   }
 
   &-review-header {
-    @apply text-[#319ed4] font-medium text-lg my-1;
+    @apply tw-text-[#319ed4] tw-font-medium tw-text-lg tw-my-1;
   }
 
   &-offers {
     &__counter {
-      @apply grow text-center flex flex-col items-center
-        justify-center border-l border-solid border-l-[#e5e5e5]
-        p-5 border-b border-solid border-b-[#e5e5e5] last:border-b-0
-        first:border-t first:border-solid first:border-t-[#e5e5e5];
+      @apply tw-grow tw-text-center tw-flex tw-flex-col tw-items-center
+        tw-justify-center tw-border-l tw-border-solid tw-border-l-[#e5e5e5]
+        tw-p-5 tw-border-b tw-border-solid tw-border-b-[#e5e5e5] last:tw-border-b-0
+        first:tw-border-t first:tw-border-solid first:tw-border-t-[#e5e5e5];
 
       &-value {
-        @apply text-[32px] font-medium mb-2;
+        @apply tw-text-[32px] tw-font-medium tw-mb-2;
 
         &_error {
-          @apply text-[#ff4a4a];
+          @apply tw-text-[#ff4a4a];
         }
 
         &_warning {
-          @apply text-[#f89406];
+          @apply tw-text-[#f89406];
         }
       }
 
       &-title {
-        @apply font-bold text-[#6b7987];
+        @apply tw-font-bold tw-text-[#6b7987];
       }
     }
   }
 }
 
 .vc-separator {
-  @apply h-px bg-[#e3e7ec];
+  @apply tw-h-px tw-bg-[#e3e7ec];
 }
 </style>

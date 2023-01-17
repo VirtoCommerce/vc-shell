@@ -8,63 +8,85 @@
     "
     width="50%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
   >
     <VcContainer>
       <VcRow>
         <VcCol>
-          <VcInput
-            class="p-3"
-            :label="
-              $t(
-                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
-              )
-            "
-            :placeholder="
-              $t(
-                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER'
-              )
-            "
-            :clearable="true"
-            :required="true"
-            :tooltip="
-              $t(
-                'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP'
-              )
-            "
-            name="name"
-            v-model="profileDetails.name"
-          ></VcInput>
-          <VcSelect
-            class="p-3"
-            :label="
-              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
-            "
-            :isRequired="true"
-            :tooltip="
-              $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')
-            "
+          <Field
+            v-slot="{ field, errorMessage, handleChange, errors }"
+            rules="required"
+            name="profile_name"
+          >
+            <VcInput
+              v-bind="field"
+              class="tw-p-3"
+              :label="
+                $t(
+                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
+                )
+              "
+              :placeholder="
+                $t(
+                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER'
+                )
+              "
+              :clearable="true"
+              :tooltip="
+                $t(
+                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP'
+                )
+              "
+              v-model="profileDetails.name"
+              :error="!!errors.length"
+              :error-message="errorMessage"
+              required
+              @update:modelValue="handleChange"
+            ></VcInput>
+          </Field>
+          <Field
+            v-slot="{ field, handleChange }"
+            rules="required"
             name="importer"
-            :options="dataImporters"
-            :initialItem="importer"
-            keyProperty="typeName"
-            displayProperty="typeName"
-            :isSearchable="true"
-            :clearable="false"
-            v-model="profileDetails.typeName"
-            @update:modelValue="setImporter"
-          ></VcSelect>
+          >
+            <VcSelect
+              v-bind="field"
+              class="tw-p-3"
+              :label="
+                $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
+              "
+              :tooltip="
+                $t(
+                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP'
+                )
+              "
+              name="importer"
+              :options="dataImporters"
+              option-value="typeName"
+              option-label="typeName"
+              v-model="profileDetails.dataImporterType"
+              @update:modelValue="
+                (e) => {
+                  handleChange(e);
+                  setImporter(e);
+                }
+              "
+              required
+              searchable
+              :clearable="false"
+            ></VcSelect>
+          </Field>
         </VcCol>
       </VcRow>
-      <VcRow class="p-3" v-if="profileDetails.typeName">
+      <VcRow class="tw-p-3" v-if="profileDetails.dataImporterType">
         <VcCard
           :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
         >
           <VcRow>
             <VcCol>
-              <div class="p-4">
+              <div class="tw-p-4">
                 <a class="vc-link" :href="sampleTemplateUrl">{{
                   $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
                 }}</a>
@@ -72,7 +94,7 @@
               </div>
 
               <VcDynamicProperty
-                class="px-4 pb-4"
+                class="tw-px-4 tw-pb-4"
                 v-for="(setting, i) in profileDetails.settings"
                 :key="`${profileDetails.id}_${i}`"
                 :property="setting"
@@ -111,44 +133,54 @@
 import { defineComponent, computed, onMounted, ref, unref } from "vue";
 
 export default defineComponent({
-  url: "import-profile-details",
+  url: "/import-profile-details",
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeToolbar } from "../../../types";
-import { useI18n, useAutosave } from "@vc-shell/core";
+import {
+  useI18n,
+  IParentCallArgs,
+  IBladeToolbar,
+  VcInput,
+  VcSelect,
+  VcBlade,
+  VcContainer,
+  VcRow,
+  VcCol,
+  VcDynamicProperty,
+} from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import {
+  IDataImporter,
   ImportProfile,
   ObjectSettingEntry,
 } from "../../../api_client/marketplacevendor";
-import { useForm } from "@vc-shell/ui";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field, useForm } from "vee-validate";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: {
+    importer: IDataImporter;
+  };
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: undefined,
 });
-const emit = defineEmits(["page:close", "parent:call"]);
+
+const emit = defineEmits<Emits>();
 const { t } = useI18n();
 const {
   dataImporters,
@@ -163,11 +195,7 @@ const {
   fetchDataImporters,
   setImporter,
 } = useImport();
-const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
-  profileDetails,
-  modified,
-  props.param ?? "importProfile"
-);
+
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const showConfirmation = ref(false);
@@ -190,8 +218,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
               method: "reload",
             });
           }
-          resetAutosaved();
-          emit("page:close");
+          emit("close:blade");
         } catch (err) {
           alert(err.message);
         }
@@ -210,8 +237,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.CANCEL")),
     icon: "fas fa-ban",
     clickHandler() {
-      resetAutosaved();
-      emit("page:close");
+      emit("close:blade");
     },
     isVisible: computed(() => !props.param),
   },
@@ -221,7 +247,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "far fa-trash-alt",
     isVisible: computed(() => !!props.param),
     clickHandler() {
-      resetAutosaved();
       showConfirmation.value = true;
     },
   },
@@ -239,7 +264,6 @@ const sampleTemplateUrl = computed(() => {
     : "#";
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const title = computed(() =>
   props.options.importer
     ? props.options.importer.typeName
@@ -251,11 +275,6 @@ onMounted(async () => {
   await fetchDataImporters();
   if (props.param) {
     await loadImportProfile({ id: props.param });
-  }
-
-  loadAutosaved();
-  if (savedValue.value) {
-    profileDetails.value = savedValue.value as ImportProfile;
   }
 });
 
@@ -286,26 +305,23 @@ async function deleteProfile() {
   emit("parent:call", {
     method: "reloadParent",
   });
-  emit("page:close");
+  emit("close:blade");
 }
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(
+    return confirm(
       unref(
         computed(() =>
           t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION")
         )
       )
     );
-    if (confirmationStatus) {
-      resetAutosaved();
-    }
-    return confirmationStatus;
   }
 }
 
 defineExpose({
   onBeforeClose,
+  title,
 });
 </script>

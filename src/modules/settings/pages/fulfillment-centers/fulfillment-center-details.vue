@@ -3,7 +3,7 @@
     :title="title"
     width="30%"
     v-loading="loading"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
@@ -13,17 +13,17 @@
         :outline="false"
         :extend="true"
         variant="light-danger"
-        class="w-full box-border mb-3"
+        class="tw-w-full tw-box-border tw-mb-3"
         v-if="errorMessage"
       >
-        <div class="flex flex-row items-center">
+        <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
             icon="fas fa-exclamation-circle"
-            class="text-[#ff4a4a] mr-3"
+            class="tw-text-[#ff4a4a] tw-mr-3"
             size="xxl"
           ></VcIcon>
           <div>
-            <div class="font-bold">
+            <div class="tw-font-bold">
               {{ $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.ERROR") }}
             </div>
             <div>{{ errorMessage }}</div>
@@ -33,21 +33,33 @@
       <VcForm>
         <VcRow>
           <VcCol>
-            <VcInput
-              class="p-3"
-              :label="
-                $t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')
-              "
-              :placeholder="
-                $t(
-                  'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER'
-                )
-              "
-              :required="true"
+            <Field
+              v-slot="{ field, errorMessage, handleChange, errors }"
               name="name"
-              v-model="fulfillmentCenterDetails.name"
+              rules="required"
+              :modelValue="fulfillmentCenterDetails.name"
             >
-            </VcInput>
+              <VcInput
+                v-bind="field"
+                class="tw-p-3"
+                :label="
+                  $t(
+                    'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL'
+                  )
+                "
+                :placeholder="
+                  $t(
+                    'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER'
+                  )
+                "
+                v-model="fulfillmentCenterDetails.name"
+                required
+                :error="!!errors.length"
+                :error-message="errorMessage"
+                @update:modelValue="handleChange"
+              >
+              </VcInput>
+            </Field>
           </VcCol>
         </VcRow>
       </VcForm>
@@ -61,38 +73,37 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, unref } from "vue";
-import { IBladeToolbar } from "../../../../types";
-import { useI18n, useLogger } from "@vc-shell/core";
+import { computed, onMounted, ref, unref } from "vue";
+import {
+  IBladeToolbar,
+  IParentCallArgs,
+  useForm,
+  useI18n,
+  useLogger,
+} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useForm } from "@vc-shell/ui";
-import { useIsFormValid } from "vee-validate";
+import { Field, useIsFormValid } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
 
-const emit = defineEmits(["page:close", "parent:call"]);
+const emit = defineEmits<Emits>();
 useForm({ validateOnMount: false });
 
 const { t } = useI18n();
@@ -134,7 +145,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("parent:call", {
             method: "reload",
           });
-          emit("page:close");
+          emit("close:blade");
         } catch (e) {
           logger.error(e);
         }
@@ -194,20 +205,19 @@ async function removeFulfillmentCenter() {
     emit("parent:call", {
       method: "reload",
     });
-    emit("page:close");
+    emit("close:blade");
   }
 }
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(
+    return confirm(
       unref(
         computed(() =>
           t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION")
         )
       )
     );
-    return confirmationStatus;
   }
 }
 

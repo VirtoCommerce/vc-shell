@@ -1,5 +1,5 @@
 import { computed, Ref, ref } from "vue";
-import { useLogger, useUser } from "@vc-shell/core";
+import { useLogger, useUser } from "@vc-shell/framework";
 import {
   VcmpSellerOrdersClient,
   CustomerOrderSearchResult,

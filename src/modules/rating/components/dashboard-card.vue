@@ -5,9 +5,9 @@
     icon="fas fa-star"
   >
     <template v-slot:actions>
-      <div class="flex items-center">
+      <div class= "tw-flex tw-items-center">
         <div class="vc-card__title">
-          <Rating class="mr-5" :variant="'star-and-text'"></Rating>
+          <Rating class="tw-mr-5" :variant="'star-and-text'"></Rating>
         </div>
         <vc-button small outline @click="openAllReviews()">{{
           $t("RATING.DASHBOARD_CARD.ALL_REVIEWS")
@@ -23,28 +23,29 @@
   </VcCard>
   <VcCard
     v-else
-    class="mb-4"
+    class="tw-mb-4"
     :header="$t('RATING.DASHBOARD_CARD.TITLE')"
     icon="fas fa-star"
     @click="openAllReviews()"
   >
-    <div class="h-px bg-[#e3e7ec]"></div>
-    <div class="my-4 dashboard-counters__value">
+    <div class="tw-h-px tw-bg-[#e3e7ec]"></div>
+    <div class="tw-my-4 dashboard-counters__value">
       <Rating :variant="'text'"></Rating>
     </div>
   </VcCard>
 </template>
 
 <script lang="ts" setup>
-import { IPage, VcButton, VcCard } from "@vc-shell/ui";
+import { ExtendedComponent, VcButton, VcCard } from "@vc-shell/framework";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Rating, ReviewTable } from "../components";
 import { ReviewDetails, ReviewList } from "../pages";
+import { shallowRef } from "vue";
 
 // Component
 
 export interface Props {
-  openPage: (index: number, page: IPage) => void;
+  openPage: (page: ExtendedComponent, index: number) => void;
 }
 
 const props = defineProps<Props>();
@@ -52,9 +53,12 @@ const props = defineProps<Props>();
 // Card
 
 const openAllReviews = () => {
-  props.openPage(0, {
-    component: ReviewList,
-  });
+  props.openPage(
+    {
+      parentBlade: shallowRef(ReviewList),
+    },
+    0
+  );
 };
 
 const onItemClick = (
@@ -62,17 +66,23 @@ const onItemClick = (
   onSelect: () => void,
   onDeselect: () => void
 ) => {
-  props.openPage(0, {
-    component: ReviewList,
-  });
-  props.openPage(1, {
-    component: ReviewDetails,
-    param: item.id,
-    componentOptions: {
-      review: item,
+  props.openPage(
+    {
+      component: shallowRef(ReviewList),
     },
-    onOpen: onSelect,
-    onClose: onDeselect,
-  });
+    0
+  );
+  props.openPage(
+    {
+      component: shallowRef(ReviewDetails),
+      param: item.id,
+      bladeOptions: {
+        review: item,
+      },
+      onOpen: onSelect,
+      onClose: onDeselect,
+    },
+    1
+  );
 };
 </script>

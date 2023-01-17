@@ -17,5 +17,6 @@ module.exports = {
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
     "vue/multi-word-component-names": 'off'
-  }
+  },
+  globals: { defineOptions: 'writable' }
 };

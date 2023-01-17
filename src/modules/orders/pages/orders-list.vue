@@ -5,11 +5,11 @@
     :closable="closable"
     width="30%"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
     <VcTable
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :expanded="expanded"
       :empty="empty"
       :loading="loading"
@@ -32,18 +32,18 @@
     >
       <!-- Filters -->
       <template v-slot:filters="{ closePanel }">
-        <h2 v-if="$isMobile.value" class="my-4 text-[19px] font-bold">
+        <h2 v-if="$isMobile.value" class="tw-my-4 tw-text-[19px] tw-font-bold">
           {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
         <VcContainer no-padding>
           <VcRow>
-            <VcCol class="filter-col p-2">
-              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
+            <VcCol class="filter-col tw-p-2">
+              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
                 <VcCheckbox
-                  class="mb-2"
+                  class="tw-mb-2"
                   v-for="status in PaymentStatus"
                   :key="status"
                   :modelValue="filter.status === status"
@@ -54,35 +54,33 @@
                 </VcCheckbox>
               </div>
             </VcCol>
-            <VcCol class="p-2">
-              <div class="mb-4 text-[#a1c0d4] font-bold text-[17px]">
+            <VcCol class="tw-p-2">
+              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.START_DATE')"
                   type="date"
-                  class="mb-3"
+                  class="tw-mb-3"
                   :modelValue="getFilterDate('startDate')"
                   @update:modelValue="setFilterDate('startDate', $event)"
-                  max="9999-12-31"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
                   @update:modelValue="setFilterDate('endDate', $event)"
-                  max="9999-12-31"
                 ></VcInput>
               </div>
             </VcCol>
           </VcRow>
           <VcRow>
-            <VcCol class="p-2">
-              <div class="flex justify-end">
+            <VcCol class="tw-p-2">
+              <div class= "tw-flex tw-justify-end">
                 <vc-button
                   outline
-                  class="mr-4"
+                  class="tw-mr-4"
                   @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
                   >{{
@@ -103,10 +101,10 @@
       <!-- Not found template -->
       <template v-slot:notfound>
         <div
-          class="w-full h-full box-border flex flex-col items-center justify-center"
+          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
         >
           <img :src="emptyImage" />
-          <div class="m-4 text-xl font-medium">
+          <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.NO_ORDERS") }}
           </div>
           <vc-button @click="resetSearch">{{
@@ -118,10 +116,10 @@
       <!-- Empty template -->
       <template v-slot:empty>
         <div
-          class="w-full h-full box-border flex flex-col items-center justify-center"
+          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
         >
           <img :src="emptyImage" />
-          <div class="m-4 text-xl font-medium">
+          <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("ORDERS.PAGES.LIST.EMPTY") }}
           </div>
         </div>
@@ -135,13 +133,13 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="p-3">
-          <div class="w-full flex justify-evenly">
-            <div class="grow basis-0">
-              <div class="font-bold text-lg">
+        <div class="tw-p-3">
+          <div class="tw-w-full tw-flex tw-justify-evenly">
+            <div class="tw-grow tw-basis-0">
+              <div class="tw-font-bold tw-text-lg">
                 {{ itemData.item.number }}
               </div>
-              <VcHint class="mt-1">{{ itemData.item.customerName }}</VcHint>
+              <VcHint class="tw-mt-1">{{ itemData.item.customerName }}</VcHint>
             </div>
             <div>
               <VcStatus v-bind="statusStyle(itemData.item.status)">
@@ -150,24 +148,16 @@
             </div>
           </div>
           <div>
-            <div class="mt-3 w-full flex justify-between">
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+            <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+              <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
-                <div
-                  class="truncate mt-1"
-                >
+                <div class="tw-truncate tw-mt-1">
                   {{ itemData.item.total }} {{ itemData.item.currency }}
                 </div>
               </div>
-              <div
-                class="truncate grow basis-0 mr-2"
-              >
+              <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
-                <div
-                  class="truncate mt-1"
-                >
+                <div class="tw-truncate tw-mt-1">
                   {{
                     itemData.item.createdDate &&
                     moment(itemData.item.createdDate).fromNow()
@@ -190,48 +180,47 @@ import {
   reactive,
   ref,
   watch,
+  shallowRef,
 } from "vue";
 
 export default defineComponent({
-  url: "orders",
+  url: "/orders",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n } from "@vc-shell/core";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useFunctions,
+  useI18n,
+  ITableColumns,
+  IActionBuilderResult,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { CustomerOrder } from "../../../api_client/orders";
-import {
-  IActionBuilderResult,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../types";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+  (event: "open:blade", blade: IBladeEvent): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
-const emit = defineEmits(["page:open"]);
+
+const emit = defineEmits<Emits>();
 const {
   orders,
   loadOrders,
@@ -330,14 +319,22 @@ const tableColumns = ref<ITableColumns[]>([
   },
 ]);
 
+const columns = computed(() => {
+  if (props.expanded) {
+    return tableColumns.value;
+  } else {
+    return tableColumns.value.filter((item) => item.alwaysVisible === true);
+  }
+});
+
 const empty = reactive({
   image: emptyImage,
   text: computed(() => t("ORDERS.PAGES.EMPTY")),
 });
 
 const onItemClick = (item: { id: string }) => {
-  emit("page:open", {
-    component: OrdersDetails,
+  emit("open:blade", {
+    component: shallowRef(OrdersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -457,13 +454,6 @@ const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
     .map(([id, isChecked]) => id);
 };
 
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 function setFilterDate(key: string, value: string) {

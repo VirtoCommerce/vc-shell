@@ -6,7 +6,7 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <template v-slot:actions>
       <mp-product-status :status="product.status"></mp-product-status>
@@ -16,22 +16,22 @@
     <VcContainer :no-padding="true">
       <div v-if="productDetails" class="product-details__inner">
         <div class="product-details__content">
-          <div class="p-4">
+          <div class="tw-p-4">
             <VcStatus
               :outline="false"
               :extend="true"
               variant="light-danger"
-              class="w-full box-border mb-5"
-              v-if="statusText && product.status != 'Published'"
+              class="tw-w-full tw-box-border tw-mb-5"
+              v-if="statusText && product.status !== 'Published'"
             >
-              <div class="flex flex-row items-center">
+              <div class="tw-flex tw-flex-row tw-items-center">
                 <VcIcon
                   icon="fas fa-exclamation-circle"
                   class="product-details__decline-icon"
                   size="xxl"
                 ></VcIcon>
                 <div>
-                  <div class="font-bold">
+                  <div class="tw-font-bold">
                     {{ $t("PRODUCTS.PAGES.DETAILS.DECLINE_REASON") }}
                   </div>
                   <div>{{ statusText }}</div>
@@ -39,66 +39,83 @@
               </div>
             </VcStatus>
             <VcForm>
-              <VcInput
-                class="mb-4"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="productDetails.name"
-                :clearable="true"
-                :required="true"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                "
-                rules="min:3"
+              <Field
                 name="name"
-                :disabled="readonly"
-                maxchars="64"
-              ></VcInput>
-              <VcSelect
-                class="mb-4"
-                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
-                v-model="productDetails.categoryId"
-                :isRequired="true"
-                :isSearchable="true"
-                :clearable="false"
-                :placeholder="
-                  $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                "
-                :options="categories"
-                :initialItem="currentCategory"
-                keyProperty="id"
-                displayProperty="name"
-                :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-                @search="onCategoriesSearch"
-                @close="onSelectClose"
-                @update:modelValue="setCategory"
-                :is-disabled="readonly"
-                name="category"
-                :onInfiniteScroll="onLoadMore"
-                :optionsTotal="categoriesTotal"
+                rules="required|min:3"
+                :modelValue="productDetails.name"
+                v-slot="{ field, errorMessage, handleChange, errors }"
               >
-                <template v-slot:item="itemData">
-                  <div
-                    class="flex items-center py-2 truncate"
+                <VcInput
+                  v-bind="field"
+                  class="tw-mb-4"
+                  :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                  v-model="productDetails.name"
+                  :clearable="true"
+                  :placeholder="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                  "
+                  :disabled="disabled"
+                  maxlength="64"
+                  required
+                  :error="!!errors.length"
+                  :error-message="errorMessage"
+                  @update:modelValue="handleChange"
+                >
+                </VcInput>
+              </Field>
+              <Field
+                name="categoryId"
+                rules="required"
+                :modelValue="productDetails.categoryId"
+                v-slot="{ field, errorMessage, handleChange, errors }"
+              >
+                <VcSelect
+                  v-bind="field"
+                  class="tw-mb-4"
+                  :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
+                  :model-value="productDetails.categoryId"
+                  searchable
+                  :placeholder="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                  "
+                  :options="fetchCategories"
+                  option-value="id"
+                  option-label="name"
+                  :tooltip="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
+                  "
+                  @update:modelValue="
+                    (e) => {
+                      handleChange(e.categoryId);
+                      setCategory(e);
+                    }
+                  "
+                  :disabled="disabled"
+                  required
+                  :error="!!errors.length"
+                  :error-message="errorMessage"
+                  :clearable="false"
+                  :emit-value="false"
+                >
+                  <template
+                    v-for="item in ['option', 'selected-item']"
+                    v-slot:[item]="scope"
+                    :key="item"
                   >
-                    <div
-                      class="grow basis-0 ml-4 truncate"
-                    >
-                      <div
-                        class="truncate"
-                      >
-                        {{ itemData.item.path }}
+                    <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
+                      <div class="tw-grow tw-basis-0 tw-ml-4 tw-truncate">
+                        <div class="tw-truncate">
+                          {{ scope.opt.path }}
+                        </div>
+                        <VcHint class="tw-truncate tw-mt-1">
+                          {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
+                          {{ scope.opt.code }}
+                        </VcHint>
                       </div>
-                      <VcHint
-                        class="truncate mt-1"
-                      >
-                        {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.CODE") }}:
-                        {{ itemData.item.code }}
-                      </VcHint>
                     </div>
-                  </div>
-                </template>
-              </VcSelect>
-
+                  </template>
+                </VcSelect>
+              </Field>
               <VcCard
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
@@ -106,38 +123,57 @@
                 v-if="product.id || currentCategory"
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
-                <div class="p-4">
-                  <VcInput
-                    class="mb-4"
-                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                    v-model="productDetails.gtin"
-                    :clearable="true"
-                    :required="true"
-                    :placeholder="
-                      $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                    "
-                    :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
-                    :rules="validateGtin"
-                    :disabled="readonly"
+                <div class="tw-p-4">
+                  <Field
                     name="gtin"
-                    maxchars="64"
-                  ></VcInput>
-                  <VcTextarea
-                    class="mb-4"
-                    :label="
-                      $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
-                    "
-                    v-model="productDetails.description"
-                    :required="true"
-                    :placeholder="
-                      $t(
-                        'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
-                      )
-                    "
-                    rules="min:3"
-                    :disabled="readonly"
+                    :rules="validateGtin"
+                    :modelValue="productDetails.gtin"
+                    v-slot="{ field, errorMessage, handleChange, errors }"
+                  >
+                    <VcInput
+                      v-bind="field"
+                      class="tw-mb-4"
+                      :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
+                      v-model="productDetails.gtin"
+                      :placeholder="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                      "
+                      :tooltip="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
+                      "
+                      :disabled="disabled"
+                      maxlength="64"
+                      required
+                      clearable
+                      :error="!!errors.length"
+                      :error-message="errorMessage"
+                      @update:modelValue="handleChange"
+                    ></VcInput>
+                  </Field>
+                  <Field
                     name="description"
-                  ></VcTextarea>
+                    rules="min:3|required"
+                    v-slot="{ field, errorMessage, handleChange }"
+                  >
+                    <VcTextarea
+                      v-bind="field"
+                      class="tw-mb-4"
+                      :label="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
+                      "
+                      v-model="productDetails.description"
+                      :placeholder="
+                        $t(
+                          'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
+                        )
+                      "
+                      :disabled="disabled"
+                      name="description"
+                      is-required
+                      :error-message="errorMessage"
+                      @update:modelValue="handleChange"
+                    ></VcTextarea>
+                  </Field>
 
                   <VcDynamicProperty
                     v-for="property in filteredProps"
@@ -146,8 +182,8 @@
                     :optionsGetter="loadDictionaries"
                     :getter="getPropertyValue"
                     :setter="setPropertyValue"
-                    class="mb-4"
-                    :disabled="readonly"
+                    class="tw-mb-4"
+                    :disabled="disabled"
                   >
                   </VcDynamicProperty>
                 </div>
@@ -156,19 +192,19 @@
               <VcCard
                 v-if="productDetails.categoryId"
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
-                class="my-3 relative"
+                class="tw-my-3 tw-relative"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
                 <VcLoading :active="fileUploading"></VcLoading>
-                <div class="p-2">
+                <div class="tw-p-2">
                   <VcGallery
                     :images="productDetails.images"
                     @upload="onGalleryUpload"
                     @item:edit="onGalleryItemEdit"
                     @item:remove="onGalleryImageRemove"
-                    :disabled="readonly"
+                    :disabled="disabled"
                     @sort="onGallerySort"
                     :multiple="true"
                   ></VcGallery>
@@ -193,67 +229,88 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  unref,
+  shallowRef,
+  Ref,
+} from "vue";
 
 export default defineComponent({
-  url: "product",
+  url: "/product",
 });
 </script>
 
 <script lang="ts" setup>
-import { useFunctions, useI18n, useUser, useAutosave } from "@vc-shell/core";
-import { useForm, min, VcInput } from "@vc-shell/ui";
+import {
+  useI18n,
+  useUser,
+  useForm,
+  min,
+  required,
+  IParentCallArgs,
+  IBladeEvent,
+  IBladeToolbar,
+  AssetsDetails,
+  VcInput,
+} from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import {
-  ICategory,
-  Image,
   IProperty,
   IPropertyValue,
   PropertyValue,
   PropertyDictionaryItem,
 } from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
-import { AssetsDetails } from "@vc-shell/mod-assets";
 import { OffersList } from "../../offers";
-import { IBladeToolbar } from "../../../types";
-import _ from "lodash-es";
+import { debounce, orderBy } from "lodash-es";
 import {
   IImage,
-  IProductDetails,
   ISellerProduct,
+  Category,
+  Image,
+  Property,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid } from "vee-validate";
+import { useIsFormValid, Field } from "vee-validate";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+  bladeOptions: {
+    editableAsset?: Image;
+    images?: Image[];
+    sortHandler?: (remove: boolean, localImage: IImage) => void;
+    sellerProduct?: ISellerProduct;
+  };
+};
 
-  param: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+  (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeOptions): void;
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
-const emit = defineEmits(["parent:call", "page:close", "page:open"]);
+
+const emit = defineEmits<Emits>();
+
 const { t } = useI18n();
-useForm({ validateOnMount: false });
-const isValid = useIsFormValid();
 const {
   product: productData,
   productDetails,
-  loading: prodLoading,
+  loading,
   modified,
   validateProduct,
   loadProduct,
@@ -263,27 +320,67 @@ const {
   revertStagedChanges,
   searchDictionaryItems,
 } = useProduct();
-const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
-  productDetails,
-  modified,
-  props.param ?? "productsEdit"
-);
+
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
-const { debounce } = useFunctions();
-
-const currentCategory = ref<ICategory>();
+const { setValues } = useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
 const offersCount = ref(0);
-const categories = ref<ICategory[]>([]);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 let isOffersOpened = false;
-const categoriesTotal = ref();
+const categoryLoading = ref(false);
+const currentCategory = ref<Category>();
 
 const filterTypes = ["Category", "Variation"];
 
 const filteredProps = computed(() =>
   productDetails.value.properties.filter((x) => !filterTypes.includes(x.type))
+);
+
+const product = computed(() =>
+  props.param ? productData.value : productDetails.value
+);
+
+const disabled = computed(
+  () => props.param && !productData.value?.canBeModified
+);
+
+const validateGtin = [
+  (value: string): string | boolean => {
+    return min(value, [3]);
+  },
+  (value: string): string | boolean => {
+    return required(value);
+  },
+  async (value: string): Promise<string | boolean> =>
+    await validate("gtin", value),
+];
+
+const validate = debounce(
+  async (fieldName: string, value: string): Promise<string | boolean> => {
+    const sellerProduct = {
+      ...product.value,
+      [fieldName]: value,
+    } as ISellerProduct;
+    const productErrors = await validateProduct(sellerProduct);
+    const errors = productErrors?.filter(
+      (error) => error.propertyName.toLowerCase() === fieldName.toLowerCase()
+    );
+    return (
+      !errors ||
+      errors.length === 0 ||
+      errors
+        .map((error) =>
+          t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
+            value: error?.attemptedValue,
+          })
+        )
+        .join("\n")
+    );
+  },
+  1000,
+  { leading: true, trailing: false }
 );
 
 const reload = async (fullReload: boolean) => {
@@ -293,20 +390,9 @@ const reload = async (fullReload: boolean) => {
       if (props.param) {
         await loadProduct({ id: props.param });
       }
-      loadAutosaved();
-
-      if (savedValue.value) {
-        productDetails.value = savedValue.value as IProductDetails;
-      }
-
-      const searchResult = await fetchCategories();
-      categories.value = searchResult.results;
-      categoriesTotal.value = searchResult.totalCount;
-      if (productDetails.value?.categoryId) {
-        await setCategoryItem(product.value.categoryId);
-      }
     } finally {
       productLoading.value = false;
+      categoryLoading.value = false;
     }
   }
   //Load offers count to populate widget
@@ -340,12 +426,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           } else {
             await createProduct(productDetails.value);
           }
-          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
           if (!props.param) {
-            emit("page:close");
+            emit("close:blade");
           }
         } catch (err) {
           alert(err.message);
@@ -381,12 +466,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             { ...productDetails.value },
             true
           );
-          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
           if (!props.param) {
-            emit("page:close");
+            emit("close:blade");
           }
         } catch (err) {
           alert(err.message);
@@ -417,7 +501,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       await revertStagedChanges(productData.value.id);
-      resetAutosaved();
       emit("parent:call", {
         method: "reload",
       });
@@ -438,7 +521,7 @@ const statusText = computed(() => {
     productData.value.publicationRequests &&
     productData.value.publicationRequests.length
   ) {
-    return _.orderBy(
+    return orderBy(
       productData.value.publicationRequests,
       ["createdDate"],
       ["desc"]
@@ -446,47 +529,6 @@ const statusText = computed(() => {
   }
   return null;
 });
-
-const product = computed(() =>
-  props.param ? productData.value : productDetails.value
-);
-const readonly = computed(
-  () => props.param && !productData.value?.canBeModified
-);
-const loading = computed(() => prodLoading.value);
-
-const validateGtin = [
-  (value: string): string | boolean => {
-    return min(value, [3]);
-  },
-  async (value: string): Promise<string | boolean> =>
-    await validate("gtin", value),
-];
-
-const validate = async (
-  fieldName: string,
-  value: string
-): Promise<string | boolean> => {
-  const sellerProduct = {
-    ...product.value,
-    [fieldName]: value,
-  } as ISellerProduct;
-  const productErrors = await validateProduct(sellerProduct);
-  const errors = productErrors?.filter(
-    (error) => error.propertyName.toLowerCase() === fieldName.toLowerCase()
-  );
-  return (
-    !errors ||
-    errors.length === 0 ||
-    errors
-      .map((error) =>
-        t(`PRODUCTS.PAGES.DETAILS.ERRORS.${error?.errorCode}`, {
-          value: error?.attemptedValue,
-        })
-      )
-      .join("\n")
-  );
-};
 
 const onGalleryUpload = async (files: FileList) => {
   try {
@@ -532,9 +574,9 @@ const onGalleryUpload = async (files: FileList) => {
 };
 
 const onGalleryItemEdit = (item: Image) => {
-  emit("page:open", {
-    component: AssetsDetails,
-    componentOptions: {
+  emit("open:blade", {
+    component: shallowRef(AssetsDetails),
+    bladeOptions: {
       editableAsset: item,
       images: productDetails.value.images,
       sortHandler: sortImage,
@@ -581,17 +623,16 @@ const onGalleryImageRemove = (image: Image) => {
   }
 };
 
-const setCategory = async (id: string) => {
-  currentCategory.value = categories.value?.find((x) => x.id === id);
-  if (!currentCategory.value) {
-    await setCategoryItem(id);
-  }
-
+const setCategory = async (selectedCategory: Category) => {
+  currentCategory.value = selectedCategory;
+  productDetails.value.categoryId = selectedCategory.id;
   const currentProperties = [...(productDetails.value?.properties || [])];
   productDetails.value.properties = [
-    ...(currentCategory.value.properties || []),
+    ...(selectedCategory.properties?.map(
+      (prop) => new Property({ ...prop, isReadOnly: false })
+    ) || []),
   ];
-  productDetails.value.properties.forEach(async (property) => {
+  productDetails.value.properties.forEach((property) => {
     const previousPropertyValue = currentProperties?.find(
       (item) => item.id === property.id
     );
@@ -603,13 +644,6 @@ const setCategory = async (id: string) => {
   });
 };
 
-async function setCategoryItem(id: string) {
-  const fetchedCategory = await fetchCategories(undefined, 0, [id]);
-  if (fetchedCategory.results && fetchedCategory.results.length) {
-    currentCategory.value = fetchedCategory.results[0];
-  }
-}
-
 async function loadDictionaries(
   property: IProperty,
   keyword?: string,
@@ -618,36 +652,13 @@ async function loadDictionaries(
   return await searchDictionaryItems([property.id], keyword, skip);
 }
 
-const onCategoriesSearch = debounce(async (value: string) => {
-  const searchResult = await fetchCategories(value);
-  categories.value = searchResult.results;
-  categoriesTotal.value = searchResult.totalCount;
-}, 500);
-
-const onSelectClose = async () => {
-  const searchResult = await fetchCategories();
-  categories.value = searchResult.results;
-  if (
-    currentCategory.value &&
-    !categories.value.some((x) => x.id === currentCategory.value.id)
-  ) {
-    categories.value.push(currentCategory.value);
-  }
-};
-
-async function onLoadMore() {
-  const data = await fetchCategories(undefined, categories.value.length);
-  categories.value.push(...data.results);
-}
-
 async function openOffers() {
   if (!isOffersOpened) {
-    emit("page:open", {
-      component: OffersList,
-      componentOptions: {
+    emit("open:blade", {
+      component: shallowRef(OffersList),
+      bladeOptions: {
         sellerProduct: productData.value,
       },
-      url: null,
       onOpen() {
         isOffersOpened = true;
       },
@@ -660,15 +671,11 @@ async function openOffers() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(
+    return confirm(
       unref(
         computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
       )
     );
-    if (confirmationStatus) {
-      resetAutosaved();
-    }
-    return confirmationStatus;
   }
 }
 
@@ -768,27 +775,27 @@ defineExpose({
 <style lang="scss">
 .product-details {
   &__inner {
-    @apply overflow-hidden min-h-full flex grow basis-0;
+    @apply tw-overflow-hidden tw-min-h-full tw-flex tw-grow tw-basis-0;
   }
 
   &__content {
-    @apply border-r border-solid border-r-[#eaedf3] overflow-hidden grow basis-0;
+    @apply tw-border-r tw-border-solid tw-border-r-[#eaedf3] tw-overflow-hidden tw-grow tw-basis-0;
   }
 
   &__decline-icon {
-    @apply text-[#ff4a4a] mr-3;
+    @apply tw-text-[#ff4a4a] tw-mr-3;
   }
 
   .vc-app_phone &__inner {
-    @apply flex-col;
+    @apply tw-flex-col;
   }
 
   .vc-app_phone &__content {
-    @apply border-r-0 border-b border-solid border-b-[#eaedf3] overflow-visible;
+    @apply tw-border-r-0 tw-border-b tw-border-solid tw-border-b-[#eaedf3] tw-overflow-visible;
   }
 
   .vc-app_phone &__widgets {
-    @apply flex flex-row;
+    @apply tw-flex tw-flex-row;
   }
 }
 </style>

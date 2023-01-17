@@ -5,10 +5,10 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcTable
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :loading="loading"
       :expanded="expanded"
       :columns="columns"
@@ -26,7 +26,7 @@
     >
       <!-- Override status column template -->
       <template v-slot:item_isLockedOut="itemData">
-        <div class="flex">
+        <div class= "tw-flex">
           <VcStatus
             :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
             :outline="false"
@@ -45,57 +45,47 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
-          <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow basis-0 mr-2"
-            >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")
               }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.firstName }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME")
               }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.lastName }}
               </div>
             </div>
           </div>
-          <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL")
               }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.email || "N/A" }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0 mr-2"
-            >
+            <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
               }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ roleName(itemData.item.role) }}
               </div>
             </div>
-            <div
-              class="truncate grow-[2] basis-0"
-            >
+            <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.STATUS")
               }}</VcHint>
-              <div class="mt-1">
+              <div class="tw-mt-1">
                 <VcStatus
                   :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
                   :outline="false"
@@ -115,47 +105,59 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from "vue";
 import {
-  UserPermissions,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../../types";
+  defineComponent,
+  ref,
+  computed,
+  watch,
+  onMounted,
+  shallowRef,
+} from "vue";
+import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
-  url: "team",
+  url: "/team",
   permissions: [UserPermissions.SellerUsersManage],
 });
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  ITableColumns,
+  useI18n,
+} from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { SellerUser } from "../../../../api_client/marketplacevendor";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, unknown>;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+  bladeOptions?: {
+    user?: SellerUser;
+  };
+};
 
-  param: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeOptions): void;
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
+  options: () => ({}),
 });
-const emit = defineEmits(["page:close", "page:open"]);
+
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const {
@@ -201,8 +203,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("page:open", {
-        component: TeamMemberDetails,
+      emit("open:blade", {
+        component: shallowRef(TeamMemberDetails),
       });
     },
   },
@@ -277,10 +279,10 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: SellerUser) => {
-  emit("page:open", {
-    component: TeamMemberDetails,
+  emit("open:blade", {
+    component: shallowRef(TeamMemberDetails),
     param: item.id,
-    componentOptions: {
+    bladeOptions: {
       user: item,
     },
     onOpen() {

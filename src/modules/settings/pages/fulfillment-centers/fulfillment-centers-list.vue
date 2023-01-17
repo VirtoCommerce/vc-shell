@@ -5,10 +5,10 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    @close="$emit('page:close')"
+    @close="$emit('close:blade')"
   >
     <VcTable
-      class="grow basis-0"
+      class="tw-grow tw-basis-0"
       :loading="loading"
       :expanded="expanded"
       :columns="columns"
@@ -25,15 +25,13 @@
       :selectedItemId="selectedItemId"
     >
       <template v-slot:mobile-item="itemData">
-        <div class="border-b border-solid border-b-[#e3e7ec] py-3 px-4">
-          <div class="mt-3 w-full flex justify-between">
-            <div
-              class="truncate grow basis-0 mr-2"
-            >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>{{
                 $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
               }}</VcHint>
-              <div class="truncate mt-1">
+              <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.name }}
               </div>
             </div>
@@ -45,47 +43,51 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted } from "vue";
 import {
-  UserPermissions,
-  IBladeToolbar,
-  ITableColumns,
-} from "../../../../types";
+  defineComponent,
+  ref,
+  computed,
+  watch,
+  onMounted,
+  shallowRef,
+} from "vue";
+import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
-  url: "fulfillment-centers-list",
+  url: "/fulfillment-centers-list",
   permissions: [UserPermissions.SellerDetailsEdit],
 });
 </script>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  ITableColumns,
+  useI18n,
+} from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { FulfillmentCenter } from "../../../../api_client/marketplacevendor";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+  (event: "close:blade"): void;
+  (event: "open:blade", blade: IBladeEvent): void;
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
-
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
+  param: undefined,
 });
-const emit = defineEmits(["page:close", "page:open"]);
+
+const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
 const {
@@ -122,8 +124,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     ),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("page:open", {
-        component: FulfillmentCenterDetails,
+      emit("open:blade", {
+        component: shallowRef(FulfillmentCenterDetails),
       });
     },
   },
@@ -135,7 +137,6 @@ const columns = ref<ITableColumns[]>([
     title: computed(() =>
       t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
     ),
-    alwaysVisible: true,
     sortable: true,
   },
 ]);
@@ -177,8 +178,8 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: FulfillmentCenter) => {
-  emit("page:open", {
-    component: FulfillmentCenterDetails,
+  emit("open:blade", {
+    component: shallowRef(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

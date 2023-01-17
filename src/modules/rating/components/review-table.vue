@@ -1,9 +1,9 @@
 <template>
   <VcTable
-    class="grow basis-0"
+    class="tw-grow tw-basis-0"
     :loading="loading"
     :expanded="expanded"
-    :columns="columns"
+    :columns="tableColumns"
     :header="false"
     :footer="footer"
     :items="reviews"
@@ -21,10 +21,10 @@
     <!-- Empty -->
     <template v-slot:empty>
       <div
-        class="w-full h-full box-border flex flex-col items-center justify-center p-5"
+        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
       >
         <img :src="emptyImage" />
-        <div class="m-4 text-xl font-medium">
+        <div class="tw-m-4 tw-text-xl tw-font-medium">
           {{ $t("RATING.REVIEW_TABLE.EMPTY") }}
         </div>
       </div>
@@ -43,13 +43,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n } from "@vc-shell/core";
-import { VcRating, VcTable } from "@vc-shell/ui";
+import { useI18n, VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
-import { ITableColumns } from "../../../types";
 import { Status } from "../components";
 import { useReviews } from "../composables";
+// eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
 // Component
@@ -89,25 +88,18 @@ const { loading, reviews, totalCount, pages, currentPage, sort, loadReviews } =
 
 // Table
 
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
 const tableColumns = ref<ITableColumns[]>([
   {
     id: "title",
     title: computed(() => t("RATING.REVIEW_TABLE.HEADER.TITLE")),
     alwaysVisible: true,
-    class: "truncate",
+    class: "tw-truncate",
   },
   {
     id: "review",
     title: computed(() => t("RATING.REVIEW_TABLE.HEADER.REVIEW")),
     alwaysVisible: false,
-    class: "truncate",
+    class: "tw-truncate",
   },
   {
     id: "rating",

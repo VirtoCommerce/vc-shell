@@ -4,6 +4,7 @@ import fs from "fs";
 import { loadEnv } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
+import VueMacros from "unplugin-vue-macros/vite";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -37,7 +38,11 @@ const getProxy = (target, options = {}) => {
 export default {
   plugins: [
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
-    vue(),
+    VueMacros({
+      plugins: {
+        vue: vue(),
+      },
+    }),
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
@@ -77,10 +82,8 @@ export default {
     alias:
       mode === "development"
         ? {
-            "@vc-shell/ui/dist/style.css": "@vc-shell/ui/dist/style.css",
-            "@vc-shell/ui": "@vc-shell/ui/src/index.ts",
-            "@vc-shell/core": "@vc-shell/core",
-            "@vc-shell/mod-assets": "@vc-shell/mod-assets/src/index.ts",
+            "@vc-shell/framework/dist/style.css":
+              "@vc-shell/framework/dist/style.css",
             "vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
@@ -117,6 +120,9 @@ export default {
     },
   },
   optimizeDeps: {
+    esbuildOptions: {
+      target: ["es2020", "safari14"],
+    },
     include:
       mode === "development"
         ? [
@@ -124,13 +130,14 @@ export default {
             "vue-router",
             "url-pattern",
             "ace-builds",
-            "@vc-shell/ui",
-            "@vc-shell/core",
-            "@vc-shell/mod-assets",
+            "vue-logger-plugin",
+            "client-oauth2",
+            "vue-currency-input",
           ]
         : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {
+    target: "esnext",
     sourcemap: true,
     emptyOutDir: true,
     commonjsOptions: {

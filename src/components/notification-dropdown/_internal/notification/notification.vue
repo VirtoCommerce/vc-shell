@@ -1,7 +1,7 @@
 <template>
-  <div class="flex">
+  <div class="tw-flex">
     <div
-      class="w-[41px] h-[41px] rounded-full text-white mr-4 flex items-center justify-center shrink-0"
+      class="tw-w-[41px] tw-h-[41px] tw-rounded-full tw-text-white tw-mr-4 tw-flex tw-items-center tw-justify-center tw-shrink-0"
       :style="{
         'background-color': current.styles.color,
       }"
@@ -9,7 +9,7 @@
       <VcIcon :icon="current.styles.icon" size="l"></VcIcon>
     </div>
 
-    <VcRow class="justify-between grow basis-0">
+    <VcRow class="tw-justify-between tw-grow tw-basis-0">
       <div>
         <component
           :is="current.component"
@@ -18,16 +18,16 @@
         >
           <template v-slot:title="{ title }">
             <p
-              class="text-[color:var(--basic-black-color)] text-xl leading-[19px] font-bold m-0 mb-1"
-              :class="{ 'mr-4': $isDesktop.value }"
+              class="tw-text-[color:var(--basic-black-color)] tw-text-xl tw-leading-[19px] tw-font-bold tw-m-0 tw-mb-1"
+              :class="{ 'tw-mr-4': $isDesktop.value }"
             >
               {{ title }}
             </p>
           </template>
         </component>
       </div>
-      <div class="flex shrink-0">
-        <p class="text-s leading-[18px] text-[#8e8e8e] m-0">
+      <div class="tw-flex tw-shrink-0">
+        <p class="tw-text-s tw-leading-[18px] tw-text-[#8e8e8e] tw-m-0">
           {{ pushTime }}
         </p>
       </div>
@@ -37,12 +37,16 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, shallowRef, watch } from "vue";
-import { VcRow, VcIcon } from "@vc-shell/ui";
+import {
+  VcRow,
+  VcIcon,
+  IPushNotification,
+  PushNotification,
+} from "@vc-shell/framework";
 import ImportPush from "./_internal/ImportPush.vue";
 import DefaultPush from "./_internal/DefaultPush.vue";
 import ProductPush from "./_internal/ProductPush.vue";
 import moment from "moment";
-import { IPushNotification, PushNotification } from "@vc-shell/api-client";
 
 interface IExtendedPush extends IPushNotification {
   finished: Date;

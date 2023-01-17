@@ -1,5 +1,11 @@
-import {computed, Ref, ref, unref, defineEmits, watch} from "vue";
-import { useLogger, useUser, useI18n } from "@vc-shell/core";
+import { computed, Ref, ref, unref, defineEmits, watch, shallowRef } from "vue";
+import {
+  useLogger,
+  useUser,
+  useI18n,
+  AssetsDetails,
+  IBladeEvent,
+} from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -15,13 +21,17 @@ import {
   PropertyValue,
   Image,
   IImage,
+  OfferProduct,
+  Category,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import { AssetsDetails } from "@vc-shell/mod-assets";
 import { isEqual, cloneDeep } from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
+  salePrice?: number;
+  listPrice?: number;
+  minQuantity?: number;
   id?: string;
   properties?: Property[];
 };
@@ -57,25 +67,37 @@ interface IStoreSettings {
   storeId: string;
 }
 
+interface IBladeOptions extends IBladeEvent {
+  bladeOptions?: {
+    editableAsset: Image;
+    images: Image[];
+    sortHandler: (remove: boolean, localImage: IImage) => void;
+  };
+}
+
+export interface Emits {
+  (event: "open:blade", blade: IBladeOptions): void;
+}
+
 export default (): IUseOffer => {
   const { user, getAccessToken } = useUser();
   const logger = useLogger();
   const offer = ref<IOffer>({});
   const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
-  let offerDetailsCopy: TextOfferDetails;
+  const offerDetailsCopy: Ref<TextOfferDetails> = ref();
   const storeSettings = ref<IStoreSettings>();
   const currencyList = ref([]);
   const imageUploading = ref(false);
-  const emit = defineEmits(["page:open"]);
+  const emit = defineEmits<Emits>();
   const { t } = useI18n();
   const modified = ref(false);
 
   const loading = ref(false);
 
   watch(
-    () => offerDetails,
-    (state) => {
-      modified.value = !isEqual(offerDetailsCopy, state.value);
+    [() => offerDetails, () => offerDetailsCopy],
+    ([state, stateCopy]) => {
+      modified.value = !isEqual(stateCopy.value, state.value);
     },
     { deep: true }
   );
@@ -93,12 +115,14 @@ export default (): IUseOffer => {
     ids?: string[]
   ): Promise<SearchOfferProductsResult> {
     const client = await getApiClient();
-    return await client.searchOfferProducts({
-      objectIds: ids,
-      keyword,
-      skip,
-      take: 20,
-    } as SearchProductsForNewOfferQuery);
+    return (
+      await client.searchOfferProducts({
+        objectIds: ids,
+        keyword,
+        skip,
+        take: 20,
+      } as SearchProductsForNewOfferQuery)
+    );
   }
 
   async function createOffer(details: TextOfferDetails) {
@@ -175,7 +199,7 @@ export default (): IUseOffer => {
   }
 
   function makeCopy() {
-    offerDetailsCopy = cloneDeep(offerDetails.value);
+    offerDetailsCopy.value = cloneDeep(offerDetails.value);
   }
 
   async function deleteOffer(args: { id: string }) {
@@ -265,9 +289,9 @@ export default (): IUseOffer => {
   };
 
   const onGalleryItemEdit = (item: Image) => {
-    emit("page:open", {
-      component: AssetsDetails,
-      componentOptions: {
+    emit("open:blade", {
+      component: shallowRef(AssetsDetails),
+      bladeOptions: {
         editableAsset: item,
         images: offerDetails.value.images,
         sortHandler: sortImage,

@@ -9,19 +9,19 @@
   >
     <VcContainer class="import">
       <!-- Import profile widgets-->
-      <div class="p-3" v-if="importProfiles && importProfiles.length">
+      <div class="tw-p-3" v-if="importProfiles && importProfiles.length">
         <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
           <template v-slot="{ slide }">
-            <div class="relative">
+            <div class="tw-relative">
               <VcStatus
                 variant="success"
                 :outline="false"
-                class="absolute right-0 -top-[10px]"
+                class="tw-absolute tw-right-0 -tw-top-[10px]"
                 v-if="slide.inProgress"
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
-                class="w-max"
+                class="tw-w-max"
                 @click="openImporter(slide.id)"
                 icon="fas fa-file-csv"
                 variant="widget"
@@ -36,7 +36,7 @@
       </div>
       <VcCard
         :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
-        class="import__archive m-3"
+        class="import__archive tw-m-3"
       >
         <VcTable
           :loading="loading"
@@ -52,8 +52,8 @@
         >
           <!-- Override name column template -->
           <template v-slot:item_name="itemData">
-            <div class="flex flex-col">
-              <div class="truncate">
+            <div class="tw-flex tw-flex-col">
+              <div class="tw-truncate">
                 {{ itemData.item.name }}
               </div>
             </div>
@@ -70,44 +70,48 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from "vue";
+import { defineComponent, computed, onMounted, ref, shallowRef } from "vue";
 
 export default defineComponent({
-  url: "import",
+  url: "/import",
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeToolbar, ITableColumns } from "../../../types";
-import { useI18n } from "@vc-shell/core";
+import {IBladeEvent, IBladeToolbar, useI18n, ITableColumns, VcBlade, VcContainer, VcSlider, VcStatus, VcButton, VcCard, VcTable} from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
 import { ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 
-const props = defineProps({
-  expanded: {
-    type: Boolean,
-    default: true,
-  },
+type IBladeOptions = IBladeEvent & {
+    bladeOptions?: {
+        importJobId?: string,
+        title?: string
+    }
+}
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    importJobId?: string;
+  };
+}
 
-  param: {
-    type: String,
-    default: undefined,
-  },
+export interface Emits {
+    (event: 'open:blade', blade: IBladeOptions): void;
+}
 
-  options: {
-    type: Object,
-    default: () => ({}),
-  },
+const props = withDefaults(defineProps<Props>(), {
+  expanded: true,
+  closable: true,
 });
-const emit = defineEmits(["page:open"]);
+
+const emit = defineEmits<Emits>();
+
 const { t } = useI18n();
 const {
   importHistory,
@@ -199,8 +203,9 @@ async function reload() {
 
 function newProfile() {
   bladeWidth.value = 70;
-  emit("page:open", {
-    component: ImportProfileDetails,
+
+  emit("open:blade", {
+    component: shallowRef(ImportProfileDetails),
   });
 }
 
@@ -211,10 +216,10 @@ function openImporter(profileId: string) {
     (profile) => profile.id === profileId
   );
 
-  emit("page:open", {
-    component: ImportNew,
+  emit("open:blade", {
+    component: shallowRef(ImportNew),
     param: profileId,
-    componentOptions: {
+    bladeOptions: {
       importJobId: profile && profile.inProgress ? profile.jobId : undefined,
     },
     onOpen() {
@@ -228,11 +233,11 @@ function openImporter(profileId: string) {
 
 function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
-  selectedProfileId.value = item.profileId;
-  emit("page:open", {
-    component: ImportNew,
+
+  emit("open:blade", {
+    component: shallowRef(ImportNew),
     param: item.profileId,
-    componentOptions: {
+    bladeOptions: {
       importJobId: item.jobId,
       title: item.profileName,
     },
@@ -261,12 +266,12 @@ defineExpose({
 <style lang="scss">
 .import {
   & .vc-container__inner {
-    @apply flex flex-col;
+    @apply tw-flex tw-flex-col;
   }
 
   &__archive {
     & .vc-card__body {
-      @apply flex flex-col;
+      @apply tw-flex tw-flex-col;
     }
   }
 }

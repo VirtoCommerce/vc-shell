@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="tw-relative">
     <VcLoading :active="loading"></VcLoading>
     <VcRating v-if="rating" :rating="rating" :variant="variant">
       <template v-slot:details>
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcLoading, VcRating } from "@vc-shell/ui";
+import { VcLoading, VcRating } from "@vc-shell/framework";
 import { onMounted } from "vue";
 import { useRating } from "../composables";
 

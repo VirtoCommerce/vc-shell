@@ -95,49 +95,40 @@
             <VcHint class="tw-mt-1">{{ itemData.item.path }}</VcHint>
 
             <div class="tw-mt-2 tw-mb-3">
-              <mp-product-status class="tw-mt-3" :status="itemData.item.status" />
+              <mp-product-status
+                class="tw-mt-3"
+                :status="itemData.item.status"
+              />
             </div>
 
             <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
-              <div
-                class="tw-truncate tw-grow tw-basis-0 tw-mr-2"
-              >
+              <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{
                   $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN")
                 }}</VcHint>
-                <div
-                  class="tw-truncate tw-mt-1"
-                >
+                <div class="tw-truncate tw-mt-1">
                   {{
                     itemData.item.productData && itemData.item.productData.gtin
                   }}
                 </div>
               </div>
-              <div
-                class="tw-truncate tw-grow tw-basis-0 tw-mr-2"
-              >
+              <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{
                   $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED")
                 }}</VcHint>
-                <div
-                  class="tw-truncate tw-mt-1"
-                >
+                <div class="tw-truncate tw-mt-1">
                   {{
                     itemData.item.createdDate &&
                     moment(itemData.item.createdDate).fromNow()
                   }}
                 </div>
               </div>
-              <div
-                class="tw-truncate tw-grow tw-basis-0 tw-mr-2"
-              >
+              <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <div class="tw-flex tw-flex-col tw-items-center">
                   <VcHint>{{
                     $t("MP_PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
                   }}</VcHint>
-                  <div
-                    class="tw-truncate tw-mt-1"
-                  >
+                  <div class="tw-truncate tw-mt-1">
                     <VcStatusIcon
                       :status="itemData.item && itemData.item.isPublished"
                     ></VcStatusIcon>
@@ -162,9 +153,11 @@ import {
   watch,
   shallowRef,
 } from "vue";
+import { UserPermissions } from "../../../types";
 
 export default defineComponent({
   url: "/mp-products",
+  permissions: [UserPermissions.SellerProductsSearchFromAllSellers],
 });
 </script>
 

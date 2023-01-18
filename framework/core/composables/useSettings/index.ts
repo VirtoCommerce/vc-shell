@@ -30,7 +30,7 @@ export default (): IUseSettings => {
 
   async function getUiCustomizationSettings() {
     const client = await getApiClient();
-    const base = window.location.origin;
+    const base = import.meta.env.APP_PLATFORM_URL;
 
     try {
       const result = await client.getUICustomizationSetting();

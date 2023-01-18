@@ -148,7 +148,6 @@ import {
   RequestPasswordResult,
   useI18n,
 } from "@vc-shell/framework";
-import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
 
@@ -163,7 +162,6 @@ const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading } = useUser();
-const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const form = reactive({
@@ -188,7 +186,6 @@ const login = async () => {
 
 const forgot = async () => {
   if (isValid.value) {
-    await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
     forgotPasswordRequestSent.value = true;
   }
 };

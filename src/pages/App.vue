@@ -286,6 +286,9 @@ const menuItems = reactive<IMenuItems[]>([
         bladeOptions: {
           readonly: true,
         },
+        isVisible: computed(() =>
+          checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)
+        ),
       },
       {
         title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),

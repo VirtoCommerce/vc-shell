@@ -1,9 +1,10 @@
-import { Component, ComponentPublicInstance, ComputedRef } from "vue";
+import { ComputedRef } from "vue";
 import { PushNotification } from "@vc-shell/framework";
 
 enum UserPermissions {
   SellerUsersManage = "seller:users:manage",
   SellerDetailsEdit = "seller:details:edit",
+  SellerProductsSearchFromAllSellers = "seller:products:search_from_all_sellers",
 }
 
 interface IShippingInfo {

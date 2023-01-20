@@ -32,8 +32,9 @@
     <!-- Logo container for desktop devices -->
     <template v-else>
       <img
-        class="h-3/6 tw-cursor-pointer"
+        class="tw-h-3/6 tw-cursor-pointer"
         :src="logo"
+        alt="logo"
         @click="$emit('logo:click')"
       />
       <div
@@ -47,9 +48,9 @@
     <!-- Product name slot -->
     <div
       class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium tw-ml-[30px]"
-      v-if="$slots['productName']"
+      v-if="title"
     >
-      <slot name="productName"></slot>
+      {{ title }}
     </div>
 
     <!-- Additional spacer -->
@@ -105,6 +106,7 @@ export interface Props {
   version: string;
   blades: IBladeElement[];
   buttons: IBladeToolbar[];
+  title?: string;
 }
 
 withDefaults(defineProps<Props>(), {

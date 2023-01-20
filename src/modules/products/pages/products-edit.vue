@@ -319,6 +319,7 @@ const {
   fetchCategories,
   revertStagedChanges,
   searchDictionaryItems,
+  deleteProduct,
 } = useProduct();
 
 const { searchOffers } = useOffers();
@@ -513,6 +514,27 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           productData.value?.canBeModified
         )
     ),
+  },
+  {
+    id: "delete",
+    title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.DELETE"),
+    icon: "fas fa-trash",
+    async clickHandler() {
+      if (
+        window.confirm(
+          unref(
+            computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT"))
+          )
+        )
+      ) {
+        await deleteProduct(props.param);
+        emit("parent:call", {
+          method: "reload",
+        });
+        emit("close:blade");
+      }
+    },
+    isVisible: computed(() => !!props.param && !productLoading.value),
   },
 ]);
 

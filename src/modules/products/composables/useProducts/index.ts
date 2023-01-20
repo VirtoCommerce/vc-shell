@@ -22,6 +22,7 @@ interface IUseProducts {
   searchQuery: Ref<ISearchProductsQuery>;
   currentPage: Ref<number>;
   loadProducts: (query: ISearchProductsQuery) => void;
+  deleteProducts: (ids: string[]) => Promise<void>;
   SellerProductStatus: Ref<SellerProductStatusApproveExcluded>;
   exportCategories: () => void;
 }
@@ -119,6 +120,21 @@ export default (options?: IUseProductOptions): IUseProducts => {
     }
   }
 
+  async function deleteProducts(ids: string[]) {
+    logger.info("delete products", ids);
+
+    const client = await getApiClient();
+    try {
+      loading.value = true;
+      await client.deleteProducts(ids);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     products: computed(() => searchResult.value?.results),
     totalCount: computed(() => searchResult.value?.totalCount),
@@ -129,6 +145,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     loading: computed(() => loading.value),
     searchQuery,
     loadProducts,
+    deleteProducts,
     exportCategories,
     SellerProductStatus: computed(() => statuses.value),
   };

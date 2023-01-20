@@ -3,21 +3,21 @@ import { useLogger, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 import {
-    CatalogProduct,
-    Category,
-    CreateNewProductCommand,
-    CreateNewPublicationRequestCommand,
-    IProductDetails,
-    ISellerProduct,
-    ProductDetails,
-    PropertyDictionaryItem,
-    PropertyDictionaryItemSearchCriteria,
-    UpdateProductDetailsCommand,
-    SellerProduct,
-    ValidateProductQuery,
-    VcmpSellerCatalogClient,
-    ValidationFailure,
-    SearchCategoriesQuery, CategorySearchResult,
+  CatalogProduct,
+  CreateNewProductCommand,
+  CreateNewPublicationRequestCommand,
+  IProductDetails,
+  ISellerProduct,
+  ProductDetails,
+  PropertyDictionaryItem,
+  PropertyDictionaryItemSearchCriteria,
+  UpdateProductDetailsCommand,
+  SellerProduct,
+  ValidateProductQuery,
+  VcmpSellerCatalogClient,
+  ValidationFailure,
+  SearchCategoriesQuery,
+  CategorySearchResult,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
@@ -44,6 +44,7 @@ interface IUseProduct {
     keyword?: string,
     skip?: number
   ) => Promise<PropertyDictionaryItem[]>;
+  deleteProduct: (id: string) => Promise<void>;
 }
 
 export default (): IUseProduct => {
@@ -221,6 +222,21 @@ export default (): IUseProduct => {
     }
   }
 
+  async function deleteProduct(id: string) {
+    logger.info("delete product", id);
+
+    const client = await getApiClient();
+    try {
+      loading.value = true;
+      await client.deleteProducts([id]);
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     product: computed(() => product.value),
     productDetails,
@@ -233,5 +249,6 @@ export default (): IUseProduct => {
     createProduct,
     revertStagedChanges,
     searchDictionaryItems,
+    deleteProduct,
   };
 };

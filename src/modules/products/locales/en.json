@@ -20,7 +20,7 @@
           "REFRESH": "Refresh",
           "ADD": "Add",
           "EXPORT_CATEGORIES": "Export categories",
-          "BULK_DELETE": "Delete"
+          "DELETE": "Delete selected"
         },
         "SEARCH": {
           "PLACEHOLDER": "Search keywords"
@@ -76,8 +76,10 @@
         },
         "ACTIONS": {
           "UNPUBLISH": "Unpublish",
-          "PUBLISH": "Publish"
-        }
+          "PUBLISH": "Publish",
+          "DELETE": "Delete"
+        },
+        "DELETE_SELECTED_CONFIRMATION": "Are you sure you want to delete {count} selected products?"
       },
       "DETAILS": {
         "TITLE": "Add product",
@@ -92,7 +94,8 @@
           },
           "CLOSE": "Close",
           "REVERT": "Revert staged changes",
-          "APPROVE": "Approve (test only)"
+          "APPROVE": "Approve (test only)",
+          "DELETE": "Delete"
         },
         "DECLINE_REASON": "Decline reason",
         "FIELDS": {
@@ -125,7 +128,8 @@
         },
         "ALERTS": {
           "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?",
-          "DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
+          "DELETE_CONFIRMATION": "Are you sure you want to delete this image?",
+          "DELETE_PRODUCT": "Are you sure you want to delete this product?"
         }
       }
     }

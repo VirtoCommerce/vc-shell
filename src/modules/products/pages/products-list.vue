@@ -15,6 +15,7 @@
       :columns="columns"
       :items="products"
       :itemActionBuilder="actionBuilder"
+      :multiselect="true"
       :sort="sort"
       :pages="pages"
       :currentPage="currentPage"
@@ -29,6 +30,7 @@
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
+      @selectionChanged="onSelectionChanged"
     >
       <!-- Filters -->
       <template v-slot:filters="{ closePanel }">
@@ -38,7 +40,9 @@
         <VcContainer no-padding>
           <VcRow>
             <VcCol class="tw-w-[180px] tw-p-2">
-              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
+              <div
+                class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]"
+              >
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
@@ -143,7 +147,10 @@
             <VcHint class="tw-mt-1">{{ itemData.item.path }}</VcHint>
 
             <div class="tw-mt-2 tw-mb-3">
-              <mp-product-status class="tw-mt-3" :status="itemData.item.status" />
+              <mp-product-status
+                class="tw-mt-3"
+                :status="itemData.item.status"
+              />
             </div>
 
             <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
@@ -193,6 +200,8 @@ import {
   ref,
   watch,
   shallowRef,
+  unref,
+  inject,
 } from "vue";
 
 export default defineComponent({
@@ -226,6 +235,7 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "close:children"): void;
   (event: "open:blade", blade: IBladeEvent): void;
 }
 
@@ -240,12 +250,15 @@ const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
 
+const isDesktop = inject("isDesktop");
+
 const {
   products,
   totalCount,
   pages,
   currentPage,
   loadProducts,
+  deleteProducts,
   loading,
   searchQuery,
   SellerProductStatus,
@@ -259,6 +272,7 @@ const appliedFilter = ref({});
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref();
+const selectedProductIds = ref([]);
 const applyFiltersDisable = computed(() => {
   const activeFilters = Object.values(filter).filter(
     (x) => x !== undefined && Array.isArray(x) && !!x.length
@@ -283,6 +297,7 @@ onMounted(async () => {
 
 const reload = async () => {
   logger.debug("Products list reload");
+  selectedProductIds.value = [];
   await loadProducts({
     ...searchQuery.value,
     skip: (currentPage.value - 1) * searchQuery.value.take,
@@ -327,13 +342,29 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
   },
   {
-    id: "batchDelete",
-    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
+    id: "deleteSelected",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
-    isVisible: false,
     async clickHandler() {
-      logger.debug("Delete selected products");
+      //TODO: replace to confirmation dialog from UI library
+      if (
+        window.confirm(
+          unref(
+            computed(() =>
+              t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
+                count: selectedProductIds.value.length,
+              })
+            )
+          )
+        )
+      ) {
+        emit("close:children");
+        await deleteProducts(selectedProductIds.value);
+        await reload();
+      }
     },
+    disabled: computed(() => !selectedProductIds.value?.length),
+    isVisible: isDesktop,
   },
 ]);
 
@@ -427,6 +458,12 @@ const onPaginationClick = async (page: number) => {
   });
 };
 
+const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
+  selectedProductIds.value = Object.entries(checkboxes)
+    .filter(([id, isChecked]) => isChecked)
+    .map(([id, isChecked]) => id);
+};
+
 const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
   let result = [];
 
@@ -451,18 +488,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
             alert("Publish");
           },
         });
-      }
-
-      result.push({
-        icon: "fas fa-trash",
-        title: "Delete",
-        variant: "danger",
-        leftActions: true,
-        clickHandler(item: ISellerProduct) {
-          if (window.confirm("Delete " + item.id)) {
-          }
-        },
-      });*/
+      }*/
 
   /*result.push(
         ...[
@@ -483,8 +509,37 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
         ]
       );*/
 
+  result.push({
+    icon: "fas fa-trash",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.DELETE")),
+    variant: "danger",
+    leftActions: true,
+    clickHandler(item: ISellerProduct) {
+      if (!selectedProductIds.value.includes(item.id)) {
+        selectedProductIds.value.push(item.id);
+      }
+      removeProducts();
+      selectedProductIds.value = [];
+    },
+  });
+
   return result;
 };
+
+async function removeProducts() {
+  //TODO: replace to confirmation dialog from UI library
+  if (
+    window.confirm(
+      t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
+        count: selectedProductIds.value.length,
+      })
+    )
+  ) {
+    emit("close:children");
+    await deleteProducts(selectedProductIds.value);
+    await reload();
+  }
+}
 
 async function resetSearch() {
   searchValue.value = "";

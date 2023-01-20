@@ -39,6 +39,10 @@ export default getLibraryConfiguration(
         },
       },
     },
+    envPrefix: "APP_",
+    define: {
+      "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
+    },
     optimizeDeps: {
       esbuildOptions: {
         target: ["es2020", "safari14"],

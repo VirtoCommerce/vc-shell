@@ -22,7 +22,9 @@
           :key="item.id"
           @click="switchApp(item)"
           class="tw-flex tw-flex-row tw-items-center tw-cursor-pointer tw-group"
-          :class="{ '[&>p]:tw-font-extrabold': locationHandler(item.relativeUrl) }"
+          :class="{
+            '[&>p]:tw-font-extrabold': locationHandler(item.relativeUrl),
+          }"
         >
           <img
             :src="imageUrl(item.iconUrl)"
@@ -60,7 +62,8 @@ const emit = defineEmits<Emits>();
 
 const isVisible = ref(false);
 
-const imageUrl = (url: string) => window.location.origin + url;
+const imageUrl = (url: string) =>
+  import.meta.env.APP_PLATFORM_URL.replace(/\/+$/, "") + url;
 
 const locationHandler = (url: string) => {
   const cleanUrl = window.location.pathname.replace(/\/+$/, "");

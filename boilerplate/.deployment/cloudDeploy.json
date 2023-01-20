@@ -1,0 +1,13 @@
+{
+  "artifactKey": "Tag",
+  "deployRepo": "vc-deploy-marketplace",
+  "cmPath": "custom-app1/image.json",
+  "dev": {
+    "deployAppName": "vcmp-dev",
+    "deployBranch": "vcmp-dev",
+    "environmentId": "dev",
+    "environmentName": "Development",
+    "environmentType": "development",
+    "environmentUrl": "https://vcmp-dev.paas.govirto.com/"
+  }
+}

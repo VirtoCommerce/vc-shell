@@ -153,6 +153,7 @@
                   <Field
                     name="description"
                     rules="min:3|required"
+                    :modelValue="productDetails.description"
                     v-slot="{ field, errorMessage, handleChange }"
                   >
                     <VcTextarea
@@ -324,7 +325,7 @@ const {
 
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
-const { setValues } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const offersCount = ref(0);
 const productLoading = ref(false);

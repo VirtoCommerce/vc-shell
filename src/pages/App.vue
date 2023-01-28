@@ -311,7 +311,9 @@ const menuItems = reactive<IMenuItems[]>([
   {
     title: computed(() => t("RATING.MENU.TITLE")),
     icon: "fas fa-star",
-    isVisible: true,
+    isVisible: computed(() =>
+      checkPermission(UserPermissions.ManageSellerReviews)
+    ),
     component: shallowRef(ReviewList),
   },
   {
@@ -321,6 +323,7 @@ const menuItems = reactive<IMenuItems[]>([
       checkPermission([
         UserPermissions.SellerUsersManage,
         UserPermissions.SellerDetailsEdit,
+        UserPermissions.ManageSellerFulfillmentCenters,
       ])
     ),
     children: [
@@ -335,7 +338,7 @@ const menuItems = reactive<IMenuItems[]>([
         title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
         component: shallowRef(FulfillmentCenters),
         isVisible: computed(() =>
-          checkPermission(UserPermissions.SellerUsersManage)
+          checkPermission(UserPermissions.ManageSellerFulfillmentCenters)
         ),
       },
       {

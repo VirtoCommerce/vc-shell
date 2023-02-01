@@ -10625,6 +10625,7 @@ export class ImportRunHistory implements IImportRunHistory {
     processedCount?: number;
     errorsCount?: number;
     errors?: string[] | undefined;
+    reportUrl?: string | undefined;
     readonly typeName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     createdDate?: Date;
@@ -10659,6 +10660,7 @@ export class ImportRunHistory implements IImportRunHistory {
                 for (let item of _data["errors"])
                     this.errors!.push(item);
             }
+            this.reportUrl = _data["reportUrl"];
             (<any>this).typeName = _data["typeName"];
             if (Array.isArray(_data["settings"])) {
                 this.settings = [] as any;
@@ -10697,6 +10699,7 @@ export class ImportRunHistory implements IImportRunHistory {
             for (let item of this.errors)
                 data["errors"].push(item);
         }
+        data["reportUrl"] = this.reportUrl;
         data["typeName"] = this.typeName;
         if (Array.isArray(this.settings)) {
             data["settings"] = [];
@@ -10724,6 +10727,7 @@ export interface IImportRunHistory {
     processedCount?: number;
     errorsCount?: number;
     errors?: string[] | undefined;
+    reportUrl?: string | undefined;
     typeName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     createdDate?: Date;

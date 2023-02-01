@@ -1,5 +1,5 @@
-import { readonly } from "vue";
-import { UseLoading, useLoading } from "../useLoading";
+import { readonly, ref } from "vue";
+import { UseLoading } from "../useLoading";
 import useLogger from "../useLogger";
 
 export type AsyncAction<Payload = void, Result = void> = (
@@ -14,7 +14,7 @@ export function useAsync<Payload = void, Result = void>(
   innerAction: AsyncAction<Payload, Result>
 ): UseAsync<Payload, Result> {
   const logger = useLogger();
-  const { loading } = useLoading();
+  const loading = ref(false);
 
   async function action(payload?: Payload): Promise<Result> {
     loading.value = true;

@@ -1,12 +1,12 @@
 import { readonly, ref } from "vue";
-import { UseLoading } from "../useLoading";
+import { HasLoading } from "../useLoading";
 import useLogger from "../useLogger";
 
 export type AsyncAction<Payload = void, Result = void> = (
   payload?: Payload
 ) => Promise<Result>;
 
-export interface UseAsync<Payload = void, Result = void> extends UseLoading {
+export interface UseAsync<Payload = void, Result = void> extends HasLoading {
   action: AsyncAction<Payload, Result>;
 }
 

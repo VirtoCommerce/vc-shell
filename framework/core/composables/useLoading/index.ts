@@ -1,17 +1,11 @@
-import { Ref, ref, watch } from "vue";
+import { computed, ComputedRef, Ref } from "vue";
 
-export interface UseLoading {
-  loading: Ref<boolean>;
+export interface HasLoading {
+  loading: Readonly<Ref<boolean>>;
 }
 
-export function useLoading(...args: Readonly<Ref<boolean>>[]): UseLoading {
-  const loading = ref(false);
-
-  watch(args, () => {
-    loading.value = args.some((item) => item.value);
-  });
-
-  return {
-    loading,
-  };
+export function useLoading(
+  ...args: Readonly<Ref<boolean>>[]
+): ComputedRef<boolean> {
+  return computed(() => args.some((item) => item.value));
 }

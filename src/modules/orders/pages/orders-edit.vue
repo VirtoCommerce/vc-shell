@@ -99,7 +99,7 @@
               :footer="false"
             >
               <template v-slot:item_name="itemData">
-                <div class= "tw-flex tw-flex-col">
+                <div class="tw-flex tw-flex-col">
                   <div>{{ itemData.item.name }}</div>
                   <VcHint class="tw-mt-1"
                     >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
@@ -108,14 +108,14 @@
                 </div>
               </template>
               <template v-slot:item_quantity="itemData">
-                <div class= "tw-flex tw-flex-col">
+                <div class="tw-flex tw-flex-col">
                   <div>{{ itemData.item.quantity }}</div>
                 </div>
               </template>
 
               <template v-slot:item_fee="itemData">
                 <div
-                  class= "tw-flex tw-flex-col"
+                  class="tw-flex tw-flex-col"
                   v-if="itemData.item.feeDetails.length"
                 >
                   <div>{{ itemData.item.feeDetails[0].description }}</div>
@@ -228,12 +228,13 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import moment from "moment";
-import { useOrder } from "../composables";
+import { useOrder, useOrders } from "../composables";
 import {
   IBladeToolbar,
   IParentCallArgs,
-  useI18n,
   ITableColumns,
+  useI18n,
+  useLoading,
 } from "@vc-shell/framework";
 
 export interface Props {
@@ -254,14 +255,22 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n();
-const { loading, order, changeOrderStatus, loadOrder, loadPdf, shippingInfo } =
-  useOrder();
+const {
+  loading: loadingOrder,
+  order,
+  loadOrder,
+  loadPdf,
+  shippingInfo,
+} = useOrder();
+const { loading: loadingOrders, changeOrderStatus } = useOrders();
 const locale = window.navigator.language;
 const items = computed(() => order.value?.items);
 const createdDate = computed(() => {
   const date = new Date(order.value?.createdDate);
   return moment(date).locale(locale).format("L LT");
 });
+
+const loading = useLoading(loadingOrder, loadingOrders);
 
 onMounted(async () => {
   if (props.param) {
@@ -294,7 +303,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
         try {
           order.value.status = "Accepted";
-          await changeOrderStatus(order.value);
+          await changeOrderStatus({
+            orderId: order.value.id,
+            newStatus: order.value.status,
+          });
           emit("parent:call", {
             method: "reload",
           });
@@ -322,7 +334,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
         try {
           order.value.status = "Cancelled";
-          await changeOrderStatus(order.value);
+          await changeOrderStatus({
+            orderId: order.value.id,
+            newStatus: order.value.status,
+          });
           emit("parent:call", {
             method: "reload",
           });
@@ -344,7 +359,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
         try {
           order.value.status = "Shipped";
-          await changeOrderStatus(order.value);
+          await changeOrderStatus({
+            orderId: order.value.id,
+            newStatus: order.value.status,
+          });
           emit("parent:call", {
             method: "reload",
           });

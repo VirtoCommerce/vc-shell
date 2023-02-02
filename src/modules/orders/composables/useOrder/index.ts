@@ -1,86 +1,67 @@
 import { computed, Ref, ref } from "vue";
-import { useUser, useLogger } from "@vc-shell/framework";
 import {
-  OrderModuleClient,
+  AsyncAction,
+  useApiClient,
+  useAsync,
+  useLoading,
+} from "@vc-shell/framework";
+import { OrderModuleClient } from "../../../../api_client/orders";
+import {
+  VcmpSellerOrdersClient,
   CustomerOrder,
-  AddressType,
-} from "../../../../api_client/orders";
+  OrderAddressAddressType,
+} from "../../../../api_client/marketplacevendor";
 
 import { IShippingInfo } from "../../../../types";
+
+export interface GetOrderByIdPayload {
+  id: string;
+}
 
 interface IUseOrder {
   order: Ref<CustomerOrder>;
   shippingInfo: Ref<IShippingInfo[]>;
   loading: Ref<boolean>;
-  loadOrder: (args: { id: string }) => Promise<CustomerOrder>;
+  loadOrder: AsyncAction<GetOrderByIdPayload>;
   loadPdf: () => Promise<void>;
-  changeOrderStatus: (order: CustomerOrder) => Promise<void>;
 }
 
 const order: Ref<CustomerOrder> = ref({} as CustomerOrder);
 
 export default (): IUseOrder => {
-  const logger = useLogger();
-  const loading = ref(false);
+  const { getApiClient: getSellerOrdersApiClient } = useApiClient(
+    VcmpSellerOrdersClient
+  );
 
-  async function getApiClient(): Promise<OrderModuleClient> {
-    const { getAccessToken } = useUser();
-    const client = new OrderModuleClient();
-    client.setAuthToken(await getAccessToken());
-    return client;
-  }
+  const { loading: orderLoading, action: loadOrder } =
+    useAsync<GetOrderByIdPayload>(async (payload) => {
+      const client = await getSellerOrdersApiClient();
+      order.value = await client.getById(payload.id);
+    });
 
-  async function loadOrder(args: { id: string }): Promise<CustomerOrder> {
-    loading.value = true;
-    const client = await getApiClient();
-    try {
-      loading.value = true;
-      order.value = await client.getById(args.id, null);
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-    return order.value;
-  }
+  // TODO: Remove after PT-10642 will be fixed
+  const { getApiClient: getOrderApiClient } = useApiClient(OrderModuleClient);
 
-  async function loadPdf(): Promise<void> {
-    const client = await getApiClient();
-    try {
-      const response = await client.getInvoicePdf(order.value.number);
-      const dataType = response.data.type;
-      const binaryData = [];
-      binaryData.push(response.data);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = window.URL.createObjectURL(
-        new Blob(binaryData, { type: dataType })
-      );
-      downloadLink.setAttribute(
-        "download",
-        response.fileName || `Invoice ${order.value.number}`
-      );
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    }
-  }
+  const { loading: pdfLoading, action: loadPdf } = useAsync(async () => {
+    const client = await getOrderApiClient();
+    const response = await client.getInvoicePdf(order.value.number);
+    const dataType = response.data.type;
+    const binaryData = [];
+    binaryData.push(response.data);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = window.URL.createObjectURL(
+      new Blob(binaryData, { type: dataType })
+    );
+    downloadLink.setAttribute(
+      "download",
+      response.fileName || `Invoice ${order.value.number}`
+    );
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  });
 
-  async function changeOrderStatus(order: CustomerOrder): Promise<void> {
-    loading.value = true;
-    const client = await getApiClient();
-    try {
-      await client.updateOrder(order);
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-  }
+  const loading = useLoading(orderLoading, pdfLoading);
 
   return {
     order: computed(() => order.value),
@@ -97,19 +78,19 @@ export default (): IUseOrder => {
             email: address.email ?? "",
           };
           switch (address.addressType) {
-            case AddressType.Billing:
+            case OrderAddressAddressType.Billing:
               acc.push({ label: "Sold to", ...orderInfo });
               break;
-            case AddressType.Shipping:
+            case OrderAddressAddressType.Shipping:
               acc.push({ label: "Ship to", ...orderInfo });
               break;
-            case AddressType.BillingAndShipping:
+            case OrderAddressAddressType.BillingAndShipping:
               acc.push(
                 { label: "Sold to", ...orderInfo },
                 { label: "Ship to", ...orderInfo }
               );
               break;
-            case AddressType.Pickup:
+            case OrderAddressAddressType.Pickup:
               acc.push({ label: "Pick-up at", ...orderInfo });
               break;
           }
@@ -121,7 +102,6 @@ export default (): IUseOrder => {
     }),
     loadOrder,
     loadPdf,
-    changeOrderStatus,
     loading,
   };
 };

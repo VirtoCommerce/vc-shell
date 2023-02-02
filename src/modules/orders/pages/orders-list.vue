@@ -38,7 +38,9 @@
         <VcContainer no-padding>
           <VcRow>
             <VcCol class="filter-col tw-p-2">
-              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
+              <div
+                class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]"
+              >
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
@@ -55,7 +57,9 @@
               </div>
             </VcCol>
             <VcCol class="tw-p-2">
-              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
+              <div
+                class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]"
+              >
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
@@ -77,7 +81,7 @@
           </VcRow>
           <VcRow>
             <VcCol class="tw-p-2">
-              <div class= "tw-flex tw-justify-end">
+              <div class="tw-flex tw-justify-end">
                 <vc-button
                   outline
                   class="tw-mr-4"
@@ -386,7 +390,7 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.ACCEPT")),
       variant: "success",
       async clickHandler() {
-        await changeOrderStatus(item.id, "Accepted");
+        await changeOrderStatus({ orderId: item.id, newStatus: "Accepted" });
         await reload();
       },
     });
@@ -398,7 +402,7 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       title: computed(() => t("ORDERS.PAGES.LIST.TABLE.ACTIONS.CANCEL")),
       variant: "danger",
       async clickHandler() {
-        await changeOrderStatus(item.id, "Cancelled");
+        await changeOrderStatus({ orderId: item.id, newStatus: "Cancelled" });
         await reload();
       },
     });
@@ -412,7 +416,7 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
       async clickHandler() {
         item.status = "Shipped";
         item.status = "Shipped";
-        await changeOrderStatus(item.id, "Cancelled");
+        await changeOrderStatus({ orderId: item.id, newStatus: "Cancelled" });
         await reload();
       },
     });

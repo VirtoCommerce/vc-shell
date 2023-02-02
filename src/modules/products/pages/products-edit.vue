@@ -260,21 +260,19 @@ import {
 } from "@vc-shell/framework";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
-import {
-  IProperty,
-  IPropertyValue,
-  PropertyValue,
-  PropertyDictionaryItem,
-} from "../../../api_client/catalog";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
 import { debounce, orderBy } from "lodash-es";
 import {
   IImage,
+  IProperty,
+  IPropertyValue,
   ISellerProduct,
   Category,
   Image,
   Property,
+  PropertyValue,
+  PropertyDictionaryItem,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
 

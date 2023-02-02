@@ -1,12 +1,18 @@
 import { computed, Ref, ref } from "vue";
-import { useLogger, useUser } from "@vc-shell/framework";
+import {
+  AsyncAction,
+  useApiClient,
+  useAsync,
+  useLoading,
+  useUser,
+} from "@vc-shell/framework";
 import {
   VcmpSellerOrdersClient,
   CustomerOrderSearchResult,
   SearchOrdersQuery,
   ISearchOrdersQuery,
-  ChangeOrderStatusCommand,
   CustomerOrder,
+  ChangeOrderStatusCommand,
 } from "../../../../api_client/marketplacevendor";
 
 interface IPaymentStatus {
@@ -20,6 +26,11 @@ enum PaymentStatus {
   Cancelled = "Cancelled",
 }
 
+interface ChangeOrderStatusPayload {
+  orderId: string;
+  newStatus: string;
+}
+
 interface IUseOrders {
   readonly orders: Ref<CustomerOrder[]>;
   readonly totalCount: Ref<number>;
@@ -28,13 +39,11 @@ interface IUseOrders {
   readonly currentPage: Ref<number>;
   PaymentStatus: Ref<IPaymentStatus>;
   loadOrders(query?: ISearchOrdersQuery): void;
-  changeOrderStatus(orderId: string, newStatus: string): Promise<void>;
+  changeOrderStatus: AsyncAction<ChangeOrderStatusPayload>;
 }
 
 export default (): IUseOrders => {
-  const logger = useLogger();
-  const { getAccessToken, user } = useUser();
-  const loading = ref(false);
+  const { user } = useUser();
   const orders = ref(new CustomerOrderSearchResult({ results: [] }));
   const currentPage = ref(1);
   const statuses = computed(() => {
@@ -42,16 +51,11 @@ export default (): IUseOrders => {
     return Object.fromEntries(statusKey);
   });
 
-  async function getApiClient(): Promise<VcmpSellerOrdersClient> {
-    const client = new VcmpSellerOrdersClient();
-    client.setAuthToken(await getAccessToken());
-    return client;
-  }
+  const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 
-  async function loadOrders(query?: ISearchOrdersQuery) {
-    loading.value = true;
-    const client = await getApiClient();
-    try {
+  const { loading: ordersLoading, action: loadOrders } =
+    useAsync<ISearchOrdersQuery>(async (query) => {
+      const client = await getApiClient();
       orders.value = await client.searchOrders({
         take: 20,
         ...(query || {}),
@@ -59,39 +63,26 @@ export default (): IUseOrders => {
       } as SearchOrdersQuery);
       currentPage.value =
         (query?.skip || 0) / Math.max(1, query?.take || 20) + 1;
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-  }
+    });
 
-  async function changeOrderStatus(
-    orderId: string,
-    newStatus: string
-  ): Promise<void> {
-    loading.value = true;
-    const client = await getApiClient();
-    try {
+  // TODO: Support multiple ordes
+  const { loading: changeOrderStatusLoading, action: changeOrderStatus } =
+    useAsync<ChangeOrderStatusPayload>(async (payload) => {
+      const client = await getApiClient();
       const command = new ChangeOrderStatusCommand({
-        orderId,
-        newStatus,
+        orderId: payload.orderId,
+        newStatus: payload.newStatus,
       });
       await client.updateOrderStatus(command);
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    } finally {
-      loading.value = false;
-    }
-  }
+    });
+
+  const loading = useLoading(ordersLoading, changeOrderStatusLoading);
 
   return {
     orders: computed(() => orders.value?.results),
     totalCount: computed(() => orders.value?.totalCount),
     pages: computed(() => Math.ceil(orders.value?.totalCount / 20)),
-    loading: computed(() => loading.value),
+    loading,
     currentPage: computed(() => currentPage.value),
     PaymentStatus: computed(() => statuses.value),
     loadOrders,

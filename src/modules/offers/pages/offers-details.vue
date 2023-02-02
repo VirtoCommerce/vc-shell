@@ -514,19 +514,17 @@ import {
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
+  IProperty,
+  IPropertyValue,
   OfferPrice,
   InventoryInfo,
+  PropertyDictionaryItem,
+  PropertyValue,
   SellerProduct,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field } from "vee-validate";
 import moment from "moment/moment";
-import {
-  IProperty,
-  IPropertyValue,
-  PropertyDictionaryItem,
-  PropertyValue,
-} from "../../../api_client/catalog";
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
 

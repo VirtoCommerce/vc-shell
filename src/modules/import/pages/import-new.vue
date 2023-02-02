@@ -78,7 +78,9 @@
                       ></VcProgress>
                     </VcCol>
                   </VcRow>
-                  <VcRow class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5]">
+                  <VcRow
+                    class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5]"
+                  >
                     <VcCol
                       v-for="(badge, i) in importBadges"
                       :key="i"
@@ -102,6 +104,12 @@
               <VcHint class="tw-p-3 import-new__error" v-if="errorMessage">{{
                 errorMessage
               }}</VcHint>
+              <div v-if="reportUrl && reportUrl != 'DefaultDataReporter'">
+                <VcHint class="tw-p-3 import-new__history"
+                  >{{ $t("IMPORT.PAGES.LIST.REPORT.DOWNLOAD") }}
+                  <a class="vc-link" :href="reportUrl">{{ reportUrl }}</a>
+                </VcHint>
+              </div>
             </VcCard>
           </VcRow>
         </div>
@@ -557,6 +565,8 @@ const reversedErrors = computed(() => {
 
   return errors.reverse();
 });
+
+const reportUrl = computed(() => importStatus.value?.notification?.reportUrl);
 
 watch(importStatus, (newVal, oldVal) => {
   if (newVal && !newVal.inProgress && oldVal) {

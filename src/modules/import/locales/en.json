@@ -118,6 +118,9 @@
             "FAILED": "Failed",
             "CANCELLED": "Cancelled"
           }
+        },
+        "REPORT": {
+          "DOWNLOAD": "URL to download error report"
         }
       },
       "IMPORTING": {

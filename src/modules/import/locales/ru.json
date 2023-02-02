@@ -10,6 +10,11 @@
         "TOOLBAR": {
           "ADD_PROFILE": "Добавить профиль",
           "REFRESH": "Обновить"
+        },
+        "LIST": {
+          "REPORT": {
+            "DOWNLOAD": "URL отчета с ошибками"
+          }
         }
       },
       "PRODUCT_IMPORTER": {

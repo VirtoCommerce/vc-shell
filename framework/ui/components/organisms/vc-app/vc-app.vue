@@ -15,7 +15,6 @@
       class="tw-shrink-0"
       :logo="logo"
       :blades="bladesRefs"
-      :version="version"
       :buttons="toolbarItems"
       @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="$refs.menu.isMobileVisible = true"
@@ -34,6 +33,7 @@
         ref="menu"
         class="tw-shrink-0"
         :items="menuItems"
+        :version="version"
         :mobileMenuItems="mobileMenuItems"
         @item:click="onMenuItemClick"
       ></VcAppMenu>

@@ -3,55 +3,40 @@
     class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-pl-4"
   >
     <slot name="appSwitcher"></slot>
-    <!-- Logo container for mobile devices -->
-    <template v-if="$isMobile.value">
-      <!-- Show logo on mobile dashboard -->
+
+    <template v-if="!$isMobile.value || blades.length === 0">
+      <!-- Logo -->
       <img
-        v-if="blades.length === 0"
-        class="h-3/6 tw-cursor-pointer"
+        class="tw-h-1/2 tw-cursor-pointer tw-mx-3"
         alt="logo"
         :src="logo"
         @click="$emit('logo:click')"
       />
 
+      <!-- Title -->
+      <div
+        class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium"
+        v-if="title"
+      >
+        {{ title }}
+      </div>
+    </template>
+
+    <template v-if="$isMobile.value">
       <!-- Show blades name when at least one blade is opened -->
       <div
-        v-else-if="blades.length === 1"
+        v-if="blades.length === 1"
         class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header"
       >
         {{ blades[0].title }}
       </div>
 
       <!-- Show back link when more than one blade is opened -->
-      <VcLink v-else @click="$emit('backlink:click')">
+      <VcLink v-else-if="blades.length > 1" @click="$emit('backlink:click')">
         <VcIcon icon="fas fa-chevron-left" size="s"></VcIcon>
         <span class="tw-ml-2 tw-text-lg">{{ $t("Back") }}</span>
       </VcLink>
     </template>
-
-    <!-- Logo container for desktop devices -->
-    <template v-else>
-      <img
-        class="tw-h-3/6 tw-cursor-pointer"
-        :src="logo"
-        alt="logo"
-        @click="$emit('logo:click')"
-      />
-      <div
-        class="tw-text-[color:var(--app-bar-version-color)] tw-text-xs tw-ml-[30px]"
-        @click="$emit('version:click')"
-      >
-        {{ version }}
-      </div>
-    </template>
-
-    <!-- Product name slot -->
-    <div
-      class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium tw-ml-[30px]"
-      v-if="title"
-    >
-      {{ title }}
-    </div>
 
     <!-- Additional spacer -->
     <div class="tw-grow tw-basis-0 tw-basis-0"></div>
@@ -103,7 +88,6 @@ import { IBladeElement } from "@/shared";
 
 export interface Props {
   logo: string;
-  version: string;
   blades: IBladeElement[];
   buttons: IBladeToolbar[];
   title?: string;
@@ -111,7 +95,6 @@ export interface Props {
 
 withDefaults(defineProps<Props>(), {
   logo: "",
-  version: "",
   blades: () => [],
   buttons: () => [],
 });
@@ -119,7 +102,6 @@ withDefaults(defineProps<Props>(), {
 defineEmits([
   "logo:click",
   "backlink:click",
-  "version:click",
   "toolbarbutton:click",
   "menubutton:click",
 ]);
@@ -135,7 +117,6 @@ defineEmits([
   --app-bar-button-background-color: var(--app-bar-background-color);
   --app-bar-button-color-hover: #34414f;
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
-  --app-bar-version-color: #838d9a;
   --app-bar-product-name-color: #34414f;
   --app-bar-product-name-size: 20px;
 }

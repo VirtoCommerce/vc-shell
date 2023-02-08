@@ -223,8 +223,9 @@ import {
   VcTable,
   IBladeToolbar,
   ITableColumns,
+  usePermissions,
 } from "@vc-shell/framework";
-import { INotificationActions } from "../../../types";
+import { INotificationActions, UserPermissions } from "../../../types";
 import useImport from "../composables/useImport";
 import {
   IDataImporter,
@@ -272,7 +273,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
 const { t } = useI18n();
+const { checkPermission } = usePermissions();
 const { getAccessToken } = useUser();
 const {
   loading: importLoading,
@@ -317,7 +320,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         param: profile.value.id,
       });
     },
-    isVisible: computed(() => profile.value),
+    isVisible: computed(
+      () =>
+        checkPermission(UserPermissions.SellerImportProfilesEdit) &&
+        profile.value
+    ),
     disabled: computed(() => importLoading.value || !profile.value.name),
   },
   {

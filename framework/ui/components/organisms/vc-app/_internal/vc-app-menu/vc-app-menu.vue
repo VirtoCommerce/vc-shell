@@ -28,7 +28,7 @@
 
       <!-- Show scrollable area with menu items -->
       <VcContainer :noPadding="true" class="tw-grow tw-basis-0">
-        <div class="tw-gap-[5px] tw-flex tw-flex-col tw-px-4">
+        <div class="tw-gap-[5px] tw-flex tw-flex-col tw-px-4 tw-h-full">
           <template
             v-for="(item, index) in mobileMenuItems"
             :key="`info_item_${index}`"
@@ -38,7 +38,7 @@
                 v-if="item.component"
                 :is="item.component"
                 v-bind="item.bladeOptions"
-                class="tw-p-0 tw-mb-2 tw-w-full"
+                class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto"
               ></component>
             </template>
           </template>
@@ -60,6 +60,12 @@
               "
             />
           </template>
+          <div
+            class="tw-text-[color:var(--app-menu-version-color)] tw-text-xs tw-mt-auto tw-self-center tw-p-1"
+            @click="$emit('version:click')"
+          >
+            {{ version }}
+          </div>
         </div>
       </VcContainer>
     </div>
@@ -76,15 +82,18 @@ import { IMenuClickEvent } from "@/shared";
 export interface Props {
   items?: IMenuItems[];
   mobileMenuItems?: IMenuItems[];
+  version: string;
 }
 
 export interface Emits {
   (event: "item:click", { item, navigationCb }: IMenuClickEvent): void;
+  (event: "version:click"): void;
 }
 
 withDefaults(defineProps<Props>(), {
   items: () => [],
   mobileMenuItems: () => [],
+  version: "",
 });
 
 defineEmits<Emits>();
@@ -100,6 +109,7 @@ defineExpose({
 :root {
   --app-menu-width: 230px;
   --app-menu-background-color: #ffffff;
+  --app-menu-version-color: #838d9a;
 }
 
 .vc-app-menu {

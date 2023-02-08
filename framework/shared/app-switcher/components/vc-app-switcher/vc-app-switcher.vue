@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-ml-2 tw-mr-[15px] tw-shrink-0"
+    class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-mx-2 tw-shrink-0"
     v-click-outside="onClose"
   >
     <button

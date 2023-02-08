@@ -78,19 +78,33 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {IBladeEvent, IBladeToolbar, useI18n, ITableColumns, VcBlade, VcContainer, VcSlider, VcStatus, VcButton, VcCard, VcTable} from "@vc-shell/framework";
+import {
+  IBladeEvent,
+  IBladeToolbar,
+  useI18n,
+  ITableColumns,
+  VcBlade,
+  VcContainer,
+  VcSlider,
+  VcStatus,
+  VcButton,
+  VcCard,
+  VcTable,
+  usePermissions,
+} from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
 import { ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
+import { UserPermissions } from "../../../types";
 
-type IBladeOptions = IBladeEvent & {
-    bladeOptions?: {
-        importJobId?: string,
-        title?: string
-    }
-}
+export type IBladeOptions = IBladeEvent & {
+  bladeOptions?: {
+    importJobId?: string;
+    title?: string;
+  };
+};
 
 export interface Props {
   expanded: boolean;
@@ -102,7 +116,7 @@ export interface Props {
 }
 
 export interface Emits {
-    (event: 'open:blade', blade: IBladeOptions): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,6 +127,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
+const { checkPermission } = usePermissions();
 const {
   importHistory,
   historyPages,
@@ -145,6 +160,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       newProfile();
     },
+    isVisible: computed(() =>
+      checkPermission(UserPermissions.SellerImportProfilesEdit)
+    ),
   },
 ]);
 const columns = ref<ITableColumns[]>([

@@ -297,6 +297,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         props.param &&
         (order.value.status === "Paid" ||
           order.value.status === "Unpaid" ||
+          order.value.status === "Pending" ||
           order.value.status === "New")
       ) {
         const lastStatus = order.value.status;
@@ -320,6 +321,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         !(
           (order.value.status === "Paid" ||
             order.value.status === "Unpaid" ||
+            order.value.status === "Pending" ||
             order.value.status === "New") &&
           props.param
         )

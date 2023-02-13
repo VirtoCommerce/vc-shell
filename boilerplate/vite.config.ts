@@ -2,7 +2,7 @@ import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
 import VueMacros from "unplugin-vue-macros/vite";
-import { loadEnv } from "vite";
+import { loadEnv, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -26,10 +26,14 @@ if (mode !== "production") {
   _define.global = {};
 }
 
-const getProxy = (target, options = {}) => {
+const getProxy = (
+  target: ProxyOptions["target"],
+  options: Omit<ProxyOptions, "target"> = {}
+): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
   return {
     target,
+    changeOrigin: true,
     secure: dontTrustSelfSignedCertificate,
     ...options,
   };
@@ -118,7 +122,6 @@ export default {
       "/connect/token": getProxy(`${process.env.APP_PLATFORM_URL}`),
       "/pushNotificationHub": getProxy(`${process.env.APP_PLATFORM_URL}`),
       "^/pushNotificationHub": getProxy(`${process.env.APP_PLATFORM_URL}`, {
-        changeOrigin: true,
         ws: true,
       }),
       "/Modules": getProxy(`${process.env.APP_PLATFORM_URL}`),

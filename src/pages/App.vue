@@ -385,23 +385,18 @@ function onOpen(args: IOpenBlade) {
 
 async function customizationHandler() {
   await getCurrentSeller();
+  await getUiCustomizationSettings();
 
-  if (sellerDetails.value) {
-    if (sellerDetails.value.logo) {
-      applySettings({ logo: sellerDetails.value.logo });
-    }
-    if (sellerDetails.value.name) {
-      applySettings({ title: sellerDetails.value.name });
-    }
-  } else {
-    await getUiCustomizationSettings();
+  if (sellerDetails.value.logo) {
+    applySettings({ logo: sellerDetails.value.logo });
+  } else if (!uiSettings.value.logo) {
+    applySettings({ logo: logoImage });
+  }
 
-    if (!uiSettings.value.logo) {
-      applySettings({ logo: logoImage });
-    }
-    if (!uiSettings.value.title) {
-      applySettings({ title: undefined });
-    }
+  if (sellerDetails.value.name) {
+    applySettings({ title: sellerDetails.value.name });
+  } else if (!uiSettings.value.title) {
+    applySettings({ title: undefined });
   }
 }
 </script>

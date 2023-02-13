@@ -1,5 +1,9 @@
 <template>
-  <VcLoginForm :logo="logo" :background="background" :title="computedTitle">
+  <VcLoginForm
+    :logo="customization.logo"
+    :background="background"
+    :title="title"
+  >
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
@@ -139,7 +143,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import {
   useLogger,
   useUser,
@@ -147,6 +151,7 @@ import {
   SignInResults,
   RequestPasswordResult,
   useI18n,
+  useSettings,
 } from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
@@ -158,6 +163,7 @@ const router = useRouter();
 const route = useRoute();
 useForm({ validateOnMount: false });
 const { logo, background, title } = route.meta;
+const { getUiCustomizationSettings, uiSettings } = useSettings();
 
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
@@ -166,6 +172,25 @@ const { signIn, loading } = useUser();
 const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
+const customizationLoading = ref(false);
+
+onMounted(async () => {
+  try {
+    customizationLoading.value = true;
+    await getUiCustomizationSettings();
+  } finally {
+    customizationLoading.value = false;
+  }
+});
+
+const customization = computed(() => {
+  return (
+    !customizationLoading.value && {
+      logo: uiSettings.value?.logo || logo,
+    }
+  );
+});
+
 const form = reactive({
   username: "",
   password: "",
@@ -174,10 +199,6 @@ const form = reactive({
 const forgotPasswordForm = reactive({
   loginOrEmail: "",
 });
-
-const computedTitle = computed(() =>
-  isLogin.value ? title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")
-);
 
 const login = async () => {
   if (isValid.value) {

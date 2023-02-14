@@ -25,7 +25,7 @@ import {
   Category,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import { isEqual, cloneDeep } from "lodash-es";
+import {isEqual, cloneDeep, extend} from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -115,14 +115,12 @@ export default (): IUseOffer => {
     ids?: string[]
   ): Promise<SearchOfferProductsResult> {
     const client = await getApiClient();
-    return (
-      await client.searchOfferProducts({
-        objectIds: ids,
-        keyword,
-        skip,
-        take: 20,
-      } as SearchProductsForNewOfferQuery)
-    );
+    return await client.searchOfferProducts({
+      objectIds: ids,
+      keyword,
+      skip,
+      take: 20,
+    } as SearchProductsForNewOfferQuery);
   }
 
   async function createOffer(details: TextOfferDetails) {
@@ -134,7 +132,7 @@ export default (): IUseOffer => {
       productId: details.productId,
       details: new OfferDetails({
         ...details,
-        properties: details.properties.map(
+        properties: details.properties?.map(
           (x) =>
             new Property({
               ...x,

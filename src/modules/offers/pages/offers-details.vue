@@ -37,8 +37,8 @@
                 :error="!!errors.length"
                 :error-message="errorMessage"
                 @update:modelValue="
-                  () => {
-                    handleChange();
+                  (e) => {
+                    handleChange(e);
                     getProductItem();
                   }
                 "
@@ -425,7 +425,7 @@
                           type="datetime-local"
                           :modelValue="getFilterDate('startDate')"
                           @update:modelValue="
-                            setFilterDate('startDate', $event)
+                            (e: string) => setFilterDate('startDate', e)
                           "
                           :disabled="readonly"
                           :error="!!errors.length"
@@ -447,7 +447,7 @@
                           "
                           type="datetime-local"
                           :modelValue="getFilterDate('endDate')"
-                          @update:modelValue="setFilterDate('endDate', $event)"
+                          @update:modelValue="(e: string) => setFilterDate('endDate', e)"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"

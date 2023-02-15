@@ -137,12 +137,7 @@
                     <!-- Always in stock -->
                     <VcCheckbox
                       :modelValue="!offerDetails.trackInventory"
-                      @update:modelValue="
-                        offerDetails.trackInventory = !$event;
-                        offerDetails.inventory.forEach(
-                          (x) => (x.inStockQuantity = 0)
-                        );
-                      "
+                      @update:modelValue="offerDetails.trackInventory = !$event"
                       :disabled="readonly"
                       name="alwaysinstock"
                     >

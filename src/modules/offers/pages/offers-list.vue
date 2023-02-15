@@ -146,7 +146,7 @@ export interface Props {
   };
 }
 
-type IBladeOptions = IBladeEvent & {
+export type IBladeOptions = IBladeEvent & {
   bladeOptions?: {
     sellerProduct?: SellerProduct;
   };
@@ -291,14 +291,14 @@ const tableColumns = ref<ITableColumns[]>([
     alwaysVisible: true,
   },
   {
-    id: "salePrice",
+    id: "prices.salePrice",
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
     width: 100,
     sortable: true,
     type: "money",
   },
   {
-    id: "listPrice",
+    id: "prices.listPrice",
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.LIST_PRICE")),
     width: 100,
     sortable: true,

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.44",
+  "version": "1.0.45",
   "private": true,
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn bootstrap && yarn run build",
@@ -81,7 +81,7 @@
     "vite-plugin-pwa": "^0.13.3",
     "vue": "^3.0.0",
     "vue-eslint-parser": "^8.2.0",
-    "vue-tsc": "^1.0.7",
+    "vue-tsc": "^1.0.24",
     "yarn": "^1.22.11"
   },
   "lint-staged": {

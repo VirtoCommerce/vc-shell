@@ -65,7 +65,10 @@
   </template>
 
   <!-- Status icon cell -->
-  <div v-else-if="cell.type === 'status-icon'" class= "tw-flex tw-justify-center">
+  <div
+    v-else-if="cell.type === 'status-icon'"
+    class="tw-flex tw-justify-center"
+  >
     <VcStatusIcon :status="value"></VcStatusIcon>
   </div>
 
@@ -102,12 +105,14 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const locale = window.navigator.language;
-const value = computed(() =>
-  (props.cell.field || props.cell.id)
+const value = computed(() => {
+  return (props.cell.field || props.cell.id)
     .split(".")
-    .reduce(
-      (p: { [x: string]: unknown }, c: string) => (p && p[c]) || null,
-      props.item
-    )
-);
+    .reduce((p: { [x: string]: unknown }, c: string) => {
+      if (p && Array.isArray(p) && p.length) {
+        return (p && p[0][c]) || null;
+      }
+      return (p && p[c]) || null;
+    }, props.item);
+});
 </script>

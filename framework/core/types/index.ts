@@ -30,7 +30,7 @@ export interface IBladeToolbar {
   bladeOptions?: Record<string, unknown> | unknown;
   disabled?: boolean | ComputedRef<boolean>;
   dropdownItems?: IBladeDropdownItem[];
-  clickHandler?(app: Record<string, unknown> | IBladeElement): void;
+  clickHandler?(app?: Record<string, unknown> | IBladeElement): void;
 }
 
 export interface IBladeDropdownItem {

@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.45",
+  "version": "1.0.46",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [

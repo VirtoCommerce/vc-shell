@@ -7,7 +7,9 @@
         <span>)</span>
       </div>
     </template>
-    <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center">
+    <div
+      class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center"
+    >
       <div class="tw-box-border p-5 tw-grow tw-basis-0 tw-w-full">
         <div
           class="bg-contain tw-bg-no-repeat tw-bg-center tw-w-full tw-h-full tw-box-border"
@@ -56,20 +58,22 @@
 import { computed, ref } from "vue";
 import { VcPopup } from "@/ui/components";
 
-const props = defineProps({
-  images: {
-    type: Array,
-    default: () => [],
-  },
+export interface Props {
+  images?: {
+    title: string;
+    name: string;
+    url: string;
+  }[];
+  index: number;
+}
 
-  index: {
-    type: Number,
-    default: 0,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  images: () => [],
+  index: 0,
 });
 
 const localIndex = ref(props.index);
-const currentImage = computed(() => props.images[localIndex.value] || {});
+const currentImage = computed(() => props.images[localIndex.value]);
 
 const copyLink = (link: string) => {
   if (link.charAt(0) === "/") {

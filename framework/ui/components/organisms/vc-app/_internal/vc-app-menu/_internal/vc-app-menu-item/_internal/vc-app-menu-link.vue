@@ -2,8 +2,8 @@
   <div
     class="vc-app-menu-item"
     :class="[
-      { 'vc-app-menu-item_active': isActive && !children.length },
-      { 'vc-app-menu-item_no-hover': children.length },
+      { 'vc-app-menu-item_active': isActive && !Object.keys(children).length },
+      { 'vc-app-menu-item_no-hover': Object.keys(children).length },
     ]"
     @click="$emit('onClick')"
   >
@@ -22,7 +22,7 @@
         class="vc-app-menu-item__title-icon"
         icon="fas fa-chevron-down"
         size="xs"
-        v-if="children.length"
+        v-if="Object.keys(children).length"
       ></VcIcon>
     </div>
   </div>

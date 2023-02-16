@@ -1,15 +1,19 @@
 <template>
-  <div class="vc-col tw-flex tw-flex-col tw-min-w-0 tw-basis-0" :style="{ flexGrow: size }">
+  <div
+    class="vc-col tw-flex tw-flex-col tw-min-w-0 tw-basis-0"
+    :style="{ flexGrow: parseInt(size) }"
+  >
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  size: {
-    type: String,
-    default: "1",
-  },
+export interface Props {
+  size: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  size: "1",
 });
 </script>
 

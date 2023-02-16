@@ -65,16 +65,16 @@ export interface VcSelectProps {
    * Default value: []
    */
   options?:
-    | ((
-        keyword?: string,
-        skip?: number,
-        ids?: string[]
-      ) => Promise<{
-        results?: Record<string, unknown>[];
-        totalCount?: number;
-      }>)
-    | any[]
-    | undefined;
+  | ((
+    keyword?: string,
+    skip?: number,
+    ids?: string[]
+  ) => Promise<{
+    results?: object[];
+    totalCount?: number;
+  }>)
+  | any[]
+  | undefined;
   /**
    * Property of option which holds the 'value'
    * Default value: id
@@ -121,18 +121,19 @@ export interface VcSelectEmits {
    * @param event Emitted event name
    * @param value New model value
    */
-  (event: "update:modelValue", value: any): void;
+  "update:modelValue": (value: any) => void;
   /**
    * Emitted when user wants to filter a value
    * @param event Emitted event name
    * @param inputValue What the user typed
    */
-  (event: "search", inputValue: string): void;
+  search: (inputValue: string) => void;
+
   /**
    * Emitted when the select options list is hidden
    * @param event Emitted event name
    */
-  (event: "close"): void;
+  close: () => void;
 }
 export interface VcSelectSlots {
   /**

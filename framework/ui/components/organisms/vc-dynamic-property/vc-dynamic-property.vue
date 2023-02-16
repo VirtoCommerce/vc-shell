@@ -3,7 +3,7 @@
     v-if="
       (property.dictionary || property.isDictionary) && !property.multivalue
     "
-    v-slot="{ field, errorMessage, handleChange, errors }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :name="property.displayName || property.name"
     :modelValue="getter(property, true)"
     :rules="rules"
@@ -38,7 +38,7 @@
       property.multivalue &&
       !(property.dictionary || property.isDictionary)
     "
-    v-slot="{ field, errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange }"
     :name="property.name"
     :modelValue="property.values"
     :rules="rules"
@@ -96,7 +96,7 @@
 
   <Field
     v-else-if="property.valueType === 'ShortText'"
-    v-slot="{ field, errorMessage, handleChange, errors }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :name="property.displayName || property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -122,7 +122,7 @@
 
   <Field
     v-else-if="property.valueType === 'Number' && property.multivalue"
-    v-slot="{ field, errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange }"
     :name="property.name"
     :modelValue="property.values"
     :rules="rules"
@@ -147,7 +147,7 @@
 
   <Field
     v-else-if="property.valueType === 'Number'"
-    v-slot="{ field, errorMessage, handleChange, errors }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -174,7 +174,7 @@
 
   <Field
     v-else-if="property.valueType === 'Integer'"
-    v-slot="{ field, errorMessage, handleChange, errors }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -202,7 +202,7 @@
 
   <Field
     v-else-if="property.valueType === 'DateTime'"
-    v-slot="{ field, errorMessage, handleChange, errors }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -228,7 +228,7 @@
 
   <Field
     v-else-if="property.valueType === 'LongText'"
-    v-slot="{ field, errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange }"
     :name="property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -252,7 +252,7 @@
 
   <Field
     v-else-if="property.valueType === 'Boolean'"
-    v-slot="{ field, errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange }"
     :name="property.displayName || property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -277,7 +277,7 @@
 
   <Field
     v-else-if="property.valueType === 'Html'"
-    v-slot="{ field, errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange }"
     :name="property.displayName || property.name"
     :modelValue="getter(property)"
     :rules="rules"
@@ -307,12 +307,12 @@ import { ref, onMounted, computed } from "vue";
 import { useI18n } from "@/core/composables";
 import { Field } from "vee-validate";
 
-interface IValidationRules {
+type IValidationRules = {
   required?: boolean;
   min?: number;
   max?: number;
   regex?: RegExp;
-}
+};
 
 interface IDisplayName {
   languageCode: string;

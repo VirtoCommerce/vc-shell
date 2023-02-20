@@ -1,12 +1,12 @@
 import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "path";
-import VueMacros from "unplugin-vue-macros/vite";
+import VueMacros from "unplugin-vue-macros";
 
 export default getLibraryConfiguration(
   {
     plugins: [
-      VueMacros({
+      VueMacros.vite({
         plugins: {
           vue: vue(),
         },

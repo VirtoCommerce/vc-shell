@@ -68,19 +68,12 @@ import {
   VcTextarea,
 } from "@/ui/components";
 
-interface ILocalImage {
-  url: string;
-  name: string;
-  altText: string;
-  description: string;
-}
-
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options?: {
-    editableAsset?: ILocalImage;
-    sortHandler?: (remove: boolean, localImage: ILocalImage) => void;
+    editableAsset: ILocalImage;
+    sortHandler: (remove: boolean, localImage: ILocalImage) => void;
   };
 }
 
@@ -89,10 +82,16 @@ export interface Emits {
   (event: "close:blade"): void;
 }
 
+export interface ILocalImage {
+  url: string;
+  name: string;
+  altText: string;
+  description: string;
+}
+
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
-  options: () => ({}),
 });
 
 const emit = defineEmits<Emits>();

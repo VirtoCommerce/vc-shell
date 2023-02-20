@@ -1,6 +1,6 @@
 <template>
   <div class="vc-slider tw-relative">
-    <swiper-component
+    <swiper
       :class="[
         'vc-slider__swiper',
         {
@@ -16,7 +16,7 @@
       <swiper-slide v-for="(slide, i) in slides" :key="i">
         <slot :slide="slide"></slot>
       </swiper-slide>
-    </swiper-component>
+    </swiper>
     <!-- Navigation buttons-->
     <div v-show="navigation">
       <div class="vc-slider__prev tw-left-0">
@@ -39,7 +39,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Swiper as SwiperComponent, SwiperSlide } from "swiper/vue";
+import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { Navigation } from "swiper";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";

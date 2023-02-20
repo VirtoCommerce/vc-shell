@@ -1,5 +1,7 @@
 <template>
-  <div class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0">
+  <div
+    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0"
+  >
     <!-- Header slot with filter and searchbar -->
     <slot
       name="header"
@@ -11,7 +13,9 @@
           activeFilterCount)
       "
     >
-      <div class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4">
+      <div
+        class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
+      >
         <!-- Table filter mobile button -->
         <div v-if="$isMobile.value && $slots['filters']" class="tw-mr-3">
           <VcTableFilter :counter="activeFilterCount">
@@ -46,7 +50,7 @@
       </div>
     </slot>
 
-    <div class= "tw-flex tw-relative tw-overflow-hidden tw-grow">
+    <div class="tw-flex tw-relative tw-overflow-hidden tw-grow">
       <!-- Table loading overlay -->
       <VcLoading :active="loading"></VcLoading>
 
@@ -92,7 +96,7 @@
                 class="tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
                 width="50"
               >
-                <div class= "tw-flex tw-justify-center tw-items-center">
+                <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     :modelValue="headerCheckbox"
                     @update:modelValue="processHeaderCheckbox"
@@ -111,7 +115,7 @@
                 @click="handleHeaderClick(item)"
               >
                 <div
-                  class= "tw-flex tw-items-center tw-flex-nowrap"
+                  class="tw-flex tw-items-center tw-flex-nowrap"
                   :class="tableAlignment[item.align]"
                 >
                   <div>
@@ -126,7 +130,7 @@
                     ></VcIcon>
                   </div>
                   <div
-                    class= "tw-flex tw-flex-col tw-ml-1 tw-invisible group-hover:tw-visible"
+                    class="tw-flex tw-flex-col tw-ml-1 tw-invisible group-hover:tw-visible"
                     v-else
                   >
                     <VcIcon size="xs" icon="fas fa-caret-up"></VcIcon>
@@ -158,7 +162,7 @@
               @mouseleave="closeActions"
             >
               <td v-if="multiselect" width="50">
-                <div class= "tw-flex tw-justify-center tw-items-center">
+                <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     :modelValue="checkboxes[item.id]"
                     @update:modelValue="processCheckbox(item.id, $event)"
@@ -202,7 +206,7 @@
                     role="tooltip"
                   >
                     <div
-                      class= "tw-flex tw-items-center tw-flex-row tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
+                      class="tw-flex tw-items-center tw-flex-row tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
                     >
                       <div
                         v-for="(itemAction, i) in itemActions"

@@ -63,6 +63,7 @@ storybook-static
 package-lock.json
 
 .npmrc
+.history
 
 # Apps
 /apps/

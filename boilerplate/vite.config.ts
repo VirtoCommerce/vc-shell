@@ -1,7 +1,7 @@
 import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
-import VueMacros from "unplugin-vue-macros/vite";
+import VueMacros from "unplugin-vue-macros";
 import { loadEnv, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
@@ -42,7 +42,7 @@ const getProxy = (
 export default {
   plugins: [
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
-    VueMacros({
+    VueMacros.vite({
       plugins: {
         vue: vue(),
       },

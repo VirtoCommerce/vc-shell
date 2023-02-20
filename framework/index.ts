@@ -61,7 +61,7 @@ export * from "./ui/types";
 export * from "./core/composables";
 export * from "./core/directives";
 export * from "./core/types";
-export * from "./core/plugins/validation";
+export * from "./core/plugins";
 export * from "./core/api";
 export * from "./core/utilities";
 

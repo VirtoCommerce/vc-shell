@@ -58,7 +58,7 @@
             v-else
             class="tw-relative tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color: var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)] tw-transition-[color] tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]"
             :class="{ 'vc-app-bar__button_accent': item.isAccent }"
-            :title="item.title"
+            :title="item.title as string"
             @click="$emit('button:click', item)"
           >
             <VcIcon

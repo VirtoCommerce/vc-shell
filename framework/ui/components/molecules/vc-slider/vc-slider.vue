@@ -9,13 +9,16 @@
         },
       ]"
       :space-between="spaceBetweenSlides"
-      :navigation="buttonsList"
-      :slidesPerView="slidesPerView"
+      :navigation="buttonsList as any"
+      :slidesPerView="slidesPerView as any"
       :resizeObserver="true"
     >
-      <swiper-slide v-for="(slide, i) in slides" :key="i">
+    <div v-for="(slide, i) in slides" :key="i">
+      <swiper-slide :swiper-ref="SwiperCore">
         <slot :slide="slide"></slot>
       </swiper-slide>
+    </div>
+
     </swiper>
     <!-- Navigation buttons-->
     <div v-show="navigation">

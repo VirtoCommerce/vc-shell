@@ -86,15 +86,12 @@ export interface VcInputProps {
    * Input required state
    */
   required?: boolean | undefined;
-}
-export interface VcInputEmits {
   /**
    * Emitted when the component needs to change the model; Is also used by v-model
-   * @param event Emitted event name
-   * @param value New model value
    */
-  (event: "update:modelValue", value: string | number | Date | null): void;
+  "onUpdate:modelValue"?: (value: string | number | Date | null) => void;
 }
+
 export interface VcInputSlots {
   /**
    * Slot for controls

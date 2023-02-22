@@ -46,6 +46,8 @@
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"
+              :isVisible="item.isVisible as boolean"
+              :title="item.title as string"
               @click="
                 (navigationCb) => {
                   $emit('item:click', { item, navigationCb });

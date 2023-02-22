@@ -1,5 +1,5 @@
 <template>
-  <i :class="`vc-icon vc-icon_${size} ${icon.toLowerCase()}`" />
+  <i :class="`vc-icon vc-icon_${size} ${(icon as string).toLowerCase()}`" />
 </template>
 
 <script lang="ts" setup>

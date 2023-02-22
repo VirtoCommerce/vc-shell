@@ -3,7 +3,6 @@ import {
   ComponentOptions,
   ComponentPublicInstance,
   ComputedOptions,
-  EmitsOptions,
   MethodOptions,
   VNodeProps,
 } from "vue";
@@ -16,31 +15,18 @@ export type ComponentConstructor<
     RawBindings,
     D,
     C,
-    M,
-    E
+    M
   > = ComponentPublicInstance<any>,
   Props = any,
   RawBindings = any,
   D = any,
   C extends ComputedOptions = ComputedOptions,
   M extends MethodOptions = MethodOptions,
-  E extends EmitsOptions = EmitsOptions
-> = { new (): Component } & ComponentOptions<
-  Props,
-  RawBindings,
-  D,
-  C,
-  M,
-  any,
-  any,
-  E
->;
+> = { new (): Component } & ComponentOptions<Props, RawBindings, D, C, M>;
 
-
-export type GlobalComponentConstructor<Props = {}, Slots = {}, Emits = {}> = {
-  new (): {
-    $props: PublicProps & Props;
-    $slots: Slots;
-    $emit: EmitsOptions & Emits;
-  };
+export type GlobalComponentConstructor<Props = {}, Slots = {}> = {
+    new (): {
+      $props: PublicProps & Props;
+      $slots: Slots;
+    }
 };

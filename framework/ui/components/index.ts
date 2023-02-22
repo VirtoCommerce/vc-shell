@@ -26,7 +26,6 @@ export { default as VcForm } from "./molecules/vc-form/vc-form.vue";
 export { default as VcFileUpload } from "./molecules/vc-file-upload/vc-file-upload.vue";
 export { VcInput } from "./molecules/vc-input";
 export { VcInputCurrency } from "./molecules/vc-input-currency";
-export { default as VcMultivalue } from "./molecules/vc-multivalue/vc-multivalue.vue";
 export { default as VcNotification } from "./molecules/vc-notification/vc-notification.vue";
 export { default as VcPagination } from "./molecules/vc-pagination/vc-pagination.vue";
 export { default as VcRating } from "./molecules/vc-rating/vc-rating.vue";

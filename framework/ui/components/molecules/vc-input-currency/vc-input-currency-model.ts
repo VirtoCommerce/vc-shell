@@ -100,20 +100,14 @@ export interface VcInputCurrencyProps {
    * @returns Label of the current option
    */
   optionLabel?: OptionProp;
-}
-export interface VcInputCurrencyEmits {
   /**
-   * Emitted when the component needs to change the model; Is also used by v-model
-   * @param event Emitted event name
-   * @param value New model value
-   */
-  (event: "update:modelValue", value: string | number | null): void;
+  * Emitted when the component needs to change the model; Is also used by v-model
+  */
+  "onUpdate:modelValue"?: (value: string | number | null) => void;
   /**
    * Emitted when the component needs to change the options model; Is also used by v-model:option
-   * @param event Emitted event name
-   * @param value New model value
    */
-  (event: "update:option", value: string | number | null): void;
+  "onUpdate:option"?: (value: string | number | null) => void;
 }
 export interface VcInputCurrencySlots {
   /**

@@ -114,27 +114,20 @@ export interface VcSelectProps {
    * Input search activation
    */
   searchable?: boolean | undefined;
-}
-export interface VcSelectEmits {
   /**
-   * Emitted when the component needs to change the model; Is also used by v-model
-   * @param event Emitted event name
-   * @param value New model value
-   */
-  "update:modelValue": (value: any) => void;
+  * Emitted when the component needs to change the model; Is also used by v-model
+  */
+  "onUpdate:modelValue"?: (inputValue: any) => void;
   /**
    * Emitted when user wants to filter a value
-   * @param event Emitted event name
-   * @param inputValue What the user typed
    */
-  search: (inputValue: string) => void;
-
+  onSearch?: (inputValue: string) => void;
   /**
    * Emitted when the select options list is hidden
-   * @param event Emitted event name
    */
-  close: () => void;
+  onClose?: () => void;
 }
+
 export interface VcSelectSlots {
   /**
    * Custom select control

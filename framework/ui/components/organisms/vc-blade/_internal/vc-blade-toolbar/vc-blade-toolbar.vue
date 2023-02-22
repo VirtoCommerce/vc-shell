@@ -24,14 +24,16 @@
 </template>
 
 <script lang="ts" setup>
+import { IBladeToolbar } from "@/core/types";
 import { ref } from "vue";
 import VcBladeToolbarButton from "./_internal/vc-blade-toolbar-button/vc-blade-toolbar-button.vue";
 
-const props = defineProps({
-  items: {
-    type: Array,
-    default: () => [],
-  },
+export interface Props {
+  items: IBladeToolbar[];
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  items: () => [],
 });
 
 const isExpanded = ref(true);

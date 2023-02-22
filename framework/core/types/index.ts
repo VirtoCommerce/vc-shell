@@ -22,12 +22,12 @@ export type IValidationRules = {
 
 export interface IBladeToolbar {
   id?: string;
-  icon?: string;
-  title?: string | ComputedRef<string>;
+  icon?: string | (() => string);
+  title?: string | unknown;
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
   component?: ExtendedComponent;
-  bladeOptions?: Record<string, unknown> | unknown;
+  bladeOptions?: Record<string, unknown>;
   disabled?: boolean | ComputedRef<boolean>;
   dropdownItems?: IBladeDropdownItem[];
   clickHandler?(app?: Record<string, unknown> | IBladeElement): void;
@@ -49,11 +49,14 @@ export interface IActionBuilderResult {
   title: string;
   variant: string;
   leftActions?: boolean;
-  clickHandler(): void;
+  clickHandler(item?: { id: string; }): void;
 }
 
 export interface IImage {
   sortOrder?: number;
+  title: string;
+  name: string;
+  url: string;
 }
 
 export interface AuthData {
@@ -77,7 +80,7 @@ export interface RequestPasswordResult {
   errorCode?: string;
 }
 
-export interface ITableColumns {
+export type ITableColumns = {
   id: string;
   title: string | ComputedRef<string>;
   width?: number;
@@ -90,3 +93,5 @@ export interface ITableColumns {
   format?: string;
   align?: string;
 }
+
+export type { ExtendedComponent }

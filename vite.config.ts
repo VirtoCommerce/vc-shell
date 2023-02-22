@@ -5,6 +5,7 @@ import VueMacros from "unplugin-vue-macros/vite";
 import { loadEnv, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
+import checker from "vite-plugin-checker";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -79,6 +80,9 @@ export default {
           },
         ],
       },
+    }),
+    checker({
+      vueTsc: true,
     }),
   ],
   resolve: {

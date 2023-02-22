@@ -11,7 +11,9 @@
     @close="$emit('close:blade')"
   >
     <template v-slot:actions>
-      <mp-product-status :status="product.status"></mp-product-status>
+      <mp-product-status
+        :status="(product as ISellerProduct).status"
+      ></mp-product-status>
     </template>
 
     <!-- Blade contents -->
@@ -24,7 +26,7 @@
               :extend="true"
               variant="light-danger"
               class="tw-w-full tw-box-border tw-mb-5"
-              v-if="statusText && product.status !== 'Published'"
+              v-if="statusText && (product as ISellerProduct).status !== 'Published'"
             >
               <div class="tw-flex tw-flex-row tw-items-center">
                 <VcIcon
@@ -86,8 +88,8 @@
                     $t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
                   "
                   @update:modelValue="
-                    (e) => {
-                      handleChange(e.categoryId);
+                    (e: Category) => {
+                      handleChange(e.id);
                       setCategory(e);
                     }
                   "
@@ -121,7 +123,7 @@
                 :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
-                v-if="product.id || currentCategory"
+                v-if="(product as ISellerProduct).id || currentCategory"
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="tw-p-4">
@@ -219,7 +221,7 @@
             icon="fas fa-file-alt"
             title="Offers"
             :value="offersCount"
-            :disabled="!product.isPublished"
+            :disabled="!(product as ISellerProduct).isPublished"
             @click="openOffers"
           >
           </VcWidget>
@@ -281,7 +283,7 @@ export interface Props {
   param?: string;
 }
 
-type IBladeOptions = IBladeEvent & {
+export type IBladeOptions = IBladeEvent & {
   bladeOptions: {
     editableAsset?: Image;
     images?: Image[];

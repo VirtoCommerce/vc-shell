@@ -21,11 +21,9 @@ import {
   PropertyValue,
   Image,
   IImage,
-  OfferProduct,
-  Category,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import {isEqual, cloneDeep, extend} from "lodash-es";
+import { isEqual, cloneDeep, extend } from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;

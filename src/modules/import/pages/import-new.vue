@@ -237,34 +237,34 @@ import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
 
+export interface Props {
+  expanded: boolean;
+  closable: boolean;
+  param?: string;
+  options?: {
+    importJobId: string;
+    title: string;
+  };
+}
+
+export type IBladeOptions = IBladeEvent & {
+    bladeOptions: {
+        importer: IDataImporter;
+    };
+};
+
+export interface Emits {
+  (event: "open:blade", blade: IBladeOptions): void;
+  (event: "close:blade"): void;
+  (event: "parent:call", args: IParentCallArgs): void;
+}
+
 interface IImportBadges {
   id: string;
   icon: string;
   color: string;
   title?: string | number;
   description?: string;
-}
-
-type IBladeOptions = IBladeEvent & {
-  bladeOptions: {
-    importer: IDataImporter;
-  };
-};
-
-export interface Props {
-  expanded: boolean;
-  closable: boolean;
-  param?: string;
-  options?: {
-    importJobId?: string;
-    title?: string;
-  };
-}
-
-export interface Emits {
-  (event: "open:blade", blade: IBladeOptions): void;
-  (event: "close:blade"): void;
-  (event: "parent:call", args: IParentCallArgs): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

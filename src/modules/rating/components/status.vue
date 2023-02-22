@@ -7,10 +7,10 @@
 <script lang="ts" setup>
 import { VcStatus } from "@vc-shell/framework";
 import { computed } from "vue";
-import { CustomerReviewStatus } from "../../../api_client/marketplacevendor";
+import { CustomerReviewReviewStatus } from "../../../api_client/marketplacevendor";
 
 export interface Props {
-  reviewStatus?: CustomerReviewStatus;
+  reviewStatus?: CustomerReviewReviewStatus;
 }
 
 const props = defineProps<Props>();
@@ -18,13 +18,13 @@ const props = defineProps<Props>();
 const status = computed(() => {
   let status = undefined;
   switch (props.reviewStatus) {
-    case CustomerReviewStatus.New:
+    case CustomerReviewReviewStatus.New:
       status = "warning";
       break;
-    case CustomerReviewStatus.Approved:
+    case CustomerReviewReviewStatus.Approved:
       status = "success";
       break;
-    case CustomerReviewStatus.Rejected:
+    case CustomerReviewReviewStatus.Rejected:
       status = "danger";
       break;
   }

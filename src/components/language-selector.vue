@@ -45,7 +45,7 @@ import { ref } from "vue";
 export interface Props {
   title: string;
   value: string;
-  languageItems: { lang: string; title: string; clickHandler: () => void }[];
+  languageItems: { lang: string; title: string; clickHandler: (lang: string) => void }[];
 }
 
 withDefaults(defineProps<Props>(), {

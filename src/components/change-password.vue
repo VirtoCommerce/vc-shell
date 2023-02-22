@@ -6,51 +6,70 @@
   >
     <div class="tw-p-3">
       <VcForm>
-          <Field name="current" rules="required|min:6" :modelValue="form.currentPassword" v-slot="{field, errorMessage, errors}">
-              <VcInput
-                    v-bind="field"
-                    ref="passwordField"
-                    class="tw-mb-4 tw-mt-1"
-                    :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
-                    :placeholder="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
-                    type="password"
-                    v-model="form.currentPassword"
-                    @update:modelValue="validate"
-                    required
-                    :error="!!errors.length"
-                    :error-message="errorMessage"
-              ></VcInput>
-          </Field>
-          <Field name="new_pass" rules="required|min:6" :modelValue="form.password" v-slot="{field, errorMessage, errors}">
-              <VcInput
-                      v-bind="field"
-                      ref="newPasswordField"
-                      class="tw-mb-4 tw-mt-1"
-                      :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
-                      :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
-                      type="password"
-                      @update:modelValue="validate"
-                      v-model="form.password"
-                      required
-                      :error="!!errors.length"
-                      :error-message="errorMessage"
-              ></VcInput>
-          </Field>
-          <Field name="confirm_pass" rules="required|min:6" :modelValue="form.confirmPassword" v-slot="{field, errorMessage, errors}">
-              <VcInput
-                      v-bind="field"
-                      ref="confirmPasswordField"
-                      class="tw-mb-4"
-                      :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
-                      :placeholder="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
-                      @update:modelValue="validate"
-                      type="password"
-                      v-model="form.confirmPassword"
-                      required
-                      :error="!!errors.length"
-                      :error-message="errorMessage"
-              ></VcInput>
-          </Field>
+        <Field
+          name="current"
+          rules="required|min:6"
+          :modelValue="form.currentPassword"
+          v-slot="{ field, errorMessage, errors }"
+        >
+          <VcInput
+            v-bind="field"
+            ref="passwordField"
+            class="tw-mb-4 tw-mt-1"
+            :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
+            :placeholder="
+              $t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')
+            "
+            type="password"
+            v-model="form.currentPassword"
+            @update:modelValue="validate"
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+          ></VcInput>
+        </Field>
+        <Field
+          name="new_pass"
+          rules="required|min:6"
+          :modelValue="form.password"
+          v-slot="{ field, errorMessage, errors }"
+        >
+          <VcInput
+            v-bind="field"
+            ref="newPasswordField"
+            class="tw-mb-4 tw-mt-1"
+            :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
+            :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
+            type="password"
+            @update:modelValue="validate"
+            v-model="form.password"
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+          ></VcInput>
+        </Field>
+        <Field
+          name="confirm_pass"
+          rules="required|min:6"
+          :modelValue="form.confirmPassword"
+          v-slot="{ field, errorMessage, errors }"
+        >
+          <VcInput
+            v-bind="field"
+            ref="confirmPasswordField"
+            class="tw-mb-4"
+            :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
+            :placeholder="
+              $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
+            "
+            @update:modelValue="validate"
+            type="password"
+            v-model="form.confirmPassword"
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+          ></VcInput>
+        </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
           <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <VcButton
@@ -77,8 +96,12 @@
         >
           <!-- TODO: stylizing-->
           {{
-            error.code
-              ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${error.code}`)
+            (error as IIdentityError).code
+              ? $t(
+                  `SHELL.CHANGE_PASSWORD.ERRORS.${
+                    (error as IIdentityError).code
+                  }`
+                )
               : error
           }}
         </VcHint>
@@ -140,13 +163,13 @@ function validate() {
     if (form.password || form.confirmPassword) {
       form.errors = (await validatePassword(form.password)).errors;
       if (form.confirmPassword !== form.password) {
-        form.errors.push({ code: "Repeat-password" });
+        (form.errors as IIdentityError[]).push({ code: "Repeat-password" });
       }
       if (
         form.confirmPassword === form.currentPassword &&
         form.password === form.currentPassword
       ) {
-        form.errors.push({ code: "Equal-passwords" });
+        (form.errors as IIdentityError[]).push({ code: "Equal-passwords" });
       }
       form.isValid = form.errors.length == 0;
     }

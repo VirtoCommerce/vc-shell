@@ -139,7 +139,7 @@ export interface Props {
   options?: Record<string, unknown>;
 }
 
-type IBladeOptions = IBladeEvent & {
+export type IBladeOptions = IBladeEvent & {
   bladeOptions?: {
     user?: SellerUser;
   };

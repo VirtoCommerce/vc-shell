@@ -25,7 +25,7 @@ interface IUseTeamMembers {
   readonly modified: Ref<boolean>;
   currentPage: Ref<number>;
   searchQuery: Ref<ISearchSellerUsersQuery>;
-  userDetails: Ref<SellerUserDetails>;
+  userDetails: Ref<SellerUserDetails & { id?: string }>;
   userDetailsCopy: Ref<SellerUserDetails>;
   getTeamMembers: (query: ISearchSellerUsersQuery) => void;
   createTeamMember: (details: ISellerUser, inviteStatus: boolean) => void;

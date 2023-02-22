@@ -48,14 +48,14 @@ import DefaultPush from "./_internal/DefaultPush.vue";
 import ProductPush from "./_internal/ProductPush.vue";
 import moment from "moment";
 
-interface IExtendedPush extends IPushNotification {
+export interface Props {
+  notification: PushNotification | IExtendedPush;
+}
+
+export interface IExtendedPush extends IPushNotification {
   finished: Date;
   errors: string[];
   newStatus: string;
-}
-
-export interface Props {
-  notification: PushNotification | IExtendedPush;
 }
 
 const props = withDefaults(defineProps<Props>(), {

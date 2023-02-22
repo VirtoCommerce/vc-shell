@@ -68,13 +68,13 @@
                   type="date"
                   class="tw-mb-3"
                   :modelValue="getFilterDate('startDate')"
-                  @update:modelValue="setFilterDate('startDate', $event)"
+                  @update:modelValue="(e: string) => setFilterDate('startDate', e)"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :modelValue="getFilterDate('endDate')"
-                  @update:modelValue="setFilterDate('endDate', $event)"
+                  @update:modelValue="(e: string) => setFilterDate('endDate', e)"
                 ></VcInput>
               </div>
             </VcCol>
@@ -237,14 +237,16 @@ const {
 } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n();
-const filter = reactive({});
+const filter = ref<{ status: string }>();
 const appliedFilter = ref({});
 const searchValue = ref();
 const selectedItemId = ref();
 const selectedOrdersIds = ref([]);
 const sort = ref("createdDate:DESC");
 const applyFiltersDisable = computed(() => {
-  const activeFilters = Object.values(filter).filter((x) => x !== undefined);
+  const activeFilters = Object.values(filter.value).filter(
+    (x) => x !== undefined
+  );
   return !activeFilters.length;
 });
 const applyFiltersReset = computed(() => {
@@ -260,7 +262,7 @@ onMounted(async () => {
 });
 
 watch(sort, async (value) => {
-  await loadOrders({ ...filter, keyword: searchValue.value, sort: value });
+  await loadOrders({ ...filter.value, keyword: searchValue.value, sort: value });
 });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -428,14 +430,14 @@ const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
 const onSearchList = debounce(async (keyword: string) => {
   searchValue.value = keyword;
   await loadOrders({
-    ...filter,
+    ...filter.value,
     keyword,
   });
 }, 200);
 
 const reload = async () => {
   await loadOrders({
-    ...filter,
+    ...filter.value,
     keyword: searchValue.value,
   });
 };
@@ -463,14 +465,14 @@ const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 function setFilterDate(key: string, value: string) {
   const date = moment(value).toDate();
   if (date instanceof Date && !isNaN(date.valueOf())) {
-    filter[key] = date;
+    filter.value[key] = date;
   } else {
-    filter[key] = undefined;
+    filter.value[key] = undefined;
   }
 }
 
 function getFilterDate(key: string) {
-  const date = filter[key] as Date;
+  const date = filter.value[key] as Date;
   if (date) {
     return moment(date).format("YYYY-MM-DD");
   }
@@ -479,9 +481,9 @@ function getFilterDate(key: string) {
 
 async function resetSearch() {
   searchValue.value = "";
-  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
   await loadOrders({
-    ...filter,
+    ...filter.value,
     keyword: "",
   });
   appliedFilter.value = {};
@@ -492,17 +494,17 @@ const activeFilterCount = computed(
 async function applyFilters(closePanel: () => void) {
   closePanel();
   await loadOrders({
-    ...filter,
+    ...filter.value,
   });
   appliedFilter.value = {
-    ...filter,
+    ...filter.value,
   };
 }
 async function resetFilters(closePanel: () => void) {
   closePanel();
-  Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
   await loadOrders({
-    ...filter,
+    ...filter.value,
   });
   appliedFilter.value = {};
 }

@@ -57,7 +57,10 @@ import { INotificationActions } from "../../../types";
 
 export interface Props {
   uploadActions: INotificationActions[];
-  uploadedFile: object;
+  uploadedFile: {
+    name: string;
+    size: number | string;
+  };
   isUploaded: boolean;
   isStarted: boolean;
 }

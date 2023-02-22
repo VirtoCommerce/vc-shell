@@ -38,7 +38,7 @@ export interface Props {
   param?: string;
 }
 
-type IBladeOptions = IBladeEvent & {
+export type IBladeOptions = IBladeEvent & {
   bladeOptions?: {
     review?: CustomerReview;
   };

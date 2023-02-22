@@ -2,6 +2,7 @@ import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "path";
 import VueMacros from "unplugin-vue-macros";
+import checker from "vite-plugin-checker";
 
 export default getLibraryConfiguration(
   {
@@ -10,6 +11,9 @@ export default getLibraryConfiguration(
         plugins: {
           vue: vue(),
         },
+      }),
+      checker({
+        vueTsc: true,
       }),
     ],
     resolve: {

@@ -151,7 +151,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
-import { VcInputProps, VcInputEmits } from "./vc-input-model";
+import { VcInputProps } from "./vc-input-model";
 
 const props = withDefaults(defineProps<VcInputProps>(), {
   modelValue: null,
@@ -163,7 +163,7 @@ const props = withDefaults(defineProps<VcInputProps>(), {
   maxlength: "1024",
 });
 
-const emit = defineEmits<VcInputEmits>();
+const emit = defineEmits(["update:modelValue"]);
 
 let emitTimer;
 let emitValueFn;

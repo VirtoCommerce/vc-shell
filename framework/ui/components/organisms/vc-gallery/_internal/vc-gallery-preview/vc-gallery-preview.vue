@@ -57,13 +57,10 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { VcPopup } from "@/ui/components";
+import { IImage } from "@/core/types";
 
 export interface Props {
-  images?: {
-    title: string;
-    name: string;
-    url: string;
-  }[];
+  images?: IImage[];
   index: number;
 }
 

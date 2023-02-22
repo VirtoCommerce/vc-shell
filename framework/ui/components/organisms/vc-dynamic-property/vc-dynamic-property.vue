@@ -122,14 +122,13 @@
 
   <Field
     v-else-if="property.valueType === 'Number' && property.multivalue"
-    v-slot="{ errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :modelValue="property.values"
     :rules="rules"
   >
-    <VcMultivalue
+    <VcSelect
       v-bind="$attrs"
-      :error-message="errorMessage"
       :label="handleDisplayName"
       :modelValue="property.values"
       @update:modelValue="
@@ -142,7 +141,13 @@
       :required="property.required || property.isRequired"
       placeholder="Add value"
       :disabled="disabled"
-    ></VcMultivalue>
+      :error="!!errors.length"
+      :error-message="errorMessage"
+      :options="items"
+      option-value="id"
+      :option-label="handleDisplayProperty"
+      multiple
+    ></VcSelect>
   </Field>
 
   <Field

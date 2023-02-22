@@ -6,7 +6,7 @@
           :isActive="isActive"
           :children="children"
           :sticky="sticky"
-          :icon="icon"
+          :icon="icon as string"
           :title="title"
           @onClick="onMenuItemClick(() => navigate($event))"
         />
@@ -16,7 +16,7 @@
       <vc-app-menu-link
         :children="children"
         :sticky="sticky"
-        :icon="icon"
+        :icon="icon as string"
         :title="title"
         @onClick="onMenuItemClick"
         :isActive="isHomePage"
@@ -54,7 +54,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, computed } from "vue";
-import { ExtendedComponent, IMenuItems } from "@/core/types";
+import {ExtendedComponent, IBladeToolbar, IMenuItems} from "@/core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { NavigationFailure, useRoute } from "vue-router";
 
@@ -64,9 +64,9 @@ export interface Props {
   component?: ExtendedComponent;
   bladeOptions?: Record<string, unknown>;
   clickHandler?: () => void;
-  icon: string;
-  title: string;
-  children?: IMenuItems[];
+  icon?: string | (() => string);
+  title?: string;
+  children?: IBladeToolbar[];
   isCollapsed?: boolean;
 }
 
@@ -90,8 +90,6 @@ const props = withDefaults(defineProps<Props>(), {
   component: undefined,
   bladeOptions: () => ({}),
   clickHandler: undefined,
-  icon: "",
-  title: "",
   children: () => [],
   isCollapsed: true,
 });

@@ -192,7 +192,7 @@
                   <button
                     class="tw-text-[#319ed4] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray]"
                     @click.stop="showActions(item, item.id)"
-                    :ref="(el) => setActionToggleRefs(el, item.id)"
+                    :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     aria-describedby="tooltip"
                     :disabled="!(itemActions && itemActions.length)"
                   >
@@ -202,7 +202,7 @@
                     class="vc-table__body-tooltip tw-bg-white tw-rounded-l-[4px] tw-p-[15px] tw-z-0 tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
                     v-show="selectedRow === item.id"
                     @mouseleave="closeActions"
-                    :ref="(el) => setTooltipRefs(el, item.id)"
+                    :ref="(el: Element) => setTooltipRefs(el, item.id)"
                     role="tooltip"
                   >
                     <div
@@ -312,128 +312,71 @@ import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
-import { IActionBuilderResult } from "@/core/types";
+import { IActionBuilderResult, ITableColumns } from "@/core/types";
 
-interface ITableItemRef {
-  element: HTMLDivElement;
-  id: string;
+export interface Props {
+  columns: ITableColumns[];
+  items: { id: string }[];
+  itemActionBuilder?: (item: { id: string }) => IActionBuilderResult[];
+  sort?: string;
+  multiselect?: boolean;
+  expanded?: boolean;
+  totalLabel?: string;
+  totalCount?: number;
+  pages?: number;
+  currentPage?: number;
+  searchPlaceholder?: string;
+  searchValue?: string;
+  loading?: boolean;
+  empty?: StatusImage;
+  notfound?: StatusImage;
+  header?: boolean;
+  footer?: boolean;
+  activeFilterCount?: number;
+  selectedItemId?: string;
+  scrolling?: boolean;
+  onItemClick?: () => void;
 }
 
-const props = defineProps({
-  columns: {
-    type: Array,
-    default: () => [],
-  },
+export interface StatusImage {
+  image?: string;
+  text: string;
+  action?: boolean;
+  clickHandler?: () => void;
+}
 
-  items: {
-    type: Array as PropType<{ id: string }[]>,
-    default: () => [],
-  },
-
-  filterItems: {
-    type: Array,
-    default: () => [],
-  },
-
-  itemActionBuilder: {
-    type: Function,
-    default: undefined,
-  },
-
-  sort: {
-    type: String,
-    default: undefined,
-  },
-
-  multiselect: {
-    type: Boolean,
-    default: false,
-  },
-
-  expanded: {
-    type: Boolean,
-    default: false,
-  },
-
-  totalLabel: {
-    type: String,
-    default: "Totals:",
-  },
-
-  totalCount: {
-    type: Number,
-    default: 0,
-  },
-
-  pages: {
-    type: Number,
-    default: 0,
-  },
-
-  currentPage: {
-    type: Number,
-    default: 0,
-  },
-
-  searchPlaceholder: {
-    type: String,
-    default: "Search...",
-  },
-
-  searchValue: {
-    type: String,
-    default: undefined,
-  },
-
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-
-  empty: {
-    type: Object,
-    default: () => ({
-      text: "List is empty.",
-    }),
-  },
-
-  notfound: {
-    type: Object,
-    default: () => ({
-      text: "Nothing found.",
-    }),
-  },
-
-  header: {
-    type: Boolean,
-    default: true,
-  },
-
-  footer: {
-    type: Boolean,
-    default: true,
-  },
-
-  activeFilterCount: {
-    type: Number,
-    default: 0,
-  },
-
-  selectedItemId: {
-    type: String,
-    default: undefined,
-  },
-
-  scrolling: {
-    type: Boolean,
-    default: false,
-  },
-
-  onItemClick: {
-    type: Function,
-    default: undefined,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  columns: () => [],
+  items: () => [],
+  itemActionBuilder: undefined,
+  sort: undefined,
+  multiselect: false,
+  expanded: false,
+  totalLabel: "Totals:",
+  totalCount: 0,
+  pages: 0,
+  currentPage: 0,
+  searchPlaceholder: "Search...",
+  searchValue: undefined,
+  loading: false,
+  empty: () => ({
+    text: "List is empty.",
+  }),
+  notfound: () => ({
+    text: "Nothing found.",
+  }),
+  header: true,
+  footer: true,
+  activeFilterCount: 0,
+  selectedItemId: undefined,
+  scrolling: false,
+  onItemClick: undefined,
 });
+
+interface ITableItemRef {
+  element: Element;
+  id: string;
+}
 
 const emit = defineEmits([
   "paginationClick",
@@ -490,7 +433,7 @@ watch(
   }
 );
 
-function setTooltipRefs(el: HTMLDivElement, id: string) {
+function setTooltipRefs(el: Element, id: string) {
   if (el) {
     const isExists = tooltipRefs.value.some((item) => item.id === id);
     if (!isExists) {
@@ -499,7 +442,7 @@ function setTooltipRefs(el: HTMLDivElement, id: string) {
   }
 }
 
-function setActionToggleRefs(el: HTMLDivElement, id: string) {
+function setActionToggleRefs(el: Element, id: string) {
   if (el) {
     const isExists = actionToggleRefs.value.some((item) => item.id === id);
     if (!isExists) {
@@ -529,18 +472,22 @@ function showActions(item: { id: string }, index: string) {
 
   if (toggleRef && tooltipRef) {
     nextTick(() => {
-      tooltip.value = createPopper(toggleRef.element, tooltipRef.element, {
-        placement: "bottom",
-        onFirstUpdate: () => tooltip.value?.update(),
-        modifiers: [
-          {
-            name: "offset",
-            options: {
-              offset: [-15, 15],
+      tooltip.value = createPopper(
+        toggleRef.element,
+        tooltipRef.element as HTMLElement,
+        {
+          placement: "bottom",
+          onFirstUpdate: () => tooltip.value?.update(),
+          modifiers: [
+            {
+              name: "offset",
+              options: {
+                offset: [-15, 15],
+              },
             },
-          },
-        ],
-      });
+          ],
+        }
+      );
     });
   }
 }

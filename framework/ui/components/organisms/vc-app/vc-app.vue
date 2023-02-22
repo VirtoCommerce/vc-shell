@@ -17,7 +17,11 @@
       :blades="bladesRefs"
       :buttons="toolbarItems"
       @toolbarbutton:click="onToolbarButtonClick"
-      @menubutton:click="$refs.menu.isMobileVisible = true"
+      @menubutton:click="
+        (
+          $refs.menu as Record<'isMobileVisible', boolean>
+        ).isMobileVisible = true
+      "
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
       @logo:click="openDashboard"
       :title="title"

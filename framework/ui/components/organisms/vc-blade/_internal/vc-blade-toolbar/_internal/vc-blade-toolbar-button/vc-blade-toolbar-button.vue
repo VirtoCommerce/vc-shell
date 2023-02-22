@@ -3,13 +3,13 @@
     class="vc-blade-toolbar-button"
     :class="{ 'vc-blade-toolbar-button_disabled': disabled || isWaiting }"
     @click="onClick"
-    :title="title"
+    :title="title as string"
   >
     <div ref="dropButtonRef">
       <div class="vc-blade-toolbar-button__wrap" ref="bladeDropToggle">
         <VcIcon
           class="vc-blade-toolbar-button__icon"
-          :icon="icon"
+          :icon="icon as string"
           size="m"
         ></VcIcon>
         <div v-if="isExpanded" class="vc-blade-toolbar-button__title">
@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, PropType, ref } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -51,40 +51,26 @@ export default defineComponent({
 <script lang="ts" setup>
 import { VcIcon } from "@/ui/components";
 import { createPopper, Instance } from "@popperjs/core";
-import { IBladeDropdownItem } from "@/core/types";
+import { IBladeDropdownItem, IBladeToolbar } from "@/core/types";
 
-const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+export interface Props extends IBladeToolbar {
+  isExpanded: boolean;
+}
 
-  isExpanded: {
-    type: Boolean,
-    default: true,
-  },
+export interface Emits {
+  (event: "click"): void;
+}
 
-  icon: {
-    type: String,
-    default: "fas fa-question-circle",
-  },
-
-  title: {
-    type: String,
-    default: undefined,
-  },
-
-  dropdownItems: {
-    type: Array as PropType<IBladeDropdownItem[]>,
-    default: () => [],
-  },
-
-  clickHandler: {
-    type: Function,
-    default: undefined,
-  },
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  isExpanded: true,
+  icon: "fas fa-question-circle",
+  title: undefined,
+  dropdownItems: () => [],
+  clickHandler: undefined,
 });
-const emit = defineEmits(["click"]);
+
+const emit = defineEmits<Emits>();
 
 const popper = ref<Instance>();
 const isWaiting = ref(false);

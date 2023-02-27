@@ -25,10 +25,13 @@
       "scripthost"
     ],
     "types": [
-      "src/typings",
       "vite/client",
       "unplugin-vue-macros/macros-global",
-      "unplugin-vue-define-options/macros-global"],
+      "unplugin-vue-define-options/macros-global"
+    ],
+    "typeRoots": [
+      "./typings"
+    ],
     "paths": {
       "@/*": ["*"],
     }

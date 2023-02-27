@@ -77,7 +77,7 @@ export default {
     include: ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {
-    sourcemap: true,
+    // sourcemap: true,
     emptyOutDir: true,
     rollupOptions: {
       plugins: [

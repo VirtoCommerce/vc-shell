@@ -74,6 +74,8 @@
           "LINES_FOUND": "lines found",
           "NO_ERRORS": "No errors",
           "IN_PROGRESS": "Import in progress",
+          "ESTIMATING": "Calculating remaining time...",
+          "ESTIMATED": "Estimated remaining time is ",
           "STARTED_AT": "Started at",
           "LINES_READ": "lines read",
           "IMPORTED": "items imported",

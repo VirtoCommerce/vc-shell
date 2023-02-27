@@ -76,6 +76,29 @@
                         :variant="progressbarVariant"
                         :key="importStatus.progress"
                       ></VcProgress>
+                      <VcHint
+                        v-if="
+                          importStatus.estimatingRemaining ||
+                          importStatus.estimatedRemaining
+                        "
+                        class="tw-py-3"
+                      >
+                        <template v-if="importStatus.estimatingRemaining">
+                          {{
+                            $t(
+                              "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATING"
+                            )
+                          }}
+                        </template>
+                        <template v-else>
+                          {{
+                            $t(
+                              "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATED"
+                            )
+                          }}
+                          {{ estimatedRemaining }}
+                        </template>
+                      </VcHint>
                     </VcCol>
                   </VcRow>
                   <VcRow
@@ -199,6 +222,8 @@ import {
   shallowRef,
 } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
+import _ from "lodash";
+import { argThresholdOpts } from "moment";
 
 export default defineComponent({
   url: "/importer",
@@ -209,6 +234,7 @@ export default defineComponent({
 import {
   IBladeEvent,
   IParentCallArgs,
+  moment,
   useI18n,
   useUser,
   VcContainer,
@@ -232,7 +258,6 @@ import {
   ImportDataPreview,
 } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
-import moment from "moment";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
@@ -273,6 +298,14 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+interface IImportBadges {
+  id: string;
+  icon: string;
+  color: string;
+  title?: string | number;
+  description?: string;
+}
 
 const { t } = useI18n();
 const { checkPermission } = usePermissions();
@@ -564,6 +597,15 @@ const profileDetails = computed(() => profile.value);
 const importStarted = computed(
   () => !!(importStatus.value && importStatus.value.jobId)
 );
+
+const estimatedRemaining = computed(() => {
+  return importStatus.value && importStatus.value.estimatedRemaining
+    ? moment
+        .duration(importStatus.value.estimatedRemaining)
+        .locale(locale)
+        .humanize(false, "precise")
+    : null;
+});
 
 const previewTotalNum = computed(() => preview.value?.totalCount);
 

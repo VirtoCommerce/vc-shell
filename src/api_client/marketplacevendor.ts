@@ -1924,12 +1924,15 @@ export class VcmpSellerImportClient extends AuthApiBase {
 
     /**
      * @param id (optional) 
+     * @param ids (optional) 
      * @return Success
      */
-    deleteProfile(id: string | null | undefined): Promise<void> {
+    deleteProfile(id: string | null | undefined, ids: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/import/profiles?";
         if (id !== undefined && id !== null)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
+        if (ids !== undefined && ids !== null)
+            ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: RequestInit = {
@@ -9619,6 +9622,8 @@ export class ImportProfile implements IImportProfile {
     settings?: ObjectSettingEntry[] | undefined;
     readonly typeName?: string | undefined;
     importFileUrl?: string | undefined;
+    importReportUrl?: string | undefined;
+    importReporterType?: string | undefined;
     previewObjectCount?: number;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -9648,6 +9653,8 @@ export class ImportProfile implements IImportProfile {
             }
             (<any>this).typeName = _data["typeName"];
             this.importFileUrl = _data["importFileUrl"];
+            this.importReportUrl = _data["importReportUrl"];
+            this.importReporterType = _data["importReporterType"];
             this.previewObjectCount = _data["previewObjectCount"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
@@ -9677,6 +9684,8 @@ export class ImportProfile implements IImportProfile {
         }
         data["typeName"] = this.typeName;
         data["importFileUrl"] = this.importFileUrl;
+        data["importReportUrl"] = this.importReportUrl;
+        data["importReporterType"] = this.importReporterType;
         data["previewObjectCount"] = this.previewObjectCount;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
@@ -9695,6 +9704,8 @@ export interface IImportProfile {
     settings?: ObjectSettingEntry[] | undefined;
     typeName?: string | undefined;
     importFileUrl?: string | undefined;
+    importReportUrl?: string | undefined;
+    importReporterType?: string | undefined;
     previewObjectCount?: number;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -9751,6 +9762,8 @@ export class ImportPushNotification implements IImportPushNotification {
     profileId?: string | undefined;
     profileName?: string | undefined;
     jobId?: string | undefined;
+    estimatingRemaining?: boolean;
+    estimatedRemaining?: string | undefined;
     finished?: Date | undefined;
     totalCount?: number;
     processedCount?: number;
@@ -9781,6 +9794,8 @@ export class ImportPushNotification implements IImportPushNotification {
             this.profileId = _data["profileId"];
             this.profileName = _data["profileName"];
             this.jobId = _data["jobId"];
+            this.estimatingRemaining = _data["estimatingRemaining"];
+            this.estimatedRemaining = _data["estimatedRemaining"];
             this.finished = _data["finished"] ? new Date(_data["finished"].toString()) : <any>undefined;
             this.totalCount = _data["totalCount"];
             this.processedCount = _data["processedCount"];
@@ -9815,6 +9830,8 @@ export class ImportPushNotification implements IImportPushNotification {
         data["profileId"] = this.profileId;
         data["profileName"] = this.profileName;
         data["jobId"] = this.jobId;
+        data["estimatingRemaining"] = this.estimatingRemaining;
+        data["estimatedRemaining"] = this.estimatedRemaining;
         data["finished"] = this.finished ? this.finished.toISOString() : <any>undefined;
         data["totalCount"] = this.totalCount;
         data["processedCount"] = this.processedCount;
@@ -9842,6 +9859,8 @@ export interface IImportPushNotification {
     profileId?: string | undefined;
     profileName?: string | undefined;
     jobId?: string | undefined;
+    estimatingRemaining?: boolean;
+    estimatedRemaining?: string | undefined;
     finished?: Date | undefined;
     totalCount?: number;
     processedCount?: number;
@@ -11361,12 +11380,12 @@ The value also includes customer payment interactions such as Website, Call, Sto
 
 export class IOperation implements IIOperation {
     operationType?: string | undefined;
-    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
+    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 
@@ -11382,12 +11401,12 @@ export class IOperation implements IIOperation {
     init(_data?: any) {
         if (_data) {
             this.operationType = _data["operationType"];
-            this.parentOperationId = _data["parentOperationId"];
             this.number = _data["number"];
             this.isApproved = _data["isApproved"];
             this.status = _data["status"];
             this.comment = _data["comment"];
             this.currency = _data["currency"];
+            this.parentOperationId = _data["parentOperationId"];
             if (Array.isArray(_data["childrenOperations"])) {
                 this.childrenOperations = [] as any;
                 for (let item of _data["childrenOperations"])
@@ -11407,12 +11426,12 @@ export class IOperation implements IIOperation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["operationType"] = this.operationType;
-        data["parentOperationId"] = this.parentOperationId;
         data["number"] = this.number;
         data["isApproved"] = this.isApproved;
         data["status"] = this.status;
         data["comment"] = this.comment;
         data["currency"] = this.currency;
+        data["parentOperationId"] = this.parentOperationId;
         if (Array.isArray(this.childrenOperations)) {
             data["childrenOperations"] = [];
             for (let item of this.childrenOperations)
@@ -11425,12 +11444,12 @@ export class IOperation implements IIOperation {
 
 export interface IIOperation {
     operationType?: string | undefined;
-    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
+    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 }
@@ -12080,6 +12099,7 @@ export class OrderLineItem implements IOrderLineItem {
     fulfillmentCenterName?: string | undefined;
     outerId?: string | undefined;
     feeDetails?: FeeDetail[] | undefined;
+    vendorId?: string | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -12148,6 +12168,7 @@ export class OrderLineItem implements IOrderLineItem {
                 for (let item of _data["feeDetails"])
                     this.feeDetails!.push(FeeDetail.fromJS(item));
             }
+            this.vendorId = _data["vendorId"];
             this.weightUnit = _data["weightUnit"];
             this.weight = _data["weight"];
             this.measureUnit = _data["measureUnit"];
@@ -12228,6 +12249,7 @@ export class OrderLineItem implements IOrderLineItem {
             for (let item of this.feeDetails)
                 data["feeDetails"].push(item.toJSON());
         }
+        data["vendorId"] = this.vendorId;
         data["weightUnit"] = this.weightUnit;
         data["weight"] = this.weight;
         data["measureUnit"] = this.measureUnit;
@@ -12303,6 +12325,7 @@ export interface IOrderLineItem {
     fulfillmentCenterName?: string | undefined;
     outerId?: string | undefined;
     feeDetails?: FeeDetail[] | undefined;
+    vendorId?: string | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;

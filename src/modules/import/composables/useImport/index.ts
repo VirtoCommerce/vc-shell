@@ -32,6 +32,8 @@ export interface IImportStatus {
   jobId?: string;
   inProgress: boolean;
   progress: number;
+  estimatingRemaining?: boolean;
+  estimatedRemaining?: string;
 }
 
 export interface IUploadedFile {
@@ -176,12 +178,15 @@ export default (): IUseImport => {
   }
 
   function updateStatus(notification: INotificationHistory) {
+    const pushNotifcation = notification as ImportPushNotification;
     importStatus.value = {
       notification: notification,
       jobId: notification.jobId,
       inProgress: !notification.finished,
       progress:
         (notification.processedCount / notification.totalCount) * 100 || 0,
+      estimatingRemaining: pushNotifcation.estimatingRemaining,
+      estimatedRemaining: pushNotifcation.estimatedRemaining,
     };
   }
 

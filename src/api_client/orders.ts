@@ -43,7 +43,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) criteria
      * @return Success
      */
-    searchCustomerOrder(body: CustomerOrderSearchCriteria | null | undefined): Promise<CustomerOrderSearchResult> {
+    searchCustomerOrder(body?: CustomerOrderSearchCriteria | null | undefined): Promise<CustomerOrderSearchResult> {
         let url_ = this.baseUrl + "/api/order/customerOrders/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -97,7 +97,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param respGroup (optional) 
      * @return Success
      */
-    getByNumber(number: string | null, respGroup: string | null | undefined): Promise<CustomerOrder> {
+    getByNumber(number: string | null, respGroup?: string | null | undefined): Promise<CustomerOrder> {
         let url_ = this.baseUrl + "/api/order/customerOrders/number/{number}?";
         if (number === undefined || number === null)
             throw new Error("The parameter 'number' must be defined.");
@@ -152,7 +152,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param respGroup (optional) 
      * @return Success
      */
-    getById(id: string | null, respGroup: string | null | undefined): Promise<CustomerOrder> {
+    getById(id: string | null, respGroup?: string | null | undefined): Promise<CustomerOrder> {
         let url_ = this.baseUrl + "/api/order/customerOrders/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -206,7 +206,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) Customer order
      * @return Success
      */
-    calculateTotals(body: CustomerOrder | null | undefined): Promise<CustomerOrder> {
+    calculateTotals(body?: CustomerOrder | null | undefined): Promise<CustomerOrder> {
         let url_ = this.baseUrl + "/api/order/customerOrders/recalculate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -261,7 +261,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) banking card information
      * @return Success
      */
-    processOrderPayments(orderId: string | null, paymentId: string | null, body: BankCardInfo | null | undefined): Promise<ProcessPaymentRequestResult> {
+    processOrderPayments(orderId: string | null, paymentId: string | null, body?: BankCardInfo | null | undefined): Promise<ProcessPaymentRequestResult> {
         let url_ = this.baseUrl + "/api/order/customerOrders/{orderId}/processPayment/{paymentId}";
         if (orderId === undefined || orderId === null)
             throw new Error("The parameter 'orderId' must be defined.");
@@ -372,7 +372,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) customer order
      * @return Success
      */
-    createOrder(body: CustomerOrder | null | undefined): Promise<CustomerOrder> {
+    createOrder(body?: CustomerOrder | null | undefined): Promise<CustomerOrder> {
         let url_ = this.baseUrl + "/api/order/customerOrders";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -425,7 +425,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) customer order
      * @return Success
      */
-    updateOrder(body: CustomerOrder | null | undefined): Promise<void> {
+    updateOrder(body?: CustomerOrder | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/order/customerOrders";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -474,7 +474,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param ids (optional) customer order ids for delete
      * @return Success
      */
-    deleteOrdersByIds(ids: string[] | null | undefined): Promise<void> {
+    deleteOrdersByIds(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/order/customerOrders?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -626,7 +626,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param end (optional) end interval date
      * @return Success
      */
-    getDashboardStatistics(start: Date | null | undefined, end: Date | null | undefined): Promise<DashboardStatisticsResult> {
+    getDashboardStatistics(start?: Date | null | undefined, end?: Date | null | undefined): Promise<DashboardStatisticsResult> {
         let url_ = this.baseUrl + "/api/order/dashboardStatistics?";
         if (start !== undefined && start !== null)
             url_ += "start=" + encodeURIComponent(start ? "" + start.toISOString() : "") + "&";
@@ -679,7 +679,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) payment callback parameters
      * @return Success
      */
-    postProcessPayment(body: PaymentCallbackParameters | null | undefined): Promise<PostProcessPaymentRequestResult> {
+    postProcessPayment(body?: PaymentCallbackParameters | null | undefined): Promise<PostProcessPaymentRequestResult> {
         let url_ = this.baseUrl + "/api/paymentcallback";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -842,7 +842,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchOrderChanges(body: CustomerOrderHistorySearchCriteria | null | undefined): Promise<ChangeLogSearchResult> {
+    searchOrderChanges(body?: CustomerOrderHistorySearchCriteria | null | undefined): Promise<ChangeLogSearchResult> {
         let url_ = this.baseUrl + "/api/order/customerOrders/searchChanges";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -937,7 +937,7 @@ export class OrderModuleClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchCustomerOrderIndexed(body: CustomerOrderIndexedSearchCriteria | null | undefined): Promise<CustomerOrderSearchResult> {
+    searchCustomerOrderIndexed(body?: CustomerOrderIndexedSearchCriteria | null | undefined): Promise<CustomerOrderSearchResult> {
         let url_ = this.baseUrl + "/api/order/customerOrders/indexed/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1002,7 +1002,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
      * @param body (optional) criteria
      * @return Success
      */
-    searchOrderPayments(body: PaymentSearchCriteria | null | undefined): Promise<PaymentSearchResult> {
+    searchOrderPayments(body?: PaymentSearchCriteria | null | undefined): Promise<PaymentSearchResult> {
         let url_ = this.baseUrl + "/api/order/payments/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1056,7 +1056,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
      * @param respGroup (optional) 
      * @return Success
      */
-    getById(id: string | null, respGroup: string | null | undefined): Promise<PaymentIn> {
+    getById(id: string | null, respGroup?: string | null | undefined): Promise<PaymentIn> {
         let url_ = this.baseUrl + "/api/order/payments/{id}?";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -1110,7 +1110,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
      * @param body (optional) payment
      * @return Success
      */
-    createPayment(body: PaymentIn | null | undefined): Promise<CustomerOrder> {
+    createPayment(body?: PaymentIn | null | undefined): Promise<CustomerOrder> {
         let url_ = this.baseUrl + "/api/order/payments";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1162,7 +1162,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updatePayment(body: PaymentIn | null | undefined): Promise<CustomerOrder> {
+    updatePayment(body?: PaymentIn | null | undefined): Promise<CustomerOrder> {
         let url_ = this.baseUrl + "/api/order/payments";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1215,7 +1215,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
      * @param ids (optional) order payment ids
      * @return Success
      */
-    deleteOrderPaymentsByIds(ids: string[] | null | undefined): Promise<void> {
+    deleteOrderPaymentsByIds(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/order/payments?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -1273,7 +1273,7 @@ export class OrderModuleShipmentsClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateShipment(body: OrderShipment | null | undefined): Promise<void> {
+    updateShipment(body?: OrderShipment | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/order/shipments";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3081,6 +3081,7 @@ export class OrderLineItem implements IOrderLineItem {
     fulfillmentCenterName?: string | undefined;
     outerId?: string | undefined;
     feeDetails?: FeeDetail[] | undefined;
+    vendorId?: string | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -3149,6 +3150,7 @@ export class OrderLineItem implements IOrderLineItem {
                 for (let item of _data["feeDetails"])
                     this.feeDetails!.push(FeeDetail.fromJS(item));
             }
+            this.vendorId = _data["vendorId"];
             this.weightUnit = _data["weightUnit"];
             this.weight = _data["weight"];
             this.measureUnit = _data["measureUnit"];
@@ -3229,6 +3231,7 @@ export class OrderLineItem implements IOrderLineItem {
             for (let item of this.feeDetails)
                 data["feeDetails"].push(item.toJSON());
         }
+        data["vendorId"] = this.vendorId;
         data["weightUnit"] = this.weightUnit;
         data["weight"] = this.weight;
         data["measureUnit"] = this.measureUnit;
@@ -3304,6 +3307,7 @@ export interface IOrderLineItem {
     fulfillmentCenterName?: string | undefined;
     outerId?: string | undefined;
     feeDetails?: FeeDetail[] | undefined;
+    vendorId?: string | undefined;
     weightUnit?: string | undefined;
     weight?: number | undefined;
     measureUnit?: string | undefined;
@@ -5538,7 +5542,7 @@ export interface FileResponse {
 }
 
 export class ApiException extends Error {
-    message: string;
+    override message: string;
     status: number;
     response: string;
     headers: { [key: string]: any; };

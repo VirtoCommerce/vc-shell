@@ -43,7 +43,7 @@ export class StoreModuleClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchStores(body: StoreSearchCriteria | null | undefined): Promise<StoreSearchResult> {
+    searchStores(body?: StoreSearchCriteria | null | undefined): Promise<StoreSearchResult> {
         let url_ = this.baseUrl + "/api/stores/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -148,7 +148,7 @@ export class StoreModuleClient extends AuthApiBase {
      * @param body (optional) Store
      * @return Success
      */
-    createStore(body: Store | null | undefined): Promise<Store> {
+    createStore(body?: Store | null | undefined): Promise<Store> {
         let url_ = this.baseUrl + "/api/stores";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -201,7 +201,7 @@ export class StoreModuleClient extends AuthApiBase {
      * @param body (optional) Store
      * @return Success
      */
-    updateStore(body: Store | null | undefined): Promise<void> {
+    updateStore(body?: Store | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/stores";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -250,7 +250,7 @@ export class StoreModuleClient extends AuthApiBase {
      * @param ids (optional) Ids of store that needed to delete
      * @return Success
      */
-    deleteStore(ids: string[] | null | undefined): Promise<void> {
+    deleteStore(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/stores?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -297,7 +297,7 @@ export class StoreModuleClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    sendDynamicNotificationAnStoreEmail(body: SendDynamicNotificationRequest | null | undefined): Promise<void> {
+    sendDynamicNotificationAnStoreEmail(body?: SendDynamicNotificationRequest | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/stores/send/dynamicnotification";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1593,7 +1593,7 @@ export enum StoreState2 {
 }
 
 export class ApiException extends Error {
-    message: string;
+    override message: string;
     status: number;
     response: string;
     headers: { [key: string]: any; };

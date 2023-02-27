@@ -190,7 +190,7 @@ export class VcmpFeeClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createFee(body: CreateFeeCommand | null | undefined): Promise<CommissionFee> {
+    createFee(body?: CreateFeeCommand | null | undefined): Promise<CommissionFee> {
         let url_ = this.baseUrl + "/api/vcmp/fees";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -242,7 +242,7 @@ export class VcmpFeeClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateFee(body: UpdateFeeCommand | null | undefined): Promise<CommissionFee> {
+    updateFee(body?: UpdateFeeCommand | null | undefined): Promise<CommissionFee> {
         let url_ = this.baseUrl + "/api/vcmp/fees";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -294,7 +294,7 @@ export class VcmpFeeClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteFee(ids: string[] | null | undefined): Promise<void> {
+    deleteFee(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/fees?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -340,7 +340,7 @@ export class VcmpFeeClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchFee(body: SearchCommissionFeesQuery | null | undefined): Promise<SearchCommissionFeesResult> {
+    searchFee(body?: SearchCommissionFeesQuery | null | undefined): Promise<SearchCommissionFeesResult> {
         let url_ = this.baseUrl + "/api/vcmp/fees/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -404,7 +404,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    massChangeProductsStatus(status: string | null, body: SearchProductsQuery | null | undefined): Promise<void> {
+    massChangeProductsStatus(status: string | null, body?: SearchProductsQuery | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products/status/{status}";
         if (status === undefined || status === null)
             throw new Error("The parameter 'status' must be defined.");
@@ -455,7 +455,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    changeProductStatus(body: ChangeRequestStatusCommand | null | undefined): Promise<void> {
+    changeProductStatus(body?: ChangeRequestStatusCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/product/status/change";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -503,7 +503,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchCategories(body: SearchCategoriesQuery | null | undefined): Promise<CategorySearchResult> {
+    searchCategories(body?: SearchCategoriesQuery | null | undefined): Promise<CategorySearchResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/categories/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -547,7 +547,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    validateProduct(body: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
+    validateProduct(body?: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products/validate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -598,7 +598,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createSellerCategories(body: CreateSellerCategoriesCommand | null | undefined): Promise<void> {
+    createSellerCategories(body?: CreateSellerCategoriesCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/categories/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -646,7 +646,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    deleteSellerCategories(body: DeleteSellerCategoriesCommand | null | undefined): Promise<void> {
+    deleteSellerCategories(body?: DeleteSellerCategoriesCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/categories/delete";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -694,7 +694,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    exportSellerCategories(body: RunCategoriesExportCommand | null | undefined): Promise<void> {
+    exportSellerCategories(body?: RunCategoriesExportCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/categories/export";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -734,7 +734,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchProducts(body: SearchProductsQuery | null | undefined): Promise<SearchProductsResult> {
+    searchProducts(body?: SearchProductsQuery | null | undefined): Promise<SearchProductsResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -778,7 +778,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchPropertyDictionaryItems(body: PropertyDictionaryItemSearchCriteria | null | undefined): Promise<PropertyDictionaryItemSearchResult> {
+    searchPropertyDictionaryItems(body?: PropertyDictionaryItemSearchCriteria | null | undefined): Promise<PropertyDictionaryItemSearchResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/dictionaryitems/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -864,7 +864,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createNewProduct(body: CreateNewProductCommand | null | undefined): Promise<SellerProduct> {
+    createNewProduct(body?: CreateNewProductCommand | null | undefined): Promise<SellerProduct> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -908,7 +908,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateProductDetails(body: UpdateProductDetailsCommand | null | undefined): Promise<SellerProduct> {
+    updateProductDetails(body?: UpdateProductDetailsCommand | null | undefined): Promise<SellerProduct> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -952,7 +952,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteProducts(ids: string[] | null | undefined): Promise<void> {
+    deleteProducts(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -990,7 +990,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createNewPublicationRequest(body: CreateNewPublicationRequestCommand | null | undefined): Promise<ProductPublicationRequest> {
+    createNewPublicationRequest(body?: CreateNewPublicationRequestCommand | null | undefined): Promise<ProductPublicationRequest> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products/requests/new";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1076,7 +1076,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchOffers(body: SearchOffersQuery | null | undefined): Promise<SearchOffersResult> {
+    searchOffers(body?: SearchOffersQuery | null | undefined): Promise<SearchOffersResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1204,7 +1204,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchOfferProducts(body: SearchProductsForNewOfferQuery | null | undefined): Promise<SearchOfferProductsResult> {
+    searchOfferProducts(body?: SearchProductsForNewOfferQuery | null | undefined): Promise<SearchOfferProductsResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers/products/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1248,7 +1248,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createNewOffer(body: CreateNewOfferCommand | null | undefined): Promise<Offer> {
+    createNewOffer(body?: CreateNewOfferCommand | null | undefined): Promise<Offer> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers/new";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1292,7 +1292,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    changeOfferState(body: ChangeOfferStateCommand | null | undefined): Promise<Offer> {
+    changeOfferState(body?: ChangeOfferStateCommand | null | undefined): Promise<Offer> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers/state";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1336,7 +1336,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateOffer(body: UpdateOfferCommand | null | undefined): Promise<Offer> {
+    updateOffer(body?: UpdateOfferCommand | null | undefined): Promise<Offer> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1380,7 +1380,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteOffers(ids: string[] | null | undefined): Promise<void> {
+    deleteOffers(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/offers?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -1418,7 +1418,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchFulfillmentCenters(body: SearchFulfillmentCentersQuery | null | undefined): Promise<SearchFulfillmentCentersResult> {
+    searchFulfillmentCenters(body?: SearchFulfillmentCentersQuery | null | undefined): Promise<SearchFulfillmentCentersResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1504,7 +1504,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateFulfillmentCenter(body: UpdateFulfillmentCenterCommand | null | undefined): Promise<FulfillmentCenter> {
+    updateFulfillmentCenter(body?: UpdateFulfillmentCenterCommand | null | undefined): Promise<FulfillmentCenter> {
         let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1548,7 +1548,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteFulfillmentCenter(ids: string[] | null | undefined): Promise<void> {
+    deleteFulfillmentCenter(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/seller/fulfillmentcenters?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -1598,7 +1598,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    runImport(body: RunImportCommand | null | undefined): Promise<ImportPushNotification> {
+    runImport(body?: RunImportCommand | null | undefined): Promise<ImportPushNotification> {
         let url_ = this.baseUrl + "/api/vcmp/import/run";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1642,7 +1642,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    cancelJob(body: ImportCancellationRequest | null | undefined): Promise<void> {
+    cancelJob(body?: ImportCancellationRequest | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/import/task/cancel";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1690,7 +1690,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    preview(body: PreviewDataQuery | null | undefined): Promise<ImportDataPreview> {
+    preview(body?: PreviewDataQuery | null | undefined): Promise<ImportDataPreview> {
         let url_ = this.baseUrl + "/api/vcmp/import/preview";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1838,7 +1838,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createImportProfile(body: CreateProfileCommand | null | undefined): Promise<ImportProfile> {
+    createImportProfile(body?: CreateProfileCommand | null | undefined): Promise<ImportProfile> {
         let url_ = this.baseUrl + "/api/vcmp/import/profiles";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1882,7 +1882,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateImportProfile(body: UpdateProfileCommand | null | undefined): Promise<ImportProfile> {
+    updateImportProfile(body?: UpdateProfileCommand | null | undefined): Promise<ImportProfile> {
         let url_ = this.baseUrl + "/api/vcmp/import/profiles";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -1927,7 +1927,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteProfile(id: string | null | undefined, ids: string[] | null | undefined): Promise<void> {
+    deleteProfile(id?: string | null | undefined, ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/import/profiles?";
         if (id !== undefined && id !== null)
             url_ += "id=" + encodeURIComponent("" + id) + "&";
@@ -1967,7 +1967,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchImportProfiles(body: SearchImportProfilesQuery | null | undefined): Promise<SearchImportProfilesResult> {
+    searchImportProfiles(body?: SearchImportProfilesQuery | null | undefined): Promise<SearchImportProfilesResult> {
         let url_ = this.baseUrl + "/api/vcmp/import/profiles/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2011,7 +2011,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchImportProfilesHistory(body: SearchImportProfilesHistoryQuery | null | undefined): Promise<SearchImportProfilesHistoryResult> {
+    searchImportProfilesHistory(body?: SearchImportProfilesHistoryQuery | null | undefined): Promise<SearchImportProfilesHistoryResult> {
         let url_ = this.baseUrl + "/api/vcmp/import/profiles/execution/history/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2144,7 +2144,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchOrders(body: SearchOrdersQuery | null | undefined): Promise<CustomerOrderSearchResult> {
+    searchOrders(body?: SearchOrdersQuery | null | undefined): Promise<CustomerOrderSearchResult> {
         let url_ = this.baseUrl + "/api/vcmp/orders/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2188,7 +2188,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateOrderStatus(body: ChangeOrderStatusCommand | null | undefined): Promise<void> {
+    updateOrderStatus(body?: ChangeOrderStatusCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/orders/status";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2228,7 +2228,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    fulfill(body: FulfillOrderCommand | null | undefined): Promise<void> {
+    fulfill(body?: FulfillOrderCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/orders/fulfill";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2319,7 +2319,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchCustomerReviews(body: SearchCustomerReviewsQuery | null | undefined): Promise<SearchCustomerReviewsResult> {
+    searchCustomerReviews(body?: SearchCustomerReviewsQuery | null | undefined): Promise<SearchCustomerReviewsResult> {
         let url_ = this.baseUrl + "/api/vcmp/seller/reviews/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2375,7 +2375,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param memberId (optional) 
      * @return Success
      */
-    sendInvitation(memberId: string | null | undefined): Promise<void> {
+    sendInvitation(memberId?: string | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/send/invitation?";
         if (memberId !== undefined && memberId !== null)
             url_ += "memberId=" + encodeURIComponent("" + memberId) + "&";
@@ -2413,7 +2413,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    sendUserInvitation(body: SendSellerUserInvitationCommand | null | undefined): Promise<void> {
+    sendUserInvitation(body?: SendSellerUserInvitationCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/users/invitation/send";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2453,7 +2453,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    validateSeller(body: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
+    validateSeller(body?: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/validate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2551,7 +2551,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteSellers(ids: string[] | null | undefined): Promise<void> {
+    deleteSellers(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -2639,7 +2639,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createSeller(body: CreateSellerCommand | null | undefined): Promise<void> {
+    createSeller(body?: CreateSellerCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2687,7 +2687,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateSeller(body: UpdateSellerCommand | null | undefined): Promise<void> {
+    updateSeller(body?: UpdateSellerCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/update";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2727,7 +2727,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchSellers(body: SearchSellersQuery | null | undefined): Promise<SearchSellersResult> {
+    searchSellers(body?: SearchSellersQuery | null | undefined): Promise<SearchSellersResult> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2779,7 +2779,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    createSellerUser(body: CreateSellerUserCommand | null | undefined): Promise<SellerUser> {
+    createSellerUser(body?: CreateSellerUserCommand | null | undefined): Promise<SellerUser> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/users/create";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2823,7 +2823,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    validateUser(body: ValidateSellerUserQuery | null | undefined): Promise<ValidationFailure[]> {
+    validateUser(body?: ValidateSellerUserQuery | null | undefined): Promise<ValidationFailure[]> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/users/validate";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2874,7 +2874,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    updateSellerUser(body: UpdateSellerUserCommand | null | undefined): Promise<SellerUser> {
+    updateSellerUser(body?: UpdateSellerUserCommand | null | undefined): Promise<SellerUser> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/users/update";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -2918,7 +2918,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param ids (optional) 
      * @return Success
      */
-    deleteSellerUsers(ids: string[] | null | undefined): Promise<void> {
+    deleteSellerUsers(ids?: string[] | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/users?";
         if (ids !== undefined && ids !== null)
             ids && ids.forEach(item => { url_ += "ids=" + encodeURIComponent("" + item) + "&"; });
@@ -2956,7 +2956,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    searchSellerUsers(body: SearchSellerUsersQuery | null | undefined): Promise<SearchSellerUsersResult> {
+    searchSellerUsers(body?: SearchSellerUsersQuery | null | undefined): Promise<SearchSellerUsersResult> {
         let url_ = this.baseUrl + "/api/vcmp/security/seller/users/search";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3000,7 +3000,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    forgotPassword(body: ForgotPasswordCommand | null | undefined): Promise<void> {
+    forgotPassword(body?: ForgotPasswordCommand | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/security/forgotpassword";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3052,7 +3052,7 @@ export class VcmpSyncClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    runSynchronization(body: SyncContext | null | undefined): Promise<SyncPushNotification> {
+    runSynchronization(body?: SyncContext | null | undefined): Promise<SyncPushNotification> {
         let url_ = this.baseUrl + "/api/vcmp/sync/run";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -3104,7 +3104,7 @@ export class VcmpSyncClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
-    cancelJob(body: SyncJobCancellationRequest | null | undefined): Promise<void> {
+    cancelJob(body?: SyncJobCancellationRequest | null | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/vcmp/sync/cancel";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -11380,12 +11380,12 @@ The value also includes customer payment interactions such as Website, Call, Sto
 
 export class IOperation implements IIOperation {
     operationType?: string | undefined;
+    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
-    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 
@@ -11401,12 +11401,12 @@ export class IOperation implements IIOperation {
     init(_data?: any) {
         if (_data) {
             this.operationType = _data["operationType"];
+            this.parentOperationId = _data["parentOperationId"];
             this.number = _data["number"];
             this.isApproved = _data["isApproved"];
             this.status = _data["status"];
             this.comment = _data["comment"];
             this.currency = _data["currency"];
-            this.parentOperationId = _data["parentOperationId"];
             if (Array.isArray(_data["childrenOperations"])) {
                 this.childrenOperations = [] as any;
                 for (let item of _data["childrenOperations"])
@@ -11426,12 +11426,12 @@ export class IOperation implements IIOperation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["operationType"] = this.operationType;
+        data["parentOperationId"] = this.parentOperationId;
         data["number"] = this.number;
         data["isApproved"] = this.isApproved;
         data["status"] = this.status;
         data["comment"] = this.comment;
         data["currency"] = this.currency;
-        data["parentOperationId"] = this.parentOperationId;
         if (Array.isArray(this.childrenOperations)) {
             data["childrenOperations"] = [];
             for (let item of this.childrenOperations)
@@ -11444,12 +11444,12 @@ export class IOperation implements IIOperation {
 
 export interface IIOperation {
     operationType?: string | undefined;
+    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
-    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 }
@@ -15993,7 +15993,7 @@ export enum CustomerAddressAddressType {
 }
 
 export class ApiException extends Error {
-    message: string;
+    override message: string;
     status: number;
     response: string;
     headers: { [key: string]: any; };

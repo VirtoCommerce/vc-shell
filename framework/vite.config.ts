@@ -12,9 +12,11 @@ export default getLibraryConfiguration(
           vue: vue(),
         },
       }),
-      // checker({
-      //   vueTsc: true,
-      // }),
+      checker({
+        vueTsc: {
+          tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
+        },
+      }),
     ],
     resolve: {
       alias: {

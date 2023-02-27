@@ -3,7 +3,7 @@ import { LibraryOptions } from "vite";
 
 export default {
   build: {
-    sourcemap: true,
+    // sourcemap: true,
     lib: {
       entry: process.cwd() + "/src/index.ts",
       formats: ["cjs"],

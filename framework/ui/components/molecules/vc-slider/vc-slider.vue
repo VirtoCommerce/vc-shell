@@ -13,12 +13,13 @@
       :slidesPerView="slidesPerView as any"
       :resizeObserver="true"
     >
-    <div v-for="(slide, i) in slides" :key="i">
-      <swiper-slide :swiper-ref="SwiperCore">
+      <swiper-slide
+        :swiper-ref="SwiperCore"
+        v-for="(slide, i) in slides"
+        :key="i"
+      >
         <slot :slide="slide"></slot>
       </swiper-slide>
-    </div>
-
     </swiper>
     <!-- Navigation buttons-->
     <div v-show="navigation">

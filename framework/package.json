@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.47",
+  "version": "1.0.48",
   "main": "./dist/framework.js",
   "module": "./dist/framework.js",
   "types": "./dist/index.d.ts",
@@ -51,8 +51,8 @@
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@rollup/plugin-commonjs": "^21.0.2",
-    "@vc-shell/api-client-generator": "^1.0.47",
-    "@vc-shell/config-generator": "^1.0.47",
+    "@vc-shell/api-client-generator": "^1.0.48",
+    "@vc-shell/config-generator": "^1.0.48",
     "@vue-macros/volar": "^0.8.1",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",

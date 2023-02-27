@@ -3859,6 +3859,41 @@
     "@typescript-eslint/types" "5.53.0"
     eslint-visitor-keys "^3.3.0"
 
+"@vc-shell/api-client-generator@^1.0.46":
+  version "1.0.46"
+  resolved "https://registry.yarnpkg.com/@vc-shell/api-client-generator/-/api-client-generator-1.0.46.tgz#e3c7004e417ffcdf9af9200f73ac043e13a3ccda"
+  integrity sha512-cXiAtwsrHjBoWii0I9d2sNNPw/FEy/FvT9w7etUIHcYLrdEYS4KEEBGmBkl+yRX4QTybW6qEv5biaAILQdqftw==
+  dependencies:
+    chalk "^2.4.2"
+    nswag "^13.16.1"
+    vite "^3.2.4"
+
+"@vc-shell/config-generator@^1.0.46":
+  version "1.0.46"
+  resolved "https://registry.yarnpkg.com/@vc-shell/config-generator/-/config-generator-1.0.46.tgz#89e6d9c62b287fbd40e0875aa2f3b80fbc3b74a4"
+  integrity sha512-mG8KqOxG9nimeif/kpFNOk/VgGWVl4CJtzazJCkbwZ6tE2I7YrpL1XTZwvgAdbHTV3WhHehbMS249vvdSyyOrw==
+
+"@vc-shell/framework@^1.0.46":
+  version "1.0.46"
+  resolved "https://registry.yarnpkg.com/@vc-shell/framework/-/framework-1.0.46.tgz#f6db9adb17e2436d4a4ca0575607ee6c22cfb58e"
+  integrity sha512-wSitqiwyumTqF/YzPC5nu1gdUQ5mdjmcZb75TWTh/Jdr5PFLRj9lEbVFLA++U5dVonBcbwcthzaq0Ai6zMhvqA==
+  dependencies:
+    "@popperjs/core" "^2.11.0"
+    "@vee-validate/rules" "^4.5.5"
+    "@vueuse/components" "^9.9.0"
+    "@vueuse/core" "^9.9.0"
+    "@vueuse/integrations" "^9.9.0"
+    client-oauth2 "^4.3.3"
+    moment "^2.29.1"
+    normalize.css "^8.0.1"
+    swiper "^6.8.4"
+    vue-currency-input "~2.5.1"
+    vue-i18n "^9.1.7"
+    vue-logger-plugin "^2.1.2"
+    vue3-ace-editor "^2.2.2"
+    vue3-touch-events "^4.1.0"
+    vuedraggable "^4.1.0"
+
 "@vee-validate/rules@^4.5.5":
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.7.4.tgz#fca175f11ae4ce33e46d513b12feca94164b871f"

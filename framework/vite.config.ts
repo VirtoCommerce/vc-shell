@@ -13,9 +13,7 @@ export default getLibraryConfiguration(
         },
       }),
       checker({
-        vueTsc: {
-          tsconfigPath: path.resolve(__dirname, "tsconfig.json"),
-        },
+        vueTsc: true,
       }),
     ],
     resolve: {

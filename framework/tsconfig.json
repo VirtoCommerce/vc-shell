@@ -44,6 +44,7 @@
   },
   "include": [
     "*.ts",
+    "typings/*.d.ts",
     "core/**/*.ts",
     "core/api/*.ts",
     "ui/components/**/*.vue",

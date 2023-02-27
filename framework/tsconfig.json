@@ -25,6 +25,7 @@
       "scripthost"
     ],
     "types": [
+      "stc/typings",
       "vite/client",
       "unplugin-vue-macros/macros-global",
       "unplugin-vue-define-options/macros-global"],

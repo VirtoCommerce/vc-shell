@@ -4,7 +4,7 @@ import {Ref} from "vue";
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
   const component: DefineComponent<{}, {}, any>
-  export default component
+  export default component;
 }
 
 declare module '*.mdx' {
@@ -22,4 +22,4 @@ declare module '@vue/runtime-core' {
     }
 }
 
-export {}
+export {};

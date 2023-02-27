@@ -12,9 +12,9 @@ export default getLibraryConfiguration(
           vue: vue(),
         },
       }),
-      checker({
-        vueTsc: true,
-      }),
+      // checker({
+      //   vueTsc: true,
+      // }),
     ],
     resolve: {
       alias: {

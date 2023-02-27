@@ -66,7 +66,7 @@
       property.multivalue &&
       (property.dictionary || property.isDictionary)
     "
-    v-slot="{ field, errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange }"
     :name="property.name"
     :modelValue="property.values"
     :rules="rules"

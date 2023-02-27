@@ -22,4 +22,8 @@ declare module '@vue/runtime-core' {
     }
 }
 
+declare module 'vee-validate'
+declare module 'vee-validate/*';
+declare module 'vue-router'
+
 export {};

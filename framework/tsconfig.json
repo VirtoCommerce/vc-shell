@@ -29,9 +29,6 @@
       "unplugin-vue-macros/macros-global",
       "unplugin-vue-define-options/macros-global"
     ],
-    "typeRoots": [
-      "./typings"
-    ],
     "paths": {
       "@/*": ["*"],
     }
@@ -46,6 +43,7 @@
     "*.ts",
     "core/**/*.ts",
     "core/api/*.ts",
+    "typings/*.ts",
     "ui/components/**/*.vue",
     "ui/components/**/*.ts",
     "ui/types/*.ts",

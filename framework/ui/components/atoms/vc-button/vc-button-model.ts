@@ -2,7 +2,7 @@ import { VNode } from "vue";
 
 export interface VcButtonProps {
   /**
-   * Badge active state
+   * Button icon from Fontawesome icons set
    * */
   icon?: string | undefined;
   /**

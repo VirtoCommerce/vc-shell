@@ -26,7 +26,7 @@
     >
       <!-- Override status column template -->
       <template v-slot:item_isLockedOut="itemData">
-        <div class= "tw-flex">
+        <div class="tw-flex">
           <VcStatus
             :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
             :outline="false"
@@ -41,11 +41,13 @@
 
       <!-- Override role column template -->
       <template v-slot:item_role="itemData">
-        {{ roleName(itemData.item.role) }}
+        {{ roleName(itemData.item.role as string) }}
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+        <div
+          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4"
+        >
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>{{
@@ -78,7 +80,7 @@
                 $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
               }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{ roleName(itemData.item.role) }}
+                {{ roleName(itemData.item.role as string) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
@@ -130,7 +132,6 @@ import {
 } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
-import { SellerUser } from "../../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;
@@ -141,7 +142,7 @@ export interface Props {
 
 export type IBladeOptions = IBladeEvent & {
   bladeOptions?: {
-    user?: SellerUser;
+    user?: { id?: string };
   };
 };
 
@@ -278,7 +279,7 @@ const onPaginationClick = async (page: number) => {
   });
 };
 
-const onItemClick = (item: SellerUser) => {
+const onItemClick = (item: { id?: string }) => {
   emit("open:blade", {
     component: shallowRef(TeamMemberDetails),
     param: item.id,

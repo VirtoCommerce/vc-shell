@@ -43,7 +43,7 @@
 
                 <!-- Override qty column template -->
                 <template v-slot:item_items="itemData">
-                  {{ calcQty(itemData.item.items) }}
+                  {{ calcQty(itemData.item.items as OrderLineItem[]) }}
                 </template>
               </VcTable>
             </VcCard>
@@ -118,7 +118,7 @@
                 <!-- Override status column template -->
                 <template v-slot:item_status="itemData">
                   <mp-product-status
-                    :status="itemData.item.status"
+                    :status="itemData.item.status as string"
                     class="tw-mb-1"
                   />
                 </template>
@@ -180,7 +180,7 @@
 
                     <!-- Override alwaysInStock column template -->
                     <template v-slot:item_alwaysInStock="itemData">
-                      <div class= "tw-flex tw-justify-center">
+                      <div class="tw-flex tw-justify-center">
                         <VcStatusIcon :status="!itemData"></VcStatusIcon>
                       </div>
                     </template>
@@ -212,7 +212,6 @@ import {
   ITableColumns,
 } from "@vc-shell/framework";
 import { computed, onMounted, ref, shallowRef } from "vue";
-import { useRouter } from "vue-router";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
@@ -228,7 +227,7 @@ const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();
 const { orders, loadOrders, loading: ordersLoading } = useOrders();
 const { offers, loadOffers, loading: offersLoading } = useOffers();
-const router = useRouter();
+
 const { openBlade } = useBladeNavigation();
 
 const productsColumns = ref<ITableColumns[]>([
@@ -498,7 +497,7 @@ function calcQty(items: OrderLineItem[]) {
     &__counter {
       @apply tw-grow tw-text-center tw-flex tw-flex-col tw-items-center
         tw-justify-center tw-border-l tw-border-solid tw-border-l-[#e5e5e5]
-        tw-p-5 tw-border-b tw-border-solid tw-border-b-[#e5e5e5] last:tw-border-b-0
+        tw-p-5 tw-border-b tw-border-b-[#e5e5e5] last:tw-border-b-0
         first:tw-border-t first:tw-border-solid first:tw-border-t-[#e5e5e5];
 
       &-value {

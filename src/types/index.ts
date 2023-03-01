@@ -22,7 +22,7 @@ interface INotificationActions {
   name: string | ComputedRef<string>;
   clickHandler(): void;
   outline: boolean;
-  variant: string;
+  variant: "primary" | "secondary" | "special" | "danger" | "widget" | "onlytext" | undefined;
   isVisible?: boolean | ComputedRef<boolean>;
   disabled?: boolean | ComputedRef<boolean>;
 }

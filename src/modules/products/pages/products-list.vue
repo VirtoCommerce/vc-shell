@@ -126,7 +126,10 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <mp-product-status :status="itemData.item.status" class="tw-mb-1" />
+        <mp-product-status
+          :status="itemData.item.status as string"
+          class="tw-mb-1"
+        />
       </template>
 
       <template v-slot:mobile-item="itemData">
@@ -138,7 +141,7 @@
             aspect="1x1"
             size="m"
             :bordered="true"
-            :src="itemData.item.imgSrc"
+            :src="itemData.item.imgSrc as string"
           />
           <div class="tw-grow tw-basis-0 tw-ml-3">
             <div class="tw-font-bold tw-text-lg">
@@ -149,7 +152,7 @@
             <div class="tw-mt-2 tw-mb-3">
               <mp-product-status
                 class="tw-mt-3"
-                :status="itemData.item.status"
+                :status="itemData.item.status as string"
               />
             </div>
 
@@ -158,7 +161,8 @@
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
                   {{
-                    itemData.item.productData && itemData.item.productData.gtin
+                    itemData.item.productData &&
+                    (itemData.item.productData as Record<"gtin", string>).gtin
                   }}
                 </div>
               </div>
@@ -178,7 +182,7 @@
                   }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     <VcStatusIcon
-                      :status="itemData.item && itemData.item.isPublished"
+                      :status="itemData.item && itemData.item.isPublished as boolean"
                     ></VcStatusIcon>
                   </div>
                 </div>
@@ -592,7 +596,7 @@ function selectFilterItem(e: boolean, status: string) {
 }
 
 function isItemSelected(status: string) {
-  return filter.status?.find((x) => x === status);
+  return filter.status?.some((x) => x === status);
 }
 
 defineExpose({

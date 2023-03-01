@@ -3,21 +3,22 @@ import { useLogger, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 import {
-    CatalogProduct,
-    Category,
-    CreateNewProductCommand,
-    CreateNewPublicationRequestCommand,
-    IProductDetails,
-    ISellerProduct,
-    ProductDetails,
-    PropertyDictionaryItem,
-    PropertyDictionaryItemSearchCriteria,
-    UpdateProductDetailsCommand,
-    SellerProduct,
-    ValidateProductQuery,
-    VcmpSellerCatalogClient,
-    ValidationFailure,
-    SearchCategoriesQuery, CategorySearchResult,
+  CatalogProduct,
+  Category,
+  CreateNewProductCommand,
+  CreateNewPublicationRequestCommand,
+  IProductDetails,
+  ISellerProduct,
+  ProductDetails,
+  PropertyDictionaryItem,
+  PropertyDictionaryItemSearchCriteria,
+  UpdateProductDetailsCommand,
+  SellerProduct,
+  ValidateProductQuery,
+  VcmpSellerCatalogClient,
+  ValidationFailure,
+  SearchCategoriesQuery,
+  CategorySearchResult,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {

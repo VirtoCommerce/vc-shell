@@ -162,7 +162,7 @@ const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 useForm({ validateOnMount: false });
-const { logo, background, title } = route.meta;
+const { logo, background, title } = route.meta as {logo: string; background: string; title: string};
 const { getUiCustomizationSettings, uiSettings } = useSettings();
 
 const signInResult = ref<SignInResults>({ succeeded: true });

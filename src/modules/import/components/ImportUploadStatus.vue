@@ -1,6 +1,6 @@
 <template>
-  <div class= "tw-flex tw-flex-col tw-grow tw-basis-0">
-    <div class= "tw-flex tw-flex-row tw-items-center">
+  <div class="tw-flex tw-flex-col tw-grow tw-basis-0">
+    <div class="tw-flex tw-flex-row tw-items-center">
       <div
         class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-success-img)]"
         v-if="isUploaded"
@@ -9,7 +9,7 @@
         class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-error-img)]"
         v-else
       ></div>
-      <div class= "tw-flex tw-flex-col tw-grow tw-basis-0 tw-ml-3">
+      <div class="tw-flex tw-flex-col tw-grow tw-basis-0 tw-ml-3">
         <div class="tw-font-normal tw-text-lg">
           {{ uploadedFile.name }}
         </div>
@@ -17,7 +17,7 @@
       </div>
     </div>
     <div
-      class= "tw-flex tw-flex-row tw-justify-between tw-mt-5"
+      class="tw-flex tw-flex-row tw-justify-between tw-mt-5"
       v-if="filteredActions && filteredActions.length"
     >
       <div>
@@ -28,7 +28,7 @@
           :variant="action.variant"
           :outline="action.outline"
           :small="true"
-          :disabled="action.disabled"
+          :disabled="action.disabled as boolean"
         >
           {{ action.name }}
         </VcButton>
@@ -41,7 +41,7 @@
           :variant="action.variant"
           :outline="action.outline"
           :small="true"
-          :disabled="action.disabled"
+          :disabled="action.disabled as boolean"
           class="tw-ml-3"
         >
           {{ action.name }}

@@ -9,7 +9,9 @@
     @close="$emit('close:blade')"
   >
     <template v-slot:actions>
-      <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
+      <mp-product-status
+        :status="(product as ISellerProduct).status"
+      ></mp-product-status>
     </template>
 
     <!-- Blade contents -->
@@ -51,7 +53,9 @@
                   :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                   v-model="productDetails.name"
                   :clearable="true"
-                  :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
+                  :placeholder="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
+                  "
                   :disabled="disabled"
                   maxlength="64"
                   required
@@ -73,14 +77,18 @@
                   :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                   :model-value="productDetails.categoryId"
                   searchable
-                  :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')"
+                  :placeholder="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
+                  "
                   :options="fetchCategories"
                   option-value="id"
-                  option-label="123"
-                  :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
+                  option-label="name"
+                  :tooltip="
+                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
+                  "
                   @update:modelValue="
                     (e) => {
-                      handleChange(e.id);
+                      handleChange(e.categoryId);
                       setCategory(e);
                     }
                   "
@@ -129,8 +137,12 @@
                       class="tw-mb-4"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                       v-model="productDetails.gtin"
-                      :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')"
-                      :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
+                      :placeholder="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
+                      "
+                      :tooltip="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
+                      "
                       :disabled="disabled"
                       maxlength="64"
                       required
@@ -149,14 +161,18 @@
                     <VcTextarea
                       v-bind="field"
                       class="tw-mb-4"
-                      :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
+                      :label="
+                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
+                      "
                       v-model="productDetails.description"
                       :placeholder="
-                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
+                        $t(
+                          'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
+                        )
                       "
                       :disabled="disabled"
                       name="description"
-                      is-required
+                      required
                       :error-message="errorMessage"
                       @update:modelValue="handleChange"
                     ></VcTextarea>
@@ -216,7 +232,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref, shallowRef, Ref } from "vue";
+import {
+  defineComponent,
+  computed,
+  onMounted,
+  ref,
+  unref,
+  shallowRef,
+  Ref,
+} from "vue";
 
 export default defineComponent({
   url: "/product",
@@ -316,9 +340,13 @@ const filteredProps = computed(() =>
   productDetails.value.properties.filter((x) => !filterTypes.includes(x.type))
 );
 
-const product = computed(() => (props.param ? productData.value : productDetails.value));
+const product = computed(() =>
+  props.param ? productData.value : productDetails.value
+);
 
-const disabled = computed(() => props.param && !productData.value?.canBeModified);
+const disabled = computed(
+  () => props.param && !productData.value?.canBeModified
+);
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -327,7 +355,8 @@ const validateGtin = [
   (value: string): string | boolean => {
     return required(value);
   },
-  async (value: string): Promise<string | boolean> => await validate("gtin", value),
+  async (value: string): Promise<string | boolean> =>
+    await validate("gtin", value),
 ];
 
 const validate = debounce(
@@ -392,7 +421,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           if (props.param) {
-            await updateProductDetails(productData.value.id, productDetails.value);
+            await updateProductDetails(
+              productData.value.id,
+              productDetails.value
+            );
           } else {
             await createProduct(productDetails.value);
           }
@@ -406,19 +438,26 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           alert(err.message);
         }
       } else {
-        alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
+        alert(
+          unref(
+            computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))
+          )
+        );
       }
     },
     disabled: computed(
       () =>
         !isValid.value ||
-        (props.param && !(productData.value?.canBeModified || modified.value)) ||
+        (props.param &&
+          !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
   },
   {
     id: "saveAndSendToApprove",
-    title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")),
+    title: computed(() =>
+      t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
+    ),
     icon: "fas fa-share-square",
     isVisible: computed(() => !!props.param),
     async clickHandler() {
@@ -441,7 +480,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       } else {
         alert(
           unref(
-            computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))
+            computed(() =>
+              t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
+            )
           )
         );
       }
@@ -482,7 +523,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       if (
         window.confirm(
-          unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT")))
+          unref(
+            computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT"))
+          )
         )
       ) {
         await deleteProduct(props.param);
@@ -501,8 +544,11 @@ const statusText = computed(() => {
     productData.value.publicationRequests &&
     productData.value.publicationRequests.length
   ) {
-    return orderBy(productData.value.publicationRequests, ["createdDate"], ["desc"])[0]
-      .comment;
+    return orderBy(
+      productData.value.publicationRequests,
+      ["createdDate"],
+      ["desc"]
+    )[0].comment;
   }
   return null;
 });
@@ -532,7 +578,8 @@ const onGalleryUpload = async (files: FileList) => {
         image.createdDate = new Date();
         if (productDetails.value.images && productDetails.value.images.length) {
           const lastImageSortOrder =
-            productDetails.value.images[productDetails.value.images.length - 1].sortOrder;
+            productDetails.value.images[productDetails.value.images.length - 1]
+              .sortOrder;
           image.sortOrder = lastImageSortOrder + 1;
         } else {
           image.sortOrder = 0;
@@ -583,7 +630,9 @@ const onGallerySort = (images: Image[]) => {
 const onGalleryImageRemove = (image: Image) => {
   if (
     window.confirm(
-      unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))
+      unref(
+        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))
+      )
     )
   ) {
     const imageIndex = productDetails.value.images.findIndex((img) => {
@@ -618,7 +667,11 @@ const setCategory = async (selectedCategory: Category) => {
   });
 };
 
-async function loadDictionaries(property: IProperty, keyword?: string, skip?: number) {
+async function loadDictionaries(
+  property: IProperty,
+  keyword?: string,
+  skip?: number
+) {
   return await searchDictionaryItems([property.id], keyword, skip);
 }
 
@@ -642,7 +695,9 @@ async function openOffers() {
 async function onBeforeClose() {
   if (modified.value) {
     return confirm(
-      unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION")))
+      unref(
+        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
+      )
     );
   }
 }
@@ -677,7 +732,11 @@ function setPropertyValue(
   ) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
-        const handledValue = handleDictionaryValue(property, item.valueId, dictionary);
+        const handledValue = handleDictionaryValue(
+          property,
+          item.valueId,
+          dictionary
+        );
         return new PropertyValue(handledValue);
       });
     } else {
@@ -687,7 +746,11 @@ function setPropertyValue(
     }
   } else {
     if (dictionary && dictionary.length) {
-      const handledValue = handleDictionaryValue(property, value as string, dictionary);
+      const handledValue = handleDictionaryValue(
+        property,
+        value as string,
+        dictionary
+      );
       property.values[0] = new PropertyValue({
         ...handledValue,
         isInherited: false,
@@ -712,7 +775,7 @@ function getPropertyValue(
   if (isDictionary) {
     return (
       property.values[0] &&
-      ((property.values[0].valueId as unknown) as Record<string, unknown>)
+      (property.values[0].valueId as unknown as Record<string, unknown>)
     );
   }
   return property.values[0] && property.values[0].value;

@@ -12,8 +12,8 @@
     :pages="pages"
     :bladesRefs="bladesRefs"
     @backlink:click="closeBlade($event)"
-    @onOpen="onOpen"
-    @onClose="closeBlade($event)"
+    @open="onOpen"
+    @close="closeBlade($event)"
     v-else
   >
     <!-- App Switcher -->
@@ -57,22 +57,21 @@
 <script lang="ts" setup>
 import { HubConnection } from "@microsoft/signalr";
 import {
-  PushNotification,
-  IBladeToolbar,
-  IMenuItems,
-  useAppSwitcher,
-  useFunctions,
-  useI18n,
-  useLogger,
-  useNotifications,
-  usePermissions,
-  useSettings,
-  useUser,
-  VcAppSwitcher,
-  useBladeNavigation,
-  VcBladeNavigation,
-  IOpenBlade,
-  IBladeElement,
+    PushNotification,
+    IBladeToolbar,
+    IMenuItems,
+    useAppSwitcher,
+    useFunctions,
+    useI18n,
+    useLogger,
+    useNotifications,
+    usePermissions,
+    useSettings,
+    useUser,
+    VcAppSwitcher,
+    useBladeNavigation,
+    IOpenBlade,
+    IBladeElement, ExtendedComponent,
 } from "@vc-shell/framework";
 import {
   computed,
@@ -140,7 +139,7 @@ const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const isChangePasswordActive = ref(false);
-const pages = inject("pages");
+const pages = inject<ExtendedComponent[]>("pages");
 const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");

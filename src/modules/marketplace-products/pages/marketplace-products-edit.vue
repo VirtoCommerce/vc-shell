@@ -172,7 +172,7 @@
                       "
                       :disabled="disabled"
                       name="description"
-                      is-required
+                      required
                       :error-message="errorMessage"
                       @update:modelValue="handleChange"
                     ></VcTextarea>

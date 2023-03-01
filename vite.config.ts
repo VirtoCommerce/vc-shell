@@ -150,7 +150,7 @@ export default {
   },
   build: {
     target: "esnext",
-    sourcemap: true,
+    sourcemap: false,
     emptyOutDir: true,
     commonjsOptions: {
       include: [/^@vc-shell(\/.+)?$/, /node_modules/],

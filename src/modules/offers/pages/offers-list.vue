@@ -41,14 +41,16 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
+        <div
+          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4"
+        >
           <div class="tw-w-full tw-flex tw-justify-evenly">
             <VcImage
               class="tw-shrink-0"
               aspect="1x1"
               size="s"
               :bordered="true"
-              :src="itemData.item.imgSrc"
+              :src="itemData.item.imgSrc as string"
             ></VcImage>
             <div class="tw-grow tw-basis-0 tw-ml-3">
               <div class="tw-font-bold tw-text-lg">
@@ -75,14 +77,15 @@
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{
-                  itemData.item.listPrice && itemData.item.listPrice.toFixed(2)
+                  itemData.item.listPrice &&
+                  (itemData.item.listPrice as number).toFixed(2)
                 }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{ handleSalePrice(itemData.item.salePrice) }}
+                {{ handleSalePrice(itemData.item.salePrice as number) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
@@ -155,7 +158,8 @@ export type IBladeOptions = IBladeEvent & {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:children"): void;
-  (event: "open:blade", blade: IBladeOptions);
+  (event: "open:blade", blade: IBladeOptions): void;
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -131,7 +131,7 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <VcStatus v-bind="statusStyle(itemData.item.status)">
+        <VcStatus v-bind="statusStyle(itemData.item.status as string)">
           {{ itemData.item.status }}
         </VcStatus>
       </template>
@@ -146,7 +146,7 @@
               <VcHint class="tw-mt-1">{{ itemData.item.customerName }}</VcHint>
             </div>
             <div>
-              <VcStatus v-bind="statusStyle(itemData.item.status)">
+              <VcStatus v-bind="statusStyle(itemData.item.status as string)">
                 {{ itemData.item.status }}
               </VcStatus>
             </div>
@@ -262,7 +262,11 @@ onMounted(async () => {
 });
 
 watch(sort, async (value) => {
-  await loadOrders({ ...filter.value, keyword: searchValue.value, sort: value });
+  await loadOrders({
+    ...filter.value,
+    keyword: searchValue.value,
+    sort: value,
+  });
 });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -352,7 +356,10 @@ const onItemClick = (item: { id: string }) => {
 };
 
 const statusStyle = (status: string) => {
-  const result = {
+  const result: {
+    outline: boolean;
+    variant: "success" | "danger" | "info";
+  } = {
     outline: true,
     variant: "info",
   };
@@ -481,7 +488,9 @@ function getFilterDate(key: string) {
 
 async function resetSearch() {
   searchValue.value = "";
-  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
+  Object.keys(filter.value).forEach(
+    (key: string) => (filter.value[key] = undefined)
+  );
   await loadOrders({
     ...filter.value,
     keyword: "",
@@ -502,7 +511,9 @@ async function applyFilters(closePanel: () => void) {
 }
 async function resetFilters(closePanel: () => void) {
   closePanel();
-  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
+  Object.keys(filter.value).forEach(
+    (key: string) => (filter.value[key] = undefined)
+  );
   await loadOrders({
     ...filter.value,
   });

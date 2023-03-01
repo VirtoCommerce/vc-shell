@@ -116,7 +116,7 @@
               <template v-slot:item_fee="itemData">
                 <div
                   class="tw-flex tw-flex-col"
-                  v-if="itemData.item.feeDetails.length"
+                  v-if="(itemData.item.feeDetails as Record<string, unknown>[]).length"
                 >
                   <div>{{ itemData.item.feeDetails[0].description }}</div>
                   <div>
@@ -145,7 +145,7 @@
                       aspect="1x1"
                       size="s"
                       :bordered="true"
-                      :src="itemData.item.imageUrl"
+                      :src="itemData.item.imageUrl as string"
                     ></VcImage>
                     <div class="tw-grow tw-basis-0 tw-ml-3">
                       <div class="tw-font-bold tw-text-lg">
@@ -172,7 +172,8 @@
                       }}</VcHint>
                       <div class="tw-truncate tw-mt-1">
                         {{
-                          itemData.item.price && itemData.item.price.toFixed(2)
+                          itemData.item.price &&
+                          (itemData.item.price as number).toFixed(2)
                         }}
                       </div>
                     </div>
@@ -183,13 +184,13 @@
                       <div class="tw-truncate tw-mt-1">
                         {{
                           itemData.item.extendedPrice &&
-                          itemData.item.extendedPrice.toFixed(2)
+                          (itemData.item.extendedPrice as number).toFixed(2)
                         }}
                       </div>
                     </div>
                     <div
                       class="tw-truncate tw-grow-[2] tw-basis-0"
-                      v-if="itemData.item.feeDetails.length"
+                      v-if="(itemData.item.feeDetails as Record<string, unknown>[]).length"
                     >
                       <VcHint>{{
                         $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION")
@@ -245,6 +246,7 @@ export interface Props {
 
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

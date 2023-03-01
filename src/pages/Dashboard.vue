@@ -60,7 +60,11 @@
           </VcCol>
 
           <!-- Rating & Reviews block -->
-          <VcCol size="4" class="tw-p-2">
+          <VcCol
+            size="4"
+            class="tw-p-2"
+            v-permissions="UserPermissions.ManageSellerReviews"
+          >
             <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
           </VcCol>
         </VcRow>
@@ -222,6 +226,7 @@ import {
   useProducts,
 } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
+import { UserPermissions } from "../types";
 
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();

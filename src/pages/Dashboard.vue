@@ -60,7 +60,11 @@
           </VcCol>
 
           <!-- Rating & Reviews block -->
-          <VcCol size="4" class="tw-p-2">
+          <VcCol
+            size="4"
+            class="tw-p-2"
+            v-permissions="UserPermissions.ManageSellerReviews"
+          >
             <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
           </VcCol>
         </VcRow>
@@ -180,7 +184,7 @@
 
                     <!-- Override alwaysInStock column template -->
                     <template v-slot:item_alwaysInStock="itemData">
-                      <div class= "tw-flex tw-justify-center">
+                      <div class="tw-flex tw-justify-center">
                         <VcStatusIcon :status="!itemData"></VcStatusIcon>
                       </div>
                     </template>
@@ -223,6 +227,7 @@ import {
   useProducts,
 } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
+import { UserPermissions } from "../types";
 
 const { t } = useI18n();
 const { products, loadProducts, loading: productsLoading } = useProducts();

@@ -150,9 +150,8 @@
             <tr
               v-for="(item, i) in items"
               :key="item.id"
-              class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9]"
+              class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
-                'tw-cursor-pointer hover:tw-bg-[#dfeef9]': onItemClick,
                 'tw-bg-[#f8f8f8]': i % 2 === 1,
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
                   item && item.id ? selectedItemId === item.id : false,
@@ -298,7 +297,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, PropType, ref, watch, onBeforeUpdate } from "vue";
+import { computed, nextTick, ref, watch, onBeforeUpdate } from "vue";
 import {
   VcIcon,
   VcLoading,
@@ -312,40 +311,10 @@ import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
-import { IActionBuilderResult, ITableColumns } from "@/core/types";
+import { IActionBuilderResult } from "@/core/types";
+import { VcTableProps } from "@/ui/components/organisms/vc-table/vc-table-model";
 
-export interface Props {
-  columns: ITableColumns[];
-  items: { id: string }[];
-  itemActionBuilder?: (item: { id: string }) => IActionBuilderResult[];
-  sort?: string;
-  multiselect?: boolean;
-  expanded?: boolean;
-  totalLabel?: string;
-  totalCount?: number;
-  pages?: number;
-  currentPage?: number;
-  searchPlaceholder?: string;
-  searchValue?: string;
-  loading?: boolean;
-  empty?: StatusImage;
-  notfound?: StatusImage;
-  header?: boolean;
-  footer?: boolean;
-  activeFilterCount?: number;
-  selectedItemId?: string;
-  scrolling?: boolean;
-  onItemClick?: () => void;
-}
-
-export interface StatusImage {
-  image?: string;
-  text: string;
-  action?: boolean;
-  clickHandler?: () => void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<VcTableProps>(), {
   columns: () => [],
   items: () => [],
   itemActionBuilder: undefined,
@@ -370,7 +339,6 @@ const props = withDefaults(defineProps<Props>(), {
   activeFilterCount: 0,
   selectedItemId: undefined,
   scrolling: false,
-  onItemClick: undefined,
 });
 
 interface ITableItemRef {
@@ -382,9 +350,9 @@ const emit = defineEmits([
   "paginationClick",
   "selectionChanged",
   "search:change",
-  "filter:apply",
-  "filter:reset",
   "headerClick",
+  "itemlick",
+  "scroll:ptr",
 ]);
 
 const checkboxes = ref<Record<string, boolean>>({});
@@ -464,7 +432,7 @@ function processCheckbox(id: string, state: boolean) {
   emit("selectionChanged", checkboxes.value);
 }
 
-function showActions(item: { id: string }, index: string) {
+function showActions(item: { id?: string }, index: string) {
   selectedRow.value = item.id;
 
   const toggleRef = actionToggleRefs.value.find((item) => item.id === index);
@@ -492,7 +460,7 @@ function showActions(item: { id: string }, index: string) {
   }
 }
 
-async function calculateActions(item: { id: string }) {
+async function calculateActions(item: { id?: string }) {
   if (typeof props.itemActionBuilder === "function") {
     itemActions.value = await props.itemActionBuilder(item);
   }

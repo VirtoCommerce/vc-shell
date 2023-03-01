@@ -125,9 +125,9 @@ import { VcIcon } from "@/ui/components";
 
 export interface Props {
   item: {
-    id: string;
+    id?: string;
   };
-  actionBuilder?: (item: { id: string }) => IActionBuilderResult[];
+  actionBuilder?: (item: { id?: string }) => IActionBuilderResult[];
   swipingItem?: string;
 }
 

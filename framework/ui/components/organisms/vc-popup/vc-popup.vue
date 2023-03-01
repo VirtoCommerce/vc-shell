@@ -23,22 +23,11 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  title: {
-    type: String,
-    default: undefined,
-  },
+import { VcPopupProps } from "@/ui/components/organisms/vc-popup/vc-popup-model";
 
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  variant: {
-    type: String,
-    default: "fullscreen",
-    enum: ["small", "medium", "fullscreen"],
-  },
+withDefaults(defineProps<VcPopupProps>(), {
+  closable: true,
+  variant: "fullscreen",
 });
 
 defineEmits(["close"]);

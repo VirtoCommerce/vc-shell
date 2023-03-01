@@ -27,21 +27,10 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  logo: {
-    type: String,
-    default: undefined,
-  },
+import { VcLoginFormProps } from "@/ui/components/organisms/vc-login-form/vc-login-form-model";
 
-  background: {
-    type: String,
-    default: undefined,
-  },
-
-  title: {
-    type: String,
-    default: "Login",
-  },
+withDefaults(defineProps<VcLoginFormProps>(), {
+  title: "Login",
 });
 
 console.debug("Init vc-login-form");

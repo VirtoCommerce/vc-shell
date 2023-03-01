@@ -4,7 +4,7 @@
     :class="[
       {
         'vc-editor_error': errorMessage,
-        'vc-editor_disabled': disabled
+        'vc-editor_disabled': disabled,
       },
     ]"
   >
@@ -16,11 +16,10 @@
 
     <!-- Editor field -->
     <v-ace-editor
-      class="tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-[var(--editor-border-radius)]"
+      class="tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-[var(--editor-border-radius)] tw-h-[200px]"
       v-model:value="content"
       lang="html"
       theme="chrome"
-      style="height: 200px"
       @input="onInput"
     />
     <slot v-if="errorMessage" name="error">
@@ -35,63 +34,27 @@
 import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
-import {ref, unref, watch} from "vue";
+import { ref, unref, watch } from "vue";
+import { VcEditorProps } from "@/ui/components/molecules/vc-editor/vc-editor-model";
 
-const props = defineProps({
-  placeholder: {
-    type: String,
-    default: "",
-  },
-
-  modelValue: {
-    type: [String, Number, Date],
-    default: null,
-  },
-
-  required: {
-    type: Boolean,
-    default: false,
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  label: {
-    type: String,
-    default: undefined,
-  },
-
-  tooltip: {
-    type: String,
-    default: undefined,
-  },
-
-  name: {
-    type: String,
-    default: "Field",
-  },
-
-  errorMessage: {
-    type: String,
-    default: undefined
-  }
+const props = withDefaults(defineProps<VcEditorProps>(), {
+  placeholder: "",
+  modelValue: null,
+  required: false,
+  name: "Field",
 });
 
 const emit = defineEmits(["update:modelValue"]);
 const content = ref();
-let initialValue = unref(props.modelValue);
 
 watch(
-    () => props.modelValue,
-    (value) => {
-        let init = unref(value);
-        emit("update:modelValue", init);
-    }
+  () => props.modelValue,
+  (value) => {
+    let init = unref(value);
+    emit("update:modelValue", init);
+  }
 );
 
-// Handle input event to propertly validate value and emit changes
 function onInput() {
   emit("update:modelValue", content.value);
 }

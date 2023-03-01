@@ -26,38 +26,14 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "@/ui/components";
+import { VcButtonProps } from "@/ui/components/atoms/vc-button/vc-button-model";
 
-const props = defineProps({
-  icon: {
-    type: String,
-    default: undefined,
-  },
-
-  variant: {
-    type: String,
-    enum: ["primary", "secondary", "special", "danger", "widget", "onlytext"],
-    default: "primary",
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  small: {
-    type: Boolean,
-    default: false,
-  },
-
-  outline: {
-    type: Boolean,
-    default: false,
-  },
-
-  selected: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<VcButtonProps>(), {
+  variant: "primary",
+  disabled: false,
+  small: false,
+  outline: false,
+  selected: false,
 });
 
 const emit = defineEmits(["click"]);

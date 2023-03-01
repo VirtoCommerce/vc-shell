@@ -12,22 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  variant: {
-    type: String,
-    default: "info",
-    enum: ["info", "warning", "danger", "success", "light-danger"],
-  },
+import { VcStatusProps } from "@/ui/components/atoms/vc-status/vc-status-model";
 
-  outline: {
-    type: Boolean,
-    default: true,
-  },
-
-  extend: {
-    type: Boolean,
-    default: false,
-  },
+withDefaults(defineProps<VcStatusProps>(), {
+  variant: "info",
+  outline: true,
+  extend: false,
 });
 </script>
 

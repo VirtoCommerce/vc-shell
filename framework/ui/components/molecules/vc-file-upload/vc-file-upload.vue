@@ -1,5 +1,5 @@
 <template>
-  <div class= "tw-flex tw-flex-col tw-flex-1">
+  <div class="tw-flex tw-flex-col tw-flex-1">
     <div
       class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[#c8dbea] tw-rounded-[6px] tw-p-2 tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
       :class="`vc-file-upload_${variant}`"
@@ -18,7 +18,9 @@
         size="xxl"
       ></VcIcon>
 
-      <div class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
+      <div
+        class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4"
+      >
         <span>Drag and drop file here or</span>&nbsp;
         <br />
         <VcLink @click="toggleUploader">browse your files</VcLink>
@@ -45,37 +47,14 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
+import { VcFileUploadProps } from "@/ui/components/molecules/vc-file-upload/vc-file-upload-model";
 
-const props = defineProps({
-  variant: {
-    type: String,
-    enum: ["gallery", "file-upload"],
-    default: "gallery",
-  },
-
-  loading: {
-    type: Boolean,
-    default: false,
-  },
-
-  accept: {
-    type: String,
-    default: ".jpg, .png, .jpeg",
-  },
-
-  multiple: {
-    type: Boolean,
-    default: false,
-  },
-
-  rules: {
-    type: [String, Object],
-  },
-
-  name: {
-    type: String,
-    default: "Gallery",
-  },
+const props = withDefaults(defineProps<VcFileUploadProps>(), {
+  variant: "gallery",
+  loading: false,
+  accept: ".jpg, .png, .jpeg",
+  multiple: false,
+  name: "Gallery",
 });
 
 const emit = defineEmits(["upload"]);

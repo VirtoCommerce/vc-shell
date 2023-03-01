@@ -73,35 +73,10 @@ export default defineComponent({
 import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { IBladeToolbar, IMenuItems } from "@/core/types";
-import {
-  IBladeElement,
-  ExtendedComponent,
-  IMenuClickEvent,
-  IOpenBlade,
-} from "@/shared";
+import { IMenuClickEvent } from "@/shared";
+import { VcAppProps } from "@/ui/components/organisms/vc-app/vc-app-model";
 
-export interface Props {
-  pages: ExtendedComponent[];
-  menuItems: IMenuItems[];
-  mobileMenuItems: IMenuItems[];
-  toolbarItems: IBladeToolbar[];
-  isReady: boolean;
-  isAuthorized: boolean;
-  logo: string;
-  version: string;
-  theme?: "light" | "dark";
-  bladesRefs: IBladeElement[];
-  title?: string;
-}
-
-export interface Emits {
-  (event: "onOpen", args: IOpenBlade): void;
-  (event: "onClose", index: number): void;
-  (event: "backlink:click", index: number): void;
-}
-
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<VcAppProps>(), {
   pages: () => [],
   menuItems: () => [],
   mobileMenuItems: () => [],
@@ -114,7 +89,7 @@ withDefaults(defineProps<Props>(), {
   bladesRefs: () => [],
 });
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits(["open", "close", "backlink:click"]);
 
 console.debug("vc-app: Init vc-app");
 
@@ -127,7 +102,7 @@ const onMenuItemClick = function ({ item, navigationCb }: IMenuClickEvent) {
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);
   } else {
-    emit("onOpen", { parentBlade: item.component, id: 0, navigationCb });
+    emit("open", { parentBlade: item.component, id: 0, navigationCb });
   }
 };
 
@@ -143,7 +118,7 @@ const openDashboard = async () => {
   console.debug(`openDashboard() called.`);
 
   // Close all opened pages with onBeforeClose callback
-  await emit("onClose", 0);
+  await emit("close", 0);
 
   router.push("/");
 };

@@ -54,9 +54,10 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, computed } from "vue";
-import {ExtendedComponent, IBladeToolbar, IMenuItems} from "@/core/types";
+import {IBladeToolbar, IMenuItems} from "@/core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { NavigationFailure, useRoute } from "vue-router";
+import {ExtendedComponent} from "@/shared";
 
 export interface Props {
   sticky?: boolean;

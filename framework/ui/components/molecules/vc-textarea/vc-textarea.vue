@@ -7,7 +7,7 @@
     }"
   >
     <!-- Textarea label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="isRequired">
+    <VcLabel v-if="label" class="tw-mb-2" :required="required">
       <span>{{ label }}</span>
       <template v-if="tooltip" v-slot:tooltip>
         <span v-html="tooltip"></span>
@@ -37,52 +37,14 @@
 <script lang="ts" setup>
 import { watch } from "vue";
 import { VcLabel } from "@/ui/components";
+import { VcTextareaProps } from "@/ui/components/molecules/vc-textarea/vc-textarea-model";
 
-const props = defineProps({
-  placeholder: {
-    type: String,
-    default: "",
-  },
-
-  modelValue: {
-    type: String,
-    default: undefined,
-  },
-
-  isRequired: {
-    type: Boolean,
-    default: false,
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  label: {
-    type: String,
-    default: undefined,
-  },
-
-  tooltip: {
-    type: String,
-    default: undefined,
-  },
-
-  name: {
-    type: String,
-    default: "Field",
-  },
-
-  maxchars: {
-    type: String,
-    default: "1024",
-  },
-
-  errorMessage: {
-    type: String,
-    default: undefined,
-  },
+const props = withDefaults(defineProps<VcTextareaProps>(), {
+  placeholder: "",
+  required: false,
+  disabled: false,
+  name: "Field",
+  maxchars: "1024",
 });
 
 const emit = defineEmits(["update:modelValue"]);

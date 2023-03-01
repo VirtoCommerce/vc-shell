@@ -17,26 +17,12 @@
 
 <script lang="ts" setup>
 import { VcLabel, VcRow, VcCol } from "@/ui/components";
+import { VcInfoRowProps } from "@/ui/components/atoms/vc-info-row/vc-info-row-model";
 
-defineProps({
-  label: {
-    type: String,
-    default: "",
-  },
-
-  value: {
-    type: String,
-    default: "",
-  },
-
-  tooltip: {
-    type: String,
-    default: "",
-  },
-
-  type: {
-    type: String,
-    default: "default",
-  },
+withDefaults(defineProps<VcInfoRowProps>(), {
+  label: "",
+  value: "",
+  tooltip: "",
+  type: "default",
 });
 </script>

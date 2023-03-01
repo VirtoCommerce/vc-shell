@@ -18,17 +18,10 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "@/ui/components";
+import { VcNotificationProps } from "@/ui/components/molecules/vc-notification/vc-notification-model";
 
-const props = defineProps({
-  variant: {
-    type: String,
-    default: "info",
-  },
-
-  timeout: {
-    type: Number,
-    default: 0,
-  },
+const props = withDefaults(defineProps<VcNotificationProps>(), {
+  timeout: 0,
 });
 
 const emit = defineEmits(["dismiss", "expired"]);

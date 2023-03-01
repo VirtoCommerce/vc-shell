@@ -45,7 +45,7 @@
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
-                is-required
+                required
               ></VcTextarea>
             </VcForm>
           </div>

@@ -13,16 +13,11 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  active: {
-    type: Boolean,
-    default: false,
-  },
+import { VcLinkProps } from "@/ui/components/atoms/vc-link/vc-link-model";
 
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<VcLinkProps>(), {
+  active: false,
+  disabled: false,
 });
 const emit = defineEmits(["click"]);
 function onClick(): void {

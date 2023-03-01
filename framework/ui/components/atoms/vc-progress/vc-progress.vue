@@ -6,24 +6,18 @@
     ]"
   >
     <div
-      class="vc-progress__value tw-bg-[color:var(--progressbar-foreground-color)] tw-transition  tw-duration-200 tw-h-full"
+      class="vc-progress__value tw-bg-[color:var(--progressbar-foreground-color)] tw-transition tw-duration-200 tw-h-full"
       :style="`width: ${value}%`"
     ></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  value: {
-    type: Number,
-    default: 0,
-  },
+import { VcProgressProps } from "@/ui/components/atoms/vc-progress/vc-progress-model";
 
-  variant: {
-    type: String,
-    default: "default",
-    enum: ["default", "striped"],
-  },
+withDefaults(defineProps<VcProgressProps>(), {
+  value: 0,
+  variant: "default",
 });
 </script>
 

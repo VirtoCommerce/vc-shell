@@ -13,13 +13,7 @@ export interface VcBadgeProps {
    * Is badge clickable?
    * */
   clickable?: boolean | undefined;
-}
-
-export interface VcBadgeEmits {
-  /**
-   * Emitted when component is clicked
-   * */
-  (event: "click"): void;
+  onClick?: (event: "click") => void;
 }
 
 export interface VcBadgeSlots {

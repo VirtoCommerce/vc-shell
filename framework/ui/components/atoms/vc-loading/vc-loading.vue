@@ -24,10 +24,9 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  active: {
-    type: Boolean,
-    default: false,
-  },
+import { VcLoadingProps } from "@/ui/components/atoms/vc-loading/vc-loading-model";
+
+withDefaults(defineProps<VcLoadingProps>(), {
+  active: false,
 });
 </script>

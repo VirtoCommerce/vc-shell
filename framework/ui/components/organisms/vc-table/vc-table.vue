@@ -298,7 +298,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, PropType, ref, watch, onBeforeUpdate } from "vue";
+import { computed, nextTick, ref, watch, onBeforeUpdate } from "vue";
 import {
   VcIcon,
   VcLoading,
@@ -385,6 +385,7 @@ const emit = defineEmits([
   "filter:apply",
   "filter:reset",
   "headerClick",
+  "scroll:ptr",
 ]);
 
 const checkboxes = ref<Record<string, boolean>>({});

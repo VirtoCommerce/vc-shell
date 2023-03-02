@@ -25,7 +25,7 @@
     @open:blade="$emit('onOpen', { blade: $event, id: blade.idx })"
     @close:blade="$emit('onClose', i)"
     @close:children="$emit('onClose', i + 1)"
-    @parent:call="$emit('onParentCall', { id: i, cb: $event })"
+    @parent:call="$emit('onParentCall', { id: i, args: $event })"
     :ref="setBladesRef"
   ></component>
 </template>

@@ -23,31 +23,13 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  modelValue: {
-    type: Boolean,
-    default: false,
-  },
+import { VcSwitchProps } from "./vc-switch-model";
 
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  tooltip: {
-    type: String,
-    default: "",
-  },
-
-  required: {
-    type: Boolean,
-    default: false,
-  },
-
-  label: {
-    type: String,
-    default: undefined,
-  },
+withDefaults(defineProps<VcSwitchProps>(), {
+  modelValue: false,
+  disabled: false,
+  tooltip: "",
+  required: false,
 });
 
 const emit = defineEmits(["update:modelValue"]);

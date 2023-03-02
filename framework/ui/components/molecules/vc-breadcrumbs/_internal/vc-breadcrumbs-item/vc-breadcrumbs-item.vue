@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@/ui/components";
+import { VcIcon } from "./../../../../../components";
 
 const props = defineProps({
   current: {

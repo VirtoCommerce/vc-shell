@@ -48,33 +48,15 @@ import SwiperCore, { Navigation } from "swiper";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import "swiper/components/navigation/navigation.min.css";
+import { VcSliderProps } from "./vc-slider-model";
 SwiperCore.use([Navigation]);
 
-defineProps({
-  slides: {
-    type: Array,
-    default: () => [],
-  },
-
-  navigation: {
-    type: Boolean,
-    default: false,
-  },
-
-  overflow: {
-    type: Boolean,
-    default: false,
-  },
-
-  slidesPerView: {
-    type: String,
-    default: "auto",
-  },
-
-  spaceBetweenSlides: {
-    type: Number,
-    default: 10,
-  },
+withDefaults(defineProps<VcSliderProps>(), {
+  slides: () => [],
+  navigation: false,
+  overflow: false,
+  slidesPerView: "auto",
+  spaceBetweenSlides: 10,
 });
 
 const buttonsList = computed(() => ({

@@ -10,7 +10,7 @@
   >
     <VcImage aspect="1x1" :src="image.url" background="contain"></VcImage>
     <div class="vc-gallery-item__overlay">
-      <div class= "tw-flex">
+      <div class="tw-flex">
         <VcIcon
           v-if="!readonly && !disableDrag"
           class="vc-gallery-item__move"
@@ -21,7 +21,7 @@
           {{ image.name }}
         </div>
       </div>
-      <div class= "tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around">
+      <div class="tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around">
         <div
           class="vc-gallery-item__button"
           @click="$emit('preview', image)"
@@ -62,28 +62,38 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { clickOutside as vClickOutside } from "@/core/directives";
+import { clickOutside as vClickOutside } from "./../../../../../../core/directives";
+import { IImage } from "./../../../../../../core/types";
 
-defineProps({
-  image: {
-    type: Object,
-    default: () => ({}),
-  },
+export interface Props {
+  image?: IImage | undefined;
+  readonly?: boolean | undefined;
+  actions?:
+    | {
+        name?: string | undefined;
+        preview: boolean | undefined;
+        edit: boolean | undefined;
+        remove: boolean | undefined;
+      }
+    | undefined;
+  disableDrag?: boolean | undefined;
+}
 
-  readonly: {
-    type: Boolean,
-    default: false,
-  },
-
-  actions: {
-    type: Object,
-    default: () => ({}),
-  },
-
-  disableDrag: {
-    type: Boolean,
-    default: false,
-  },
+withDefaults(defineProps<Props>(), {
+  image: () => ({
+    sortOrder: undefined,
+    title: undefined,
+    name: undefined,
+    url: undefined,
+  }),
+  readonly: false,
+  actions: () => ({
+    name: undefined,
+    preview: undefined,
+    edit: undefined,
+    remove: undefined,
+  }),
+  disableDrag: false,
 });
 
 defineEmits(["preview", "edit", "remove"]);

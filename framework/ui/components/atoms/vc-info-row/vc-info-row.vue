@@ -16,27 +16,13 @@
 </template>
 
 <script lang="ts" setup>
-import { VcLabel, VcRow, VcCol } from "@/ui/components";
+import { VcLabel, VcRow, VcCol } from "./../../../components";
+import { VcInfoRowProps } from "./vc-info-row-model";
 
-defineProps({
-  label: {
-    type: String,
-    default: "",
-  },
-
-  value: {
-    type: String,
-    default: "",
-  },
-
-  tooltip: {
-    type: String,
-    default: "",
-  },
-
-  type: {
-    type: String,
-    default: "default",
-  },
+withDefaults(defineProps<VcInfoRowProps>(), {
+  label: "",
+  value: "",
+  tooltip: "",
+  type: "default",
 });
 </script>

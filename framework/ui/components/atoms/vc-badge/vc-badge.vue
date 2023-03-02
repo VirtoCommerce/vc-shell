@@ -17,16 +17,15 @@
 
 <script lang="ts" setup>
 import {
-  VcBadgeEmits,
   VcBadgeProps,
-} from "@/ui/components/atoms/vc-badge/vc-badge-model";
+} from "./vc-badge-model";
 
 const props = withDefaults(defineProps<VcBadgeProps>(), {
   active: false,
   disabled: false,
   clickable: true,
 });
-const emit = defineEmits<VcBadgeEmits>();
+const emit = defineEmits(["click"]);
 
 function onClick(): void {
   if (props.clickable && !props.disabled) {

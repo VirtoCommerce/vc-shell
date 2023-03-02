@@ -232,8 +232,8 @@
 
 <script lang="ts" setup>
 import { nextTick, ref, computed, watch, toRefs } from "vue";
-import { VcIcon, VcLabel, VcContainer } from "@/ui/components";
-import { clickOutside as vClickOutside } from "@/core/directives";
+import { VcIcon, VcLabel, VcContainer } from "./../../../components";
+import { clickOutside as vClickOutside } from "./../../../../core/directives";
 import { createPopper, Instance, State } from "@popperjs/core";
 import { VcSelectProps, OptionProp } from "./vc-select-model";
 import { intersection, isEqual } from "lodash-es";

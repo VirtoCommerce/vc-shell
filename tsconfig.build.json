@@ -15,6 +15,6 @@
     "target": "esnext",
     "jsx": "preserve",
     "isolatedModules": true,
-    "useDefineForClassFields": true
-  }
+    "useDefineForClassFields": true,
+  },
 }

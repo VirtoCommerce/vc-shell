@@ -45,7 +45,7 @@
                 :placeholder="
                   $t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
                 "
-                is-required
+                required
               ></VcTextarea>
             </VcForm>
           </div>
@@ -57,8 +57,8 @@
 
 <script lang="ts" setup>
 import { computed, reactive, unref } from "vue";
-import { useI18n } from "@/core/composables";
-import { IParentCallArgs } from "@/shared";
+import { useI18n } from "./../../../../core/composables";
+import { IParentCallArgs } from "./../../../../shared";
 import {
   VcBlade,
   VcContainer,
@@ -66,7 +66,7 @@ import {
   VcImage,
   VcInput,
   VcTextarea,
-} from "@/ui/components";
+} from "./../../../../ui/components";
 
 export interface Props {
   expanded?: boolean;

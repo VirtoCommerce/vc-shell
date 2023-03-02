@@ -29,9 +29,6 @@
       "unplugin-vue-macros/macros-global",
       "unplugin-vue-define-options/macros-global"
     ],
-    "paths": {
-      "@/*": ["*"],
-    }
   },
   "vueCompilerOptions": {
     "target": 3,

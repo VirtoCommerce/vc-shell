@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "private": true,
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn bootstrap && yarn run build",
@@ -9,7 +9,7 @@
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",
-    "lint": "eslint --fix framework/**/*.{js,ts,vue} apps/**/*.{js,ts,vue}",
+    "lint": "eslint --fix framework/**/*.{ts,vue} apps/**/*.{ts,vue}",
     "lint-staged": "lint-staged",
     "init-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "version": "cross-env-shell \"lerna version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .\"",

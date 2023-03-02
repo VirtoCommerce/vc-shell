@@ -16,11 +16,6 @@ export default getLibraryConfiguration(
         vueTsc: true,
       }),
     ],
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./"),
-      },
-    },
     build: {
       target: "esnext",
       lib: {

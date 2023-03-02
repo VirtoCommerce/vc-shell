@@ -24,10 +24,9 @@
 </template>
 
 <script lang="ts" setup>
-defineProps({
-  active: {
-    type: Boolean,
-    default: false,
-  },
+import { VcLoadingProps } from "./vc-loading-model";
+
+withDefaults(defineProps<VcLoadingProps>(), {
+  active: false,
 });
 </script>

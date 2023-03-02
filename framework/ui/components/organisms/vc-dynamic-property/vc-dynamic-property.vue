@@ -1,10 +1,10 @@
 <template>
   <Field
     v-if="
-      (property.dictionary || property.isDictionary) && !property.multivalue
+      (property['dictionary'] || property['isDictionary']) && !property['multivalue']
     "
     v-slot="{ errorMessage, handleChange, errors }"
-    :name="property.displayName || property.name"
+    :name="property['displayName'] || property['name']"
     :modelValue="getter(property, true)"
     :rules="rules"
   >
@@ -12,7 +12,7 @@
       v-bind="$attrs"
       :error="!!errors.length"
       :error-message="errorMessage"
-      :label="handleDisplayName || property.displayName"
+      :label="handleDisplayName || property['displayName']"
       :modelValue="getter(property, true)"
       @update:modelValue="
         (e) => {
@@ -20,8 +20,8 @@
           setter(property, e, items);
         }
       "
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
+      :required="property['required'] || property['isRequired']"
+      :placeholder="handleDisplayName || property['defaultValue']"
       :options="items"
       option-value="id"
       :option-label="handleDisplayProperty"
@@ -34,27 +34,27 @@
 
   <Field
     v-else-if="
-      property.valueType === 'ShortText' &&
-      property.multivalue &&
-      !(property.dictionary || property.isDictionary)
+      property['valueType'] === 'ShortText' &&
+      property['multivalue'] &&
+      !(property['dictionary'] || property['isDictionary'])
     "
     v-slot="{ errorMessage, handleChange }"
-    :name="property.name"
-    :modelValue="property.values"
+    :name="property['name']"
+    :modelValue="property['values']"
     :rules="rules"
   >
     <VcMultivalue
       v-bind="$attrs"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="property.values"
+      :modelValue="property['values']"
       @update:modelValue="
         (e) => {
           handleChange(e);
           setter(property, e);
         }
       "
-      :required="property.required || property.isRequired"
+      :required="property['required'] || property['isRequired']"
       placeholder="Add value"
       :disabled="disabled"
     ></VcMultivalue>
@@ -62,29 +62,29 @@
 
   <Field
     v-else-if="
-      property.valueType === 'ShortText' &&
-      property.multivalue &&
-      (property.dictionary || property.isDictionary)
+      property['valueType'] === 'ShortText' &&
+      property['multivalue'] &&
+      (property['dictionary'] || property['isDictionary'])
     "
     v-slot="{ errorMessage, handleChange }"
-    :name="property.name"
-    :modelValue="property.values"
+    :name="property['name']"
+    :modelValue="property['values']"
     :rules="rules"
   >
     <VcMultivalue
       v-bind="$attrs"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="property.values"
+      :modelValue="property['values']"
       @update:modelValue="
         (e) => {
           handleChange(e);
           setter(property, e, items);
         }
       "
-      :required="property.required || property.isRequired"
+      :required="property['required'] || property['isRequired']"
       placeholder="Add value"
-      :multivalue="property.multivalue"
+      :multivalue="property['multivalue']"
       :disabled="disabled"
       :options="items"
       keyProperty="id"
@@ -95,9 +95,9 @@
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'ShortText'"
+    v-else-if="property['valueType'] === 'ShortText'"
     v-slot="{ errorMessage, handleChange, errors }"
-    :name="property.displayName || property.name"
+    :name="property['displayName'] || property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -105,8 +105,8 @@
       v-bind="$attrs"
       :error="!!errors.length"
       :error-message="errorMessage"
-      :label="handleDisplayName || property.displayName"
-      :modelValue="getter(property)"
+      :label="handleDisplayName || property['displayName']"
+      :modelValue="(getter(property) as string | number | Date)"
       @update:modelValue="
         (e) => {
           handleChange(e);
@@ -114,23 +114,23 @@
         }
       "
       clearable
-      :required="property.required || property.isRequired"
+      :required="property['required'] || property['isRequired']"
       :placeholder="handleDisplayName || 'Add value'"
       :disabled="disabled"
     ></VcInput>
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'Number' && property.multivalue"
+    v-else-if="property['valueType'] === 'Number' && property['multivalue']"
     v-slot="{ errorMessage, handleChange, errors }"
-    :name="property.name"
-    :modelValue="property.values"
+    :name="property['name']"
+    :modelValue="property['values']"
     :rules="rules"
   >
     <VcSelect
       v-bind="$attrs"
       :label="handleDisplayName"
-      :modelValue="property.values"
+      :modelValue="property['values']"
       @update:modelValue="
         (e) => {
           handleChange(e);
@@ -138,7 +138,7 @@
         }
       "
       type="number"
-      :required="property.required || property.isRequired"
+      :required="property['required'] || property['isRequired']"
       placeholder="Add value"
       :disabled="disabled"
       :error="!!errors.length"
@@ -151,9 +151,9 @@
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'Number'"
+    v-else-if="property['valueType'] === 'Number'"
     v-slot="{ errorMessage, handleChange, errors }"
-    :name="property.name"
+    :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -162,7 +162,7 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="getter(property)"
+      :modelValue="(getter(property) as string | number | Date)"
       @update:modelValue="
         (e) => {
           handleChange(e);
@@ -171,16 +171,16 @@
       "
       clearable
       type="number"
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
+      :required="property['required'] || property['isRequired']"
+      :placeholder="handleDisplayName || property['defaultValue']"
       :disabled="disabled"
     ></VcInput>
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'Integer'"
+    v-else-if="property['valueType'] === 'Integer'"
     v-slot="{ errorMessage, handleChange, errors }"
-    :name="property.name"
+    :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -189,7 +189,7 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="getter(property)"
+      :modelValue="(getter(property) as string | number | Date)"
       @update:modelValue="
         (e) => {
           handleChange(e);
@@ -199,16 +199,16 @@
       clearable
       type="number"
       step="1"
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
+      :required="property['required'] || property['isRequired']"
+      :placeholder="handleDisplayName || property['defaultValue']"
       :disabled="disabled"
     ></VcInput>
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'DateTime'"
+    v-else-if="property['valueType'] === 'DateTime'"
     v-slot="{ errorMessage, handleChange, errors }"
-    :name="property.name"
+    :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -217,7 +217,7 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="getter(property)"
+      :modelValue="(getter(property) as string | number | Date)"
       @update:modelValue="
         (e) => {
           handleChange(e);
@@ -225,16 +225,16 @@
         }
       "
       type="datetime-local"
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
+      :required="property['required'] || property['isRequired']"
+      :placeholder="handleDisplayName || property['defaultValue']"
       :disabled="disabled"
     ></VcInput>
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'LongText'"
+    v-else-if="property['valueType'] === 'LongText'"
     v-slot="{ errorMessage, handleChange }"
-    :name="property.name"
+    :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -242,65 +242,65 @@
       v-bind="$attrs"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="getter(property)"
+      :modelValue="getter(property) as string"
       @update:modelValue="
         (e) => {
           handleChange(e);
           setter(property, e);
         }
       "
-      :isRequired="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
+      :required="property['required'] || property['isRequired']"
+      :placeholder="handleDisplayName || property['defaultValue']"
       :disabled="disabled"
     ></VcTextarea>
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'Boolean'"
+    v-else-if="property['valueType'] === 'Boolean'"
     v-slot="{ errorMessage, handleChange }"
-    :name="property.displayName || property.name"
+    :name="property['displayName'] || property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
     <VcCheckbox
       v-bind="$attrs"
       :error-message="errorMessage"
-      :modelValue="getter(property)"
+      :modelValue="getter(property) as boolean"
       @update:modelValue="
         (e) => {
           handleChange(e);
           setter(property, e);
         }
       "
-      :required="property.required || property.isRequired"
+      :required="property['required'] || property['isRequired']"
       :disabled="disabled"
-      :name="property.displayName || property.name"
+      :name="property['displayName'] || property['name']"
     >
-      {{ handleDisplayName || property.displayName }}
+      {{ handleDisplayName || property['displayName'] }}
     </VcCheckbox>
   </Field>
 
   <Field
-    v-else-if="property.valueType === 'Html'"
+    v-else-if="property['valueType'] === 'Html'"
     v-slot="{ errorMessage, handleChange }"
-    :name="property.displayName || property.name"
+    :name="property['displayName'] || property['name']"
     :modelValue="getter(property)"
     :rules="rules"
   >
     <VcEditor
       v-bind="$attrs"
-      :label="handleDisplayName || property.displayName"
-      :modelValue="getter(property)"
+      :label="handleDisplayName || property['displayName']"
+      :modelValue="(getter(property) as string | number | Date)"
       @update:modelValue="
         (e) => {
           handleChange(e);
           setter(property, e);
         }
       "
-      :required="property.required || property.isRequired"
+      :required="property['required'] || property['isRequired']"
       :placeholder="handleDisplayName || 'Add value'"
       :disabled="disabled"
-      :name="property.displayName || property.name"
+      :name="property['displayName'] || property['name']"
       :error-message="errorMessage"
     >
     </VcEditor>
@@ -309,8 +309,9 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { useI18n } from "@/core/composables";
+import { useI18n } from "./../../../../core/composables";
 import { Field } from "vee-validate";
+import { VcDynamicPropertyProps } from "./vc-dynamic-property-model";
 
 type IValidationRules = {
   required?: boolean;
@@ -324,38 +325,9 @@ interface IDisplayName {
   name?: string;
 }
 
-const props = defineProps({
-  property: {
-    type: Object,
-    default: () => ({}),
-  },
-
-  dictionaries: {
-    type: Object,
-    default: () => ({}),
-  },
-
-  getter: {
-    type: Function,
-  },
-
-  optionsGetter: {
-    type: Function,
-  },
-
-  setter: {
-    type: Function,
-  },
-
-  culture: {
-    type: String,
-    default: "en-US",
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<VcDynamicPropertyProps>(), {
+  culture: "en-US",
+  disabled: false,
 });
 
 const { locale, te, t } = useI18n();

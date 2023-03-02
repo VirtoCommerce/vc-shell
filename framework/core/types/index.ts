@@ -1,5 +1,5 @@
 import { Component, ComponentPublicInstance, ComputedRef } from "vue";
-import { IBladeElement, ExtendedComponent } from "@/shared";
+import { IBladeElement, ExtendedComponent } from "./../../shared";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -49,14 +49,14 @@ export interface IActionBuilderResult {
   title: string;
   variant: string;
   leftActions?: boolean;
-  clickHandler(item?: { id: string; }): void;
+  clickHandler(item?: { id?: string; }): void;
 }
 
 export interface IImage {
   sortOrder?: number;
-  title: string;
-  name: string;
-  url: string;
+  title?: string;
+  name?: string;
+  url?: string;
 }
 
 export interface AuthData {

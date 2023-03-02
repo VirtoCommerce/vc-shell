@@ -92,23 +92,13 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@/ui/components";
+import { VcIcon } from "./../../../components";
+import { VcPaginationProps } from "./vc-pagination-model";
 
-defineProps({
-  expanded: {
-    type: Boolean,
-    default: false,
-  },
-
-  pages: {
-    type: Number,
-    default: 1,
-  },
-
-  currentPage: {
-    type: Number,
-    default: 1,
-  },
+withDefaults(defineProps<VcPaginationProps>(), {
+  expanded: false,
+  pages: 1,
+  currentPage: 1,
 });
 
 defineEmits(["itemClick"]);
@@ -119,7 +109,7 @@ defineEmits(["itemClick"]);
   --pagination-item-width: 30px;
   --pagination-item-height: 30px;
   --pagination-item-color: #000000;
-  --pagination-item-color-hover:tw- #000000;
+  --pagination-item-color-hover: #000000;
   --pagination-item-color-current: #ffffff;
   --pagination-item-color-disabled: #9c9c9c;
   --pagination-item-background-color: #ffffff;

@@ -36,23 +36,16 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed, nextTick } from "vue";
-const props = defineProps({
-  shadow: {
-    type: Boolean,
-    default: false,
-  },
+import { VcContainerProps } from "./vc-container-model";
 
-  noPadding: {
-    type: Boolean,
-    default: false,
-  },
-
-  usePtr: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<VcContainerProps>(), {
+  shadow: false,
+  noPadding: false,
+  usePtr: false,
 });
-const emit = defineEmits(["scroll:ptr", "scroll:infinite"]);
+
+const emit = defineEmits(["scroll:ptr"]);
+
 const component = ref<HTMLElement>();
 const scroll = ref(false);
 const startY = ref(0);
@@ -160,8 +153,8 @@ function ease(distance: number) {
 }
 
 defineExpose({
-    scrollTop,
-    component,
+  scrollTop,
+  component,
 });
 </script>
 

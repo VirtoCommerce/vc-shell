@@ -49,9 +49,9 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { VcIcon } from "@/ui/components";
+import { VcIcon } from "./../../../../../../../components";
 import { createPopper, Instance } from "@popperjs/core";
-import { IBladeDropdownItem, IBladeToolbar } from "@/core/types";
+import { IBladeDropdownItem, IBladeToolbar } from "./../../../../../../../../core/types";
 
 export interface Props extends IBladeToolbar {
   isExpanded: boolean;

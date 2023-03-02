@@ -1,4 +1,4 @@
-import { PushNotification, PushNotificationClient } from "@/core/api";
+import { PushNotification, PushNotificationClient } from "./../../../core/api";
 import useUser from "../useUser";
 import { computed, ComputedRef, readonly, ref } from "vue";
 import useLogger from "../useLogger";

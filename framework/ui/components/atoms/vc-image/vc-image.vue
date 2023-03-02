@@ -5,7 +5,8 @@
         `vc-image_${aspect}`,
         {
           'tw-rounded-full tw-pb-[var(--image-padding-bottom-1x1)]': rounded,
-          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
+          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]':
+            bordered,
           'tw-cursor-pointer': clickable,
         },
         'tw-relative',
@@ -25,42 +26,15 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import { VcImageProps } from "./vc-image-model";
 
-const props = defineProps({
-  aspect: {
-    type: String,
-    default: "1x1",
-  },
-
-  rounded: {
-    type: Boolean,
-    default: false,
-  },
-
-  bordered: {
-    type: Boolean,
-    default: false,
-  },
-
-  clickable: {
-    type: Boolean,
-    default: false,
-  },
-
-  src: {
-    type: String,
-    default: undefined,
-  },
-
-  size: {
-    type: String,
-    default: "auto",
-  },
-
-  background: {
-    type: String,
-    default: "cover",
-  },
+const props = withDefaults(defineProps<VcImageProps>(), {
+  aspect: "1x1",
+  rounded: false,
+  bordered: false,
+  clickable: false,
+  size: "auto",
+  background: "cover",
 });
 
 const emit = defineEmits(["click"]);

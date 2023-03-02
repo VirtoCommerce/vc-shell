@@ -1,7 +1,9 @@
 <template>
-  <div class= "tw-flex tw-flex-nowrap tw-font-bold">
+  <div class="tw-flex tw-flex-nowrap tw-font-bold">
     <span><slot></slot></span>
-    <span v-if="required" class="tw-text-[color:var(--label-required-color)] tw-ml-1"
+    <span
+      v-if="required"
+      class="tw-text-[color:var(--label-required-color)] tw-ml-1"
       >*</span
     >
     <span v-if="$slots['tooltip']" class="tw-grow tw-basis-0 tw-ml-1">
@@ -23,19 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@/ui/components";
+import { VcIcon } from "./../../../components";
 import { ref } from "vue";
+import { VcLabelProps } from "./vc-label-model";
 
-defineProps({
-  required: {
-    type: Boolean,
-    default: false,
-  },
-
-  tooltipIcon: {
-    type: String,
-    default: "fas fa-info-circle",
-  },
+withDefaults(defineProps<VcLabelProps>(), {
+  required: false,
+  tooltipIcon: "fas fa-info-circle",
 });
 
 const tooltipVisible = ref(false);

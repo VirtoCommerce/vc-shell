@@ -2,7 +2,10 @@
   <div
     class="tw-shrink-0 tw-h-[var(--blade-header-height)] tw-bg-[color:var(--blade-header-background-color)] tw-flex tw-items-center tw-py-0 tw-px-4 tw-border-solid tw-border-b tw-border-b-[color:#eaedf3]"
   >
-    <div v-if="icon" class="tw-text-[color:var(--blade-header-icon-color)] tw-mr-3">
+    <div
+      v-if="icon"
+      class="tw-text-[color:var(--blade-header-icon-color)] tw-mr-3"
+    >
       <VcIcon :icon="icon" size="xxl"></VcIcon>
     </div>
 
@@ -28,7 +31,7 @@
       <slot name="actions"></slot>
     </div>
 
-    <div v-if="!$isMobile.value" class= "tw-flex tw-items-center">
+    <div v-if="!$isMobile.value" class="tw-flex tw-items-center">
       <template v-if="expandable">
         <div
           v-if="expanded"
@@ -53,38 +56,20 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@/ui/components";
+import { VcIcon } from "./../../../../../../ui/components";
 
-const props = defineProps({
-  expandable: {
-    type: Boolean,
-    default: false,
-  },
-
-  expanded: {
-    type: Boolean,
-    default: false,
-  },
-
-  closable: {
-    type: Boolean,
-    default: false,
-  },
-
-  title: {
-    type: String,
-    default: undefined,
-  },
-
-  subtitle: {
-    type: String,
-    default: undefined,
-  },
-
-  icon: {
-    type: String,
-    default: undefined,
-  },
+export interface Props {
+  expandable?: boolean | undefined;
+  expanded?: boolean | undefined;
+  closable?: boolean | undefined;
+  title?: string | undefined;
+  subtitle?: string | undefined;
+  icon?: string | undefined;
+}
+const props = withDefaults(defineProps<Props>(), {
+  expandable: false,
+  expanded: false,
+  closable: false,
 });
 
 const emit = defineEmits(["close", "expand", "collapse"]);

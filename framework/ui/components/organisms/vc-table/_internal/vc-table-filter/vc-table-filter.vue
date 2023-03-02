@@ -59,7 +59,7 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import { createPopper, Instance } from "@popperjs/core";
-import { VcIcon } from "@/ui/components";
+import { VcIcon } from "./../../../../../components";
 
 export interface Props {
   title: string;

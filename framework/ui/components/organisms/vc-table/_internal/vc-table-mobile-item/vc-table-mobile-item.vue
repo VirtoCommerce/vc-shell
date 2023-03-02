@@ -120,14 +120,14 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { IActionBuilderResult } from "@/core/types";
-import { VcIcon } from "@/ui/components";
+import { IActionBuilderResult } from "./../../../../../../core/types";
+import { VcIcon } from "./../../../../../components";
 
 export interface Props {
   item: {
-    id: string;
+    id?: string;
   };
-  actionBuilder?: (item: { id: string }) => IActionBuilderResult[];
+  actionBuilder?: (item: { id?: string }) => IActionBuilderResult[];
   swipingItem?: string;
 }
 

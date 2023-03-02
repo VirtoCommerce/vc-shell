@@ -1,14 +1,14 @@
 import { computed, ref, unref, watch, Ref } from "vue";
 import { isEqual } from "lodash-es";
 import { useRouter, useRoute, NavigationFailure } from "vue-router";
-import { usePermissions } from "@/core/composables";
+import { usePermissions } from "./../../../../core/composables";
 import {
   ExtendedComponent,
   IBladeContainer,
   IBladeElement,
   IBladeEvent,
   IParentCallArgs,
-} from "@/shared";
+} from "./../../../../shared";
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;

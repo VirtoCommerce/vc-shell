@@ -648,7 +648,7 @@ function clearErrorMessage() {
   errorMessage.value = "";
 }
 
-async function uploadCsv(files: File) {
+async function uploadCsv(files: FileList) {
   try {
     fileLoading.value = true;
     const formData = new FormData();

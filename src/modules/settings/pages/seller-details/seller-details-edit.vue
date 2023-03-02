@@ -589,7 +589,7 @@ onMounted(async () => {
 
 const logoHandler = computed(() =>
   sellerDetails.value.logo
-    ? [{ url: sellerDetails.value.logo, name: user.value.userName }]
+    ? [{ url: sellerDetails.value.logo, name: user.value.userName, title: "" }]
     : []
 );
 

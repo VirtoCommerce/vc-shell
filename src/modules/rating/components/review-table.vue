@@ -32,12 +32,14 @@
 
     <!-- Override rating column template -->
     <template v-slot:item_rating="itemData">
-      <VcRating :rating="itemData.item.rating"></VcRating>
+      <VcRating :rating="itemData.item.rating as number"></VcRating>
     </template>
 
     <!-- Override status column template -->
     <template v-slot:item_status="itemData">
-      <Status :review-status="itemData.item.reviewStatus"></Status>
+      <Status
+        :review-status="itemData.item.reviewStatus as CustomerReviewReviewStatus"
+      ></Status>
     </template>
   </VcTable>
 </template>
@@ -45,7 +47,10 @@
 <script lang="ts" setup>
 import { useI18n, VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
-import { CustomerReview } from "../../../api_client/marketplacevendor";
+import {
+  CustomerReview,
+  CustomerReviewReviewStatus,
+} from "../../../api_client/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 // eslint-disable-next-line import/no-unresolved

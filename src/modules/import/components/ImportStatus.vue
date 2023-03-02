@@ -12,11 +12,11 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { ImportRunHistory } from "../../../api_client/marketplacevendor";
+import { IImportRunHistory } from "../../../api_client/marketplacevendor";
 import { camelToSnake } from "@vc-shell/framework";
 
 export interface Props {
-  item: ImportRunHistory;
+  item: IImportRunHistory;
 }
 
 const props = withDefaults(defineProps<Props>(), {

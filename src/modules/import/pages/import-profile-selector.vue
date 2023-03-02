@@ -11,7 +11,7 @@
       <!-- Import profile widgets-->
       <div class="tw-p-3" v-if="importProfiles && importProfiles.length">
         <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
-          <template v-slot="{ slide }">
+          <template v-slot:default="{ slide }">
             <div class="tw-relative">
               <VcStatus
                 variant="success"

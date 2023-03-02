@@ -12,8 +12,8 @@
     :pages="pages"
     :bladesRefs="bladesRefs"
     @backlink:click="closeBlade($event)"
-    @open="onOpen"
-    @close="closeBlade($event)"
+    @onOpen="onOpen"
+    @onClose="closeBlade($event)"
     v-else
   >
     <!-- App Switcher -->
@@ -25,7 +25,7 @@
       <VcBladeNavigation
         @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
-        @onParentCall="(e) => onParentCall(e.id, e.cb)"
+        @onParentCall="(e) => onParentCall(e.id, e.args)"
         :blades="blades"
         :parentBladeOptions="parentBladeOptions"
         :parentBladeParam="parentBladeParam"

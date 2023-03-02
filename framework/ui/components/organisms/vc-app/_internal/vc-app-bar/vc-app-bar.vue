@@ -82,9 +82,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@/ui/components";
-import { IBladeToolbar } from "@/core/types";
-import { IBladeElement } from "@/shared";
+import { VcIcon } from "./../../../../../components";
+import { IBladeToolbar } from "./../../../../../../core/types";
+import { IBladeElement } from "./../../../../../../shared";
 
 export interface Props {
   logo: string;

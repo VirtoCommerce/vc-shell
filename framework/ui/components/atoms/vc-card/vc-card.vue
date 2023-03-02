@@ -29,37 +29,12 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-const props = defineProps({
-  header: {
-    type: String,
-    default: undefined,
-  },
-
-  icon: {
-    type: String,
-    default: undefined,
-  },
-
-  isCollapsable: {
-    type: Boolean,
-    default: false,
-  },
-
-  isCollapsed: {
-    type: Boolean,
-    default: false,
-  },
-
-  fill: {
-    type: Boolean,
-    default: false,
-  },
-
-  variant: {
-    type: String,
-    enum: ["default", "success", "danger"],
-    default: "default",
-  },
+import { VcCardProps } from "./vc-card-model";
+const props = withDefaults(defineProps<VcCardProps>(), {
+  isCollapsable: false,
+  isCollapsed: false,
+  fill: false,
+  variant: "default",
 });
 const emit = defineEmits(["header:click", "state:collapsed"]);
 const isCollapsedInternal = ref(props.isCollapsed);

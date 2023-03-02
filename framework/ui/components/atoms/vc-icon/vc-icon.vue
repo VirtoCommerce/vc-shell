@@ -3,12 +3,9 @@
 </template>
 
 <script lang="ts" setup>
-export interface Props {
-  icon?: string;
-  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl";
-}
+import { VcIconProps } from "./vc-icon-model";
 
-withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<VcIconProps>(), {
   icon: "fas fa-square-full",
   size: "m",
 });

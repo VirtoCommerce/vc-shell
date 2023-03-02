@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "dev": "vite",
     "development": "vite build --watch -m development",
     "watch": "vite build --watch",
     "type-check": "vue-tsc --noEmit"
@@ -59,7 +60,7 @@
     "@vue-macros/volar": "^0.8.1",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",
-    "unplugin-vue-macros": "^1.1.1",
+    "unplugin-vue-macros": "^1.9.1",
     "url-pattern": "^1.0.3"
   },
   "publishConfig": {

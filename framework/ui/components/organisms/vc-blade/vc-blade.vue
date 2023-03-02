@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -41,41 +41,16 @@ export default defineComponent({
 <script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { IBladeToolbar } from "@/core/types";
+import { VcBladeProps } from "./vc-blade-model";
 
-defineProps({
-  icon: {
-    type: String,
-  },
-
-  title: {
-    type: String,
-  },
-
-  subtitle: {
-    type: String,
-  },
-
-  width: {
-    type: [Number, String],
-    default: "30%",
-  },
-
-  expanded: {
-    type: Boolean,
-    default: false,
-  },
-
-  closable: {
-    type: Boolean,
-    default: true,
-  },
-
-  toolbarItems: {
-    type: Array as PropType<IBladeToolbar[]>,
-    default: () => [],
-  },
+withDefaults(defineProps<VcBladeProps>(), {
+  width: "30%",
+  expanded: false,
+  closable: true,
+  toolbarItems: () => [],
 });
+
+defineEmits(["close"]);
 </script>
 
 <style lang="scss">

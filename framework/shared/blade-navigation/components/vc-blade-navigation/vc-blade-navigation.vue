@@ -38,7 +38,7 @@ import {
   IBladeElement,
   IBladeEvent,
   IParentCallArgs,
-} from "@/shared";
+} from "./../../../../shared";
 
 export interface Props {
   blades: IBladeContainer[];

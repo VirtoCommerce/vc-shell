@@ -56,8 +56,8 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { VcPopup } from "@/ui/components";
-import { IImage } from "@/core/types";
+import { VcPopup } from "./../../../../../components";
+import { IImage } from "./../../../../../../core/types";
 
 export interface Props {
   images?: IImage[];

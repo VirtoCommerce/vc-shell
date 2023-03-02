@@ -16,26 +16,10 @@
 </template>
 
 <script lang="ts" setup>
-const props = defineProps({
-  icon: {
-    type: String,
-    default: undefined,
-  },
+import { VcWidgetProps } from "./vc-widget-model";
 
-  title: {
-    type: String,
-    default: undefined,
-  },
-
-  value: {
-    type: [String, Number],
-    default: undefined,
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+const props = withDefaults(defineProps<VcWidgetProps>(), {
+  disabled: false,
 });
 const emit = defineEmits(["click"]);
 

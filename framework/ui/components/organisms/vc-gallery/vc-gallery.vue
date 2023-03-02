@@ -10,10 +10,10 @@
     </VcLabel>
 
     <template v-if="(images && images.length) || !disabled">
-      <div class= "tw-flex tw-flex-wrap">
+      <div class="tw-flex tw-flex-wrap">
         <draggable
           :list="images"
-          class= "tw-flex tw-flex-wrap tw-w-full"
+          class="tw-flex tw-flex-wrap tw-w-full"
           tag="transition-group"
           v-bind="dragOptions"
           @change="updateOrder"
@@ -49,7 +49,7 @@
         </draggable>
       </div>
     </template>
-    <div v-else class= "tw-flex tw-justify-center tw-p-5">
+    <div v-else class="tw-flex tw-justify-center tw-p-5">
       <VcHint>Gallery is empty</VcHint>
     </div>
 
@@ -63,95 +63,31 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType, ref } from "vue";
-import { VcLabel, VcFileUpload } from "@/ui/components";
+import { computed, ref } from "vue";
+import { VcLabel, VcFileUpload } from "./../../../components";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { IImage } from "@/core/types";
+import { VcGalleryProps } from "./vc-gallery-model";
 
-const props = defineProps({
-  images: {
-    type: Array as PropType<IImage[]>,
-    default: () => [],
-  },
-
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
-
-  required: {
-    type: Boolean,
-    default: false,
-  },
-
-  label: {
-    type: String,
-    default: undefined,
-  },
-
-  tooltip: {
-    type: String,
-    default: undefined,
-  },
-
-  tooltipIcon: {
-    type: String,
-    default: "fas fa-info",
-  },
-
-  uploadIcon: {
-    type: String,
-    default: "fas fa-upload",
-  },
-
-  multiple: {
-    type: Boolean,
-    default: false,
-  },
-
-  variant: {
-    type: String,
-    default: "gallery",
-  },
-
-  itemActions: {
-    type: Object,
-    default: () => ({
-      preview: true,
-      edit: true,
-      remove: true,
-    }),
-  },
-
-  disableDrag: {
-    type: Boolean,
-    default: false,
-  },
-
-  hideAfterUpload: {
-    type: Boolean,
-    default: false,
-  },
-
-  rules: {
-    type: [String, Object],
-  },
-
-  name: {
-    type: String,
-    default: "Gallery",
-  },
+const props = withDefaults(defineProps<VcGalleryProps>(), {
+  images: () => [],
+  disabled: false,
+  required: false,
+  tooltipIcon: "fas fa-info",
+  uploadIcon: "fas fa-upload",
+  multiple: false,
+  variant: "gallery",
+  itemActions: () => ({
+    preview: true,
+    edit: true,
+    remove: true,
+  }),
+  disableDrag: false,
+  hideAfterUpload: false,
+  name: "Gallery",
 });
 
-const emit = defineEmits([
-  "upload",
-  "sort",
-  "item:preview",
-  "item:edit",
-  "item:remove",
-  "item:move",
-]);
+const emit = defineEmits(["upload", "sort", "item:edit", "item:remove"]);
 
 const preview = ref(false);
 const previewImageIndex = ref();

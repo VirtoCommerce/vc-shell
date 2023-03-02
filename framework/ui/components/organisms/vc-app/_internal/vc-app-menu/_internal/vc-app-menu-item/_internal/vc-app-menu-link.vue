@@ -28,7 +28,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ExtendedComponent } from "@/shared";
+import { ExtendedComponent } from "./../../../../../../../../../shared";
 
 export interface Props {
   isActive?: boolean;

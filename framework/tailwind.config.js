@@ -1,7 +1,7 @@
 /** @type { import('tailwindcss').Config } */
 module.exports = {
   prefix: 'tw-',
-  content: ["./ui/components/**/*.{vue,js,ts,jsx,tsx}"],
+  content: ["./ui/components/**/*.{vue,js,ts,jsx,tsx}", "./shared/**/*.{vue,js,ts,jsx,tsx}"],
     theme: {
         fontFamily: {
             roboto: ["Roboto", "sans-serif"],

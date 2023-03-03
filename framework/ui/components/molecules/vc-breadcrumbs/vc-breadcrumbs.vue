@@ -1,5 +1,8 @@
 <template>
-  <div v-if="items" class="tw-flex tw-items-center tw-flex-nowrap">
+  <div
+    v-if="items"
+    class="tw-flex tw-items-center tw-flex-nowrap"
+  >
     <VcBreadcrumbsItem
       v-for="(item, i) in items"
       :key="item.id"

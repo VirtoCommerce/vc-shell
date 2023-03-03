@@ -5,12 +5,7 @@ import { email, numeric } from "@vee-validate/rules";
 
 // required
 export const required = (value: unknown) => {
-  if (
-    value === null ||
-    value === undefined ||
-    value === false ||
-    value === ""
-  ) {
+  if (value === null || value === undefined || value === false || value === "") {
     return "This field is required";
   }
   return true;
@@ -114,27 +109,19 @@ export const after = (value: string, [target]: string[]) => {
 defineRule("after", after);
 
 // maxdimensions
-export const maxdimensions = (
-  images: HTMLInputElement,
-  [width, height]: [string | number, string | number]
-) => {
+export const maxdimensions = (images: HTMLInputElement, [width, height]: [string | number, string | number]) => {
   // The field is empty so it should pass
   if (!images?.files || !images.files?.length) {
     return true;
   }
 
-  const validateImage = (
-    file: File,
-    width: string | number,
-    height: string | number
-  ) => {
+  const validateImage = (file: File, width: string | number, height: string | number) => {
     const URL = window.URL || window.webkitURL;
     return new Promise((resolve) => {
       const image = new Image();
       image.onerror = () => resolve(false);
       image.onload = () => {
-        const isValid =
-          image.width >= Number(width) && image.height >= Number(height);
+        const isValid = image.width >= Number(width) && image.height >= Number(height);
         if (isValid) {
           resolve(true);
         } else {
@@ -154,9 +141,7 @@ export const maxdimensions = (
 
     list.push(fileList[i]);
   }
-  return Promise.all(
-    list.map((file) => validateImage(file, width, height))
-  ).then((res) => {
+  return Promise.all(list.map((file) => validateImage(file, width, height))).then((res) => {
     const isInvalid = res.find((x) => x !== true);
     if (isInvalid === false || typeof isInvalid === "string") {
       return isInvalid;

@@ -12,9 +12,17 @@
     ]"
   >
     <!-- Input label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="required">
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+      :required="required"
+    >
       <span>{{ label }}</span>
-      <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
+      <template
+        v-if="tooltip"
+        v-slot:tooltip
+        >{{ tooltip }}</template
+      >
     </VcLabel>
 
     <div class="tw-flex tw-flex-nowrap tw-items-start">
@@ -25,9 +33,7 @@
         >
           <slot name="prepend"></slot>
         </div>
-        <div
-          class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative"
-        >
+        <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
           <div class="vc-input__field-wrapper">
             <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full">
               <div
@@ -72,13 +78,14 @@
                   {{ suffix }}
                 </div>
                 <div
-                  v-if="
-                    clearable && modelValue && !disabled && type !== 'password'
-                  "
+                  v-if="clearable && modelValue && !disabled && type !== 'password'"
                   class="vc-input__clear"
                   @click="onReset"
                 >
-                  <VcIcon size="s" icon="fas fa-times"></VcIcon>
+                  <VcIcon
+                    size="s"
+                    icon="fas fa-times"
+                  ></VcIcon>
                 </div>
 
                 <div
@@ -86,7 +93,10 @@
                   v-if="type === 'password' && internalType === 'password'"
                   @click="internalType = 'text'"
                 >
-                  <VcIcon size="s" icon="fas fa-eye-slash"></VcIcon>
+                  <VcIcon
+                    size="s"
+                    icon="fas fa-eye-slash"
+                  ></VcIcon>
                 </div>
 
                 <div
@@ -94,7 +104,10 @@
                   v-if="type === 'password' && internalType === 'text'"
                   @click="internalType = 'password'"
                 >
-                  <VcIcon size="s" icon="fas fa-eye"></VcIcon>
+                  <VcIcon
+                    size="s"
+                    icon="fas fa-eye"
+                  ></VcIcon>
                 </div>
               </div>
 
@@ -116,20 +129,27 @@
               </div>
             </div>
           </div>
-          <div
-            class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]"
-          >
-            <Transition name="slide-up" mode="out-in">
+          <div class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]">
+            <Transition
+              name="slide-up"
+              mode="out-in"
+            >
               <div v-if="error">
                 <slot name="error">
-                  <VcHint class="vc-input__error" v-if="errorMessage">
+                  <VcHint
+                    class="vc-input__error"
+                    v-if="errorMessage"
+                  >
                     {{ errorMessage }}
                   </VcHint>
                 </slot>
               </div>
               <div v-else>
                 <slot name="hint">
-                  <VcHint class="vc-input__desc" v-if="hint">
+                  <VcHint
+                    class="vc-input__desc"
+                    v-if="hint"
+                  >
                     {{ hint }}
                   </VcHint>
                 </slot>

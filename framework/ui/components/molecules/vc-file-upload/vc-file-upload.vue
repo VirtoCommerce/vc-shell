@@ -18,9 +18,7 @@
         size="xxl"
       ></VcIcon>
 
-      <div
-        class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4"
-      >
+      <div class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
         <span>Drag and drop file here or</span>&nbsp;
         <br />
         <VcLink @click="toggleUploader">browse your files</VcLink>
@@ -36,7 +34,10 @@
         :name="name"
       />
     </div>
-    <slot v-if="errorMessage" name="error">
+    <slot
+      v-if="errorMessage"
+      name="error"
+    >
       <VcHint class="vc-input__error">
         {{ errorMessage }}
       </VcHint>

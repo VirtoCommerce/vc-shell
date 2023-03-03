@@ -31,9 +31,7 @@
             :alt="`icon_${item.id}`"
             class="tw-w-5 tw-h-5 tw-mr-2 tw-shrink-0"
           />
-          <p
-            class="tw-font-normal tw-text-sm tw-text-[#727C87] tw-truncate group-hover:tw-opacity-80"
-          >
+          <p class="tw-font-normal tw-text-sm tw-text-[#727C87] tw-truncate group-hover:tw-opacity-80">
             {{ item.title }}
           </p>
         </li>
@@ -62,8 +60,7 @@ const emit = defineEmits<Emits>();
 
 const isVisible = ref(false);
 
-const imageUrl = (url: string) =>
-  import.meta.env.APP_PLATFORM_URL.replace(/\/+$/, "") + url;
+const imageUrl = (url: string) => import.meta.env.APP_PLATFORM_URL.replace(/\/+$/, "") + url;
 
 const locationHandler = (url: string) => {
   const cleanUrl = window.location.pathname.replace(/\/+$/, "");

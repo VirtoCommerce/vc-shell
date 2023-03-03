@@ -1,9 +1,6 @@
 import { VNode } from "vue";
 
-export type OptionProp =
-  | ((option: string | Record<string, unknown>) => string)
-  | string
-  | undefined;
+export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 
 export interface VcInputCurrencyProps {
   /**
@@ -101,8 +98,8 @@ export interface VcInputCurrencyProps {
    */
   optionLabel?: OptionProp;
   /**
-  * Emitted when the component needs to change the model; Is also used by v-model
-  */
+   * Emitted when the component needs to change the model; Is also used by v-model
+   */
   "onUpdate:modelValue"?: (value: string | number | null) => void;
   /**
    * Emitted when the component needs to change the options model; Is also used by v-model:option

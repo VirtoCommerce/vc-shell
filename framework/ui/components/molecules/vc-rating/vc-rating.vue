@@ -1,9 +1,15 @@
 <template>
   <div class="vc-rating">
     <!-- Rating label -->
-    <VcLabel v-if="label" class="tw-mb-2">
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+    >
       <span>{{ label }}</span>
-      <template v-if="tooltip" v-slot:tooltip>
+      <template
+        v-if="tooltip"
+        v-slot:tooltip
+      >
         <span v-html="tooltip"></span>
       </template>
     </VcLabel>

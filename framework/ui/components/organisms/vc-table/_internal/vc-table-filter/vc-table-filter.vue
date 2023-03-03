@@ -6,8 +6,14 @@
       @click="openPanel($isMobile.value)"
       ref="filterToggle"
     >
-      <VcIcon icon="fas fa-filter" size="m" />
-      <span v-if="title" class="tw-ml-[10px] tw-font-medium">
+      <VcIcon
+        icon="fas fa-filter"
+        size="m"
+      />
+      <span
+        v-if="title"
+        class="tw-ml-[10px] tw-font-medium"
+      >
         {{ title }}
       </span>
       <div

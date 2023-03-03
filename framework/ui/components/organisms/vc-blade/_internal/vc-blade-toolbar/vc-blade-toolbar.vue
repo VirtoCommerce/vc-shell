@@ -4,10 +4,11 @@
     class="tw-h-[var(--blade-toolbar-height)] tw-bg-[color:var(--blade-toolbar-background-color)] tw-border-b-[color:#eaedf3] tw-border-solid tw-border-b tw-flex tw-box-border tw-w-full tw-content-center tw-items-stretch tw-shrink-0"
     :class="{ '!tw-h-[var(--blade-toolbar-height-expanded)]': isExpanded }"
   >
-    <div
-      class="tw-grow tw-basis-0 tw-flex tw-content-start tw-items-center tw-overflow-x-auto tw-px-2"
-    >
-      <template v-for="item in items" :key="item.id">
+    <div class="tw-grow tw-basis-0 tw-flex tw-content-start tw-items-center tw-overflow-x-auto tw-px-2">
+      <template
+        v-for="item in items"
+        :key="item.id"
+      >
         <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
           v-bind="item"
@@ -38,18 +39,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const isExpanded = ref(true);
 try {
-  isExpanded.value =
-    localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
+  isExpanded.value = localStorage.getItem("VC_BLADE_TOOLBAR_IS_EXPANDED") === "true";
 } catch (err) {
   isExpanded.value = true;
 }
 
 function toggleToolbar() {
   isExpanded.value = !isExpanded.value;
-  localStorage.setItem(
-    "VC_BLADE_TOOLBAR_IS_EXPANDED",
-    isExpanded.value.toString()
-  );
+  localStorage.setItem("VC_BLADE_TOOLBAR_IS_EXPANDED", isExpanded.value.toString());
 }
 
 function isToolbarVisible() {

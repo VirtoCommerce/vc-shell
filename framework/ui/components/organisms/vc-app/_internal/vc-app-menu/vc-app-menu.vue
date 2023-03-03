@@ -27,7 +27,10 @@
       </div>
 
       <!-- Show scrollable area with menu items -->
-      <VcContainer :noPadding="true" class="tw-grow tw-basis-0">
+      <VcContainer
+        :noPadding="true"
+        class="tw-grow tw-basis-0"
+      >
         <div class="tw-gap-[5px] tw-flex tw-flex-col tw-px-4 tw-h-full">
           <template
             v-for="(item, index) in mobileMenuItems"
@@ -42,7 +45,10 @@
               ></component>
             </template>
           </template>
-          <template v-for="(item, index) in items" :key="index">
+          <template
+            v-for="(item, index) in items"
+            :key="index"
+          >
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
               v-bind="item"

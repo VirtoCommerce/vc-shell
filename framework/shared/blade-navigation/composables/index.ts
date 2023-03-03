@@ -1,1 +1,1 @@
-export {default as useBladeNavigation} from './useBladeNavigation'
+export { default as useBladeNavigation } from "./useBladeNavigation";

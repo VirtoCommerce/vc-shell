@@ -9,20 +9,31 @@
     }"
   >
     <!-- Select label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="required">
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+      :required="required"
+    >
       <span>{{ label }}</span>
-      <template v-if="tooltip" v-slot:tooltip>
+      <template
+        v-if="tooltip"
+        v-slot:tooltip
+      >
         <span v-html="tooltip"></span>
       </template>
     </VcLabel>
 
     <!-- Select field -->
-    <div class="tw-flex tw-flex-nowrap tw-items-start" ref="dropdownToggleRef">
+    <div
+      class="tw-flex tw-flex-nowrap tw-items-start"
+      ref="dropdownToggleRef"
+    >
       <div class="tw-flex tw-flex-auto tw-text-left tw-max-w-full">
-        <slot name="control" :toggleHandler="toggleDropdown">
-          <div
-            class="tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full"
-          >
+        <slot
+          name="control"
+          :toggleHandler="toggleDropdown"
+        >
+          <div class="tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full">
             <div
               class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
               v-if="$slots['prepend']"
@@ -33,21 +44,15 @@
               <div
                 class="tw-truncate vc-select__field-wrapper tw-relative tw-box-border tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-rounded-[var(--select-border-radius)] tw-bg-[color:var(--select-background-color)] tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-items-stretch"
               >
-                <div
-                  class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative"
-                >
-                  <div
-                    class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3"
-                  >
+                <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
+                  <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3">
                     <div
                       class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
                       v-if="$slots['prepend-inner']"
                     >
                       <slot name="prepend-inner"></slot>
                     </div>
-                    <div
-                      class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate"
-                    >
+                    <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate">
                       <div
                         class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                         v-if="prefix"
@@ -58,14 +63,13 @@
                         class="tw-w-full tw-appearance-none tw-border-none tw-outline-none tw-min-h-[var(--select-height)] tw-flex tw-items-center tw-w-full tw-box-border tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
                         @click.stop="toggleDropdown"
                       >
-                        <div v-if="!hasValue" class="tw-text-[#a5a5a5]">
+                        <div
+                          v-if="!hasValue"
+                          class="tw-text-[#a5a5a5]"
+                        >
                           {{ placeholder }}
                         </div>
-                        <template
-                          v-else-if="
-                            selectedScope && selectedScope.length && hasValue
-                          "
-                        >
+                        <template v-else-if="selectedScope && selectedScope.length && hasValue">
                           <template v-if="$slots['selected-item']">
                             <slot
                               name="selected-item"
@@ -86,9 +90,7 @@
                                   <div
                                     class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                   >
-                                    <span>{{
-                                      getEmittingOptionValue(item.opt)
-                                    }}</span>
+                                    <span>{{ getEmittingOptionValue(item.opt) }}</span>
                                     <VcIcon
                                       v-if="!disabled"
                                       class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
@@ -117,7 +119,10 @@
                         class="tw-cursor-pointer tw-flex tw-items-center tw-pl-3 tw-text-[color:var(--select-clear-color)] hover:tw-text-[color:var(--select-clear-color-hover)]"
                         @click="onReset"
                       >
-                        <VcIcon size="s" icon="fas fa-times"></VcIcon>
+                        <VcIcon
+                          size="s"
+                          icon="fas fa-times"
+                        ></VcIcon>
                       </div>
                     </div>
                     <div
@@ -145,16 +150,20 @@
                         class="vc-select__chevron tw-cursor-pointer tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
                         @click.stop="toggleDropdown"
                       >
-                        <VcIcon size="s" icon="fas fa-chevron-down"></VcIcon>
+                        <VcIcon
+                          size="s"
+                          icon="fas fa-chevron-down"
+                        ></VcIcon>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div
-                class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]"
-              >
-                <Transition name="slide-up" mode="out-in">
+              <div class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]">
+                <Transition
+                  name="slide-up"
+                  mode="out-in"
+                >
                   <div v-if="error">
                     <slot name="error">
                       <VcHint
@@ -203,7 +212,10 @@
           @input="onInput"
         />
 
-        <VcContainer :no-padding="true" ref="root">
+        <VcContainer
+          :no-padding="true"
+          ref="root"
+        >
           <div
             v-if="!(optionsList && optionsList.length)"
             class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
@@ -220,9 +232,16 @@
             @click="item.toggleOption(item.opt)"
             :class="{ 'tw-bg-[#eff7fc]': item.selected }"
           >
-            <slot name="option" v-bind="item">{{ item.label }}</slot>
+            <slot
+              name="option"
+              v-bind="item"
+              >{{ item.label }}</slot
+            >
           </div>
-          <span ref="el" v-if="hasNextPage"></span>
+          <span
+            ref="el"
+            v-if="hasNextPage"
+          ></span>
         </VcContainer>
       </div>
       <!--      </teleport>-->
@@ -312,17 +331,11 @@ watch(
           const data = await props.options(
             undefined,
             undefined,
-            Array.isArray(props.modelValue)
-              ? props.modelValue
-              : [props.modelValue]
+            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results.filter(
-            (x) => x[props.optionValue as string] === props.modelValue
-          );
+          defaultValue.value = data.results.filter((x) => x[props.optionValue as string] === props.modelValue);
         } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter(
-            (x) => x[props.optionValue as string] === props.modelValue
-          );
+          defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
         }
       }
     }
@@ -361,10 +374,7 @@ async function onLoadMore() {
   if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
-      const data = await props.options(
-        filterString.value,
-        optionsList.value.length
-      );
+      const data = await props.options(filterString.value, optionsList.value.length);
       optionsList.value.push(...data.results);
     } finally {
       listLoading.value = false;
@@ -376,36 +386,26 @@ const hasNextPage = computed(() => {
   return optionsList.value.length < totalItems.value;
 });
 
-const getOptionValue = computed(() =>
-  getPropValueFn(props.optionValue, "value")
-);
+const getOptionValue = computed(() => getPropValueFn(props.optionValue, "value"));
 
-const getOptionLabel = computed(() =>
-  getPropValueFn(props.optionLabel, "label")
-);
+const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "label"));
 
 const innerValue = computed((): Record<string, unknown>[] | string[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
   const val: Record<string, unknown>[] | string[] =
-    props.modelValue !== undefined &&
-    (props.modelValue !== null || mapNull === true)
+    props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
       ? props.multiple === true && Array.isArray(props.modelValue)
         ? props.modelValue
         : [props.modelValue]
       : [];
 
   if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
-    const cache =
-      props.mapOptions === true && innerValueCache !== undefined
-        ? innerValueCache
-        : [];
+    const cache = props.mapOptions === true && innerValueCache !== undefined ? innerValueCache : [];
 
     const values = val.map((v) => getOption(v, cache));
 
-    return props.modelValue === null && mapNull === true
-      ? values.filter((v) => v !== null)
-      : values;
+    return props.modelValue === null && mapNull === true ? values.filter((v) => v !== null) : values;
   }
 
   return val;
@@ -431,9 +431,7 @@ const selectedScope = computed(() => {
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 
-const innerOptionsValue = computed(() =>
-  innerValue.value.map((opt) => getOptionValue.value(opt))
-);
+const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt)));
 
 const optionScope = computed(() => {
   return optionsTemp.value.map((opt, i) => {
@@ -452,21 +450,12 @@ function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
 
   return typeof val === "function"
     ? val
-    : (opt) =>
-        opt !== null && typeof opt === "object" && val in opt ? opt[val] : opt;
+    : (opt) => (opt !== null && typeof opt === "object" && val in opt ? opt[val] : opt);
 }
 
-function getOption(
-  value: Record<string, unknown> | string,
-  valueCache: Array<Record<string, unknown> | string>
-) {
+function getOption(value: Record<string, unknown> | string, valueCache: Array<Record<string, unknown> | string>) {
   const fn = (opt) => isEqual(getOptionValue.value(opt), value);
-  return (
-    defaultValue.value.find(fn) ||
-    optionsList.value.find(fn) ||
-    valueCache.find(fn) ||
-    value
-  );
+  return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
 function fieldValueIsFilled(val: Record<string, unknown>[] | unknown[]) {
@@ -474,9 +463,7 @@ function fieldValueIsFilled(val: Record<string, unknown>[] | unknown[]) {
 }
 
 function getEmittingOptionValue(opt: Record<string, unknown>) {
-  return props.emitValue === true
-    ? getOptionLabel.value(opt)
-    : getOptionValue.value(opt);
+  return props.emitValue === true ? getOptionLabel.value(opt) : getOptionValue.value(opt);
 }
 
 function removeAtIndex(index: number) {
@@ -523,78 +510,64 @@ async function toggleDropdown() {
 
       await nextTick(() => {
         searchRef?.value?.focus();
-        popper.value = createPopper(
-          dropdownToggleRef.value,
-          dropdownRef.value,
-          {
-            placement: "bottom",
-            modifiers: [
-              {
-                name: "flip",
-                options: {
-                  fallbackPlacements: ["top", "bottom"],
-                },
+        popper.value = createPopper(dropdownToggleRef.value, dropdownRef.value, {
+          placement: "bottom",
+          modifiers: [
+            {
+              name: "flip",
+              options: {
+                fallbackPlacements: ["top", "bottom"],
               },
-              {
-                name: "preventOverflow",
-                options: {
-                  mainAxis: false,
-                },
+            },
+            {
+              name: "preventOverflow",
+              options: {
+                mainAxis: false,
               },
-              {
-                name: "sameWidthChangeBorders",
-                enabled: true,
-                phase: "beforeWrite",
-                requires: ["computeStyles"],
-                fn: ({ state }: { state: State }) => {
-                  const placement = state.placement;
-                  if (placement === "top") {
-                    state.styles.popper.borderTop =
-                      "1px solid var(--select-border-color)";
-                    state.styles.popper.borderBottom =
-                      "1px solid var(--select-background-color)";
-                    state.styles.popper.borderRadius =
-                      "var(--select-border-radius) var(--select-border-radius) 0 0";
-                  } else {
-                    state.styles.popper.borderBottom =
-                      "1px solid var(--select-border-color)";
-                    state.styles.popper.borderTop =
-                      "1px solid var(--select-background-color)";
-                    state.styles.popper.borderRadius =
-                      "0 0 var(--select-border-radius) var(--select-border-radius)";
-                  }
-                  state.styles.popper.width = `${state.rects.reference.width}px`;
-                },
-                effect: ({ state }: { state: State }) => {
-                  const ref = state.elements.reference as HTMLElement;
-                  const placement = state.placement;
-                  if (placement === "top") {
-                    state.elements.popper.style.borderTop =
-                      "1px solid var(--select-border-color)";
-                    state.elements.popper.style.borderBottom =
-                      "1px solid var(--select-background-color)";
-                    state.elements.popper.style.borderRadius =
-                      "var(--select-border-radius) var(--select-border-radius) 0 0";
-                  } else {
-                    state.elements.popper.style.borderBottom =
-                      "1px solid var(--select-border-color)";
-                    state.elements.popper.style.borderTop =
-                      "1px solid var(--select-background-color)";
-                    state.elements.popper.style.borderRadius =
-                      "0 0 var(--select-border-radius) var(--select-border-radius)";
-                  }
-                  state.elements.popper.style.width = `${ref.offsetWidth}px`;
-                },
+            },
+            {
+              name: "sameWidthChangeBorders",
+              enabled: true,
+              phase: "beforeWrite",
+              requires: ["computeStyles"],
+              fn: ({ state }: { state: State }) => {
+                const placement = state.placement;
+                if (placement === "top") {
+                  state.styles.popper.borderTop = "1px solid var(--select-border-color)";
+                  state.styles.popper.borderBottom = "1px solid var(--select-background-color)";
+                  state.styles.popper.borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
+                } else {
+                  state.styles.popper.borderBottom = "1px solid var(--select-border-color)";
+                  state.styles.popper.borderTop = "1px solid var(--select-background-color)";
+                  state.styles.popper.borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
+                }
+                state.styles.popper.width = `${state.rects.reference.width}px`;
               },
-              {
-                name: "offset",
-                options: {
-                  offset: [0, -2],
-                },
+              effect: ({ state }: { state: State }) => {
+                const ref = state.elements.reference as HTMLElement;
+                const placement = state.placement;
+                if (placement === "top") {
+                  state.elements.popper.style.borderTop = "1px solid var(--select-border-color)";
+                  state.elements.popper.style.borderBottom = "1px solid var(--select-background-color)";
+                  state.elements.popper.style.borderRadius =
+                    "var(--select-border-radius) var(--select-border-radius) 0 0";
+                } else {
+                  state.elements.popper.style.borderBottom = "1px solid var(--select-border-color)";
+                  state.elements.popper.style.borderTop = "1px solid var(--select-background-color)";
+                  state.elements.popper.style.borderRadius =
+                    "0 0 var(--select-border-radius) var(--select-border-radius)";
+                }
+                state.elements.popper.style.width = `${ref.offsetWidth}px`;
               },
-            ],
-          }
-        );
+            },
+            {
+              name: "offset",
+              options: {
+                offset: [0, -2],
+              },
+            },
+          ],
+        });
       });
     }
   }
@@ -608,10 +581,7 @@ function toggleOption(opt: { [x: string]: string }) {
   const optValue = getOptionValue.value(opt);
 
   if (props.multiple !== true) {
-    if (
-      innerValue.value.length === 0 ||
-      isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true
-    ) {
+    if (innerValue.value.length === 0 || isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
       emit("update:modelValue", props.emitValue === true ? optValue : opt);
       isOpened.value = false;
     }
@@ -652,9 +622,7 @@ async function onSearch(value: string) {
     }
   } else {
     optionsTemp.value = optionsList.value.filter((x) => {
-      return x[props.optionLabel as string]
-        .toLowerCase()
-        .includes(filterString.value.toLowerCase());
+      return x[props.optionLabel as string].toLowerCase().includes(filterString.value.toLowerCase());
     });
   }
 }

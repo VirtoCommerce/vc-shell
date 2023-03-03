@@ -17,17 +17,7 @@ export interface VcInputProps {
    * Input type
    * Default value: text
    */
-  type?:
-    | "text"
-    | "password"
-    | "email"
-    | "tel"
-    | "number"
-    | "url"
-    | "time"
-    | "date"
-    | "datetime-local"
-    | undefined;
+  type?: "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local" | undefined;
   /**
    * Input description (hint) text below input component
    */

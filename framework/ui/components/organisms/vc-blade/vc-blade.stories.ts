@@ -19,8 +19,7 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template:
-    '<vc-blade v-bind="args"><div class="p-4">Blade Contents</div></vc-blade>',
+  template: '<vc-blade v-bind="args"><div class="p-4">Blade Contents</div></vc-blade>',
 });
 
 export const Blade = Template.bind({});

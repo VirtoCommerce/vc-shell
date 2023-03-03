@@ -49,7 +49,10 @@
         </draggable>
       </div>
     </template>
-    <div v-else class="tw-flex tw-justify-center tw-p-5">
+    <div
+      v-else
+      class="tw-flex tw-justify-center tw-p-5"
+    >
       <VcHint>Gallery is empty</VcHint>
     </div>
 

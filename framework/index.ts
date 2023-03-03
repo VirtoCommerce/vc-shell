@@ -42,8 +42,7 @@ export default {
     app.config.globalProperties.$isTablet = bp.between("phone", "desktop");
     app.config.globalProperties.$isMobile = bp.smaller("desktop");
     app.config.globalProperties.$isDesktop = bp.greater("desktop");
-    app.config.globalProperties.$isTouch =
-      "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    app.config.globalProperties.$isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
     app.provide("isPhone", app.config.globalProperties.$isPhone);
     app.provide("isTablet", app.config.globalProperties.$isTablet);

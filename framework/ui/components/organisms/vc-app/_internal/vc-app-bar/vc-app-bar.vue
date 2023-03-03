@@ -32,8 +32,14 @@
       </div>
 
       <!-- Show back link when more than one blade is opened -->
-      <VcLink v-else-if="blades.length > 1" @click="$emit('backlink:click')">
-        <VcIcon icon="fas fa-chevron-left" size="s"></VcIcon>
+      <VcLink
+        v-else-if="blades.length > 1"
+        @click="$emit('backlink:click')"
+      >
+        <VcIcon
+          icon="fas fa-chevron-left"
+          size="s"
+        ></VcIcon>
         <span class="tw-ml-2 tw-text-lg">{{ $t("Back") }}</span>
       </VcLink>
     </template>
@@ -43,7 +49,10 @@
 
     <!-- Toolbar container -->
     <div class="tw-flex tw-h-full tw-box-border">
-      <template v-for="(item, index) in buttons" :key="index">
+      <template
+        v-for="(item, index) in buttons"
+        :key="index"
+      >
         <template v-if="item.isVisible === undefined || item.isVisible">
           <!-- Draw custom component is it is passed -->
           <component
@@ -99,12 +108,7 @@ withDefaults(defineProps<Props>(), {
   buttons: () => [],
 });
 
-defineEmits([
-  "logo:click",
-  "backlink:click",
-  "toolbarbutton:click",
-  "menubutton:click",
-]);
+defineEmits(["logo:click", "backlink:click", "toolbarbutton:click", "menubutton:click"]);
 </script>
 
 <style lang="scss">

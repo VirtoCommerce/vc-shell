@@ -1,26 +1,25 @@
 <template>
-  <div
-    class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0"
-  >
+  <div class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0">
     <!-- Header slot with filter and searchbar -->
     <slot
       name="header"
       v-if="
         ($slots['header'] || header) &&
-        ((items && items.length) ||
-          searchValue ||
-          searchValue === '' ||
-          activeFilterCount)
+        ((items && items.length) || searchValue || searchValue === '' || activeFilterCount)
       "
     >
-      <div
-        class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
-      >
+      <div class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4">
         <!-- Table filter mobile button -->
-        <div v-if="$isMobile.value && $slots['filters']" class="tw-mr-3">
+        <div
+          v-if="$isMobile.value && $slots['filters']"
+          class="tw-mr-3"
+        >
           <VcTableFilter :counter="activeFilterCount">
             <template v-slot:default="{ closePanel }">
-              <slot name="filters" :closePanel="closePanel"></slot>
+              <slot
+                name="filters"
+                :closePanel="closePanel"
+              ></slot>
             </template>
           </VcTableFilter>
         </div>
@@ -36,14 +35,20 @@
         ></VcInput>
 
         <!-- Table filter desktop button -->
-        <div v-if="$isDesktop.value && $slots['filters']" class="tw-ml-3">
+        <div
+          v-if="$isDesktop.value && $slots['filters']"
+          class="tw-ml-3"
+        >
           <VcTableFilter
             :title="$t('Filters')"
             :counter="activeFilterCount"
             :parentExpanded="expanded"
           >
             <template v-slot:default="{ closePanel }">
-              <slot name="filters" :closePanel="closePanel"></slot>
+              <slot
+                name="filters"
+                :closePanel="closePanel"
+              ></slot>
             </template>
           </VcTableFilter>
         </div>
@@ -75,7 +80,10 @@
               @swipeStart="handleSwipe"
               :swipingItem="mobileSwipeItem"
             >
-              <slot name="mobile-item" :item="item"></slot>
+              <slot
+                name="mobile-item"
+                :item="item"
+              ></slot>
             </VcTableMobileItem>
           </div>
         </template>
@@ -89,7 +97,10 @@
             'vc-table_multiselect': multiselect,
           }"
         >
-          <thead v-if="columns" class="vc-table__header">
+          <thead
+            v-if="columns"
+            class="vc-table__header"
+          >
             <tr class="vc-table__header-row">
               <th
                 v-if="multiselect"
@@ -121,20 +132,27 @@
                   <div>
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>
                   </div>
-                  <div v-if="sortField === item.id" class="tw-ml-1">
+                  <div
+                    v-if="sortField === item.id"
+                    class="tw-ml-1"
+                  >
                     <VcIcon
                       size="xs"
-                      :icon="`fas fa-caret-${
-                        sortDirection === 'DESC' ? 'down' : 'up'
-                      }`"
+                      :icon="`fas fa-caret-${sortDirection === 'DESC' ? 'down' : 'up'}`"
                     ></VcIcon>
                   </div>
                   <div
                     class="tw-flex tw-flex-col tw-ml-1 tw-invisible group-hover:tw-visible"
                     v-else
                   >
-                    <VcIcon size="xs" icon="fas fa-caret-up"></VcIcon>
-                    <VcIcon size="xs" icon="fas fa-caret-down"></VcIcon>
+                    <VcIcon
+                      size="xs"
+                      icon="fas fa-caret-up"
+                    ></VcIcon>
+                    <VcIcon
+                      size="xs"
+                      icon="fas fa-caret-down"
+                    ></VcIcon>
                   </div>
                 </div>
               </th>
@@ -146,21 +164,26 @@
             </tr>
           </thead>
 
-          <tbody v-if="items" class="vc-table__body">
+          <tbody
+            v-if="items"
+            class="vc-table__body"
+          >
             <tr
               v-for="(item, i) in items"
               :key="item.id"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
                 'tw-bg-[#f8f8f8]': i % 2 === 1,
-                '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
-                  item && item.id ? selectedItemId === item.id : false,
+                '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]': item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
               @mouseover="calculateActions(item)"
               @mouseleave="closeActions"
             >
-              <td v-if="multiselect" width="50">
+              <td
+                v-if="multiselect"
+                width="50"
+              >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     :modelValue="checkboxes[item.id]"
@@ -176,8 +199,15 @@
                 :class="cell.class"
                 :width="cell.width"
               >
-                <slot :name="`item_${cell.id}`" :item="item" :cell="cell">
-                  <VcTableCell :cell="cell" :item="item"></VcTableCell>
+                <slot
+                  :name="`item_${cell.id}`"
+                  :item="item"
+                  :cell="cell"
+                >
+                  <VcTableCell
+                    :cell="cell"
+                    :item="item"
+                  ></VcTableCell>
                 </slot>
               </td>
               <td
@@ -185,9 +215,7 @@
                 width="44"
                 v-if="itemActionBuilder"
               >
-                <div
-                  class="vc-table__body-actions-container tw-relative !tw-hidden tw-justify-center tw-items-center"
-                >
+                <div class="vc-table__body-actions-container tw-relative !tw-hidden tw-justify-center tw-items-center">
                   <button
                     class="tw-text-[#319ed4] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray]"
                     @click.stop="showActions(item, item.id)"
@@ -195,7 +223,10 @@
                     aria-describedby="tooltip"
                     :disabled="!(itemActions && itemActions.length)"
                   >
-                    <VcIcon icon="fas fa-cog" size="m" />
+                    <VcIcon
+                      icon="fas fa-cog"
+                      size="m"
+                    />
                   </button>
                   <div
                     class="vc-table__body-tooltip tw-bg-white tw-rounded-l-[4px] tw-p-[15px] tw-z-0 tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
@@ -216,7 +247,10 @@
                         ]"
                         @click.stop="itemAction.clickHandler(item)"
                       >
-                        <VcIcon :icon="itemAction.icon" size="m" />
+                        <VcIcon
+                          :icon="itemAction.icon"
+                          size="m"
+                        />
                         <div
                           class="tw-not-italic tw-font-normal tw-text-base tw-leading-[20px] tw-text-[#3f3f3f] tw-ml-[7px]"
                         >
@@ -246,23 +280,38 @@
             v-if="notfound"
             class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
           >
-            <img v-if="notfound.image" :src="notfound.image" />
+            <img
+              v-if="notfound.image"
+              :src="notfound.image"
+            />
             <div class="tw-m-4 vc-table__empty-text">
               {{ notfound.text }}
             </div>
-            <VcButton v-if="notfound.action" @click="notfound.clickHandler">
+            <VcButton
+              v-if="notfound.action"
+              @click="notfound.clickHandler"
+            >
               {{ notfound.action }}
             </VcButton>
           </div>
         </slot>
-        <slot v-else name="empty">
+        <slot
+          v-else
+          name="empty"
+        >
           <div
             v-if="empty"
             class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
           >
-            <img v-if="empty.image" :src="empty.image" />
+            <img
+              v-if="empty.image"
+              :src="empty.image"
+            />
             <div class="tw-m-4 tw-text-xl tw-font-medium">{{ empty.text }}</div>
-            <VcButton v-if="empty.action" @click="empty.clickHandler">
+            <VcButton
+              v-if="empty.action"
+              @click="empty.clickHandler"
+            >
               {{ empty.action }}
             </VcButton>
           </div>
@@ -298,14 +347,7 @@
 
 <script lang="ts" setup>
 import { computed, nextTick, ref, watch, onBeforeUpdate } from "vue";
-import {
-  VcIcon,
-  VcLoading,
-  VcCheckbox,
-  VcContainer,
-  VcInput,
-  VcPagination,
-} from "./../../../components";
+import { VcIcon, VcLoading, VcCheckbox, VcContainer, VcInput, VcPagination } from "./../../../components";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -388,9 +430,7 @@ const tableAlignment = {
   evenly: "justify-evenly",
 };
 
-const headerCheckbox = computed(() =>
-  Object.values(checkboxes.value).every((value) => value)
-);
+const headerCheckbox = computed(() => Object.values(checkboxes.value).every((value) => value));
 
 watch(
   () => props.items,
@@ -421,9 +461,7 @@ function setActionToggleRefs(el: Element, id: string) {
 
 function processHeaderCheckbox() {
   const currentState = Object.values(checkboxes.value).every((value) => value);
-  Object.keys(checkboxes.value).forEach(
-    (key) => (checkboxes.value[key] = !currentState)
-  );
+  Object.keys(checkboxes.value).forEach((key) => (checkboxes.value[key] = !currentState));
   emit("selectionChanged", checkboxes.value);
 }
 
@@ -440,22 +478,18 @@ function showActions(item: { id?: string }, index: string) {
 
   if (toggleRef && tooltipRef) {
     nextTick(() => {
-      tooltip.value = createPopper(
-        toggleRef.element,
-        tooltipRef.element as HTMLElement,
-        {
-          placement: "bottom",
-          onFirstUpdate: () => tooltip.value?.update(),
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [-15, 15],
-              },
+      tooltip.value = createPopper(toggleRef.element, tooltipRef.element as HTMLElement, {
+        placement: "bottom",
+        onFirstUpdate: () => tooltip.value?.update(),
+        modifiers: [
+          {
+            name: "offset",
+            options: {
+              offset: [-15, 15],
             },
-          ],
-        }
-      );
+          },
+        ],
+      });
     });
   }
 }

@@ -8,7 +8,11 @@
     @tap.stop="hover = !hover"
     v-click-outside="onClose"
   >
-    <VcImage aspect="1x1" :src="image.url" background="contain"></VcImage>
+    <VcImage
+      aspect="1x1"
+      :src="image.url"
+      background="contain"
+    ></VcImage>
     <div class="vc-gallery-item__overlay">
       <div class="tw-flex">
         <VcIcon
@@ -17,7 +21,10 @@
           icon="fas fa-arrows-alt"
           size="s"
         ></VcIcon>
-        <div class="tw-truncate" :title="image.name">
+        <div
+          class="tw-truncate"
+          :title="image.name"
+        >
           {{ image.name }}
         </div>
       </div>

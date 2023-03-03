@@ -41,8 +41,7 @@ export default (): INotifications => {
         });
 
         result.text().then((response) => {
-          notifications.value =
-            <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
+          notifications.value = <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
         });
       } catch (e) {
         logger.error(e);
@@ -53,9 +52,7 @@ export default (): INotifications => {
 
   function addNotification(message: PushNotification) {
     if (message.notifyType !== "IndexProgressPushNotification") {
-      const existsNotification = notifications.value.find(
-        (x) => x.id == message.id
-      );
+      const existsNotification = notifications.value.find((x) => x.id == message.id);
 
       if (existsNotification) {
         message.isNew = existsNotification.isNew;
@@ -102,9 +99,7 @@ export default (): INotifications => {
   }
 
   return {
-    notifications: computed(() =>
-      readonly(orderBy(notifications.value, ["created"], ["desc"]))
-    ),
+    notifications: computed(() => readonly(orderBy(notifications.value, ["created"], ["desc"]))),
     popupNotifications: computed(() => readonly(popupNotifications.value)),
     loadFromHistory,
     addNotification,

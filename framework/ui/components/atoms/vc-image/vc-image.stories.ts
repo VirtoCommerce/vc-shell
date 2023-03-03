@@ -25,8 +25,7 @@ const Template: Story = (args) => ({
   setup() {
     return { args };
   },
-  template:
-    '<div style="width: 400px"><vc-image v-bind="args"></vc-image></div>',
+  template: '<div style="width: 400px"><vc-image v-bind="args"></vc-image></div>',
 });
 
 export const Image = Template.bind({});

@@ -33,12 +33,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
-import {
-  IBladeContainer,
-  IBladeElement,
-  IBladeEvent,
-  IParentCallArgs,
-} from "./../../../../shared";
+import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "./../../../../shared";
 
 export interface Props {
   blades: IBladeContainer[];

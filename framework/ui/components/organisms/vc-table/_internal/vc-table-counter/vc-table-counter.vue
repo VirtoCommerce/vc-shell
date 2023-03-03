@@ -1,11 +1,7 @@
 <template>
   <div class="tw-font-medium tw-text-base">
-    <span class="tw-text-[color:var(--table-counter-label-color)]"
-      >{{ label }}&nbsp;</span
-    >
-    <span class="tw-text-[color:var(--table-counter-value-color)]">{{
-      value
-    }}</span>
+    <span class="tw-text-[color:var(--table-counter-label-color)]">{{ label }}&nbsp;</span>
+    <span class="tw-text-[color:var(--table-counter-value-color)]">{{ value }}</span>
   </div>
 </template>
 

@@ -1,8 +1,6 @@
 <template>
   <Field
-    v-if="
-      (property['dictionary'] || property['isDictionary']) && !property['multivalue']
-    "
+    v-if="(property['dictionary'] || property['isDictionary']) && !property['multivalue']"
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property['displayName'] || property['name']"
     :modelValue="getter(property, true)"
@@ -276,7 +274,7 @@
       :disabled="disabled"
       :name="property['displayName'] || property['name']"
     >
-      {{ handleDisplayName || property['displayName'] }}
+      {{ handleDisplayName || property["displayName"] }}
     </VcCheckbox>
   </Field>
 
@@ -335,16 +333,12 @@ const { locale, te, t } = useI18n();
 const rules: IValidationRules = {};
 const items = ref([]);
 const handleDisplayProperty = computed(() => {
-  return items.value?.some((x: { alias: string }) => x.alias)
-    ? "alias"
-    : "name";
+  return items.value?.some((x: { alias: string }) => x.alias) ? "alias" : "name";
 });
 const handleDisplayName = computed(() => {
   let localized: string;
   const isLocaleExists = props.property.displayNames?.find((x: IDisplayName) =>
-    x.languageCode
-      ?.toLowerCase()
-      .startsWith((locale.value as string)?.toLowerCase())
+    x.languageCode?.toLowerCase().startsWith((locale.value as string)?.toLowerCase())
   );
   if (isLocaleExists && isLocaleExists.name) {
     localized = isLocaleExists.name;
@@ -352,13 +346,10 @@ const handleDisplayName = computed(() => {
     const fallback = props.property.displayNames?.find((x: IDisplayName) =>
       x.languageCode?.toLowerCase().includes(props.culture?.toLowerCase())
     );
-    localized =
-      fallback && fallback?.name ? fallback.name : props.property.name;
+    localized = fallback && fallback?.name ? fallback.name : props.property.name;
   }
 
-  return localized && te(localized.toUpperCase())
-    ? t(localized.toUpperCase())
-    : localized;
+  return localized && te(localized.toUpperCase()) ? t(localized.toUpperCase()) : localized;
 });
 
 onMounted(async () => {

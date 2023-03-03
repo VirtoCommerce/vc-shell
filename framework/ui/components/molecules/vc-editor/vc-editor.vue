@@ -9,9 +9,17 @@
     ]"
   >
     <!-- Editor label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="required">
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+      :required="required"
+    >
       <span>{{ label }}</span>
-      <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
+      <template
+        v-if="tooltip"
+        v-slot:tooltip
+        >{{ tooltip }}</template
+      >
     </VcLabel>
 
     <!-- Editor field -->
@@ -22,7 +30,10 @@
       theme="chrome"
       @input="onInput"
     />
-    <slot v-if="errorMessage" name="error">
+    <slot
+      v-if="errorMessage"
+      name="error"
+    >
       <VcHint class="vc-editor__error">
         {{ errorMessage }}
       </VcHint>

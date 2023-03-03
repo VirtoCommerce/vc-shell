@@ -1,7 +1,11 @@
 <template>
   <div>
     <template v-if="component && component.url">
-      <router-link :to="component.url" custom v-slot="{ isActive, navigate }">
+      <router-link
+        :to="component.url"
+        custom
+        v-slot="{ isActive, navigate }"
+      >
         <vc-app-menu-link
           :isActive="isActive"
           :children="children"
@@ -23,8 +27,14 @@
       />
 
       <!-- Nested menu items -->
-      <div class="vc-app-menu-item__child" v-if="isOpened">
-        <template v-for="(nested, i) in children" :key="i">
+      <div
+        class="vc-app-menu-item__child"
+        v-if="isOpened"
+      >
+        <template
+          v-for="(nested, i) in children"
+          :key="i"
+        >
           <router-link
             :to="nested.component.url"
             custom
@@ -39,9 +49,7 @@
               ]"
               v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
-              @click="
-                $emit('child:click', { item: nested, navigationCb: navigate })
-              "
+              @click="$emit('child:click', { item: nested, navigationCb: navigate })"
             >
               {{ nested.title }}
             </div>
@@ -54,10 +62,10 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, computed } from "vue";
-import {IBladeToolbar, IMenuItems} from "./../../../../../../../../core/types";
+import { IBladeToolbar, IMenuItems } from "./../../../../../../../../core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { NavigationFailure, useRoute } from "vue-router";
-import {ExtendedComponent} from "./../../../../../../../../shared";
+import { ExtendedComponent } from "./../../../../../../../../shared";
 
 export interface Props {
   sticky?: boolean;
@@ -104,18 +112,12 @@ const isOpened = ref(false);
 const isHomePage = computed(() => route.path === "/");
 
 onMounted(() => {
-  if (
-    props.children &&
-    props.children.length &&
-    props.children.find((x) => x.component?.url === route?.path)
-  ) {
+  if (props.children && props.children.length && props.children.find((x) => x.component?.url === route?.path)) {
     isOpened.value = true;
   }
 });
 
-function onMenuItemClick(
-  navigationCb?: () => Promise<void | NavigationFailure>
-) {
+function onMenuItemClick(navigationCb?: () => Promise<void | NavigationFailure>) {
   if (!props.children?.length) {
     emit("click", navigationCb);
   } else {

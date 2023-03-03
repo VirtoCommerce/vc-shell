@@ -8,9 +8,7 @@ interface IUseAutosave {
 
 export default (data, modified, defaultName: string): IUseAutosave => {
   const rawValue = computed(() => (isRef(data) ? unref(data) : data));
-  const isModified = computed(() =>
-    isRef(modified) ? unref(modified) : modified
-  );
+  const isModified = computed(() => (isRef(modified) ? unref(modified) : modified));
   const savedValue = ref();
 
   const isSaving = ref(false);

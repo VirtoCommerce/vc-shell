@@ -11,9 +11,7 @@ export interface StatusImage {
 export interface VcTableProps {
   columns?: ITableColumns[];
   items?: { id?: string }[] | any[];
-  itemActionBuilder?: (item: {
-    id?: string;
-  }) => IActionBuilderResult[] | undefined;
+  itemActionBuilder?: (item: { id?: string }) => IActionBuilderResult[] | undefined;
   sort?: string | undefined;
   multiselect?: boolean | undefined;
   expanded?: boolean | undefined;
@@ -42,14 +40,9 @@ export interface VcTableProps {
 export interface VcTableSlots {
   header: () => VNode[];
   filters: (args: { closePanel: () => void }) => VNode[];
-  "mobile-item": (args: {
-    item: { [x: string]: any; id: string };
-  }) => VNode[];
+  "mobile-item": (args: { item: { [x: string]: any; id: string } }) => VNode[];
   [key: `header_${string}`]: () => VNode[];
-  [key: `item_${string}`]: (args: {
-    item?: { [x: string]: any; id: string };
-    cell?: ITableColumns;
-  }) => VNode[];
+  [key: `item_${string}`]: (args: { item?: { [x: string]: any; id: string }; cell?: ITableColumns }) => VNode[];
   notfound: () => VNode[];
   empty: () => VNode[];
   footer: () => VNode[];

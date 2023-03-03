@@ -1,6 +1,6 @@
 /* Atoms */
 export { VcBadge } from "./atoms/vc-badge";
-export {VcButton } from "./atoms/vc-button";
+export { VcButton } from "./atoms/vc-button";
 export { VcCard } from "./atoms/vc-card";
 export { VcCheckbox } from "./atoms/vc-checkbox";
 export { VcCol } from "./atoms/vc-col";

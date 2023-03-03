@@ -31,7 +31,10 @@
         @update:modelValue="$emit('update:modelValue', +$event)"
       >
         <template v-slot:append-inner>
-          <slot name="button" :toggleHandler="toggleHandler">
+          <slot
+            name="button"
+            :toggleHandler="toggleHandler"
+          >
             <button
               class="tw-text-[#43b0e6] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
               @click.stop.prevent="toggleHandler"
@@ -41,7 +44,11 @@
           </slot>
         </template>
         <template v-slot:control="{ placeholder }">
-          <input type="text" ref="inputRef" :placeholder="placeholder" />
+          <input
+            type="text"
+            ref="inputRef"
+            :placeholder="placeholder"
+          />
         </template>
       </VcInput>
     </template>

@@ -4,9 +4,7 @@
     <template v-if="value > 0">
       <span>{{ Math.trunc(Number(value)) }}</span
       ><span class="tw-text-[#a5a5a5] tw-text-xs"
-        >.{{
-          `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2)
-        }}</span
+        >.{{ `${(Number(value) * 100) % 100}`.padEnd(2, "0").slice(0, 2) }}</span
       >
     </template>
     <template v-else>
@@ -15,7 +13,10 @@
   </template>
 
   <!-- Date ago cell -->
-  <span v-else-if="cell.type === 'date-ago'" class="tw-text-[#a5a5a5]">
+  <span
+    v-else-if="cell.type === 'date-ago'"
+    class="tw-text-[#a5a5a5]"
+  >
     <template v-if="value">
       {{ moment(value).fromNow() }}
     </template>
@@ -24,9 +25,7 @@
 
   <!-- Date exact cell -->
   <span
-    v-else-if="
-      cell.type === 'date' || cell.type === 'time' || cell.type === 'date-time'
-    "
+    v-else-if="cell.type === 'date' || cell.type === 'time' || cell.type === 'date-time'"
     class="tw-text-[#a5a5a5]"
   >
     <template v-if="value">
@@ -34,15 +33,9 @@
         {{ moment(value).locale(locale).format(cell.format) }}
       </template>
       <template v-else>
-        <template v-if="cell.type === 'date'">{{
-          value.toLocaleDateString()
-        }}</template>
-        <template v-if="cell.type === 'time'">{{
-          value.toLocaleTimeString()
-        }}</template>
-        <template v-if="cell.type === 'date-time'">{{
-          value.toLocaleString()
-        }}</template>
+        <template v-if="cell.type === 'date'">{{ value.toLocaleDateString() }}</template>
+        <template v-if="cell.type === 'time'">{{ value.toLocaleTimeString() }}</template>
+        <template v-if="cell.type === 'date-time'">{{ value.toLocaleString() }}</template>
       </template>
     </template>
     <template v-else>N/A</template>
@@ -73,7 +66,10 @@
   </div>
 
   <!-- Number cell -->
-  <span v-else-if="cell.type === 'number'" class="tw-text-right">
+  <span
+    v-else-if="cell.type === 'number'"
+    class="tw-text-right"
+  >
     {{ Number(value).toFixed(0) }}
   </span>
 
@@ -106,13 +102,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const locale = window.navigator.language;
 const value = computed(() => {
-  return (props.cell.field || props.cell.id)
-    .split(".")
-    .reduce((p: { [x: string]: unknown }, c: string) => {
-      if (p && Array.isArray(p) && p.length) {
-        return (p && p[0][c]) || null;
-      }
-      return (p && p[c]) || null;
-    }, props.item);
+  return (props.cell.field || props.cell.id).split(".").reduce((p: { [x: string]: unknown }, c: string) => {
+    if (p && Array.isArray(p) && p.length) {
+      return (p && p[0][c]) || null;
+    }
+    return (p && p[c]) || null;
+  }, props.item);
 });
 </script>

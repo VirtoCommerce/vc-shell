@@ -1,11 +1,7 @@
 <template>
   <div
     class="vc-status"
-    :class="[
-      `vc-status_${variant}`,
-      { 'vc-status_outline': outline },
-      { 'vc-status_extended': extend },
-    ]"
+    :class="[`vc-status_${variant}`, { 'vc-status_outline': outline }, { 'vc-status_extended': extend }]"
   >
     <slot></slot>
   </div>

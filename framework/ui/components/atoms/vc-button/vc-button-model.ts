@@ -2,14 +2,7 @@ import { VNode } from "vue";
 
 export interface VcButtonProps {
   icon?: string | undefined;
-  variant?:
-    | "primary"
-    | "secondary"
-    | "special"
-    | "danger"
-    | "widget"
-    | "onlytext"
-    | undefined;
+  variant?: "primary" | "secondary" | "special" | "danger" | "widget" | "onlytext" | undefined;
   disabled?: boolean | undefined;
   small?: boolean | undefined;
   outline?: boolean | undefined;

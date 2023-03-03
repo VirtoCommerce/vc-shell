@@ -57,8 +57,7 @@ const delta = ref(0);
 
 onMounted(() => {
   const observer = new ResizeObserver(() => {
-    scroll.value = (component.value &&
-      component.value.clientHeight < component.value.scrollHeight) as boolean;
+    scroll.value = (component.value && component.value.clientHeight < component.value.scrollHeight) as boolean;
   });
 
   if (component.value) {
@@ -66,9 +65,7 @@ onMounted(() => {
   }
 });
 
-const touchable = computed(
-  () => status.value !== "refresh" && status.value !== "success"
-);
+const touchable = computed(() => status.value !== "refresh" && status.value !== "success");
 
 const scrollTop = () => {
   if (component.value) {
@@ -164,8 +161,7 @@ defineExpose({
   --container-scroll-color-hover: #cce4f5;
   --container-scroll-width: 8px;
   --container-scroll-padding: 8px;
-  --container-scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset,
-    0 -3px 2px rgba(0, 0, 0, 0.1) inset;
+  --container-scroll-shadow: 0 3px 2px rgba(0, 0, 0, 0.1) inset, 0 -3px 2px rgba(0, 0, 0, 0.1) inset;
 }
 
 .vc-container {

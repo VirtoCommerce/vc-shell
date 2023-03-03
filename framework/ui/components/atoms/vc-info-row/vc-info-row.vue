@@ -4,11 +4,20 @@
       <VcCol>
         <VcLabel>
           <span>{{ label }}</span>
-          <template v-if="tooltip" v-slot:tooltip>{{ tooltip }}</template>
+          <template
+            v-if="tooltip"
+            v-slot:tooltip
+            >{{ tooltip }}</template
+          >
         </VcLabel>
       </VcCol>
       <VcCol size="2">
-        <p class="tw-m-0" v-if="type === 'default'">{{ value }}</p>
+        <p
+          class="tw-m-0"
+          v-if="type === 'default'"
+        >
+          {{ value }}
+        </p>
         <VcLink v-else-if="type === 'email'">{{ value }}</VcLink>
       </VcCol>
     </VcRow>

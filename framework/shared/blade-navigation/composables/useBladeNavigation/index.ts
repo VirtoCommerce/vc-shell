@@ -2,13 +2,7 @@ import { computed, ref, unref, watch, Ref } from "vue";
 import { isEqual } from "lodash-es";
 import { useRouter, useRoute, NavigationFailure } from "vue-router";
 import { usePermissions } from "./../../../../core/composables";
-import {
-  ExtendedComponent,
-  IBladeContainer,
-  IBladeElement,
-  IBladeEvent,
-  IParentCallArgs,
-} from "./../../../../shared";
+import { ExtendedComponent, IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "./../../../../shared";
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;
@@ -16,14 +10,7 @@ interface IUseBladeNavigation {
   readonly parentBladeParam: Ref<string>;
   bladesRefs: Ref<IBladeElement[]>;
   openBlade: (
-    {
-      parentBlade,
-      component,
-      param,
-      bladeOptions,
-      onOpen,
-      onClose,
-    }: IBladeEvent,
+    { parentBlade, component, param, bladeOptions, onOpen, onClose }: IBladeEvent,
     index?: number,
     navigationCb?: () => Promise<void | NavigationFailure>
   ) => void;
@@ -61,14 +48,7 @@ export default (): IUseBladeNavigation => {
   );
 
   async function openBlade(
-    {
-      parentBlade,
-      component: blade,
-      param,
-      bladeOptions,
-      onOpen,
-      onClose,
-    }: IBladeEvent,
+    { parentBlade, component: blade, param, bladeOptions, onOpen, onClose }: IBladeEvent,
     index?: number,
     navigationCb?: () => Promise<void | NavigationFailure>
   ) {
@@ -102,9 +82,7 @@ export default (): IUseBladeNavigation => {
       if (existingChild === undefined) {
         child.idx = index + 1;
       } else if (existingChild) {
-        await closeBlade(
-          blades.value.findIndex((x) => x.idx === existingChild.idx)
-        );
+        await closeBlade(blades.value.findIndex((x) => x.idx === existingChild.idx));
         child.idx = existingChild.idx;
       }
 
@@ -118,10 +96,7 @@ export default (): IUseBladeNavigation => {
 
       isPrevented.value = false;
       for (let i = 0; i < children.length; i++) {
-        if (
-          children[i]?.onBeforeClose &&
-          typeof children[i].onBeforeClose === "function"
-        ) {
+        if (children[i]?.onBeforeClose && typeof children[i].onBeforeClose === "function") {
           const result = await children[i].onBeforeClose();
           if (result === false) {
             isPrevented.value = true;
@@ -172,18 +147,14 @@ export default (): IUseBladeNavigation => {
   }
 
   async function onParentCall(index: number, args: IParentCallArgs) {
-    console.debug(
-      `vc-app#onParentCall(${index}, { method: ${args.method} }) called.`
-    );
+    console.debug(`vc-app#onParentCall(${index}, { method: ${args.method} }) called.`);
 
     if (index >= 0) {
       const currentParent = unref(bladesRefs.value[index]);
 
       if (currentParent) {
         if (args.method && typeof currentParent[args.method] === "function") {
-          const method = currentParent[args.method] as (
-            args: unknown
-          ) => Promise<unknown>;
+          const method = currentParent[args.method] as (args: unknown) => Promise<unknown>;
           const result = await method(args.args);
           if (typeof args.callback === "function") {
             args.callback(result);

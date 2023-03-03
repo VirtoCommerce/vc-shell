@@ -11,10 +11,7 @@ interface UseApiClient<ApiClient extends IAuthApiBase> {
 }
 
 export function useApiClient<ApiClient extends IAuthApiBase>(
-  c: new (
-    baseUrl?: string,
-    http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }
-  ) => ApiClient
+  c: new (baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) => ApiClient
 ): UseApiClient<ApiClient> {
   const { getAccessToken } = useUser();
 

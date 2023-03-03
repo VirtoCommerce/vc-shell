@@ -7,10 +7,7 @@ export interface VcDynamicPropertyProps {
     property: Record<string, any>,
     isDictionary?: boolean
   ) => Record<string, any> | string | number | boolean | Date | undefined;
-  optionsGetter?: (
-    property: Record<string, any>,
-    keyword?: string
-  ) => Promise<any[] | undefined> | any[];
+  optionsGetter?: (property: Record<string, any>, keyword?: string) => Promise<any[] | undefined> | any[];
   setter?: (
     property: Record<string, any>,
     value: Record<string, any> | string | number | boolean,

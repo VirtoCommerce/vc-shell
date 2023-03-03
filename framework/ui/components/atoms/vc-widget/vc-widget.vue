@@ -10,8 +10,18 @@
       :icon="icon"
       size="xxl"
     ></VcIcon>
-    <div v-if="title" class="vc-widget__title">{{ title }}</div>
-    <div v-if="value !== undefined" class="vc-widget__value">{{ value }}</div>
+    <div
+      v-if="title"
+      class="vc-widget__title"
+    >
+      {{ title }}
+    </div>
+    <div
+      v-if="value !== undefined"
+      class="vc-widget__value"
+    >
+      {{ value }}
+    </div>
   </div>
 </template>
 

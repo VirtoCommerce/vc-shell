@@ -1,10 +1,10 @@
-import {VNode} from "vue";
+import { VNode } from "vue";
 
 export interface VcIconProps {
-   icon?: string | undefined
-    size?: "xs" | "s" | "m" | "l" | "xl" | "xxl"
+  icon?: string | undefined;
+  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl";
 }
 
 export interface VcIconSlots {
-    default: () => VNode[];
+  default: () => VNode[];
 }

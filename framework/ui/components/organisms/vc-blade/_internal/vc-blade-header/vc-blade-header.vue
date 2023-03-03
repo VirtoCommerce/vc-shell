@@ -6,15 +6,17 @@
       v-if="icon"
       class="tw-text-[color:var(--blade-header-icon-color)] tw-mr-3"
     >
-      <VcIcon :icon="icon" size="xxl"></VcIcon>
+      <VcIcon
+        :icon="icon"
+        size="xxl"
+      ></VcIcon>
     </div>
 
     <div class="tw-overflow-hidden tw-grow tw-basis-0">
       <div
         class="tw-text-[color:var(--blade-header-title-color)] tw-text-lg tw-truncate"
         :class="{
-          '!tw-text-[length:var(--blade-header-title-font-size)] tw-font-medium':
-            !subtitle,
+          '!tw-text-[length:var(--blade-header-title-font-size)] tw-font-medium': !subtitle,
         }"
       >
         {{ title }}
@@ -31,17 +33,30 @@
       <slot name="actions"></slot>
     </div>
 
-    <div v-if="!$isMobile.value" class="tw-flex tw-items-center">
+    <div
+      v-if="!$isMobile.value"
+      class="tw-flex tw-items-center"
+    >
       <template v-if="expandable">
         <div
           v-if="expanded"
           class="tw-text-[color:var(--blade-header-button-color)] tw-ml-4 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)]"
           @click="onCollapse"
         >
-          <VcIcon icon="fas fa-window-minimize" size="s"></VcIcon>
+          <VcIcon
+            icon="fas fa-window-minimize"
+            size="s"
+          ></VcIcon>
         </div>
-        <div v-else class="vc-blade-header__button" @click="onExpand">
-          <VcIcon icon="fas fa-window-maximize" size="s"></VcIcon>
+        <div
+          v-else
+          class="vc-blade-header__button"
+          @click="onExpand"
+        >
+          <VcIcon
+            icon="fas fa-window-maximize"
+            size="s"
+          ></VcIcon>
         </div>
       </template>
       <div

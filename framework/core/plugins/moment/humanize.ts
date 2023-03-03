@@ -1,10 +1,7 @@
 import _ from "lodash";
 import { default as moment, Duration, RelativeTimeKey } from "moment";
 
-type momentUnit = Extract<
-  moment.RelativeTimeKey,
-  "s" | "m" | "h" | "d" | "w" | "M" | "y"
->;
+type momentUnit = Extract<moment.RelativeTimeKey, "s" | "m" | "h" | "d" | "w" | "M" | "y">;
 
 const momentUnits: momentUnit[] = ["s", "m", "h", "d", "w", "M", "y"];
 

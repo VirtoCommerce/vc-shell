@@ -1,12 +1,14 @@
 <template>
-  <div class="vc-image" :class="[`vc-image_${size}`]">
+  <div
+    class="vc-image"
+    :class="[`vc-image_${size}`]"
+  >
     <div
       :class="[
         `vc-image_${aspect}`,
         {
           'tw-rounded-full tw-pb-[var(--image-padding-bottom-1x1)]': rounded,
-          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]':
-            bordered,
+          'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
           'tw-cursor-pointer': clickable,
         },
         'tw-relative',
@@ -18,7 +20,10 @@
         v-if="!src"
         class="tw-absolute tw-w-full tw-h-full tw-flex tw-items-center tw-justify-center tw-text-[#83a3be]"
       >
-        <VcIcon icon="fas fa-image" size="xl"></VcIcon>
+        <VcIcon
+          icon="fas fa-image"
+          size="xl"
+        ></VcIcon>
       </div>
     </div>
   </div>
@@ -41,9 +46,7 @@ const emit = defineEmits(["click"]);
 
 const imageHandler = computed(() => {
   if (props.src) {
-    return `background: url(${encodeURI(props.src)}) center / ${
-      props.background
-    } no-repeat`;
+    return `background: url(${encodeURI(props.src)}) center / ${props.background} no-repeat`;
   }
   return undefined;
 });

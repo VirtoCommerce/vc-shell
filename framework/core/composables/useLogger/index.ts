@@ -1,10 +1,5 @@
 import { App } from "vue";
-import {
-  createLogger,
-  LogLevel,
-  useLogger as useVueLogger,
-  VueLogger,
-} from "vue-logger-plugin";
+import { createLogger, LogLevel, useLogger as useVueLogger, VueLogger } from "vue-logger-plugin";
 
 export function init(app: App): App {
   console.debug(`[@vc-shell/framework#useLogger:init] - Entry point`);

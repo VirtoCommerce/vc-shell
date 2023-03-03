@@ -18,7 +18,10 @@
       :icon="icon"
       :size="small ? 'xs' : 's'"
     ></VcIcon>
-    <span v-if="$slots['default']" class="vc-button__title">
+    <span
+      v-if="$slots['default']"
+      class="vc-button__title"
+    >
       <slot></slot>
     </span>
   </button>

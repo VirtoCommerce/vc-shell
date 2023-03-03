@@ -1,7 +1,11 @@
 <template>
   <div>
     <!-- Switch label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="required">
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+      :required="required"
+    >
       <span>{{ label }}</span>
     </VcLabel>
     <div class="tw-relative tw-inline-block tw-w-[54px] tw-h-[18px]">
@@ -15,7 +19,10 @@
         />
         <span class="vc-switch__slider"></span>
       </label>
-      <VcHint class="tw-mt-2 tw-w-max" v-if="tooltip">
+      <VcHint
+        class="tw-mt-2 tw-w-max"
+        v-if="tooltip"
+      >
         {{ tooltip }}
       </VcHint>
     </div>

@@ -3,10 +3,22 @@
     class="vc-card"
     :class="[{ 'vc-card_collapsable': isCollapsable }, `vc-card_${variant}`]"
   >
-    <div class="vc-card__header" v-if="header" @click="onHeaderClick">
-      <VcIcon v-if="icon" class="vc-card__icon" :icon="icon" size="xl"></VcIcon>
+    <div
+      class="vc-card__header"
+      v-if="header"
+      @click="onHeaderClick"
+    >
+      <VcIcon
+        v-if="icon"
+        class="vc-card__icon"
+        :icon="icon"
+        size="xl"
+      ></VcIcon>
       <div class="vc-card__title">{{ header }}</div>
-      <div v-if="$slots['actions']" class="vc-card__actions">
+      <div
+        v-if="$slots['actions']"
+        class="vc-card__actions"
+      >
         <slot name="actions"></slot>
       </div>
       <VcIcon

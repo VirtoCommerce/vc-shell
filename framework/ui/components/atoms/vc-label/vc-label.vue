@@ -6,7 +6,10 @@
       class="tw-text-[color:var(--label-required-color)] tw-ml-1"
       >*</span
     >
-    <span v-if="$slots['tooltip']" class="tw-grow tw-basis-0 tw-ml-1">
+    <span
+      v-if="$slots['tooltip']"
+      class="tw-grow tw-basis-0 tw-ml-1"
+    >
       <VcIcon
         class="tw-text-[color:var(--label-tooltip-color)]"
         :icon="tooltipIcon"

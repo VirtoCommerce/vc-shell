@@ -8,7 +8,10 @@
       }"
       @click="currentPage !== 1 && $emit('itemClick', 1)"
     >
-      <VcIcon size="xs" icon="fas fa-angle-double-left"></VcIcon>
+      <VcIcon
+        size="xs"
+        icon="fas fa-angle-double-left"
+      ></VcIcon>
     </div>
 
     <!-- To previous page arrow -->
@@ -19,7 +22,10 @@
       }"
       @click="currentPage !== 1 && $emit('itemClick', currentPage - 1)"
     >
-      <VcIcon size="xs" icon="fas fa-arrow-left"></VcIcon>
+      <VcIcon
+        size="xs"
+        icon="fas fa-arrow-left"
+      ></VcIcon>
     </div>
 
     <template v-if="expanded && $isDesktop.value">
@@ -75,7 +81,10 @@
       }"
       @click="currentPage !== pages && $emit('itemClick', currentPage + 1)"
     >
-      <VcIcon size="xs" icon="fas fa-arrow-right"></VcIcon>
+      <VcIcon
+        size="xs"
+        icon="fas fa-arrow-right"
+      ></VcIcon>
     </div>
 
     <!-- To last page chevron -->
@@ -86,7 +95,10 @@
       }"
       @click="currentPage !== pages && $emit('itemClick', pages)"
     >
-      <VcIcon size="xs" icon="fas fa-angle-double-right"></VcIcon>
+      <VcIcon
+        size="xs"
+        icon="fas fa-angle-double-right"
+      ></VcIcon>
     </div>
   </div>
 </template>

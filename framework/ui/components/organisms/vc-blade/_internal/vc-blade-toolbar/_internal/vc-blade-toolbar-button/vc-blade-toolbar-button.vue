@@ -6,13 +6,19 @@
     :title="title as string"
   >
     <div ref="dropButtonRef">
-      <div class="vc-blade-toolbar-button__wrap" ref="bladeDropToggle">
+      <div
+        class="vc-blade-toolbar-button__wrap"
+        ref="bladeDropToggle"
+      >
         <VcIcon
           class="vc-blade-toolbar-button__icon"
           :icon="icon as string"
           size="m"
         ></VcIcon>
-        <div v-if="isExpanded" class="vc-blade-toolbar-button__title">
+        <div
+          v-if="isExpanded"
+          class="vc-blade-toolbar-button__title"
+        >
           {{ title }}
         </div>
       </div>
@@ -140,15 +146,9 @@ function handleDropItemClick(item: IBladeDropdownItem) {
   --blade-toolbar-button-icon-color-hover: #257fad;
   --blade-toolbar-button-icon-color-disabled: #d2d4d7;
 
-  --blade-toolbar-button-background-color: var(
-    --blade-toolbar-background-color
-  );
-  --blade-toolbar-button-background-color-hover: var(
-    --blade-toolbar-background-color
-  );
-  --blade-toolbar-button-background-color-disabled: var(
-    --blade-toolbar-background-color
-  );
+  --blade-toolbar-button-background-color: var(--blade-toolbar-background-color);
+  --blade-toolbar-button-background-color-hover: var(--blade-toolbar-background-color);
+  --blade-toolbar-button-background-color-disabled: var(--blade-toolbar-background-color);
 }
 
 .vc-blade-toolbar-button {

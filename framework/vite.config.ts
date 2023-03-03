@@ -22,12 +22,7 @@ export default getLibraryConfiguration(
         entry: path.resolve(__dirname, "index.ts"),
       },
       rollupOptions: {
-        external: [
-          "vue",
-          "vue-router",
-          "vee-validate",
-          "@vc-shell/config-generator",
-        ],
+        external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
         output: {
           globals: {
             vue: "Vue",

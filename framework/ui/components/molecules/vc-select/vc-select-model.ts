@@ -1,9 +1,6 @@
 import { VNode } from "vue";
 
-export type OptionProp =
-  | ((option: string | Record<string, unknown>) => string)
-  | string
-  | undefined;
+export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 
 export interface VcSelectProps {
   /**
@@ -65,16 +62,16 @@ export interface VcSelectProps {
    * Default value: []
    */
   options?:
-  | ((
-    keyword?: string,
-    skip?: number,
-    ids?: string[]
-  ) => Promise<{
-    results?: object[];
-    totalCount?: number;
-  }>)
-  | any[]
-  | undefined;
+    | ((
+        keyword?: string,
+        skip?: number,
+        ids?: string[]
+      ) => Promise<{
+        results?: object[];
+        totalCount?: number;
+      }>)
+    | any[]
+    | undefined;
   /**
    * Property of option which holds the 'value'
    * Default value: id
@@ -115,8 +112,8 @@ export interface VcSelectProps {
    */
   searchable?: boolean | undefined;
   /**
-  * Emitted when the component needs to change the model; Is also used by v-model
-  */
+   * Emitted when the component needs to change the model; Is also used by v-model
+   */
   "onUpdate:modelValue"?: (inputValue: any) => void;
   /**
    * Emitted when user wants to filter a value

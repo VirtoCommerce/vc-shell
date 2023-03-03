@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-popup" :class="`vc-popup_${variant}`">
+  <div
+    class="vc-popup"
+    :class="`vc-popup_${variant}`"
+  >
     <div class="vc-popup__wrapper">
       <div class="vc-popup__inner">
         <div class="vc-popup__header">

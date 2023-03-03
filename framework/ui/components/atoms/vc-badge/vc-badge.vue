@@ -16,9 +16,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  VcBadgeProps,
-} from "./vc-badge-model";
+import { VcBadgeProps } from "./vc-badge-model";
 
 const props = withDefaults(defineProps<VcBadgeProps>(), {
   active: false,

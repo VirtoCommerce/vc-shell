@@ -32,25 +32,13 @@ interface IUseUser {
   signOut: () => Promise<void>;
   validateToken: (userId: string, token: string) => Promise<boolean>;
   validatePassword: (password: string) => Promise<IdentityResult>;
-  resetPasswordByToken: (
-    userId: string,
-    password: string,
-    token: string
-  ) => Promise<SecurityResult>;
-  requestPasswordReset: (
-    loginOrEmail: string
-  ) => Promise<RequestPasswordResult>;
-  changeUserPassword: (
-    oldPassword: string,
-    newPassword: string
-  ) => Promise<SecurityResult>;
+  resetPasswordByToken: (userId: string, password: string, token: string) => Promise<SecurityResult>;
+  requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
+  changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult>;
 }
 
 export default (): IUseUser => {
-  async function validateToken(
-    userId: string,
-    token: string
-  ): Promise<boolean> {
+  async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
     try {
       loading.value = true;
@@ -69,21 +57,14 @@ export default (): IUseUser => {
     return securityClient.validatePassword(password);
   }
 
-  async function resetPasswordByToken(
-    userId: string,
-    password: string,
-    token: string
-  ): Promise<SecurityResult> {
+  async function resetPasswordByToken(userId: string, password: string, token: string): Promise<SecurityResult> {
     return securityClient.resetPasswordByToken(userId, {
       newPassword: password,
       token,
     } as ResetPasswordConfirmRequest);
   }
 
-  async function signIn(
-    username: string,
-    password: string
-  ): Promise<SignInResults> {
+  async function signIn(username: string, password: string): Promise<SignInResults> {
     console.debug(`[@vc-shell/framework#useUser:signIn] - Entry point`);
     let token = undefined;
     try {
@@ -103,10 +84,7 @@ export default (): IUseUser => {
         expiresAt: addOffsetToCurrentDate(Number(token.data["expires_in"])),
         userName: username,
       };
-      console.log(
-        "[userUsers]: an access token has been obtained successfully",
-        authData.value
-      );
+      console.log("[userUsers]: an access token has been obtained successfully", authData.value);
 
       storeAuthData(authData.value);
       await loadUser();
@@ -153,9 +131,7 @@ export default (): IUseUser => {
         authData.value.refreshToken ?? "",
         {}
       );
-      console.log(
-        "[userUsers]: an access token is expired, using refresh token to receive a new"
-      );
+      console.log("[userUsers]: an access token is expired, using refresh token to receive a new");
       try {
         const newToken = await token.refresh();
         if (newToken) {
@@ -164,9 +140,7 @@ export default (): IUseUser => {
             accessToken: newToken.accessToken,
             token: newToken.accessToken,
             refreshToken: newToken.refreshToken,
-            expiresAt: addOffsetToCurrentDate(
-              Number(newToken.data["expires_in"])
-            ),
+            expiresAt: addOffsetToCurrentDate(Number(newToken.data["expires_in"])),
           };
           storeAuthData(authData.value);
         }
@@ -179,24 +153,17 @@ export default (): IUseUser => {
   }
 
   function storeAuthData(authData: AuthData) {
-    localStorage.setItem(
-      VC_AUTH_DATA_KEY,
-      JSON.stringify({ ...(authData || {}) })
-    );
+    localStorage.setItem(VC_AUTH_DATA_KEY, JSON.stringify({ ...(authData || {}) }));
   }
   function readAuthData(): AuthData {
-    return JSON.parse(
-      localStorage.getItem(VC_AUTH_DATA_KEY) || "{}"
-    ) as AuthData;
+    return JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) || "{}") as AuthData;
   }
 
   function addOffsetToCurrentDate(offsetInSeconds: number): number {
     return Date.now() + offsetInSeconds * 1000;
   }
 
-  async function requestPasswordReset(
-    loginOrEmail: string
-  ): Promise<RequestPasswordResult> {
+  async function requestPasswordReset(loginOrEmail: string): Promise<RequestPasswordResult> {
     try {
       loading.value = true;
       await securityClient.requestPasswordReset(loginOrEmail);
@@ -209,10 +176,7 @@ export default (): IUseUser => {
     }
   }
 
-  async function changeUserPassword(
-    oldPassword: string,
-    newPassword: string
-  ): Promise<SecurityResult> {
+  async function changeUserPassword(oldPassword: string, newPassword: string): Promise<SecurityResult> {
     const token = await getAccessToken();
     let result;
 
@@ -220,21 +184,18 @@ export default (): IUseUser => {
     if (token) {
       try {
         loading.value = true;
-        const res = await fetch(
-          "/api/platform/security/currentuser/changepassword",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json-patch+json",
-              Accept: "text/plain",
-              authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              oldPassword,
-              newPassword,
-            }),
-          }
-        );
+        const res = await fetch("/api/platform/security/currentuser/changepassword", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json-patch+json",
+            Accept: "text/plain",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            oldPassword,
+            newPassword,
+          }),
+        });
         if (res.status !== 500) {
           result = await res.text().then((response) => {
             return JSON.parse(response);

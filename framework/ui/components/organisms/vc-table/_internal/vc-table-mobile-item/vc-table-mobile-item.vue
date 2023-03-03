@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-relative tw-flex tw-flex-nowrap tw-items-stretch tw-transition  tw-duration-200"
+    class="tw-relative tw-flex tw-flex-nowrap tw-items-stretch tw-transition tw-duration-200"
     :class="{ ' tw-transition-none': isMoving }"
     :style="`transform: translateX(${offsetX}px)`"
     @click="$emit('click')"
@@ -11,11 +11,11 @@
   >
     <!-- Left swipe actions-->
     <div
-      class= "tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
+      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
       v-if="leftSwipeActions && leftSwipeActions.length"
     >
       <div
-        class= "tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+        class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
         :class="[`vc-table-mobile__item-action_${leftSwipeActions[0].variant}`]"
         @click.stop="leftSwipeActions[0].clickHandler(item)"
       >
@@ -26,22 +26,20 @@
       </div>
     </div>
 
-    <div class= "tw-flex-shrink-0 tw-w-full">
+    <div class="tw-flex-shrink-0 tw-w-full">
       <!-- Mobile item slot content -->
       <slot></slot>
     </div>
 
     <!-- Item actions -->
     <div
-      class= "tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
+      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
       v-if="rightSwipeActions && rightSwipeActions.length"
     >
       <!-- First available action -->
       <div
-        class= "tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-        :class="[
-          `vc-table-mobile__item-action_${rightSwipeActions[0].variant}`,
-        ]"
+        class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+        :class="[`vc-table-mobile__item-action_${rightSwipeActions[0].variant}`]"
         @click.stop="rightSwipeActions[0].clickHandler(item)"
       >
         <VcIcon :icon="rightSwipeActions[0].icon"></VcIcon>
@@ -53,10 +51,8 @@
       <!-- Second available action -->
       <div
         v-if="rightSwipeActions.length === 2"
-        class= "tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
-        :class="[
-          `vc-table-mobile__item-action_${rightSwipeActions[1].variant}`,
-        ]"
+        class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+        :class="[`vc-table-mobile__item-action_${rightSwipeActions[1].variant}`]"
         @click.stop="rightSwipeActions[1].clickHandler(item)"
       >
         <VcIcon :icon="rightSwipeActions[1].icon"></VcIcon>
@@ -68,7 +64,7 @@
       <!-- Other available actions -->
       <template v-if="rightSwipeActions.length > 2">
         <div
-          class= "tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
+          class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
           @click.stop="isActionsPopupVisible = true"
         >
           <VcIcon icon="fas fa-ellipsis-h"></VcIcon>
@@ -76,17 +72,18 @@
         </div>
 
         <!-- Actions popup -->
-        <teleport to="body" v-if="isActionsPopupVisible">
+        <teleport
+          to="body"
+          v-if="isActionsPopupVisible"
+        >
           <div
             class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[rgba(107,121,135,0.15)] tw-flex tw-items-center tw-justify-center tw-z-[99]"
           >
             <div
               class="tw-bg-white tw-rounded-[6px] tw-overflow-hidden tw-p-5 tw-max-w-[80%] tw-w-[350px] tw-border tw-border-solid tw-border-[#eef0f2] tw-box-border tw-shadow-[1px_1px_22px_rgba(126,142,157,0.2)]"
             >
-              <div class= "tw-flex tw-w-full tw-items-center">
-                <span
-                  class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]"
-                >
+              <div class="tw-flex tw-w-full tw-items-center">
+                <span class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]">
                   {{ $t("All actions") }}
                 </span>
                 <VcIcon
@@ -97,14 +94,17 @@
                 ></VcIcon>
               </div>
 
-              <div class= "tw-flex tw-flex-wrap tw-my-5 tw-justify-between">
+              <div class="tw-flex tw-flex-wrap tw-my-5 tw-justify-between">
                 <div
                   v-for="(itemAction, i) in itemActions"
                   :key="i"
-                  class= "tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
+                  class="tw-flex tw-grow tw-shrink-0 tw-flex-col tw-items-center tw-text-[#319ed4] tw-my-2 tw-box-border tw-p-1 tw-max-w-[80px]"
                   @click="itemAction.clickHandler(item)"
                 >
-                  <VcIcon :icon="itemAction.icon" size="xl"></VcIcon>
+                  <VcIcon
+                    :icon="itemAction.icon"
+                    size="xl"
+                  ></VcIcon>
                   <div class="tw-text-base tw-mt-2 tw-text-center">
                     {{ itemAction.title }}
                   </div>
@@ -165,23 +165,17 @@ const rightSwipeActions = computed(
   () =>
     itemActions.value &&
     itemActions.value.length &&
-    itemActions.value.filter(
-      (actions: IActionBuilderResult) => !actions.leftActions
-    )
+    itemActions.value.filter((actions: IActionBuilderResult) => !actions.leftActions)
 );
 const leftSwipeActions = computed(
   () =>
     itemActions.value &&
     itemActions.value.length &&
-    itemActions.value.filter(
-      (actions: IActionBuilderResult) => actions.leftActions
-    )
+    itemActions.value.filter((actions: IActionBuilderResult) => actions.leftActions)
 );
 
 function handleOffset() {
-  if (
-    itemActions.value.some((action: IActionBuilderResult) => action.leftActions)
-  ) {
+  if (itemActions.value.some((action: IActionBuilderResult) => action.leftActions)) {
     offsetX.value = -maxWidth;
     startOffsetX.value = offsetX.value;
   } else {
@@ -233,10 +227,7 @@ function touchEnd(): void {
   if (absoluteOffsetX < maxWidth) {
     offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
   } else {
-    offsetX.value =
-      absoluteOffsetX <= maxWidth * 2 - threshold * 2
-        ? -maxWidth
-        : -maxWidth * 2;
+    offsetX.value = absoluteOffsetX <= maxWidth * 2 - threshold * 2 ? -maxWidth : -maxWidth * 2;
   }
 
   isMoving.value = false;
@@ -247,10 +238,7 @@ function touchCancel(): void {
   if (absoluteOffsetX < maxWidth) {
     offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
   } else {
-    offsetX.value =
-      absoluteOffsetX <= maxWidth * 2 - threshold * 2
-        ? -maxWidth
-        : -maxWidth * 2;
+    offsetX.value = absoluteOffsetX <= maxWidth * 2 - threshold * 2 ? -maxWidth : -maxWidth * 2;
   }
 
   isMoving.value = false;

@@ -49,7 +49,7 @@ export interface IActionBuilderResult {
   title: string;
   variant: string;
   leftActions?: boolean;
-  clickHandler(item?: { id?: string; }): void;
+  clickHandler(item?: { id?: string }): void;
 }
 
 export interface IImage {
@@ -92,6 +92,6 @@ export type ITableColumns = {
   class?: string;
   format?: string;
   align?: string;
-}
+};
 
-export type { ExtendedComponent }
+export type { ExtendedComponent };

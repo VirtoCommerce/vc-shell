@@ -17,11 +17,7 @@
       :blades="bladesRefs"
       :buttons="toolbarItems"
       @toolbarbutton:click="onToolbarButtonClick"
-      @menubutton:click="
-        (
-          $refs.menu as Record<'isMobileVisible', boolean>
-        ).isMobileVisible = true
-      "
+      @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
       @logo:click="openDashboard"
       :title="title"
@@ -43,9 +39,7 @@
       ></VcAppMenu>
 
       <!-- Workspace blades -->
-      <div
-        class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0"
-      >
+      <div class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0">
         <slot name="bladeNavigation"></slot>
       </div>
 
@@ -132,8 +126,8 @@ defineExpose({
 
 <style lang="scss">
 :root {
-  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
-    linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%), linear-gradient(0deg, #e8f2f3, #e8f2f3),
+    #eef2f8;
 }
 
 .vc-app {

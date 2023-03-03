@@ -1,5 +1,8 @@
 <template>
-  <div class="vc-checkbox" :class="{ 'vc-checkbox_disabled': disabled }">
+  <div
+    class="vc-checkbox"
+    :class="{ 'vc-checkbox_disabled': disabled }"
+  >
     <label class="vc-checkbox__label">
       <input
         type="checkbox"
@@ -9,7 +12,10 @@
         @change="onChange"
       />
       <span class="vc-checkbox__checkmark"></span>
-      <span v-if="$slots['default']" class="tw-ml-2">
+      <span
+        v-if="$slots['default']"
+        class="tw-ml-2"
+      >
         <slot></slot>
       </span>
       <span
@@ -19,7 +25,10 @@
       >
     </label>
 
-    <slot v-if="errorMessage" name="error">
+    <slot
+      v-if="errorMessage"
+      name="error"
+    >
       <VcHint class="vc-checkbox__error tw-mt-1">
         {{ errorMessage }}
       </VcHint>

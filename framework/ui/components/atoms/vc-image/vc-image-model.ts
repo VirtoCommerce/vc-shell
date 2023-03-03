@@ -6,18 +6,7 @@ export interface VcImageProps {
   bordered?: boolean | undefined;
   clickable?: boolean | undefined;
   src?: string | undefined;
-  size?:
-    | "auto"
-    | "1x1"
-    | "16x9"
-    | "4x3"
-    | "3x2"
-    | "xs"
-    | "s"
-    | "m"
-    | "l"
-    | "xl"
-    | "xxl";
+  size?: "auto" | "1x1" | "16x9" | "4x3" | "3x2" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
   background?: "cover" | "contain" | "auto";
   onClick?: () => void;
 }

@@ -11,10 +11,19 @@
       class="vc-app-menu-item__handler"
       :class="{ 'vc-app-menu-item__handler_enabled': !sticky }"
     >
-      <VcIcon icon="fas fa-ellipsis-v" size="m" />
+      <VcIcon
+        icon="fas fa-ellipsis-v"
+        size="m"
+      />
     </div>
-    <div v-if="icon" class="vc-app-menu-item__icon">
-      <VcIcon :icon="icon" size="m" />
+    <div
+      v-if="icon"
+      class="vc-app-menu-item__icon"
+    >
+      <VcIcon
+        :icon="icon"
+        size="m"
+      />
     </div>
     <div class="vc-app-menu-item__title">
       {{ title }}

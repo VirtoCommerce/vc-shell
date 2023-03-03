@@ -8,7 +8,7 @@
     @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
-    <div class= "tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
+    <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
       <div class="assets-details__content tw-grow tw-basis-0">
         <VcContainer :no-padding="true">
           <div class="tw-p-4">
@@ -25,9 +25,7 @@
                 v-model="localImage.name"
                 clearable
                 required
-                :placeholder="
-                  $t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                "
+                :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
               ></VcInput>
               <VcInput
                 class="tw-mb-4"
@@ -42,9 +40,7 @@
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="localImage.description"
-                :placeholder="
-                  $t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')
-                "
+                :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                 required
               ></VcTextarea>
             </VcForm>
@@ -59,14 +55,7 @@
 import { computed, reactive, unref } from "vue";
 import { useI18n } from "./../../../../core/composables";
 import { IParentCallArgs } from "./../../../../shared";
-import {
-  VcBlade,
-  VcContainer,
-  VcForm,
-  VcImage,
-  VcInput,
-  VcTextarea,
-} from "./../../../../ui/components";
+import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "./../../../../ui/components";
 
 export interface Props {
   expanded?: boolean;
@@ -104,10 +93,7 @@ const bladeToolbar = [
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "fas fa-save",
     clickHandler() {
-      if (
-        props.options.sortHandler &&
-        typeof props.options.sortHandler === "function"
-      ) {
+      if (props.options.sortHandler && typeof props.options.sortHandler === "function") {
         props.options.sortHandler(false, localImage);
         emit("close:blade");
       }
@@ -118,15 +104,8 @@ const bladeToolbar = [
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     clickHandler() {
-      if (
-        window.confirm(
-          unref(computed(() => t("ASSETS.PAGES.DETAILS.DELETE_CONFIRMATION")))
-        )
-      ) {
-        if (
-          props.options.sortHandler &&
-          typeof props.options.sortHandler === "function"
-        ) {
+      if (window.confirm(unref(computed(() => t("ASSETS.PAGES.DETAILS.DELETE_CONFIRMATION"))))) {
+        if (props.options.sortHandler && typeof props.options.sortHandler === "function") {
           props.options.sortHandler(true, localImage);
           emit("close:blade");
         }

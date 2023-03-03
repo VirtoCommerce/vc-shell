@@ -7,9 +7,16 @@
     }"
   >
     <!-- Textarea label -->
-    <VcLabel v-if="label" class="tw-mb-2" :required="required">
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+      :required="required"
+    >
       <span>{{ label }}</span>
-      <template v-if="tooltip" v-slot:tooltip>
+      <template
+        v-if="tooltip"
+        v-slot:tooltip
+      >
         <span v-html="tooltip"></span>
       </template>
     </VcLabel>
@@ -26,7 +33,10 @@
       ></textarea>
     </div>
 
-    <slot v-if="errorMessage" name="error">
+    <slot
+      v-if="errorMessage"
+      name="error"
+    >
       <VcHint class="vc-textarea__error">
         {{ errorMessage }}
       </VcHint>

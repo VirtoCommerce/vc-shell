@@ -3859,7 +3859,12 @@
     "@typescript-eslint/types" "5.54.0"
     eslint-visitor-keys "^3.3.0"
 
-"@vee-validate/rules@^4.5.5":
+"@vee-validate/i18n@^4.7.3":
+  version "4.7.4"
+  resolved "https://registry.yarnpkg.com/@vee-validate/i18n/-/i18n-4.7.4.tgz#3e7eeaa6e48c596daf9e39126b0d45db070b9b21"
+  integrity sha512-zK5rnPjgd4kBEfUj4jWUu6GHsldETji/JuorBb+emWSD1QUo4nEr1R7zFqHHunbAQu664iIQnzAlsfzkkXM40A==
+
+"@vee-validate/rules@^4.7.3":
   version "4.7.4"
   resolved "https://registry.yarnpkg.com/@vee-validate/rules/-/rules-4.7.4.tgz#fca175f11ae4ce33e46d513b12feca94164b871f"
   integrity sha512-rWpmGKB/jy7/jbuAH/pfCYoCjiYDx77geNEaYeTl07eHo+2jL+j802Ttn85cTJsMUeXzRSUauepvNCpkVWV+aA==

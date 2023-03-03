@@ -2,7 +2,7 @@
   "name": "@vc-shell/framework",
   "version": "1.0.53",
   "main": "./dist/framework.js",
-  "module": "./dist/framework.js",
+  "module": "./dist/framework.esm.js",
   "types": "./dist/index.d.ts",
   "style": "./dist/style.css",
   "files": [
@@ -14,7 +14,7 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/framework.js",
+      "import": "./dist/framework.esm.js",
       "require": "./dist/framework.js",
       "types": "./dist/index.d.ts"
     },
@@ -46,7 +46,7 @@
     "vue": "^3.0.0",
     "vue-currency-input": "~2.5.1",
     "vue-i18n": "^9.1.7",
-    "vue-logger-plugin": "^2.1.2",
+    "vuejs3-logger": "^2.0.0-rc1",
     "vue-router": "^4.1.6",
     "vue3-ace-editor": "^2.2.2",
     "vue3-touch-events": "^4.1.0",
@@ -54,7 +54,7 @@
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
-    "@rollup/plugin-commonjs": "^21.0.2",
+    "@rollup/plugin-commonjs": "^24.0.1",
     "@vc-shell/api-client-generator": "^1.0.53",
     "@vc-shell/config-generator": "^1.0.53",
     "@vue-macros/volar": "^0.8.1",

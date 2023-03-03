@@ -1,12 +1,13 @@
 import typescript from "@rollup/plugin-typescript";
-import { LibraryOptions } from "vite";
+import { LibraryOptions, UserConfigExport } from "vite";
+import { RollupOptions } from "rollup";
 
 export default {
   build: {
     // sourcemap: true,
     lib: {
       entry: process.cwd() + "/src/index.ts",
-      formats: ["cjs"],
+      formats: ["cjs", "esm"],
     } as LibraryOptions,
     rollupOptions: {
       plugins: [
@@ -14,6 +15,6 @@ export default {
           tsconfig: process.cwd() + "/tsconfig.json",
         }),
       ],
-    },
+    } as RollupOptions,
   },
-};
+} as UserConfigExport;

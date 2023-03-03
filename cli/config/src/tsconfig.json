@@ -11,12 +11,10 @@
     "."
   ],
   "files": [
-    "merge.ts",
     "templates/vite.application.appconfig.ts",
     "templates/vite.library.appconfig.ts"
   ],
   "exclude": [
     "templates/*.appconfig.ts",
-    "merge.ts",
   ]
 }

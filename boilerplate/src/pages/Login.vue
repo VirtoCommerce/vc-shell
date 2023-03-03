@@ -180,7 +180,10 @@ const computedTitle = computed(() =>
 const login = async () => {
   if (isValid.value) {
     signInResult.value = await signIn(form.username, form.password);
-    router.push("/");
+
+    if (signInResult.value.succeeded) {
+      router.push("/");
+    }
   }
 };
 

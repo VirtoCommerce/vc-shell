@@ -15,13 +15,9 @@
             <VcCard
               :header="
                 importStarted
-                  ? $t(
-                      'IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.IMPORT_RESULTS'
-                    )
+                  ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.IMPORT_RESULTS')
                   : uploadedFile && uploadedFile.url
-                  ? $t(
-                      'IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED'
-                    )
+                  ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED')
                   : $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE')
               "
             >
@@ -31,9 +27,11 @@
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
               >
                 <VcRow class="tw-mb-4">
-                  <a class="vc-link" :href="sampleTemplateUrl">{{
-                    $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
-                  }}</a>
+                  <a
+                    class="vc-link"
+                    :href="sampleTemplateUrl"
+                    >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
+                  >
                   &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
                 </VcRow>
                 <VcRow>
@@ -65,11 +63,7 @@
                     v-if="inProgress"
                   >
                     <VcCol class="tw-text-[#a1c0d4]">
-                      {{
-                        $t(
-                          "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS"
-                        )
-                      }}
+                      {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS") }}
                       <VcProgress
                         class="tw-mt-3"
                         :value="importStatus.progress"
@@ -77,33 +71,20 @@
                         :key="importStatus.progress"
                       ></VcProgress>
                       <VcHint
-                        v-if="
-                          importStatus.estimatingRemaining ||
-                          importStatus.estimatedRemaining
-                        "
+                        v-if="importStatus.estimatingRemaining || importStatus.estimatedRemaining"
                         class="tw-py-3"
                       >
                         <template v-if="importStatus.estimatingRemaining">
-                          {{
-                            $t(
-                              "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATING"
-                            )
-                          }}
+                          {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATING") }}
                         </template>
                         <template v-else>
-                          {{
-                            $t(
-                              "IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATED"
-                            )
-                          }}
+                          {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATED") }}
                           {{ estimatedRemaining }}
                         </template>
                       </VcHint>
                     </VcCol>
                   </VcRow>
-                  <VcRow
-                    class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5]"
-                  >
+                  <VcRow class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5]">
                     <VcCol
                       v-for="(badge, i) in importBadges"
                       :key="i"
@@ -124,29 +105,35 @@
                   </VcRow>
                 </VcCol>
               </VcCol>
-              <VcHint class="tw-p-3 import-new__error" v-if="errorMessage">{{
-                errorMessage
-              }}</VcHint>
+              <VcHint
+                class="tw-p-3 import-new__error"
+                v-if="errorMessage"
+              >
+                {{ errorMessage }}
+              </VcHint>
               <div v-if="reportUrl && reportUrl != 'DefaultDataReporter'">
                 <VcHint class="tw-p-3 import-new__history"
                   >{{ $t("IMPORT.PAGES.LIST.REPORT.DOWNLOAD") }}
-                  <a class="vc-link" :href="reportUrl">{{ reportUrl }}</a>
+                  <a
+                    class="vc-link"
+                    :href="reportUrl"
+                    >{{ reportUrl }}</a
+                  >
                 </VcHint>
               </div>
             </VcCard>
           </VcRow>
         </div>
         <!-- Skipped details table -->
-        <VcCol class="tw-p-3" v-if="importStarted && reversedErrors.length">
+        <VcCol
+          class="tw-p-3"
+          v-if="importStarted && reversedErrors.length"
+        >
           <VcCard
             class="import-new__skipped"
             :fill="true"
             :variant="skippedColorVariant"
-            :header="
-              $t(
-                'IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.SKIPPED_DETAILS'
-              )
-            "
+            :header="$t('IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.SKIPPED_DETAILS')"
           >
             <VcTable
               :columns="skippedColumns"
@@ -167,7 +154,10 @@
         </VcCol>
 
         <!-- History-->
-        <VcCol class="tw-p-3" v-if="!importStarted">
+        <VcCol
+          class="tw-p-3"
+          v-if="!importStarted"
+        >
           <VcCard
             :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
             :fill="true"
@@ -213,14 +203,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  onMounted,
-  ref,
-  watch,
-  shallowRef,
-} from "vue";
+import { defineComponent, computed, onMounted, ref, watch, shallowRef } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
 import _ from "lodash";
 import { argThresholdOpts } from "moment";
@@ -253,10 +236,7 @@ import {
 } from "@vc-shell/framework";
 import { INotificationActions, UserPermissions } from "../../../types";
 import useImport from "../composables/useImport";
-import {
-  IDataImporter,
-  ImportDataPreview,
-} from "../../../api_client/marketplacevendor";
+import { IDataImporter, ImportDataPreview } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
@@ -273,9 +253,9 @@ export interface Props {
 }
 
 export type IBladeOptions = IBladeEvent & {
-    bladeOptions: {
-        importer: IDataImporter;
-    };
+  bladeOptions: {
+    importer: IDataImporter;
+  };
 };
 
 export interface Emits {
@@ -353,11 +333,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         param: profile.value.id,
       });
     },
-    isVisible: computed(
-      () =>
-        checkPermission(UserPermissions.SellerImportProfilesEdit) &&
-        profile.value
-    ),
+    isVisible: computed(() => checkPermission(UserPermissions.SellerImportProfilesEdit) && profile.value),
     disabled: computed(() => importLoading.value || !profile.value.name),
   },
   {
@@ -427,9 +403,7 @@ const columns = ref<ITableColumns[]>([
 const skippedColumns = ref<ITableColumns[]>([
   {
     id: "errors",
-    title: computed(() =>
-      t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC")
-    ),
+    title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.ERROR_DESC")),
   },
 ]);
 
@@ -443,23 +417,15 @@ const importBadges = computed((): IImportBadges[] => {
         t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.STARTED_AT") +
         " " +
         ("created" in importStatus.value.notification
-          ? moment(importStatus.value.notification.created)
-              .locale(locale)
-              .format("LTS")
+          ? moment(importStatus.value.notification.created).locale(locale).format("LTS")
           : "createdDate" in importStatus.value.notification
-          ? moment(importStatus.value.notification.createdDate)
-              .locale(locale)
-              .format("LTS")
+          ? moment(importStatus.value.notification.createdDate).locale(locale).format("LTS")
           : null),
       description:
         "created" in importStatus.value.notification
-          ? moment(importStatus.value.notification.created)
-              .locale(locale)
-              .fromNow()
+          ? moment(importStatus.value.notification.created).locale(locale).fromNow()
           : "createdDate" in importStatus.value.notification
-          ? moment(importStatus.value.notification.createdDate)
-              .locale(locale)
-              .fromNow()
+          ? moment(importStatus.value.notification.createdDate).locale(locale).fromNow()
           : null,
     },
     {
@@ -475,18 +441,12 @@ const importBadges = computed((): IImportBadges[] => {
       color: "#87B563",
       title:
         "errorCount" in importStatus.value.notification
-          ? importStatus.value.notification.processedCount -
-              importStatus.value.notification.errorCount >=
-            0
-            ? importStatus.value.notification.processedCount -
-              importStatus.value.notification.errorCount
+          ? importStatus.value.notification.processedCount - importStatus.value.notification.errorCount >= 0
+            ? importStatus.value.notification.processedCount - importStatus.value.notification.errorCount
             : 0
           : "errorsCount" in importStatus.value.notification
-          ? importStatus.value.notification.processedCount -
-              importStatus.value.notification.errorsCount >=
-            0
-            ? importStatus.value.notification.processedCount -
-              importStatus.value.notification.errorsCount
+          ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount >= 0
+            ? importStatus.value.notification.processedCount - importStatus.value.notification.errorsCount
             : 0
           : 0,
       description: t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IMPORTED"),
@@ -528,11 +488,7 @@ const uploadActions = ref<INotificationActions[]>([
         preview.value = await previewData();
         popupItems.value = [];
         popupColumns.value = [];
-        if (
-          preview.value &&
-          preview.value.records &&
-          preview.value.records.length
-        ) {
+        if (preview.value && preview.value.records && preview.value.records.length) {
           for (const recordKey in preview.value.records[0]) {
             popupColumns.value.push({
               id: recordKey,
@@ -554,20 +510,14 @@ const uploadActions = ref<INotificationActions[]>([
     isVisible: computed(() => isValid.value && !importStarted.value),
   },
   {
-    name: computed(() =>
-      t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")
-    ),
+    name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")),
     async clickHandler() {
       await start();
     },
     outline: false,
     variant: "primary",
     isVisible: computed(() => isValid.value && !importStarted.value),
-    disabled: computed(
-      () =>
-        (importStatus.value && importStatus.value.inProgress) ||
-        importLoading.value
-    ),
+    disabled: computed(() => (importStatus.value && importStatus.value.inProgress) || importLoading.value),
   },
 ]);
 
@@ -582,28 +532,19 @@ const skippedColorVariant = computed(() => {
     : "danger";
 });
 
-const progressbarVariant = computed(() =>
-  inProgress.value ? "striped" : "default"
-);
+const progressbarVariant = computed(() => (inProgress.value ? "striped" : "default"));
 
-const inProgress = computed(
-  () => (importStatus.value && importStatus.value.inProgress) || false
-);
+const inProgress = computed(() => (importStatus.value && importStatus.value.inProgress) || false);
 
 const bladeLoading = computed(() => importLoading.value);
 
 const profileDetails = computed(() => profile.value);
 
-const importStarted = computed(
-  () => !!(importStatus.value && importStatus.value.jobId)
-);
+const importStarted = computed(() => !!(importStatus.value && importStatus.value.jobId));
 
 const estimatedRemaining = computed(() => {
   return importStatus.value && importStatus.value.estimatedRemaining
-    ? moment
-        .duration(importStatus.value.estimatedRemaining)
-        .locale(locale)
-        .humanize(false, "precise")
+    ? moment.duration(importStatus.value.estimatedRemaining).locale(locale).humanize(false, "precise")
     : null;
 });
 
@@ -633,9 +574,7 @@ onMounted(async () => {
     });
   }
   if (props.options && props.options.importJobId) {
-    const historyItem =
-      importHistory.value &&
-      importHistory.value.find((x) => x.jobId === props.options.importJobId);
+    const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
     if (historyItem) {
       updateStatus(historyItem);
     } else {
@@ -699,9 +638,7 @@ function reloadParent() {
 }
 
 const sampleTemplateUrl = computed(() => {
-  return profile.value &&
-    profile.value.importer &&
-    profile.value.importer.metadata
+  return profile.value && profile.value.importer && profile.value.importer.metadata
     ? profile.value.importer.metadata.sampleCsvUrl
     : "#";
 });

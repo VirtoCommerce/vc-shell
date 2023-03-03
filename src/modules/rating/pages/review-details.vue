@@ -50,9 +50,7 @@
             <VcRating
               class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.LABEL')"
-              :placeholder="
-                $t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.PLACEHOLDER')
-              "
+              :placeholder="$t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.PLACEHOLDER')"
               :rating="customerReview.rating"
             >
             </VcRating>
@@ -63,9 +61,7 @@
             <VcTextarea
               class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.LABEL')"
-              :placeholder="
-                $t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.PLACEHOLDER')
-              "
+              :placeholder="$t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.PLACEHOLDER')"
               name="name"
               disabled
               v-model="customerReview.review"

@@ -45,22 +45,16 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div
-          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4"
-        >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-              <VcHint>{{
-                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")
-              }}</VcHint>
+              <VcHint>{{ $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.firstName }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
-              <VcHint>{{
-                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME")
-              }}</VcHint>
+              <VcHint>{{ $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.LAST_NAME") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.lastName }}
               </div>
@@ -68,25 +62,19 @@
           </div>
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
-              <VcHint>{{
-                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL")
-              }}</VcHint>
+              <VcHint>{{ $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.EMAIL") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.email || "N/A" }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
-              <VcHint>{{
-                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE")
-              }}</VcHint>
+              <VcHint>{{ $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.ROLE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ roleName(itemData.item.role as string) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
-              <VcHint>{{
-                $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.STATUS")
-              }}</VcHint>
+              <VcHint>{{ $t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.STATUS") }}</VcHint>
               <div class="tw-mt-1">
                 <VcStatus
                   :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
@@ -107,14 +95,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  computed,
-  watch,
-  onMounted,
-  shallowRef,
-} from "vue";
+import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -124,12 +105,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  IBladeEvent,
-  IBladeToolbar,
-  ITableColumns,
-  useI18n,
-} from "@vc-shell/framework";
+import { IBladeEvent, IBladeToolbar, ITableColumns, useI18n } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 
@@ -161,15 +137,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
-const {
-  getTeamMembers,
-  searchQuery,
-  loading,
-  membersList,
-  currentPage,
-  pages,
-  totalCount,
-} = useTeamMembers();
+const { getTeamMembers, searchQuery, loading, membersList, currentPage, pages, totalCount } = useTeamMembers();
 
 const sort = ref("createdDate:DESC");
 const selectedItemId = ref();
@@ -214,9 +182,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 const columns = ref<ITableColumns[]>([
   {
     id: "firstName",
-    title: computed(() =>
-      t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")
-    ),
+    title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TABLE.HEADER.FIRST_NAME")),
     alwaysVisible: true,
     sortable: true,
   },

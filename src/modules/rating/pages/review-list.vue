@@ -7,18 +7,16 @@
     :closable="closable"
     @close="$emit('close:blade')"
   >
-    <ReviewTable :expanded="expanded" @itemClick="onItemClick"></ReviewTable>
+    <ReviewTable
+      :expanded="expanded"
+      @itemClick="onItemClick"
+    ></ReviewTable>
   </VcBlade>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, shallowRef } from "vue";
-import {
-  VcBlade,
-  useI18n,
-  IBladeEvent,
-  IBladeToolbar,
-} from "@vc-shell/framework";
+import { VcBlade, useI18n, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
@@ -77,11 +75,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-const onItemClick = (
-  item: CustomerReview,
-  onSelect: () => void,
-  onDeselect: () => void
-) => {
+const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
   emit("open:blade", {
     component: shallowRef(ReviewDetails),
     param: item.id,

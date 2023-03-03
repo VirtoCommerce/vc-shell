@@ -6,7 +6,10 @@
         'background-color': current.styles.color,
       }"
     >
-      <VcIcon :icon="current.styles.icon" size="l"></VcIcon>
+      <VcIcon
+        :icon="current.styles.icon"
+        size="l"
+      ></VcIcon>
     </div>
 
     <VcRow class="tw-justify-between tw-grow tw-basis-0">
@@ -37,12 +40,7 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, shallowRef, watch } from "vue";
-import {
-  VcRow,
-  VcIcon,
-  IPushNotification,
-  PushNotification,
-} from "@vc-shell/framework";
+import { VcRow, VcIcon, IPushNotification, PushNotification } from "@vc-shell/framework";
 import ImportPush from "./_internal/ImportPush.vue";
 import DefaultPush from "./_internal/DefaultPush.vue";
 import ProductPush from "./_internal/ProductPush.vue";
@@ -70,11 +68,9 @@ const pushComponents = reactive({
     styles: {
       color: computed(() => {
         const notification = props.notification as IExtendedPush;
-        return notification.finished &&
-          !(notification.errors && notification.errors.length)
+        return notification.finished && !(notification.errors && notification.errors.length)
           ? "#87b563"
-          : !(notification.errors && notification.errors.length) &&
-            !notification.finished
+          : !(notification.errors && notification.errors.length) && !notification.finished
           ? "#A9BCCD"
           : "#F14E4E";
       }),

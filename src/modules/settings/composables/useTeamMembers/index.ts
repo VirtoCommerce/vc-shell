@@ -86,10 +86,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     }
   }
 
-  async function createTeamMember(
-    details: ISellerUserDetails,
-    inviteStatus: boolean
-  ) {
+  async function createTeamMember(details: ISellerUserDetails, inviteStatus: boolean) {
     const client = await getApiClient();
 
     const command = new CreateSellerUserCommand({
@@ -100,10 +97,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     try {
       loading.value = true;
       const validationResult = await validateTeamMember(command.userDetails);
-      if (
-        validationResult.length &&
-        validationResult[0].errorCode === "EMAIL_ALREADY_EXISTS"
-      ) {
+      if (validationResult.length && validationResult[0].errorCode === "EMAIL_ALREADY_EXISTS") {
         throwCreationError(validationResult[0].errorCode);
         return;
       }
@@ -173,16 +167,11 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   }
 
   async function handleUserDetailsItem(user: ISellerUser) {
-    userDetails.value = Object.assign(
-      {},
-      new SellerUserDetails(user as ISellerUserDetails)
-    );
+    userDetails.value = Object.assign({}, new SellerUserDetails(user as ISellerUserDetails));
     userDetailsCopy = _cloneDeep(userDetails.value);
   }
 
-  async function validateTeamMember(
-    details: SellerUserDetails
-  ): Promise<ValidationFailure[]> {
+  async function validateTeamMember(details: SellerUserDetails): Promise<ValidationFailure[]> {
     const client = await getApiClient();
 
     const command = new ValidateSellerUserQuery({ sellerUser: details });
@@ -202,9 +191,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     loading: computed(() => loading.value),
     membersList: computed(() => searchResult.value?.results),
     totalCount: computed(() => searchResult.value?.totalCount),
-    currentPage: computed(
-      () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
-    ),
+    currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     userDetailsCopy: computed(() => userDetailsCopy),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
     modified: computed(() => modified.value),

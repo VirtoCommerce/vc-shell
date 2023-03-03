@@ -4,9 +4,7 @@
     v-for="(status, i) in statuses"
     :class="[$attrs.class, { 'tw-mr-1': i < statuses.length - 1 }]"
     :key="i"
-    >{{
-      $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`)
-    }}</VcStatus
+    >{{ $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`) }}</VcStatus
   >
 </template>
 

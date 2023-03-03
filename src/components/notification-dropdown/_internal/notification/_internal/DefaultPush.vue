@@ -1,8 +1,13 @@
 <template>
-  <slot name="title" v-bind:title="notification.title"></slot>
-  <VcHint class="tw-mb-1" v-if="notification.description">{{
-    notification.description
-  }}</VcHint>
+  <slot
+    name="title"
+    v-bind:title="notification.title"
+  ></slot>
+  <VcHint
+    class="tw-mb-1"
+    v-if="notification.description"
+    >{{ notification.description }}</VcHint
+  >
 </template>
 
 <script lang="ts">

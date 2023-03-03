@@ -44,9 +44,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     return client;
   }
 
-  async function searchOffers(
-    query: ISearchOffersQuery
-  ): Promise<SearchOffersResult> {
+  async function searchOffers(query: ISearchOffersQuery): Promise<SearchOffersResult> {
     const client = await getApiClient();
     try {
       loading.value = true;
@@ -60,9 +58,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
   }
 
   async function loadOffers(query: ISearchOffersQuery) {
-    logger.info(
-      `Load offers page ${query?.skip || 1} sort by ${query?.sort || "default"}`
-    );
+    logger.info(`Load offers page ${query?.skip || 1} sort by ${query?.sort || "default"}`);
 
     searchQuery.value = { ...searchQuery.value, ...query };
     try {
@@ -99,9 +95,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     offers: computed(() => searchResult.value?.results),
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
-    currentPage: computed(
-      () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
-    ),
+    currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     loading: computed(() => loading.value),
     searchQuery,
     loadOffers,

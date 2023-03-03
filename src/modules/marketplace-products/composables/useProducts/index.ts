@@ -48,9 +48,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
   const searchResult = ref<SearchProductsResult>();
   const loading = ref(false);
   const statuses = computed((): SellerProductStatusApproveExcluded => {
-    const statusKeys = Object.entries(SellerProductStatus).filter(
-      (key) => !key.includes(SellerProductStatus.Approved)
-    );
+    const statusKeys = Object.entries(SellerProductStatus).filter((key) => !key.includes(SellerProductStatus.Approved));
     return Object.fromEntries(statusKeys);
   });
 
@@ -62,11 +60,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
   }
 
   async function loadProducts(query: ISearchProductsQuery) {
-    logger.info(
-      `Load products page ${query?.skip || 1} sort by ${
-        query?.sort || "default"
-      }`
-    );
+    logger.info(`Load products page ${query?.skip || 1} sort by ${query?.sort || "default"}`);
 
     searchQuery.value = { ...searchQuery.value, ...query };
     const client = await getApiClient();
@@ -123,9 +117,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
     products: computed(() => searchResult.value?.results),
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
-    currentPage: computed(
-      () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
-    ),
+    currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     loading: computed(() => loading.value),
     searchQuery,
     loadProducts,

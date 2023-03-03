@@ -25,25 +25,13 @@ interface IUseProduct {
   productDetails: Ref<IProductDetails>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
-  fetchCategories: (
-    keyword?: string,
-    skip?: number,
-    ids?: string[]
-  ) => Promise<CategorySearchResult>;
+  fetchCategories: (keyword?: string, skip?: number, ids?: string[]) => Promise<CategorySearchResult>;
   loadProduct: (args: { id: string }) => void;
   validateProduct: (product: ISellerProduct) => Promise<ValidationFailure[]>;
   createProduct: (details: IProductDetails) => void;
-  updateProductDetails: (
-    productId: string,
-    details: IProductDetails,
-    sendToAprove?: boolean
-  ) => void;
+  updateProductDetails: (productId: string, details: IProductDetails, sendToAprove?: boolean) => void;
   revertStagedChanges: (productId: string) => void;
-  searchDictionaryItems: (
-    propertyIds: string[],
-    keyword?: string,
-    skip?: number
-  ) => Promise<PropertyDictionaryItem[]>;
+  searchDictionaryItems: (propertyIds: string[], keyword?: string, skip?: number) => Promise<PropertyDictionaryItem[]>;
   deleteProduct: (id: string) => Promise<void>;
 }
 
@@ -94,11 +82,7 @@ export default (): IUseProduct => {
     return client;
   }
 
-  async function fetchCategories(
-    keyword?: string,
-    skip = 0,
-    ids?: string[]
-  ): Promise<CategorySearchResult> {
+  async function fetchCategories(keyword?: string, skip = 0, ids?: string[]): Promise<CategorySearchResult> {
     const client = await getApiClient();
     return await client.searchCategories(
       new SearchCategoriesQuery({
@@ -136,11 +120,7 @@ export default (): IUseProduct => {
     }
   }
 
-  async function updateProductDetails(
-    productId: string,
-    details: IProductDetails,
-    sendToAprove = false
-  ) {
+  async function updateProductDetails(productId: string, details: IProductDetails, sendToAprove = false) {
     logger.info(`Update  product details`, details);
 
     const client = await getApiClient();
@@ -168,9 +148,7 @@ export default (): IUseProduct => {
     }
   }
 
-  async function validateProduct(
-    product: ISellerProduct
-  ): Promise<ValidationFailure[]> {
+  async function validateProduct(product: ISellerProduct): Promise<ValidationFailure[]> {
     const client = await getApiClient();
 
     const query = new ValidateProductQuery({

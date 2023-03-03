@@ -17,12 +17,7 @@ import {
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
-import {
-  IObjectSettingEntry,
-  useLogger,
-  useNotifications,
-  useUser,
-} from "@vc-shell/framework";
+import { IObjectSettingEntry, useLogger, useNotifications, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
@@ -96,9 +91,7 @@ export default (): IUseImport => {
   const historySearchResult = ref<SearchImportProfilesHistoryResult>();
   const profileSearchResult = ref<ISearchProfile>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
-  const profileDetails = ref<ImportProfile>(
-    new ImportProfile({ settings: [new ObjectSettingEntry()] })
-  );
+  const profileDetails = ref<ImportProfile>(new ImportProfile({ settings: [new ObjectSettingEntry()] }));
   let profileDetailsCopy: ImportProfile;
   const dataImporters = ref<IDataImporter[]>([]);
   const modified = ref(false);
@@ -120,24 +113,19 @@ export default (): IUseImport => {
         }
       }
 
-      if (
-        profileSearchResult.value &&
-        profileSearchResult.value.results &&
-        profileSearchResult.value.results.length
-      ) {
-        profileSearchResult.value.results =
-          profileSearchResult.value.results.map((res) => {
-            const notification = newNotifications.value.find(
-              (x: ImportPushNotification) => x.profileId === res.id
-            ) as ImportPushNotification;
+      if (profileSearchResult.value && profileSearchResult.value.results && profileSearchResult.value.results.length) {
+        profileSearchResult.value.results = profileSearchResult.value.results.map((res) => {
+          const notification = newNotifications.value.find(
+            (x: ImportPushNotification) => x.profileId === res.id
+          ) as ImportPushNotification;
 
-            if (notification) {
-              res.inProgress = !notification.finished;
-              res.jobId = notification.jobId;
-            }
+          if (notification) {
+            res.inProgress = !notification.finished;
+            res.jobId = notification.jobId;
+          }
 
-            return res;
-          });
+          return res;
+        });
       }
     },
     { deep: true, immediate: true }
@@ -159,11 +147,8 @@ export default (): IUseImport => {
         ...(query || {}),
         take: 15,
       });
-      historySearchResult.value = await client.searchImportProfilesHistory(
-        historyQuery
-      );
-      currentPage.value =
-        (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
+      historySearchResult.value = await client.searchImportProfilesHistory(historyQuery);
+      currentPage.value = (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -183,8 +168,7 @@ export default (): IUseImport => {
       notification: notification,
       jobId: notification.jobId,
       inProgress: !notification.finished,
-      progress:
-        (notification.processedCount / notification.totalCount) * 100 || 0,
+      progress: (notification.processedCount / notification.totalCount) * 100 || 0,
       estimatingRemaining: pushNotifcation.estimatingRemaining,
       estimatedRemaining: pushNotifcation.estimatedRemaining,
     };
@@ -218,9 +202,7 @@ export default (): IUseImport => {
     try {
       loading.value = true;
       const profileQuery = new SearchImportProfilesQuery();
-      profileSearchResult.value = (await client.searchImportProfiles(
-        profileQuery
-      )) as ISearchProfile;
+      profileSearchResult.value = (await client.searchImportProfiles(profileQuery)) as ISearchProfile;
     } catch (e) {
       logger.error(e);
       throw e;
@@ -269,9 +251,7 @@ export default (): IUseImport => {
     const client = await getApiClient();
     try {
       if (importStatus.value.inProgress) {
-        await client.cancelJob(
-          new ImportCancellationRequest({ jobId: importStatus.value.jobId })
-        );
+        await client.cancelJob(new ImportCancellationRequest({ jobId: importStatus.value.jobId }));
       }
     } catch (e) {
       logger.error(e);
@@ -296,9 +276,7 @@ export default (): IUseImport => {
 
       profile.value = await client.getImportProfileById(args.id);
 
-      profile.value.importer = dataImporters.value.find(
-        (x) => x.typeName === profile.value.dataImporterType
-      );
+      profile.value.importer = dataImporters.value.find((x) => x.typeName === profile.value.dataImporterType);
 
       Object.assign(profileDetails.value, profile.value);
 
@@ -313,14 +291,10 @@ export default (): IUseImport => {
 
   async function setImporter(typeName: string) {
     if (typeName) {
-      const importer = dataImporters.value.find(
-        (importer) => importer.typeName === typeName
-      );
+      const importer = dataImporters.value.find((importer) => importer.typeName === typeName);
       if (importer) {
         profileDetails.value.settings = [
-          ...(importer?.availSettings.map(
-            (x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)
-          ) || []),
+          ...(importer?.availSettings.map((x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)) || []),
         ];
       }
     }
@@ -355,9 +329,7 @@ export default (): IUseImport => {
     const command = new CreateProfileCommand({
       importProfile: new ImportProfile({
         ...newProfile,
-        settings: newProfile.settings.map(
-          (setting) => new ObjectSettingEntry(setting)
-        ),
+        settings: newProfile.settings.map((setting) => new ObjectSettingEntry(setting)),
       }),
     });
 
@@ -409,9 +381,7 @@ export default (): IUseImport => {
     modified: computed(() => modified.value),
     profile: computed(() => profile.value),
     totalHistoryCount: computed(() => historySearchResult.value?.totalCount),
-    historyPages: computed(() =>
-      Math.ceil(historySearchResult.value?.totalCount / 15)
-    ),
+    historyPages: computed(() => Math.ceil(historySearchResult.value?.totalCount / 15)),
     currentPage: computed(() => currentPage.value),
     profileDetails,
     setFile,

@@ -43,18 +43,10 @@
                   <VcInput
                     v-bind="field"
                     class="tw-p-2"
-                    :label="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL'
-                      )
-                    "
+                    :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL')"
                     v-model="sellerDetails.name"
                     :clearable="true"
-                    :placeholder="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER'
-                      )
-                    "
+                    :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.PLACEHOLDER')"
                     maxlength="254"
                     required
                     :error="!!errors.length"
@@ -64,9 +56,7 @@
                 </Field>
                 <div class="tw-p-2">
                   <VcLabel class="tw-mb-2">{{
-                    $t(
-                      "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL"
-                    )
+                    $t("SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMMISSION.LABEL")
                   }}</VcLabel>
                   <p>{{ computedFee }}</p>
                 </div>
@@ -74,17 +64,9 @@
                   <VcCol>
                     <VcInput
                       class="tw-m-2"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL'
-                        )
-                      "
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.LABEL')"
                       v-model="sellerDetails.registrationId"
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER'
-                        )
-                      "
+                      :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_REG_NUM.PLACEHOLDER')"
                       name="company_reg_num"
                       maxlength="128"
                       clearable
@@ -92,17 +74,9 @@
                     </VcInput>
                     <VcInput
                       class="tw-m-2"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL'
-                        )
-                      "
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.LABEL')"
                       v-model="sellerDetails.outerId"
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER'
-                        )
-                      "
+                      :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_OUTER_ID.PLACEHOLDER')"
                       name="company_outer_id"
                       maxlength="128"
                       clearable
@@ -111,11 +85,7 @@
                   </VcCol>
                   <VcCol class="tw-m-2">
                     <VcLabel class="tw-mb-2">
-                      <span>{{
-                        $t(
-                          "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.LABEL"
-                        )
-                      }}</span>
+                      <span>{{ $t("SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.LABEL") }}</span>
                     </VcLabel>
                     <div class="tw-relative">
                       <VcLoading :active="fileUploading"></VcLoading>
@@ -138,40 +108,28 @@
                       ></VcGallery>
                     </div>
 
-                    <VcHint class="tw-mt-1" v-if="!logoHandler.length">{{
-                      $t(
-                        "SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.DESCRIPTION"
-                      )
-                    }}</VcHint>
+                    <VcHint
+                      class="tw-mt-1"
+                      v-if="!logoHandler.length"
+                      >{{ $t("SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.UPLOAD.DESCRIPTION") }}</VcHint
+                    >
                   </VcCol>
                 </VcRow>
                 <VcTextarea
                   class="tw-mb-4 tw-mx-2"
-                  :label="
-                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL')
-                  "
+                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.LABEL')"
                   v-model="sellerDetails.description"
                   :clearable="true"
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.PLACEHOLDER'
-                    )
-                  "
+                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.ABOUT.PLACEHOLDER')"
                   name="about"
                 >
                 </VcTextarea>
                 <VcTextarea
                   class="tw-mb-4 tw-mx-2"
-                  :label="
-                    $t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')
-                  "
+                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.LABEL')"
                   :clearable="true"
                   v-model="sellerDetails.deliveryTime"
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER'
-                    )
-                  "
+                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.DELIVERY.PLACEHOLDER')"
                   name="delivery_time"
                 >
                 </VcTextarea>
@@ -194,16 +152,8 @@
                       <VcSelect
                         v-bind="field"
                         class="tw-m-2"
-                        :label="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL'
-                          )
-                        "
-                        :placeholder="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER'
-                          )
-                        "
+                        :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL')"
+                        :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.PLACEHOLDER')"
                         :options="countriesList"
                         v-model="sellerDetails.addresses[0].countryCode"
                         option-value="id"
@@ -233,16 +183,8 @@
                       <VcInput
                         v-bind="field"
                         class="tw-m-2 tw-my-org__num-field"
-                        :label="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL'
-                          )
-                        "
-                        :placeholder="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER'
-                          )
-                        "
+                        :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL')"
+                        :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.PLACEHOLDER')"
                         type="number"
                         v-model="sellerDetails.addresses[0].postalCode"
                         maxlength="32"
@@ -259,16 +201,8 @@
                   <VcCol>
                     <VcSelect
                       class="tw-m-2"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL'
-                        )
-                      "
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.PLACEHOLDER'
-                        )
-                      "
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.LABEL')"
+                      :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.STATE.PLACEHOLDER')"
                       :options="regionsList"
                       v-model="sellerDetails.addresses[0].regionId"
                       option-value="id"
@@ -289,16 +223,8 @@
                       <VcInput
                         v-bind="field"
                         class="tw-p-2"
-                        :label="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL'
-                          )
-                        "
-                        :placeholder="
-                          $t(
-                            'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER'
-                          )
-                        "
+                        :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL')"
+                        :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.PLACEHOLDER')"
                         v-model="sellerDetails.addresses[0].city"
                         maxlength="128"
                         required
@@ -320,16 +246,8 @@
                   <VcInput
                     v-bind="field"
                     class="tw-p-2"
-                    :label="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL'
-                      )
-                    "
-                    :placeholder="
-                      $t(
-                        'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER'
-                      )
-                    "
+                    :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL')"
+                    :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.PLACEHOLDER')"
                     v-model="sellerDetails.addresses[0].line1"
                     name="address_first"
                     maxlength="128"
@@ -343,16 +261,8 @@
                 </Field>
                 <VcInput
                   class="tw-p-2"
-                  :label="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL'
-                    )
-                  "
-                  :placeholder="
-                    $t(
-                      'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER'
-                    )
-                  "
+                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.LABEL')"
+                  :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_2.PLACEHOLDER')"
                   v-model="sellerDetails.addresses[0].line2"
                   name="address_second"
                   maxlength="128"
@@ -371,16 +281,8 @@
                   >
                     <VcInput
                       v-bind="field"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL'
-                        )
-                      "
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER'
-                        )
-                      "
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL')"
+                      :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.PLACEHOLDER')"
                       v-model="sellerDetails.location"
                       name="long_lat"
                       maxlength="512"
@@ -393,9 +295,7 @@
                   </Field>
 
                   <VcHint class="tw-mt-1">{{
-                    $t(
-                      "SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION"
-                    )
+                    $t("SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.DESCRIPTION")
                   }}</VcHint>
                 </div>
               </div>
@@ -410,16 +310,8 @@
                     <VcInput
                       v-bind="field"
                       class="tw-mt-4 tw-mx-4 tw-my-org__num-field"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL'
-                        )
-                      "
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER'
-                        )
-                      "
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL')"
+                      :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.PLACEHOLDER')"
                       type="number"
                       v-model="sellerDetails.phones[0]"
                       maxlength="64"
@@ -441,16 +333,8 @@
                     <VcInput
                       v-bind="field"
                       class="tw-mt-4 tw-mx-4"
-                      :label="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL'
-                        )
-                      "
-                      :placeholder="
-                        $t(
-                          'SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER'
-                        )
-                      "
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL')"
+                      :placeholder="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.PLACEHOLDER')"
                       v-model="sellerDetails.emails[0]"
                       maxlength="256"
                       :error="!!errors.length"
@@ -481,13 +365,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  useI18n,
-  useUser,
-  useAutosave,
-  useForm,
-  IBladeToolbar,
-} from "@vc-shell/framework";
+import { useI18n, useUser, useAutosave, useForm, IBladeToolbar } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
@@ -535,12 +413,8 @@ const fileUploading = ref(false);
 
 const computedFee = computed(() => {
   if (sellerDetails.value.commissionFee) {
-    return `${sellerDetails.value.commissionFee?.name} (${
-      sellerDetails.value.commissionFee?.fee
-    } ${
-      sellerDetails.value.commissionFee?.calculationType === "Percent"
-        ? "%"
-        : "Fixed"
+    return `${sellerDetails.value.commissionFee?.name} (${sellerDetails.value.commissionFee?.fee} ${
+      sellerDetails.value.commissionFee?.calculationType === "Percent" ? "%" : "Fixed"
     })`;
   }
   return "";
@@ -561,9 +435,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           errorMessage.value = e.message;
         }
       } else {
-        alert(
-          unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.NOT_VALID")))
-        );
+        alert(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.NOT_VALID"))));
       }
     },
   },
@@ -588,20 +460,12 @@ onMounted(async () => {
 });
 
 const logoHandler = computed(() =>
-  sellerDetails.value.logo
-    ? [{ url: sellerDetails.value.logo, name: user.value.userName, title: "" }]
-    : []
+  sellerDetails.value.logo ? [{ url: sellerDetails.value.logo, name: user.value.userName, title: "" }] : []
 );
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
-      unref(
-        computed(() =>
-          t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.CLOSE_CONFIRMATION")
-        )
-      )
-    );
+    return confirm(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 
@@ -612,16 +476,13 @@ async function onLogoUpload(files: FileList) {
       const formData = new FormData();
       formData.append("file", files[i]);
       const authToken = await getAccessToken();
-      const result = await fetch(
-        `/api/assets?folderUrl=/seller_logos/${user.value.userName}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      const result = await fetch(`/api/assets?folderUrl=/seller_logos/${user.value.userName}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
       const response = await result.json();
       if (response?.length) {
         const image = new Image(response[0]);
@@ -639,15 +500,7 @@ async function onLogoUpload(files: FileList) {
 }
 
 function onLogoRemove() {
-  if (
-    window.confirm(
-      unref(
-        computed(() =>
-          t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.DELETE_CONFIRMATION")
-        )
-      )
-    )
-  ) {
+  if (window.confirm(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.DELETE_CONFIRMATION"))))) {
     sellerDetails.value.logo = undefined;
   }
 }

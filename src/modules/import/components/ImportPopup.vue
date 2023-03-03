@@ -11,14 +11,10 @@
           {{ $t("IMPORT.PAGES.IMPORTING.POPUP.DESCRIPTION") }}
         </p>
       </div>
-      <div
-        class="tw-p-5 tw-flex tw-items-center tw-border-l tw-border-solid tw-border-l-[#e3e7ec]"
-      >
+      <div class="tw-p-5 tw-flex tw-items-center tw-border-l tw-border-solid tw-border-l-[#e3e7ec]">
         <p class="tw-text-lg tw-leading-xl tw-text-[color:var(--basic-black-color)] tw-m-0">
           {{ $t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_COUNT") }}:
-          <span class="tw-text-[color:var(--primary-color)]">{{
-            items.length
-          }}</span>
+          <span class="tw-text-[color:var(--primary-color)]">{{ items.length }}</span>
           {{ $t("IMPORT.PAGES.IMPORTING.POPUP.PREVIEW_OF") }}
           <span class="tw-text-[color:var(--primary-color)]">{{ total }}</span>
         </p>
@@ -32,12 +28,16 @@
       :footer="false"
     ></VcTable>
     <div class="tw-p-5 tw-flex tw-justify-between">
-      <VcButton :outline="true" @click="$emit('close')">{{
-        $t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL")
-      }}</VcButton>
-      <VcButton @click="$emit('startImport')" :disabled="disabled">{{
-        $t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT")
-      }}</VcButton>
+      <VcButton
+        :outline="true"
+        @click="$emit('close')"
+        >{{ $t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL") }}</VcButton
+      >
+      <VcButton
+        @click="$emit('startImport')"
+        :disabled="disabled"
+        >{{ $t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT") }}</VcButton
+      >
     </div>
   </VcPopup>
 </template>

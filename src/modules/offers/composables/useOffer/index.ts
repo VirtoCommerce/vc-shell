@@ -1,11 +1,5 @@
 import { computed, Ref, ref, unref, defineEmits, watch, shallowRef } from "vue";
-import {
-  useLogger,
-  useUser,
-  useI18n,
-  AssetsDetails,
-  IBladeEvent,
-} from "@vc-shell/framework";
+import { useLogger, useUser, useI18n, AssetsDetails, IBladeEvent } from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -41,11 +35,7 @@ interface IUseOffer {
   modified: Ref<boolean>;
   offerDetails: Ref<TextOfferDetails>;
   loadOffer: (args: { id: string }) => void;
-  fetchProducts: (
-    keyword?: string,
-    skip?: number,
-    ids?: string[]
-  ) => Promise<SearchOfferProductsResult>;
+  fetchProducts: (keyword?: string, skip?: number, ids?: string[]) => Promise<SearchOfferProductsResult>;
   createOffer: (details: TextOfferDetails) => void;
   updateOffer: (details: TextOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
@@ -107,11 +97,7 @@ export default (): IUseOffer => {
     client.setAuthToken(await getAccessToken());
     return client;
   }
-  async function fetchProducts(
-    keyword?: string,
-    skip = 0,
-    ids?: string[]
-  ): Promise<SearchOfferProductsResult> {
+  async function fetchProducts(keyword?: string, skip = 0, ids?: string[]): Promise<SearchOfferProductsResult> {
     const client = await getApiClient();
     return await client.searchOfferProducts({
       objectIds: ids,
@@ -230,12 +216,10 @@ export default (): IUseOffer => {
           storeSettings.value = JSON.parse(response);
         });
 
-        currencyList.value = storeSettings.value.availCurencies?.map(
-          (currency) => ({
-            title: currency,
-            value: currency,
-          })
-        );
+        currencyList.value = storeSettings.value.availCurencies?.map((currency) => ({
+          title: currency,
+          value: currency,
+        }));
       } catch (e) {
         logger.error(e);
         throw e;
@@ -250,24 +234,19 @@ export default (): IUseOffer => {
         const formData = new FormData();
         formData.append("file", files[i]);
         const authToken = await getAccessToken();
-        const result = await fetch(
-          `/api/assets?folderUrl=/offers/${offerDetails.value.id}`,
-          {
-            method: "POST",
-            body: formData,
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+        const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         const response = await result.json();
         if (response?.length) {
           const image = new Image(response[0]);
           image.createdDate = new Date();
           if (offerDetails.value.images && offerDetails.value.images.length) {
-            const lastImageSortOrder =
-              offerDetails.value.images[offerDetails.value.images.length - 1]
-                .sortOrder;
+            const lastImageSortOrder = offerDetails.value.images[offerDetails.value.images.length - 1].sortOrder;
             image.sortOrder = lastImageSortOrder + 1;
           } else {
             image.sortOrder = 0;
@@ -316,13 +295,7 @@ export default (): IUseOffer => {
   };
 
   const onGalleryImageRemove = (image: Image) => {
-    if (
-      window.confirm(
-        unref(
-          computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))
-        )
-      )
-    ) {
+    if (window.confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
       const imageIndex = offerDetails.value.images.findIndex((img) => {
         if (img.id && image.id) {
           return img.id === image.id;

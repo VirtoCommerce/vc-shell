@@ -9,14 +9,15 @@
     @close="$emit('close:blade')"
   >
     <template v-slot:actions>
-      <mp-product-status
-        :status="(product as ISellerProduct).status"
-      ></mp-product-status>
+      <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
 
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
-      <div v-if="productDetails" class="product-details__inner">
+      <div
+        v-if="productDetails"
+        class="product-details__inner"
+      >
         <div class="product-details__content">
           <div class="tw-p-4">
             <VcStatus
@@ -53,9 +54,7 @@
                   :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                   v-model="productDetails.name"
                   :clearable="true"
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')
-                  "
+                  :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="disabled"
                   maxlength="64"
                   required
@@ -77,15 +76,11 @@
                   :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                   :model-value="productDetails.categoryId"
                   searchable
-                  :placeholder="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')
-                  "
+                  :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.PLACEHOLDER')"
                   :options="fetchCategories"
                   option-value="id"
                   option-label="name"
-                  :tooltip="
-                    $t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')
-                  "
+                  :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
                   @update:modelValue="
                     (e) => {
                       handleChange(e.categoryId);
@@ -137,12 +132,8 @@
                       class="tw-mb-4"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                       v-model="productDetails.gtin"
-                      :placeholder="
-                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')
-                      "
-                      :tooltip="
-                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')
-                      "
+                      :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')"
+                      :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
                       :disabled="disabled"
                       maxlength="64"
                       required
@@ -161,15 +152,9 @@
                     <VcTextarea
                       v-bind="field"
                       class="tw-mb-4"
-                      :label="
-                        $t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')
-                      "
+                      :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                       v-model="productDetails.description"
-                      :placeholder="
-                        $t(
-                          'PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER'
-                        )
-                      "
+                      :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                       :disabled="disabled"
                       name="description"
                       required
@@ -232,15 +217,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed,
-  onMounted,
-  ref,
-  unref,
-  shallowRef,
-  Ref,
-} from "vue";
+import { defineComponent, computed, onMounted, ref, unref, shallowRef, Ref } from "vue";
 
 export default defineComponent({
   url: "/product",
@@ -336,17 +313,11 @@ const currentCategory = ref<Category>();
 
 const filterTypes = ["Category", "Variation"];
 
-const filteredProps = computed(() =>
-  productDetails.value.properties.filter((x) => !filterTypes.includes(x.type))
-);
+const filteredProps = computed(() => productDetails.value.properties.filter((x) => !filterTypes.includes(x.type)));
 
-const product = computed(() =>
-  props.param ? productData.value : productDetails.value
-);
+const product = computed(() => (props.param ? productData.value : productDetails.value));
 
-const disabled = computed(
-  () => props.param && !productData.value?.canBeModified
-);
+const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -355,8 +326,7 @@ const validateGtin = [
   (value: string): string | boolean => {
     return required(value);
   },
-  async (value: string): Promise<string | boolean> =>
-    await validate("gtin", value),
+  async (value: string): Promise<string | boolean> => await validate("gtin", value),
 ];
 
 const validate = debounce(
@@ -366,9 +336,7 @@ const validate = debounce(
       [fieldName]: value,
     } as ISellerProduct;
     const productErrors = await validateProduct(sellerProduct);
-    const errors = productErrors?.filter(
-      (error) => error.propertyName.toLowerCase() === fieldName.toLowerCase()
-    );
+    const errors = productErrors?.filter((error) => error.propertyName.toLowerCase() === fieldName.toLowerCase());
     return (
       !errors ||
       errors.length === 0 ||
@@ -421,10 +389,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           if (props.param) {
-            await updateProductDetails(
-              productData.value.id,
-              productDetails.value
-            );
+            await updateProductDetails(productData.value.id, productDetails.value);
           } else {
             await createProduct(productDetails.value);
           }
@@ -438,36 +403,25 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           alert(err.message);
         }
       } else {
-        alert(
-          unref(
-            computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))
-          )
-        );
+        alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
       }
     },
     disabled: computed(
       () =>
         !isValid.value ||
-        (props.param &&
-          !(productData.value?.canBeModified || modified.value)) ||
+        (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
   },
   {
     id: "saveAndSendToApprove",
-    title: computed(() =>
-      t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")
-    ),
+    title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.TITLE")),
     icon: "fas fa-share-square",
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       if (isValid.value) {
         try {
-          await updateProductDetails(
-            productData.value.id,
-            { ...productDetails.value },
-            true
-          );
+          await updateProductDetails(productData.value.id, { ...productDetails.value }, true);
           emit("parent:call", {
             method: "reload",
           });
@@ -478,22 +432,12 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           alert(err.message);
         }
       } else {
-        alert(
-          unref(
-            computed(() =>
-              t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID")
-            )
-          )
-        );
+        alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
       }
     },
     disabled: computed(
       () =>
-        !isValid.value ||
-        !(
-          productData.value?.canBeModified &&
-          (productData.value?.hasStagedChanges || modified.value)
-        )
+        !isValid.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },
   {
@@ -508,12 +452,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       });
     },
     disabled: computed(
-      () =>
-        !(
-          productData.value?.isPublished &&
-          productData.value?.hasStagedChanges &&
-          productData.value?.canBeModified
-        )
+      () => !(productData.value?.isPublished && productData.value?.hasStagedChanges && productData.value?.canBeModified)
     ),
   },
   {
@@ -521,13 +460,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     async clickHandler() {
-      if (
-        window.confirm(
-          unref(
-            computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT"))
-          )
-        )
-      ) {
+      if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT"))))) {
         await deleteProduct(props.param);
         emit("parent:call", {
           method: "reload",
@@ -540,15 +473,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 const statusText = computed(() => {
-  if (
-    productData.value.publicationRequests &&
-    productData.value.publicationRequests.length
-  ) {
-    return orderBy(
-      productData.value.publicationRequests,
-      ["createdDate"],
-      ["desc"]
-    )[0].comment;
+  if (productData.value.publicationRequests && productData.value.publicationRequests.length) {
+    return orderBy(productData.value.publicationRequests, ["createdDate"], ["desc"])[0].comment;
   }
   return null;
 });
@@ -561,9 +487,7 @@ const onGalleryUpload = async (files: FileList) => {
       formData.append("file", files[i]);
       const authToken = await getAccessToken();
       const result = await fetch(
-        `/api/assets?folderUrl=/catalog/${
-          productData.value.id || productData.value.categoryId
-        }`,
+        `/api/assets?folderUrl=/catalog/${productData.value.id || productData.value.categoryId}`,
         {
           method: "POST",
           body: formData,
@@ -577,9 +501,7 @@ const onGalleryUpload = async (files: FileList) => {
         const image = new Image(response[0]);
         image.createdDate = new Date();
         if (productDetails.value.images && productDetails.value.images.length) {
-          const lastImageSortOrder =
-            productDetails.value.images[productDetails.value.images.length - 1]
-              .sortOrder;
+          const lastImageSortOrder = productDetails.value.images[productDetails.value.images.length - 1].sortOrder;
           image.sortOrder = lastImageSortOrder + 1;
         } else {
           image.sortOrder = 0;
@@ -628,13 +550,7 @@ const onGallerySort = (images: Image[]) => {
 };
 
 const onGalleryImageRemove = (image: Image) => {
-  if (
-    window.confirm(
-      unref(
-        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))
-      )
-    )
-  ) {
+  if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
     const imageIndex = productDetails.value.images.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;
@@ -651,27 +567,17 @@ const setCategory = async (selectedCategory: Category) => {
   productDetails.value.categoryId = selectedCategory.id;
   const currentProperties = [...(productDetails.value?.properties || [])];
   productDetails.value.properties = [
-    ...(selectedCategory.properties?.map(
-      (prop) => new Property({ ...prop, isReadOnly: false })
-    ) || []),
+    ...(selectedCategory.properties?.map((prop) => new Property({ ...prop, isReadOnly: false })) || []),
   ];
   productDetails.value.properties.forEach((property) => {
-    const previousPropertyValue = currentProperties?.find(
-      (item) => item.id === property.id
-    );
+    const previousPropertyValue = currentProperties?.find((item) => item.id === property.id);
     if (previousPropertyValue) {
-      property.values = previousPropertyValue.values.map(
-        (item) => new PropertyValue(item)
-      );
+      property.values = previousPropertyValue.values.map((item) => new PropertyValue(item));
     }
   });
 };
 
-async function loadDictionaries(
-  property: IProperty,
-  keyword?: string,
-  skip?: number
-) {
+async function loadDictionaries(property: IProperty, keyword?: string, skip?: number) {
   return await searchDictionaryItems([property.id], keyword, skip);
 }
 
@@ -694,19 +600,11 @@ async function openOffers() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
-      unref(
-        computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))
-      )
-    );
+    return confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 
-function handleDictionaryValue(
-  property: IProperty,
-  valueId: string,
-  dictionary: PropertyDictionaryItem[]
-) {
+function handleDictionaryValue(property: IProperty, valueId: string, dictionary: PropertyDictionaryItem[]) {
   let valueName;
   const dictionaryItem = dictionary.find((x) => x.id === valueId);
   if (dictionaryItem) {
@@ -721,36 +619,19 @@ function handleDictionaryValue(
   };
 }
 
-function setPropertyValue(
-  property: IProperty,
-  value: IPropertyValue,
-  dictionary?: PropertyDictionaryItem[]
-) {
-  if (
-    typeof value === "object" &&
-    Object.prototype.hasOwnProperty.call(value, "length")
-  ) {
+function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary?: PropertyDictionaryItem[]) {
+  if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
-        const handledValue = handleDictionaryValue(
-          property,
-          item.valueId,
-          dictionary
-        );
+        const handledValue = handleDictionaryValue(property, item.valueId, dictionary);
         return new PropertyValue(handledValue);
       });
     } else {
-      property.values = (value as IPropertyValue[]).map(
-        (item) => new PropertyValue(item)
-      );
+      property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));
     }
   } else {
     if (dictionary && dictionary.length) {
-      const handledValue = handleDictionaryValue(
-        property,
-        value as string,
-        dictionary
-      );
+      const handledValue = handleDictionaryValue(property, value as string, dictionary);
       property.values[0] = new PropertyValue({
         ...handledValue,
         isInherited: false,
@@ -768,15 +649,9 @@ function setPropertyValue(
   }
 }
 
-function getPropertyValue(
-  property: IProperty,
-  isDictionary?: boolean
-): Record<string, unknown> {
+function getPropertyValue(property: IProperty, isDictionary?: boolean): Record<string, unknown> {
   if (isDictionary) {
-    return (
-      property.values[0] &&
-      (property.values[0].valueId as unknown as Record<string, unknown>)
-    );
+    return property.values[0] && (property.values[0].valueId as unknown as Record<string, unknown>);
   }
   return property.values[0] && property.values[0].value;
 }

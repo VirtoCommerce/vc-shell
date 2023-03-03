@@ -25,14 +25,10 @@
       :selectedItemId="selectedItemId"
     >
       <template v-slot:mobile-item="itemData">
-        <div
-          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4"
-        >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-              <VcHint>{{
-                $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
-              }}</VcHint>
+              <VcHint>{{ $t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
                 {{ itemData.item.name }}
               </div>
@@ -45,14 +41,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  computed,
-  watch,
-  onMounted,
-  shallowRef,
-} from "vue";
+import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -62,12 +51,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  IBladeEvent,
-  IBladeToolbar,
-  ITableColumns,
-  useI18n,
-} from "@vc-shell/framework";
+import { IBladeEvent, IBladeToolbar, ITableColumns, useI18n } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 
@@ -91,15 +75,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
-const {
-  searchQuery,
-  loading,
-  currentPage,
-  pages,
-  totalCount,
-  fulfillmentCentersList,
-  searchFulfillmentCenters,
-} = useFulfillmentCenters();
+const { searchQuery, loading, currentPage, pages, totalCount, fulfillmentCentersList, searchFulfillmentCenters } =
+  useFulfillmentCenters();
 
 const sort = ref("createdDate:DESC");
 const selectedItemId = ref();
@@ -108,9 +85,7 @@ const title = t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TITLE");
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "refresh",
-    title: computed(() =>
-      t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TOOLBAR.REFRESH")
-    ),
+    title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TOOLBAR.REFRESH")),
     icon: "fas fa-sync-alt",
     async clickHandler() {
       await reload();
@@ -118,11 +93,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "addMember",
-    title: computed(() =>
-      t(
-        "SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TOOLBAR.ADD_FULFILLMENT_CENTER"
-      )
-    ),
+    title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TOOLBAR.ADD_FULFILLMENT_CENTER")),
     icon: "fas fa-plus",
     clickHandler() {
       emit("open:blade", {
@@ -135,9 +106,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 const columns = ref<ITableColumns[]>([
   {
     id: "name",
-    title: computed(() =>
-      t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")
-    ),
+    title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
   },
 ]);

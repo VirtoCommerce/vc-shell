@@ -1,8 +1,13 @@
 <template>
-  <slot name="title" v-bind:title="notificationTitle"></slot>
-  <VcHint class="tw-mb-1" :style="{ color: variant }">{{
-    notificationDescription
-  }}</VcHint>
+  <slot
+    name="title"
+    v-bind:title="notificationTitle"
+  ></slot>
+  <VcHint
+    class="tw-mb-1"
+    :style="{ color: variant }"
+    >{{ notificationDescription }}</VcHint
+  >
 </template>
 
 <script lang="ts" setup>
@@ -22,14 +27,12 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { t } = useI18n();
 const notificationTitle = computed(() => {
-  return `${t("SHELL.NOTIFICATIONS.TITLE.PRODUCT.TITLE")} "${
-    props.notification.productName
-  }" ${t("SHELL.NOTIFICATIONS.TITLE.PRODUCT.UPDATE")}`;
+  return `${t("SHELL.NOTIFICATIONS.TITLE.PRODUCT.TITLE")} "${props.notification.productName}" ${t(
+    "SHELL.NOTIFICATIONS.TITLE.PRODUCT.UPDATE"
+  )}`;
 });
 
 const notificationDescription = computed(() => {
-  return `${props.notification.newStatus}. ${t(
-    "SHELL.NOTIFICATIONS.TITLE.PRODUCT.MORE_DETAILS"
-  )}`;
+  return `${props.notification.newStatus}. ${t("SHELL.NOTIFICATIONS.TITLE.PRODUCT.MORE_DETAILS")}`;
 });
 </script>

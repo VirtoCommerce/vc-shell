@@ -41,9 +41,7 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div
-          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4"
-        >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-w-full tw-flex tw-justify-evenly">
             <VcImage
               class="tw-shrink-0"
@@ -76,10 +74,7 @@
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{
-                  itemData.item.listPrice &&
-                  (itemData.item.listPrice as number).toFixed(2)
-                }}
+                {{ itemData.item.listPrice && (itemData.item.listPrice as number).toFixed(2) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
@@ -91,10 +86,7 @@
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{
-                  itemData.item.createdDate &&
-                  moment(itemData.item.createdDate).fromNow()
-                }}
+                {{ itemData.item.createdDate && moment(itemData.item.createdDate).fromNow() }}
               </div>
             </div>
           </div>
@@ -105,17 +97,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  inject,
-  onMounted,
-  reactive,
-  ref,
-  unref,
-  watch,
-  shallowRef,
-} from "vue";
+import { computed, defineComponent, inject, onMounted, reactive, ref, unref, watch, shallowRef } from "vue";
 
 export default defineComponent({
   url: "/offers",
@@ -173,16 +155,7 @@ const { t } = useI18n();
 const logger = useLogger();
 const { debounce } = useFunctions();
 
-const {
-  searchQuery,
-  offers,
-  totalCount,
-  pages,
-  currentPage,
-  loadOffers,
-  loading,
-  deleteOffers,
-} = useOffers();
+const { searchQuery, offers, totalCount, pages, currentPage, loadOffers, loading, deleteOffers } = useOffers();
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
@@ -408,9 +381,7 @@ const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
     .map(([id, isChecked]) => id);
 };
 
-const actionBuilder = (
-  item: IOffer & { status: string }
-): IActionBuilderResult[] => {
+const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[] => {
   let result = [];
 
   // if (item.status === "Published") {

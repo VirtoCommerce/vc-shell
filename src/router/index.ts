@@ -5,28 +5,13 @@ import ResetPassword from "../pages/ResetPassword.vue";
 import { OrdersEdit, OrdersList } from "../modules/orders";
 import { ProductsList, ProductsEdit } from "../modules/products";
 import { OffersDetails, OffersList } from "../modules/offers";
-import {
-  MpProductsList,
-  MpProductsEdit,
-} from "../modules/marketplace-products";
+import { MpProductsList, MpProductsEdit } from "../modules/marketplace-products";
 import Login from "./../pages/Login.vue";
 import App from "./../pages/App.vue";
-import {
-  ImportNew,
-  ImportProfileDetails,
-  ImportProfileSelector,
-} from "../modules/import";
+import { ImportNew, ImportProfileDetails, ImportProfileSelector } from "../modules/import";
 import { ReviewDetails, ReviewList } from "../modules/rating";
-import {
-  SellerDetails,
-  TeamList,
-  FulfillmentCenters,
-} from "../modules/settings";
-import {
-  usePermissions,
-  useUser,
-  ExtendedComponent,
-} from "@vc-shell/framework";
+import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
+import { usePermissions, useUser, ExtendedComponent } from "@vc-shell/framework";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -196,8 +181,7 @@ let programmatic = false;
 });
 
 router.beforeEach((to, from, next) => {
-  const ExtendedComponent = to.matched[to.matched.length - 1]?.components
-    ?.default as ExtendedComponent;
+  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as ExtendedComponent;
 
   if (from.name === undefined || programmatic) {
     if (ExtendedComponent && ExtendedComponent.permissions) {

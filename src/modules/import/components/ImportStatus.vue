@@ -1,12 +1,6 @@
 <template>
   <VcStatus v-bind="statusStyles">
-    {{
-      $t(
-        `IMPORT.PAGES.LIST.TABLE.STATUSES.${camelToSnake(
-          statusText
-        ).toUpperCase()}`
-      )
-    }}</VcStatus
+    {{ $t(`IMPORT.PAGES.LIST.TABLE.STATUSES.${camelToSnake(statusText).toUpperCase()}`) }}</VcStatus
   >
 </template>
 
@@ -28,10 +22,7 @@ const statusStyles = computed(
     outline: boolean;
     variant: "warning" | "danger" | "success";
   } => {
-    if (
-      props.item.finished &&
-      props.item.errorsCount >= props.item.processedCount
-    ) {
+    if (props.item.finished && props.item.errorsCount >= props.item.processedCount) {
       return {
         outline: false,
         variant: "danger",
@@ -61,16 +52,9 @@ const statusStyles = computed(
 );
 
 const statusText = computed(() => {
-  if (
-    props.item.finished &&
-    props.item.errorsCount >= props.item.processedCount
-  ) {
+  if (props.item.finished && props.item.errorsCount >= props.item.processedCount) {
     return "Failed";
-  } else if (
-    props.item.finished &&
-    props.item.errorsCount < props.item.processedCount &&
-    props.item.errorsCount > 0
-  ) {
+  } else if (props.item.finished && props.item.errorsCount < props.item.processedCount && props.item.errorsCount > 0) {
     return "CompletedWithErrors";
   } else if (props.item.finished && props.item.errorsCount === 0) {
     return "Completed";

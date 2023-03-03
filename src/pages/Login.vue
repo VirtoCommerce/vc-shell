@@ -48,12 +48,19 @@
         </Field>
 
         <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
-          <VcButton variant="onlytext" @click="togglePassRequest" type="button">
+          <VcButton
+            variant="onlytext"
+            @click="togglePassRequest"
+            type="button"
+          >
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <vc-button
             variant="primary"
             :disabled="loading || !isValid"
@@ -78,9 +85,7 @@
               ref="forgotPasswordField"
               class="tw-mb-4 tw-mt-1"
               :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
-              :placeholder="
-                $t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')
-              "
+              :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
               v-model="forgotPasswordForm.loginOrEmail"
               :hint="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
               required
@@ -111,7 +116,10 @@
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
         <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <vc-button
             variant="primary"
             :disabled="loading"
@@ -162,7 +170,7 @@ const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 useForm({ validateOnMount: false });
-const { logo, background, title } = route.meta as {logo: string; background: string; title: string};
+const { logo, background, title } = route.meta as { logo: string; background: string; title: string };
 const { getUiCustomizationSettings, uiSettings } = useSettings();
 
 const signInResult = ref<SignInResults>({ succeeded: true });

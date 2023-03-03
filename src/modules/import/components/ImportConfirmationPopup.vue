@@ -1,12 +1,17 @@
 <template>
-  <VcPopup @close="$emit('close')" variant="small" :title="title">
+  <VcPopup
+    @close="$emit('close')"
+    variant="small"
+    :title="title"
+  >
     <div class="tw-p-3">
-      <slot name="description">{{
-        $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.CONFIRMATION")
-      }}</slot>
+      <slot name="description">{{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.CONFIRMATION") }}</slot>
 
       <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-        <span v-if="$isDesktop.value" class="vc-tw-grow tw-basis-0"></span>
+        <span
+          v-if="$isDesktop.value"
+          class="vc-tw-grow tw-basis-0"
+        ></span>
         <VcButton
           variant="primary"
           :outline="true"
@@ -15,7 +20,10 @@
         >
           {{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.NO") }}
         </VcButton>
-        <VcButton variant="primary" @click="$emit('confirm')">
+        <VcButton
+          variant="primary"
+          @click="$emit('confirm')"
+        >
           {{ $t("IMPORT.PAGES.IMPORTING.CONFIRMATION_POPUP.YES") }}
         </VcButton>
       </div>

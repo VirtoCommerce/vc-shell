@@ -1,5 +1,8 @@
 <template>
-  <VcStatus :variant="status" :outline="false">
+  <VcStatus
+    :variant="status"
+    :outline="false"
+  >
     {{ reviewStatus }}
   </VcStatus>
 </template>

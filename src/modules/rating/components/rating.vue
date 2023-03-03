@@ -1,7 +1,11 @@
 <template>
   <div class="tw-relative">
     <VcLoading :active="loading"></VcLoading>
-    <VcRating v-if="rating" :rating="rating" :variant="variant">
+    <VcRating
+      v-if="rating"
+      :rating="rating"
+      :variant="variant"
+    >
       <template v-slot:details>
         {{
           $t("RATING.RATING.REVIEWS", {

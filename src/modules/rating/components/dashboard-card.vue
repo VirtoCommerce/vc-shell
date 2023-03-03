@@ -5,13 +5,19 @@
     icon="fas fa-star"
   >
     <template v-slot:actions>
-      <div class= "tw-flex tw-items-center">
+      <div class="tw-flex tw-items-center">
         <div class="vc-card__title">
-          <Rating class="tw-mr-5" :variant="'star-and-text'"></Rating>
+          <Rating
+            class="tw-mr-5"
+            :variant="'star-and-text'"
+          ></Rating>
         </div>
-        <vc-button small outline @click="openAllReviews()">{{
-          $t("RATING.DASHBOARD_CARD.ALL_REVIEWS")
-        }}</vc-button>
+        <vc-button
+          small
+          outline
+          @click="openAllReviews()"
+          >{{ $t("RATING.DASHBOARD_CARD.ALL_REVIEWS") }}</vc-button
+        >
       </div>
     </template>
     <ReviewTable
@@ -61,11 +67,7 @@ const openAllReviews = () => {
   );
 };
 
-const onItemClick = (
-  item: CustomerReview,
-  onSelect: () => void,
-  onDeselect: () => void
-) => {
+const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
   props.openPage(
     {
       component: shallowRef(ReviewList),

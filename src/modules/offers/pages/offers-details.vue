@@ -9,7 +9,10 @@
     @close="$emit('close:blade')"
   >
     <!-- Blade contents -->
-    <VcContainer :no-padding="true" ref="container">
+    <VcContainer
+      :no-padding="true"
+      ref="container"
+    >
       <div class="offer-details__inner tw-grow tw-basis-0 tw-overflow-hidden">
         <div class="tw-p-4">
           <VcForm>
@@ -27,9 +30,7 @@
                 required
                 searchable
                 v-model="offerDetails.productId"
-                :placeholder="
-                  $t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')
-                "
+                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')"
                 :options="fetchProducts"
                 option-value="id"
                 option-label="name"
@@ -64,9 +65,7 @@
                       <div
                         class="vc-link tw-mt-1"
                         v-if="scope.opt.sellerProductId"
-                        @click.stop="
-                          showProductDetails(scope.opt.sellerProductId)
-                        "
+                        @click.stop="showProductDetails(scope.opt.sellerProductId)"
                       >
                         {{ $t("OFFERS.PAGES.DETAILS.MORE_INFO") }}
                       </div>
@@ -115,9 +114,7 @@
                       :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
                       v-model="offerDetails.sku"
                       @update:modelValue="handleChange"
-                      :placeholder="
-                        $t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')
-                      "
+                      :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
                       :disabled="readonly"
                       required
                       clearable
@@ -128,12 +125,18 @@
                 </div>
 
                 <!-- In stock quantity fields -->
-                <VcLabel class="tw-mb-2" :required="true">
+                <VcLabel
+                  class="tw-mb-2"
+                  :required="true"
+                >
                   <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.QTY.TITLE") }}</span>
                 </VcLabel>
 
                 <VcRow>
-                  <VcCol size="1" class="self-center tw-mr-2 tw-my-2">
+                  <VcCol
+                    size="1"
+                    class="self-center tw-mr-2 tw-my-2"
+                  >
                     <!-- Always in stock -->
                     <VcCheckbox
                       :modelValue="!offerDetails.trackInventory"
@@ -141,32 +144,25 @@
                       :disabled="readonly"
                       name="alwaysinstock"
                     >
-                      {{
-                        $t("OFFERS.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE")
-                      }}
+                      {{ $t("OFFERS.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE") }}
                     </VcCheckbox>
                   </VcCol>
                 </VcRow>
 
-                <template
-                  v-if="offerDetails.inventory && offerDetails.inventory.length"
-                >
+                <template v-if="offerDetails.inventory && offerDetails.inventory.length">
                   <div>
                     <VcRow>
                       <VcCol size="2">
                         <VcLabel class="tw-my-2">
-                          <span>{{
-                            $t(
-                              "OFFERS.PAGES.DETAILS.FIELDS.FULFILLMENT_CENTER.TITLE"
-                            )
-                          }}</span>
+                          <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.FULFILLMENT_CENTER.TITLE") }}</span>
                         </VcLabel>
                       </VcCol>
                       <VcCol size="2">
-                        <VcLabel class="tw-my-2" :required="true">
-                          <span>{{
-                            $t("OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE")
-                          }}</span>
+                        <VcLabel
+                          class="tw-my-2"
+                          :required="true"
+                        >
+                          <span>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.TITLE") }}</span>
                         </VcLabel>
                       </VcCol>
                     </VcRow>
@@ -185,20 +181,13 @@
                           <VcCol>
                             <!-- Fulfillment center label -->
                             <VcLabel class="tw-py-4">
-                              <span class="tw-font-normal">{{
-                                item.fulfillmentCenterName
-                              }}</span>
+                              <span class="tw-font-normal">{{ item.fulfillmentCenterName }}</span>
                             </VcLabel>
                           </VcCol>
                           <VcCol class="tw-py-2">
                             <!-- In stock qty field -->
                             <Field
-                              v-slot="{
-                                field,
-                                errorMessage,
-                                handleChange,
-                                errors,
-                              }"
+                              v-slot="{ field, errorMessage, handleChange, errors }"
                               :modelValue="item.inStockQuantity"
                               :name="`availqty_${i}`"
                               rules="required"
@@ -208,14 +197,8 @@
                                 v-model="item.inStockQuantity"
                                 @update:modelValue="handleChange"
                                 type="number"
-                                :placeholder="
-                                  $t(
-                                    'OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER'
-                                  )
-                                "
-                                :disabled="
-                                  readonly || !offerDetails.trackInventory
-                                "
+                                :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER')"
+                                :disabled="readonly || !offerDetails.trackInventory"
                                 required
                                 clearable
                                 :error="!!errors.length"
@@ -255,14 +238,16 @@
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
             >
               <template v-slot:actions>
-                <VcButton v-if="!readonly" small @click="addPrice(true)">
+                <VcButton
+                  v-if="!readonly"
+                  small
+                  @click="addPrice(true)"
+                >
                   {{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.ADD_PRICE") }}
                 </VcButton>
               </template>
 
-              <template
-                v-if="offerDetails.prices && offerDetails.prices.length"
-              >
+              <template v-if="offerDetails.prices && offerDetails.prices.length">
                 <div :class="{ 'tw-p-2': $isDesktop.value }">
                   <VcRow
                     v-for="(item, i) in offerDetails.prices"
@@ -289,16 +274,8 @@
                               v-model:modelValue.number="item.listPrice"
                               v-model:option="item.currency"
                               @update:modelValue="handleChange"
-                              :label="
-                                $t(
-                                  'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE'
-                                )
-                              "
-                              :placeholder="
-                                $t(
-                                  'OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER'
-                                )
-                              "
+                              :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
+                              :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
                               :disabled="readonly"
                               required
                               :clearable="false"
@@ -316,14 +293,8 @@
                           <VcInputCurrency
                             v-model:modelValue.number="item.salePrice"
                             v-model:option="item.currency"
-                            :label="
-                              $t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')
-                            "
-                            :placeholder="
-                              $t(
-                                'OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER'
-                              )
-                            "
+                            :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.TITLE')"
+                            :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')"
                             :disabled="readonly"
                             :clearable="false"
                             :options="currencyList"
@@ -349,14 +320,8 @@
                           v-model.number="item.minQuantity"
                           @update:modelValue="handleChange"
                           type="number"
-                          :label="
-                            $t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')
-                          "
-                          :placeholder="
-                            $t(
-                              'OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER'
-                            )
-                          "
+                          :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
+                          :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')"
                           :disabled="readonly"
                           required
                           clearable
@@ -390,16 +355,15 @@
                     v-if="pricingEqual"
                   >
                     <!-- TODO: stylizing-->
-                    {{
-                      $t(`OFFERS.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`)
-                    }}
+                    {{ $t(`OFFERS.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`) }}
                   </VcHint>
                 </div>
               </template>
-              <div v-else class="tw-p-5 tw-flex tw-justify-center">
-                <VcHint>{{
-                  $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.EMPTY")
-                }}</VcHint>
+              <div
+                v-else
+                class="tw-p-5 tw-flex tw-justify-center"
+              >
+                <VcHint>{{ $t("OFFERS.PAGES.DETAILS.FIELDS.PRICING.EMPTY") }}</VcHint>
               </div>
             </VcCard>
             <VcCard :header="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.TITLE')">
@@ -414,9 +378,7 @@
                       >
                         <VcInput
                           v-bind="field"
-                          :label="
-                            $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')
-                          "
+                          :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                           type="datetime-local"
                           :modelValue="getFilterDate('startDate')"
                           @update:modelValue="
@@ -437,9 +399,7 @@
                       >
                         <VcInput
                           v-bind="field"
-                          :label="
-                            $t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')
-                          "
+                          :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                           type="datetime-local"
                           :modelValue="getFilterDate('endDate')"
                           @update:modelValue="(e: string) => setFilterDate('endDate', e)"
@@ -482,17 +442,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  ref,
-  onMounted,
-  onBeforeUpdate,
-  nextTick,
-  unref,
-  watch,
-  shallowRef,
-} from "vue";
+import { computed, defineComponent, ref, onMounted, onBeforeUpdate, nextTick, unref, watch, shallowRef } from "vue";
 
 export default defineComponent({
   url: "/offer",
@@ -500,13 +450,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  useForm,
-  useI18n,
-  IParentCallArgs,
-  IBladeEvent,
-  IBladeToolbar,
-} from "@vc-shell/framework";
+import { useForm, useI18n, IParentCallArgs, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IProperty,
@@ -581,13 +525,10 @@ const duplicates = ref([]);
 const filterTypes = ["Variation"];
 
 const filteredProps = computed(() => {
-  return offerDetails.value?.properties?.filter((x) =>
-    filterTypes.includes(x.type)
-  );
+  return offerDetails.value?.properties?.filter((x) => filterTypes.includes(x.type));
 });
 
-const { fulfillmentCentersList, searchFulfillmentCenters } =
-  useFulfillmentCenters();
+const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
 onMounted(async () => {
   try {
@@ -602,15 +543,9 @@ onMounted(async () => {
       makeCopy();
     }
 
-    if (
-      offer.value.productId ||
-      offerDetails.value.productId ||
-      props.options?.sellerProduct?.publishedProductDataId
-    ) {
+    if (offer.value.productId || offerDetails.value.productId || props.options?.sellerProduct?.publishedProductDataId) {
       await setProductItem(
-        offer.value.productId ||
-          offerDetails.value.productId ||
-          props.options?.sellerProduct?.publishedProductDataId
+        offer.value.productId || offerDetails.value.productId || props.options?.sellerProduct?.publishedProductDataId
       );
     }
   } finally {
@@ -709,13 +644,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     isVisible: true,
     disabled: computed(
-      () =>
-        !(
-          offerDetails.value.prices &&
-          offerDetails.value.prices.length &&
-          isFormValid.value &&
-          modified.value
-        )
+      () => !(offerDetails.value.prices && offerDetails.value.prices.length && isFormValid.value && modified.value)
     ),
   },
   {
@@ -727,9 +656,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         offerDetails.value.isActive = true;
       }
     },
-    isVisible: computed(
-      () => !!props.param && !offerLoading.value && !offerDetails.value.isActive
-    ),
+    isVisible: computed(() => !!props.param && !offerLoading.value && !offerDetails.value.isActive),
   },
   {
     id: "disable",
@@ -740,20 +667,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         offerDetails.value.isActive = false;
       }
     },
-    isVisible: computed(
-      () => !!props.param && !offerLoading.value && offerDetails.value.isActive
-    ),
+    isVisible: computed(() => !!props.param && !offerLoading.value && offerDetails.value.isActive),
   },
   {
     id: "delete",
     title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     async clickHandler() {
-      if (
-        window.confirm(
-          unref(computed(() => t("OFFERS.PAGES.ALERTS.DELETE_OFFER")))
-        )
-      ) {
+      if (window.confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.DELETE_OFFER"))))) {
         await deleteOffer({ id: props.param });
         emit("parent:call", {
           method: "reload",
@@ -873,45 +794,24 @@ function getProductItem() {
   }
 }
 
-async function loadDictionaries(
-  property: IProperty,
-  keyword?: string,
-  skip?: number
-) {
+async function loadDictionaries(property: IProperty, keyword?: string, skip?: number) {
   return await searchDictionaryItems([property.id], keyword, skip);
 }
 
-function setPropertyValue(
-  property: IProperty,
-  value: IPropertyValue,
-  dictionary?: PropertyDictionaryItem[]
-) {
+function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary?: PropertyDictionaryItem[]) {
   if (value) {
-    if (
-      typeof value === "object" &&
-      Object.prototype.hasOwnProperty.call(value, "length")
-    ) {
+    if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
       if (dictionary && dictionary.length) {
         property.values = (value as IPropertyValue[]).map((item) => {
-          const handledValue = handleDictionaryValue(
-            property,
-            item.valueId,
-            dictionary
-          );
+          const handledValue = handleDictionaryValue(property, item.valueId, dictionary);
           return new PropertyValue(handledValue);
         });
       } else {
-        property.values = (value as IPropertyValue[]).map(
-          (item) => new PropertyValue(item)
-        );
+        property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));
       }
     } else {
       if (dictionary && dictionary.length) {
-        const handledValue = handleDictionaryValue(
-          property,
-          value as string,
-          dictionary
-        );
+        const handledValue = handleDictionaryValue(property, value as string, dictionary);
         property.values[0] = new PropertyValue({
           ...handledValue,
           isInherited: false,
@@ -937,24 +837,14 @@ function setPropertyValue(
   }
 }
 
-function getPropertyValue(
-  property: IProperty,
-  isDictionary?: boolean
-): Record<string, unknown> {
+function getPropertyValue(property: IProperty, isDictionary?: boolean): Record<string, unknown> {
   if (isDictionary) {
-    return (
-      property.values[0] &&
-      (property.values[0].valueId as unknown as Record<string, unknown>)
-    );
+    return property.values[0] && (property.values[0].valueId as unknown as Record<string, unknown>);
   }
   return property.values[0] && property.values[0].value;
 }
 
-function handleDictionaryValue(
-  property: IProperty,
-  valueId: string,
-  dictionary: PropertyDictionaryItem[]
-) {
+function handleDictionaryValue(property: IProperty, valueId: string, dictionary: PropertyDictionaryItem[]) {
   let valueName;
   const dictionaryItem = dictionary.find((x) => x.id === valueId);
   if (dictionaryItem) {
@@ -971,9 +861,7 @@ function handleDictionaryValue(
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
-      unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION")))
-    );
+    return confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

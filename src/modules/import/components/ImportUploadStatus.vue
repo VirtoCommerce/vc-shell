@@ -72,9 +72,7 @@ const props = withDefaults(defineProps<Props>(), {
   isStarted: false,
 });
 
-const filteredActions = computed(() =>
-  props.uploadActions.filter((action) => action.isVisible)
-);
+const filteredActions = computed(() => props.uploadActions.filter((action) => action.isVisible));
 </script>
 <style lang="scss">
 :root {

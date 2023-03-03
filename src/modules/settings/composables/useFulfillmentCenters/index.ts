@@ -34,9 +34,7 @@ interface IUseFulfillmentCentersOptions {
   sort?: string;
 }
 
-export default (
-  options?: IUseFulfillmentCentersOptions
-): IUseFulfillmentCenters => {
+export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters => {
   const loading = ref(false);
   const logger = useLogger();
   const pageSize = options?.pageSize || 20;
@@ -64,9 +62,7 @@ export default (
     return client;
   }
 
-  async function searchFulfillmentCenters(
-    query: ISearchFulfillmentCentersQuery
-  ) {
+  async function searchFulfillmentCenters(query: ISearchFulfillmentCentersQuery) {
     const client = await getApiClient();
 
     searchQuery.value = { ...searchQuery.value, ...query };
@@ -87,9 +83,7 @@ export default (
     const client = await getApiClient();
     try {
       loading.value = true;
-      fulfillmentCenterDetails.value = await client.getFulfillmentCenterById(
-        id
-      );
+      fulfillmentCenterDetails.value = await client.getFulfillmentCenterById(id);
     } catch (e) {
       logger.error(e);
     } finally {
@@ -129,19 +123,11 @@ export default (
   }
 
   async function resetEntries() {
-    fulfillmentCenterDetails.value = Object.assign(
-      {},
-      fulfillmentCenterDetailsCopy
-    );
+    fulfillmentCenterDetails.value = Object.assign({}, fulfillmentCenterDetailsCopy);
   }
 
-  async function handleFulfillmentCenterItem(
-    fulfillmentCenter: IFulfillmentCenter
-  ) {
-    fulfillmentCenterDetails.value = Object.assign(
-      {},
-      new FulfillmentCenter(fulfillmentCenter as IFulfillmentCenter)
-    );
+  async function handleFulfillmentCenterItem(fulfillmentCenter: IFulfillmentCenter) {
+    fulfillmentCenterDetails.value = Object.assign({}, new FulfillmentCenter(fulfillmentCenter as IFulfillmentCenter));
     fulfillmentCenterDetailsCopy = _cloneDeep(fulfillmentCenterDetails.value);
   }
 
@@ -150,9 +136,7 @@ export default (
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
     modified: computed(() => modified.value),
-    currentPage: computed(
-      () => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1
-    ),
+    currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     fulfillmentCentersList: computed(() => searchResult.value?.results),
     fulfillmentCenterDetails,
     fulfillmentCenterDetailsCopy: computed(() => fulfillmentCenterDetailsCopy),

@@ -32,31 +32,23 @@
     >
       <!-- Not found template -->
       <template v-slot:notfound>
-        <div
-          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
-        >
+        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("MP_PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
-          <VcButton @click="resetSearch">{{
-            $t("MP_PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
-          }}</VcButton>
+          <VcButton @click="resetSearch">{{ $t("MP_PRODUCTS.PAGES.LIST.NOT_FOUND.RESET") }}</VcButton>
         </div>
       </template>
 
       <!-- Empty template -->
       <template v-slot:empty>
-        <div
-          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
-        >
+        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("MP_PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
-          <VcButton @click="addProduct">{{
-            $t("MP_PRODUCTS.PAGES.LIST.EMPTY.ADD")
-          }}</VcButton>
+          <VcButton @click="addProduct">{{ $t("MP_PRODUCTS.PAGES.LIST.EMPTY.ADD") }}</VcButton>
         </div>
       </template>
 
@@ -74,13 +66,14 @@
 
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
-        <mp-product-status :status="itemData.item.status as string" class="tw-mb-1" />
+        <mp-product-status
+          :status="itemData.item.status as string"
+          class="tw-mb-1"
+        />
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div
-          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap"
-        >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
           <VcImage
             class="tw-shrink-0"
             aspect="1x1"
@@ -105,28 +98,20 @@
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{
-                    itemData.item.productData &&
-                    (itemData.item.productData as Record<"gtin", string>).gtin
-                  }}
+                  {{ itemData.item.productData && (itemData.item.productData as Record<"gtin", string>).gtin }}
                 </div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{
-                    itemData.item.createdDate &&
-                    moment(itemData.item.createdDate).fromNow()
-                  }}
+                  {{ itemData.item.createdDate && moment(itemData.item.createdDate).fromNow() }}
                 </div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <div class="tw-flex tw-flex-col tw-items-center">
                   <VcHint>{{ $t("MP_PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
-                    <VcStatusIcon
-                      :status="itemData.item && itemData.item.isPublished as boolean"
-                    ></VcStatusIcon>
+                    <VcStatusIcon :status="itemData.item && itemData.item.isPublished as boolean"></VcStatusIcon>
                   </div>
                 </div>
               </div>
@@ -139,15 +124,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  shallowRef,
-} from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef } from "vue";
 import { UserPermissions } from "../../../types";
 
 export default defineComponent({
@@ -196,16 +173,10 @@ const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
 
-const {
-  products,
-  totalCount,
-  pages,
-  currentPage,
-  loadProducts,
-  loading,
-  searchQuery,
-  exportCategories,
-} = useProducts({ isPublished: true, searchFromAllSellers: true });
+const { products, totalCount, pages, currentPage, loadProducts, loading, searchQuery, exportCategories } = useProducts({
+  isPublished: true,
+  searchFromAllSellers: true,
+});
 const filter = reactive<{
   status?: string[];
 }>({ status: [] });
@@ -334,9 +305,7 @@ const columns = computed(() => {
 });
 
 const title = computed(() => t("MP_PRODUCTS.PAGES.LIST.TITLE"));
-const activeFilterCount = computed(
-  () => Object.values(appliedFilter.value).filter((item) => !!item).length
-);
+const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {

@@ -1,14 +1,15 @@
 <template>
-  <slot name="title" v-bind:title="notification.title"></slot>
-  <VcHint class="tw-mb-1" v-if="notification.profileName"
-    >{{ $t("SHELL.NOTIFICATIONS.PROFILE") }}
-    <b>{{ notification.profileName }}</b></VcHint
+  <slot
+    name="title"
+    v-bind:title="notification.title"
+  ></slot>
+  <VcHint
+    class="tw-mb-1"
+    v-if="notification.profileName"
+    >{{ $t("SHELL.NOTIFICATIONS.PROFILE") }} <b>{{ notification.profileName }}</b></VcHint
   >
   <div v-if="notification.errors && notification.errors.length">
-    <VcHint>
-      {{ $t("SHELL.NOTIFICATIONS.ERRORS") }}:
-      {{ notification.errors && notification.errors.length }}</VcHint
-    >
+    <VcHint> {{ $t("SHELL.NOTIFICATIONS.ERRORS") }}: {{ notification.errors && notification.errors.length }}</VcHint>
   </div>
 </template>
 

@@ -9,8 +9,15 @@
   >
     <VcContainer class="import">
       <!-- Import profile widgets-->
-      <div class="tw-p-3" v-if="importProfiles && importProfiles.length">
-        <VcSlider :navigation="true" :overflow="true" :slides="importProfiles">
+      <div
+        class="tw-p-3"
+        v-if="importProfiles && importProfiles.length"
+      >
+        <VcSlider
+          :navigation="true"
+          :overflow="true"
+          :slides="importProfiles"
+        >
           <template v-slot:default="{ slide }">
             <div class="tw-relative">
               <VcStatus
@@ -153,16 +160,12 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "new",
-    title: computed(() =>
-      t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE")
-    ),
+    title: computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TOOLBAR.ADD_PROFILE")),
     icon: "fas fa-plus",
     clickHandler() {
       newProfile();
     },
-    isVisible: computed(() =>
-      checkPermission(UserPermissions.SellerImportProfilesEdit)
-    ),
+    isVisible: computed(() => checkPermission(UserPermissions.SellerImportProfilesEdit)),
   },
 ]);
 const columns = ref<ITableColumns[]>([
@@ -205,9 +208,7 @@ onMounted(async () => {
     selectedProfileId.value = props.param;
   }
   if (props.options && props.options.importJobId) {
-    const historyItem = importHistory.value.find(
-      (x) => x.jobId === props.options.importJobId
-    );
+    const historyItem = importHistory.value.find((x) => x.jobId === props.options.importJobId);
     if (historyItem) {
       selectedItemId.value = historyItem.id;
     }
@@ -230,9 +231,7 @@ function newProfile() {
 function openImporter(profileId: string) {
   bladeWidth.value = 50;
 
-  const profile = importProfiles.value.find(
-    (profile) => profile.id === profileId
-  );
+  const profile = importProfiles.value.find((profile) => profile.id === profileId);
 
   emit("open:blade", {
     component: shallowRef(ImportNew),

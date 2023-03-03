@@ -20,9 +20,7 @@
   >
     <!-- Empty -->
     <template v-slot:empty>
-      <div
-        class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
-      >
+      <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5">
         <img :src="emptyImage" />
         <div class="tw-m-4 tw-text-xl tw-font-medium">
           {{ $t("RATING.REVIEW_TABLE.EMPTY") }}
@@ -37,9 +35,7 @@
 
     <!-- Override status column template -->
     <template v-slot:item_status="itemData">
-      <Status
-        :review-status="itemData.item.reviewStatus as CustomerReviewReviewStatus"
-      ></Status>
+      <Status :review-status="itemData.item.reviewStatus as CustomerReviewReviewStatus"></Status>
     </template>
   </VcTable>
 </template>
@@ -47,10 +43,7 @@
 <script lang="ts" setup>
 import { useI18n, VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
-import {
-  CustomerReview,
-  CustomerReviewReviewStatus,
-} from "../../../api_client/marketplacevendor";
+import { CustomerReview, CustomerReviewReviewStatus } from "../../../api_client/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 // eslint-disable-next-line import/no-unresolved
@@ -67,12 +60,7 @@ export interface Props {
 }
 
 export interface Emits {
-  (
-    event: "itemClick",
-    item: CustomerReview,
-    onSelect: () => void,
-    onDeselect: () => void
-  ): void;
+  (event: "itemClick", item: CustomerReview, onSelect: () => void, onDeselect: () => void): void;
 }
 
 const props = withDefaults(defineProps<Props>(), { footer: true });
@@ -88,8 +76,10 @@ const { t } = useI18n();
 
 // Data
 
-const { loading, reviews, totalCount, pages, currentPage, sort, loadReviews } =
-  useReviews({ pageSize: props.pageSize, sort: props.sort });
+const { loading, reviews, totalCount, pages, currentPage, sort, loadReviews } = useReviews({
+  pageSize: props.pageSize,
+  sort: props.sort,
+});
 
 // Table
 

@@ -32,15 +32,16 @@
     >
       <!-- Filters -->
       <template v-slot:filters="{ closePanel }">
-        <h2 v-if="$isMobile.value" class="tw-my-4 tw-text-[19px] tw-font-bold">
+        <h2
+          v-if="$isMobile.value"
+          class="tw-my-4 tw-text-[19px] tw-font-bold"
+        >
           {{ $t("ORDERS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
         <VcContainer no-padding>
           <VcRow>
             <VcCol class="filter-col tw-p-2">
-              <div
-                class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]"
-              >
+              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
@@ -49,17 +50,13 @@
                   v-for="status in PaymentStatus"
                   :key="status"
                   :modelValue="filter.status === status"
-                  @update:modelValue="
-                    filter.status = $event ? status : undefined
-                  "
+                  @update:modelValue="filter.status = $event ? status : undefined"
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS." + status.toUpperCase()) }}
                 </VcCheckbox>
               </div>
             </VcCol>
             <VcCol class="tw-p-2">
-              <div
-                class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]"
-              >
+              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
                 {{ $t("ORDERS.PAGES.LIST.FILTERS.ORDER_DATE") }}
               </div>
               <div>
@@ -87,9 +84,7 @@
                   class="tw-mr-4"
                   @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
-                  >{{
-                    $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</vc-button
+                  >{{ $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS") }}</vc-button
                 >
                 <vc-button
                   @click="applyFilters(closePanel)"
@@ -104,24 +99,18 @@
 
       <!-- Not found template -->
       <template v-slot:notfound>
-        <div
-          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
-        >
+        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("ORDERS.PAGES.LIST.NOT_FOUND.NO_ORDERS") }}
           </div>
-          <vc-button @click="resetSearch">{{
-            $t("ORDERS.PAGES.LIST.NOT_FOUND.RESET")
-          }}</vc-button>
+          <vc-button @click="resetSearch">{{ $t("ORDERS.PAGES.LIST.NOT_FOUND.RESET") }}</vc-button>
         </div>
       </template>
 
       <!-- Empty template -->
       <template v-slot:empty>
-        <div
-          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
-        >
+        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("ORDERS.PAGES.LIST.EMPTY") }}
@@ -155,17 +144,12 @@
             <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.TOTAL") }}</VcHint>
-                <div class="tw-truncate tw-mt-1">
-                  {{ itemData.item.total }} {{ itemData.item.currency }}
-                </div>
+                <div class="tw-truncate tw-mt-1">{{ itemData.item.total }} {{ itemData.item.currency }}</div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("ORDERS.PAGES.LIST.STATUS.CREATED") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{
-                    itemData.item.createdDate &&
-                    moment(itemData.item.createdDate).fromNow()
-                  }}
+                  {{ itemData.item.createdDate && moment(itemData.item.createdDate).fromNow() }}
                 </div>
               </div>
             </div>
@@ -177,15 +161,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  shallowRef,
-} from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef } from "vue";
 
 export default defineComponent({
   url: "/orders",
@@ -225,16 +201,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const {
-  orders,
-  loadOrders,
-  loading,
-  pages,
-  currentPage,
-  totalCount,
-  changeOrderStatus,
-  PaymentStatus,
-} = useOrders();
+const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n();
 const filter = ref<{ status: string }>();
@@ -244,15 +211,11 @@ const selectedItemId = ref();
 const selectedOrdersIds = ref([]);
 const sort = ref("createdDate:DESC");
 const applyFiltersDisable = computed(() => {
-  const activeFilters = Object.values(filter.value).filter(
-    (x) => x !== undefined
-  );
+  const activeFilters = Object.values(filter.value).filter((x) => x !== undefined);
   return !activeFilters.length;
 });
 const applyFiltersReset = computed(() => {
-  const activeFilters = Object.values(appliedFilter.value).filter(
-    (x) => x !== undefined
-  );
+  const activeFilters = Object.values(appliedFilter.value).filter((x) => x !== undefined);
   return !activeFilters.length;
 });
 
@@ -488,18 +451,14 @@ function getFilterDate(key: string) {
 
 async function resetSearch() {
   searchValue.value = "";
-  Object.keys(filter.value).forEach(
-    (key: string) => (filter.value[key] = undefined)
-  );
+  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
   await loadOrders({
     ...filter.value,
     keyword: "",
   });
   appliedFilter.value = {};
 }
-const activeFilterCount = computed(
-  () => Object.values(appliedFilter.value).filter((item) => !!item).length
-);
+const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);
 async function applyFilters(closePanel: () => void) {
   closePanel();
   await loadOrders({
@@ -511,9 +470,7 @@ async function applyFilters(closePanel: () => void) {
 }
 async function resetFilters(closePanel: () => void) {
   closePanel();
-  Object.keys(filter.value).forEach(
-    (key: string) => (filter.value[key] = undefined)
-  );
+  Object.keys(filter.value).forEach((key: string) => (filter.value[key] = undefined));
   await loadOrders({
     ...filter.value,
   });

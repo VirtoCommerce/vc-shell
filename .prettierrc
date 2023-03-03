@@ -1,3 +1,4 @@
 {
-    "endOfLine": "auto"
+  "singleAttributePerLine": true,
+  "endOfLine": "auto"
 }

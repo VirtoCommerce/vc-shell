@@ -24,7 +24,10 @@
       v-if="menuItems && menuItems.length"
       class="user-dropdown-button__chevron"
     >
-      <VcIcon icon="fas fa-chevron-down" size="xl"></VcIcon>
+      <VcIcon
+        icon="fas fa-chevron-down"
+        size="xl"
+      ></VcIcon>
     </div>
     <div
       v-if="menuItems && accountMenuVisible"
@@ -35,9 +38,7 @@
         v-for="item in menuItems"
         :key="item.id"
         class="user-dropdown-button__menu-item"
-        @click="
-          item.hasOwnProperty('clickHandler') ? item.clickHandler() : null
-        "
+        @click="item.hasOwnProperty('clickHandler') ? item.clickHandler() : null"
       >
         {{ item.title }}
       </div>

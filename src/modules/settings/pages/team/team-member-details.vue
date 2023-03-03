@@ -43,9 +43,7 @@
                 v-bind="field"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
-                :placeholder="
-                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')
-                "
+                :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')"
                 :disabled="isOwnerReadonly"
                 v-model="userDetails.firstName"
                 required
@@ -68,9 +66,7 @@
                 v-bind="field"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
-                :placeholder="
-                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')
-                "
+                :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')"
                 :disabled="isOwnerReadonly"
                 v-model="userDetails.lastName"
                 required
@@ -93,9 +89,7 @@
                 v-bind="field"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-                :placeholder="
-                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')
-                "
+                :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
                 :disabled="!!props.param"
                 v-model="userDetails.email"
                 required
@@ -119,9 +113,7 @@
                 v-bind="field"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
-                :placeholder="
-                  $t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')
-                "
+                :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')"
                 :options="roles"
                 v-model="userDetails.role"
                 option-value="id"
@@ -175,21 +167,12 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import {
-  useI18n,
-  useUser,
-  useAutosave,
-  IParentCallArgs,
-  IBladeToolbar,
-} from "@vc-shell/framework";
+import { useI18n, useUser, useAutosave, IParentCallArgs, IBladeToolbar } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid, Field, useForm } from "vee-validate";
-import {
-  SellerUser,
-  SellerUserDetails,
-} from "../../../../api_client/marketplacevendor";
+import { SellerUser, SellerUserDetails } from "../../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;
@@ -229,15 +212,9 @@ const {
   updateTeamMember,
   sendTeamMemberInvitation,
 } = useTeamMembers();
-const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(
-  userDetails,
-  modified,
-  props.param ?? "teamMembers"
-);
+const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(userDetails, modified, props.param ?? "teamMembers");
 const title = computed(() =>
-  props.param
-    ? userDetails.value.firstName + " " + userDetails.value.lastName
-    : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE")
+  props.param ? userDetails.value.firstName + " " + userDetails.value.lastName : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE")
 );
 
 const isEmailExistsModal = ref(false);
@@ -246,9 +223,7 @@ const sendInviteStatus = ref(false);
 const errorMessage = ref("");
 const isValid = useIsFormValid();
 
-const isOwnerReadonly = computed(
-  () => userDetails.value.role === "vcmp-owner-role"
-);
+const isOwnerReadonly = computed(() => userDetails.value.role === "vcmp-owner-role");
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -272,9 +247,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           }
         }
       } else {
-        alert(
-          unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID")))
-        );
+        alert(unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID"))));
       }
     },
     isVisible: !props.param,
@@ -299,9 +272,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           }
         }
       } else {
-        alert(
-          unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID")))
-        );
+        alert(unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID"))));
       }
     },
     isVisible: !!props.param,
@@ -325,11 +296,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       deleteModal.value = true;
     },
     isVisible: !!props.param,
-    disabled: computed(
-      () =>
-        isOwnerReadonly.value ||
-        user.value.userName === props.options.user.userName
-    ),
+    disabled: computed(() => isOwnerReadonly.value || user.value.userName === props.options.user.userName),
   },
   {
     id: "resend",
@@ -346,8 +313,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !!props.param,
-    disabled:
-      computed(() => isOwnerReadonly.value) || !!userDetails.value.email,
+    disabled: computed(() => isOwnerReadonly.value) || !!userDetails.value.email,
   },
 ]);
 
@@ -363,9 +329,7 @@ const roles = [
 ];
 
 const role = computed(
-  () =>
-    roles.find((x) => x.id === userDetails.value.role) ||
-    roles.find((x) => x.id === "vcmp-agent-role")
+  () => roles.find((x) => x.id === userDetails.value.role) || roles.find((x) => x.id === "vcmp-agent-role")
 );
 
 const isActive = computed({
@@ -409,9 +373,7 @@ async function removeUser() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(
-      unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION")))
-    );
+    const confirmationStatus = confirm(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
     if (confirmationStatus) {
       resetAutosaved();
     }

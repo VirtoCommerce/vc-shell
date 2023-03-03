@@ -1,6 +1,9 @@
 <template>
   <VcContainer class="dashboard tw-w-full tw-h-full tw-box-border">
-    <div class="dashboard-header" v-if="$isDesktop.value">
+    <div
+      class="dashboard-header"
+      v-if="$isDesktop.value"
+    >
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
 
@@ -8,16 +11,22 @@
       <VcCol size="10">
         <VcRow>
           <!-- Latest orders block -->
-          <VcCol size="3" class="tw-p-2">
+          <VcCol
+            size="3"
+            class="tw-p-2"
+          >
             <VcCard
               v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
             >
               <template v-slot:actions>
-                <vc-button small outline @click="open('orders-list')">{{
-                  $t("SHELL.DASHBOARD.ORDERS.ALL")
-                }}</vc-button>
+                <vc-button
+                  small
+                  outline
+                  @click="open('orders-list')"
+                  >{{ $t("SHELL.DASHBOARD.ORDERS.ALL") }}</vc-button
+                >
               </template>
 
               <VcTable
@@ -71,16 +80,22 @@
 
         <VcRow>
           <!-- Latest products block -->
-          <VcCol size="3" class="tw-p-2">
+          <VcCol
+            size="3"
+            class="tw-p-2"
+          >
             <VcCard
               v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
             >
               <template v-slot:actions>
-                <vc-button small outline @click="open('products-list')">{{
-                  $t("SHELL.DASHBOARD.PRODUCTS.ALL")
-                }}</vc-button>
+                <vc-button
+                  small
+                  outline
+                  @click="open('products-list')"
+                  >{{ $t("SHELL.DASHBOARD.PRODUCTS.ALL") }}</vc-button
+                >
               </template>
 
               <VcTable
@@ -101,9 +116,7 @@
                     <div class="tw-m-4 tw-text-xl tw-font-medium">
                       {{ $t("SHELL.DASHBOARD.PRODUCTS.EMPTY") }}
                     </div>
-                    <vc-button @click="open('products-add')">{{
-                      $t("SHELL.DASHBOARD.PRODUCTS.ADD")
-                    }}</vc-button>
+                    <vc-button @click="open('products-add')">{{ $t("SHELL.DASHBOARD.PRODUCTS.ADD") }}</vc-button>
                   </div>
                 </template>
 
@@ -141,19 +154,28 @@
           </VcCol>
 
           <!-- Offers block -->
-          <VcCol size="4" class="tw-p-2">
+          <VcCol
+            size="4"
+            class="tw-p-2"
+          >
             <VcCard
               v-if="$isDesktop.value"
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
             >
               <template v-slot:actions>
-                <vc-button small class="tw-mr-3" @click="open('offers-add')">{{
-                  $t("SHELL.DASHBOARD.OFFERS.ADD")
-                }}</vc-button>
-                <vc-button small outline @click="open('offers-list')">{{
-                  $t("SHELL.DASHBOARD.OFFERS.ALL")
-                }}</vc-button>
+                <vc-button
+                  small
+                  class="tw-mr-3"
+                  @click="open('offers-add')"
+                  >{{ $t("SHELL.DASHBOARD.OFFERS.ADD") }}</vc-button
+                >
+                <vc-button
+                  small
+                  outline
+                  @click="open('offers-list')"
+                  >{{ $t("SHELL.DASHBOARD.OFFERS.ALL") }}</vc-button
+                >
               </template>
 
               <VcRow>
@@ -176,9 +198,7 @@
                         <div class="tw-m-4 tw-text-xl tw-font-medium">
                           {{ $t("SHELL.DASHBOARD.OFFERS.EMPTY") }}
                         </div>
-                        <vc-button @click="open('offers-add')">{{
-                          $t("SHELL.DASHBOARD.OFFERS.ADD")
-                        }}</vc-button>
+                        <vc-button @click="open('offers-add')">{{ $t("SHELL.DASHBOARD.OFFERS.ADD") }}</vc-button>
                       </div>
                     </template>
 
@@ -210,21 +230,12 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  useI18n,
-  useBladeNavigation,
-  ITableColumns,
-} from "@vc-shell/framework";
+import { useI18n, useBladeNavigation, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, shallowRef } from "vue";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
-import {
-  MpProductStatus,
-  ProductsEdit,
-  ProductsList,
-  useProducts,
-} from "../modules/products";
+import { MpProductStatus, ProductsEdit, ProductsList, useProducts } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
 import { UserPermissions } from "../types";
 

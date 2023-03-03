@@ -70,11 +70,7 @@ export default (): IUseSellerDetails => {
       const seller = await client.getCurrentSeller();
       sellerDetails.value = new Seller({
         ...seller,
-        addresses: [
-          new CustomerAddress(
-            seller.addresses && seller.addresses.length && seller.addresses[0]
-          ),
-        ],
+        addresses: [new CustomerAddress(seller.addresses && seller.addresses.length && seller.addresses[0])],
       });
       sellerDetailsCopy = _cloneDeep(sellerDetails.value);
     } catch (e) {
@@ -91,9 +87,7 @@ export default (): IUseSellerDetails => {
       sellerId: seller.id,
       sellerDetails: new SellerDetails({
         ...(seller as ISellerDetails),
-        addresses: seller.addresses.map(
-          (address) => new CustomerAddress(address)
-        ),
+        addresses: seller.addresses.map((address) => new CustomerAddress(address)),
       }),
       commissionFeeId: seller.commissionFee.id,
     });
@@ -137,17 +131,14 @@ export default (): IUseSellerDetails => {
     const token = await getAccessToken();
     if (token) {
       try {
-        const result = await fetch(
-          `/api/platform/common/countries/${countryId}/regions`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json-patch+json",
-              Accept: "application/json",
-              authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const result = await fetch(`/api/platform/common/countries/${countryId}/regions`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json-patch+json",
+            Accept: "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        });
 
         result.text().then((response) => {
           regionsList.value = JSON.parse(response);

@@ -38,11 +38,6 @@ interface INewOrderPushNotification extends PushNotification {
   orderId?: string;
 }
 
-export type {
-  IShippingInfo,
-  INotificationActions,
-  IProductPushNotification,
-  INewOrderPushNotification,
-};
+export type { IShippingInfo, INotificationActions, IProductPushNotification, INewOrderPushNotification };
 
 export { UserPermissions };

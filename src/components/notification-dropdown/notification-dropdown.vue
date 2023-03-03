@@ -22,7 +22,10 @@
         },
       ]"
     >
-      <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
+      <VcIcon
+        icon="fas fa-bell"
+        size="xl"
+      ></VcIcon>
     </div>
     <div
       v-if="$isMobile.value && isDropdownVisible"
@@ -48,7 +51,10 @@
           @click.stop="isDropdownVisible = false"
         ></VcIcon>
       </div>
-      <VcContainer :noPadding="true" @click.stop>
+      <VcContainer
+        :noPadding="true"
+        @click.stop
+      >
         <VcCol v-if="notifications && notifications.length">
           <div
             @click="handleClick(item)"
@@ -59,7 +65,10 @@
             <NotificationItem :notification="item"></NotificationItem>
           </div>
         </VcCol>
-        <div class="tw-flex tw-justify-center tw-items-center tw-p-4" v-else>
+        <div
+          class="tw-flex tw-justify-center tw-items-center tw-p-4"
+          v-else
+        >
           {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
         </div>
       </VcContainer>
@@ -69,19 +78,12 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef } from "vue";
-import {
-  PushNotification,
-  useBladeNavigation,
-  useNotifications,
-} from "@vc-shell/framework";
+import { PushNotification, useBladeNavigation, useNotifications } from "@vc-shell/framework";
 import { ImportNew, ImportProfileSelector } from "../../modules/import";
 import { ImportPushNotification } from "../../api_client/marketplacevendor";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { ProductsList, ProductsEdit } from "../../modules/products";
-import {
-  IProductPushNotification,
-  INewOrderPushNotification,
-} from "../../types";
+import { IProductPushNotification, INewOrderPushNotification } from "../../types";
 import { OrdersEdit, OrdersList } from "../../modules/orders";
 
 export interface Props {
@@ -110,11 +112,7 @@ function toggleNotificationsDrop() {
 }
 
 const handleClick = async (
-  notification:
-    | PushNotification
-    | ImportPushNotification
-    | IProductPushNotification
-    | INewOrderPushNotification
+  notification: PushNotification | ImportPushNotification | IProductPushNotification | INewOrderPushNotification
 ) => {
   const low = notification.notifyType.toLowerCase();
   isDropdownVisible.value = false;
@@ -134,9 +132,7 @@ const handleClick = async (
       1
     );
   } else if (
-    (low.includes("product") ||
-      notification.notifyType ===
-        "PublicationRequestStatusChangedDomainEvent") &&
+    (low.includes("product") || notification.notifyType === "PublicationRequestStatusChangedDomainEvent") &&
     "productId" in notification
   ) {
     await closeBlade(0);
@@ -149,8 +145,7 @@ const handleClick = async (
       1
     );
   } else if (
-    (low.includes("order") ||
-      notification.notifyType === "OrderCreatedEventHandler") &&
+    (low.includes("order") || notification.notifyType === "OrderCreatedEventHandler") &&
     "orderId" in notification
   ) {
     await closeBlade(0);

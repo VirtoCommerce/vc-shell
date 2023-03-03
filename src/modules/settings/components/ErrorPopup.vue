@@ -4,7 +4,7 @@
     @close="$emit('close')"
     variant="small"
   >
-    <div class= "tw-flex tw-flex-col">
+    <div class="tw-flex tw-flex-col">
       <div class="tw-px-[40px] tw-py-[28px] tw-flex tw-flex-row tw-items-center">
         <VcIcon
           icon="fas fa-exclamation-circle"
@@ -20,10 +20,12 @@
           "
         ></div>
       </div>
-      <div class= "tw-flex tw-my-4 tw-mx-5">
-        <VcButton class="tw-ml-auto" @click="$emit('close')">{{
-          $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ERROR.BUTTONS.OK")
-        }}</VcButton>
+      <div class="tw-flex tw-my-4 tw-mx-5">
+        <VcButton
+          class="tw-ml-auto"
+          @click="$emit('close')"
+          >{{ $t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ERROR.BUTTONS.OK") }}</VcButton
+        >
       </div>
     </div>
   </VcPopup>

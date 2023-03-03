@@ -42,16 +42,8 @@
               <VcInput
                 v-bind="field"
                 class="tw-p-3"
-                :label="
-                  $t(
-                    'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL'
-                  )
-                "
-                :placeholder="
-                  $t(
-                    'SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER'
-                  )
-                "
+                :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
+                :placeholder="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
                 v-model="fulfillmentCenterDetails.name"
                 required
                 :error="!!errors.length"
@@ -74,13 +66,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import {
-  IBladeToolbar,
-  IParentCallArgs,
-  useForm,
-  useI18n,
-  useLogger,
-} from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, useForm, useI18n, useLogger } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { Field, useIsFormValid } from "vee-validate";
@@ -121,9 +107,7 @@ const {
 const { getCurrentSeller, sellerDetails } = useSellerDetails();
 
 const title = computed(() =>
-  props.param
-    ? fulfillmentCenterDetails.value.name
-    : t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE")
+  props.param ? fulfillmentCenterDetails.value.name : t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE")
 );
 
 const deleteModal = ref(false);
@@ -134,9 +118,7 @@ const logger = useLogger();
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    title: computed(() =>
-      t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.SAVE")
-    ),
+    title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
       if (isValid.value) {
@@ -150,13 +132,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           logger.error(e);
         }
       } else {
-        alert(
-          unref(
-            computed(() =>
-              t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NOT_VALID")
-            )
-          )
-        );
+        alert(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NOT_VALID"))));
       }
     },
     isVisible: true,
@@ -164,9 +140,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "reset",
-    title: computed(() =>
-      t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.RESET")
-    ),
+    title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.RESET")),
     icon: "fas fa-undo",
     clickHandler() {
       resetEntries();
@@ -176,9 +150,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
   {
     id: "delete",
-    title: computed(() =>
-      t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.DELETE")
-    ),
+    title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
     clickHandler() {
       deleteModal.value = true;
@@ -211,13 +183,7 @@ async function removeFulfillmentCenter() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
-      unref(
-        computed(() =>
-          t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION")
-        )
-      )
-    );
+    return confirm(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

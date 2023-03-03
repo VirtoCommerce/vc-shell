@@ -1,10 +1,5 @@
 import { computed, Ref, ref } from "vue";
-import {
-  AsyncAction,
-  useApiClient,
-  useAsync,
-  useLoading,
-} from "@vc-shell/framework";
+import { AsyncAction, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
 import { OrderModuleClient } from "../../../../api_client/orders";
 import {
   VcmpSellerOrdersClient,
@@ -29,15 +24,12 @@ interface IUseOrder {
 const order: Ref<CustomerOrder> = ref({} as CustomerOrder);
 
 export default (): IUseOrder => {
-  const { getApiClient: getSellerOrdersApiClient } = useApiClient(
-    VcmpSellerOrdersClient
-  );
+  const { getApiClient: getSellerOrdersApiClient } = useApiClient(VcmpSellerOrdersClient);
 
-  const { loading: orderLoading, action: loadOrder } =
-    useAsync<GetOrderByIdPayload>(async (payload) => {
-      const client = await getSellerOrdersApiClient();
-      order.value = await client.getById(payload.id);
-    });
+  const { loading: orderLoading, action: loadOrder } = useAsync<GetOrderByIdPayload>(async (payload) => {
+    const client = await getSellerOrdersApiClient();
+    order.value = await client.getById(payload.id);
+  });
 
   // TODO: Remove after PT-10642 will be fixed
   const { getApiClient: getOrderApiClient } = useApiClient(OrderModuleClient);
@@ -49,13 +41,8 @@ export default (): IUseOrder => {
     const binaryData = [];
     binaryData.push(response.data);
     const downloadLink = document.createElement("a");
-    downloadLink.href = window.URL.createObjectURL(
-      new Blob(binaryData, { type: dataType })
-    );
-    downloadLink.setAttribute(
-      "download",
-      response.fileName || `Invoice ${order.value.number}`
-    );
+    downloadLink.href = window.URL.createObjectURL(new Blob(binaryData, { type: dataType }));
+    downloadLink.setAttribute("download", response.fileName || `Invoice ${order.value.number}`);
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -71,9 +58,9 @@ export default (): IUseOrder => {
         order.value.addresses.reduce((acc, address) => {
           const orderInfo = {
             name: `${address.firstName} ${address.lastName}`,
-            address: `${address.line1 ?? ""} ${address.line2 ?? ""}, ${
-              address.city ?? ""
-            }, ${address.postalCode ?? ""} ${address.countryCode ?? ""}`,
+            address: `${address.line1 ?? ""} ${address.line2 ?? ""}, ${address.city ?? ""}, ${
+              address.postalCode ?? ""
+            } ${address.countryCode ?? ""}`,
             phone: address.phone ?? "",
             email: address.email ?? "",
           };
@@ -85,10 +72,7 @@ export default (): IUseOrder => {
               acc.push({ label: "Ship to", ...orderInfo });
               break;
             case OrderAddressAddressType.BillingAndShipping:
-              acc.push(
-                { label: "Sold to", ...orderInfo },
-                { label: "Ship to", ...orderInfo }
-              );
+              acc.push({ label: "Sold to", ...orderInfo }, { label: "Ship to", ...orderInfo });
               break;
             case OrderAddressAddressType.Pickup:
               acc.push({ label: "Pick-up at", ...orderInfo });
@@ -96,9 +80,7 @@ export default (): IUseOrder => {
           }
           return acc;
         }, []);
-      return info && info.length
-        ? info
-        : [{ label: "Sold to" }, { label: "Ship to" }];
+      return info && info.length ? info : [{ label: "Sold to" }, { label: "Ship to" }];
     }),
     loadOrder,
     loadPdf,

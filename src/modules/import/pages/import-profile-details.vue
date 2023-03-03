@@ -1,11 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading"
-    :title="
-      param && profileDetails
-        ? profileDetails.name
-        : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')
-    "
+    :title="param && profileDetails ? profileDetails.name : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')"
     width="50%"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
@@ -23,22 +19,10 @@
             <VcInput
               v-bind="field"
               class="tw-p-3"
-              :label="
-                $t(
-                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE'
-                )
-              "
-              :placeholder="
-                $t(
-                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER'
-                )
-              "
+              :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
+              :placeholder="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER')"
               :clearable="true"
-              :tooltip="
-                $t(
-                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP'
-                )
-              "
+              :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP')"
               v-model="profileDetails.name"
               :error="!!errors.length"
               :error-message="errorMessage"
@@ -54,14 +38,8 @@
             <VcSelect
               v-bind="field"
               class="tw-p-3"
-              :label="
-                $t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')
-              "
-              :tooltip="
-                $t(
-                  'IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP'
-                )
-              "
+              :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
+              :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
               name="importer"
               :options="dataImporters"
               option-value="typeName"
@@ -80,16 +58,19 @@
           </Field>
         </VcCol>
       </VcRow>
-      <VcRow class="tw-p-3" v-if="profileDetails.dataImporterType">
-        <VcCard
-          :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')"
-        >
+      <VcRow
+        class="tw-p-3"
+        v-if="profileDetails.dataImporterType"
+      >
+        <VcCard :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')">
           <VcRow>
             <VcCol>
               <div class="tw-p-4">
-                <a class="vc-link" :href="sampleTemplateUrl">{{
-                  $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE")
-                }}</a>
+                <a
+                  class="vc-link"
+                  :href="sampleTemplateUrl"
+                  >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
+                >
                 {{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
               </div>
 
@@ -110,19 +91,13 @@
     </VcContainer>
     <import-confirmation-popup
       v-if="showConfirmation"
-      :title="
-        $t('IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.TITLE')
-      "
+      :title="$t('IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.TITLE')"
       @close="showConfirmation = false"
       @confirm="deleteProfile"
     >
       <template v-slot:description>
         <p>
-          {{
-            $t(
-              "IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION"
-            )
-          }}
+          {{ $t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION") }}
         </p>
       </template>
     </import-confirmation-popup>
@@ -152,11 +127,7 @@ import {
 } from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
-import {
-  IDataImporter,
-  ImportProfile,
-  ObjectSettingEntry,
-} from "../../../api_client/marketplacevendor";
+import { IDataImporter, ImportProfile, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 
 export interface Props {
@@ -225,11 +196,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     disabled: computed(() => {
-      return (
-        !isValid.value ||
-        (props.param && !modified.value) ||
-        (!props.param && !modified.value)
-      );
+      return !isValid.value || (props.param && !modified.value) || (!props.param && !modified.value);
     }),
   },
   {
@@ -253,21 +220,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 const sampleTemplateUrl = computed(() => {
-  const importer = dataImporters.value.find(
-    (x) => x.typeName === profileDetails.value.typeName
-  );
+  const importer = dataImporters.value.find((x) => x.typeName === profileDetails.value.typeName);
   return profile.value.importer
-    ? profile.value.importer.metadata &&
-        profile.value.importer.metadata.sampleCsvUrl
+    ? profile.value.importer.metadata && profile.value.importer.metadata.sampleCsvUrl
     : importer
     ? importer.metadata && importer.metadata.sampleCsvUrl
     : "#";
 });
 
 const title = computed(() =>
-  props.options.importer
-    ? props.options.importer.typeName
-    : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
+  props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
 );
 const importer = computed(() => profile.value.importer);
 
@@ -282,10 +244,7 @@ function getSettingsValue(setting: ObjectSettingEntry) {
   return setting.value;
 }
 
-function setSettingsValue(
-  setting: ObjectSettingEntry,
-  value: string | boolean
-) {
+function setSettingsValue(setting: ObjectSettingEntry, value: string | boolean) {
   setting.value = value;
 }
 
@@ -310,13 +269,7 @@ async function deleteProfile() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(
-      unref(
-        computed(() =>
-          t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION")
-        )
-      )
-    );
+    return confirm(unref(computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

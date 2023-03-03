@@ -40,9 +40,7 @@
         <VcContainer no-padding>
           <VcRow>
             <VcCol class="tw-w-[180px] tw-p-2">
-              <div
-                class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]"
-              >
+              <div class="tw-mb-4 tw-text-[#a1c0d4] tw-font-bold tw-text-[17px]">
                 {{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS_FILTER") }}
               </div>
               <div>
@@ -52,9 +50,7 @@
                   class="tw-mb-2"
                   :modelValue="isItemSelected(status)"
                   @update:modelValue="selectFilterItem($event, status)"
-                  >{{
-                    $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status)
-                  }}</VcCheckbox
+                  >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status) }}</VcCheckbox
                 >
               </div>
             </VcCol>
@@ -67,9 +63,7 @@
                   class="tw-mr-4"
                   @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
-                  >{{
-                    $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS")
-                  }}</VcButton
+                  >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS") }}</VcButton
                 >
                 <VcButton
                   @click="applyFilters(closePanel)"
@@ -84,31 +78,23 @@
 
       <!-- Not found template -->
       <template v-slot:notfound>
-        <div
-          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
-        >
+        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("PRODUCTS.PAGES.LIST.NOT_FOUND.EMPTY") }}
           </div>
-          <VcButton @click="resetSearch">{{
-            $t("PRODUCTS.PAGES.LIST.NOT_FOUND.RESET")
-          }}</VcButton>
+          <VcButton @click="resetSearch">{{ $t("PRODUCTS.PAGES.LIST.NOT_FOUND.RESET") }}</VcButton>
         </div>
       </template>
 
       <!-- Empty template -->
       <template v-slot:empty>
-        <div
-          class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
-        >
+        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
             {{ $t("PRODUCTS.PAGES.LIST.EMPTY.NO_PRODUCTS") }}
           </div>
-          <VcButton @click="addProduct">{{
-            $t("PRODUCTS.PAGES.LIST.EMPTY.ADD")
-          }}</VcButton>
+          <VcButton @click="addProduct">{{ $t("PRODUCTS.PAGES.LIST.EMPTY.ADD") }}</VcButton>
         </div>
       </template>
 
@@ -133,9 +119,7 @@
       </template>
 
       <template v-slot:mobile-item="itemData">
-        <div
-          class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap"
-        >
+        <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
           <VcImage
             class="tw-shrink-0"
             aspect="1x1"
@@ -160,30 +144,20 @@
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{
-                    itemData.item.productData &&
-                    (itemData.item.productData as Record<"gtin", string>).gtin
-                  }}
+                  {{ itemData.item.productData && (itemData.item.productData as Record<"gtin", string>).gtin }}
                 </div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.CREATED") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{
-                    itemData.item.createdDate &&
-                    moment(itemData.item.createdDate).fromNow()
-                  }}
+                  {{ itemData.item.createdDate && moment(itemData.item.createdDate).fromNow() }}
                 </div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <div class="tw-flex tw-flex-col tw-items-center">
-                  <VcHint>{{
-                    $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED")
-                  }}</VcHint>
+                  <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
-                    <VcStatusIcon
-                      :status="itemData.item && itemData.item.isPublished as boolean"
-                    ></VcStatusIcon>
+                    <VcStatusIcon :status="itemData.item && itemData.item.isPublished as boolean"></VcStatusIcon>
                   </div>
                 </div>
               </div>
@@ -196,17 +170,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  shallowRef,
-  unref,
-  inject,
-} from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef, unref, inject } from "vue";
 
 export default defineComponent({
   url: "/products",
@@ -278,15 +242,11 @@ const searchValue = ref();
 const selectedItemId = ref();
 const selectedProductIds = ref([]);
 const applyFiltersDisable = computed(() => {
-  const activeFilters = Object.values(filter).filter(
-    (x) => x !== undefined && Array.isArray(x) && !!x.length
-  );
+  const activeFilters = Object.values(filter).filter((x) => x !== undefined && Array.isArray(x) && !!x.length);
   return !activeFilters.length;
 });
 const applyFiltersReset = computed(() => {
-  const activeFilters = Object.values(appliedFilter.value).filter(
-    (x) => x !== undefined
-  );
+  const activeFilters = Object.values(appliedFilter.value).filter((x) => x !== undefined);
   return !activeFilters.length;
 });
 
@@ -426,9 +386,7 @@ const columns = computed(() => {
 });
 
 const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
-const activeFilterCount = computed(
-  () => Object.values(appliedFilter.value).filter((item) => !!item).length
-);
+const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {

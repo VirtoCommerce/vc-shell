@@ -1,11 +1,5 @@
 import { computed, Ref, ref } from "vue";
-import {
-  AsyncAction,
-  useApiClient,
-  useAsync,
-  useLoading,
-  useUser,
-} from "@vc-shell/framework";
+import { AsyncAction, useApiClient, useAsync, useLoading, useUser } from "@vc-shell/framework";
 import {
   VcmpSellerOrdersClient,
   CustomerOrderSearchResult,
@@ -53,28 +47,27 @@ export default (): IUseOrders => {
 
   const { getApiClient } = useApiClient(VcmpSellerOrdersClient);
 
-  const { loading: ordersLoading, action: loadOrders } =
-    useAsync<ISearchOrdersQuery>(async (query) => {
-      const client = await getApiClient();
-      orders.value = await client.searchOrders({
-        take: 20,
-        ...(query || {}),
-        employeeId: user.value.id,
-      } as SearchOrdersQuery);
-      currentPage.value =
-        (query?.skip || 0) / Math.max(1, query?.take || 20) + 1;
-    });
+  const { loading: ordersLoading, action: loadOrders } = useAsync<ISearchOrdersQuery>(async (query) => {
+    const client = await getApiClient();
+    orders.value = await client.searchOrders({
+      take: 20,
+      ...(query || {}),
+      employeeId: user.value.id,
+    } as SearchOrdersQuery);
+    currentPage.value = (query?.skip || 0) / Math.max(1, query?.take || 20) + 1;
+  });
 
   // TODO: Support multiple ordes
-  const { loading: changeOrderStatusLoading, action: changeOrderStatus } =
-    useAsync<ChangeOrderStatusPayload>(async (payload) => {
+  const { loading: changeOrderStatusLoading, action: changeOrderStatus } = useAsync<ChangeOrderStatusPayload>(
+    async (payload) => {
       const client = await getApiClient();
       const command = new ChangeOrderStatusCommand({
         orderId: payload.orderId,
         newStatus: payload.newStatus,
       });
       await client.updateOrderStatus(command);
-    });
+    }
+  );
 
   const loading = useLoading(ordersLoading, changeOrderStatusLoading);
 

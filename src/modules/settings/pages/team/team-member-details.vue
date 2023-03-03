@@ -35,6 +35,7 @@
           <VcCol>
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
               :modelValue="userDetails.firstName"
               name="name"
               rules="required"
@@ -58,6 +59,7 @@
           <VcCol>
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
               :modelValue="userDetails.lastName"
               name="lastName"
               rules="required"
@@ -81,6 +83,7 @@
           <VcCol>
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
               :modelValue="userDetails.email"
               name="email"
               rules="required|email"
@@ -105,6 +108,7 @@
           <VcCol>
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
               :modelValue="userDetails.role"
               name="role"
               rules="required"

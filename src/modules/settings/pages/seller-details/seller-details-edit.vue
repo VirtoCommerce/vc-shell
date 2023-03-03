@@ -36,6 +36,7 @@
               <VcForm>
                 <Field
                   v-slot="{ field, errorMessage, handleChange, errors }"
+                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.INFO.FORM.COMPANY_NAME.LABEL')"
                   :modelValue="sellerDetails.name"
                   name="company_name"
                   rules="required"
@@ -145,6 +146,7 @@
                   <VcCol>
                     <Field
                       v-slot="{ field, errorMessage, handleChange, errors }"
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.COUNTRY.LABEL')"
                       :modelValue="sellerDetails.addresses[0].countryCode"
                       name="country"
                       rules="required"
@@ -176,6 +178,7 @@
                   <VcCol>
                     <Field
                       v-slot="{ field, errorMessage, handleChange, errors }"
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ZIP.LABEL')"
                       :modelValue="sellerDetails.addresses[0].postalCode"
                       name="zip"
                       rules="required"
@@ -216,6 +219,7 @@
                   <VcCol>
                     <Field
                       v-slot="{ field, errorMessage, handleChange, errors }"
+                      :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.CITY.LABEL')"
                       :modelValue="sellerDetails.addresses[0].city"
                       name="city"
                       rules="required"
@@ -239,6 +243,7 @@
                 </VcRow>
                 <Field
                   v-slot="{ field, errorMessage, handleChange, errors }"
+                  :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.ADDRESS_1.LABEL')"
                   :modelValue="sellerDetails.addresses[0].line1"
                   name="address_first"
                   rules="required"
@@ -272,6 +277,7 @@
                 <div class="tw-m-2 tw-mb-2">
                   <Field
                     v-slot="{ field, errorMessage, handleChange, errors }"
+                    :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.LONGLAT.LABEL')"
                     :modelValue="sellerDetails.location"
                     name="long_lat"
                     :rules="{
@@ -303,6 +309,7 @@
                 <VcCol>
                   <Field
                     v-slot="{ field, errorMessage, handleChange, errors }"
+                    :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.PHONE.LABEL')"
                     :modelValue="sellerDetails.phones[0]"
                     name="phone"
                     rules="numeric"
@@ -326,6 +333,7 @@
                 <VcCol>
                   <Field
                     v-slot="{ field, errorMessage, handleChange, errors }"
+                    :label="$t('SETTINGS.SELLER_DETAILS.CARDS.ADDRESS.FORM.EMAIL.LABEL')"
                     :modelValue="sellerDetails.emails[0]"
                     name="email"
                     rules="email"

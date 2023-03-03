@@ -27,7 +27,10 @@ if (mode !== "production") {
   _define.global = {};
 }
 
-const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
+const getProxy = (
+  target: ProxyOptions["target"],
+  options: Omit<ProxyOptions, "target"> = {}
+): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
   return {
     target,
@@ -88,10 +91,8 @@ export default {
       mode === "development"
         ? {
             "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
           }
         : {
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
           },
   },
   base: process.env.APP_BASE_PATH,
@@ -131,18 +132,11 @@ export default {
     esbuildOptions: {
       target: ["es2020", "safari14"],
     },
-    include:
-      mode === "development"
-        ? ["vue", "vue-router", "url-pattern", "ace-builds", "vue-logger-plugin", "client-oauth2", "vue-currency-input"]
-        : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {
     target: "esnext",
     sourcemap: false,
     emptyOutDir: true,
-    commonjsOptions: {
-      include: [/^@vc-shell(\/.+)?$/, /node_modules/],
-    },
     rollupOptions: {
       plugins: [
         typescript({

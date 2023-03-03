@@ -29,14 +29,7 @@
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  inject,
-  reactive,
-  ref,
-  shallowRef,
-} from "vue";
+import { computed, defineComponent, inject, reactive, ref, shallowRef } from "vue";
 
 export default defineComponent({
   url: "/default",

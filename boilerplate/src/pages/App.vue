@@ -1,5 +1,9 @@
 <template>
-  <VcLoading v-if="!isReady" active class="app__loader" />
+  <VcLoading
+    v-if="!isReady"
+    active
+    class="app__loader"
+  />
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -17,11 +21,20 @@
     v-else
   >
     <!-- App Switcher -->
-    <template v-slot:appSwitcher v-if="appsList && appsList.length">
-      <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
+    <template
+      v-slot:appSwitcher
+      v-if="appsList && appsList.length"
+    >
+      <VcAppSwitcher
+        :appsList="appsList"
+        @onClick="switchApp($event)"
+      />
     </template>
 
-    <template v-slot:bladeNavigation v-if="isAuthorized">
+    <template
+      v-slot:bladeNavigation
+      v-if="isAuthorized"
+    >
       <VcBladeNavigation
         @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
@@ -74,55 +87,27 @@ import {
   IOpenBlade,
   IBladeElement,
 } from "@vc-shell/framework";
-import {
-  computed,
-  inject,
-  onMounted,
-  reactive,
-  ref,
-  Ref,
-  shallowRef,
-  watch,
-} from "vue";
+import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ChangePassword from "../components/change-password.vue";
 import LanguageSelector from "../components/language-selector.vue";
 import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
 import UserDropdownButton from "../components/user-dropdown-button.vue";
-import { UserPermissions } from "../types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 
 import { DefaultList } from "../modules/default";
-const {
-  t,
-  locale: currentLocale,
-  availableLocales,
-  getLocaleMessage,
-} = useI18n();
+const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
 const log = useLogger();
 const { user, loadUser, signOut } = useUser();
-const {
-  popupNotifications,
-  notifications,
-  addNotification,
-  dismiss,
-  markAsRead,
-} = useNotifications();
-const { checkPermission } = usePermissions();
+const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
+usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { delay } = useFunctions();
-const {
-  blades,
-  bladesRefs,
-  parentBladeOptions,
-  parentBladeParam,
-  openBlade,
-  closeBlade,
-  onParentCall,
-} = useBladeNavigation();
+const { blades, bladesRefs, parentBladeOptions, parentBladeParam, openBlade, closeBlade, onParentCall } =
+  useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 const route = useRoute();
 const router = useRouter();
@@ -179,8 +164,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
       languageItems: computed(() =>
         availableLocales.map((locale: string) => ({
           lang: locale,
-          title: (getLocaleMessage(locale) as { language_name: string })
-            .language_name,
+          title: (getLocaleMessage(locale) as { language_name: string }).language_name,
           clickHandler(lang: string) {
             currentLocale.value = lang;
             localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
@@ -189,17 +173,12 @@ const toolbarItems = ref<IBladeToolbar[]>([
       ),
     },
     isVisible: computed(() => {
-      return isDesktop.value
-        ? isDesktop.value
-        : isMobile.value
-        ? route.path === "/"
-        : false;
+      return isDesktop.value ? isDesktop.value : isMobile.value ? route.path === "/" : false;
     }),
   },
   {
     isAccent: computed(() => {
-      return !!notifications.value.filter((notification) => notification.isNew)
-        .length;
+      return !!notifications.value.filter((notification) => notification.isNew).length;
     }),
     component: shallowRef(NotificationDropdown),
     bladeOptions: {
@@ -211,9 +190,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
     bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
-      role: computed(() =>
-        user.value?.isAdministrator ? "Administrator" : "Seller account"
-      ),
+      role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
       menuItems: [
         {
           title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
@@ -241,9 +218,7 @@ const mobileMenuItems = ref<IBladeToolbar[]>([
     bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
-      role: computed(() =>
-        user.value?.isAdministrator ? "Administrator" : "Seller account"
-      ),
+      role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
     },
     isVisible: isMobile,
   },
@@ -386,8 +361,8 @@ textarea {
 .vc-app.vc-theme_light {
   --background-color: #f2f2f2;
   --top-bar-color: #ffffff;
-  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
-    linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%), linear-gradient(0deg, #e8f2f3, #e8f2f3),
+    #eef2f8;
   --app-bar-background-color: #ffffff;
   --app-bar-divider-color: #ffffff;
   --app-bar-toolbar-item-width: 50px;

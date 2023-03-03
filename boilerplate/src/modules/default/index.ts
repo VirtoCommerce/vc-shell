@@ -1,6 +1,6 @@
-import { App } from "vue";
 import * as pages from "./pages";
 import * as locales from "./locales";
+import { App } from "vue";
 
 export default {
   install(app: App): void {

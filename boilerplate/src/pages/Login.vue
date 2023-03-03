@@ -1,5 +1,9 @@
 <template>
-  <VcLoginForm :logo="logo" :background="background" :title="computedTitle">
+  <VcLoginForm
+    :logo="logo"
+    :background="background"
+    :title="computedTitle"
+  >
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
@@ -44,12 +48,19 @@
         </Field>
 
         <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
-          <VcButton variant="onlytext" @click="togglePassRequest" type="button">
+          <VcButton
+            variant="onlytext"
+            @click="togglePassRequest"
+            type="button"
+          >
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <vc-button
             variant="primary"
             :disabled="loading || !isValid"
@@ -74,9 +85,7 @@
               ref="forgotPasswordField"
               class="tw-mb-4 tw-mt-1"
               :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
-              :placeholder="
-                $t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')
-              "
+              :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
               v-model="forgotPasswordForm.loginOrEmail"
               :hint="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
               required
@@ -107,7 +116,10 @@
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
         <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <vc-button
             variant="primary"
             :disabled="loading"
@@ -140,14 +152,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed } from "vue";
-import {
-  useLogger,
-  useUser,
-  useForm,
-  SignInResults,
-  RequestPasswordResult,
-  useI18n,
-} from "@vc-shell/framework";
+import { useLogger, useUser, useForm, SignInResults, RequestPasswordResult, useI18n } from "@vc-shell/framework";
 import { useRouter, useRoute } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
 
@@ -173,9 +178,7 @@ const forgotPasswordForm = reactive({
   loginOrEmail: "",
 });
 
-const computedTitle = computed(() =>
-  isLogin.value ? title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")
-);
+const computedTitle = computed(() => (isLogin.value ? title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")));
 
 const login = async () => {
   if (isValid.value) {

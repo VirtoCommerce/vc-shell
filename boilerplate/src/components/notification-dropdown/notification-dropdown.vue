@@ -22,7 +22,10 @@
         },
       ]"
     >
-      <VcIcon icon="fas fa-bell" size="xl"></VcIcon>
+      <VcIcon
+        icon="fas fa-bell"
+        size="xl"
+      ></VcIcon>
     </div>
     <div
       v-if="$isMobile.value && isDropdownVisible"
@@ -48,7 +51,10 @@
           @click.stop="isDropdownVisible = false"
         ></VcIcon>
       </div>
-      <VcContainer :noPadding="true" @click.stop>
+      <VcContainer
+        :noPadding="true"
+        @click.stop
+      >
         <VcCol v-if="notifications && notifications.length">
           <div
             @click="handleClick(item)"
@@ -59,7 +65,10 @@
             <NotificationItem :notification="item"></NotificationItem>
           </div>
         </VcCol>
-        <div class="tw-flex tw-justify-center tw-items-center tw-p-4" v-else>
+        <div
+          class="tw-flex tw-justify-center tw-items-center tw-p-4"
+          v-else
+        >
           {{ $t("SHELL.NOTIFICATIONS.EMPTY") }}
         </div>
       </VcContainer>
@@ -69,11 +78,7 @@
 
 <script lang="ts" setup>
 import { onMounted, ref, shallowRef } from "vue";
-import {
-  PushNotification,
-  useBladeNavigation,
-  useNotifications,
-} from "@vc-shell/framework";
+import { PushNotification, useBladeNavigation, useNotifications } from "@vc-shell/framework";
 import NotificationItem from "./_internal/notification/notification.vue";
 
 export interface Props {

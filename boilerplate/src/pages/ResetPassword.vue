@@ -1,9 +1,6 @@
 <template>
   <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
-    <VcLoading
-      v-if="loading"
-      active
-    ></VcLoading>
+    <VcLoading v-if="loading" active></VcLoading>
 
     <VcLoginForm
       logo="/assets/logo-white.svg"
@@ -12,6 +9,7 @@
     >
       <VcForm>
         <Field
+          :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
           name="password"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.password"
@@ -38,6 +36,7 @@
           />
         </Field>
         <Field
+          :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
           name="confirm_password"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.confirmPassword"
@@ -66,24 +65,13 @@
           </VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span
-            v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
-          ></span>
-          <vc-button
-            variant="primary"
-            :disabled="disableButton"
-            @click="resetPassword"
-          >
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <vc-button variant="primary" :disabled="disableButton" @click="resetPassword">
             {{ $t("SHELL.PASSWORDRESET.SAVE_PASSWORD") }}
           </vc-button>
         </div>
 
-        <VcHint
-          class="tw-mt-3 !tw-text-[#f14e4e]"
-          v-for="error in form.errors"
-          :key="error"
-        >
+        <VcHint class="tw-mt-3 !tw-text-[#f14e4e]" v-for="error in form.errors" :key="error">
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.PASSWORDRESET.ERRORS.${error}`) }}
         </VcHint>

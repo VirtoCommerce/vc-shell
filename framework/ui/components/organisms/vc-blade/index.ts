@@ -1,5 +1,7 @@
 import { ComponentPublicInstance } from "vue";
-import { VcBladeProps } from "./vc-blade-model";
+import { VcBladeEmits, VcBladeProps } from "./vc-blade-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Blade from "./vc-blade.vue";
-export const VcBlade: ComponentConstructor<ComponentPublicInstance<VcBladeProps>> = Blade;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcBlade: ComponentConstructor<ComponentPublicInstance<VcBladeProps, any, any, any, any, VcBladeEmits>> =
+  Blade;

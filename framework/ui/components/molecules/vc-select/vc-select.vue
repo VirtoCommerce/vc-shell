@@ -254,26 +254,13 @@ import { nextTick, ref, computed, watch, toRefs } from "vue";
 import { VcIcon, VcLabel, VcContainer } from "./../../../components";
 import { clickOutside as vClickOutside } from "./../../../../core/directives";
 import { createPopper, Instance, State } from "@popperjs/core";
-import { VcSelectProps, OptionProp } from "./vc-select-model";
+import { selectEmits, selectProps, OptionProp } from "./vc-select-model";
 import { intersection, isEqual } from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 
-const props = withDefaults(defineProps<VcSelectProps>(), {
-  optionValue: "id",
-  optionLabel: "title",
-  debounce: 500,
-  clearable: true,
-  name: "Field",
-  searchable: false,
-  required: false,
-  autofocus: true,
-  emitValue: true,
-  mapOptions: true,
-  placeholder: "Click to select...",
-  options: () => [],
-});
+const props = defineProps(selectProps);
 
-const emit = defineEmits(["update:modelValue", "search", "close"]);
+const emit = defineEmits(selectEmits);
 
 const { modelValue, options } = toRefs(props);
 

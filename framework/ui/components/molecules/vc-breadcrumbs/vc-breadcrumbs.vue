@@ -14,9 +14,7 @@
 
 <script lang="ts" setup>
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
-import { VcBreadcrumbsProps } from "./vc-breadcrumbs-model";
+import { breadcrumbsProps } from "./vc-breadcrumbs-model";
 
-withDefaults(defineProps<VcBreadcrumbsProps>(), {
-  items: () => [],
-});
+defineProps(breadcrumbsProps);
 </script>

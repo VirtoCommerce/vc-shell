@@ -1,3 +1,5 @@
 node_modules
 dist
+apps/vendor-portal/dist
+framework/dist
 api-client.ts

@@ -57,10 +57,16 @@ export default defineComponent({
 <script lang="ts" setup>
 import { VcIcon } from "./../../../../../../../components";
 import { createPopper, Instance } from "@popperjs/core";
-import { IBladeDropdownItem, IBladeToolbar } from "./../../../../../../../../core/types";
+import { IBladeDropdownItem } from "./../../../../../../../../core/types";
 
-export interface Props extends IBladeToolbar {
+export interface Props {
   isExpanded: boolean;
+  icon?: string | (() => string);
+  title?: string | unknown;
+  bladeOptions?: Record<string, unknown>;
+  disabled?: boolean;
+  dropdownItems?: { id: number; title: string; icon?: string; clickHandler?(): void }[];
+  clickHandler?(): void;
 }
 
 export interface Emits {

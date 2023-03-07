@@ -16,14 +16,11 @@
 </template>
 
 <script lang="ts" setup>
-import { VcBadgeProps } from "./vc-badge-model";
+import { badgeProps, badgeEmits } from "./vc-badge-model";
 
-const props = withDefaults(defineProps<VcBadgeProps>(), {
-  active: false,
-  disabled: false,
-  clickable: true,
-});
-const emit = defineEmits(["click"]);
+const props = defineProps(badgeProps);
+
+const emit = defineEmits(badgeEmits);
 
 function onClick(): void {
   if (props.clickable && !props.disabled) {

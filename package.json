@@ -9,7 +9,7 @@
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",
-    "lint": "eslint --fix framework/**/*.{ts,vue} apps/**/*.{ts,vue}",
+    "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'apps/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "init-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "version": "cross-env-shell \"lerna version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .\"",

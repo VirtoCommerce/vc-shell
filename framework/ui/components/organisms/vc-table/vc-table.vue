@@ -354,48 +354,16 @@ import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult } from "./../../../../core/types";
-import { VcTableProps } from "./vc-table-model";
+import { tableEmits, tableProps } from "./vc-table-model";
 
-const props = withDefaults(defineProps<VcTableProps>(), {
-  columns: () => [],
-  items: () => [],
-  itemActionBuilder: undefined,
-  sort: undefined,
-  multiselect: false,
-  expanded: false,
-  totalLabel: "Totals:",
-  totalCount: 0,
-  pages: 0,
-  currentPage: 0,
-  searchPlaceholder: "Search...",
-  searchValue: undefined,
-  loading: false,
-  empty: () => ({
-    text: "List is empty.",
-  }),
-  notfound: () => ({
-    text: "Nothing found.",
-  }),
-  header: true,
-  footer: true,
-  activeFilterCount: 0,
-  selectedItemId: undefined,
-  scrolling: false,
-});
+const props = defineProps(tableProps);
 
 interface ITableItemRef {
   element: Element;
   id: string;
 }
 
-const emit = defineEmits([
-  "paginationClick",
-  "selectionChanged",
-  "search:change",
-  "headerClick",
-  "itemClick",
-  "scroll:ptr",
-]);
+const emit = defineEmits(tableEmits);
 
 const checkboxes = ref<Record<string, boolean>>({});
 const selectedRow = ref<string>();

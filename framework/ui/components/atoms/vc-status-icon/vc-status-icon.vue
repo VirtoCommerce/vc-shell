@@ -17,9 +17,7 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
-import { VcStatusIconProps } from "./vc-status-icon-model";
+import { statusIconProps } from "./vc-status-icon-model";
 
-withDefaults(defineProps<VcStatusIconProps>(), {
-  status: false,
-});
+defineProps(statusIconProps);
 </script>

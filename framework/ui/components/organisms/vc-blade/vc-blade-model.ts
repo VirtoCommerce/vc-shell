@@ -1,16 +1,35 @@
 import { IBladeToolbar } from "./../../../../core/types";
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
 
-export interface VcBladeProps {
-  icon?: string | undefined;
-  title?: string | undefined;
-  subtitle?: string | undefined;
-  width?: number | string | undefined;
-  expanded?: boolean | undefined;
-  closable?: boolean | undefined;
-  toolbarItems?: IBladeToolbar[] | undefined;
-  onClose?: () => void;
-}
+export const bladeProps = {
+  icon: String,
+  title: String,
+  subtitle: String,
+  width: {
+    type: [Number, String],
+    default: "30%",
+  },
+  expanded: {
+    type: Boolean,
+    default: false,
+  },
+  closable: {
+    type: Boolean,
+    default: true,
+  },
+  toolbarItems: {
+    type: Array as PropType<IBladeToolbar[]>,
+    default: () => [],
+  },
+};
+
+export const bladeEmits = {
+  close: () => true,
+};
+
+export type VcBladeProps = ExtractTypes<typeof bladeProps>;
+export type VcBladeEmits = typeof bladeEmits;
 
 export interface VcBladeSlots {
   actions: () => VNode[];

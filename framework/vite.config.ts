@@ -1,16 +1,11 @@
 import vue from "@vitejs/plugin-vue";
 import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "path";
-import VueMacros from "unplugin-vue-macros";
 import checker from "vite-plugin-checker";
 
 export default getLibraryConfiguration({
   plugins: [
-    VueMacros.vite({
-      plugins: {
-        vue: vue(),
-      },
-    }),
+    vue(),
     checker({
       vueTsc: true,
     }),
@@ -21,12 +16,7 @@ export default getLibraryConfiguration({
       entry: path.resolve(__dirname, "index.ts"),
     },
     rollupOptions: {
-      external: [
-        "vue",
-        "vue-router",
-        "vee-validate",
-        "@vc-shell/config-generator",
-      ],
+      external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
       output: {
         globals: {
           vue: "Vue",

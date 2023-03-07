@@ -1,6 +1,6 @@
 import { computed, Ref, ref } from "vue";
 import { AppDescriptor, AppsClient } from "./../../../../core/api";
-import { useLogger, useUser, usePermissions } from "./../../../../core/composables";
+import { useUser, usePermissions } from "./../../../../core/composables";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
@@ -9,7 +9,6 @@ interface IUseAppSwitcher {
 }
 
 export default (): IUseAppSwitcher => {
-  const logger = useLogger();
   const { checkPermission } = usePermissions();
   const appsList = ref<AppDescriptor[]>([]);
 
@@ -26,7 +25,7 @@ export default (): IUseAppSwitcher => {
     try {
       appsList.value = await client.getApps();
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     }
   }

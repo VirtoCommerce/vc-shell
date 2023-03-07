@@ -1,4 +1,4 @@
-import { useUser, useLogger } from "./../../../core/composables";
+import { useUser } from "./../../../core/composables";
 import { computed, Ref, ref } from "vue";
 import { SettingClient } from "./../../../core/api";
 
@@ -20,7 +20,6 @@ const uiSettings = ref<IUISetting>({
 });
 export default (): IUseSettings => {
   const { getAccessToken } = useUser();
-  const logger = useLogger();
 
   async function getApiClient() {
     const client = new SettingClient();
@@ -41,7 +40,7 @@ export default (): IUseSettings => {
         title: settings.title,
       };
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     }
   }
 

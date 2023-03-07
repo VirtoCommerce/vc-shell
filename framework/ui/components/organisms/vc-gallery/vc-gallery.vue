@@ -70,27 +70,11 @@ import { computed, ref } from "vue";
 import { VcLabel, VcFileUpload } from "./../../../components";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { VcGalleryProps } from "./vc-gallery-model";
+import { galleryEmits, galleryProps } from "./vc-gallery-model";
 
-const props = withDefaults(defineProps<VcGalleryProps>(), {
-  images: () => [],
-  disabled: false,
-  required: false,
-  tooltipIcon: "fas fa-info",
-  uploadIcon: "fas fa-upload",
-  multiple: false,
-  variant: "gallery",
-  itemActions: () => ({
-    preview: true,
-    edit: true,
-    remove: true,
-  }),
-  disableDrag: false,
-  hideAfterUpload: false,
-  name: "Gallery",
-});
+const props = defineProps(galleryProps);
 
-const emit = defineEmits(["upload", "sort", "item:edit", "item:remove"]);
+const emit = defineEmits(galleryEmits);
 
 const preview = ref(false);
 const previewImageIndex = ref();

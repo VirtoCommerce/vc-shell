@@ -26,14 +26,11 @@
 </template>
 
 <script lang="ts" setup>
-import { VcPopupProps } from "./vc-popup-model";
+import { popupEmits, popupProps } from "./vc-popup-model";
 
-withDefaults(defineProps<VcPopupProps>(), {
-  closable: true,
-  variant: "fullscreen",
-});
+defineProps(popupProps);
 
-defineEmits(["close"]);
+defineEmits(popupEmits);
 </script>
 
 <style lang="scss">

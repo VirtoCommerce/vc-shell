@@ -47,17 +47,11 @@
 <script lang="ts" setup>
 import { watch } from "vue";
 import { VcLabel } from "./../../../components";
-import { VcTextareaProps } from "./vc-textarea-model";
+import { textareaEmits, textareaProps } from "./vc-textarea-model";
 
-const props = withDefaults(defineProps<VcTextareaProps>(), {
-  placeholder: "",
-  required: false,
-  disabled: false,
-  name: "Field",
-  maxchars: "1024",
-});
+const props = defineProps(textareaProps);
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(textareaEmits);
 
 watch(
   () => props.modelValue,

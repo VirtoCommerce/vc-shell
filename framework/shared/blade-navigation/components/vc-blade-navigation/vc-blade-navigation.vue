@@ -38,7 +38,7 @@ import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "./
 export interface Props {
   blades: IBladeContainer[];
   parentBladeOptions: Record<string, unknown>;
-  parentBladeParam: string;
+  parentBladeParam?: string | undefined;
 }
 
 export interface Emits {

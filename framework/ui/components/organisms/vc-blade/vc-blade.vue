@@ -44,16 +44,11 @@ export default defineComponent({
 <script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcBladeProps } from "./vc-blade-model";
+import { bladeEmits, bladeProps } from "./vc-blade-model";
 
-withDefaults(defineProps<VcBladeProps>(), {
-  width: "30%",
-  expanded: false,
-  closable: true,
-  toolbarItems: () => [],
-});
+defineProps(bladeProps);
 
-defineEmits(["close"]);
+defineEmits(bladeEmits);
 </script>
 
 <style lang="scss">

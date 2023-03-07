@@ -1,5 +1,7 @@
 import { ComponentPublicInstance } from "vue";
-import { VcTableProps } from "./vc-table-model";
+import { VcTableEmits, VcTableProps } from "./vc-table-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Table from "./vc-table.vue";
-export const VcTable: ComponentConstructor<ComponentPublicInstance<VcTableProps>> = Table;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcTable: ComponentConstructor<ComponentPublicInstance<VcTableProps, any, any, any, any, VcTableEmits>> =
+  Table;

@@ -4,11 +4,10 @@ import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import draggable from "vuedraggable/src/vuedraggable";
-import { init as initLogger } from "./core/composables/useLogger";
 import { init as initI18n } from "./core/composables/useI18n";
 import { init as initShared } from "./shared";
 
-const init = [initLogger, initI18n, initShared];
+const init = [initI18n, initShared];
 
 import "normalize.css";
 import "./assets/styles/index.scss";
@@ -56,6 +55,8 @@ export * from "./ui/components";
 
 // eslint-disable-next-line import/export
 export * from "./ui/types";
+
+export * from "./ui/utils";
 
 export * from "./core/composables";
 export * from "./core/directives";

@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from "vue";
-import { VcLinkProps } from "./vc-link-model";
+import { VcLinkEmits, VcLinkProps } from "./vc-link-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Link from "./vc-link.vue";
-export const VcLink: ComponentConstructor<ComponentPublicInstance<VcLinkProps>> = Link;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcLink: ComponentConstructor<ComponentPublicInstance<VcLinkProps, any, any, any, any, VcLinkEmits>> = Link;

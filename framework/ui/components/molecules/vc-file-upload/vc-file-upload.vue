@@ -48,23 +48,18 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
-import { VcFileUploadProps } from "./vc-file-upload-model";
+import { fileUploadEmits, fileUploadProps } from "./vc-file-upload-model";
 
-const props = withDefaults(defineProps<VcFileUploadProps>(), {
-  variant: "gallery",
-  loading: false,
-  accept: ".jpg, .png, .jpeg",
-  multiple: false,
-  name: "Gallery",
-});
+const props = defineProps(fileUploadProps);
 
-const emit = defineEmits(["upload"]);
+const emit = defineEmits(fileUploadEmits);
+
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination
 let internalRules = unref(props.rules) || "";
 
 // Prepare field-level validation
-const { errorMessage, handleChange, errors, validate } = useField(
+const { errorMessage, handleChange, validate } = useField(
   `${props.name === "Gallery" ? instance?.uid : props.name}`,
   internalRules
 );

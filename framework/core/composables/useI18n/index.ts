@@ -1,5 +1,5 @@
 import { App } from "vue";
-import { Composer, createI18n, useI18n as VueUseI18n, VueMessageType } from "vue-i18n";
+import { Composer, createI18n, useI18n as VueUseI18n } from "vue-i18n";
 
 export function init(app: App): App {
   console.debug(`[@vc-shell/framework#useI18n:init] - Entry point`);
@@ -16,7 +16,7 @@ export function init(app: App): App {
   return app;
 }
 
-export default function useI18n(): Composer<unknown, unknown, unknown, {}> {
+export default function useI18n(): Composer<unknown, unknown, unknown, unknown> {
   console.debug(`[@vc-shell/framework#useI18n] - Entry point`);
   return VueUseI18n({ useScope: "global" });
 }

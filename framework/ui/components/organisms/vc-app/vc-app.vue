@@ -68,22 +68,11 @@ import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { IMenuClickEvent } from "./../../../../shared";
-import { VcAppProps } from "./vc-app-model";
+import { appEmits, appProps } from "./vc-app-model";
 
-withDefaults(defineProps<VcAppProps>(), {
-  pages: () => [],
-  menuItems: () => [],
-  mobileMenuItems: () => [],
-  toolbarItems: () => [],
-  isReady: false,
-  isAuthorized: false,
-  logo: undefined,
-  version: undefined,
-  theme: "light",
-  bladesRefs: () => [],
-});
+defineProps(appProps);
 
-const emit = defineEmits(["open", "close", "backlink:click"]);
+const emit = defineEmits(appEmits);
 
 console.debug("vc-app: Init vc-app");
 

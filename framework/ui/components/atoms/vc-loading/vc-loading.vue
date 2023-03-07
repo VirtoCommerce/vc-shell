@@ -21,9 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcLoadingProps } from "./vc-loading-model";
+import { loadingProps } from "./vc-loading-model";
 
-withDefaults(defineProps<VcLoadingProps>(), {
-  active: false,
-});
+defineProps(loadingProps);
 </script>

@@ -3,12 +3,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIconProps } from "./vc-icon-model";
+import { iconProps } from "./vc-icon-model";
 
-withDefaults(defineProps<VcIconProps>(), {
-  icon: "fas fa-square-full",
-  size: "m",
-});
+defineProps(iconProps);
 </script>
 
 <style lang="scss">

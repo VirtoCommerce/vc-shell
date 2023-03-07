@@ -13,12 +13,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VcProgressProps } from "./vc-progress-model";
+import { progressProps } from "./vc-progress-model";
 
-withDefaults(defineProps<VcProgressProps>(), {
-  value: 0,
-  variant: "default",
-});
+defineProps(progressProps);
 </script>
 
 <style lang="scss">

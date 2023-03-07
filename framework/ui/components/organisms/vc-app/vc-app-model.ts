@@ -1,23 +1,61 @@
 import { ExtendedComponent, IBladeElement, IOpenBlade } from "./../../../../shared";
 import { IBladeToolbar, IMenuItems } from "./../../../../core/types";
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
+import { isObject, isNumber } from "./../../../utils";
 
-export interface VcAppProps {
-  pages?: ExtendedComponent[] | undefined;
-  menuItems?: IMenuItems[] | undefined;
-  mobileMenuItems?: IMenuItems[] | undefined;
-  toolbarItems?: IBladeToolbar[] | undefined;
-  isReady?: boolean | undefined;
-  isAuthorized?: boolean | undefined;
-  logo?: string | undefined;
-  version?: string | undefined;
-  theme?: "light" | "dark" | undefined;
-  bladesRefs?: IBladeElement[] | undefined;
-  title?: string | undefined;
-  onOpen?: (args: IOpenBlade) => void;
-  onClose?: (index: number) => void;
-  "onBacklink:click"?: (index: number) => void;
-}
+export const appProps = {
+  pages: {
+    type: Array as PropType<ExtendedComponent[]>,
+    default: () => [],
+  },
+  menuItems: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
+  },
+  mobileMenuItems: {
+    type: Array as PropType<IMenuItems[]>,
+    default: () => [],
+  },
+  toolbarItems: {
+    type: Array as PropType<IBladeToolbar[]>,
+    default: () => [],
+  },
+  isReady: {
+    type: Boolean,
+    default: false,
+  },
+  isAuthorized: {
+    type: Boolean,
+    default: false,
+  },
+  logo: {
+    type: String,
+    default: undefined,
+  },
+  version: {
+    type: String,
+    default: undefined,
+  },
+  theme: {
+    type: String as PropType<"light" | "dark">,
+    default: "light",
+  },
+  bladesRefs: {
+    type: Array as PropType<IBladeElement[]>,
+    default: () => [],
+  },
+  title: String,
+};
+
+export const appEmits = {
+  open: (args: IOpenBlade) => isObject(args),
+  close: (index: number) => isNumber(index),
+  "backlink:click": (index: number) => isNumber(index),
+};
+
+export type VcAppProps = ExtractTypes<typeof appProps>;
+export type VcAppEmits = typeof appEmits;
 
 export interface VcAppSlots {
   appSwitcher: () => VNode[];

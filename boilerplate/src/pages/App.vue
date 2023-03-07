@@ -63,7 +63,6 @@ import {
   useAppSwitcher,
   useFunctions,
   useI18n,
-  useLogger,
   useNotifications,
   usePermissions,
   useSettings,
@@ -102,7 +101,6 @@ const {
   availableLocales,
   getLocaleMessage,
 } = useI18n();
-const log = useLogger();
 const { user, loadUser, signOut } = useUser();
 const {
   popupNotifications,
@@ -168,7 +166,7 @@ watch(
   { deep: true }
 );
 
-log.debug(`Initializing App`);
+console.debug(`Initializing App`);
 
 const toolbarItems = ref<IBladeToolbar[]>([
   {

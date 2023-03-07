@@ -26,15 +26,7 @@
     ],
     "types": [
       "vite/client",
-      "unplugin-vue-macros/macros-global",
-      "unplugin-vue-define-options/macros-global"
     ],
-  },
-  "vueCompilerOptions": {
-    "target": 3,
-    "plugins": [
-      "@vue-macros/volar/define-props"
-    ]
   },
   "include": [
     "*.ts",
@@ -45,6 +37,7 @@
     "ui/components/**/*.vue",
     "ui/components/**/*.ts",
     "ui/types/*.ts",
+    "ui/utils/*.ts",
     "shared/**/*.vue",
     "shared/**/*.ts",
     "shared/**/*.json"

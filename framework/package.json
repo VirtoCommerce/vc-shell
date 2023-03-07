@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.53",
+  "version": "1.0.54",
   "main": "./dist/framework.js",
   "module": "./dist/framework.esm.js",
   "types": "./dist/index.d.ts",
@@ -52,8 +52,8 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.53",
-    "@vc-shell/config-generator": "^1.0.53",
+    "@vc-shell/api-client-generator": "^1.0.54",
+    "@vc-shell/config-generator": "^1.0.54",
     "@vue-macros/volar": "^0.8.1",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",

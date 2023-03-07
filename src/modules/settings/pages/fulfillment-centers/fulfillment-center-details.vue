@@ -66,7 +66,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import { IBladeToolbar, IParentCallArgs, useForm, useI18n, useLogger } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, useForm, useI18n } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { Field, useIsFormValid } from "vee-validate";
@@ -113,7 +113,6 @@ const title = computed(() =>
 const deleteModal = ref(false);
 const errorMessage = ref("");
 const isValid = useIsFormValid();
-const logger = useLogger();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -129,7 +128,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           });
           emit("close:blade");
         } catch (e) {
-          logger.error(e);
+          console.error(e);
         }
       } else {
         alert(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NOT_VALID"))));

@@ -127,7 +127,7 @@ import {
 } from "@vc-shell/framework";
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
-import { IDataImporter, ImportProfile, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
+import { IDataImporter, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 
 export interface Props {
@@ -231,7 +231,6 @@ const sampleTemplateUrl = computed(() => {
 const title = computed(() =>
   props.options.importer ? props.options.importer.typeName : t("IMPORT.PAGES.PROFILE_DETAILS.TITLE")
 );
-const importer = computed(() => profile.value.importer);
 
 onMounted(async () => {
   await fetchDataImporters();

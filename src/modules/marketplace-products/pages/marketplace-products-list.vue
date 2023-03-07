@@ -139,7 +139,6 @@ import {
   IBladeToolbar,
   useFunctions,
   useI18n,
-  useLogger,
   IActionBuilderResult,
   ITableColumns,
 } from "@vc-shell/framework";
@@ -169,7 +168,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
 
@@ -196,7 +194,7 @@ onMounted(async () => {
 });
 
 const reload = async () => {
-  logger.debug("Products list reload");
+  console.debug("Products list reload");
   await loadProducts({
     ...searchQuery.value,
     skip: (currentPage.value - 1) * searchQuery.value.take,
@@ -205,7 +203,7 @@ const reload = async () => {
 };
 
 const onSearchList = debounce(async (keyword: string) => {
-  logger.debug(`Products list search by ${keyword}`);
+  console.debug(`Products list search by ${keyword}`);
   searchValue.value = keyword;
   await loadProducts({
     ...searchQuery.value,
@@ -246,7 +244,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-trash",
     isVisible: false,
     async clickHandler() {
-      logger.debug("Delete selected products");
+      console.debug("Delete selected products");
     },
   },
 ]);

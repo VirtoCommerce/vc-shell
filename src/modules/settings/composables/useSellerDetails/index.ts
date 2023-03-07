@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 import { computed, Ref, ref, watch } from "vue";
 import {
   CustomerAddress,
@@ -32,7 +32,6 @@ interface IUseSellerDetails {
 }
 
 export default (): IUseSellerDetails => {
-  const logger = useLogger();
   const { getAccessToken } = useUser();
   const sellerDetails = ref(
     new Seller({
@@ -74,7 +73,7 @@ export default (): IUseSellerDetails => {
       });
       sellerDetailsCopy = _cloneDeep(sellerDetails.value);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -98,7 +97,7 @@ export default (): IUseSellerDetails => {
       await client.updateSeller(command);
       sellerDetailsCopy = _cloneDeep(sellerDetails.value);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -122,7 +121,7 @@ export default (): IUseSellerDetails => {
           countriesList.value = JSON.parse(response);
         });
       } catch (e) {
-        logger.error(e);
+        console.error(e);
       }
     }
   }
@@ -144,7 +143,7 @@ export default (): IUseSellerDetails => {
           regionsList.value = JSON.parse(response);
         });
       } catch (e) {
-        logger.error(e);
+        console.error(e);
       }
     }
   }

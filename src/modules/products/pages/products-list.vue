@@ -113,7 +113,7 @@
       <!-- Override status column template -->
       <template v-slot:item_status="itemData">
         <mp-product-status
-          :status="itemData.item.status as string"
+          :status="itemData.item.status"
           class="tw-mb-1"
         />
       </template>
@@ -183,7 +183,6 @@ import {
   IBladeToolbar,
   useFunctions,
   useI18n,
-  useLogger,
   IActionBuilderResult,
   ITableColumns,
 } from "@vc-shell/framework";
@@ -214,7 +213,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const logger = useLogger();
 const { debounce } = useFunctions();
 const { t } = useI18n();
 
@@ -260,7 +258,7 @@ onMounted(async () => {
 });
 
 const reload = async () => {
-  logger.debug("Products list reload");
+  console.debug("Products list reload");
   selectedProductIds.value = [];
   await loadProducts({
     ...searchQuery.value,
@@ -270,7 +268,7 @@ const reload = async () => {
 };
 
 const onSearchList = debounce(async (keyword: string) => {
-  logger.debug(`Products list search by ${keyword}`);
+  console.debug(`Products list search by ${keyword}`);
   searchValue.value = keyword;
   await loadProducts({
     ...searchQuery.value,

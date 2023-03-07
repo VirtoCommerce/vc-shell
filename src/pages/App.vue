@@ -1,5 +1,9 @@
 <template>
-  <VcLoading v-if="!isReady" active class="app__loader" />
+  <VcLoading
+    v-if="!isReady"
+    active
+    class="app__loader"
+  />
   <VcApp
     :menuItems="menuItems"
     :mobileMenuItems="mobileMenuItems"
@@ -17,11 +21,20 @@
     v-else
   >
     <!-- App Switcher -->
-    <template v-slot:appSwitcher v-if="appsList && appsList.length">
-      <VcAppSwitcher :appsList="appsList" @onClick="switchApp($event)" />
+    <template
+      v-slot:appSwitcher
+      v-if="appsList && appsList.length"
+    >
+      <VcAppSwitcher
+        :appsList="appsList"
+        @onClick="switchApp($event)"
+      />
     </template>
 
-    <template v-slot:bladeNavigation v-if="isAuthorized">
+    <template
+      v-slot:bladeNavigation
+      v-if="isAuthorized"
+    >
       <VcBladeNavigation
         @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
@@ -63,7 +76,6 @@ import {
   useAppSwitcher,
   useFunctions,
   useI18n,
-  useLogger,
   useNotifications,
   usePermissions,
   useSettings,
@@ -74,16 +86,7 @@ import {
   IBladeElement,
   ExtendedComponent,
 } from "@vc-shell/framework";
-import {
-  computed,
-  inject,
-  onMounted,
-  reactive,
-  ref,
-  Ref,
-  shallowRef,
-  watch,
-} from "vue";
+import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ChangePassword from "../components/change-password.vue";
 import LanguageSelector from "../components/language-selector.vue";
@@ -95,44 +98,21 @@ import { OrdersList } from "../modules/orders";
 import { ProductsList } from "../modules/products";
 import { MpProductsList } from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
-import {
-  SellerDetails,
-  TeamList,
-  FulfillmentCenters,
-} from "../modules/settings";
+import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
 import { UserPermissions } from "../types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
-const {
-  t,
-  locale: currentLocale,
-  availableLocales,
-  getLocaleMessage,
-} = useI18n();
-const log = useLogger();
+const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
 const { user, loadUser, signOut } = useUser();
-const {
-  popupNotifications,
-  notifications,
-  addNotification,
-  dismiss,
-  markAsRead,
-} = useNotifications();
+const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { delay } = useFunctions();
-const {
-  blades,
-  bladesRefs,
-  parentBladeOptions,
-  parentBladeParam,
-  openBlade,
-  closeBlade,
-  onParentCall,
-} = useBladeNavigation();
+const { blades, bladesRefs, parentBladeOptions, parentBladeParam, openBlade, closeBlade, onParentCall } =
+  useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 const { sellerDetails, getCurrentSeller } = useSellerDetails();
 const route = useRoute();
@@ -179,7 +159,7 @@ watch(
   { deep: true }
 );
 
-log.debug(`Initializing App`);
+console.debug(`Initializing App`);
 
 const toolbarItems = ref<IBladeToolbar[]>([
   {
@@ -190,8 +170,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
       languageItems: computed(() =>
         availableLocales.map((locale: string) => ({
           lang: locale,
-          title: (getLocaleMessage(locale) as { language_name: string })
-            .language_name,
+          title: (getLocaleMessage(locale) as { language_name: string }).language_name,
           clickHandler(lang: string) {
             currentLocale.value = lang;
             localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
@@ -200,17 +179,12 @@ const toolbarItems = ref<IBladeToolbar[]>([
       ),
     },
     isVisible: computed(() => {
-      return isDesktop.value
-        ? isDesktop.value
-        : isMobile.value
-        ? route.path === "/"
-        : false;
+      return isDesktop.value ? isDesktop.value : isMobile.value ? route.path === "/" : false;
     }),
   },
   {
     isAccent: computed(() => {
-      return !!notifications.value.filter((notification) => notification.isNew)
-        .length;
+      return !!notifications.value.filter((notification) => notification.isNew).length;
     }),
     component: shallowRef(NotificationDropdown),
     bladeOptions: {
@@ -222,9 +196,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
     bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
-      role: computed(() =>
-        user.value?.isAdministrator ? "Administrator" : "Seller account"
-      ),
+      role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
       menuItems: [
         {
           title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
@@ -252,9 +224,7 @@ const mobileMenuItems = ref<IBladeToolbar[]>([
     bladeOptions: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
-      role: computed(() =>
-        user.value?.isAdministrator ? "Administrator" : "Seller account"
-      ),
+      role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
     },
     isVisible: isMobile,
   },
@@ -286,9 +256,7 @@ const menuItems = reactive<IMenuItems[]>([
         bladeOptions: {
           readonly: true,
         },
-        isVisible: computed(() =>
-          checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)
-        ),
+        isVisible: computed(() => checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)),
       },
       {
         title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
@@ -311,9 +279,7 @@ const menuItems = reactive<IMenuItems[]>([
   {
     title: computed(() => t("RATING.MENU.TITLE")),
     icon: "fas fa-star",
-    isVisible: computed(() =>
-      checkPermission(UserPermissions.ManageSellerReviews)
-    ),
+    isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
     component: shallowRef(ReviewList),
   },
   {
@@ -330,23 +296,17 @@ const menuItems = reactive<IMenuItems[]>([
       {
         title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
         component: shallowRef(TeamList),
-        isVisible: computed(() =>
-          checkPermission(UserPermissions.SellerUsersManage)
-        ),
+        isVisible: computed(() => checkPermission(UserPermissions.SellerUsersManage)),
       },
       {
         title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
         component: shallowRef(FulfillmentCenters),
-        isVisible: computed(() =>
-          checkPermission(UserPermissions.ManageSellerFulfillmentCenters)
-        ),
+        isVisible: computed(() => checkPermission(UserPermissions.ManageSellerFulfillmentCenters)),
       },
       {
         title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
         component: shallowRef(SellerDetails),
-        isVisible: computed(() =>
-          checkPermission(UserPermissions.SellerDetailsEdit)
-        ),
+        isVisible: computed(() => checkPermission(UserPermissions.SellerDetailsEdit)),
       },
     ],
   },
@@ -464,8 +424,8 @@ textarea {
 .vc-app.vc-theme_light {
   --background-color: #f2f2f2;
   --top-bar-color: #ffffff;
-  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%),
-    linear-gradient(0deg, #e8f2f3, #e8f2f3), #eef2f8;
+  --app-background: linear-gradient(180deg, #e4f5fb 5.06%, #e8f3f2 100%), linear-gradient(0deg, #e8f2f3, #e8f2f3),
+    #eef2f8;
   --app-bar-background-color: #ffffff;
   --app-bar-divider-color: #ffffff;
   --app-bar-toolbar-item-width: 50px;

@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 import {
   IFulfillmentCenter,
   FulfillmentCenter,
@@ -36,7 +36,6 @@ interface IUseFulfillmentCentersOptions {
 
 export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters => {
   const loading = ref(false);
-  const logger = useLogger();
   const pageSize = options?.pageSize || 20;
   const searchQuery = ref<ISearchFulfillmentCentersQuery>({
     take: pageSize,
@@ -73,7 +72,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       loading.value = true;
       searchResult.value = await client.searchFulfillmentCenters(command);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -85,7 +84,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       loading.value = true;
       fulfillmentCenterDetails.value = await client.getFulfillmentCenterById(id);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -102,7 +101,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       loading.value = true;
       await client.updateFulfillmentCenter(command);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -116,7 +115,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       loading.value = true;
       await client.deleteFulfillmentCenter([args.id]);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }

@@ -205,8 +205,6 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref, watch, shallowRef } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
-import _ from "lodash";
-import { argThresholdOpts } from "moment";
 
 export default defineComponent({
   url: "/importer",
@@ -278,14 +276,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-
-interface IImportBadges {
-  id: string;
-  icon: string;
-  color: string;
-  title?: string | number;
-  description?: string;
-}
 
 const { t } = useI18n();
 const { checkPermission } = usePermissions();

@@ -1,7 +1,6 @@
 import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
-import VueMacros from "unplugin-vue-macros/vite";
 import { loadEnv, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
@@ -27,10 +26,7 @@ if (mode !== "production") {
   _define.global = {};
 }
 
-const getProxy = (
-  target: ProxyOptions["target"],
-  options: Omit<ProxyOptions, "target"> = {}
-): ProxyOptions => {
+const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
   return {
     target,
@@ -43,11 +39,7 @@ const getProxy = (
 export default {
   plugins: [
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
-    VueMacros({
-      plugins: {
-        vue: vue(),
-      },
-    }),
+    vue(),
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
@@ -91,9 +83,9 @@ export default {
       mode === "development"
         ? {
             "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+            "@vc-shell/framework": "@vc-shell/framework/index.ts",
           }
-        : {
-          },
+        : {},
   },
   base: process.env.APP_BASE_PATH,
   mode,
@@ -129,6 +121,7 @@ export default {
     },
   },
   optimizeDeps: {
+    include: mode === "development" ? ["ace-builds", "client-oauth2"] : [],
     esbuildOptions: {
       target: ["es2020", "safari14"],
     },

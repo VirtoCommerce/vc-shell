@@ -111,7 +111,6 @@ import {
   IParentCallArgs,
   useFunctions,
   useI18n,
-  useLogger,
   IActionBuilderResult,
   ITableColumns,
 } from "@vc-shell/framework";
@@ -152,7 +151,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
-const logger = useLogger();
 const { debounce } = useFunctions();
 
 const { searchQuery, offers, totalCount, pages, currentPage, loadOffers, loading, deleteOffers } = useOffers();
@@ -186,7 +184,7 @@ const reload = async () => {
 };
 
 const onSearchList = debounce(async (keyword: string) => {
-  logger.debug(`Offers list search by ${keyword}`);
+  console.debug(`Offers list search by ${keyword}`);
   searchValue.value = keyword;
   await loadOffers({
     ...searchQuery.value,

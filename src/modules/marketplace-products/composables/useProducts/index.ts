@@ -1,5 +1,5 @@
 import { Ref, ref, computed } from "vue";
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 
 import {
   VcmpSellerCatalogClient,
@@ -35,8 +35,6 @@ interface IUseProductOptions {
 }
 
 export default (options?: IUseProductOptions): IUseProducts => {
-  const logger = useLogger();
-
   const pageSize = options?.pageSize || 20;
   const searchQuery = ref<ISearchProductsQuery>({
     take: pageSize,
@@ -60,7 +58,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
   }
 
   async function loadProducts(query: ISearchProductsQuery) {
-    logger.info(`Load products page ${query?.skip || 1} sort by ${query?.sort || "default"}`);
+    console.info(`Load products page ${query?.skip || 1} sort by ${query?.sort || "default"}`);
 
     searchQuery.value = { ...searchQuery.value, ...query };
     const client = await getApiClient();
@@ -70,7 +68,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
         ...searchQuery.value,
       } as SearchProductsQuery);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -78,7 +76,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
   }
 
   async function exportCategories() {
-    const { getAccessToken, user } = useUser();
+    const { getAccessToken } = useUser();
     const authToken = await getAccessToken();
 
     try {
@@ -106,7 +104,7 @@ export default (options?: IUseProductOptions): IUseProducts => {
 
       window.URL.revokeObjectURL(blobUrl);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;

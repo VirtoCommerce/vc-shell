@@ -1,5 +1,5 @@
 import { computed, Ref, ref, unref, defineEmits, watch, shallowRef } from "vue";
-import { useLogger, useUser, useI18n, AssetsDetails, IBladeEvent } from "@vc-shell/framework";
+import { useUser, useI18n, AssetsDetails, IBladeEvent } from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -17,7 +17,7 @@ import {
   IImage,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import { isEqual, cloneDeep, extend } from "lodash-es";
+import { isEqual, cloneDeep } from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -69,7 +69,6 @@ export interface Emits {
 
 export default (): IUseOffer => {
   const { user, getAccessToken } = useUser();
-  const logger = useLogger();
   const offer = ref<IOffer>({});
   const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
   const offerDetailsCopy: Ref<TextOfferDetails> = ref();
@@ -108,7 +107,7 @@ export default (): IUseOffer => {
   }
 
   async function createOffer(details: TextOfferDetails) {
-    logger.info(`create new  offer`, details);
+    console.info(`create new  offer`, details);
 
     const client = await getApiClient();
     const command = new CreateNewOfferCommand({
@@ -131,7 +130,7 @@ export default (): IUseOffer => {
       offer.value = await client.createNewOffer(command);
       modified.value = false;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -139,7 +138,7 @@ export default (): IUseOffer => {
   }
 
   async function updateOffer(details: TextOfferDetails) {
-    logger.info(`update offer`, details);
+    console.info(`update offer`, details);
 
     const client = await getApiClient();
     const command = new UpdateOfferCommand({
@@ -153,7 +152,7 @@ export default (): IUseOffer => {
       offer.value = await client.updateOffer(command);
       modified.value = false;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -161,7 +160,7 @@ export default (): IUseOffer => {
   }
 
   async function loadOffer(args: { id: string }) {
-    logger.info(`Load offer ${args}`);
+    console.info(`Load offer ${args}`);
 
     const client = await getApiClient();
 
@@ -171,7 +170,7 @@ export default (): IUseOffer => {
 
       offerDetails.value = offer.value as IOfferDetails;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -185,7 +184,7 @@ export default (): IUseOffer => {
   }
 
   async function deleteOffer(args: { id: string }) {
-    logger.info(`Delete offer ${args}`);
+    console.info(`Delete offer ${args}`);
 
     const client = await getApiClient();
 
@@ -193,7 +192,7 @@ export default (): IUseOffer => {
       loading.value = true;
       await client.deleteOffers([args.id]);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -221,7 +220,7 @@ export default (): IUseOffer => {
           value: currency,
         }));
       } catch (e) {
-        logger.error(e);
+        console.error(e);
         throw e;
       }
     }

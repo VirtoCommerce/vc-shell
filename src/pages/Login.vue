@@ -1,5 +1,9 @@
 <template>
-  <VcLoginForm :logo="customization.logo" :background="background" :title="title">
+  <VcLoginForm
+    :logo="customization.logo"
+    :background="background"
+    :title="title"
+  >
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
@@ -44,13 +48,24 @@
         </Field>
 
         <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
-          <VcButton variant="onlytext" @click="togglePassRequest" type="button">
+          <VcButton
+            variant="onlytext"
+            @click="togglePassRequest"
+            type="button"
+          >
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
-          <vc-button variant="primary" :disabled="loading || !isValid" @click="login">
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
+          <vc-button
+            variant="primary"
+            :disabled="loading || !isValid"
+            @click="login"
+          >
             {{ $t("SHELL.LOGIN.BUTTON") }}
           </vc-button>
         </div>
@@ -80,10 +95,18 @@
             ></VcInput>
           </Field>
           <div class="tw-flex tw-justify-between tw-items-center tw-pt-2">
-            <vc-button variant="secondary" type="button" @click="togglePassRequest">
+            <vc-button
+              variant="secondary"
+              type="button"
+              @click="togglePassRequest"
+            >
               {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
             </vc-button>
-            <vc-button variant="primary" :disabled="loading || !isValid" @click="forgot">
+            <vc-button
+              variant="primary"
+              :disabled="loading || !isValid"
+              @click="forgot"
+            >
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>
@@ -93,19 +116,34 @@
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
         <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
-          <vc-button variant="primary" :disabled="loading" @click="togglePassRequest">
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
+          <vc-button
+            variant="primary"
+            :disabled="loading"
+            @click="togglePassRequest"
+          >
             {{ $t("SHELL.LOGIN.BUTTON_OK") }}
           </vc-button>
         </div>
       </template>
     </template>
 
-    <VcHint v-if="!signInResult.succeeded" class="tw-mt-3" style="color: #f14e4e">
+    <VcHint
+      v-if="!signInResult.succeeded"
+      class="tw-mt-3"
+      style="color: #f14e4e"
+    >
       <!-- TODO: stylizing-->
       {{ signInResult.error }}
     </VcHint>
-    <VcHint v-if="!requestPassResult.succeeded" class="tw-mt-3" style="color: #f14e4e">
+    <VcHint
+      v-if="!requestPassResult.succeeded"
+      class="tw-mt-3"
+      style="color: #f14e4e"
+    >
       <!-- TODO: stylizing-->
       {{ requestPassResult.error }}
     </VcHint>
@@ -114,21 +152,11 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from "vue";
-import {
-  useLogger,
-  useUser,
-  useForm,
-  SignInResults,
-  RequestPasswordResult,
-  useI18n,
-  useSettings,
-} from "@vc-shell/framework";
+import { useUser, useForm, SignInResults, RequestPasswordResult, useSettings } from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
 
-const log = useLogger();
-const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 useForm({ validateOnMount: false });
@@ -196,5 +224,5 @@ const togglePassRequest = () => {
   }
 };
 
-log.debug("Init login-page");
+console.debug("Init login-page");
 </script>

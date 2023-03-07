@@ -215,7 +215,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref, shallowRef, Ref } from "vue";
+import { defineComponent, computed, onMounted, ref, unref, shallowRef } from "vue";
 
 export default defineComponent({
   url: "/mp-product",
@@ -298,7 +298,7 @@ const {
 
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
-const { setValues } = useForm({ validateOnMount: false });
+useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const offersCount = ref(0);
 const productLoading = ref(false);

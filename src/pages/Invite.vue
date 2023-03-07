@@ -101,7 +101,7 @@
 
 <script lang="ts" setup>
 import { reactive, onMounted } from "vue";
-import { useUser, useForm, useI18n } from "@vc-shell/framework";
+import { useUser, useForm } from "@vc-shell/framework";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
 
@@ -124,7 +124,6 @@ const props = defineProps({
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const isFormValid = useIsFormValid();
-const { t } = useI18n();
 
 const form = reactive({
   isValid: false,

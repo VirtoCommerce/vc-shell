@@ -1,6 +1,7 @@
 import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
+import path from "path";
 import { loadEnv, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
@@ -20,6 +21,8 @@ const TSCONFIG = process.cwd() + "/tsconfig.json";
 const TSCONFIG_BUILD = process.cwd() + "/tsconfig.build.json";
 const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
+const isMonorepo = fs.existsSync(path.resolve("./../../framework/package.json"));
+
 // "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
 const _define: { global?: unknown } = {};
 if (mode !== "production") {
@@ -34,6 +37,27 @@ const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "t
     secure: dontTrustSelfSignedCertificate,
     ...options,
   };
+};
+
+const aliasResolver = () => {
+  if (isMonorepo) {
+    if (mode === "development") {
+      return {
+        "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+        "@vc-shell/framework": "@vc-shell/framework/index.ts",
+      };
+    }
+    return {};
+  } else {
+    if (mode === "development") {
+      return {
+        "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+        "vue-router": "vue-router/dist/vue-router.cjs.js",
+      };
+    } else {
+      return {};
+    }
+  }
 };
 
 export default {
@@ -79,13 +103,7 @@ export default {
   ],
   resolve: {
     preserveSymlinks: true,
-    alias:
-      mode === "development"
-        ? {
-            "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
-            "@vc-shell/framework": "@vc-shell/framework/index.ts",
-          }
-        : {},
+    alias: aliasResolver(),
   },
   base: process.env.APP_BASE_PATH,
   mode,

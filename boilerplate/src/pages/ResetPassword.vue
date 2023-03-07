@@ -1,8 +1,9 @@
 <template>
-  <div
-    class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light"
-  >
-    <VcLoading v-if="loading" active></VcLoading>
+  <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
+    <VcLoading
+      v-if="loading"
+      active
+    ></VcLoading>
 
     <VcLoginForm
       logo="/assets/logo-white.svg"
@@ -47,9 +48,7 @@
             ref="confirmPasswordField"
             class="tw-mb-4"
             :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="
-              $t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')
-            "
+            :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
             v-model="form.confirmPassword"
             type="password"
@@ -67,7 +66,10 @@
           </VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <vc-button
             variant="primary"
             :disabled="disableButton"
@@ -110,13 +112,7 @@ const props = defineProps({
     default: undefined,
   },
 });
-const {
-  validateToken,
-  validatePassword,
-  resetPasswordByToken,
-  signIn,
-  loading,
-} = useUser();
+const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const { validate: veeValidate } = useForm({ validateOnMount: false });
 
@@ -136,12 +132,7 @@ onMounted(async () => {
 });
 
 const disableButton = computed(() => {
-  return (
-    loading.value ||
-    !form.password ||
-    !form.confirmPassword ||
-    (!form.isValid && form.tokenIsValid)
-  );
+  return loading.value || !form.password || !form.confirmPassword || (!form.isValid && form.tokenIsValid);
 });
 
 const validate = async () => {
@@ -158,11 +149,7 @@ const validate = async () => {
 const resetPassword = async () => {
   const { valid } = await veeValidate();
   if (valid) {
-    const result = await resetPasswordByToken(
-      props.userId,
-      form.password,
-      props.token
-    );
+    const result = await resetPasswordByToken(props.userId, form.password, props.token);
     if (result.succeeded) {
       const result = await signIn(props.userName, form.password);
       if (result.succeeded) {

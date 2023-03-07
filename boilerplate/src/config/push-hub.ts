@@ -13,9 +13,7 @@ export default {
     function start() {
       startedPromise = connection.start().catch((err) => {
         console.error("Failed to connect", err);
-        return new Promise((resolve, reject) =>
-          setTimeout(() => start().then(resolve).catch(reject), 5000)
-        );
+        return new Promise((resolve, reject) => setTimeout(() => start().then(resolve).catch(reject), 5000));
       });
       return startedPromise;
     }

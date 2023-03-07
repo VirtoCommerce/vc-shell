@@ -6,7 +6,10 @@
         'background-color': current.styles.color,
       }"
     >
-      <VcIcon :icon="current.styles.icon" size="l"></VcIcon>
+      <VcIcon
+        :icon="current.styles.icon"
+        size="l"
+      ></VcIcon>
     </div>
 
     <VcRow class="tw-justify-between tw-grow tw-basis-0">
@@ -36,19 +39,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, shallowRef, watch } from "vue";
-import {
-  VcRow,
-  VcIcon,
-  IPushNotification,
-  PushNotification,
-} from "@vc-shell/framework";
-import ImportPush from "./_internal/ImportPush.vue";
+import { computed, reactive, ref, watch } from "vue";
+import { VcRow, VcIcon, IPushNotification, PushNotification } from "@vc-shell/framework";
 import DefaultPush from "./_internal/DefaultPush.vue";
-import ProductPush from "./_internal/ProductPush.vue";
 import moment from "moment";
 
-interface IExtendedPush extends IPushNotification {
+export interface IExtendedPush extends IPushNotification {
   finished: Date;
   errors: string[];
   newStatus: string;
@@ -65,60 +61,6 @@ const props = withDefaults(defineProps<Props>(), {
 const locale = window.navigator.language;
 const current = ref();
 const pushComponents = reactive({
-  ImportPushNotification: {
-    component: shallowRef(ImportPush),
-    styles: {
-      color: computed(() => {
-        const notification = props.notification as IExtendedPush;
-        return notification.finished &&
-          !(notification.errors && notification.errors.length)
-          ? "#87b563"
-          : !(notification.errors && notification.errors.length) &&
-            !notification.finished
-          ? "#A9BCCD"
-          : "#F14E4E";
-      }),
-      icon: "fas fa-download",
-    },
-  },
-  OfferCreatedDomainEvent: {
-    component: shallowRef(DefaultPush),
-    styles: {
-      color: "#87b563",
-      icon: "fas fa-percentage",
-    },
-  },
-  OfferDeletedDomainEvent: {
-    component: shallowRef(DefaultPush),
-    styles: {
-      color: "#F14E4E",
-      icon: "fas fa-percentage",
-    },
-  },
-  PublicationRequestStatusChangedDomainEvent: {
-    component: shallowRef(ProductPush),
-    styles: {
-      color: computed(() => {
-        switch ((props.notification as IExtendedPush).newStatus) {
-          case "RequestChanges":
-            return "#F14E4E";
-          case "Approved":
-            return "#87B563";
-          case "WaitForApproval":
-            return "#f89406";
-          case "Rejected":
-            return "#F14E4E";
-          case "HasStagedChanges":
-            return "#f89406";
-          case "Published":
-            return "#87B563";
-          default:
-            return "#A9BCCD";
-        }
-      }),
-      icon: "fas fa-box-open",
-    },
-  },
   DefaultPush: {
     component: DefaultPush,
     styles: {

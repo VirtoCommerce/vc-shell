@@ -1,9 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import {
-  usePermissions,
-  useUser,
-  ExtendedComponent,
-} from "@vc-shell/framework";
+import { usePermissions, useUser, ExtendedComponent } from "@vc-shell/framework";
 
 /**
  * Pages
@@ -101,8 +97,7 @@ let programmatic = false;
 });
 
 router.beforeEach((to, from, next) => {
-  const ExtendedComponent = to.matched[to.matched.length - 1]?.components
-    ?.default as ExtendedComponent;
+  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as ExtendedComponent;
 
   if (from.name === undefined || programmatic) {
     if (ExtendedComponent && ExtendedComponent.permissions) {

@@ -3,10 +3,10 @@
   "version": "1.0.42",
   "private": true,
   "scripts": {
-    "postinstall": "husky install",
     "serve": "cross-env APP_ENV=development vite",
     "preview": "vite preview",
     "build": "cross-env APP_ENV=production vite build",
+    "lint": "eslint --fix **/*.{ts,vue}",
     "lint-staged": "lint-staged",
     "generate-api-client": "api-client-generator --color"
   },

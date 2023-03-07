@@ -12,11 +12,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/style.css";
 
-const app = createApp(EmptyRouterView)
-  .use(router)
-  .use(PushHub)
-  .use(VirtoShellFramework)
-  .use(Default);
+const app = createApp(EmptyRouterView).use(router).use(PushHub).use(VirtoShellFramework).use(Default);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

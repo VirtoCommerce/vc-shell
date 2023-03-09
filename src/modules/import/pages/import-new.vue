@@ -650,7 +650,6 @@ async function saveExternalUrl() {
     url: profile.value.importFileUrl,
     size: Number(response.headers.get("content-length")),
   });
-  console.log(response.headers.get("content-length"));
 }
 
 async function start() {

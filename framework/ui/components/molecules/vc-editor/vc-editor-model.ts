@@ -1,16 +1,36 @@
 import { VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
+import { isString, isNumber, isDate } from "./../../../utils";
 
-export interface VcEditorProps {
-  placeholder?: string | undefined;
-  modelValue?: string | number | Date | undefined;
-  required?: boolean | undefined;
-  disabled?: boolean | undefined;
-  label?: string | undefined;
-  tooltip?: string | undefined;
-  name?: string | undefined;
-  errorMessage?: string | undefined;
-  "onUpdate:modelValue"?: (value: string) => void;
-}
+export const editorProps = {
+  placeholder: {
+    type: String,
+    default: "",
+  },
+  modelValue: {
+    type: [String, Number, Date],
+    default: null,
+  },
+  required: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: Boolean,
+  label: String,
+  tooltip: String,
+  name: {
+    type: String,
+    default: "Field",
+  },
+  errorMessage: String,
+};
+
+export const editorEmits = {
+  "update:modelValue": (value: string | number | Date) => isString(value) || isNumber(value) || isDate(value),
+};
+
+export type VcEditorProps = ExtractTypes<typeof editorProps>;
+export type VcEditorEmits = typeof editorEmits;
 
 export interface VcEditorSlots {
   error: () => VNode[];

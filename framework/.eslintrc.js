@@ -8,5 +8,5 @@ module.exports = {
             },
         },
     },
-    globals: { defineOptions: 'writable' }
+    globals: { defineOptions: 'writable' },
 };

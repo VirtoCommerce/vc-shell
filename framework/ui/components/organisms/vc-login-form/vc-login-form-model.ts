@@ -1,11 +1,16 @@
 import { VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
 
-export interface VcLoginFormProps {
-  logo?: string | undefined;
-  background?: string | undefined;
-  title?: string | undefined;
-}
+export const loginFormProps = {
+  logo: String,
+  background: String,
+  title: {
+    type: String,
+    default: "Login",
+  },
+};
 
+export type VcLoginFormProps = ExtractTypes<typeof loginFormProps>;
 export interface VcLoginFormSlots {
   default: () => VNode[];
 }

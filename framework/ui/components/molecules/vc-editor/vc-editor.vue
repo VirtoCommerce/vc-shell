@@ -46,16 +46,11 @@ import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
 import { ref, unref, watch } from "vue";
-import { VcEditorProps } from "./vc-editor-model";
+import { editorEmits, editorProps } from "./vc-editor-model";
 
-const props = withDefaults(defineProps<VcEditorProps>(), {
-  placeholder: "",
-  modelValue: null,
-  required: false,
-  name: "Field",
-});
+const props = defineProps(editorProps);
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(editorEmits);
 const content = ref();
 
 watch(

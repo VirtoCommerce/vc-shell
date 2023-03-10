@@ -41,14 +41,11 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { VcCardProps } from "./vc-card-model";
-const props = withDefaults(defineProps<VcCardProps>(), {
-  isCollapsable: false,
-  isCollapsed: false,
-  fill: false,
-  variant: "default",
-});
-const emit = defineEmits(["header:click", "state:collapsed"]);
+import { cardProps, cardEmits } from "./vc-card-model";
+
+const props = defineProps(cardProps);
+
+const emit = defineEmits(cardEmits);
 const isCollapsedInternal = ref(props.isCollapsed);
 
 function onHeaderClick() {

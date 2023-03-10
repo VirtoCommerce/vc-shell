@@ -1,5 +1,6 @@
 import { ComponentPublicInstance } from "vue";
-import { VcAppProps } from "./vc-app-model";
+import { VcAppEmits, VcAppProps } from "./vc-app-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import App from "./vc-app.vue";
-export const VcApp: ComponentConstructor<ComponentPublicInstance<VcAppProps>> = App;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcApp: ComponentConstructor<ComponentPublicInstance<VcAppProps, any, any, any, any, VcAppEmits>> = App;

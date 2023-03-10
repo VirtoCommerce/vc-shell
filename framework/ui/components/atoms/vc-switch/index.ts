@@ -1,5 +1,7 @@
 import { ComponentPublicInstance } from "vue";
-import { VcSwitchProps } from "./vc-switch-model";
+import { VcSwitchEmits, VcSwitchProps } from "./vc-switch-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Switch from "./vc-switch.vue";
-export const VcSwitch: ComponentConstructor<ComponentPublicInstance<VcSwitchProps>> = Switch;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcSwitch: ComponentConstructor<ComponentPublicInstance<VcSwitchProps, any, any, any, any, VcSwitchEmits>> =
+  Switch;

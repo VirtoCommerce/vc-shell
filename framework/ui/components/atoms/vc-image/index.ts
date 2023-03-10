@@ -1,5 +1,7 @@
 import { ComponentPublicInstance } from "vue";
-import { VcImageProps } from "./vc-image-model";
+import { VcImageEmits, VcImageProps } from "./vc-image-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Image from "./vc-image.vue";
-export const VcImage: ComponentConstructor<ComponentPublicInstance<VcImageProps>> = Image;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcImage: ComponentConstructor<ComponentPublicInstance<VcImageProps, any, any, any, any, VcImageEmits>> =
+  Image;

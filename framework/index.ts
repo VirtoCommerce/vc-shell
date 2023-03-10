@@ -12,7 +12,6 @@ import "./assets/styles/index.scss";
 
 export default {
   install(app: App): void {
-    app.use(logger);
     app.use(i18n);
     // Left for backward compatibility
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;

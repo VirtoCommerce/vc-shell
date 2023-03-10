@@ -171,19 +171,11 @@
 
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
-import { VcInputProps } from "./vc-input-model";
+import { inputEmits, inputProps } from "./vc-input-model";
 
-const props = withDefaults(defineProps<VcInputProps>(), {
-  modelValue: null,
-  clearable: false,
-  required: false,
-  disabled: false,
-  type: "text",
-  name: "Field",
-  maxlength: "1024",
-});
+const props = defineProps(inputProps);
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(inputEmits);
 
 let emitTimer;
 let emitValueFn;
@@ -214,7 +206,7 @@ function onInput(e: Event) {
   emitValue(newValue);
 }
 
-function emitValue(val) {
+function emitValue(val: string) {
   emitValueFn = () => {
     if (props.modelValue !== val) {
       emit("update:modelValue", val);

@@ -13,13 +13,11 @@
 </template>
 
 <script lang="ts" setup>
-import { VcLinkProps } from "./vc-link-model";
+import { linkEmits, linkProps } from "./vc-link-model";
 
-const props = withDefaults(defineProps<VcLinkProps>(), {
-  active: false,
-  disabled: false,
-});
-const emit = defineEmits(["click"]);
+const props = defineProps(linkProps);
+const emit = defineEmits(linkEmits);
+
 function onClick(): void {
   if (!props.disabled) {
     emit("click");

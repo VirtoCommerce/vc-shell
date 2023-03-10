@@ -76,7 +76,6 @@ import {
   useAppSwitcher,
   useFunctions,
   useI18n,
-  useLogger,
   useNotifications,
   usePermissions,
   useSettings,
@@ -100,7 +99,12 @@ import logoImage from "/assets/logo.svg";
 
 import { DefaultList } from "../modules/default";
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
-const log = useLogger();
+const {
+  t,
+  locale: currentLocale,
+  availableLocales,
+  getLocaleMessage,
+} = useI18n();
 const { user, loadUser, signOut } = useUser();
 const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
 usePermissions();
@@ -153,7 +157,7 @@ watch(
   { deep: true }
 );
 
-log.debug(`Initializing App`);
+console.debug(`Initializing App`);
 
 const toolbarItems = ref<IBladeToolbar[]>([
   {

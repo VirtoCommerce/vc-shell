@@ -1,13 +1,22 @@
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
 
-export interface VcRatingProps {
-  label?: string;
-  placeholder?: string;
-  tooltip?: string;
-  rating: number | undefined;
-  max?: number;
-  variant?: "stars" | "star-and-text" | "text";
-}
+export const ratingProps = {
+  label: String,
+  placeholder: String,
+  tooltip: String,
+  rating: Number,
+  max: {
+    type: Number,
+    default: 5,
+  },
+  variant: {
+    type: String as PropType<"stars" | "star-and-text" | "text">,
+    default: "stars",
+  },
+};
+
+export type VcRatingProps = ExtractTypes<typeof ratingProps>;
 
 export interface VcRatingSlots {
   details: () => VNode[];

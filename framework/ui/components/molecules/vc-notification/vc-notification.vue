@@ -18,13 +18,11 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
-import { VcNotificationProps } from "./vc-notification-model";
+import { notificationEmits, notificationProps } from "./vc-notification-model";
 
-const props = withDefaults(defineProps<VcNotificationProps>(), {
-  timeout: 0,
-});
+const props = defineProps(notificationProps);
 
-const emit = defineEmits(["dismiss", "expired"]);
+const emit = defineEmits(notificationEmits);
 
 function Timer(callback: (...args: unknown[]) => unknown, delay: number) {
   let timerId: number;

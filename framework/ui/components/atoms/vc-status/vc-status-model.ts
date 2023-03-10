@@ -1,10 +1,22 @@
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
 
-export interface VcStatusProps {
-  variant?: "info" | "warning" | "danger" | "success" | "light-danger" | undefined;
-  outline?: boolean | undefined;
-  extend?: boolean | undefined;
-}
+export const statusProps = {
+  variant: {
+    type: String as PropType<"info" | "warning" | "danger" | "success" | "light-danger">,
+    default: "info",
+  },
+  outline: {
+    type: Boolean,
+    default: true,
+  },
+  extend: {
+    type: Boolean,
+    default: false,
+  },
+};
+
+export type VcStatusProps = ExtractTypes<typeof statusProps>;
 
 export interface VcStatusSlots {
   default: () => VNode[];

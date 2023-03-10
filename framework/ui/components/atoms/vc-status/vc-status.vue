@@ -8,13 +8,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VcStatusProps } from "./vc-status-model";
+import { statusProps } from "./vc-status-model";
 
-withDefaults(defineProps<VcStatusProps>(), {
-  variant: "info",
-  outline: true,
-  extend: false,
-});
+defineProps(statusProps);
 </script>
 
 <style lang="scss">

@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
+import { isNumber, isString, isObject } from "./../../../utils";
 
 export interface StatusImage {
   image?: string;
@@ -8,34 +11,98 @@ export interface StatusImage {
   clickHandler?: () => void;
 }
 
-export interface VcTableProps {
-  columns?: ITableColumns[];
-  items?: { id?: string }[] | any[];
-  itemActionBuilder?: (item: { id?: string }) => IActionBuilderResult[] | undefined;
-  sort?: string | undefined;
-  multiselect?: boolean | undefined;
-  expanded?: boolean | undefined;
-  totalLabel?: string | undefined;
-  totalCount?: number | undefined;
-  pages?: number | undefined;
-  currentPage?: number | undefined;
-  searchPlaceholder?: string | undefined;
-  searchValue?: string | undefined;
-  loading?: boolean | undefined;
-  empty?: StatusImage | undefined;
-  notfound?: StatusImage | undefined;
-  header?: boolean | undefined;
-  footer?: boolean | undefined;
-  activeFilterCount?: number | undefined;
-  selectedItemId?: string | undefined;
-  scrolling?: boolean | undefined;
-  onPaginationClick?: (page: number) => void;
-  onSelectionChanged?: (values: Record<string, boolean>) => void;
-  "onSearch:change"?: (value: string) => void;
-  onHeaderClick?: (value: Record<string, unknown>) => void;
-  onItemClick?: (item: { id?: string }) => void;
-  "onScroll:ptr"?: () => void;
-}
+export const tableProps = {
+  columns: { type: Array as PropType<ITableColumns[]>, default: () => [] },
+  items: { type: Array as PropType<{ id?: string }[] | any[]>, default: () => [] },
+  itemActionBuilder: {
+    type: Function as PropType<(item: { id?: string }) => IActionBuilderResult[]>,
+    default: undefined,
+  },
+  sort: {
+    type: String,
+    default: undefined,
+  },
+  multiselect: {
+    type: Boolean,
+    default: false,
+  },
+  expanded: {
+    type: Boolean,
+    default: false,
+  },
+  totalLabel: {
+    type: String,
+    default: "Totals:",
+  },
+  totalCount: {
+    type: Number,
+    default: 0,
+  },
+  pages: {
+    type: Number,
+    default: 0,
+  },
+  currentPage: {
+    type: Number,
+    default: 0,
+  },
+  searchPlaceholder: {
+    type: String,
+    default: "Search...",
+  },
+  searchValue: {
+    type: String,
+    default: undefined,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  empty: {
+    type: Object as PropType<StatusImage>,
+    default: () => ({
+      text: "List is empty.",
+    }),
+  },
+  notfound: {
+    type: Object as PropType<StatusImage>,
+    default: () => ({
+      text: "Nothing found.",
+    }),
+  },
+  header: {
+    type: Boolean,
+    default: true,
+  },
+  footer: {
+    type: Boolean,
+    default: true,
+  },
+  activeFilterCount: {
+    type: Number,
+    default: 0,
+  },
+  selectedItemId: {
+    type: String,
+    default: undefined,
+  },
+  scrolling: {
+    type: Boolean,
+    default: false,
+  },
+};
+
+export const tableEmits = {
+  paginationClick: (page: number) => isNumber(page),
+  selectionChanged: (values: Record<string, boolean>) => isObject(values),
+  "search:change": (value: string) => isString(value),
+  headerClick: (value: Record<string, unknown>) => isObject(value),
+  itemClick: (item: { id?: string }) => isObject(item),
+  "scroll:ptr": () => true,
+};
+
+export type VcTableProps = ExtractTypes<typeof tableProps>;
+export type VcTableEmits = typeof tableEmits;
 
 export interface VcTableSlots {
   header: () => VNode[];

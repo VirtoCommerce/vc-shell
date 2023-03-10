@@ -48,9 +48,9 @@
 
 <script lang="ts" setup>
 import { VcIcon, VcLabel } from "./../../../components";
-import { VcRatingProps } from "./vc-rating-model";
+import { ratingProps } from "./vc-rating-model";
 
-withDefaults(defineProps<VcRatingProps>(), { max: 5, variant: "stars" });
+defineProps(ratingProps);
 </script>
 
 <style lang="scss">

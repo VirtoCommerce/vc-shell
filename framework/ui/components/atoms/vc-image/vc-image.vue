@@ -31,18 +31,11 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { VcImageProps } from "./vc-image-model";
+import { imageProps, imageEmits } from "./vc-image-model";
 
-const props = withDefaults(defineProps<VcImageProps>(), {
-  aspect: "1x1",
-  rounded: false,
-  bordered: false,
-  clickable: false,
-  size: "auto",
-  background: "cover",
-});
+const props = defineProps(imageProps);
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(imageEmits);
 
 const imageHandler = computed(() => {
   if (props.src) {

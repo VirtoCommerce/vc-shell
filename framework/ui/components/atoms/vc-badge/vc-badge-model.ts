@@ -1,20 +1,27 @@
+import { ExtractTypes } from "./../../../types/ts-helpers";
 import { VNode } from "vue";
 
-export interface VcBadgeProps {
-  /**
-   * Badge active state
-   * */
-  active?: boolean | undefined;
-  /**
-   * Put component in disabled state
-   * */
-  disabled?: boolean | undefined;
-  /**
-   * Is badge clickable?
-   * */
-  clickable?: boolean | undefined;
-  onClick?: (event: "click") => void;
-}
+export const badgeProps = {
+  active: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  clickable: {
+    type: Boolean,
+    default: false,
+  },
+};
+
+export const badgeEmits = {
+  click: () => true,
+};
+
+export type VcBadgeProps = ExtractTypes<typeof badgeProps>;
+export type VcBadgeEmits = typeof badgeEmits;
 
 export interface VcBadgeSlots {
   /**

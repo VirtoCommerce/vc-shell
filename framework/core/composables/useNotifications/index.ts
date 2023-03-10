@@ -1,7 +1,6 @@
 import { PushNotification, PushNotificationClient } from "./../../../core/api";
 import useUser from "../useUser";
 import { computed, ComputedRef, readonly, ref } from "vue";
-import useLogger from "../useLogger";
 import { orderBy, remove } from "lodash-es";
 
 const notificationsClient = new PushNotificationClient();
@@ -22,7 +21,6 @@ const popupNotifications = ref<PushNotification[]>([]);
 
 export default (): INotifications => {
   const { getAccessToken } = useUser();
-  const logger = useLogger();
 
   async function loadFromHistory(take = 10) {
     const token = await getAccessToken();
@@ -44,7 +42,7 @@ export default (): INotifications => {
           notifications.value = <PushNotification[]>JSON.parse(response).notifyEvents ?? [];
         });
       } catch (e) {
-        logger.error(e);
+        console.error(e);
         throw e;
       }
     }
@@ -92,7 +90,7 @@ export default (): INotifications => {
           return x;
         });
       } catch (e) {
-        logger.error(e);
+        console.error(e);
         throw e;
       }
     }

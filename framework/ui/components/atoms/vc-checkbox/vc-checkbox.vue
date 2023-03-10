@@ -38,15 +38,10 @@
 
 <script lang="ts" setup>
 import { watch } from "vue";
-import { VcCheckboxProps } from "./vc-checkbox-model";
+import { checkboxProps, checkboxEmits } from "./vc-checkbox-model";
 
-const props = withDefaults(defineProps<VcCheckboxProps>(), {
-  modelValue: false,
-  disabled: false,
-  required: false,
-  name: "Field",
-});
-const emit = defineEmits(["update:modelValue"]);
+const props = defineProps(checkboxProps);
+const emit = defineEmits(checkboxEmits);
 
 watch(
   () => props.modelValue,

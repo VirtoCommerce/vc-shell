@@ -39,11 +39,7 @@ const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "t
 export default {
   plugins: [
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
-    VueMacros.vite({
-      plugins: {
-        vue: vue(),
-      },
-    }),
+    vue(),
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {

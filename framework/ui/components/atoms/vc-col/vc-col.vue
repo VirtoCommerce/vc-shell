@@ -8,11 +8,9 @@
 </template>
 
 <script lang="ts" setup>
-import { VcColProps } from "./vc-col-model";
+import { colProps } from "./vc-col-model";
 
-withDefaults(defineProps<VcColProps>(), {
-  size: "1",
-});
+defineProps(colProps);
 </script>
 
 <style lang="scss">

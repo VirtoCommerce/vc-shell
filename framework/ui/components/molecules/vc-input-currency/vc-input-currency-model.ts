@@ -1,111 +1,124 @@
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
+import { isString, isNumber } from "./../../../utils";
 
 export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 
-export interface VcInputCurrencyProps {
+export const inputCurrencyProps = {
   /**
    * Model of the currency component; Use with a listener for 'update:price' event OR use v-model:price directive
    */
-  modelValue?: string | number | Date | null;
+  modelValue: [String, Number, Date],
   /**
    * Input label text
    */
-  label?: string | undefined;
+  label: String,
   /**
    * Input placeholder text
    */
-  placeholder?: string | undefined;
+  placeholder: String,
   /**
    * Input description (hint) text below input component
    */
-  hint?: string | undefined;
+  hint: String,
   /**
    * Appends clearable icon when a value is set;
    * When clicked, model becomes null
    */
-  clearable?: boolean | undefined;
+  clearable: Boolean,
   /**
    * Prefix
    */
-  prefix?: string | undefined;
+  prefix: String,
   /**
    * Suffix
    */
-  suffix?: string | undefined;
+  suffix: String,
   /**
    * Used to specify the name of the control; If not specified, it takes the value 'Field'
    */
-  name?: string | undefined;
+  name: String,
   /**
    * Signals the user a process is in progress by displaying a spinner
    */
-  loading?: boolean | undefined;
+  loading: Boolean,
   /**
    * Debounce amount (in milliseconds) for search input
    * Default: 0
    */
-  debounce?: string | number | undefined;
+  debounce: {
+    type: [String, Number],
+    default: 0,
+  },
   /**
    * Put component in disabled mode
    */
-  disabled?: boolean | undefined;
+  disabled: Boolean,
   /**
    * Focus field on initial component render
    */
-  autofocus?: boolean | undefined;
+  autofocus: Boolean,
   /**
    * Does field have validation errors?
    */
-  error?: boolean | undefined;
+  error: Boolean,
   /**
    * Validation error message (gets displayed only if 'error' is set to 'true')
    */
-  errorMessage?: string | undefined;
+  errorMessage: String,
   /**
    * Specify a max length of model
    * Default value: 1024
    */
-  maxlength?: string | number | undefined;
+  maxlength: [String, Number],
   /**
    * Input tooltip information
    */
-  tooltip?: string | undefined;
+  tooltip: String,
   /**
    * Input required state
    */
-  required?: boolean | undefined;
+  required: Boolean,
   /**
    * Option label
    */
-  option?: string | undefined;
+  option: String,
   /**
    * Available options that the user can select from.
    * Default value: []
    */
-  options?: any[] | undefined;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: Array as PropType<any[]>,
   /**
    * Property of option which holds the 'value'
    * Default value: id
    * @param option The current option being processed
    * @returns Value of the current option
    */
-  optionValue?: OptionProp;
+  optionValue: [Function, String] as PropType<OptionProp>,
   /**
    * Property of option which holds the 'label'
    * Default value: title
    * @param option The current option being processed
    * @returns Label of the current option
    */
-  optionLabel?: OptionProp;
+  optionLabel: [Function, String] as PropType<OptionProp>,
+};
+
+export const inputCurrencyEmits = {
   /**
    * Emitted when the component needs to change the model; Is also used by v-model
    */
-  "onUpdate:modelValue"?: (value: string | number | null) => void;
+  "update:modelValue": (value: string | number | null) => isString(value) || isNumber(value) || value === null,
   /**
    * Emitted when the component needs to change the options model; Is also used by v-model:option
    */
-  "onUpdate:option"?: (value: string | number | null) => void;
-}
+  "update:option": (value: string | number | null) => isString(value) || isNumber(value) || value === null,
+};
+
+export type VcInputCurrencyProps = ExtractTypes<typeof inputCurrencyProps>;
+export type VcInputCurrencyEmits = typeof inputCurrencyEmits;
+
 export interface VcInputCurrencySlots {
   /**
    * Slot for custom dropdown open handler

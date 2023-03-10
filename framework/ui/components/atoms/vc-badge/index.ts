@@ -1,5 +1,7 @@
 import { ComponentPublicInstance } from "vue";
-import { VcBadgeProps } from "./vc-badge-model";
+import { VcBadgeEmits, VcBadgeProps } from "./vc-badge-model";
 import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Badge from "./vc-badge.vue";
-export const VcBadge: ComponentConstructor<ComponentPublicInstance<VcBadgeProps>> = Badge;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const VcBadge: ComponentConstructor<ComponentPublicInstance<VcBadgeProps, any, any, any, any, VcBadgeEmits>> =
+  Badge;

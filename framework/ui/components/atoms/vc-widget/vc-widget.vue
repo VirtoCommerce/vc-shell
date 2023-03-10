@@ -26,12 +26,11 @@
 </template>
 
 <script lang="ts" setup>
-import { VcWidgetProps } from "./vc-widget-model";
+import { widgetEmits, widgetProps } from "./vc-widget-model";
 
-const props = withDefaults(defineProps<VcWidgetProps>(), {
-  disabled: false,
-});
-const emit = defineEmits(["click"]);
+const props = defineProps(widgetProps);
+
+const emit = defineEmits(widgetEmits);
 
 function onClick() {
   if (!props.disabled) {

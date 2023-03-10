@@ -1,86 +1,114 @@
-import { VNode } from "vue";
+import { PropType, VNode } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
+import { isString, isNumber, isDate } from "./../../../utils";
 
-export interface VcInputProps {
+export const inputProps = {
   /**
    * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
    */
-  modelValue?: string | number | Date | null;
+  modelValue: {
+    type: [String, Number, Date],
+    default: null,
+  },
   /**
    * Input label text
    */
-  label?: string | undefined;
+  label: String,
   /**
    * Input placeholder text
    */
-  placeholder?: string | undefined;
+  placeholder: String,
   /**
    * Input type
    * Default value: text
    */
-  type?: "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local" | undefined;
+  type: {
+    type: String as PropType<
+      "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local"
+    >,
+    default: "text",
+  },
   /**
    * Input description (hint) text below input component
    */
-  hint?: string | undefined;
+  hint: String,
   /**
    * Appends clearable icon when a value is set;
    * When clicked, model becomes null
    */
-  clearable?: boolean | undefined;
+  clearable: {
+    type: Boolean,
+    default: false,
+  },
   /**
    * Prefix
    */
-  prefix?: string | undefined;
+  prefix: String,
   /**
    * Suffix
    */
-  suffix?: string | undefined;
+  suffix: String,
   /**
    * Used to specify the name of the control; If not specified, it takes the value 'Field'
    */
-  name?: string | undefined;
+  name: {
+    type: String,
+    default: "Field",
+  },
   /**
    * Signals the user a process is in progress by displaying a spinner
    */
-  loading?: boolean | undefined;
+  loading: Boolean,
   /**
    * Debounce amount (in milliseconds) when updating model
    */
-  debounce?: string | number | undefined;
+  debounce: [String, Number],
   /**
    * Put component in disabled mode
    */
-  disabled?: boolean | undefined;
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
   /**
    * Focus field on initial component render
    */
-  autofocus?: boolean | undefined;
+  autofocus: Boolean,
   /**
    * Does field have validation errors?
    */
-  error?: boolean | undefined;
+  error: Boolean,
   /**
    * Validation error message (gets displayed only if 'error' is set to 'true')
    */
-  errorMessage?: string | undefined;
+  errorMessage: String,
   /**
    * Specify a max length of model
    * Default value: 1024
    */
-  maxlength?: string | number | undefined;
+  maxlength: {
+    type: [String, Number],
+    default: "1024",
+  },
   /**
    * Input tooltip information
    */
-  tooltip?: string | undefined;
+  tooltip: String,
   /**
    * Input required state
    */
-  required?: boolean | undefined;
-  /**
-   * Emitted when the component needs to change the model; Is also used by v-model
-   */
-  "onUpdate:modelValue"?: (value: string | number | Date | null) => void;
-}
+  required: {
+    type: Boolean,
+    default: false,
+  },
+};
+
+export const inputEmits = {
+  "update:modelValue": (value: string | number | Date | null) => isString(value) || isNumber(value) || isDate(value) || value === null,
+};
+
+export type VcInputProps = ExtractTypes<typeof inputProps>;
+export type VcInputEmits = typeof inputEmits;
 
 export interface VcInputSlots {
   /**

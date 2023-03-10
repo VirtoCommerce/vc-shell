@@ -43,7 +43,6 @@ import {
   IParentCallArgs,
   useFunctions,
   useI18n,
-  useLogger,
   IActionBuilderResult,
   ITableColumns,
 } from "@vc-shell/framework";
@@ -72,7 +71,6 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n();
-const logger = useLogger();
 const { debounce } = useFunctions();
 
 const sort = ref("createdDate:DESC");

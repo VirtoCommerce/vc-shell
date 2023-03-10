@@ -1,4 +1,4 @@
-import { Component, ComponentPublicInstance, ComputedRef } from "vue";
+import { ComputedRef } from "vue";
 import { IBladeElement, ExtendedComponent } from "./../../shared";
 
 // Type instead of interface here is workaround for:
@@ -93,5 +93,3 @@ export type ITableColumns = {
   format?: string;
   align?: string;
 };
-
-export type { ExtendedComponent };

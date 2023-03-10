@@ -56,15 +56,13 @@
 </template>
 
 <script lang="ts" setup>
-import { VcInputCurrencyProps } from "./vc-input-currency-model";
+import { inputCurrencyEmits, inputCurrencyProps } from "./vc-input-currency-model";
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { watch } from "vue";
 
-const props = withDefaults(defineProps<VcInputCurrencyProps>(), {
-  debounce: 0,
-});
+const props = defineProps(inputCurrencyProps);
 
-defineEmits(["update:modelValue", "update:option"]);
+defineEmits(inputCurrencyEmits);
 
 const { inputRef, setOptions } = useCurrencyInput({
   locale: navigator.language,

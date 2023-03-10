@@ -1,129 +1,162 @@
-import { VNode } from "vue";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { VNode, PropType } from "vue";
+import { ExtractTypes } from "./../../../types/ts-helpers";
+import { isString } from "./../../../utils";
 
 export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 
-export interface VcSelectProps {
+export const selectProps = {
   /**
    * Name of select
    */
-  name?: string | undefined;
+  name: {
+    type: String,
+    default: "Field",
+  },
   /**
    * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
    */
-  modelValue: any;
+  modelValue: null,
   /**
    * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
    * Default value: true
    */
-  mapOptions?: boolean | undefined;
+  mapOptions: {
+    type: Boolean,
+    default: true,
+  },
   /**
    * Does field have validation errors?
    */
-  error?: boolean | undefined;
+  error: Boolean,
   /**
    * Validation error message (gets displayed only if 'error' is set to 'true')
    */
-  errorMessage?: string | undefined;
+  errorMessage: String,
   /**
    * Select label
    */
-  label?: string | undefined;
+  label: String,
   /**
    * Select description (hint) text below input component
    */
-  hint?: string | undefined;
+  hint: String,
   /**
    * Prefix
    */
-  prefix?: string | undefined;
+  prefix: String,
   /**
    * Suffix
    */
-  suffix?: string | undefined;
+  suffix: String,
   /**
    * Signals the user a process is in progress by displaying a spinner
    */
-  loading?: boolean | undefined;
+  loading: Boolean,
   /**
    * Appends clearable icon when a value is set;
    * When clicked, model becomes null
    */
-  clearable?: boolean | undefined;
+  clearable: {
+    type: Boolean,
+    default: true,
+  },
   /**
    * Put component in disabled mode
    */
-  disabled?: boolean | undefined;
+  disabled: Boolean,
   /**
    * Allow multiple selection; Model must be Array
    */
-  multiple?: boolean | undefined;
+  multiple: Boolean,
   /**
    * Available options that the user can select from.
    * Default value: []
    */
-  options?:
-    | ((
-        keyword?: string,
-        skip?: number,
-        ids?: string[]
-      ) => Promise<{
-        results?: object[];
-        totalCount?: number;
-      }>)
-    | any[]
-    | undefined;
+  options: {
+    type: [Function, Array] as PropType<
+      | ((
+          keyword?: string,
+          skip?: number,
+          ids?: string[]
+        ) => Promise<{
+          results?: object[];
+          totalCount?: number;
+        }>)
+      | any[]
+    >,
+    default: () => [],
+  },
   /**
    * Property of option which holds the 'value'
    * Default value: id
    * @param option The current option being processed
    * @returns Value of the current option
    */
-  optionValue?: OptionProp;
+  optionValue: { type: [Function, String] as PropType<OptionProp>, default: "id" },
   /**
    * Property of option which holds the 'label'
    * Default value: title
    * @param option The current option being processed
    * @returns Label of the current option
    */
-  optionLabel?: OptionProp;
+  optionLabel: { type: [Function, String] as PropType<OptionProp>, default: "title" },
   /**
    * Update model with the value of the selected option instead of the whole option
    */
-  emitValue?: boolean | undefined;
+  emitValue: {
+    type: Boolean,
+    default: true,
+  },
   /**
    * Debounce the search input update with an amount of milliseconds
    * Default value: 500
    */
-  debounce?: number | string | undefined;
+  debounce: {
+    type: [Number, String],
+    default: 500,
+  },
   /**
    * Input placeholder text
    */
-  placeholder?: string | undefined;
+  placeholder: String,
   /**
    * Input tooltip information
    */
-  tooltip?: string | undefined;
+  tooltip: String,
   /**
    * Input required state
    */
-  required?: boolean | undefined;
+  required: {
+    type: Boolean,
+    default: false,
+  },
   /**
    * Input search activation
    */
-  searchable?: boolean | undefined;
+  searchable: {
+    type: Boolean,
+    default: false,
+  },
+};
+
+export const selectEmits = {
   /**
    * Emitted when the component needs to change the model; Is also used by v-model
    */
-  "onUpdate:modelValue"?: (inputValue: any) => void;
+  "update:modelValue": (inputValue: any) => !!inputValue,
   /**
    * Emitted when user wants to filter a value
    */
-  onSearch?: (inputValue: string) => void;
+  search: (inputValue: string) => isString(inputValue),
   /**
    * Emitted when the select options list is hidden
    */
-  onClose?: () => void;
-}
+  close: () => true,
+};
+
+export type VcSelectProps = ExtractTypes<typeof selectProps>;
+export type VcSelectEmits = typeof selectEmits;
 
 export interface VcSelectSlots {
   /**

@@ -1,8 +1,9 @@
 import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import * as fs from "fs";
-import { loadEnv, ProxyOptions } from "vite";
+import { loadEnv, ProxyOptions, UserConfigExport } from "vite";
 import mkcert from "vite-plugin-mkcert";
+import { RollupOptions } from "rollup";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -85,6 +86,6 @@ export default {
           tsconfig: tsconfigFile,
         }),
       ],
-    },
+    } as RollupOptions,
   },
-};
+} as UserConfigExport;

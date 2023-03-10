@@ -37,14 +37,15 @@
       property['multivalue'] &&
       !(property['dictionary'] || property['isDictionary'])
     "
-    v-slot="{ errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :label="handleDisplayName"
     :name="property['name']"
     :modelValue="property['values']"
     :rules="rules"
   >
-    <VcMultivalue
+    <VcSelect
       v-bind="$attrs"
+      :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
       :modelValue="property['values']"
@@ -57,7 +58,8 @@
       :required="property['required'] || property['isRequired']"
       placeholder="Add value"
       :disabled="disabled"
-    ></VcMultivalue>
+      :multiple="true"
+    ></VcSelect>
   </Field>
 
   <Field
@@ -66,14 +68,15 @@
       property['multivalue'] &&
       (property['dictionary'] || property['isDictionary'])
     "
-    v-slot="{ errorMessage, handleChange }"
+    v-slot="{ errorMessage, handleChange, errors }"
     :label="handleDisplayName"
     :name="property['name']"
     :modelValue="property['values']"
     :rules="rules"
   >
-    <VcMultivalue
+    <VcSelect
       v-bind="$attrs"
+      :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
       :modelValue="property['values']"
@@ -85,14 +88,14 @@
       "
       :required="property['required'] || property['isRequired']"
       placeholder="Add value"
-      :multivalue="property['multivalue']"
       :disabled="disabled"
       :options="items"
-      keyProperty="id"
-      displayProperty="alias"
+      option-label="alias"
+      option-value="id"
       @search="onSearch"
       @close="onClose"
-    ></VcMultivalue>
+      :multiple="property['multivalue']"
+    ></VcSelect>
   </Field>
 
   <Field
@@ -320,7 +323,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useI18n } from "./../../../../core/composables";
 import { Field } from "vee-validate";
-import { VcDynamicPropertyProps } from "./vc-dynamic-property-model";
+import { dynamicPropertyProps } from "./vc-dynamic-property-model";
 
 type IValidationRules = {
   required?: boolean;
@@ -334,10 +337,7 @@ interface IDisplayName {
   name?: string;
 }
 
-const props = withDefaults(defineProps<VcDynamicPropertyProps>(), {
-  culture: "en-US",
-  disabled: false,
-});
+const props = defineProps(dynamicPropertyProps);
 
 const { locale, te, t } = useI18n();
 
@@ -348,19 +348,21 @@ const handleDisplayProperty = computed(() => {
 });
 const handleDisplayName = computed(() => {
   let localized: string;
-  const isLocaleExists = props.property.displayNames?.find((x: IDisplayName) =>
+  const isLocaleExists = props.property["displayNames"]?.find((x: IDisplayName) =>
     x.languageCode?.toLowerCase().startsWith((locale.value as string)?.toLowerCase())
   );
   if (isLocaleExists && isLocaleExists.name) {
     localized = isLocaleExists.name;
   } else {
-    const fallback = props.property.displayNames?.find((x: IDisplayName) =>
+    const fallback = props.property["displayNames"]?.find((x: IDisplayName) =>
       x.languageCode?.toLowerCase().includes(props.culture?.toLowerCase())
     );
-    localized = fallback && fallback?.name ? fallback.name : props.property.name;
+    localized = fallback && fallback?.name ? fallback.name : props.property["name"];
   }
 
-  return localized && te(localized.toUpperCase()) ? t(localized.toUpperCase()) : localized;
+  return localized && te(localized.toUpperCase())
+    ? t(localized.toUpperCase())
+    : localized;
 });
 
 onMounted(async () => {
@@ -369,24 +371,24 @@ onMounted(async () => {
   }
 });
 
-if (props.property.required || props.property.isRequired) {
+if (props.property["required"] || props.property["isRequired"]) {
   rules.required = true;
 }
-if (props.property.validationRule?.charCountMin) {
-  rules.min = Number(props.property.validationRule.charCountMin);
+if (props.property["validationRule"]?.charCountMin) {
+  rules.min = Number(props.property["validationRule"].charCountMin);
 }
-if (props.property.validationRule?.charCountMax) {
-  rules.max = Number(props.property.validationRule.charCountMax);
+if (props.property["validationRule"]?.charCountMax) {
+  rules.max = Number(props.property["validationRule"].charCountMax);
 }
-if (props.property.validationRule?.regExp) {
-  rules.regex = new RegExp(props.property.validationRule?.regExp);
+if (props.property["validationRule"]?.regExp) {
+  rules.regex = new RegExp(props.property["validationRule"]?.regExp);
 }
 
 /*function getLabel() {
   return (
-    (props.property.displayNames as { culture: string }[]).find(
+    (props.property['displayNames'] as { culture: string }[]).find(
       (item) => item.culture === props.culture
-    ) || props.property.name
+    ) || props.property['name']
   );
 }
  */

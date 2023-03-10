@@ -29,22 +29,14 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
-import { VcButtonProps } from "./vc-button-model";
+import { buttonProps, buttonEmits } from "./vc-button-model";
 
-const props = withDefaults(defineProps<VcButtonProps>(), {
-  variant: "primary",
-  disabled: false,
-  small: false,
-  outline: false,
-  selected: false,
-});
-
-const emit = defineEmits(["click"]);
-
+const props = defineProps(buttonProps);
+const emit = defineEmits(buttonEmits);
 function onClick(e: Event): void {
   if (!props.disabled) {
     e.preventDefault();
-    emit("click", e);
+    emit("click");
   }
 }
 </script>

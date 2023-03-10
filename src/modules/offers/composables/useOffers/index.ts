@@ -1,5 +1,5 @@
 import { Ref, ref, computed } from "vue";
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 
 interface IUseOffers {
   readonly offers: Ref<IOffer[]>;
@@ -27,8 +27,6 @@ import {
 } from "../../../../api_client/marketplacevendor";
 
 export default (options?: IUseOffersOptions): IUseOffers => {
-  const logger = useLogger();
-
   const pageSize = options?.pageSize || 20;
   const searchQuery = ref<ISearchOffersQuery>({
     take: pageSize,
@@ -50,7 +48,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
       loading.value = true;
       return await client.searchOffers(query as SearchOffersQuery);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -58,7 +56,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
   }
 
   async function loadOffers(query: ISearchOffersQuery) {
-    logger.info(`Load offers page ${query?.skip || 1} sort by ${query?.sort || "default"}`);
+    console.info(`Load offers page ${query?.skip || 1} sort by ${query?.sort || "default"}`);
 
     searchQuery.value = { ...searchQuery.value, ...query };
     try {
@@ -68,7 +66,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
       } as SearchOffersQuery);
       // currentPage.value = (searchQuery.value.skip / Math.max(1, pageSize)) || 1;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -76,7 +74,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
   }
 
   async function deleteOffers(args: { ids: string[] }) {
-    logger.info(`Delete offers ${args}`);
+    console.info(`Delete offers ${args}`);
 
     const client = await getApiClient();
 
@@ -84,7 +82,7 @@ export default (options?: IUseOffersOptions): IUseOffers => {
       loading.value = true;
       await client.deleteOffers(args.ids);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;

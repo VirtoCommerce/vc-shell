@@ -363,7 +363,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, unref, watch } from "vue";
+import { defineComponent, onMounted, ref, computed, unref } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -373,7 +373,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser, useAutosave, useForm, IBladeToolbar } from "@vc-shell/framework";
+import { useI18n, useUser, useForm, IBladeToolbar } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useIsFormValid, Field } from "vee-validate";
@@ -388,7 +388,7 @@ export interface Emits {
   (event: "close:blade"): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
   param: undefined,

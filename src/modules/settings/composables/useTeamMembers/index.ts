@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 import {
   CreateSellerUserCommand,
   ISearchSellerUsersQuery,
@@ -43,7 +43,6 @@ interface IUseTeamMembersOptions {
 
 export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   const loading = ref(false);
-  const logger = useLogger();
   const pageSize = options?.pageSize || 20;
   const searchQuery = ref<ISearchSellerUsersQuery>({
     take: pageSize,
@@ -80,7 +79,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       loading.value = true;
       searchResult.value = await client.searchSellerUsers(command);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -105,7 +104,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       await client.createSellerUser(command);
       modified.value = false;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throwCreationError(e);
     } finally {
       loading.value = false;
@@ -125,7 +124,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       loading.value = true;
       await client.updateSellerUser(command);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -146,7 +145,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       loading.value = true;
       await client.sendUserInvitation(command);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -160,7 +159,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       loading.value = true;
       await client.deleteSellerUsers([args.id]);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }
@@ -179,7 +178,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
     try {
       return await client.validateUser(command);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     }
   }
 

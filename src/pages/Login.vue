@@ -155,21 +155,11 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted } from "vue";
-import {
-  useLogger,
-  useUser,
-  useForm,
-  SignInResults,
-  RequestPasswordResult,
-  useI18n,
-  useSettings,
-} from "@vc-shell/framework";
+import { useUser, useForm, SignInResults, RequestPasswordResult, useSettings } from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
 import { useIsFormValid, Field } from "vee-validate";
 
-const log = useLogger();
-const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 useForm({ validateOnMount: false });
@@ -214,7 +204,10 @@ const forgotPasswordForm = reactive({
 const login = async () => {
   if (isValid.value) {
     signInResult.value = await signIn(form.username, form.password);
-    router.push("/");
+
+    if (signInResult.value.succeeded) {
+      router.push("/");
+    }
   }
 };
 
@@ -234,5 +227,5 @@ const togglePassRequest = () => {
   }
 };
 
-log.debug("Init login-page");
+console.debug("Init login-page");
 </script>

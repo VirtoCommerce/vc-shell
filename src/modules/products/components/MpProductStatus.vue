@@ -1,11 +1,13 @@
 <template>
-  <VcStatus
-    v-bind="statusStyles[status]"
-    v-for="(status, i) in statuses"
-    :class="[$attrs.class, { 'tw-mr-1': i < statuses.length - 1 }]"
-    :key="i"
-    >{{ $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`) }}</VcStatus
-  >
+  <div>
+    <VcStatus
+      v-bind="statusStyles[status]"
+      v-for="(status, i) in statuses"
+      :class="[$attrs.class, { 'tw-mr-1': i < statuses.length - 1 }]"
+      :key="`${status}_${i}`"
+      >{{ $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`) }}</VcStatus
+    >
+  </div>
 </template>
 
 <script lang="ts" setup>

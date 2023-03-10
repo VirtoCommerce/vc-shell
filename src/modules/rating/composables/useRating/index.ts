@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 import { VcmpSellerRatingAndReviewsClient } from "../../../../api_client/marketplacevendor";
 import { ref, Ref } from "vue";
 
@@ -10,8 +10,6 @@ interface IUseRating {
 }
 
 export default (): IUseRating => {
-  const logger = useLogger();
-
   const loading = ref(false);
   const rating = ref<number>(undefined);
   const reviewCount = ref<number>(undefined);
@@ -32,7 +30,7 @@ export default (): IUseRating => {
       rating.value = currentSellerRating?.rating;
       reviewCount.value = currentSellerRating?.reviewCount;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }

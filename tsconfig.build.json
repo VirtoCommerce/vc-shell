@@ -24,15 +24,7 @@
     ],
     "types": [
       "vite/client",
-      "unplugin-vue-macros/macros-global",
-      "unplugin-vue-define-options/macros-global"
       ]
-  },
-  "vueCompilerOptions": {
-    "target": 3,
-    "plugins": [
-      "@vue-macros/volar/define-props"
-    ]
   },
   "include": [
     "src/**/*.ts",

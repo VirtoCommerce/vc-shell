@@ -17,7 +17,7 @@ import {
   ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
-import { IObjectSettingEntry, useLogger, useNotifications, useUser } from "@vc-shell/framework";
+import { IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
@@ -83,7 +83,6 @@ interface IUseImport {
 }
 
 export default (): IUseImport => {
-  const logger = useLogger();
   const { notifications } = useNotifications();
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
@@ -150,7 +149,7 @@ export default (): IUseImport => {
       historySearchResult.value = await client.searchImportProfilesHistory(historyQuery);
       currentPage.value = (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -189,7 +188,7 @@ export default (): IUseImport => {
 
       return dataImporters.value;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -204,7 +203,7 @@ export default (): IUseImport => {
       const profileQuery = new SearchImportProfilesQuery();
       profileSearchResult.value = (await client.searchImportProfiles(profileQuery)) as ISearchProfile;
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -221,7 +220,7 @@ export default (): IUseImport => {
       });
       return client.preview(previewDataQuery);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -240,7 +239,7 @@ export default (): IUseImport => {
       importStarted.value = true;
       updateStatus(notification);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -254,7 +253,7 @@ export default (): IUseImport => {
         await client.cancelJob(new ImportCancellationRequest({ jobId: importStatus.value.jobId }));
       }
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     }
   }
@@ -282,7 +281,7 @@ export default (): IUseImport => {
 
       profileDetailsCopy = _cloneDeep(profileDetails.value);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -314,7 +313,7 @@ export default (): IUseImport => {
       await client.updateImportProfile(command);
       await loadImportProfile({ id: updatedProfile.id });
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -338,7 +337,7 @@ export default (): IUseImport => {
       const newProfileWithId = await client.createImportProfile(command);
       await loadImportProfile({ id: newProfileWithId.id });
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -352,7 +351,7 @@ export default (): IUseImport => {
       loading.value = true;
       await client.deleteProfile(args.id);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;

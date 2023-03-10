@@ -1,4 +1,4 @@
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 import { computed, ref, Ref } from "vue";
 import {
   CustomerReview,
@@ -27,8 +27,6 @@ interface IUseReviews {
 }
 
 export default (options?: IUseReviewsOptions): IUseReviews => {
-  const logger = useLogger();
-
   const loading = ref(false);
 
   const pageSize = options?.pageSize || 20;
@@ -62,7 +60,7 @@ export default (options?: IUseReviewsOptions): IUseReviews => {
       loading.value = true;
       searchResult.value = await client.searchCustomerReviews(body);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
     } finally {
       loading.value = false;
     }

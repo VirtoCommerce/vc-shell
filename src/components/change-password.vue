@@ -93,15 +93,11 @@
 
         <VcHint
           class="tw-mt-3 !tw-text-[#f14e4e]"
-          v-for="error in form.errors"
-          :key="error"
+          v-for="(err, i) in form.errors"
+          :key="i"
         >
           <!-- TODO: stylizing-->
-          {{
-            (error as IIdentityError).code
-              ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${(error as IIdentityError).code}`)
-              : error
-          }}
+          {{ (err as IIdentityError).code ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err }}
         </VcHint>
       </VcForm>
     </div>

@@ -1,10 +1,9 @@
 import { computed, Ref, ref, watch } from "vue";
-import { useLogger, useUser } from "@vc-shell/framework";
+import { useUser } from "@vc-shell/framework";
 import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
 
 import {
   CatalogProduct,
-  Category,
   CreateNewProductCommand,
   CreateNewPublicationRequestCommand,
   IProductDetails,
@@ -36,7 +35,6 @@ interface IUseProduct {
 }
 
 export default (): IUseProduct => {
-  const logger = useLogger();
   const product = ref<ISellerProduct>({
     productData: {
       reviews: [],
@@ -95,7 +93,7 @@ export default (): IUseProduct => {
   }
 
   async function loadProduct(args: { id: string }) {
-    logger.info(`Load product page ${args}`);
+    console.info(`Load product page ${args}`);
 
     const client = await getApiClient();
 
@@ -113,7 +111,7 @@ export default (): IUseProduct => {
       };
       productDetailsCopy = _cloneDeep(productDetails.value);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -121,7 +119,7 @@ export default (): IUseProduct => {
   }
 
   async function updateProductDetails(productId: string, details: IProductDetails, sendToAprove = false) {
-    logger.info(`Update  product details`, details);
+    console.info(`Update  product details`, details);
 
     const client = await getApiClient();
 
@@ -141,7 +139,7 @@ export default (): IUseProduct => {
       }
       await loadProduct({ id: product.value.id });
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -158,13 +156,13 @@ export default (): IUseProduct => {
     try {
       return await client.validateProduct(query);
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     }
   }
 
   async function createProduct(details: IProductDetails) {
-    logger.info(`create new  product`, details);
+    console.info(`create new  product`, details);
 
     const client = await getApiClient();
 
@@ -177,7 +175,7 @@ export default (): IUseProduct => {
       const newProduct = await client.createNewProduct(command);
       await loadProduct({ id: newProduct.id });
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;
@@ -185,7 +183,7 @@ export default (): IUseProduct => {
   }
 
   async function revertStagedChanges(productId: string) {
-    logger.info(`revert staged changes for product`, productId);
+    console.info(`revert staged changes for product`, productId);
 
     const client = await getApiClient();
     try {
@@ -193,7 +191,7 @@ export default (): IUseProduct => {
       await client.revertStagedChanges(productId);
       await loadProduct({ id: productId });
     } catch (e) {
-      logger.error(e);
+      console.error(e);
       throw e;
     } finally {
       loading.value = false;

@@ -76,7 +76,6 @@ import {
   useAppSwitcher,
   useFunctions,
   useI18n,
-  useLogger,
   useNotifications,
   usePermissions,
   useSettings,
@@ -107,7 +106,6 @@ import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
-const log = useLogger();
 const { user, loadUser, signOut } = useUser();
 const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
 const { checkPermission } = usePermissions();
@@ -161,7 +159,7 @@ watch(
   { deep: true }
 );
 
-log.debug(`Initializing App`);
+console.debug(`Initializing App`);
 
 const toolbarItems = ref<IBladeToolbar[]>([
   {

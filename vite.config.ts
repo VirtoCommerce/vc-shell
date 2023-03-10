@@ -1,7 +1,7 @@
 import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import fs from "fs";
-import VueMacros from "unplugin-vue-macros/vite";
+import path from "path";
 import { loadEnv, ProxyOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { VitePWA } from "vite-plugin-pwa";
@@ -21,6 +21,8 @@ const TSCONFIG = process.cwd() + "/tsconfig.json";
 const TSCONFIG_BUILD = process.cwd() + "/tsconfig.build.json";
 const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
+const isMonorepo = fs.existsSync(path.resolve("./../../framework/package.json"));
+
 // "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
 const _define: { global?: unknown } = {};
 if (mode !== "production") {
@@ -37,14 +39,31 @@ const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "t
   };
 };
 
+const aliasResolver = () => {
+  if (isMonorepo) {
+    if (mode === "development") {
+      return {
+        "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+        "@vc-shell/framework": "@vc-shell/framework/index.ts",
+      };
+    }
+    return {};
+  } else {
+    if (mode === "development") {
+      return {
+        "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
+        "vue-router": "vue-router/dist/vue-router.cjs.js",
+      };
+    } else {
+      return {};
+    }
+  }
+};
+
 export default {
   plugins: [
     mkcert({ hosts: ["localhost", "127.0.0.1"] }),
-    VueMacros({
-      plugins: {
-        vue: vue(),
-      },
-    }),
+    vue(),
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
@@ -84,15 +103,7 @@ export default {
   ],
   resolve: {
     preserveSymlinks: true,
-    alias:
-      mode === "development"
-        ? {
-            "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
-          }
-        : {
-            "vue-router": "vue-router/dist/vue-router.cjs.js",
-          },
+    alias: aliasResolver(),
   },
   base: process.env.APP_BASE_PATH,
   mode,
@@ -128,21 +139,15 @@ export default {
     },
   },
   optimizeDeps: {
+    include: mode === "development" ? ["ace-builds", "client-oauth2"] : [],
     esbuildOptions: {
       target: ["es2020", "safari14"],
     },
-    include:
-      mode === "development"
-        ? ["vue", "vue-router", "url-pattern", "ace-builds", "vue-logger-plugin", "client-oauth2", "vue-currency-input"]
-        : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {
     target: "esnext",
     sourcemap: false,
     emptyOutDir: true,
-    commonjsOptions: {
-      include: [/^@vc-shell(\/.+)?$/, /node_modules/],
-    },
     rollupOptions: {
       plugins: [
         typescript({

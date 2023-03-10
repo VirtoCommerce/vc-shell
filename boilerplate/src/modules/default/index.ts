@@ -1,21 +1,8 @@
 import * as pages from "./pages";
 import * as locales from "./locales";
-import { App } from "vue";
+import { createAppModule } from "@vc-shell/framework";
 
-export default {
-  install(app: App): void {
-    // Register exported pages
-    Object.entries(pages).forEach(([pageName, page]) => {
-      app.component(pageName, page);
-      app.config.globalProperties.pages?.push(page);
-    });
-
-    // Load locales
-    Object.entries(locales).forEach(([key, message]) => {
-      app.config.globalProperties.$mergeLocaleMessage(key, message);
-    });
-  },
-};
+export default createAppModule(pages, locales);
 
 export * from "./pages";
 export * from "./composables";

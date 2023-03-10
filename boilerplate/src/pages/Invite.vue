@@ -1,9 +1,6 @@
 <template>
   <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
-    <VcLoading
-      v-if="loading"
-      active
-    ></VcLoading>
+    <VcLoading v-if="loading" active></VcLoading>
 
     <VcLoginForm
       logo="/assets/logo-white.svg"
@@ -19,6 +16,7 @@
           disabled
         ></VcInput>
         <Field
+          :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.password"
           rules="required"
@@ -45,6 +43,7 @@
           ></VcInput>
         </Field>
         <Field
+          :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.confirmPassword"
           rules="required"
@@ -72,10 +71,7 @@
           ></VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span
-            v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
-          ></span>
+          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
           <vc-button
             variant="primary"
             :disabled="loading || !form.isValid || !form.tokenIsValid"
@@ -85,12 +81,7 @@
           </vc-button>
         </div>
 
-        <VcHint
-          class="tw-mt-3"
-          style="color: #f14e4e"
-          v-for="error in form.errors"
-          :key="error"
-        >
+        <VcHint class="tw-mt-3" style="color: #f14e4e" v-for="error in form.errors" :key="error">
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.INVITATION.ERRORS.${error}`) }}
         </VcHint>

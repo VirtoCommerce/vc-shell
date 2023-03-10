@@ -1,95 +1,51 @@
 import { defineRule } from "vee-validate";
-import { email, numeric } from "@vee-validate/rules";
+import AllRules, * as veeValidate from "@vee-validate/rules";
 
-// Define global validation rules
+Object.keys(AllRules).forEach((rule) => {
+  defineRule(rule, AllRules[rule]);
+});
 
-// required
-export const required = (value: unknown) => {
-  if (value === null || value === undefined || value === false || value === "") {
-    return "This field is required";
-  }
-  return true;
+/** @deprecated use `required` from `@vee-validate/rules` */
+export const required = veeValidate.required;
+
+/** @deprecated use `min` from `@vee-validate/rules` */
+export const min = veeValidate.min;
+
+/** @deprecated use `max` from `@vee-validate/rules` */
+export const max = veeValidate.required;
+
+/** @deprecated use `numeric` from `@vee-validate/rules` */
+export const numeric = veeValidate.numeric;
+
+/** @deprecated use `email` from `@vee-validate/rules` */
+export const email = veeValidate.email;
+
+/** @deprecated use `regex` from `@vee-validate/rules` */
+export const regex = veeValidate.regex;
+
+/** @deprecated use `min_value` from `@vee-validate/rules` */
+export const min_value = veeValidate.min_value;
+
+/** @deprecated use `max_value` from `@vee-validate/rules` */
+export const max_value = veeValidate.max_value;
+
+/** @deprecated use `size` from `@vee-validate/rules` */
+export const size = veeValidate.size;
+
+/** @deprecated 'maxdimensions' validation rule is deprecated, use 'dimensions' validation rule instead */
+export const maxdimensions = (images: HTMLInputElement, [width, height]: [string | number, string | number]) => {
+  console.warn("'maxdimensions' validation rule is deprecated, use 'dimensions' validation rule instead");
+  return veeValidate.dimensions(images, [width, height]);
 };
-defineRule("required", required);
 
-// numeric
-export { numeric } from "@vee-validate/rules";
-defineRule("numeric", numeric);
+defineRule("maxdimensions", maxdimensions);
 
-// email
-export { email } from "@vee-validate/rules";
-defineRule("email", email);
-
-// min
-export const min = (value: string, [limit]: number[]) => {
-  // The field is empty so it should pass
-  if (!value || !value.length) {
-    return true;
-  }
-  if (value.length < limit) {
-    return `This field must contain at least ${limit} characters`;
-  }
-  return true;
-};
-defineRule("min", min);
-
-// max
-export const max = (value: string, [limit]: number[]) => {
-  // The field is empty so it should pass
-  if (!value || !value.length) {
-    return true;
-  }
-  if (value.length > limit) {
-    return `This field must contain not more than ${limit} characters`;
-  }
-  return true;
-};
-defineRule("max", max);
-
-// regex
-export const regex = (value: string, [re]: RegExp[]) => {
-  // Field is empty, should pass
-  if (!value || !value.length) {
-    return true;
-  }
-  // Check if matched
-  if (!re.test(value)) {
-    return "This field must match a given pattern";
-  }
-  return true;
-};
-defineRule("regex", regex);
-
-// min_value
-export const min_value = (value: string, [min]: number[]) => {
-  // The field is empty so it should pass
-  if (!value || !value.length) {
-    return true;
-  }
-  const numericValue = Number(value);
-  if (numericValue < min) {
-    return `Value must be greater than ${min}`;
-  }
-  return true;
-};
-defineRule("min_value", min_value);
-
-// max_value
-export const max_value = (value: string, [max]: number[]) => {
-  // The field is empty so it should pass
-  if (!value || !value.length) {
-    return true;
-  }
-  const numericValue = Number(value);
-  if (numericValue > max) {
-    return `Value must be less than ${max}`;
-  }
-  return true;
-};
-defineRule("max_value", max_value);
-
-// after
-export const after = (value: string, [target]: string[]) => {
+const compare = (
+  value: string,
+  [target]: string[],
+  comparer: (first: number, second: number) => boolean,
+  errorMessage: string
+): boolean | string => {
   // The field is empty so it should pass
   if (!value || !value.length) {
     return true;
@@ -99,83 +55,20 @@ export const after = (value: string, [target]: string[]) => {
   const second_date = new Date(target);
 
   if (first_date.getTime() > 0 && second_date.getTime() > 0) {
-    if (second_date.getTime() > first_date.getTime()) {
-      return "End date must be later than start date";
+    if (comparer(second_date.getTime(), first_date.getTime())) {
+      return errorMessage;
     }
   }
 
   return true;
 };
+
+// before
+export const before = (value: string, [target]: string[]) =>
+  compare(value, [target], (first, second) => first < second, "End date must be earlier than start date");
+defineRule("before", before);
+
+// after
+export const after = (value: string, [target]: string[]) =>
+  compare(value, [target], (first, second) => first < second, "End date must be later than start date");
 defineRule("after", after);
-
-// maxdimensions
-export const maxdimensions = (images: HTMLInputElement, [width, height]: [string | number, string | number]) => {
-  // The field is empty so it should pass
-  if (!images?.files || !images.files?.length) {
-    return true;
-  }
-
-  const validateImage = (file: File, width: string | number, height: string | number) => {
-    const URL = window.URL || window.webkitURL;
-    return new Promise((resolve) => {
-      const image = new Image();
-      image.onerror = () => resolve(false);
-      image.onload = () => {
-        const isValid = image.width >= Number(width) && image.height >= Number(height);
-        if (isValid) {
-          resolve(true);
-        } else {
-          resolve(`Image dimensions must be greater than ${height}*${width}`);
-        }
-      };
-
-      image.src = URL.createObjectURL(file);
-    });
-  };
-  const list = [];
-  const fileList = images.files;
-  for (let i = 0; i < fileList.length; i++) {
-    if (!/\.(jpg|svg|jpeg|png|bmp|gif)$/i.test(fileList[i].name)) {
-      return Promise.resolve("Not image file");
-    }
-
-    list.push(fileList[i]);
-  }
-  return Promise.all(list.map((file) => validateImage(file, width, height))).then((res) => {
-    const isInvalid = res.find((x) => x !== true);
-    if (isInvalid === false || typeof isInvalid === "string") {
-      return isInvalid;
-    } else {
-      return true;
-    }
-  });
-};
-defineRule("maxdimensions", maxdimensions);
-
-// size
-export const size = (file: HTMLInputElement, [size]: [number]) => {
-  if (!file?.files || !file.files?.length) {
-    return true;
-  }
-
-  const maxSize = size * 1000;
-
-  const fileSizeChecker = (file: File) => {
-    return file.size > maxSize;
-  };
-
-  const list = [];
-  for (let i = 0; i < file.files.length; i++) {
-    list.push(file.files[i]);
-  }
-
-  const checker = list.map((x) => fileSizeChecker(x));
-
-  const isInvalid = checker.find((x) => x === true);
-  if (isInvalid) {
-    return `File size must be maximum ${size} kb`;
-  } else {
-    return true;
-  }
-};
-defineRule("size", size);

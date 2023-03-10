@@ -64,6 +64,11 @@
           "CANCEL": "Cancel",
           "NEW_RUN": "New run"
         },
+        "EXTERNAL_URL": {
+          "TITLE": "External URL",
+          "PLACEHOLDER": "or enter external URL",
+          "SAVE": "Save"
+        },
         "FILE_UPLOAD": {
           "TITLE": "File upload",
           "TITLE_UPLOADED": "Uploaded",
@@ -94,8 +99,7 @@
         "UPLOADER": {
           "TITLE": "Uploaded",
           "ACTIONS": {
-            "UPLOAD": "Upload",
-            "DELETE": "Delete",
+            "USE_ANOTHER_ONE": "Use another one",
             "PREVIEW": "Preview",
             "START_IMPORT": "Start import",
             "CANCEL_IMPORT": "Cancel"

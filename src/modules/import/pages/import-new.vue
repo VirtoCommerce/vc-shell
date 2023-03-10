@@ -35,13 +35,50 @@
                   &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
                 </VcRow>
                 <VcRow>
-                  <VcFileUpload
-                    variant="file-upload"
-                    @upload="uploadCsv"
-                    :notification="true"
-                    accept="*.*"
-                    :loading="fileLoading"
-                  ></VcFileUpload>
+                  <VcCol>
+                    <VcRow class="tw-mb-4">
+                      <VcFileUpload
+                        variant="file-upload"
+                        @upload="uploadCsv"
+                        :notification="true"
+                        accept="*.*"
+                        :loading="fileLoading"
+                      ></VcFileUpload
+                    ></VcRow>
+                    <VcRow>
+                      <Field
+                        v-slot="{ field, errorMessage, handleChange, errors }"
+                        :modelValue="profile.importFileUrl"
+                        :label="$t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.TITLE')"
+                        rules="url"
+                        name="externalUrl"
+                      >
+                        <VcInput
+                          v-bind="field"
+                          class="tw-grow tw-basis-0"
+                          v-model="profile.importFileUrl"
+                          @update:modelValue="handleChange"
+                          :placeholder="$t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.PLACEHOLDER')"
+                          required
+                          clearable
+                          :error="!!errors.length"
+                          :error-message="errorMessage"
+                        >
+                          <template v-slot:append>
+                            <slot name="button">
+                              <VcButton
+                                variant="primary"
+                                :outline="true"
+                                @click="saveExternalUrl()"
+                              >
+                                {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.SAVE") }}
+                              </VcButton>
+                            </slot>
+                          </template>
+                        </VcInput>
+                      </Field>
+                    </VcRow>
+                  </VcCol>
                 </VcRow>
               </VcCol>
               <!-- Uploaded file actions -->
@@ -205,6 +242,7 @@
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref, watch, shallowRef } from "vue";
 import { cloneDeep as _cloneDeep } from "lodash-es";
+import ImportProfileDetails from "./import-profile-details.vue";
 
 export default defineComponent({
   url: "/importer",
@@ -234,11 +272,11 @@ import {
 } from "@vc-shell/framework";
 import { INotificationActions, UserPermissions } from "../../../types";
 import useImport from "../composables/useImport";
-import { IDataImporter, ImportDataPreview } from "../../../api_client/marketplacevendor";
+import { IDataImporter, ImportDataPreview, ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
-import ImportProfileDetails from "./import-profile-details.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
+import { Field } from "vee-validate";
 
 export interface Props {
   expanded: boolean;
@@ -458,11 +496,7 @@ const importBadges = computed((): IImportBadges[] => {
 
 const uploadActions = ref<INotificationActions[]>([
   {
-    name: computed(() =>
-      importStarted.value
-        ? t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.UPLOAD")
-        : t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.DELETE")
-    ),
+    name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.USE_ANOTHER_ONE")),
     clickHandler() {
       clearImport();
       clearErrorMessage();
@@ -604,6 +638,18 @@ async function uploadCsv(files: FileList) {
   } finally {
     fileLoading.value = false;
   }
+}
+
+async function saveExternalUrl() {
+  const response = await fetch(profile.value.importFileUrl, {
+    method: "HEAD",
+    mode: "cors",
+  });
+  setFile({
+    name: profile.value.importFileUrl.substring(profile.value.importFileUrl.lastIndexOf("/") + 1),
+    url: profile.value.importFileUrl,
+    size: Number(response.headers.get("content-length")),
+  });
 }
 
 async function start() {

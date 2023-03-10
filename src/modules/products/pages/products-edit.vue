@@ -43,6 +43,7 @@
             </VcStatus>
             <VcForm>
               <Field
+                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 name="name"
                 rules="required|min:3"
                 :modelValue="productDetails.name"
@@ -65,6 +66,7 @@
                 </VcInput>
               </Field>
               <Field
+                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 name="categoryId"
                 rules="required"
                 :modelValue="productDetails.categoryId"
@@ -122,6 +124,7 @@
               >
                 <div class="tw-p-4">
                   <Field
+                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                     name="gtin"
                     :rules="validateGtin"
                     :modelValue="productDetails.gtin"
@@ -144,6 +147,7 @@
                     ></VcInput>
                   </Field>
                   <Field
+                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                     name="description"
                     rules="min:3|required"
                     :modelValue="productDetails.description"

@@ -4,7 +4,7 @@ import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import draggable from "vuedraggable/src/vuedraggable";
-import { logger, i18n } from "./core/plugins";
+import { i18n } from "./core/plugins";
 import { default as SharedModule } from "./shared";
 
 import "normalize.css";

@@ -12,6 +12,7 @@
     >
       <VcForm>
         <Field
+          :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
           name="password"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.password"
@@ -38,6 +39,7 @@
           />
         </Field>
         <Field
+          :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
           name="confirm_password"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.confirmPassword"

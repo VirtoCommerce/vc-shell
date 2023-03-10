@@ -20,6 +20,7 @@
         ></VcInput>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
+          :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
           :modelValue="form.password"
           rules="required"
           name="password"
@@ -46,6 +47,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
+          :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
           :modelValue="form.confirmPassword"
           rules="required"
           name="confirm_password"

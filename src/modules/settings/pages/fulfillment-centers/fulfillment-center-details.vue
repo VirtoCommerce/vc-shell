@@ -35,6 +35,7 @@
           <VcCol>
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
               name="name"
               rules="required"
               :modelValue="fulfillmentCenterDetails.name"

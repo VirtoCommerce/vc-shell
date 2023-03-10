@@ -13,6 +13,7 @@
         <VcCol>
           <Field
             v-slot="{ field, errorMessage, handleChange, errors }"
+            :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
             rules="required"
             name="profile_name"
           >
@@ -32,6 +33,7 @@
           </Field>
           <Field
             v-slot="{ field, handleChange }"
+            :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
             rules="required"
             name="importer"
           >

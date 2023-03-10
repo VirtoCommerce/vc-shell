@@ -1,15 +1,13 @@
 import { App } from "vue";
-import { default as AssetsDetails } from "./assets";
-import { default as VcAppSwitcher } from "./app-switcher";
-import { default as VcBladeNavigation } from "./blade-navigation";
+import { default as AssetsDetailsModule } from "./assets";
+import { default as VcAppSwitcherModule } from "./app-switcher";
+import { default as VcBladeNavigationModule } from "./blade-navigation";
 
-const components = [AssetsDetails, VcAppSwitcher, VcBladeNavigation];
-
-export function init(app: App): App {
-  components.forEach((component) => app.use(component));
-
-  return app;
-}
+export default {
+  install(app: App): void {
+    app.use(AssetsDetailsModule).use(VcAppSwitcherModule).use(VcBladeNavigationModule);
+  },
+};
 
 export * from "./assets";
 export * from "./app-switcher";

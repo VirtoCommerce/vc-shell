@@ -2,6 +2,7 @@
   <Field
     v-if="(property['dictionary'] || property['isDictionary']) && !property['multivalue']"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName || property['displayName']"
     :name="property['displayName'] || property['name']"
     :modelValue="getter(property, true)"
     :rules="rules"
@@ -37,6 +38,7 @@
       !(property['dictionary'] || property['isDictionary'])
     "
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="property['values']"
     :rules="rules"
@@ -67,6 +69,7 @@
       (property['dictionary'] || property['isDictionary'])
     "
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="property['values']"
     :rules="rules"
@@ -98,6 +101,7 @@
   <Field
     v-else-if="property['valueType'] === 'ShortText'"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName || property['displayName']"
     :name="property['displayName'] || property['name']"
     :modelValue="getter(property)"
     :rules="rules"
@@ -124,6 +128,7 @@
   <Field
     v-else-if="property['valueType'] === 'Number' && property['multivalue']"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="property['values']"
     :rules="rules"
@@ -154,6 +159,7 @@
   <Field
     v-else-if="property['valueType'] === 'Number'"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
@@ -181,6 +187,7 @@
   <Field
     v-else-if="property['valueType'] === 'Integer'"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
@@ -209,6 +216,7 @@
   <Field
     v-else-if="property['valueType'] === 'DateTime'"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
@@ -235,6 +243,7 @@
   <Field
     v-else-if="property['valueType'] === 'LongText'"
     v-slot="{ errorMessage, handleChange }"
+    :label="handleDisplayName"
     :name="property['name']"
     :modelValue="getter(property)"
     :rules="rules"
@@ -259,6 +268,7 @@
   <Field
     v-else-if="property['valueType'] === 'Boolean'"
     v-slot="{ errorMessage, handleChange }"
+    :label="handleDisplayName || property['displayName']"
     :name="property['displayName'] || property['name']"
     :modelValue="getter(property)"
     :rules="rules"
@@ -284,6 +294,7 @@
   <Field
     v-else-if="property['valueType'] === 'Html'"
     v-slot="{ errorMessage, handleChange }"
+    :label="handleDisplayName || property['displayName']"
     :name="property['displayName'] || property['name']"
     :modelValue="getter(property)"
     :rules="rules"

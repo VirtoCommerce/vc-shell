@@ -620,7 +620,7 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
 }
 
 function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary?: PropertyDictionaryItem[]) {
-  if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
+  if (value && typeof value === "object" && Object.keys(value).length) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
         const handledValue = handleDictionaryValue(property, item.valueId, dictionary);

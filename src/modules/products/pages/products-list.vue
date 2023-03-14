@@ -31,6 +31,7 @@
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
       @selectionChanged="onSelectionChanged"
+      state-key="products_list"
     >
       <!-- Filters -->
       <template v-slot:filters="{ closePanel }">

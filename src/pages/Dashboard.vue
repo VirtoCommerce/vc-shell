@@ -37,6 +37,7 @@
                 :header="false"
                 :footer="false"
                 @itemClick="ordersClick"
+                state-key="dashboard_orders"
               >
                 <!-- Empty template -->
                 <template v-slot:empty>
@@ -106,6 +107,7 @@
                 :header="false"
                 :footer="false"
                 @itemClick="productsClick"
+                state-key="dashboard_products"
               >
                 <!-- Empty template -->
                 <template v-slot:empty>
@@ -180,7 +182,7 @@
 
               <VcRow>
                 <VcCol style="display: block">
-                  <vc-table
+                  <VcTable
                     class="tw-w-full tw-h-full tw-box-border"
                     :loading="offersLoading"
                     :items="offers"
@@ -188,6 +190,7 @@
                     :header="false"
                     :footer="false"
                     @itemClick="offersClick"
+                    state-key="dashboard_offers"
                   >
                     <!-- Empty template -->
                     <template v-slot:empty>
@@ -208,7 +211,7 @@
                         <VcStatusIcon :status="!itemData"></VcStatusIcon>
                       </div>
                     </template>
-                  </vc-table>
+                  </VcTable>
                 </VcCol>
               </VcRow>
             </VcCard>

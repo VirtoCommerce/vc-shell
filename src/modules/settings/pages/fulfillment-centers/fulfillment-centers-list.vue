@@ -23,6 +23,7 @@
       @scroll:ptr="reload"
       :header="false"
       :selectedItemId="selectedItemId"
+      state-key="fulfillment_centers_list"
     >
       <template v-slot:mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">

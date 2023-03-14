@@ -21,7 +21,7 @@ const TSCONFIG = process.cwd() + "/tsconfig.json";
 const TSCONFIG_BUILD = process.cwd() + "/tsconfig.build.json";
 const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
-const isMonorepo = fs.existsSync(path.resolve("./../../framework/package.json"));
+const isMonorepo = fs.existsSync(path.resolve(__dirname, "./../../framework/package.json"));
 
 // "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
 const _define: { global?: unknown } = {};
@@ -53,6 +53,7 @@ const aliasResolver = () => {
       return {
         "@vc-shell/framework/dist/style.css": "@vc-shell/framework/dist/style.css",
         "vue-router": "vue-router/dist/vue-router.cjs.js",
+        "vee-validate": "vee-validate/dist/vee-validate.js",
       };
     } else {
       return {};
@@ -139,7 +140,7 @@ export default {
     },
   },
   optimizeDeps: {
-    include: mode === "development" ? ["ace-builds", "client-oauth2"] : [],
+    include: mode === "development" ? ["ace-builds", "client-oauth2", "vee-validate"] : [],
     esbuildOptions: {
       target: ["es2020", "safari14"],
     },

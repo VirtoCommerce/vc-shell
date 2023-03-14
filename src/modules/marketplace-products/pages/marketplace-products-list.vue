@@ -29,6 +29,7 @@
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
+      state-key="marketplace_products"
     >
       <!-- Not found template -->
       <template v-slot:notfound>

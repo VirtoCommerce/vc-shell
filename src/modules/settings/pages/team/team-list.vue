@@ -23,6 +23,7 @@
       @scroll:ptr="reload"
       :header="false"
       :selectedItemId="selectedItemId"
+      state-key="team_list"
     >
       <!-- Override status column template -->
       <template v-slot:item_isLockedOut="itemData">

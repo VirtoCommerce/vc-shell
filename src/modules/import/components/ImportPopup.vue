@@ -26,6 +26,7 @@
       :header="false"
       :scrolling="true"
       :footer="false"
+      state-key="import_popup"
     ></VcTable>
     <div class="tw-p-5 tw-flex tw-justify-between">
       <VcButton

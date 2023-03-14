@@ -29,6 +29,7 @@
       @scroll:ptr="reload"
       @headerClick="onHeaderClick"
       @selectionChanged="onSelectionChanged"
+      state-key="orders_list"
     >
       <!-- Filters -->
       <template v-slot:filters="{ closePanel }">

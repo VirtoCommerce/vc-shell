@@ -17,6 +17,7 @@
     @itemClick="onItemClick"
     @paginationClick="onPaginationClick"
     @scroll:ptr="loadReviews"
+    state-key="review_table"
   >
     <!-- Empty -->
     <template v-slot:empty>

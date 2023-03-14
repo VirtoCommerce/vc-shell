@@ -32,6 +32,7 @@
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
       @selectionChanged="onSelectionChanged"
+      state-key="offers_list"
     >
       <!-- Override sellerName column template -->
       <template v-slot:item_name="itemData">

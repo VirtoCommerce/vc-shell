@@ -140,6 +140,7 @@
               :header="false"
               :footer="false"
               :items="reversedErrors"
+              state-key="import_errors"
             >
               <!-- Override errors column template -->
               <template v-slot:item_errors="itemData">
@@ -172,6 +173,7 @@
               :pages="historyPages"
               :currentPage="currentPage"
               @paginationClick="onPaginationClick"
+              state-key="import_history"
             >
               <!-- Override name column template -->
               <template v-slot:item_name="itemData">

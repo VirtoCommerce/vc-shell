@@ -39,7 +39,7 @@
 import { ref, computed } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
 import { clickOutside as vClickOutside } from "./../../../../../../core/directives";
-import { useFloating, flip, shift } from "@floating-ui/vue";
+import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
 
 export interface Props {
   items: ITableColumns[];
@@ -57,6 +57,7 @@ const referenceButton = ref();
 const floatingDrop = ref();
 const floater = useFloating(referenceButton, floatingDrop, {
   placement: "bottom-end",
+  whileElementsMounted: autoUpdate,
   middleware: [flip({ fallbackPlacements: ["top-end", "bottom-end"] }), shift({ mainAxis: false })],
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.54",
+  "version": "1.0.55",
   "main": "./dist/framework.js",
   "module": "./dist/framework.esm.js",
   "types": "./dist/index.d.ts",
@@ -33,8 +33,8 @@
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@floating-ui/vue": "^0.2.1",
     "@popperjs/core": "^2.11.0",
-    "@floating-ui/vue":"^0.2.1",
     "@vee-validate/rules": "^4.5.5",
     "@vueuse/components": "^9.9.0",
     "@vueuse/core": "^9.9.0",
@@ -53,8 +53,8 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.54",
-    "@vc-shell/config-generator": "^1.0.54",
+    "@vc-shell/api-client-generator": "^1.0.55",
+    "@vc-shell/config-generator": "^1.0.55",
     "@vue-macros/volar": "^0.8.1",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",

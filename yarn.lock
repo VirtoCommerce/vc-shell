@@ -1425,6 +1425,26 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@floating-ui/core@^1.2.3":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.2.4.tgz#89e6311b021190c9e121fcf20306e76ac66e4066"
+  integrity sha512-SQOeVbMwb1di+mVWWJLpsUTToKfqVNioXys011beCAhyOIFtS+GQoW4EQSneuxzmQKddExDwQ+X0hLl4lJJaSQ==
+
+"@floating-ui/dom@^1.2.1":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.2.4.tgz#e2eb2674f57fc182c425587e48ea43e336f4b8f8"
+  integrity sha512-4+k+BLhtWj+peCU60gp0+rHeR8+Ohqx6kjJf/lHMnJ8JD5Qj6jytcq1+SZzRwD7rvHKRhR7TDiWWddrNrfwQLg==
+  dependencies:
+    "@floating-ui/core" "^1.2.3"
+
+"@floating-ui/vue@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@floating-ui/vue/-/vue-0.2.1.tgz#a52b66e020897ad0535d0d0d3b09932446fc6231"
+  integrity sha512-HE+EIeakID7wI6vUwF0yMpaW48bNaPj8QtnQaRMkaQFhQReVBA4bY6fmJ3J7X+dqVgDbMhyfCG0fBJfdQMdWxQ==
+  dependencies:
+    "@floating-ui/dom" "^1.2.1"
+    vue-demi "^0.13.11"
+
 "@fortawesome/fontawesome-free@^5.15.3":
   version "5.15.4"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.15.4.tgz#ecda5712b61ac852c760d8b3c79c96adca5554e5"
@@ -14973,7 +14993,7 @@ vue-currency-input@~2.5.1:
   dependencies:
     vue-demi "^0.12.1"
 
-vue-demi@*:
+vue-demi@*, vue-demi@^0.13.11:
   version "0.13.11"
   resolved "https://registry.yarnpkg.com/vue-demi/-/vue-demi-0.13.11.tgz#7d90369bdae8974d87b1973564ad390182410d99"
   integrity sha512-IR8HoEEGM65YY3ZJYAjMlKygDQn25D5ajNFNoKh9RSDMQtlzCxtfQjdQgv9jjK+m3377SsJXY8ysq8kLCZL25A==

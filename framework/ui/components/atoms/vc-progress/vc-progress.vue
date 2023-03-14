@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import { progressProps } from "./vc-progress-model";
 
-defineProps(progressProps);
+defineProps({...progressProps});
 </script>
 
 <style lang="scss">

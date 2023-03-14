@@ -114,6 +114,7 @@ export const inputCurrencyEmits = {
    * Emitted when the component needs to change the options model; Is also used by v-model:option
    */
   "update:option": (value: string | number | null) => isString(value) || isNumber(value) || value === null,
+  change: (value: string | number | null) => isString(value) || isNumber(value) || value === null,
 };
 
 export type VcInputCurrencyProps = ExtractTypes<typeof inputCurrencyProps>;

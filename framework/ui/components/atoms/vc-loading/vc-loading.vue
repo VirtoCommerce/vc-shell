@@ -23,5 +23,5 @@
 <script lang="ts" setup>
 import { loadingProps } from "./vc-loading-model";
 
-defineProps(loadingProps);
+defineProps({...loadingProps});
 </script>

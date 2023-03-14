@@ -60,9 +60,9 @@ import { inputCurrencyEmits, inputCurrencyProps } from "./vc-input-currency-mode
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { watch } from "vue";
 
-const props = defineProps(inputCurrencyProps);
+const props = defineProps({...inputCurrencyProps});
 
-defineEmits(inputCurrencyEmits);
+defineEmits({...inputCurrencyEmits});
 
 const { inputRef, setOptions } = useCurrencyInput({
   locale: navigator.language,

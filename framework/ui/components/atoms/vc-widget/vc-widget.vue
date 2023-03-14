@@ -28,9 +28,9 @@
 <script lang="ts" setup>
 import { widgetEmits, widgetProps } from "./vc-widget-model";
 
-const props = defineProps(widgetProps);
+const props = defineProps({...widgetProps});
 
-const emit = defineEmits(widgetEmits);
+const emit = defineEmits({...widgetEmits});
 
 function onClick() {
   if (!props.disabled) {

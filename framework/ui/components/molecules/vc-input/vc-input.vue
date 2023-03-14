@@ -173,9 +173,9 @@
 import { computed, ref, unref, watch } from "vue";
 import { inputEmits, inputProps } from "./vc-input-model";
 
-const props = defineProps(inputProps);
+const props = defineProps({ ...inputProps });
 
-const emit = defineEmits(inputEmits);
+const emit = defineEmits({ ...inputEmits });
 
 let emitTimer;
 let emitValueFn;

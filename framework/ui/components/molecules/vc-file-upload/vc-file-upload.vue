@@ -50,9 +50,9 @@ import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
 import { fileUploadEmits, fileUploadProps } from "./vc-file-upload-model";
 
-const props = defineProps(fileUploadProps);
+const props = defineProps({...fileUploadProps});
 
-const emit = defineEmits(fileUploadEmits);
+const emit = defineEmits({...fileUploadEmits});
 
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination

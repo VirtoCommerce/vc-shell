@@ -16,5 +16,5 @@
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
 import { breadcrumbsProps } from "./vc-breadcrumbs-model";
 
-defineProps(breadcrumbsProps);
+defineProps({...breadcrumbsProps});
 </script>

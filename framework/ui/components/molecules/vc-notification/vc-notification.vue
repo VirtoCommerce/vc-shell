@@ -20,9 +20,9 @@
 import { VcIcon } from "./../../../components";
 import { notificationEmits, notificationProps } from "./vc-notification-model";
 
-const props = defineProps(notificationProps);
+const props = defineProps({...notificationProps});
 
-const emit = defineEmits(notificationEmits);
+const emit = defineEmits({...notificationEmits});
 
 function Timer(callback: (...args: unknown[]) => unknown, delay: number) {
   let timerId: number;

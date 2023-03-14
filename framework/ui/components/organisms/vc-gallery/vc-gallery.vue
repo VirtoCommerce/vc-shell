@@ -72,9 +72,9 @@ import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
 import { galleryEmits, galleryProps } from "./vc-gallery-model";
 
-const props = defineProps(galleryProps);
+const props = defineProps({...galleryProps});
 
-const emit = defineEmits(galleryEmits);
+const emit = defineEmits({...galleryEmits});
 
 const preview = ref(false);
 const previewImageIndex = ref();

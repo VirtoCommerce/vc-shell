@@ -15,8 +15,8 @@
 <script lang="ts" setup>
 import { linkEmits, linkProps } from "./vc-link-model";
 
-const props = defineProps(linkProps);
-const emit = defineEmits(linkEmits);
+const props = defineProps({...linkProps});
+const emit = defineEmits({...linkEmits});
 
 function onClick(): void {
   if (!props.disabled) {

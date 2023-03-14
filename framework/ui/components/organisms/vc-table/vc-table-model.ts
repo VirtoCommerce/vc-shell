@@ -90,6 +90,17 @@ export const tableProps = {
     type: Boolean,
     default: false,
   },
+  resizableColumns: {
+    type: Boolean,
+    default: true,
+  },
+  reorderableColumns: {
+    type: Boolean,
+    default: true,
+  },
+  stateKey: {
+    type: String,
+  },
 };
 
 export const tableEmits = {

@@ -50,7 +50,7 @@
 import { VcIcon, VcLabel } from "./../../../components";
 import { ratingProps } from "./vc-rating-model";
 
-defineProps(ratingProps);
+defineProps({...ratingProps});
 </script>
 
 <style lang="scss">

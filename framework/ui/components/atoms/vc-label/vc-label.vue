@@ -32,7 +32,7 @@ import { VcIcon } from "./../../../components";
 import { ref } from "vue";
 import { labelProps } from "./vc-label-model";
 
-defineProps(labelProps);
+defineProps({...labelProps});
 
 const tooltipVisible = ref(false);
 </script>

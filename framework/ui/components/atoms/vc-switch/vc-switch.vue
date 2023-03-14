@@ -32,9 +32,9 @@
 <script lang="ts" setup>
 import { switchEmits, switchProps } from "./vc-switch-model";
 
-defineProps(switchProps);
+defineProps({...switchProps});
 
-const emit = defineEmits(switchEmits);
+const emit = defineEmits({...switchEmits});
 
 function onInput(e: InputEvent) {
   const newValue = (e.target as HTMLInputElement).checked;

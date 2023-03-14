@@ -28,5 +28,5 @@
 import { VcLabel, VcRow, VcCol } from "./../../../components";
 import { infoRowProps } from "./vc-info-row-model";
 
-defineProps(infoRowProps);
+defineProps({...infoRowProps});
 </script>

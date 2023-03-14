@@ -43,9 +43,9 @@
 import { ref } from "vue";
 import { cardProps, cardEmits } from "./vc-card-model";
 
-const props = defineProps(cardProps);
+const props = defineProps({...cardProps});
 
-const emit = defineEmits(cardEmits);
+const emit = defineEmits({...cardEmits});
 const isCollapsedInternal = ref(props.isCollapsed);
 
 function onHeaderClick() {

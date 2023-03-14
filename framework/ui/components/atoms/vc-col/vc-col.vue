@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import { colProps } from "./vc-col-model";
 
-defineProps(colProps);
+defineProps({...colProps});
 </script>
 
 <style lang="scss">

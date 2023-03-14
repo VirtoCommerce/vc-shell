@@ -18,9 +18,9 @@
 <script lang="ts" setup>
 import { badgeProps, badgeEmits } from "./vc-badge-model";
 
-const props = defineProps(badgeProps);
+const props = defineProps({...badgeProps});
 
-const emit = defineEmits(badgeEmits);
+const emit = defineEmits({...badgeEmits});
 
 function onClick(): void {
   if (props.clickable && !props.disabled) {

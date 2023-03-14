@@ -28,9 +28,9 @@
 <script lang="ts" setup>
 import { popupEmits, popupProps } from "./vc-popup-model";
 
-defineProps(popupProps);
+defineProps({...popupProps});
 
-defineEmits(popupEmits);
+defineEmits({...popupEmits});
 </script>
 
 <style lang="scss">

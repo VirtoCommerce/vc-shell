@@ -26,7 +26,7 @@ export const buttonProps = {
 };
 
 export const buttonEmits = {
-  click: () => true,
+  click: (e: Event) => e instanceof Event,
 };
 
 export type VcButtonProps = ExtractTypes<typeof buttonProps>;

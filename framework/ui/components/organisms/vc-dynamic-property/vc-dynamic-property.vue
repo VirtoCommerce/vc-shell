@@ -326,7 +326,7 @@ interface IDisplayName {
   name?: string;
 }
 
-const props = defineProps(dynamicPropertyProps);
+const props = defineProps({...dynamicPropertyProps});
 
 const { locale, te, t } = useI18n();
 

@@ -46,9 +46,9 @@ import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 import { bladeEmits, bladeProps } from "./vc-blade-model";
 
-defineProps(bladeProps);
+defineProps({...bladeProps});
 
-defineEmits(bladeEmits);
+defineEmits({...bladeEmits});
 </script>
 
 <style lang="scss">

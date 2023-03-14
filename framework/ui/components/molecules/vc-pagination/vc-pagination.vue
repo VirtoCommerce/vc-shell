@@ -107,9 +107,9 @@
 import { VcIcon } from "./../../../components";
 import { paginationEmits, paginationProps } from "./vc-pagination-model";
 
-defineProps(paginationProps);
+defineProps({...paginationProps});
 
-defineEmits(paginationEmits);
+defineEmits({...paginationEmits});
 </script>
 
 <style lang="scss">

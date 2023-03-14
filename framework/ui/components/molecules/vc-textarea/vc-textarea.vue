@@ -49,9 +49,9 @@ import { watch } from "vue";
 import { VcLabel } from "./../../../components";
 import { textareaEmits, textareaProps } from "./vc-textarea-model";
 
-const props = defineProps(textareaProps);
+const props = defineProps({...textareaProps});
 
-const emit = defineEmits(textareaEmits);
+const emit = defineEmits({...textareaEmits});
 
 watch(
   () => props.modelValue,

@@ -29,7 +29,7 @@
 <script lang="ts" setup>
 import { loginFormProps } from "./vc-login-form-model";
 
-defineProps(loginFormProps);
+defineProps({...loginFormProps});
 
 console.debug("Init vc-login-form");
 </script>

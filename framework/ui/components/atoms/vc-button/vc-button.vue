@@ -31,12 +31,12 @@
 import { VcIcon } from "./../../../components";
 import { buttonProps, buttonEmits } from "./vc-button-model";
 
-const props = defineProps(buttonProps);
-const emit = defineEmits(buttonEmits);
+const props = defineProps({...buttonProps});
+const emit = defineEmits({...buttonEmits});
 function onClick(e: Event): void {
   if (!props.disabled) {
     e.preventDefault();
-    emit("click");
+    emit("click", e);
   }
 }
 </script>

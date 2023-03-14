@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import { statusProps } from "./vc-status-model";
 
-defineProps(statusProps);
+defineProps({...statusProps});
 </script>
 
 <style lang="scss">

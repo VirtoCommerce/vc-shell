@@ -70,9 +70,9 @@ import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { IMenuClickEvent } from "./../../../../shared";
 import { appEmits, appProps } from "./vc-app-model";
 
-defineProps(appProps);
+defineProps({...appProps});
 
-const emit = defineEmits(appEmits);
+const emit = defineEmits({...appEmits});
 
 console.debug("vc-app: Init vc-app");
 

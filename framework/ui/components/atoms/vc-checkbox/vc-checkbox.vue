@@ -40,8 +40,8 @@
 import { watch } from "vue";
 import { checkboxProps, checkboxEmits } from "./vc-checkbox-model";
 
-const props = defineProps(checkboxProps);
-const emit = defineEmits(checkboxEmits);
+const props = defineProps({...checkboxProps});
+const emit = defineEmits({...checkboxEmits});
 
 watch(
   () => props.modelValue,

@@ -48,9 +48,9 @@ import "ace-builds/src-noconflict/theme-chrome";
 import { ref, unref, watch } from "vue";
 import { editorEmits, editorProps } from "./vc-editor-model";
 
-const props = defineProps(editorProps);
+const props = defineProps({...editorProps});
 
-const emit = defineEmits(editorEmits);
+const emit = defineEmits({...editorEmits});
 const content = ref();
 
 watch(

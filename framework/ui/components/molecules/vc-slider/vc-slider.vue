@@ -51,7 +51,7 @@ import "swiper/components/navigation/navigation.min.css";
 import { sliderProps } from "./vc-slider-model";
 SwiperCore.use([Navigation]);
 
-defineProps(sliderProps);
+defineProps({...sliderProps});
 
 const buttonsList = computed(() => ({
   nextEl: ".vc-slider__next",

@@ -24,11 +24,11 @@
     </VcLabel>
 
     <!-- Select field -->
-    <div
-      class="tw-flex tw-flex-nowrap tw-items-start"
-      ref="dropdownToggleRef"
-    >
-      <div class="tw-flex tw-flex-auto tw-text-left tw-max-w-full">
+    <div class="tw-flex tw-flex-nowrap tw-items-start tw-relative">
+      <div
+        ref="dropdownToggleRef"
+        class="tw-flex tw-flex-auto tw-text-left tw-max-w-full"
+      >
         <slot
           name="control"
           :toggleHandler="toggleDropdown"
@@ -198,76 +198,87 @@
         </slot>
       </div>
 
-      <!--      <teleport to="#app">-->
-      <div
-        v-if="isOpened"
-        class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
-        ref="dropdownRef"
-        v-click-outside="closeDropdown"
-      >
-        <input
-          v-if="searchable"
-          ref="searchRef"
-          class="tw-w-full tw-box-border tw-border tw-border-solid tw-border-[#eaecf2] tw-rounded-[4px] tw-h-[32px] tw-leading-[32px] tw-outline-none tw-mb-3 tw-px-2"
-          @input="onInput"
-        />
-
-        <VcContainer
-          :no-padding="true"
-          ref="root"
+      <teleport to="#app">
+        <div
+          v-if="isOpened"
+          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
+          ref="dropdownRef"
+          v-click-outside="closeDropdown"
+          :style="dropdownStyle"
         >
-          <div
-            v-if="!(optionsList && optionsList.length)"
-            class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
+          <input
+            v-if="searchable"
+            ref="searchRef"
+            class="tw-w-full tw-box-border tw-border tw-border-solid tw-border-[#eaecf2] tw-rounded-[4px] tw-h-[32px] tw-leading-[32px] tw-outline-none tw-mb-3 tw-px-2"
+            @input="onInput"
+          />
+
+          <VcContainer
+            :no-padding="true"
+            ref="root"
           >
-            <slot name="no-options">
-              <span class="tw-m-4 tw-text-xl tw-font-medium">No options</span>
-            </slot>
-          </div>
-          <div
-            v-else
-            class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
-            v-for="(item, i) in optionScope"
-            :key="i"
-            @click="item.toggleOption(item.opt)"
-            :class="{ 'tw-bg-[#eff7fc]': item.selected }"
-          >
-            <slot
-              name="option"
-              v-bind="item"
-              >{{ item.label }}</slot
+            <div
+              v-if="!(optionsList && optionsList.length)"
+              class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center"
             >
-          </div>
-          <span
-            ref="el"
-            v-if="hasNextPage"
-          ></span>
-        </VcContainer>
-      </div>
-      <!--      </teleport>-->
+              <slot name="no-options">
+                <span class="tw-m-4 tw-text-xl tw-font-medium">No options</span>
+              </slot>
+            </div>
+            <div
+              v-else
+              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
+              v-for="(item, i) in optionScope"
+              :key="i"
+              @click="item.toggleOption(item.opt)"
+              :class="{ 'tw-bg-[#eff7fc]': item.selected }"
+            >
+              <slot
+                name="option"
+                v-bind="item"
+                >{{ item.label }}</slot
+              >
+            </div>
+            <span
+              ref="el"
+              v-if="hasNextPage"
+            ></span>
+          </VcContainer>
+        </div>
+      </teleport>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, computed, watch, toRefs } from "vue";
+import { ref, computed, watch, toRefs, nextTick } from "vue";
 import { VcIcon, VcLabel, VcContainer } from "./../../../components";
 import { clickOutside as vClickOutside } from "./../../../../core/directives";
-import { createPopper, Instance, State } from "@popperjs/core";
 import { selectEmits, selectProps, OptionProp } from "./vc-select-model";
 import { intersection, isEqual } from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
+import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 
-const props = defineProps(selectProps);
+type FloatingInstanceType = UseFloatingReturn & {
+  middlewareData: {
+    sameWidthChangeBorders: {
+      borderTop?: string;
+      borderBottom?: string;
+      borderRadius?: string;
+      width?: string;
+    };
+  };
+};
 
-const emit = defineEmits(selectEmits);
+const props = defineProps({ ...selectProps });
+
+const emit = defineEmits({ ...selectEmits });
 
 const { modelValue, options } = toRefs(props);
 
 const isOpened = ref(false);
 
 const searchRef = ref();
-const popper = ref<Instance>();
 const dropdownToggleRef = ref();
 const dropdownRef = ref();
 const root = ref();
@@ -296,6 +307,17 @@ useIntersectionObserver(
   },
   { threshold: 1, root: root.value?.component }
 );
+
+const popper = useFloating(dropdownToggleRef, dropdownRef, {
+  placement: "bottom",
+  whileElementsMounted: autoUpdate,
+  middleware: [
+    flip({ fallbackPlacements: ["top", "bottom"] }),
+    shift({ mainAxis: false }),
+    sameWidthChangeBorders(),
+    offset(-2),
+  ],
+}) as FloatingInstanceType;
 
 watch(
   modelValue,
@@ -355,6 +377,15 @@ watch(
     optionsTemp.value = newVal;
   },
   { immediate: true, deep: true }
+);
+
+watch(
+  () => popper.isPositioned.value,
+  (newVal) => {
+    if (newVal) {
+      popper.update();
+    }
+  }
 );
 
 async function onLoadMore() {
@@ -432,6 +463,14 @@ const optionScope = computed(() => {
   });
 });
 
+const dropdownStyle = computed(() => {
+  return {
+    top: `${popper.y.value ?? 0}px`,
+    left: `${popper.x.value ?? 0}px`,
+    ...popper.middlewareData.value.sameWidthChangeBorders,
+  };
+});
+
 function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
   const val = propValue !== undefined ? propValue : defaultVal;
 
@@ -472,7 +511,6 @@ function isOptionSelected(opt: Record<string, unknown>) {
 
 function closeDropdown() {
   isOpened.value = false;
-  popper.value?.destroy();
   emit("close");
 
   onDropdownClose();
@@ -495,69 +533,44 @@ async function toggleDropdown() {
     } else {
       isOpened.value = true;
 
-      await nextTick(() => {
+      nextTick(() => {
         searchRef?.value?.focus();
-        popper.value = createPopper(dropdownToggleRef.value, dropdownRef.value, {
-          placement: "bottom",
-          modifiers: [
-            {
-              name: "flip",
-              options: {
-                fallbackPlacements: ["top", "bottom"],
-              },
-            },
-            {
-              name: "preventOverflow",
-              options: {
-                mainAxis: false,
-              },
-            },
-            {
-              name: "sameWidthChangeBorders",
-              enabled: true,
-              phase: "beforeWrite",
-              requires: ["computeStyles"],
-              fn: ({ state }: { state: State }) => {
-                const placement = state.placement;
-                if (placement === "top") {
-                  state.styles.popper.borderTop = "1px solid var(--select-border-color)";
-                  state.styles.popper.borderBottom = "1px solid var(--select-background-color)";
-                  state.styles.popper.borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
-                } else {
-                  state.styles.popper.borderBottom = "1px solid var(--select-border-color)";
-                  state.styles.popper.borderTop = "1px solid var(--select-background-color)";
-                  state.styles.popper.borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
-                }
-                state.styles.popper.width = `${state.rects.reference.width}px`;
-              },
-              effect: ({ state }: { state: State }) => {
-                const ref = state.elements.reference as HTMLElement;
-                const placement = state.placement;
-                if (placement === "top") {
-                  state.elements.popper.style.borderTop = "1px solid var(--select-border-color)";
-                  state.elements.popper.style.borderBottom = "1px solid var(--select-background-color)";
-                  state.elements.popper.style.borderRadius =
-                    "var(--select-border-radius) var(--select-border-radius) 0 0";
-                } else {
-                  state.elements.popper.style.borderBottom = "1px solid var(--select-border-color)";
-                  state.elements.popper.style.borderTop = "1px solid var(--select-background-color)";
-                  state.elements.popper.style.borderRadius =
-                    "0 0 var(--select-border-radius) var(--select-border-radius)";
-                }
-                state.elements.popper.style.width = `${ref.offsetWidth}px`;
-              },
-            },
-            {
-              name: "offset",
-              options: {
-                offset: [0, -2],
-              },
-            },
-          ],
-        });
       });
     }
   }
+}
+
+function sameWidthChangeBorders() {
+  return {
+    name: "sameWidthChangeBorders",
+    fn: ({ rects, placement, x, y }) => {
+      let borderTop;
+      let borderBottom;
+      let borderRadius;
+      if (placement === "top") {
+        borderTop = "1px solid var(--select-border-color)";
+        borderBottom = "1px solid var(--select-background-color)";
+        borderRadius = "var(--select-border-radius) var(--select-border-radius) 0 0";
+      } else {
+        borderBottom = "1px solid var(--select-border-color)";
+        borderTop = "1px solid var(--select-background-color)";
+        borderRadius = "0 0 var(--select-border-radius) var(--select-border-radius)";
+      }
+
+      const width = `${rects.reference.width}px`;
+
+      return {
+        x,
+        y,
+        data: {
+          borderTop,
+          borderBottom,
+          borderRadius,
+          width,
+        },
+      };
+    },
+  };
 }
 
 function toggleOption(opt: { [x: string]: string }) {
@@ -594,7 +607,7 @@ function toggleOption(opt: { [x: string]: string }) {
   emit("update:modelValue", model);
 
   if (isOpened.value) {
-    popper.value.update();
+    popper.update();
   }
 }
 

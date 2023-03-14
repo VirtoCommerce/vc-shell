@@ -33,9 +33,9 @@
 import { computed } from "vue";
 import { imageProps, imageEmits } from "./vc-image-model";
 
-const props = defineProps(imageProps);
+const props = defineProps({...imageProps});
 
-const emit = defineEmits(imageEmits);
+const emit = defineEmits({...imageEmits});
 
 const imageHandler = computed(() => {
   if (props.src) {

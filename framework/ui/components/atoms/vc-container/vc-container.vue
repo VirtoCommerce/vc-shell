@@ -38,9 +38,9 @@
 import { ref, onMounted, computed, nextTick } from "vue";
 import { containerProps, containerEmits } from "./vc-container-model";
 
-const props = defineProps(containerProps);
+const props = defineProps({...containerProps});
 
-const emit = defineEmits(containerEmits);
+const emit = defineEmits({...containerEmits});
 
 const component = ref<HTMLElement>();
 const scroll = ref(false);

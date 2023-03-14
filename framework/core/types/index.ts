@@ -83,7 +83,7 @@ export interface RequestPasswordResult {
 export type ITableColumns = {
   id: string;
   title: string | ComputedRef<string>;
-  width?: number;
+  width?: number | string;
   field?: string;
   alwaysVisible?: boolean;
   type?: string;
@@ -92,4 +92,5 @@ export type ITableColumns = {
   class?: string;
   format?: string;
   align?: string;
+  visible?: boolean;
 };

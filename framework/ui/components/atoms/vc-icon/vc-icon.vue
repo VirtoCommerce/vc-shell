@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { iconProps } from "./vc-icon-model";
 
-defineProps(iconProps);
+defineProps({...iconProps});
 </script>
 
 <style lang="scss">

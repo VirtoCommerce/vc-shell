@@ -19,5 +19,5 @@
 import { VcIcon } from "./../../../components";
 import { statusIconProps } from "./vc-status-icon-model";
 
-defineProps(statusIconProps);
+defineProps({...statusIconProps});
 </script>

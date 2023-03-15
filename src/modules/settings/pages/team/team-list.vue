@@ -232,7 +232,14 @@ const onHeaderClick = (item: ITableColumns) => {
 
   if (item.sortable) {
     if (sort.value.split(":")[0] === item.id) {
-      const index = sortOptions.findIndex((x) => x === sort.value.split(":")[1]);
+      const index = sortOptions.findIndex((x) => {
+        const sorting = sort.value.split(":")[1];
+        if (sorting) {
+          return x === sorting;
+        } else {
+          return x === "";
+        }
+      });
 
       if (index !== -1) {
         const newSort = sortOptions[(index + 1) % sortOptions.length];

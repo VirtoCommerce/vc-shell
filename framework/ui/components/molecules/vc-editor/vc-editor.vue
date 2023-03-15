@@ -23,18 +23,20 @@
     </VcLabel>
 
     <!-- Editor field -->
-    <v-ace-editor
-      class="tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-[var(--editor-border-radius)] tw-h-[200px]"
-      v-model:value="content"
-      lang="html"
-      theme="chrome"
-      @input="onInput"
+    <QuillEditor
+      class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
+      v-model:content="content"
+      theme="snow"
+      toolbar="minimal"
+      content-type="html"
+      @update:content="onInput"
+      :read-only="disabled"
     />
     <slot
       v-if="errorMessage"
       name="error"
     >
-      <VcHint class="vc-editor__error">
+      <VcHint class="vc-editor__error !tw-text-[color:var(--editor-border-color-error)] tw-mt-1">
         {{ errorMessage }}
       </VcHint>
     </slot>
@@ -42,27 +44,46 @@
 </template>
 
 <script lang="ts" setup>
-import { VAceEditor } from "vue3-ace-editor";
-import "ace-builds/src-noconflict/mode-html";
-import "ace-builds/src-noconflict/theme-chrome";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { ref, unref, watch } from "vue";
 import { editorEmits, editorProps } from "./vc-editor-model";
 
-const props = defineProps(editorProps);
+const props = defineProps({ ...editorProps });
 
-const emit = defineEmits(editorEmits);
+const emit = defineEmits({ ...editorEmits });
 const content = ref();
 
 watch(
   () => props.modelValue,
   (value) => {
-    let init = unref(value);
-    emit("update:modelValue", init);
-  }
+    content.value = unref(value);
+  },
+  { immediate: true }
 );
 
 function onInput() {
-  emit("update:modelValue", content.value);
+  if (isContentChangedOnMount(content.value)) {
+    if (isQuillEmpty(content.value)) {
+      emit("update:modelValue", null);
+    } else {
+      emit("update:modelValue", content.value);
+    }
+  }
+}
+
+function isQuillEmpty(value: string) {
+  if (value.replace(/<(.|\n)*?>/g, "").trim().length === 0) {
+    return true;
+  }
+  return false;
+}
+
+function isContentChangedOnMount(value: string) {
+  if (value.replace(/<(.|\n)*?>/g, "").trim() === props.modelValue) {
+    return false;
+  }
+  return true;
 }
 </script>
 
@@ -75,12 +96,8 @@ function onInput() {
 }
 
 .vc-editor {
-  &__error {
-    @apply tw-text-[color:var(--editor-border-color-error)] tw-mt-1;
-  }
-
-  &_error .ace_editor {
-    @apply tw-border tw-border-solid tw-border-[color:var(--editor-border-color-error)];
+  &_error .quill-editor {
+    @apply tw-border tw-border-solid tw-border-[color:var(--editor-border-color-error)] #{!important};
   }
 }
 </style>

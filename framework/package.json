@@ -36,6 +36,7 @@
     "@popperjs/core": "^2.11.0",
     "@vee-validate/rules": "^4.7.3",
     "@vee-validate/i18n": "^4.7.3",
+    "@vueup/vue-quill": "^1.1.1",
     "@vueuse/components": "^9.9.0",
     "@vueuse/core": "^9.9.0",
     "@vueuse/integrations": "^9.9.0",

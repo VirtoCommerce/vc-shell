@@ -102,10 +102,10 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue";
-import { useUser, useForm } from "@vc-shell/framework";
+import { reactive, onMounted, computed } from "vue";
+import { useUser } from "@vc-shell/framework";
 import { useRouter } from "vue-router";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 
 useForm({ validateOnMount: false });
 
@@ -126,13 +126,17 @@ const props = defineProps({
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const isFormValid = useIsFormValid();
-
+const isDirty = useIsFormDirty();
 const form = reactive({
   isValid: false,
   tokenIsValid: false,
   errors: [],
   password: "",
   confirmPassword: "",
+});
+
+const isDisabled = computed(() => {
+  return !isDirty.value || !isFormValid.value;
 });
 
 onMounted(async () => {
@@ -149,7 +153,7 @@ const validate = async () => {
     if (form.confirmPassword && form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
     }
-    form.isValid = form.errors.length == 0 && isFormValid.value;
+    form.isValid = form.errors.length == 0 && !isDisabled.value;
   }
 };
 

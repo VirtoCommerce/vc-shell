@@ -84,7 +84,7 @@
           </VcButton>
           <VcButton
             variant="primary"
-            :disabled="loading || !form.isValid || !isValid"
+            :disabled="loading || !form.isValid || isDisabled"
             @click="changePassword"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.SAVE") }}
@@ -105,9 +105,9 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, reactive } from "vue";
-import { useIsFormValid, Field } from "vee-validate";
-import { useForm, VcInput, VcHint, VcButton, VcPopup, VcForm, IIdentityError, useUser } from "@vc-shell/framework";
+import { nextTick, reactive, computed } from "vue";
+import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
+import { VcInput, VcHint, VcButton, VcPopup, VcForm, IIdentityError, useUser } from "@vc-shell/framework";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -125,6 +125,7 @@ const emit = defineEmits<Emits>();
 const { changeUserPassword, loading, validatePassword } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const form = reactive<IChangePassForm>({
   isValid: false,
   errors: [],
@@ -132,6 +133,10 @@ const form = reactive<IChangePassForm>({
   password: "",
   confirmPassword: "",
 });
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
 
 async function changePassword() {
   const result = await changeUserPassword(form.currentPassword, form.password);

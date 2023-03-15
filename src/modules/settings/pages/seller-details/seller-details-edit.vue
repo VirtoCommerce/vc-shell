@@ -376,7 +376,7 @@ export default defineComponent({
 import { useI18n, useUser, useForm, IBladeToolbar } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
@@ -414,6 +414,7 @@ const {
 const { getAccessToken, user } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const errorMessage = ref("");
 const { t } = useI18n();
 const title = t("SETTINGS.SELLER_DETAILS.TITLE");
@@ -428,12 +429,16 @@ const computedFee = computed(() => {
   return "";
 });
 
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
+
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: computed(() => t("SETTINGS.SELLER_DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
-    disabled: computed(() => !isValid.value || !modified.value),
+    disabled: computed(() => isDisabled.value || !modified.value),
     async clickHandler() {
       errorMessage.value = undefined;
       if (isValid.value) {

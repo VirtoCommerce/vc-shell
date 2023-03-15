@@ -98,7 +98,7 @@
           }"
         >
           <thead
-            v-if="cols"
+            v-if="filteredCols"
             class="vc-table__header tw-relative"
           >
             <tr class="vc-table__header-row">
@@ -174,6 +174,7 @@
               <th
                 class="tw-h-[42px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
                 width="44"
+                v-if="itemActionBuilder"
               ></th>
               <div class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-w-0 tw-align-middle">
                 <VcTableColumnSwitcher
@@ -201,8 +202,10 @@
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]': item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
+              @mouseover="calculateActions(item)"
+              @mouseleave="closeActions"
             >
-              <td v-if="multiselect">
+              <td v-if="multiselect" width="50">
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     :modelValue="checkboxes[item.id]"
@@ -216,6 +219,7 @@
                 :key="`${item.id}_${cell.id}`"
                 class="tw-box-border tw-overflow-hidden tw-px-3"
                 :class="cell.class"
+                :width="cell.width"
               >
                 <slot
                   :name="`item_${cell.id}`"
@@ -231,6 +235,7 @@
               <td class="tw-box-border tw-overflow-visible tw-px-3">
                 <div
                   class="vc-table__body-actions-container tw-relative !tw-hidden tw-justify-center tw-items-center"
+                  width="44"
                   v-if="itemActionBuilder"
                 >
                   <button

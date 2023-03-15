@@ -377,7 +377,6 @@ import {
   getCurrentInstance,
   onBeforeUnmount,
   Ref,
-  RendererNode,
 } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
@@ -387,7 +386,7 @@ import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { tableEmits, tableProps } from "./vc-table-model";
-import { RemovableRef, useLocalStorage } from "@vueuse/core";
+import { useLocalStorage } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
 
 const props = defineProps({ ...tableProps });
@@ -566,7 +565,7 @@ function handleSwipe(id: string) {
   mobileSwipeItem.value = id;
 }
 
-function handleHeaderClick(item: Record<string, unknown>) {
+function handleHeaderClick(item: ITableColumns) {
   emit("headerClick", item);
 }
 
@@ -860,9 +859,5 @@ $variants: (
       @apply tw-top-[-5px];
     }
   }
-}
-
-th:hover .resize-handle {
-  opacity: 0.3;
 }
 </style>

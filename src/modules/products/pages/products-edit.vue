@@ -298,7 +298,7 @@ const {
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 
-const test = useForm({ validateOnMount: false});
+useForm({ validateOnMount: false });
 
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
@@ -318,8 +318,8 @@ const product = computed(() => (props.param ? productData.value : productDetails
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -380,8 +380,6 @@ const reload = async (fullReload: boolean) => {
 
 onMounted(async () => {
   await reload(true);
-
-  console.log(test)
 });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
@@ -441,7 +439,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        isDisabled.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
+        isDisabled.value ||
+        !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },
   {

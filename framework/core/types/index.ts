@@ -86,11 +86,10 @@ export type ITableColumns = {
   width?: number | string;
   field?: string;
   alwaysVisible?: boolean;
-  type?: string;
+  type?: "money" | "date-ago" | "date" | "time" | "date-time" | "image" | "status" | "status-icon" | "number" | "link";
   sortable?: boolean;
-  sortDirection?: number;
   class?: string;
   format?: string;
-  align?: string;
+  align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
 };

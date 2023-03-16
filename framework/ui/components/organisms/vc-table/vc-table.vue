@@ -91,7 +91,7 @@
         <!-- Desktop table view -->
         <table
           v-else
-          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full"
+          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full tw-relative"
           :class="{
             'vc-table_empty': !items || !items.length,
             'vc-table_multiselect': multiselect,
@@ -99,13 +99,12 @@
         >
           <thead
             v-if="filteredCols"
-            class="vc-table__header tw-relative"
+            class="vc-table__header"
           >
             <tr class="vc-table__header-row">
               <th
                 v-if="multiselect"
-                class="tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
-                width="50"
+                class="tw-h-[42px] tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
@@ -114,6 +113,14 @@
                     @click.stop
                   ></VcCheckbox>
                 </div>
+                <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
+                  <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
+                </div>
+              </th>
+              <th
+                class="tw-h-[42px] tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
+                v-if="itemActionBuilder"
+              >
                 <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
                   <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
                 </div>
@@ -131,7 +138,8 @@
                   'tw-cursor-pointer tw-group': item.sortable,
                 }"
                 @click="handleHeaderClick(item)"
-                :width="item.width"
+                :style="{ maxWidth: item.width, width: item.width }"
+                :id="item.id"
               >
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3"
@@ -165,18 +173,16 @@
                 </div>
                 <div
                   class="tw-w-3 tw-top-0 tw-bottom-0 tw-cursor-col-resize tw-absolute tw-right-0 tw-flex tw-justify-end"
-                  v-if="resizableColumns && i !== cols.length - 1"
                   @mousedown="handleMouseDown($event, item)"
                 >
                   <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
                 </div>
               </th>
+
               <th
-                class="tw-h-[42px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
-                width="44"
-                v-if="itemActionBuilder"
+                class="tw-w-auto tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               ></th>
-              <div class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-w-0 tw-align-middle">
+              <div class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0">
                 <VcTableColumnSwitcher
                   :items="toggleCols"
                   @change="toggleColumn"
@@ -194,7 +200,7 @@
             class="vc-table__body"
           >
             <tr
-              v-for="(item, i) in items"
+              v-for="(item, i) in calculatedItems"
               :key="item.id"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
@@ -202,10 +208,12 @@
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]': item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
-              @mouseover="calculateActions(item)"
               @mouseleave="closeActions"
             >
-              <td v-if="multiselect" width="50">
+              <td
+                v-if="multiselect"
+                class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
+              >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     :modelValue="checkboxes[item.id]"
@@ -215,43 +223,24 @@
                 </div>
               </td>
               <td
-                v-for="cell in filteredCols"
-                :key="`${item.id}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3"
-                :class="cell.class"
-                :width="cell.width"
+                class="tw-box-border tw-overflow-visible tw-px-3 tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px]"
+                v-if="itemActionBuilder"
               >
-                <slot
-                  :name="`item_${cell.id}`"
-                  :item="item"
-                  :cell="cell"
-                >
-                  <VcTableCell
-                    :cell="cell"
-                    :item="item"
-                  ></VcTableCell>
-                </slot>
-              </td>
-              <td class="tw-box-border tw-overflow-visible tw-px-3">
-                <div
-                  class="vc-table__body-actions-container tw-relative !tw-hidden tw-justify-center tw-items-center"
-                  width="44"
-                  v-if="itemActionBuilder"
-                >
+                <div class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center">
                   <button
-                    class="tw-text-[#319ed4] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray]"
+                    class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-5 hover:tw-text-[#319ed4]"
                     @click.stop="showActions(item, item.id)"
                     :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     aria-describedby="tooltip"
-                    :disabled="!(itemActions && itemActions.length)"
+                    :disabled="!(item.actions && item.actions.length)"
                   >
                     <VcIcon
-                      icon="fas fa-cog"
+                      icon="fas fa-ellipsis-v"
                       size="m"
                     />
                   </button>
                   <div
-                    class="vc-table__body-tooltip tw-bg-white tw-rounded-l-[4px] tw-p-[15px] tw-z-0 tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
+                    class="vc-table__body-tooltip tw-bg-white tw-rounded-[4px] tw-p-[15px] tw-z-[1] tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
                     v-show="selectedRow === item.id"
                     @mouseleave="closeActions"
                     :ref="(el: Element) => setTooltipRefs(el, item.id)"
@@ -261,7 +250,7 @@
                       class="tw-flex tw-items-center tw-flex-row tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
                     >
                       <div
-                        v-for="(itemAction, i) in itemActions"
+                        v-for="(itemAction, i) in item.actions"
                         :key="i"
                         :class="[
                           'tw-flex tw-flex-row tw-items-center tw-text-[#319ed4] tw-cursor-pointer',
@@ -287,6 +276,25 @@
                   </div>
                 </div>
               </td>
+              <td
+                v-for="cell in filteredCols"
+                :key="`${item.id}_${cell.id}`"
+                class="tw-box-border tw-overflow-hidden tw-px-3"
+                :class="cell.class"
+                :style="{ maxWidth: cell.width, width: cell.width }"
+              >
+                <slot
+                  :name="`item_${cell.id}`"
+                  :item="item"
+                  :cell="cell"
+                >
+                  <VcTableCell
+                    :cell="cell"
+                    :item="item"
+                  ></VcTableCell>
+                </slot>
+              </td>
+              <td></td>
             </tr>
           </tbody>
         </table>
@@ -368,16 +376,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  computed,
-  nextTick,
-  ref,
-  watch,
-  onBeforeUpdate,
-  getCurrentInstance,
-  onBeforeUnmount,
-  Ref,
-} from "vue";
+import { computed, nextTick, ref, watch, onBeforeUpdate, getCurrentInstance, onBeforeUnmount, Ref } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -386,7 +385,7 @@ import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { tableEmits, tableProps } from "./vc-table-model";
-import { useLocalStorage } from "@vueuse/core";
+import { useLocalStorage, computedAsync, useCurrentElement } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
 
 const props = defineProps({ ...tableProps });
@@ -404,13 +403,12 @@ const tooltip = ref<Instance>();
 const scrollContainer = ref<typeof VcContainer>();
 const actionToggleRefs = ref<ITableItemRef[]>([]);
 const tooltipRefs = ref<ITableItemRef[]>([]);
-const itemActions = ref<IActionBuilderResult[]>([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
 const resizeColumnElement = ref<ITableColumns>();
 const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
-const table = getCurrentInstance();
+const table = useCurrentElement();
 const columnResizeListener = ref(null);
 const columnResizeEndListener = ref(null);
 const resizer = ref();
@@ -418,6 +416,7 @@ const state = useLocalStorage(props.stateKey, []);
 const cols: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
 const dropPosition = ref();
+const calculatedItems = computedAsync(async () => await populateWithActions(props.items), []);
 
 onBeforeUpdate(() => {
   actionToggleRefs.value = [];
@@ -445,12 +444,12 @@ const toggleCols = computed(() => {
 });
 
 const tableAlignment = {
-  start: "justify-start",
-  end: "justify-end",
-  center: "justify-center",
-  between: "justify-between",
-  around: "justify-around",
-  evenly: "justify-evenly",
+  start: "tw-justify-start",
+  end: "tw-justify-end",
+  center: "tw-justify-center",
+  between: "tw-justify-between",
+  around: "tw-justify-around",
+  evenly: "tw-justify-evenly",
 };
 
 const headerCheckbox = computed(() => {
@@ -475,12 +474,14 @@ const filteredCols = computed(() => {
 
 watch(
   () => props.items,
-  (value: { id: string }[]) => {
+  async (value: { id: string }[]) => {
     checkboxes.value = {};
-    value?.forEach((item) => (checkboxes.value[item.id] = false));
+    value?.forEach((item) => {
+      checkboxes.value[item.id] = false;
+    });
     scrollContainer.value?.scrollTop();
   },
-  { deep: true }
+  { deep: true, immediate: true }
 );
 
 watch(
@@ -496,6 +497,26 @@ watch(
   },
   { deep: true, immediate: true }
 );
+
+async function populateWithActions(value: { id?: string }[]) {
+  const populatedItems = [];
+
+  if (props.itemActionBuilder && typeof props.itemActionBuilder === "function") {
+    for (let index = 0; index < value.length; index++) {
+      const element = value[index];
+
+      if (!("actions" in element && element.actions))
+        populatedItems.push({
+          actions: await calculateActions(element),
+          ...element,
+        });
+    }
+
+    return populatedItems;
+  } else {
+    return props.items;
+  }
+}
 
 function setTooltipRefs(el: Element, id: string) {
   if (el) {
@@ -552,7 +573,7 @@ function showActions(item: { id?: string }, index: string) {
 
 async function calculateActions(item: { id?: string }) {
   if (typeof props.itemActionBuilder === "function") {
-    itemActions.value = await props.itemActionBuilder(item);
+    return await props.itemActionBuilder(item);
   }
 }
 
@@ -570,10 +591,10 @@ function handleHeaderClick(item: ITableColumns) {
 }
 
 function handleMouseDown(e: MouseEvent, item: ITableColumns) {
-  let containerLeft = getOffset(table.vnode.el as HTMLElement).left;
+  let containerLeft = getOffset(table.value as HTMLElement).left;
   resizeColumnElement.value = item;
   columnResizing.value = true;
-  lastResize.value = e.pageX - containerLeft + table.vnode.el.scrollLeft;
+  lastResize.value = e.pageX - containerLeft + table.value.scrollLeft;
 
   bindColumnResizeEvents();
 }
@@ -608,10 +629,10 @@ function unbindColumnResizeEvents() {
 }
 
 function onColumnResize(event: MouseEvent) {
-  let containerLeft = getOffset(table.vnode.el as HTMLElement).left;
+  let containerLeft = getOffset(table.value as HTMLElement).left;
 
   resizer.value.style.top = 0 + "px";
-  resizer.value.style.left = event.pageX - containerLeft + table.vnode.el.scrollLeft + "px";
+  resizer.value.style.left = event.pageX - containerLeft + table.value.scrollLeft + "px";
   resizer.value.style.display = "block";
 }
 
@@ -631,16 +652,28 @@ function getOffset(element: HTMLElement) {
 function onColumnResizeEnd() {
   let delta = resizer.value.offsetLeft - lastResize.value;
 
-  let columnWidth = resizeColumnElement.value.width as number;
+  const columnElement: HTMLElement = table.value.querySelector(`#${resizeColumnElement.value.id}`);
+
+  let columnWidth = columnElement.offsetWidth;
   let newColumnWidth = columnWidth + delta;
 
   let minWidth = 15;
-  if (columnWidth + delta > parseInt(minWidth.toString(), 10)) {
-    nextColumn.value = cols.value[cols.value.indexOf(resizeColumnElement.value) + 1];
+  console.log(columnElement, columnWidth);
 
-    let nextColumnWidth = (nextColumn.value.width as number) - delta;
-    if (newColumnWidth > 15 && nextColumnWidth > 15) {
-      resizeTableCells(newColumnWidth, nextColumnWidth);
+  if (columnWidth + delta > parseInt(minWidth.toString(), 10)) {
+    nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
+    console.log(nextColumn.value);
+    if (nextColumn.value) {
+      const nextColElement: HTMLElement = table.value.querySelector(`#${nextColumn.value.id}`);
+
+      let nextColumnWidth = nextColElement.offsetWidth - delta;
+      if (newColumnWidth > 15 && nextColumnWidth > 15) {
+        resizeTableCells(newColumnWidth, nextColumnWidth);
+      }
+    } else {
+      if (newColumnWidth > 15) {
+        resizeColumnElement.value.width = newColumnWidth + "px";
+      }
     }
   }
   resizer.value.style.display = "none";
@@ -651,8 +684,8 @@ function onColumnResizeEnd() {
 }
 
 function resizeTableCells(newColumnWidth: number, nextColumnWidth: number) {
-  resizeColumnElement.value.width = newColumnWidth;
-  nextColumn.value.width = nextColumnWidth;
+  resizeColumnElement.value.width = newColumnWidth + "px";
+  nextColumn.value.width = nextColumnWidth + "px";
 }
 
 function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
@@ -830,9 +863,9 @@ $variants: (
       top: -5px;
     }
 
-    &-row:hover .vc-table__body-actions-container {
-      @apply tw-flex #{!important};
-    }
+    // &-row:hover .vc-table__body-actions-container {
+    //   @apply tw-flex #{!important};
+    // }
 
     &-actions-item {
       @each $name, $variant in $variants {

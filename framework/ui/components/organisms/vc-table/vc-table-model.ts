@@ -28,7 +28,7 @@ export const tableProps = {
   },
   expanded: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   totalLabel: {
     type: String,

@@ -182,7 +182,10 @@
               <th
                 class="tw-w-auto tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               ></th>
-              <div class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0">
+              <div
+                class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0"
+                v-if="props.expanded"
+              >
                 <VcTableColumnSwitcher
                   :items="toggleCols"
                   @change="toggleColumn"
@@ -462,12 +465,8 @@ const headerCheckbox = computed(() => {
 
 const filteredCols = computed(() => {
   return cols.value.filter((x) => {
-    if ("visible" in x) {
-      if (x.visible) {
-        return x;
-      }
-    } else {
-      return x;
+    if (("visible" in x && x.visible) || !("visible" in x)) {
+      return props.expanded ? x : x.alwaysVisible;
     }
   });
 });
@@ -816,6 +815,33 @@ function toggleColumn(item: ITableColumns) {
   if (isStateful()) {
     saveState();
   }
+}
+
+const generatedColumns = computed(() => {
+  const test = props.items[0];
+
+  // return Object.keys(Object.fromEntries(Object.entries(test).filter(([key, value]) => typeof value !== "object"))).map(
+  //   (x) => camelToSnake(x)
+  // );
+
+  return Object.keys(Object.fromEntries(Object.entries(test).filter(([key, value]) => typeof value !== "object"))).filter(x => !props.columns.some(t=> t.id === x)).map(x => ({
+    id: x,
+    title: camelToSnake(x),
+    width: 'auto',
+    visible: false
+  }))
+
+});
+
+function camelToSnake(str: string): string {
+  return (
+    str
+      .replace(/([A-Z])/g, " $1")
+      // uppercase the first character
+      .replace(/^./, function (str) {
+        return str.toUpperCase();
+      })
+  );
 }
 </script>
 

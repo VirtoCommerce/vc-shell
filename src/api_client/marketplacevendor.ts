@@ -3038,437 +3038,437 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
 }
 
 export class VcmpSmClient extends AuthApiBase {
-  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
-  private baseUrl: string;
-  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-  constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-      super();
-      this.http = http ? http : window as any;
-      this.baseUrl = this.getBaseUrl("", baseUrl);
-  }
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        super();
+        this.http = http ? http : window as any;
+        this.baseUrl = this.getBaseUrl("", baseUrl);
+    }
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  search(body?: SearchSmDefinitionsQuery | null | undefined): Promise<SearchSmDefinitionsResult> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/search";
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    search(body?: SearchSmDefinitionsQuery | null | undefined): Promise<SearchSmDefinitionsResult> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/search";
+        url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+        const content_ = JSON.stringify(body);
 
-      let options_: RequestInit = {
-          body: content_,
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json-patch+json",
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processSearch(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSearch(_response);
+        });
+    }
 
-  protected processSearch(response: Response): Promise<SearchSmDefinitionsResult> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SearchSmDefinitionsResult.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SearchSmDefinitionsResult>(null as any);
-  }
+    protected processSearch(response: Response): Promise<SearchSmDefinitionsResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchSmDefinitionsResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchSmDefinitionsResult>(null as any);
+    }
 
-  /**
-   * @return Success
-   */
-  getStateMachineById(id: string | null): Promise<SmDefinition> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/{id}";
-      if (id === undefined || id === null)
-          throw new Error("The parameter 'id' must be defined.");
-      url_ = url_.replace("{id}", encodeURIComponent("" + id));
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @return Success
+     */
+    getStateMachineById(id: string | null): Promise<SmDefinition> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
 
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processGetStateMachineById(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetStateMachineById(_response);
+        });
+    }
 
-  protected processGetStateMachineById(response: Response): Promise<SmDefinition> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SmDefinition.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SmDefinition>(null as any);
-  }
+    protected processGetStateMachineById(response: Response): Promise<SmDefinition> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SmDefinition.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SmDefinition>(null as any);
+    }
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  validateDefinition(body?: SmDefinition | null | undefined): Promise<SmDefinition> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/validate";
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    validateDefinition(body?: SmDefinition | null | undefined): Promise<SmDefinition> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/validate";
+        url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+        const content_ = JSON.stringify(body);
 
-      let options_: RequestInit = {
-          body: content_,
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json-patch+json",
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processValidateDefinition(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processValidateDefinition(_response);
+        });
+    }
 
-  protected processValidateDefinition(response: Response): Promise<SmDefinition> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SmDefinition.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SmDefinition>(null as any);
-  }
+    protected processValidateDefinition(response: Response): Promise<SmDefinition> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SmDefinition.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SmDefinition>(null as any);
+    }
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  createNewDefinition(body?: CreateSmDefinitionCommand | null | undefined): Promise<SmDefinition> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/new";
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    createNewDefinition(body?: CreateSmDefinitionCommand | null | undefined): Promise<SmDefinition> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/new";
+        url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+        const content_ = JSON.stringify(body);
 
-      let options_: RequestInit = {
-          body: content_,
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json-patch+json",
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processCreateNewDefinition(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateNewDefinition(_response);
+        });
+    }
 
-  protected processCreateNewDefinition(response: Response): Promise<SmDefinition> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SmDefinition.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SmDefinition>(null as any);
-  }
+    protected processCreateNewDefinition(response: Response): Promise<SmDefinition> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SmDefinition.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SmDefinition>(null as any);
+    }
 
-  /**
-   * @param body (optional)
-   * @return Success
-   */
-  searchInstance(body?: SearchSmInstancesQuery | null | undefined): Promise<SearchSmInstancesResult> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/instances/search";
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    searchInstance(body?: SearchSmInstancesQuery | null | undefined): Promise<SearchSmInstancesResult> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/instances/search";
+        url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+        const content_ = JSON.stringify(body);
 
-      let options_: RequestInit = {
-          body: content_,
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json-patch+json",
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processSearchInstance(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processSearchInstance(_response);
+        });
+    }
 
-  protected processSearchInstance(response: Response): Promise<SearchSmInstancesResult> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SearchSmInstancesResult.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SearchSmInstancesResult>(null as any);
-  }
+    protected processSearchInstance(response: Response): Promise<SearchSmInstancesResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SearchSmInstancesResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SearchSmInstancesResult>(null as any);
+    }
 
-  /**
-   * @return Success
-   */
-  getStateMachineInstanceById(instanceId: string | null): Promise<SmInstance> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/instances/{instanceId}";
-      if (instanceId === undefined || instanceId === null)
-          throw new Error("The parameter 'instanceId' must be defined.");
-      url_ = url_.replace("{instanceId}", encodeURIComponent("" + instanceId));
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @return Success
+     */
+    getStateMachineInstanceById(instanceId: string | null): Promise<SmInstance> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/instances/{instanceId}";
+        if (instanceId === undefined || instanceId === null)
+            throw new Error("The parameter 'instanceId' must be defined.");
+        url_ = url_.replace("{instanceId}", encodeURIComponent("" + instanceId));
+        url_ = url_.replace(/[?&]$/, "");
 
-      let options_: RequestInit = {
-          method: "GET",
-          headers: {
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processGetStateMachineInstanceById(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetStateMachineInstanceById(_response);
+        });
+    }
 
-  protected processGetStateMachineInstanceById(response: Response): Promise<SmInstance> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SmInstance.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SmInstance>(null as any);
-  }
+    protected processGetStateMachineInstanceById(response: Response): Promise<SmInstance> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SmInstance.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SmInstance>(null as any);
+    }
 
-  /**
-   * @param instanceId (optional)
-   * @param body (optional)
-   * @return Success
-   */
-  createNewInstance(smId: string | null, instanceId?: string | null | undefined, body?: IHasDynamicProperties | null | undefined): Promise<SmInstance> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/{smId}/instances/new?";
-      if (smId === undefined || smId === null)
-          throw new Error("The parameter 'smId' must be defined.");
-      url_ = url_.replace("{smId}", encodeURIComponent("" + smId));
-      if (instanceId !== undefined && instanceId !== null)
-          url_ += "instanceId=" + encodeURIComponent("" + instanceId) + "&";
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @param instanceId (optional)
+     * @param body (optional)
+     * @return Success
+     */
+    createNewInstance(smId: string | null, instanceId?: string | null | undefined, body?: IHasDynamicProperties | null | undefined): Promise<SmInstance> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/{smId}/instances/new?";
+        if (smId === undefined || smId === null)
+            throw new Error("The parameter 'smId' must be defined.");
+        url_ = url_.replace("{smId}", encodeURIComponent("" + smId));
+        if (instanceId !== undefined && instanceId !== null)
+            url_ += "instanceId=" + encodeURIComponent("" + instanceId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
 
-      const content_ = JSON.stringify(body);
+        const content_ = JSON.stringify(body);
 
-      let options_: RequestInit = {
-          body: content_,
-          method: "POST",
-          headers: {
-              "Content-Type": "application/json-patch+json",
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processCreateNewInstance(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processCreateNewInstance(_response);
+        });
+    }
 
-  protected processCreateNewInstance(response: Response): Promise<SmInstance> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SmInstance.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SmInstance>(null as any);
-  }
+    protected processCreateNewInstance(response: Response): Promise<SmInstance> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SmInstance.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SmInstance>(null as any);
+    }
 
-  /**
-   * @return Success
-   */
-  fire(instanceId: string | null, trigger: string | null, entityId: string | null): Promise<SmInstance> {
-      let url_ = this.baseUrl + "/api/vcmp/sm/instances/{instanceId}/fire/{trigger}/{entityId}";
-      if (instanceId === undefined || instanceId === null)
-          throw new Error("The parameter 'instanceId' must be defined.");
-      url_ = url_.replace("{instanceId}", encodeURIComponent("" + instanceId));
-      if (trigger === undefined || trigger === null)
-          throw new Error("The parameter 'trigger' must be defined.");
-      url_ = url_.replace("{trigger}", encodeURIComponent("" + trigger));
-      if (entityId === undefined || entityId === null)
-          throw new Error("The parameter 'entityId' must be defined.");
-      url_ = url_.replace("{entityId}", encodeURIComponent("" + entityId));
-      url_ = url_.replace(/[?&]$/, "");
+    /**
+     * @return Success
+     */
+    fire(instanceId: string | null, trigger: string | null, entityId: string | null): Promise<SmInstance> {
+        let url_ = this.baseUrl + "/api/vcmp/sm/instances/{instanceId}/fire/{trigger}/{entityId}";
+        if (instanceId === undefined || instanceId === null)
+            throw new Error("The parameter 'instanceId' must be defined.");
+        url_ = url_.replace("{instanceId}", encodeURIComponent("" + instanceId));
+        if (trigger === undefined || trigger === null)
+            throw new Error("The parameter 'trigger' must be defined.");
+        url_ = url_.replace("{trigger}", encodeURIComponent("" + trigger));
+        if (entityId === undefined || entityId === null)
+            throw new Error("The parameter 'entityId' must be defined.");
+        url_ = url_.replace("{entityId}", encodeURIComponent("" + entityId));
+        url_ = url_.replace(/[?&]$/, "");
 
-      let options_: RequestInit = {
-          method: "POST",
-          headers: {
-              "Accept": "text/plain"
-          }
-      };
+        let options_: RequestInit = {
+            method: "POST",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
 
-      return this.transformOptions(options_).then(transformedOptions_ => {
-          return this.http.fetch(url_, transformedOptions_);
-      }).then((_response: Response) => {
-          return this.processFire(_response);
-      });
-  }
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processFire(_response);
+        });
+    }
 
-  protected processFire(response: Response): Promise<SmInstance> {
-      const status = response.status;
-      let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-      if (status === 200) {
-          return response.text().then((_responseText) => {
-          let result200: any = null;
-          let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-          result200 = SmInstance.fromJS(resultData200);
-          return result200;
-          });
-      } else if (status === 401) {
-          return response.text().then((_responseText) => {
-          return throwException("Unauthorized", status, _responseText, _headers);
-          });
-      } else if (status === 403) {
-          return response.text().then((_responseText) => {
-          return throwException("Forbidden", status, _responseText, _headers);
-          });
-      } else if (status !== 200 && status !== 204) {
-          return response.text().then((_responseText) => {
-          return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-          });
-      }
-      return Promise.resolve<SmInstance>(null as any);
-  }
+    protected processFire(response: Response): Promise<SmInstance> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SmInstance.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<SmInstance>(null as any);
+    }
 }
 
 export class VcmpSyncClient extends AuthApiBase {
@@ -8261,11 +8261,11 @@ export class ProductDetails implements IProductDetails {
                     this.images!.push(Image.fromJS(item));
             }
             if (Array.isArray(_data["assets"])) {
-                this.assets = [] as any;
-                for (let item of _data["assets"])
-                    this.assets!.push(Asset.fromJS(item));
-            }
-        }
+              this.assets = [] as any;
+              for (let item of _data["assets"])
+                  this.assets!.push(Asset.fromJS(item));
+          }
+      }
     }
 
     static fromJS(data: any): ProductDetails {
@@ -8294,11 +8294,11 @@ export class ProductDetails implements IProductDetails {
                 data["images"].push(item.toJSON());
         }
         if (Array.isArray(this.assets)) {
-            data["assets"] = [];
-            for (let item of this.assets)
-                data["assets"].push(item.toJSON());
-        }
-        return data;
+          data["assets"] = [];
+          for (let item of this.assets)
+              data["assets"].push(item.toJSON());
+      }
+      return data;
     }
 }
 
@@ -15832,727 +15832,727 @@ export interface IForgotPasswordCommand {
 }
 
 export class SearchSmDefinitionsQuery implements ISearchSmDefinitionsQuery {
-  responseGroup?: string | undefined;
-  objectType?: string | undefined;
-  objectTypes?: string[] | undefined;
-  objectIds?: string[] | undefined;
-  keyword?: string | undefined;
-  searchPhrase?: string | undefined;
-  languageCode?: string | undefined;
-  sort?: string | undefined;
-  readonly sortInfos?: SortInfo[] | undefined;
-  skip?: number;
-  take?: number;
+    responseGroup?: string | undefined;
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    keyword?: string | undefined;
+    searchPhrase?: string | undefined;
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    readonly sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
 
-  constructor(data?: ISearchSmDefinitionsQuery) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISearchSmDefinitionsQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.responseGroup = _data["responseGroup"];
-          this.objectType = _data["objectType"];
-          if (Array.isArray(_data["objectTypes"])) {
-              this.objectTypes = [] as any;
-              for (let item of _data["objectTypes"])
-                  this.objectTypes!.push(item);
-          }
-          if (Array.isArray(_data["objectIds"])) {
-              this.objectIds = [] as any;
-              for (let item of _data["objectIds"])
-                  this.objectIds!.push(item);
-          }
-          this.keyword = _data["keyword"];
-          this.searchPhrase = _data["searchPhrase"];
-          this.languageCode = _data["languageCode"];
-          this.sort = _data["sort"];
-          if (Array.isArray(_data["sortInfos"])) {
-              (<any>this).sortInfos = [] as any;
-              for (let item of _data["sortInfos"])
-                  (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-          }
-          this.skip = _data["skip"];
-          this.take = _data["take"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.responseGroup = _data["responseGroup"];
+            this.objectType = _data["objectType"];
+            if (Array.isArray(_data["objectTypes"])) {
+                this.objectTypes = [] as any;
+                for (let item of _data["objectTypes"])
+                    this.objectTypes!.push(item);
+            }
+            if (Array.isArray(_data["objectIds"])) {
+                this.objectIds = [] as any;
+                for (let item of _data["objectIds"])
+                    this.objectIds!.push(item);
+            }
+            this.keyword = _data["keyword"];
+            this.searchPhrase = _data["searchPhrase"];
+            this.languageCode = _data["languageCode"];
+            this.sort = _data["sort"];
+            if (Array.isArray(_data["sortInfos"])) {
+                (<any>this).sortInfos = [] as any;
+                for (let item of _data["sortInfos"])
+                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+            }
+            this.skip = _data["skip"];
+            this.take = _data["take"];
+        }
+    }
 
-  static fromJS(data: any): SearchSmDefinitionsQuery {
-      data = typeof data === 'object' ? data : {};
-      let result = new SearchSmDefinitionsQuery();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SearchSmDefinitionsQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchSmDefinitionsQuery();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["responseGroup"] = this.responseGroup;
-      data["objectType"] = this.objectType;
-      if (Array.isArray(this.objectTypes)) {
-          data["objectTypes"] = [];
-          for (let item of this.objectTypes)
-              data["objectTypes"].push(item);
-      }
-      if (Array.isArray(this.objectIds)) {
-          data["objectIds"] = [];
-          for (let item of this.objectIds)
-              data["objectIds"].push(item);
-      }
-      data["keyword"] = this.keyword;
-      data["searchPhrase"] = this.searchPhrase;
-      data["languageCode"] = this.languageCode;
-      data["sort"] = this.sort;
-      if (Array.isArray(this.sortInfos)) {
-          data["sortInfos"] = [];
-          for (let item of this.sortInfos)
-              data["sortInfos"].push(item.toJSON());
-      }
-      data["skip"] = this.skip;
-      data["take"] = this.take;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["responseGroup"] = this.responseGroup;
+        data["objectType"] = this.objectType;
+        if (Array.isArray(this.objectTypes)) {
+            data["objectTypes"] = [];
+            for (let item of this.objectTypes)
+                data["objectTypes"].push(item);
+        }
+        if (Array.isArray(this.objectIds)) {
+            data["objectIds"] = [];
+            for (let item of this.objectIds)
+                data["objectIds"].push(item);
+        }
+        data["keyword"] = this.keyword;
+        data["searchPhrase"] = this.searchPhrase;
+        data["languageCode"] = this.languageCode;
+        data["sort"] = this.sort;
+        if (Array.isArray(this.sortInfos)) {
+            data["sortInfos"] = [];
+            for (let item of this.sortInfos)
+                data["sortInfos"].push(item.toJSON());
+        }
+        data["skip"] = this.skip;
+        data["take"] = this.take;
+        return data;
+    }
 }
 
 export interface ISearchSmDefinitionsQuery {
-  responseGroup?: string | undefined;
-  objectType?: string | undefined;
-  objectTypes?: string[] | undefined;
-  objectIds?: string[] | undefined;
-  keyword?: string | undefined;
-  searchPhrase?: string | undefined;
-  languageCode?: string | undefined;
-  sort?: string | undefined;
-  sortInfos?: SortInfo[] | undefined;
-  skip?: number;
-  take?: number;
+    responseGroup?: string | undefined;
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    keyword?: string | undefined;
+    searchPhrase?: string | undefined;
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
 }
 
 export class SmTransition implements ISmTransition {
-  trigger?: string | undefined;
-  description?: string | undefined;
-  toState?: string | undefined;
-  icon?: string | undefined;
+    trigger?: string | undefined;
+    description?: string | undefined;
+    toState?: string | undefined;
+    icon?: string | undefined;
 
-  constructor(data?: ISmTransition) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISmTransition) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.trigger = _data["trigger"];
-          this.description = _data["description"];
-          this.toState = _data["toState"];
-          this.icon = _data["icon"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.trigger = _data["trigger"];
+            this.description = _data["description"];
+            this.toState = _data["toState"];
+            this.icon = _data["icon"];
+        }
+    }
 
-  static fromJS(data: any): SmTransition {
-      data = typeof data === 'object' ? data : {};
-      let result = new SmTransition();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SmTransition {
+        data = typeof data === 'object' ? data : {};
+        let result = new SmTransition();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["trigger"] = this.trigger;
-      data["description"] = this.description;
-      data["toState"] = this.toState;
-      data["icon"] = this.icon;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["trigger"] = this.trigger;
+        data["description"] = this.description;
+        data["toState"] = this.toState;
+        data["icon"] = this.icon;
+        return data;
+    }
 }
 
 export interface ISmTransition {
-  trigger?: string | undefined;
-  description?: string | undefined;
-  toState?: string | undefined;
-  icon?: string | undefined;
+    trigger?: string | undefined;
+    description?: string | undefined;
+    toState?: string | undefined;
+    icon?: string | undefined;
 }
 
 export class SmAction implements ISmAction {
-  type?: string | undefined;
+    type?: string | undefined;
 
-  constructor(data?: ISmAction) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISmAction) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.type = _data["type"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.type = _data["type"];
+        }
+    }
 
-  static fromJS(data: any): SmAction {
-      data = typeof data === 'object' ? data : {};
-      let result = new SmAction();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SmAction {
+        data = typeof data === 'object' ? data : {};
+        let result = new SmAction();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["type"] = this.type;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["type"] = this.type;
+        return data;
+    }
 }
 
 export interface ISmAction {
-  type?: string | undefined;
+    type?: string | undefined;
 }
 
 export class SmState implements ISmState {
-  name?: string | undefined;
-  type?: string | undefined;
-  description?: string | undefined;
-  isInitial?: boolean;
-  isFinal?: boolean;
-  autoTransitionTimeout?: string | undefined;
-  stateData?: any | undefined;
-  transitions?: SmTransition[] | undefined;
-  onEntryActions?: SmAction[] | undefined;
+    name?: string | undefined;
+    type?: string | undefined;
+    description?: string | undefined;
+    isInitial?: boolean;
+    isFinal?: boolean;
+    autoTransitionTimeout?: string | undefined;
+    stateData?: any | undefined;
+    transitions?: SmTransition[] | undefined;
+    onEntryActions?: SmAction[] | undefined;
 
-  constructor(data?: ISmState) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISmState) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.name = _data["name"];
-          this.type = _data["type"];
-          this.description = _data["description"];
-          this.isInitial = _data["isInitial"];
-          this.isFinal = _data["isFinal"];
-          this.autoTransitionTimeout = _data["autoTransitionTimeout"];
-          this.stateData = _data["stateData"];
-          if (Array.isArray(_data["transitions"])) {
-              this.transitions = [] as any;
-              for (let item of _data["transitions"])
-                  this.transitions!.push(SmTransition.fromJS(item));
-          }
-          if (Array.isArray(_data["onEntryActions"])) {
-              this.onEntryActions = [] as any;
-              for (let item of _data["onEntryActions"])
-                  this.onEntryActions!.push(SmAction.fromJS(item));
-          }
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.type = _data["type"];
+            this.description = _data["description"];
+            this.isInitial = _data["isInitial"];
+            this.isFinal = _data["isFinal"];
+            this.autoTransitionTimeout = _data["autoTransitionTimeout"];
+            this.stateData = _data["stateData"];
+            if (Array.isArray(_data["transitions"])) {
+                this.transitions = [] as any;
+                for (let item of _data["transitions"])
+                    this.transitions!.push(SmTransition.fromJS(item));
+            }
+            if (Array.isArray(_data["onEntryActions"])) {
+                this.onEntryActions = [] as any;
+                for (let item of _data["onEntryActions"])
+                    this.onEntryActions!.push(SmAction.fromJS(item));
+            }
+        }
+    }
 
-  static fromJS(data: any): SmState {
-      data = typeof data === 'object' ? data : {};
-      let result = new SmState();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SmState {
+        data = typeof data === 'object' ? data : {};
+        let result = new SmState();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["name"] = this.name;
-      data["type"] = this.type;
-      data["description"] = this.description;
-      data["isInitial"] = this.isInitial;
-      data["isFinal"] = this.isFinal;
-      data["autoTransitionTimeout"] = this.autoTransitionTimeout;
-      data["stateData"] = this.stateData;
-      if (Array.isArray(this.transitions)) {
-          data["transitions"] = [];
-          for (let item of this.transitions)
-              data["transitions"].push(item.toJSON());
-      }
-      if (Array.isArray(this.onEntryActions)) {
-          data["onEntryActions"] = [];
-          for (let item of this.onEntryActions)
-              data["onEntryActions"].push(item.toJSON());
-      }
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["type"] = this.type;
+        data["description"] = this.description;
+        data["isInitial"] = this.isInitial;
+        data["isFinal"] = this.isFinal;
+        data["autoTransitionTimeout"] = this.autoTransitionTimeout;
+        data["stateData"] = this.stateData;
+        if (Array.isArray(this.transitions)) {
+            data["transitions"] = [];
+            for (let item of this.transitions)
+                data["transitions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.onEntryActions)) {
+            data["onEntryActions"] = [];
+            for (let item of this.onEntryActions)
+                data["onEntryActions"].push(item.toJSON());
+        }
+        return data;
+    }
 }
 
 export interface ISmState {
-  name?: string | undefined;
-  type?: string | undefined;
-  description?: string | undefined;
-  isInitial?: boolean;
-  isFinal?: boolean;
-  autoTransitionTimeout?: string | undefined;
-  stateData?: any | undefined;
-  transitions?: SmTransition[] | undefined;
-  onEntryActions?: SmAction[] | undefined;
+    name?: string | undefined;
+    type?: string | undefined;
+    description?: string | undefined;
+    isInitial?: boolean;
+    isFinal?: boolean;
+    autoTransitionTimeout?: string | undefined;
+    stateData?: any | undefined;
+    transitions?: SmTransition[] | undefined;
+    onEntryActions?: SmAction[] | undefined;
 }
 
 export class SmDefinition implements ISmDefinition {
-  version?: string | undefined;
-  entityType?: string | undefined;
-  name?: string | undefined;
-  isActive?: boolean;
-  states?: SmState[] | undefined;
-  createdDate?: Date;
-  modifiedDate?: Date | undefined;
-  createdBy?: string | undefined;
-  modifiedBy?: string | undefined;
-  id?: string | undefined;
+    version?: string | undefined;
+    entityType?: string | undefined;
+    name?: string | undefined;
+    isActive?: boolean;
+    states?: SmState[] | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
 
-  constructor(data?: ISmDefinition) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISmDefinition) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.version = _data["version"];
-          this.entityType = _data["entityType"];
-          this.name = _data["name"];
-          this.isActive = _data["isActive"];
-          if (Array.isArray(_data["states"])) {
-              this.states = [] as any;
-              for (let item of _data["states"])
-                  this.states!.push(SmState.fromJS(item));
-          }
-          this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-          this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-          this.createdBy = _data["createdBy"];
-          this.modifiedBy = _data["modifiedBy"];
-          this.id = _data["id"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.version = _data["version"];
+            this.entityType = _data["entityType"];
+            this.name = _data["name"];
+            this.isActive = _data["isActive"];
+            if (Array.isArray(_data["states"])) {
+                this.states = [] as any;
+                for (let item of _data["states"])
+                    this.states!.push(SmState.fromJS(item));
+            }
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
 
-  static fromJS(data: any): SmDefinition {
-      data = typeof data === 'object' ? data : {};
-      let result = new SmDefinition();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SmDefinition {
+        data = typeof data === 'object' ? data : {};
+        let result = new SmDefinition();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["version"] = this.version;
-      data["entityType"] = this.entityType;
-      data["name"] = this.name;
-      data["isActive"] = this.isActive;
-      if (Array.isArray(this.states)) {
-          data["states"] = [];
-          for (let item of this.states)
-              data["states"].push(item.toJSON());
-      }
-      data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-      data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-      data["createdBy"] = this.createdBy;
-      data["modifiedBy"] = this.modifiedBy;
-      data["id"] = this.id;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["version"] = this.version;
+        data["entityType"] = this.entityType;
+        data["name"] = this.name;
+        data["isActive"] = this.isActive;
+        if (Array.isArray(this.states)) {
+            data["states"] = [];
+            for (let item of this.states)
+                data["states"].push(item.toJSON());
+        }
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
 }
 
 export interface ISmDefinition {
-  version?: string | undefined;
-  entityType?: string | undefined;
-  name?: string | undefined;
-  isActive?: boolean;
-  states?: SmState[] | undefined;
-  createdDate?: Date;
-  modifiedDate?: Date | undefined;
-  createdBy?: string | undefined;
-  modifiedBy?: string | undefined;
-  id?: string | undefined;
+    version?: string | undefined;
+    entityType?: string | undefined;
+    name?: string | undefined;
+    isActive?: boolean;
+    states?: SmState[] | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
 }
 
 export class SearchSmDefinitionsResult implements ISearchSmDefinitionsResult {
-  totalCount?: number;
-  results?: SmDefinition[] | undefined;
+    totalCount?: number;
+    results?: SmDefinition[] | undefined;
 
-  constructor(data?: ISearchSmDefinitionsResult) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISearchSmDefinitionsResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.totalCount = _data["totalCount"];
-          if (Array.isArray(_data["results"])) {
-              this.results = [] as any;
-              for (let item of _data["results"])
-                  this.results!.push(SmDefinition.fromJS(item));
-          }
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(SmDefinition.fromJS(item));
+            }
+        }
+    }
 
-  static fromJS(data: any): SearchSmDefinitionsResult {
-      data = typeof data === 'object' ? data : {};
-      let result = new SearchSmDefinitionsResult();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SearchSmDefinitionsResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchSmDefinitionsResult();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["totalCount"] = this.totalCount;
-      if (Array.isArray(this.results)) {
-          data["results"] = [];
-          for (let item of this.results)
-              data["results"].push(item.toJSON());
-      }
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        return data;
+    }
 }
 
 export interface ISearchSmDefinitionsResult {
-  totalCount?: number;
-  results?: SmDefinition[] | undefined;
+    totalCount?: number;
+    results?: SmDefinition[] | undefined;
 }
 
 export class CreateSmDefinitionCommand implements ICreateSmDefinitionCommand {
-  smDefinition?: SmDefinition | undefined;
+    smDefinition?: SmDefinition | undefined;
 
-  constructor(data?: ICreateSmDefinitionCommand) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ICreateSmDefinitionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.smDefinition = _data["smDefinition"] ? SmDefinition.fromJS(_data["smDefinition"]) : <any>undefined;
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.smDefinition = _data["smDefinition"] ? SmDefinition.fromJS(_data["smDefinition"]) : <any>undefined;
+        }
+    }
 
-  static fromJS(data: any): CreateSmDefinitionCommand {
-      data = typeof data === 'object' ? data : {};
-      let result = new CreateSmDefinitionCommand();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): CreateSmDefinitionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateSmDefinitionCommand();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["smDefinition"] = this.smDefinition ? this.smDefinition.toJSON() : <any>undefined;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["smDefinition"] = this.smDefinition ? this.smDefinition.toJSON() : <any>undefined;
+        return data;
+    }
 }
 
 export interface ICreateSmDefinitionCommand {
-  smDefinition?: SmDefinition | undefined;
+    smDefinition?: SmDefinition | undefined;
 }
 
 export class SearchSmInstancesQuery implements ISearchSmInstancesQuery {
-  responseGroup?: string | undefined;
-  objectType?: string | undefined;
-  objectTypes?: string[] | undefined;
-  objectIds?: string[] | undefined;
-  keyword?: string | undefined;
-  searchPhrase?: string | undefined;
-  languageCode?: string | undefined;
-  sort?: string | undefined;
-  readonly sortInfos?: SortInfo[] | undefined;
-  skip?: number;
-  take?: number;
+    responseGroup?: string | undefined;
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    keyword?: string | undefined;
+    searchPhrase?: string | undefined;
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    readonly sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
 
-  constructor(data?: ISearchSmInstancesQuery) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISearchSmInstancesQuery) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.responseGroup = _data["responseGroup"];
-          this.objectType = _data["objectType"];
-          if (Array.isArray(_data["objectTypes"])) {
-              this.objectTypes = [] as any;
-              for (let item of _data["objectTypes"])
-                  this.objectTypes!.push(item);
-          }
-          if (Array.isArray(_data["objectIds"])) {
-              this.objectIds = [] as any;
-              for (let item of _data["objectIds"])
-                  this.objectIds!.push(item);
-          }
-          this.keyword = _data["keyword"];
-          this.searchPhrase = _data["searchPhrase"];
-          this.languageCode = _data["languageCode"];
-          this.sort = _data["sort"];
-          if (Array.isArray(_data["sortInfos"])) {
-              (<any>this).sortInfos = [] as any;
-              for (let item of _data["sortInfos"])
-                  (<any>this).sortInfos!.push(SortInfo.fromJS(item));
-          }
-          this.skip = _data["skip"];
-          this.take = _data["take"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.responseGroup = _data["responseGroup"];
+            this.objectType = _data["objectType"];
+            if (Array.isArray(_data["objectTypes"])) {
+                this.objectTypes = [] as any;
+                for (let item of _data["objectTypes"])
+                    this.objectTypes!.push(item);
+            }
+            if (Array.isArray(_data["objectIds"])) {
+                this.objectIds = [] as any;
+                for (let item of _data["objectIds"])
+                    this.objectIds!.push(item);
+            }
+            this.keyword = _data["keyword"];
+            this.searchPhrase = _data["searchPhrase"];
+            this.languageCode = _data["languageCode"];
+            this.sort = _data["sort"];
+            if (Array.isArray(_data["sortInfos"])) {
+                (<any>this).sortInfos = [] as any;
+                for (let item of _data["sortInfos"])
+                    (<any>this).sortInfos!.push(SortInfo.fromJS(item));
+            }
+            this.skip = _data["skip"];
+            this.take = _data["take"];
+        }
+    }
 
-  static fromJS(data: any): SearchSmInstancesQuery {
-      data = typeof data === 'object' ? data : {};
-      let result = new SearchSmInstancesQuery();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SearchSmInstancesQuery {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchSmInstancesQuery();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["responseGroup"] = this.responseGroup;
-      data["objectType"] = this.objectType;
-      if (Array.isArray(this.objectTypes)) {
-          data["objectTypes"] = [];
-          for (let item of this.objectTypes)
-              data["objectTypes"].push(item);
-      }
-      if (Array.isArray(this.objectIds)) {
-          data["objectIds"] = [];
-          for (let item of this.objectIds)
-              data["objectIds"].push(item);
-      }
-      data["keyword"] = this.keyword;
-      data["searchPhrase"] = this.searchPhrase;
-      data["languageCode"] = this.languageCode;
-      data["sort"] = this.sort;
-      if (Array.isArray(this.sortInfos)) {
-          data["sortInfos"] = [];
-          for (let item of this.sortInfos)
-              data["sortInfos"].push(item.toJSON());
-      }
-      data["skip"] = this.skip;
-      data["take"] = this.take;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["responseGroup"] = this.responseGroup;
+        data["objectType"] = this.objectType;
+        if (Array.isArray(this.objectTypes)) {
+            data["objectTypes"] = [];
+            for (let item of this.objectTypes)
+                data["objectTypes"].push(item);
+        }
+        if (Array.isArray(this.objectIds)) {
+            data["objectIds"] = [];
+            for (let item of this.objectIds)
+                data["objectIds"].push(item);
+        }
+        data["keyword"] = this.keyword;
+        data["searchPhrase"] = this.searchPhrase;
+        data["languageCode"] = this.languageCode;
+        data["sort"] = this.sort;
+        if (Array.isArray(this.sortInfos)) {
+            data["sortInfos"] = [];
+            for (let item of this.sortInfos)
+                data["sortInfos"].push(item.toJSON());
+        }
+        data["skip"] = this.skip;
+        data["take"] = this.take;
+        return data;
+    }
 }
 
 export interface ISearchSmInstancesQuery {
-  responseGroup?: string | undefined;
-  objectType?: string | undefined;
-  objectTypes?: string[] | undefined;
-  objectIds?: string[] | undefined;
-  keyword?: string | undefined;
-  searchPhrase?: string | undefined;
-  languageCode?: string | undefined;
-  sort?: string | undefined;
-  sortInfos?: SortInfo[] | undefined;
-  skip?: number;
-  take?: number;
+    responseGroup?: string | undefined;
+    objectType?: string | undefined;
+    objectTypes?: string[] | undefined;
+    objectIds?: string[] | undefined;
+    keyword?: string | undefined;
+    searchPhrase?: string | undefined;
+    languageCode?: string | undefined;
+    sort?: string | undefined;
+    sortInfos?: SortInfo[] | undefined;
+    skip?: number;
+    take?: number;
 }
 
 export class SmInstance implements ISmInstance {
-  entityId?: string | undefined;
-  entityType?: string | undefined;
-  readonly stateMachineId?: string | undefined;
-  readonly stateMachineName?: string | undefined;
-  readonly state?: string | undefined;
-  readonly currentState?: SmState | undefined;
-  permittedTriggers?: string[] | undefined;
-  readonly isActive?: boolean;
-  createdDate?: Date;
-  modifiedDate?: Date | undefined;
-  createdBy?: string | undefined;
-  modifiedBy?: string | undefined;
-  id?: string | undefined;
+    entityId?: string | undefined;
+    entityType?: string | undefined;
+    readonly stateMachineId?: string | undefined;
+    readonly stateMachineName?: string | undefined;
+    readonly state?: string | undefined;
+    readonly currentState?: SmState | undefined;
+    permittedTriggers?: string[] | undefined;
+    readonly isActive?: boolean;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
 
-  constructor(data?: ISmInstance) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISmInstance) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.entityId = _data["entityId"];
-          this.entityType = _data["entityType"];
-          (<any>this).stateMachineId = _data["stateMachineId"];
-          (<any>this).stateMachineName = _data["stateMachineName"];
-          (<any>this).state = _data["state"];
-          (<any>this).currentState = _data["currentState"] ? SmState.fromJS(_data["currentState"]) : <any>undefined;
-          if (Array.isArray(_data["permittedTriggers"])) {
-              this.permittedTriggers = [] as any;
-              for (let item of _data["permittedTriggers"])
-                  this.permittedTriggers!.push(item);
-          }
-          (<any>this).isActive = _data["isActive"];
-          this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
-          this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
-          this.createdBy = _data["createdBy"];
-          this.modifiedBy = _data["modifiedBy"];
-          this.id = _data["id"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.entityId = _data["entityId"];
+            this.entityType = _data["entityType"];
+            (<any>this).stateMachineId = _data["stateMachineId"];
+            (<any>this).stateMachineName = _data["stateMachineName"];
+            (<any>this).state = _data["state"];
+            (<any>this).currentState = _data["currentState"] ? SmState.fromJS(_data["currentState"]) : <any>undefined;
+            if (Array.isArray(_data["permittedTriggers"])) {
+                this.permittedTriggers = [] as any;
+                for (let item of _data["permittedTriggers"])
+                    this.permittedTriggers!.push(item);
+            }
+            (<any>this).isActive = _data["isActive"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
 
-  static fromJS(data: any): SmInstance {
-      data = typeof data === 'object' ? data : {};
-      let result = new SmInstance();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SmInstance {
+        data = typeof data === 'object' ? data : {};
+        let result = new SmInstance();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["entityId"] = this.entityId;
-      data["entityType"] = this.entityType;
-      data["stateMachineId"] = this.stateMachineId;
-      data["stateMachineName"] = this.stateMachineName;
-      data["state"] = this.state;
-      data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
-      if (Array.isArray(this.permittedTriggers)) {
-          data["permittedTriggers"] = [];
-          for (let item of this.permittedTriggers)
-              data["permittedTriggers"].push(item);
-      }
-      data["isActive"] = this.isActive;
-      data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-      data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
-      data["createdBy"] = this.createdBy;
-      data["modifiedBy"] = this.modifiedBy;
-      data["id"] = this.id;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["entityId"] = this.entityId;
+        data["entityType"] = this.entityType;
+        data["stateMachineId"] = this.stateMachineId;
+        data["stateMachineName"] = this.stateMachineName;
+        data["state"] = this.state;
+        data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
+        if (Array.isArray(this.permittedTriggers)) {
+            data["permittedTriggers"] = [];
+            for (let item of this.permittedTriggers)
+                data["permittedTriggers"].push(item);
+        }
+        data["isActive"] = this.isActive;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
 }
 
 export interface ISmInstance {
-  entityId?: string | undefined;
-  entityType?: string | undefined;
-  stateMachineId?: string | undefined;
-  stateMachineName?: string | undefined;
-  state?: string | undefined;
-  currentState?: SmState | undefined;
-  permittedTriggers?: string[] | undefined;
-  isActive?: boolean;
-  createdDate?: Date;
-  modifiedDate?: Date | undefined;
-  createdBy?: string | undefined;
-  modifiedBy?: string | undefined;
-  id?: string | undefined;
+    entityId?: string | undefined;
+    entityType?: string | undefined;
+    stateMachineId?: string | undefined;
+    stateMachineName?: string | undefined;
+    state?: string | undefined;
+    currentState?: SmState | undefined;
+    permittedTriggers?: string[] | undefined;
+    isActive?: boolean;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
 }
 
 export class SearchSmInstancesResult implements ISearchSmInstancesResult {
-  totalCount?: number;
-  results?: SmInstance[] | undefined;
+    totalCount?: number;
+    results?: SmInstance[] | undefined;
 
-  constructor(data?: ISearchSmInstancesResult) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: ISearchSmInstancesResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          this.totalCount = _data["totalCount"];
-          if (Array.isArray(_data["results"])) {
-              this.results = [] as any;
-              for (let item of _data["results"])
-                  this.results!.push(SmInstance.fromJS(item));
-          }
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            this.totalCount = _data["totalCount"];
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(SmInstance.fromJS(item));
+            }
+        }
+    }
 
-  static fromJS(data: any): SearchSmInstancesResult {
-      data = typeof data === 'object' ? data : {};
-      let result = new SearchSmInstancesResult();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): SearchSmInstancesResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchSmInstancesResult();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["totalCount"] = this.totalCount;
-      if (Array.isArray(this.results)) {
-          data["results"] = [];
-          for (let item of this.results)
-              data["results"].push(item.toJSON());
-      }
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["totalCount"] = this.totalCount;
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        return data;
+    }
 }
 
 export interface ISearchSmInstancesResult {
-  totalCount?: number;
-  results?: SmInstance[] | undefined;
+    totalCount?: number;
+    results?: SmInstance[] | undefined;
 }
 
 export class IHasDynamicProperties implements IIHasDynamicProperties {
-  readonly objectType?: string | undefined;
-  dynamicProperties?: DynamicObjectProperty[] | undefined;
-  id?: string | undefined;
+    readonly objectType?: string | undefined;
+    dynamicProperties?: DynamicObjectProperty[] | undefined;
+    id?: string | undefined;
 
-  constructor(data?: IIHasDynamicProperties) {
-      if (data) {
-          for (var property in data) {
-              if (data.hasOwnProperty(property))
-                  (<any>this)[property] = (<any>data)[property];
-          }
-      }
-  }
+    constructor(data?: IIHasDynamicProperties) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
 
-  init(_data?: any) {
-      if (_data) {
-          (<any>this).objectType = _data["objectType"];
-          if (Array.isArray(_data["dynamicProperties"])) {
-              this.dynamicProperties = [] as any;
-              for (let item of _data["dynamicProperties"])
-                  this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
-          }
-          this.id = _data["id"];
-      }
-  }
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).objectType = _data["objectType"];
+            if (Array.isArray(_data["dynamicProperties"])) {
+                this.dynamicProperties = [] as any;
+                for (let item of _data["dynamicProperties"])
+                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+            }
+            this.id = _data["id"];
+        }
+    }
 
-  static fromJS(data: any): IHasDynamicProperties {
-      data = typeof data === 'object' ? data : {};
-      let result = new IHasDynamicProperties();
-      result.init(data);
-      return result;
-  }
+    static fromJS(data: any): IHasDynamicProperties {
+        data = typeof data === 'object' ? data : {};
+        let result = new IHasDynamicProperties();
+        result.init(data);
+        return result;
+    }
 
-  toJSON(data?: any) {
-      data = typeof data === 'object' ? data : {};
-      data["objectType"] = this.objectType;
-      if (Array.isArray(this.dynamicProperties)) {
-          data["dynamicProperties"] = [];
-          for (let item of this.dynamicProperties)
-              data["dynamicProperties"].push(item.toJSON());
-      }
-      data["id"] = this.id;
-      return data;
-  }
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["objectType"] = this.objectType;
+        if (Array.isArray(this.dynamicProperties)) {
+            data["dynamicProperties"] = [];
+            for (let item of this.dynamicProperties)
+                data["dynamicProperties"].push(item.toJSON());
+        }
+        data["id"] = this.id;
+        return data;
+    }
 }
 
 export interface IIHasDynamicProperties {
-  objectType?: string | undefined;
-  dynamicProperties?: DynamicObjectProperty[] | undefined;
-  id?: string | undefined;
+    objectType?: string | undefined;
+    dynamicProperties?: DynamicObjectProperty[] | undefined;
+    id?: string | undefined;
 }
 
 export class SyncContext implements ISyncContext {

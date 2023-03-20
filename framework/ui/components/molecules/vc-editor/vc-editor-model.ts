@@ -23,6 +23,10 @@ export const editorProps = {
     default: "Field",
   },
   errorMessage: String,
+  assetsFolder: {
+    type: String,
+    required: true,
+  },
 };
 
 export const editorEmits = {

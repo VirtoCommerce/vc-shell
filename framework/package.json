@@ -44,6 +44,7 @@
     "moment": "^2.29.1",
     "normalize.css": "^8.0.1",
     "swiper": "^6.8.4",
+    "quill-image-uploader": "^1.2.4",
     "vee-validate": "^4.7.3",
     "vue": "^3.0.0",
     "vue-currency-input": "~2.5.1",

@@ -27,7 +27,8 @@
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       v-model:content="content"
       theme="snow"
-      toolbar="minimal"
+      :toolbar="toolbar"
+      :modules="modules"
       content-type="html"
       @update:content="onInput"
       :read-only="disabled"
@@ -48,11 +49,54 @@ import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { ref, unref, watch } from "vue";
 import { editorEmits, editorProps } from "./vc-editor-model";
+import ImageUploader from "quill-image-uploader";
+import { useUser } from "./../../../../core/composables";
 
 const props = defineProps({ ...editorProps });
 
 const emit = defineEmits({ ...editorEmits });
+
+const { getAccessToken } = useUser();
 const content = ref();
+const toolbar = [
+  { header: 1 },
+  { header: 2 },
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "link",
+  "image",
+  "blockquote",
+  { list: "ordered" },
+  { list: "bullet" },
+];
+
+const modules = {
+  name: "imageUploader",
+  module: ImageUploader,
+  options: {
+    upload: async (file: File) => {
+      const authToken = await getAccessToken();
+
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const result = await fetch(`/api/assets?folderUrl=/catalog/${props.assetsFolder}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      const response = await result.json();
+      if (response) {
+        return response[0].url;
+      }
+    },
+  },
+};
 
 watch(
   () => props.modelValue,
@@ -63,12 +107,10 @@ watch(
 );
 
 function onInput() {
-  if (isContentChangedOnMount(content.value)) {
-    if (isQuillEmpty(content.value)) {
-      emit("update:modelValue", null);
-    } else {
-      emit("update:modelValue", content.value);
-    }
+  if (isQuillEmpty(content.value)) {
+    emit("update:modelValue", null);
+  } else {
+    emit("update:modelValue", content.value);
   }
 }
 
@@ -77,13 +119,6 @@ function isQuillEmpty(value: string) {
     return true;
   }
   return false;
-}
-
-function isContentChangedOnMount(value: string) {
-  if (value.replace(/<(.|\n)*?>/g, "").trim() === props.modelValue) {
-    return false;
-  }
-  return true;
 }
 </script>
 

@@ -12409,6 +12409,11 @@ quill-delta@^4.2.2:
     lodash.clonedeep "^4.5.0"
     lodash.isequal "^4.5.0"
 
+quill-image-uploader@^1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/quill-image-uploader/-/quill-image-uploader-1.2.4.tgz#18be96dd1d2d662c401327728df6c16d3c5ce8d2"
+  integrity sha512-ipho6Qpsu4wMlnmrGjlT5C6VzoFag0o2TiOWXR3wJm3g44cG9f5DisPGo7CZkvsCdrxHhNrf2p4BAPWQ4eE8NA==
+
 quill@^1.3.7:
   version "1.3.7"
   resolved "https://registry.yarnpkg.com/quill/-/quill-1.3.7.tgz#da5b2f3a2c470e932340cdbf3668c9f21f9286e8"

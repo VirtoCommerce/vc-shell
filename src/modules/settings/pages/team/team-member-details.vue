@@ -175,7 +175,7 @@ import { useI18n, useUser, useAutosave, IParentCallArgs, IBladeToolbar } from "@
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { useIsFormValid, Field, useForm } from "vee-validate";
+import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { SellerUser, SellerUserDetails } from "../../../../api_client/marketplacevendor";
 
 export interface Props {
@@ -226,8 +226,13 @@ const deleteModal = ref(false);
 const sendInviteStatus = ref(false);
 const errorMessage = ref("");
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 
 const isOwnerReadonly = computed(() => userDetails.value.role === "vcmp-owner-role");
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -255,7 +260,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !props.param,
-    disabled: computed(() => !(isValid.value && modified.value)),
+    disabled: computed(() => !(!isDisabled.value && modified.value)),
   },
   {
     id: "save",
@@ -280,7 +285,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: !!props.param,
-    disabled: computed(() => props.param && !(isValid.value && modified.value)),
+    disabled: computed(() => props.param && !(!isDisabled.value && modified.value)),
   },
   {
     id: "reset",

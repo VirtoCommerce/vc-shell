@@ -457,7 +457,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useForm, useI18n, IParentCallArgs, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
+import { useI18n, IParentCallArgs, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IProperty,
@@ -469,7 +469,7 @@ import {
   SellerProduct,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
-import { Form, useIsFormValid, Field } from "vee-validate";
+import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import moment from "moment/moment";
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
@@ -518,10 +518,12 @@ const {
 } = useOffer();
 
 const { searchDictionaryItems } = useProduct();
-const { setFieldError } = useForm({
+const { setFieldError, meta } = useForm({
   validateOnMount: false,
 });
+console.log(meta.value.initialValues)
 const isFormValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const priceRefs = ref([]);
 const container = ref();
 const offerLoading = ref(false);
@@ -571,6 +573,10 @@ const title = computed(() => {
     ? offerDetails.value.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
     : t("OFFERS.PAGES.DETAILS.TITLE");
 });
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isFormValid.value;
+  });
 
 watch(offerDetails.value.prices, () => {
   scrollToLastPrice();
@@ -651,7 +657,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     isVisible: true,
     disabled: computed(
-      () => !(offerDetails.value.prices && offerDetails.value.prices.length && isFormValid.value && modified.value)
+      () => !(offerDetails.value.prices && offerDetails.value.prices.length && !isDisabled.value && modified.value)
     ),
   },
   {
@@ -771,6 +777,8 @@ async function setProductItem(id: string) {
   try {
     productLoading.value = true;
     const fetchedProduct = (await fetchProducts(undefined, 0, [id])).results;
+
+    console.log(fetchedProduct, id)
     if (fetchedProduct && fetchedProduct.length) {
       const currentProduct = fetchedProduct[0];
 

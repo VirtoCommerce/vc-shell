@@ -107,7 +107,7 @@
             </vc-button>
             <vc-button
               variant="primary"
-              :disabled="loading || !isValid"
+              :disabled="loading || isDisabled"
               @click="forgot"
             >
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
@@ -158,7 +158,7 @@ import { ref, reactive, computed, onMounted } from "vue";
 import { useUser, useForm, SignInResults, RequestPasswordResult, useSettings } from "@vc-shell/framework";
 import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
 
 const router = useRouter();
 const route = useRoute();
@@ -173,6 +173,7 @@ const { signIn, loading } = useUser();
 const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const customizationLoading = ref(false);
 
 onMounted(async () => {
@@ -191,6 +192,10 @@ const customization = computed(() => {
     }
   );
 });
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
 
 const form = reactive({
   username: "",

@@ -15,7 +15,7 @@
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
       <div
-        v-if="productDetails"
+        v-if="productData.id"
         class="product-details__inner"
       >
         <div class="product-details__content">
@@ -153,7 +153,7 @@
                     :modelValue="productDetails.description"
                     v-slot="{ field, errorMessage, handleChange }"
                   >
-                    <VcTextarea
+                    <VcEditor
                       v-bind="field"
                       class="tw-mb-4"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
@@ -164,7 +164,8 @@
                       required
                       :error-message="errorMessage"
                       @update:modelValue="handleChange"
-                    ></VcTextarea>
+                      :assets-folder="productData.id || productData.categoryId"
+                    ></VcEditor>
                   </Field>
 
                   <VcDynamicProperty
@@ -243,7 +244,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref, shallowRef } from "vue";
+import { defineComponent, computed, onMounted, ref, unref, shallowRef, nextTick } from "vue";
 
 export default defineComponent({
   url: "/product",
@@ -251,18 +252,8 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  useI18n,
-  useUser,
-  useForm,
-  min,
-  required,
-  IParentCallArgs,
-  IBladeEvent,
-  IBladeToolbar,
-  AssetsDetails,
-  VcInput,
-} from "@vc-shell/framework";
+import { useUser, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails, VcInput } from "@vc-shell/framework";
+import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -281,7 +272,8 @@ import {
   PropertyValue,
   PropertyDictionaryItem,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
+import { min, required } from "@vee-validate/rules";
 
 export interface Props {
   expanded?: boolean;
@@ -331,8 +323,11 @@ const {
 
 const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
+
 useForm({ validateOnMount: false });
+
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const offersCount = ref(0);
 const productLoading = ref(false);
 const fileUploading = ref(false);
@@ -348,6 +343,10 @@ const filteredProps = computed(() => productDetails.value.properties.filter((x) 
 const product = computed(() => (props.param ? productData.value : productDetails.value));
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
+
+const isDisabled = computed(() => {
+  return !isDirty.value || !isValid.value;
+});
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -438,7 +437,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        !isValid.value ||
+        isDisabled.value ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
@@ -467,7 +466,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        !isValid.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
+        !isValid.value ||
+        !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },
   {
@@ -734,7 +734,7 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
 }
 
 function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary?: PropertyDictionaryItem[]) {
-  if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
+  if (value && typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
         const handledValue = handleDictionaryValue(property, item.valueId, dictionary);

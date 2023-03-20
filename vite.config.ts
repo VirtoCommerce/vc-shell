@@ -139,7 +139,7 @@ export default {
     },
   },
   optimizeDeps: {
-    include: mode === "development" ? ["ace-builds", "client-oauth2"] : [],
+    include: mode === "development" ? ["ace-builds", "client-oauth2", "quill-delta", "quill"] : [],
     esbuildOptions: {
       target: ["es2020", "safari14"],
     },

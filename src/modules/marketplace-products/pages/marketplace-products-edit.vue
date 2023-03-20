@@ -257,7 +257,6 @@ export default defineComponent({
 import {
   useI18n,
   useUser,
-  useForm,
   min,
   required,
   IParentCallArgs,
@@ -283,7 +282,7 @@ import {
   IAsset,
   Asset,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
@@ -334,6 +333,7 @@ const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const offersCount = ref(0);
 const productLoading = ref(false);
 const fileUploading = ref(false);
@@ -350,6 +350,10 @@ const filteredProps = computed(() => productDetails.value.properties.filter((x) 
 const product = computed(() => (props.param ? productData.value : productDetails.value));
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -440,7 +444,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        !isValid.value ||
+        isDisabled.value ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
@@ -469,7 +473,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        !isValid.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
+        isDisabled.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },
   {

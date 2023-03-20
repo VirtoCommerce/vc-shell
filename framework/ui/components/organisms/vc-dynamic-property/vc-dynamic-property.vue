@@ -295,7 +295,7 @@
     :modelValue="getter(property)"
     :rules="rules"
   >
-    <VcEditor
+    <VcCodeEditor
       v-bind="$attrs"
       :label="handleDisplayName || property.displayName"
       :modelValue="(getter(property) as string | number | Date)"
@@ -311,7 +311,7 @@
       :name="property.displayName || property.name"
       :error-message="errorMessage"
     >
-    </VcEditor>
+    </VcCodeEditor>
   </Field>
 </template>
 

@@ -18,9 +18,7 @@
             ref="passwordField"
             class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
-            :placeholder="
-              $t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')
-            "
+            :placeholder="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
             type="password"
             v-model="form.currentPassword"
             @update:modelValue="validate"
@@ -62,9 +60,7 @@
             ref="confirmPasswordField"
             class="tw-mb-4"
             :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="
-              $t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')
-            "
+            :placeholder="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
             @update:modelValue="validate"
             type="password"
             v-model="form.confirmPassword"
@@ -74,7 +70,10 @@
           ></VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <VcButton
             variant="primary"
             :outline="true"
@@ -85,7 +84,7 @@
           </VcButton>
           <VcButton
             variant="primary"
-            :disabled="loading || !form.isValid || !isValid"
+            :disabled="loading || !form.isValid || isDisabled"
             @click="changePassword"
           >
             {{ $t("SHELL.CHANGE_PASSWORD.SAVE") }}
@@ -94,15 +93,11 @@
 
         <VcHint
           class="tw-mt-3 !tw-text-[#f14e4e]"
-          v-for="error in form.errors"
-          :key="error"
+          v-for="err in form.errors"
+          :key="err"
         >
           <!-- TODO: stylizing-->
-          {{
-            error.code
-              ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${error.code}`)
-              : error
-          }}
+          {{ (err as IIdentityError).code ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err }}
         </VcHint>
       </VcForm>
     </div>
@@ -111,17 +106,8 @@
 
 <script lang="ts" setup>
 import { nextTick, reactive } from "vue";
-import { useIsFormValid, Field } from "vee-validate";
-import {
-  useForm,
-  VcInput,
-  VcHint,
-  VcButton,
-  VcPopup,
-  VcForm,
-  IIdentityError,
-  useUser,
-} from "@vc-shell/framework";
+import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
+import { VcInput, VcHint, VcButton, VcPopup, VcForm, IIdentityError, useUser } from "@vc-shell/framework";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -139,12 +125,17 @@ const emit = defineEmits<Emits>();
 const { changeUserPassword, loading, validatePassword } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const form = reactive<IChangePassForm>({
   isValid: false,
   errors: [],
   currentPassword: "",
   password: "",
   confirmPassword: "",
+});
+
+const isDisabled = computed(() => {
+  return !isDirty.value || !isValid.value;
 });
 
 async function changePassword() {
@@ -164,10 +155,7 @@ function validate() {
       if (form.confirmPassword !== form.password) {
         form.errors.push({ code: "Repeat-password" });
       }
-      if (
-        form.confirmPassword === form.currentPassword &&
-        form.password === form.currentPassword
-      ) {
+      if (form.confirmPassword === form.currentPassword && form.password === form.currentPassword) {
         form.errors.push({ code: "Equal-passwords" });
       }
       form.isValid = form.errors.length == 0;

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
   "types": "./dist/types/index.d.ts",
@@ -18,7 +18,7 @@
       "types": "./dist/types/index.d.ts"
     },
     "./client": {
-      "types": "./dist/ui/types/index.d.ts"
+      "types": "./dist/ui/services/types/index.d.ts"
     },
     "./dist/index.css": "./dist/index.css",
     "./tailwind.config": "./tailwind.config.js",
@@ -35,14 +35,16 @@
   "dependencies": {
     "@floating-ui/vue": "^0.2.1",
     "@popperjs/core": "^2.11.0",
-    "@vee-validate/rules": "^4.7.3",
     "@vee-validate/i18n": "^4.7.3",
+    "@vee-validate/rules": "^4.7.3",
+    "@vueup/vue-quill": "^1.1.1",
     "@vueuse/components": "^9.9.0",
     "@vueuse/core": "^9.9.0",
     "@vueuse/integrations": "^9.9.0",
     "client-oauth2": "^4.3.3",
     "moment": "^2.29.1",
     "normalize.css": "^8.0.1",
+    "quill-image-uploader": "^1.2.4",
     "swiper": "^6.8.4",
     "vee-validate": "^4.7.3",
     "vue": "^3.0.0",
@@ -54,8 +56,8 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.55",
-    "@vc-shell/config-generator": "^1.0.55",
+    "@vc-shell/api-client-generator": "^1.0.56",
+    "@vc-shell/config-generator": "^1.0.56",
     "@vue-macros/volar": "^0.8.1",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",

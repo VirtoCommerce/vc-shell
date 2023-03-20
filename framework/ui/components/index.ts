@@ -21,6 +21,7 @@ export * from "./atoms/vc-widget";
 
 /* Molecules */
 export * from "./molecules/vc-breadcrumbs";
+export * from "./molecules/vc-code-editor";
 export * from "./molecules/vc-editor";
 export * from "./molecules/vc-form";
 export * from "./molecules/vc-file-upload";

@@ -23,19 +23,15 @@ export const editorProps = {
     default: "Field",
   },
   errorMessage: String,
-  assetsFolder: {
-    type: String,
-    required: true,
-  },
 };
 
 export const editorEmits = {
   "update:modelValue": (value: string | number | Date) => isString(value) || isNumber(value) || isDate(value),
 };
 
-export type VcEditorProps = ExtractTypes<typeof editorProps>;
-export type VcEditorEmits = typeof editorEmits;
+export type VcCodeEditorProps = ExtractTypes<typeof editorProps>;
+export type VcCodeEditorEmits = typeof editorEmits;
 
-export interface VcEditorSlots {
+export interface VcCodeEditorSlots {
   error: () => VNode[];
 }

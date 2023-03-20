@@ -21,6 +21,7 @@ export { VcWidget } from "./atoms/vc-widget";
 
 /* Molecules */
 export { VcBreadcrumbs } from "./molecules/vc-breadcrumbs";
+export { VcCodeEditor } from "./molecules/vc-code-editor";
 export { VcEditor } from "./molecules/vc-editor";
 export { VcForm } from "./molecules/vc-form";
 export { VcFileUpload } from "./molecules/vc-file-upload";

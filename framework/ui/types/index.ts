@@ -30,6 +30,11 @@ import { VcStatusIconProps, VcStatusIconSlots } from "../components/atoms/vc-sta
 import { VcSwitchProps, VcSwitchSlots, VcSwitchEmits } from "../components/atoms/vc-switch/vc-switch-model";
 import { VcWidgetProps, VcWidgetSlots, VcWidgetEmits } from "../components/atoms/vc-widget/vc-widget-model";
 import { VcBreadcrumbsProps, VcBreadcrumbsSlots } from "../components/molecules/vc-breadcrumbs/vc-breadcrumbs-model";
+import {
+  VcCodeEditorProps,
+  VcCodeEditorSlots,
+  VcCodeEditorEmits,
+} from "../components/molecules/vc-code-editor/vc-code-editor-model";
 import { VcEditorProps, VcEditorSlots, VcEditorEmits } from "../components/molecules/vc-editor/vc-editor-model";
 import {
   VcFileUploadProps,
@@ -91,6 +96,7 @@ declare module "@vue/runtime-core" {
 
     // molecules
     VcBreadcrumbs: GlobalComponentConstructor<VcBreadcrumbsProps, VcBreadcrumbsSlots>;
+    VcCodeEditor: GlobalComponentConstructor<VcCodeEditorProps, VcCodeEditorSlots, VcCodeEditorEmits>;
     VcEditor: GlobalComponentConstructor<VcEditorProps, VcEditorSlots, VcEditorEmits>;
     VcFileUpload: GlobalComponentConstructor<VcFileUploadProps, VcFileUploadSlots, VcFileUploadEmits>;
     VcForm: GlobalComponentConstructor<any, VcFormSlots>;

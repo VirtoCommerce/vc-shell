@@ -130,7 +130,7 @@ import {
 import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { IDataImporter, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
-import { useIsFormValid, Field, useForm } from "vee-validate";
+import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
@@ -171,7 +171,13 @@ const {
 
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const showConfirmation = ref(false);
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
+
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
@@ -198,7 +204,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     disabled: computed(() => {
-      return !isValid.value || (props.param && !modified.value) || (!props.param && !modified.value);
+      return isDisabled.value || (props.param && !modified.value) || (!props.param && !modified.value);
     }),
   },
   {

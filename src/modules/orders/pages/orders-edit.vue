@@ -10,7 +10,10 @@
   >
     <VcContainer>
       <VcRow>
-        <VcCol size="1" class="tw-p-2">
+        <VcCol
+          size="1"
+          class="tw-p-2"
+        >
           <VcCard :header="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TITLE')">
             <VcRow class="tw-p-2">
               <VcCol class="tw-p-2">
@@ -34,36 +37,28 @@
                 <VcInfoRow
                   class="tw-border-t tw-border-solid tw-border-t-[#e5e5e5] tw-mt-[5px] tw-pt-[21px]"
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.SUBTOTAL')"
-                  :value="
-                    order.subTotal &&
-                    order.subTotal.toFixed(2) + ' ' + order.currency
-                  "
+                  :value="order.subTotal && order.subTotal.toFixed(2) + ' ' + order.currency"
                 />
                 <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.DISCOUNT_TOTAL')"
-                  :value="
-                    order.discountTotal &&
-                    order.discountTotal.toFixed(2) + ' ' + order.currency
-                  "
+                  :value="order.discountTotal && order.discountTotal.toFixed(2) + ' ' + order.currency"
                 />
                 <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.COMMISSIONS_TOTAL')"
-                  :value="
-                    order.feeTotal &&
-                    order.feeTotal.toFixed(2) + ' ' + order.currency
-                  "
+                  :value="order.feeTotal && order.feeTotal.toFixed(2) + ' ' + order.currency"
                 />
                 <VcInfoRow
                   :label="$t('ORDERS.PAGES.EDIT.ORDER_INFO.TOTAL')"
-                  :value="
-                    order.total && order.total.toFixed(2) + ' ' + order.currency
-                  "
+                  :value="order.total && order.total.toFixed(2) + ' ' + order.currency"
                 />
               </VcCol>
             </VcRow>
           </VcCard>
         </VcCol>
-        <VcCol size="1" class="tw-p-2">
+        <VcCol
+          size="1"
+          class="tw-p-2"
+        >
           <VcCard :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
             <VcCol class="tw-p-2">
               <VcCol
@@ -75,13 +70,22 @@
                   :label="item.label"
                   :value="item.name"
                   :class="{
-                    'tw-border-t tw-border-solid tw-border-t-[#e5e5e5] tw-mt-[5px] tw-pt-[21px]':
-                      i === 1,
+                    'tw-border-t tw-border-solid tw-border-t-[#e5e5e5] tw-mt-[5px] tw-pt-[21px]': i === 1,
                   }"
                 />
-                <VcInfoRow :value="item.address" v-if="item.address" />
-                <VcInfoRow :value="item.phone" v-if="item.phone" />
-                <VcInfoRow :value="item.email" type="email" v-if="item.email" />
+                <VcInfoRow
+                  :value="item.address"
+                  v-if="item.address"
+                />
+                <VcInfoRow
+                  :value="item.phone"
+                  v-if="item.phone"
+                />
+                <VcInfoRow
+                  :value="item.email"
+                  type="email"
+                  v-if="item.email"
+                />
               </VcCol>
             </VcCol>
           </VcCard>
@@ -102,10 +106,7 @@
               <template v-slot:item_name="itemData">
                 <div class="tw-flex tw-flex-col">
                   <div>{{ itemData.item.name }}</div>
-                  <VcHint class="tw-mt-1"
-                    >{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}:
-                    {{ itemData.item.sku }}</VcHint
-                  >
+                  <VcHint class="tw-mt-1">{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}: {{ itemData.item.sku }}</VcHint>
                 </div>
               </template>
               <template v-slot:item_quantity="itemData">
@@ -121,17 +122,10 @@
                 >
                   <div>{{ itemData.item.feeDetails[0].description }}</div>
                   <div>
-                    <span>{{
-                      Math.trunc(Number(itemData.item.feeDetails[0].amount))
-                    }}</span
+                    <span>{{ Math.trunc(Number(itemData.item.feeDetails[0].amount)) }}</span
                     ><span class="tw-text-[#a5a5a5] tw-text-xs"
                       >.{{
-                        `${
-                          (Number(itemData.item.feeDetails[0].amount) * 100) %
-                          100
-                        }`
-                          .padEnd(2, "0")
-                          .slice(0, 2)
+                        `${(Number(itemData.item.feeDetails[0].amount) * 100) % 100}`.padEnd(2, "0").slice(0, 2)
                       }}</span
                     >
                   </div>
@@ -160,50 +154,34 @@
                   </div>
                   <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
                     <div class="tw-truncate tw-grow-[2] tw-basis-0">
-                      <VcHint>{{
-                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY")
-                      }}</VcHint>
+                      <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.QUANTITY") }}</VcHint>
                       <div class="tw-truncate tw-mt-1">
                         {{ itemData.item.quantity }}
                       </div>
                     </div>
                     <div class="tw-truncate tw-grow-[2] tw-basis-0">
-                      <VcHint>{{
-                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE")
-                      }}</VcHint>
+                      <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.UNIT_PRICE") }}</VcHint>
                       <div class="tw-truncate tw-mt-1">
-                        {{
-                          itemData.item.price && itemData.item.price.toFixed(2)
-                        }}
+                        {{ itemData.item.price && itemData.item.price.toFixed(2) }}
                       </div>
                     </div>
                     <div class="tw-truncate tw-grow-[2] tw-basis-0">
-                      <VcHint>{{
-                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL")
-                      }}</VcHint>
+                      <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.TOTAL") }}</VcHint>
                       <div class="tw-truncate tw-mt-1">
-                        {{
-                          itemData.item.extendedPrice &&
-                          itemData.item.extendedPrice.toFixed(2)
-                        }}
+                        {{ itemData.item.extendedPrice && itemData.item.extendedPrice.toFixed(2) }}
                       </div>
                     </div>
                     <div
                       class="tw-truncate tw-grow-[2] tw-basis-0"
                       v-if="itemData.item.feeDetails.length"
                     >
-                      <VcHint>{{
-                        $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION")
-                      }}</VcHint>
+                      <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION") }}</VcHint>
 
                       <div class="tw-mt-1 tw-truncate">
                         <div class="tw-truncate">
                           {{ itemData.item.feeDetails[0].description }}
                           <br /><span class="tw-truncate">
-                            {{
-                              itemData.item.feeDetails[0].amount &&
-                              itemData.item.feeDetails[0].amount.toFixed(2)
-                            }}
+                            {{ itemData.item.feeDetails[0].amount && itemData.item.feeDetails[0].amount.toFixed(2) }}
                           </span>
                         </div>
                       </div>
@@ -230,16 +208,10 @@ export default defineComponent({
 <script lang="ts" setup>
 import moment from "moment";
 import { useOrder, useOrders } from "../composables";
-import {
-  IBladeToolbar,
-  IParentCallArgs,
-  ITableColumns,
-  useI18n,
-  useLoading,
-} from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, ITableColumns, useI18n, useLoading } from "@vc-shell/framework";
 
 import { useStateMachines } from "../../state-machines/composables";
-import { SmInstance } from "../../../api_client/marketplacevendor";
+import { StateMachineInstance } from "../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;
@@ -259,13 +231,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n();
-const {
-  loading: loadingOrder,
-  order,
-  loadOrder,
-  loadPdf,
-  shippingInfo,
-} = useOrder();
+const { loading: loadingOrder, order, loadOrder, loadPdf, shippingInfo } = useOrder();
 const { loading: loadingOrders } = useOrders();
 const locale = window.navigator.language;
 const items = computed(() => order.value?.items);
@@ -290,7 +256,7 @@ onMounted(async () => {
   }
 });
 
-const refreshToolbar = (sm: SmInstance) => {
+const refreshToolbar = (sm: StateMachineInstance) => {
   bladeToolbar.value.splice(0);
   bladeToolbar.value.push({
     title: t("ORDERS.PAGES.EDIT.ACTIONS.DL_PDF"),
@@ -307,11 +273,7 @@ const refreshToolbar = (sm: SmInstance) => {
       title: transition.trigger,
       icon: transition.icon ?? "fas fa-tasks",
       async clickHandler() {
-        const currentStateMachine = await fireTrigger(
-          sm.id,
-          transition.trigger,
-          props.param
-        );
+        const currentStateMachine = await fireTrigger(sm.id, transition.trigger, props.param);
         emit("parent:call", {
           method: "reload",
         });

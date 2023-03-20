@@ -67,10 +67,10 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import { IBladeToolbar, IParentCallArgs, useForm, useI18n } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, useI18n } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
-import { Field, useIsFormValid } from "vee-validate";
+import { Field, useIsFormValid, useIsFormDirty, useForm } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 
 export interface Props {
@@ -114,6 +114,11 @@ const title = computed(() =>
 const deleteModal = ref(false);
 const errorMessage = ref("");
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -136,7 +141,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     isVisible: true,
-    disabled: computed(() => props.param && !(isValid.value && modified.value)),
+    disabled: computed(() => props.param && !(!isDisabled.value && modified.value)),
   },
   {
     id: "reset",

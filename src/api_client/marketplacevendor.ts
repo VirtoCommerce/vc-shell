@@ -187,7 +187,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createFee(body?: CreateFeeCommand | null | undefined): Promise<CommissionFee> {
@@ -239,7 +239,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateFee(body?: UpdateFeeCommand | null | undefined): Promise<CommissionFee> {
@@ -291,7 +291,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteFee(ids?: string[] | null | undefined): Promise<void> {
@@ -337,7 +337,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchFee(body?: SearchCommissionFeesQuery | null | undefined): Promise<SearchCommissionFeesResult> {
@@ -401,7 +401,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     massChangeProductsStatus(status: string | null, body?: SearchProductsQuery | null | undefined): Promise<void> {
@@ -452,7 +452,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     changeProductStatus(body?: ChangeRequestStatusCommand | null | undefined): Promise<void> {
@@ -500,7 +500,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchCategories(body?: SearchCategoriesQuery | null | undefined): Promise<CategorySearchResult> {
@@ -544,7 +544,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateProduct(body?: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
@@ -595,7 +595,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createSellerCategories(body?: CreateSellerCategoriesCommand | null | undefined): Promise<void> {
@@ -643,7 +643,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     deleteSellerCategories(body?: DeleteSellerCategoriesCommand | null | undefined): Promise<void> {
@@ -691,7 +691,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     exportSellerCategories(body?: RunCategoriesExportCommand | null | undefined): Promise<void> {
@@ -731,7 +731,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchProducts(body?: SearchProductsQuery | null | undefined): Promise<SearchProductsResult> {
@@ -775,7 +775,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchPropertyDictionaryItems(body?: PropertyDictionaryItemSearchCriteria | null | undefined): Promise<PropertyDictionaryItemSearchResult> {
@@ -861,7 +861,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewProduct(body?: CreateNewProductCommand | null | undefined): Promise<SellerProduct> {
@@ -905,7 +905,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateProductDetails(body?: UpdateProductDetailsCommand | null | undefined): Promise<SellerProduct> {
@@ -949,7 +949,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteProducts(ids?: string[] | null | undefined): Promise<void> {
@@ -987,7 +987,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewPublicationRequest(body?: CreateNewPublicationRequestCommand | null | undefined): Promise<ProductPublicationRequest> {
@@ -1073,7 +1073,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchOffers(body?: SearchOffersQuery | null | undefined): Promise<SearchOffersResult> {
@@ -1201,7 +1201,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchOfferProducts(body?: SearchProductsForNewOfferQuery | null | undefined): Promise<SearchOfferProductsResult> {
@@ -1245,7 +1245,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewOffer(body?: CreateNewOfferCommand | null | undefined): Promise<Offer> {
@@ -1289,7 +1289,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     changeOfferState(body?: ChangeOfferStateCommand | null | undefined): Promise<Offer> {
@@ -1333,7 +1333,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateOffer(body?: UpdateOfferCommand | null | undefined): Promise<Offer> {
@@ -1377,7 +1377,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteOffers(ids?: string[] | null | undefined): Promise<void> {
@@ -1415,7 +1415,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchFulfillmentCenters(body?: SearchFulfillmentCentersQuery | null | undefined): Promise<SearchFulfillmentCentersResult> {
@@ -1501,7 +1501,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateFulfillmentCenter(body?: UpdateFulfillmentCenterCommand | null | undefined): Promise<FulfillmentCenter> {
@@ -1545,7 +1545,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteFulfillmentCenter(ids?: string[] | null | undefined): Promise<void> {
@@ -1595,7 +1595,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     runImport(body?: RunImportCommand | null | undefined): Promise<ImportPushNotification> {
@@ -1639,7 +1639,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     cancelJob(body?: ImportCancellationRequest | null | undefined): Promise<void> {
@@ -1687,7 +1687,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     preview(body?: PreviewDataQuery | null | undefined): Promise<ImportDataPreview> {
@@ -1835,7 +1835,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createImportProfile(body?: CreateProfileCommand | null | undefined): Promise<ImportProfile> {
@@ -1879,7 +1879,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateImportProfile(body?: UpdateProfileCommand | null | undefined): Promise<ImportProfile> {
@@ -1923,8 +1923,8 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param id (optional)
-     * @param ids (optional)
+     * @param id (optional) 
+     * @param ids (optional) 
      * @return Success
      */
     deleteProfile(id?: string | null | undefined, ids?: string[] | null | undefined): Promise<void> {
@@ -1964,7 +1964,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchImportProfiles(body?: SearchImportProfilesQuery | null | undefined): Promise<SearchImportProfilesResult> {
@@ -2008,7 +2008,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchImportProfilesHistory(body?: SearchImportProfilesHistoryQuery | null | undefined): Promise<SearchImportProfilesHistoryResult> {
@@ -2141,7 +2141,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchOrders(body?: SearchOrdersQuery | null | undefined): Promise<CustomerOrderSearchResult> {
@@ -2185,7 +2185,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateOrderStatus(body?: ChangeOrderStatusCommand | null | undefined): Promise<void> {
@@ -2225,7 +2225,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     fulfill(body?: FulfillOrderCommand | null | undefined): Promise<void> {
@@ -2316,7 +2316,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchCustomerReviews(body?: SearchCustomerReviewsQuery | null | undefined): Promise<SearchCustomerReviewsResult> {
@@ -2372,7 +2372,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param memberId (optional)
+     * @param memberId (optional) 
      * @return Success
      */
     sendInvitation(memberId?: string | null | undefined): Promise<void> {
@@ -2410,7 +2410,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     sendUserInvitation(body?: SendSellerUserInvitationCommand | null | undefined): Promise<void> {
@@ -2450,7 +2450,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateSeller(body?: ValidateProductQuery | null | undefined): Promise<ValidationFailure[]> {
@@ -2548,7 +2548,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteSellers(ids?: string[] | null | undefined): Promise<void> {
@@ -2636,7 +2636,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createSeller(body?: CreateSellerCommand | null | undefined): Promise<void> {
@@ -2684,7 +2684,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateSeller(body?: UpdateSellerCommand | null | undefined): Promise<void> {
@@ -2724,7 +2724,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchSellers(body?: SearchSellersQuery | null | undefined): Promise<SearchSellersResult> {
@@ -2776,7 +2776,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createSellerUser(body?: CreateSellerUserCommand | null | undefined): Promise<SellerUser> {
@@ -2820,7 +2820,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateUser(body?: ValidateSellerUserQuery | null | undefined): Promise<ValidationFailure[]> {
@@ -2871,7 +2871,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateSellerUser(body?: UpdateSellerUserCommand | null | undefined): Promise<SellerUser> {
@@ -2915,7 +2915,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteSellerUsers(ids?: string[] | null | undefined): Promise<void> {
@@ -2953,7 +2953,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchSellerUsers(body?: SearchSellerUsersQuery | null | undefined): Promise<SearchSellerUsersResult> {
@@ -2997,7 +2997,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     forgotPassword(body?: ForgotPasswordCommand | null | undefined): Promise<void> {
@@ -3049,11 +3049,11 @@ export class VcmpSmClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
-    search(body?: SearchSmDefinitionsQuery | null | undefined): Promise<SearchSmDefinitionsResult> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/search";
+    search(body?: SearchStateMachineDefinitionsQuery | null | undefined): Promise<SearchStateMachineDefinitionsResult> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/search";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3074,14 +3074,14 @@ export class VcmpSmClient extends AuthApiBase {
         });
     }
 
-    protected processSearch(response: Response): Promise<SearchSmDefinitionsResult> {
+    protected processSearch(response: Response): Promise<SearchStateMachineDefinitionsResult> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SearchSmDefinitionsResult.fromJS(resultData200);
+            result200 = SearchStateMachineDefinitionsResult.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
@@ -3097,117 +3097,15 @@ export class VcmpSmClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SearchSmDefinitionsResult>(null as any);
+        return Promise.resolve<SearchStateMachineDefinitionsResult>(null as any);
     }
 
     /**
+     * @param body (optional) 
      * @return Success
      */
-    getStateMachineById(id: string | null): Promise<SmDefinition> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processGetStateMachineById(_response);
-        });
-    }
-
-    protected processGetStateMachineById(response: Response): Promise<SmDefinition> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SmDefinition.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SmDefinition>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    validateDefinition(body?: SmDefinition | null | undefined): Promise<SmDefinition> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/validate";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: RequestInit = {
-            body: content_,
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json-patch+json",
-                "Accept": "text/plain"
-            }
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.http.fetch(url_, transformedOptions_);
-        }).then((_response: Response) => {
-            return this.processValidateDefinition(_response);
-        });
-    }
-
-    protected processValidateDefinition(response: Response): Promise<SmDefinition> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SmDefinition.fromJS(resultData200);
-            return result200;
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-            return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-            return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
-        }
-        return Promise.resolve<SmDefinition>(null as any);
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    createNewDefinition(body?: CreateSmDefinitionCommand | null | undefined): Promise<SmDefinition> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/new";
+    createNewDefinition(body?: CreateStateMachineDefinitionCommand | null | undefined): Promise<StateMachineDefinition> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/new";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3228,14 +3126,14 @@ export class VcmpSmClient extends AuthApiBase {
         });
     }
 
-    protected processCreateNewDefinition(response: Response): Promise<SmDefinition> {
+    protected processCreateNewDefinition(response: Response): Promise<StateMachineDefinition> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SmDefinition.fromJS(resultData200);
+            result200 = StateMachineDefinition.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
@@ -3251,15 +3149,117 @@ export class VcmpSmClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SmDefinition>(null as any);
+        return Promise.resolve<StateMachineDefinition>(null as any);
     }
 
     /**
-     * @param body (optional)
      * @return Success
      */
-    searchInstance(body?: SearchSmInstancesQuery | null | undefined): Promise<SearchSmInstancesResult> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/instances/search";
+    getStateMachineById(definitionId: string | null): Promise<StateMachineDefinition> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/{definitionId}";
+        if (definitionId === undefined || definitionId === null)
+            throw new Error("The parameter 'definitionId' must be defined.");
+        url_ = url_.replace("{definitionId}", encodeURIComponent("" + definitionId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetStateMachineById(_response);
+        });
+    }
+
+    protected processGetStateMachineById(response: Response): Promise<StateMachineDefinition> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StateMachineDefinition.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StateMachineDefinition>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    validateDefinition(body?: StateMachineDefinition | null | undefined): Promise<StateMachineDefinition> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/definitions/validate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processValidateDefinition(_response);
+        });
+    }
+
+    protected processValidateDefinition(response: Response): Promise<StateMachineDefinition> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StateMachineDefinition.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+            return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+            return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<StateMachineDefinition>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    searchInstance(body?: SearchStateMachineInstancesQuery | null | undefined): Promise<SearchStateMachineInstancesResult> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/search";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(body);
@@ -3280,14 +3280,14 @@ export class VcmpSmClient extends AuthApiBase {
         });
     }
 
-    protected processSearchInstance(response: Response): Promise<SearchSmInstancesResult> {
+    protected processSearchInstance(response: Response): Promise<SearchStateMachineInstancesResult> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SearchSmInstancesResult.fromJS(resultData200);
+            result200 = SearchStateMachineInstancesResult.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
@@ -3303,14 +3303,14 @@ export class VcmpSmClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SearchSmInstancesResult>(null as any);
+        return Promise.resolve<SearchStateMachineInstancesResult>(null as any);
     }
 
     /**
      * @return Success
      */
-    getStateMachineInstanceById(instanceId: string | null): Promise<SmInstance> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/instances/{instanceId}";
+    getStateMachineInstanceById(instanceId: string | null): Promise<StateMachineInstance> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/{instanceId}";
         if (instanceId === undefined || instanceId === null)
             throw new Error("The parameter 'instanceId' must be defined.");
         url_ = url_.replace("{instanceId}", encodeURIComponent("" + instanceId));
@@ -3330,14 +3330,14 @@ export class VcmpSmClient extends AuthApiBase {
         });
     }
 
-    protected processGetStateMachineInstanceById(response: Response): Promise<SmInstance> {
+    protected processGetStateMachineInstanceById(response: Response): Promise<StateMachineInstance> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SmInstance.fromJS(resultData200);
+            result200 = StateMachineInstance.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
@@ -3353,19 +3353,19 @@ export class VcmpSmClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SmInstance>(null as any);
+        return Promise.resolve<StateMachineInstance>(null as any);
     }
 
     /**
-     * @param instanceId (optional)
-     * @param body (optional)
+     * @param instanceId (optional) 
+     * @param body (optional) 
      * @return Success
      */
-    createNewInstance(smId: string | null, instanceId?: string | null | undefined, body?: IHasDynamicProperties | null | undefined): Promise<SmInstance> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/{smId}/instances/new?";
-        if (smId === undefined || smId === null)
-            throw new Error("The parameter 'smId' must be defined.");
-        url_ = url_.replace("{smId}", encodeURIComponent("" + smId));
+    createNewInstance(definitionId: string | null, instanceId?: string | null | undefined, body?: IHasDynamicProperties | null | undefined): Promise<StateMachineInstance> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/{definitionId}/new?";
+        if (definitionId === undefined || definitionId === null)
+            throw new Error("The parameter 'definitionId' must be defined.");
+        url_ = url_.replace("{definitionId}", encodeURIComponent("" + definitionId));
         if (instanceId !== undefined && instanceId !== null)
             url_ += "instanceId=" + encodeURIComponent("" + instanceId) + "&";
         url_ = url_.replace(/[?&]$/, "");
@@ -3388,14 +3388,14 @@ export class VcmpSmClient extends AuthApiBase {
         });
     }
 
-    protected processCreateNewInstance(response: Response): Promise<SmInstance> {
+    protected processCreateNewInstance(response: Response): Promise<StateMachineInstance> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SmInstance.fromJS(resultData200);
+            result200 = StateMachineInstance.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
@@ -3411,14 +3411,14 @@ export class VcmpSmClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SmInstance>(null as any);
+        return Promise.resolve<StateMachineInstance>(null as any);
     }
 
     /**
      * @return Success
      */
-    fire(instanceId: string | null, trigger: string | null, entityId: string | null): Promise<SmInstance> {
-        let url_ = this.baseUrl + "/api/vcmp/sm/instances/{instanceId}/fire/{trigger}/{entityId}";
+    fire(instanceId: string | null, trigger: string | null, entityId: string | null): Promise<StateMachineInstance> {
+        let url_ = this.baseUrl + "/api/vcmp/statemachine/instances/{instanceId}/fire/{trigger}/{entityId}";
         if (instanceId === undefined || instanceId === null)
             throw new Error("The parameter 'instanceId' must be defined.");
         url_ = url_.replace("{instanceId}", encodeURIComponent("" + instanceId));
@@ -3444,14 +3444,14 @@ export class VcmpSmClient extends AuthApiBase {
         });
     }
 
-    protected processFire(response: Response): Promise<SmInstance> {
+    protected processFire(response: Response): Promise<StateMachineInstance> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = SmInstance.fromJS(resultData200);
+            result200 = StateMachineInstance.fromJS(resultData200);
             return result200;
             });
         } else if (status === 401) {
@@ -3467,7 +3467,7 @@ export class VcmpSmClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<SmInstance>(null as any);
+        return Promise.resolve<StateMachineInstance>(null as any);
     }
 }
 
@@ -3483,7 +3483,7 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     runSynchronization(body?: SyncContext | null | undefined): Promise<SyncPushNotification> {
@@ -3535,7 +3535,7 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     cancelJob(body?: SyncJobCancellationRequest | null | undefined): Promise<void> {
@@ -7141,7 +7141,7 @@ export class SellerProduct implements ISellerProduct {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     name?: string | undefined;
-    readonly code?: string | undefined;
+    code?: string | undefined;
     imgSrc?: string | undefined;
     gtin?: string | undefined;
     categoryId?: string | undefined;
@@ -7177,7 +7177,7 @@ export class SellerProduct implements ISellerProduct {
             this.sellerId = _data["sellerId"];
             this.sellerName = _data["sellerName"];
             this.name = _data["name"];
-            (<any>this).code = _data["code"];
+            this.code = _data["code"];
             this.imgSrc = _data["imgSrc"];
             this.gtin = _data["gtin"];
             this.categoryId = _data["categoryId"];
@@ -8231,6 +8231,7 @@ export class ProductDetails implements IProductDetails {
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     images?: Image[] | undefined;
+    assets?: Asset[] | undefined;
 
     constructor(data?: IProductDetails) {
         if (data) {
@@ -8259,7 +8260,12 @@ export class ProductDetails implements IProductDetails {
                 for (let item of _data["images"])
                     this.images!.push(Image.fromJS(item));
             }
-        }
+            if (Array.isArray(_data["assets"])) {
+              this.assets = [] as any;
+              for (let item of _data["assets"])
+                  this.assets!.push(Asset.fromJS(item));
+          }
+      }
     }
 
     static fromJS(data: any): ProductDetails {
@@ -8287,7 +8293,12 @@ export class ProductDetails implements IProductDetails {
             for (let item of this.images)
                 data["images"].push(item.toJSON());
         }
-        return data;
+        if (Array.isArray(this.assets)) {
+          data["assets"] = [];
+          for (let item of this.assets)
+              data["assets"].push(item.toJSON());
+      }
+      return data;
     }
 }
 
@@ -8300,6 +8311,7 @@ export interface IProductDetails {
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     images?: Image[] | undefined;
+    assets?: Asset[] | undefined;
 }
 
 export class CreateNewProductCommand implements ICreateNewProductCommand {
@@ -11719,7 +11731,7 @@ export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived.
+    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -11811,7 +11823,7 @@ export interface IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived.
+    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -13418,7 +13430,7 @@ export class CustomerOrder implements ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account.
+Therefore, the discount will not be taking tax into account. 
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -13795,7 +13807,7 @@ export interface ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account.
+Therefore, the discount will not be taking tax into account. 
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -15819,7 +15831,7 @@ export interface IForgotPasswordCommand {
     loginOrEmail: string;
 }
 
-export class SearchSmDefinitionsQuery implements ISearchSmDefinitionsQuery {
+export class SearchStateMachineDefinitionsQuery implements ISearchStateMachineDefinitionsQuery {
     responseGroup?: string | undefined;
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
@@ -15832,7 +15844,7 @@ export class SearchSmDefinitionsQuery implements ISearchSmDefinitionsQuery {
     skip?: number;
     take?: number;
 
-    constructor(data?: ISearchSmDefinitionsQuery) {
+    constructor(data?: ISearchStateMachineDefinitionsQuery) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -15869,9 +15881,9 @@ export class SearchSmDefinitionsQuery implements ISearchSmDefinitionsQuery {
         }
     }
 
-    static fromJS(data: any): SearchSmDefinitionsQuery {
+    static fromJS(data: any): SearchStateMachineDefinitionsQuery {
         data = typeof data === 'object' ? data : {};
-        let result = new SearchSmDefinitionsQuery();
+        let result = new SearchStateMachineDefinitionsQuery();
         result.init(data);
         return result;
     }
@@ -15905,7 +15917,7 @@ export class SearchSmDefinitionsQuery implements ISearchSmDefinitionsQuery {
     }
 }
 
-export interface ISearchSmDefinitionsQuery {
+export interface ISearchStateMachineDefinitionsQuery {
     responseGroup?: string | undefined;
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
@@ -15919,13 +15931,13 @@ export interface ISearchSmDefinitionsQuery {
     take?: number;
 }
 
-export class SmTransition implements ISmTransition {
+export class StateMachineTransition implements IStateMachineTransition {
     trigger?: string | undefined;
     description?: string | undefined;
     toState?: string | undefined;
     icon?: string | undefined;
 
-    constructor(data?: ISmTransition) {
+    constructor(data?: IStateMachineTransition) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -15943,9 +15955,9 @@ export class SmTransition implements ISmTransition {
         }
     }
 
-    static fromJS(data: any): SmTransition {
+    static fromJS(data: any): StateMachineTransition {
         data = typeof data === 'object' ? data : {};
-        let result = new SmTransition();
+        let result = new StateMachineTransition();
         result.init(data);
         return result;
     }
@@ -15960,17 +15972,17 @@ export class SmTransition implements ISmTransition {
     }
 }
 
-export interface ISmTransition {
+export interface IStateMachineTransition {
     trigger?: string | undefined;
     description?: string | undefined;
     toState?: string | undefined;
     icon?: string | undefined;
 }
 
-export class SmAction implements ISmAction {
+export class StateMachineAction implements IStateMachineAction {
     type?: string | undefined;
 
-    constructor(data?: ISmAction) {
+    constructor(data?: IStateMachineAction) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -15985,9 +15997,9 @@ export class SmAction implements ISmAction {
         }
     }
 
-    static fromJS(data: any): SmAction {
+    static fromJS(data: any): StateMachineAction {
         data = typeof data === 'object' ? data : {};
-        let result = new SmAction();
+        let result = new StateMachineAction();
         result.init(data);
         return result;
     }
@@ -15999,11 +16011,11 @@ export class SmAction implements ISmAction {
     }
 }
 
-export interface ISmAction {
+export interface IStateMachineAction {
     type?: string | undefined;
 }
 
-export class SmState implements ISmState {
+export class StateMachineState implements IStateMachineState {
     name?: string | undefined;
     type?: string | undefined;
     description?: string | undefined;
@@ -16011,10 +16023,10 @@ export class SmState implements ISmState {
     isFinal?: boolean;
     autoTransitionTimeout?: string | undefined;
     stateData?: any | undefined;
-    transitions?: SmTransition[] | undefined;
-    onEntryActions?: SmAction[] | undefined;
+    transitions?: StateMachineTransition[] | undefined;
+    onEntryActions?: StateMachineAction[] | undefined;
 
-    constructor(data?: ISmState) {
+    constructor(data?: IStateMachineState) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16035,19 +16047,19 @@ export class SmState implements ISmState {
             if (Array.isArray(_data["transitions"])) {
                 this.transitions = [] as any;
                 for (let item of _data["transitions"])
-                    this.transitions!.push(SmTransition.fromJS(item));
+                    this.transitions!.push(StateMachineTransition.fromJS(item));
             }
             if (Array.isArray(_data["onEntryActions"])) {
                 this.onEntryActions = [] as any;
                 for (let item of _data["onEntryActions"])
-                    this.onEntryActions!.push(SmAction.fromJS(item));
+                    this.onEntryActions!.push(StateMachineAction.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): SmState {
+    static fromJS(data: any): StateMachineState {
         data = typeof data === 'object' ? data : {};
-        let result = new SmState();
+        let result = new StateMachineState();
         result.init(data);
         return result;
     }
@@ -16075,7 +16087,7 @@ export class SmState implements ISmState {
     }
 }
 
-export interface ISmState {
+export interface IStateMachineState {
     name?: string | undefined;
     type?: string | undefined;
     description?: string | undefined;
@@ -16083,23 +16095,23 @@ export interface ISmState {
     isFinal?: boolean;
     autoTransitionTimeout?: string | undefined;
     stateData?: any | undefined;
-    transitions?: SmTransition[] | undefined;
-    onEntryActions?: SmAction[] | undefined;
+    transitions?: StateMachineTransition[] | undefined;
+    onEntryActions?: StateMachineAction[] | undefined;
 }
 
-export class SmDefinition implements ISmDefinition {
+export class StateMachineDefinition implements IStateMachineDefinition {
     version?: string | undefined;
     entityType?: string | undefined;
     name?: string | undefined;
     isActive?: boolean;
-    states?: SmState[] | undefined;
+    states?: StateMachineState[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
     modifiedBy?: string | undefined;
     id?: string | undefined;
 
-    constructor(data?: ISmDefinition) {
+    constructor(data?: IStateMachineDefinition) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16117,7 +16129,7 @@ export class SmDefinition implements ISmDefinition {
             if (Array.isArray(_data["states"])) {
                 this.states = [] as any;
                 for (let item of _data["states"])
-                    this.states!.push(SmState.fromJS(item));
+                    this.states!.push(StateMachineState.fromJS(item));
             }
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
@@ -16127,9 +16139,9 @@ export class SmDefinition implements ISmDefinition {
         }
     }
 
-    static fromJS(data: any): SmDefinition {
+    static fromJS(data: any): StateMachineDefinition {
         data = typeof data === 'object' ? data : {};
-        let result = new SmDefinition();
+        let result = new StateMachineDefinition();
         result.init(data);
         return result;
     }
@@ -16154,12 +16166,12 @@ export class SmDefinition implements ISmDefinition {
     }
 }
 
-export interface ISmDefinition {
+export interface IStateMachineDefinition {
     version?: string | undefined;
     entityType?: string | undefined;
     name?: string | undefined;
     isActive?: boolean;
-    states?: SmState[] | undefined;
+    states?: StateMachineState[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -16167,11 +16179,11 @@ export interface ISmDefinition {
     id?: string | undefined;
 }
 
-export class SearchSmDefinitionsResult implements ISearchSmDefinitionsResult {
+export class SearchStateMachineDefinitionsResult implements ISearchStateMachineDefinitionsResult {
     totalCount?: number;
-    results?: SmDefinition[] | undefined;
+    results?: StateMachineDefinition[] | undefined;
 
-    constructor(data?: ISearchSmDefinitionsResult) {
+    constructor(data?: ISearchStateMachineDefinitionsResult) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16186,14 +16198,14 @@ export class SearchSmDefinitionsResult implements ISearchSmDefinitionsResult {
             if (Array.isArray(_data["results"])) {
                 this.results = [] as any;
                 for (let item of _data["results"])
-                    this.results!.push(SmDefinition.fromJS(item));
+                    this.results!.push(StateMachineDefinition.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): SearchSmDefinitionsResult {
+    static fromJS(data: any): SearchStateMachineDefinitionsResult {
         data = typeof data === 'object' ? data : {};
-        let result = new SearchSmDefinitionsResult();
+        let result = new SearchStateMachineDefinitionsResult();
         result.init(data);
         return result;
     }
@@ -16210,15 +16222,15 @@ export class SearchSmDefinitionsResult implements ISearchSmDefinitionsResult {
     }
 }
 
-export interface ISearchSmDefinitionsResult {
+export interface ISearchStateMachineDefinitionsResult {
     totalCount?: number;
-    results?: SmDefinition[] | undefined;
+    results?: StateMachineDefinition[] | undefined;
 }
 
-export class CreateSmDefinitionCommand implements ICreateSmDefinitionCommand {
-    smDefinition?: SmDefinition | undefined;
+export class CreateStateMachineDefinitionCommand implements ICreateStateMachineDefinitionCommand {
+    definition?: StateMachineDefinition | undefined;
 
-    constructor(data?: ICreateSmDefinitionCommand) {
+    constructor(data?: ICreateStateMachineDefinitionCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16229,29 +16241,29 @@ export class CreateSmDefinitionCommand implements ICreateSmDefinitionCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.smDefinition = _data["smDefinition"] ? SmDefinition.fromJS(_data["smDefinition"]) : <any>undefined;
+            this.definition = _data["definition"] ? StateMachineDefinition.fromJS(_data["definition"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): CreateSmDefinitionCommand {
+    static fromJS(data: any): CreateStateMachineDefinitionCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new CreateSmDefinitionCommand();
+        let result = new CreateStateMachineDefinitionCommand();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["smDefinition"] = this.smDefinition ? this.smDefinition.toJSON() : <any>undefined;
+        data["definition"] = this.definition ? this.definition.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface ICreateSmDefinitionCommand {
-    smDefinition?: SmDefinition | undefined;
+export interface ICreateStateMachineDefinitionCommand {
+    definition?: StateMachineDefinition | undefined;
 }
 
-export class SearchSmInstancesQuery implements ISearchSmInstancesQuery {
+export class SearchStateMachineInstancesQuery implements ISearchStateMachineInstancesQuery {
     responseGroup?: string | undefined;
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
@@ -16264,7 +16276,7 @@ export class SearchSmInstancesQuery implements ISearchSmInstancesQuery {
     skip?: number;
     take?: number;
 
-    constructor(data?: ISearchSmInstancesQuery) {
+    constructor(data?: ISearchStateMachineInstancesQuery) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16301,9 +16313,9 @@ export class SearchSmInstancesQuery implements ISearchSmInstancesQuery {
         }
     }
 
-    static fromJS(data: any): SearchSmInstancesQuery {
+    static fromJS(data: any): SearchStateMachineInstancesQuery {
         data = typeof data === 'object' ? data : {};
-        let result = new SearchSmInstancesQuery();
+        let result = new SearchStateMachineInstancesQuery();
         result.init(data);
         return result;
     }
@@ -16337,7 +16349,7 @@ export class SearchSmInstancesQuery implements ISearchSmInstancesQuery {
     }
 }
 
-export interface ISearchSmInstancesQuery {
+export interface ISearchStateMachineInstancesQuery {
     responseGroup?: string | undefined;
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
@@ -16351,13 +16363,13 @@ export interface ISearchSmInstancesQuery {
     take?: number;
 }
 
-export class SmInstance implements ISmInstance {
+export class StateMachineInstance implements IStateMachineInstance {
     entityId?: string | undefined;
     entityType?: string | undefined;
-    readonly stateMachineId?: string | undefined;
+    readonly stateMachineDefinitionId?: string | undefined;
     readonly stateMachineName?: string | undefined;
-    readonly state?: string | undefined;
-    readonly currentState?: SmState | undefined;
+    readonly currentStateName?: string | undefined;
+    readonly currentState?: StateMachineState | undefined;
     permittedTriggers?: string[] | undefined;
     readonly isActive?: boolean;
     createdDate?: Date;
@@ -16366,7 +16378,7 @@ export class SmInstance implements ISmInstance {
     modifiedBy?: string | undefined;
     id?: string | undefined;
 
-    constructor(data?: ISmInstance) {
+    constructor(data?: IStateMachineInstance) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16379,10 +16391,10 @@ export class SmInstance implements ISmInstance {
         if (_data) {
             this.entityId = _data["entityId"];
             this.entityType = _data["entityType"];
-            (<any>this).stateMachineId = _data["stateMachineId"];
+            (<any>this).stateMachineDefinitionId = _data["stateMachineDefinitionId"];
             (<any>this).stateMachineName = _data["stateMachineName"];
-            (<any>this).state = _data["state"];
-            (<any>this).currentState = _data["currentState"] ? SmState.fromJS(_data["currentState"]) : <any>undefined;
+            (<any>this).currentStateName = _data["currentStateName"];
+            (<any>this).currentState = _data["currentState"] ? StateMachineState.fromJS(_data["currentState"]) : <any>undefined;
             if (Array.isArray(_data["permittedTriggers"])) {
                 this.permittedTriggers = [] as any;
                 for (let item of _data["permittedTriggers"])
@@ -16397,9 +16409,9 @@ export class SmInstance implements ISmInstance {
         }
     }
 
-    static fromJS(data: any): SmInstance {
+    static fromJS(data: any): StateMachineInstance {
         data = typeof data === 'object' ? data : {};
-        let result = new SmInstance();
+        let result = new StateMachineInstance();
         result.init(data);
         return result;
     }
@@ -16408,9 +16420,9 @@ export class SmInstance implements ISmInstance {
         data = typeof data === 'object' ? data : {};
         data["entityId"] = this.entityId;
         data["entityType"] = this.entityType;
-        data["stateMachineId"] = this.stateMachineId;
+        data["stateMachineDefinitionId"] = this.stateMachineDefinitionId;
         data["stateMachineName"] = this.stateMachineName;
-        data["state"] = this.state;
+        data["currentStateName"] = this.currentStateName;
         data["currentState"] = this.currentState ? this.currentState.toJSON() : <any>undefined;
         if (Array.isArray(this.permittedTriggers)) {
             data["permittedTriggers"] = [];
@@ -16427,13 +16439,13 @@ export class SmInstance implements ISmInstance {
     }
 }
 
-export interface ISmInstance {
+export interface IStateMachineInstance {
     entityId?: string | undefined;
     entityType?: string | undefined;
-    stateMachineId?: string | undefined;
+    stateMachineDefinitionId?: string | undefined;
     stateMachineName?: string | undefined;
-    state?: string | undefined;
-    currentState?: SmState | undefined;
+    currentStateName?: string | undefined;
+    currentState?: StateMachineState | undefined;
     permittedTriggers?: string[] | undefined;
     isActive?: boolean;
     createdDate?: Date;
@@ -16443,11 +16455,11 @@ export interface ISmInstance {
     id?: string | undefined;
 }
 
-export class SearchSmInstancesResult implements ISearchSmInstancesResult {
+export class SearchStateMachineInstancesResult implements ISearchStateMachineInstancesResult {
     totalCount?: number;
-    results?: SmInstance[] | undefined;
+    results?: StateMachineInstance[] | undefined;
 
-    constructor(data?: ISearchSmInstancesResult) {
+    constructor(data?: ISearchStateMachineInstancesResult) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -16462,14 +16474,14 @@ export class SearchSmInstancesResult implements ISearchSmInstancesResult {
             if (Array.isArray(_data["results"])) {
                 this.results = [] as any;
                 for (let item of _data["results"])
-                    this.results!.push(SmInstance.fromJS(item));
+                    this.results!.push(StateMachineInstance.fromJS(item));
             }
         }
     }
 
-    static fromJS(data: any): SearchSmInstancesResult {
+    static fromJS(data: any): SearchStateMachineInstancesResult {
         data = typeof data === 'object' ? data : {};
-        let result = new SearchSmInstancesResult();
+        let result = new SearchStateMachineInstancesResult();
         result.init(data);
         return result;
     }
@@ -16486,9 +16498,9 @@ export class SearchSmInstancesResult implements ISearchSmInstancesResult {
     }
 }
 
-export interface ISearchSmInstancesResult {
+export interface ISearchStateMachineInstancesResult {
     totalCount?: number;
-    results?: SmInstance[] | undefined;
+    results?: StateMachineInstance[] | undefined;
 }
 
 export class IHasDynamicProperties implements IIHasDynamicProperties {

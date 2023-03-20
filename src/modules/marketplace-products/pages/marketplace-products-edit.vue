@@ -181,6 +181,33 @@
 
               <VcCard
                 v-if="productDetails.categoryId"
+                :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.ASSETS.TITLE')"
+                class="tw-my-3 tw-relative"
+                is-collapsable
+                :is-collapsed="restoreCollapsed('product_assets')"
+                @state:collapsed="handleCollapsed('product_assets', $event)"
+              >
+                <Field
+                  name="assets"
+                  rules=""
+                >
+                  <VcLoading :active="fileAssetUploading"></VcLoading>
+                  <div class="tw-p-2">
+                    <VcGallery
+                      :images="productDetails.assets"
+                      @upload="onAssetsUpload"
+                      @item:edit="onAssetsItemEdit"
+                      @item:remove="onAssetsItemRemove"
+                      :disabled="disabled"
+                      @sort="onAssetsSort"
+                      :multiple="true"
+                    ></VcGallery>
+                  </div>
+                </Field>
+              </VcCard>
+
+              <VcCard
+                v-if="productDetails.categoryId"
                 :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
                 class="tw-my-3 tw-relative"
                 is-collapsable
@@ -230,7 +257,6 @@ export default defineComponent({
 import {
   useI18n,
   useUser,
-  useForm,
   min,
   required,
   IParentCallArgs,
@@ -253,8 +279,10 @@ import {
   Property,
   PropertyValue,
   PropertyDictionaryItem,
+  IAsset,
+  Asset,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
@@ -266,6 +294,7 @@ export type IBladeOptions = IBladeEvent & {
   bladeOptions: {
     editableAsset?: Image;
     images?: Image[];
+    assets?: Asset[];
     sortHandler?: (remove: boolean, localImage: IImage) => void;
     sellerProduct?: ISellerProduct;
   };
@@ -304,12 +333,15 @@ const { searchOffers } = useOffers();
 const { getAccessToken } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const offersCount = ref(0);
 const productLoading = ref(false);
 const fileUploading = ref(false);
+const fileAssetUploading = ref(false);
 let isOffersOpened = false;
 const categoryLoading = ref(false);
 const currentCategory = ref<Category>();
+let isGalleryChanged = false;
 
 const filterTypes = ["Category", "Variation"];
 
@@ -318,6 +350,10 @@ const filteredProps = computed(() => productDetails.value.properties.filter((x) 
 const product = computed(() => (props.param ? productData.value : productDetails.value));
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
+
+const isDisabled = computed(() => {
+    return !isDirty.value || !isValid.value;
+  });
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -408,7 +444,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        !isValid.value ||
+        isDisabled.value ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
@@ -437,7 +473,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        !isValid.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
+        isDisabled.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },
   {
@@ -545,6 +581,90 @@ const onGalleryImageRemove = (image: Image) => {
     });
     productDetails.value.images.splice(imageIndex, 1);
   }
+};
+
+const onAssetsUpload = async (files: FileList) => {
+  try {
+    fileAssetUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(
+        `/api/assets?folderUrl=/catalog/${productData.value.id || productData.value.categoryId}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const asset = new Asset(response[0]);
+        asset.createdDate = new Date();
+        if (productDetails.value.assets && productDetails.value.assets.length) {
+          const lastAssetSortOrder = productDetails.value.assets[productDetails.value.assets.length - 1].sortOrder;
+          asset.sortOrder = lastAssetSortOrder + 1;
+        } else {
+          asset.sortOrder = 0;
+        }
+        productDetails.value.assets.push(asset);
+        isGalleryChanged = true;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+  } finally {
+    fileAssetUploading.value = false;
+  }
+
+  files = null;
+};
+
+const onAssetsItemEdit = (item: Asset) => {
+  emit("open:blade", {
+    component: shallowRef(AssetsDetails),
+    bladeOptions: {
+      editableAsset: item,
+      assets: productDetails.value.assets,
+      sortHandler: sortAssets,
+    },
+  });
+};
+
+function sortAssets(remove = false, localAsset: IAsset) {
+  const assets = productDetails.value.assets;
+  const asset = new Asset(localAsset);
+  if (assets.length) {
+    const imageIndex = assets.findIndex((asst) => asst.id === localAsset.id);
+
+    remove ? assets.splice(imageIndex, 1) : (assets[imageIndex] = asset);
+
+    editAssets(assets);
+  }
+}
+
+const editAssets = (args: Asset[]) => {
+  productDetails.value.assets = args;
+};
+
+const onAssetsItemRemove = (asset: Asset) => {
+  if (window.confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+    const assetIndex = productDetails.value.assets.findIndex((asst) => {
+      if (asst.id && asset.id) {
+        return asst.id === asset.id;
+      } else {
+        return asst.url === asset.url;
+      }
+    });
+    productDetails.value.assets.splice(assetIndex, 1);
+  }
+};
+
+const onAssetsSort = (images: Image[]) => {
+  productDetails.value.images = images;
 };
 
 const setCategory = async (selectedCategory: Category) => {

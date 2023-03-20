@@ -40,6 +40,6 @@ export default getApplicationConfiguration({
     }),
   ],
   optimizeDeps: {
-    include: mode === "development" ? ["ace-builds", "client-oauth2", "vee-validate"] : [],
+    include: mode === "development" ? ["ace-builds", "client-oauth2", "quill-delta", "quill"] : [],
   },
 });

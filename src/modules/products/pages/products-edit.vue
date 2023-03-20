@@ -164,6 +164,7 @@
                       required
                       :error-message="errorMessage"
                       @update:modelValue="handleChange"
+                      :assets-folder="productData.id || productData.categoryId"
                     ></VcEditor>
                   </Field>
 
@@ -439,7 +440,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        isDisabled.value ||
+        !isValid.value ||
         !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },

@@ -161,7 +161,7 @@
             },
             "UPLOAD": {
               "LABEL": "Organization logo",
-              "DESCRIPTION": "Select image with min height 60px and min width 160px of the PNG, JPEG"
+              "DESCRIPTION": "Select image with min height 120px and min width 120px of the PNG, JPEG"
             }
           }
         },

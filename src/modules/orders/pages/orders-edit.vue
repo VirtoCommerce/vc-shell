@@ -101,6 +101,7 @@
               :items="items"
               :header="false"
               :footer="false"
+              state-key="orders_edit"
             >
               <template v-slot:item_name="itemData">
                 <div class="tw-flex tw-flex-col">

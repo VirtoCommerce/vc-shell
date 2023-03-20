@@ -16,7 +16,7 @@ import * as locales from "./locales";
 import "./styles/index.scss";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
-import "@vc-shell/framework/dist/style.css";
+import "@vc-shell/framework/dist/index.css";
 
 const app = createApp(EmptyRouterView)
   .use(router)

@@ -161,7 +161,7 @@
                         option-value="id"
                         option-label="name"
                         @update:modelValue="
-                          (e) => {
+                          (e: string) => {
                             handleChange(e);
                             setCountry(e);
                             getRegions(e);

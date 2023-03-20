@@ -56,6 +56,7 @@
           :pages="historyPages"
           :currentPage="currentPage"
           @paginationClick="onPaginationClick"
+          state-key="import_profile_history"
         >
           <!-- Override name column template -->
           <template v-slot:item_name="itemData">

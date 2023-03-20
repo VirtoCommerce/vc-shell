@@ -2,6 +2,7 @@
   <Field
     v-if="(property.dictionary || property.isDictionary) && !property.multivalue"
     v-slot="{ errorMessage, handleChange, errors }"
+    :label="handleDisplayName || property.displayName"
     :name="property.displayName || property.name"
     :modelValue="getter(property, true)"
     :rules="rules"
@@ -37,6 +38,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :modelValue="property.values"
+    :label="handleDisplayName"
     :rules="rules"
   >
     <VcSelect
@@ -64,6 +66,7 @@
     "
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
+    :label="handleDisplayName"
     :modelValue="property.values"
     :rules="rules"
   >
@@ -95,6 +98,7 @@
     v-else-if="property.valueType === 'ShortText'"
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.displayName || property.name"
+    :label="handleDisplayName || property.displayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -122,6 +126,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :modelValue="property.values"
+    :label="handleDisplayName"
     :rules="rules"
   >
     <VcSelect
@@ -151,6 +156,7 @@
     v-else-if="property.valueType === 'Number'"
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
+    :label="handleDisplayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -178,6 +184,7 @@
     v-else-if="property.valueType === 'Integer'"
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
+    :label="handleDisplayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -206,6 +213,7 @@
     v-else-if="property.valueType === 'DateTime'"
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
+    :label="handleDisplayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -232,6 +240,7 @@
     v-else-if="property.valueType === 'LongText'"
     v-slot="{ errorMessage, handleChange }"
     :name="property.name"
+    :label="handleDisplayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -256,6 +265,7 @@
     v-else-if="property.valueType === 'Boolean'"
     v-slot="{ errorMessage, handleChange }"
     :name="property.displayName || property.name"
+    :label="handleDisplayName || property.displayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -273,7 +283,7 @@
       :disabled="disabled"
       :name="property.displayName || property.name"
     >
-      {{ handleDisplayName || property["displayName"] }}
+      {{ handleDisplayName || property.displayName }}
     </VcCheckbox>
   </Field>
 
@@ -281,6 +291,7 @@
     v-else-if="property.valueType === 'Html'"
     v-slot="{ errorMessage, handleChange }"
     :name="property.displayName || property.name"
+    :label="handleDisplayName || property.displayName"
     :modelValue="getter(property)"
     :rules="rules"
   >
@@ -362,16 +373,16 @@ const handleDisplayProperty = computed(() => {
 });
 const handleDisplayName = computed(() => {
   let localized: string;
-  const isLocaleExists = props.property["displayNames"]?.find((x: IDisplayName) =>
+  const isLocaleExists = props.property.displayNames?.find((x: IDisplayName) =>
     x.languageCode?.toLowerCase().startsWith((locale.value as string)?.toLowerCase())
   );
   if (isLocaleExists && isLocaleExists.name) {
     localized = isLocaleExists.name;
   } else {
-    const fallback = props.property["displayNames"]?.find((x: IDisplayName) =>
+    const fallback = props.property.displayNames?.find((x: IDisplayName) =>
       x.languageCode?.toLowerCase().includes(props.culture?.toLowerCase())
     );
-    localized = fallback && fallback?.name ? fallback.name : props.property["name"];
+    localized = fallback && fallback?.name ? fallback.name : props.property.name;
   }
 
   return localized && te(localized.toUpperCase()) ? t(localized.toUpperCase()) : localized;
@@ -383,17 +394,17 @@ onMounted(async () => {
   }
 });
 
-if (props.property["required"] || props.property["isRequired"]) {
+if (props.property.required || props.property.isRequired) {
   rules.required = true;
 }
-if (props.property["validationRule"]?.charCountMin) {
-  rules.min = Number(props.property["validationRule"].charCountMin);
+if (props.property.validationRule?.charCountMin) {
+  rules.min = Number(props.property.validationRule.charCountMin);
 }
-if (props.property["validationRule"]?.charCountMax) {
-  rules.max = Number(props.property["validationRule"].charCountMax);
+if (props.property.validationRule?.charCountMax) {
+  rules.max = Number(props.property.validationRule.charCountMax);
 }
-if (props.property["validationRule"]?.regExp) {
-  rules.regex = new RegExp(props.property["validationRule"]?.regExp);
+if (props.property.validationRule?.regExp) {
+  rules.regex = new RegExp(props.property.validationRule?.regExp);
 }
 
 /*function getLabel() {

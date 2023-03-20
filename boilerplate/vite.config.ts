@@ -125,7 +125,7 @@ export default {
     },
     include:
       mode === "development"
-        ? ["vue", "vue-router", "url-pattern", "ace-builds", "vue-logger-plugin", "client-oauth2", "vue-currency-input"]
+        ? ["vue", "vue-router", "url-pattern", "ace-builds", "client-oauth2", "vue-currency-input"]
         : ["vue", "vue-router", "url-pattern", "ace-builds"],
   },
   build: {

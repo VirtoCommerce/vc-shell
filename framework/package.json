@@ -35,7 +35,8 @@
   "dependencies": {
     "@floating-ui/vue": "^0.2.1",
     "@popperjs/core": "^2.11.0",
-    "@vee-validate/rules": "^4.5.5",
+    "@vee-validate/rules": "^4.7.3",
+    "@vee-validate/i18n": "^4.7.3",
     "@vueuse/components": "^9.9.0",
     "@vueuse/core": "^9.9.0",
     "@vueuse/integrations": "^9.9.0",

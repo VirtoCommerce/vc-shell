@@ -521,7 +521,7 @@ const { searchDictionaryItems } = useProduct();
 const { setFieldError, meta } = useForm({
   validateOnMount: false,
 });
-console.log(meta.value.initialValues)
+console.log(meta.value.initialValues);
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const priceRefs = ref([]);
@@ -550,6 +550,7 @@ onMounted(async () => {
       await addEmptyInventory();
       addPrice();
       makeCopy();
+      offerDetails.value.sku = generateSku();
     }
 
     if (offer.value.productId || offerDetails.value.productId || props.options?.sellerProduct?.publishedProductDataId) {
@@ -575,8 +576,8 @@ const title = computed(() => {
 });
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isFormValid.value;
-  });
+  return !isDirty.value || !isFormValid.value;
+});
 
 watch(offerDetails.value.prices, () => {
   scrollToLastPrice();
@@ -749,6 +750,20 @@ function setPriceRefs(el: HTMLDivElement) {
   }
 }
 
+function generateSku(): string {
+  // XXX(leter)-XXXXXXXX(number).
+  const letterPart = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const digitPart = "1234567890";
+  let result = "";
+  for (let i = 0; i < 3; i++) {
+    result += letterPart[Math.floor(Math.random() * letterPart.length)];
+  }
+  result += "-";
+  for (let i = 0; i < 8; i++) {
+    result += digitPart[Math.floor(Math.random() * digitPart.length)];
+  }
+  return result;
+}
 async function showProductDetails(id: string) {
   emit("open:blade", {
     component: shallowRef(ProductsEdit),
@@ -778,7 +793,7 @@ async function setProductItem(id: string) {
     productLoading.value = true;
     const fetchedProduct = (await fetchProducts(undefined, 0, [id])).results;
 
-    console.log(fetchedProduct, id)
+    console.log(fetchedProduct, id);
     if (fetchedProduct && fetchedProduct.length) {
       const currentProduct = fetchedProduct[0];
 

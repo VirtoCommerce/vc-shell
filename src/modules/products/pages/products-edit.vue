@@ -252,7 +252,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useUser, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails, VcInput } from "@vc-shell/framework";
+import { useUser, IParentCallArgs, IBladeEvent, IBladeToolbar, AssetsDetails } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";

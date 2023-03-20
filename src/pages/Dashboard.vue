@@ -253,24 +253,24 @@ const productsColumns = ref<ITableColumns[]>([
   {
     id: "imgSrc",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-    width: 60,
+    width: "20%",
     type: "image",
   },
   {
     id: "name",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
-    width: 120,
+    width: "25%",
   },
   {
     id: "createdDate",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-    width: 140,
+    width: "25%",
     type: "date-ago",
   },
   {
     id: "status",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-    width: 180,
+    width: "40%",
   },
 ]);
 
@@ -278,23 +278,23 @@ const ordersColumns = ref<ITableColumns[]>([
   {
     id: "number",
     title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.NUMBER")),
-    width: 80,
+    width: "20%",
   },
   {
     id: "items",
     title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.QTY")),
-    width: 80,
+    width: "20%",
   },
   {
     id: "status",
     title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.STATUS")),
-    width: 160,
+    width: "40%",
     type: "status",
   },
   {
     id: "createdDate",
     title: computed(() => t("ORDERS.PAGES.LIST.TABLE.HEADER.CREATED")),
-    width: 160,
+    width: "40%",
     type: "date-ago",
   },
 ]);

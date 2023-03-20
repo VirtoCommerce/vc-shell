@@ -12,7 +12,8 @@
       class="tw-grow tw-basis-0"
       :loading="loading"
       :expanded="expanded"
-      :columns="columns"
+      :columns="tableColumns"
+      :rawColumns="products"
       :items="products"
       :itemActionBuilder="actionBuilder"
       :multiselect="true"
@@ -335,20 +336,20 @@ const tableColumns = ref<ITableColumns[]>([
   {
     id: "imgSrc",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.IMAGE")),
-    width: 60,
+    width: "60px",
     type: "image",
   },
   {
     id: "name",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
-    width: 100,
+    width: "100px",
     alwaysVisible: true,
   },
   {
     id: "createdDate",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.CREATED_DATE")),
-    width: 140,
+    width: "140px",
     sortable: true,
     type: "date-ago",
   },
@@ -356,14 +357,14 @@ const tableColumns = ref<ITableColumns[]>([
     id: "isPublished",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PUBLISHED")),
     type: "status-icon",
-    width: 180,
+    width: "180px",
     align: "center",
     sortable: true,
   },
   {
     id: "status",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.STATUS")),
-    width: 180,
+    width: "180px",
     sortable: true,
     alwaysVisible: true,
   },
@@ -371,18 +372,10 @@ const tableColumns = ref<ITableColumns[]>([
     id: "gtin",
     field: "productData.gtin",
     title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.GTIN")),
-    width: 180,
+    width: "180px",
     alwaysVisible: true,
   },
 ]);
-
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
 
 const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);

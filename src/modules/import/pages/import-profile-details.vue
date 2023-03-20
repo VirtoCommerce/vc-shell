@@ -48,7 +48,7 @@
               @update:modelValue="
                 (e) => {
                   handleChange(e);
-                  setImporter(e);
+                  setImporter(e as string);
                 }
               "
               required

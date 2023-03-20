@@ -85,6 +85,7 @@ import {
   IOpenBlade,
   IBladeElement,
   ExtendedComponent,
+
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -105,6 +106,7 @@ import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
+
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
 const { user, loadUser, signOut } = useUser();
 const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();

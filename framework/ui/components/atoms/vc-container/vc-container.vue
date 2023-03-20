@@ -36,11 +36,20 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed, nextTick } from "vue";
-import { containerProps, containerEmits } from "./vc-container-model";
 
-const props = defineProps(containerProps);
+export interface Props {
+  shadow?: boolean;
+  noPadding?: boolean;
+  usePtr?: boolean;
+}
 
-const emit = defineEmits(containerEmits);
+export interface Emits {
+  (event: "scroll:ptr"): void;
+}
+
+const props = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 const component = ref<HTMLElement>();
 const scroll = ref(false);

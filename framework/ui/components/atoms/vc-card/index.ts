@@ -1,6 +1,10 @@
-import { ComponentPublicInstance } from "vue";
-import { VcCardEmits, VcCardProps } from "./vc-card-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Card from "./vc-card.vue";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcCard: ComponentConstructor<ComponentPublicInstance<VcCardProps, any, any, any, any, VcCardEmits>> = Card;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcCardSlots = {
+  default?: () => VNode[];
+  actions?: () => VNode[];
+};
+
+export const VcCard: GlobalComponentConstructor<typeof Card, VcCardSlots> = Card;

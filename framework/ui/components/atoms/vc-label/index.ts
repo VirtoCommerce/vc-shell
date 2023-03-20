@@ -1,5 +1,10 @@
-import { ComponentPublicInstance } from "vue";
-import { VcLabelProps } from "./vc-label-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Label from "./vc-label.vue";
-export const VcLabel: ComponentConstructor<ComponentPublicInstance<VcLabelProps>> = Label;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import { VNode } from "vue";
+
+export type VcLabelSlots = {
+  default?: () => VNode[];
+  tooltip?: () => VNode[];
+};
+
+export const VcLabel: GlobalComponentConstructor<typeof Label, VcLabelSlots> = Label;

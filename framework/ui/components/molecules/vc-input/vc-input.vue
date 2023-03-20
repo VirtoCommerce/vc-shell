@@ -171,11 +171,99 @@
 
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
-import { inputEmits, inputProps } from "./vc-input-model";
 
-const props = defineProps(inputProps);
+export interface Props {
+  /**
+   * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
+   */
+  modelValue: string | number | Date | null | undefined;
+  /**
+   * Input label text
+   */
+  label?: string;
+  /**
+   * Input placeholder text
+   */
+  placeholder?: string;
+  /**
+   * Input type
+   * Default value: text
+   */
+  type?: "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local";
+  /**
+   * Input description (hint) text below input component
+   */
+  hint?: string;
+  /**
+   * Appends clearable icon when a value is set;
+   * When clicked, model becomes null
+   */
+  clearable?: boolean;
+  /**
+   * Prefix
+   */
+  prefix?: string;
+  /**
+   * Suffix
+   */
+  suffix?: string;
+  /**
+   * Used to specify the name of the control; If not specified, it takes the value 'Field'
+   */
+  name?: string;
+  /**
+   * Signals the user a process is in progress by displaying a spinner
+   */
+  loading?: boolean;
+  /**
+   * Debounce amount (in milliseconds) when updating model
+   */
+  debounce?: string | number;
+  /**
+   * Put component in disabled mode
+   */
+  disabled?: boolean;
+  /**
+   * Focus field on initial component render
+   */
+  autofocus?: boolean;
+  /**
+   * Does field have validation errors?
+   */
+  error?: boolean;
+  /**
+   * Validation error message (gets displayed only if 'error' is set to 'true')
+   */
+  errorMessage?: string;
+  /**
+   * Specify a max length of model
+   * Default value: 1024
+   */
+  maxlength?: string | number;
+  /**
+   * Input tooltip information
+   */
+  tooltip?: string;
+  /**
+   * Input required state
+   */
+  required?: boolean;
+}
 
-const emit = defineEmits(inputEmits);
+export interface Emits {
+  /**
+   * Emitted when the component needs to change the model; Is also used by v-model
+   */
+  (event: "update:modelValue", value: string | number | Date | null): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  type: "text",
+  name: "Field",
+  maxlength: "1024",
+});
+
+const emit = defineEmits<Emits>();
 
 let emitTimer;
 let emitValueFn;
@@ -184,7 +272,7 @@ const inputRef = ref();
 
 const internalType = ref(unref(props.type));
 
-const maxDate = computed(() => props.type === "date" && "9999-12-31");
+const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefined);
 
 watch(
   () => props.modelValue,

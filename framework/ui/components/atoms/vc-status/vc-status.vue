@@ -8,9 +8,16 @@
 </template>
 
 <script lang="ts" setup>
-import { statusProps } from "./vc-status-model";
+export interface Props {
+  variant?: "info" | "warning" | "danger" | "success" | "light-danger";
+  outline?: boolean;
+  extend?: boolean;
+}
 
-defineProps(statusProps);
+withDefaults(defineProps<Props>(), {
+  variant: "info",
+  outline: true,
+});
 </script>
 
 <style lang="scss">

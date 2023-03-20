@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.54",
+  "version": "1.0.56",
   "private": true,
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn bootstrap && yarn run build",
@@ -36,7 +36,6 @@
     "@commitlint/config-conventional": "^12.1.4",
     "@commitlint/config-lerna-scopes": "^12.1.4",
     "@rollup/plugin-commonjs": "^24.0.1",
-    "@rollup/plugin-typescript": "^11.0.0",
     "@storybook/addon-actions": "^6.3.8",
     "@storybook/addon-backgrounds": "^6.4.18",
     "@storybook/addon-essentials": "^6.3.8",

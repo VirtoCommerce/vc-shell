@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'vc-progress tw-border tw-border-[length:var(--progressbar-border-width)] tw-border-[color:var(--progressbar-border-color)] tw-rounded-[var(--progressbar-border-radius)] tw-h-[var(--progressbar-height)] tw-transition  tw-duration-200 tw-box-border tw-bg-[color:var(--progressbar-background-color)]',
+      'vc-progress tw-border-[length:var(--progressbar-border-width)] tw-border-[color:var(--progressbar-border-color)] tw-rounded-[var(--progressbar-border-radius)] tw-h-[var(--progressbar-height)] tw-transition  tw-duration-200 tw-box-border tw-bg-[color:var(--progressbar-background-color)]',
       variant,
     ]"
   >
@@ -13,9 +13,15 @@
 </template>
 
 <script lang="ts" setup>
-import { progressProps } from "./vc-progress-model";
+export interface Props {
+  value?: number;
+  variant?: "default" | "striped";
+}
 
-defineProps(progressProps);
+withDefaults(defineProps<Props>(), {
+  value: 0,
+  variant: "default",
+});
 </script>
 
 <style lang="scss">

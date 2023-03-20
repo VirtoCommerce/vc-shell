@@ -48,10 +48,22 @@ import SwiperCore, { Navigation } from "swiper";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 import "swiper/components/navigation/navigation.min.css";
-import { sliderProps } from "./vc-slider-model";
-SwiperCore.use([Navigation]);
 
-defineProps(sliderProps);
+export interface Props {
+  slides?: Record<string, unknown>[] | unknown[];
+  navigation?: boolean;
+  overflow?: boolean;
+  slidesPerView?: string | "auto";
+  spaceBetweenSlides?: number;
+}
+
+withDefaults(defineProps<Props>(), {
+  slides: () => [],
+  slidesPerView: "auto",
+  spaceBetweenSlides: 10,
+});
+
+SwiperCore.use([Navigation]);
 
 const buttonsList = computed(() => ({
   nextEl: ".vc-slider__next",

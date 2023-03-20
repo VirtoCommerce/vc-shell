@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcStatusProps } from "./vc-status-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Status from "./vc-status.vue";
-export const VcStatus: ComponentConstructor<ComponentPublicInstance<VcStatusProps>> = Status;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcStatusSlots = {
+  default?: () => VNode[];
+};
+
+export const VcStatus: GlobalComponentConstructor<typeof Status, VcStatusSlots> = Status;

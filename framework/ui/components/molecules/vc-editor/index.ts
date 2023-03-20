@@ -1,8 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcEditorEmits, VcEditorProps } from "./vc-editor-model";
-import { ComponentConstructor } from "../../../types/ts-helpers";
+import { VNode } from "vue";
 import Editor from "./vc-editor.vue";
-export const VcEditor: ComponentConstructor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ComponentPublicInstance<VcEditorProps, any, any, any, any, VcEditorEmits>
-> = Editor;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcEditorSlots = {
+  error?: () => VNode[];
+};
+
+export const VcEditor: GlobalComponentConstructor<typeof Editor, VcEditorSlots> = Editor;

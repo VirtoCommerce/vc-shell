@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcProgressProps } from "./vc-progress-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Progress from "./vc-progress.vue";
-export const VcProgress: ComponentConstructor<ComponentPublicInstance<VcProgressProps>> = Progress;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcProgressSlots = {
+  default?: () => VNode[];
+};
+
+export const VcProgress: GlobalComponentConstructor<typeof Progress, VcProgressSlots> = Progress;

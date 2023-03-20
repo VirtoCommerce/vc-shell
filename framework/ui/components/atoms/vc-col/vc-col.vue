@@ -8,9 +8,13 @@
 </template>
 
 <script lang="ts" setup>
-import { colProps } from "./vc-col-model";
+export interface Props {
+  size?: string;
+}
 
-defineProps(colProps);
+withDefaults(defineProps<Props>(), {
+  size: "1",
+});
 </script>
 
 <style lang="scss">

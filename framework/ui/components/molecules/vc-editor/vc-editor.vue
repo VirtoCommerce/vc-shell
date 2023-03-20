@@ -47,16 +47,35 @@
 <script lang="ts" setup>
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import { ref, unref, watch } from "vue";
-import { editorEmits, editorProps } from "./vc-editor-model";
-import ImageUploader from "quill-image-uploader";
 import { useUser } from "./../../../../core/composables";
+import { ref, unref, watch } from "vue";
+import ImageUploader from "quill-image-uploader";
 
-const props = defineProps({ ...editorProps });
+export interface Props {
+  placeholder?: string;
+  modelValue?: string | number | Date;
+  required?: boolean;
+  disabled?: boolean;
+  label?: string;
+  tooltip?: string;
+  name?: string;
+  errorMessage?: string;
+  assetsFolder: string;
+}
 
-const emit = defineEmits({ ...editorEmits });
+export interface Emits {
+  (event: "update:modelValue", value: string | number | Date | null | undefined): void;
+}
 
 const { getAccessToken } = useUser();
+
+const props = withDefaults(defineProps<Props>(), {
+  modelValue: null,
+  name: "Field",
+});
+
+const emit = defineEmits<Emits>();
+
 const content = ref();
 const toolbar = [
   { header: 1 },

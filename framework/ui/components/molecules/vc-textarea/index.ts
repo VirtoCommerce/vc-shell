@@ -1,8 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcTextareaEmits, VcTextareaProps } from "./vc-textarea-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Textarea from "./vc-textarea.vue";
-export const VcTextarea: ComponentConstructor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ComponentPublicInstance<VcTextareaProps, any, any, any, any, VcTextareaEmits>
-> = Textarea;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcTextareaSlots = {
+  error?: () => VNode[];
+};
+
+export const VcTextarea: GlobalComponentConstructor<typeof Textarea, VcTextareaSlots> = Textarea;

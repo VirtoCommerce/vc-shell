@@ -3,6 +3,8 @@ import { getLibraryConfiguration } from "@vc-shell/config-generator";
 import * as path from "path";
 import checker from "vite-plugin-checker";
 
+const mode = process.env.APP_ENV as string;
+
 export default getLibraryConfiguration({
   plugins: [
     vue(),
@@ -12,19 +14,18 @@ export default getLibraryConfiguration({
   ],
   build: {
     target: "esnext",
+    cssCodeSplit: true,
+    sourcemap: mode === "development",
     lib: {
       entry: path.resolve(__dirname, "index.ts"),
+      formats: ["es"],
     },
     rollupOptions: {
       external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
-      output: {
-        globals: {
-          vue: "Vue",
-          "@vc-shell/config-generator": "@vc-shell/config-generator",
-          "vue-router": "vue-router",
-          "vee-validate": "vee-validate",
-        },
-      },
+    },
+    minify: "terser",
+    terserOptions: {
+      keep_fnames: true,
     },
   },
   envPrefix: "APP_",

@@ -17,9 +17,6 @@ export function getApplicationConfiguration(options: UserConfigExport = {}) {
   return getConfiguration(applicationConfiguration, options);
 }
 
-function getConfiguration(
-  configuration: UserConfigExport = {},
-  options: UserConfigExport
-) {
+function getConfiguration(configuration: UserConfigExport = {}, options: UserConfigExport) {
   return mergeConfig(configuration, options);
 }

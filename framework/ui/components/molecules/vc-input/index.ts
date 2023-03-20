@@ -1,7 +1,59 @@
-import { ComponentPublicInstance } from "vue";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Input from "./vc-input.vue";
-import { VcInputEmits, VcInputProps } from "./vc-input-model";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcInput: ComponentConstructor<ComponentPublicInstance<VcInputProps, any, any, any, any, VcInputEmits>> =
-  Input;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcInputSlots = {
+  /**
+   * Slot for controls
+   * @param scope
+   */
+  control?: (scope: {
+    /**
+     * Field is editable
+     */
+    editable: boolean;
+    /**
+     * Field has focus
+     */
+    focused: boolean;
+    /**
+     * Field's value
+     */
+    modelValue: string | number | Date | null;
+    /**
+     * Function that emits an @input event in the context of the field
+     * @param value Value to be emitted
+     */
+    emitValue: (value: string | number | Date | null) => void;
+    /**
+     * Field placeholder text
+     */
+    placeholder?: string | undefined;
+  }) => VNode[];
+  /**
+   * Prepend outer field
+   */
+  prepend?: () => VNode[];
+  /**
+   * Prepend inner field
+   */
+  "prepend-inner"?: () => VNode[];
+  /**
+   * Append to inner field
+   */
+  "append-inner"?: () => VNode[];
+  /**
+   * Append outer field
+   */
+  append?: () => VNode[];
+  /**
+   * Slot for errors
+   */
+  error?: () => VNode[];
+  /**
+   * Slot for hint text
+   */
+  hint?: () => VNode[];
+};
+
+export const VcInput: GlobalComponentConstructor<typeof Input, VcInputSlots> = Input;

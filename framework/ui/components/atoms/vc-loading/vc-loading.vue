@@ -21,7 +21,9 @@
 </template>
 
 <script lang="ts" setup>
-import { loadingProps } from "./vc-loading-model";
+export interface Props {
+  active?: boolean;
+}
 
-defineProps(loadingProps);
+defineProps<Props>();
 </script>

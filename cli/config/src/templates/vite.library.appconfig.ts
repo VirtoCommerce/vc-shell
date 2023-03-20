@@ -4,17 +4,9 @@ import { RollupOptions } from "rollup";
 
 export default {
   build: {
-    // sourcemap: true,
     lib: {
       entry: process.cwd() + "/src/index.ts",
-      formats: ["cjs", "esm"],
+      formats: ["es"],
     } as LibraryOptions,
-    rollupOptions: {
-      plugins: [
-        typescript({
-          tsconfig: process.cwd() + "/tsconfig.json",
-        }),
-      ],
-    } as RollupOptions,
   },
 } as UserConfigExport;

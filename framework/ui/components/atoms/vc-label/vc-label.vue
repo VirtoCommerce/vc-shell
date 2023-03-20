@@ -30,9 +30,15 @@
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
 import { ref } from "vue";
-import { labelProps } from "./vc-label-model";
 
-defineProps(labelProps);
+export interface Props {
+  required?: boolean;
+  tooltipIcon?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  tooltipIcon: "fas fa-info-circle",
+});
 
 const tooltipVisible = ref(false);
 </script>

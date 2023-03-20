@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcLoadingProps } from "./vc-loading-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Loading from "./vc-loading.vue";
-export const VcLoading: ComponentConstructor<ComponentPublicInstance<VcLoadingProps>> = Loading;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcLoadingSlots = {
+  default?: () => VNode[];
+};
+
+export const VcLoading: GlobalComponentConstructor<typeof Loading, VcLoadingSlots> = Loading;

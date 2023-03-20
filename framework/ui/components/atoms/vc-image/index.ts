@@ -1,7 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcImageEmits, VcImageProps } from "./vc-image-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Image from "./vc-image.vue";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcImage: ComponentConstructor<ComponentPublicInstance<VcImageProps, any, any, any, any, VcImageEmits>> =
-  Image;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcImageSlots = {
+  default?: () => VNode[];
+};
+
+export const VcImage: GlobalComponentConstructor<typeof Image, VcImageSlots> = Image;

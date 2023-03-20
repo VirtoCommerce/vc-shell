@@ -56,13 +56,119 @@
 </template>
 
 <script lang="ts" setup>
-import { inputCurrencyEmits, inputCurrencyProps } from "./vc-input-currency-model";
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { watch } from "vue";
 
-const props = defineProps(inputCurrencyProps);
+export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 
-defineEmits(inputCurrencyEmits);
+export interface Props {
+  /**
+   * Model of the currency component; Use with a listener for 'update:price' event OR use v-model:price directive
+   */
+  modelValue: string | number | Date | null;
+  /**
+   * Input label text
+   */
+  label?: string;
+  /**
+   * Input placeholder text
+   */
+  placeholder?: string;
+  /**
+   * Input description (hint) text below input component
+   */
+  hint?: string;
+  /**
+   * Appends clearable icon when a value is set;
+   * When clicked, model becomes null
+   */
+  clearable?: boolean;
+  /**
+   * Prefix
+   */
+  prefix?: string;
+  /**
+   * Suffix
+   */
+  suffix?: string;
+  /**
+   * Used to specify the name of the control; If not specified, it takes the value 'Field'
+   */
+  name?: string;
+  /**
+   * Signals the user a process is in progress by displaying a spinner
+   */
+  loading?: boolean;
+  /**
+   * Debounce amount (in milliseconds) for search input
+   * Default: 0
+   */
+  debounce?: string | number;
+  /**
+   * Put component in disabled mode
+   */
+  disabled?: boolean;
+  /**
+   * Focus field on initial component render
+   */
+  autofocus?: boolean;
+  /**
+   * Does field have validation errors?
+   */
+  error?: boolean;
+  /**
+   * Validation error message (gets displayed only if 'error' is set to 'true')
+   */
+  errorMessage?: string;
+  /**
+   * Specify a max length of model
+   * Default value: 1024
+   */
+  maxlength?: string | number;
+  /**
+   * Input tooltip information
+   */
+  tooltip?: string;
+  /**
+   * Input required state
+   */
+  required?: boolean;
+  /**
+   * Option label
+   */
+  option?: string;
+  /**
+   * Available options that the user can select from.
+   * Default value: []
+   */
+  options: unknown[];
+  /**
+   * Property of option which holds the 'value'
+   * Default value: id
+   * @param option The current option being processed
+   * @returns Value of the current option
+   */
+  optionValue?: OptionProp;
+  /**
+   * Property of option which holds the 'label'
+   * Default value: title
+   * @param option The current option being processed
+   * @returns Label of the current option
+   */
+  optionLabel?: OptionProp;
+}
+
+export interface Emits {
+  (event: "update:modelValue", value: string | number | null): void;
+  (event: "update:option", value: string | number | null): void;
+  (event: "change", value: string | number | null): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  debounce: 0,
+});
+
+defineEmits<Emits>();
 
 const { inputRef, setOptions } = useCurrencyInput({
   locale: navigator.language,
@@ -78,7 +184,7 @@ watch(
   (newVal) => {
     setOptions({
       locale: navigator.language,
-      currency: newVal,
+      currency: newVal as string,
       autoSign: false,
       currencyDisplay: CurrencyDisplay.hidden,
       hideGroupingSeparatorOnFocus: false,

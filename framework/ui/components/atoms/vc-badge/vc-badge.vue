@@ -16,11 +16,19 @@
 </template>
 
 <script lang="ts" setup>
-import { badgeProps, badgeEmits } from "./vc-badge-model";
+export interface Props {
+  active?: boolean;
+  disabled?: boolean;
+  clickable?: boolean;
+}
 
-const props = defineProps(badgeProps);
+export interface Emits {
+  (event: "click"): void;
+}
 
-const emit = defineEmits(badgeEmits);
+const props = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 function onClick(): void {
   if (props.clickable && !props.disabled) {

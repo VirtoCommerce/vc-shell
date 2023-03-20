@@ -26,7 +26,15 @@
 
 <script lang="ts" setup>
 import { VcLabel, VcRow, VcCol } from "./../../../components";
-import { infoRowProps } from "./vc-info-row-model";
 
-defineProps(infoRowProps);
+export interface Props {
+  label?: string;
+  value?: string;
+  tooltip?: string;
+  type?: "default" | "email";
+}
+
+withDefaults(defineProps<Props>(), {
+  type: "default",
+});
 </script>

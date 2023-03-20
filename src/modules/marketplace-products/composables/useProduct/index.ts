@@ -39,11 +39,13 @@ export default (): IUseProduct => {
     productData: {
       reviews: [],
       images: [],
+      assets: [],
     } as CatalogProduct,
   });
   const productDetails = ref<IProductDetails>(
     new ProductDetails({
       images: [],
+      assets: [],
     })
   );
   let productDetailsCopy: IProductDetails;
@@ -104,6 +106,7 @@ export default (): IUseProduct => {
       productDetails.value = {
         name: product.value.name,
         images: product.value.productData?.images,
+        assets: product.value.productData?.assets,
         categoryId: product.value.categoryId,
         gtin: product.value.productData?.gtin,
         properties: product.value.productData?.properties,

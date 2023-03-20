@@ -119,6 +119,9 @@
             "TITLE": "Description",
             "PLACEHOLDER": "Enter product description"
           },
+          "ASSETS":{
+            "TITLE": "Assets"
+          },
           "IMAGES": {
             "TITLE": "Images"
           }

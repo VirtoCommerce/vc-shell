@@ -8231,6 +8231,7 @@ export class ProductDetails implements IProductDetails {
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     images?: Image[] | undefined;
+    assets?: Asset[] | undefined;
 
     constructor(data?: IProductDetails) {
         if (data) {
@@ -8259,7 +8260,12 @@ export class ProductDetails implements IProductDetails {
                 for (let item of _data["images"])
                     this.images!.push(Image.fromJS(item));
             }
-        }
+            if (Array.isArray(_data["assets"])) {
+              this.assets = [] as any;
+              for (let item of _data["assets"])
+                  this.assets!.push(Asset.fromJS(item));
+          }
+      }
     }
 
     static fromJS(data: any): ProductDetails {
@@ -8287,7 +8293,12 @@ export class ProductDetails implements IProductDetails {
             for (let item of this.images)
                 data["images"].push(item.toJSON());
         }
-        return data;
+        if (Array.isArray(this.assets)) {
+          data["assets"] = [];
+          for (let item of this.assets)
+              data["assets"].push(item.toJSON());
+      }
+      return data;
     }
 }
 
@@ -8300,6 +8311,7 @@ export interface IProductDetails {
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     images?: Image[] | undefined;
+    assets?: Asset[] | undefined;
 }
 
 export class CreateNewProductCommand implements ICreateNewProductCommand {

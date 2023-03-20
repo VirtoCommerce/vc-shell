@@ -105,6 +105,7 @@ export default (): IUseProduct => {
       productDetails.value = {
         name: product.value.name,
         images: product.value.productData?.images,
+        assets: product.value.productData?.assets,
         categoryId: product.value.categoryId,
         gtin: product.value.productData?.gtin,
         properties: product.value.productData?.properties,

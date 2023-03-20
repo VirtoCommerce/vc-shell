@@ -19,6 +19,7 @@
             <!-- Product selector -->
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
+              :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
               :modelValue="offerDetails.productId"
               name="product"
               rules="required"
@@ -104,6 +105,7 @@
                 <div class="tw-mb-4 tw-flex tw-flex-row tw-items-center">
                   <Field
                     v-slot="{ field, errorMessage, handleChange, errors }"
+                    :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
                     :modelValue="offerDetails.sku"
                     rules="required|min:3"
                     name="sku"
@@ -186,6 +188,7 @@
                           </VcCol>
                           <VcCol class="tw-py-2">
                             <!-- In stock qty field -->
+                            <!-- TODO -->
                             <Field
                               v-slot="{ field, errorMessage, handleChange, errors }"
                               :modelValue="item.inStockQuantity"
@@ -266,6 +269,7 @@
                           <!-- List price field -->
                           <Field
                             v-slot="{ errorMessage, handleChange, errors }"
+                            :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                             :modelValue="item.listPrice"
                             :name="`listprice_${i}`"
                             rules="required"
@@ -311,6 +315,7 @@
                       <!-- Minimum quantity field -->
                       <Field
                         v-slot="{ field, errorMessage, handleChange, errors }"
+                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                         :modelValue="item.minQuantity"
                         :name="`minqty_${i}`"
                         rules="required"
@@ -373,6 +378,7 @@
                     <VcCol class="tw-p-2">
                       <Field
                         v-slot="{ field, errorMessage, errors }"
+                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                         :modelValue="getFilterDate('startDate')"
                         name="startDate"
                       >
@@ -393,6 +399,7 @@
                     <VcCol class="tw-p-2">
                       <Field
                         v-slot="{ field, errorMessage, errors }"
+                        :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                         :modelValue="getFilterDate('endDate')"
                         name="endDate"
                         rules="after:@startDate"

@@ -7,6 +7,7 @@
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
+          :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
           name="username"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.username"
@@ -26,6 +27,7 @@
           />
         </Field>
         <Field
+          :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
           name="password"
           v-slot="{ field, errorMessage, handleChange, errors }"
           :modelValue="form.password"
@@ -75,6 +77,7 @@
       <template v-if="!forgotPasswordRequestSent">
         <VcForm @submit.prevent="forgot">
           <Field
+            :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             name="loginOrEmail"
             v-slot="{ field, errorMessage, handleChange, errors }"
             :modelValue="forgotPasswordForm.loginOrEmail"

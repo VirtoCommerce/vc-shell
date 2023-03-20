@@ -7,6 +7,7 @@
     <div class="tw-p-3">
       <VcForm>
         <Field
+          :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
           name="current"
           rules="required|min:6"
           :modelValue="form.currentPassword"
@@ -27,6 +28,7 @@
           ></VcInput>
         </Field>
         <Field
+          :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           name="new_pass"
           rules="required|min:6"
           :modelValue="form.password"
@@ -47,6 +49,7 @@
           ></VcInput>
         </Field>
         <Field
+          :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
           name="confirm_pass"
           rules="required|min:6"
           :modelValue="form.confirmPassword"

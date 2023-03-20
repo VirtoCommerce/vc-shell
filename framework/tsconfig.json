@@ -30,14 +30,14 @@
   },
   "include": [
     "*.ts",
-    "typings/*.d.ts",
+    "typings",
     "core/**/*.ts",
     "core/api/*.ts",
-    "typings/*.ts",
-    "ui/components/**/*.vue",
-    "ui/components/**/*.ts",
-    "ui/types/*.ts",
-    "ui/utils/*.ts",
+
+    "ui/components",
+    "ui/services/*.ts",
+    "ui/services/types/*.ts",
+
     "shared/**/*.vue",
     "shared/**/*.ts",
     "shared/**/*.json"

@@ -1,8 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcPaginationEmits, VcPaginationProps } from "./vc-pagination-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
 import Pagination from "./vc-pagination.vue";
-export const VcPagination: ComponentConstructor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ComponentPublicInstance<VcPaginationProps, any, any, any, any, VcPaginationEmits>
-> = Pagination;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import { VNode } from "vue";
+
+export type VcPaginationSlots = {
+  default?: () => VNode[];
+};
+
+export const VcPagination: GlobalComponentConstructor<typeof Pagination, VcPaginationSlots> = Pagination;

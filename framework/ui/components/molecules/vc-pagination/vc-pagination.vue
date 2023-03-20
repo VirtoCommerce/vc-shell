@@ -105,11 +105,23 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
-import { paginationEmits, paginationProps } from "./vc-pagination-model";
 
-defineProps({...paginationProps});
+export interface Props {
+  expanded?: boolean;
+  pages?: number;
+  currentPage?: number;
+}
 
-defineEmits({...paginationEmits});
+export interface Emits {
+  (event: "itemClick", pages: number): void;
+}
+
+withDefaults(defineProps<Props>(), {
+  pages: 1,
+  currentPage: 1,
+});
+
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

@@ -48,9 +48,17 @@
 
 <script lang="ts" setup>
 import { VcIcon, VcLabel } from "./../../../components";
-import { ratingProps } from "./vc-rating-model";
 
-defineProps({...ratingProps});
+export interface Props {
+  label?: string;
+  placeholder?: string;
+  tooltip?: string;
+  rating: number;
+  max?: number;
+  variant?: "stars" | "star-and-text" | "text";
+}
+
+withDefaults(defineProps<Props>(), { max: 5, variant: "stars" });
 </script>
 
 <style lang="scss">

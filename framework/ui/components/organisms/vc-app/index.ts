@@ -1,6 +1,12 @@
-import { ComponentPublicInstance } from "vue";
-import { VcAppEmits, VcAppProps } from "./vc-app-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import App from "./vc-app.vue";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcApp: ComponentConstructor<ComponentPublicInstance<VcAppProps, any, any, any, any, VcAppEmits>> = App;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcAppSlots = {
+  appSwitcher?: () => VNode[];
+  bladeNavigation?: () => VNode[];
+  notifications?: () => VNode[];
+  passwordChange?: () => VNode[];
+};
+
+export const VcApp: GlobalComponentConstructor<typeof App, VcAppSlots> = App;

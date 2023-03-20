@@ -4,6 +4,8 @@ import * as fs from "fs";
 import { loadEnv, ProxyOptions, UserConfigExport } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { RollupOptions } from "rollup";
+import path from "path";
+import checker from "vite-plugin-checker";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
@@ -19,16 +21,15 @@ const TSCONFIG = process.cwd() + "/tsconfig.json";
 const TSCONFIG_BUILD = process.cwd() + "/tsconfig.build.json";
 const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
+const isMonorepo = fs.existsSync(path.resolve(__dirname, "./../../framework/package.json"));
+
 // "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
 const _define: { global?: unknown } = {};
 if (mode !== "production") {
   _define.global = {};
 }
 
-const getProxy = (
-  target: ProxyOptions["target"],
-  options: Omit<ProxyOptions, "target"> = {}
-): ProxyOptions => {
+const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "target"> = {}): ProxyOptions => {
   const dontTrustSelfSignedCertificate = false;
   return {
     target,
@@ -38,13 +39,43 @@ const getProxy = (
   };
 };
 
+const aliasResolver = () => {
+  if (isMonorepo) {
+    if (mode === "development") {
+      return {
+        "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+        "@vc-shell/framework": "@vc-shell/framework/index.ts",
+      };
+    }
+    return {};
+  } else {
+    if (mode === "development") {
+      return {
+        "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+        "vue-router": "vue-router/dist/vue-router.cjs.js",
+        "vee-validate": "vee-validate/dist/vee-validate.js",
+      };
+    } else {
+      return {};
+    }
+  }
+};
+
 export default {
   mode,
   resolve: {
     preserveSymlinks: true,
+    alias: aliasResolver(),
   },
   envPrefix: "APP_",
-  plugins: [mkcert({ hosts: ["localhost", "127.0.0.1"] }), vue()],
+  base: process.env.APP_BASE_PATH,
+  plugins: [
+    mkcert({ hosts: ["localhost", "127.0.0.1"] }),
+    vue(),
+    checker({
+      vueTsc: true,
+    }),
+  ],
   define: {
     ..._define,
 
@@ -52,6 +83,7 @@ export default {
     "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
     "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
     "import.meta.env.APP_LOG_LEVEL": `"${process.env.APP_LOG_LEVEL}"`,
+    "import.meta.env.APP_BASE_PATH": `"${process.env.APP_BASE_PATH}"`,
 
     // https://vue-i18n.intlify.dev/guide/advanced/optimization.html#reduce-bundle-size-with-feature-build-flags
     __VUE_I18N_FULL_INSTALL__: true,
@@ -75,10 +107,13 @@ export default {
     },
   },
   optimizeDeps: {
-    include: ["vue", "vue-router", "url-pattern", "ace-builds"],
+    esbuildOptions: {
+      target: ["es2020", "safari14"],
+    },
   },
   build: {
-    // sourcemap: true,
+    target: "esnext",
+    sourcemap: mode === "development",
     emptyOutDir: true,
     rollupOptions: {
       plugins: [

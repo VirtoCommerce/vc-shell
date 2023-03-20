@@ -1,9 +1,17 @@
-import { ComponentPublicInstance } from "vue";
-import { VcInputCurrencyEmits, VcInputCurrencyProps } from "./vc-input-currency-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import InputCurrency from "./vc-input-currency.vue";
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
 
-export const VcInputCurrency: ComponentConstructor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ComponentPublicInstance<VcInputCurrencyProps, any, any, any, any, VcInputCurrencyEmits>
-> = InputCurrency;
+export type VcInputCurrencySlots = {
+  /**
+   * Slot for custom dropdown open handler
+   */
+  button?: (scope: {
+    /**
+     * Dropdown open/close handler
+     */
+    toggleHandler: () => void;
+  }) => VNode[];
+};
+
+export const VcInputCurrency: GlobalComponentConstructor<typeof InputCurrency, VcInputCurrencySlots> = InputCurrency;

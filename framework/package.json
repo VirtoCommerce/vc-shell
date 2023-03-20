@@ -1,10 +1,10 @@
 {
   "name": "@vc-shell/framework",
   "version": "1.0.55",
-  "main": "./dist/framework.js",
-  "module": "./dist/framework.esm.js",
-  "types": "./dist/index.d.ts",
-  "style": "./dist/style.css",
+  "main": "./dist/framework.mjs",
+  "module": "./dist/framework.mjs",
+  "types": "./dist/types/index.d.ts",
+  "style": "./dist/index.css",
   "files": [
     "dist",
     "tailwind.config.js",
@@ -14,19 +14,19 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/framework.esm.js",
-      "require": "./dist/framework.js",
-      "types": "./dist/index.d.ts"
+      "import": "./dist/framework.mjs",
+      "types": "./dist/types/index.d.ts"
     },
     "./client": {
       "types": "./dist/ui/types/index.d.ts"
     },
-    "./dist/style.css": "./dist/style.css",
+    "./dist/index.css": "./dist/index.css",
     "./tailwind.config": "./tailwind.config.js",
     "./*": "./*"
   },
   "scripts": {
-    "build": "vite build --debug",
+    "build": "vite build && yarn build:types",
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "dev": "vite",
     "development": "vite build --watch -m development",
     "watch": "vite build --watch",

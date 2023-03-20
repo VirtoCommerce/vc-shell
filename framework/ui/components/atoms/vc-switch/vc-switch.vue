@@ -30,13 +30,23 @@
 </template>
 
 <script lang="ts" setup>
-import { switchEmits, switchProps } from "./vc-switch-model";
+export interface Props {
+  modelValue: boolean;
+  disabled?: boolean;
+  tooltip?: string;
+  required?: boolean;
+  label?: string;
+}
 
-defineProps({...switchProps});
+export interface Emits {
+  (event: "update:modelValue", value: boolean): void;
+}
 
-const emit = defineEmits({...switchEmits});
+defineProps<Props>();
 
-function onInput(e: InputEvent) {
+const emit = defineEmits<Emits>();
+
+function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).checked;
   emit("update:modelValue", newValue);
 }

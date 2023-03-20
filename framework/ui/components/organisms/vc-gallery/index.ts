@@ -1,8 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcGalleryEmits, VcGalleryProps } from "./vc-gallery-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Gallery from "./vc-gallery.vue";
-export const VcGallery: ComponentConstructor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ComponentPublicInstance<VcGalleryProps, any, any, any, any, VcGalleryEmits>
-> = Gallery;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcGallerySlots = {
+  default?: () => VNode[];
+};
+
+export const VcGallery: GlobalComponentConstructor<typeof Gallery, VcGallerySlots> = Gallery;

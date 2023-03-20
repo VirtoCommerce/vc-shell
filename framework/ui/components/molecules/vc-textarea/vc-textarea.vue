@@ -47,11 +47,29 @@
 <script lang="ts" setup>
 import { watch } from "vue";
 import { VcLabel } from "./../../../components";
-import { textareaEmits, textareaProps } from "./vc-textarea-model";
 
-const props = defineProps({...textareaProps});
+export interface Props {
+  placeholder?: string;
+  modelValue: string;
+  required?: boolean;
+  disabled?: boolean;
+  label?: string;
+  tooltip?: string;
+  name?: string;
+  maxchars?: string;
+  errorMessage?: string;
+}
 
-const emit = defineEmits({...textareaEmits});
+export interface Emits {
+  (event: "update:modelValue", value: string): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  name: "Field",
+  maxchars: "1024",
+});
+
+const emit = defineEmits<Emits>();
 
 watch(
   () => props.modelValue,
@@ -61,7 +79,7 @@ watch(
 );
 
 // Handle input event to propertly validate value and emit changes
-function onInput(e: InputEvent) {
+function onInput(e: Event) {
   const newValue = (e.target as HTMLInputElement).value;
   emit("update:modelValue", newValue);
 }

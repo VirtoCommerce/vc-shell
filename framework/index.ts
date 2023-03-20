@@ -1,5 +1,5 @@
 import { App } from "vue";
-import * as components from "./ui/components";
+import * as vcShellComponents from "./ui/services/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
@@ -22,8 +22,8 @@ export default {
     app.component("draggable", draggable);
 
     // Register exported components
-    Object.entries(components).forEach(([componentName, component]) => {
-      app.component(componentName, component);
+    Object.entries(vcShellComponents).forEach(([name, component]) => {
+      app.component(name, component);
     });
 
     // Register exported directives
@@ -52,11 +52,8 @@ export default {
 };
 
 export * from "./ui/components";
-
 // eslint-disable-next-line import/export
-export * from "./ui/types";
-
-export * from "./ui/utils";
+export * from "./ui/services/types";
 
 export * from "./core/composables";
 export * from "./core/directives";

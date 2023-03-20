@@ -46,11 +46,27 @@ import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
 import { ref, unref, watch } from "vue";
-import { editorEmits, editorProps } from "./vc-editor-model";
 
-const props = defineProps({...editorProps});
+export interface Props {
+  placeholder?: string;
+  modelValue?: string | number | Date;
+  required?: boolean;
+  disabled?: boolean;
+  label?: string;
+  tooltip?: string;
+  name?: string;
+  errorMessage?: string;
+}
 
-const emit = defineEmits({...editorEmits});
+export interface Emits {
+  (event: "update:modelValue", value: string | number | Date): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  name: "Field",
+});
+
+const emit = defineEmits<Emits>();
 const content = ref();
 
 watch(

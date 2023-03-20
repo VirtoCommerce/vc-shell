@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcRatingProps } from "./vc-rating-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Rating from "./vc-rating.vue";
-export const VcRating: ComponentConstructor<ComponentPublicInstance<VcRatingProps>> = Rating;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcRatingSlots = {
+  details?: () => VNode[];
+};
+
+export const VcRating: GlobalComponentConstructor<typeof Rating, VcRatingSlots> = Rating;

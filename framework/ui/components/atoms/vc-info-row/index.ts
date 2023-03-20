@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcInfoRowProps } from "./vc-info-row-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
 import InfoRow from "./vc-info-row.vue";
-export const VcInfoRow: ComponentConstructor<ComponentPublicInstance<VcInfoRowProps>> = InfoRow;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import { VNode } from "vue";
+
+export type VcInfoRowSlots = {
+  default?: () => VNode[];
+};
+
+export const VcInfoRow: GlobalComponentConstructor<typeof InfoRow, VcInfoRowSlots> = InfoRow;

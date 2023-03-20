@@ -1,5 +1,12 @@
-import { ComponentPublicInstance } from "vue";
-import { VcSliderProps } from "./vc-slider-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Slider from "./vc-slider.vue";
-export const VcSlider: ComponentConstructor<ComponentPublicInstance<VcSliderProps>> = Slider;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcSliderSlots = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  default?: (args: { slide: Record<string, unknown> | any }) => VNode[];
+  prevBtn?: () => VNode[];
+  nextBtn?: () => VNode[];
+};
+
+export const VcSlider: GlobalComponentConstructor<typeof Slider, VcSliderSlots> = Slider;

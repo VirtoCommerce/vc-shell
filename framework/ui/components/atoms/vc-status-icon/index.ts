@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcStatusIconProps } from "./vc-status-icon-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import StatusIcon from "./vc-status-icon.vue";
-export const VcStatusIcon: ComponentConstructor<ComponentPublicInstance<VcStatusIconProps>> = StatusIcon;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcStatusIconSlots = {
+  default?: () => VNode[];
+};
+
+export const VcStatusIcon: GlobalComponentConstructor<typeof StatusIcon, VcStatusIconSlots> = StatusIcon;

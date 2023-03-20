@@ -3,9 +3,15 @@
 </template>
 
 <script lang="ts" setup>
-import { iconProps } from "./vc-icon-model";
+export interface Props {
+  icon?: string;
+  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl";
+}
 
-defineProps({...iconProps});
+withDefaults(defineProps<Props>(), {
+  icon: "fas fa-square-full",
+  size: "m",
+});
 </script>
 
 <style lang="scss">

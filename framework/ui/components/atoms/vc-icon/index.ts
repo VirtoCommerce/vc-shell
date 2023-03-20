@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcIconProps } from "./vc-icon-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Icon from "./vc-icon.vue";
-export const VcIcon: ComponentConstructor<ComponentPublicInstance<VcIconProps>> = Icon;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcIconSlots = {
+  default?: () => VNode[];
+};
+
+export const VcIcon: GlobalComponentConstructor<typeof Icon, VcIconSlots> = Icon;

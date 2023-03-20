@@ -1,7 +1,10 @@
-import { ComponentPublicInstance } from "vue";
-import { VcBladeEmits, VcBladeProps } from "./vc-blade-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Blade from "./vc-blade.vue";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcBlade: ComponentConstructor<ComponentPublicInstance<VcBladeProps, any, any, any, any, VcBladeEmits>> =
-  Blade;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcBladeSlots = {
+  actions?: () => VNode[];
+  default?: () => VNode[];
+};
+
+export const VcBlade: GlobalComponentConstructor<typeof Blade, VcBladeSlots> = Blade;

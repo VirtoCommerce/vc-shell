@@ -67,14 +67,55 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { IImage } from "../../../../core/types";
 import { VcLabel, VcFileUpload } from "./../../../components";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
-import { galleryEmits, galleryProps } from "./vc-gallery-model";
 
-const props = defineProps({...galleryProps});
+export interface Props {
+  images?: IImage[];
+  disabled?: boolean;
+  required?: boolean;
+  label?: string;
+  tooltip?: string;
+  tooltipIcon?: string;
+  uploadIcon?: string;
+  multiple?: boolean;
+  variant?: "gallery" | "file-upload";
+  itemActions?: {
+    name?: string;
+    preview: boolean;
+    edit: boolean;
+    remove: boolean;
+  };
+  disableDrag?: boolean;
+  hideAfterUpload?: boolean;
+  rules?: string | Record<string, unknown>;
+  name?: string;
+}
 
-const emit = defineEmits({...galleryEmits});
+export interface Emits {
+  (event: "upload", files: FileList): void;
+  (event: "sort", sorted: IImage[]): void;
+  (event: "item:edit", image: IImage): void;
+  (event: "item:remove", image: IImage): void;
+  (event: "item:move", image: IImage): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  images: () => [],
+  tooltipIcon: "fas fa-info",
+  uploadIcon: "fas fa-upload",
+  variant: "gallery",
+  itemActions: () => ({
+    preview: true,
+    edit: true,
+    remove: true,
+  }),
+  name: "Gallery",
+});
+
+const emit = defineEmits<Emits>();
 
 const preview = ref(false);
 const previewImageIndex = ref();

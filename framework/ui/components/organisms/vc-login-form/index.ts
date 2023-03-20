@@ -1,5 +1,9 @@
-import { ComponentPublicInstance } from "vue";
-import { VcLoginFormProps } from "./vc-login-form-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import LoginForm from "./vc-login-form.vue";
-export const VcLoginForm: ComponentConstructor<ComponentPublicInstance<VcLoginFormProps>> = LoginForm;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcLoginFormSlots = {
+  default?: () => VNode[];
+};
+
+export const VcLoginForm: GlobalComponentConstructor<typeof LoginForm, VcLoginFormSlots> = LoginForm;

@@ -254,10 +254,138 @@
 import { ref, computed, watch, toRefs, nextTick } from "vue";
 import { VcIcon, VcLabel, VcContainer } from "./../../../components";
 import { clickOutside as vClickOutside } from "./../../../../core/directives";
-import { selectEmits, selectProps, OptionProp } from "./vc-select-model";
 import { intersection, isEqual } from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
+
+export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
+
+export interface Props {
+  /**
+   * Name of select
+   */
+  name?: string;
+  /**
+   * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  modelValue: any;
+  /**
+   * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
+   * Default value: true
+   */
+  mapOptions?: boolean;
+  /**
+   * Does field have validation errors?
+   */
+  error?: boolean;
+  /**
+   * Validation error message (gets displayed only if 'error' is set to 'true')
+   */
+  errorMessage?: string;
+  /**
+   * Select label
+   */
+  label?: string;
+  /**
+   * Select description (hint) text below input component
+   */
+  hint?: string;
+  /**
+   * Prefix
+   */
+  prefix?: string;
+  /**
+   * Suffix
+   */
+  suffix?: string;
+  /**
+   * Signals the user a process is in progress by displaying a spinner
+   */
+  loading?: boolean;
+  /**
+   * Appends clearable icon when a value is set;
+   * When clicked, model becomes null
+   */
+  clearable?: boolean;
+  /**
+   * Put component in disabled mode
+   */
+  disabled?: boolean;
+  /**
+   * Allow multiple selection; Model must be Array
+   */
+  multiple?: boolean;
+  /**
+   * Available options that the user can select from.
+   * Default value: []
+   */
+  options?:
+    | ((
+        keyword?: string,
+        skip?: number,
+        ids?: string[]
+      ) => Promise<{
+        results?: object[];
+        totalCount?: number;
+      }>)
+    | unknown[];
+  /**
+   * Property of option which holds the 'value'
+   * Default value: id
+   * @param option The current option being processed
+   * @returns Value of the current option
+   */
+  optionValue?: OptionProp;
+  /**
+   * Property of option which holds the 'label'
+   * Default value: title
+   * @param option The current option being processed
+   * @returns Label of the current option
+   */
+  optionLabel?: OptionProp;
+  /**
+   * Update model with the value of the selected option instead of the whole option
+   */
+  emitValue?: boolean;
+  /**
+   * Debounce the search input update with an amount of milliseconds
+   * Default value: 500
+   */
+  debounce?: number | string;
+  /**
+   * Input placeholder text
+   */
+  placeholder?: string;
+  /**
+   * Input tooltip information
+   */
+  tooltip?: string;
+  /**
+   * Input required state
+   */
+  required?: boolean;
+  /**
+   * Input search activation
+   */
+  searchable?: boolean;
+}
+
+export interface Emits {
+  /**
+   * Emitted when the component needs to change the model; Is also used by v-model
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (event: "update:modelValue", inputValue: any): void;
+  /**
+   * Emitted when user wants to filter a value
+   */
+  (event: "search", inputValue: string): void;
+  /**
+   * Emitted when the select options list is hidden
+   */
+  (event: "close"): void;
+}
 
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
@@ -270,9 +398,20 @@ type FloatingInstanceType = UseFloatingReturn & {
   };
 };
 
-const props = defineProps({ ...selectProps });
+const props = withDefaults(defineProps<Props>(), {
+  optionValue: "id",
+  optionLabel: "title",
+  debounce: 500,
+  clearable: true,
+  name: "Field",
+  autofocus: true,
+  emitValue: true,
+  mapOptions: true,
+  placeholder: "Click to select...",
+  options: () => [],
+});
 
-const emit = defineEmits({ ...selectEmits });
+const emit = defineEmits<Emits>();
 
 const { modelValue, options } = toRefs(props);
 
@@ -287,10 +426,13 @@ const listLoading = ref(false);
 
 const filterString = ref();
 
-const defaultValue = ref([]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const defaultValue = ref<any[]>([]);
 
-const optionsList = ref([]);
-const optionsTemp = ref([]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const optionsList = ref<any[]>([]);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const optionsTemp = ref<any[]>([]);
 
 const totalItems = ref();
 
@@ -342,7 +484,9 @@ watch(
             undefined,
             Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results.filter((x) => x[props.optionValue as string] === props.modelValue);
+          defaultValue.value = data.results?.filter(
+            (x) => x[props.optionValue as string] === props.modelValue
+          ) as unknown[];
         } else if (props.options && Array.isArray(props.options)) {
           defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
         }
@@ -359,7 +503,7 @@ watch(
       try {
         listLoading.value = true;
         const data = await props.options();
-        optionsList.value = data.results;
+        optionsList.value = data.results as unknown[];
         totalItems.value = data.totalCount;
       } finally {
         listLoading.value = false;
@@ -393,7 +537,7 @@ async function onLoadMore() {
     try {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
-      optionsList.value.push(...data.results);
+      optionsList.value.push(...(data.results as unknown[]));
     } finally {
       listLoading.value = false;
     }
@@ -476,7 +620,7 @@ function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
 
   return typeof val === "function"
     ? val
-    : (opt) => (opt !== null && typeof opt === "object" && val in opt ? opt[val] : opt);
+    : (opt) => (opt !== null && typeof opt === "object" && (val as string) in opt ? opt[val as string] : opt);
 }
 
 function getOption(value: Record<string, unknown> | string, valueCache: Array<Record<string, unknown> | string>) {
@@ -518,7 +662,7 @@ function closeDropdown() {
 
 const onDropdownClose = async () => {
   if (props.options && typeof props.options === "function") {
-    optionsList.value = (await props.options()).results;
+    optionsList.value = (await props.options()).results as unknown[];
   } else {
     optionsList.value = props.options as Record<string, unknown>[];
   }
@@ -616,7 +760,7 @@ async function onSearch(value: string) {
   if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
-      optionsTemp.value = (await props.options(filterString.value)).results;
+      optionsTemp.value = (await props.options(filterString.value)).results as unknown[];
     } finally {
       listLoading.value = false;
     }

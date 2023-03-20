@@ -1,7 +1,12 @@
-import { ComponentPublicInstance } from "vue";
-import { VcBadgeEmits, VcBadgeProps } from "./vc-badge-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Badge from "./vc-badge.vue";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcBadge: ComponentConstructor<ComponentPublicInstance<VcBadgeProps, any, any, any, any, VcBadgeEmits>> =
-  Badge;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcBadgeSlots = {
+  /**
+   * Slot for component content
+   * */
+  default?: () => VNode[];
+};
+
+export const VcBadge: GlobalComponentConstructor<typeof Badge, VcBadgeSlots> = Badge;

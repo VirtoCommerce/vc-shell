@@ -1,2 +1,9 @@
+import { VNode } from "vue";
 import Row from "./vc-row.vue";
-export const VcRow = Row;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcRowSlots = {
+  default?: () => VNode[];
+};
+
+export const VcRow: GlobalComponentConstructor<typeof Row, VcRowSlots> = Row;

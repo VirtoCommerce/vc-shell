@@ -72,8 +72,8 @@
         <template v-if="$isMobile.value && $slots['mobile-item']">
           <div>
             <VcTableMobileItem
-              v-for="item in items"
-              :key="item.id"
+              v-for="(item, i) in items"
+              :key="i"
               :item="item"
               :actionBuilder="itemActionBuilder"
               @click="$emit('itemClick', item)"
@@ -126,7 +126,7 @@
                 </div>
               </th>
               <th
-                v-for="(item, i) in filteredCols"
+                v-for="item in filteredCols"
                 @mousedown="onColumnHeaderMouseDown"
                 @dragstart="onColumnHeaderDragStart($event, item)"
                 @dragover="onColumnHeaderDragOver"
@@ -143,7 +143,7 @@
               >
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3"
-                  :class="tableAlignment[item.align]"
+                  :class="tableAlignment[item.align as string]"
                 >
                   <div class="tw-truncate">
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>
@@ -379,7 +379,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch, onBeforeUpdate, getCurrentInstance, onBeforeUnmount, Ref } from "vue";
+import { computed, nextTick, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -387,18 +387,79 @@ import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
-import { tableEmits, tableProps } from "./vc-table-model";
 import { useLocalStorage, computedAsync, useCurrentElement } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
 
-const props = defineProps({ ...tableProps });
+export interface StatusImage {
+  image?: string;
+  text: string;
+  action?: string;
+  clickHandler?: () => void;
+}
+
+export interface Props {
+  columns: ITableColumns[];
+  items: { id?: string }[] | string[];
+  itemActionBuilder?: (item: { id?: string }) => IActionBuilderResult[];
+  sort?: string;
+  multiselect?: boolean;
+  expanded?: boolean;
+  totalLabel?: string;
+  totalCount?: number;
+  pages?: number;
+  currentPage?: number;
+  searchPlaceholder?: string;
+  searchValue?: string;
+  loading?: boolean;
+  empty?: StatusImage;
+  notfound?: StatusImage;
+  header?: boolean;
+  footer?: boolean;
+  activeFilterCount?: number;
+  selectedItemId?: string;
+  scrolling?: boolean;
+  resizableColumns?: boolean;
+  reorderableColumns?: boolean;
+  stateKey: string;
+}
+
+export interface Emits {
+  (event: "paginationClick", page: number): void;
+  (event: "selectionChanged", values: Record<string, boolean>): void;
+  (event: "search:change", value: string): void;
+  (event: "headerClick", value: Record<string, unknown>): void;
+  (event: "itemClick", item: { id?: string }): void;
+  (event: "scroll:ptr"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  columns: () => [],
+  items: () => [],
+  totalLabel: "Totals:",
+  totalCount: 0,
+  pages: 0,
+  expanded: true,
+  currentPage: 0,
+  searchPlaceholder: "Search...",
+  empty: () => ({
+    text: "List is empty.",
+  }),
+  notfound: () => ({
+    text: "Nothing found.",
+  }),
+  header: true,
+  footer: true,
+  activeFilterCount: 0,
+  resizableColumns: true,
+  reorderableColumns: true,
+});
 
 interface ITableItemRef {
   element: Element;
   id: string;
 }
 
-const emit = defineEmits({ ...tableEmits });
+const emit = defineEmits<Emits>();
 
 const checkboxes = ref<Record<string, boolean>>({});
 const selectedRow = ref<string>();
@@ -497,23 +558,25 @@ watch(
   { deep: true, immediate: true }
 );
 
-async function populateWithActions(value: { id?: string }[]) {
+async function populateWithActions(value: { id?: string }[] | string[]) {
   const populatedItems = [];
 
-  if (props.itemActionBuilder && typeof props.itemActionBuilder === "function") {
-    for (let index = 0; index < value.length; index++) {
-      const element = value[index];
+  if (value && typeof value === "object") {
+    if (props.itemActionBuilder && typeof props.itemActionBuilder === "function") {
+      for (let index = 0; index < value.length; index++) {
+        const element = value[index] as Record<string, unknown>;
 
-      if (!("actions" in element && element.actions))
-        populatedItems.push({
-          actions: await calculateActions(element),
-          ...element,
-        });
+        if (!("actions" in element && element.actions))
+          populatedItems.push({
+            actions: await calculateActions(element),
+            ...element,
+          });
+      }
+
+      return populatedItems;
+    } else {
+      return props.items;
     }
-
-    return populatedItems;
-  } else {
-    return props.items;
   }
 }
 
@@ -657,11 +720,10 @@ function onColumnResizeEnd() {
   let newColumnWidth = columnWidth + delta;
 
   let minWidth = 15;
-  console.log(columnElement, columnWidth);
 
   if (columnWidth + delta > parseInt(minWidth.toString(), 10)) {
     nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
-    console.log(nextColumn.value);
+
     if (nextColumn.value) {
       const nextColElement: HTMLElement = table.value.querySelector(`#${nextColumn.value.id}`);
 
@@ -796,7 +858,7 @@ function reorderArray(value: Record<string, unknown>[], from: number, to: number
   }
 }
 
-function onColumnHeaderMouseDown(event: MouseEvent & { currentTarget: { draggable: boolean } }) {
+function onColumnHeaderMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
   if (props.reorderableColumns) {
     event.currentTarget.draggable = true;
   }
@@ -824,13 +886,14 @@ const generatedColumns = computed(() => {
   //   (x) => camelToSnake(x)
   // );
 
-  return Object.keys(Object.fromEntries(Object.entries(test).filter(([key, value]) => typeof value !== "object"))).filter(x => !props.columns.some(t=> t.id === x)).map(x => ({
-    id: x,
-    title: camelToSnake(x),
-    width: 'auto',
-    visible: false
-  }))
-
+  return Object.keys(Object.fromEntries(Object.entries(test).filter(([key, value]) => typeof value !== "object")))
+    .filter((x) => !props.columns.some((t) => t.id === x))
+    .map((x) => ({
+      id: x,
+      title: camelToSnake(x),
+      width: "auto",
+      visible: false,
+    }));
 });
 
 function camelToSnake(str: string): string {

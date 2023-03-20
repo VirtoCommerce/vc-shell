@@ -28,11 +28,29 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../components";
-import { buttonProps, buttonEmits } from "./vc-button-model";
 
-const props = defineProps({...buttonProps});
-const emit = defineEmits({...buttonEmits});
+export interface Props {
+  icon?: string | undefined;
+  variant?: "primary" | "secondary" | "special" | "danger" | "widget" | "onlytext";
+  disabled?: boolean | undefined;
+  small?: boolean | undefined;
+  outline?: boolean | undefined;
+  selected?: boolean | undefined;
+}
+
+export interface Emits {
+  /**
+   * Emitted when component is clicked
+   * */
+  (event: "click", value: Event): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: "primary",
+});
+
+const emit = defineEmits<Emits>();
+
 function onClick(e: Event): void {
   if (!props.disabled) {
     e.preventDefault();

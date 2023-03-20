@@ -57,6 +57,7 @@
 
 <script lang="ts">
 import { defineComponent, getCurrentInstance } from "vue";
+import { IMenuItems, IBladeToolbar } from "../../../../core/types";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -67,12 +68,38 @@ export default defineComponent({
 import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { IMenuClickEvent } from "./../../../../shared";
-import { appEmits, appProps } from "./vc-app-model";
+import { ExtendedComponent, IBladeElement, IMenuClickEvent, IOpenBlade } from "./../../../../shared";
 
-defineProps({...appProps});
+export interface Props {
+  pages?: ExtendedComponent[];
+  menuItems?: IMenuItems[];
+  mobileMenuItems?: IMenuItems[];
+  toolbarItems?: IBladeToolbar[];
+  isReady?: boolean;
+  isAuthorized?: boolean;
+  logo?: string;
+  version?: string;
+  theme?: "light" | "dark";
+  bladesRefs?: IBladeElement[];
+  title?: string;
+}
 
-const emit = defineEmits({...appEmits});
+export interface Emits {
+  (event: "open", args: IOpenBlade): void;
+  (event: "close", index: number): void;
+  (event: "backlink:click", index: number): void;
+}
+
+withDefaults(defineProps<Props>(), {
+  pages: () => [],
+  menuItems: () => [],
+  mobileMenuItems: () => [],
+  toolbarItems: () => [],
+  theme: "light",
+  bladesRefs: () => [],
+});
+
+const emit = defineEmits<Emits>();
 
 console.debug("vc-app: Init vc-app");
 
@@ -83,7 +110,7 @@ const router = useRouter();
 const onMenuItemClick = function ({ item, navigationCb }: IMenuClickEvent) {
   console.debug(`vc-app#onMenuItemClick() called.`);
   if (item.clickHandler && typeof item.clickHandler === "function") {
-    item.clickHandler(instance?.exposed);
+    item.clickHandler(instance?.exposed as Record<string, unknown>);
   } else {
     emit("open", { parentBlade: item.component, id: 0, navigationCb });
   }

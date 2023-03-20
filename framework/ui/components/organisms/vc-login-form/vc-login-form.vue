@@ -27,9 +27,15 @@
 </template>
 
 <script lang="ts" setup>
-import { loginFormProps } from "./vc-login-form-model";
+export interface Props {
+  logo: string;
+  background: string;
+  title?: string;
+}
 
-defineProps({...loginFormProps});
+withDefaults(defineProps<Props>(), {
+  title: "Login",
+});
 
 console.debug("Init vc-login-form");
 </script>

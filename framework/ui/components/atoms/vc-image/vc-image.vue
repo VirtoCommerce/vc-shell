@@ -31,11 +31,28 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { imageProps, imageEmits } from "./vc-image-model";
 
-const props = defineProps({...imageProps});
+export interface Props {
+  aspect?: string;
+  rounded?: boolean;
+  bordered?: boolean;
+  clickable?: boolean;
+  src: string;
+  size?: "auto" | "1x1" | "16x9" | "4x3" | "3x2" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
+  background?: "cover" | "contain" | "auto";
+}
 
-const emit = defineEmits({...imageEmits});
+export interface Emits {
+  (event: "click"): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  aspect: "1x1",
+  size: "auto",
+  background: "cover",
+});
+
+const emit = defineEmits<Emits>();
 
 const imageHandler = computed(() => {
   if (props.src) {

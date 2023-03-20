@@ -1,8 +1,10 @@
-import { ComponentPublicInstance } from "vue";
-import { VcCheckboxEmits, VcCheckboxProps } from "./vc-checkbox-model";
-import { ComponentConstructor } from "./../../../types/ts-helpers";
+import { VNode } from "vue";
 import Checkbox from "./vc-checkbox.vue";
-export const VcCheckbox: ComponentConstructor<
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ComponentPublicInstance<VcCheckboxProps, any, any, any, any, VcCheckboxEmits>
-> = Checkbox;
+import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+
+export type VcCheckboxSlots = {
+  default?: () => VNode[];
+  error?: () => VNode[];
+};
+
+export const VcCheckbox: GlobalComponentConstructor<typeof Checkbox, VcCheckboxSlots> = Checkbox;

@@ -14,7 +14,18 @@
 
 <script lang="ts" setup>
 import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-item.vue";
-import { breadcrumbsProps } from "./vc-breadcrumbs-model";
 
-defineProps({...breadcrumbsProps});
+export interface Props {
+  items?: {
+    current: boolean;
+    icon: string;
+    title: string;
+    clickHandler: () => void;
+    id: string;
+  }[];
+}
+
+withDefaults(defineProps<Props>(), {
+  items: () => [],
+});
 </script>

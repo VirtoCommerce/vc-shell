@@ -17,7 +17,9 @@
 
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
-import { statusIconProps } from "./vc-status-icon-model";
+export interface Props {
+  status?: boolean;
+}
 
-defineProps({...statusIconProps});
+defineProps<Props>();
 </script>

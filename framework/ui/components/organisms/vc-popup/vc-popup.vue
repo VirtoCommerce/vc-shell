@@ -26,11 +26,22 @@
 </template>
 
 <script lang="ts" setup>
-import { popupEmits, popupProps } from "./vc-popup-model";
+export interface Props {
+  title?: string;
+  closable?: boolean;
+  variant?: "small" | "medium" | "fullscreen";
+}
 
-defineProps({...popupProps});
+export interface Emits {
+  (event: "close"): void;
+}
 
-defineEmits({...popupEmits});
+withDefaults(defineProps<Props>(), {
+  closable: true,
+  variant: "fullscreen",
+});
+
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

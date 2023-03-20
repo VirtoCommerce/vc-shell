@@ -48,11 +48,27 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
-import { fileUploadEmits, fileUploadProps } from "./vc-file-upload-model";
 
-const props = defineProps({...fileUploadProps});
+export interface Props {
+  variant?: "gallery" | "file-upload";
+  loading?: boolean;
+  accept?: string;
+  multiple?: boolean;
+  rules?: string | Record<string, unknown>;
+  name?: string;
+}
 
-const emit = defineEmits({...fileUploadEmits});
+export interface Emits {
+  (event: "upload", files: FileList): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: "gallery",
+  accept: ".jpg, .png, .jpeg",
+  name: "Gallery",
+});
+
+const emit = defineEmits<Emits>();
 
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination
@@ -66,7 +82,7 @@ const { errorMessage, handleChange, validate } = useField(
 
 const uploader = ref();
 
-const upload = async (event: InputEvent) => {
+const upload = async (event: Event) => {
   await handleChange(event.target);
 
   const isValid = await validate();

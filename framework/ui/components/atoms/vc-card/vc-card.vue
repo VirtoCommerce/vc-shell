@@ -41,11 +41,27 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { cardProps, cardEmits } from "./vc-card-model";
 
-const props = defineProps({...cardProps});
+export interface Props {
+  header?: string;
+  icon?: string;
+  isCollapsable?: boolean;
+  isCollapsed?: boolean;
+  fill?: boolean;
+  variant?: "default" | "success" | "danger";
+}
 
-const emit = defineEmits({...cardEmits});
+export interface Emits {
+  (event: "header:click"): void;
+  (event: "state:collapsed", isCollapsedState: boolean): void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  variant: "default",
+});
+
+const emit = defineEmits<Emits>();
+
 const isCollapsedInternal = ref(props.isCollapsed);
 
 function onHeaderClick() {

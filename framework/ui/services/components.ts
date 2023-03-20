@@ -20,6 +20,7 @@ export {
   VcWidget,
   VcBreadcrumbs,
   VcEditor,
+  VcCodeEditor,
   VcFileUpload,
   VcForm,
   VcInput,

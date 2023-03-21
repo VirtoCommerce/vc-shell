@@ -521,7 +521,7 @@ const { searchDictionaryItems } = useProduct();
 const { setFieldError, meta } = useForm({
   validateOnMount: false,
 });
-console.log(meta.value.initialValues);
+
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const priceRefs = ref([]);
@@ -793,7 +793,6 @@ async function setProductItem(id: string) {
     productLoading.value = true;
     const fetchedProduct = (await fetchProducts(undefined, 0, [id])).results;
 
-    console.log(fetchedProduct, id);
     if (fetchedProduct && fetchedProduct.length) {
       const currentProduct = fetchedProduct[0];
 

@@ -6,4 +6,4 @@ export type VcStatusIconSlots = {
   default?: () => VNode[];
 };
 
-export const VcStatusIcon: GlobalComponentConstructor<typeof StatusIcon, VcStatusIconSlots> = StatusIcon;
+export const VcStatusIcon: GlobalComponentConstructor<InstanceType<typeof StatusIcon>, VcStatusIconSlots> = StatusIcon;

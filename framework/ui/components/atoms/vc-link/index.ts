@@ -6,4 +6,4 @@ export type VcLinkSlots = {
   default?: () => VNode[];
 };
 
-export const VcLink: GlobalComponentConstructor<typeof Link, VcLinkSlots> = Link;
+export const VcLink: GlobalComponentConstructor<InstanceType<typeof Link>, VcLinkSlots> = Link;

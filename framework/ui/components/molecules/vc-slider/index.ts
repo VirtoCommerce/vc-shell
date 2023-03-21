@@ -9,4 +9,4 @@ export type VcSliderSlots = {
   nextBtn?: () => VNode[];
 };
 
-export const VcSlider: GlobalComponentConstructor<typeof Slider, VcSliderSlots> = Slider;
+export const VcSlider: GlobalComponentConstructor<InstanceType<typeof Slider>, VcSliderSlots> = Slider;

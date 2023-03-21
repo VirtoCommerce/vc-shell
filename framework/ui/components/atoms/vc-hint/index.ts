@@ -6,4 +6,4 @@ export type VcHintSlots = {
   default?: () => VNode[];
 };
 
-export const VcHint: GlobalComponentConstructor<typeof Hint, VcHintSlots> = Hint;
+export const VcHint: GlobalComponentConstructor<InstanceType<typeof Hint>, VcHintSlots> = Hint;

@@ -6,4 +6,7 @@ export type VcNotificationSlots = {
   default?: () => VNode[];
 };
 
-export const VcNotification: GlobalComponentConstructor<typeof Notification, VcNotificationSlots> = Notification;
+export const VcNotification: GlobalComponentConstructor<
+  InstanceType<typeof Notification>,
+  VcNotificationSlots
+> = Notification;

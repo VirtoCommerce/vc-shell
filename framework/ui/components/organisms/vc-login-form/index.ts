@@ -6,4 +6,4 @@ export type VcLoginFormSlots = {
   default?: () => VNode[];
 };
 
-export const VcLoginForm: GlobalComponentConstructor<typeof LoginForm, VcLoginFormSlots> = LoginForm;
+export const VcLoginForm: GlobalComponentConstructor<InstanceType<typeof LoginForm>, VcLoginFormSlots> = LoginForm;

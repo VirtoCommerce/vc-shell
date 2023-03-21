@@ -6,4 +6,4 @@ export type VcGallerySlots = {
   default?: () => VNode[];
 };
 
-export const VcGallery: GlobalComponentConstructor<typeof Gallery, VcGallerySlots> = Gallery;
+export const VcGallery: GlobalComponentConstructor<InstanceType<typeof Gallery>, VcGallerySlots> = Gallery;

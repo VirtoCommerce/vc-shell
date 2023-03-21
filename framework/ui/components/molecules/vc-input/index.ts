@@ -56,4 +56,4 @@ export type VcInputSlots = {
   hint?: () => VNode[];
 };
 
-export const VcInput: GlobalComponentConstructor<typeof Input, VcInputSlots> = Input;
+export const VcInput: GlobalComponentConstructor<InstanceType<typeof Input>, VcInputSlots> = Input;

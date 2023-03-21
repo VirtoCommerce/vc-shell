@@ -9,4 +9,4 @@ export type VcAppSlots = {
   passwordChange?: () => VNode[];
 };
 
-export const VcApp: GlobalComponentConstructor<typeof App, VcAppSlots> = App;
+export const VcApp: GlobalComponentConstructor<InstanceType<typeof App>, VcAppSlots> = App;

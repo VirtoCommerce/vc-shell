@@ -6,4 +6,4 @@ export type VcInfoRowSlots = {
   default?: () => VNode[];
 };
 
-export const VcInfoRow: GlobalComponentConstructor<typeof InfoRow, VcInfoRowSlots> = InfoRow;
+export const VcInfoRow: GlobalComponentConstructor<InstanceType<typeof InfoRow>, VcInfoRowSlots> = InfoRow;

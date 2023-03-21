@@ -84,5 +84,4 @@ export type VcSelectSlots = {
   }) => VNode[];
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const VcSelect: GlobalComponentConstructor<typeof Select, VcSelectSlots> = Select;
+export const VcSelect: GlobalComponentConstructor<InstanceType<typeof Select>, VcSelectSlots> = Select;

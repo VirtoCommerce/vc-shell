@@ -6,4 +6,4 @@ export type VcBreadcrumbsSlots = {
   default?: () => VNode[];
 };
 
-export const VcBreadcrumbs: GlobalComponentConstructor<typeof Breadcrumbs, VcBreadcrumbsSlots> = Breadcrumbs;
+export const VcBreadcrumbs: GlobalComponentConstructor<InstanceType<typeof Breadcrumbs>, VcBreadcrumbsSlots> = Breadcrumbs;

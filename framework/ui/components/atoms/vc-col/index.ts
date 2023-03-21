@@ -6,4 +6,4 @@ export type VcColSlots = {
   default?: () => VNode[];
 };
 
-export const VcCol: GlobalComponentConstructor<typeof Col, VcColSlots> = Col;
+export const VcCol: GlobalComponentConstructor<InstanceType<typeof Col>, VcColSlots> = Col;

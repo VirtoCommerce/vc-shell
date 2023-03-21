@@ -6,4 +6,4 @@ export type VcProgressSlots = {
   default?: () => VNode[];
 };
 
-export const VcProgress: GlobalComponentConstructor<typeof Progress, VcProgressSlots> = Progress;
+export const VcProgress: GlobalComponentConstructor<InstanceType<typeof Progress>, VcProgressSlots> = Progress;

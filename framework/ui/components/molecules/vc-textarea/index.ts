@@ -6,4 +6,4 @@ export type VcTextareaSlots = {
   error?: () => VNode[];
 };
 
-export const VcTextarea: GlobalComponentConstructor<typeof Textarea, VcTextareaSlots> = Textarea;
+export const VcTextarea: GlobalComponentConstructor<InstanceType<typeof Textarea>, VcTextareaSlots> = Textarea;

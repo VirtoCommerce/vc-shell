@@ -7,4 +7,4 @@ export type VcCardSlots = {
   actions?: () => VNode[];
 };
 
-export const VcCard: GlobalComponentConstructor<typeof Card, VcCardSlots> = Card;
+export const VcCard: GlobalComponentConstructor<InstanceType<typeof Card>, VcCardSlots> = Card;

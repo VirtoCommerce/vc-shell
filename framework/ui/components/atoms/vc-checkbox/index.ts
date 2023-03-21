@@ -7,4 +7,4 @@ export type VcCheckboxSlots = {
   error?: () => VNode[];
 };
 
-export const VcCheckbox: GlobalComponentConstructor<typeof Checkbox, VcCheckboxSlots> = Checkbox;
+export const VcCheckbox: GlobalComponentConstructor<InstanceType<typeof Checkbox>, VcCheckboxSlots> = Checkbox;

@@ -6,4 +6,4 @@ export type VcImageSlots = {
   default?: () => VNode[];
 };
 
-export const VcImage: GlobalComponentConstructor<typeof Image, VcImageSlots> = Image;
+export const VcImage: GlobalComponentConstructor<InstanceType<typeof Image>, VcImageSlots> = Image;

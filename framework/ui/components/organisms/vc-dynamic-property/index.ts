@@ -6,5 +6,7 @@ export type VcDynamicPropertySlots = {
   default?: () => VNode[];
 };
 
-export const VcDynamicProperty: GlobalComponentConstructor<typeof DynamicProperty, VcDynamicPropertySlots> =
-  DynamicProperty;
+export const VcDynamicProperty: GlobalComponentConstructor<
+  InstanceType<typeof DynamicProperty>,
+  VcDynamicPropertySlots
+> = DynamicProperty;

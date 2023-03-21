@@ -6,4 +6,4 @@ export type VcPaginationSlots = {
   default?: () => VNode[];
 };
 
-export const VcPagination: GlobalComponentConstructor<typeof Pagination, VcPaginationSlots> = Pagination;
+export const VcPagination: GlobalComponentConstructor<InstanceType<typeof Pagination>, VcPaginationSlots> = Pagination;

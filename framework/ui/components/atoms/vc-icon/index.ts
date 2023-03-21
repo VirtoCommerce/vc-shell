@@ -6,4 +6,4 @@ export type VcIconSlots = {
   default?: () => VNode[];
 };
 
-export const VcIcon: GlobalComponentConstructor<typeof Icon, VcIconSlots> = Icon;
+export const VcIcon: GlobalComponentConstructor<InstanceType<typeof Icon>, VcIconSlots> = Icon;

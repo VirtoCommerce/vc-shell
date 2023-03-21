@@ -6,4 +6,4 @@ export type VcSwitchSlots = {
   default?: () => VNode[];
 };
 
-export const VcSwitch: GlobalComponentConstructor<typeof Switch, VcSwitchSlots> = Switch;
+export const VcSwitch: GlobalComponentConstructor<InstanceType<typeof Switch>, VcSwitchSlots> = Switch;

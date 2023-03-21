@@ -7,4 +7,4 @@ export type VcLabelSlots = {
   tooltip?: () => VNode[];
 };
 
-export const VcLabel: GlobalComponentConstructor<typeof Label, VcLabelSlots> = Label;
+export const VcLabel: GlobalComponentConstructor<InstanceType<typeof Label>, VcLabelSlots> = Label;

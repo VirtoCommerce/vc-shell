@@ -14,4 +14,4 @@ export type VcTableSlots = {
   footer?: () => VNode[];
 };
 
-export const VcTable: GlobalComponentConstructor<typeof Table, VcTableSlots> = Table;
+export const VcTable: GlobalComponentConstructor<InstanceType<typeof Table>, VcTableSlots> = Table;

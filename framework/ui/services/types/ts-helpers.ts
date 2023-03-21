@@ -12,7 +12,13 @@ export type ComponentConstructor<
   Slot extends Slots = Slots
 > = { new (): Component & { $slots: Slot } } & ComponentOptions<Props, RawBindings, D, C, M, E>;
 
-export type GlobalComponentConstructor<
-  T extends abstract new (...args: any) => any,
-  S extends Slots
-> = ComponentConstructor<InstanceType<T>, any, any, any, any, any, any, S>;
+export type GlobalComponentConstructor<T extends ComponentPublicInstance, S extends Slots> = ComponentConstructor<
+  T,
+  any,
+  any,
+  any,
+  any,
+  any,
+  any,
+  S
+>;

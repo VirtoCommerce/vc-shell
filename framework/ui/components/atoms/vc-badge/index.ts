@@ -9,4 +9,4 @@ export type VcBadgeSlots = {
   default?: () => VNode[];
 };
 
-export const VcBadge: GlobalComponentConstructor<typeof Badge, VcBadgeSlots> = Badge;
+export const VcBadge: GlobalComponentConstructor<InstanceType<typeof Badge>, VcBadgeSlots> = Badge;

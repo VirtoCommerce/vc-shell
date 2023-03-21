@@ -6,4 +6,4 @@ export type VcRatingSlots = {
   details?: () => VNode[];
 };
 
-export const VcRating: GlobalComponentConstructor<typeof Rating, VcRatingSlots> = Rating;
+export const VcRating: GlobalComponentConstructor<InstanceType<typeof Rating>, VcRatingSlots> = Rating;

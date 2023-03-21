@@ -14,4 +14,7 @@ export type VcInputCurrencySlots = {
   }) => VNode[];
 };
 
-export const VcInputCurrency: GlobalComponentConstructor<typeof InputCurrency, VcInputCurrencySlots> = InputCurrency;
+export const VcInputCurrency: GlobalComponentConstructor<
+  InstanceType<typeof InputCurrency>,
+  VcInputCurrencySlots
+> = InputCurrency;

@@ -6,4 +6,4 @@ export type VcWidgetSlots = {
   default?: () => VNode[];
 }
 
-export const VcWidget: GlobalComponentConstructor<typeof Widget, VcWidgetSlots> = Widget;
+export const VcWidget: GlobalComponentConstructor<InstanceType<typeof Widget>, VcWidgetSlots> = Widget;

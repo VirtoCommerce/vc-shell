@@ -6,4 +6,4 @@ export type VcLoadingSlots = {
   default?: () => VNode[];
 };
 
-export const VcLoading: GlobalComponentConstructor<typeof Loading, VcLoadingSlots> = Loading;
+export const VcLoading: GlobalComponentConstructor<InstanceType<typeof Loading>, VcLoadingSlots> = Loading;

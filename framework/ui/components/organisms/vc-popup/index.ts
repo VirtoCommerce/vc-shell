@@ -6,4 +6,4 @@ export type VcPopupSlots = {
   default?: () => VNode[];
 };
 
-export const VcPopup: GlobalComponentConstructor<typeof Popup, VcPopupSlots> = Popup;
+export const VcPopup: GlobalComponentConstructor<InstanceType<typeof Popup>, VcPopupSlots> = Popup;

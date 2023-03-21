@@ -7,4 +7,4 @@ export type VcBladeSlots = {
   default?: () => VNode[];
 };
 
-export const VcBlade: GlobalComponentConstructor<typeof Blade, VcBladeSlots> = Blade;
+export const VcBlade: GlobalComponentConstructor<InstanceType<typeof Blade>, VcBladeSlots> = Blade;

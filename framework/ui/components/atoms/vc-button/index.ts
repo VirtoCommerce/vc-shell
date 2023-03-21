@@ -6,4 +6,4 @@ export type VcButtonSlots = {
   default?: () => VNode[];
 };
 
-export const VcButton: GlobalComponentConstructor<typeof Button, VcButtonSlots> = Button;
+export const VcButton: GlobalComponentConstructor<InstanceType<typeof Button>, VcButtonSlots> = Button;

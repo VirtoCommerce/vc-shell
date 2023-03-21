@@ -6,4 +6,4 @@ export type VcRowSlots = {
   default?: () => VNode[];
 };
 
-export const VcRow: GlobalComponentConstructor<typeof Row, VcRowSlots> = Row;
+export const VcRow: GlobalComponentConstructor<InstanceType<typeof Row>, VcRowSlots> = Row;

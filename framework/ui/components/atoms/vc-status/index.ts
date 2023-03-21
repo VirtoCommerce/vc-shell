@@ -6,4 +6,4 @@ export type VcStatusSlots = {
   default?: () => VNode[];
 };
 
-export const VcStatus: GlobalComponentConstructor<typeof Status, VcStatusSlots> = Status;
+export const VcStatus: GlobalComponentConstructor<InstanceType<typeof Status>, VcStatusSlots> = Status;

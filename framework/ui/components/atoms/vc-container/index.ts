@@ -6,4 +6,4 @@ export type VcContainerSlots = {
   default?: () => VNode[];
 };
 
-export const VcContainer: GlobalComponentConstructor<typeof Container, VcContainerSlots> = Container;
+export const VcContainer: GlobalComponentConstructor<InstanceType<typeof Container>, VcContainerSlots> = Container;

@@ -6,4 +6,4 @@ export type VcCodeEditorSlots = {
   error?: () => VNode[];
 };
 
-export const VcCodeEditor: GlobalComponentConstructor<typeof CodeEditor, VcCodeEditorSlots> = CodeEditor;
+export const VcCodeEditor: GlobalComponentConstructor<InstanceType<typeof CodeEditor>, VcCodeEditorSlots> = CodeEditor;

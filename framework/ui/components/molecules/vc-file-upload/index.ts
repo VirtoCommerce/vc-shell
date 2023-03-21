@@ -6,4 +6,4 @@ export type VcFileUploadSlots = {
   error?: () => VNode[];
 };
 
-export const VcFileUpload: GlobalComponentConstructor<typeof FileUpload, VcFileUploadSlots> = FileUpload;
+export const VcFileUpload: GlobalComponentConstructor<InstanceType<typeof FileUpload>, VcFileUploadSlots> = FileUpload;

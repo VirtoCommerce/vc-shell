@@ -35,8 +35,7 @@
     "core/api/*.ts",
 
     "ui/components",
-    "ui/services/*.ts",
-    "ui/services/types/*.ts",
+    "ui/types/*.ts",
 
     "shared/**/*.vue",
     "shared/**/*.ts",
@@ -45,5 +44,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
 }

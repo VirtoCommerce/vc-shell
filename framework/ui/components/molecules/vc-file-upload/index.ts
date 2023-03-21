@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import FileUpload from "./vc-file-upload.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _FileUpload from "./vc-file-upload.vue";
 
-export type VcFileUploadSlots = {
-  error?: () => VNode[];
+export const VcFileUpload = _FileUpload as typeof _FileUpload & {
+  new (): {
+    $slots: {
+      error?: () => VNode[];
+    };
+  };
 };
-
-export const VcFileUpload: GlobalComponentConstructor<InstanceType<typeof FileUpload>, VcFileUploadSlots> = FileUpload;

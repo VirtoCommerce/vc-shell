@@ -1,9 +1,3 @@
-import { VNode } from "vue";
-import Image from "./vc-image.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Image from "./vc-image.vue";
 
-export type VcImageSlots = {
-  default?: () => VNode[];
-};
-
-export const VcImage: GlobalComponentConstructor<InstanceType<typeof Image>, VcImageSlots> = Image;
+export const VcImage = _Image as typeof _Image;

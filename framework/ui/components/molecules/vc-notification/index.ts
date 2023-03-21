@@ -1,12 +1,10 @@
 import { VNode } from "vue";
-import Notification from "./vc-notification.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Notification from "./vc-notification.vue";
 
-export type VcNotificationSlots = {
-  default?: () => VNode[];
+export const VcNotification = _Notification as typeof _Notification & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcNotification: GlobalComponentConstructor<
-  InstanceType<typeof Notification>,
-  VcNotificationSlots
-> = Notification;

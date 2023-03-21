@@ -1,12 +1,4 @@
 import { VNode } from "vue";
-import DynamicProperty from "./vc-dynamic-property.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _DynamicProperty from "./vc-dynamic-property.vue";
 
-export type VcDynamicPropertySlots = {
-  default?: () => VNode[];
-};
-
-export const VcDynamicProperty: GlobalComponentConstructor<
-  InstanceType<typeof DynamicProperty>,
-  VcDynamicPropertySlots
-> = DynamicProperty;
+export const VcDynamicProperty = _DynamicProperty as typeof _DynamicProperty;

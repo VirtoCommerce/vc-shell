@@ -1,9 +1,3 @@
-import { VNode } from "vue";
-import Breadcrumbs from "./vc-breadcrumbs.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Breadcrumbs from "./vc-breadcrumbs.vue";
 
-export type VcBreadcrumbsSlots = {
-  default?: () => VNode[];
-};
-
-export const VcBreadcrumbs: GlobalComponentConstructor<InstanceType<typeof Breadcrumbs>, VcBreadcrumbsSlots> = Breadcrumbs;
+export const VcBreadcrumbs = _Breadcrumbs as typeof _Breadcrumbs;

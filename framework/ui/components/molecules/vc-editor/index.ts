@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Editor from "./vc-editor.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Editor from "./vc-editor.vue";
 
-export type VcEditorSlots = {
-  error?: () => VNode[];
+export const VcEditor = _Editor as typeof _Editor & {
+  new (): {
+    $slots: {
+      error: () => VNode[];
+    };
+  };
 };
-
-export const VcEditor: GlobalComponentConstructor<InstanceType<typeof Editor>, VcEditorSlots> = Editor;

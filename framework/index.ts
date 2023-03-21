@@ -1,5 +1,5 @@
 import { App } from "vue";
-import * as components from "./ui/services/components";
+import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
@@ -59,7 +59,7 @@ export default {
 
 export * from "./ui/components";
 // eslint-disable-next-line import/export
-export * from "./ui/services/types";
+export * from "./ui/types";
 
 export * from "./core/composables";
 export * from "./core/directives";

@@ -1,10 +1,11 @@
 import { VNode } from "vue";
-import Card from "./vc-card.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Card from "./vc-card.vue";
 
-export type VcCardSlots = {
-  default?: () => VNode[];
-  actions?: () => VNode[];
+export const VcCard = _Card as typeof _Card & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+      actions: () => VNode[];
+    };
+  };
 };
-
-export const VcCard: GlobalComponentConstructor<InstanceType<typeof Card>, VcCardSlots> = Card;

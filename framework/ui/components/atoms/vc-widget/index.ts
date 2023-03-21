@@ -1,9 +1,3 @@
-import { VNode } from "vue";
-import Widget from "./vc-widget.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Widget from "./vc-widget.vue";
 
-export type VcWidgetSlots = {
-  default?: () => VNode[];
-}
-
-export const VcWidget: GlobalComponentConstructor<InstanceType<typeof Widget>, VcWidgetSlots> = Widget;
+export const VcWidget = _Widget as typeof _Widget;

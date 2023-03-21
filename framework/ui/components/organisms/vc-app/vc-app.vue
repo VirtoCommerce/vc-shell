@@ -90,6 +90,13 @@ export interface Emits {
   (event: "backlink:click", index: number): void;
 }
 
+// defineSlots<{
+//   appSwitcher: unknown;
+//   bladeNavigation: unknown;
+//   notifications: unknown;
+//   passwordChange: unknown;
+// }>();
+
 withDefaults(defineProps<Props>(), {
   pages: () => [],
   menuItems: () => [],

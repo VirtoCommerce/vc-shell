@@ -1,10 +1,11 @@
-import Label from "./vc-label.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Label from "./vc-label.vue";
 import { VNode } from "vue";
 
-export type VcLabelSlots = {
-  default?: () => VNode[];
-  tooltip?: () => VNode[];
+export const VcLabel = _Label as typeof _Label & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+      tooltip: () => VNode[];
+    };
+  };
 };
-
-export const VcLabel: GlobalComponentConstructor<InstanceType<typeof Label>, VcLabelSlots> = Label;

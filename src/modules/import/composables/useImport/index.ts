@@ -293,7 +293,13 @@ export default (): IUseImport => {
       const importer = dataImporters.value.find((importer) => importer.typeName === typeName);
       if (importer) {
         profileDetails.value.settings = [
-          ...(importer?.availSettings.map((x) => new ObjectSettingEntry(x as unknown as IObjectSettingEntry)) || []),
+          ...(importer?.availSettings.map((x) => {
+            const entry = new ObjectSettingEntry(x as unknown as IObjectSettingEntry);
+            if (entry.defaultValue) {
+              entry.value = entry.defaultValue;
+            }
+            return entry;
+          }) || []),
         ];
       }
     }

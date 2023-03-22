@@ -13,7 +13,6 @@
       :loading="loading"
       :expanded="expanded"
       :columns="tableColumns"
-      :rawColumns="products"
       :items="products"
       :itemActionBuilder="actionBuilder"
       :multiselect="true"

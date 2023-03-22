@@ -16,6 +16,7 @@
             :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
             rules="required"
             name="profile_name"
+            :model-value="profileDetails.name"
           >
             <VcInput
               v-bind="field"
@@ -36,6 +37,7 @@
             :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
             rules="required"
             name="importer"
+            :model-value="profileDetails.dataImporterType"
           >
             <VcSelect
               v-bind="field"
@@ -77,9 +79,9 @@
               </div>
 
               <VcDynamicProperty
-                class="tw-px-4 tw-pb-4"
                 v-for="(setting, i) in profileDetails.settings"
                 :key="`${profileDetails.id}_${i}`"
+                class="tw-px-4 tw-pb-4"
                 :property="setting"
                 :getter="getSettingsValue"
                 :setter="setSettingsValue"
@@ -175,8 +177,8 @@ const isDirty = useIsFormDirty();
 const showConfirmation = ref(false);
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {

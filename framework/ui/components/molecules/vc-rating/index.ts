@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Rating from "./vc-rating.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Rating from "./vc-rating.vue";
 
-export type VcRatingSlots = {
-  details?: () => VNode[];
+export const VcRating = _Rating as typeof _Rating & {
+  new (): {
+    $slots: {
+      details: () => VNode[];
+    };
+  };
 };
-
-export const VcRating: GlobalComponentConstructor<typeof Rating, VcRatingSlots> = Rating;

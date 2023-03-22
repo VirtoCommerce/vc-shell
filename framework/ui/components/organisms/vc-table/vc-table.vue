@@ -204,17 +204,24 @@
           >
             <tr
               v-for="(item, i) in calculatedItems"
-              :key="item.id"
+              :key="(typeof item === 'object' && 'id' in item && item.id) || i"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
                 'tw-bg-[#f8f8f8]': i % 2 === 1,
-                '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]': item && item.id ? selectedItemId === item.id : false,
+                '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
+                  typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
               @mouseleave="closeActions"
+              @mousedown="onRowMouseDown"
+              @dragstart="onRowDragStart($event, item)"
+              @dragover="onRowDragOver($event, item)"
+              @dragleave="onRowDragLeave"
+              @dragend="onRowDragEnd"
+              @drop="onRowDrop"
             >
               <td
-                v-if="multiselect"
+                v-if="multiselect && typeof item === 'object'"
                 class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
@@ -227,7 +234,7 @@
               </td>
               <td
                 class="tw-box-border tw-overflow-visible tw-px-3 tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px]"
-                v-if="itemActionBuilder"
+                v-if="itemActionBuilder && typeof item === 'object'"
               >
                 <div class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center">
                   <button
@@ -281,7 +288,7 @@
               </td>
               <td
                 v-for="cell in filteredCols"
-                :key="`${item.id}_${cell.id}`"
+                :key="`${(typeof item === 'object' && 'id' in item && item.id) || i}_${cell.id}`"
                 class="tw-box-border tw-overflow-hidden tw-px-3"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
@@ -292,6 +299,7 @@
                   :cell="cell"
                 >
                   <VcTableCell
+                    v-if="typeof item === 'object'"
                     :cell="cell"
                     :item="item"
                   ></VcTableCell>
@@ -397,10 +405,19 @@ export interface StatusImage {
   clickHandler?: () => void;
 }
 
+export interface TableItem {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
+  id?: string;
+  actions?: IActionBuilderResult[];
+}
+
+export type TableItemType = TableItem | string;
+
 export interface Props {
   columns: ITableColumns[];
-  items: { id?: string }[] | string[];
-  itemActionBuilder?: (item: { id?: string }) => IActionBuilderResult[];
+  items: TableItemType[];
+  itemActionBuilder?: (item: TableItem) => IActionBuilderResult[];
   sort?: string;
   multiselect?: boolean;
   expanded?: boolean;
@@ -420,6 +437,7 @@ export interface Props {
   scrolling?: boolean;
   resizableColumns?: boolean;
   reorderableColumns?: boolean;
+  reorderableRows?: boolean;
   stateKey: string;
 }
 
@@ -428,12 +446,12 @@ export interface Emits {
   (event: "selectionChanged", values: Record<string, boolean>): void;
   (event: "search:change", value: string): void;
   (event: "headerClick", value: Record<string, unknown>): void;
-  (event: "itemClick", item: { id?: string }): void;
+  (event: "itemClick", item: TableItem): void;
   (event: "scroll:ptr"): void;
+  (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: TableItemType[] }): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  columns: () => [],
   items: () => [],
   totalLabel: "Totals:",
   totalCount: 0,
@@ -477,10 +495,16 @@ const columnResizeListener = ref(null);
 const columnResizeEndListener = ref(null);
 const resizer = ref();
 const state = useLocalStorage(props.stateKey, []);
-const cols: Ref<ITableColumns[]> = ref([]);
+const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
 const dropPosition = ref();
 const calculatedItems = computedAsync(async () => await populateWithActions(props.items), []);
+
+// row reordering variables
+const draggedRow = ref<TableItemType>();
+const rowDragged = ref(false);
+const droppedRowIndex = ref<number>();
+const draggedRowIndex = ref<number>();
 
 onBeforeUpdate(() => {
   actionToggleRefs.value = [];
@@ -503,7 +527,7 @@ const sortField = computed(() => {
 
 const toggleCols = computed(() => {
   return props.columns.map((item) => {
-    return cols.value.find((mutatedItem) => item.id === mutatedItem.id);
+    return defaultColumns.value.find((mutatedItem) => item.id === mutatedItem.id);
   });
 });
 
@@ -525,7 +549,7 @@ const headerCheckbox = computed(() => {
 });
 
 const filteredCols = computed(() => {
-  return cols.value.filter((x) => {
+  return defaultColumns.value.filter((x) => {
     if (("visible" in x && x.visible) || !("visible" in x)) {
       return props.expanded ? x : x.alwaysVisible;
     }
@@ -534,10 +558,12 @@ const filteredCols = computed(() => {
 
 watch(
   () => props.items,
-  async (value: { id: string }[]) => {
+  async (value: TableItemType[]) => {
     checkboxes.value = {};
     value?.forEach((item) => {
-      checkboxes.value[item.id] = false;
+      if (typeof item === "object" && "id" in item) {
+        checkboxes.value[item.id] = false;
+      }
     });
     scrollContainer.value?.scrollTop();
   },
@@ -551,14 +577,14 @@ watch(
       nextTick(() => restoreState());
     }
 
-    if (!cols.value.length) {
-      cols.value = newVal;
+    if (!defaultColumns.value.length) {
+      defaultColumns.value = newVal;
     }
   },
   { deep: true, immediate: true }
 );
 
-async function populateWithActions(value: { id?: string }[] | string[]) {
+async function populateWithActions(value: TableItemType[]): Promise<TableItemType[]> {
   const populatedItems = [];
 
   if (value && typeof value === "object") {
@@ -577,6 +603,8 @@ async function populateWithActions(value: { id?: string }[] | string[]) {
     } else {
       return props.items;
     }
+  } else {
+    return props.items;
   }
 }
 
@@ -609,7 +637,7 @@ function processCheckbox(id: string, state: boolean) {
   emit("selectionChanged", checkboxes.value);
 }
 
-function showActions(item: { id?: string }, index: string) {
+function showActions(item: TableItem, index: string) {
   selectedRow.value = item.id;
 
   const toggleRef = actionToggleRefs.value.find((item) => item.id === index);
@@ -633,7 +661,7 @@ function showActions(item: { id?: string }, index: string) {
   }
 }
 
-async function calculateActions(item: { id?: string }) {
+async function calculateActions(item: TableItem) {
   if (typeof props.itemActionBuilder === "function") {
     return await props.itemActionBuilder(item);
   }
@@ -803,8 +831,8 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
   event.preventDefault();
 
   if (draggedColumn.value) {
-    let dragIndex = cols.value.indexOf(draggedColumn.value);
-    let dropIndex = cols.value.indexOf(item);
+    let dragIndex = defaultColumns.value.indexOf(draggedColumn.value);
+    let dropIndex = defaultColumns.value.indexOf(item);
 
     let allowDrop = dragIndex !== dropIndex;
 
@@ -817,7 +845,7 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
     }
 
     if (allowDrop) {
-      reorderArray(cols.value, dragIndex, dropIndex);
+      reorderArray(defaultColumns.value, dragIndex, dropIndex);
 
       if (isStateful()) {
         saveState();
@@ -837,17 +865,17 @@ function isStateful() {
 function saveState() {
   console.debug("[@vc-shell/framewok#vc-table.vue] - Save state");
 
-  state.value = cols.value;
+  state.value = defaultColumns.value;
 }
 
 function restoreState() {
   console.debug("[@vc-shell/framewok#vc-table.vue] - Restore state");
   if (Object.keys(state.value).length) {
-    cols.value = state.value;
+    defaultColumns.value = state.value;
   }
 }
 
-function reorderArray(value: Record<string, unknown>[], from: number, to: number) {
+function reorderArray(value: unknown[], from: number, to: number) {
   if (value && from !== to) {
     if (to >= value.length) {
       to %= value.length;
@@ -866,7 +894,7 @@ function onColumnHeaderMouseDown(event: MouseEvent & { currentTarget?: { draggab
 
 function toggleColumn(item: ITableColumns) {
   if (item) {
-    cols.value = cols.value.map((x) => {
+    defaultColumns.value = defaultColumns.value.map((x) => {
       if (x === item) {
         x = item;
       }
@@ -879,32 +907,73 @@ function toggleColumn(item: ITableColumns) {
   }
 }
 
-const generatedColumns = computed(() => {
-  const test = props.items[0];
+function onRowMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
+  if (props.reorderableRows) {
+    event.currentTarget.draggable = true;
+  }
+}
 
-  // return Object.keys(Object.fromEntries(Object.entries(test).filter(([key, value]) => typeof value !== "object"))).map(
-  //   (x) => camelToSnake(x)
-  // );
+function onRowDragStart(event: DragEvent, item: TableItem | string) {
+  rowDragged.value = true;
+  draggedRow.value = item;
+  draggedRowIndex.value = calculatedItems.value.indexOf(item);
+  event.dataTransfer.setData("text", "row-reorder");
+}
 
-  return Object.keys(Object.fromEntries(Object.entries(test).filter(([key, value]) => typeof value !== "object")))
-    .filter((x) => !props.columns.some((t) => t.id === x))
-    .map((x) => ({
-      id: x,
-      title: camelToSnake(x),
-      width: "auto",
-      visible: false,
-    }));
-});
+function onRowDragOver(event: DragEvent, item: TableItem | string) {
+  const index = calculatedItems.value.indexOf(item);
 
-function camelToSnake(str: string): string {
-  return (
-    str
-      .replace(/([A-Z])/g, " $1")
-      // uppercase the first character
-      .replace(/^./, function (str) {
-        return str.toUpperCase();
-      })
-  );
+  if (rowDragged.value && draggedRow.value !== item) {
+    let rowElement = event.currentTarget;
+    let rowY = getOffset(rowElement as HTMLElement).top;
+    let pageY = event.pageY;
+    let rowMidY = rowY + (rowElement as HTMLElement).offsetHeight / 2;
+
+    if (pageY < rowMidY) {
+      droppedRowIndex.value = index;
+    } else {
+      droppedRowIndex.value = index + 1;
+    }
+
+    event.preventDefault();
+  }
+}
+
+function onRowDragLeave(event: DragEvent) {
+  event.preventDefault();
+}
+
+function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean } }) {
+  rowDragged.value = false;
+  draggedRowIndex.value = null;
+  droppedRowIndex.value = null;
+  event.currentTarget.draggable = false;
+}
+
+function onRowDrop(event) {
+  if (droppedRowIndex.value != null) {
+    let dropIndex =
+      draggedRowIndex.value > droppedRowIndex.value
+        ? droppedRowIndex.value
+        : droppedRowIndex.value === 0
+        ? 0
+        : droppedRowIndex.value - 1;
+
+    let processedItems = [...calculatedItems.value];
+
+    reorderArray(processedItems, draggedRowIndex.value, dropIndex);
+
+    emit("row:reorder", {
+      dragIndex: draggedRowIndex.value,
+      dropIndex: dropIndex,
+      value: processedItems as TableItemType[],
+    });
+  }
+
+  // cleanup
+  onRowDragLeave(event);
+  onRowDragEnd(event);
+  event.preventDefault();
 }
 </script>
 

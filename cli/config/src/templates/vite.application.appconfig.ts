@@ -21,7 +21,7 @@ const TSCONFIG = process.cwd() + "/tsconfig.json";
 const TSCONFIG_BUILD = process.cwd() + "/tsconfig.build.json";
 const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
-const isMonorepo = fs.existsSync(path.resolve(__dirname, "./../../framework/package.json"));
+const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
 
 // "Not so smart" override: https://github.com/bevacqua/dragula/issues/602#issuecomment-912863804
 const _define: { global?: unknown } = {};

@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Link from "./vc-link.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Link from "./vc-link.vue";
 
-export type VcLinkSlots = {
-  default?: () => VNode[];
+export const VcLink = _Link as typeof _Link & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcLink: GlobalComponentConstructor<typeof Link, VcLinkSlots> = Link;

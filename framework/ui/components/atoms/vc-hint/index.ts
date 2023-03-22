@@ -1,9 +1,10 @@
-import Hint from "./vc-hint.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Hint from "./vc-hint.vue";
 import { VNode } from "vue";
 
-export type VcHintSlots = {
-  default?: () => VNode[];
+export const VcHint = _Hint as typeof _Hint & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcHint: GlobalComponentConstructor<typeof Hint, VcHintSlots> = Hint;

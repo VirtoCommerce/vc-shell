@@ -1,9 +1,3 @@
-import { VNode } from "vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
-import Switch from "./vc-switch.vue";
+import _Switch from "./vc-switch.vue";
 
-export type VcSwitchSlots = {
-  default?: () => VNode[];
-};
-
-export const VcSwitch: GlobalComponentConstructor<typeof Switch, VcSwitchSlots> = Switch;
+export const VcSwitch = _Switch as typeof _Switch;

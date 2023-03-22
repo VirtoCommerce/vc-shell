@@ -95,10 +95,7 @@ export interface Props {
   item: Record<string, unknown>;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  cell: undefined,
-  item: undefined,
-});
+const props = defineProps<Props>();
 
 const locale = window.navigator.language;
 const value = computed(() => {

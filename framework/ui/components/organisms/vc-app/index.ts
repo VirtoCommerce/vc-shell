@@ -1,12 +1,13 @@
 import { VNode } from "vue";
-import App from "./vc-app.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _App from "./vc-app.vue";
 
-export type VcAppSlots = {
-  appSwitcher?: () => VNode[];
-  bladeNavigation?: () => VNode[];
-  notifications?: () => VNode[];
-  passwordChange?: () => VNode[];
+export const VcApp = _App as typeof _App & {
+  new (): {
+    $slots: {
+      appSwitcher: () => VNode[];
+      bladeNavigation: () => VNode[];
+      notifications: () => VNode[];
+      passwordChange: () => VNode[];
+    };
+  };
 };
-
-export const VcApp: GlobalComponentConstructor<typeof App, VcAppSlots> = App;

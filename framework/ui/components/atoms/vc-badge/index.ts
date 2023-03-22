@@ -1,12 +1,13 @@
 import { VNode } from "vue";
-import Badge from "./vc-badge.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Badge from "./vc-badge.vue";
 
-export type VcBadgeSlots = {
-  /**
-   * Slot for component content
-   * */
-  default?: () => VNode[];
+export const VcBadge = _Badge as typeof _Badge & {
+  new (): {
+    $slots: {
+      /**
+       * Slot for component content
+       * */
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcBadge: GlobalComponentConstructor<typeof Badge, VcBadgeSlots> = Badge;

@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Form from "./vc-form.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Form from "./vc-form.vue";
 
-export type VcFormSlots = {
-  default?: () => VNode[];
+export const VcForm = _Form as typeof _Form & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcForm: GlobalComponentConstructor<typeof Form, VcFormSlots> = Form;

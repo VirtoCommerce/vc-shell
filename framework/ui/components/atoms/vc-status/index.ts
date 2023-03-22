@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Status from "./vc-status.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Status from "./vc-status.vue";
 
-export type VcStatusSlots = {
-  default?: () => VNode[];
+export const VcStatus = _Status as typeof _Status & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcStatus: GlobalComponentConstructor<typeof Status, VcStatusSlots> = Status;

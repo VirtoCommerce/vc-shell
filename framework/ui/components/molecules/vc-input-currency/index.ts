@@ -1,17 +1,18 @@
 import { VNode } from "vue";
-import InputCurrency from "./vc-input-currency.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _InputCurrency from "./vc-input-currency.vue";
 
-export type VcInputCurrencySlots = {
-  /**
-   * Slot for custom dropdown open handler
-   */
-  button?: (scope: {
-    /**
-     * Dropdown open/close handler
-     */
-    toggleHandler: () => void;
-  }) => VNode[];
+export const VcInputCurrency = _InputCurrency as typeof _InputCurrency & {
+  new (): {
+    $slots: {
+      /**
+       * Slot for custom dropdown open handler
+       */
+      button?: (scope: {
+        /**
+         * Dropdown open/close handler
+         */
+        toggleHandler: () => void;
+      }) => VNode[];
+    };
+  };
 };
-
-export const VcInputCurrency: GlobalComponentConstructor<typeof InputCurrency, VcInputCurrencySlots> = InputCurrency;

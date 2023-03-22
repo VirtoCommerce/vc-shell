@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Popup from "./vc-popup.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Popup from "./vc-popup.vue";
 
-export type VcPopupSlots = {
-  default?: () => VNode[];
+export const VcPopup = _Popup as typeof _Popup & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcPopup: GlobalComponentConstructor<typeof Popup, VcPopupSlots> = Popup;

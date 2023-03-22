@@ -1,10 +1,11 @@
 import { VNode } from "vue";
-import Checkbox from "./vc-checkbox.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Checkbox from "./vc-checkbox.vue";
 
-export type VcCheckboxSlots = {
-  default?: () => VNode[];
-  error?: () => VNode[];
+export const VcCheckbox = _Checkbox as typeof _Checkbox & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+      error: () => VNode[];
+    };
+  };
 };
-
-export const VcCheckbox: GlobalComponentConstructor<typeof Checkbox, VcCheckboxSlots> = Checkbox;

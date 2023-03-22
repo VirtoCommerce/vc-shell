@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Button from "./vc-button.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Button from "./vc-button.vue";
 
-export type VcButtonSlots = {
-  default?: () => VNode[];
+export const VcButton = _Button as typeof _Button & {
+  new (): {
+    $slots: {
+      default: () => VNode[];
+    };
+  };
 };
-
-export const VcButton: GlobalComponentConstructor<typeof Button, VcButtonSlots> = Button;

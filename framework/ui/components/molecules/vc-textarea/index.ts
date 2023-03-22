@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import Textarea from "./vc-textarea.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _Textarea from "./vc-textarea.vue";
 
-export type VcTextareaSlots = {
-  error?: () => VNode[];
+export const VcTextarea = _Textarea as typeof _Textarea & {
+  new (): {
+    $slots: {
+      error: () => VNode[];
+    };
+  };
 };
-
-export const VcTextarea: GlobalComponentConstructor<typeof Textarea, VcTextareaSlots> = Textarea;

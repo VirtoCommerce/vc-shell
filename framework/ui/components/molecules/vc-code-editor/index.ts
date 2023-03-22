@@ -1,9 +1,10 @@
 import { VNode } from "vue";
-import CodeEditor from "./vc-code-editor.vue";
-import { GlobalComponentConstructor } from "./../../../services/types/ts-helpers";
+import _CodeEditor from "./vc-code-editor.vue";
 
-export type VcCodeEditorSlots = {
-  error?: () => VNode[];
+export const VcCodeEditor = _CodeEditor as typeof _CodeEditor & {
+  new (): {
+    $slots: {
+      error: () => VNode[];
+    };
+  };
 };
-
-export const VcCodeEditor: GlobalComponentConstructor<typeof CodeEditor, VcCodeEditorSlots> = CodeEditor;

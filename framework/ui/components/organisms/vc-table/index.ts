@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VNode } from "vue";
 import _Table from "./vc-table.vue";
-import { ITableColumns } from "core/types";
+import { ITableColumns } from "./../../../../core/types";
 
 export const VcTable = _Table as typeof _Table & {
   new (): {

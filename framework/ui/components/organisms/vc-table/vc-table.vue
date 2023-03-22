@@ -452,7 +452,6 @@ export interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  columns: () => [],
   items: () => [],
   totalLabel: "Totals:",
   totalCount: 0,

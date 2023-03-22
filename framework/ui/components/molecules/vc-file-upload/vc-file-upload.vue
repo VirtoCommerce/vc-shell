@@ -1,15 +1,20 @@
 <template>
   <div class="tw-flex tw-flex-col tw-flex-1">
     <div
-      class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[#c8dbea] tw-rounded-[6px] tw-p-2 tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
-      :class="`vc-file-upload_${variant}`"
+      class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[#c8dbea] tw-rounded-[6px] tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
+      :class="[
+        `vc-file-upload_${variant}`,
+        {
+          '!tw-bg-[#e8f1f9] !tw-border-solid tw-cursor-copy': isDragging,
+        },
+      ]"
       @drop.stop.prevent="onDrop"
       @drag.stop.prevent
       @dragstart.stop.prevent
       @dragend.stop.prevent
-      @dragover.stop.prevent
+      @dragover.stop.prevent="dragOver"
       @dragenter.stop.prevent
-      @dragleave.stop.prevent
+      @dragleave.stop.prevent="dragLeave"
     >
       <VcLoading :active="loading"></VcLoading>
       <VcIcon
@@ -73,6 +78,7 @@ const emit = defineEmits<Emits>();
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination
 let internalRules = unref(props.rules) || "";
+const isDragging = ref(false);
 
 // Prepare field-level validation
 const { errorMessage, handleChange, validate } = useField(
@@ -108,6 +114,14 @@ function onDrop(event: DragEvent) {
   if (fileList && fileList.length) {
     emit("upload", fileList);
   }
+}
+
+function dragOver() {
+  isDragging.value = true;
+}
+
+function dragLeave() {
+  isDragging.value = false;
 }
 </script>
 

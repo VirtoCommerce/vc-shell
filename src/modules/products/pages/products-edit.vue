@@ -15,7 +15,7 @@
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
       <div
-        v-if="!productLoading"
+      v-if="!productLoading"
         class="product-details__inner"
       >
         <div class="product-details__content">

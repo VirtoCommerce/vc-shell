@@ -391,10 +391,8 @@ const onPaginationClick = async (page: number) => {
   });
 };
 
-const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
-  selectedOfferIds.value = Object.entries(checkboxes)
-    .filter(([id, isChecked]) => isChecked)
-    .map(([id, isChecked]) => id);
+const onSelectionChanged = (items: IOffer[]) => {
+  selectedOfferIds.value = items.map((item) => item.id);
 };
 
 const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[] => {

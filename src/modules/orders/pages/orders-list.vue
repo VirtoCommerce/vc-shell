@@ -442,10 +442,8 @@ const onHeaderClick = (item: ITableColumns) => {
   }
 };
 
-const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
-  selectedOrdersIds.value = Object.entries(checkboxes)
-    .filter(([id, isChecked]) => isChecked)
-    .map(([id, isChecked]) => id);
+const onSelectionChanged = (items: CustomerOrder[]) => {
+  selectedOrdersIds.value = items.map((item) => item.id);
 };
 
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));

@@ -80,12 +80,10 @@ import {
   usePermissions,
   useSettings,
   useUser,
-  VcAppSwitcher,
   useBladeNavigation,
   IOpenBlade,
   IBladeElement,
   ExtendedComponent,
-
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";

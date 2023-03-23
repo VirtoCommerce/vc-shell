@@ -91,7 +91,7 @@
         <!-- Desktop table view -->
         <table
           v-else
-          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full tw-relative"
+          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full"
           :class="{
             'vc-table_empty': !items || !items.length,
             'vc-table_multiselect': multiselect,
@@ -108,8 +108,7 @@
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
-                    :modelValue="headerCheckbox"
-                    @update:modelValue="processHeaderCheckbox"
+                    v-model="headerCheckbox"
                     @click.stop
                   ></VcCheckbox>
                 </div>
@@ -199,7 +198,7 @@
           </thead>
 
           <tbody
-            v-if="items"
+            v-if="calculatedItems"
             class="vc-table__body"
           >
             <tr
@@ -211,7 +210,7 @@
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
               }"
-              @click="$emit('itemClick', item)"
+              @click="itemClick(item)"
               @mouseleave="closeActions"
               @mousedown="onRowMouseDown"
               @dragstart="onRowDragStart($event, item)"
@@ -226,8 +225,8 @@
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
-                    :modelValue="checkboxes[item.id]"
-                    @update:modelValue="processCheckbox(item.id, $event)"
+                    @update:model-value="rowCheckbox(item)"
+                    :model-value="isSelected(item)"
                     @click.stop
                   ></VcCheckbox>
                 </div>
@@ -257,7 +256,7 @@
                     role="tooltip"
                   >
                     <div
-                      class="tw-flex tw-items-center tw-flex-row tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
+                      class="tw-flex tw-items-start tw-flex-col tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
                     >
                       <div
                         v-for="(itemAction, i) in item.actions"
@@ -363,7 +362,7 @@
     <!-- Table footer -->
     <slot
       name="footer"
-      v-if="($slots['footer'] || footer) && items && items.length"
+      v-if="($slots['footer'] || footer) && calculatedItems && calculatedItems.length"
     >
       <div
         class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
@@ -397,6 +396,7 @@ import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, computedAsync, useCurrentElement } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
+import { differenceWith, isEqual, omit, toPairs } from "lodash-es";
 
 export interface StatusImage {
   image?: string;
@@ -420,6 +420,11 @@ export interface Props {
   itemActionBuilder?: (item: TableItem) => IActionBuilderResult[];
   sort?: string;
   multiselect?: boolean;
+  /**
+   * Emit whole item instead of {id: boolean} while prop multiselect = true
+   * @default false
+   */
+  multiselectEmitItem?: boolean;
   expanded?: boolean;
   totalLabel?: string;
   totalCount?: number;
@@ -443,10 +448,10 @@ export interface Props {
 
 export interface Emits {
   (event: "paginationClick", page: number): void;
-  (event: "selectionChanged", values: Record<string, boolean>): void;
+  (event: "selectionChanged", values: TableItemType[]): void;
   (event: "search:change", value: string): void;
   (event: "headerClick", value: Record<string, unknown>): void;
-  (event: "itemClick", item: TableItem): void;
+  (event: "itemClick", item: TableItemType): void;
   (event: "scroll:ptr"): void;
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: TableItemType[] }): void;
 }
@@ -479,7 +484,8 @@ interface ITableItemRef {
 
 const emit = defineEmits<Emits>();
 
-const checkboxes = ref<Record<string, boolean>>({});
+const selection = ref<TableItemType[]>([]);
+
 const selectedRow = ref<string>();
 const tooltip = ref<Instance>();
 const scrollContainer = ref<typeof VcContainer>();
@@ -491,8 +497,8 @@ const resizeColumnElement = ref<ITableColumns>();
 const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
-const columnResizeListener = ref(null);
-const columnResizeEndListener = ref(null);
+let columnResizeListener = null;
+let columnResizeEndListener = null;
 const resizer = ref();
 const state = useLocalStorage(props.stateKey, []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
@@ -540,12 +546,21 @@ const tableAlignment = {
   evenly: "tw-justify-evenly",
 };
 
-const headerCheckbox = computed(() => {
-  const checkboxList = Object.values(checkboxes.value);
+const headerCheckbox = computed({
+  get() {
+    return calculatedItems.value ? selection.value.length === calculatedItems.value.length : false;
+  },
+  set(checked: boolean) {
+    let _selected = [];
 
-  if (checkboxList.length) {
-    return checkboxList.every((value) => value);
-  } else return false;
+    if (checked) {
+      _selected = calculatedItems.value;
+    }
+
+    selection.value = _selected;
+
+    emit("selectionChanged", selection.value);
+  },
 });
 
 const filteredCols = computed(() => {
@@ -558,13 +573,7 @@ const filteredCols = computed(() => {
 
 watch(
   () => props.items,
-  async (value: TableItemType[]) => {
-    checkboxes.value = {};
-    value?.forEach((item) => {
-      if (typeof item === "object" && "id" in item) {
-        checkboxes.value[item.id] = false;
-      }
-    });
+  () => {
     scrollContainer.value?.scrollTop();
   },
   { deep: true, immediate: true }
@@ -583,6 +592,30 @@ watch(
   },
   { deep: true, immediate: true }
 );
+
+function itemClick(item: TableItemType) {
+  if (typeof item === "object") {
+    const ummutableItem = omit(item, ["actions"]);
+    emit("itemClick", ummutableItem);
+  } else {
+    emit("itemClick", item);
+  }
+}
+
+function isSelected(item) {
+  return selection.value.indexOf(item) > -1;
+}
+
+function rowCheckbox(item: TableItemType) {
+  const index = selection.value.indexOf(item);
+  if (index > -1) {
+    selection.value = selection.value.filter((x) => x !== item);
+  } else {
+    selection.value.push(item);
+  }
+
+  emit("selectionChanged", selection.value);
+}
 
 async function populateWithActions(value: TableItemType[]): Promise<TableItemType[]> {
   const populatedItems = [];
@@ -624,17 +657,6 @@ function setActionToggleRefs(el: Element, id: string) {
       actionToggleRefs.value.push({ element: el, id });
     }
   }
-}
-
-function processHeaderCheckbox() {
-  const currentState = Object.values(checkboxes.value).every((value) => value);
-  Object.keys(checkboxes.value).forEach((key) => (checkboxes.value[key] = !currentState));
-  emit("selectionChanged", checkboxes.value);
-}
-
-function processCheckbox(id: string, state: boolean) {
-  checkboxes.value[id] = state;
-  emit("selectionChanged", checkboxes.value);
 }
 
 function showActions(item: TableItem, index: string) {
@@ -690,15 +712,15 @@ function handleMouseDown(e: MouseEvent, item: ITableColumns) {
 }
 
 function bindColumnResizeEvents() {
-  if (!columnResizeListener.value) {
-    columnResizeListener.value = document.addEventListener("mousemove", (event: MouseEvent) => {
+  if (!columnResizeListener) {
+    columnResizeListener = document.addEventListener("mousemove", (event: MouseEvent) => {
       if (columnResizing.value) {
         onColumnResize(event);
       }
     });
   }
-  if (!columnResizeEndListener.value) {
-    columnResizeEndListener.value = document.addEventListener("mouseup", () => {
+  if (!columnResizeEndListener) {
+    columnResizeEndListener = document.addEventListener("mouseup", () => {
       if (columnResizing.value) {
         columnResizing.value = false;
         onColumnResizeEnd();
@@ -708,13 +730,13 @@ function bindColumnResizeEvents() {
 }
 
 function unbindColumnResizeEvents() {
-  if (columnResizeListener.value) {
-    document.removeEventListener("document", columnResizeListener.value);
-    columnResizeListener.value = null;
+  if (columnResizeListener) {
+    document.removeEventListener("document", columnResizeListener);
+    columnResizeListener = null;
   }
-  if (columnResizeEndListener.value) {
-    document.removeEventListener("document", columnResizeEndListener.value);
-    columnResizeEndListener.value = null;
+  if (columnResizeEndListener) {
+    document.removeEventListener("document", columnResizeEndListener);
+    columnResizeEndListener = null;
   }
 }
 
@@ -1020,10 +1042,6 @@ $variants: (
     &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
       top: -5px;
     }
-
-    // &-row:hover .vc-table__body-actions-container {
-    //   @apply tw-flex #{!important};
-    // }
 
     &-actions-item {
       @each $name, $variant in $variants {

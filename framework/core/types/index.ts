@@ -59,6 +59,18 @@ export interface IImage {
   url?: string;
 }
 
+export interface Asset {
+  readableSize?: string;
+  relativeUrl?: string;
+  url?: string;
+  description?: string;
+  name?: string;
+  modifiedDate?: Date;
+  id?: string;
+  altText?: string;
+  typeId?: string;
+}
+
 export interface AuthData {
   accessToken?: string;
   //alias for accessToken is used by platform and is required for sharing auth data between platform and custom apps

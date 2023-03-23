@@ -2,15 +2,15 @@
   "ASSETS": {
     "PAGES": {
       "DETAILS": {
-        "SUBTITLE": "Image edit",
+        "SUBTITLE": "Asset edit",
         "TOOLBAR": {
           "SAVE": "Save",
           "DELETE": "Delete"
         },
         "FIELDS": {
           "NAME": {
-            "TITLE": "Image name",
-            "PLACEHOLDER": "Enter image name"
+            "TITLE": "Asset name",
+            "PLACEHOLDER": "Enter asset name"
           },
           "ALT": {
             "TITLE": "Image alternative text",
@@ -21,8 +21,7 @@
             "TITLE": "Meta description",
             "PLACEHOLDER": "Enter meta description"
           }
-        },
-        "DELETE_CONFIRMATION": "Are you sure you want to delete this image?"
+        }
       }
     }
   }

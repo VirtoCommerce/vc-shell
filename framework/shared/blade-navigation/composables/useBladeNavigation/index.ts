@@ -91,7 +91,7 @@ export default (): IUseBladeNavigation => {
   }
 
   async function closeBlade(index: number) {
-    const refsIndex = index + 1
+    const refsIndex = index + 1;
     if (refsIndex < bladesRefs.value.length) {
       const children = bladesRefs.value.slice(refsIndex).reverse();
 

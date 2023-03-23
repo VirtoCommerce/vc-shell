@@ -33,6 +33,7 @@
 
       <!-- Show back link when more than one blade is opened -->
       <VcLink
+        class="tw-ml-3"
         v-else-if="blades.length > 1"
         @click="$emit('backlink:click')"
       >
@@ -45,7 +46,7 @@
     </template>
 
     <!-- Additional spacer -->
-    <div class="tw-grow tw-basis-0 tw-basis-0"></div>
+    <div class="tw-grow tw-basis-0"></div>
 
     <!-- Toolbar container -->
     <div class="tw-flex tw-h-full tw-box-border">

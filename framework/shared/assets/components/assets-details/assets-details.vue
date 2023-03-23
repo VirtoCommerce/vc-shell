@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="options.editableAsset.name"
+    :title="options?.asset?.name"
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
     :closable="closable"
@@ -15,14 +15,15 @@
             <VcForm>
               <VcImage
                 class="tw-mb-4"
-                :src="localImage.url"
+                :src="defaultAsset.url"
                 size="xl"
                 :bordered="true"
+                v-if="assetType === 'Image'"
               ></VcImage>
               <VcInput
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="localImage.name"
+                v-model="defaultAsset.name"
                 clearable
                 required
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
@@ -30,16 +31,17 @@
               <VcInput
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
-                v-model="localImage.altText"
+                v-model="defaultAsset.altText"
                 clearable
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
                 required
+                v-if="assetType === 'Image'"
               ></VcInput>
               <VcTextarea
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                v-model="localImage.description"
+                v-model="defaultAsset.description"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                 required
               ></VcTextarea>
@@ -52,30 +54,23 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, unref } from "vue";
-import { useI18n } from "./../../../../core/composables";
-import { IParentCallArgs } from "./../../../../shared";
+import { Asset } from "./../../../../core/types";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "./../../../../ui/components";
 
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options?: {
-    editableAsset: ILocalImage;
-    sortHandler: (remove: boolean, localImage: ILocalImage) => void;
+    asset: Asset;
+    assetEditHandler?: (defaultAsset: Asset) => void;
+    assetRemoveHandler?: (defaultAsset: Asset) => void;
   };
 }
 
 export interface Emits {
-  (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
-}
-
-export interface ILocalImage {
-  url: string;
-  name: string;
-  altText: string;
-  description: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -85,7 +80,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n();
-const localImage = reactive({ ...props.options.editableAsset });
+const defaultAsset = ref<Asset>({ ...props.options?.asset });
 
 const bladeToolbar = [
   {
@@ -93,8 +88,8 @@ const bladeToolbar = [
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "fas fa-save",
     clickHandler() {
-      if (props.options.sortHandler && typeof props.options.sortHandler === "function") {
-        props.options.sortHandler(false, localImage);
+      if (props.options?.assetEditHandler && typeof props.options?.assetEditHandler === "function") {
+        props.options?.assetEditHandler(defaultAsset.value);
         emit("close:blade");
       }
     },
@@ -104,13 +99,13 @@ const bladeToolbar = [
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     clickHandler() {
-      if (window.confirm(unref(computed(() => t("ASSETS.PAGES.DETAILS.DELETE_CONFIRMATION"))))) {
-        if (props.options.sortHandler && typeof props.options.sortHandler === "function") {
-          props.options.sortHandler(true, localImage);
-          emit("close:blade");
-        }
+      if (props.options?.assetRemoveHandler && typeof props.options?.assetRemoveHandler === "function") {
+        props.options?.assetRemoveHandler(defaultAsset.value);
+        emit("close:blade");
       }
     },
   },
 ];
+
+const assetType = computed(() => defaultAsset.value?.typeId);
 </script>

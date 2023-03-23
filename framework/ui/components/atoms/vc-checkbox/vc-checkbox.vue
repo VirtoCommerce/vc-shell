@@ -37,8 +37,6 @@
 </template>
 
 <script lang="ts" setup>
-import { watch } from "vue";
-
 export interface Props {
   modelValue?: boolean;
   disabled?: boolean;
@@ -51,17 +49,9 @@ export interface Emits {
   (event: "update:modelValue", value: boolean): void;
 }
 
-const props = withDefaults(defineProps<Props>(), { name: "Field" });
+withDefaults(defineProps<Props>(), { name: "Field" });
 const emit = defineEmits<Emits>();
 
-watch(
-  () => props.modelValue,
-  (value) => {
-    emit("update:modelValue", value);
-  }
-);
-
-// Handle input event to propertly validate value and emit changes
 function onChange(e: Event) {
   const newValue = (e.target as HTMLInputElement).checked;
   emit("update:modelValue", newValue);

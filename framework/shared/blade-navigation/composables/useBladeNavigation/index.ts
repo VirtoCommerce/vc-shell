@@ -52,7 +52,7 @@ export default (): IUseBladeNavigation => {
     index?: number,
     navigationCb?: () => Promise<void | NavigationFailure>
   ) {
-    console.debug(`openBlade(${1}) called.`);
+    console.debug(`openBlade called.`);
 
     const parent = unref(parentBlade);
     const child = unref(blade);
@@ -91,8 +91,9 @@ export default (): IUseBladeNavigation => {
   }
 
   async function closeBlade(index: number) {
-    if (index < bladesRefs.value.length) {
-      const children = bladesRefs.value.slice(index).reverse();
+    const refsIndex = index + 1
+    if (refsIndex < bladesRefs.value.length) {
+      const children = bladesRefs.value.slice(refsIndex).reverse();
 
       isPrevented.value = false;
       for (let i = 0; i < children.length; i++) {

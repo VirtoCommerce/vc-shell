@@ -64,7 +64,7 @@ onBeforeUpdate(() => {
 });
 
 const setBladesRef = (el: IBladeElement) => {
-  if (el && Object.keys(el).length) {
+  if (el && el !== null) {
     bladesRefs.value.push(el);
   }
 };

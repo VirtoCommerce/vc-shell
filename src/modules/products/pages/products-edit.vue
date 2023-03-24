@@ -216,7 +216,7 @@
           >
           </VcWidget>
           <VcWidget
-            icon="fas fa-file"
+            icon="far fa-file"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
             :value="assetsCount"
             :disabled="!(product as ISellerProduct).isPublished"

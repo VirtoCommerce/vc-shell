@@ -208,7 +208,7 @@
         </div>
         <div class="product-details__widgets">
           <VcWidget
-            icon="fas fa-file-alt"
+            icon="fas fa-tags"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS')"
             :value="offersCount"
             :disabled="!(product as ISellerProduct).isPublished"
@@ -216,7 +216,7 @@
           >
           </VcWidget>
           <VcWidget
-            icon="far fa-file"
+            icon="fas fa-file"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
             :value="assetsCount"
             :disabled="!(product as ISellerProduct).isPublished"

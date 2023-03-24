@@ -104,7 +104,7 @@
                         }"
                         :disableDrag="true"
                         :hideAfterUpload="!!logoHandler.length"
-                        rules="maxdimensions:120,120|size:1024"
+                        rules="mindimensions:120,120|fileWeight:1024"
                         name="logo"
                       ></VcGallery>
                     </div>

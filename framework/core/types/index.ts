@@ -69,6 +69,9 @@ export interface Asset {
   id?: string;
   altText?: string;
   typeId?: string;
+  sortOrder?: number;
+  size?: number;
+  createdDate?: Date;
 }
 
 export interface AuthData {

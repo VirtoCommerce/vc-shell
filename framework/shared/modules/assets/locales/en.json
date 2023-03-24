@@ -1,0 +1,31 @@
+{
+  "ASSETS": {
+    "PAGES": {
+      "DETAILS": {
+        "SUBTITLE": "Asset edit",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "DELETE": "Delete"
+        },
+        "FIELDS": {
+          "SIZE": "Size",
+          "CREATED_DATE": "Created date",
+          "URL": "Url",
+          "NAME": {
+            "TITLE": "Asset name",
+            "PLACEHOLDER": "Enter asset name"
+          },
+          "ALT": {
+            "TITLE": "Image alternative text",
+            "PLACEHOLDER": "Enter image alt text",
+            "TOOLTIP": "This text will be displayed in case of disabled/unloaded image on the page"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Meta description",
+            "PLACEHOLDER": "Enter meta description"
+          }
+        }
+      }
+    }
+  }
+}

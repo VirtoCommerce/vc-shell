@@ -26,7 +26,7 @@
       <!-- Show blades name when at least one blade is opened -->
       <div
         v-if="blades.length === 1"
-        class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header"
+        class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header tw-ml-2"
       >
         {{ blades[0].title }}
       </div>

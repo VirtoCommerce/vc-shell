@@ -126,11 +126,11 @@
               </th>
               <th
                 v-for="item in filteredCols"
-                @mousedown="onColumnHeaderMouseDown"
-                @dragstart="onColumnHeaderDragStart($event, item)"
-                @dragover="onColumnHeaderDragOver"
-                @dragleave="onColumnHeaderDragLeave"
-                @drop="onColumnHeaderDrop($event, item)"
+                @mousedown.stop="onColumnHeaderMouseDown"
+                @dragstart.stop="onColumnHeaderDragStart($event, item)"
+                @dragover.stop="onColumnHeaderDragOver"
+                @dragleave.stop="onColumnHeaderDragLeave"
+                @drop.stop="onColumnHeaderDrop($event, item)"
                 :key="item.id"
                 class="tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
                 :class="{
@@ -198,11 +198,11 @@
           </thead>
 
           <tbody
-            v-if="calculatedItems"
+            v-if="itemsWithActions"
             class="vc-table__body"
           >
             <tr
-              v-for="(item, i) in calculatedItems"
+              v-for="(item, i) in itemsWithActions"
               :key="(typeof item === 'object' && 'id' in item && item.id) || i"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
@@ -212,12 +212,12 @@
               }"
               @click="itemClick(item)"
               @mouseleave="closeActions"
-              @mousedown="onRowMouseDown"
-              @dragstart="onRowDragStart($event, item)"
-              @dragover="onRowDragOver($event, item)"
-              @dragleave="onRowDragLeave"
-              @dragend="onRowDragEnd"
-              @drop="onRowDrop"
+              @mousedown.stop="onRowMouseDown"
+              @dragstart.stop="onRowDragStart($event, item)"
+              @dragover.stop="onRowDragOver($event, item)"
+              @dragleave.stop="onRowDragLeave"
+              @dragend.stop="onRowDragEnd"
+              @drop.stop="onRowDrop"
             >
               <td
                 v-if="multiselect && typeof item === 'object'"
@@ -288,7 +288,7 @@
               <td
                 v-for="cell in filteredCols"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || i}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3"
+                class="tw-box-border tw-overflow-hidden tw-px-3 tw-truncate"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
@@ -362,7 +362,7 @@
     <!-- Table footer -->
     <slot
       name="footer"
-      v-if="($slots['footer'] || footer) && calculatedItems && calculatedItems.length"
+      v-if="($slots['footer'] || footer) && itemsWithActions && itemsWithActions.length"
     >
       <div
         class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
@@ -386,7 +386,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref } from "vue";
+import { computed, nextTick, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref, onUpdated, onBeforeMount } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -396,7 +396,7 @@ import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, computedAsync, useCurrentElement } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
-import { differenceWith, isEqual, omit, toPairs } from "lodash-es";
+import { isEqual, omit } from "lodash-es";
 
 export interface StatusImage {
   image?: string;
@@ -504,7 +504,15 @@ const state = useLocalStorage(props.stateKey, []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
 const dropPosition = ref();
-const calculatedItems = computedAsync(async () => await populateWithActions(props.items), []);
+const itemsWithActions = computedAsync(async () => await populateWithActions(props.items), []);
+const itemsWithoutActions = computed(() =>
+  itemsWithActions.value.map((x) => {
+    if (typeof x === "object") {
+      return unpopulateActions(x);
+    }
+    return x;
+  })
+);
 
 // row reordering variables
 const draggedRow = ref<TableItemType>();
@@ -512,13 +520,25 @@ const rowDragged = ref(false);
 const droppedRowIndex = ref<number>();
 const draggedRowIndex = ref<number>();
 
+onBeforeMount(() => {
+  if (isStateful()) {
+    restoreState();
+  }
+});
+
+onBeforeUnmount(() => {
+  unbindColumnResizeEvents();
+});
+
 onBeforeUpdate(() => {
   actionToggleRefs.value = [];
   tooltipRefs.value = [];
 });
 
-onBeforeUnmount(() => {
-  unbindColumnResizeEvents();
+onUpdated(() => {
+  if (isStateful()) {
+    saveState();
+  }
 });
 
 const sortDirection = computed(() => {
@@ -548,13 +568,13 @@ const tableAlignment = {
 
 const headerCheckbox = computed({
   get() {
-    return calculatedItems.value ? selection.value.length === calculatedItems.value.length : false;
+    return itemsWithoutActions.value ? selection.value.length === itemsWithoutActions.value.length : false;
   },
   set(checked: boolean) {
     let _selected = [];
 
     if (checked) {
-      _selected = calculatedItems.value;
+      _selected = itemsWithoutActions.value;
     }
 
     selection.value = _selected;
@@ -582,10 +602,6 @@ watch(
 watch(
   () => props.columns,
   (newVal) => {
-    if (isStateful()) {
-      nextTick(() => restoreState());
-    }
-
     if (!defaultColumns.value.length) {
       defaultColumns.value = newVal;
     }
@@ -593,25 +609,34 @@ watch(
   { deep: true, immediate: true }
 );
 
+function unpopulateActions(item: TableItemType) {
+  if (typeof item === "object") {
+    return omit(item, "actions");
+  } else {
+    return item;
+  }
+}
+
 function itemClick(item: TableItemType) {
   if (typeof item === "object") {
-    const ummutableItem = omit(item, ["actions"]);
-    emit("itemClick", ummutableItem);
+    const immutableItem = unpopulateActions(item);
+    emit("itemClick", immutableItem);
   } else {
     emit("itemClick", item);
   }
 }
 
-function isSelected(item) {
-  return selection.value.indexOf(item) > -1;
+function isSelected(item: TableItemType) {
+  return selection.value.findIndex((x) => isEqual(x, unpopulateActions(item))) > -1;
 }
 
 function rowCheckbox(item: TableItemType) {
-  const index = selection.value.indexOf(item);
+  const clear = unpopulateActions(item);
+  const index = selection.value.findIndex((x) => isEqual(x, clear));
   if (index > -1) {
-    selection.value = selection.value.filter((x) => x !== item);
+    selection.value = selection.value.filter((x) => !isEqual(x, clear));
   } else {
-    selection.value.push(item);
+    selection.value.push(clear);
   }
 
   emit("selectionChanged", selection.value);
@@ -938,12 +963,12 @@ function onRowMouseDown(event: MouseEvent & { currentTarget?: { draggable: boole
 function onRowDragStart(event: DragEvent, item: TableItem | string) {
   rowDragged.value = true;
   draggedRow.value = item;
-  draggedRowIndex.value = calculatedItems.value.indexOf(item);
+  draggedRowIndex.value = itemsWithoutActions.value.indexOf(item);
   event.dataTransfer.setData("text", "row-reorder");
 }
 
 function onRowDragOver(event: DragEvent, item: TableItem | string) {
-  const index = calculatedItems.value.indexOf(item);
+  const index = itemsWithoutActions.value.indexOf(item);
 
   if (rowDragged.value && draggedRow.value !== item) {
     let rowElement = event.currentTarget;
@@ -981,7 +1006,7 @@ function onRowDrop(event) {
         ? 0
         : droppedRowIndex.value - 1;
 
-    let processedItems = [...calculatedItems.value];
+    let processedItems = [...itemsWithoutActions.value];
 
     reorderArray(processedItems, draggedRowIndex.value, dropIndex);
 

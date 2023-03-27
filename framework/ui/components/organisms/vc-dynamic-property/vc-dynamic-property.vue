@@ -56,7 +56,11 @@
       :required="property.required || property.isRequired"
       placeholder="Add value"
       :disabled="disabled"
+      option-label="alias"
+      option-value="id"
       :multiple="true"
+      :emit-value="false"
+      :clearable="false"
     ></VcSelect>
   </Field>
 
@@ -91,6 +95,8 @@
       @search="onSearch"
       @close="onClose"
       :multiple="property.multivalue"
+      :emit-value="false"
+      :clearable="false"
     ></VcSelect>
   </Field>
 

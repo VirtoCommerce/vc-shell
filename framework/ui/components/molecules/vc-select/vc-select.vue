@@ -60,7 +60,7 @@
                         {{ prefix }}
                       </div>
                       <div
-                        class="tw-w-full tw-appearance-none tw-border-none tw-outline-none tw-min-h-[var(--select-height)] tw-flex tw-items-center tw-w-full tw-box-border tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
+                        class="tw-appearance-none tw-border-none tw-outline-none tw-min-h-[var(--select-height)] tw-flex tw-items-center tw-w-full tw-box-border tw-cursor-pointer invalid:tw-text-[color:var(--select-placeholder-color)] tw-truncate"
                         @click.stop="toggleDropdown"
                       >
                         <div
@@ -90,7 +90,7 @@
                                   <div
                                     class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                   >
-                                    <span>{{ getEmittingOptionValue(item.opt) }}</span>
+                                    <span>{{ getOptionLabel(item.opt) }}</span>
                                     <VcIcon
                                       v-if="!disabled"
                                       class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"

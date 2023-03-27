@@ -126,11 +126,11 @@
               </th>
               <th
                 v-for="item in filteredCols"
-                @mousedown.stop="onColumnHeaderMouseDown"
-                @dragstart.stop="onColumnHeaderDragStart($event, item)"
-                @dragover.stop="onColumnHeaderDragOver"
-                @dragleave.stop="onColumnHeaderDragLeave"
-                @drop.stop="onColumnHeaderDrop($event, item)"
+                @mousedown="onColumnHeaderMouseDown"
+                @dragstart="onColumnHeaderDragStart($event, item)"
+                @dragover="onColumnHeaderDragOver"
+                @dragleave="onColumnHeaderDragLeave"
+                @drop="onColumnHeaderDrop($event, item)"
                 :key="item.id"
                 class="tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
                 :class="{
@@ -212,12 +212,12 @@
               }"
               @click="itemClick(item)"
               @mouseleave="closeActions"
-              @mousedown.stop="onRowMouseDown"
-              @dragstart.stop="onRowDragStart($event, item)"
-              @dragover.stop="onRowDragOver($event, item)"
-              @dragleave.stop="onRowDragLeave"
-              @dragend.stop="onRowDragEnd"
-              @drop.stop="onRowDrop"
+              @mousedown="onRowMouseDown"
+              @dragstart="onRowDragStart($event, item)"
+              @dragover="onRowDragOver($event, item)"
+              @dragleave="onRowDragLeave"
+              @dragend="onRowDragEnd"
+              @drop="onRowDrop"
             >
               <td
                 v-if="multiselect && typeof item === 'object'"
@@ -961,14 +961,20 @@ function onRowMouseDown(event: MouseEvent & { currentTarget?: { draggable: boole
 }
 
 function onRowDragStart(event: DragEvent, item: TableItem | string) {
+  if (!props.reorderableRows) {
+    return;
+  }
   rowDragged.value = true;
   draggedRow.value = item;
-  draggedRowIndex.value = itemsWithoutActions.value.indexOf(item);
+  draggedRowIndex.value = itemsWithoutActions.value.findIndex((x) => isEqual(x, unpopulateActions(item)));
   event.dataTransfer.setData("text", "row-reorder");
 }
 
 function onRowDragOver(event: DragEvent, item: TableItem | string) {
-  const index = itemsWithoutActions.value.indexOf(item);
+  if (!props.reorderableRows) {
+    return;
+  }
+  const index = itemsWithoutActions.value.findIndex((x) => isEqual(x, unpopulateActions(item)));
 
   if (rowDragged.value && draggedRow.value !== item) {
     let rowElement = event.currentTarget;
@@ -997,7 +1003,7 @@ function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean 
   event.currentTarget.draggable = false;
 }
 
-function onRowDrop(event) {
+function onRowDrop(event: DragEvent) {
   if (droppedRowIndex.value != null) {
     let dropIndex =
       draggedRowIndex.value > droppedRowIndex.value
@@ -1019,7 +1025,7 @@ function onRowDrop(event) {
 
   // cleanup
   onRowDragLeave(event);
-  onRowDragEnd(event);
+  onRowDragEnd(event as DragEvent & { currentTarget?: { draggable: boolean } });
   event.preventDefault();
 }
 </script>

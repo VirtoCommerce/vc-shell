@@ -9,13 +9,13 @@
   >
     <div
       class="tw-relative tw-h-full"
-      @dragover.stop.prevent="dragOver"
-      @dragleave.stop.prevent="dragLeave"
+      @dragover.prevent.stop="dragOver"
+      @dragleave.prevent="dragLeave"
+      @drop.prevent.stop="onDrop"
       @drag.stop.prevent
       @dragstart.stop.prevent
       @dragend.stop.prevent
       @dragenter.stop.prevent
-      @drop.stop.prevent="onDrop"
     >
       <VcLoading :active="loading"></VcLoading>
       <VcTable
@@ -130,14 +130,6 @@
           </div>
         </template>
       </VcTable>
-
-      <div
-        v-if="isDragging"
-        class="tw-absolute tw-top-0 tw-bottom-0 tw-h-full tw-w-full tw-z-[1] tw-flex tw-items-center tw-justify-center"
-        :class="{
-          'tw-backdrop-blur-[3px] tw-bg-[rgba(255, 255, 255, 0.5)] tw-cursor-copy tw-pointer-events-none': isDragging,
-        }"
-      ></div>
     </div>
 
     <input
@@ -246,7 +238,7 @@ const columns = ref<ITableColumns[]>([
   },
   {
     id: "sortOrder",
-    title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.SORT")),
+    title: computed(() => t("ASSETS_MANAGER.TABLE.HEADER.SORT_ORDER")),
     width: "180px",
     alwaysVisible: true,
   },

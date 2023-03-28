@@ -91,6 +91,7 @@
         <!-- Desktop table view -->
         <table
           v-else
+          ref="tableRef"
           class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full"
           :class="{
             'vc-table_empty': !items || !items.length,
@@ -99,7 +100,7 @@
         >
           <thead
             v-if="filteredCols"
-            class="vc-table__header"
+            class="vc-table__header tw-relative"
           >
             <tr class="vc-table__header-row">
               <th
@@ -193,7 +194,11 @@
             </tr>
             <div
               ref="resizer"
-              class="tw-w-[1px] tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
+              class="tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
+            ></div>
+            <div
+              ref="reorderRef"
+              class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
             ></div>
           </thead>
 
@@ -484,13 +489,22 @@ interface ITableItemRef {
 
 const emit = defineEmits<Emits>();
 
+// template refs
+const tooltipRefs = ref<ITableItemRef[]>([]);
+const reorderRef = ref<HTMLElement | null>();
+const tableRef = ref<HTMLElement | null>();
+
+// event listeners
+let columnResizeListener = null;
+let columnResizeEndListener = null;
+
 const selection = ref<TableItemType[]>([]);
 
 const selectedRow = ref<string>();
 const tooltip = ref<Instance>();
 const scrollContainer = ref<typeof VcContainer>();
 const actionToggleRefs = ref<ITableItemRef[]>([]);
-const tooltipRefs = ref<ITableItemRef[]>([]);
+
 const itemActions = ref<IActionBuilderResult[][]>([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
@@ -498,8 +512,6 @@ const resizeColumnElement = ref<ITableColumns>();
 const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
-let columnResizeListener = null;
-let columnResizeEndListener = null;
 const resizer = ref();
 const state = useLocalStorage(props.stateKey, []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
@@ -814,16 +826,25 @@ function onColumnHeaderDragOver(event: DragEvent) {
 
   if (props.reorderableColumns && draggedColumn.value && dropHeader) {
     event.preventDefault();
+    let containerOffset = getOffset(table.value as HTMLElement);
     let dropHeaderOffset = getOffset(dropHeader);
 
     if (draggedColumn.value !== dropHeader) {
+      let targetLeft = dropHeaderOffset.left - containerOffset.left;
       let columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
 
+      reorderRef.value.style.top = dropHeaderOffset.top - getOffset(tableRef.value).top + "px";
+
       if (event.pageX > columnCenter) {
+        reorderRef.value.style.left = targetLeft + dropHeader.offsetWidth + "px";
+
         dropPosition.value = 1;
       } else {
+        reorderRef.value.style.left = targetLeft + "px";
         dropPosition.value = -1;
       }
+
+      reorderRef.value.style.display = "block";
     }
   }
 }
@@ -831,6 +852,8 @@ function onColumnHeaderDragOver(event: DragEvent) {
 function onColumnHeaderDragLeave(event: DragEvent) {
   if (props.reorderableColumns && draggedColumn.value) {
     event.preventDefault();
+
+    reorderRef.value.style.display = "none";
   }
 }
 
@@ -859,6 +882,7 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
       }
     }
 
+    reorderRef.value.style.display = "none";
     draggedColumn.value.draggable = false;
     draggedColumn.value = null;
     dropPosition.value = null;
@@ -937,15 +961,29 @@ function onRowDragOver(event: DragEvent, item: TableItem | string) {
   const index = props.items.indexOf(item);
 
   if (rowDragged.value && draggedRow.value !== item) {
-    let rowElement = event.currentTarget;
-    let rowY = getOffset(rowElement as HTMLElement).top;
+    let rowElement = event.currentTarget as HTMLElement;
+    let rowY = getOffset(rowElement).top;
     let pageY = event.pageY;
-    let rowMidY = rowY + (rowElement as HTMLElement).offsetHeight / 2;
+    let rowMidY = rowY + rowElement.offsetHeight / 2;
+    let previousRowElement = rowElement.previousElementSibling;
 
     if (pageY < rowMidY) {
+      rowElement.classList.remove("vc-table__drag-row-bottom");
       droppedRowIndex.value = index;
+
+      if (previousRowElement) {
+        previousRowElement.classList.add("vc-table__drag-row-bottom");
+      } else {
+        rowElement.classList.add("vc-table__drag-row-top");
+      }
     } else {
+      if (previousRowElement) {
+        previousRowElement.classList.remove("vc-table__drag-row-bottom");
+      } else {
+        rowElement.classList.add("vc-table__drag-row-top");
+      }
       droppedRowIndex.value = index + 1;
+      rowElement.classList.add("vc-table__drag-row-bottom");
     }
 
     event.preventDefault();
@@ -954,6 +992,16 @@ function onRowDragOver(event: DragEvent, item: TableItem | string) {
 
 function onRowDragLeave(event: DragEvent) {
   event.preventDefault();
+
+  let rowElement = event.currentTarget as HTMLElement;
+  let previousRowElement = rowElement.previousElementSibling;
+
+  if (previousRowElement) {
+    previousRowElement.classList.remove("vc-table__drag-row-bottom");
+  }
+
+  rowElement.classList.remove("vc-table__drag-row-top");
+  rowElement.classList.remove("vc-table__drag-row-bottom");
 }
 
 function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean } }) {
@@ -991,6 +1039,10 @@ function onRowDrop(event: DragEvent) {
 </script>
 
 <style lang="scss">
+:root {
+  --row-drag-color: #41afe6;
+}
+
 $variants: (
   danger: #ff4a4a,
   success: #87b563,
@@ -1058,6 +1110,14 @@ $variants: (
     &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
       @apply tw-top-[-5px];
     }
+  }
+
+  &__drag-row-bottom {
+    box-shadow: inset 0 -2px 0 0 var(--row-drag-color);
+  }
+
+  &__drag-row-top {
+    box-shadow: inset 0 2px 0 0 var(--row-drag-color);
   }
 }
 </style>

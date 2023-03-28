@@ -198,19 +198,19 @@
           </thead>
 
           <tbody
-            v-if="itemsWithActions"
+            v-if="items"
             class="vc-table__body"
           >
             <tr
-              v-for="(item, i) in itemsWithActions"
-              :key="(typeof item === 'object' && 'id' in item && item.id) || i"
+              v-for="(item, itemIndex) in items"
+              :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
-                'tw-bg-[#f8f8f8]': i % 2 === 1,
+                'tw-bg-[#f8f8f8]': itemIndex % 2 === 1,
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
               }"
-              @click="itemClick(item)"
+              @click="$emit('itemClick', item)"
               @mouseleave="closeActions"
               @mousedown="onRowMouseDown"
               @dragstart="onRowDragStart($event, item)"
@@ -222,6 +222,7 @@
               <td
                 v-if="multiselect && typeof item === 'object'"
                 class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
+                @click.stop
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
@@ -234,6 +235,7 @@
               <td
                 class="tw-box-border tw-overflow-visible tw-px-3 tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px]"
                 v-if="itemActionBuilder && typeof item === 'object'"
+                @click.stop
               >
                 <div class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center">
                   <button
@@ -241,7 +243,7 @@
                     @click.stop="showActions(item, item.id)"
                     :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     aria-describedby="tooltip"
-                    :disabled="!(item.actions && item.actions.length)"
+                    :disabled="!(itemActions[itemIndex] && itemActions[itemIndex].length)"
                   >
                     <VcIcon
                       icon="fas fa-ellipsis-v"
@@ -259,7 +261,7 @@
                       class="tw-flex tw-items-start tw-flex-col tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
                     >
                       <div
-                        v-for="(itemAction, i) in item.actions"
+                        v-for="(itemAction, i) in itemActions[itemIndex]"
                         :key="i"
                         :class="[
                           'tw-flex tw-flex-row tw-items-center tw-text-[#319ed4] tw-cursor-pointer',
@@ -287,7 +289,7 @@
               </td>
               <td
                 v-for="cell in filteredCols"
-                :key="`${(typeof item === 'object' && 'id' in item && item.id) || i}_${cell.id}`"
+                :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
                 class="tw-box-border tw-overflow-hidden tw-px-3 tw-truncate"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
@@ -362,7 +364,7 @@
     <!-- Table footer -->
     <slot
       name="footer"
-      v-if="($slots['footer'] || footer) && itemsWithActions && itemsWithActions.length"
+      v-if="($slots['footer'] || footer) && items && items.length"
     >
       <div
         class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
@@ -394,9 +396,8 @@ import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
-import { useLocalStorage, computedAsync, useCurrentElement } from "@vueuse/core";
+import { useLocalStorage, useCurrentElement } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
-import { isEqual, omit } from "lodash-es";
 
 export interface StatusImage {
   image?: string;
@@ -491,6 +492,7 @@ const tooltip = ref<Instance>();
 const scrollContainer = ref<typeof VcContainer>();
 const actionToggleRefs = ref<ITableItemRef[]>([]);
 const tooltipRefs = ref<ITableItemRef[]>([]);
+const itemActions = ref<IActionBuilderResult[][]>([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
 const resizeColumnElement = ref<ITableColumns>();
@@ -504,15 +506,6 @@ const state = useLocalStorage(props.stateKey, []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
 const dropPosition = ref();
-const itemsWithActions = computedAsync(async () => await populateWithActions(props.items), []);
-const itemsWithoutActions = computed(() =>
-  itemsWithActions.value.map((x) => {
-    if (typeof x === "object") {
-      return unpopulateActions(x);
-    }
-    return x;
-  })
-);
 
 // row reordering variables
 const draggedRow = ref<TableItemType>();
@@ -568,13 +561,13 @@ const tableAlignment = {
 
 const headerCheckbox = computed({
   get() {
-    return itemsWithoutActions.value ? selection.value.length === itemsWithoutActions.value.length : false;
+    return props.items ? selection.value.length === props.items.length : false;
   },
   set(checked: boolean) {
     let _selected = [];
 
     if (checked) {
-      _selected = itemsWithoutActions.value;
+      _selected = props.items;
     }
 
     selection.value = _selected;
@@ -593,8 +586,10 @@ const filteredCols = computed(() => {
 
 watch(
   () => props.items,
-  () => {
+  (newVal) => {
     scrollContainer.value?.scrollTop();
+
+    calculateActions(newVal);
   },
   { deep: true, immediate: true }
 );
@@ -609,61 +604,20 @@ watch(
   { deep: true, immediate: true }
 );
 
-function unpopulateActions(item: TableItemType) {
-  if (typeof item === "object") {
-    return omit(item, "actions");
-  } else {
-    return item;
-  }
-}
-
-function itemClick(item: TableItemType) {
-  if (typeof item === "object") {
-    const immutableItem = unpopulateActions(item);
-    emit("itemClick", immutableItem);
-  } else {
-    emit("itemClick", item);
-  }
-}
-
 function isSelected(item: TableItemType) {
-  return selection.value.findIndex((x) => isEqual(x, unpopulateActions(item))) > -1;
+  return selection.value.indexOf(item) > -1;
 }
 
 function rowCheckbox(item: TableItemType) {
-  const clear = unpopulateActions(item);
-  const index = selection.value.findIndex((x) => isEqual(x, clear));
+  const clear = item;
+  const index = selection.value.indexOf(clear);
   if (index > -1) {
-    selection.value = selection.value.filter((x) => !isEqual(x, clear));
+    selection.value = selection.value.filter((x) => x !== clear);
   } else {
     selection.value.push(clear);
   }
 
   emit("selectionChanged", selection.value);
-}
-
-async function populateWithActions(value: TableItemType[]): Promise<TableItemType[]> {
-  const populatedItems = [];
-
-  if (value && typeof value === "object") {
-    if (props.itemActionBuilder && typeof props.itemActionBuilder === "function") {
-      for (let index = 0; index < value.length; index++) {
-        const element = value[index] as Record<string, unknown>;
-
-        if (!("actions" in element && element.actions))
-          populatedItems.push({
-            actions: await calculateActions(element),
-            ...element,
-          });
-      }
-
-      return populatedItems;
-    } else {
-      return props.items;
-    }
-  } else {
-    return props.items;
-  }
 }
 
 function setTooltipRefs(el: Element, id: string) {
@@ -708,9 +662,16 @@ function showActions(item: TableItem, index: string) {
   }
 }
 
-async function calculateActions(item: TableItem) {
+async function calculateActions(items: TableItemType[]) {
   if (typeof props.itemActionBuilder === "function") {
-    return await props.itemActionBuilder(item);
+    let populatedItems = [];
+    for (let index = 0; index < items.length; index++) {
+      if (typeof items[index] === "object") {
+        const elementWithActions = await props.itemActionBuilder(items[index] as TableItem);
+        populatedItems.push(elementWithActions);
+      }
+    }
+    itemActions.value = populatedItems;
   }
 }
 
@@ -966,7 +927,7 @@ function onRowDragStart(event: DragEvent, item: TableItem | string) {
   }
   rowDragged.value = true;
   draggedRow.value = item;
-  draggedRowIndex.value = itemsWithoutActions.value.findIndex((x) => isEqual(x, unpopulateActions(item)));
+  draggedRowIndex.value = props.items.indexOf(item);
   event.dataTransfer.setData("text", "row-reorder");
 }
 
@@ -974,7 +935,7 @@ function onRowDragOver(event: DragEvent, item: TableItem | string) {
   if (!props.reorderableRows) {
     return;
   }
-  const index = itemsWithoutActions.value.findIndex((x) => isEqual(x, unpopulateActions(item)));
+  const index = props.items.indexOf(item);
 
   if (rowDragged.value && draggedRow.value !== item) {
     let rowElement = event.currentTarget;
@@ -1012,7 +973,7 @@ function onRowDrop(event: DragEvent) {
         ? 0
         : droppedRowIndex.value - 1;
 
-    let processedItems = [...itemsWithoutActions.value];
+    let processedItems = [...props.items];
 
     reorderArray(processedItems, draggedRowIndex.value, dropIndex);
 

@@ -12,10 +12,6 @@
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
-      @drag.stop.prevent
-      @dragstart.stop.prevent
-      @dragend.stop.prevent
-      @dragenter.stop.prevent
     >
       <VcLoading :active="loading"></VcLoading>
       <VcTable
@@ -145,7 +141,7 @@
 
 <script setup lang="ts">
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, shallowRef, unref } from "vue";
+import { ref, computed, onMounted, shallowRef, unref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
 import moment from "moment";
@@ -211,6 +207,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
         props.options.assetsRemoveHandler(selectedItems.value);
+        defaultAssets.value = defaultAssets.value.filter((asset) => !selectedItems.value.includes(asset));
       }
     },
     disabled: computed(() => !selectedItems.value.length),
@@ -252,9 +249,7 @@ const columns = ref<ITableColumns[]>([
 ]);
 
 onMounted(() => {
-  if (props.options?.assets && props.options?.assets.length) {
-    defaultAssets.value = props.options.assets;
-  }
+  defaultAssets.value = props.options?.assets;
 });
 
 function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
@@ -363,6 +358,8 @@ const actionBuilder = (): IActionBuilderResult[] => {
     leftActions: true,
     clickHandler(item: Asset) {
       props.options.assetsRemoveHandler([item]);
+      defaultAssets.value = defaultAssets.value.filter((asset) => asset !== item);
+      selectedItems.value = [];
     },
   });
 

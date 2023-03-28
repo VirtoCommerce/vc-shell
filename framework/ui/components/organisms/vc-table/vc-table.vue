@@ -227,12 +227,12 @@
               <td
                 v-if="multiselect && typeof item === 'object'"
                 class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
+                @click.stop
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
                     @update:model-value="rowCheckbox(item)"
                     :model-value="isSelected(item)"
-                    @click.stop
                   ></VcCheckbox>
                 </div>
               </td>
@@ -513,7 +513,7 @@ const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
 const resizer = ref();
-const state = useLocalStorage(props.stateKey, []);
+const state = useLocalStorage("VC_TABLE_STATE_" + props.stateKey.toUpperCase(), []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
 const dropPosition = ref();

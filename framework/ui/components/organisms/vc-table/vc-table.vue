@@ -222,7 +222,6 @@
               <td
                 v-if="multiselect && typeof item === 'object'"
                 class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
-                @click.stop
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox

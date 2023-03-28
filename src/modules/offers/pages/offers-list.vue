@@ -229,6 +229,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       ) {
         emit("close:children");
         await deleteOffers({ ids: selectedOfferIds.value });
+        if (searchQuery.value.skip >= searchQuery.value.take) {
+          searchQuery.value.skip -= searchQuery.value.take;
+        }
         await reload();
       }
     },

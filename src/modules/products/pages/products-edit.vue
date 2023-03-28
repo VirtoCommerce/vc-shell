@@ -346,7 +346,7 @@ const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
 });
 
-const assetsCount = computed(() => productDetails.value && productDetails.value?.assets?.length);
+const assetsCount = computed(() => productDetails.value && productDetails.value?.assets?.length || 0);
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -437,7 +437,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        (isDisabled.value && !modified.value) ||
+        (isDisabled.value && modified.value) ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),

@@ -323,6 +323,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       ) {
         emit("close:children");
         await deleteProducts(selectedProductIds.value);
+        if (searchQuery.value.skip >= searchQuery.value.take) {
+          searchQuery.value.skip -= searchQuery.value.take;
+        }
         await reload();
       }
     },

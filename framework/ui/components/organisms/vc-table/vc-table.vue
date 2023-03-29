@@ -516,6 +516,7 @@ const resizer = ref();
 const state = useLocalStorage("VC_TABLE_STATE_" + props.stateKey.toUpperCase(), []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
+const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
 
 // row reordering variables
@@ -803,6 +804,7 @@ function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
   }
 
   draggedColumn.value = item;
+  draggedElement.value = event.target as HTMLElement
   event.dataTransfer.setData("text", "reorder");
 }
 
@@ -829,7 +831,7 @@ function onColumnHeaderDragOver(event: DragEvent) {
     let containerOffset = getOffset(table.value as HTMLElement);
     let dropHeaderOffset = getOffset(dropHeader);
 
-    if (draggedColumn.value !== dropHeader) {
+    if (draggedElement.value !== dropHeader) {
       let targetLeft = dropHeaderOffset.left - containerOffset.left;
       let columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
 
@@ -883,7 +885,7 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
     }
 
     reorderRef.value.style.display = "none";
-    draggedColumn.value.draggable = false;
+    draggedElement.value.draggable = false;
     draggedColumn.value = null;
     dropPosition.value = null;
   }

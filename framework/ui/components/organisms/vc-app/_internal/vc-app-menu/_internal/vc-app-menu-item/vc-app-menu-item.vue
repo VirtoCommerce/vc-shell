@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
 import { IBladeToolbar, IMenuItems } from "./../../../../../../../../core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { NavigationFailure, useRoute } from "vue-router";

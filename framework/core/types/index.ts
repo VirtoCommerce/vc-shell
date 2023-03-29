@@ -53,10 +53,12 @@ export interface IActionBuilderResult {
 }
 
 export interface IImage {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
   sortOrder?: number;
-  title?: string;
-  name?: string;
-  url?: string;
+  title?: string | undefined;
+  name?: string | undefined;
+  url?: string | undefined;
 }
 
 export interface Asset {

@@ -176,7 +176,7 @@ export interface Props {
   /**
    * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
    */
-  modelValue: string | number | Date | null | undefined;
+  modelValue?: string | number | Date | null | undefined;
   /**
    * Input label text
    */

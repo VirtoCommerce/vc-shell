@@ -13,7 +13,7 @@
         <VcContainer :no-padding="true">
           <div class="tw-p-4">
             <VcForm>
-              <VcRow class="tw-mb-4">
+              <VcRow class="tw-mb-4 !tw-flex">
                 <template v-if="isImage(defaultAsset.name)">
                   <VcImage
                     :src="defaultAsset.url"

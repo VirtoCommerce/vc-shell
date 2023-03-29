@@ -192,15 +192,26 @@
               >
                 <VcLoading :active="fileUploading"></VcLoading>
                 <div class="tw-p-2">
-                  <VcGallery
-                    :images="productDetails.images"
-                    @upload="onGalleryUpload"
-                    @item:edit="onGalleryItemEdit"
-                    @item:remove="onGalleryImageRemove"
-                    :disabled="disabled"
-                    @sort="editImages"
-                    :multiple="true"
-                  ></VcGallery>
+                  <Field
+                    name="gallery"
+                    :modelValue="productDetails.images"
+                    v-slot="{ handleChange }"
+                  >
+                    <VcGallery
+                      :images="productDetails.images"
+                      @upload="onGalleryUpload"
+                      @item:edit="onGalleryItemEdit"
+                      @item:remove="onGalleryImageRemove"
+                      :disabled="disabled"
+                      @sort="
+                        (e) => {
+                          handleChange(e);
+                          editImages(e as Image[]);
+                        }
+                      "
+                      :multiple="true"
+                    ></VcGallery>
+                  </Field>
                 </div>
               </VcCard>
             </VcForm>
@@ -340,8 +351,8 @@ const product = computed(() => (props.param ? productData.value : productDetails
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const assetsCount = computed(() => productDetails.value && productDetails.value?.assets?.length);
 

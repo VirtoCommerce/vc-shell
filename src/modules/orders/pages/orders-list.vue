@@ -205,7 +205,7 @@ const emit = defineEmits<Emits>();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n();
-const filter = ref<{ status: string }>({status: undefined});
+const filter = ref<{ status: string }>({ status: undefined });
 const appliedFilter = ref({});
 const searchValue = ref();
 const selectedItemId = ref();
@@ -440,10 +440,6 @@ const onSelectionChanged = (items: CustomerOrder[]) => {
   selectedOrdersIds.value = items.map((item) => item.id);
 };
 
-
-
-
-
 function setFilterDate(key: string, value: string) {
   const date = moment(value).toDate();
   if (date instanceof Date && !isNaN(date.valueOf())) {
@@ -454,7 +450,7 @@ function setFilterDate(key: string, value: string) {
 }
 
 function getFilterDate(key: string) {
-  const date = filter.value && filter.value[key] as Date;
+  const date = filter.value && (filter.value[key] as Date);
   if (date) {
     return moment(date).format("YYYY-MM-DD");
   }

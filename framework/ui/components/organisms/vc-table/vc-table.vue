@@ -91,7 +91,8 @@
         <!-- Desktop table view -->
         <table
           v-else
-          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full tw-relative"
+          ref="tableRef"
+          class="[border-spacing:0] tw-border-collapse tw-relative tw-pt-[43px] tw-table-fixed tw-box-border tw-w-full"
           :class="{
             'vc-table_empty': !items || !items.length,
             'vc-table_multiselect': multiselect,
@@ -99,7 +100,7 @@
         >
           <thead
             v-if="filteredCols"
-            class="vc-table__header"
+            class="vc-table__header tw-relative"
           >
             <tr class="vc-table__header-row">
               <th
@@ -108,8 +109,7 @@
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
-                    :modelValue="headerCheckbox"
-                    @update:modelValue="processHeaderCheckbox"
+                    v-model="headerCheckbox"
                     @click.stop
                   ></VcCheckbox>
                 </div>
@@ -194,7 +194,11 @@
             </tr>
             <div
               ref="resizer"
-              class="tw-w-[1px] tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
+              class="tw-w-px tw-absolute tw-z-10 tw-hidden tw-h-full tw-bg-[#e5e7eb] tw-cursor-col-resize"
+            ></div>
+            <div
+              ref="reorderRef"
+              class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
             ></div>
           </thead>
 
@@ -203,11 +207,11 @@
             class="vc-table__body"
           >
             <tr
-              v-for="(item, i) in calculatedItems"
-              :key="(typeof item === 'object' && 'id' in item && item.id) || i"
+              v-for="(item, itemIndex) in items"
+              :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
-                'tw-bg-[#f8f8f8]': i % 2 === 1,
+                'tw-bg-[#f8f8f8]': itemIndex % 2 === 1,
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
               }"
@@ -223,18 +227,19 @@
               <td
                 v-if="multiselect && typeof item === 'object'"
                 class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
+                @click.stop
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
-                    :modelValue="checkboxes[item.id]"
-                    @update:modelValue="processCheckbox(item.id, $event)"
-                    @click.stop
+                    @update:model-value="rowCheckbox(item)"
+                    :model-value="isSelected(item)"
                   ></VcCheckbox>
                 </div>
               </td>
               <td
                 class="tw-box-border tw-overflow-visible tw-px-3 tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px]"
                 v-if="itemActionBuilder && typeof item === 'object'"
+                @click.stop
               >
                 <div class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center">
                   <button
@@ -242,7 +247,7 @@
                     @click.stop="showActions(item, item.id)"
                     :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     aria-describedby="tooltip"
-                    :disabled="!(item.actions && item.actions.length)"
+                    :disabled="!(itemActions[itemIndex] && itemActions[itemIndex].length)"
                   >
                     <VcIcon
                       icon="fas fa-ellipsis-v"
@@ -257,10 +262,10 @@
                     role="tooltip"
                   >
                     <div
-                      class="tw-flex tw-items-center tw-flex-row tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
+                      class="tw-flex tw-items-start tw-flex-col tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
                     >
                       <div
-                        v-for="(itemAction, i) in item.actions"
+                        v-for="(itemAction, i) in itemActions[itemIndex]"
                         :key="i"
                         :class="[
                           'tw-flex tw-flex-row tw-items-center tw-text-[#319ed4] tw-cursor-pointer',
@@ -288,8 +293,8 @@
               </td>
               <td
                 v-for="cell in filteredCols"
-                :key="`${(typeof item === 'object' && 'id' in item && item.id) || i}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3"
+                :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
+                class="tw-box-border tw-overflow-hidden tw-px-3 tw-truncate"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
@@ -387,7 +392,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref } from "vue";
+import { computed, nextTick, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref, onUpdated, onBeforeMount } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -395,7 +400,7 @@ import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
 import { createPopper, Instance } from "@popperjs/core";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
-import { useLocalStorage, computedAsync, useCurrentElement } from "@vueuse/core";
+import { useLocalStorage, useCurrentElement } from "@vueuse/core";
 import VcContainer from "./../../atoms/vc-container/vc-container.vue";
 
 export interface StatusImage {
@@ -420,6 +425,11 @@ export interface Props {
   itemActionBuilder?: (item: TableItem) => IActionBuilderResult[];
   sort?: string;
   multiselect?: boolean;
+  /**
+   * Emit whole item instead of {id: boolean} while prop multiselect = true
+   * @default false
+   */
+  multiselectEmitItem?: boolean;
   expanded?: boolean;
   totalLabel?: string;
   totalCount?: number;
@@ -443,10 +453,10 @@ export interface Props {
 
 export interface Emits {
   (event: "paginationClick", page: number): void;
-  (event: "selectionChanged", values: Record<string, boolean>): void;
+  (event: "selectionChanged", values: TableItemType[]): void;
   (event: "search:change", value: string): void;
   (event: "headerClick", value: Record<string, unknown>): void;
-  (event: "itemClick", item: TableItem): void;
+  (event: "itemClick", item: TableItemType): void;
   (event: "scroll:ptr"): void;
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: TableItemType[] }): void;
 }
@@ -479,26 +489,35 @@ interface ITableItemRef {
 
 const emit = defineEmits<Emits>();
 
-const checkboxes = ref<Record<string, boolean>>({});
+// template refs
+const tooltipRefs = ref<ITableItemRef[]>([]);
+const reorderRef = ref<HTMLElement | null>();
+const tableRef = ref<HTMLElement | null>();
+
+// event listeners
+let columnResizeListener = null;
+let columnResizeEndListener = null;
+
+const selection = ref<TableItemType[]>([]);
+
 const selectedRow = ref<string>();
 const tooltip = ref<Instance>();
 const scrollContainer = ref<typeof VcContainer>();
 const actionToggleRefs = ref<ITableItemRef[]>([]);
-const tooltipRefs = ref<ITableItemRef[]>([]);
+
+const itemActions = ref<IActionBuilderResult[][]>([]);
 const mobileSwipeItem = ref<string>();
 const columnResizing = ref(false);
 const resizeColumnElement = ref<ITableColumns>();
 const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
-const columnResizeListener = ref(null);
-const columnResizeEndListener = ref(null);
 const resizer = ref();
-const state = useLocalStorage(props.stateKey, []);
+const state = useLocalStorage("VC_TABLE_STATE_" + props.stateKey.toUpperCase(), []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
+const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
-const calculatedItems = computedAsync(async () => await populateWithActions(props.items), []);
 
 // row reordering variables
 const draggedRow = ref<TableItemType>();
@@ -506,13 +525,25 @@ const rowDragged = ref(false);
 const droppedRowIndex = ref<number>();
 const draggedRowIndex = ref<number>();
 
+onBeforeMount(() => {
+  if (isStateful()) {
+    restoreState();
+  }
+});
+
+onBeforeUnmount(() => {
+  unbindColumnResizeEvents();
+});
+
 onBeforeUpdate(() => {
   actionToggleRefs.value = [];
   tooltipRefs.value = [];
 });
 
-onBeforeUnmount(() => {
-  unbindColumnResizeEvents();
+onUpdated(() => {
+  if (isStateful()) {
+    saveState();
+  }
 });
 
 const sortDirection = computed(() => {
@@ -540,12 +571,21 @@ const tableAlignment = {
   evenly: "tw-justify-evenly",
 };
 
-const headerCheckbox = computed(() => {
-  const checkboxList = Object.values(checkboxes.value);
+const headerCheckbox = computed({
+  get() {
+    return props.items ? selection.value.length === props.items.length : false;
+  },
+  set(checked: boolean) {
+    let _selected = [];
 
-  if (checkboxList.length) {
-    return checkboxList.every((value) => value);
-  } else return false;
+    if (checked) {
+      _selected = props.items;
+    }
+
+    selection.value = _selected;
+
+    emit("selectionChanged", selection.value);
+  },
 });
 
 const filteredCols = computed(() => {
@@ -558,14 +598,10 @@ const filteredCols = computed(() => {
 
 watch(
   () => props.items,
-  async (value: TableItemType[]) => {
-    checkboxes.value = {};
-    value?.forEach((item) => {
-      if (typeof item === "object" && "id" in item) {
-        checkboxes.value[item.id] = false;
-      }
-    });
+  (newVal) => {
     scrollContainer.value?.scrollTop();
+
+    calculateActions(newVal);
   },
   { deep: true, immediate: true }
 );
@@ -573,10 +609,6 @@ watch(
 watch(
   () => props.columns,
   (newVal) => {
-    if (isStateful()) {
-      nextTick(() => restoreState());
-    }
-
     if (!defaultColumns.value.length) {
       defaultColumns.value = newVal;
     }
@@ -584,28 +616,20 @@ watch(
   { deep: true, immediate: true }
 );
 
-async function populateWithActions(value: TableItemType[]): Promise<TableItemType[]> {
-  const populatedItems = [];
+function isSelected(item: TableItemType) {
+  return selection.value.indexOf(item) > -1;
+}
 
-  if (value && typeof value === "object") {
-    if (props.itemActionBuilder && typeof props.itemActionBuilder === "function") {
-      for (let index = 0; index < value.length; index++) {
-        const element = value[index] as Record<string, unknown>;
-
-        if (!("actions" in element && element.actions))
-          populatedItems.push({
-            actions: await calculateActions(element),
-            ...element,
-          });
-      }
-
-      return populatedItems;
-    } else {
-      return props.items;
-    }
+function rowCheckbox(item: TableItemType) {
+  const clear = item;
+  const index = selection.value.indexOf(clear);
+  if (index > -1) {
+    selection.value = selection.value.filter((x) => x !== clear);
   } else {
-    return props.items;
+    selection.value.push(clear);
   }
+
+  emit("selectionChanged", selection.value);
 }
 
 function setTooltipRefs(el: Element, id: string) {
@@ -624,17 +648,6 @@ function setActionToggleRefs(el: Element, id: string) {
       actionToggleRefs.value.push({ element: el, id });
     }
   }
-}
-
-function processHeaderCheckbox() {
-  const currentState = Object.values(checkboxes.value).every((value) => value);
-  Object.keys(checkboxes.value).forEach((key) => (checkboxes.value[key] = !currentState));
-  emit("selectionChanged", checkboxes.value);
-}
-
-function processCheckbox(id: string, state: boolean) {
-  checkboxes.value[id] = state;
-  emit("selectionChanged", checkboxes.value);
 }
 
 function showActions(item: TableItem, index: string) {
@@ -661,9 +674,16 @@ function showActions(item: TableItem, index: string) {
   }
 }
 
-async function calculateActions(item: TableItem) {
+async function calculateActions(items: TableItemType[]) {
   if (typeof props.itemActionBuilder === "function") {
-    return await props.itemActionBuilder(item);
+    let populatedItems = [];
+    for (let index = 0; index < items.length; index++) {
+      if (typeof items[index] === "object") {
+        const elementWithActions = await props.itemActionBuilder(items[index] as TableItem);
+        populatedItems.push(elementWithActions);
+      }
+    }
+    itemActions.value = populatedItems;
   }
 }
 
@@ -690,15 +710,15 @@ function handleMouseDown(e: MouseEvent, item: ITableColumns) {
 }
 
 function bindColumnResizeEvents() {
-  if (!columnResizeListener.value) {
-    columnResizeListener.value = document.addEventListener("mousemove", (event: MouseEvent) => {
+  if (!columnResizeListener) {
+    columnResizeListener = document.addEventListener("mousemove", (event: MouseEvent) => {
       if (columnResizing.value) {
         onColumnResize(event);
       }
     });
   }
-  if (!columnResizeEndListener.value) {
-    columnResizeEndListener.value = document.addEventListener("mouseup", () => {
+  if (!columnResizeEndListener) {
+    columnResizeEndListener = document.addEventListener("mouseup", () => {
       if (columnResizing.value) {
         columnResizing.value = false;
         onColumnResizeEnd();
@@ -708,13 +728,13 @@ function bindColumnResizeEvents() {
 }
 
 function unbindColumnResizeEvents() {
-  if (columnResizeListener.value) {
-    document.removeEventListener("document", columnResizeListener.value);
-    columnResizeListener.value = null;
+  if (columnResizeListener) {
+    document.removeEventListener("document", columnResizeListener);
+    columnResizeListener = null;
   }
-  if (columnResizeEndListener.value) {
-    document.removeEventListener("document", columnResizeEndListener.value);
-    columnResizeEndListener.value = null;
+  if (columnResizeEndListener) {
+    document.removeEventListener("document", columnResizeEndListener);
+    columnResizeEndListener = null;
   }
 }
 
@@ -784,6 +804,7 @@ function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
   }
 
   draggedColumn.value = item;
+  draggedElement.value = event.target as HTMLElement
   event.dataTransfer.setData("text", "reorder");
 }
 
@@ -807,16 +828,25 @@ function onColumnHeaderDragOver(event: DragEvent) {
 
   if (props.reorderableColumns && draggedColumn.value && dropHeader) {
     event.preventDefault();
+    let containerOffset = getOffset(table.value as HTMLElement);
     let dropHeaderOffset = getOffset(dropHeader);
 
-    if (draggedColumn.value !== dropHeader) {
+    if (draggedElement.value !== dropHeader) {
+      let targetLeft = dropHeaderOffset.left - containerOffset.left;
       let columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
 
+      reorderRef.value.style.top = dropHeaderOffset.top - getOffset(tableRef.value).top + "px";
+
       if (event.pageX > columnCenter) {
+        reorderRef.value.style.left = targetLeft + dropHeader.offsetWidth + "px";
+
         dropPosition.value = 1;
       } else {
+        reorderRef.value.style.left = targetLeft + "px";
         dropPosition.value = -1;
       }
+
+      reorderRef.value.style.display = "block";
     }
   }
 }
@@ -824,6 +854,8 @@ function onColumnHeaderDragOver(event: DragEvent) {
 function onColumnHeaderDragLeave(event: DragEvent) {
   if (props.reorderableColumns && draggedColumn.value) {
     event.preventDefault();
+
+    reorderRef.value.style.display = "none";
   }
 }
 
@@ -852,7 +884,8 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
       }
     }
 
-    draggedColumn.value.draggable = false;
+    reorderRef.value.style.display = "none";
+    draggedElement.value.draggable = false;
     draggedColumn.value = null;
     dropPosition.value = null;
   }
@@ -914,25 +947,45 @@ function onRowMouseDown(event: MouseEvent & { currentTarget?: { draggable: boole
 }
 
 function onRowDragStart(event: DragEvent, item: TableItem | string) {
+  if (!props.reorderableRows) {
+    return;
+  }
   rowDragged.value = true;
   draggedRow.value = item;
-  draggedRowIndex.value = calculatedItems.value.indexOf(item);
+  draggedRowIndex.value = props.items.indexOf(item);
   event.dataTransfer.setData("text", "row-reorder");
 }
 
 function onRowDragOver(event: DragEvent, item: TableItem | string) {
-  const index = calculatedItems.value.indexOf(item);
+  if (!props.reorderableRows) {
+    return;
+  }
+  const index = props.items.indexOf(item);
 
   if (rowDragged.value && draggedRow.value !== item) {
-    let rowElement = event.currentTarget;
-    let rowY = getOffset(rowElement as HTMLElement).top;
+    let rowElement = event.currentTarget as HTMLElement;
+    let rowY = getOffset(rowElement).top;
     let pageY = event.pageY;
-    let rowMidY = rowY + (rowElement as HTMLElement).offsetHeight / 2;
+    let rowMidY = rowY + rowElement.offsetHeight / 2;
+    let previousRowElement = rowElement.previousElementSibling;
 
     if (pageY < rowMidY) {
+      rowElement.classList.remove("vc-table__drag-row-bottom");
       droppedRowIndex.value = index;
+
+      if (previousRowElement) {
+        previousRowElement.classList.add("vc-table__drag-row-bottom");
+      } else {
+        rowElement.classList.add("vc-table__drag-row-top");
+      }
     } else {
+      if (previousRowElement) {
+        previousRowElement.classList.remove("vc-table__drag-row-bottom");
+      } else {
+        rowElement.classList.add("vc-table__drag-row-top");
+      }
       droppedRowIndex.value = index + 1;
+      rowElement.classList.add("vc-table__drag-row-bottom");
     }
 
     event.preventDefault();
@@ -941,6 +994,16 @@ function onRowDragOver(event: DragEvent, item: TableItem | string) {
 
 function onRowDragLeave(event: DragEvent) {
   event.preventDefault();
+
+  let rowElement = event.currentTarget as HTMLElement;
+  let previousRowElement = rowElement.previousElementSibling;
+
+  if (previousRowElement) {
+    previousRowElement.classList.remove("vc-table__drag-row-bottom");
+  }
+
+  rowElement.classList.remove("vc-table__drag-row-top");
+  rowElement.classList.remove("vc-table__drag-row-bottom");
 }
 
 function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean } }) {
@@ -950,7 +1013,7 @@ function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean 
   event.currentTarget.draggable = false;
 }
 
-function onRowDrop(event) {
+function onRowDrop(event: DragEvent) {
   if (droppedRowIndex.value != null) {
     let dropIndex =
       draggedRowIndex.value > droppedRowIndex.value
@@ -959,7 +1022,7 @@ function onRowDrop(event) {
         ? 0
         : droppedRowIndex.value - 1;
 
-    let processedItems = [...calculatedItems.value];
+    let processedItems = [...props.items];
 
     reorderArray(processedItems, draggedRowIndex.value, dropIndex);
 
@@ -972,12 +1035,16 @@ function onRowDrop(event) {
 
   // cleanup
   onRowDragLeave(event);
-  onRowDragEnd(event);
+  onRowDragEnd(event as DragEvent & { currentTarget?: { draggable: boolean } });
   event.preventDefault();
 }
 </script>
 
 <style lang="scss">
+:root {
+  --row-drag-color: #41afe6;
+}
+
 $variants: (
   danger: #ff4a4a,
   success: #87b563,
@@ -1021,10 +1088,6 @@ $variants: (
       top: -5px;
     }
 
-    // &-row:hover .vc-table__body-actions-container {
-    //   @apply tw-flex #{!important};
-    // }
-
     &-actions-item {
       @each $name, $variant in $variants {
         &_#{$name} {
@@ -1049,6 +1112,14 @@ $variants: (
     &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
       @apply tw-top-[-5px];
     }
+  }
+
+  &__drag-row-bottom {
+    box-shadow: inset 0 -2px 0 0 var(--row-drag-color);
+  }
+
+  &__drag-row-top {
+    box-shadow: inset 0 2px 0 0 var(--row-drag-color);
   }
 }
 </style>

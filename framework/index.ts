@@ -3,7 +3,6 @@ import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
-import draggable from "vuedraggable/src/vuedraggable";
 import { i18n } from "./core/plugins";
 import { default as SharedModule } from "./shared";
 
@@ -18,7 +17,6 @@ export default {
 
     // Install libraries
     app.use(Vue3TouchEvents);
-    app.component("draggable", draggable);
 
     // Register exported components
     Object.entries(components).forEach(([name, component]) => {

@@ -33,7 +33,7 @@
 <script lang="ts" setup>
 import { computed, onBeforeUpdate, ref } from "vue";
 import { useRoute } from "vue-router";
-import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "./../../../../shared";
+import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "./../../../../../shared";
 
 export interface Props {
   blades: IBladeContainer[];
@@ -64,7 +64,7 @@ onBeforeUpdate(() => {
 });
 
 const setBladesRef = (el: IBladeElement) => {
-  if (el && Object.keys(el).length) {
+  if (el && el !== null) {
     bladesRefs.value.push(el);
   }
 };

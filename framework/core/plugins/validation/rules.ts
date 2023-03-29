@@ -1,44 +1,87 @@
 import { defineRule } from "vee-validate";
-import AllRules, * as veeValidate from "@vee-validate/rules";
+import AllRules from "@vee-validate/rules";
 
 Object.keys(AllRules).forEach((rule) => {
   defineRule(rule, AllRules[rule]);
 });
 
-/** @deprecated use `required` from `@vee-validate/rules` */
-export const required = veeValidate.required;
+/**
+ * Check if an image dimension larger than a given size.
+ */
+export const mindimensions = (images: HTMLInputElement, [width, height]: [string | number, string | number]) => {
+  // The field is empty so it should pass
+  if (!images?.files || !images.files?.length) {
+    return true;
+  }
 
-/** @deprecated use `min` from `@vee-validate/rules` */
-export const min = veeValidate.min;
+  const validateImage = (file: File, width: string | number, height: string | number) => {
+    const URL = window.URL || window.webkitURL;
+    return new Promise((resolve) => {
+      const image = new Image();
+      image.onerror = () => resolve(false);
+      image.onload = () => {
+        const isValid = image.width >= Number(width) && image.height >= Number(height);
+        if (isValid) {
+          resolve(true);
+        } else {
+          resolve(`Image dimensions must be greater than ${height}*${width}`);
+        }
+      };
 
-/** @deprecated use `max` from `@vee-validate/rules` */
-export const max = veeValidate.required;
+      image.src = URL.createObjectURL(file);
+    });
+  };
+  const list = [];
+  const fileList = images.files;
+  for (let i = 0; i < fileList.length; i++) {
+    if (!/\.(jpg|svg|jpeg|png|bmp|gif)$/i.test(fileList[i].name)) {
+      return Promise.resolve("Not image file");
+    }
 
-/** @deprecated use `numeric` from `@vee-validate/rules` */
-export const numeric = veeValidate.numeric;
-
-/** @deprecated use `email` from `@vee-validate/rules` */
-export const email = veeValidate.email;
-
-/** @deprecated use `regex` from `@vee-validate/rules` */
-export const regex = veeValidate.regex;
-
-/** @deprecated use `min_value` from `@vee-validate/rules` */
-export const min_value = veeValidate.min_value;
-
-/** @deprecated use `max_value` from `@vee-validate/rules` */
-export const max_value = veeValidate.max_value;
-
-/** @deprecated use `size` from `@vee-validate/rules` */
-export const size = veeValidate.size;
-
-/** @deprecated 'maxdimensions' validation rule is deprecated, use 'dimensions' validation rule instead */
-export const maxdimensions = (images: HTMLInputElement, [width, height]: [string | number, string | number]) => {
-  console.warn("'maxdimensions' validation rule is deprecated, use 'dimensions' validation rule instead");
-  return veeValidate.dimensions(images, [width, height]);
+    list.push(fileList[i]);
+  }
+  return Promise.all(list.map((file) => validateImage(file, width, height))).then((res) => {
+    const isInvalid = res.find((x) => x !== true);
+    if (isInvalid === false || typeof isInvalid === "string") {
+      return isInvalid;
+    } else {
+      return true;
+    }
+  });
 };
 
-defineRule("maxdimensions", maxdimensions);
+defineRule("mindimensions", mindimensions);
+
+/**
+ * Check if image not exceeding a given size in kilobytes
+ */
+export const fileWeight = (file: HTMLInputElement, [size]: [number]) => {
+  if (!file?.files || !file.files?.length) {
+    return true;
+  }
+
+  const maxSize = size * 1000;
+
+  const fileSizeChecker = (file: File) => {
+    return file.size > maxSize;
+  };
+
+  const list = [];
+  for (let i = 0; i < file.files.length; i++) {
+    list.push(file.files[i]);
+  }
+
+  const checker = list.map((x) => fileSizeChecker(x));
+
+  const isInvalid = checker.find((x) => x === true);
+  if (isInvalid) {
+    return `File size must be maximum ${size} kb`;
+  } else {
+    return true;
+  }
+};
+
+defineRule("fileWeight", fileWeight);
 
 const compare = (
   value: string,

@@ -1,10 +1,10 @@
-import { createModule } from "../../core/plugins/modularity";
+import { createModule } from "../../../core/plugins/modularity";
 import * as components from "./components";
 
 // Declare globally
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
-    VcAppSwitcher: (typeof components)["VcAppSwitcher"];
+    VcBladeNavigation: (typeof components)["VcBladeNavigation"];
   }
 }
 
@@ -12,3 +12,4 @@ export default createModule(components);
 
 export * from "./components";
 export * from "./composables";
+export * from "./types";

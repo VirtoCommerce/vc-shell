@@ -10,7 +10,7 @@
   >
     <VcImage
       aspect="1x1"
-      :src="image.url"
+      :src="image['url']"
       background="contain"
     ></VcImage>
     <div class="vc-gallery-item__overlay">
@@ -23,9 +23,9 @@
         ></VcIcon>
         <div
           class="tw-truncate"
-          :title="image.name"
+          :title="image['name']"
         >
-          {{ image.name }}
+          {{ image["name"] }}
         </div>
       </div>
       <div class="tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around">
@@ -73,7 +73,7 @@ import { clickOutside as vClickOutside } from "./../../../../../../core/directiv
 import { IImage } from "./../../../../../../core/types";
 
 export interface Props {
-  image?: IImage | undefined;
+  image: IImage;
   readonly?: boolean | undefined;
   actions?:
     | {
@@ -87,12 +87,6 @@ export interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  image: () => ({
-    sortOrder: undefined,
-    title: undefined,
-    name: undefined,
-    url: undefined,
-  }),
   readonly: false,
   actions: () => ({
     name: undefined,
@@ -126,7 +120,7 @@ function onClose() {
   }
 
   &__move {
-    @apply tw-text-[#a1c0d4] tw-cursor-pointer tw-mr-2;
+    @apply tw-text-[#a1c0d4] tw-cursor-move tw-mr-2;
   }
 
   &__button {

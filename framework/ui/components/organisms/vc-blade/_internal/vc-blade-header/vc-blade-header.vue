@@ -50,7 +50,7 @@
         </div>
         <div
           v-else
-          class="vc-blade-header__button"
+          class="tw-text-[color:var(--blade-header-button-color)] tw-ml-4 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)]"
           @click="onExpand"
         >
           <VcIcon
@@ -81,11 +81,7 @@ export interface Props {
   subtitle?: string | undefined;
   icon?: string | undefined;
 }
-const props = withDefaults(defineProps<Props>(), {
-  expandable: false,
-  expanded: false,
-  closable: false,
-});
+const props = defineProps<Props>();
 
 const emit = defineEmits(["close", "expand", "collapse"]);
 

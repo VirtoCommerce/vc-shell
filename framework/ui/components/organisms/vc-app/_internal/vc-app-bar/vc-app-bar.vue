@@ -26,13 +26,14 @@
       <!-- Show blades name when at least one blade is opened -->
       <div
         v-if="blades.length === 1"
-        class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header"
+        class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header tw-ml-2"
       >
         {{ blades[0].title }}
       </div>
 
       <!-- Show back link when more than one blade is opened -->
       <VcLink
+        class="tw-ml-3"
         v-else-if="blades.length > 1"
         @click="$emit('backlink:click')"
       >
@@ -45,7 +46,7 @@
     </template>
 
     <!-- Additional spacer -->
-    <div class="tw-grow tw-basis-0 tw-basis-0"></div>
+    <div class="tw-grow tw-basis-0"></div>
 
     <!-- Toolbar container -->
     <div class="tw-flex tw-h-full tw-box-border">

@@ -9,44 +9,45 @@
       {{ label }}
     </VcLabel>
 
-    <template v-if="(images && images.length) || !disabled">
-      <div class="tw-flex tw-flex-wrap">
-        <draggable
-          :list="images"
+    <template v-if="(defaultImages && defaultImages.length) || !disabled">
+      <div class="tw-flex tw-flex-wrap tw-relative">
+        <div
           class="tw-flex tw-flex-wrap tw-w-full"
-          tag="transition-group"
-          v-bind="dragOptions"
-          @change="updateOrder"
-          :component-data="{
-            tag: 'div',
-          }"
+          ref="galleryRef"
         >
-          <template #item="{ element, index }">
-            <VcGalleryItem
-              class="tw-m-2"
-              :key="element.sortOrder"
-              :image="element"
-              :readonly="disabled"
-              @preview="onPreviewClick(index)"
-              @edit="$emit('item:edit', $event)"
-              @remove="$emit('item:remove', $event)"
-              :actions="itemActions"
-              :disableDrag="disableDrag"
-            ></VcGalleryItem>
-          </template>
-          <template #footer>
-            <VcFileUpload
-              v-if="!disabled && !hideAfterUpload"
-              class="tw-m-2"
-              :icon="uploadIcon"
-              @upload="onUpload"
-              :variant="variant"
-              :multiple="multiple"
-              :rules="rules"
-              :name="name"
-            ></VcFileUpload>
-          </template>
-        </draggable>
+          <VcGalleryItem
+            class="tw-m-2 vc-gallery__item"
+            v-for="(image, i) in defaultImages"
+            :key="`image_${i}`"
+            :image="image"
+            :readonly="disabled"
+            @preview="onPreviewClick(i)"
+            @edit="$emit('item:edit', $event)"
+            @remove="$emit('item:remove', $event)"
+            :actions="itemActions"
+            :disableDrag="disableDrag"
+            @mousedown="onItemMouseDown"
+            @dragstart="onItemDragStart($event, image)"
+            @dragover="onItemDragOver"
+            @dragleave="onItemDragLeave"
+            @drop="onItemDrop($event, image)"
+            @touchstart="onItemMouseDown"
+          ></VcGalleryItem>
+          <VcFileUpload
+            v-if="!disabled && !hideAfterUpload"
+            class="tw-m-2"
+            :icon="uploadIcon"
+            @upload="onUpload"
+            :variant="variant"
+            :multiple="multiple"
+            :rules="rules"
+            :name="name"
+          ></VcFileUpload>
+        </div>
+        <div
+          ref="reorderGalleryRef"
+          class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
+        ></div>
       </div>
     </template>
     <div
@@ -66,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref, watch } from "vue";
 import { IImage } from "../../../../core/types";
 import { VcLabel, VcFileUpload } from "./../../../components";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
@@ -99,7 +100,6 @@ export interface Emits {
   (event: "sort", sorted: IImage[]): void;
   (event: "item:edit", image: IImage): void;
   (event: "item:remove", image: IImage): void;
-  (event: "item:move", image: IImage): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -118,15 +118,22 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const preview = ref(false);
-const previewImageIndex = ref();
-const dragOptions = computed(() => {
-  return {
-    animation: 200,
-    group: "description",
-    disabled: props.disableDrag,
-    ghostClass: "ghost",
-  };
-});
+const previewImageIndex = ref<number>();
+
+const defaultImages = ref<IImage[]>([]);
+const draggedItem = ref<IImage>();
+const draggedElement = ref<HTMLElement>();
+const galleryRef = ref<HTMLElement>();
+const reorderGalleryRef = ref<HTMLElement>();
+const dropPosition = ref<number>();
+
+watch(
+  () => props.images,
+  (newVal) => {
+    defaultImages.value = newVal;
+  },
+  { deep: true, immediate: true }
+);
 
 const onUpload = (files: FileList) => {
   if (files && files.length) {
@@ -140,11 +147,119 @@ const onPreviewClick = (index: number) => {
 };
 
 const updateOrder = () => {
-  const images = props.images;
+  const images = defaultImages.value;
   const sortedImgs = images.map((item, index) => {
     item.sortOrder = index;
     return item;
   });
-  emit("sort", ref(sortedImgs).value);
+
+  emit("sort", sortedImgs);
 };
+
+function onItemMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
+  if (!props.disableDrag) {
+    event.currentTarget.draggable = true;
+    return;
+  }
+}
+
+function onItemDragStart(event: DragEvent, item: IImage) {
+  draggedItem.value = item;
+  draggedElement.value = event.target as HTMLElement;
+  event.dataTransfer.setData("text", "gallery_reorder");
+}
+
+function onItemDragOver(event: DragEvent) {
+  let dropItem = findParentElement(event.target as HTMLElement);
+
+  if (!props.disableDrag && draggedItem.value && dropItem) {
+    event.preventDefault();
+
+    let containerOffset = galleryRef.value.getBoundingClientRect();
+    let dropItemOffset = dropItem.getBoundingClientRect();
+
+    if (draggedElement.value !== dropItem) {
+      let elementStyle = getComputedStyle(dropItem);
+      const dropItemOffsetWidth = dropItem.offsetWidth + parseFloat(elementStyle.marginLeft);
+      let targetLeft = dropItemOffset.left - containerOffset.left;
+      let columnCenter = dropItemOffset.left + dropItemOffsetWidth / 2;
+
+      reorderGalleryRef.value.style.top = dropItemOffset.top - containerOffset.top + "px";
+      reorderGalleryRef.value.style.height = dropItem.offsetHeight + "px";
+
+      if (event.pageX > columnCenter) {
+        reorderGalleryRef.value.style.left = targetLeft + dropItemOffsetWidth + "px";
+        dropPosition.value = 1;
+      } else {
+        reorderGalleryRef.value.style.left = targetLeft - parseFloat(elementStyle.marginLeft) + "px";
+        dropPosition.value = -1;
+      }
+
+      reorderGalleryRef.value.style.display = "block";
+    }
+  }
+}
+
+function onItemDragLeave(event: DragEvent) {
+  if (!props.disableDrag && draggedItem.value) {
+    event.preventDefault();
+
+    reorderGalleryRef.value.style.display = "none";
+  }
+}
+
+function onItemDrop(event: DragEvent, item: IImage) {
+  event.preventDefault();
+
+  if (draggedItem.value) {
+    let dragIndex = defaultImages.value.indexOf(draggedItem.value);
+    let dropIndex = defaultImages.value.indexOf(item);
+
+    let allowDrop = dragIndex !== dropIndex;
+
+    if (
+      allowDrop &&
+      ((dropIndex - dragIndex === 1 && dropPosition.value === -1) ||
+        (dropIndex - dragIndex === -1 && dropPosition.value === 1))
+    ) {
+      allowDrop = false;
+    }
+
+    if (allowDrop) {
+      reorderArray(defaultImages.value, dragIndex, dropIndex);
+
+      updateOrder();
+    }
+
+    reorderGalleryRef.value.style.display = "none";
+    draggedElement.value.draggable = false;
+    draggedItem.value = null;
+    dropPosition.value = null;
+  }
+}
+
+function reorderArray(value: unknown[], from: number, to: number) {
+  if (value && from !== to) {
+    if (to >= value.length) {
+      to %= value.length;
+      from %= value.length;
+    }
+
+    value.splice(to, 0, value.splice(from, 1)[0]);
+  }
+}
+
+function findParentElement(element: HTMLElement) {
+  if (element.classList.contains("vc-gallery__item")) {
+    return element;
+  } else {
+    let parent = element.parentElement;
+
+    while (!parent.classList.contains("vc-gallery__item")) {
+      parent = parent.parentElement;
+      if (!parent) break;
+    }
+    return parent;
+  }
+}
 </script>

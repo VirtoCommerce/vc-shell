@@ -1,0 +1,28 @@
+{
+  "ASSETS_MANAGER": {
+    "TITLE": "Assets",
+    "TOOLBAR": {
+      "SAVE":"Save",
+      "REFRESH":"Resfresh",
+      "ADD": "Add",
+      "DELETE": "Delete selected"
+    },
+    "EMPTY": {
+      "NO_ASSETS":"Drag & drop assets here or click 'Upload' button",
+      "UPLOAD": "Upload"
+    },
+    "TABLE":{
+      "HEADER":{
+        "IMAGE": "Img",
+        "NAME":"Name",
+        "SIZE":"Size",
+        "SORT_ORDER":"Sort order",
+        "CREATED_DATE":"Created date"
+      },
+      "ACTIONS":{
+        "DELETE":"Delete",
+        "EDIT": "Edit"
+      }
+    }
+  }
+}

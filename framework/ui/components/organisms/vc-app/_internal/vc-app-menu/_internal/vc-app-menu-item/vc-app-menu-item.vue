@@ -4,10 +4,10 @@
       <router-link
         :to="component.url"
         custom
-        v-slot="{ isActive, navigate }"
+        v-slot="{ isExactActive, navigate }"
       >
         <vc-app-menu-link
-          :isActive="isActive"
+          :isActive="isExactActive"
           :children="children"
           :sticky="sticky"
           :icon="icon as string"
@@ -23,7 +23,6 @@
         :icon="icon as string"
         :title="title"
         @onClick="onMenuItemClick"
-        :isActive="isHomePage"
       />
 
       <!-- Nested menu items -->
@@ -61,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
 import { IBladeToolbar, IMenuItems } from "./../../../../../../../../core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { NavigationFailure, useRoute } from "vue-router";
@@ -108,8 +107,6 @@ const route = useRoute();
 const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);
-
-const isHomePage = computed(() => route.path === "/");
 
 onMounted(() => {
   if (props.children && props.children.length && props.children.find((x) => x.component?.url === route?.path)) {

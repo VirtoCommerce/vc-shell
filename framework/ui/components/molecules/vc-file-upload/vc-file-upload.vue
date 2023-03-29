@@ -109,6 +109,7 @@ function toggleUploader() {
 }
 
 function onDrop(event: DragEvent) {
+  dragLeave();
   const fileList = event.dataTransfer?.files;
 
   if (fileList && fileList.length) {

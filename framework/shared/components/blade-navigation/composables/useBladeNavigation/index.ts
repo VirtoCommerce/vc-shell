@@ -1,8 +1,8 @@
 import { computed, ref, unref, watch, Ref } from "vue";
 import { isEqual } from "lodash-es";
 import { useRouter, useRoute, NavigationFailure } from "vue-router";
-import { usePermissions } from "./../../../../core/composables";
-import { ExtendedComponent, IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "./../../../../shared";
+import { usePermissions } from "../../../../../core/composables";
+import { ExtendedComponent, IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs } from "../../../..";
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;
@@ -52,7 +52,7 @@ export default (): IUseBladeNavigation => {
     index?: number,
     navigationCb?: () => Promise<void | NavigationFailure>
   ) {
-    console.debug(`openBlade(${1}) called.`);
+    console.debug(`openBlade called.`);
 
     const parent = unref(parentBlade);
     const child = unref(blade);
@@ -91,8 +91,9 @@ export default (): IUseBladeNavigation => {
   }
 
   async function closeBlade(index: number) {
-    if (index < bladesRefs.value.length) {
-      const children = bladesRefs.value.slice(index).reverse();
+    const refsIndex = index + 1;
+    if (refsIndex < bladesRefs.value.length) {
+      const children = bladesRefs.value.slice(refsIndex).reverse();
 
       isPrevented.value = false;
       for (let i = 0; i < children.length; i++) {

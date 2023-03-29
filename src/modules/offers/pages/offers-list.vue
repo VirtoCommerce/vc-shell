@@ -15,7 +15,7 @@
       :notfound="notfound"
       class="tw-grow tw-basis-0"
       :multiselect="true"
-      :columns="columns"
+      :columns="tableColumns"
       :items="offers"
       :itemActionBuilder="actionBuilder"
       :sort="sort"
@@ -326,14 +326,6 @@ const notfound = reactive({
       keyword: "",
     });
   },
-});
-
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
 });
 
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));

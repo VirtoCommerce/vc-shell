@@ -13,7 +13,7 @@
       :expanded="expanded"
       :empty="empty"
       :loading="loading"
-      :columns="columns"
+      :columns="tableColumns"
       :items="orders"
       :itemActionBuilder="actionBuilder"
       :totalCount="totalCount"
@@ -50,7 +50,7 @@
                   class="tw-mb-2"
                   v-for="status in PaymentStatus"
                   :key="status"
-                  :modelValue="filter.status === status"
+                  :modelValue="filter?.status === status"
                   @update:modelValue="filter.status = $event ? status : undefined"
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS." + status.toUpperCase()) }}
                 </VcCheckbox>
@@ -205,15 +205,15 @@ const emit = defineEmits<Emits>();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n();
-const filter = ref<{ status: string }>();
+const filter = ref<{ status: string }>({status: undefined});
 const appliedFilter = ref({});
 const searchValue = ref();
 const selectedItemId = ref();
 const selectedOrdersIds = ref([]);
 const sort = ref("createdDate:DESC");
 const applyFiltersDisable = computed(() => {
-  const activeFilters = Object.values(filter.value).filter((x) => x !== undefined);
-  return !activeFilters.length;
+  const activeFilters = filter.value && Object.values(filter.value).filter((x) => x !== undefined);
+  return !(activeFilters && activeFilters.length);
 });
 const applyFiltersReset = computed(() => {
   const activeFilters = Object.values(appliedFilter.value).filter((x) => x !== undefined);
@@ -293,18 +293,12 @@ const tableColumns = ref<ITableColumns[]>([
   },
 ]);
 
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
-
 const empty = reactive({
   image: emptyImage,
   text: computed(() => t("ORDERS.PAGES.EMPTY")),
 });
+
+const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
@@ -446,7 +440,9 @@ const onSelectionChanged = (items: CustomerOrder[]) => {
   selectedOrdersIds.value = items.map((item) => item.id);
 };
 
-const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
+
+
+
 
 function setFilterDate(key: string, value: string) {
   const date = moment(value).toDate();
@@ -458,7 +454,7 @@ function setFilterDate(key: string, value: string) {
 }
 
 function getFilterDate(key: string) {
-  const date = filter.value[key] as Date;
+  const date = filter.value && filter.value[key] as Date;
   if (date) {
     return moment(date).format("YYYY-MM-DD");
   }

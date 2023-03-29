@@ -235,6 +235,9 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("SHELL.MENU.DASHBOARD")),
     icon: "fas fa-home",
     isVisible: true,
+    component: {
+      url: "/",
+    },
     clickHandler(app: IBladeElement) {
       app.openDashboard();
     },

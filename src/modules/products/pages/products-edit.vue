@@ -437,7 +437,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        (isDisabled.value && modified.value) ||
+        (isDisabled.value || !modified.value) ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),

@@ -133,6 +133,10 @@
           "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?",
           "DELETE_CONFIRMATION": "Are you sure you want to delete this image?",
           "DELETE_PRODUCT": "Are you sure you want to delete this product?"
+        },
+        "WIDGETS": {
+            "OFFERS":"Offers",
+            "ASSETS":"Assets"
         }
       }
     }

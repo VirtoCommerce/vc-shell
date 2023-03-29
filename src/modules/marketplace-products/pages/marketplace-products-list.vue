@@ -238,16 +238,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       await exportCategories();
     },
-  },
-  {
-    id: "batchDelete",
-    title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.BULK_DELETE")),
-    icon: "fas fa-trash",
-    isVisible: false,
-    async clickHandler() {
-      console.debug("Delete selected products");
-    },
-  },
+  }
 ]);
 
 const tableColumns = ref<ITableColumns[]>([

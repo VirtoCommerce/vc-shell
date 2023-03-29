@@ -15,7 +15,7 @@
       :notfound="notfound"
       class="tw-grow tw-basis-0"
       :multiselect="true"
-      :columns="columns"
+      :columns="tableColumns"
       :items="offers"
       :itemActionBuilder="actionBuilder"
       :sort="sort"
@@ -229,6 +229,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       ) {
         emit("close:children");
         await deleteOffers({ ids: selectedOfferIds.value });
+        if (searchQuery.value.skip >= searchQuery.value.take) {
+          searchQuery.value.skip -= searchQuery.value.take;
+        }
         await reload();
       }
     },
@@ -325,14 +328,6 @@ const notfound = reactive({
   },
 });
 
-const columns = computed(() => {
-  if (props.expanded) {
-    return tableColumns.value;
-  } else {
-    return tableColumns.value.filter((item) => item.alwaysVisible === true);
-  }
-});
-
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
@@ -391,10 +386,8 @@ const onPaginationClick = async (page: number) => {
   });
 };
 
-const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
-  selectedOfferIds.value = Object.entries(checkboxes)
-    .filter(([id, isChecked]) => isChecked)
-    .map(([id, isChecked]) => id);
+const onSelectionChanged = (items: IOffer[]) => {
+  selectedOfferIds.value = items.map((item) => item.id);
 };
 
 const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[] => {

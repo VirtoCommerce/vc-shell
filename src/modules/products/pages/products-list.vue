@@ -323,6 +323,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       ) {
         emit("close:children");
         await deleteProducts(selectedProductIds.value);
+        if (searchQuery.value.skip >= searchQuery.value.take) {
+          searchQuery.value.skip -= searchQuery.value.take;
+        }
         await reload();
       }
     },
@@ -428,10 +431,8 @@ const onPaginationClick = async (page: number) => {
   });
 };
 
-const onSelectionChanged = (checkboxes: { [key: string]: boolean }) => {
-  selectedProductIds.value = Object.entries(checkboxes)
-    .filter(([id, isChecked]) => isChecked)
-    .map(([id, isChecked]) => id);
+const onSelectionChanged = (items: ISellerProduct[]) => {
+  selectedProductIds.value = items.map((item) => item.id);
 };
 
 const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {

@@ -15,7 +15,7 @@
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
       <div
-        v-if="productDetails"
+        v-if="!productLoading"
         class="product-details__inner"
       >
         <div class="product-details__content">
@@ -93,6 +93,7 @@
                   :error="!!errors.length"
                   :error-message="errorMessage"
                   :clearable="false"
+                  :emit-value="false"
                 >
                   <template
                     v-for="item in ['option', 'selected-item']"
@@ -149,9 +150,10 @@
                     :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                     name="description"
                     rules="min:3|required"
+                    :modelValue="productDetails.description"
                     v-slot="{ field, errorMessage, handleChange }"
                   >
-                    <VcTextarea
+                    <VcEditor
                       v-bind="field"
                       class="tw-mb-4"
                       :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
@@ -162,7 +164,8 @@
                       required
                       :error-message="errorMessage"
                       @update:modelValue="handleChange"
-                    ></VcTextarea>
+                      :assets-folder="productData.id || productData.categoryId"
+                    ></VcEditor>
                   </Field>
 
                   <VcDynamicProperty
@@ -184,47 +187,31 @@
                 :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.ASSETS.TITLE')"
                 class="tw-my-3 tw-relative"
                 is-collapsable
-                :is-collapsed="restoreCollapsed('product_assets')"
-                @state:collapsed="handleCollapsed('product_assets', $event)"
-              >
-                <Field
-                  name="assets"
-                  rules=""
-                >
-                  <VcLoading :active="fileAssetUploading"></VcLoading>
-                  <div class="tw-p-2">
-                    <VcGallery
-                      :images="productDetails.assets"
-                      @upload="onAssetsUpload"
-                      @item:edit="onAssetsItemEdit"
-                      @item:remove="onAssetsItemRemove"
-                      :disabled="disabled"
-                      @sort="onAssetsSort"
-                      :multiple="true"
-                    ></VcGallery>
-                  </div>
-                </Field>
-              </VcCard>
-
-              <VcCard
-                v-if="productDetails.categoryId"
-                :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.IMAGES.TITLE')"
-                class="tw-my-3 tw-relative"
-                is-collapsable
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
                 <VcLoading :active="fileUploading"></VcLoading>
                 <div class="tw-p-2">
-                  <VcGallery
-                    :images="productDetails.images"
-                    @upload="onGalleryUpload"
-                    @item:edit="onGalleryItemEdit"
-                    @item:remove="onGalleryImageRemove"
-                    :disabled="disabled"
-                    @sort="onGallerySort"
-                    :multiple="true"
-                  ></VcGallery>
+                  <Field
+                    name="gallery"
+                    :modelValue="productDetails.images"
+                    v-slot="{ handleChange }"
+                  >
+                    <VcGallery
+                      :images="productDetails.images"
+                      @upload="onGalleryUpload"
+                      @item:edit="onGalleryItemEdit"
+                      @item:remove="onGalleryImageRemove"
+                      :disabled="disabled"
+                      @sort="
+                        (e) => {
+                          handleChange(e);
+                          editImages(e as Image[]);
+                        }
+                      "
+                      :multiple="true"
+                    ></VcGallery>
+                  </Field>
                 </div>
               </VcCard>
             </VcForm>
@@ -232,11 +219,19 @@
         </div>
         <div class="product-details__widgets">
           <VcWidget
-            icon="fas fa-file-alt"
-            title="Offers"
+            icon="fas fa-tags"
+            :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS')"
             :value="offersCount"
             :disabled="!(product as ISellerProduct).isPublished"
             @click="openOffers"
+          >
+          </VcWidget>
+          <VcWidget
+            icon="far fa-file"
+            :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
+            :value="assetsCount"
+            :disabled="!(product as ISellerProduct).isPublished"
+            @click="openAssets"
           >
           </VcWidget>
         </div>
@@ -255,15 +250,14 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-  useI18n,
   useUser,
-  min,
-  required,
   IParentCallArgs,
   IBladeEvent,
   IBladeToolbar,
   AssetsDetails,
+  AssetsManager,
 } from "@vc-shell/framework";
+import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -276,13 +270,14 @@ import {
   ISellerProduct,
   Category,
   Image,
+  IAsset,
+  Asset,
   Property,
   PropertyValue,
   PropertyDictionaryItem,
-  IAsset,
-  Asset,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
+import { min, required } from "@vee-validate/rules";
 
 export interface Props {
   expanded?: boolean;
@@ -292,10 +287,14 @@ export interface Props {
 
 export type IBladeOptions = IBladeEvent & {
   bladeOptions: {
-    editableAsset?: Image;
+    asset?: Image;
     images?: Image[];
     assets?: Asset[];
-    sortHandler?: (remove: boolean, localImage: IImage) => void;
+    assetEditHandler?: (localImage: IImage) => void;
+    assetsEditHandler?: (assets: Asset[]) => void;
+    assetsUploadHandler?: (files: FileList) => void;
+    assetsRemoveHandler?: (assets: Asset[]) => void;
+    assetRemoveHandler?: (localImage: IImage) => void;
     sellerProduct?: ISellerProduct;
   };
 };
@@ -339,9 +338,9 @@ const productLoading = ref(false);
 const fileUploading = ref(false);
 const fileAssetUploading = ref(false);
 let isOffersOpened = false;
+let isAssetsOpened = false;
 const categoryLoading = ref(false);
 const currentCategory = ref<Category>();
-let isGalleryChanged = false;
 
 const filterTypes = ["Category", "Variation"];
 
@@ -352,8 +351,10 @@ const product = computed(() => (props.param ? productData.value : productDetails
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
+
+const assetsCount = computed(() => productDetails.value && productDetails.value?.assets?.length);
 
 const validateGtin = [
   (value: string): string | boolean => {
@@ -444,7 +445,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        isDisabled.value ||
+        (isDisabled.value && !modified.value) ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
@@ -473,7 +474,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        isDisabled.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
+        !isValid.value || !(productData.value?.canBeModified && (productData.value?.hasStagedChanges || modified.value))
     ),
   },
   {
@@ -543,31 +544,41 @@ const onGalleryItemEdit = (item: Image) => {
   emit("open:blade", {
     component: shallowRef(AssetsDetails),
     bladeOptions: {
-      editableAsset: item,
+      asset: item,
       images: productDetails.value.images,
-      sortHandler: sortImage,
+      assetEditHandler: editImage,
+      assetRemoveHandler: removeImage,
     },
   });
 };
 
-function sortImage(remove = false, localImage: IImage) {
+function editImage(localImage: IImage) {
   const images = productDetails.value.images;
   const image = new Image(localImage);
   if (images.length) {
     const imageIndex = images.findIndex((img) => img.id === localImage.id);
 
-    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+    images[imageIndex] = image;
 
     editImages(images);
   }
 }
 
+function removeImage(localImage: IImage) {
+  if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+    const images = productDetails.value.images;
+    if (images.length) {
+      const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+      images.splice(imageIndex, 1);
+
+      editImages(images);
+    }
+  }
+}
+
 const editImages = (args: Image[]) => {
   productDetails.value.images = args;
-};
-
-const onGallerySort = (images: Image[]) => {
-  productDetails.value.images = images;
 };
 
 const onGalleryImageRemove = (image: Image) => {
@@ -604,6 +615,8 @@ const onAssetsUpload = async (files: FileList) => {
       if (response?.length) {
         const asset = new Asset(response[0]);
         asset.createdDate = new Date();
+        asset.size = files[i].size;
+
         if (productDetails.value.assets && productDetails.value.assets.length) {
           const lastAssetSortOrder = productDetails.value.assets[productDetails.value.assets.length - 1].sortOrder;
           asset.sortOrder = lastAssetSortOrder + 1;
@@ -611,7 +624,6 @@ const onAssetsUpload = async (files: FileList) => {
           asset.sortOrder = 0;
         }
         productDetails.value.assets.push(asset);
-        isGalleryChanged = true;
       }
     }
   } catch (e) {
@@ -623,48 +635,23 @@ const onAssetsUpload = async (files: FileList) => {
   files = null;
 };
 
-const onAssetsItemEdit = (item: Asset) => {
-  emit("open:blade", {
-    component: shallowRef(AssetsDetails),
-    bladeOptions: {
-      editableAsset: item,
-      assets: productDetails.value.assets,
-      sortHandler: sortAssets,
-    },
-  });
-};
-
-function sortAssets(remove = false, localAsset: IAsset) {
-  const assets = productDetails.value.assets;
-  const asset = new Asset(localAsset);
-  if (assets.length) {
-    const imageIndex = assets.findIndex((asst) => asst.id === localAsset.id);
-
-    remove ? assets.splice(imageIndex, 1) : (assets[imageIndex] = asset);
-
-    editAssets(assets);
-  }
-}
-
-const editAssets = (args: Asset[]) => {
-  productDetails.value.assets = args;
-};
-
-const onAssetsItemRemove = (asset: Asset) => {
+const onAssetsItemRemove = (assets: Asset[]) => {
   if (window.confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
-    const assetIndex = productDetails.value.assets.findIndex((asst) => {
-      if (asst.id && asset.id) {
-        return asst.id === asset.id;
-      } else {
-        return asst.url === asset.url;
-      }
+    assets.forEach((asset) => {
+      const assetIndex = productDetails.value.assets.findIndex((asst) => {
+        if (asst.id && asset.id) {
+          return asst.id === asset.id;
+        } else {
+          return asst.url === asset.url;
+        }
+      });
+      productDetails.value.assets.splice(assetIndex, 1);
     });
-    productDetails.value.assets.splice(assetIndex, 1);
   }
 };
 
-const onAssetsSort = (images: Image[]) => {
-  productDetails.value.images = images;
+const onAssetsEdit = (assets: Asset[]) => {
+  productDetails.value.assets = assets.map((item) => new Asset(item));
 };
 
 const setCategory = async (selectedCategory: Category) => {
@@ -703,6 +690,27 @@ async function openOffers() {
   }
 }
 
+async function openAssets() {
+  if (!isAssetsOpened) {
+    emit("open:blade", {
+      component: shallowRef(AssetsManager),
+      bladeOptions: {
+        assets: productDetails.value.assets,
+        assetsEditHandler: onAssetsEdit,
+        assetsUploadHandler: onAssetsUpload,
+        assetsRemoveHandler: onAssetsItemRemove,
+        disabled: disabled.value,
+      },
+      onOpen() {
+        isAssetsOpened = true;
+      },
+      onClose() {
+        isAssetsOpened = false;
+      },
+    });
+  }
+}
+
 async function onBeforeClose() {
   if (modified.value) {
     return confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
@@ -725,7 +733,7 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
 }
 
 function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary?: PropertyDictionaryItem[]) {
-  if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
+  if (value && typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
         const handledValue = handleDictionaryValue(property, item.valueId, dictionary);

@@ -617,7 +617,9 @@ const selectedScope = computed(() => {
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 
-const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt) || getDisplayValue.value(opt)));
+const innerOptionsValue = computed(() =>
+  innerValue.value.map((opt) => getOptionValue.value(opt) || getDisplayValue.value(opt))
+);
 
 const optionScope = computed(() => {
   return optionsTemp.value.map((opt, i) => {

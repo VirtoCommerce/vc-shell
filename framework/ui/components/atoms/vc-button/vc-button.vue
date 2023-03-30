@@ -150,7 +150,6 @@ $variants: primary, secondary, special, danger, widget;
     tw-shadow-[1px_4px_10px_rgba(197,206,214,0.24)]
     tw-rounded-[4px]
     tw-p-[15px]
-    tw-border-[color:var(--button-widget-background-color)]
     hover:tw-bg-[color:var(--button-widget-background-color-hover)]
     focus:tw-bg-[color:var(--button-widget-background-color-active)]
     focus:tw-border-[color:var(--button-widget-border-color-active)]

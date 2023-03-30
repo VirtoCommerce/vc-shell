@@ -46,7 +46,5 @@ module.exports = {
                 loadingProgress: "loadingProgress 1s linear infinite",
             }
         },
-    },
-
-  plugins: [require("@tailwindcss/line-clamp")],
+    }
 }

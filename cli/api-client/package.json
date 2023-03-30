@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/api-client-generator",
   "description": "Tool for API clients generation",
-  "version": "1.0.59",
+  "version": "1.0.60",
   "bin": "./dist/index.js",
   "files": [
     "dist",
@@ -11,7 +11,7 @@
     "build": "tsc -p src"
   },
   "devDependencies": {
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   },
   "dependencies": {
     "chalk": "^2.4.2",

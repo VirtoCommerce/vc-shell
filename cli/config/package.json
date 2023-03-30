@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.59",
+  "version": "1.0.60",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -11,7 +11,7 @@
     "build": "tsc -p src"
   },
   "devDependencies": {
-    "typescript": "^4.9.5",
+    "typescript": "^5.0.2",
     "vite-plugin-mkcert": "^1.10.1"
   },
   "publishConfig": {

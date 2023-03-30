@@ -147,11 +147,31 @@ function isQuillEmpty(value: string) {
   --editor-border-color: #d3dbe9;
   --editor-border-color-error: #f14e4e;
   --editor-placeholder-color: #a5a5a5;
+
+  --editor-scroll-width: 8px;
+  --editor-scroll-color-hover: #cce4f5;
 }
 
 .vc-editor {
   &_error .quill-editor {
     @apply tw-border tw-border-solid tw-border-[color:var(--editor-border-color-error)] #{!important};
+  }
+
+  .quill-editor .ql-editor {
+    &::-webkit-scrollbar {
+      @apply tw-w-[var(--editor-scroll-width)] tw-bg-transparent;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply tw-bg-transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply tw-bg-[color:var(--editor-scroll-color)]
+      tw-rounded-[calc(var(--editor-scroll-width)/2)]
+      tw-overflow-x-hidden
+      hover:tw-bg-[color:var(--editor-scroll-color-hover)];
+    }
   }
 }
 </style>

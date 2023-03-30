@@ -18,12 +18,12 @@
         :columns="columns"
         :expanded="expanded"
         stateKey="assets_manager"
-        :reorderableRows="true"
+        :reorderableRows="!readonly"
         :items="defaultAssets"
         :header="false"
         :footer="false"
-        :itemActionBuilder="actionBuilder"
-        multiselect
+        :itemActionBuilder="!readonly && actionBuilder"
+        :multiselect="!readonly"
         class="tw-h-full tw-w-full"
         @item-click="onItemClick"
         @row:reorder="sortAssets"
@@ -141,7 +141,7 @@
 
 <script setup lang="ts">
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, shallowRef, unref, watch } from "vue";
+import { ref, computed, onMounted, shallowRef, unref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
 import moment from "moment";
@@ -182,6 +182,7 @@ const isDragging = ref(false);
 const uploader = ref();
 const loading = ref(false);
 const selectedItems = ref([]);
+const readonly = computed(() => props.options.disabled);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -191,6 +192,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       emit("close:blade");
     },
+    disabled: computed(() => readonly.value),
   },
   {
     id: "add",
@@ -199,6 +201,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       toggleUploader();
     },
+    disabled: computed(() => readonly.value),
   },
   {
     id: "delete",
@@ -210,7 +213,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         defaultAssets.value = defaultAssets.value.filter((asset) => !selectedItems.value.includes(asset));
       }
     },
-    disabled: computed(() => !selectedItems.value.length),
+    disabled: computed(() => !selectedItems.value.length && readonly.value),
   },
 ]);
 
@@ -264,19 +267,19 @@ function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[
 }
 
 function dragOver() {
-  if (!props.options.disabled) {
+  if (!readonly.value) {
     isDragging.value = true;
   }
 }
 
 function dragLeave() {
-  if (!props.options.disabled) {
+  if (!readonly.value) {
     isDragging.value = false;
   }
 }
 
 async function onDrop(event: DragEvent) {
-  if (!props.options.disabled) {
+  if (!readonly.value) {
     const fileList = event.dataTransfer?.files;
 
     if (fileList && fileList.length) {
@@ -316,6 +319,7 @@ function onItemClick(item: Asset) {
     component: shallowRef(Assets),
     bladeOptions: {
       asset: unref(item),
+      disabled: readonly.value,
       assetEditHandler: (asset: Asset) => {
         const mutated = defaultAssets.value.map((x) => {
           if (x.id === asset.id || x.url === asset.url) {

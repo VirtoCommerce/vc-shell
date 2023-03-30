@@ -9,7 +9,7 @@
   >
     <!-- Blade contents -->
     <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
-      <div class="assets-details__content tw-grow tw-basis-0">
+      <div class="assets-details__content tw-grow tw-basis-0 tw-w-full">
         <VcContainer :no-padding="true">
           <div class="tw-p-4">
             <VcForm>
@@ -19,12 +19,13 @@
                     :src="defaultAsset.url"
                     size="xl"
                     :bordered="true"
+                    class="tw-shrink-0"
                   ></VcImage>
                 </template>
                 <template v-else>
                   <VcIcon
                     :icon="getFileThumbnail(defaultAsset.name)"
-                    class="tw-text-[#a9bfd2] tw-text-[128px]"
+                    class="tw-text-[#a9bfd2] tw-text-[128px] tw-shrink-0"
                   ></VcIcon>
                 </template>
                 <VcCol class="tw-ml-6">
@@ -39,14 +40,16 @@
                         (defaultAsset.createdDate && moment(defaultAsset.createdDate).fromNow()) || "N/A"
                       }}</VcHint>
                     </VcCol>
-                    <VcCol>
+                    <VcCol class="tw-w-full">
                       <VcLabel>{{ $t("ASSETS.PAGES.DETAILS.FIELDS.URL") }}</VcLabel>
-                      <VcRow>
-                        <VcLink
-                          class="vc-link tw-text-s tw-max-w-10 tw-truncate tw-w-max tw-max-w-[100px]"
-                          @click="openLink(defaultAsset.url)"
-                          >{{ props.options?.asset.name }}</VcLink
-                        >
+                      <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
+                        <div class="tw-truncate">
+                          <VcLink
+                            class="vc-link tw-text-s tw-truncate tw-w-full"
+                            @click="openLink(defaultAsset.url)"
+                            >{{ props.options?.asset.name }}</VcLink
+                          >
+                        </div>
                         <VcButton
                           icon="far fa-copy"
                           size="m"
@@ -55,7 +58,7 @@
                           @click="copyLink(defaultAsset.url)"
                           title="Copy link"
                         ></VcButton>
-                      </VcRow>
+                      </div>
                     </VcCol>
                   </VcCol>
                 </VcCol>
@@ -78,6 +81,7 @@
                   :error="!!errors.length"
                   :error-message="errorMessage"
                   :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
+                  :disabled="readonly"
                 ></VcInput>
               </Field>
               <VcInput
@@ -88,12 +92,14 @@
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
                 v-if="assetType === 'Image'"
+                :disabled="readonly"
               ></VcInput>
               <VcTextarea
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="defaultAsset.description"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
+                :disabled="readonly"
               ></VcTextarea>
             </VcForm>
           </div>
@@ -117,6 +123,7 @@ export interface Props {
   closable?: boolean;
   options?: {
     asset: Asset;
+    disabled?: boolean;
     assetEditHandler?: (defaultAsset: Asset) => void;
     assetRemoveHandler?: (defaultAsset: Asset) => void;
   };
@@ -137,6 +144,8 @@ const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const { t } = useI18n();
 const defaultAsset = ref<Asset>({ ...props.options?.asset });
+
+const readonly = computed(() => props.options.disabled);
 
 const assetNameClean = computed({
   get() {
@@ -163,7 +172,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         emit("close:blade");
       }
     },
-    disabled: computed(() => isDisabled.value),
+    disabled: computed(() => isDisabled.value || readonly.value),
   },
   {
     id: "delete",
@@ -175,6 +184,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         emit("close:blade");
       }
     },
+    disabled: computed(() => readonly.value),
   },
 ]);
 

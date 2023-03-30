@@ -177,6 +177,10 @@
                     :setter="setPropertyValue"
                     class="tw-mb-4"
                     :disabled="disabled"
+                    :displayedValueLabel="{
+                      value: 'valueId',
+                      label: 'value',
+                    }"
                   >
                   </VcDynamicProperty>
                 </div>
@@ -270,7 +274,6 @@ import {
   ISellerProduct,
   Category,
   Image,
-  IAsset,
   Asset,
   Property,
   PropertyValue,
@@ -748,9 +751,6 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
   return {
     value: valueName,
     valueId,
-
-    alias: valueName,
-    id: valueId,
   };
 }
 
@@ -762,9 +762,12 @@ function setPropertyValue(
   if (value && typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
-        const handledValue = handleDictionaryValue(property, item.id, dictionary);
+        if (dictionary.includes(item as PropertyDictionaryItem)) {
+          const handledValue = handleDictionaryValue(property, item.id, dictionary);
 
-        return new PropertyValue(handledValue);
+          return new PropertyValue(handledValue);
+        }
+        return item as PropertyValue;
       });
     } else {
       property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));

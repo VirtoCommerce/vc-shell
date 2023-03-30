@@ -90,7 +90,7 @@
                                   <div
                                     class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                   >
-                                    <span>{{ getOptionLabel(item.opt) }}</span>
+                                    <span>{{ getDisplayLabel(item.opt) }}</span>
                                     <VcIcon
                                       v-if="!disabled"
                                       class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
@@ -345,6 +345,26 @@ export interface Props {
    */
   optionLabel?: OptionProp;
   /**
+   * @requires optionValue
+   * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionValue**
+   *
+   * Property of option which holds the 'value'
+   * Default value: id
+   * @param option The current option being processed
+   * @returns Value of the current option
+   */
+  displayValue?: OptionProp;
+  /**
+   * @requires optionLabel
+   * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionLabel**
+   *
+   * Property of option which holds the 'label'
+   * Default value: title
+   * @param option The current option being processed
+   * @returns Label of the current option
+   */
+  displayLabel?: OptionProp;
+  /**
    * Update model with the value of the selected option instead of the whole option
    */
   emitValue?: boolean;
@@ -548,9 +568,13 @@ const hasNextPage = computed(() => {
   return optionsList.value.length < totalItems.value;
 });
 
-const getOptionValue = computed(() => getPropValueFn(props.optionValue, "value"));
+const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
 
-const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "label"));
+const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
+
+const getDisplayValue = computed(() => getPropValueFn(props.displayValue, "id"));
+
+const getDisplayLabel = computed(() => getPropValueFn(props.displayLabel, "title"));
 
 const innerValue = computed((): Record<string, unknown>[] | string[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
@@ -593,7 +617,7 @@ const selectedScope = computed(() => {
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 
-const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt)));
+const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt) || getDisplayValue.value(opt)));
 
 const optionScope = computed(() => {
   return optionsTemp.value.map((opt, i) => {
@@ -601,7 +625,7 @@ const optionScope = computed(() => {
       index: i,
       opt,
       selected: isOptionSelected(opt) === true,
-      label: getOptionLabel.value(opt),
+      label: getOptionLabel.value(opt) || getDisplayLabel.value(opt),
       toggleOption,
     };
   });
@@ -624,7 +648,7 @@ function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
 }
 
 function getOption(value: Record<string, unknown> | string, valueCache: Array<Record<string, unknown> | string>) {
-  const fn = (opt) => isEqual(getOptionValue.value(opt), value);
+  const fn = (opt) => isEqual(getOptionValue.value(opt), value) || isEqual(getDisplayValue.value(opt), value);
   return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
@@ -649,7 +673,8 @@ function removeAtIndex(index: number) {
 }
 
 function isOptionSelected(opt: Record<string, unknown>) {
-  const val = getOptionValue.value(opt);
+  const val = getOptionValue.value(opt) || getDisplayValue.value(opt);
+
   return innerOptionsValue.value.find((v) => isEqual(v, val)) !== void 0;
 }
 
@@ -722,7 +747,7 @@ function toggleOption(opt: { [x: string]: string }) {
     return;
   }
 
-  const optValue = getOptionValue.value(opt);
+  const optValue = getOptionValue.value(opt) || getDisplayValue.value(opt);
 
   if (props.multiple !== true) {
     if (innerValue.value.length === 0 || isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
@@ -796,6 +821,10 @@ function emitValue(val: string) {
 }
 
 function onReset() {
+  if (props.multiple) {
+    emit("update:modelValue", []);
+    return;
+  }
   emit("update:modelValue", null);
 }
 </script>

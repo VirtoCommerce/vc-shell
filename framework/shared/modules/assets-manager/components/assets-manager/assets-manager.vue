@@ -212,7 +212,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-trash",
     clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
-        console.log(selectedItems.value);
         defaultAssets.value = props.options.assetsRemoveHandler(selectedItems.value);
       }
     },

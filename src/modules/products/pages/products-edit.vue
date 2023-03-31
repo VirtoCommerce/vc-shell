@@ -294,9 +294,9 @@ export type IBladeOptions = IBladeEvent & {
     images?: Image[];
     assets?: Asset[];
     assetEditHandler?: (localImage: IImage) => void;
-    assetsEditHandler?: (assets: Asset[]) => void;
-    assetsUploadHandler?: (files: FileList) => void;
-    assetsRemoveHandler?: (assets: Asset[]) => void;
+    assetsEditHandler?: (assets: Asset[]) => Asset[];
+    assetsUploadHandler?: (files: FileList) => Promise<Asset[]>;
+    assetsRemoveHandler?: (assets: Asset[]) => Asset[];
     assetRemoveHandler?: (localImage: IImage) => void;
     sellerProduct?: ISellerProduct;
   };
@@ -333,7 +333,7 @@ const {
 } = useProduct();
 
 const { searchOffers } = useOffers();
-const { getAccessToken } = useUser();
+const { getAccessToken, user } = useUser();
 
 useForm({ validateOnMount: false });
 
@@ -355,6 +355,8 @@ const filteredProps = computed(() => productDetails.value.properties.filter((x) 
 const product = computed(() => (props.param ? productData.value : productDetails.value));
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
+
+const assetsDisabled = computed(() => disabled);
 
 const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
@@ -451,8 +453,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        isDisabled.value ||
         !modified.value ||
+        !isValid.value ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
@@ -616,7 +618,7 @@ const onGalleryImageRemove = (image: Image) => {
   }
 };
 
-const onAssetsUpload = async (files: FileList) => {
+const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
   try {
     fileAssetUploading.value = true;
     for (let i = 0; i < files.length; i++) {
@@ -646,6 +648,7 @@ const onAssetsUpload = async (files: FileList) => {
           asset.sortOrder = 0;
         }
         productDetails.value.assets.push(asset);
+        return productDetails.value.assets;
       }
     }
   } catch (e) {
@@ -657,23 +660,17 @@ const onAssetsUpload = async (files: FileList) => {
   files = null;
 };
 
-const onAssetsItemRemove = (assets: Asset[]) => {
+const onAssetsItemRemove = (assets: Asset[]): Asset[] => {
   if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
-    assets.forEach((asset) => {
-      const assetIndex = productDetails.value.assets.findIndex((asst) => {
-        if (asst.id && asset.id) {
-          return asst.id === asset.id;
-        } else {
-          return asst.url === asset.url;
-        }
-      });
-      productDetails.value.assets.splice(assetIndex, 1);
-    });
+    productDetails.value.assets = productDetails.value.assets.filter((asset) => !assets.includes(asset));
   }
+  return productDetails.value.assets;
 };
 
-const onAssetsEdit = (assets: Asset[]) => {
+const onAssetsEdit = (assets: Asset[]): Asset[] => {
   productDetails.value.assets = assets.map((item) => new Asset(item));
+
+  return productDetails.value.assets;
 };
 
 const setCategory = async (selectedCategory: Category) => {

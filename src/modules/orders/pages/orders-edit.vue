@@ -247,7 +247,10 @@ onMounted(async () => {
   if (props.param) {
     await loadOrder({ id: props.param });
     await searchStateMachines({
-      objectType: "VirtoCommerce.OrdersModule.Core.Model.CustomerOrder",
+      objectTypes: [
+        "VirtoCommerce.OrdersModule.Core.Model.CustomerOrder",
+        "VirtoCommerce.MarketplaceVendorModule.Core.Domains.SellerOrder",
+      ],
       objectIds: [props.param],
     });
     if (stateMachine.value) {

@@ -177,6 +177,10 @@
                     :setter="setPropertyValue"
                     class="tw-mb-4"
                     :disabled="disabled"
+                    :displayedValueLabel="{
+                      value: 'valueId',
+                      label: 'value',
+                    }"
                   >
                   </VcDynamicProperty>
                 </div>
@@ -230,7 +234,7 @@
             icon="far fa-file"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
             :value="assetsCount"
-            :disabled="!(product as ISellerProduct).isPublished"
+            :disabled="disabled"
             @click="openAssets"
           >
           </VcWidget>
@@ -270,13 +274,12 @@ import {
   ISellerProduct,
   Category,
   Image,
-  IAsset,
   Asset,
   Property,
   PropertyValue,
   PropertyDictionaryItem,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
+import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
 
 export interface Props {
@@ -291,9 +294,9 @@ export type IBladeOptions = IBladeEvent & {
     images?: Image[];
     assets?: Asset[];
     assetEditHandler?: (localImage: IImage) => void;
-    assetsEditHandler?: (assets: Asset[]) => void;
-    assetsUploadHandler?: (files: FileList) => void;
-    assetsRemoveHandler?: (assets: Asset[]) => void;
+    assetsEditHandler?: (assets: Asset[]) => Asset[];
+    assetsUploadHandler?: (files: FileList) => Promise<Asset[]>;
+    assetsRemoveHandler?: (assets: Asset[]) => Asset[];
     assetRemoveHandler?: (localImage: IImage) => void;
     sellerProduct?: ISellerProduct;
   };
@@ -329,10 +332,9 @@ const {
 } = useProduct();
 
 const { searchOffers } = useOffers();
-const { getAccessToken } = useUser();
+const { getAccessToken, user } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
-const isDirty = useIsFormDirty();
 const offersCount = ref(0);
 const productLoading = ref(false);
 const fileUploading = ref(false);
@@ -350,9 +352,9 @@ const product = computed(() => (props.param ? productData.value : productDetails
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
-const isDisabled = computed(() => {
-  return !isDirty.value || !isValid.value;
-});
+const assetsDisabled = computed(
+  () => disabled.value || productData.value.createdBy !== user.value?.userName
+);
 
 const assetsCount = computed(() => productDetails.value && productDetails.value?.assets?.length);
 
@@ -445,7 +447,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     },
     disabled: computed(
       () =>
-        (isDisabled.value && !modified.value) ||
+        !modified.value ||
+        !isValid.value ||
         (props.param && !(productData.value?.canBeModified || modified.value)) ||
         (!props.param && !modified.value)
     ),
@@ -594,7 +597,7 @@ const onGalleryImageRemove = (image: Image) => {
   }
 };
 
-const onAssetsUpload = async (files: FileList) => {
+const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
   try {
     fileAssetUploading.value = true;
     for (let i = 0; i < files.length; i++) {
@@ -624,6 +627,7 @@ const onAssetsUpload = async (files: FileList) => {
           asset.sortOrder = 0;
         }
         productDetails.value.assets.push(asset);
+        return productDetails.value.assets;
       }
     }
   } catch (e) {
@@ -635,7 +639,7 @@ const onAssetsUpload = async (files: FileList) => {
   files = null;
 };
 
-const onAssetsItemRemove = (assets: Asset[]) => {
+const onAssetsItemRemove = (assets: Asset[]): Asset[] => {
   if (window.confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
     assets.forEach((asset) => {
       const assetIndex = productDetails.value.assets.findIndex((asst) => {
@@ -648,10 +652,13 @@ const onAssetsItemRemove = (assets: Asset[]) => {
       productDetails.value.assets.splice(assetIndex, 1);
     });
   }
+  return productDetails.value.assets;
 };
 
-const onAssetsEdit = (assets: Asset[]) => {
+const onAssetsEdit = (assets: Asset[]): Asset[] => {
   productDetails.value.assets = assets.map((item) => new Asset(item));
+
+  return productDetails.value.assets;
 };
 
 const setCategory = async (selectedCategory: Category) => {
@@ -699,7 +706,7 @@ async function openAssets() {
         assetsEditHandler: onAssetsEdit,
         assetsUploadHandler: onAssetsUpload,
         assetsRemoveHandler: onAssetsItemRemove,
-        disabled: disabled.value,
+        disabled: assetsDisabled.value,
       },
       onOpen() {
         isAssetsOpened = true;
@@ -736,8 +743,12 @@ function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary
   if (value && typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
     if (dictionary && dictionary.length) {
       property.values = (value as IPropertyValue[]).map((item) => {
-        const handledValue = handleDictionaryValue(property, item.valueId, dictionary);
-        return new PropertyValue(handledValue);
+        if (dictionary.includes(item as PropertyDictionaryItem)) {
+          const handledValue = handleDictionaryValue(property, item.id, dictionary);
+
+          return new PropertyValue(handledValue);
+        }
+        return item as PropertyValue;
       });
     } else {
       property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));

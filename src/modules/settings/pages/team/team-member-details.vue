@@ -171,12 +171,12 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { useI18n, useUser, useAutosave, IParentCallArgs, IBladeToolbar } from "@vc-shell/framework";
+import { useI18n, useUser, IParentCallArgs, IBladeToolbar } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
-import { SellerUser, SellerUserDetails } from "../../../../api_client/marketplacevendor";
+import { SellerUser } from "../../../../api_client/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;
@@ -216,7 +216,7 @@ const {
   updateTeamMember,
   sendTeamMemberInvitation,
 } = useTeamMembers();
-const { loadAutosaved, resetAutosaved, savedValue } = useAutosave(userDetails, modified, props.param ?? "teamMembers");
+
 const title = computed(() =>
   props.param ? userDetails.value.firstName + " " + userDetails.value.lastName : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE")
 );
@@ -243,7 +243,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           await createTeamMember(userDetails.value, sendInviteStatus.value);
-          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -270,7 +269,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       if (isValid.value) {
         try {
           await updateTeamMember(userDetails.value);
-          resetAutosaved();
           emit("parent:call", {
             method: "reload",
           });
@@ -362,11 +360,6 @@ onMounted(async () => {
     userDetails.value.role = role.value.id;
     handleUserDetailsItem(userDetails.value);
   }
-  loadAutosaved();
-
-  if (savedValue.value) {
-    userDetails.value = savedValue.value as unknown as SellerUserDetails;
-  }
 });
 
 async function removeUser() {
@@ -382,11 +375,7 @@ async function removeUser() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    const confirmationStatus = confirm(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
-    if (confirmationStatus) {
-      resetAutosaved();
-    }
-    return confirmationStatus;
+    return confirm(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

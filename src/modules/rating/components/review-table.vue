@@ -1,6 +1,6 @@
 <template>
   <VcTable
-    class="tw-grow tw-basis-0"
+    class="tw-w-full tw-h-full tw-box-border"
     :loading="loading"
     :expanded="expanded"
     :columns="tableColumns"

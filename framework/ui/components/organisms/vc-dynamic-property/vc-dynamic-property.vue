@@ -58,9 +58,10 @@
       :disabled="disabled"
       option-label="alias"
       option-value="id"
+      :display-label="displayedValueLabel.label"
+      :display-value="displayedValueLabel.value"
       :multiple="true"
       :emit-value="false"
-      :clearable="false"
     ></VcSelect>
   </Field>
 
@@ -92,11 +93,12 @@
       :options="items"
       option-label="alias"
       option-value="id"
+      :display-label="displayedValueLabel.label"
+      :display-value="displayedValueLabel.value"
       @search="onSearch"
       @close="onClose"
       :multiple="property.multivalue"
       :emit-value="false"
-      :clearable="false"
     ></VcSelect>
   </Field>
 
@@ -154,6 +156,8 @@
       :options="items"
       option-value="id"
       :option-label="handleDisplayProperty"
+      :display-label="displayedValueLabel.label"
+      :display-value="displayedValueLabel.value"
       multiple
     ></VcSelect>
   </Field>
@@ -323,8 +327,8 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { useI18n } from "./../../../../core/composables";
 import { Field } from "vee-validate";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -348,6 +352,13 @@ export interface Props {
   ) => void | undefined;
   culture?: string;
   disabled?: boolean;
+  /**
+   * @description Used only with multiple selection **only** in rare cases, where we need to display selection with other value-label pair
+   */
+  displayedValueLabel?: {
+    value: string;
+    label: string;
+  };
 }
 
 export interface PropertyItem {

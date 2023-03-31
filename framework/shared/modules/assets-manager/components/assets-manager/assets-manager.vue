@@ -18,12 +18,12 @@
         :columns="columns"
         :expanded="expanded"
         stateKey="assets_manager"
-        :reorderableRows="true"
+        :reorderableRows="!readonly"
         :items="defaultAssets"
         :header="false"
         :footer="false"
-        :itemActionBuilder="actionBuilder"
-        multiselect
+        :itemActionBuilder="!readonly && actionBuilder"
+        :multiselect="!readonly"
         class="tw-h-full tw-w-full"
         @item-click="onItemClick"
         @row:reorder="sortAssets"
@@ -147,15 +147,16 @@ import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
+import { cloneDeep, isEqual } from "lodash-es";
 
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options: {
     assets: Asset[];
-    assetsEditHandler: (assets: Asset[]) => void;
-    assetsUploadHandler: (files: FileList) => void;
-    assetsRemoveHandler: (assets: Asset[]) => void;
+    assetsEditHandler: (assets: Asset[]) => Asset[];
+    assetsUploadHandler: (files: FileList) => Promise<Asset[]>;
+    assetsRemoveHandler: (assets: Asset[]) => Asset[];
     disabled: boolean;
   };
 }
@@ -182,6 +183,9 @@ const isDragging = ref(false);
 const uploader = ref();
 const loading = ref(false);
 const selectedItems = ref([]);
+const readonly = computed(() => props.options.disabled);
+let assetsCopy;
+const modified = ref(false);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -191,6 +195,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       emit("close:blade");
     },
+    disabled: computed(() => !modified.value || readonly.value),
   },
   {
     id: "add",
@@ -199,6 +204,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       toggleUploader();
     },
+    disabled: computed(() => readonly.value),
   },
   {
     id: "delete",
@@ -206,11 +212,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-trash",
     clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
-        props.options.assetsRemoveHandler(selectedItems.value);
-        defaultAssets.value = defaultAssets.value.filter((asset) => !selectedItems.value.includes(asset));
+        defaultAssets.value = props.options.assetsRemoveHandler(selectedItems.value);
       }
     },
-    disabled: computed(() => !selectedItems.value.length),
+    disabled: computed(() => !selectedItems.value.length || readonly.value),
   },
 ]);
 
@@ -248,35 +253,48 @@ const columns = ref<ITableColumns[]>([
   },
 ]);
 
+watch(
+  () => defaultAssets.value,
+  (newVal) => {
+    modified.value = !isEqual(newVal, assetsCopy);
+  },
+  { deep: true }
+);
+
 onMounted(() => {
   defaultAssets.value = props.options?.assets;
+  assetsCopy = cloneDeep(props.options?.assets);
 });
 
 function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {
-  if (props.options.assetsEditHandler && typeof props.options.assetsEditHandler === "function") {
+  if (
+    props.options.assetsEditHandler &&
+    typeof props.options.assetsEditHandler === "function" &&
+    event.dragIndex !== event.dropIndex
+  ) {
     const sorted = event.value.map((item, index) => {
       item.sortOrder = index;
       return item;
     });
-    defaultAssets.value = sorted;
-    props.options.assetsEditHandler(sorted);
+
+    defaultAssets.value = props.options.assetsEditHandler(sorted);
   }
 }
 
 function dragOver() {
-  if (!props.options.disabled) {
+  if (!readonly.value) {
     isDragging.value = true;
   }
 }
 
 function dragLeave() {
-  if (!props.options.disabled) {
+  if (!readonly.value) {
     isDragging.value = false;
   }
 }
 
 async function onDrop(event: DragEvent) {
-  if (!props.options.disabled) {
+  if (!readonly.value) {
     const fileList = event.dataTransfer?.files;
 
     if (fileList && fileList.length) {
@@ -295,7 +313,7 @@ async function upload(files: FileList) {
   if (files && files.length) {
     try {
       loading.value = true;
-      await props.options.assetsUploadHandler(files);
+      defaultAssets.value = await props.options.assetsUploadHandler(files);
     } finally {
       loading.value = false;
     }
@@ -316,6 +334,7 @@ function onItemClick(item: Asset) {
     component: shallowRef(Assets),
     bladeOptions: {
       asset: unref(item),
+      disabled: readonly.value,
       assetEditHandler: (asset: Asset) => {
         const mutated = defaultAssets.value.map((x) => {
           if (x.id === asset.id || x.url === asset.url) {
@@ -325,12 +344,11 @@ function onItemClick(item: Asset) {
         });
 
         if (props.options.assetsEditHandler && typeof props.options.assetsEditHandler === "function") {
-          defaultAssets.value = mutated;
-          props.options.assetsEditHandler(mutated);
+          defaultAssets.value = props.options.assetsEditHandler(mutated);
         }
       },
       assetRemoveHandler: (asset: Asset) => {
-        props.options.assetsRemoveHandler([asset]);
+        defaultAssets.value = props.options.assetsRemoveHandler([asset]);
       },
     },
   });
@@ -357,8 +375,7 @@ const actionBuilder = (): IActionBuilderResult[] => {
     variant: "danger",
     leftActions: true,
     clickHandler(item: Asset) {
-      props.options.assetsRemoveHandler([item]);
-      defaultAssets.value = defaultAssets.value.filter((asset) => asset !== item);
+      defaultAssets.value = props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];
     },
   });

@@ -7,8 +7,8 @@ import {
   SecurityResult,
   ValidatePasswordResetTokenRequest,
   IdentityResult,
-} from "./../../../core/api";
-import { AuthData, RequestPasswordResult, SignInResults } from "./../../../core/types";
+} from "./../../api";
+import { AuthData, RequestPasswordResult, SignInResults } from "./../../types";
 //The Platform Manager uses the same key to store authorization data in the
 //local storage, so we can exchange authorization data between the Platform Manager
 //and the user application that is hosted in the same domain as the sub application.

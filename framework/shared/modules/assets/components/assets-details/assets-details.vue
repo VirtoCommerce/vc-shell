@@ -9,7 +9,7 @@
   >
     <!-- Blade contents -->
     <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
-      <div class="assets-details__content tw-grow tw-basis-0">
+      <div class="assets-details__content tw-grow tw-basis-0 tw-w-full">
         <VcContainer :no-padding="true">
           <div class="tw-p-4">
             <VcForm>
@@ -19,12 +19,13 @@
                     :src="defaultAsset.url"
                     size="xl"
                     :bordered="true"
+                    class="tw-shrink-0"
                   ></VcImage>
                 </template>
                 <template v-else>
                   <VcIcon
                     :icon="getFileThumbnail(defaultAsset.name)"
-                    class="tw-text-[#a9bfd2] tw-text-[128px]"
+                    class="tw-text-[#a9bfd2] tw-text-[128px] tw-shrink-0"
                   ></VcIcon>
                 </template>
                 <VcCol class="tw-ml-6">
@@ -39,14 +40,16 @@
                         (defaultAsset.createdDate && moment(defaultAsset.createdDate).fromNow()) || "N/A"
                       }}</VcHint>
                     </VcCol>
-                    <VcCol>
+                    <VcCol class="tw-w-full">
                       <VcLabel>{{ $t("ASSETS.PAGES.DETAILS.FIELDS.URL") }}</VcLabel>
-                      <VcRow>
-                        <VcLink
-                          class="vc-link tw-text-s tw-max-w-10 tw-truncate tw-w-max tw-max-w-[100px]"
-                          @click="openLink(defaultAsset.url)"
-                          >{{ defaultAsset.name }}</VcLink
-                        >
+                      <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
+                        <div class="tw-truncate">
+                          <VcLink
+                            class="vc-link tw-text-s tw-truncate tw-w-full"
+                            @click="openLink(defaultAsset.url)"
+                            >{{ props.options?.asset.name }}</VcLink
+                          >
+                        </div>
                         <VcButton
                           icon="far fa-copy"
                           size="m"
@@ -55,20 +58,32 @@
                           @click="copyLink(defaultAsset.url)"
                           title="Copy link"
                         ></VcButton>
-                      </VcRow>
+                      </div>
                     </VcCol>
                   </VcCol>
                 </VcCol>
               </VcRow>
 
-              <VcInput
-                class="tw-mb-4"
+              <Field
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                v-model="defaultAsset.name"
-                clearable
-                required
-                :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
-              ></VcInput>
+                name="asset_name"
+                rules="required"
+                :modelValue="defaultAsset.name"
+                v-slot="{ errorMessage, handleChange, errors }"
+              >
+                <VcInput
+                  class="tw-mb-4"
+                  :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                  v-model="assetNameClean"
+                  @update:modelValue="handleChange"
+                  clearable
+                  required
+                  :error="!!errors.length"
+                  :error-message="errorMessage"
+                  :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
+                  :disabled="readonly"
+                ></VcInput>
+              </Field>
               <VcInput
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
@@ -76,15 +91,15 @@
                 clearable
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
-                required
                 v-if="assetType === 'Image'"
+                :disabled="readonly"
               ></VcInput>
               <VcTextarea
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                 v-model="defaultAsset.description"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
-                required
+                :disabled="readonly"
               ></VcTextarea>
             </VcForm>
           </div>
@@ -95,18 +110,20 @@
 </template>
 
 <script lang="ts" setup>
-import { Asset } from "./../../../../../core/types";
+import { Asset, IBladeToolbar } from "./../../../../../core/types";
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcBlade, VcContainer, VcForm, VcImage, VcInput, VcTextarea } from "./../../../../../ui/components";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
 import moment from "moment";
+import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 
 export interface Props {
   expanded?: boolean;
   closable?: boolean;
   options?: {
     asset: Asset;
+    disabled?: boolean;
     assetEditHandler?: (defaultAsset: Asset) => void;
     assetRemoveHandler?: (defaultAsset: Asset) => void;
   };
@@ -122,10 +139,29 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+useForm({ validateOnMount: false });
+const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
 const { t } = useI18n();
 const defaultAsset = ref<Asset>({ ...props.options?.asset });
 
-const bladeToolbar = [
+const readonly = computed(() => props.options.disabled);
+
+const assetNameClean = computed({
+  get() {
+    return defaultAsset.value.name.split(".").shift();
+  },
+  set(value: string) {
+    const fileExtension = defaultAsset.value.name.split(".").pop();
+    defaultAsset.value.name = value + "." + fileExtension;
+  },
+});
+
+const isDisabled = computed(() => {
+  return !isDirty.value || !isValid.value;
+});
+
+const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
@@ -136,6 +172,7 @@ const bladeToolbar = [
         emit("close:blade");
       }
     },
+    disabled: computed(() => isDisabled.value || readonly.value),
   },
   {
     id: "delete",
@@ -147,8 +184,9 @@ const bladeToolbar = [
         emit("close:blade");
       }
     },
+    disabled: computed(() => readonly.value),
   },
-];
+]);
 
 const assetType = computed(() => defaultAsset.value?.typeId);
 

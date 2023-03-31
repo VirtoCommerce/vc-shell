@@ -105,7 +105,7 @@
             <tr class="vc-table__header-row">
               <th
                 v-if="multiselect"
-                class="tw-h-[42px] tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
+                class="tw-h-[42px] tw-w-[50px] tw-max-w-[28px] tw-min-w-[28px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
@@ -118,7 +118,7 @@
                 </div>
               </th>
               <th
-                class="tw-h-[42px] tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
+                class="tw-h-[42px] tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
                 v-if="itemActionBuilder"
               >
                 <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
@@ -211,7 +211,7 @@
               :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
               class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
-                'tw-bg-[#f8f8f8]': itemIndex % 2 === 1,
+                '!tw-bg-[#F9F9F9]': itemIndex % 2 === 1,
                 '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
               }"
@@ -226,7 +226,7 @@
             >
               <td
                 v-if="multiselect && typeof item === 'object'"
-                class="tw-w-[50px] tw-max-w-[50px] tw-min-w-[50px]"
+                class="tw-w-[50px] tw-max-w-[28px] tw-min-w-[28px] tw-relative"
                 @click.stop
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
@@ -235,15 +235,18 @@
                     :model-value="isSelected(item)"
                   ></VcCheckbox>
                 </div>
+                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
               </td>
               <td
-                class="tw-box-border tw-overflow-visible tw-px-3 tw-w-[44px] tw-max-w-[44px] tw-min-w-[44px]"
+                class="tw-box-border tw-overflow-visible tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-relative"
                 v-if="itemActionBuilder && typeof item === 'object'"
                 @click.stop
               >
-                <div class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center">
+                <div
+                  class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center tw-group"
+                >
                   <button
-                    class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-5 hover:tw-text-[#319ed4]"
+                    class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-full group-hover:tw-text-[#319ed4]"
                     @click.stop="showActions(item, item.id)"
                     :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     aria-describedby="tooltip"
@@ -290,6 +293,7 @@
                     ></div>
                   </div>
                 </div>
+                <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
               </td>
               <td
                 v-for="cell in filteredCols"
@@ -583,8 +587,6 @@ const headerCheckbox = computed({
     }
 
     selection.value = _selected;
-
-    emit("selectionChanged", selection.value);
   },
 });
 
@@ -602,8 +604,18 @@ watch(
     scrollContainer.value?.scrollTop();
 
     calculateActions(newVal);
+
+    selection.value = selection.value.filter((selection) => newVal.includes(selection));
   },
   { deep: true, immediate: true }
+);
+
+watch(
+  () => selection.value,
+  (newVal) => {
+    emit("selectionChanged", newVal);
+  },
+  { deep: true }
 );
 
 watch(
@@ -628,8 +640,6 @@ function rowCheckbox(item: TableItemType) {
   } else {
     selection.value.push(clear);
   }
-
-  emit("selectionChanged", selection.value);
 }
 
 function setTooltipRefs(el: Element, id: string) {
@@ -804,7 +814,7 @@ function onColumnHeaderDragStart(event: DragEvent, item: ITableColumns) {
   }
 
   draggedColumn.value = item;
-  draggedElement.value = event.target as HTMLElement
+  draggedElement.value = event.target as HTMLElement;
   event.dataTransfer.setData("text", "reorder");
 }
 
@@ -1052,42 +1062,6 @@ $variants: (
 
 .vc-table {
   &__body {
-    &-tooltip {
-      background: #ffffff;
-      border-radius: 4px 0 0 4px;
-      padding: 15px;
-      z-index: 0;
-      position: absolute;
-      right: 0;
-      filter: drop-shadow(1px 3px 14px rgba(111, 122, 131, 0.25));
-    }
-
-    &-tooltip-arrow,
-    &-tooltip-arrow:before {
-      position: absolute;
-      width: 8px;
-      height: 8px;
-      background: inherit;
-    }
-
-    &-tooltip-arrow {
-      visibility: hidden;
-    }
-
-    &-tooltip-arrow:before {
-      visibility: visible;
-      content: "";
-      transform: rotate(45deg);
-    }
-
-    &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
-      bottom: -5px;
-    }
-
-    &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
-      top: -5px;
-    }
-
     &-actions-item {
       @each $name, $variant in $variants {
         &_#{$name} {
@@ -1106,20 +1080,20 @@ $variants: (
     }
 
     &-tooltip[data-popper-placement^="top"] > .vc-table__body-tooltip-arrow {
-      @apply tw-bottom-[-5px];
+      @apply tw-bottom-[-4px];
     }
 
     &-tooltip[data-popper-placement^="bottom"] > .vc-table__body-tooltip-arrow {
-      @apply tw-top-[-5px];
+      @apply tw-top-[-4px];
     }
   }
 
   &__drag-row-bottom {
-    box-shadow: inset 0 -2px 0 0 var(--row-drag-color);
+    @apply tw-shadow-[inset_0_-2px_0_0_var(--row-drag-color)];
   }
 
   &__drag-row-top {
-    box-shadow: inset 0 2px 0 0 var(--row-drag-color);
+    @apply tw-shadow-[inset_0_2px_0_0_var(--row-drag-color)];
   }
 }
 </style>

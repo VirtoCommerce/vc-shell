@@ -50,7 +50,7 @@ import { VcLabel } from "./../../../components";
 
 export interface Props {
   placeholder?: string;
-  modelValue: string;
+  modelValue?: string;
   required?: boolean;
   disabled?: boolean;
   label?: string;

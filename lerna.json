@@ -9,7 +9,7 @@
   "version": "independent",
   "command": {
     "create": {
-      "homepage": "https://github.com/VirtoCommerce/platform-manager-sdk"
+      "homepage": "https://github.com/VirtoCommerce/vc-shell"
     },
     "publish": {
       "conventionalCommits": true

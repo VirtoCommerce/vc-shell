@@ -1,4 +1,4 @@
-import { useUser } from "./../../../core/composables";
+import { useUser } from "./../";
 import { computed, ComputedRef } from "vue";
 
 interface IUsePermissions {

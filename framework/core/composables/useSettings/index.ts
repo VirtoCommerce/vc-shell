@@ -1,6 +1,6 @@
-import { useUser } from "./../../../core/composables";
+import { useUser } from "./../";
 import { computed, Ref, ref } from "vue";
-import { SettingClient } from "./../../../core/api";
+import { SettingClient } from "./../../api";
 
 interface IUISetting {
   contrast_logo?: string;

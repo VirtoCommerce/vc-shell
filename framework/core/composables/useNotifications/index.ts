@@ -1,5 +1,5 @@
-import { PushNotification, PushNotificationClient } from "./../../../core/api";
-import useUser from "../useUser";
+import { PushNotification, PushNotificationClient } from "./../../api";
+import { useUser } from "./../";
 import { computed, ComputedRef, readonly, ref } from "vue";
 import { orderBy, remove } from "lodash-es";
 

@@ -147,7 +147,7 @@ import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
-import { isEqual } from "lodash-es";
+import { cloneDeep, isEqual } from "lodash-es";
 
 export interface Props {
   expanded?: boolean;
@@ -264,7 +264,7 @@ watch(
 
 onMounted(() => {
   defaultAssets.value = props.options?.assets;
-  assetsCopy = props.options?.assets;
+  assetsCopy = cloneDeep(props.options?.assets);
 });
 
 function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {

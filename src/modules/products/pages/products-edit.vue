@@ -234,7 +234,7 @@
             icon="far fa-file"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
             :value="assetsCount"
-            :disabled="!(product as ISellerProduct).isPublished"
+            :disabled="disabled"
             @click="openAssets"
           >
           </VcWidget>
@@ -279,7 +279,7 @@ import {
   PropertyValue,
   PropertyDictionaryItem,
 } from "../../../api_client/marketplacevendor";
-import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
+import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
 
 export interface Props {
@@ -338,7 +338,6 @@ const { getAccessToken, user } = useUser();
 useForm({ validateOnMount: false });
 
 const isValid = useIsFormValid();
-const isDirty = useIsFormDirty();
 const offersCount = ref(0);
 const productLoading = ref(false);
 const fileUploading = ref(false);
@@ -356,11 +355,9 @@ const product = computed(() => (props.param ? productData.value : productDetails
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
-const assetsDisabled = computed(() => disabled);
-
-const isDisabled = computed(() => {
-  return !isDirty.value || !isValid.value;
-});
+const assetsDisabled = computed(
+  () => disabled.value || productData.value.createdBy !== user.value?.userName
+);
 
 const assetsCount = computed(() => (productDetails.value && productDetails.value?.assets?.length) || 0);
 
@@ -718,7 +715,7 @@ async function openAssets() {
         assetsEditHandler: onAssetsEdit,
         assetsUploadHandler: onAssetsUpload,
         assetsRemoveHandler: onAssetsItemRemove,
-        disabled: disabled.value,
+        disabled: assetsDisabled.value,
       },
       onOpen() {
         isAssetsOpened = true;

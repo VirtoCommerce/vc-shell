@@ -643,14 +643,14 @@ async function uploadCsv(files: FileList) {
 }
 
 async function saveExternalUrl() {
-  const response = await fetch(profile.value.importFileUrl, {
-    method: "HEAD",
-    mode: "cors",
-  });
+  //const response = await fetch(profile.value.importFileUrl, {
+  //  method: "HEAD",
+  //  mode: "cors",
+  //});
   setFile({
     name: profile.value.importFileUrl.substring(profile.value.importFileUrl.lastIndexOf("/") + 1),
     url: profile.value.importFileUrl,
-    size: Number(response.headers.get("content-length")),
+    size: Number(0/*response.headers.get("content-length")*/),
   });
 }
 

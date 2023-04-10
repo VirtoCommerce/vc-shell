@@ -1,8 +1,21 @@
 {
-  "extends": "./tsconfig.build.json",
   "compilerOptions": {
     "baseUrl": ".",
     "rootDir": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "strict": true,
+    "importHelpers": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "jsx": "preserve",
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
     "resolveJsonModule": true,
     "paths": {
       "@vc-shell/framework": [

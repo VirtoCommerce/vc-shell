@@ -1,9 +1,7 @@
-import typescript from "@rollup/plugin-typescript";
 import vue from "@vitejs/plugin-vue";
 import * as fs from "fs";
 import { loadEnv, ProxyOptions, UserConfigExport } from "vite";
 import mkcert from "vite-plugin-mkcert";
-import { RollupOptions } from "rollup";
 import path from "path";
 import checker from "vite-plugin-checker";
 
@@ -17,9 +15,6 @@ process.env = {
   ...process.env,
   ...loadEnv(mode, process.cwd(), "APP_"),
 };
-const TSCONFIG = process.cwd() + "/tsconfig.json";
-const TSCONFIG_BUILD = process.cwd() + "/tsconfig.build.json";
-const tsconfigFile = mode === "production" ? TSCONFIG_BUILD : TSCONFIG;
 
 const isMonorepo = fs.existsSync(path.resolve(process.cwd(), "./../../framework/package.json"));
 
@@ -65,7 +60,7 @@ export default {
   mode,
   resolve: {
     preserveSymlinks: true,
-    alias: aliasResolver(),
+    alias: { ...aliasResolver(), querystring: "querystring-es3" },
   },
   envPrefix: "APP_",
   base: process.env.APP_BASE_PATH,
@@ -115,12 +110,5 @@ export default {
     target: "esnext",
     sourcemap: mode === "development",
     emptyOutDir: true,
-    rollupOptions: {
-      plugins: [
-        typescript({
-          tsconfig: tsconfigFile,
-        }),
-      ],
-    } as RollupOptions,
   },
 } as UserConfigExport;

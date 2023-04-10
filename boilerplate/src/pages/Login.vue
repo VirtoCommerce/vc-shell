@@ -1,5 +1,9 @@
 <template>
-  <VcLoginForm :logo="logo" :background="background" :title="computedTitle">
+  <VcLoginForm
+    :logo="customization.logo"
+    :background="background"
+    :title="title"
+  >
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
@@ -46,13 +50,24 @@
         </Field>
 
         <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
-          <VcButton variant="onlytext" @click="togglePassRequest" type="button">
+          <VcButton
+            variant="onlytext"
+            @click="togglePassRequest"
+            type="button"
+          >
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
-          <vc-button variant="primary" :disabled="loading || !isValid" @click="login">
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
+          <vc-button
+            variant="primary"
+            :disabled="loading || !isValid"
+            @click="login"
+          >
             {{ $t("SHELL.LOGIN.BUTTON") }}
           </vc-button>
         </div>
@@ -83,10 +98,18 @@
             ></VcInput>
           </Field>
           <div class="tw-flex tw-justify-between tw-items-center tw-pt-2">
-            <vc-button variant="secondary" type="button" @click="togglePassRequest">
+            <vc-button
+              variant="secondary"
+              type="button"
+              @click="togglePassRequest"
+            >
               {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
             </vc-button>
-            <vc-button variant="primary" :disabled="loading || !isValid" @click="forgot">
+            <vc-button
+              variant="primary"
+              :disabled="loading || isDisabled"
+              @click="forgot"
+            >
               {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>
@@ -96,19 +119,34 @@
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
         <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
-          <vc-button variant="primary" :disabled="loading" @click="togglePassRequest">
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
+          <vc-button
+            variant="primary"
+            :disabled="loading"
+            @click="togglePassRequest"
+          >
             {{ $t("SHELL.LOGIN.BUTTON_OK") }}
           </vc-button>
         </div>
       </template>
     </template>
 
-    <VcHint v-if="!signInResult.succeeded" class="tw-mt-3" style="color: #f14e4e">
+    <VcHint
+      v-if="!signInResult.succeeded"
+      class="tw-mt-3"
+      style="color: #f14e4e"
+    >
       <!-- TODO: stylizing-->
       {{ signInResult.error }}
     </VcHint>
-    <VcHint v-if="!requestPassResult.succeeded" class="tw-mt-3" style="color: #f14e4e">
+    <VcHint
+      v-if="!requestPassResult.succeeded"
+      class="tw-mt-3"
+      style="color: #f14e4e"
+    >
       <!-- TODO: stylizing-->
       {{ requestPassResult.error }}
     </VcHint>
@@ -116,29 +154,49 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed } from "vue";
-import {
-  useUser,
-  useForm,
-  SignInResults,
-  RequestPasswordResult,
-  useI18n,
-} from "@vc-shell/framework";
+import { ref, reactive, computed, onMounted } from "vue";
+import { useUser, useForm, SignInResults, RequestPasswordResult, useSettings } from "@vc-shell/framework";
+import { useLogin } from "../modules/login";
 import { useRouter, useRoute } from "vue-router";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
 
-const { t } = useI18n();
 const router = useRouter();
 const route = useRoute();
 useForm({ validateOnMount: false });
-const { logo, background, title } = route.meta;
+const { logo, background, title } = route.meta as { logo: string; background: string; title: string };
+const { getUiCustomizationSettings, uiSettings } = useSettings();
 
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading } = useUser();
+const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
+const isDirty = useIsFormDirty();
+const customizationLoading = ref(false);
+
+onMounted(async () => {
+  try {
+    customizationLoading.value = true;
+    await getUiCustomizationSettings();
+  } finally {
+    customizationLoading.value = false;
+  }
+});
+
+const customization = computed(() => {
+  return (
+    !customizationLoading.value && {
+      logo: uiSettings.value?.logo || logo,
+    }
+  );
+});
+
+const isDisabled = computed(() => {
+  return !isDirty.value || !isValid.value;
+});
+
 const form = reactive({
   username: "",
   password: "",
@@ -147,8 +205,6 @@ const form = reactive({
 const forgotPasswordForm = reactive({
   loginOrEmail: "",
 });
-
-const computedTitle = computed(() => (isLogin.value ? title : t("SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.TITLE")));
 
 const login = async () => {
   if (isValid.value) {
@@ -162,6 +218,7 @@ const login = async () => {
 
 const forgot = async () => {
   if (isValid.value) {
+    await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
     forgotPasswordRequestSent.value = true;
   }
 };

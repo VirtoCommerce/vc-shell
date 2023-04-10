@@ -194,8 +194,8 @@ const customization = computed(() => {
 });
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const form = reactive({
   username: "",

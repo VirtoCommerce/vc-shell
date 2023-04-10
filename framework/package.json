@@ -3,7 +3,7 @@
   "version": "1.0.60",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "style": "./dist/index.css",
   "files": [
     "dist",
@@ -15,10 +15,7 @@
   "exports": {
     ".": {
       "import": "./dist/framework.mjs",
-      "types": "./dist/types/index.d.ts"
-    },
-    "./client": {
-      "types": "./dist/ui/services/types/index.d.ts"
+      "types": "./dist/index.d.ts"
     },
     "./dist/index.css": "./dist/index.css",
     "./tailwind.config": "./tailwind.config.js",
@@ -27,7 +24,7 @@
   "scripts": {
     "build": "yarn build:lib & yarn build:types",
     "build:lib": "vite build",
-    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist",
     "dev": "vite",
     "development": "vite build --watch -m development",
     "watch": "vite build --watch",
@@ -35,7 +32,6 @@
   },
   "dependencies": {
     "@floating-ui/vue": "^0.2.1",
-    "@popperjs/core": "^2.11.0",
     "@vee-validate/i18n": "^4.7.3",
     "@vee-validate/rules": "^4.7.3",
     "@vueup/vue-quill": "^1.1.1",
@@ -45,6 +41,7 @@
     "client-oauth2": "^4.3.3",
     "moment": "^2.29.1",
     "normalize.css": "^8.0.1",
+    "querystring-es3":"^0.2.1",
     "quill-image-uploader": "^1.2.4",
     "swiper": "^6.8.4",
     "vee-validate": "^4.7.3",

@@ -8,7 +8,7 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export default createModule(components);
+export const VcBladeNavigationComponent = createModule(components);
 
 export * from "./components";
 export * from "./composables";

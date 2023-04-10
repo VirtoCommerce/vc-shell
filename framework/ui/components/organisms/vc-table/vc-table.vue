@@ -201,18 +201,42 @@
               class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
             ></div>
           </thead>
-
+          <div
+            class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
+            v-if="allSelected"
+          >
+            <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
+              <div>
+                {{
+                  bulkSelected
+                    ? $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_BULK_SELECTED")
+                    : $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                }}
+                <VcButton
+                  variant="onlytext"
+                  class="tw-text-[13px]"
+                  @click="handleBulkSelection"
+                  >{{
+                    bulkSelected
+                      ? $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
+                      : $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT")
+                  }}</VcButton
+                >
+              </div>
+            </div>
+          </div>
           <tbody
             v-if="items"
             class="vc-table__body"
+            :class="{ 'tw-translate-y-[60px]': allSelected }"
           >
             <tr
               v-for="(item, itemIndex) in items"
               :key="(typeof item === 'object' && 'id' in item && item.id) || itemIndex"
-              class="vc-table__body-row tw-h-[60px] tw-bg-white hover:tw-bg-[#dfeef9] tw-cursor-pointer"
+              class="vc-table__body-row tw-h-[60px] tw-bg-white hover:!tw-bg-[#dfeef9] tw-cursor-pointer"
               :class="{
                 '!tw-bg-[#F9F9F9]': itemIndex % 2 === 1,
-                '!tw-bg-[#dfeef9] hover:tw-bg-[#dfeef9]':
+                '!tw-bg-[#dfeef9] hover:!tw-bg-[#dfeef9]':
                   typeof item === 'object' && 'id' in item && item.id ? selectedItemId === item.id : false,
               }"
               @click="$emit('itemClick', item)"
@@ -246,10 +270,12 @@
                   class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center tw-group"
                 >
                   <button
-                    class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-full group-hover:tw-text-[#319ed4]"
+                    class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-full"
+                    :class="{
+                      'group-hover:tw-text-[#319ed4]': itemActions[itemIndex] && itemActions[itemIndex].length,
+                    }"
                     @click.stop="showActions(item, item.id)"
                     :ref="(el: Element) => setActionToggleRefs(el, item.id)"
-                    aria-describedby="tooltip"
                     :disabled="!(itemActions[itemIndex] && itemActions[itemIndex].length)"
                   >
                     <VcIcon
@@ -258,11 +284,11 @@
                     />
                   </button>
                   <div
-                    class="vc-table__body-tooltip tw-bg-white tw-rounded-[4px] tw-p-[15px] tw-z-[1] tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)]"
+                    class="vc-table__body-tooltip tw-bg-white tw-rounded-[4px] tw-p-[15px] tw-z-[1] tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)] tw-w-max"
                     v-show="selectedRow === item.id"
                     @mouseleave="closeActions"
                     :ref="(el: Element) => setTooltipRefs(el, item.id)"
-                    role="tooltip"
+                    :style="tooltipStyle"
                   >
                     <div
                       class="tw-flex tw-items-start tw-flex-col tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
@@ -289,7 +315,8 @@
                     </div>
                     <div
                       class="vc-table__body-tooltip-arrow"
-                      data-popper-arrow
+                      :style="arrowStyle"
+                      :ref="(el: Element) => setTooltipArrowRefs(el, item.id)"
                     ></div>
                   </div>
                 </div>
@@ -396,16 +423,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, nextTick, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref, onUpdated, onBeforeMount } from "vue";
+import { computed, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref, onUpdated, onBeforeMount, nextTick } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
 import VcTableCell from "./_internal/vc-table-cell/vc-table-cell.vue";
 import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table-column-switcher.vue";
-import { createPopper, Instance } from "@popperjs/core";
+import { offset, flip, arrow, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, useCurrentElement } from "@vueuse/core";
-import VcContainer from "./../../atoms/vc-container/vc-container.vue";
+import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton, VcLoading } from "./../../";
 
 export interface StatusImage {
   image?: string;
@@ -429,11 +456,6 @@ export interface Props {
   itemActionBuilder?: (item: TableItem) => IActionBuilderResult[];
   sort?: string;
   multiselect?: boolean;
-  /**
-   * Emit whole item instead of {id: boolean} while prop multiselect = true
-   * @default false
-   */
-  multiselectEmitItem?: boolean;
   expanded?: boolean;
   totalLabel?: string;
   totalCount?: number;
@@ -495,6 +517,7 @@ const emit = defineEmits<Emits>();
 
 // template refs
 const tooltipRefs = ref<ITableItemRef[]>([]);
+const tooltipArrowRefs = ref<ITableItemRef[] | null>([]);
 const reorderRef = ref<HTMLElement | null>();
 const tableRef = ref<HTMLElement | null>();
 
@@ -503,9 +526,10 @@ let columnResizeListener = null;
 let columnResizeEndListener = null;
 
 const selection = ref<TableItemType[]>([]);
+const bulkSelected = ref(false);
 
 const selectedRow = ref<string>();
-const tooltip = ref<Instance>();
+const tooltip = ref<ComputePositionReturn>();
 const scrollContainer = ref<typeof VcContainer>();
 const actionToggleRefs = ref<ITableItemRef[]>([]);
 
@@ -598,6 +622,8 @@ const filteredCols = computed(() => {
   });
 });
 
+const allSelected = computed(() => selection.value.length === props.items.length && props.pages > 1);
+
 watch(
   () => props.items,
   (newVal) => {
@@ -621,12 +647,18 @@ watch(
 watch(
   () => props.columns,
   (newVal) => {
-    if (!defaultColumns.value.length) {
-      defaultColumns.value = newVal;
-    }
+    defaultColumns.value = newVal;
   },
   { deep: true, immediate: true }
 );
+
+function handleBulkSelection() {
+  bulkSelected.value = !bulkSelected.value;
+
+  if (!bulkSelected.value) {
+    selection.value = [];
+  }
+}
 
 function isSelected(item: TableItemType) {
   return selection.value.indexOf(item) > -1;
@@ -660,29 +692,61 @@ function setActionToggleRefs(el: Element, id: string) {
   }
 }
 
+function setTooltipArrowRefs(el: Element, id: string) {
+  if (el) {
+    const isExists = tooltipArrowRefs.value.some((item) => item.id === id);
+    if (!isExists) {
+      tooltipArrowRefs.value.push({ element: el, id });
+    }
+  }
+}
+
 function showActions(item: TableItem, index: string) {
+  if (selectedRow.value) {
+    closeActions();
+    return;
+  }
   selectedRow.value = item.id;
 
-  const toggleRef = actionToggleRefs.value.find((item) => item.id === index);
-  const tooltipRef = tooltipRefs.value.find((item) => item.id === index);
+  const toggleRef = actionToggleRefs.value.find((item) => item.id === index).element;
+  const tooltipRef = tooltipRefs.value.find((item) => item.id === index).element;
+  const tooltipArrowRef = tooltipArrowRefs.value.find((item) => item.id === index).element;
 
-  if (toggleRef && tooltipRef) {
+  if (toggleRef && tooltipRef && tooltipArrowRef) {
     nextTick(() => {
-      tooltip.value = createPopper(toggleRef.element, tooltipRef.element as HTMLElement, {
+      computePosition(toggleRef, tooltipRef as HTMLElement, {
         placement: "bottom",
-        onFirstUpdate: () => tooltip.value?.update(),
-        modifiers: [
-          {
-            name: "offset",
-            options: {
-              offset: [-15, 15],
-            },
-          },
+        middleware: [
+          flip({ fallbackPlacements: ["top", "bottom"] }),
+          offset({ crossAxis: 15, mainAxis: 15 }),
+          arrow({ element: tooltipArrowRef as HTMLElement }),
         ],
-      });
+      }).then((item) => (tooltip.value = item));
     });
   }
 }
+
+const tooltipStyle = computed(() => {
+  return {
+    top: `${tooltip.value?.y ?? 0}px`,
+    left: `${tooltip.value?.x ?? 0}px`,
+  };
+});
+
+const arrowStyle = computed(() => {
+  if (tooltip.value && tooltip.value.middlewareData.arrow) {
+    const { x } = tooltip.value && tooltip.value.middlewareData.arrow;
+    return {
+      top: (tooltip.value.placement === "bottom" && "-4px") || undefined,
+      bottom: (tooltip.value.placement === "top" && "-4px") || undefined,
+      left: `${x ?? 0}px`,
+    };
+  }
+  return {
+    top: "0px",
+    left: "0px",
+  };
+});
 
 async function calculateActions(items: TableItemType[]) {
   if (typeof props.itemActionBuilder === "function") {
@@ -699,7 +763,6 @@ async function calculateActions(items: TableItemType[]) {
 
 function closeActions() {
   selectedRow.value = undefined;
-  tooltip.value?.destroy();
 }
 
 function handleSwipe(id: string) {

@@ -1,1 +1,1 @@
-export { AssetsManager } from "./assets-manager";
+export * from "./assets-manager";

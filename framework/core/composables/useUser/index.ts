@@ -37,7 +37,7 @@ interface IUseUser {
   changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult>;
 }
 
-export default (): IUseUser => {
+export function useUser(): IUseUser {
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
     try {
@@ -224,4 +224,4 @@ export default (): IUseUser => {
     requestPasswordReset,
     changeUserPassword,
   };
-};
+}

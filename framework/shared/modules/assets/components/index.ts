@@ -1,1 +1,1 @@
-export { AssetsDetails } from "./assets-details";
+export * from "./assets-details";

@@ -42,6 +42,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VcIcon } from "./../../";
 import { computed } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import SwiperCore, { Navigation } from "swiper";

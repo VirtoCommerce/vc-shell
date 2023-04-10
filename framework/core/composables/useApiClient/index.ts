@@ -1,4 +1,4 @@
-import useUser from "../useUser";
+import { useUser } from "../useUser";
 
 interface IAuthApiBase {
   authToken: string;

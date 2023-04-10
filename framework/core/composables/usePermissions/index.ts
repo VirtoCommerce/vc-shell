@@ -1,4 +1,4 @@
-import { useUser } from "./../";
+import { useUser } from "./../useUser";
 import { computed, ComputedRef } from "vue";
 
 interface IUsePermissions {
@@ -6,7 +6,7 @@ interface IUsePermissions {
   checkPermission(permissions: string | string[]): boolean;
 }
 
-export default (): IUsePermissions => {
+export function usePermissions(): IUsePermissions {
   const { user } = useUser();
 
   function checkPermission(permissions: string | string[] | undefined) {
@@ -29,4 +29,4 @@ export default (): IUsePermissions => {
     userPermissions: computed(() => user.value?.permissions),
     checkPermission,
   };
-};
+}

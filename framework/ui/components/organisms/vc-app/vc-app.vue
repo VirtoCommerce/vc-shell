@@ -39,7 +39,7 @@
       ></VcAppMenu>
 
       <!-- Workspace blades -->
-      <div class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0">
+      <div class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative">
         <slot name="bladeNavigation"></slot>
       </div>
 
@@ -68,7 +68,7 @@ export default defineComponent({
 import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { ExtendedComponent, IBladeElement, IMenuClickEvent, IOpenBlade } from "./../../../../shared";
+import { ExtendedComponent, IBladeRef, IMenuClickEvent, IOpenBlade } from "./../../../../shared";
 
 export interface Props {
   pages?: ExtendedComponent[];
@@ -80,7 +80,7 @@ export interface Props {
   logo?: string;
   version?: string;
   theme?: "light" | "dark";
-  bladesRefs?: IBladeElement[];
+  bladesRefs?: IBladeRef[];
   title?: string;
 }
 
@@ -89,13 +89,6 @@ export interface Emits {
   (event: "close", index: number): void;
   (event: "backlink:click", index: number): void;
 }
-
-// defineSlots<{
-//   appSwitcher: unknown;
-//   bladeNavigation: unknown;
-//   notifications: unknown;
-//   passwordChange: unknown;
-// }>();
 
 withDefaults(defineProps<Props>(), {
   pages: () => [],

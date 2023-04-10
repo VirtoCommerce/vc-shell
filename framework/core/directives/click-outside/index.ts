@@ -4,7 +4,7 @@ interface OutsideClickableHTMLElement extends HTMLElement {
   _outsideClickHandler: (event: MouseEvent | TouchEvent) => void;
 }
 
-export default {
+export const clickOutside = {
   mounted(el: OutsideClickableHTMLElement, binding: DirectiveBinding): void {
     const closeHandler = binding.value;
     el._outsideClickHandler = function (event: MouseEvent | TouchEvent) {

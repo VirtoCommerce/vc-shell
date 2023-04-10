@@ -46,7 +46,7 @@
 
 <script lang="ts" setup>
 import { watch } from "vue";
-import { VcLabel } from "./../../../components";
+import { VcHint, VcLabel } from "./../../";
 
 export interface Props {
   placeholder?: string;

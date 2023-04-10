@@ -39,7 +39,7 @@
     >
       <template v-if="expandable">
         <div
-          v-if="expanded"
+          v-if="maximized"
           class="tw-text-[color:var(--blade-header-button-color)] tw-ml-4 tw-cursor-pointer hover:tw-text-[color:var(--blade-header-button-color-hover)]"
           @click="onCollapse"
         >
@@ -71,15 +71,15 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../../../../ui/components";
+import { VcIcon } from "./../../../../";
 
 export interface Props {
-  expandable?: boolean | undefined;
-  expanded?: boolean | undefined;
-  closable?: boolean | undefined;
-  title?: string | undefined;
-  subtitle?: string | undefined;
-  icon?: string | undefined;
+  expandable?: boolean;
+  maximized?: boolean;
+  closable?: boolean;
+  title?: string;
+  subtitle?: string;
+  icon?: string;
 }
 const props = defineProps<Props>();
 

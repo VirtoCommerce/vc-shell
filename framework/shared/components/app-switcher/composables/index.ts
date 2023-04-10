@@ -1,1 +1,1 @@
-export { default as useAppSwitcher } from "./useAppSwitcher";
+export { useAppSwitcher } from "./useAppSwitcher";

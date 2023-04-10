@@ -252,11 +252,11 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, toRefs, nextTick } from "vue";
-import { VcIcon, VcLabel, VcContainer } from "./../../../components";
 import { clickOutside as vClickOutside } from "./../../../../core/directives";
-import { intersection, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
+import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 
 export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 
@@ -269,7 +269,7 @@ export interface Props {
    * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue: any;
+  modelValue?: any;
   /**
    * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
    * Default value: true
@@ -487,7 +487,7 @@ watch(
     if (newVal && !oldVal) {
       const initial = optionsList.value.filter((x) => {
         if (props.modelValue && Array.isArray(props.modelValue)) {
-          return intersection(optionsList.value, props.modelValue);
+          return _.intersection(optionsList.value, props.modelValue);
         } else if (props.modelValue && typeof props.modelValue === "object") {
           return optionsList.value.includes(props.modelValue);
         } else {
@@ -650,7 +650,7 @@ function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
 }
 
 function getOption(value: Record<string, unknown> | string, valueCache: Array<Record<string, unknown> | string>) {
-  const fn = (opt) => isEqual(getOptionValue.value(opt), value) || isEqual(getDisplayValue.value(opt), value);
+  const fn = (opt) => _.isEqual(getOptionValue.value(opt), value) || _.isEqual(getDisplayValue.value(opt), value);
   return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
@@ -677,7 +677,7 @@ function removeAtIndex(index: number) {
 function isOptionSelected(opt: Record<string, unknown>) {
   const val = getOptionValue.value(opt) || getDisplayValue.value(opt);
 
-  return innerOptionsValue.value.find((v) => isEqual(v, val)) !== void 0;
+  return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
 }
 
 function closeDropdown() {
@@ -752,7 +752,7 @@ function toggleOption(opt: { [x: string]: string }) {
   const optValue = getOptionValue.value(opt) || getDisplayValue.value(opt);
 
   if (props.multiple !== true) {
-    if (innerValue.value.length === 0 || isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
+    if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
       emit("update:modelValue", props.emitValue === true ? optValue : opt);
       isOpened.value = false;
     }
@@ -766,7 +766,7 @@ function toggleOption(opt: { [x: string]: string }) {
   }
 
   const model = props.modelValue.slice();
-  const index = innerOptionsValue.value.findIndex((v) => isEqual(v, optValue));
+  const index = innerOptionsValue.value.findIndex((v) => _.isEqual(v, optValue));
 
   if (index > -1) {
     model.splice(index, 1);

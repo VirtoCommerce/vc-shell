@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon, VcLabel } from "./../../../components";
+import { VcLabel, VcIcon } from "./../../";
 
 export interface Props {
   label?: string;

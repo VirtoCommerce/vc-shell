@@ -1,4 +1,4 @@
-import _ from "lodash";
+import * as _ from "lodash-es";
 import { default as moment, Duration, RelativeTimeKey } from "moment";
 
 type momentUnit = Extract<moment.RelativeTimeKey, "s" | "m" | "h" | "d" | "w" | "M" | "y">;

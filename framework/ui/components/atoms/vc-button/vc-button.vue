@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-
+import { VcIcon } from "./../vc-icon";
 export interface Props {
   icon?: string | undefined;
   variant?: "primary" | "secondary" | "special" | "danger" | "widget" | "onlytext";

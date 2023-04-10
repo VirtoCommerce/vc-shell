@@ -36,6 +36,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed, nextTick } from "vue";
+import { VcIcon } from "./../vc-icon";
 
 export interface Props {
   shadow?: boolean;

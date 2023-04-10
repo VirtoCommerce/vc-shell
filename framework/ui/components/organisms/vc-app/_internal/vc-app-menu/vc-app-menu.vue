@@ -83,7 +83,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
-import { VcContainer } from "./../../../../../components";
+import { VcContainer, VcIcon } from "./../../../../";
 import { IMenuItems } from "./../../../../../../core/types";
 import { IMenuClickEvent } from "./../../../../../../shared";
 

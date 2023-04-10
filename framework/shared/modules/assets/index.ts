@@ -9,6 +9,6 @@ declare module "@vue/runtime-core" {
   }
 }
 
-export default createModule(components, locales);
+export const AssetsDetailsModule = createModule(components, locales);
 
 export * from "./components";

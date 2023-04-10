@@ -29,7 +29,7 @@ import { VcLabel, VcRow, VcCol } from "./../../../components";
 
 export interface Props {
   label?: string;
-  value?: string;
+  value?: string | number;
   tooltip?: string;
   type?: "default" | "email";
 }

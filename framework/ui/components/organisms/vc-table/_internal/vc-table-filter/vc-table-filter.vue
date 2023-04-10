@@ -36,6 +36,7 @@
         v-if="isPanelVisible"
         @click.self="closePanel"
         ref="filterPanel"
+        :style="filterStyle"
       >
         <div
           class="vc-table-filter__panel-inner tw-bg-white tw-box-border tw-p-5 tw-flex tw-flex-col"
@@ -56,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, watch } from "vue";
+import { defineComponent, ref, watch, computed, nextTick } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -64,8 +65,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { createPopper, Instance } from "@popperjs/core";
-import { VcIcon } from "./../../../../../components";
+import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 
 export interface Props {
   title: string;
@@ -80,9 +80,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const isPanelVisible = ref(false);
-const filterToggle = ref();
-const filterPanel = ref();
-const popper = ref<Instance>();
+const filterToggle = ref<HTMLElement | null>();
+const filterPanel = ref<HTMLElement | null>();
+
+const popper = ref<ComputePositionReturn>();
 
 watch(
   () => props.parentExpanded,
@@ -91,45 +92,28 @@ watch(
   }
 );
 
+const filterStyle = computed(() => ({
+  top: `${popper.value?.y ?? 0}px`,
+  left: `${popper.value?.x ?? 0}px`,
+}));
+
 function openPanel(isMobile: boolean) {
   isPanelVisible.value = !isPanelVisible.value;
 
   if (!isMobile) {
-    const element = document.querySelector(".vc-blade");
     if (isPanelVisible.value) {
       nextTick(() => {
-        popper.value = createPopper(filterToggle.value, filterPanel.value, {
+        computePosition(filterToggle.value, filterPanel.value, {
           placement: "bottom-end",
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [0, 10],
-              },
-            },
-            {
-              name: "preventOverflow",
-              options: {
-                boundary: element,
-              },
-            },
-          ],
-        });
+          middleware: [offset(10)],
+        }).then((item) => (popper.value = item));
       });
-    } else {
-      destroyPopper();
     }
   }
 }
 
 function closePanel() {
   isPanelVisible.value = false;
-  destroyPopper();
-}
-
-function destroyPopper() {
-  // To prevent memory leaks Popper needs to be destroyed.
-  popper.value?.destroy();
 }
 </script>
 

@@ -171,6 +171,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, unref, watch } from "vue";
+import { VcLabel, VcIcon, VcHint } from "./../../";
 
 export interface Props {
   /**

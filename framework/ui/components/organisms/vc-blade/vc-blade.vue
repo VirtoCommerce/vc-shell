@@ -1,19 +1,30 @@
 <template>
   <div
     class="vc-blade tw-relative tw-flex tw-shrink-0 tw-flex-col tw-bg-[color:var(--blade-background-color)] tw-rounded-[var(--blade-border-radius)] tw-shadow-[2px_2px_8px_rgba(126,142,157,0.14)] tw-my-4 tw-mx-2 tw-overflow-hidden tw-transition-[width] tw-duration-200"
+    :class="[
+      $attrs.class,
+      {
+        '!tw-w-full': $isMobile.value,
+        '!tw-w-full !tw-shrink': expanded,
+        '!tw-absolute !tw-z-[2] !tw-top-0 !tw-bottom-0 !tw-left-0 ![width:-webkit-fill-available] !tw-mx-4 !tw-shrink':
+          maximized,
+      },
+    ]"
     :style="{ width: typeof width === 'number' ? `${width}px` : width }"
-    :class="[$attrs.class, { '!tw-w-full !tw-shrink': $isMobile.value || expanded }]"
   >
     <!-- Init blade header -->
     <VcBladeHeader
       class="tw-shrink-0"
       v-if="!$isMobile.value || closable"
-      :expanded="expanded"
+      :maximized="maximized"
+      :expandable="isExpandable"
       :closable="closable"
       :icon="icon"
       :title="title"
       :subtitle="subtitle"
       @close="$emit('close')"
+      @expand="$emit('expand')"
+      @collapse="$emit('collapse')"
     >
       <template
         v-slot:actions
@@ -34,8 +45,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
+import { IBladeContainer } from "./../../../../shared";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -52,22 +64,35 @@ export interface Props {
   subtitle?: string;
   width?: number | string;
   expanded?: boolean;
+  maximized?: boolean;
+  expandable?: boolean;
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
   onClose?: () => void;
+  blades?: IBladeContainer[];
 }
 
 export interface Emits {
   (event: "close"): void;
+  (event: "expand"): void;
+  (event: "collapse"): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   width: "30%",
   closable: true,
+  expandable: true,
   toolbarItems: () => [],
 });
 
 defineEmits<Emits>();
+
+const isExpandable = computed(() => {
+  if (!props.expandable) {
+    return props.expandable;
+  }
+  return props.blades?.length !== 0;
+});
 </script>
 
 <style lang="scss">

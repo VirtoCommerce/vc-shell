@@ -53,6 +53,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
+import { VcLoading, VcIcon, VcLink, VcHint } from "./../../";
 
 export interface Props {
   variant?: "gallery" | "file-upload";

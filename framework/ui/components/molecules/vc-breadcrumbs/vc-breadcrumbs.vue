@@ -18,9 +18,9 @@ import VcBreadcrumbsItem from "./_internal/vc-breadcrumbs-item/vc-breadcrumbs-it
 export interface Props {
   items?: {
     current: boolean;
-    icon: string;
+    icon?: string;
     title: string;
-    clickHandler: () => void;
+    clickHandler?: () => void;
     id: string;
   }[];
 }

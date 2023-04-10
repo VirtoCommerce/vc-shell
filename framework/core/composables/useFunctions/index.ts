@@ -10,7 +10,7 @@ interface IUseFunctions {
   throttle: typeof throttle;
 }
 
-export default function useFunctions(): IUseFunctions {
+export function useFunctions(): IUseFunctions {
   console.debug("useFunctions entry point");
   return {
     debounce,

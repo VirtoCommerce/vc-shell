@@ -1,1 +1,1 @@
-export { VcAppSwitcher } from "./vc-app-switcher";
+export * from "./vc-app-switcher";

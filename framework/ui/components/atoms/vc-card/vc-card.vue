@@ -40,6 +40,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VcIcon } from "./../vc-icon";
 import { ref } from "vue";
 
 export interface Props {

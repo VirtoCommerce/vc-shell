@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VcIcon } from "./../../";
 export interface Props {
   title?: string;
   closable?: boolean;

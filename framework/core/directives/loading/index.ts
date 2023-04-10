@@ -2,7 +2,7 @@ import { Directive, DirectiveBinding } from "vue";
 
 const className = "v-loading";
 
-export default {
+export const loading = {
   mounted: function (el: HTMLElement, binding: DirectiveBinding): void {
     console.log("v-loading mount");
     const loader = document.createElement("div");

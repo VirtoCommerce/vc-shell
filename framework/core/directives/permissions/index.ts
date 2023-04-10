@@ -10,7 +10,7 @@ function checkAndRemove(el: HTMLElement, binding: DirectiveBinding) {
   }
 }
 
-export default {
+export const permissions = {
   mounted(el: HTMLElement, binding: DirectiveBinding): void {
     checkAndRemove(el, binding);
   },

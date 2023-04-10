@@ -6,6 +6,7 @@
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    :expandable="false"
   >
     <VcTable
       class="tw-grow tw-basis-0"
@@ -131,7 +132,6 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
-  param: undefined,
   options: () => ({}),
 });
 

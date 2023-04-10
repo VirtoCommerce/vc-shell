@@ -6,6 +6,8 @@
     width="50%"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -172,6 +174,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef, unref, inject } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   url: "/products",
@@ -179,14 +182,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  IBladeEvent,
-  IBladeToolbar,
-  useFunctions,
-  useI18n,
-  IActionBuilderResult,
-  ITableColumns,
-} from "@vc-shell/framework";
+import { IBladeEvent, IBladeToolbar, useFunctions, IActionBuilderResult, ITableColumns } from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -203,6 +199,8 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "close:children"): void;
   (event: "open:blade", blade: IBladeEvent): void;
 }

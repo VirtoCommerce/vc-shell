@@ -7,6 +7,8 @@
     @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <VcContainer>
       <VcRow>
@@ -145,6 +147,8 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "parent:call", args: IParentCallArgs): void;
 }
 

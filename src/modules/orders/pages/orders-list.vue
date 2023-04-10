@@ -6,6 +6,8 @@
     width="30%"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -193,6 +195,9 @@ export interface Props {
 
 export interface Emits {
   (event: "open:blade", blade: IBladeEvent): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

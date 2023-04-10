@@ -6,6 +6,8 @@
     :expanded="expanded"
     :closable="closable"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <ReviewTable
       :expanded="expanded"
@@ -44,6 +46,8 @@ export type IBladeOptions = IBladeEvent & {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeOptions): void;
 }
 

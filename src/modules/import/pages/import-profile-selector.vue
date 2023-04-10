@@ -6,6 +6,8 @@
     :toolbarItems="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <VcContainer class="import">
       <!-- Import profile widgets-->
@@ -125,6 +127,8 @@ export interface Props {
 
 export interface Emits {
   (event: "open:blade", blade: IBladeOptions): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

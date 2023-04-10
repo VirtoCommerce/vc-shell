@@ -5,8 +5,10 @@
     :expanded="expanded"
     :closable="closable"
     :toolbarItems="bladeToolbar"
-    width="30%"
+    width="50%"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <template v-slot:actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
@@ -266,7 +268,7 @@ import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
-import { debounce, orderBy } from "lodash-es";
+import * as _ from "lodash-es";
 import {
   IImage,
   IProperty,
@@ -305,6 +307,8 @@ export type IBladeOptions = IBladeEvent & {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeOptions): void;
 }
 
@@ -371,7 +375,7 @@ const validateGtin = [
   async (value: string): Promise<string | boolean> => await validate("gtin", value),
 ];
 
-const validate = debounce(
+const validate = _.debounce(
   async (fieldName: string, value: string): Promise<string | boolean> => {
     const sellerProduct = {
       ...product.value,
@@ -517,7 +521,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 const statusText = computed(() => {
   if (productData.value.publicationRequests && productData.value.publicationRequests.length) {
-    return orderBy(productData.value.publicationRequests, ["createdDate"], ["desc"])[0].comment;
+    return _.orderBy(productData.value.publicationRequests, ["createdDate"], ["desc"])[0].comment;
   }
   return null;
 });
@@ -804,6 +808,7 @@ function restoreCollapsed(key: string): boolean {
 defineExpose({
   editImages,
   onBeforeClose,
+  onClose: () => {console.log('test')}
 });
 </script>
 

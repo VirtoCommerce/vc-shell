@@ -7,6 +7,8 @@
     :closable="closable"
     :expanded="expanded"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <VcContainer class="import-new">
       <VcCol>
@@ -243,7 +245,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref, watch, shallowRef } from "vue";
-import { cloneDeep as _cloneDeep } from "lodash-es";
+import * as _ from "lodash-es";
 import ImportProfileDetails from "./import-profile-details.vue";
 
 export default defineComponent({
@@ -299,6 +301,8 @@ export type IBladeOptions = IBladeEvent & {
 export interface Emits {
   (event: "open:blade", blade: IBladeOptions): void;
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "parent:call", args: IParentCallArgs): void;
 }
 
@@ -577,7 +581,7 @@ const estimatedRemaining = computed(() => {
 const previewTotalNum = computed(() => preview.value?.totalCount);
 
 const reversedErrors = computed(() => {
-  const errors = _cloneDeep(importStatus.value.notification.errors);
+  const errors = _.cloneDeep(importStatus.value.notification.errors);
 
   return errors.reverse();
 });

@@ -7,6 +7,7 @@
     :closable="closable"
     :expanded="expanded"
     :toolbarItems="bladeToolbar"
+    :expandable="false"
   >
     <VcContainer>
       <VcStatus

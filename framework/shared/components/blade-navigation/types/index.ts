@@ -1,4 +1,4 @@
-import { Component, ComponentPublicInstance } from "vue";
+import { Component, ComponentPublicInstance, VNode } from "vue";
 import { IMenuItems } from "../../../../core/types";
 import { NavigationFailure } from "vue-router";
 
@@ -10,7 +10,7 @@ export interface IParentCallArgs {
 }
 
 /* extended component */
-export type ExtendedComponent = Component & {
+export type ExtendedComponent = (VNode | Component) & {
   url?: string;
   permissions?: string | string[];
   idx?: number;
@@ -49,4 +49,9 @@ export interface IMenuClickEvent {
 export interface IOpenBlade extends IBladeEvent {
   id?: number;
   navigationCb?: () => Promise<void | NavigationFailure>;
+}
+
+export interface IBladeRef {
+  exposed: IBladeElement;
+  blade: IBladeContainer;
 }

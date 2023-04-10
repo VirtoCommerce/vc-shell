@@ -1,26 +1,23 @@
-/**
- * Status component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcStatus from "./vc-status.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcStatus } from "./";
 
-export default {
-  title: "atoms/vc-status",
+const meta: Meta<typeof VcStatus> = {
+  title: "atoms/VcStatus",
   component: VcStatus,
 };
 
-const Template: Story = (args) => ({
-  components: { VcStatus },
-  setup() {
-    return { args };
-  },
-  template: '<vc-status v-bind="args">Status text</vc-status>',
-});
+export default meta;
+type Story = StoryObj<typeof VcStatus>;
 
-export const Status = Template.bind({});
-Status.storyName = "vc-status";
-Status.args = {
-  disabled: false,
-  clickable: true,
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcStatus },
+    setup() {
+      return { args };
+    },
+    template: '<vc-status v-bind="args">Status text</vc-status>',
+  }),
+  args: {
+    variant: "danger",
+  },
 };

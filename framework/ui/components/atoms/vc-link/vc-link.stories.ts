@@ -1,30 +1,25 @@
-/**
- * Link component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcLink from "./vc-link.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcLink } from "./";
 
-export default {
-  title: "atoms/vc-link",
+const meta: Meta<typeof VcLink> = {
+  title: "atoms/VcLink",
   component: VcLink,
-  argTypes: {
-    click: { action: "click", name: "click" },
-  },
 };
 
-const Template: Story = (args) => ({
-  components: { VcLink },
-  setup() {
-    return { args };
-  },
-  template: '<vc-link v-bind="args">This is a link</vc-link>',
-});
+export default meta;
+type Story = StoryObj<typeof VcLink>;
 
-export const Link = Template.bind({});
-Link.storyName = "vc-link";
-Link.args = {
-  to: undefined,
-  active: false,
-  disabled: false,
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcLink },
+    setup() {
+      return { args };
+    },
+    template: '<vc-link v-bind="args">This is a link</vc-link>',
+  }),
+  args: {
+    to: undefined,
+    active: false,
+    disabled: false,
+  },
 };

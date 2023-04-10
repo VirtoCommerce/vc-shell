@@ -1,25 +1,23 @@
-/**
- * Checkbox component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcCheckbox from "./vc-checkbox.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcCheckbox } from "./";
 
-export default {
-  title: "atoms/vc-checkbox",
+const meta: Meta<typeof VcCheckbox> = {
+  title: "atoms/VcCheckbox",
   component: VcCheckbox,
 };
 
-const Template: Story = (args) => ({
-  components: { VcCheckbox },
-  setup() {
-    return { args };
-  },
-  template: '<vc-checkbox v-bind="args"></vc-checkbox>',
-});
+export default meta;
+type Story = StoryObj<typeof VcCheckbox>;
 
-export const Checkbox = Template.bind({});
-Checkbox.storyName = "vc-checkbox";
-Checkbox.args = {
-  checked: false,
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcCheckbox },
+    setup() {
+      return { args };
+    },
+    template: '<vc-checkbox v-bind="args"></vc-checkbox>',
+  }),
+  args: {
+    modelValue: true,
+  },
 };

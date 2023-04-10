@@ -1,34 +1,26 @@
-/**
- * Button component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcButton from "./vc-button.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcButton } from "./";
 
-export default {
-  title: "atoms/vc-button",
+const meta: Meta<typeof VcButton> = {
+  title: "atoms/VcButton",
   component: VcButton,
-  argTypes: {
-    variant: {
-      options: ["primary", "secondary", "special"],
-      control: { type: "radio" },
-    },
-  },
 };
 
-const Template: Story = (args) => ({
-  components: { VcButton },
-  setup() {
-    return { args };
-  },
-  template: '<vc-button v-bind="args">I am a button</vc-button>',
-});
+export default meta;
+type Story = StoryObj<typeof VcButton>;
 
-export const Button = Template.bind({});
-Button.storyName = "vc-button";
-Button.args = {
-  icon: "fas fa-star",
-  variant: "primary",
-  disabled: false,
-  small: false,
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcButton },
+    setup() {
+      return { args };
+    },
+    template: '<vc-button v-bind="args">I am a button</vc-button>',
+  }),
+  args: {
+    icon: "fas fa-star",
+    variant: "primary",
+    disabled: false,
+    small: false,
+  },
 };

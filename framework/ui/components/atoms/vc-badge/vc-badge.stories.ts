@@ -1,27 +1,25 @@
-/**
- * Badge component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcBadge from "./vc-badge.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcBadge } from "./";
 
-export default {
-  title: "atoms/vc-badge",
+const meta: Meta<typeof VcBadge> = {
+  title: "atoms/VcBadge",
   component: VcBadge,
 };
 
-const Template: Story = (args) => ({
-  components: { VcBadge },
-  setup() {
-    return { args };
-  },
-  template: '<vc-badge v-bind="args">42</vc-badge>',
-});
+export default meta;
+type Story = StoryObj<typeof VcBadge>;
 
-export const Badge = Template.bind({});
-Badge.storyName = "vc-badge";
-Badge.args = {
-  active: false,
-  disabled: false,
-  clickable: true,
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcBadge },
+    setup() {
+      return { args };
+    },
+    template: '<vc-badge v-bind="args">42</vc-badge>',
+  }),
+  args: {
+    active: false,
+    disabled: false,
+    clickable: true,
+  },
 };

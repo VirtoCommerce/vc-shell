@@ -1,23 +1,22 @@
-/**
- * Login Form component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcLoginForm from "./vc-login-form.vue";
-import VcInput from "../../molecules/vc-input/vc-input.vue";
-import VcButton from "../../atoms/vc-button/vc-button.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcLoginForm } from "./";
+import { VcInput, VcButton } from "./../../";
 
-export default {
-  title: "organisms/vc-login-form",
+const meta: Meta<typeof VcLoginForm> = {
+  title: "organisms/VcLoginForm",
   component: VcLoginForm,
 };
 
-const Template: Story = (args) => ({
-  components: { VcLoginForm, VcInput, VcButton },
-  setup() {
-    return { args };
-  },
-  template: `<vc-login-form v-bind="args">
+export default meta;
+type Story = StoryObj<typeof VcLoginForm>;
+
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcLoginForm, VcInput, VcButton },
+    setup() {
+      return { args };
+    },
+    template: `<vc-login-form v-bind="args">
     <vc-input
         ref="loginField"
         class="tw-mb-4 tw-mt-1"
@@ -45,11 +44,9 @@ const Template: Story = (args) => ({
       </vc-button>
     </div>
   </vc-login-form>`,
-});
-
-export const LoginForm = Template.bind({});
-LoginForm.storyName = "vc-login-form";
-LoginForm.args = {
-  background: "images/background.jpg",
-  logo: "images/logo-white.svg",
+  }),
+  args: {
+    background: "images/background.jpg",
+    logo: "images/logo-white.svg",
+  },
 };

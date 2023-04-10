@@ -1,12 +1,8 @@
-/**
- * Image component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcImage from "./vc-image.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcImage } from "./";
 
-export default {
-  title: "atoms/vc-image",
+const meta: Meta<typeof VcImage> = {
+  title: "atoms/VcImage",
   component: VcImage,
   argTypes: {
     aspect: {
@@ -20,20 +16,22 @@ export default {
   },
 };
 
-const Template: Story = (args) => ({
-  components: { VcImage },
-  setup() {
-    return { args };
-  },
-  template: '<div style="width: 400px"><vc-image v-bind="args"></vc-image></div>',
-});
+export default meta;
+type Story = StoryObj<typeof VcImage>;
 
-export const Image = Template.bind({});
-Image.storyName = "vc-image";
-Image.args = {
-  aspect: "1x1",
-  rounded: false,
-  clickable: false,
-  src: "https://placekitten.com/800/600",
-  size: "auto",
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcImage },
+    setup() {
+      return { args };
+    },
+    template: '<div style="width: 400px"><vc-image v-bind="args"></vc-image></div>',
+  }),
+  args: {
+    aspect: "1x1",
+    rounded: false,
+    clickable: false,
+    src: "https://placekitten.com/800/600",
+    size: "auto",
+  },
 };

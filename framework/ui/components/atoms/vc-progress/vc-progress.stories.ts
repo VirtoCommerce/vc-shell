@@ -1,25 +1,24 @@
-/**
- * Progress component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcProgress from "./vc-progress.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcProgress } from "./";
 
-export default {
-  title: "atoms/vc-progress",
+const meta: Meta<typeof VcProgress> = {
+  title: "atoms/VcProgress",
   component: VcProgress,
 };
 
-const Template: Story = (args) => ({
-  components: { VcProgress },
-  setup() {
-    return { args };
-  },
-  template: '<vc-progress v-bind="args"></vc-progress>',
-});
+export default meta;
+type Story = StoryObj<typeof VcProgress>;
 
-export const Progress = Template.bind({});
-Progress.storyName = "vc-progress";
-Progress.args = {
-  value: 30,
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcProgress },
+    setup() {
+      return { args };
+    },
+    template: '<vc-progress v-bind="args"></vc-progress>',
+  }),
+  args: {
+    value: 30,
+    variant: "striped",
+  },
 };

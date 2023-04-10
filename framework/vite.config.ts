@@ -23,10 +23,6 @@ export default getLibraryConfiguration({
     rollupOptions: {
       external: ["vue", "vue-router", "vee-validate", "@vc-shell/config-generator"],
     },
-    minify: "terser",
-    terserOptions: {
-      keep_fnames: true,
-    },
   },
   envPrefix: "APP_",
   define: {

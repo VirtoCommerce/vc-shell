@@ -54,7 +54,7 @@ export interface Props {
   avatar: string;
   name: string;
   role: string;
-  menuItems: IMenuItems[];
+  menuItems?: IMenuItems[];
 }
 const props = withDefaults(defineProps<Props>(), {
   avatar: undefined,

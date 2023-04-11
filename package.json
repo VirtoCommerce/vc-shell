@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.60",
+  "version": "1.0.66",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -11,7 +11,10 @@
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
-    "generate-api-client": "api-client-generator --color"
+    "generate-api-client": "api-client-generator --color",
+    "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s",
+    "version": "cross-env-shell \"yarn version --new-version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .\"",
+    "postversion": "git push origin --tags"
   },
   "devDependencies": {
     "@commitlint/cli": "^12.1.4",

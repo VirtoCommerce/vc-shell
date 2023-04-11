@@ -18,11 +18,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, shallowRef } from "vue";
-import { VcBlade, useI18n, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
+import { VcBlade, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   url: "/reviews",
@@ -90,4 +91,8 @@ const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () 
     onClose: onDeselect,
   });
 };
+
+defineExpose({
+  title,
+});
 </script>

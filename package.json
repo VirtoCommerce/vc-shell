@@ -12,7 +12,7 @@
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
     "generate-api-client": "api-client-generator --color",
-    "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "version": "cross-env-shell \"yarn version --new-version $npm_package_version --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add .\"",
     "postversion": "git push origin --tags"
   },

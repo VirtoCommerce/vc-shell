@@ -19,7 +19,7 @@
       @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
-      @logo:click="openDashboard"
+      @logo:click="$emit('logo:click')"
       :title="title"
     >
       <template v-slot:appSwitcher>
@@ -88,6 +88,7 @@ export interface Emits {
   (event: "open", args: IOpenBlade): void;
   (event: "close", index: number): void;
   (event: "backlink:click", index: number): void;
+  (event: "logo:click"): void;
 }
 
 withDefaults(defineProps<Props>(), {
@@ -104,8 +105,6 @@ const emit = defineEmits<Emits>();
 console.debug("vc-app: Init vc-app");
 
 const instance = getCurrentInstance();
-
-const router = useRouter();
 
 const onMenuItemClick = function ({ item, navigationCb }: IMenuClickEvent) {
   console.debug(`vc-app#onMenuItemClick() called.`);
@@ -124,17 +123,7 @@ const onToolbarButtonClick = function (item: Record<string, unknown>) {
   }
 };
 
-const openDashboard = async () => {
-  console.debug(`openDashboard() called.`);
-
-  // Close all opened pages with onBeforeClose callback
-  await emit("close", 0);
-
-  router.push("/");
-};
-
 defineExpose({
-  openDashboard,
   onToolbarButtonClick,
   onMenuItemClick,
 });

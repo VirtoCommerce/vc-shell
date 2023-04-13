@@ -557,10 +557,13 @@ onMounted(async () => {
       offerDetails.value.sku = generateSku();
     }
 
-    if (offer.value.productId || offerDetails.value.productId || props.options?.sellerProduct?.publishedProductDataId) {
-      await setProductItem(
-        offer.value.productId || offerDetails.value.productId || props.options?.sellerProduct?.publishedProductDataId
-      );
+    let searchableProductId =
+      offer.value.productId ||
+      offerDetails.value.productId ||
+      props.options?.sellerProduct?.publishedProductDataId ||
+      props.options?.sellerProduct?.stagedProductDataId;
+    if (searchableProductId) {
+      await setProductItem(searchableProductId);
     }
   } finally {
     offerLoading.value = false;

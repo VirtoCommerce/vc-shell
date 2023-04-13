@@ -228,7 +228,7 @@
             icon="fas fa-tags"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.OFFERS')"
             :value="offersCount"
-            :disabled="!(product as ISellerProduct).isPublished"
+            :disabled="disabled"
             @click="openOffers"
           >
           </VcWidget>
@@ -359,9 +359,7 @@ const product = computed(() => (props.param ? productData.value : productDetails
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
-const assetsDisabled = computed(
-  () => disabled.value || productData.value.createdBy !== user.value?.userName
-);
+const assetsDisabled = computed(() => disabled.value || productData.value.createdBy !== user.value?.userName);
 
 const assetsCount = computed(() => (productDetails.value && productDetails.value?.assets?.length) || 0);
 

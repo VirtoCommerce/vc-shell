@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -12,7 +12,7 @@
     "type-check": "vue-tsc --noEmit",
     "lint-staged": "lint-staged",
     "generate-api-client": "cross-env APP_API_PLATFORM_URL=https://vcmp-dev.paas.govirto.com/ api-client-generator --color",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0 && git add . && git commit --amend --no-edit",
     "version": "cross-env-shell \"yarn version --new-version $npm_package_version --no-commit-hooks --ignore-scripts --no-git-tag-version --yes && git add .\"",
     "postversion": "git push origin --tags",
     "create:tag": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"

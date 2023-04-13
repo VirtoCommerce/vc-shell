@@ -1,4 +1,9 @@
-## [1.0.69](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.68...v1.0.69) (2023-04-13)
+## [1.0.70](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.68...v1.0.70) (2023-04-13)
+
+
+### Features
+
+* vm-1137 import re run ([2ad2a14](https://github.com/VirtoCommerce/vendor-portal/commit/2ad2a14ccec457ebb9e0b6bba604189b8dccf64b))
 
 
 

@@ -1,3 +1,12 @@
+## [1.0.68](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.67...v1.0.68) (2023-04-13)
+
+
+### Reverts
+
+* @vue/eslint-config-typescript ([90c0fe9](https://github.com/VirtoCommerce/vendor-portal/commit/90c0fe9e97b6d112da8e041bc07b782243b53e94))
+
+
+
 ## [1.0.67](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.66...v1.0.67) (2023-04-13)
 
 

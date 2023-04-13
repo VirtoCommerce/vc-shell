@@ -9,7 +9,7 @@ import {
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
 } from "../../../../api_client/marketplacevendor";
-import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 
 interface ILocation {
   id: string;
@@ -50,7 +50,7 @@ export default (): IUseSellerDetails => {
   watch(
     () => sellerDetails,
     (state) => {
-      modified.value = !isEqual(sellerDetailsCopy, state.value);
+      modified.value = !_.isEqual(sellerDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -71,7 +71,7 @@ export default (): IUseSellerDetails => {
         ...seller,
         addresses: [new CustomerAddress(seller.addresses && seller.addresses.length && seller.addresses[0])],
       });
-      sellerDetailsCopy = _cloneDeep(sellerDetails.value);
+      sellerDetailsCopy = _.cloneDeep(sellerDetails.value);
     } catch (e) {
       console.error(e);
     } finally {
@@ -95,7 +95,7 @@ export default (): IUseSellerDetails => {
       loading.value = true;
       modified.value = false;
       await client.updateSeller(command);
-      sellerDetailsCopy = _cloneDeep(sellerDetails.value);
+      sellerDetailsCopy = _.cloneDeep(sellerDetails.value);
     } catch (e) {
       console.error(e);
       throw e;
@@ -169,7 +169,7 @@ export default (): IUseSellerDetails => {
   }
 
   async function resetEntries() {
-    sellerDetails.value = _cloneDeep(sellerDetailsCopy) as SellerDetails;
+    sellerDetails.value = _.cloneDeep(sellerDetailsCopy) as SellerDetails;
   }
 
   return {

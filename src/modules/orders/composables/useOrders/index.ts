@@ -52,7 +52,7 @@ export default (): IUseOrders => {
     orders.value = await client.searchOrders({
       take: 20,
       ...(query || {}),
-      employeeId: user.value.id,
+      employeeId: user.value?.id,
     } as SearchOrdersQuery);
     currentPage.value = (query?.skip || 0) / Math.max(1, query?.take || 20) + 1;
   });

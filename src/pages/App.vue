@@ -18,6 +18,7 @@
     @backlink:click="closeBlade($event)"
     @open="onOpen"
     @close="closeBlade($event)"
+    @logo:click="openDashboard"
     v-else
   >
     <!-- App Switcher -->
@@ -238,8 +239,8 @@ const menuItems = reactive<IMenuItems[]>([
     component: {
       url: "/",
     },
-    clickHandler(app: IBladeElement) {
-      app.openDashboard();
+    clickHandler() {
+      openDashboard();
     },
   },
   {
@@ -345,6 +346,15 @@ function langInit() {
 function onOpen(args: IOpenBlade) {
   openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb);
 }
+
+const openDashboard = () => {
+  console.debug(`openDashboard() called.`);
+
+  // Close all opened pages with onBeforeClose callback
+  closeBlade(0);
+
+  router.push("/");
+};
 
 async function customizationHandler() {
   await getCurrentSeller();

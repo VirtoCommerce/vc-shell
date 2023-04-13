@@ -6,6 +6,8 @@
     :expanded="expanded"
     :closable="closable"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <template v-slot:actions>
       <Status :review-status="customerReview.reviewStatus"></Status>
@@ -105,6 +107,8 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

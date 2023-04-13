@@ -17,7 +17,7 @@ import {
   IImage,
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
-import { isEqual, cloneDeep } from "lodash-es";
+import * as _ from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -30,7 +30,7 @@ export type TextOfferDetails = IOfferDetails & {
 
 interface IUseOffer {
   offer: Ref<IOffer>;
-  currencyList: Ref<string[]>;
+  currencyList: Ref<{ title: string; value: string }[]>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
   offerDetails: Ref<TextOfferDetails>;
@@ -84,7 +84,7 @@ export default (): IUseOffer => {
   watch(
     [() => offerDetails, () => offerDetailsCopy],
     ([state, stateCopy]) => {
-      modified.value = !isEqual(stateCopy.value, state.value);
+      modified.value = !_.isEqual(stateCopy.value, state.value);
     },
     { deep: true }
   );
@@ -180,7 +180,7 @@ export default (): IUseOffer => {
   }
 
   function makeCopy() {
-    offerDetailsCopy.value = cloneDeep(offerDetails.value);
+    offerDetailsCopy.value = _.cloneDeep(offerDetails.value);
   }
 
   async function deleteOffer(args: { id: string }) {

@@ -6,6 +6,7 @@
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    :expandable="false"
   >
     <VcTable
       class="tw-grow tw-basis-0"
@@ -64,6 +65,8 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeEvent): void;
 }
 
@@ -109,6 +112,7 @@ const columns = ref<ITableColumns[]>([
     id: "name",
     title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TABLE.HEADER.NAME")),
     sortable: true,
+    alwaysVisible: true,
   },
 ]);
 

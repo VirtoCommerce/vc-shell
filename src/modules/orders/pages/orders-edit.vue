@@ -7,6 +7,8 @@
     width="70%"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <VcContainer>
       <VcRow>
@@ -221,6 +223,9 @@ export interface Props {
 
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

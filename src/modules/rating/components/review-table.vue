@@ -29,6 +29,47 @@
       </div>
     </template>
 
+    <template v-slot:mobile-item="{ item }">
+      <div class="tw-p-3">
+        <div class="tw-w-full tw-flex tw-justify-evenly">
+          <div class="tw-grow tw-basis-0">
+            <div class="tw-font-bold tw-text-lg">
+              {{ item.title }}
+            </div>
+          </div>
+          <div>
+            <Status :review-status="item.reviewStatus as CustomerReviewReviewStatus"></Status>
+          </div>
+        </div>
+        <div>
+          <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
+              <VcHint>Rating</VcHint>
+              <VcRating :rating="item.rating as number"></VcRating>
+            </div>
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
+              <VcHint>Created date</VcHint>
+              <div class="tw-truncate tw-mt-1">
+                {{ item.createdDate && moment(item.createdDate).fromNow() }}
+              </div>
+            </div>
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
+              <VcHint>Created by</VcHint>
+              <div class="tw-truncate tw-mt-1">
+                {{ item.createdBy }}
+              </div>
+            </div>
+          </div>
+          <div class="tw-mt-3 tw-w-full">
+            <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
+              <VcHint>Review</VcHint>
+              <div class="tw-truncate tw-mt-1">{{ item.review }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
     <!-- Override rating column template -->
     <template v-slot:item_rating="itemData">
       <VcRating :rating="itemData.item.rating as number"></VcRating>
@@ -42,13 +83,15 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n, VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
+import { VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
 import { CustomerReview, CustomerReviewReviewStatus } from "../../../api_client/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
+import moment from "moment";
+import { useI18n } from "vue-i18n";
 
 // Component
 

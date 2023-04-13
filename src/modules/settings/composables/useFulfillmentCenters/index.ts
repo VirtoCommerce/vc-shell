@@ -9,7 +9,7 @@ import {
   VcmpSellerCatalogClient,
 } from "../../../../api_client/marketplacevendor";
 import { computed, Ref, ref, watch } from "vue";
-import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 
 interface IUseFulfillmentCenters {
   readonly loading: Ref<boolean>;
@@ -49,7 +49,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
   watch(
     () => fulfillmentCenterDetails,
     (state) => {
-      modified.value = !isEqual(fulfillmentCenterDetailsCopy, state.value);
+      modified.value = !_.isEqual(fulfillmentCenterDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -127,7 +127,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
 
   async function handleFulfillmentCenterItem(fulfillmentCenter: IFulfillmentCenter) {
     fulfillmentCenterDetails.value = Object.assign({}, new FulfillmentCenter(fulfillmentCenter as IFulfillmentCenter));
-    fulfillmentCenterDetailsCopy = _cloneDeep(fulfillmentCenterDetails.value);
+    fulfillmentCenterDetailsCopy = _.cloneDeep(fulfillmentCenterDetails.value);
   }
 
   return {

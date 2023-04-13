@@ -1,5 +1,6 @@
 import { getApplicationConfiguration } from "@vc-shell/config-generator";
 import { VitePWA } from "vite-plugin-pwa";
+import { splitVendorChunkPlugin } from "vite";
 
 const mode = process.env.APP_ENV as string;
 
@@ -38,6 +39,7 @@ export default getApplicationConfiguration({
         ],
       },
     }),
+    splitVendorChunkPlugin(),
   ],
   optimizeDeps: {
     include: mode === "development" ? ["ace-builds", "client-oauth2", "quill-delta", "quill"] : [],

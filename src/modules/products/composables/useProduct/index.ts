@@ -1,6 +1,6 @@
 import { computed, Ref, ref, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
-import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 
 import {
   CatalogProduct,
@@ -54,7 +54,7 @@ export default (): IUseProduct => {
   watch(
     () => productDetails,
     (state) => {
-      modified.value = !isEqual(productDetailsCopy, state.value);
+      modified.value = !_.isEqual(productDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -111,7 +111,7 @@ export default (): IUseProduct => {
         properties: product.value.productData?.properties,
         description: product.value.productData?.reviews[0]?.content,
       };
-      productDetailsCopy = _cloneDeep(productDetails.value);
+      productDetailsCopy = _.cloneDeep(productDetails.value);
     } catch (e) {
       console.error(e);
       throw e;

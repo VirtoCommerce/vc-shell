@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.62",
+  "version": "1.0.63",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -11,7 +11,7 @@
     "publish": "lerna publish",
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'apps/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "packages-changelog": "lerna exec --scope=@vc-shell/{config-generator,api-client-generator,framework} --concurrency 1 --stream -- 'conventional-changelog --preset angular --release-count 0 --commit-path $PWD --pkg $PWD/package.json --outfile $PWD/CHANGELOG.md --lerna-package $LERNA_PACKAGE_NAME'",
     "bump-version": "cross-env-shell 'f() { lerna version \"$@\" --conventional-commits --no-changelog --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && lerna run create:tag && yarn packages-changelog && yarn version --\"$@\" && yarn changelog && git add . && git commit --amend --no-edit;}; f'",
     "postversion": "git push origin --tags",
@@ -30,7 +30,6 @@
     "cli/*"
   ],
   "devDependencies": {
-    "conventional-changelog-cli": "^2.2.2",
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
     "@commitlint/config-lerna-scopes": "^17.4.2",
@@ -53,6 +52,7 @@
     "@vue/eslint-config-typescript": "^10.0.0",
     "autoprefixer": "^10.4.4",
     "chalk": "^2.4.2",
+    "conventional-changelog-cli": "^2.2.2",
     "cross-env": "^7.0.3",
     "eslint": "~8.22.0",
     "eslint-import-resolver-typescript": "^2.5.0",

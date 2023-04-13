@@ -1,4 +1,9 @@
-## 1.0.62 (2023-04-13)
+## 1.0.63 (2023-04-13)
+
+
+### Features
+
+* bulk delete in vc-table ([56e8a43](https://github.com/VirtoCommerce/vc-shell/commit/56e8a43dd079654a6ee6d45c1a543b9bbb591f36))
 
 
 

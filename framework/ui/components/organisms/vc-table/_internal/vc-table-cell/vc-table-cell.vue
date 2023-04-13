@@ -88,7 +88,6 @@
 import { computed } from "vue";
 import moment from "moment";
 import { ITableColumns } from "./../../../../../../core/types";
-import { VcImage, VcStatus, VcStatusIcon, VcLink } from "./../../../../../components";
 
 export interface Props {
   cell: ITableColumns;

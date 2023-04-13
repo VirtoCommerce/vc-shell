@@ -37,6 +37,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VcHint } from "./../vc-hint";
 export interface Props {
   modelValue?: boolean;
   disabled?: boolean;

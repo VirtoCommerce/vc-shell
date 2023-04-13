@@ -27,6 +27,7 @@
           class="vc-blade-toolbar-button__dropdown"
           v-if="isDropActive"
           ref="bladeDropRef"
+          :style="dropStyle"
         >
           <div
             class="vc-blade-toolbar-button__dropdown-item"
@@ -47,7 +48,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref } from "vue";
+import { defineComponent, ref, computed, nextTick } from "vue";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -55,8 +56,8 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../../../../../components";
-import { createPopper, Instance } from "@popperjs/core";
+import { VcIcon } from "./../../../../../../";
+import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 import { IBladeDropdownItem } from "./../../../../../../../../core/types";
 
 export interface Props {
@@ -65,7 +66,7 @@ export interface Props {
   title?: string | unknown;
   bladeOptions?: Record<string, unknown>;
   disabled?: boolean;
-  dropdownItems?: { id: number; title: string; icon?: string; clickHandler?(): void }[];
+  dropdownItems?: IBladeDropdownItem[];
   clickHandler?(): void;
 }
 
@@ -84,12 +85,17 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const popper = ref<Instance>();
+const popper = ref<ComputePositionReturn>();
 const isWaiting = ref(false);
 const isDropActive = ref(false);
 const bladeDropToggle = ref();
 const dropButtonRef = ref();
 const bladeDropRef = ref();
+
+const dropStyle = computed(() => ({
+  top: `${popper.value?.y ?? 0}px`,
+  left: `${popper.value?.x ?? 0}px`,
+}));
 
 async function onClick(): Promise<void> {
   console.debug("vc-blade-toolbar-item#onClick()");
@@ -114,21 +120,14 @@ function toggleDropdown() {
   if (props.dropdownItems?.length) {
     if (isDropActive.value) {
       isDropActive.value = false;
-      popper.value?.destroy();
     } else {
       isDropActive.value = true;
+
       nextTick(() => {
-        popper.value = createPopper(bladeDropToggle.value, bladeDropRef.value, {
+        computePosition(bladeDropToggle.value, bladeDropRef.value, {
           placement: "bottom",
-          modifiers: [
-            {
-              name: "offset",
-              options: {
-                offset: [70, 5],
-              },
-            },
-          ],
-        });
+          middleware: [offset(10)],
+        }).then((item) => (popper.value = item));
       });
     }
   }

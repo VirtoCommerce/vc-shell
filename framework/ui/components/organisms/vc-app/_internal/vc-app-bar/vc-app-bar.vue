@@ -28,7 +28,7 @@
         v-if="blades.length === 1"
         class="tw-overflow-ellipsis tw-overflow-hidden tw-whitespace-nowrap tw-text-2xl tw-leading-header tw-ml-2"
       >
-        {{ blades[0].title }}
+        {{ blades[0].exposed.title }}
       </div>
 
       <!-- Show back link when more than one blade is opened -->
@@ -92,22 +92,18 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "./../../../../../components";
+import { VcIcon, VcLink } from "./../../../../";
 import { IBladeToolbar } from "./../../../../../../core/types";
-import { IBladeElement } from "./../../../../../../shared";
+import { IBladeRef } from "./../../../../../../shared";
 
 export interface Props {
   logo: string;
-  blades: IBladeElement[];
+  blades: IBladeRef[];
   buttons: IBladeToolbar[];
   title?: string;
 }
 
-withDefaults(defineProps<Props>(), {
-  logo: "",
-  blades: () => [],
-  buttons: () => [],
-});
+defineProps<Props>();
 
 defineEmits(["logo:click", "backlink:click", "toolbarbutton:click", "menubutton:click"]);
 </script>

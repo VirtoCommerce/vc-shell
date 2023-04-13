@@ -38,7 +38,7 @@
       <VcBladeNavigation
         @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
-        @onParentCall="(e) => onParentCall(e.id, e.cb)"
+        @onParentCall="(e) => onParentCall(e.id, e.args)"
         :blades="blades"
         :parentBladeOptions="parentBladeOptions"
         :parentBladeParam="parentBladeParam"
@@ -80,11 +80,10 @@ import {
   usePermissions,
   useSettings,
   useUser,
-  VcAppSwitcher,
   useBladeNavigation,
-  VcBladeNavigation,
   IOpenBlade,
   IBladeElement,
+  ExtendedComponent,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -99,15 +98,9 @@ import logoImage from "/assets/logo.svg";
 
 import { DefaultList } from "../modules/default";
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
-const {
-  t,
-  locale: currentLocale,
-  availableLocales,
-  getLocaleMessage,
-} = useI18n();
 const { user, loadUser, signOut } = useUser();
 const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
-usePermissions();
+// const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { delay } = useFunctions();
 const { blades, bladesRefs, parentBladeOptions, parentBladeParam, openBlade, closeBlade, onParentCall } =
@@ -118,7 +111,7 @@ const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const isChangePasswordActive = ref(false);
-const pages = inject("pages");
+const pages = inject<ExtendedComponent[]>("pages");
 const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
@@ -233,6 +226,9 @@ const menuItems = reactive<IMenuItems[]>([
     title: computed(() => t("SHELL.MENU.DASHBOARD")),
     icon: "fas fa-home",
     isVisible: true,
+    component: {
+      url: "/",
+    },
     clickHandler(app: IBladeElement) {
       app.openDashboard();
     },

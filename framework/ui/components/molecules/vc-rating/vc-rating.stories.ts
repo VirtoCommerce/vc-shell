@@ -1,23 +1,23 @@
-/**
- * Rating component.
- * @author Aleksandr Vishnyakov <av@virtoway.com>
- */
-import { Story } from "@storybook/vue3";
-import VcRating from "./vc-rating.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcRating } from "./";
 
-export default {
-  title: "atoms/vc-rating",
+const meta: Meta<typeof VcRating> = {
+  title: "molecules/VcRating",
   component: VcRating,
 };
 
-const Template: Story = (args) => ({
-  components: { VcRating },
-  setup() {
-    return { args };
-  },
-  template: '<vc-rating v-bind="args"></vc-rating>',
-});
+export default meta;
+type Story = StoryObj<typeof VcRating>;
 
-export const Rating = Template.bind({});
-Rating.storyName = "vc-rating";
-Rating.args = {};
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcRating },
+    setup() {
+      return { args };
+    },
+    template: '<vc-rating v-bind="args"></vc-rating>',
+  }),
+  args: {
+    rating: 4,
+  },
+};

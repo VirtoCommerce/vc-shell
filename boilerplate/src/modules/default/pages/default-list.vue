@@ -6,6 +6,8 @@
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
     <VcTable
@@ -23,6 +25,7 @@
       :selectedItemId="selectedItemId"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
+      state-key="default_list"
     >
     </VcTable>
   </VcBlade>
@@ -60,6 +63,8 @@ export interface Props {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:children"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeEvent);
 }
 
@@ -147,13 +152,30 @@ const onItemClick = (item: { id: string }) => {
 };
 
 const onHeaderClick = (item: ITableColumns) => {
-  const sortBy = [":DESC", ":ASC", ""];
+  const sortOptions = ["DESC", "ASC", ""];
+
   if (item.sortable) {
-    item.sortDirection = (item.sortDirection ?? 0) + 1;
-    if (sortBy[item.sortDirection % 3] === "") {
-      sort.value = `${sortBy[item.sortDirection % 3]}`;
+    if (sort.value.split(":")[0] === item.id) {
+      const index = sortOptions.findIndex((x) => {
+        const sorting = sort.value.split(":")[1];
+        if (sorting) {
+          return x === sorting;
+        } else {
+          return x === "";
+        }
+      });
+
+      if (index !== -1) {
+        const newSort = sortOptions[(index + 1) % sortOptions.length];
+
+        if (newSort === "") {
+          sort.value = `${item.id}`;
+        } else {
+          sort.value = `${item.id}:${newSort}`;
+        }
+      }
     } else {
-      sort.value = `${item.id}${sortBy[item.sortDirection % 3]}`;
+      sort.value = `${item.id}:${sortOptions[0]}`;
     }
   }
 };

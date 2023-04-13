@@ -93,8 +93,8 @@
 
         <VcHint
           class="tw-mt-3 !tw-text-[#f14e4e]"
-          v-for="err in form.errors"
-          :key="err"
+          v-for="(err, i) in form.errors"
+          :key="i"
         >
           <!-- TODO: stylizing-->
           {{ (err as IIdentityError).code ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err }}
@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, reactive } from "vue";
+import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { VcInput, VcHint, VcButton, VcPopup, VcForm, IIdentityError, useUser } from "@vc-shell/framework";
 
@@ -153,10 +153,10 @@ function validate() {
     if (form.password || form.confirmPassword) {
       form.errors = (await validatePassword(form.password)).errors;
       if (form.confirmPassword !== form.password) {
-        form.errors.push({ code: "Repeat-password" });
+        (form.errors as IIdentityError[]).push({ code: "Repeat-password" });
       }
       if (form.confirmPassword === form.currentPassword && form.password === form.currentPassword) {
-        form.errors.push({ code: "Equal-passwords" });
+        (form.errors as IIdentityError[]).push({ code: "Equal-passwords" });
       }
       form.isValid = form.errors.length == 0;
     }

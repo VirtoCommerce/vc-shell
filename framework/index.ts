@@ -4,7 +4,8 @@ import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import { i18n } from "./core/plugins";
-import { default as SharedModule } from "./shared";
+import { SharedModule } from "./shared";
+import * as componentLocales from "./ui/locales";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
@@ -14,6 +15,11 @@ export default {
     app.use(i18n);
     // Left for backward compatibility
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
+
+    // Components locales
+    Object.entries(componentLocales).forEach(([key, message]) => {
+      i18n.global.mergeLocaleMessage(key, message);
+    });
 
     // Install libraries
     app.use(Vue3TouchEvents);

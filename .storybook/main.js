@@ -1,24 +1,26 @@
-const { mergeConfig } = require('vite');
-
+const {
+  mergeConfig
+} = require('vite');
 module.exports = {
-  stories: ['../@(framework|apps)/*/src/**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  stories: ['../framework/ui/**/*.stories.ts'],
   addons: ['@storybook/addon-docs', '@storybook/addon-controls', '@storybook/addon-backgrounds'],
-
-  typescript: {
-    check: false,
+  core: {
+    builder: '@storybook/builder-vite'
   },
-
-  core: { builder: "@storybook/builder-vite" },
-
+  staticDirs: ['./assets'],
   async viteFinal(config) {
-      return mergeConfig(config, {
-          resolve: {
-              preserveSymlinks: true,
-              alias: {
-                  "@vc-shell/framework": "@vc-shell/framework/index.ts",
-              },
-          },
-
-      })
+    return mergeConfig(config, {
+      resolve: {
+        preserveSymlinks: true,
+        alias: {
+          "@vc-shell/framework/dist/index.css": "@vc-shell/framework/dist/index.css",
+          "@vc-shell/framework": "@vc-shell/framework/index.ts",
+        }
+      }
+    });
   },
-}
+  framework: {
+    name: '@storybook/vue3-vite',
+    options: {}
+  },
+};

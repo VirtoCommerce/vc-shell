@@ -1,5 +1,5 @@
 import { App } from "vue";
-import { default as i18n } from "../i18n";
+import { i18n } from "./../i18n";
 
 export const createModule = (components: unknown, locales?: unknown) => ({
   install(app: App): void {

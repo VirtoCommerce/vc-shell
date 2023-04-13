@@ -1,4 +1,4 @@
-import { useUser } from "./../";
+import { useUser } from "./../useUser";
 import { computed, Ref, ref } from "vue";
 import { SettingClient } from "./../../api";
 
@@ -18,7 +18,7 @@ const uiSettings = ref<IUISetting>({
   logo: undefined,
   title: undefined,
 });
-export default (): IUseSettings => {
+export function useSettings(): IUseSettings {
   const { getAccessToken } = useUser();
 
   async function getApiClient() {
@@ -58,4 +58,4 @@ export default (): IUseSettings => {
     getUiCustomizationSettings,
     applySettings,
   };
-};
+}

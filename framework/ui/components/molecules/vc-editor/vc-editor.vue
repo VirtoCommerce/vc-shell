@@ -51,6 +51,7 @@ import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { useUser } from "./../../../../core/composables";
 import { ref, unref, watch } from "vue";
 import ImageUploader from "quill-image-uploader";
+import { VcLabel, VcHint } from "./../../";
 
 export interface Props {
   placeholder?: string;

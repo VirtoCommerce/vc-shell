@@ -1,1 +1,1 @@
-export { default as camelToSnake } from "./camelToSnake";
+export * from "./camelToSnake";

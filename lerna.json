@@ -1,10 +1,5 @@
 {
   "npmClient": "yarn",
-  "packages": [
-    "apps/*",
-    "framework",
-    "cli/*"
-  ],
   "useWorkspaces": true,
   "version": "independent",
   "command": {

@@ -1,6 +1,9 @@
 <template>
   <div class="vc-app tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-m-0 vc-theme_light">
-    <VcLoading v-if="loading" active></VcLoading>
+    <VcLoading
+      v-if="loading"
+      active
+    ></VcLoading>
 
     <VcLoginForm
       logo="/assets/logo-white.svg"
@@ -71,7 +74,10 @@
           ></VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span v-if="$isDesktop.value" class="tw-grow tw-basis-0"></span>
+          <span
+            v-if="$isDesktop.value"
+            class="tw-grow tw-basis-0"
+          ></span>
           <vc-button
             variant="primary"
             :disabled="loading || !form.isValid || !form.tokenIsValid"
@@ -81,7 +87,12 @@
           </vc-button>
         </div>
 
-        <VcHint class="tw-mt-3" style="color: #f14e4e" v-for="error in form.errors" :key="error">
+        <VcHint
+          class="tw-mt-3"
+          style="color: #f14e4e"
+          v-for="error in form.errors"
+          :key="error"
+        >
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.INVITATION.ERRORS.${error}`) }}
         </VcHint>
@@ -91,10 +102,10 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue";
-import { useUser, useForm, useI18n } from "@vc-shell/framework";
+import { reactive, onMounted, computed } from "vue";
+import { useUser } from "@vc-shell/framework";
 import { useRouter } from "vue-router";
-import { useIsFormValid, Field } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 
 useForm({ validateOnMount: false });
 
@@ -115,14 +126,17 @@ const props = defineProps({
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
 const isFormValid = useIsFormValid();
-const { t } = useI18n();
-
+const isDirty = useIsFormDirty();
 const form = reactive({
   isValid: false,
   tokenIsValid: false,
   errors: [],
   password: "",
   confirmPassword: "",
+});
+
+const isDisabled = computed(() => {
+  return !isDirty.value || !isFormValid.value;
 });
 
 onMounted(async () => {
@@ -139,7 +153,7 @@ const validate = async () => {
     if (form.confirmPassword && form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
     }
-    form.isValid = form.errors.length == 0 && isFormValid.value;
+    form.isValid = form.errors.length == 0 && !isDisabled.value;
   }
 };
 

@@ -71,6 +71,7 @@
 import { ref } from "vue";
 import { clickOutside as vClickOutside } from "./../../../../../../core/directives";
 import { IImage } from "./../../../../../../core/types";
+import { VcImage, VcIcon } from "./../../../../";
 
 export interface Props {
   image: IImage;

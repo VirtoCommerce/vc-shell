@@ -8,7 +8,7 @@ interface IUseAppSwitcher {
   switchApp: (app: AppDescriptor) => void;
 }
 
-export default (): IUseAppSwitcher => {
+export function useAppSwitcher(): IUseAppSwitcher {
   const { checkPermission } = usePermissions();
   const appsList = ref<AppDescriptor[]>([]);
 
@@ -46,4 +46,4 @@ export default (): IUseAppSwitcher => {
     getApps,
     switchApp,
   };
-};
+}

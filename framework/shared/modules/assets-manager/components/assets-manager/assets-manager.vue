@@ -5,7 +5,9 @@
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
-    width="50%"
+    width="70%"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <div
       class="tw-relative tw-h-full"
@@ -147,7 +149,7 @@ import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
-import { cloneDeep, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 
 export interface Props {
   expanded?: boolean;
@@ -256,14 +258,14 @@ const columns = ref<ITableColumns[]>([
 watch(
   () => defaultAssets.value,
   (newVal) => {
-    modified.value = !isEqual(newVal, assetsCopy);
+    modified.value = !_.isEqual(newVal, assetsCopy);
   },
   { deep: true }
 );
 
 onMounted(() => {
   defaultAssets.value = props.options?.assets;
-  assetsCopy = cloneDeep(props.options?.assets);
+  assetsCopy = _.cloneDeep(props.options?.assets);
 });
 
 function sortAssets(event: { dragIndex: number; dropIndex: number; value: Asset[] }) {

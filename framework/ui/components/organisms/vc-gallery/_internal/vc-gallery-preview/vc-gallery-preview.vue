@@ -61,7 +61,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { VcPopup } from "./../../../../../components";
+import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
 import { IImage } from "./../../../../../../core/types";
 
 export interface Props {

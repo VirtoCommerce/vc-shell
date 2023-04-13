@@ -6,7 +6,7 @@ module.exports = {
   },
   ignorePatterns: ["**/*.js"],
   plugins: ['@typescript-eslint', 'vue'],
-  extends: ["plugin:vue/vue3-essential", "eslint:recommended", "plugin:import/recommended", "plugin:import/typescript", "@vue/typescript/recommended", "@vue/prettier", "@vue/eslint-config-typescript/recommended"],
+  extends: ["plugin:vue/vue3-essential", "eslint:recommended", "plugin:import/recommended", "plugin:import/typescript", "@vue/typescript/recommended", "@vue/prettier", "@vue/eslint-config-typescript/recommended", "plugin:storybook/recommended"],
   parser: "vue-eslint-parser",
   parserOptions: {
     ecmaVersion: 2020
@@ -16,6 +16,6 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     "@typescript-eslint/ban-ts-comment": "warn",
     "@typescript-eslint/no-unused-vars": "warn",
-    "vue/multi-word-component-names": 'off',
-  },
+    "vue/multi-word-component-names": 'off'
+  }
 };

@@ -24,7 +24,7 @@
       ></VcIcon>
     </div>
     <div
-      class="tw-absolute tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-z-[9999] tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] tw-w-min tw-z-[10000]"
+      class="tw-absolute tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] tw-w-min tw-z-[10000]"
       v-if="isDropActive"
     >
       <div
@@ -46,7 +46,7 @@ import { ref } from "vue";
 export interface Props {
   title: string;
   value: string;
-  languageItems: { lang: string; title: string; clickHandler: () => void }[];
+  languageItems: { lang: string; title: string; clickHandler: (lang: string) => void }[];
 }
 
 withDefaults(defineProps<Props>(), {

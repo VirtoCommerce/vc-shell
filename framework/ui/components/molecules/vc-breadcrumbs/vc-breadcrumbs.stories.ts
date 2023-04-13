@@ -1,39 +1,40 @@
-/**
- * Breadcrumbs component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcBreadcrumbs from "./vc-breadcrumbs.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcBreadcrumbs } from "./";
 
-export default {
-  title: "molecules/vc-breadcrumbs",
+const meta: Meta<typeof VcBreadcrumbs> = {
+  title: "molecules/VcBreadcrumbs",
   component: VcBreadcrumbs,
 };
 
-const Template: Story = (args) => ({
-  components: { VcBreadcrumbs },
-  setup() {
-    return { args };
-  },
-  template: '<vc-breadcrumbs v-bind="args"></vc-breadcrumbs>',
-});
+export default meta;
+type Story = StoryObj<typeof VcBreadcrumbs>;
 
-export const Breadcrumbs = Template.bind({});
-Breadcrumbs.storyName = "vc-breadcrumbs";
-Breadcrumbs.args = {
-  items: [
-    {
-      id: 0,
-      title: "Back",
-      icon: "fas fa-arrow-left",
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcBreadcrumbs },
+    setup() {
+      return { args };
     },
-    {
-      id: 1,
-      title: "Electronics",
-    },
-    {
-      id: 2,
-      title: "Desktop",
-    },
-  ],
+    template: '<vc-breadcrumbs v-bind="args"></vc-breadcrumbs>',
+  }),
+  args: {
+    items: [
+      {
+        id: "0",
+        title: "Back",
+        icon: "fas fa-arrow-left",
+        current: false,
+      },
+      {
+        id: "1",
+        title: "Electronics",
+        current: false,
+      },
+      {
+        id: "2",
+        title: "Desktop",
+        current: true,
+      },
+    ],
+  },
 };

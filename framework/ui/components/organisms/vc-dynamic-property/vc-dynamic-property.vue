@@ -329,6 +329,7 @@
 import { ref, onMounted, computed } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
+import { VcSelect, VcInput, VcTextarea, VcCheckbox, VcCodeEditor } from "./../../";
 
 export interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,23 +1,21 @@
-/**
- * Hint component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcHint from "./vc-hint.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcHint } from "./";
 
-export default {
-  title: "atoms/vc-hint",
+const meta: Meta<typeof VcHint> = {
+  title: "atoms/VcHint",
   component: VcHint,
 };
 
-const Template: Story = (args) => ({
-  components: { VcHint },
-  setup() {
-    return { args };
-  },
-  template: '<vc-hint v-bind="args">This is a hint</vc-hint>',
-});
+export default meta;
+type Story = StoryObj<typeof VcHint>;
 
-export const Hint = Template.bind({});
-Hint.storyName = "vc-hint";
-Hint.args = {};
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcHint },
+    setup() {
+      return { args };
+    },
+    template: '<vc-hint v-bind="args">This is a hint</vc-hint>',
+  }),
+  args: {},
+};

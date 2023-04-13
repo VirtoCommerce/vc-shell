@@ -34,7 +34,7 @@ export interface IBladeToolbar {
 }
 
 export interface IBladeDropdownItem {
-  id: number;
+  id: string;
   title: string;
   icon?: string;
   clickHandler?(): void;

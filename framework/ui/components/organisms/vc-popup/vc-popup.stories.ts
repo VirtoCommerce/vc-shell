@@ -1,23 +1,21 @@
-/**
- * Popup component.
- * @author Iurii A Taranov <me@flanker72.ru>
- */
-import { Story } from "@storybook/vue3";
-import VcPopup from "./vc-popup.vue";
+import type { Meta, StoryObj } from "@storybook/vue3";
+import { VcPopup } from "./";
 
-export default {
-  title: "organisms/vc-popup",
+const meta: Meta<typeof VcPopup> = {
+  title: "organisms/VcPopup",
   component: VcPopup,
 };
 
-const Template: Story = (args) => ({
-  components: { VcPopup },
-  setup() {
-    return { args };
-  },
-  template: '<vc-popup v-bind="args"></vc-popup>',
-});
+export default meta;
+type Story = StoryObj<typeof VcPopup>;
 
-export const Popup = Template.bind({});
-Popup.storyName = "vc-popup";
-Popup.args = {};
+export const Primary: Story = {
+  render: (args) => ({
+    components: { VcPopup },
+    setup() {
+      return { args };
+    },
+    template: '<vc-popup v-bind="args"></vc-popup>',
+  }),
+  args: {},
+};

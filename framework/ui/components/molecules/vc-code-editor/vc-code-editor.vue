@@ -45,7 +45,8 @@
 import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
-import { ref, unref, watch } from "vue";
+import { ref, unref, watch, onMounted } from "vue";
+import { VcLabel, VcHint } from "./../../";
 
 export interface Props {
   placeholder?: string;
@@ -70,13 +71,9 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 const content = ref();
 
-watch(
-  () => props.modelValue,
-  (value) => {
-    let init = unref(value);
-    emit("update:modelValue", init);
-  }
-);
+onMounted(() => {
+  content.value = props.modelValue;
+});
 
 function onInput() {
   emit("update:modelValue", content.value);

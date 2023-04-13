@@ -36,6 +36,8 @@
 
     "ui/components",
     "ui/types/*.ts",
+    "ui/locales/*.ts",
+    "ui/locales/*.json",
 
     "shared/**/*.vue",
     "shared/**/*.ts",

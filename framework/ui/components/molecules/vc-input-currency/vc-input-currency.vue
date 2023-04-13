@@ -58,6 +58,7 @@
 <script lang="ts" setup>
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
 import { watch } from "vue";
+import { VcSelect, VcInput } from "./../../";
 
 export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
 

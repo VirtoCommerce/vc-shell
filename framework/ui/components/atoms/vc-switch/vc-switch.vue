@@ -30,6 +30,7 @@
 </template>
 
 <script lang="ts" setup>
+import { VcLabel, VcHint } from "./../../";
 export interface Props {
   modelValue: boolean;
   disabled?: boolean;

@@ -28,8 +28,8 @@
 
 <script lang="ts" setup>
 export interface Props {
-  logo: string;
-  background: string;
+  logo?: string;
+  background?: string;
   title?: string;
 }
 

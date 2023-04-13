@@ -19,7 +19,7 @@
       @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
-      @logo:click="openDashboard"
+      @logo:click="$emit('logo:click')"
       :title="title"
     >
       <template v-slot:appSwitcher>
@@ -39,7 +39,7 @@
       ></VcAppMenu>
 
       <!-- Workspace blades -->
-      <div class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0">
+      <div class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative">
         <slot name="bladeNavigation"></slot>
       </div>
 
@@ -68,7 +68,7 @@ export default defineComponent({
 import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { ExtendedComponent, IBladeElement, IMenuClickEvent, IOpenBlade } from "./../../../../shared";
+import { ExtendedComponent, IBladeRef, IMenuClickEvent, IOpenBlade } from "./../../../../shared";
 
 export interface Props {
   pages?: ExtendedComponent[];
@@ -80,7 +80,7 @@ export interface Props {
   logo?: string;
   version?: string;
   theme?: "light" | "dark";
-  bladesRefs?: IBladeElement[];
+  bladesRefs?: IBladeRef[];
   title?: string;
 }
 
@@ -88,14 +88,8 @@ export interface Emits {
   (event: "open", args: IOpenBlade): void;
   (event: "close", index: number): void;
   (event: "backlink:click", index: number): void;
+  (event: "logo:click"): void;
 }
-
-// defineSlots<{
-//   appSwitcher: unknown;
-//   bladeNavigation: unknown;
-//   notifications: unknown;
-//   passwordChange: unknown;
-// }>();
 
 withDefaults(defineProps<Props>(), {
   pages: () => [],
@@ -111,8 +105,6 @@ const emit = defineEmits<Emits>();
 console.debug("vc-app: Init vc-app");
 
 const instance = getCurrentInstance();
-
-const router = useRouter();
 
 const onMenuItemClick = function ({ item, navigationCb }: IMenuClickEvent) {
   console.debug(`vc-app#onMenuItemClick() called.`);
@@ -131,17 +123,7 @@ const onToolbarButtonClick = function (item: Record<string, unknown>) {
   }
 };
 
-const openDashboard = async () => {
-  console.debug(`openDashboard() called.`);
-
-  // Close all opened pages with onBeforeClose callback
-  await emit("close", 0);
-
-  router.push("/");
-};
-
 defineExpose({
-  openDashboard,
   onToolbarButtonClick,
   onMenuItemClick,
 });

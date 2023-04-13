@@ -31,7 +31,6 @@
             @dragover="onItemDragOver"
             @dragleave="onItemDragLeave"
             @drop="onItemDrop($event, image)"
-            @touchstart="onItemMouseDown"
           ></VcGalleryItem>
           <VcFileUpload
             v-if="!disabled && !hideAfterUpload"
@@ -69,7 +68,7 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { IImage } from "../../../../core/types";
-import { VcLabel, VcFileUpload } from "./../../../components";
+import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
 
@@ -157,22 +156,24 @@ const updateOrder = () => {
 };
 
 function onItemMouseDown(event: MouseEvent & { currentTarget?: { draggable: boolean } }) {
-  if (!props.disableDrag) {
+  if (!props.disableDrag && !props.disabled) {
     event.currentTarget.draggable = true;
     return;
   }
 }
 
 function onItemDragStart(event: DragEvent, item: IImage) {
-  draggedItem.value = item;
-  draggedElement.value = event.target as HTMLElement;
-  event.dataTransfer.setData("text", "gallery_reorder");
+  if (!props.disableDrag && !props.disabled) {
+    draggedItem.value = item;
+    draggedElement.value = event.target as HTMLElement;
+    event.dataTransfer.setData("text", "gallery_reorder");
+  }
 }
 
 function onItemDragOver(event: DragEvent) {
   let dropItem = findParentElement(event.target as HTMLElement);
 
-  if (!props.disableDrag && draggedItem.value && dropItem) {
+  if (!props.disableDrag && !props.disabled && draggedItem.value && dropItem) {
     event.preventDefault();
 
     let containerOffset = galleryRef.value.getBoundingClientRect();
@@ -201,7 +202,7 @@ function onItemDragOver(event: DragEvent) {
 }
 
 function onItemDragLeave(event: DragEvent) {
-  if (!props.disableDrag && draggedItem.value) {
+  if (!props.disableDrag && !props.disabled && draggedItem.value) {
     event.preventDefault();
 
     reorderGalleryRef.value.style.display = "none";

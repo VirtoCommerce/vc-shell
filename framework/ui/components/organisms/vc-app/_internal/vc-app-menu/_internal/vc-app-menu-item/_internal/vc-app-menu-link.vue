@@ -38,6 +38,7 @@
 </template>
 <script lang="ts" setup>
 import { ExtendedComponent } from "./../../../../../../../../../shared";
+import { VcIcon } from "./../../../../../../../";
 
 export interface Props {
   isActive?: boolean;

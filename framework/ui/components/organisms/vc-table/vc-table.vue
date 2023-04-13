@@ -201,7 +201,7 @@
               class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
             ></div>
           </thead>
-          <div
+          <!-- <div
             class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
             v-if="allSelected"
           >
@@ -224,7 +224,7 @@
                 >
               </div>
             </div>
-          </div>
+          </div> -->
           <tbody
             v-if="items"
             class="vc-table__body"
@@ -652,13 +652,13 @@ watch(
   { deep: true, immediate: true }
 );
 
-function handleBulkSelection() {
-  bulkSelected.value = !bulkSelected.value;
+// function handleBulkSelection() {
+//   bulkSelected.value = !bulkSelected.value;
 
-  if (!bulkSelected.value) {
-    selection.value = [];
-  }
-}
+//   if (!bulkSelected.value) {
+//     selection.value = [];
+//   }
+// }
 
 function isSelected(item: TableItemType) {
   return selection.value.indexOf(item) > -1;
@@ -750,7 +750,7 @@ const arrowStyle = computed(() => {
 
 async function calculateActions(items: TableItemType[]) {
   if (typeof props.itemActionBuilder === "function") {
-    let populatedItems = [];
+    const populatedItems = [];
     for (let index = 0; index < items.length; index++) {
       if (typeof items[index] === "object") {
         const elementWithActions = await props.itemActionBuilder(items[index] as TableItem);
@@ -774,7 +774,7 @@ function handleHeaderClick(item: ITableColumns) {
 }
 
 function handleMouseDown(e: MouseEvent, item: ITableColumns) {
-  let containerLeft = getOffset(table.value as HTMLElement).left;
+  const containerLeft = getOffset(table.value as HTMLElement).left;
   resizeColumnElement.value = item;
   columnResizing.value = true;
   lastResize.value = e.pageX - containerLeft + table.value.scrollLeft;
@@ -812,7 +812,7 @@ function unbindColumnResizeEvents() {
 }
 
 function onColumnResize(event: MouseEvent) {
-  let containerLeft = getOffset(table.value as HTMLElement).left;
+  const containerLeft = getOffset(table.value as HTMLElement).left;
 
   resizer.value.style.top = 0 + "px";
   resizer.value.style.left = event.pageX - containerLeft + table.value.scrollLeft + "px";
@@ -824,8 +824,8 @@ function getOffset(element: HTMLElement) {
     return { top: 0, left: 0 };
   }
 
-  let rect = element.getBoundingClientRect();
-  let win = element.ownerDocument.defaultView;
+  const rect = element.getBoundingClientRect();
+  const win = element.ownerDocument.defaultView;
   return {
     top: rect.top + win.pageYOffset,
     left: rect.left + win.pageXOffset,
@@ -833,14 +833,14 @@ function getOffset(element: HTMLElement) {
 }
 
 function onColumnResizeEnd() {
-  let delta = resizer.value.offsetLeft - lastResize.value;
+  const delta = resizer.value.offsetLeft - lastResize.value;
 
   const columnElement: HTMLElement = table.value.querySelector(`#${resizeColumnElement.value.id}`);
 
-  let columnWidth = columnElement.offsetWidth;
-  let newColumnWidth = columnWidth + delta;
+  const columnWidth = columnElement.offsetWidth;
+  const newColumnWidth = columnWidth + delta;
 
-  let minWidth = 15;
+  const minWidth = 15;
 
   if (columnWidth + delta > parseInt(minWidth.toString(), 10)) {
     nextColumn.value = filteredCols.value[filteredCols.value.indexOf(resizeColumnElement.value) + 1];
@@ -848,7 +848,7 @@ function onColumnResizeEnd() {
     if (nextColumn.value) {
       const nextColElement: HTMLElement = table.value.querySelector(`#${nextColumn.value.id}`);
 
-      let nextColumnWidth = nextColElement.offsetWidth - delta;
+      const nextColumnWidth = nextColElement.offsetWidth - delta;
       if (newColumnWidth > 15 && nextColumnWidth > 15) {
         resizeTableCells(newColumnWidth, nextColumnWidth);
       }
@@ -897,16 +897,16 @@ function findParentHeader(element: HTMLElement) {
 }
 
 function onColumnHeaderDragOver(event: DragEvent) {
-  let dropHeader = findParentHeader(event.target as HTMLElement);
+  const dropHeader = findParentHeader(event.target as HTMLElement);
 
   if (props.reorderableColumns && draggedColumn.value && dropHeader) {
     event.preventDefault();
-    let containerOffset = getOffset(table.value as HTMLElement);
-    let dropHeaderOffset = getOffset(dropHeader);
+    const containerOffset = getOffset(table.value as HTMLElement);
+    const dropHeaderOffset = getOffset(dropHeader);
 
     if (draggedElement.value !== dropHeader) {
-      let targetLeft = dropHeaderOffset.left - containerOffset.left;
-      let columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
+      const targetLeft = dropHeaderOffset.left - containerOffset.left;
+      const columnCenter = dropHeaderOffset.left + dropHeader.offsetWidth / 2;
 
       reorderRef.value.style.top = dropHeaderOffset.top - getOffset(tableRef.value).top + "px";
 
@@ -936,8 +936,8 @@ function onColumnHeaderDrop(event: DragEvent, item: ITableColumns) {
   event.preventDefault();
 
   if (draggedColumn.value) {
-    let dragIndex = defaultColumns.value.indexOf(draggedColumn.value);
-    let dropIndex = defaultColumns.value.indexOf(item);
+    const dragIndex = defaultColumns.value.indexOf(draggedColumn.value);
+    const dropIndex = defaultColumns.value.indexOf(item);
 
     let allowDrop = dragIndex !== dropIndex;
 
@@ -1036,11 +1036,11 @@ function onRowDragOver(event: DragEvent, item: TableItem | string) {
   const index = props.items.indexOf(item);
 
   if (rowDragged.value && draggedRow.value !== item) {
-    let rowElement = event.currentTarget as HTMLElement;
-    let rowY = getOffset(rowElement).top;
-    let pageY = event.pageY;
-    let rowMidY = rowY + rowElement.offsetHeight / 2;
-    let previousRowElement = rowElement.previousElementSibling;
+    const rowElement = event.currentTarget as HTMLElement;
+    const rowY = getOffset(rowElement).top;
+    const pageY = event.pageY;
+    const rowMidY = rowY + rowElement.offsetHeight / 2;
+    const previousRowElement = rowElement.previousElementSibling;
 
     if (pageY < rowMidY) {
       rowElement.classList.remove("vc-table__drag-row-bottom");
@@ -1068,8 +1068,8 @@ function onRowDragOver(event: DragEvent, item: TableItem | string) {
 function onRowDragLeave(event: DragEvent) {
   event.preventDefault();
 
-  let rowElement = event.currentTarget as HTMLElement;
-  let previousRowElement = rowElement.previousElementSibling;
+  const rowElement = event.currentTarget as HTMLElement;
+  const previousRowElement = rowElement.previousElementSibling;
 
   if (previousRowElement) {
     previousRowElement.classList.remove("vc-table__drag-row-bottom");
@@ -1088,14 +1088,14 @@ function onRowDragEnd(event: DragEvent & { currentTarget?: { draggable: boolean 
 
 function onRowDrop(event: DragEvent) {
   if (droppedRowIndex.value != null) {
-    let dropIndex =
+    const dropIndex =
       draggedRowIndex.value > droppedRowIndex.value
         ? droppedRowIndex.value
         : droppedRowIndex.value === 0
         ? 0
         : droppedRowIndex.value - 1;
 
-    let processedItems = [...props.items];
+    const processedItems = [...props.items];
 
     reorderArray(processedItems, draggedRowIndex.value, dropIndex);
 

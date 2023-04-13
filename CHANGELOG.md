@@ -1,4 +1,4 @@
-## [1.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.60...v1.0.61) (2023-04-13)
+## [1.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.60...v1.0.62) (2023-04-13)
 
 
 ### Bug Fixes
@@ -23,6 +23,11 @@
 * updated bump version script ([b012894](https://github.com/VirtoCommerce/vc-shell/commit/b01289488874948c59e55d8f276e1e22f31b0b2b))
 * updated bump-version script ([14ac4ce](https://github.com/VirtoCommerce/vc-shell/commit/14ac4ce547d25b8b0d98732aa1a6667df2decab5))
 * updated lerna and scripts ([0c73bc7](https://github.com/VirtoCommerce/vc-shell/commit/0c73bc70ed62932baf03d9e028f3d59dad056bf5))
+
+
+### Reverts
+
+* vc-table without bulk delete ([ca2865b](https://github.com/VirtoCommerce/vc-shell/commit/ca2865bea4c5b9b72fc7b704dfc229f0762fa149))
 
 
 

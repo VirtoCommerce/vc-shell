@@ -69,7 +69,7 @@ interface IUseImport {
   setImporter(typeName: string): void;
   fetchDataImporters(): Promise<IDataImporter[]>;
   previewData(): Promise<ImportDataPreview>;
-  startImport(): Promise<void>;
+  startImport(extProfile: ExtProfile): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
   fetchImportHistory(query?: ISearchImportProfilesHistoryQuery): void;
@@ -227,13 +227,13 @@ export default (): IUseImport => {
     }
   }
 
-  async function startImport() {
+  async function startImport(extProfile: ExtProfile) {
     const client = await getApiClient();
 
     try {
       loading.value = true;
       const importDataQuery = new RunImportCommand({
-        importProfile: profile.value,
+        importProfile: extProfile ? extProfile : profile.value,
       });
       const notification = await client.runImport(importDataQuery);
       importStarted.value = true;

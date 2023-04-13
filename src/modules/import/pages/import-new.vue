@@ -275,7 +275,7 @@ import {
   usePermissions,
 } from "@vc-shell/framework";
 import { INotificationActions, UserPermissions } from "../../../types";
-import useImport from "../composables/useImport";
+import useImport, { ExtProfile } from "../composables/useImport";
 import { IDataImporter, ImportDataPreview, ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
@@ -400,6 +400,26 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       });
     },
     disabled: computed(() => importStatus.value?.inProgress),
+    isVisible: computed(() => !!(importStatus.value && profile.value.name)),
+  },
+  {
+    id: "reRun",
+    title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.RE_RUN")),
+    icon: "fas fa-sync",
+    async clickHandler() {
+      const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
+      if (historyItem.fileUrl) {
+        let correctedProfile = profile?.value;
+        correctedProfile.importFileUrl = historyItem.fileUrl;
+        correctedProfile.inProgress = false;
+        correctedProfile.jobId = null;
+        await start(correctedProfile);
+      }
+    },
+    disabled: computed(() => {
+      const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
+      return !(historyItem?.finished && historyItem.fileUrl != null);
+    }),
     isVisible: computed(() => !!(importStatus.value && profile.value.name)),
   },
 ]);
@@ -542,7 +562,7 @@ const uploadActions = ref<INotificationActions[]>([
   {
     name: computed(() => t("IMPORT.PAGES.ACTIONS.UPLOADER.ACTIONS.START_IMPORT")),
     async clickHandler() {
-      await start();
+      await start(null);
     },
     outline: false,
     variant: "primary",
@@ -654,14 +674,14 @@ async function saveExternalUrl() {
   setFile({
     name: profile.value.importFileUrl.substring(profile.value.importFileUrl.lastIndexOf("/") + 1),
     url: profile.value.importFileUrl,
-    size: Number(0/*response.headers.get("content-length")*/),
+    size: Number(0 /*response.headers.get("content-length")*/),
   });
 }
 
-async function start() {
+async function start(profile: ExtProfile) {
   try {
     errorMessage.value = "";
-    await startImport();
+    await startImport(profile);
   } catch (e) {
     errorMessage.value = e.message;
   }
@@ -669,7 +689,7 @@ async function start() {
 
 function initializeImporting() {
   importPreview.value = false;
-  start();
+  start(null);
 }
 
 function reloadParent() {

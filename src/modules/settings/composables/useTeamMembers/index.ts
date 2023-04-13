@@ -15,7 +15,7 @@ import {
   VcmpSellerSecurityClient,
 } from "../../../../api_client/marketplacevendor";
 import { computed, Ref, ref, watch } from "vue";
-import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 
 interface IUseTeamMembers {
   readonly loading: Ref<boolean>;
@@ -56,7 +56,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
   watch(
     () => userDetails,
     (state) => {
-      modified.value = !isEqual(userDetailsCopy, state.value);
+      modified.value = !_.isEqual(userDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -167,7 +167,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
 
   async function handleUserDetailsItem(user: ISellerUser) {
     userDetails.value = Object.assign({}, new SellerUserDetails(user as ISellerUserDetails));
-    userDetailsCopy = _cloneDeep(userDetails.value);
+    userDetailsCopy = _.cloneDeep(userDetails.value);
   }
 
   async function validateTeamMember(details: SellerUserDetails): Promise<ValidationFailure[]> {

@@ -6,6 +6,8 @@
     :expanded="expanded"
     :closable="closable"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <ReviewTable
       :expanded="expanded"
@@ -16,11 +18,12 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, shallowRef } from "vue";
-import { VcBlade, useI18n, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
+import { VcBlade, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   url: "/reviews",
@@ -44,6 +47,8 @@ export type IBladeOptions = IBladeEvent & {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeOptions): void;
 }
 
@@ -86,4 +91,8 @@ const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () 
     onClose: onDeselect,
   });
 };
+
+defineExpose({
+  title,
+});
 </script>

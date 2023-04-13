@@ -7,6 +7,8 @@
     :closable="closable"
     :toolbarItems="bladeToolbar"
     @close="$emit('close:blade')"
+    @expand="$emit('expand:blade')"
+    @collapse="$emit('collapse:blade')"
   >
     <!-- Blade contents -->
     <VcContainer
@@ -486,6 +488,8 @@ export interface Props {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
+  (event: "collapse:blade"): void;
+  (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeEvent): void;
 }
 
@@ -518,7 +522,7 @@ const {
 } = useOffer();
 
 const { searchDictionaryItems } = useProduct();
-const { setFieldError, meta } = useForm({
+const { setFieldError } = useForm({
   validateOnMount: false,
 });
 
@@ -573,8 +577,10 @@ onBeforeUpdate(() => {
 const readonly = false;
 
 const title = computed(() => {
-  return props.param && offerDetails.value && offerDetails.value.name
-    ? offerDetails.value.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
+  return props.param
+    ? offerDetails.value?.name
+      ? offerDetails.value.name + " " + t("OFFERS.PAGES.DETAILS.OFFER_DETAILS")
+      : ""
     : t("OFFERS.PAGES.DETAILS.TITLE");
 });
 
@@ -892,13 +898,14 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
 }
 
 async function onBeforeClose() {
-  if (modified.value) {
+  if (!isDisabled.value && modified.value) {
     return confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 
 defineExpose({
   onBeforeClose,
+  title,
 });
 </script>
 

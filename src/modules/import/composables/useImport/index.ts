@@ -18,7 +18,7 @@ import {
   ObjectSettingEntry,
 } from "../../../../api_client/marketplacevendor";
 import { IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
-import { cloneDeep as _cloneDeep, isEqual } from "lodash-es";
+import * as _ from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;
 
@@ -133,7 +133,7 @@ export default (): IUseImport => {
   watch(
     () => profileDetails,
     (state) => {
-      modified.value = !isEqual(profileDetailsCopy, state.value);
+      modified.value = !_.isEqual(profileDetailsCopy, state.value);
     },
     { deep: true }
   );
@@ -279,7 +279,7 @@ export default (): IUseImport => {
 
       Object.assign(profileDetails.value, profile.value);
 
-      profileDetailsCopy = _cloneDeep(profileDetails.value);
+      profileDetailsCopy = _.cloneDeep(profileDetails.value);
     } catch (e) {
       console.error(e);
       throw e;

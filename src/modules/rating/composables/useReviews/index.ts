@@ -26,9 +26,9 @@ interface IUseReviews {
   handleReview: (review: CustomerReview) => void;
 }
 
-export default (options?: IUseReviewsOptions): IUseReviews => {
-  const loading = ref(false);
+const loading = ref(false);
 
+export default (options?: IUseReviewsOptions): IUseReviews => {
   const pageSize = options?.pageSize || 20;
   const currentPage = ref(1);
   const sort = ref(options?.sort || "createdDate:DESC");

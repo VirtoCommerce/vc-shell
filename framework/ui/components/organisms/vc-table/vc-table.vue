@@ -201,9 +201,9 @@
               class="tw-w-0.5 tw-bg-[#41afe6] tw-h-full tw-absolute tw-top-0 tw-bottom-0 tw-z-[2] tw-hidden"
             ></div>
           </thead>
-          <!-- <div
+          <div
             class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
-            v-if="allSelected"
+            v-if="bulkDelete && allSelected"
           >
             <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
               <div>
@@ -224,11 +224,11 @@
                 >
               </div>
             </div>
-          </div> -->
+          </div>
           <tbody
             v-if="items"
             class="vc-table__body"
-            :class="{ 'tw-translate-y-[60px]': allSelected }"
+            :class="{ 'tw-translate-y-[60px]': bulkDelete && allSelected }"
           >
             <tr
               v-for="(item, itemIndex) in items"
@@ -475,6 +475,7 @@ export interface Props {
   reorderableColumns?: boolean;
   reorderableRows?: boolean;
   stateKey: string;
+  bulkDelete?: boolean;
 }
 
 export interface Emits {
@@ -485,6 +486,7 @@ export interface Emits {
   (event: "itemClick", item: TableItemType): void;
   (event: "scroll:ptr"): void;
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: TableItemType[] }): void;
+  (event: "bulk:delete"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -652,13 +654,16 @@ watch(
   { deep: true, immediate: true }
 );
 
-// function handleBulkSelection() {
-//   bulkSelected.value = !bulkSelected.value;
+function handleBulkSelection() {
+  bulkSelected.value = !bulkSelected.value;
 
-//   if (!bulkSelected.value) {
-//     selection.value = [];
-//   }
-// }
+  if (!bulkSelected.value) {
+    selection.value = [];
+    return;
+  }
+
+  emit("bulk:delete");
+}
 
 function isSelected(item: TableItemType) {
   return selection.value.indexOf(item) > -1;

@@ -12,7 +12,7 @@
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'apps/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "init-changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "bump-version": "cross-env-shell 'f() { lerna version \"$@\" --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version && git add . && yarn postversion ;}; f'",
+    "bump-version": "cross-env-shell 'f() { lerna version \"$@\" --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && git add . && yarn version --\"$@\";}; f'",
     "postversion": "git push origin --tags",
     "build": "lerna run build --scope=@vc-shell/{config-generator,api-client-generator,framework}",
     "build-framework": "lerna run build --scope @vc-shell/framework",

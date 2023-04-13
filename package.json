@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.66",
+  "version": "1.0.65",
   "private": true,
   "scripts": {
     "postinstall": "husky install",

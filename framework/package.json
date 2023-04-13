@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
   "types": "./dist/index.d.ts",
@@ -54,8 +54,8 @@
     "vue3-touch-events": "^4.1.0"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.61",
-    "@vc-shell/config-generator": "^1.0.61",
+    "@vc-shell/api-client-generator": "^1.0.62",
+    "@vc-shell/config-generator": "^1.0.62",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",
     "url-pattern": "^1.0.3"

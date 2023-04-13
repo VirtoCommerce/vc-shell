@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -12,7 +12,7 @@
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'apps/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "bump-version": "cross-env-shell 'f() { lerna version \"$@\" --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && yarn changelog && yarn version --\"$@\" && yarn changelog && git add . && git commit --amend --no-edit;}; f'",
+    "bump-version": "cross-env-shell 'f() { lerna version \"$@\" --conventional-commits --no-commit-hooks --no-push --ignore-scripts --force-publish --no-git-tag-version --yes && yarn version --\"$@\" && yarn changelog && git add . && git commit --amend --no-edit;}; f'",
     "postversion": "git push origin --tags",
     "build": "lerna run build --scope=@vc-shell/{config-generator,api-client-generator,framework}",
     "build-framework": "lerna run build --scope @vc-shell/framework",

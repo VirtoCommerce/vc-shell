@@ -1,8 +1,9 @@
-## [1.0.66](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.65...v1.0.66) (2023-04-11)
+## [1.0.66](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.65...v1.0.66) (2023-04-13)
 
 
 ### Bug Fixes
 
+* api generation ([6d8b1cd](https://github.com/VirtoCommerce/vendor-portal/commit/6d8b1cd07588da901e664dac3c8e6c86f723e30a))
 * dashboard review table centered ([3aba9dd](https://github.com/VirtoCommerce/vendor-portal/commit/3aba9dd93696d6dcd19c9319001e55a6233baa7e))
 * disabled required props ([883a90a](https://github.com/VirtoCommerce/vendor-portal/commit/883a90a087f0d9319b4ebedb8407df187893244a))
 * enable husky ([b6a61c5](https://github.com/VirtoCommerce/vendor-portal/commit/b6a61c59605c4b2307179cdc21c662d8f50567fb))
@@ -12,6 +13,8 @@
 * multiselect fix ([70ae527](https://github.com/VirtoCommerce/vendor-portal/commit/70ae527e717dbb8fbf8813d7216ea07ac4659a3f))
 * other fixes ([13a6f0b](https://github.com/VirtoCommerce/vendor-portal/commit/13a6f0b724c56483470a08c301cc9dde50f1fb06))
 * tailwinf warning fix ([7f6fe46](https://github.com/VirtoCommerce/vendor-portal/commit/7f6fe463157314a27a624ce0040e4f10ed83123c))
+* updated script ([d61a2bb](https://github.com/VirtoCommerce/vendor-portal/commit/d61a2bbf976d147186c7c6ad5fa39ee44b94550d))
+* version ([6ec2836](https://github.com/VirtoCommerce/vendor-portal/commit/6ec2836c62c751a2e1865f9487a40364d25f9530))
 
 
 ### Features

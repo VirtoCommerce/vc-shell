@@ -62,7 +62,8 @@
         "TOOLBAR": {
           "EDIT": "Edit",
           "CANCEL": "Cancel",
-          "NEW_RUN": "New run"
+          "NEW_RUN": "New run",
+          "RE_RUN": "Re-run"
         },
         "EXTERNAL_URL": {
           "TITLE": "External URL",

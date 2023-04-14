@@ -60,7 +60,7 @@ export default {
   mode,
   resolve: {
     preserveSymlinks: true,
-    alias: { ...aliasResolver(), querystring: "querystring-es3" },
+    alias: Object.assign({ querystring: "querystring-es3" }, aliasResolver()),
   },
   envPrefix: "APP_",
   base: process.env.APP_BASE_PATH,
@@ -108,6 +108,7 @@ export default {
   },
   build: {
     target: "esnext",
+    minify: true,
     sourcemap: mode === "development",
     emptyOutDir: true,
   },

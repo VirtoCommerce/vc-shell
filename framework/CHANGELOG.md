@@ -1,3 +1,12 @@
+## 1.0.64 (2023-04-14)
+
+
+### Bug Fixes
+
+* querystring alias ([723bc10](https://github.com/VirtoCommerce/vc-shell/commit/723bc103687d07c350dd4a9720fe674a50e0e131))
+
+
+
 ## 1.0.63 (2023-04-13)
 
 

@@ -1,3 +1,17 @@
+## [1.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.63...v1.0.64) (2023-04-14)
+
+
+### Bug Fixes
+
+* querystring alias ([723bc10](https://github.com/VirtoCommerce/vc-shell/commit/723bc103687d07c350dd4a9720fe674a50e0e131))
+
+
+### Features
+
+* added app changelog generation on bump ([a23da41](https://github.com/VirtoCommerce/vc-shell/commit/a23da41f16e3b72a5bd3509b312a9b99e211cb44))
+
+
+
 ## [1.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.62...v1.0.63) (2023-04-13)
 
 

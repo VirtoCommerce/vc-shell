@@ -10,12 +10,12 @@ Clickable demo with some scenarios to show various use cases.
 # package.json in @vc-shell/root
 $ yarn bump-version patch/minor/major
 # package.json in app-vendor-portal 
-$ yarn changelog && yarn amend-to-commit
+$ yarn changelog && yarn add-to-commit
 ```
 
 #### Standalone app-vendor-portal
 ```bash
 ## Standalone app-vendor-portal
 $ yarn version --patch/--minor/--major
-$ yarn changelog && yarn amend-to-commit
+$ yarn changelog && yarn add-to-commit
 ```

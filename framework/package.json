@@ -22,7 +22,7 @@
     "./*": "./*"
   },
   "scripts": {
-    "build": "yarn build:lib & yarn build:types",
+    "build": "yarn build:lib && yarn build:types",
     "build:lib": "vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist",
     "dev": "vite",

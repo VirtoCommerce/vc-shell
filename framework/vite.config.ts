@@ -12,6 +12,11 @@ export default getLibraryConfiguration({
       vueTsc: true,
     }),
   ],
+  resolve: {
+    alias: {
+      querystring: "querystring-es3",
+    },
+  },
   build: {
     target: "esnext",
     cssCodeSplit: true,

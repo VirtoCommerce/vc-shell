@@ -1,3 +1,16 @@
+## 1.0.66 (2023-04-17)
+
+
+
+## 1.0.66 (2023-04-17)
+
+
+### Bug Fixes
+
+* navigation fix ([5a0fd23](https://github.com/VirtoCommerce/vc-shell/commit/5a0fd23969922026b9fad467004dca89d4a9d105))
+
+
+
 ## 1.0.65 (2023-04-17)
 
 

@@ -1,3 +1,12 @@
+## [1.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.64...v1.0.65) (2023-04-17)
+
+
+### Bug Fixes
+
+* navigation fix ([7e062d9](https://github.com/VirtoCommerce/vc-shell/commit/7e062d9cab016faa2a6341961f0c857d930d016b))
+
+
+
 ## [1.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.63...v1.0.64) (2023-04-14)
 
 

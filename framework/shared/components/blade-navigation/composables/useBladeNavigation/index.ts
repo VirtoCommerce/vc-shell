@@ -11,10 +11,10 @@ interface IUseBladeNavigation {
   bladesRefs: Ref<IBladeRef[]>;
   openBlade: (
     { parentBlade, component, param, bladeOptions, onOpen, onClose }: IBladeEvent,
-    idx?: number,
+    index?: number,
     navigationCb?: () => Promise<void | NavigationFailure>
   ) => void;
-  closeBlade: (idx: number) => void;
+  closeBlade: (index: number) => void;
   onParentCall: (index: number, args: IParentCallArgs) => void;
 }
 
@@ -49,7 +49,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   async function openBlade(
     { parentBlade, component: blade, param, bladeOptions, onOpen, onClose }: IBladeEvent,
-    idx?: number,
+    index?: number,
     navigationCb?: () => Promise<void | NavigationFailure>
   ) {
     console.debug(`openBlade called.`);
@@ -59,7 +59,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const existingChild = findBlade(child);
 
     if (parent && parent.url) {
-      await closeBlade(1);
+      await closeBlade(0);
 
       if (!isPrevented.value) {
         parentBladeOptions.value = unref(bladeOptions);
@@ -80,19 +80,20 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
     if (child) {
       if (existingChild === undefined) {
-        child.idx = idx + 1;
+        child.idx = index + 1;
       } else if (existingChild) {
-        await closeBlade(blades.value.find((x) => x.idx === existingChild.idx).idx);
+        await closeBlade(blades.value.findIndex((x) => x.idx === existingChild.idx));
         child.idx = existingChild.idx;
       }
 
-      await addBlade(child, param, bladeOptions, onOpen, onClose, idx);
+      await addBlade(child, param, bladeOptions, onOpen, onClose, index);
     }
   }
 
-  async function closeBlade(idx: number) {
-    if (idx < bladesRefs.value.length) {
-      const children = bladesRefs.value.slice(idx).reverse();
+  async function closeBlade(index: number) {
+    const refsIndex = index + 1;
+    if (refsIndex < bladesRefs.value.length) {
+      const children = bladesRefs.value.slice(refsIndex).reverse();
 
       isPrevented.value = false;
       for (let i = 0; i < children.length; i++) {
@@ -105,11 +106,10 @@ export function useBladeNavigation(): IUseBladeNavigation {
         }
       }
       if (!isPrevented.value) {
-        const blade = blades.value.find((x) => x.idx === idx);
-        if (blade && typeof blade.onClose === "function") {
-          blade.onClose?.();
+        if (typeof blades.value[index]?.onClose === "function") {
+          blades.value[index]?.onClose?.();
         }
-        blades.value.splice(blades.value.indexOf(blade));
+        blades.value.splice(index);
       } else {
         throw "Closing prevented";
       }

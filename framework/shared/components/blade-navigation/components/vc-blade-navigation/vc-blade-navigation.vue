@@ -28,8 +28,8 @@
     :maximized="findStateById(blade.idx)"
     :options="blade.bladeOptions"
     @open:blade="onBladeOpen($event, blade.idx)"
-    @close:blade="onBladeClose(blade.idx)"
-    @close:children="$emit('onClose', blade.idx + 1)"
+    @close:blade="onBladeClose(i)"
+    @close:children="$emit('onClose', i + 1)"
     @parent:call="$emit('onParentCall', { id: i, args: $event })"
     @expand:blade="handleMaximizeBlade(blade.idx, true)"
     @collapse:blade="handleMaximizeBlade(blade.idx, false)"
@@ -105,8 +105,8 @@ function setBladesRef(el: IBladeElement, blade: IBladeContainer) {
   }
 }
 
-function onBladeClose(idx: number) {
-  emit("onClose", idx);
+function onBladeClose(index: number) {
+  emit("onClose", index);
 }
 
 function onBladeOpen(event: IBladeEvent, idx: number) {

@@ -82,7 +82,7 @@ function findStateById(id: number) {
 }
 
 function setParentRef(el: IBladeElement, bladeNode: VNode) {
-  if (el) {
+  if (el && bladeNode) {
     bladesRefs.value = [
       {
         exposed: el,
@@ -97,7 +97,7 @@ function setParentRef(el: IBladeElement, bladeNode: VNode) {
 }
 
 function setBladesRef(el: IBladeElement, blade: IBladeContainer) {
-  if (el && el !== null) {
+  if (el && el !== null && blade) {
     const isExists = bladesRefs.value.some((item) => item.blade.idx === blade.idx);
     if (!isExists) {
       bladesRefs.value.push({ exposed: el, blade });

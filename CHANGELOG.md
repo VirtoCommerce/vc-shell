@@ -1,3 +1,12 @@
+## [1.0.74](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.73...v1.0.74) (2023-04-18)
+
+
+### Bug Fixes
+
+* base prop in app-switcher/ui settings ([749e502](https://github.com/VirtoCommerce/vendor-portal/commit/749e50288bbf902239dfcad9dba8a0c5ded8e370))
+
+
+
 ## [1.0.73](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.72...v1.0.73) (2023-04-17)
 
 

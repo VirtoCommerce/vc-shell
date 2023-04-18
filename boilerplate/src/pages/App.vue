@@ -28,6 +28,7 @@
       <VcAppSwitcher
         :appsList="appsList"
         @onClick="switchApp($event)"
+        :base="base"
       />
     </template>
 
@@ -97,6 +98,9 @@ import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
 
 import { DefaultList } from "../modules/default";
+
+const base = import.meta.env.APP_PLATFORM_URL;
+
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
 const { user, loadUser, signOut } = useUser();
 const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
@@ -287,7 +291,7 @@ function onOpen(args: IOpenBlade) {
 }
 
 async function customizationHandler() {
-  await getUiCustomizationSettings();
+  await getUiCustomizationSettings(base);
 
   if (!uiSettings.value.logo) {
     applySettings({ logo: logoImage });

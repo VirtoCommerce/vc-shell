@@ -10,7 +10,7 @@ interface IUISetting {
 
 interface IUseSettings {
   readonly uiSettings: Ref<IUISetting>;
-  getUiCustomizationSettings: () => void;
+  getUiCustomizationSettings: (base: string) => void;
   applySettings: (args: { logo?: string; title?: string }) => void;
 }
 
@@ -27,9 +27,8 @@ export function useSettings(): IUseSettings {
     return client;
   }
 
-  async function getUiCustomizationSettings() {
+  async function getUiCustomizationSettings(base: string) {
     const client = await getApiClient();
-    const base = import.meta.env.APP_PLATFORM_URL;
 
     try {
       const result = await client.getUICustomizationSetting();

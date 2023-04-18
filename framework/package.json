@@ -44,6 +44,7 @@
     "normalize.css": "^8.0.1",
     "querystring-es3": "^0.2.1",
     "quill-image-uploader": "^1.2.4",
+    "buffer-esm":"^1.2.0",
     "swiper": "^6.8.4",
     "vee-validate": "^4.7.3",
     "vue": "^3.0.0",

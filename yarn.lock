@@ -4145,6 +4145,11 @@ buffer-crc32@~0.2.3:
   resolved "https://registry.yarnpkg.com/buffer-crc32/-/buffer-crc32-0.2.13.tgz#0d333e3f00eac50aa1454abd30ef8c2a5d9a7242"
   integrity sha512-VO9Ht/+p3SN7SKWqcrgEzjGbRSJYTx+Q1pTQC0wrWqHx0vpJraQ6GtHx8tvcg1rlK1byhU5gccxgOgj7B0TDkQ==
 
+buffer-esm@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/buffer-esm/-/buffer-esm-1.2.0.tgz#d6cd1cda051068c3f975af9552a5d5c88b19ac9c"
+  integrity sha512-VdoXyqlJpVWspgSdR795+2IIBwpUx0rHRaMEYMKgr/fXaDgrdyL2B9fcc2VqJy3+IJKktZFVtfOBMHadatWEsQ==
+
 buffer-from@^1.0.0:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/buffer-from/-/buffer-from-1.1.2.tgz#2b146a6fd72e80b4f55d255f35ed59a3a9a41bd5"

@@ -60,7 +60,7 @@ export default {
   mode,
   resolve: {
     preserveSymlinks: true,
-    alias: Object.assign({ querystring: "querystring-es3" }, aliasResolver()),
+    alias: Object.assign({ querystring: "querystring-es3", "safe-buffer": "buffer-esm" }, aliasResolver()),
   },
   envPrefix: "APP_",
   base: process.env.APP_BASE_PATH,

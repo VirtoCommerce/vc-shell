@@ -46,6 +46,7 @@ import { AppDescriptor } from "../../../../../core/api";
 
 export interface Props {
   appsList: AppDescriptor[];
+  base: string;
 }
 
 interface Emits {
@@ -60,7 +61,7 @@ const emit = defineEmits<Emits>();
 
 const isVisible = ref(false);
 
-const imageUrl = (url: string) => import.meta.env.APP_PLATFORM_URL.replace(/\/+$/, "") + url;
+const imageUrl = (url: string) => props.base.replace(/\/+$/, "") + url;
 
 const locationHandler = (url: string) => {
   const cleanUrl = window.location.pathname.replace(/\/+$/, "");

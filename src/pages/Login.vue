@@ -179,7 +179,7 @@ const customizationLoading = ref(false);
 onMounted(async () => {
   try {
     customizationLoading.value = true;
-    await getUiCustomizationSettings();
+    await getUiCustomizationSettings(import.meta.env.APP_PLATFORM_URL);
   } finally {
     customizationLoading.value = false;
   }

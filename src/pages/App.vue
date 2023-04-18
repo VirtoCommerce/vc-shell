@@ -28,6 +28,7 @@
     >
       <VcAppSwitcher
         :appsList="appsList"
+        :base="base"
         @onClick="switchApp($event)"
       />
     </template>
@@ -105,6 +106,8 @@ import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
+
+const base = import.meta.env.APP_PLATFORM_URL;
 
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
 const { user, loadUser, signOut } = useUser();
@@ -358,7 +361,7 @@ const openDashboard = () => {
 
 async function customizationHandler() {
   await getCurrentSeller();
-  await getUiCustomizationSettings();
+  await getUiCustomizationSettings(base);
 
   if (sellerDetails.value.logo) {
     applySettings({ logo: sellerDetails.value.logo });

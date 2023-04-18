@@ -19,6 +19,8 @@
     "create:tag": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },
   "devDependencies": {
+    "buffer-esm":"^1.2.0",
+    "querystring-es3": "^0.2.1",
     "@commitlint/cli": "^17.5.1",
     "@commitlint/config-conventional": "^17.4.4",
     "@rollup/plugin-typescript": "^11.0.0",

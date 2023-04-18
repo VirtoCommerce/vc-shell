@@ -15,6 +15,7 @@ export default getLibraryConfiguration({
   resolve: {
     alias: {
       querystring: "querystring-es3",
+      "safe-buffer": "buffer-esm",
     },
   },
   build: {

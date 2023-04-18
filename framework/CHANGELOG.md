@@ -1,4 +1,13 @@
-## 1.0.66 (2023-04-17)
+## 1.0.67 (2023-04-18)
+
+
+
+## 1.0.67 (2023-04-18)
+
+
+### Bug Fixes
+
+* base prop in app-switcher ([b797317](https://github.com/VirtoCommerce/vc-shell/commit/b797317c72b89fca50814c5c84ca472640e3bf04))
 
 
 

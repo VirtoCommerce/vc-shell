@@ -51,20 +51,30 @@ export function useNotifications(): INotifications {
   function addNotification(message: PushNotification) {
     if (message.notifyType !== "IndexProgressPushNotification") {
       const existsNotification = notifications.value.find((x) => x.id == message.id);
+      const existPushNotification = popupNotifications.value.find((x) => x.id == message.id);
 
       if (existsNotification) {
         message.isNew = existsNotification.isNew;
         Object.assign(existsNotification, message);
       } else {
-        popupNotifications.value.unshift(message);
         notifications.value.unshift(message);
+      }
+
+      if (existPushNotification) {
+        message.isNew = true;
+        Object.assign(existPushNotification, message);
+      } else {
+        popupNotifications.value.unshift(message);
       }
     }
   }
 
   function markAsRead(message: PushNotification) {
-    message.isNew = false;
-    _.remove(popupNotifications.value, (x) => x.id == message.id);
+    const mes = popupNotifications.value.find((x) => x.id === message.id);
+    if (mes) {
+      mes.isNew = false;
+      _.remove(popupNotifications.value, (x) => x.id == message.id);
+    }
   }
 
   function dismiss(message: PushNotification) {

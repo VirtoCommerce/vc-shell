@@ -1,6 +1,11 @@
-import { onErrorCaptured, getCurrentInstance, ref } from "vue";
+import { onErrorCaptured, getCurrentInstance, ref, Ref } from "vue";
 
-export function useErrorHandler(capture?: boolean) {
+interface IUseErrorHandler {
+  error: Ref<Error | string>;
+  reset(): void;
+}
+
+export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   const error = ref<Error | string>(null);
   const instance = getCurrentInstance();
 
@@ -35,6 +40,5 @@ export function useErrorHandler(capture?: boolean) {
   return {
     error,
     reset,
-    onErrorCaptured,
   };
 }

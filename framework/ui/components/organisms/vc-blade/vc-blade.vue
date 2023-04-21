@@ -4,6 +4,7 @@
     :class="[
       $attrs.class,
       {
+        '!tw-border !tw-border-solid !tw-border-[color:var(--blade-color-error)]': $slots['error'],
         '!tw-w-full': $isMobile.value,
         '!tw-w-full !tw-shrink': expanded,
         '!tw-absolute !tw-z-[2] !tw-top-0 !tw-bottom-0 !tw-left-0 ![width:-webkit-fill-available] !tw-mx-4 !tw-shrink':
@@ -33,6 +34,12 @@
         <slot name="actions"></slot>
       </template>
     </VcBladeHeader>
+
+    <template v-if="$slots['error']">
+      <VcContainer class="tw-max-h-[80px] tw-h-auto tw-text-[color:var(--blade-color-error)] tw-mx-2">
+        <slot name="error"></slot>
+      </VcContainer>
+    </template>
 
     <!-- Set up blade toolbar -->
     <VcBladeToolbar
@@ -70,6 +77,7 @@ export interface Props {
   toolbarItems?: IBladeToolbar[];
   onClose?: () => void;
   blades?: IBladeContainer[];
+  // error?: string;
 }
 
 export interface Emits {
@@ -99,6 +107,7 @@ const isExpandable = computed(() => {
 :root {
   --blade-background-color: #ffffff;
   --blade-border-radius: 6px;
+  --blade-color-error: #f14e4e;
 }
 
 .vc-app_mobile .vc-blade {

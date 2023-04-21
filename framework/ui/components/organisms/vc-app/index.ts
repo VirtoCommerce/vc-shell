@@ -6,7 +6,6 @@ export const VcApp = _App as typeof _App & {
     $slots: {
       appSwitcher: () => VNode[];
       bladeNavigation: () => VNode[];
-      notifications: () => VNode[];
       passwordChange: () => VNode[];
     };
   };

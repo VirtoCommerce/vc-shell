@@ -1,4 +1,14 @@
-## 1.0.67 (2023-04-18)
+## 1.0.68 (2023-04-21)
+
+
+
+## 1.0.68 (2023-04-21)
+
+
+### Features
+
+* error handling ([10ab19a](https://github.com/VirtoCommerce/vc-shell/commit/10ab19a372e247551f16466cf3edfa2b3a7ff82b))
+* updated notifications ([0c0a078](https://github.com/VirtoCommerce/vc-shell/commit/0c0a078c8e1ff1e2ca6fd063c60bd3dc0bbe2ef5))
 
 
 

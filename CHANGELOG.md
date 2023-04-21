@@ -1,3 +1,12 @@
+## [1.0.75](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.74...v1.0.75) (2023-04-21)
+
+
+### Features
+
+* error handling ([92d2ba8](https://github.com/VirtoCommerce/vendor-portal/commit/92d2ba8e3912756951aedae3903a8b38fce8b394))
+
+
+
 ## [1.0.74](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.73...v1.0.74) (2023-04-18)
 
 

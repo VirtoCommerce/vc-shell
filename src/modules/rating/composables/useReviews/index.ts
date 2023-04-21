@@ -61,6 +61,7 @@ export default (options?: IUseReviewsOptions): IUseReviews => {
       searchResult.value = await client.searchCustomerReviews(body);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }

@@ -74,6 +74,7 @@ export default (): IUseSellerDetails => {
       sellerDetailsCopy = _.cloneDeep(sellerDetails.value);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -122,6 +123,7 @@ export default (): IUseSellerDetails => {
         });
       } catch (e) {
         console.error(e);
+        throw e;
       }
     }
   }
@@ -144,6 +146,7 @@ export default (): IUseSellerDetails => {
         });
       } catch (e) {
         console.error(e);
+        throw e;
       }
     }
   }

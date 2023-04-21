@@ -8,6 +8,12 @@
     @close="$emit('close:blade')"
     :expandable="false"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcTable
       class="tw-grow tw-basis-0"
       :loading="loading"
@@ -107,9 +113,10 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, ITableColumns, useI18n } from "@vc-shell/framework";
+import { IBladeEvent, IBladeToolbar, ITableColumns } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -137,7 +144,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { getTeamMembers, searchQuery, loading, membersList, currentPage, pages, totalCount } = useTeamMembers();
 
 const sort = ref("createdDate:DESC");

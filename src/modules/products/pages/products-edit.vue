@@ -13,6 +13,12 @@
     <template v-slot:actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
 
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
@@ -59,7 +65,7 @@
                   :clearable="true"
                   :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="disabled"
-                  maxlength="64"
+                  maxlength="1024"
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
@@ -251,6 +257,8 @@ import { defineComponent, computed, onMounted, ref, unref, shallowRef } from "vu
 
 export default defineComponent({
   url: "/product",
+  error: 123,
+  inheritAttrs: false,
 });
 </script>
 
@@ -320,7 +328,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const {
   product: productData,
   productDetails,
@@ -431,20 +439,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-save",
     async clickHandler() {
       if (isValid.value) {
-        try {
-          if (props.param) {
-            await updateProductDetails(productData.value.id, productDetails.value);
-          } else {
-            await createProduct(productDetails.value);
-          }
-          emit("parent:call", {
-            method: "reload",
-          });
-          if (!props.param) {
-            emit("close:blade");
-          }
-        } catch (err) {
-          alert(err.message);
+        if (props.param) {
+          await updateProductDetails(productData.value.id, productDetails.value);
+        } else {
+          await createProduct(productDetails.value);
+        }
+        emit("parent:call", {
+          method: "reload",
+        });
+        if (!props.param) {
+          emit("close:blade");
         }
       } else {
         alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
@@ -465,16 +469,12 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       if (isValid.value) {
-        try {
-          await updateProductDetails(productData.value.id, { ...productDetails.value }, true);
-          emit("parent:call", {
-            method: "reload",
-          });
-          if (!props.param) {
-            emit("close:blade");
-          }
-        } catch (err) {
-          alert(err.message);
+        await updateProductDetails(productData.value.id, { ...productDetails.value }, true);
+        emit("parent:call", {
+          method: "reload",
+        });
+        if (!props.param) {
+          emit("close:blade");
         }
       } else {
         alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
@@ -556,6 +556,7 @@ const onGalleryUpload = async (files: FileList) => {
     }
   } catch (e) {
     console.log(e);
+    throw e;
   } finally {
     fileUploading.value = false;
   }
@@ -652,6 +653,7 @@ const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
     }
   } catch (e) {
     console.log(e);
+    throw e;
   } finally {
     fileAssetUploading.value = false;
   }
@@ -806,7 +808,9 @@ function restoreCollapsed(key: string): boolean {
 defineExpose({
   editImages,
   onBeforeClose,
-  onClose: () => {console.log('test')}
+  onClose: () => {
+    console.log("test");
+  },
 });
 </script>
 

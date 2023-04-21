@@ -6,7 +6,6 @@
     >
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
-
     <VcRow>
       <VcCol size="10">
         <VcRow>
@@ -233,21 +232,28 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n, useBladeNavigation, ITableColumns } from "@vc-shell/framework";
-import { computed, onMounted, ref, shallowRef } from "vue";
+import { useBladeNavigation, ITableColumns, notification } from "@vc-shell/framework";
+import { computed, onErrorCaptured, onMounted, ref, shallowRef } from "vue";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import { MpProductStatus, ProductsEdit, ProductsList, useProducts } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
 import { UserPermissions } from "../types";
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { products, loadProducts, loading: productsLoading } = useProducts();
 const { orders, loadOrders, loading: ordersLoading } = useOrders();
 const { offers, loadOffers, loading: offersLoading } = useOffers();
 
 const { openBlade } = useBladeNavigation();
+
+onErrorCaptured((err) => {
+  notification.error(err.toString(), {
+    timeout: 5000,
+  });
+});
 
 const productsColumns = ref<ITableColumns[]>([
   {

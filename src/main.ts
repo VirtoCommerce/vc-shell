@@ -1,4 +1,4 @@
-import VirtoShellFramework from "@vc-shell/framework";
+import VirtoShellFramework, { notification } from "@vc-shell/framework";
 import { createApp } from "vue";
 import PushHub from "./config/push-hub";
 import ImportModule from "./modules/import";
@@ -33,5 +33,11 @@ const app = createApp(EmptyRouterView)
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);
 });
+
+app.config.errorHandler = (err) => {
+  notification.error(err.toString(), {
+    timeout: 5000,
+  });
+};
 
 app.mount("#app");

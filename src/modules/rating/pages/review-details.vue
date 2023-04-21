@@ -9,6 +9,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <template v-slot:actions>
       <Status :review-status="customerReview.reviewStatus"></Status>
     </template>
@@ -77,22 +83,13 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  useI18n,
-  VcBlade,
-  VcCol,
-  VcContainer,
-  VcForm,
-  VcLabel,
-  VcTextarea,
-  VcRating,
-  VcRow,
-} from "@vc-shell/framework";
+import { VcBlade, VcCol, VcContainer, VcForm, VcLabel, VcTextarea, VcRating, VcRow } from "@vc-shell/framework";
 import moment from "moment";
 import { computed, onMounted } from "vue";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
+import { useI18n } from "vue-i18n";
 
 // Page
 
@@ -127,7 +124,7 @@ onMounted(async () => {
   }
 });
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const locale = window.navigator.language;
 
 // Data

@@ -10,6 +10,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer>
       <VcRow>
         <VcCol>
@@ -120,7 +126,6 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-  useI18n,
   IParentCallArgs,
   IBladeToolbar,
   VcInput,
@@ -135,6 +140,7 @@ import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { IDataImporter, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -160,7 +166,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const {
   dataImporters,
   profileDetails,
@@ -191,22 +197,18 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-save",
     async clickHandler() {
       if (isValid.value) {
-        try {
-          if (props.param) {
-            await updateImportProfile(profileDetails.value);
-            emit("parent:call", {
-              method: "reloadParent",
-            });
-          } else {
-            await createImportProfile(profileDetails.value);
-            emit("parent:call", {
-              method: "reload",
-            });
-          }
-          emit("close:blade");
-        } catch (err) {
-          alert(err.message);
+        if (props.param) {
+          await updateImportProfile(profileDetails.value);
+          emit("parent:call", {
+            method: "reloadParent",
+          });
+        } else {
+          await createImportProfile(profileDetails.value);
+          emit("parent:call", {
+            method: "reload",
+          });
         }
+        emit("close:blade");
       }
     },
     disabled: computed(() => {

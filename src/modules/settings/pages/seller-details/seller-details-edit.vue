@@ -7,6 +7,12 @@
     v-loading="loading"
     :toolbarItems="bladeToolbar"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer>
       <VcStatus
         :outline="false"
@@ -373,10 +379,11 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, useUser, useForm, IBladeToolbar } from "@vc-shell/framework";
+import { useUser, useForm, IBladeToolbar } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -416,7 +423,7 @@ useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const errorMessage = ref("");
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const title = t("SETTINGS.SELLER_DETAILS.TITLE");
 const fileUploading = ref(false);
 
@@ -430,8 +437,8 @@ const computedFee = computed(() => {
 });
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -446,6 +453,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           await updateSeller(sellerDetails.value);
         } catch (e) {
           errorMessage.value = e.message;
+          throw e;
         }
       } else {
         alert(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.NOT_VALID"))));
@@ -505,6 +513,7 @@ async function onLogoUpload(files: FileList) {
     }
   } catch (e) {
     console.log(e);
+    throw e;
   } finally {
     fileUploading.value = false;
   }

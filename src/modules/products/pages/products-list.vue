@@ -9,6 +9,13 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
+
     <!-- Blade contents -->
     <VcTable
       class="tw-grow tw-basis-0"
@@ -213,7 +220,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { debounce } = useFunctions();
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 
 const isDesktop = inject("isDesktop");
 

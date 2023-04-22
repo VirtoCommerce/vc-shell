@@ -808,9 +808,6 @@ function restoreCollapsed(key: string): boolean {
 defineExpose({
   editImages,
   onBeforeClose,
-  onClose: () => {
-    console.log("test");
-  },
 });
 </script>
 

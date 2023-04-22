@@ -232,8 +232,8 @@
 </template>
 
 <script lang="ts" setup>
-import { useBladeNavigation, ITableColumns, notification } from "@vc-shell/framework";
-import { computed, onErrorCaptured, onMounted, ref, shallowRef } from "vue";
+import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
+import { computed, onMounted, ref, shallowRef, watch } from "vue";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
@@ -248,12 +248,7 @@ const { orders, loadOrders, loading: ordersLoading } = useOrders();
 const { offers, loadOffers, loading: offersLoading } = useOffers();
 
 const { openBlade } = useBladeNavigation();
-
-onErrorCaptured((err) => {
-  notification.error(err.toString(), {
-    timeout: 5000,
-  });
-});
+const { error, reset } = useErrorHandler(true);
 
 const productsColumns = ref<ITableColumns[]>([
   {
@@ -363,6 +358,17 @@ const offersColumns = ref<ITableColumns[]>([
     type: "date-time",
   },
 ]);
+
+watch(error, (newVal) => {
+  if (newVal) {
+    notification.error(newVal, {
+      timeout: 5000,
+      onOpen() {
+        reset();
+      },
+    });
+  }
+});
 
 onMounted(async () => {
   loadOrders({ take: 5 });

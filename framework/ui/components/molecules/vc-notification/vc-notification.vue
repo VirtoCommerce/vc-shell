@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import { NotificationType } from "./../../../../shared/components/notifications";
 import { VcIcon } from "./../../";
-import { onMounted, ref, toRefs, watchEffect } from "vue";
+import { onMounted, ref, toRefs, watch } from "vue";
 
 export interface Props {
   content?: string;
@@ -52,11 +52,13 @@ const { timeout } = toRefs(props);
 
 const timer = ref();
 
-watchEffect(() => {
-  if (timeout) {
+watch(timeout, (newVal) => {
+  if (newVal) {
     timer.value = Timer(() => {
       props.closeNotification();
     }, props.timeout as number);
+
+    timer.value.start();
   }
 });
 

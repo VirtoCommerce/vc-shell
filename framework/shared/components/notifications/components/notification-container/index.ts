@@ -4,7 +4,7 @@ import { NotificationType } from "../../types";
 import { useContainer } from "../../composables";
 
 const NotificationContainer = defineComponent({
-  name: "NotificationToastContainer",
+  name: "NotificationContainer",
   inheritAttrs: false,
   props: {
     limit: {

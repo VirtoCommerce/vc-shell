@@ -4,7 +4,7 @@ import _Interceptor from "./interceptor";
 export const ErrorInterceptor = _Interceptor as typeof _Interceptor & {
   new (): {
     $slots: {
-      default: (args: { error: Error; reset: () => void }) => VNode[];
+      default: (args: { error: Error | string; reset: () => void }) => VNode[];
     };
   };
 };

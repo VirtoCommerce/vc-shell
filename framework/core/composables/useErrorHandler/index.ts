@@ -1,12 +1,12 @@
 import { onErrorCaptured, getCurrentInstance, ref, Ref } from "vue";
 
 interface IUseErrorHandler {
-  error: Ref<Error | string>;
+  error: Ref<string>;
   reset(): void;
 }
 
 export function useErrorHandler(capture?: boolean): IUseErrorHandler {
-  const error = ref<Error | string>(null);
+  const error = ref<string>(null);
   const instance = getCurrentInstance();
 
   function reset() {

@@ -52,15 +52,19 @@ const { timeout } = toRefs(props);
 
 const timer = ref();
 
-watch(timeout, (newVal) => {
-  if (newVal) {
-    timer.value = Timer(() => {
-      props.closeNotification();
-    }, props.timeout as number);
+watch(
+  timeout,
+  (newVal) => {
+    if (newVal) {
+      timer.value = Timer(() => {
+        props.closeNotification();
+      }, props.timeout as number);
 
-    timer.value.start();
-  }
-});
+      timer.value.start();
+    }
+  },
+  { immediate: true }
+);
 
 onMounted(() => {
   if (props.timeout) {

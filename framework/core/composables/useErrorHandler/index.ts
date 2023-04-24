@@ -20,8 +20,8 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
   onErrorCaptured((err) => {
     if (err && err instanceof Error) {
       if ("isApiException" in err && "response" in err) {
-        const parsedError = JSON.parse(err.response as string);
-        error.value = parsedError.message;
+        const parsedError = JSON.stringify(err);
+        error.value = parsedError;
       } else {
         error.value = err.toString();
       }

@@ -6,13 +6,13 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "error", value: Error | string): void;
+  (event: "error", value: string): void;
   (event: "reset"): void;
 }
 
 export type Slots = {
   slots: {
-    default: (args: { error: Error | string; reset: () => void }) => VNode[];
+    default: (args: { error: string; reset: () => void }) => VNode[];
   };
 };
 

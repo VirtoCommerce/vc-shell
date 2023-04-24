@@ -1,9 +1,13 @@
 <template>
   <ErrorInterceptor
     capture
-    v-slot="{ error }"
+    v-slot="{ error, reset }"
   >
-    <router-view v-slot="{ Component, route }">
+    <router-view
+      @vnode-before-unmount="reset"
+      v-slot="{ Component, route }"
+      :key="route.path"
+    >
       <component
         :is="Component"
         :closable="false"
@@ -14,7 +18,7 @@
         :maximized="findStateById(0)"
         :blades="blades"
         :param="resolveParam"
-        :key="route"
+        :key="route.path"
         :ref="(el: IBladeElement) => setParentRef(el, Component)"
         @expand:blade="handleMaximizeBlade(0, true)"
         @collapse:blade="handleMaximizeBlade(0, false)"
@@ -63,7 +67,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, VNode } from "vue";
+import { computed, ref, useSlots, VNode } from "vue";
 import { useRoute } from "vue-router";
 import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs, IBladeRef } from "./../../../../../shared";
 import { ErrorInterceptor } from "./../../../../../core/plugins/error-interceptor";
@@ -143,10 +147,6 @@ function onBladeOpen(event: IBladeEvent, idx: number) {
 const resolveParam = computed(() => {
   return props.parentBladeParam ? props.parentBladeParam : route.params.param;
 });
-
-function test(err) {
-  throw new Error(err);
-}
 
 defineExpose({
   bladesRefs,

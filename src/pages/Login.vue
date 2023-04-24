@@ -81,7 +81,7 @@
             name="loginOrEmail"
             v-slot="{ field, errorMessage, handleChange, errors }"
             :modelValue="forgotPasswordForm.loginOrEmail"
-            rules="required"
+            rules="required|email"
           >
             <VcInput
               v-bind="field"

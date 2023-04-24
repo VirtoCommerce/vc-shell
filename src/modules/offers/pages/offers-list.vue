@@ -201,7 +201,7 @@ const onSearchList = debounce(async (keyword: string) => {
     ...searchQuery.value,
     keyword,
   });
-}, 200);
+}, 1000);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {

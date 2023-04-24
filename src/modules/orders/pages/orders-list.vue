@@ -403,7 +403,7 @@ const onSearchList = debounce(async (keyword: string) => {
     ...filter.value,
     keyword,
   });
-}, 200);
+}, 1000);
 
 const reload = async () => {
   await loadOrders({

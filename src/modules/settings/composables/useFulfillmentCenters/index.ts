@@ -73,6 +73,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       searchResult.value = await client.searchFulfillmentCenters(command);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -85,6 +86,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       fulfillmentCenterDetails.value = await client.getFulfillmentCenterById(id);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -102,6 +104,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       await client.updateFulfillmentCenter(command);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -116,6 +119,7 @@ export default (options?: IUseFulfillmentCentersOptions): IUseFulfillmentCenters
       await client.deleteFulfillmentCenter([args.id]);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }

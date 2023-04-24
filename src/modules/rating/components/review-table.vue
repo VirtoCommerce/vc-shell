@@ -116,7 +116,7 @@ onMounted(async () => {
   await loadReviews();
 });
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 
 // Data
 

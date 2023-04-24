@@ -10,6 +10,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer>
       <VcRow>
         <VcCol
@@ -210,8 +216,8 @@ export default defineComponent({
 <script lang="ts" setup>
 import moment from "moment";
 import { useOrder, useOrders } from "../composables";
-import { IBladeToolbar, IParentCallArgs, ITableColumns, useI18n, useLoading } from "@vc-shell/framework";
-
+import { IBladeToolbar, IParentCallArgs, ITableColumns, useLoading } from "@vc-shell/framework";
+import { useI18n } from "vue-i18n";
 import { useStateMachines } from "../../state-machines/composables";
 import { StateMachineInstance } from "../../../api_client/marketplacevendor";
 
@@ -235,7 +241,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { loading: loadingOrder, order, loadOrder, loadPdf, shippingInfo } = useOrder();
 const { loading: loadingOrders } = useOrders();
 const locale = window.navigator.language;

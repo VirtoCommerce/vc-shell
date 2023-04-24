@@ -12,8 +12,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useI18n } from "@vc-shell/framework";
 import { IProductPushNotification } from "../../../../../types";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   notification: IProductPushNotification;
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
   variant: "#A9BCCD",
 });
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const notificationTitle = computed(() => {
   return `${t("SHELL.NOTIFICATIONS.TITLE.PRODUCT.TITLE")} "${props.notification.productName}" ${t(
     "SHELL.NOTIFICATIONS.TITLE.PRODUCT.UPDATE"

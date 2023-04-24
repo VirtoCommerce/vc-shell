@@ -80,6 +80,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       searchResult.value = await client.searchSellerUsers(command);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -97,15 +98,14 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       loading.value = true;
       const validationResult = await validateTeamMember(command.userDetails);
       if (validationResult.length && validationResult[0].errorCode === "EMAIL_ALREADY_EXISTS") {
-        throwCreationError(validationResult[0].errorCode);
-        return;
+        throw validationResult[0].errorCode;
       }
 
       await client.createSellerUser(command);
       modified.value = false;
     } catch (e) {
       console.error(e);
-      throwCreationError(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -125,13 +125,10 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       await client.updateSellerUser(command);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
-  }
-
-  function throwCreationError(e: string) {
-    throw e;
   }
 
   async function sendTeamMemberInvitation(args: { id: string }) {
@@ -160,6 +157,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       await client.deleteSellerUsers([args.id]);
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -179,6 +177,7 @@ export default (options?: IUseTeamMembersOptions): IUseTeamMembers => {
       return await client.validateUser(command);
     } catch (e) {
       console.error(e);
+      throw e;
     }
   }
 

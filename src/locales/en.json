@@ -5,7 +5,7 @@
       "FIELDS": {
         "LOGIN": {
           "LABEL": "Username",
-          "PLACEHOLDER": "Enter your seller login"
+          "PLACEHOLDER": "Enter your username"
         },
         "PASSWORD": {
           "LABEL": "Password",

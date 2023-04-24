@@ -22,6 +22,7 @@
             "CREATED_DATE": "Created",
             "STATUS": "Status",
             "SKU": "SKU#",
+            "ENABLED": "Enabled",
             "ALWAYS_IN_STOCK": "Always in stock",
             "QTY": "Initial Quantity",
             "AVAIL_QTY": "Current Quantity",

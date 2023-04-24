@@ -1,3 +1,26 @@
+## [1.0.75](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.74...v1.0.75) (2023-04-24)
+
+
+### Bug Fixes
+
+* changed locale texts ([603ea16](https://github.com/VirtoCommerce/vendor-portal/commit/603ea16ae2498843f3e210e04118b960965141a1))
+* email validation in "Forgot password" ([4ce72db](https://github.com/VirtoCommerce/vendor-portal/commit/4ce72db0e94c6a5cf3525cd16802706017f26664))
+* table search increased debounce ([6acae8f](https://github.com/VirtoCommerce/vendor-portal/commit/6acae8f64442c66753a388a530031afcc48bf2a2))
+
+
+### Features
+
+* "Enabled" column in the offers list ([75b6c4e](https://github.com/VirtoCommerce/vendor-portal/commit/75b6c4e2d00b85def2685bbf40f6adbef6b430a9))
+* error handling ([92d2ba8](https://github.com/VirtoCommerce/vendor-portal/commit/92d2ba8e3912756951aedae3903a8b38fce8b394))
+* offers bigint quantity check ([653c61f](https://github.com/VirtoCommerce/vendor-portal/commit/653c61f8d4ee5228de50639fed3a2403aa657f6f))
+
+
+### Reverts
+
+* version ([8bc8d35](https://github.com/VirtoCommerce/vendor-portal/commit/8bc8d35feb72641d344ebc14d87f423be0ccaf31))
+
+
+
 ## [1.0.74](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.73...v1.0.74) (2023-04-18)
 
 

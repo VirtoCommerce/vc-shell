@@ -1,5 +1,5 @@
 import { computed, Ref, ref, unref, defineEmits, watch, shallowRef } from "vue";
-import { useUser, useI18n, AssetsDetails, IBladeEvent } from "@vc-shell/framework";
+import { useUser, AssetsDetails, IBladeEvent } from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -18,6 +18,7 @@ import {
 } from "../../../../api_client/marketplacevendor";
 import { StoreModuleClient } from "../../../../api_client/store";
 import * as _ from "lodash-es";
+import { useI18n } from "vue-i18n";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -76,7 +77,7 @@ export default (): IUseOffer => {
   const currencyList = ref([]);
   const imageUploading = ref(false);
   const emit = defineEmits<Emits>();
-  const { t } = useI18n();
+  const { t } = useI18n({ useScope: "global" });
   const modified = ref(false);
 
   const loading = ref(false);
@@ -255,6 +256,7 @@ export default (): IUseOffer => {
       }
     } catch (e) {
       console.log(e);
+      throw e;
     } finally {
       imageUploading.value = false;
     }

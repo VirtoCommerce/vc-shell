@@ -201,7 +201,7 @@
                               v-slot="{ field, errorMessage, handleChange, errors }"
                               :modelValue="item.inStockQuantity"
                               :name="`availqty_${i}`"
-                              rules="required"
+                              rules="required|bigint"
                             >
                               <VcInput
                                 v-bind="field"
@@ -326,7 +326,7 @@
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                         :modelValue="item.minQuantity"
                         :name="`minqty_${i}`"
-                        rules="required"
+                        rules="required|bigint"
                       >
                         <VcInput
                           v-bind="field"

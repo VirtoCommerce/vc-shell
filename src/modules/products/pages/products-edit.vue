@@ -257,7 +257,6 @@ import { defineComponent, computed, onMounted, ref, unref, shallowRef } from "vu
 
 export default defineComponent({
   url: "/product",
-  error: 123,
   inheritAttrs: false,
 });
 </script>

@@ -17,7 +17,7 @@
           ></VcIcon>
         </div>
 
-        <div class="vc-popup__content tw-grow tw-basis-0">
+        <div class="vc-popup__content tw-grow tw-basis-0 tw-h-[calc(100%-44px)]">
           <slot></slot>
         </div>
       </div>

@@ -4,7 +4,6 @@
     :class="[
       $attrs.class,
       {
-        '!tw-border !tw-border-solid !tw-border-[color:var(--blade-color-error)]': $slots['error'],
         '!tw-w-full': $isMobile.value,
         '!tw-w-full !tw-shrink': expanded,
         '!tw-absolute !tw-z-[2] !tw-top-0 !tw-bottom-0 !tw-left-0 ![width:-webkit-fill-available] !tw-mx-4 !tw-shrink':
@@ -36,9 +35,19 @@
     </VcBladeHeader>
 
     <template v-if="$slots['error']">
-      <VcContainer class="tw-max-h-[80px] tw-h-auto tw-text-[color:var(--blade-color-error)] tw-mx-2">
-        <slot name="error"></slot>
-      </VcContainer>
+      <div class="tw-text-white tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)]">
+        <VcIcon
+          size="s"
+          icon="fas fa-exclamation-triangle"
+        />
+        <div class="tw-line-clamp-1 tw-w-full tw-mx-2"><slot name="error"></slot></div>
+        <VcButton
+          @click="toggleErrorPopup"
+          variant="onlytext"
+          class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
+          >{{ $t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
+        >
+      </div>
     </template>
 
     <!-- Set up blade toolbar -->
@@ -47,12 +56,30 @@
       :items="toolbarItems"
     ></VcBladeToolbar>
 
+    <VcPopup
+      variant="medium"
+      :title="$t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE')"
+      @close="toggleErrorPopup"
+      v-if="isErrorPopupActive"
+    >
+      <div class="tw-p-5 tw-flex tw-flex-row tw-items-center tw-h-full">
+        <VcIcon
+          icon="fas fa-exclamation-circle"
+          size="xxl"
+          class="tw-text-[color:var(--blade-color-error)] tw-mr-3"
+        ></VcIcon>
+        <VcContainer no-padding>
+          <slot name="error"></slot>
+        </VcContainer>
+      </div>
+    </VcPopup>
+
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { IBladeContainer } from "./../../../../shared";
 
@@ -64,6 +91,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
+import { VcButton, VcIcon, VcPopup, VcContainer } from "./../../";
 
 export interface Props {
   icon?: string;
@@ -95,12 +123,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<Emits>();
 
+const isErrorPopupActive = ref(false);
+
 const isExpandable = computed(() => {
   if (!props.expandable) {
     return props.expandable;
   }
   return props.blades?.length !== 0;
 });
+
+function toggleErrorPopup() {
+  isErrorPopupActive.value = !isErrorPopupActive.value;
+}
 </script>
 
 <style lang="scss">

@@ -280,6 +280,14 @@ const tableColumns = ref<ITableColumns[]>([
     alwaysVisible: true,
   },
   {
+    id: "isActive",
+    title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.ENABLED")),
+    width: 120,
+    sortable: true,
+    alwaysVisible: true,
+    type: "status-icon",
+  },
+  {
     id: "prices.salePrice",
     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.HEADER.SALE_PRICE")),
     width: 100,

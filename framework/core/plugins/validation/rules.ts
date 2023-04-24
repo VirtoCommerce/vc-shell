@@ -115,3 +115,13 @@ defineRule("before", before);
 export const after = (value: string, [target]: string[]) =>
   compare(value, [target], (first, second) => first < second, "End date must be later than start date");
 defineRule("after", after);
+
+export const bigInt = (value: string) => {
+  if (Number.isSafeInteger(parseInt(value))) {
+    return true;
+  } else {
+    return "Unsupported number";
+  }
+};
+
+defineRule("bigint", bigInt);

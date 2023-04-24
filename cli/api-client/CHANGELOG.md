@@ -1,4 +1,9 @@
-## 1.0.67 (2023-04-18)
+## 1.0.68 (2023-04-24)
+
+
+### Reverts
+
+* version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
 
 
 

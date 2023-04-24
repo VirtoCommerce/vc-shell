@@ -7,3 +7,4 @@ export * from "./usePermissions";
 export * from "./useAsync";
 export * from "./useApiClient";
 export * from "./useLoading";
+export * from "./useErrorHandler";

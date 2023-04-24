@@ -1,4 +1,30 @@
-## 1.0.67 (2023-04-18)
+## 1.0.68 (2023-04-24)
+
+
+
+## 1.0.68 (2023-04-24)
+
+
+### Bug Fixes
+
+* error handling fixes ([594ca20](https://github.com/VirtoCommerce/vc-shell/commit/594ca20b35cc3b8dfd24aa06b6835e48fb36c4c6))
+* errors in console ([32d3a68](https://github.com/VirtoCommerce/vc-shell/commit/32d3a688d0c9ef7cbaff7c736cd3c7863f16e567))
+* immediate timeout start in notification ([e91b7ff](https://github.com/VirtoCommerce/vc-shell/commit/e91b7ffc8db231882e5a8f59770e21d2c6d4553b))
+* notification update on timeout change ([1e1643f](https://github.com/VirtoCommerce/vc-shell/commit/1e1643fb18f6d30ee98103575d2b6cfb40e7e099))
+* update state of updated columns list props ([89e5bb2](https://github.com/VirtoCommerce/vc-shell/commit/89e5bb28251f9a6c672e6e4f960075f83a5f9b62))
+
+
+### Features
+
+* bigint validation rule ([e91f7da](https://github.com/VirtoCommerce/vc-shell/commit/e91f7dab477762ab66ebd8c98ec0ad1e35ac596e))
+* blade error popup ([2ba0140](https://github.com/VirtoCommerce/vc-shell/commit/2ba0140bd2f79b5848ee5c5b096b02908135cdbe))
+* error handling ([10ab19a](https://github.com/VirtoCommerce/vc-shell/commit/10ab19a372e247551f16466cf3edfa2b3a7ff82b))
+* updated notifications ([0c0a078](https://github.com/VirtoCommerce/vc-shell/commit/0c0a078c8e1ff1e2ca6fd063c60bd3dc0bbe2ef5))
+
+
+### Reverts
+
+* version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
 
 
 

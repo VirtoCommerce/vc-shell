@@ -1,0 +1,9 @@
+.notification__container {
+  position: fixed;
+  top: 1em;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  display: flex;
+  flex-direction: column;
+}

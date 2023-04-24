@@ -110,8 +110,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
           blades.value[index]?.onClose?.();
         }
         blades.value.splice(index);
-      } else {
-        throw "Closing prevented";
       }
     }
   }

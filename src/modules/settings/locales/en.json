@@ -160,7 +160,7 @@
               "PLACEHOLDER": "Please enter value"
             },
             "UPLOAD": {
-              "LABEL": "Organization logo",
+              "LABEL": "Company logo",
               "DESCRIPTION": "Select image with min height 120px and min width 120px of the PNG, JPEG"
             }
           }

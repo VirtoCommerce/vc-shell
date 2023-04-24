@@ -22,10 +22,10 @@ export function useErrorHandler(capture?: boolean): IUseErrorHandler {
       if ("isApiException" in err && "response" in err) {
         const parsedError = JSON.parse(err.response as string);
         error.value = parsedError.message;
-        return;
       } else {
         error.value = err.toString();
       }
+      console.error(err);
     }
 
     if (instance) {

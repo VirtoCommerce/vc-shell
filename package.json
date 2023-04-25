@@ -84,5 +84,6 @@
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
-  }
+  },
+  "packageManager": "yarn@3.5.0"
 }

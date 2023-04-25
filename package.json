@@ -5,7 +5,7 @@
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn bootstrap && yarn run build",
-    "bootstrap": "lerna bootstrap -- --frozen-lockfile",
+    "bootstrap": "lerna bootstrap --force-local -- --frozen-lockfile && lerna link --force-local",
     "prepare": "yarn run bootstrap",
     "postinstall": "husky install",
     "publish": "lerna publish",
@@ -20,7 +20,7 @@
     "build-framework": "lerna run build --scope @vc-shell/framework",
     "build-cli:config": "lerna run build --scope @vc-shell/config-generator",
     "build-cli:api-client": "lerna run build --scope @vc-shell/api-client-generator",
-    "generate-api-client:api-client": "lerna run generate-api-client --scope=@vc-shell/framework --stream --no-prefix",
+    "build-cli": "lerna run build --scope=@vc-shell/{config-generator,api-client-generator}",
     "generate-api-client": "lerna run generate-api-client --stream --no-prefix",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
     "storybook-serve": "storybook dev .storybook/assets -p 6006"

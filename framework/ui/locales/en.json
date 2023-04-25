@@ -2,9 +2,9 @@
   "COMPONENTS":{
     "ORGANISMS":{
       "VC_TABLE":{
-        "ALL_SELECTED":"All items in this page are selected.",
-        "SELECT":"Select all items",
-        "ALL_BULK_SELECTED":"All items are selected.",
+        "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
+        "SELECT_ALL": "Select all items",
+        "ALL_SELECTED": "All items are selected.",
         "CANCEL": "Cancel selection"
       }
     }

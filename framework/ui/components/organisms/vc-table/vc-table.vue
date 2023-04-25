@@ -203,23 +203,23 @@
           </thead>
           <div
             class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
-            v-if="bulkDelete && allSelected"
+            v-if="selectAll && showSelectionChoice"
           >
             <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
               <div>
                 {{
-                  bulkSelected
-                    ? $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_BULK_SELECTED")
-                    : $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                  allSelected
+                    ? $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                    : $t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
                 }}
                 <VcButton
                   variant="onlytext"
                   class="tw-text-[13px]"
-                  @click="handleBulkSelection"
+                  @click="handleSelectAll"
                   >{{
-                    bulkSelected
+                    allSelected
                       ? $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
-                      : $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT")
+                      : $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
                   }}</VcButton
                 >
               </div>
@@ -228,7 +228,7 @@
           <tbody
             v-if="items"
             class="vc-table__body"
-            :class="{ 'tw-translate-y-[60px]': bulkDelete && allSelected }"
+            :class="{ 'tw-translate-y-[60px]': selectAll && showSelectionChoice }"
           >
             <tr
               v-for="(item, itemIndex) in items"
@@ -475,18 +475,18 @@ export interface Props {
   reorderableColumns?: boolean;
   reorderableRows?: boolean;
   stateKey: string;
-  bulkDelete?: boolean;
+  selectAll?: boolean;
 }
 
 export interface Emits {
   (event: "paginationClick", page: number): void;
   (event: "selectionChanged", values: TableItemType[]): void;
+  (event: "select:all", values: boolean): void;
   (event: "search:change", value: string): void;
   (event: "headerClick", value: Record<string, unknown>): void;
   (event: "itemClick", item: TableItemType): void;
   (event: "scroll:ptr"): void;
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: TableItemType[] }): void;
-  (event: "bulk:delete"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -528,7 +528,7 @@ let columnResizeListener = null;
 let columnResizeEndListener = null;
 
 const selection = ref<TableItemType[]>([]);
-const bulkSelected = ref(false);
+const allSelected = ref(false);
 
 const selectedRow = ref<string>();
 const tooltip = ref<ComputePositionReturn>();
@@ -613,6 +613,7 @@ const headerCheckbox = computed({
     }
 
     selection.value = _selected;
+    allSelected.value = false;
   },
 });
 
@@ -624,7 +625,7 @@ const filteredCols = computed(() => {
   });
 });
 
-const allSelected = computed(() => selection.value.length === props.items.length && props.pages > 1);
+const showSelectionChoice = computed(() => selection.value.length === props.items.length && props.pages > 1);
 
 watch(
   () => props.items,
@@ -647,6 +648,13 @@ watch(
 );
 
 watch(
+  () => allSelected.value,
+  (newVal) => {
+    emit("select:all", newVal);
+  }
+);
+
+watch(
   () => props.columns,
   (newVal) => {
     defaultColumns.value = newVal;
@@ -654,15 +662,12 @@ watch(
   { deep: true, immediate: true }
 );
 
-function handleBulkSelection() {
-  bulkSelected.value = !bulkSelected.value;
+function handleSelectAll() {
+  allSelected.value = !allSelected.value;
 
-  if (!bulkSelected.value) {
+  if (!allSelected.value) {
     selection.value = [];
-    return;
   }
-
-  emit("bulk:delete");
 }
 
 function isSelected(item: TableItemType) {

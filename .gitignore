@@ -67,3 +67,11 @@ package-lock.json
 
 # Apps
 /apps/
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

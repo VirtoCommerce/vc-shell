@@ -65,7 +65,7 @@ jobs:
         yarn build
 
     - name: Add auth token
-      run: echo //npmAuthToken:${NPM_TOKEN} > .yarnrc
+      run: echo npmAuthToken:${NPM_TOKEN} > .yarnrc.yml
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 

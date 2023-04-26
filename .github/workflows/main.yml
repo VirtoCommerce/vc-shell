@@ -68,7 +68,7 @@ jobs:
 
     - name: Add auth token
       run: |
-        sed -i -e 's/"token"/${NPM_TOKEN}/g' .yarnrc.yml
+        yarn config set --json npmRegistries '{ "//registry.npmjs.org": { "npmAuthToken": "'"${NPM_TOKEN}"'" } }'
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 

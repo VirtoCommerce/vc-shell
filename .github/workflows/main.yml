@@ -40,6 +40,8 @@ jobs:
     - name: Install dependencies
       run: |
         yarn
+      env: 
+        YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master

@@ -10364,7 +10364,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.1.10, postcss@npm:^8.4.12, postcss@npm:^8.4.21, postcss@npm:^8.4.23":
+"postcss@npm:^8.1.10, postcss@npm:^8.4.12, postcss@npm:^8.4.23":
   version: 8.4.23
   resolution: "postcss@npm:8.4.23"
   dependencies:
@@ -12876,8 +12876,8 @@ __metadata:
   linkType: hard
 
 "vite-plugin-mkcert@npm:^1.10.1":
-  version: 1.14.0
-  resolution: "vite-plugin-mkcert@npm:1.14.0"
+  version: 1.14.1
+  resolution: "vite-plugin-mkcert@npm:1.14.1"
   dependencies:
     "@octokit/rest": ^19.0.5
     axios: ^1.2.2
@@ -12885,7 +12885,7 @@ __metadata:
     picocolors: ^1.0.0
   peerDependencies:
     vite: ">=3"
-  checksum: 8d092746b57af1b98679ad593c3a4c202e864a6ce3e85d574294f60c41d8e2129eebc5de3486c524788550aecb676c3da57159f1f40090b4c40b2d99f0d7f4ed
+  checksum: 5dd06c3850c1137121481681500adbeba89e1356f8ce09b4fd7815ce0eeac4665be6c9770d2067fb002c86d0b74f5980ee4c6689b9d9fcb62cf94e641b727014
   languageName: node
   linkType: hard
 
@@ -12909,12 +12909,12 @@ __metadata:
   linkType: hard
 
 "vite@npm:^4.1.4":
-  version: 4.3.2
-  resolution: "vite@npm:4.3.2"
+  version: 4.3.3
+  resolution: "vite@npm:4.3.3"
   dependencies:
     esbuild: ^0.17.5
     fsevents: ~2.3.2
-    postcss: ^8.4.21
+    postcss: ^8.4.23
     rollup: ^3.21.0
   peerDependencies:
     "@types/node": ">= 14"
@@ -12941,7 +12941,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 0194c06c44efa6fc2f81389d16d90cc3da8e7a58d071fe80e787053d604e0ea653e367fc6eb0528058d255c1ae72625396128561301add48b8e480c45343d11c
+  checksum: 99970cb1fed3330458e60f8341ec73c4260c82d815e51c95295321ab496e4c8cb447bc942daf4d94f78bbc8b2bed36cbc237f43fdc1cede19250fac737e5a0fc
   languageName: node
   linkType: hard
 

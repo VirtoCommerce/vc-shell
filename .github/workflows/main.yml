@@ -67,4 +67,4 @@ jobs:
     - name: Publish virto-shell npm
       run: yarn run publish
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

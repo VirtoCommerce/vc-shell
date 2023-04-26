@@ -14,6 +14,6 @@ $ yarn bump-version patch/minor/major
 #### Standalone app-vendor-portal
 ```bash
 ## Standalone app-vendor-portal
-$ yarn version --patch/--minor/--major
+$ yarn version patch/minor/major
 $ yarn changelog && yarn add-to-commit
 ```

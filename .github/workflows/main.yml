@@ -40,7 +40,7 @@ jobs:
     - name: Install dependencies
       run: |
         yarn
-      env: 
+      env:
         YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
     - name: Get Image Version
@@ -67,7 +67,7 @@ jobs:
         yarn build
 
     - name: Add auth token
-      run: echo npmAuthToken:${NPM_TOKEN} > .yarnrc.yml
+      run: echo npmRegistries:npmAuthToken:${NPM_TOKEN} > .yarnrc.yml
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 

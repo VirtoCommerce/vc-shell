@@ -4,7 +4,7 @@
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
-    "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && && yarn run build",
+    "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn run build",
     "postinstall": "husky install",
     "publish": "lerna publish",
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'apps/**/*.{ts,vue}'",

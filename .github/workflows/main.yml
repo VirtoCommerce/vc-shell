@@ -68,9 +68,7 @@ jobs:
 
     - name: Add auth token
       run: |
-        arr=($(cat .yarnrc.yml | grep "npmAuthToken:"))
-        npmAuthToken=${NPM_TOKEN}
-        echo $npmAuthToken
+        sed -i '' 's/token/${NPM_TOKEN}/g' .yarnrc.yml
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 

@@ -39,7 +39,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn bootstrap
+        yarn install
 
     - name: Get Image Version
       uses: VirtoCommerce/vc-github-actions/get-image-version@master
@@ -65,6 +65,6 @@ jobs:
         yarn build
 
     - name: Publish virto-shell npm
-      run: yarn run publish from-package --yes
+      run: yarn run publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

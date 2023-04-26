@@ -1,3 +1,17 @@
+## [1.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.68...v1.0.69) (2023-04-26)
+
+
+### Bug Fixes
+
+* fixed api-generation ([1e39974](https://github.com/VirtoCommerce/vc-shell/commit/1e39974ec27fa2ab2a3d5346c590be30f5d689d3))
+
+
+### Features
+
+* transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
+
+
+
 ## [1.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.67...v1.0.68) (2023-04-24)
 
 
@@ -387,11 +401,6 @@
 ## [1.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.40...v1.0.41) (2023-01-20)
 
 
-### Bug Fixes
-
-* entry point path ([ec06d64](https://github.com/VirtoCommerce/vc-shell/commit/ec06d6469efc212902fa453e1b9b5f4072710991))
-
-
 ### Features
 
 * extended customization ([07275b8](https://github.com/VirtoCommerce/vc-shell/commit/07275b862e8fddfe01ab9ceabca85f4e1449cace))
@@ -747,11 +756,6 @@
 
 
 ## [1.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.10...v1.0.11) (2022-07-08)
-
-
-### Bug Fixes
-
-* some fixes ([c93d010](https://github.com/VirtoCommerce/vc-shell/commit/c93d0107e9d844786458eee8f7be21a5b0b69754))
 
 
 ### Features
@@ -1571,7 +1575,6 @@
 * autocomplete and select v-models ([775c913](https://github.com/VirtoCommerce/vc-shell/commit/775c91388c7fc05db08b82663310ba3153187245))
 * basic mobile UI/UX ([77be3a4](https://github.com/VirtoCommerce/vc-shell/commit/77be3a414e842500e6ca9fded1ffadd4eccb68ed))
 * gallery upload, table width, label updates ([596ec14](https://github.com/VirtoCommerce/vc-shell/commit/596ec1451d7f4c57abc5b336737b40d79773000d))
-* gallery upload, table width, label updates ([6cc75c3](https://github.com/VirtoCommerce/vc-shell/commit/6cc75c31cc0d5d8ec1fe487a91223ec1a5b223f6))
 * product list update on changes ([198731f](https://github.com/VirtoCommerce/vc-shell/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
 * routing update ([d7ec6ef](https://github.com/VirtoCommerce/vc-shell/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
 
@@ -1681,25 +1684,15 @@
 
 * vm-14 - multiple components improved ([41cd1a3](https://github.com/VirtoCommerce/vc-shell/commit/41cd1a305740d9dafa5e621c607583e0f18c6e48))
 * vm-14 - product total count ([b51e2c0](https://github.com/VirtoCommerce/vc-shell/commit/b51e2c00ac1f3d6d2aa05f580378deff0fc2cd7a))
-* vm-14 - product total count ([7ee2b6a](https://github.com/VirtoCommerce/vc-shell/commit/7ee2b6aa02135a69298b1c6f39397c88c6bb3c1f))
 * vm-14 - remove products blade subtitle ([0d3125a](https://github.com/VirtoCommerce/vc-shell/commit/0d3125a4e02bea00b0471e3c552be0c77de24828))
-* vm-14 - remove products blade subtitle ([c5aa233](https://github.com/VirtoCommerce/vc-shell/commit/c5aa2339c8904b1d3fecf364f2ad3f3bf3694c86))
 * vm-14 - table improvements ([369ea4d](https://github.com/VirtoCommerce/vc-shell/commit/369ea4dd952c733092501770b739c05a80f44fb1))
 * vm-14 - table improvements ([9184acf](https://github.com/VirtoCommerce/vc-shell/commit/9184acfc1e86b1f151d69d836466b6f0e07c2ce2))
-* vm-28 - module "products" ([23dc9fe](https://github.com/VirtoCommerce/vc-shell/commit/23dc9fe98597849463fe3f9369350f60459e6be6))
 * vm-31 - table styling ([8cf26a1](https://github.com/VirtoCommerce/vc-shell/commit/8cf26a1cc76c881ffb9b9f1ee74be578d009ee26))
-* vm-31 - table styling ([116476d](https://github.com/VirtoCommerce/vc-shell/commit/116476d3ef82389d1c32eca0fc4869e92477bada))
-* vm-31 table display ([993f7a8](https://github.com/VirtoCommerce/vc-shell/commit/993f7a82416beb3a9cbe0dfb7d20a5b32ce803df))
 * vm-32 - pagination component ([91d2463](https://github.com/VirtoCommerce/vc-shell/commit/91d246385083597fbaaed9c1ce02ec287830309d))
 * vm-32 - pagination component ([e6691cf](https://github.com/VirtoCommerce/vc-shell/commit/e6691cff79e9b93c9788eff78291e84c46711e90))
-* vm-32 - pagination component ([2c3a3a4](https://github.com/VirtoCommerce/vc-shell/commit/2c3a3a4c1ab1279e7ee649c47fb610cd316a6f82))
-* vm-32 - pagination component ([9247f76](https://github.com/VirtoCommerce/vc-shell/commit/9247f7669671ca9f1662f3b1fb3c40917d97ecba))
 * vm-35 table sorting ([e26abf5](https://github.com/VirtoCommerce/vc-shell/commit/e26abf5eb21fe928d379282c1df5269c82b9b877))
-* vm-35 table sorting ([57b9ddb](https://github.com/VirtoCommerce/vc-shell/commit/57b9ddb136163ac7d0cf51cf96e9f3363398ac23))
 * vm-55 - toolbar actions ([638a9ab](https://github.com/VirtoCommerce/vc-shell/commit/638a9abbba4063dcbfb56833d42b37d61857171b))
-* vm-55 - toolbar actions ([a910e74](https://github.com/VirtoCommerce/vc-shell/commit/a910e74b672fc37b4660afe31532c2c5521c765a))
 * vm-66 - product list search component ([8abc12d](https://github.com/VirtoCommerce/vc-shell/commit/8abc12d66ba3c56f9bc426af3efc1564218f51c0))
-* vm-66 - product list search component ([8973dee](https://github.com/VirtoCommerce/vc-shell/commit/8973deed47f6443f6dd2392ac70e0cd3285a4e04))
 
 
 
@@ -1939,9 +1932,6 @@
 
 ### Features
 
-* core composables ([be9df90](https://github.com/VirtoCommerce/vc-shell/commit/be9df90a3b4aa7aa453d55588d547a8c9892c6fb))
-* core composables ([10f8fa6](https://github.com/VirtoCommerce/vc-shell/commit/10f8fa67a8e0247cbd5568924e3d69692bb282cf))
-* demo manager version display and locale ([b90b934](https://github.com/VirtoCommerce/vc-shell/commit/b90b934f62133866ba28507eaf70a8408711a6d2))
 * login form and route guarding ([78813af](https://github.com/VirtoCommerce/vc-shell/commit/78813afc10753f4972d2e120c3ea48295131b2ed))
 * ui component structure aligned with docs ([2001f40](https://github.com/VirtoCommerce/vc-shell/commit/2001f404583a385531d1395591f16a251ee41f95))
 

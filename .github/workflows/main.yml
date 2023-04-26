@@ -64,7 +64,10 @@ jobs:
       run: |
         yarn build
 
+    - name: Add auth token
+      run: echo //npmAuthToken:${NPM_TOKEN} > .yarnrc
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
     - name: Publish virto-shell npm
       run: yarn run publish
-      env:
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

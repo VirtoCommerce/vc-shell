@@ -6,7 +6,7 @@
   "scripts": {
     "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn run build",
     "postinstall": "husky install",
-    "publish": "lerna publish",
+    "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework}' npm publish",
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'apps/**/*.{ts,vue}'",
     "lint-staged": "lint-staged",
     "changelog": "yarn workspaces foreach -v --from '{@vc-shell/root,@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework}' exec -- 'conventional-changelog --preset angular --release-count 0 --commit-path $INIT_CWD --pkg $INIT_CWD/package.json --outfile $INIT_CWD/CHANGELOG.md'",

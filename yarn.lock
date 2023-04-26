@@ -3905,7 +3905,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@^1.0.68, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.69, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -3918,7 +3918,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.68, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.69, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -3927,13 +3927,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.68, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.69, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
     "@floating-ui/vue": ^0.2.1
-    "@vc-shell/api-client-generator": ^1.0.68
-    "@vc-shell/config-generator": ^1.0.68
+    "@vc-shell/api-client-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.69
     "@vee-validate/i18n": ^4.7.3
     "@vee-validate/rules": ^4.7.3
     "@vueup/vue-quill": ^1.1.1
@@ -4589,9 +4589,9 @@ __metadata:
     "@types/lodash-es": ^4.17.6
     "@typescript-eslint/eslint-plugin": ^5.10.1
     "@typescript-eslint/parser": ^5.10.1
-    "@vc-shell/api-client-generator": ^1.0.68
-    "@vc-shell/config-generator": ^1.0.68
-    "@vc-shell/framework": ^1.0.68
+    "@vc-shell/api-client-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.69
+    "@vc-shell/framework": ^1.0.69
     "@vitejs/plugin-vue": ^4.0.0
     "@vue/eslint-config-prettier": ^7.0.0
     "@vue/eslint-config-typescript": ^10.0.0

@@ -1,5 +1,0 @@
-undecided:
-  - "@vc-shell/root"
-  - "@vc-shell/api-client-generator"
-  - "@vc-shell/config-generator"
-  - "@vc-shell/framework"

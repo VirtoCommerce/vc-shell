@@ -3900,7 +3900,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.69, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.70, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -3915,7 +3915,7 @@ __metadata:
   dependencies:
     "@floating-ui/vue": ^0.2.1
     "@vc-shell/api-client-generator": ^1.0.69
-    "@vc-shell/config-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.70
     "@vee-validate/i18n": ^4.7.3
     "@vee-validate/rules": ^4.7.3
     "@vueup/vue-quill": ^1.1.1
@@ -3924,8 +3924,6 @@ __metadata:
     "@vueuse/integrations": ^9.9.0
     buffer-esm: ^1.2.0
     client-oauth2: ^4.3.3
-    conventional-changelog-cli: ^2.2.2
-    cross-env: ^7.0.3
     moment: ^2.29.1
     normalize.css: ^8.0.1
     querystring-es3: ^0.2.1
@@ -4574,7 +4572,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.10.1
     "@typescript-eslint/parser": ^5.10.1
     "@vc-shell/api-client-generator": ^1.0.69
-    "@vc-shell/config-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.70
     "@vc-shell/framework": ^1.0.69
     "@vitejs/plugin-vue": ^4.0.0
     "@vue/eslint-config-prettier": ^7.0.0

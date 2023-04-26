@@ -28,8 +28,7 @@
     "dev": "vite",
     "development": "vite build --watch -m development",
     "watch": "vite build --watch",
-    "type-check": "vue-tsc --noEmit",
-    "generate-api-client": "cross-env APP_PLATFORM_URL=https://vcmp-dev.paas.govirto.com/ api-client-generator --color"
+    "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@floating-ui/vue": "^0.2.1",

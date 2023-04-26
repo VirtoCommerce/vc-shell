@@ -1861,11 +1861,11 @@ __metadata:
   linkType: hard
 
 "@floating-ui/dom@npm:^1.2.1":
-  version: 1.2.6
-  resolution: "@floating-ui/dom@npm:1.2.6"
+  version: 1.2.7
+  resolution: "@floating-ui/dom@npm:1.2.7"
   dependencies:
     "@floating-ui/core": ^1.2.6
-  checksum: 2226c6c244b96ae75ab14cc35bb119c8d7b83a85e2ff04e9d9800cffdb17faf4a7cf82db741dd045242ced56e31c8a08e33c8c512c972309a934d83b1f410441
+  checksum: f330228b909ecf241fea1db780a97c842acaea74d2a5ce99456040f9932a80d12c6a77e1c7d56a2700fe6bc85f961f76a7f3bd2640c3a5b2bc497ccc65074519
   languageName: node
   linkType: hard
 
@@ -3887,7 +3887,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@^1.0.68, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.69, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -3900,7 +3900,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.68, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.69, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -3909,13 +3909,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.68, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.69, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
     "@floating-ui/vue": ^0.2.1
-    "@vc-shell/api-client-generator": ^1.0.68
-    "@vc-shell/config-generator": ^1.0.68
+    "@vc-shell/api-client-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.69
     "@vee-validate/i18n": ^4.7.3
     "@vee-validate/rules": ^4.7.3
     "@vueup/vue-quill": ^1.1.1
@@ -3924,6 +3924,8 @@ __metadata:
     "@vueuse/integrations": ^9.9.0
     buffer-esm: ^1.2.0
     client-oauth2: ^4.3.3
+    conventional-changelog-cli: ^2.2.2
+    cross-env: ^7.0.3
     moment: ^2.29.1
     normalize.css: ^8.0.1
     querystring-es3: ^0.2.1
@@ -4571,9 +4573,9 @@ __metadata:
     "@types/lodash-es": ^4.17.6
     "@typescript-eslint/eslint-plugin": ^5.10.1
     "@typescript-eslint/parser": ^5.10.1
-    "@vc-shell/api-client-generator": ^1.0.68
-    "@vc-shell/config-generator": ^1.0.68
-    "@vc-shell/framework": ^1.0.68
+    "@vc-shell/api-client-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.69
+    "@vc-shell/framework": ^1.0.69
     "@vitejs/plugin-vue": ^4.0.0
     "@vue/eslint-config-prettier": ^7.0.0
     "@vue/eslint-config-typescript": ^10.0.0

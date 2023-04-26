@@ -23,7 +23,7 @@ async function generateApiClient(): Promise<void> {
     );
 
     const nswag = spawnSync(
-      "nswag",
+      "npx nswag",
       [
         "run",
         paths.nswagPaths.configuration,

@@ -1,3 +1,12 @@
+## [1.0.76](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.75...v1.0.76) (2023-04-26)
+
+
+### Bug Fixes
+
+* reviews dashboard open item fix ([47ca2b9](https://github.com/VirtoCommerce/vendor-portal/commit/47ca2b9846bfaf0590d195c4f019f249aef8248e))
+
+
+
 ## [1.0.75](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.74...v1.0.75) (2023-04-24)
 
 
@@ -473,7 +482,6 @@
 * readme scripts update ([8170778](https://github.com/VirtoCommerce/vendor-portal/commit/81707786b07bee27a621cbec71dddf58dec41ecb))
 * required key change ([5de380f](https://github.com/VirtoCommerce/vendor-portal/commit/5de380f3a2f1493a3a45b1f1199aaa9cb224df76))
 * search offers for  seller product ([4ec6a5c](https://github.com/VirtoCommerce/vendor-portal/commit/4ec6a5c5cec7db1833bc308b30262cc9e38dee05))
-* some fixes ([c93d010](https://github.com/VirtoCommerce/vendor-portal/commit/c93d0107e9d844786458eee8f7be21a5b0b69754))
 * status badges style ([5515bd6](https://github.com/VirtoCommerce/vendor-portal/commit/5515bd6ec6fa44a9b7b24d855333872040bfc91c))
 * temporarily disable storybook ci/cd ([98b83ab](https://github.com/VirtoCommerce/vendor-portal/commit/98b83abcbf52f5eeca4c3eba4eba4c7bd538d110))
 * **ui:** deps ([3b5a375](https://github.com/VirtoCommerce/vendor-portal/commit/3b5a375f5794cf1c87d042f0e541f3badfe66f47))
@@ -522,8 +530,6 @@
 * commitlint, packages cleanup ([0e7f5d5](https://github.com/VirtoCommerce/vendor-portal/commit/0e7f5d56aad4bd32fcca9aab8e0ed9ba84a5f9f2))
 * connect product details to Api ([6ae2219](https://github.com/VirtoCommerce/vendor-portal/commit/6ae22199c20aa37aa4e78b65562d0c0212b74f2c))
 * conventional changelog ([fd83ac2](https://github.com/VirtoCommerce/vendor-portal/commit/fd83ac23191b903859275df9758d62d518a0f2e5))
-* core composables ([be9df90](https://github.com/VirtoCommerce/vendor-portal/commit/be9df90a3b4aa7aa453d55588d547a8c9892c6fb))
-* core composables ([10f8fa6](https://github.com/VirtoCommerce/vendor-portal/commit/10f8fa67a8e0247cbd5568924e3d69692bb282cf))
 * core composables ([57d84af](https://github.com/VirtoCommerce/vendor-portal/commit/57d84afae7eeaab6c501346150f18ce49f7c27b7))
 * core composables ([7713230](https://github.com/VirtoCommerce/vendor-portal/commit/771323097efd7aef41fc77d320e153e589c2f0e0))
 * **core:** additional dependencies for API connecton ([6d77562](https://github.com/VirtoCommerce/vendor-portal/commit/6d77562d0509544248e2d9494f89ec4960b6d52a))
@@ -533,7 +539,6 @@
 * dashboard ([683f65a](https://github.com/VirtoCommerce/vendor-portal/commit/683f65ac6d01b974dc05d931f62277891688ef1f))
 * dashboard offers widgets ([ca0738b](https://github.com/VirtoCommerce/vendor-portal/commit/ca0738bde650aad5c4338731ce5e26dad742fef5))
 * decoupling done ([7cbf0cf](https://github.com/VirtoCommerce/vendor-portal/commit/7cbf0cfa60af0b617c389a90741b0c131f3486bc))
-* demo manager version display and locale ([b90b934](https://github.com/VirtoCommerce/vendor-portal/commit/b90b934f62133866ba28507eaf70a8408711a6d2))
 * demo manager version display and locale ([674dc7e](https://github.com/VirtoCommerce/vendor-portal/commit/674dc7e4a993f12477764ef3e1ad1c4b5f2f7a3b))
 * dependencies version sync, platform-manager-demo serve ([60cc81b](https://github.com/VirtoCommerce/vendor-portal/commit/60cc81b6cfcfff17fbe1b0111ce30d03d1272a5c))
 * download invoice + some minor UI bug fixes ([bbb6cca](https://github.com/VirtoCommerce/vendor-portal/commit/bbb6cca09895d24420d7184354efaf8f7db7722f))
@@ -547,7 +552,6 @@
 * forgot password ([faabc0d](https://github.com/VirtoCommerce/vendor-portal/commit/faabc0de78598e465b980805fc497f29d36cd272))
 * gallery component ([ecb9219](https://github.com/VirtoCommerce/vendor-portal/commit/ecb9219d376035a9e16f221bcb961f50b1443179))
 * gallery upload, table width, label updates ([596ec14](https://github.com/VirtoCommerce/vendor-portal/commit/596ec1451d7f4c57abc5b336737b40d79773000d))
-* gallery upload, table width, label updates ([6cc75c3](https://github.com/VirtoCommerce/vendor-portal/commit/6cc75c31cc0d5d8ec1fe487a91223ec1a5b223f6))
 * github workflow update ([7ad482d](https://github.com/VirtoCommerce/vendor-portal/commit/7ad482d9af21aec0c837f6db1388e241c8bce3e9))
 * list mobile actions ([c269a88](https://github.com/VirtoCommerce/vendor-portal/commit/c269a88b9ca304520b9157a51ccd4c602fd0059b))
 * login component API connect (WIP) ([fbb385f](https://github.com/VirtoCommerce/vendor-portal/commit/fbb385feae4d58ae61351be9f6db85a8705c003d))
@@ -649,9 +653,7 @@
 * vm-100 fix: vm-336 ([3533d23](https://github.com/VirtoCommerce/vendor-portal/commit/3533d234d4ded877fb3eecaa3046d2738fda2d8c))
 * vm-14 - multiple components improved ([41cd1a3](https://github.com/VirtoCommerce/vendor-portal/commit/41cd1a305740d9dafa5e621c607583e0f18c6e48))
 * vm-14 - product total count ([b51e2c0](https://github.com/VirtoCommerce/vendor-portal/commit/b51e2c00ac1f3d6d2aa05f580378deff0fc2cd7a))
-* vm-14 - product total count ([7ee2b6a](https://github.com/VirtoCommerce/vendor-portal/commit/7ee2b6aa02135a69298b1c6f39397c88c6bb3c1f))
 * vm-14 - remove products blade subtitle ([0d3125a](https://github.com/VirtoCommerce/vendor-portal/commit/0d3125a4e02bea00b0471e3c552be0c77de24828))
-* vm-14 - remove products blade subtitle ([c5aa233](https://github.com/VirtoCommerce/vendor-portal/commit/c5aa2339c8904b1d3fecf364f2ad3f3bf3694c86))
 * vm-14 - table improvements ([369ea4d](https://github.com/VirtoCommerce/vendor-portal/commit/369ea4dd952c733092501770b739c05a80f44fb1))
 * vm-14 - table improvements ([9184acf](https://github.com/VirtoCommerce/vendor-portal/commit/9184acfc1e86b1f151d69d836466b6f0e07c2ce2))
 * vm-20 offers list ([ebafb36](https://github.com/VirtoCommerce/vendor-portal/commit/ebafb36bb151f28f4415e5ebb4223d029514e90a))
@@ -663,25 +665,17 @@
 * vm-271 input fix ([0b1b538](https://github.com/VirtoCommerce/vendor-portal/commit/0b1b5388560a7f9346c8ab666f0303247c74f2a3))
 * vm-271 removed currency sign ([579257b](https://github.com/VirtoCommerce/vendor-portal/commit/579257bab5ba9b44cb59590f6c989cbb81c16444))
 * vm-28 - module "products" ([ae2ddb2](https://github.com/VirtoCommerce/vendor-portal/commit/ae2ddb2e3d355a7665cd9de0f9e717e8879c289a))
-* vm-28 - module "products" ([23dc9fe](https://github.com/VirtoCommerce/vendor-portal/commit/23dc9fe98597849463fe3f9369350f60459e6be6))
 * vm-283, vm-284, vm-285, vm-286, vm-287, vm-288, vm-289, vm-290, vm-291, vm-292, vm-293 ([55541a8](https://github.com/VirtoCommerce/vendor-portal/commit/55541a8fa355999cdc9a222d2e79723e387b618e))
 * vm-31 - table styling ([8cf26a1](https://github.com/VirtoCommerce/vendor-portal/commit/8cf26a1cc76c881ffb9b9f1ee74be578d009ee26))
-* vm-31 - table styling ([116476d](https://github.com/VirtoCommerce/vendor-portal/commit/116476d3ef82389d1c32eca0fc4869e92477bada))
 * vm-31 table display ([ebb2924](https://github.com/VirtoCommerce/vendor-portal/commit/ebb292476ddf010d69fac361eef9ffb8045fdc0a))
-* vm-31 table display ([993f7a8](https://github.com/VirtoCommerce/vendor-portal/commit/993f7a82416beb3a9cbe0dfb7d20a5b32ce803df))
 * vm-32 - pagination component ([91d2463](https://github.com/VirtoCommerce/vendor-portal/commit/91d246385083597fbaaed9c1ce02ec287830309d))
 * vm-32 - pagination component ([e6691cf](https://github.com/VirtoCommerce/vendor-portal/commit/e6691cff79e9b93c9788eff78291e84c46711e90))
-* vm-32 - pagination component ([2c3a3a4](https://github.com/VirtoCommerce/vendor-portal/commit/2c3a3a4c1ab1279e7ee649c47fb610cd316a6f82))
-* vm-32 - pagination component ([9247f76](https://github.com/VirtoCommerce/vendor-portal/commit/9247f7669671ca9f1662f3b1fb3c40917d97ecba))
 * vm-33 loading indicator ([a8241c1](https://github.com/VirtoCommerce/vendor-portal/commit/a8241c1577663961bed735779d4c5efddb92c3a3))
 * vm-35 table sorting ([e26abf5](https://github.com/VirtoCommerce/vendor-portal/commit/e26abf5eb21fe928d379282c1df5269c82b9b877))
-* vm-35 table sorting ([57b9ddb](https://github.com/VirtoCommerce/vendor-portal/commit/57b9ddb136163ac7d0cf51cf96e9f3363398ac23))
 * vm-49, vm-182 ([515114f](https://github.com/VirtoCommerce/vendor-portal/commit/515114fde0da270b429a538e54aeefee5efc7fdd))
 * vm-55 - toolbar actions ([638a9ab](https://github.com/VirtoCommerce/vendor-portal/commit/638a9abbba4063dcbfb56833d42b37d61857171b))
-* vm-55 - toolbar actions ([a910e74](https://github.com/VirtoCommerce/vendor-portal/commit/a910e74b672fc37b4660afe31532c2c5521c765a))
 * vm-568 - rework to use specialized API for seller orders ([e11fb95](https://github.com/VirtoCommerce/vendor-portal/commit/e11fb956253a29a6b4b04c21ca213db8c132edb1))
 * vm-66 - product list search component ([8abc12d](https://github.com/VirtoCommerce/vendor-portal/commit/8abc12d66ba3c56f9bc426af3efc1564218f51c0))
-* vm-66 - product list search component ([8973dee](https://github.com/VirtoCommerce/vendor-portal/commit/8973deed47f6443f6dd2392ac70e0cd3285a4e04))
 * vm-94 - gallery component ([ee288e2](https://github.com/VirtoCommerce/vendor-portal/commit/ee288e2107771e8ae6787fbd3bdbf03fd4ef3b4a))
 * vm-97 extended products ([496db62](https://github.com/VirtoCommerce/vendor-portal/commit/496db62414726df80561945f80d8957c543c00c3))
 * vm-97 extended products ([cab5998](https://github.com/VirtoCommerce/vendor-portal/commit/cab5998e2254a2c5d810e3e0e28dc3dc4b8ed8e0))

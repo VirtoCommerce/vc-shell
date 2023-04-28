@@ -1885,6 +1885,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-free@npm:^5.15.3":
+  version: 5.15.4
+  resolution: "@fortawesome/fontawesome-free@npm:5.15.4"
+  checksum: 32281c3df4075290d9a96dfc22f72fadb3da7055d4117e48d34046b8c98032a55fa260ae351b0af5d6f6fb57a2f5d79a4abe52af456da35195f7cb7dda27b4a2
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -2130,6 +2137,19 @@ __metadata:
   peerDependencies:
     react: ">=16"
   checksum: f45fe779556e6cd9a787f711274480e0638b63c460f192ebdcd77cc07ffa61e23c98cb46dd46e577093e1cb4997a232a848d1fb0ba850ae204422cf603add524
+  languageName: node
+  linkType: hard
+
+"@microsoft/signalr@npm:^5.0.7":
+  version: 5.0.17
+  resolution: "@microsoft/signalr@npm:5.0.17"
+  dependencies:
+    abort-controller: ^3.0.0
+    eventsource: ^1.0.7
+    fetch-cookie: ^0.7.3
+    node-fetch: ^2.6.7
+    ws: ^6.0.0
+  checksum: 7d6eb07120a98b6121014f6ccffb773baa58ac39f3205b3bfd60c4ef8b892d67b27e565de006b6d6c00baab30cd4d61d57c7a0fcbbb4078f5668c7b66e9c6ae1
   languageName: node
   linkType: hard
 
@@ -3902,12 +3922,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
+    "@vitejs/plugin-vue": ^4.0.0
     typescript: ^4.9.5
+    vite: ^4.1.4
+    vite-plugin-checker: ^0.5.6
     vite-plugin-mkcert: ^1.10.1
+    vue: ^3.0.0
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.69, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -3925,6 +3949,7 @@ __metadata:
     moment: ^2.29.1
     normalize.css: ^8.0.1
     querystring-es3: ^0.2.1
+    quill: ^1.3.7
     quill-image-uploader: ^1.2.4
     sass: ^1.49.0
     swiper: ^6.8.4
@@ -3987,7 +4012,8 @@ __metadata:
     tailwindcss: ^3.1.8
     typescript: ^4.9.5
     vite: ^4.1.4
-    vite-plugin-checker: ^0.4.2
+    vite-plugin-checker: ^0.5.6
+    vite-plugin-mkcert: ^1.10.1
     vite-plugin-pwa: ^0.14.4
     vue: ^3.0.0
     vue-eslint-parser: ^8.2.0
@@ -4348,6 +4374,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"abort-controller@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "abort-controller@npm:3.0.0"
+  dependencies:
+    event-target-shim: ^5.0.0
+  checksum: 170bdba9b47b7e65906a28c8ce4f38a7a369d78e2271706f020849c1bfe0ee2067d4261df8bbb66eb84f79208fd5b710df759d64191db58cfba7ce8ef9c54b75
+  languageName: node
+  linkType: hard
+
 "accepts@npm:~1.3.5, accepts@npm:~1.3.8":
   version: 1.3.8
   resolution: "accepts@npm:1.3.8"
@@ -4547,6 +4582,58 @@ __metadata:
   checksum: d4b1653fc60b6465b982bf5a88b12051ed2d807d70609386a809306e1c636496f53522d61fa30f9f98c71aaae34f34e1651889cf17d81a44e3dafd2859d495ad
   languageName: node
   linkType: hard
+
+"app-vendor-portal@workspace:apps/vendor-portal":
+  version: 0.0.0-use.local
+  resolution: "app-vendor-portal@workspace:apps/vendor-portal"
+  dependencies:
+    "@commitlint/cli": ^17.5.1
+    "@commitlint/config-conventional": ^17.4.4
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@microsoft/signalr": ^5.0.7
+    "@rollup/plugin-typescript": ^11.0.0
+    "@types/lodash-es": ^4.17.6
+    "@typescript-eslint/eslint-plugin": ^5.10.1
+    "@typescript-eslint/parser": ^5.10.1
+    "@vc-shell/api-client-generator": ^1.0.69
+    "@vc-shell/config-generator": ^1.0.69
+    "@vc-shell/framework": ^1.0.69
+    "@vitejs/plugin-vue": ^4.0.0
+    "@vue/eslint-config-prettier": ^7.0.0
+    "@vue/eslint-config-typescript": ^10.0.0
+    autoprefixer: ^10.4.4
+    buffer-esm: ^1.2.0
+    conventional-changelog-cli: ^2.1.1
+    cross-env: ^7.0.3
+    eslint: ~8.22.0
+    eslint-import-resolver-typescript: ^2.5.0
+    eslint-plugin-import: ^2.25.4
+    eslint-plugin-prettier: ^4.0.0
+    eslint-plugin-vue: ^8.4.0
+    husky: ^8.0.3
+    lint-staged: ^11.0.1
+    lodash-es: ^4.17.21
+    moment: ^2.29.1
+    postcss: ^8.4.12
+    prettier: ^2.5.1
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.49.0
+    tailwindcss: ^3.1.8
+    typescript: ^4.9.5
+    url-pattern: ^1.0.3
+    vee-validate: ^4.7.3
+    vite: ^4.1.4
+    vite-plugin-checker: ^0.5.6
+    vite-plugin-mkcert: ^1.10.1
+    vite-plugin-pwa: ^0.14.4
+    vue: ^3.0.0
+    vue-eslint-parser: ^9.1.1
+    vue-router: ^4.1.6
+    vue-tsc: ~1.0.24
+    yarn: ^1.22.11
+  languageName: unknown
+  linkType: soft
 
 "aproba@npm:^1.0.3 || ^2.0.0":
   version: 2.0.0
@@ -5554,7 +5641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog-cli@npm:^2.2.2":
+"conventional-changelog-cli@npm:^2.1.1, conventional-changelog-cli@npm:^2.2.2":
   version: 2.2.2
   resolution: "conventional-changelog-cli@npm:2.2.2"
   dependencies:
@@ -6374,6 +6461,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"es6-denodeify@npm:^0.1.1":
+  version: 0.1.5
+  resolution: "es6-denodeify@npm:0.1.5"
+  checksum: 501c51fa92423272aed50f9bbc0713e57738091688d99cb6a85b228d0b428e4fd08d5f8e254d50de5ee7890c24d6a4dd9d7d1eef78b4ed4061683f463d08608c
+  languageName: node
+  linkType: hard
+
 "es6-object-assign@npm:^1.1.0":
   version: 1.1.0
   resolution: "es6-object-assign@npm:1.1.0"
@@ -6718,7 +6812,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^9.0.0, espree@npm:^9.3.3, espree@npm:^9.4.0":
+"espree@npm:^9.0.0, espree@npm:^9.3.1, espree@npm:^9.3.3, espree@npm:^9.4.0":
   version: 9.5.1
   resolution: "espree@npm:9.5.1"
   dependencies:
@@ -6799,10 +6893,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"event-target-shim@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "event-target-shim@npm:5.0.1"
+  checksum: 1ffe3bb22a6d51bdeb6bf6f7cf97d2ff4a74b017ad12284cc9e6a279e727dc30a5de6bb613e5596ff4dc3e517841339ad09a7eec44266eccb1aa201a30448166
+  languageName: node
+  linkType: hard
+
 "eventemitter3@npm:^2.0.3":
   version: 2.0.3
   resolution: "eventemitter3@npm:2.0.3"
   checksum: dfbf4a07144afea0712d8e6a7f30ae91beb7c12c36c3d480818488aafa437d9a331327461f82c12dfd60a4fbad502efc97f684089cda02809988b84a23630752
+  languageName: node
+  linkType: hard
+
+"eventsource@npm:^1.0.7":
+  version: 1.1.2
+  resolution: "eventsource@npm:1.1.2"
+  checksum: fe8f2ac3c70b1b63ee3cef5c0a28680cb00b5747bfda1d9835695fab3ed602be41c5c799b1fc997b34b02633573fead25b12b036bdf5212f23a6aa9f59212e9b
   languageName: node
   linkType: hard
 
@@ -6955,6 +7063,16 @@ __metadata:
   dependencies:
     pend: ~1.2.0
   checksum: c8585fd5713f4476eb8261150900d2cb7f6ff2d87f8feb306ccc8a1122efd152f1783bdb2b8dc891395744583436bfd8081d8e63ece0ec8687eeefea394d4ff2
+  languageName: node
+  linkType: hard
+
+"fetch-cookie@npm:^0.7.3":
+  version: 0.7.3
+  resolution: "fetch-cookie@npm:0.7.3"
+  dependencies:
+    es6-denodeify: ^0.1.1
+    tough-cookie: ^2.3.3
+  checksum: df70ebeaacb25908c93f7fdc864ac771bd4f0f08904dbd6f804157aa7f7be445223f974f84fe6599ec9e0525b8fd9f8e89634bc52192e8b266f750a908559e87
   languageName: node
   linkType: hard
 
@@ -7811,6 +7929,15 @@ __metadata:
   bin:
     husky: lib/bin.js
   checksum: c6ec4af63da2c9522da8674a20ad9b48362cc92704896cc8a58c6a2a39d797feb2b806f93fbd83a6d653fbdceb2c3b6e0b602c6b2e8565206ffc2882ef7db9e9
+  languageName: node
+  linkType: hard
+
+"husky@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "husky@npm:8.0.3"
+  bin:
+    husky: lib/bin.js
+  checksum: 837bc7e4413e58c1f2946d38fb050f5d7324c6f16b0fd66411ffce5703b294bd21429e8ba58711cd331951ee86ed529c5be4f76805959ff668a337dbfa82a1b0
   languageName: node
   linkType: hard
 
@@ -11129,6 +11256,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"roboto-fontface@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "roboto-fontface@npm:0.10.0"
+  checksum: 58749bb49133974aa72d79ab1928d5d0aa1df162daab7398cbceeadc1508d222054d2e81d41ab548361a785c5cd2da97159544c3acecc8a180030c91b504be3b
+  languageName: node
+  linkType: hard
+
 "rollup-plugin-terser@npm:^7.0.0":
   version: 7.0.2
   resolution: "rollup-plugin-terser@npm:7.0.2"
@@ -11286,7 +11420,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.7":
+"semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.3.7":
   version: 7.5.0
   resolution: "semver@npm:7.5.0"
   dependencies:
@@ -12148,6 +12282,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tough-cookie@npm:^2.3.3":
+  version: 2.5.0
+  resolution: "tough-cookie@npm:2.5.0"
+  dependencies:
+    psl: ^1.1.28
+    punycode: ^2.1.1
+  checksum: 16a8cd090224dd176eee23837cbe7573ca0fa297d7e468ab5e1c02d49a4e9a97bb05fef11320605eac516f91d54c57838a25864e8680e27b069a5231d8264977
+  languageName: node
+  linkType: hard
+
 "tough-cookie@npm:^3.0.1":
   version: 3.0.1
   resolution: "tough-cookie@npm:3.0.1"
@@ -12710,9 +12854,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite-plugin-checker@npm:^0.4.2":
-  version: 0.4.9
-  resolution: "vite-plugin-checker@npm:0.4.9"
+"vite-plugin-checker@npm:^0.5.6":
+  version: 0.5.6
+  resolution: "vite-plugin-checker@npm:0.5.6"
   dependencies:
     "@babel/code-frame": ^7.12.13
     ansi-escapes: ^4.3.0
@@ -12720,6 +12864,7 @@ __metadata:
     chokidar: ^3.5.1
     commander: ^8.0.0
     fast-glob: ^3.2.7
+    fs-extra: ^11.1.0
     lodash.debounce: ^4.0.8
     lodash.pick: ^4.4.0
     npm-run-path: ^4.0.1
@@ -12730,10 +12875,33 @@ __metadata:
     vscode-languageserver-textdocument: ^1.0.1
     vscode-uri: ^3.0.2
   peerDependencies:
-    vite: ^2.0.0 || ^3.0.0-0
-  bin:
-    vite-plugin-checker-vls: bin/vls
-  checksum: b3bff686c3a48335869376d01ceb98ec4a5fa961dcdb4968ab2e629ab989a7760f2ea29c3660cf3fa54f3354968c93415fc918f2bebea2ec8a6bb93692eec41a
+    eslint: ">=7"
+    meow: ^9.0.0
+    optionator: ^0.9.1
+    stylelint: ">=13"
+    typescript: "*"
+    vite: ">=2.0.0"
+    vls: "*"
+    vti: "*"
+    vue-tsc: "*"
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+    meow:
+      optional: true
+    optionator:
+      optional: true
+    stylelint:
+      optional: true
+    typescript:
+      optional: true
+    vls:
+      optional: true
+    vti:
+      optional: true
+    vue-tsc:
+      optional: true
+  checksum: 9590f7efb968a294bf575be0c106a4d9d4000d86a6a5870debb52a5a38ef25334f7e2fb65d21a522a6bca59e7767709ba752746c72aa28ff53d0f1f32fe17d50
   languageName: node
   linkType: hard
 
@@ -12970,6 +13138,23 @@ __metadata:
   peerDependencies:
     eslint: ">=6.0.0"
   checksum: 8cc751e9fc2bfba93664ad8945732ab1c97791f9123e703de8669b65670d1e01906d80436bf4932d7ee6fa6174ed4545e8abb059206c88f4bd71957ca6cf7ba8
+  languageName: node
+  linkType: hard
+
+"vue-eslint-parser@npm:^9.1.1":
+  version: 9.1.1
+  resolution: "vue-eslint-parser@npm:9.1.1"
+  dependencies:
+    debug: ^4.3.4
+    eslint-scope: ^7.1.1
+    eslint-visitor-keys: ^3.3.0
+    espree: ^9.3.1
+    esquery: ^1.4.0
+    lodash: ^4.17.21
+    semver: ^7.3.6
+  peerDependencies:
+    eslint: ">=6.0.0"
+  checksum: 41b19530a2e9bde70d4ad9e95c034c90d5b7f79988dd1751c16c6ca9f5fc785852659fa8431701bc44c8b343218c56f4db0976147da029f16de3aa834582607f
   languageName: node
   linkType: hard
 
@@ -13452,7 +13637,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^6.1.0":
+"ws@npm:^6.0.0, ws@npm:^6.1.0":
   version: 6.2.2
   resolution: "ws@npm:6.2.2"
   dependencies:
@@ -13559,6 +13744,16 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^21.1.1
   checksum: 3d8a43c336a4942bc68080768664aca85c7bd406f018bad362fd255c41c8f4e650277f42fd65d543fce99e084124ddafee7bbfc1a5c6a8fda4cec78609dcf8d4
+  languageName: node
+  linkType: hard
+
+"yarn@npm:^1.22.11":
+  version: 1.22.19
+  resolution: "yarn@npm:1.22.19"
+  bin:
+    yarn: bin/yarn.js
+    yarnpkg: bin/yarn.js
+  checksum: b43d2cc5fee7e933beb12a8aee7dfceca9e9ef2dd17c5d04d15a12ab7bec5f5744ea34a07b86e013da7f291a18c4e1ad8f70e150f5ed2f4666e6723c7f0a8452
   languageName: node
   linkType: hard
 

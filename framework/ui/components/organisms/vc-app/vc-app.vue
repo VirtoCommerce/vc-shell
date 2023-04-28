@@ -22,7 +22,10 @@
       @logo:click="$emit('logo:click')"
       :title="title"
     >
-      <template v-slot:appSwitcher>
+      <template
+        v-slot:appSwitcher
+        v-if="$slots['appSwitcher']"
+      >
         <slot name="appSwitcher"></slot>
       </template>
     </VcAppBar>
@@ -39,16 +42,14 @@
       ></VcAppMenu>
 
       <!-- Workspace blades -->
-      <div class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative">
+      <div
+        class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative"
+        v-if="$slots['bladeNavigation']"
+      >
         <slot name="bladeNavigation"></slot>
       </div>
 
-      <div
-        class="[pointer-events:painted] tw-absolute tw-flex tw-z-[1000] tw-overflow-hidden tw-top-0 tw-left-2/4 -tw-translate-x-2/4 tw-flex-col tw-items-center tw-p-2 tw-box-border"
-      >
-        <slot name="notifications"></slot>
-      </div>
-      <div>
+      <div v-if="$slots['passwordChange']">
         <slot name="passwordChange"></slot>
       </div>
     </div>
@@ -65,7 +66,6 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useRouter } from "vue-router";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { ExtendedComponent, IBladeRef, IMenuClickEvent, IOpenBlade } from "./../../../../shared";

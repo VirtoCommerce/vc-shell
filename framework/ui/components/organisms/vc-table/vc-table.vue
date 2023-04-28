@@ -433,6 +433,7 @@ import { offset, flip, arrow, computePosition, ComputePositionReturn } from "@fl
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, useCurrentElement } from "@vueuse/core";
 import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton, VcLoading } from "./../../";
+import * as _ from "lodash-es";
 
 export interface StatusImage {
   image?: string;
@@ -543,7 +544,7 @@ const nextColumn = ref<ITableColumns>();
 const lastResize = ref<number>();
 const table = useCurrentElement();
 const resizer = ref();
-const state = useLocalStorage("VC_TABLE_STATE_" + props.stateKey.toUpperCase(), []);
+const state = useLocalStorage<ITableColumns[]>("VC_TABLE_STATE_" + props.stateKey.toUpperCase(), []);
 const defaultColumns: Ref<ITableColumns[]> = ref([]);
 const draggedColumn = ref();
 const draggedElement = ref<HTMLElement>();
@@ -658,6 +659,10 @@ watch(
   () => props.columns,
   (newVal) => {
     defaultColumns.value = newVal;
+
+    if (newVal.length !== state.value.length) {
+      saveState();
+    }
   },
   { deep: true, immediate: true }
 );
@@ -987,7 +992,12 @@ function saveState() {
 function restoreState() {
   console.debug("[@vc-shell/framewok#vc-table.vue] - Restore state");
   if (Object.keys(state.value).length) {
-    defaultColumns.value = state.value;
+    defaultColumns.value = state.value.map((item) => {
+      return {
+        ...item,
+        title: defaultColumns.value.find((x) => x.id === item.id).title,
+      };
+    });
   }
 }
 

@@ -68,7 +68,7 @@ export default defineComponent({
 import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 
 export interface Props {
-  title: string;
+  title?: string;
   counter: number;
   parentExpanded?: boolean;
 }

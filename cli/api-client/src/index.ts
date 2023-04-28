@@ -10,9 +10,7 @@ async function generateApiClient(): Promise<void> {
   const paths = new Paths();
 
   const platformUrl = process.env.APP_PLATFORM_URL;
-  const platformModules = JSON.parse(
-    process.env.APP_PLATFORM_MODULES
-  ) as string[];
+  const platformModules = JSON.parse(process.env.APP_PLATFORM_MODULES) as string[];
 
   for (const platformModule of platformModules) {
     const apiClientPaths = paths.resolveApiClientPaths(platformModule);
@@ -25,7 +23,7 @@ async function generateApiClient(): Promise<void> {
     );
 
     const nswag = spawnSync(
-      "nswag",
+      "npx nswag",
       [
         "run",
         paths.nswagPaths.configuration,

@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.67",
+  "version": "1.0.69",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
   "types": "./dist/index.d.ts",
@@ -28,8 +28,7 @@
     "dev": "vite",
     "development": "vite build --watch -m development",
     "watch": "vite build --watch",
-    "type-check": "vue-tsc --noEmit",
-    "generate-api-client": "cross-env APP_PLATFORM_URL=https://vcmp-dev.paas.govirto.com/ api-client-generator --color"
+    "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@floating-ui/vue": "^0.2.1",
@@ -55,8 +54,8 @@
     "vue3-touch-events": "^4.1.0"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.67",
-    "@vc-shell/config-generator": "^1.0.67",
+    "@vc-shell/api-client-generator": "^1.0.69",
+    "@vc-shell/config-generator": "^1.0.69",
     "sass": "^1.49.0",
     "typescript": "^4.9.5",
     "url-pattern": "^1.0.3"

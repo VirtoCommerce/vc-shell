@@ -1,6 +1,12 @@
 {
   "COMPONENTS":{
     "ORGANISMS":{
+      "VC_BLADE":{
+        "SEE_DETAILS": "See details",
+        "ERROR_POPUP":{
+          "TITLE":"Error details"
+        }
+      },
       "VC_TABLE":{
         "CURRENT_PAGE_SELECTED": "All items in this page are selected.",
         "SELECT_ALL": "Select all items",

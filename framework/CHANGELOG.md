@@ -1,8 +1,30 @@
-## 1.0.67 (2023-04-18)
+## [1.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.67...v1.0.68) (2023-04-24)
+
+
+### Bug Fixes
+
+* error handling fixes ([594ca20](https://github.com/VirtoCommerce/vc-shell/commit/594ca20b35cc3b8dfd24aa06b6835e48fb36c4c6))
+* errors in console ([32d3a68](https://github.com/VirtoCommerce/vc-shell/commit/32d3a688d0c9ef7cbaff7c736cd3c7863f16e567))
+* immediate timeout start in notification ([e91b7ff](https://github.com/VirtoCommerce/vc-shell/commit/e91b7ffc8db231882e5a8f59770e21d2c6d4553b))
+* notification update on timeout change ([1e1643f](https://github.com/VirtoCommerce/vc-shell/commit/1e1643fb18f6d30ee98103575d2b6cfb40e7e099))
+* update state of updated columns list props ([89e5bb2](https://github.com/VirtoCommerce/vc-shell/commit/89e5bb28251f9a6c672e6e4f960075f83a5f9b62))
+
+
+### Features
+
+* bigint validation rule ([e91f7da](https://github.com/VirtoCommerce/vc-shell/commit/e91f7dab477762ab66ebd8c98ec0ad1e35ac596e))
+* blade error popup ([2ba0140](https://github.com/VirtoCommerce/vc-shell/commit/2ba0140bd2f79b5848ee5c5b096b02908135cdbe))
+* error handling ([10ab19a](https://github.com/VirtoCommerce/vc-shell/commit/10ab19a372e247551f16466cf3edfa2b3a7ff82b))
+* updated notifications ([0c0a078](https://github.com/VirtoCommerce/vc-shell/commit/0c0a078c8e1ff1e2ca6fd063c60bd3dc0bbe2ef5))
+
+
+### Reverts
+
+* version ([9c36dfd](https://github.com/VirtoCommerce/vc-shell/commit/9c36dfd1b91d391763ae7576be6c2eedd65a4828))
 
 
 
-## 1.0.67 (2023-04-18)
+## [1.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.66...v1.0.67) (2023-04-18)
 
 
 ### Bug Fixes
@@ -11,7 +33,7 @@
 
 
 
-## 1.0.66 (2023-04-17)
+## [1.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.65...v1.0.66) (2023-04-17)
 
 
 ### Bug Fixes
@@ -20,7 +42,7 @@
 
 
 
-## 1.0.65 (2023-04-17)
+## [1.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.64...v1.0.65) (2023-04-17)
 
 
 ### Bug Fixes
@@ -29,7 +51,7 @@
 
 
 
-## 1.0.64 (2023-04-14)
+## [1.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.63...v1.0.64) (2023-04-14)
 
 
 ### Bug Fixes
@@ -38,7 +60,7 @@
 
 
 
-## 1.0.63 (2023-04-13)
+## [1.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.62...v1.0.63) (2023-04-13)
 
 
 ### Features
@@ -47,7 +69,7 @@
 
 
 
-## 1.0.62 (2023-04-13)
+## [1.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.61...v1.0.62) (2023-04-13)
 
 
 ### Reverts
@@ -56,7 +78,7 @@
 
 
 
-## 1.0.61 (2023-04-13)
+## [1.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.60...v1.0.61) (2023-04-13)
 
 
 ### Bug Fixes
@@ -80,7 +102,7 @@
 
 
 
-## 1.0.60 (2023-03-30)
+## [1.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.59...v1.0.60) (2023-03-30)
 
 
 ### Bug Fixes
@@ -91,7 +113,7 @@
 
 
 
-## 1.0.59 (2023-03-29)
+## [1.0.59](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.58...v1.0.59) (2023-03-29)
 
 
 ### Bug Fixes
@@ -112,7 +134,7 @@
 
 
 
-## 1.0.58 (2023-03-23)
+## [1.0.58](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.57...v1.0.58) (2023-03-23)
 
 
 ### Bug Fixes
@@ -126,7 +148,7 @@
 
 
 
-## 1.0.57 (2023-03-22)
+## [1.0.57](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.56...v1.0.57) (2023-03-22)
 
 
 ### Bug Fixes
@@ -134,6 +156,7 @@
 * actions fix ([0e9d133](https://github.com/VirtoCommerce/vc-shell/commit/0e9d1336953581f8ce34fc496b8de91a27cdacca))
 * added code-editor export ([783c742](https://github.com/VirtoCommerce/vc-shell/commit/783c742fae9cceb6fb5f68218ad15e25e820fa5e))
 * added placement update ([d31a60e](https://github.com/VirtoCommerce/vc-shell/commit/d31a60e97d0ef663107b20acb1371ad79aeb36ec))
+* new yarn.lock ([e7492af](https://github.com/VirtoCommerce/vc-shell/commit/e7492afe894926b839bef1ea9a58b86fd83ce1d1))
 * return removed methods ([04aee29](https://github.com/VirtoCommerce/vc-shell/commit/04aee299011da8118f6fe089a8a2a7650ee7e124))
 * some fixes and up version ([ee3d33f](https://github.com/VirtoCommerce/vc-shell/commit/ee3d33f68015cf13cc250346a89c538a0218361b))
 
@@ -147,15 +170,11 @@
 * improved table layout ([8011d16](https://github.com/VirtoCommerce/vc-shell/commit/8011d16041e610333ee8395676abbd98720489fe))
 * new toolbar in vc-editor, image-loader ([72a48fe](https://github.com/VirtoCommerce/vc-shell/commit/72a48fe6372851cff0e73ee73dca715dbca04539))
 * some types refactoring ([4c039ea](https://github.com/VirtoCommerce/vc-shell/commit/4c039ea4d304e76e3dacb960eaf65dd8700ea5d5))
+* validation and refactoring ([ffc714a](https://github.com/VirtoCommerce/vc-shell/commit/ffc714a7f11afbf2b453686e41d0769243b9ff7a))
 
 
 
-## 1.0.55 (2023-03-14)
-
-
-### Bug Fixes
-
-* new yarn.lock ([e7492af](https://github.com/VirtoCommerce/vc-shell/commit/e7492afe894926b839bef1ea9a58b86fd83ce1d1))
+## [1.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.54...v1.0.55) (2023-03-14)
 
 
 ### Features
@@ -164,7 +183,7 @@
 
 
 
-## 1.0.54 (2023-03-07)
+## [1.0.54](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.53...v1.0.54) (2023-03-07)
 
 
 ### Bug Fixes
@@ -176,11 +195,10 @@
 
 * deps new versions, vc-shell as ES module, config builder refactoring, new logger ([2cee26c](https://github.com/VirtoCommerce/vc-shell/commit/2cee26c6017b449481dd5c3562043b116a95387f))
 * global components refactoring, removed logger, new development flow, removed unnecessary deps ([e50bf7b](https://github.com/VirtoCommerce/vc-shell/commit/e50bf7b7b12287d278432a705971c761f847e16a))
-* validation and refactoring ([ffc714a](https://github.com/VirtoCommerce/vc-shell/commit/ffc714a7f11afbf2b453686e41d0769243b9ff7a))
 
 
 
-## 1.0.53 (2023-03-02)
+## [1.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.52...v1.0.53) (2023-03-02)
 
 
 ### Bug Fixes
@@ -189,7 +207,7 @@
 
 
 
-## 1.0.52 (2023-03-02)
+## [1.0.52](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.51...v1.0.52) (2023-03-02)
 
 
 ### Bug Fixes
@@ -198,16 +216,7 @@
 
 
 
-## 1.0.51 (2023-03-02)
-
-
-### Bug Fixes
-
-* shared tailwind styles ([9f9be99](https://github.com/VirtoCommerce/vc-shell/commit/9f9be99aa0709d7f5e3a056e7298cb64af8940ef))
-
-
-
-## 1.0.50 (2023-03-01)
+## [1.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.49...v1.0.50) (2023-03-01)
 
 
 ### Features
@@ -216,7 +225,25 @@
 
 
 
-## 1.0.49 (2023-02-27)
+## [1.0.51](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.50...v1.0.51) (2023-03-02)
+
+
+### Bug Fixes
+
+* shared tailwind styles ([9f9be99](https://github.com/VirtoCommerce/vc-shell/commit/9f9be99aa0709d7f5e3a056e7298cb64af8940ef))
+
+
+
+## [1.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.49...v1.0.50) (2023-03-01)
+
+
+### Features
+
+* fully typed components ([8776b3c](https://github.com/VirtoCommerce/vc-shell/commit/8776b3cae31c4014a7e12167ba345c1c2a2bdceb))
+
+
+
+## [1.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.48...v1.0.49) (2023-02-27)
 
 
 ### Bug Fixes
@@ -234,7 +261,7 @@
 
 
 
-## 1.0.48 (2023-02-27)
+## [1.0.48](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.47...v1.0.48) (2023-02-27)
 
 
 ### Bug Fixes
@@ -248,7 +275,7 @@
 
 
 
-## 1.0.47 (2023-02-22)
+## [1.0.47](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.46...v1.0.47) (2023-02-22)
 
 
 ### Bug Fixes
@@ -257,7 +284,7 @@
 
 
 
-## 1.0.46 (2023-02-16)
+## [1.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.45...v1.0.46) (2023-02-16)
 
 
 ### Bug Fixes
@@ -266,7 +293,7 @@
 
 
 
-## 1.0.45 (2023-02-15)
+## [1.0.45](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.44...v1.0.45) (2023-02-15)
 
 
 ### Bug Fixes
@@ -280,7 +307,7 @@
 
 
 
-## 1.0.44 (2023-02-08)
+## [1.0.44](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.43...v1.0.44) (2023-02-08)
 
 
 ### Bug Fixes
@@ -289,11 +316,11 @@
 
 
 
-## 1.0.43 (2023-02-02)
+## [1.0.43](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.42...v1.0.43) (2023-02-02)
 
 
 
-## 1.0.42 (2023-02-02)
+## [1.0.42](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.41...v1.0.42) (2023-02-02)
 
 
 ### Features
@@ -302,7 +329,7 @@
 
 
 
-## 1.0.41 (2023-01-20)
+## [1.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.40...v1.0.41) (2023-01-20)
 
 
 ### Features
@@ -311,7 +338,7 @@
 
 
 
-## 1.0.40 (2023-01-17)
+## [1.0.40](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.39...v1.0.40) (2023-01-17)
 
 
 ### Bug Fixes
@@ -329,7 +356,7 @@
 
 
 
-## 1.0.39 (2022-12-12)
+## [1.0.39](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.38...v1.0.39) (2022-12-12)
 
 
 ### Bug Fixes
@@ -341,37 +368,18 @@
 ### Features
 
 * completed validation refactoring ([5d673fc](https://github.com/VirtoCommerce/vc-shell/commit/5d673fc2a3fdf8cc239171bf94b70ca621268a8e))
+* validation draft ([ed7c743](https://github.com/VirtoCommerce/vc-shell/commit/ed7c7439147d9cd37a08cd8097891cc889c1f592))
 
 
 
-## 1.0.38 (2022-12-05)
+## [1.0.38](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.37...v1.0.38) (2022-12-05)
 
 
 ### Bug Fixes
 
 * navigation fix w/o navigationCB ([66f27e3](https://github.com/VirtoCommerce/vc-shell/commit/66f27e306011d994bb2f0eb31d4cf54383b92c0a))
-* removed app switcher item description ([dc4ce9c](https://github.com/VirtoCommerce/vc-shell/commit/dc4ce9c3114a86bec23a18941c31351198f3e2c5))
-
-
-### Features
-
-* merged framework library ([46a2691](https://github.com/VirtoCommerce/vc-shell/commit/46a26910b5c437fddec8d280445209999ff77240))
-* navigation and component types, fixes and improvements ([de303e0](https://github.com/VirtoCommerce/vc-shell/commit/de303e0519e9212e692501132257903e88572d4f))
-* validation draft ([ed7c743](https://github.com/VirtoCommerce/vc-shell/commit/ed7c7439147d9cd37a08cd8097891cc889c1f592))
-
-
-
-## 1.0.37 (2022-11-22)
-
-
-
-## 1.0.36 (2022-11-21)
-
-
-### Bug Fixes
-
-* remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
 * removed api factories ([bb54dc1](https://github.com/VirtoCommerce/vc-shell/commit/bb54dc10a0e004cc22ed9f66686c41cedd0c14a5))
+* removed app switcher item description ([dc4ce9c](https://github.com/VirtoCommerce/vc-shell/commit/dc4ce9c3114a86bec23a18941c31351198f3e2c5))
 * some fixes ([7f17c63](https://github.com/VirtoCommerce/vc-shell/commit/7f17c63592180532ac21ee62dd327bda37d5eb29))
 * switcher width ([6ee568c](https://github.com/VirtoCommerce/vc-shell/commit/6ee568c4a23182dc47cb27e8f94e6ff6c8fff972))
 
@@ -380,18 +388,33 @@
 
 * app switcher ([dd7f478](https://github.com/VirtoCommerce/vc-shell/commit/dd7f4789849f6a8a39c95672246140e607c7e287))
 * app switcher ([a214461](https://github.com/VirtoCommerce/vc-shell/commit/a21446130ca7def12cd4aef9a4feb0aa66e813b1))
+* app switcher component, tailwind classes refactoring ([1f25176](https://github.com/VirtoCommerce/vc-shell/commit/1f25176ee0594af1f44ec17268af704c4c1da03f))
 * combined vue router + custom ([6d1b6d3](https://github.com/VirtoCommerce/vc-shell/commit/6d1b6d31defe685253dc53f3e761784208f1e92b))
 * combined vue router + custom ([762edea](https://github.com/VirtoCommerce/vc-shell/commit/762edeaa3cef2d80e68c53ce5605b4e2d3aedf63))
+* merged framework library ([46a2691](https://github.com/VirtoCommerce/vc-shell/commit/46a26910b5c437fddec8d280445209999ff77240))
+* navigation and component types, fixes and improvements ([de303e0](https://github.com/VirtoCommerce/vc-shell/commit/de303e0519e9212e692501132257903e88572d4f))
 * small refactoring ([721448f](https://github.com/VirtoCommerce/vc-shell/commit/721448f4398a179a77b70e1992873771c13ff3c8))
 
 
 
-## 1.0.34 (2022-11-15)
+## [1.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.36...v1.0.37) (2022-11-22)
+
+
+
+## [1.0.36](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.35...v1.0.36) (2022-11-21)
 
 
 ### Bug Fixes
 
-* api client generation ([a8919a0](https://github.com/VirtoCommerce/vc-shell/commit/a8919a014f17bd1a737b6f4ff151fbdb4ced3ebb))
+* remove unwanted gitHead ([3ec4f11](https://github.com/VirtoCommerce/vc-shell/commit/3ec4f115d030375da0b1675be645bad43ee9c544))
+
+
+
+## [1.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.33...v1.0.34) (2022-11-15)
+
+
+### Bug Fixes
+
 * vc-input validation rules ([#141](https://github.com/VirtoCommerce/vc-shell/issues/141)) ([666441b](https://github.com/VirtoCommerce/vc-shell/commit/666441be57c177b49d7fb5094198e2e13039d4b2))
 * vuedraggable fix ([e5a78c1](https://github.com/VirtoCommerce/vc-shell/commit/e5a78c19a6581c7e545163731a13b16b7bbf104d))
 * vuedraggable fix ([f449489](https://github.com/VirtoCommerce/vc-shell/commit/f4494896149c50c2ef27bca82f87b45266e36807))
@@ -399,16 +422,26 @@
 
 ### Features
 
-* app switcher component, tailwind classes refactoring ([1f25176](https://github.com/VirtoCommerce/vc-shell/commit/1f25176ee0594af1f44ec17268af704c4c1da03f))
 * request refactoring ([415131a](https://github.com/VirtoCommerce/vc-shell/commit/415131a5874ed14886ffb6398e2cad9606162fbf))
 
 
 
-## 1.0.31 (2022-10-14)
+## [1.0.33](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.32...v1.0.33) (2022-10-24)
+
+
+### Bug Fixes
+
+* api client generation ([a8919a0](https://github.com/VirtoCommerce/vc-shell/commit/a8919a014f17bd1a737b6f4ff151fbdb4ced3ebb))
+* vuedraggable fix ([cbeeaae](https://github.com/VirtoCommerce/vc-shell/commit/cbeeaae13805b4b933b1bdb696585eb208aed445))
+* vuedraggable fix ([cac509c](https://github.com/VirtoCommerce/vc-shell/commit/cac509c2a3fa5cfbd1cf532e5cc8ec0e0d85ea15))
 
 
 
-## 1.0.30 (2022-10-14)
+## [1.0.31](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.30...v1.0.31) (2022-10-14)
+
+
+
+## [1.0.30](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.29...v1.0.30) (2022-10-14)
 
 
 ### Features
@@ -419,7 +452,7 @@
 
 
 
-## 1.0.28 (2022-10-10)
+## [1.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.27...v1.0.28) (2022-10-10)
 
 
 ### Bug Fixes
@@ -433,7 +466,7 @@
 
 
 
-## 1.0.27 (2022-10-07)
+## [1.0.27](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.26...v1.0.27) (2022-10-07)
 
 
 ### Bug Fixes
@@ -442,7 +475,7 @@
 
 
 
-## 1.0.26 (2022-10-07)
+## [1.0.26](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.25...v1.0.26) (2022-10-07)
 
 
 ### Bug Fixes
@@ -451,7 +484,7 @@
 
 
 
-## 1.0.25 (2022-10-07)
+## [1.0.25](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.24...v1.0.25) (2022-10-07)
 
 
 ### Features
@@ -460,11 +493,11 @@
 
 
 
-## 1.0.24 (2022-10-06)
+## [1.0.24](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.23...v1.0.24) (2022-10-06)
 
 
 
-## 1.0.23 (2022-10-06)
+## [1.0.23](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.22...v1.0.23) (2022-10-06)
 
 
 ### Bug Fixes
@@ -479,11 +512,11 @@
 
 
 
-## 1.0.22 (2022-09-29)
+## [1.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.21...v1.0.22) (2022-09-29)
 
 
 
-## 1.0.21 (2022-09-14)
+## [1.0.21](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.20...v1.0.21) (2022-09-14)
 
 
 ### Features
@@ -493,7 +526,15 @@
 
 
 
-## 1.0.17 (2022-08-05)
+## [1.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.19...v1.0.20) (2022-09-06)
+
+
+
+## [1.0.19](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.17...v1.0.19) (2022-08-30)
+
+
+
+## [1.0.17](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.16...v1.0.17) (2022-08-05)
 
 
 ### Bug Fixes
@@ -502,7 +543,7 @@
 
 
 
-## 1.0.16 (2022-08-05)
+## [1.0.16](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.14...v1.0.16) (2022-08-05)
 
 
 ### Bug Fixes
@@ -523,7 +564,7 @@
 
 
 
-## 1.0.13 (2022-07-14)
+## [1.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.12...v1.0.13) (2022-07-14)
 
 
 ### Features
@@ -533,11 +574,11 @@
 
 
 
-## 1.0.12 (2022-07-12)
+## [1.0.12](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.11...v1.0.12) (2022-07-12)
 
 
 
-## 1.0.11 (2022-07-08)
+## [1.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.10...v1.0.11) (2022-07-08)
 
 
 ### Features
@@ -547,127 +588,127 @@
 
 
 
-## 1.0.10 (2022-06-29)
+## [1.0.10](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.9...v1.0.10) (2022-06-29)
 
 
 
-## 1.0.9 (2022-06-21)
+## [1.0.9](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.8...v1.0.9) (2022-06-21)
 
 
 
-## 1.0.8 (2022-06-16)
+## [1.0.8](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.7...v1.0.8) (2022-06-16)
 
 
 
-## 1.0.7 (2022-06-09)
+## [1.0.7](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.6...v1.0.7) (2022-06-09)
 
 
 
-## 1.0.6 (2022-06-09)
+## [1.0.6](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.5...v1.0.6) (2022-06-09)
 
 
 
-## 1.0.5 (2022-06-07)
+## [1.0.5](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.4...v1.0.5) (2022-06-07)
 
 
 
-## 1.0.4 (2022-06-03)
+## [1.0.4](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.3...v1.0.4) (2022-06-03)
 
 
 
-## 1.0.3 (2022-05-30)
+## [1.0.3](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.2...v1.0.3) (2022-05-30)
 
 
 
-## 1.0.2 (2022-05-25)
+## [1.0.2](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.1...v1.0.2) (2022-05-25)
 
 
 
-## 1.0.1 (2022-05-24)
+## [1.0.1](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.0...v1.0.1) (2022-05-24)
 
 
 
-# 1.0.0 (2022-05-13)
+# [1.0.0](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.20...v1.0.0) (2022-05-13)
 
 
 
-## 0.1.20 (2022-04-27)
+## [0.1.20](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.19...v0.1.20) (2022-04-27)
 
 
 
-## 0.1.19 (2022-04-19)
+## [0.1.19](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.18...v0.1.19) (2022-04-19)
 
 
 
-## 0.1.18 (2022-04-15)
+## [0.1.18](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.17...v0.1.18) (2022-04-15)
 
 
 
-## 0.1.17 (2022-04-15)
+## [0.1.17](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.16...v0.1.17) (2022-04-15)
 
 
 
-## 0.1.16 (2022-04-15)
+## [0.1.16](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.15...v0.1.16) (2022-04-15)
 
 
 
-## 0.1.15 (2022-04-15)
+## [0.1.15](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.13...v0.1.15) (2022-04-15)
 
 
 
-## 0.1.13 (2022-04-14)
+## [0.1.13](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.12...v0.1.13) (2022-04-14)
 
 
 
-## 0.1.12 (2022-04-07)
+## [0.1.12](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.11...v0.1.12) (2022-04-07)
 
 
 
-## 0.1.11 (2022-04-05)
+## [0.1.11](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.10...v0.1.11) (2022-04-05)
 
 
 
-## 0.1.10 (2022-04-04)
+## [0.1.10](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.9...v0.1.10) (2022-04-04)
 
 
 
-## 0.1.9 (2022-04-01)
+## [0.1.9](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.8...v0.1.9) (2022-04-01)
 
 
 
-## 0.1.8 (2022-03-29)
+## [0.1.8](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.7...v0.1.8) (2022-03-29)
 
 
 
-## 0.1.7 (2022-03-17)
+## [0.1.7](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.6...v0.1.7) (2022-03-17)
 
 
 
-## 0.1.6 (2022-03-16)
+## [0.1.6](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.5...v0.1.6) (2022-03-16)
 
 
 
-## 0.1.5 (2022-03-16)
+## [0.1.5](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.4...v0.1.5) (2022-03-16)
 
 
 
-## 0.1.4 (2022-03-16)
+## [0.1.4](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.3...v0.1.4) (2022-03-16)
 
 
 
-## 0.1.3 (2022-03-14)
+## [0.1.3](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.2...v0.1.3) (2022-03-14)
 
 
 
-## 0.1.2 (2022-03-10)
+## [0.1.2](https://github.com/VirtoCommerce/vc-shell/compare/v0.1.1...v0.1.2) (2022-03-10)
 
 
 
-## 0.1.1 (2022-03-10)
+## [0.1.1](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.123...v0.1.1) (2022-03-10)
 
 
 
-## 0.0.123 (2022-03-04)
+## [0.0.123](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.122...v0.0.123) (2022-03-04)
 
 
 ### Bug Fixes
@@ -678,87 +719,87 @@
 
 
 
-## 0.0.122 (2022-02-28)
+## [0.0.122](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.121...v0.0.122) (2022-02-28)
 
 
 
-## 0.0.121 (2022-02-24)
+## [0.0.121](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.120...v0.0.121) (2022-02-24)
 
 
 
-## 0.0.120 (2022-02-17)
+## [0.0.120](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.119...v0.0.120) (2022-02-17)
 
 
 
-## 0.0.119 (2022-02-16)
+## [0.0.119](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.117...v0.0.119) (2022-02-16)
 
 
 
-## 0.0.117 (2022-02-16)
+## [0.0.117](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.116...v0.0.117) (2022-02-16)
 
 
 
-## 0.0.116 (2022-02-14)
+## [0.0.116](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.115...v0.0.116) (2022-02-14)
 
 
 
-## 0.0.115 (2022-02-04)
+## [0.0.115](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.114...v0.0.115) (2022-02-04)
 
 
 
-## 0.0.114 (2022-02-03)
+## [0.0.114](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.113...v0.0.114) (2022-02-03)
 
 
 
-## 0.0.113 (2022-02-03)
+## [0.0.113](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.112...v0.0.113) (2022-02-03)
 
 
 
-## 0.0.112 (2022-02-03)
+## [0.0.112](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.111...v0.0.112) (2022-02-03)
 
 
 
-## 0.0.111 (2022-01-31)
+## [0.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.110...v0.0.111) (2022-01-31)
 
 
 
-## 0.0.110 (2022-01-31)
+## [0.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.109...v0.0.110) (2022-01-31)
 
 
 
-## 0.0.109 (2022-01-28)
+## [0.0.109](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.108...v0.0.109) (2022-01-28)
 
 
 
-## 0.0.108 (2022-01-24)
+## [0.0.108](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.107...v0.0.108) (2022-01-24)
 
 
 
-## 0.0.107 (2022-01-20)
+## [0.0.107](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.106...v0.0.107) (2022-01-20)
 
 
 
-## 0.0.106 (2022-01-10)
+## [0.0.106](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.105...v0.0.106) (2022-01-10)
 
 
 
-## 0.0.105 (2021-12-30)
+## [0.0.105](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.104...v0.0.105) (2021-12-30)
 
 
 
-## 0.0.104 (2021-12-29)
+## [0.0.104](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.103...v0.0.104) (2021-12-29)
 
 
 
-## 0.0.103 (2021-12-28)
+## [0.0.103](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.102...v0.0.103) (2021-12-28)
 
 
 
-## 0.0.102 (2021-12-27)
+## [0.0.102](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.101...v0.0.102) (2021-12-27)
 
 
 
-## 0.0.101 (2021-12-24)
+## [0.0.101](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.100...v0.0.101) (2021-12-24)
 
 
 ### Bug Fixes
@@ -767,43 +808,43 @@
 
 
 
-## 0.0.100 (2021-12-24)
+## [0.0.100](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.99...v0.0.100) (2021-12-24)
 
 
 
-## 0.0.99 (2021-12-15)
+## [0.0.99](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.98...v0.0.99) (2021-12-15)
 
 
 
-## 0.0.98 (2021-12-15)
+## [0.0.98](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.97...v0.0.98) (2021-12-15)
 
 
 
-## 0.0.97 (2021-12-15)
+## [0.0.97](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.96...v0.0.97) (2021-12-15)
 
 
 
-## 0.0.96 (2021-12-13)
+## [0.0.96](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.95...v0.0.96) (2021-12-13)
 
 
 
-## 0.0.95 (2021-12-07)
+## [0.0.95](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.94...v0.0.95) (2021-12-07)
 
 
 
-## 0.0.94 (2021-12-07)
+## [0.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.93...v0.0.94) (2021-12-07)
 
 
 
-## 0.0.93 (2021-12-07)
+## [0.0.93](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.92...v0.0.93) (2021-12-07)
 
 
 
-## 0.0.92 (2021-12-04)
+## [0.0.92](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.91...v0.0.92) (2021-12-04)
 
 
 
-## 0.0.91 (2021-12-03)
+## [0.0.91](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.90...v0.0.91) (2021-12-03)
 
 
 ### Features
@@ -816,25 +857,31 @@
 
 
 
-## 0.0.90 (2021-12-02)
+## [0.0.90](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.89...v0.0.90) (2021-12-02)
 
 
 
-## 0.0.89 (2021-12-02)
-
-
-
-## 0.0.88 (2021-12-02)
+## [0.0.89](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.88...v0.0.89) (2021-12-02)
 
 
 ### Bug Fixes
 
 * vm-100 tooltip disabled state ([f7c5527](https://github.com/VirtoCommerce/vc-shell/commit/f7c55271dafb439a44a59683389c007a92f7ae2b))
+
+
+
+## [0.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.87...v0.0.88) (2021-12-02)
+
+
+### Bug Fixes
+
 * vm-100 tooltip disabled state ([0775fee](https://github.com/VirtoCommerce/vc-shell/commit/0775fee621febcd2ab735204672eb53fb4153319))
 * vm-100 tooltip positioning on scroll ([5a46ced](https://github.com/VirtoCommerce/vc-shell/commit/5a46ceda3ec24b23200e0e5c4d3f6e13deb7c87f))
 * vm-100 tooltip positioning on scroll ([a262292](https://github.com/VirtoCommerce/vc-shell/commit/a26229246f9a2ada8d35e0767f6c2bd5c3d3d22e))
 * vm-100 tooltip positioning on scroll ([5db55b9](https://github.com/VirtoCommerce/vc-shell/commit/5db55b998576cee79e0b81d48005a36b044fca90))
 * vm-336 toolbar init value ([fc921fc](https://github.com/VirtoCommerce/vc-shell/commit/fc921fcb1be877a514685e36e433abcf7a7b22fb))
+* vm-346, vm-280, vm-267 ([29c74a1](https://github.com/VirtoCommerce/vc-shell/commit/29c74a1f51dba58b61c46e14076592488322d1d8))
+* vm-346, vm-280, vm-267 ([96061ce](https://github.com/VirtoCommerce/vc-shell/commit/96061ce6195ced76ec1e543ef09754ce49e6b5f1))
 
 
 ### Features
@@ -843,11 +890,11 @@
 
 
 
-## 0.0.87 (2021-12-01)
+## [0.0.87](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.86...v0.0.87) (2021-12-01)
 
 
 
-## 0.0.86 (2021-12-01)
+## [0.0.86](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.85...v0.0.86) (2021-12-01)
 
 
 ### Bug Fixes
@@ -856,19 +903,17 @@
 
 
 
-## 0.0.85 (2021-12-01)
+## [0.0.85](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.84...v0.0.85) (2021-12-01)
 
 
 ### Bug Fixes
 
 * vm-346, vm-280, vm-267 ([5859b36](https://github.com/VirtoCommerce/vc-shell/commit/5859b36b1e88414e83a36589b3ae0c4f95763d93))
 * vm-346, vm-280, vm-267 ([803c581](https://github.com/VirtoCommerce/vc-shell/commit/803c581e723feed4a8430d078b27b3e70db2a763))
-* vm-346, vm-280, vm-267 ([29c74a1](https://github.com/VirtoCommerce/vc-shell/commit/29c74a1f51dba58b61c46e14076592488322d1d8))
-* vm-346, vm-280, vm-267 ([96061ce](https://github.com/VirtoCommerce/vc-shell/commit/96061ce6195ced76ec1e543ef09754ce49e6b5f1))
 
 
 
-## 0.0.84 (2021-11-26)
+## [0.0.84](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.83...v0.0.84) (2021-11-26)
 
 
 ### Features
@@ -877,7 +922,7 @@
 
 
 
-## 0.0.83 (2021-11-24)
+## [0.0.83](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.82...v0.0.83) (2021-11-24)
 
 
 ### Features
@@ -886,7 +931,7 @@
 
 
 
-## 0.0.82 (2021-11-24)
+## [0.0.82](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.81...v0.0.82) (2021-11-24)
 
 
 ### Features
@@ -895,7 +940,7 @@
 
 
 
-## 0.0.81 (2021-11-23)
+## [0.0.81](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.80...v0.0.81) (2021-11-23)
 
 
 ### Bug Fixes
@@ -904,7 +949,7 @@
 
 
 
-## 0.0.80 (2021-11-22)
+## [0.0.80](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.79...v0.0.80) (2021-11-22)
 
 
 ### Features
@@ -913,7 +958,7 @@
 
 
 
-## 0.0.79 (2021-11-22)
+## [0.0.79](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.78...v0.0.79) (2021-11-22)
 
 
 ### Features
@@ -922,7 +967,7 @@
 
 
 
-## 0.0.78 (2021-11-22)
+## [0.0.78](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.77...v0.0.78) (2021-11-22)
 
 
 ### Features
@@ -931,11 +976,11 @@
 
 
 
-## 0.0.77 (2021-11-18)
+## [0.0.77](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.76...v0.0.77) (2021-11-18)
 
 
 
-## 0.0.76 (2021-11-18)
+## [0.0.76](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.75...v0.0.76) (2021-11-18)
 
 
 ### Features
@@ -944,7 +989,7 @@
 
 
 
-## 0.0.75 (2021-11-18)
+## [0.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.74...v0.0.75) (2021-11-18)
 
 
 ### Features
@@ -955,11 +1000,11 @@
 
 
 
-## 0.0.74 (2021-11-12)
+## [0.0.74](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.73...v0.0.74) (2021-11-12)
 
 
 
-## 0.0.73 (2021-11-11)
+## [0.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.71...v0.0.73) (2021-11-11)
 
 
 ### Features
@@ -968,11 +1013,11 @@
 
 
 
-## 0.0.71 (2021-11-11)
+## [0.0.71](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.70...v0.0.71) (2021-11-11)
 
 
 
-## 0.0.70 (2021-11-08)
+## [0.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.69...v0.0.70) (2021-11-08)
 
 
 ### Features
@@ -981,7 +1026,7 @@
 
 
 
-## 0.0.69 (2021-11-03)
+## [0.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.68...v0.0.69) (2021-11-03)
 
 
 ### Features
@@ -990,11 +1035,11 @@
 
 
 
-## 0.0.68 (2021-11-02)
+## [0.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.67...v0.0.68) (2021-11-02)
 
 
 
-## 0.0.67 (2021-11-02)
+## [0.0.67](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.66...v0.0.67) (2021-11-02)
 
 
 ### Features
@@ -1003,7 +1048,7 @@
 
 
 
-## 0.0.66 (2021-11-02)
+## [0.0.66](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.65...v0.0.66) (2021-11-02)
 
 
 ### Features
@@ -1012,7 +1057,7 @@
 
 
 
-## 0.0.65 (2021-11-01)
+## [0.0.65](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.64...v0.0.65) (2021-11-01)
 
 
 ### Features
@@ -1021,7 +1066,7 @@
 
 
 
-## 0.0.64 (2021-10-28)
+## [0.0.64](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.63...v0.0.64) (2021-10-28)
 
 
 ### Features
@@ -1030,7 +1075,7 @@
 
 
 
-## 0.0.63 (2021-10-28)
+## [0.0.63](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.62...v0.0.63) (2021-10-28)
 
 
 ### Features
@@ -1039,7 +1084,7 @@
 
 
 
-## 0.0.62 (2021-10-28)
+## [0.0.62](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.61...v0.0.62) (2021-10-28)
 
 
 ### Features
@@ -1049,7 +1094,7 @@
 
 
 
-## 0.0.61 (2021-10-26)
+## [0.0.61](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.60...v0.0.61) (2021-10-26)
 
 
 ### Features
@@ -1058,7 +1103,7 @@
 
 
 
-## 0.0.60 (2021-10-22)
+## [0.0.60](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.59...v0.0.60) (2021-10-22)
 
 
 ### Features
@@ -1067,7 +1112,7 @@
 
 
 
-## 0.0.59 (2021-10-20)
+## [0.0.59](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.58...v0.0.59) (2021-10-20)
 
 
 ### Features
@@ -1076,7 +1121,7 @@
 
 
 
-## 0.0.58 (2021-10-20)
+## [0.0.58](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.57...v0.0.58) (2021-10-20)
 
 
 ### Features
@@ -1086,11 +1131,11 @@
 
 
 
-## 0.0.57 (2021-10-15)
+## [0.0.57](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.56...v0.0.57) (2021-10-15)
 
 
 
-## 0.0.56 (2021-10-13)
+## [0.0.56](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.55...v0.0.56) (2021-10-13)
 
 
 ### Features
@@ -1099,7 +1144,7 @@
 
 
 
-## 0.0.55 (2021-10-13)
+## [0.0.55](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.54...v0.0.55) (2021-10-13)
 
 
 ### Features
@@ -1108,7 +1153,7 @@
 
 
 
-## 0.0.54 (2021-10-13)
+## [0.0.54](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.53...v0.0.54) (2021-10-13)
 
 
 ### Bug Fixes
@@ -1122,7 +1167,7 @@
 
 
 
-## 0.0.53 (2021-10-13)
+## [0.0.53](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.52...v0.0.53) (2021-10-13)
 
 
 ### Features
@@ -1131,15 +1176,15 @@
 
 
 
-## 0.0.52 (2021-10-13)
+## [0.0.52](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.51...v0.0.52) (2021-10-13)
 
 
 
-## 0.0.51 (2021-10-13)
+## [0.0.51](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.50...v0.0.51) (2021-10-13)
 
 
 
-## 0.0.50 (2021-10-12)
+## [0.0.50](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.49...v0.0.50) (2021-10-12)
 
 
 ### Features
@@ -1149,7 +1194,7 @@
 
 
 
-## 0.0.49 (2021-10-12)
+## [0.0.49](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.48...v0.0.49) (2021-10-12)
 
 
 ### Features
@@ -1158,11 +1203,11 @@
 
 
 
-## 0.0.48 (2021-10-06)
+## [0.0.48](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.47...v0.0.48) (2021-10-06)
 
 
 
-## 0.0.47 (2021-10-06)
+## [0.0.47](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.46...v0.0.47) (2021-10-06)
 
 
 ### Features
@@ -1171,11 +1216,11 @@
 
 
 
-## 0.0.46 (2021-09-30)
+## [0.0.46](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.45...v0.0.46) (2021-09-30)
 
 
 
-## 0.0.45 (2021-09-30)
+## [0.0.45](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.44...v0.0.45) (2021-09-30)
 
 
 ### Bug Fixes
@@ -1196,26 +1241,24 @@
 
 
 
-## 0.0.43 (2021-09-24)
+## [0.0.43](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.42...v0.0.43) (2021-09-24)
 
 
 ### Features
 
 * autocomplete and select v-models ([775c913](https://github.com/VirtoCommerce/vc-shell/commit/775c91388c7fc05db08b82663310ba3153187245))
-* product list update on changes ([198731f](https://github.com/VirtoCommerce/vc-shell/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
-
-
-
-## 0.0.42 (2021-09-23)
-
-
-### Features
-
 * basic mobile UI/UX ([77be3a4](https://github.com/VirtoCommerce/vc-shell/commit/77be3a414e842500e6ca9fded1ffadd4eccb68ed))
+* gallery upload, table width, label updates ([596ec14](https://github.com/VirtoCommerce/vc-shell/commit/596ec1451d7f4c57abc5b336737b40d79773000d))
+* product list update on changes ([198731f](https://github.com/VirtoCommerce/vc-shell/commit/198731ff5b8b5a0539ccca5c4998bb02f2d5b4fb))
+* routing update ([d7ec6ef](https://github.com/VirtoCommerce/vc-shell/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
 
 
 
-## 0.0.41 (2021-09-23)
+## [0.0.42](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.41...v0.0.42) (2021-09-23)
+
+
+
+## [0.0.41](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.40...v0.0.41) (2021-09-23)
 
 
 ### Features
@@ -1224,14 +1267,12 @@
 
 
 
-## 0.0.40 (2021-09-23)
+## [0.0.40](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.39...v0.0.40) (2021-09-23)
 
 
 ### Features
 
-* gallery upload, table width, label updates ([596ec14](https://github.com/VirtoCommerce/vc-shell/commit/596ec1451d7f4c57abc5b336737b40d79773000d))
 * product list connect to Api ([53bb711](https://github.com/VirtoCommerce/vc-shell/commit/53bb7119dd0603cb136024a35ff66cb47cfd8248))
-* routing update ([d7ec6ef](https://github.com/VirtoCommerce/vc-shell/commit/d7ec6effd07aa5c5156a7f36cf652dbe024803c7))
 
 
 ### Reverts
@@ -1240,7 +1281,7 @@
 
 
 
-## 0.0.39 (2021-09-13)
+## [0.0.39](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.38...v0.0.39) (2021-09-13)
 
 
 ### Features
@@ -1251,7 +1292,7 @@
 
 
 
-## 0.0.38 (2021-09-09)
+## [0.0.38](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.37...v0.0.38) (2021-09-09)
 
 
 ### Features
@@ -1261,7 +1302,7 @@
 
 
 
-## 0.0.37 (2021-09-07)
+## [0.0.37](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.36...v0.0.37) (2021-09-07)
 
 
 ### Features
@@ -1270,7 +1311,7 @@
 
 
 
-## 0.0.36 (2021-09-07)
+## [0.0.36](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.35...v0.0.36) (2021-09-07)
 
 
 ### Features
@@ -1279,7 +1320,7 @@
 
 
 
-## 0.0.35 (2021-09-07)
+## [0.0.35](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.34...v0.0.35) (2021-09-07)
 
 
 ### Features
@@ -1288,7 +1329,7 @@
 
 
 
-## 0.0.34 (2021-09-07)
+## [0.0.34](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.33...v0.0.34) (2021-09-07)
 
 
 ### Features
@@ -1300,7 +1341,7 @@
 
 
 
-## 0.0.33 (2021-09-02)
+## [0.0.33](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.32...v0.0.33) (2021-09-02)
 
 
 ### Features
@@ -1316,7 +1357,7 @@
 
 
 
-## 0.0.31 (2021-08-30)
+## [0.0.31](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.30...v0.0.31) (2021-08-30)
 
 
 ### Bug Fixes
@@ -1339,7 +1380,7 @@
 
 
 
-## 0.0.29 (2021-08-20)
+## [0.0.29](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.28...v0.0.29) (2021-08-20)
 
 
 ### Bug Fixes
@@ -1354,7 +1395,7 @@
 
 
 
-## 0.0.28 (2021-08-19)
+## [0.0.28](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.27...v0.0.28) (2021-08-19)
 
 
 ### Features
@@ -1363,15 +1404,15 @@
 
 
 
-## 0.0.27 (2021-08-19)
+## [0.0.27](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.26...v0.0.27) (2021-08-19)
 
 
 
-## 0.0.26 (2021-08-19)
+## [0.0.26](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.25...v0.0.26) (2021-08-19)
 
 
 
-## 0.0.25 (2021-08-12)
+## [0.0.25](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.24...v0.0.25) (2021-08-12)
 
 
 ### Features
@@ -1380,7 +1421,7 @@
 
 
 
-## 0.0.24 (2021-08-12)
+## [0.0.24](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.23...v0.0.24) (2021-08-12)
 
 
 ### Features
@@ -1389,7 +1430,7 @@
 
 
 
-## 0.0.23 (2021-08-11)
+## [0.0.23](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.22...v0.0.23) (2021-08-11)
 
 
 ### Features
@@ -1398,7 +1439,7 @@
 
 
 
-## 0.0.22 (2021-08-11)
+## [0.0.22](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.21...v0.0.22) (2021-08-11)
 
 
 ### Features
@@ -1412,7 +1453,7 @@
 
 
 
-## 0.0.21 (2021-08-11)
+## [0.0.21](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.20...v0.0.21) (2021-08-11)
 
 
 ### Features
@@ -1421,7 +1462,7 @@
 
 
 
-## 0.0.20 (2021-08-11)
+## [0.0.20](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.19...v0.0.20) (2021-08-11)
 
 
 ### Features
@@ -1438,7 +1479,7 @@
 
 
 
-## 0.0.19 (2021-08-11)
+## [0.0.19](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.18...v0.0.19) (2021-08-11)
 
 
 ### Features
@@ -1447,7 +1488,7 @@
 
 
 
-## 0.0.18 (2021-08-11)
+## [0.0.18](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.17...v0.0.18) (2021-08-11)
 
 
 ### Features
@@ -1458,7 +1499,7 @@
 
 
 
-## 0.0.17 (2021-08-10)
+## [0.0.17](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.16...v0.0.17) (2021-08-10)
 
 
 ### Features
@@ -1467,7 +1508,7 @@
 
 
 
-## 0.0.16 (2021-08-10)
+## [0.0.16](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.15...v0.0.16) (2021-08-10)
 
 
 ### Features
@@ -1482,15 +1523,52 @@
 
 
 
-## 0.0.15 (2021-08-09)
+## [0.0.15](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.14...v0.0.15) (2021-08-09)
 
 
 
-## 0.0.10 (2021-08-04)
+## [0.0.14](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.13...v0.0.14) (2021-08-05)
+
+
+### Features
+
+* workspace layout WIP ([1edc014](https://github.com/VirtoCommerce/vc-shell/commit/1edc014b320c1f57b7a83d2bc7150f3a834d7724))
 
 
 
-## 0.0.9 (2021-08-03)
+## [0.0.13](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.12...v0.0.13) (2021-08-05)
+
+
+### Features
+
+* login form ([8acb2c6](https://github.com/VirtoCommerce/vc-shell/commit/8acb2c6bc58c1c9355293a1c514a0a777e7fc65c))
+
+
+
+## [0.0.12](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.11...v0.0.12) (2021-08-05)
+
+
+### Bug Fixes
+
+* storybook build pipeline ([c27dba0](https://github.com/VirtoCommerce/vc-shell/commit/c27dba0e054e85a8a7f5539d2e09f864cd3dfd50))
+
+
+
+## [0.0.11](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.10...v0.0.11) (2021-08-05)
+
+
+### Features
+
+* login form and route guarding ([78813af](https://github.com/VirtoCommerce/vc-shell/commit/78813afc10753f4972d2e120c3ea48295131b2ed))
+* ui component structure aligned with docs ([2001f40](https://github.com/VirtoCommerce/vc-shell/commit/2001f404583a385531d1395591f16a251ee41f95))
+
+
+
+## [0.0.10](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.9...v0.0.10) (2021-08-04)
+
+
+
+## [0.0.9](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.8...v0.0.9) (2021-08-03)
 
 
 ### Features
@@ -1501,7 +1579,7 @@
 
 
 
-## 0.0.8 (2021-08-02)
+## [0.0.8](https://github.com/VirtoCommerce/vc-shell/compare/v0.0.7...v0.0.8) (2021-08-02)
 
 
 ### Features

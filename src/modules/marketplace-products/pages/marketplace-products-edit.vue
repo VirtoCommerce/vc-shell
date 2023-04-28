@@ -13,6 +13,12 @@
     <template v-slot:actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
 
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
@@ -320,7 +326,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const {
   product: productData,
   productDetails,
@@ -356,9 +362,7 @@ const product = computed(() => (props.param ? productData.value : productDetails
 
 const disabled = computed(() => props.param && !productData.value?.canBeModified);
 
-const assetsDisabled = computed(
-  () => disabled.value || productData.value.createdBy !== user.value?.userName
-);
+const assetsDisabled = computed(() => disabled.value || productData.value.createdBy !== user.value?.userName);
 
 const assetsCount = computed(() => productDetails.value && productDetails.value?.assets?.length);
 
@@ -430,20 +434,16 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-save",
     async clickHandler() {
       if (isValid.value) {
-        try {
-          if (props.param) {
-            await updateProductDetails(productData.value.id, productDetails.value);
-          } else {
-            await createProduct(productDetails.value);
-          }
-          emit("parent:call", {
-            method: "reload",
-          });
-          if (!props.param) {
-            emit("close:blade");
-          }
-        } catch (err) {
-          alert(err.message);
+        if (props.param) {
+          await updateProductDetails(productData.value.id, productDetails.value);
+        } else {
+          await createProduct(productDetails.value);
+        }
+        emit("parent:call", {
+          method: "reload",
+        });
+        if (!props.param) {
+          emit("close:blade");
         }
       } else {
         alert(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
@@ -464,16 +464,12 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       if (isValid.value) {
-        try {
-          await updateProductDetails(productData.value.id, { ...productDetails.value }, true);
-          emit("parent:call", {
-            method: "reload",
-          });
-          if (!props.param) {
-            emit("close:blade");
-          }
-        } catch (err) {
-          alert(err.message);
+        await updateProductDetails(productData.value.id, { ...productDetails.value }, true);
+        emit("parent:call", {
+          method: "reload",
+        });
+        if (!props.param) {
+          emit("close:blade");
         }
       } else {
         alert(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
@@ -540,6 +536,7 @@ const onGalleryUpload = async (files: FileList) => {
     }
   } catch (e) {
     console.log(e);
+    throw e;
   } finally {
     fileUploading.value = false;
   }
@@ -636,6 +633,7 @@ const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
     }
   } catch (e) {
     console.log(e);
+    throw e;
   } finally {
     fileAssetUploading.value = false;
   }

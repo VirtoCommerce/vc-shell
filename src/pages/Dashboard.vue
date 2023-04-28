@@ -6,7 +6,6 @@
     >
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
-
     <VcRow>
       <VcCol size="10">
         <VcRow>
@@ -233,21 +232,23 @@
 </template>
 
 <script lang="ts" setup>
-import { useI18n, useBladeNavigation, ITableColumns } from "@vc-shell/framework";
-import { computed, onMounted, ref, shallowRef } from "vue";
+import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
+import { computed, onMounted, ref, shallowRef, watch } from "vue";
 import { OrderLineItem } from "../api_client/orders";
 import { OffersDetails, OffersList, useOffers } from "../modules/offers";
 import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
 import { MpProductStatus, ProductsEdit, ProductsList, useProducts } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
 import { UserPermissions } from "../types";
+import { useI18n } from "vue-i18n";
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { products, loadProducts, loading: productsLoading } = useProducts();
 const { orders, loadOrders, loading: ordersLoading } = useOrders();
 const { offers, loadOffers, loading: offersLoading } = useOffers();
 
 const { openBlade } = useBladeNavigation();
+const { error, reset } = useErrorHandler(true);
 
 const productsColumns = ref<ITableColumns[]>([
   {
@@ -357,6 +358,17 @@ const offersColumns = ref<ITableColumns[]>([
     type: "date-time",
   },
 ]);
+
+watch(error, (newVal) => {
+  if (newVal) {
+    notification.error(newVal, {
+      timeout: 5000,
+      onOpen() {
+        reset();
+      },
+    });
+  }
+});
 
 onMounted(async () => {
   loadOrders({ take: 5 });

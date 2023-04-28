@@ -10,6 +10,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <!-- Blade contents -->
     <VcContainer
       :no-padding="true"
@@ -195,7 +201,7 @@
                               v-slot="{ field, errorMessage, handleChange, errors }"
                               :modelValue="item.inStockQuantity"
                               :name="`availqty_${i}`"
-                              rules="required"
+                              rules="required|bigint"
                             >
                               <VcInput
                                 v-bind="field"
@@ -320,7 +326,7 @@
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                         :modelValue="item.minQuantity"
                         :name="`minqty_${i}`"
-                        rules="required"
+                        rules="required|bigint"
                       >
                         <VcInput
                           v-bind="field"
@@ -459,7 +465,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useI18n, IParentCallArgs, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
+import { IParentCallArgs, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IProperty,
@@ -475,6 +481,7 @@ import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-valida
 import moment from "moment/moment";
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded: boolean;
@@ -499,7 +506,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 
 const {
   createOffer,
@@ -644,23 +651,19 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-save",
     async clickHandler() {
       if (isFormValid.value) {
-        try {
-          if (offerDetails.value.id) {
-            await updateOffer({
-              ...offerDetails.value,
-            });
-          } else {
-            await createOffer({
-              ...offerDetails.value,
-            });
-          }
-          emit("parent:call", {
-            method: "reload",
+        if (offerDetails.value.id) {
+          await updateOffer({
+            ...offerDetails.value,
           });
-          emit("close:blade");
-        } catch (err) {
-          alert(err.message);
+        } else {
+          await createOffer({
+            ...offerDetails.value,
+          });
         }
+        emit("parent:call", {
+          method: "reload",
+        });
+        emit("close:blade");
       } else {
         alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
@@ -760,7 +763,7 @@ function setPriceRefs(el: HTMLDivElement) {
 }
 
 function generateSku(): string {
-  // XXX(leter)-XXXXXXXX(number).
+  // XXX(letter)-XXXXXXXX(number).
   const letterPart = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const digitPart = "1234567890";
   let result = "";

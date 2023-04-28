@@ -70,7 +70,8 @@ const openAllReviews = () => {
 const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
   props.openPage(
     {
-      component: shallowRef(ReviewList),
+      parentBlade: shallowRef(ReviewList),
+      param: item.id,
     },
     0
   );

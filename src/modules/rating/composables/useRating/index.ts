@@ -31,6 +31,7 @@ export default (): IUseRating => {
       reviewCount.value = currentSellerRating?.reviewCount;
     } catch (e) {
       console.error(e);
+      throw e;
     } finally {
       loading.value = false;
     }

@@ -9,6 +9,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer class="import">
       <!-- Import profile widgets-->
       <div
@@ -91,7 +97,6 @@ export default defineComponent({
 import {
   IBladeEvent,
   IBladeToolbar,
-  useI18n,
   ITableColumns,
   VcBlade,
   VcContainer,
@@ -108,6 +113,7 @@ import ImportNew from "./import-new.vue";
 import { ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 import { UserPermissions } from "../../../types";
+import { useI18n } from "vue-i18n";
 
 export type IBladeOptions = IBladeEvent & {
   bladeOptions?: {
@@ -138,7 +144,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { checkPermission } = usePermissions();
 const {
   importHistory,

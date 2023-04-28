@@ -10,6 +10,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer class="import-new">
       <VcCol>
         <div class="tw-p-3">
@@ -258,7 +264,6 @@ import {
   IBladeEvent,
   IParentCallArgs,
   moment,
-  useI18n,
   useUser,
   VcContainer,
   VcCol,
@@ -281,6 +286,7 @@ import ImportPopup from "../components/ImportPopup.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
 import { Field } from "vee-validate";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded: boolean;
@@ -321,7 +327,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { checkPermission } = usePermissions();
 const { getAccessToken } = useUser();
 const {
@@ -381,6 +387,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           cancelled.value = true;
         } catch (e) {
           cancelled.value = false;
+          throw e;
         }
       }
     },
@@ -553,6 +560,7 @@ const uploadActions = ref<INotificationActions[]>([
         }
       } catch (e) {
         errorMessage.value = e.message;
+        throw e;
       }
     },
     variant: "primary",
@@ -661,6 +669,7 @@ async function uploadCsv(files: FileList) {
       name: files[0].name,
       size: files[0].size / (1024 * 1024),
     });
+    throw e;
   } finally {
     fileLoading.value = false;
   }
@@ -684,6 +693,7 @@ async function start(profile: ExtProfile) {
     await startImport(profile);
   } catch (e) {
     errorMessage.value = e.message;
+    throw e;
   }
 }
 

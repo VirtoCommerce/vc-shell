@@ -9,6 +9,12 @@
     :toolbarItems="bladeToolbar"
     :expandable="false"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer>
       <VcStatus
         :outline="false"
@@ -68,11 +74,12 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import { IBladeToolbar, IParentCallArgs, useI18n } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { Field, useIsFormValid, useIsFormDirty, useForm } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -94,7 +101,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 useForm({ validateOnMount: false });
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const {
   fulfillmentCenterDetails,
   loading,
@@ -118,8 +125,8 @@ const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -128,15 +135,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-save",
     async clickHandler() {
       if (isValid.value) {
-        try {
-          await updateFulfillmentCenter(fulfillmentCenterDetails.value);
-          emit("parent:call", {
-            method: "reload",
-          });
-          emit("close:blade");
-        } catch (e) {
-          console.error(e);
-        }
+        await updateFulfillmentCenter(fulfillmentCenterDetails.value);
+        emit("parent:call", {
+          method: "reload",
+        });
+        emit("close:blade");
       } else {
         alert(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NOT_VALID"))));
       }

@@ -9,6 +9,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <!-- Blade contents -->
     <VcTable
       class="tw-grow tw-basis-0"
@@ -137,14 +143,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import {
-  IBladeEvent,
-  IBladeToolbar,
-  useFunctions,
-  useI18n,
-  IActionBuilderResult,
-  ITableColumns,
-} from "@vc-shell/framework";
+import { IBladeEvent, IBladeToolbar, useFunctions, IActionBuilderResult, ITableColumns } from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
@@ -152,6 +151,7 @@ import { useProducts } from "../composables";
 import MpProductsEdit from "./marketplace-products-edit.vue";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -174,7 +174,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { debounce } = useFunctions();
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 
 const { products, totalCount, pages, currentPage, loadProducts, loading, searchQuery, exportCategories } = useProducts({
   isPublished: true,
@@ -214,7 +214,7 @@ const onSearchList = debounce(async (keyword: string) => {
     ...searchQuery.value,
     keyword,
   });
-}, 200);
+}, 1000);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -242,7 +242,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       await exportCategories();
     },
-  }
+  },
 ]);
 
 const tableColumns = ref<ITableColumns[]>([

@@ -48,18 +48,6 @@
       ></VcBladeNavigation>
     </template>
 
-    <template v-slot:notifications>
-      <VcNotification
-        v-for="item in popupNotifications"
-        :key="item.id"
-        :timeout="5000"
-        @dismiss="dismiss(item)"
-        @expired="markAsRead(item)"
-      >
-        {{ item.title }}
-      </VcNotification>
-    </template>
-
     <template v-slot:passwordChange>
       <change-password
         v-if="isChangePasswordActive"
@@ -77,15 +65,14 @@ import {
   IMenuItems,
   useAppSwitcher,
   useFunctions,
-  useI18n,
   useNotifications,
   usePermissions,
   useSettings,
   useUser,
   useBladeNavigation,
   IOpenBlade,
-  IBladeElement,
   ExtendedComponent,
+  notification,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -106,12 +93,13 @@ import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
+import { useI18n } from "vue-i18n";
 
 const base = import.meta.env.APP_PLATFORM_URL;
 
-const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
+const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
-const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
+const { popupNotifications, notifications, addNotification, markAsRead } = useNotifications();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { delay } = useFunctions();
@@ -130,6 +118,14 @@ const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 const bladeNavigationRefs = ref();
+
+const uniqChanges = computed(() =>
+  popupNotifications.value.map((x) => {
+    if (x.title) {
+      return x;
+    }
+  })
+);
 
 signalR.on("Send", (message: PushNotification) => {
   delay(() => addNotification(message), 100);
@@ -162,6 +158,23 @@ watch(
   },
   { deep: true }
 );
+
+watch(uniqChanges, (newVal) => {
+  if (newVal.length) {
+    newVal.forEach((item) => {
+      if (item.isNew) {
+        notification(item.title, {
+          timeout: 5000,
+          payload: item,
+          content: item.title,
+          onClose(payload) {
+            markAsRead(payload as PushNotification);
+          },
+        });
+      }
+    });
+  }
+});
 
 console.debug(`Initializing App`);
 

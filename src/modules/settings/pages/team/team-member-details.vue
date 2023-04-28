@@ -9,6 +9,12 @@
     :toolbarItems="bladeToolbar"
     :expandable="false"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <VcContainer>
       <VcStatus
         :outline="false"
@@ -172,12 +178,13 @@
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { useI18n, useUser, IParentCallArgs, IBladeToolbar } from "@vc-shell/framework";
+import { useUser, IParentCallArgs, IBladeToolbar } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import ErrorPopup from "../../components/ErrorPopup.vue";
 import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { SellerUser } from "../../../../api_client/marketplacevendor";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -205,7 +212,7 @@ const emit = defineEmits<Emits>();
 useForm({ validateOnMount: false });
 const { user } = useUser();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const {
   userDetails,
   loading,
@@ -232,8 +239,8 @@ const isDirty = useIsFormDirty();
 const isOwnerReadonly = computed(() => userDetails.value.role === "vcmp-owner-role");
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {

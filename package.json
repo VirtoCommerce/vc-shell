@@ -18,7 +18,6 @@
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build-cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",
     "generate-api-client:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color",
-    "generate-api-client": "yarn workspaces foreach run cross-env generate-api-client --stream --no-prefix --color",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
     "storybook-serve": "storybook dev .storybook/assets -p 6006"
   },
@@ -71,7 +70,8 @@
     "tailwindcss": "^3.1.8",
     "typescript": "^4.9.5",
     "vite": "^4.1.4",
-    "vite-plugin-checker": "^0.4.2",
+    "vite-plugin-checker": "^0.5.6",
+    "vite-plugin-mkcert": "^1.10.1",
     "vite-plugin-pwa": "^0.14.4",
     "vue": "^3.0.0",
     "vue-eslint-parser": "^8.2.0",

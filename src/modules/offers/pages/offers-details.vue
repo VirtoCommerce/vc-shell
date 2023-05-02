@@ -465,7 +465,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IParentCallArgs, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
+import { IParentCallArgs, IBladeEvent, IBladeToolbar, useNotifications, notification } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IProperty,
@@ -533,6 +533,7 @@ const { setFieldError } = useForm({
   validateOnMount: false,
 });
 
+const { moduleNotifications, markAsRead } = useNotifications(["OfferCreatedDomainEvent", "OfferDeletedDomainEvent"]);
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const priceRefs = ref([]);
@@ -594,6 +595,20 @@ const title = computed(() => {
 const isDisabled = computed(() => {
   return !isDirty.value || !isFormValid.value;
 });
+
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      notification.success(message.title, {
+        onClose() {
+          markAsRead(message);
+        },
+      });
+    });
+  },
+  { deep: true }
+);
 
 watch(offerDetails.value.prices, () => {
   scrollToLastPrice();

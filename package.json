@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "husky install",
-    "serve": "cross-env APP_ENV=development vite",
+    "serve": "cross-env APP_ENV=development vite --force",
     "preview": "vite preview",
     "build": "yarn build:app & yarn build:types",
     "build:app": "cross-env APP_ENV=production vite build",
@@ -58,7 +58,6 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@microsoft/signalr": "^5.0.7",
     "@vc-shell/config-generator": "^1.0.69",
     "@vc-shell/framework": "^1.0.69",
     "moment": "^2.29.1",

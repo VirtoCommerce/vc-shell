@@ -58,90 +58,95 @@
 </template>
 
 <script lang="ts" setup>
-import { HubConnection } from "@microsoft/signalr";
 import {
-  PushNotification,
   IBladeToolbar,
   IMenuItems,
   useAppSwitcher,
-  useFunctions,
-  useNotifications,
   usePermissions,
   useSettings,
   useUser,
   useBladeNavigation,
   IOpenBlade,
   ExtendedComponent,
+  useNotifications,
+  VcNotificationDropdown,
   notification,
+  PushNotification,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ChangePassword from "../components/change-password.vue";
 import LanguageSelector from "../components/language-selector.vue";
-import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
 import UserDropdownButton from "../components/user-dropdown-button.vue";
-import { ImportProfileSelector } from "../modules/import";
+import { ImportProfileSelector, ImportNew } from "../modules/import";
 import { OffersList } from "../modules/offers";
-import { OrdersList } from "../modules/orders";
-import { ProductsList } from "../modules/products";
+import { OrdersList, OrdersEdit } from "../modules/orders";
+import { ProductsList, ProductsEdit } from "../modules/products";
 import { MpProductsList } from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { UserPermissions } from "../types";
+import { INewOrderPushNotification, IProductPushNotification, UserPermissions } from "../types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
+import { IImportPushNotification } from "./../api_client/marketplacevendor";
 
 const base = import.meta.env.APP_PLATFORM_URL;
 
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
-const { popupNotifications, notifications, addNotification, markAsRead } = useNotifications();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { delay } = useFunctions();
 const { blades, bladesRefs, parentBladeOptions, parentBladeParam, openBlade, closeBlade, onParentCall } =
   useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 const { sellerDetails, getCurrentSeller } = useSellerDetails();
+const { moduleNotifications, notifications, markAsRead, loadFromHistory, markAllAsRead } =
+  useNotifications("OrderCreatedEventHandler");
 const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const isChangePasswordActive = ref(false);
 const pages = inject<ExtendedComponent[]>("pages");
-const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 const bladeNavigationRefs = ref();
 
-const uniqChanges = computed(() =>
-  popupNotifications.value.map((x) => {
-    if (x.title) {
-      return x;
-    }
-  })
-);
-
-signalR.on("Send", (message: PushNotification) => {
-  delay(() => addNotification(message), 100);
-});
-
 onMounted(async () => {
-  await loadUser();
-  await getApps();
-  langInit();
-  await customizationHandler();
+  try {
+    await loadUser();
+    await getApps();
+    langInit();
+    await customizationHandler();
+    await loadFromHistory();
 
-  isReady.value = true;
-  if (!isAuthorized.value) {
-    router.push("/login");
+    isReady.value = true;
+  } catch (e) {
+    if (!isAuthorized.value) {
+      router.push("/login");
+    }
+    throw e;
   }
 });
+
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      notification(message.title, {
+        onClose() {
+          markAsRead(message);
+        },
+      });
+    });
+  },
+  { deep: true }
+);
 
 watch(
   user,
@@ -158,23 +163,6 @@ watch(
   },
   { deep: true }
 );
-
-watch(uniqChanges, (newVal) => {
-  if (newVal.length) {
-    newVal.forEach((item) => {
-      if (item.isNew) {
-        notification(item.title, {
-          timeout: 5000,
-          payload: item,
-          content: item.title,
-          onClose(payload) {
-            markAsRead(payload as PushNotification);
-          },
-        });
-      }
-    });
-  }
-});
 
 console.debug(`Initializing App`);
 
@@ -200,12 +188,46 @@ const toolbarItems = ref<IBladeToolbar[]>([
     }),
   },
   {
-    isAccent: computed(() => {
-      return !!notifications.value.filter((notification) => notification.isNew).length;
-    }),
-    component: shallowRef(NotificationDropdown),
+    isAccent: computed(() => notifications.value.some((item) => item.isNew)),
+    component: shallowRef(VcNotificationDropdown),
     bladeOptions: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
+      notifications: computed(() => notifications.value),
+      onOpen() {
+        if (notifications.value.some((x) => x.isNew)) {
+          markAllAsRead();
+        }
+      },
+      async onClick(notification: PushNotification) {
+        if (notification) {
+          switch (notification.notifyType) {
+            case "ImportPushNotification":
+              openBlade({
+                parentBlade: shallowRef(ImportProfileSelector),
+                component: shallowRef(ImportNew),
+                param: (notification as IImportPushNotification).profileId,
+                bladeOptions: {
+                  importJobId: (notification as IImportPushNotification).jobId,
+                },
+              });
+              break;
+            case "PublicationRequestStatusChangedDomainEvent":
+              openBlade({
+                parentBlade: shallowRef(ProductsList),
+                component: shallowRef(ProductsEdit),
+                param: (notification as IProductPushNotification).productId,
+              });
+              break;
+            case "OrderCreatedEventHandler":
+              openBlade({
+                parentBlade: shallowRef(OrdersList),
+                component: shallowRef(OrdersEdit),
+                param: (notification as INewOrderPushNotification).orderId,
+              });
+              break;
+          }
+        }
+      },
     },
   },
   {

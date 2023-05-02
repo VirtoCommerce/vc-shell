@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, shallowRef } from "vue";
+import { defineComponent, computed, onMounted, ref, shallowRef, watch } from "vue";
 
 export default defineComponent({
   url: "/import",
@@ -146,6 +146,7 @@ const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
 const { checkPermission } = usePermissions();
+
 const {
   importHistory,
   historyPages,

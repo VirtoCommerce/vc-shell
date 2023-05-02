@@ -278,10 +278,12 @@ import {
   IBladeToolbar,
   ITableColumns,
   usePermissions,
+  useNotifications,
+  notification,
 } from "@vc-shell/framework";
 import { INotificationActions, UserPermissions } from "../../../types";
 import useImport, { ExtProfile } from "../composables/useImport";
-import { IDataImporter, ImportDataPreview, ImportRunHistory } from "../../../api_client/marketplacevendor";
+import { IDataImporter, ImportDataPreview, ImportPushNotification } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
@@ -351,6 +353,7 @@ const {
   updateStatus,
   getLongRunning,
 } = useImport();
+const { moduleNotifications, markAsRead } = useNotifications("ImportPushNotification");
 const locale = window.navigator.language;
 const fileLoading = ref(false);
 const preview = ref<ImportDataPreview>();
@@ -359,6 +362,50 @@ const popupColumns = ref<ITableColumns[]>([]);
 const popupItems = ref<Record<string, unknown>[]>([]);
 const errorMessage = ref("");
 const cancelled = ref(false);
+const notificationId = ref();
+
+watch(
+  moduleNotifications,
+  (newVal: ImportPushNotification[]) => {
+    newVal.forEach((message) => {
+      if (!message.finished) {
+        if (!notificationId.value) {
+          notificationId.value = notification(message.title, {
+            timeout: false,
+          });
+        } else {
+          notification.update(notificationId.value, {
+            content: message.title,
+          });
+        }
+      } else {
+        if (message.title === "Import failed") {
+          notification.update(notificationId.value, {
+            timeout: 5000,
+            content: message.title,
+            type: "error",
+            onClose() {
+              markAsRead(message);
+              notificationId.value = undefined;
+            },
+          });
+        } else {
+          notification.update(notificationId.value, {
+            timeout: 5000,
+            content: message.title,
+            type: "success",
+            onClose() {
+              markAsRead(message);
+              notificationId.value = undefined;
+            },
+          });
+        }
+      }
+    });
+  },
+  { deep: true }
+);
+
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "edit",
@@ -616,11 +663,14 @@ const reversedErrors = computed(() => {
 
 const reportUrl = computed(() => importStatus.value?.notification?.reportUrl);
 
-watch(importStatus, (newVal, oldVal) => {
-  if (newVal && !newVal.inProgress && oldVal) {
-    emit("parent:call", { method: "reload" });
+watch(
+  () => importStatus.value?.inProgress,
+  (newVal) => {
+    if (newVal === false) {
+      emit("parent:call", { method: "reload" });
+    }
   }
-});
+);
 
 onMounted(async () => {
   if (props.param) {

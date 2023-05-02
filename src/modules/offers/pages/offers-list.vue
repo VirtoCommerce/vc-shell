@@ -121,6 +121,8 @@ import {
   useFunctions,
   IActionBuilderResult,
   ITableColumns,
+  useNotifications,
+  notification,
 } from "@vc-shell/framework";
 import moment from "moment";
 import { IOffer, SellerProduct } from "../../../api_client/marketplacevendor";
@@ -165,12 +167,27 @@ const { t } = useI18n({ useScope: "global" });
 const { debounce } = useFunctions();
 
 const { searchQuery, offers, totalCount, pages, currentPage, loadOffers, loading, deleteOffers } = useOffers();
+const { moduleNotifications, markAsRead } = useNotifications("OfferDeletedDomainEvent");
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref<string>();
 const selectedOfferIds = ref([]);
 const isDesktop = inject("isDesktop");
+
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      notification.success(message.title, {
+        onClose() {
+          markAsRead(message);
+        },
+      });
+    });
+  },
+  { deep: true }
+);
 
 watch(sort, async (value) => {
   await loadOffers({ ...searchQuery.value, sort: value });

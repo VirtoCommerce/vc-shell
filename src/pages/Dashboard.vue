@@ -379,109 +379,58 @@ onMounted(async () => {
 function open(key: string): void {
   switch (key) {
     case "orders-list":
-      openBlade(
-        {
-          parentBlade: shallowRef(OrdersList),
-        },
-        0
-      );
+      openBlade({
+        parentBlade: shallowRef(OrdersList),
+      });
       break;
     case "products-list":
-      openBlade(
-        {
-          parentBlade: shallowRef(ProductsList),
-        },
-        0
-      );
+      openBlade({
+        parentBlade: shallowRef(ProductsList),
+      });
       break;
     case "products-add":
-      openBlade(
-        {
-          parentBlade: shallowRef(ProductsList),
-        },
-        0
-      );
-      openBlade(
-        {
-          component: shallowRef(ProductsEdit),
-        },
-        1
-      );
+      openBlade({
+        parentBlade: shallowRef(ProductsList),
+        component: shallowRef(ProductsEdit),
+      });
       break;
     case "offers-list":
-      openBlade(
-        {
-          parentBlade: shallowRef(OffersList),
-        },
-        0
-      );
+      openBlade({
+        parentBlade: shallowRef(OffersList),
+      });
       break;
     case "offers-add":
-      openBlade(
-        {
-          parentBlade: shallowRef(OffersList),
-        },
-        0
-      );
-      openBlade(
-        {
-          component: shallowRef(OffersDetails),
-        },
-        1
-      );
+      openBlade({
+        parentBlade: shallowRef(OffersList),
+        component: shallowRef(OffersDetails),
+      });
+
       break;
   }
 }
 
 function ordersClick(item: { id: string }): void {
-  openBlade(
-    {
-      parentBlade: shallowRef(OrdersList),
-      param: item.id,
-    },
-    0
-  );
-  openBlade(
-    {
-      component: shallowRef(OrdersEdit),
-      param: item.id,
-    },
-    1
-  );
+  openBlade({
+    parentBlade: shallowRef(OrdersList),
+    component: shallowRef(OrdersEdit),
+    param: item.id,
+  });
 }
 
 function productsClick(item: { id: string }): void {
-  openBlade(
-    {
-      parentBlade: shallowRef(ProductsList),
-      param: item.id,
-    },
-    0
-  );
-  openBlade(
-    {
-      component: shallowRef(ProductsEdit),
-      param: item.id,
-    },
-    1
-  );
+  openBlade({
+    parentBlade: shallowRef(ProductsList),
+    component: shallowRef(ProductsEdit),
+    param: item.id,
+  });
 }
 
 function offersClick(item: { id: string }): void {
-  openBlade(
-    {
-      parentBlade: shallowRef(OffersList),
-      param: item.id,
-    },
-    0
-  );
-  openBlade(
-    {
-      component: shallowRef(OffersDetails),
-      param: item.id,
-    },
-    1
-  );
+  openBlade({
+    parentBlade: shallowRef(OffersList),
+    component: shallowRef(OffersDetails),
+    param: item.id,
+  });
 }
 
 function calcQty(items: OrderLineItem[]) {

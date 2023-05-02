@@ -7,5 +7,21 @@
     "vue",
     "javascript"
   ],
-  "vue3snippets.enable-compile-vue-file-on-did-save-code": false
+  "vue3snippets.enable-compile-vue-file-on-did-save-code": false,
+  "i18n-ally.localesPaths": [
+    "boilerplate/src/locales",
+    "framework/ui/locales",
+    "apps/vendor-portal/src/locales",
+    "framework/core/plugins/i18n",
+    "boilerplate/src/modules/default/locales",
+    "framework/shared/modules/assets/locales",
+    "framework/shared/modules/assets-manager/locales",
+    "apps/vendor-portal/src/modules/import/locales",
+    "apps/vendor-portal/src/modules/marketplace-products/locales",
+    "apps/vendor-portal/src/modules/orders/locales",
+    "apps/vendor-portal/src/modules/rating/locales",
+    "apps/vendor-portal/src/modules/products/locales",
+    "apps/vendor-portal/src/modules/settings/locales",
+    "apps/vendor-portal/src/modules/offers/locales"
+  ]
 }

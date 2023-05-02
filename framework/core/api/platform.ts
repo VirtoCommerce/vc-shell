@@ -103,7 +103,8 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 
     /**
-     * @param authenticationType (optional) 
+     * @param authenticationType (optional)
+     * @param authenticationType (optional)
      * @return Success
      */
     signIn(authenticationType?: string | undefined): Promise<void> {
@@ -143,7 +144,12 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 
     /**
-     * @param authenticationType (optional) 
+     * @param returnUrl (optional)
+<<<<<<< Updated upstream
+     * @param authenticationType (optional)
+=======
+     * @param returnUrl (optional)
+>>>>>>> Stashed changes
      * @return Success
      */
     signOut(authenticationType?: string | undefined): Promise<void> {
@@ -183,7 +189,7 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 
     /**
-     * @param returnUrl (optional) 
+     * @param returnUrl (optional)
      * @return Success
      */
     signInCallback(returnUrl?: string | undefined): Promise<void> {
@@ -328,8 +334,13 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
+     * @param scope (optional)
+     * @param scope (optional)
+<<<<<<< Updated upstream
      * Force set changes last modified date
-     * @param scope (optional) 
+     * @param scope (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     forceChanges(scope?: string | undefined): Promise<void> {
@@ -420,9 +431,14 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
+     * @param scope (optional)
+     * @param scope (optional)
+<<<<<<< Updated upstream
      * Get last modified date for given scope
     Used for signal of what something changed and for cache invalidation in external platform clients
-     * @param scope (optional) 
+     * @param scope (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     getLastModifiedDate(scope?: string | undefined): Promise<LastModifiedResponse> {
@@ -466,7 +482,8 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     getChangedEntities(body?: ChangedEntitiesRequest | undefined): Promise<ChangedEntitiesResponse> {
@@ -510,7 +527,8 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     resetChangedEntities(body?: string[] | undefined): Promise<void> {
@@ -558,7 +576,8 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     searchChanges(body?: ChangeLogSearchCriteria | undefined): Promise<ChangeLogSearchResult> {
@@ -610,8 +629,10 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param start (optional) 
-     * @param end (optional) 
+     * @param start (optional)
+     * @param end (optional)
+     * @param start (optional)
+     * @param end (optional)
      * @return Success
      */
     searchTypeChangeHistory(type: string, start?: Date | undefined, end?: Date | undefined): Promise<OperationLog[]> {
@@ -850,8 +871,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Get dynamic properties registered for object type
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     searchDynamicProperties(body?: DynamicPropertySearchCriteria | undefined): Promise<DynamicPropertySearchResult> {
@@ -903,8 +929,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Add new dynamic property
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     createProperty(body?: DynamicProperty | undefined): Promise<DynamicProperty> {
@@ -956,8 +987,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Update existing dynamic property
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     updateProperty(body?: DynamicProperty | undefined): Promise<void> {
@@ -1005,8 +1041,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param propertyIds (optional)
+     * @param propertyIds (optional)
+<<<<<<< Updated upstream
      * Delete dynamic property
-     * @param propertyIds (optional) 
+     * @param propertyIds (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     deleteProperty(propertyIds?: string[] | undefined): Promise<void> {
@@ -1106,8 +1147,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Get dictionary items
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     searchDictionaryItems(body?: DynamicPropertyDictionaryItemSearchCriteria | undefined): Promise<DynamicPropertyDictionaryItemSearchResult> {
@@ -1159,8 +1205,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Add or update dictionary items
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     saveDictionaryItems(body?: DynamicPropertyDictionaryItem[] | undefined): Promise<void> {
@@ -1208,8 +1259,13 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
+     * @param ids (optional)
+     * @param ids (optional)
+<<<<<<< Updated upstream
      * Delete dictionary items
      * @param ids (optional) IDs of dictionary items to delete.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     deleteDictionaryItem(ids?: string[] | undefined): Promise<void> {
@@ -1432,8 +1488,13 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Get all dependent modules for module
      * @param body (optional) modules descriptors
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     getDependingModules(body?: ModuleDescriptor[] | undefined): Promise<ModuleDescriptor[]> {
@@ -1492,8 +1553,13 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Returns a flat expanded  list of modules that depend on passed modules
      * @param body (optional) modules descriptors
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     getMissingDependencies(body?: ModuleDescriptor[] | undefined): Promise<ModuleDescriptor[]> {
@@ -1600,8 +1666,13 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Install modules
      * @param body (optional) modules for install
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     installModules(body?: ModuleDescriptor[] | undefined): Promise<ModulePushNotification> {
@@ -1653,8 +1724,13 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Uninstall module
      * @param body (optional) modules
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     uninstallModule(body?: ModuleDescriptor[] | undefined): Promise<ModulePushNotification> {
@@ -1857,7 +1933,8 @@ export class OAuthAppsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     save(body?: OpenIddictApplicationDescriptor | undefined): Promise<OpenIddictApplicationDescriptor> {
@@ -1909,7 +1986,8 @@ export class OAuthAppsClient extends AuthApiBase {
     }
 
     /**
-     * @param clientIds (optional) 
+     * @param clientIds (optional)
+     * @param clientIds (optional)
      * @return Success
      */
     delete(clientIds?: string[] | undefined): Promise<void> {
@@ -1957,7 +2035,8 @@ export class OAuthAppsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     search(body?: OAuthAppSearchCriteria | undefined): Promise<OAuthAppSearchResult> {
@@ -2021,8 +2100,13 @@ export class PushNotificationClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * SearchAsync push notifications
      * @param body (optional) SearchAsync parameters.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     searchPushNotification(body?: PushNotificationSearchCriteria | undefined): Promise<PushNotificationSearchResult> {
@@ -2134,8 +2218,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Sign in with user name and password
      * @param body (optional) Login request.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     login(body?: LoginRequest | undefined): Promise<SignInResult> {
@@ -2380,8 +2469,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * SearchAsync roles by keyword
      * @param body (optional) SearchAsync parameters.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     searchRoles(body?: RoleSearchCriteria | undefined): Promise<RoleSearchResult> {
@@ -2484,8 +2578,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param ids (optional)
+     * @param ids (optional)
+<<<<<<< Updated upstream
      * Delete roles by ID
      * @param ids (optional) An array of role IDs.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     deleteRoles(ids?: string[] | undefined): Promise<void> {
@@ -2533,8 +2632,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Update an existing role or create new
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     updateRole(body?: Role | undefined): Promise<SecurityResult> {
@@ -2586,8 +2690,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * SearchAsync users by keyword
      * @param body (optional) Search criteria.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     searchUsers(body?: UserSearchCriteria | undefined): Promise<UserSearchResult> {
@@ -2846,8 +2955,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Create new user
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     create(body?: ApplicationUser | undefined): Promise<SecurityResult> {
@@ -2899,8 +3013,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Change password for current user.
      * @param body (optional) Old and new passwords.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     changeCurrentUserPassword(body?: ChangePasswordRequest | undefined): Promise<SecurityResult> {
@@ -2956,9 +3075,14 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Change password
      * @param userName user name
      * @param body (optional) Old and new passwords.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     changePassword(userName: string, body?: ChangePasswordRequest | undefined): Promise<SecurityResult> {
@@ -3017,8 +3141,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Reset password confirmation
      * @param body (optional) Password reset information containing new password.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     resetPassword(userName: string, body?: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
@@ -3073,8 +3202,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Reset password confirmation
      * @param body (optional) New password.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     resetPasswordByToken(userId: string, body?: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
@@ -3121,8 +3255,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Validate password reset token
-     * @param body (optional) 
+     * @param body (optional)
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     validatePasswordResetToken(userId: string, body?: ValidatePasswordResetTokenRequest | undefined): Promise<boolean> {
@@ -3158,7 +3297,8 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
+
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3209,7 +3349,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     validatePassword(body?: string | undefined): Promise<IdentityResult> {
@@ -3253,7 +3394,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     validateUserPassword(body?: ChangePasswordRequest | undefined): Promise<IdentityResult> {
@@ -3305,8 +3447,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
+<<<<<<< Updated upstream
      * Update user details by user ID
      * @param body (optional) User details.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     update(body?: ApplicationUser | undefined): Promise<SecurityResult> {
@@ -3358,8 +3505,13 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
+     * @param names (optional)
+     * @param names (optional)
+<<<<<<< Updated upstream
      * Delete users by name
      * @param names (optional) An array of user names.
+=======
+>>>>>>> Stashed changes
      * @return Success
      */
     delete(names?: string[] | undefined): Promise<void> {
@@ -3668,7 +3820,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     saveUserApiKey(body?: UserApiKey | undefined): Promise<UserApiKey[]> {
@@ -3727,7 +3880,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
+     * @param body (optional)
      * @return Success
      */
     updateUserApiKey(body?: UserApiKey | undefined): Promise<UserApiKey[]> {
@@ -3786,7 +3940,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
+     * @param ids (optional)
      * @return Success
      */
     deleteUserApiKeys(ids?: string[] | undefined): Promise<UserApiKey[]> {
@@ -3928,7 +4083,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     confirmEmail(userId: string, body?: ConfirmEmailRequest | undefined): Promise<SecurityResult> {
@@ -3983,7 +4138,11 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param newEmail (optional) 
+<<<<<<< Updated upstream
+     * @param newEmail (optional)
+=======
+     * @param body (optional)
+>>>>>>> Stashed changes
      * @return Success
      */
     generateChangeEmailToken(userId: string, newEmail?: string | undefined): Promise<string> {
@@ -4019,7 +4178,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4070,7 +4229,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4121,7 +4280,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4141,8 +4300,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param tokenProvider (optional) 
-     * @param purpose (optional) 
+     * @param tokenProvider (optional)
+     * @param purpose (optional)
      * @return Success
      */
     generateUserToken(userId: string, tokenProvider?: string | undefined, purpose?: string | undefined): Promise<string> {
@@ -4182,7 +4341,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4202,7 +4361,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     verifyUserToken(userId: string, body?: VerifyTokenRequest | undefined): Promise<boolean> {
@@ -4238,7 +4397,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4318,8 +4477,10 @@ export class SettingClient extends AuthApiBase {
     }
 
     /**
+     * @param body (optional)
+     * @param body (optional)
      * Update settings values
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     update(body?: ObjectSettingEntry[] | undefined): Promise<void> {
@@ -8932,3 +9093,4 @@ function throwException(message: string, status: number, response: string, heade
 }
 
 /* eslint-disable */
+

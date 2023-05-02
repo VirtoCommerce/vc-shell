@@ -70,7 +70,7 @@
 import { computed, ref, VNode } from "vue";
 import { useRoute } from "vue-router";
 import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs, IBladeRef } from "./../../../../../shared";
-import { ErrorInterceptor } from "./../../../../../core/plugins/error-interceptor";
+import { ErrorInterceptor } from "./../../../error-interceptor";
 
 export interface Props {
   blades: IBladeContainer[];

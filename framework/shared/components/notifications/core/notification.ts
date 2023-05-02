@@ -18,7 +18,7 @@ function checkPending(limit?: number) {
   return limitCount > 0 && visibleCount + pending.items.length >= limitCount;
 }
 
-function resolvePending(options) {
+function resolvePending(options: NotificationOptions) {
   if (checkPending(options.limit)) {
     pending.items.push({
       notificationId: options.notificationId,

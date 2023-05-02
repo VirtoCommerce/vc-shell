@@ -67,7 +67,6 @@
           <div
             v-else
             class="tw-relative tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color: var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)] tw-transition-[color] tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]"
-            :class="{ 'vc-app-bar__button_accent': item.isAccent }"
             :title="item.title as string"
             @click="$emit('button:click', item)"
           >
@@ -75,6 +74,12 @@
               :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
               size="xl"
             ></VcIcon>
+            <div
+              :class="{
+                'tw-block tw-absolute tw-right-3 tw-top-[18px] tw-w-[7px] tw-h-[7px] tw-bg-[#ff4a4a] tw-rounded-full tw-z-[1]':
+                  item.isAccent,
+              }"
+            ></div>
           </div>
         </template>
       </template>
@@ -120,13 +125,5 @@ defineEmits(["logo:click", "backlink:click", "toolbarbutton:click", "menubutton:
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
   --app-bar-product-name-color: #34414f;
   --app-bar-product-name-size: 20px;
-}
-
-.vc-app-bar {
-  &__button {
-    &_accent:before {
-      @apply tw-content-[""] tw-block tw-absolute tw-right-3 tw-top-[18px] tw-w-[7px] tw-h-[7px] tw-bg-[#ff4a4a] tw-rounded-full tw-z-[1];
-    }
-  }
 }
 </style>

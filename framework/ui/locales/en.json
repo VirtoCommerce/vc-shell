@@ -12,6 +12,18 @@
         "SELECT":"Select all items",
         "ALL_BULK_SELECTED":"All items are selected.",
         "CANCEL": "Cancel selection"
+      },
+      "VC_NOTIFICATION_DROPDOWN":{
+        "EMPTY":"No notifications yet",
+        "IMPORT_PUSH": {
+          "PROFILE":"Profile:",
+          "ERRORS":"Errors"
+        },
+        "PRODUCT_PUSH":{
+          "PRODUCT":"Product",
+          "UPDATE":"status update",
+          "MORE_DETAILS":"Click the notification to see details"
+        }
       }
     }
   }

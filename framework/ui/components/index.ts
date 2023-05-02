@@ -42,3 +42,4 @@ export * from "./organisms/vc-gallery";
 export * from "./organisms/vc-login-form";
 export * from "./organisms/vc-popup";
 export * from "./organisms/vc-table";
+export * from "./organisms/vc-notification-dropdown";

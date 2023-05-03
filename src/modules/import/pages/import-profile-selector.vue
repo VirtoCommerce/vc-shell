@@ -116,7 +116,7 @@ import { UserPermissions } from "../../../types";
 import { useI18n } from "vue-i18n";
 
 export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
+  options?: {
     importJobId?: string;
     title?: string;
   };
@@ -236,7 +236,7 @@ function newProfile() {
   bladeWidth.value = 70;
 
   emit("open:blade", {
-    component: shallowRef(ImportProfileDetails),
+    descendantBlade: shallowRef(ImportProfileDetails),
   });
 }
 
@@ -246,9 +246,9 @@ function openImporter(profileId: string) {
   const profile = importProfiles.value.find((profile) => profile.id === profileId);
 
   emit("open:blade", {
-    component: shallowRef(ImportNew),
+    descendantBlade: shallowRef(ImportNew),
     param: profileId,
-    bladeOptions: {
+    options: {
       importJobId: profile && profile.inProgress ? profile.jobId : undefined,
     },
     onOpen() {
@@ -264,9 +264,9 @@ function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
 
   emit("open:blade", {
-    component: shallowRef(ImportNew),
+    descendantBlade: shallowRef(ImportNew),
     param: item.profileId,
-    bladeOptions: {
+    options: {
       importJobId: item.jobId,
       title: item.profileName,
     },

@@ -297,7 +297,7 @@ export interface Props {
 }
 
 export type IBladeOptions = IBladeEvent & {
-  bladeOptions: {
+  options: {
     asset?: Image;
     images?: Image[];
     assets?: Asset[];
@@ -546,8 +546,8 @@ const onGalleryUpload = async (files: FileList) => {
 
 const onGalleryItemEdit = (item: Image) => {
   emit("open:blade", {
-    component: shallowRef(AssetsDetails),
-    bladeOptions: {
+    descendantBlade: shallowRef(AssetsDetails),
+    options: {
       asset: item,
       images: productDetails.value.images,
       assetEditHandler: editImage,
@@ -685,8 +685,8 @@ async function loadDictionaries(property: IProperty, keyword?: string, skip?: nu
 async function openOffers() {
   if (!isOffersOpened) {
     emit("open:blade", {
-      component: shallowRef(OffersList),
-      bladeOptions: {
+      descendantBlade: shallowRef(OffersList),
+      options: {
         sellerProduct: productData.value,
       },
       onOpen() {
@@ -702,8 +702,8 @@ async function openOffers() {
 async function openAssets() {
   if (!isAssetsOpened) {
     emit("open:blade", {
-      component: shallowRef(AssetsManager),
-      bladeOptions: {
+      descendantBlade: shallowRef(AssetsManager),
+      options: {
         assets: productDetails.value.assets,
         assetsEditHandler: onAssetsEdit,
         assetsUploadHandler: onAssetsUpload,

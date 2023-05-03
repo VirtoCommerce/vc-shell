@@ -391,7 +391,7 @@ function open(key: string): void {
     case "products-add":
       openBlade({
         parentBlade: shallowRef(ProductsList),
-        component: shallowRef(ProductsEdit),
+        descendantBlade: shallowRef(ProductsEdit),
       });
       break;
     case "offers-list":
@@ -402,7 +402,7 @@ function open(key: string): void {
     case "offers-add":
       openBlade({
         parentBlade: shallowRef(OffersList),
-        component: shallowRef(OffersDetails),
+        descendantBlade: shallowRef(OffersDetails),
       });
 
       break;
@@ -412,7 +412,7 @@ function open(key: string): void {
 function ordersClick(item: { id: string }): void {
   openBlade({
     parentBlade: shallowRef(OrdersList),
-    component: shallowRef(OrdersEdit),
+    descendantBlade: shallowRef(OrdersEdit),
     param: item.id,
   });
 }
@@ -420,7 +420,7 @@ function ordersClick(item: { id: string }): void {
 function productsClick(item: { id: string }): void {
   openBlade({
     parentBlade: shallowRef(ProductsList),
-    component: shallowRef(ProductsEdit),
+    descendantBlade: shallowRef(ProductsEdit),
     param: item.id,
   });
 }
@@ -428,7 +428,7 @@ function productsClick(item: { id: string }): void {
 function offersClick(item: { id: string }): void {
   openBlade({
     parentBlade: shallowRef(OffersList),
-    component: shallowRef(OffersDetails),
+    descendantBlade: shallowRef(OffersDetails),
     param: item.id,
   });
 }

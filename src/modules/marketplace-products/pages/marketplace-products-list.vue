@@ -231,7 +231,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     async clickHandler() {
       emit("open:blade", {
-        component: shallowRef(MpProductsEdit),
+        descendantBlade: shallowRef(MpProductsEdit),
       });
     },
   },
@@ -303,7 +303,7 @@ const activeFilterCount = computed(() => Object.values(appliedFilter.value).filt
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-    component: shallowRef(MpProductsEdit),
+    descendantBlade: shallowRef(MpProductsEdit),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -422,7 +422,7 @@ async function resetSearch() {
 
 function addProduct() {
   emit("open:blade", {
-    component: shallowRef(MpProductsEdit),
+    descendantBlade: shallowRef(MpProductsEdit),
   });
 }
 

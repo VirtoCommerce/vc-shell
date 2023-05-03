@@ -46,7 +46,7 @@ export interface Props {
 }
 
 export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
+  options?: {
     review?: CustomerReview;
   };
 };
@@ -88,9 +88,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 
 const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
   emit("open:blade", {
-    component: shallowRef(ReviewDetails),
+    descendantBlade: shallowRef(ReviewDetails),
     param: item.id,
-    bladeOptions: {
+    options: {
       review: item,
     },
     onOpen: onSelect,

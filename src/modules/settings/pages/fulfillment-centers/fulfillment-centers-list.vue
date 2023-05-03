@@ -108,7 +108,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     clickHandler() {
       emit("open:blade", {
-        component: shallowRef(FulfillmentCenterDetails),
+        descendantBlade: shallowRef(FulfillmentCenterDetails),
       });
     },
   },
@@ -178,7 +178,7 @@ const onPaginationClick = async (page: number) => {
 
 const onItemClick = (item: { id?: string }) => {
   emit("open:blade", {
-    component: shallowRef(FulfillmentCenterDetails),
+    descendantBlade: shallowRef(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

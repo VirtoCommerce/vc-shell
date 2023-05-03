@@ -126,7 +126,7 @@ export interface Props {
 }
 
 export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
+  options?: {
     user?: { id?: string };
   };
 };
@@ -181,7 +181,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-plus",
     clickHandler() {
       emit("open:blade", {
-        component: shallowRef(TeamMemberDetails),
+        descendantBlade: shallowRef(TeamMemberDetails),
       });
     },
   },
@@ -272,9 +272,9 @@ const onPaginationClick = async (page: number) => {
 
 const onItemClick = (item: { id?: string }) => {
   emit("open:blade", {
-    component: shallowRef(TeamMemberDetails),
+    descendantBlade: shallowRef(TeamMemberDetails),
     param: item.id,
-    bladeOptions: {
+    options: {
       user: item,
     },
     onOpen() {

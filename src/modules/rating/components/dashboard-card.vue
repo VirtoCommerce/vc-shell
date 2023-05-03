@@ -79,7 +79,7 @@ const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () 
     {
       component: shallowRef(ReviewDetails),
       param: item.id,
-      bladeOptions: {
+      options: {
         review: item,
       },
       onOpen: onSelect,

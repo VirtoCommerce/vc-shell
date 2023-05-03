@@ -169,7 +169,7 @@ console.debug(`Initializing App`);
 const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(LanguageSelector),
-    bladeOptions: {
+    options: {
       value: computed(() => currentLocale.value),
       title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
       languageItems: computed(() =>
@@ -190,7 +190,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
   {
     isAccent: computed(() => notifications.value.some((item) => item.isNew)),
     component: shallowRef(VcNotificationDropdown),
-    bladeOptions: {
+    options: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
       notifications: computed(() => notifications.value),
       onOpen() {
@@ -204,9 +204,9 @@ const toolbarItems = ref<IBladeToolbar[]>([
             case "ImportPushNotification":
               openBlade({
                 parentBlade: shallowRef(ImportProfileSelector),
-                component: shallowRef(ImportNew),
+                descendantBlade: shallowRef(ImportNew),
                 param: (notification as IImportPushNotification).profileId,
-                bladeOptions: {
+                options: {
                   importJobId: (notification as IImportPushNotification).jobId,
                 },
               });
@@ -214,14 +214,14 @@ const toolbarItems = ref<IBladeToolbar[]>([
             case "PublicationRequestStatusChangedDomainEvent":
               openBlade({
                 parentBlade: shallowRef(ProductsList),
-                component: shallowRef(ProductsEdit),
+                descendantBlade: shallowRef(ProductsEdit),
                 param: (notification as IProductPushNotification).productId,
               });
               break;
             case "OrderCreatedEventHandler":
               openBlade({
                 parentBlade: shallowRef(OrdersList),
-                component: shallowRef(OrdersEdit),
+                descendantBlade: shallowRef(OrdersEdit),
                 param: (notification as INewOrderPushNotification).orderId,
               });
               break;
@@ -232,7 +232,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
   },
   {
     component: shallowRef(UserDropdownButton),
-    bladeOptions: {
+    options: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
@@ -260,7 +260,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
 const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
-    bladeOptions: {
+    options: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
@@ -295,7 +295,7 @@ const menuItems = reactive<IMenuItems[]>([
       {
         title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
         component: shallowRef(MpProductsList),
-        bladeOptions: {
+        options: {
           readonly: true,
         },
         isVisible: computed(() => checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)),
@@ -382,7 +382,7 @@ function langInit() {
 }
 
 function onOpen(args: IOpenBlade) {
-  openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb);
+  openBlade({ parentBlade: args.parentBlade }, args.id);
 }
 
 const openDashboard = () => {

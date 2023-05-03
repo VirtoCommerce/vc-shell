@@ -307,7 +307,7 @@ const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-    component: shallowRef(OrdersDetails),
+    descendantBlade: shallowRef(OrdersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

@@ -301,7 +301,7 @@ export interface Props {
 }
 
 export type IBladeOptions = IBladeEvent & {
-  bladeOptions: {
+  options: {
     importer: IDataImporter;
   };
 };
@@ -413,8 +413,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     icon: "fas fa-pencil-alt",
     clickHandler() {
       emit("open:blade", {
-        component: shallowRef(ImportProfileDetails),
-        bladeOptions: {
+        descendantBlade: shallowRef(ImportProfileDetails),
+        options: {
           importer: profileDetails.value.importer,
         },
         param: profile.value.id,

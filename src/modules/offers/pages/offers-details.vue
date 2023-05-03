@@ -498,6 +498,7 @@ export interface IBladeOptions extends IBladeEvent {
     asset: Image;
     images: Image[];
     assetEditHandler: (remove: boolean, localImage: IImage) => void;
+    assetRemoveHandler: (image: Image) => void;
   };
 }
 

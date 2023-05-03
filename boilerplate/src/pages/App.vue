@@ -63,8 +63,6 @@ import {
   IBladeToolbar,
   IMenuItems,
   useAppSwitcher,
-  useFunctions,
-  useI18n,
   useNotifications,
   useSettings,
   useUser,
@@ -72,28 +70,28 @@ import {
   IOpenBlade,
   IBladeElement,
   ExtendedComponent,
+  VcNotificationDropdown,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import ChangePassword from "../components/change-password.vue";
 import LanguageSelector from "../components/language-selector.vue";
-import NotificationDropdown from "../components/notification-dropdown/notification-dropdown.vue";
 import UserDropdownButton from "../components/user-dropdown-button.vue";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
+import { useI18n } from "vue-i18n";
 
 import { DefaultList } from "../modules/default";
 
 const base = import.meta.env.APP_PLATFORM_URL;
 
-const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n();
+const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
-const { popupNotifications, notifications, addNotification, dismiss, markAsRead } = useNotifications();
+const { notifications, addNotification, markAsRead, loadFromHistory, markAllAsRead } = useNotifications();
 // const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { delay } = useFunctions();
 const { blades, bladesRefs, parentBladeOptions, parentBladeParam, openBlade, closeBlade, onParentCall } =
   useBladeNavigation();
 const { appsList, switchApp, getApps } = useAppSwitcher();
@@ -103,25 +101,25 @@ const isAuthorized = ref(false);
 const isReady = ref(false);
 const isChangePasswordActive = ref(false);
 const pages = inject<ExtendedComponent[]>("pages");
-const signalR = inject<HubConnection>("connection");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 const bladeNavigationRefs = ref();
 
-signalR.on("Send", (message: PushNotification) => {
-  delay(() => addNotification(message), 100);
-});
-
 onMounted(async () => {
-  await loadUser();
-  await getApps();
-  langInit();
-  await customizationHandler();
+  try {
+    await loadUser();
+    await getApps();
+    langInit();
+    await customizationHandler();
+    await loadFromHistory();
 
-  isReady.value = true;
-  if (!isAuthorized.value) {
-    router.push("/login");
+    isReady.value = true;
+  } catch (e) {
+    if (!isAuthorized.value) {
+      router.push("/login");
+    }
+    throw e;
   }
 });
 
@@ -165,12 +163,16 @@ const toolbarItems = ref<IBladeToolbar[]>([
     }),
   },
   {
-    isAccent: computed(() => {
-      return !!notifications.value.filter((notification) => notification.isNew).length;
-    }),
-    component: shallowRef(NotificationDropdown),
+    isAccent: computed(() => notifications.value.some((item) => item.isNew)),
+    component: shallowRef(VcNotificationDropdown),
     options: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
+      notifications: computed(() => notifications.value),
+      onOpen() {
+        if (notifications.value.some((x) => x.isNew)) {
+          markAllAsRead();
+        }
+      },
     },
   },
   {
@@ -220,8 +222,8 @@ const menuItems = reactive<IMenuItems[]>([
     component: {
       url: "/",
     },
-    clickHandler(app: IBladeElement) {
-      app.openDashboard();
+    clickHandler() {
+      openDashboard();
     },
   },
   {
@@ -276,6 +278,15 @@ function langInit() {
 function onOpen(args: IOpenBlade) {
   openBlade({ parentBlade: args.parentBlade }, args.id);
 }
+
+const openDashboard = () => {
+  console.debug(`openDashboard() called.`);
+
+  // Close all opened pages with onBeforeClose callback
+  closeBlade(0);
+
+  router.push("/");
+};
 
 async function customizationHandler() {
   await getUiCustomizationSettings(base);

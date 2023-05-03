@@ -106,12 +106,12 @@ console.debug("vc-app: Init vc-app");
 
 const instance = getCurrentInstance();
 
-const onMenuItemClick = function ({ item, navigationCb }: IMenuClickEvent) {
+const onMenuItemClick = function ({ item }: IMenuClickEvent) {
   console.debug(`vc-app#onMenuItemClick() called.`);
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed as Record<string, unknown>);
   } else {
-    emit("open", { parentBlade: item.component, id: 0, navigationCb });
+    emit("open", { parentBlade: item.component, id: 0 });
   }
 };
 

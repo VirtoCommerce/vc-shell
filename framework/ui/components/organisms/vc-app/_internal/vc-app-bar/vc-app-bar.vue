@@ -59,7 +59,7 @@
           <component
             v-if="item.component"
             :is="item.component"
-            v-bind="item.bladeOptions"
+            v-bind="item.options"
             :isAccent="item.isAccent"
           ></component>
 

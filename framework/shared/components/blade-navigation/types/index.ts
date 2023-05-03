@@ -1,6 +1,5 @@
 import { Component, ComponentPublicInstance, VNode } from "vue";
 import { IMenuItems } from "../../../../core/types";
-import { NavigationFailure } from "vue-router";
 
 /* onParentCall event interface */
 export interface IParentCallArgs {
@@ -32,8 +31,8 @@ export interface IBladeElement extends ComponentPublicInstance {
 /* emitted blade event */
 export interface IBladeEvent {
   parentBlade?: ExtendedComponent;
-  component?: ExtendedComponent;
-  bladeOptions?: Record<string, unknown>;
+  descendantBlade?: ExtendedComponent;
+  options?: Record<string, unknown>;
   param?: string;
   onOpen?: () => void;
   onClose?: () => void;
@@ -42,13 +41,11 @@ export interface IBladeEvent {
 /* menu item event */
 export interface IMenuClickEvent {
   item: IMenuItems;
-  navigationCb: () => Promise<void | NavigationFailure>;
 }
 
 /* openBlade args interface */
 export interface IOpenBlade extends IBladeEvent {
   id?: number;
-  navigationCb?: () => Promise<void | NavigationFailure>;
 }
 
 export interface IBladeRef {

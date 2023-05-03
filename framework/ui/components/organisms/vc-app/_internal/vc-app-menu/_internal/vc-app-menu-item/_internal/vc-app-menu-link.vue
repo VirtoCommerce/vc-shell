@@ -53,11 +53,8 @@ export interface Emits {
 }
 
 withDefaults(defineProps<Props>(), {
-  isActive: false,
   children: () => ({}),
   sticky: true,
-  icon: "",
-  title: "",
 });
 
 defineEmits<Emits>();

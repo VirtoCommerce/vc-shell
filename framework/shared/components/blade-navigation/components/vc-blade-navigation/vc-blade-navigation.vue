@@ -42,12 +42,12 @@
     >
       <component
         v-show="i >= blades.length - ($isMobile.value ? 1 : 2)"
-        :is="blade.component"
+        :is="blade.descendantBlade"
         :param="blade.param"
         :closable="i >= 0"
         :expanded="i === blades.length - 1"
         :maximized="findStateById(blade.idx)"
-        :options="blade.bladeOptions"
+        :options="blade.options"
         @open:blade="onBladeOpen($event, blade.idx)"
         @close:blade="onBladeClose(i)"
         @close:children="$emit('onClose', i + 1)"
@@ -117,7 +117,7 @@ function setParentRef(el: IBladeElement, bladeNode: VNode) {
       {
         exposed: el,
         blade: {
-          component: bladeNode.type as VNode,
+          parentBlade: bladeNode.type as VNode,
           param: bladeNode.props?.param as string,
           idx: 0,
         },

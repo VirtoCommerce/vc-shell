@@ -14,7 +14,7 @@
           :isExpanded="isExpanded"
           :icon="item.icon"
           :title="item.title"
-          :bladeOptions="item.bladeOptions"
+          :options="item.options"
           :disabled="item.disabled as boolean"
           :dropdownItems="item.dropdownItems"
           :clickHandler="item.clickHandler"

@@ -27,7 +27,7 @@ export interface IBladeToolbar {
   isVisible?: boolean | unknown;
   isAccent?: boolean | ComputedRef<boolean>;
   component?: ExtendedComponent;
-  bladeOptions?: Record<string, unknown>;
+  options?: Record<string, unknown>;
   disabled?: boolean | ComputedRef<boolean>;
   dropdownItems?: IBladeDropdownItem[];
   clickHandler?(app?: Record<string, unknown> | IBladeElement): void;

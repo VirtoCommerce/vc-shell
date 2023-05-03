@@ -64,7 +64,7 @@ export interface Props {
   isExpanded: boolean;
   icon?: string | (() => string);
   title?: string | unknown;
-  bladeOptions?: Record<string, unknown>;
+  options?: Record<string, unknown>;
   disabled?: boolean;
   dropdownItems?: IBladeDropdownItem[];
   clickHandler?(): void;

@@ -47,18 +47,6 @@
       ></VcBladeNavigation>
     </template>
 
-    <template v-slot:notifications>
-      <VcNotification
-        v-for="item in popupNotifications"
-        :key="item.id"
-        :timeout="5000"
-        @dismiss="dismiss(item)"
-        @expired="markAsRead(item)"
-      >
-        {{ item.title }}
-      </VcNotification>
-    </template>
-
     <template v-slot:passwordChange>
       <change-password
         v-if="isChangePasswordActive"
@@ -78,7 +66,6 @@ import {
   useFunctions,
   useI18n,
   useNotifications,
-  usePermissions,
   useSettings,
   useUser,
   useBladeNavigation,
@@ -159,7 +146,7 @@ console.debug(`Initializing App`);
 const toolbarItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(LanguageSelector),
-    bladeOptions: {
+    options: {
       value: computed(() => currentLocale.value),
       title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
       languageItems: computed(() =>
@@ -182,13 +169,13 @@ const toolbarItems = ref<IBladeToolbar[]>([
       return !!notifications.value.filter((notification) => notification.isNew).length;
     }),
     component: shallowRef(NotificationDropdown),
-    bladeOptions: {
+    options: {
       title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
     },
   },
   {
     component: shallowRef(UserDropdownButton),
-    bladeOptions: {
+    options: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
@@ -216,7 +203,7 @@ const toolbarItems = ref<IBladeToolbar[]>([
 const mobileMenuItems = ref<IBladeToolbar[]>([
   {
     component: shallowRef(UserDropdownButton),
-    bladeOptions: {
+    options: {
       avatar: avatarImage,
       name: computed(() => user.value?.userName),
       role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
@@ -248,7 +235,7 @@ const menuItems = reactive<IMenuItems[]>([
      *       {
      *         title: computed(() => t("")),
      *         component: shallowRef(),
-     *         bladeOptions: {},
+     *         options: {},
      *         isVisible: computed(() =>
      *           checkPermission('permission')
      *         ),
@@ -287,7 +274,7 @@ function langInit() {
 }
 
 function onOpen(args: IOpenBlade) {
-  openBlade({ parentBlade: args.parentBlade }, args.id, args.navigationCb);
+  openBlade({ parentBlade: args.parentBlade }, args.id);
 }
 
 async function customizationHandler() {

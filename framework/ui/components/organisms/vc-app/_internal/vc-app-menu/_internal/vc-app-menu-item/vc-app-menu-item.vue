@@ -4,7 +4,7 @@
       <router-link
         :to="component.url"
         custom
-        v-slot="{ isExactActive, navigate }"
+        v-slot="{ isExactActive }"
       >
         <vc-app-menu-link
           :isActive="isExactActive"
@@ -12,7 +12,7 @@
           :sticky="sticky"
           :icon="icon as string"
           :title="title"
-          @onClick="onMenuItemClick(() => navigate($event))"
+          @onClick="onMenuItemClick"
         />
       </router-link>
     </template>
@@ -37,7 +37,7 @@
           <router-link
             :to="nested.component.url"
             custom
-            v-slot="{ isActive, navigate }"
+            v-slot="{ isActive }"
           >
             <div
               :class="[
@@ -48,7 +48,7 @@
               ]"
               v-if="nested.isVisible === undefined || nested.isVisible"
               :key="i"
-              @click="$emit('child:click', { item: nested, navigationCb: navigate })"
+              @click="$emit('child:click', { item: nested })"
             >
               {{ nested.title }}
             </div>
@@ -63,14 +63,14 @@
 import { onMounted, ref } from "vue";
 import { IBladeToolbar, IMenuItems } from "./../../../../../../../../core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
-import { NavigationFailure, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { ExtendedComponent } from "./../../../../../../../../shared";
 
 export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
   component?: ExtendedComponent;
-  bladeOptions?: Record<string, unknown>;
+  options?: Record<string, unknown>;
   clickHandler?: () => void;
   icon?: string | (() => string);
   title?: string;
@@ -79,24 +79,21 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "click", navigationCb: () => Promise<void | NavigationFailure>): void;
+  (event: "click"): void;
   (
     event: "child:click",
     {
       item,
-      navigationCb,
     }: {
       item: IMenuItems;
-      navigationCb: () => Promise<void | NavigationFailure>;
     }
   ): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   sticky: true,
-  isVisible: false,
   component: undefined,
-  bladeOptions: () => ({}),
+  options: () => ({}),
   clickHandler: undefined,
   children: () => [],
   isCollapsed: true,
@@ -114,9 +111,9 @@ onMounted(() => {
   }
 });
 
-function onMenuItemClick(navigationCb?: () => Promise<void | NavigationFailure>) {
+function onMenuItemClick() {
   if (!props.children?.length) {
-    emit("click", navigationCb);
+    emit("click");
   } else {
     isOpened.value = !isOpened.value;
   }

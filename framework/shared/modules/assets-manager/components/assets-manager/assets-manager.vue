@@ -339,8 +339,8 @@ async function inputUpload(event: Event) {
 
 function onItemClick(item: Asset) {
   emit("open:blade", {
-    component: shallowRef(Assets),
-    bladeOptions: {
+    descendantBlade: shallowRef(Assets),
+    options: {
       asset: unref(item),
       disabled: readonly.value,
       assetEditHandler: (asset: Asset) => {

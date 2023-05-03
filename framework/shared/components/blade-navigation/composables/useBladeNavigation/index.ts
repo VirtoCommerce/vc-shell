@@ -1,6 +1,6 @@
 import { computed, ref, unref, watch, Ref, shallowRef } from "vue";
 import * as _ from "lodash-es";
-import { useRouter, useRoute, NavigationFailure } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { usePermissions } from "../../../../../core/composables";
 import { ExtendedComponent, IBladeContainer, IBladeRef, IBladeEvent, IParentCallArgs } from "../../../..";
 
@@ -9,11 +9,7 @@ interface IUseBladeNavigation {
   readonly parentBladeOptions: Ref<Record<string, unknown>>;
   readonly parentBladeParam: Ref<string>;
   bladesRefs: Ref<IBladeRef[]>;
-  openBlade: (
-    { parentBlade, component, param, bladeOptions, onOpen, onClose }: IBladeEvent,
-    index?: number,
-    navigationCb?: () => Promise<void | NavigationFailure>
-  ) => void;
+  openBlade: ({ parentBlade, descendantBlade, param, options, onOpen, onClose }: IBladeEvent, index?: number) => void;
   closeBlade: (index: number) => void;
   onParentCall: (index: number, args: IParentCallArgs) => void;
 }
@@ -34,11 +30,11 @@ export function useBladeNavigation(): IUseBladeNavigation {
     (newVal) => {
       const lastBlade = newVal[newVal.length - 1];
 
-      if (lastBlade && lastBlade.component.url) {
+      if (lastBlade && lastBlade.descendantBlade.url) {
         if (lastBlade.param) {
-          addEntryToLocation(lastBlade.component.url + "/" + lastBlade.param);
+          addEntryToLocation(lastBlade.descendantBlade.url + "/" + lastBlade.param);
         } else {
-          addEntryToLocation(lastBlade.component.url);
+          addEntryToLocation(lastBlade.descendantBlade.url);
         }
       } else if (!lastBlade) {
         addEntryToLocation(route.path);
@@ -48,45 +44,35 @@ export function useBladeNavigation(): IUseBladeNavigation {
   );
 
   async function openBlade(
-    { parentBlade, component: blade, param, bladeOptions, onOpen, onClose }: IBladeEvent,
-    index?: number,
-    navigationCb?: () => Promise<void | NavigationFailure>
+    { parentBlade, descendantBlade, param, options, onOpen, onClose }: IBladeEvent,
+    index?: number
   ) {
     console.debug(`openBlade called.`);
 
     const parent = unref(parentBlade);
-    const child = unref(blade);
+    const child = unref(descendantBlade);
     const existingChild = findBlade(child);
 
     if (parent && parent.url) {
       await closeBlade(0);
 
       if (!isPrevented.value) {
-        parentBladeOptions.value = unref(bladeOptions);
+        parentBladeOptions.value = unref(options);
         parentBladeParam.value = unref(param);
-        if (navigationCb && typeof navigationCb === "function") {
-          try {
-            await navigationCb();
-          } catch (e) {
-            console.log(e);
-          } finally {
-            console.debug(`Navigated to: ${parent.url}`);
-          }
-        } else if (!navigationCb) {
-          await router.push(parent.url);
-        }
+
+        await router.push(parent.url);
       }
     }
 
     if (child) {
       if (existingChild === undefined) {
-        child.idx = index + 1;
+        child.idx = index ? index + 1 : 1;
       } else if (existingChild) {
-        await closeBlade(blades.value.findIndex((x) => x.idx === existingChild.idx));
+        await closeBlade(blades.value.findIndex((x: IBladeContainer) => x.idx === existingChild.idx));
         child.idx = existingChild.idx;
       }
 
-      await addBlade(child, param, bladeOptions, onOpen, onClose, index);
+      await addBlade(child, param, options, onOpen, onClose, index);
     }
   }
 
@@ -117,19 +103,19 @@ export function useBladeNavigation(): IUseBladeNavigation {
   async function addBlade(
     blade: ExtendedComponent,
     param: string,
-    bladeOptions: Record<string, unknown>,
+    options: Record<string, unknown>,
     onOpen: () => void,
     onClose: () => void,
-    index: number
+    index?: number
   ) {
-    if (blades.value.length > index) {
+    if (index && blades.value.length > index) {
       await closeBlade(index);
     }
 
     if (blade && checkPermission(blade.permissions)) {
       blades.value.push({
-        component: shallowRef(blade),
-        bladeOptions,
+        descendantBlade: shallowRef(blade),
+        options,
         param,
         onOpen,
         onClose,
@@ -171,7 +157,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function findBlade(blade: ExtendedComponent) {
-    return blades.value.find((x) => _.isEqual(x.component, blade));
+    return blades.value.find((x) => _.isEqual(x.descendantBlade, blade));
   }
 
   return {

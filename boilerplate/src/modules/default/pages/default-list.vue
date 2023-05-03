@@ -144,7 +144,7 @@ const title = computed(() => t("DEFAULT.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-    component: shallowRef(),
+    descendantBlade: shallowRef(),
     param: item.id,
     // onOpen() {},
     // onClose() {},

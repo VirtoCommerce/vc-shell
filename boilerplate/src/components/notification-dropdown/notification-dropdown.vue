@@ -118,9 +118,9 @@ const handleClick = async (notification: PushNotification) => {
    * @example openBlade(
    *     {
    *       parentBlade: shallowRef(),
-   *       component: shallowRef(),
+   *       descendantBlade: shallowRef(),
    *       param: "",
-   *       bladeOptions: {},
+   *       options: {},
    *     },
    *     1
    *   );

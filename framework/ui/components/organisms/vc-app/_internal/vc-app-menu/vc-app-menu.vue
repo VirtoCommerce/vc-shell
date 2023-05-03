@@ -40,7 +40,7 @@
               <component
                 v-if="item.component"
                 :is="item.component"
-                v-bind="item.bladeOptions"
+                v-bind="item.options"
                 class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto"
               ></component>
             </template>
@@ -55,14 +55,14 @@
               :isVisible="item.isVisible as boolean"
               :title="item.title as string"
               @click="
-                (navigationCb) => {
-                  $emit('item:click', { item, navigationCb });
+                () => {
+                  $emit('item:click', { item });
                   isMobileVisible = false;
                 }
               "
               @child:click="
-                ({ item: blade, navigationCb }) => {
-                  $emit('item:click', { item: blade, navigationCb });
+                ({ item: blade }) => {
+                  $emit('item:click', { item: blade });
                   isMobileVisible = false;
                 }
               "
@@ -94,7 +94,7 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "item:click", { item, navigationCb }: IMenuClickEvent): void;
+  (event: "item:click", { item }: IMenuClickEvent): void;
   (event: "version:click"): void;
 }
 

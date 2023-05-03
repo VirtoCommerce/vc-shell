@@ -18,22 +18,17 @@
 </template>
 
 <script lang="ts">
-import { PushNotification } from "./../../../../../../../core/api";
 import { defineComponent } from "vue";
 import { VcHint } from "./../../../../../";
+import { IImportPush } from "./../../../../../../../core/types";
 
 export default defineComponent({
   inheritAttrs: false,
 });
 </script>
 <script lang="ts" setup>
-export interface ImportPush extends PushNotification {
-  profileName: string;
-  errors: Record<string, unknown>[];
-}
-
 export interface Props {
-  notification: ImportPush;
+  notification: IImportPush;
 }
 
 defineProps<Props>();

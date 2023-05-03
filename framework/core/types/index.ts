@@ -1,5 +1,6 @@
 import { ComputedRef } from "vue";
 import { IBladeElement, ExtendedComponent } from "./../../shared";
+import { PushNotification } from "./../api";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -110,3 +111,14 @@ export type ITableColumns = {
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
 };
+
+export interface IImportPush extends PushNotification {
+  profileName: string;
+  errors: Record<string, unknown>[];
+  finished: Date;
+}
+
+export interface IProductPush extends PushNotification {
+  productName: string;
+  newStatus: string;
+}

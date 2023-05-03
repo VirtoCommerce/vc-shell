@@ -46,15 +46,10 @@ import ProductPush from "./_internal/ProductPush.vue";
 import moment from "moment";
 import { PushNotification } from "./../../../../../../core/api";
 import { VcIcon, VcRow } from "./../../../../";
+import { IImportPush, IProductPush } from "./../../../../../../core/types";
 
 export interface Props {
-  notification: PushNotification | IExtendedPush;
-}
-
-export interface IExtendedPush extends PushNotification {
-  finished: Date;
-  errors: string[];
-  newStatus: string;
+  notification: PushNotification;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -68,7 +63,7 @@ const pushComponents = reactive({
     component: shallowRef(ImportPush),
     styles: {
       color: computed(() => {
-        const notification = props.notification as IExtendedPush;
+        const notification = props.notification as IImportPush;
         return notification.finished && !(notification.errors && notification.errors.length)
           ? "#87b563"
           : !(notification.errors && notification.errors.length) && !notification.finished
@@ -96,7 +91,8 @@ const pushComponents = reactive({
     component: shallowRef(ProductPush),
     styles: {
       color: computed(() => {
-        switch ((props.notification as IExtendedPush).newStatus) {
+        const notification = props.notification as IProductPush;
+        switch (notification.newStatus) {
           case "RequestChanges":
             return "#F14E4E";
           case "Approved":

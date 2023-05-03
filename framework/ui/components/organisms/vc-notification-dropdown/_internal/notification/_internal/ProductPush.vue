@@ -11,18 +11,13 @@
 </template>
 
 <script lang="ts" setup>
-import { PushNotification } from "./../../../../../../../core/api";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { VcHint } from "./../../../../../";
-
-export interface ProductPush extends PushNotification {
-  productName: string;
-  newStatus: string;
-}
+import { IProductPush } from "./../../../../../../../core/types";
 
 export interface Props {
-  notification: ProductPush;
+  notification: IProductPush;
   variant: string;
 }
 

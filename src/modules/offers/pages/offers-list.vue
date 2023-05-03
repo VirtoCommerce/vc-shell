@@ -142,7 +142,7 @@ export interface Props {
 }
 
 export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
+  options?: {
     sellerProduct?: SellerProduct;
   };
 };
@@ -367,7 +367,7 @@ const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
   emit("open:blade", {
-    component: shallowRef(OffersDetails),
+    descendantBlade: shallowRef(OffersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -409,8 +409,8 @@ const onHeaderClick = (item: ITableColumns) => {
 
 const addOffer = () => {
   emit("open:blade", {
-    component: shallowRef(OffersDetails),
-    bladeOptions: props.options,
+    descendantBlade: shallowRef(OffersDetails),
+    options: props.options,
   });
 };
 

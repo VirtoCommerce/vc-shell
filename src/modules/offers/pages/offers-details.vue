@@ -465,7 +465,15 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IParentCallArgs, IBladeEvent, IBladeToolbar, useNotifications, notification } from "@vc-shell/framework";
+import {
+  IParentCallArgs,
+  IBladeEvent,
+  IBladeToolbar,
+  useNotifications,
+  notification,
+  AssetsDetails,
+  useUser,
+} from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
   IProperty,
@@ -475,6 +483,8 @@ import {
   PropertyDictionaryItem,
   PropertyValue,
   SellerProduct,
+  Image,
+  IImage,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
@@ -482,6 +492,14 @@ import moment from "moment/moment";
 import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
 import { useI18n } from "vue-i18n";
+
+export interface IBladeOptions extends IBladeEvent {
+  options?: {
+    asset: Image;
+    images: Image[];
+    assetEditHandler: (remove: boolean, localImage: IImage) => void;
+  };
+}
 
 export interface Props {
   expanded: boolean;
@@ -497,7 +515,7 @@ export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
+  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -519,16 +537,12 @@ const {
   loading,
   modified,
   getCurrencies,
-  imageUploading,
-  onGalleryUpload,
-  onGalleryItemEdit,
-  onGallerySort,
-  onGalleryImageRemove,
   makeCopy,
   deleteOffer,
 } = useOffer();
 
 const { searchDictionaryItems } = useProduct();
+const { getAccessToken } = useUser();
 const { setFieldError } = useForm({
   validateOnMount: false,
 });
@@ -542,6 +556,7 @@ const offerLoading = ref(false);
 const productLoading = ref(false);
 const pricingEqual = ref(false);
 const duplicates = ref([]);
+const imageUploading = ref(false);
 
 const filterTypes = ["Variation"];
 
@@ -610,9 +625,12 @@ watch(
   { deep: true }
 );
 
-watch(offerDetails.value.prices, () => {
-  scrollToLastPrice();
-});
+watch(
+  () => offerDetails.value?.prices,
+  () => {
+    scrollToLastPrice();
+  }
+);
 
 watch(
   () => offerDetails.value.inventory,
@@ -793,7 +811,7 @@ function generateSku(): string {
 }
 async function showProductDetails(id: string) {
   emit("open:blade", {
-    component: shallowRef(ProductsEdit),
+    descendantBlade: shallowRef(ProductsEdit),
     param: id,
   });
 }
@@ -920,6 +938,88 @@ async function onBeforeClose() {
     return confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
+
+const onGalleryItemEdit = (item: Image) => {
+  emit("open:blade", {
+    descendantBlade: shallowRef(AssetsDetails),
+    options: {
+      asset: item,
+      images: offerDetails.value.images,
+      assetEditHandler: sortImage,
+      assetRemoveHandler: onGalleryImageRemove,
+    },
+  });
+};
+
+function sortImage(remove = false, localImage: IImage) {
+  const images = offerDetails.value.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+
+    editImages(images);
+  }
+}
+
+const editImages = (args: Image[]) => {
+  offerDetails.value.images = args;
+};
+
+const onGallerySort = (images: Image[]) => {
+  offerDetails.value.images = images;
+};
+
+const onGalleryImageRemove = (image: Image) => {
+  if (window.confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
+    const imageIndex = offerDetails.value.images.findIndex((img) => {
+      if (img.id && image.id) {
+        return img.id === image.id;
+      } else {
+        return img.url === image.url;
+      }
+    });
+    offerDetails.value.images.splice(imageIndex, 1);
+  }
+};
+
+const onGalleryUpload = async (files: FileList) => {
+  try {
+    imageUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        image.createdDate = new Date();
+        if (offerDetails.value.images && offerDetails.value.images.length) {
+          const lastImageSortOrder = offerDetails.value.images[offerDetails.value.images.length - 1].sortOrder;
+          image.sortOrder = lastImageSortOrder + 1;
+        } else {
+          image.sortOrder = 0;
+        }
+        offerDetails.value.images.push(image);
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  } finally {
+    imageUploading.value = false;
+  }
+
+  files = null;
+};
 
 defineExpose({
   onBeforeClose,

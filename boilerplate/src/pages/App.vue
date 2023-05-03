@@ -16,8 +16,9 @@
     :pages="pages"
     :bladesRefs="bladesRefs"
     @backlink:click="closeBlade($event)"
-    @onOpen="onOpen"
-    @onClose="closeBlade($event)"
+    @open="onOpen"
+    @close="closeBlade($event)"
+    @logo:click="openDashboard"
     v-else
   >
     <!-- App Switcher -->

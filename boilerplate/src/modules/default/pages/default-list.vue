@@ -9,6 +9,12 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-slot:error
+      v-if="$slots['error']"
+    >
+      <slot name="error"></slot>
+    </template>
     <!-- Blade contents -->
     <VcTable
       :expanded="expanded"
@@ -45,13 +51,13 @@ import {
   IBladeToolbar,
   IParentCallArgs,
   useFunctions,
-  useI18n,
   IActionBuilderResult,
   ITableColumns,
 } from "@vc-shell/framework";
 import moment from "moment";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -75,7 +81,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { debounce } = useFunctions();
 
 const sort = ref("createdDate:DESC");

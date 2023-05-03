@@ -1,4 +1,4 @@
-import VirtoShellFramework from "@vc-shell/framework";
+import VirtoShellFramework, { notification } from "@vc-shell/framework";
 import { createApp } from "vue";
 import Default from "./modules/default";
 import EmptyRouterView from "./pages/EmptyRouterView.vue";
@@ -16,5 +16,11 @@ const app = createApp(EmptyRouterView).use(router).use(VirtoShellFramework).use(
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);
 });
+
+app.config.errorHandler = (err) => {
+  notification.error(err.toString(), {
+    timeout: 5000,
+  });
+};
 
 app.mount("#app");

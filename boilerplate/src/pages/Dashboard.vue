@@ -9,7 +9,23 @@
   </VcContainer>
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { notification, useErrorHandler } from "@vc-shell/framework";
+import { watch } from "vue";
+
+const { error, reset } = useErrorHandler(true);
+
+watch(error, (newVal) => {
+  if (newVal) {
+    notification.error(newVal, {
+      timeout: 5000,
+      onOpen() {
+        reset();
+      },
+    });
+  }
+});
+</script>
 
 <style lang="scss">
 .dashboard {

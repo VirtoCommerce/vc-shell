@@ -29,7 +29,7 @@ interface IUseTeamMembers {
   userDetailsCopy: Ref<SellerUserDetails>;
   getTeamMembers: (query: ISearchSellerUsersQuery) => void;
   createTeamMember: (details: ISellerUser, inviteStatus: boolean) => void;
-  handleUserDetailsItem: (user: SellerUser) => void;
+  handleUserDetailsItem: (user: ISellerUser) => void;
   resetEntries: () => void;
   deleteTeamMember: (args: { id: string }) => void;
   updateTeamMember: (details: ISellerUser) => void;

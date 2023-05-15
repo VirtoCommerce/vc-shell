@@ -6,7 +6,7 @@
       'user-dropdown-button_no-pointer': $isMobile.value,
     }"
     @click.stop="toggleAccountMenuVisible"
-    v-click-outside="onClose"
+    v-on-click-outside="onClose"
   >
     <div
       class="user-dropdown-button__avatar"
@@ -35,8 +35,8 @@
       @click.stop="accountMenuVisible = false"
     >
       <div
-        v-for="item in menuItems"
-        :key="item.id"
+        v-for="(item, i) in menuItems"
+        :key="`menu_item_${i}`"
         class="user-dropdown-button__menu-item"
         @click="item.hasOwnProperty('clickHandler') ? item.clickHandler() : null"
       >
@@ -48,18 +48,16 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { IMenuItems } from "@vc-shell/framework";
+import { BladeMenu } from "@vc-shell/framework";
+import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   avatar: string;
   name: string;
   role: string;
-  menuItems: IMenuItems[];
+  menuItems?: BladeMenu[];
 }
 const props = withDefaults(defineProps<Props>(), {
-  avatar: undefined,
-  name: undefined,
-  role: undefined,
   menuItems: () => [],
 });
 

@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, reactive, ref, shallowRef } from "vue";
+import { computed, defineComponent, inject, reactive, ref, markRaw } from "vue";
 
 export default defineComponent({
   url: "/default",
@@ -149,12 +149,12 @@ const columns = computed(() => {
 const title = computed(() => t("DEFAULT.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(),
-    param: item.id,
-    // onOpen() {},
-    // onClose() {},
-  });
+  // openBlade({
+  //   blade: markRaw(),
+  //   param: item.id,
+  // onOpen() {},
+  // onClose() {},
+  // });
 };
 
 const onHeaderClick = (item: ITableColumns) => {
@@ -187,7 +187,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const actionBuilder = (item: { status: string }): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   result.push({
     icon: "fas fa-trash",

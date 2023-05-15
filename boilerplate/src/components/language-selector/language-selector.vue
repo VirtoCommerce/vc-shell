@@ -1,7 +1,7 @@
 <template>
   <div
     class="tw-relative"
-    v-click-outside="
+    v-on-click-outside="
       () => {
         isDropActive = false;
       }
@@ -42,6 +42,7 @@
 <script lang="ts" setup>
 import { VcIcon } from "@vc-shell/framework";
 import { ref } from "vue";
+import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   title: string;

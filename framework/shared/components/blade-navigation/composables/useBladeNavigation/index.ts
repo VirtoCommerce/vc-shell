@@ -170,7 +170,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
         onOpen();
       }
     } else {
-      notification("Access restricted");
+      notification.error("Access restricted", {
+        timeout: 3000,
+      });
     }
   }
 

@@ -37,7 +37,9 @@ export function useAppSwitcher(): IUseAppSwitcher {
         window.location.href = window.location.origin + app.relativeUrl;
       }
     } else {
-      notification("Access restricted");
+      notification.error("Access restricted", {
+        timeout: 3000,
+      });
     }
   }
 

@@ -135,8 +135,8 @@ const form = reactive<IChangePassForm>({
 });
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 async function changePassword() {
   const result = await changeUserPassword(form.currentPassword, form.password);

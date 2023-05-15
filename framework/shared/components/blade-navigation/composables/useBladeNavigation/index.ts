@@ -1,22 +1,48 @@
-import { computed, ref, unref, watch, Ref, shallowRef } from "vue";
+import {
+  computed,
+  ref,
+  unref,
+  watch,
+  Ref,
+  ComponentPublicInstance,
+  getCurrentInstance,
+  markRaw,
+  inject,
+  nextTick,
+} from "vue";
 import * as _ from "lodash-es";
 import { useRouter, useRoute } from "vue-router";
 import { usePermissions } from "../../../../../core/composables";
-import { ExtendedComponent, IBladeContainer, IBladeRef, IBladeEvent, IParentCallArgs } from "../../../..";
+import {
+  IBladeContainer,
+  IBladeRef,
+  IBladeEvent,
+  IParentCallArgs,
+  BladeConstructor,
+  BladeComponentInternalInstance,
+  BladeNavigationPlugin,
+  notification,
+} from "../../../..";
+import { bladeNavigationInstance } from "./../../plugin";
 
 interface IUseBladeNavigation {
   readonly blades: Ref<IBladeContainer[]>;
   readonly parentBladeOptions: Ref<Record<string, unknown>>;
   readonly parentBladeParam: Ref<string>;
   bladesRefs: Ref<IBladeRef[]>;
-  openBlade: ({ parentBlade, descendantBlade, param, options, onOpen, onClose }: IBladeEvent, index?: number) => void;
+  openBlade: <Blade extends ComponentPublicInstance = ComponentPublicInstance>({
+    blade,
+    param,
+    options,
+    onOpen,
+    onClose,
+  }: IBladeEvent<Blade>) => void;
   closeBlade: (index: number) => void;
   onParentCall: (index: number, args: IParentCallArgs) => void;
 }
 
-const blades: Ref<IBladeContainer[]> = ref([]);
-const bladesRefs: Ref<IBladeRef[]> = ref([]);
-const parentBladeOptions: Ref<Record<string, unknown>> = ref();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const parentBladeOptions: Ref<Record<string, any>> = ref();
 const parentBladeParam: Ref<string> = ref();
 
 export function useBladeNavigation(): IUseBladeNavigation {
@@ -25,61 +51,76 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const { checkPermission } = usePermissions();
   const isPrevented = ref(false);
 
+  const instance: BladeComponentInternalInstance = getCurrentInstance();
+  const navigationInstance =
+    (instance && inject<BladeNavigationPlugin>("bladeNavigationPlugin")) || bladeNavigationInstance;
+
+  const lastBladeUrl = ref();
   watch(
-    () => blades.value,
+    navigationInstance.blades,
     (newVal) => {
       const lastBlade = newVal[newVal.length - 1];
 
-      if (lastBlade && lastBlade.descendantBlade.url) {
+      if (lastBlade && lastBlade.blade.url) {
         if (lastBlade.param) {
-          addEntryToLocation(lastBlade.descendantBlade.url + "/" + lastBlade.param);
+          addEntryToLocation(lastBlade.blade.url + "/" + lastBlade.param);
         } else {
-          addEntryToLocation(lastBlade.descendantBlade.url);
+          addEntryToLocation(lastBlade.blade.url);
         }
       } else if (!lastBlade) {
+        clearParentData();
         addEntryToLocation(route.path);
       }
     },
     { deep: true }
   );
 
-  async function openBlade(
-    { parentBlade, descendantBlade, param, options, onOpen, onClose }: IBladeEvent,
-    index?: number
-  ) {
-    console.debug(`openBlade called.`);
+  async function openBlade<Blade extends ComponentPublicInstance>({
+    blade,
+    param,
+    options,
+    onOpen,
+    onClose,
+  }: IBladeEvent<Blade>) {
+    const caller = instance && instance.vnode.type;
 
-    const parent = unref(parentBlade);
-    const child = unref(descendantBlade);
-    const existingChild = findBlade(child);
+    const bladeComponent = unref(blade);
+    const existingChild = findBlade(bladeComponent);
+    const index = caller?.idx ? caller.idx : 0;
 
-    if (parent && parent.url) {
+    const initiator = caller?.url && navigationInstance.bladesRefs.value.find((x) => x.blade.blade.url === caller.url);
+
+    if (!initiator) {
       await closeBlade(0);
 
       if (!isPrevented.value) {
         parentBladeOptions.value = unref(options);
         parentBladeParam.value = unref(param);
 
-        await router.push(parent.url);
+        await router.push(bladeComponent.url);
       }
-    }
-
-    if (child) {
+    } else {
+      let isPrevented;
       if (existingChild === undefined) {
-        child.idx = index ? index + 1 : 1;
+        bladeComponent.idx = index ? index + 1 : 1;
       } else if (existingChild) {
-        await closeBlade(blades.value.findIndex((x: IBladeContainer) => x.idx === existingChild.idx));
-        child.idx = existingChild.idx;
+        isPrevented = await closeBlade(
+          navigationInstance.blades.value.findIndex((x: IBladeContainer) => x.idx === existingChild.idx)
+        );
+        bladeComponent.idx = existingChild.idx;
       }
-
-      await addBlade(child, param, options, onOpen, onClose, index);
+      if (!isPrevented) {
+        await addBlade(bladeComponent, param, options, onOpen, onClose, index);
+      }
     }
   }
 
   async function closeBlade(index: number) {
+    console.debug(`[@vc-shell/framework#useBladeNavigation] - closeBlade called.`);
     const refsIndex = index + 1;
-    if (refsIndex < bladesRefs.value.length) {
-      const children = bladesRefs.value.slice(refsIndex).reverse();
+
+    if (refsIndex < navigationInstance.bladesRefs.value.length) {
+      const children = navigationInstance.bladesRefs.value.slice(refsIndex).reverse();
 
       isPrevented.value = false;
       for (let i = 0; i < children.length; i++) {
@@ -87,34 +128,37 @@ export function useBladeNavigation(): IUseBladeNavigation {
           const result = await children[i].exposed.onBeforeClose();
           if (result === false) {
             isPrevented.value = true;
-            break;
+            console.debug(`[@vc-shell/framework#useBladeNavigation] - Navigation is prevented`);
+            return isPrevented;
           }
         }
       }
       if (!isPrevented.value) {
-        if (typeof blades.value[index]?.onClose === "function") {
-          blades.value[index]?.onClose?.();
+        if (typeof navigationInstance.blades.value[index]?.onClose === "function") {
+          navigationInstance.blades.value[index]?.onClose?.();
         }
-        blades.value.splice(index);
+
+        navigationInstance.blades.value.splice(index);
       }
     }
   }
 
   async function addBlade(
-    blade: ExtendedComponent,
+    blade: BladeConstructor,
     param: string,
-    options: Record<string, unknown>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    options: Record<string, any>,
     onOpen: () => void,
     onClose: () => void,
     index?: number
   ) {
-    if (index && blades.value.length > index) {
+    if (index && navigationInstance.blades.value.length > index) {
       await closeBlade(index);
     }
 
     if (blade && checkPermission(blade.permissions)) {
-      blades.value.push({
-        descendantBlade: shallowRef(blade),
+      navigationInstance.blades.value.push({
+        blade: markRaw(blade),
         options,
         param,
         onOpen,
@@ -126,8 +170,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
         onOpen();
       }
     } else {
-      // TODO temporary access alert
-      alert("Access restricted");
+      notification("Access restricted");
     }
   }
 
@@ -135,7 +178,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     console.debug(`vc-app#onParentCall(${index}, { method: ${args.method} }) called.`);
 
     if (index >= 0) {
-      const currentParent = unref(bladesRefs.value[index]);
+      const currentParent = unref(navigationInstance.bladesRefs.value[index]);
 
       if (currentParent) {
         if (args.method && typeof currentParent.exposed[args.method] === "function") {
@@ -145,7 +188,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
             args.callback(result);
           }
         } else {
-          // TODO temporary alert
           console.error(`No such method: ${args.method}.`);
         }
       }
@@ -154,17 +196,25 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   function addEntryToLocation(params: string) {
     history.pushState({}, null, "#" + params);
+    lastBladeUrl.value = params;
   }
 
-  function findBlade(blade: ExtendedComponent) {
-    return blades.value.find((x) => _.isEqual(x.descendantBlade, blade));
+  function findBlade(blade: BladeConstructor) {
+    return navigationInstance.blades.value.find((x) => _.isEqual(x.blade, blade));
+  }
+
+  async function clearParentData() {
+    nextTick(() => {
+      parentBladeOptions.value = undefined;
+      parentBladeParam.value = undefined;
+    });
   }
 
   return {
-    blades: computed(() => blades.value),
+    blades: computed(() => navigationInstance.blades.value),
     parentBladeOptions: computed(() => parentBladeOptions.value),
     parentBladeParam: computed(() => parentBladeParam.value),
-    bladesRefs,
+    bladesRefs: navigationInstance.bladesRefs,
     openBlade,
     closeBlade,
     onParentCall,

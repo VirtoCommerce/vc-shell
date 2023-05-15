@@ -6,6 +6,7 @@
         $isMobile.value,
       '!tw-block': isMobileVisible,
     }"
+    v-if="isMenuVisible"
   >
     <!-- Show backdrop overlay on mobile devices -->
     <div
@@ -51,7 +52,9 @@
           >
             <VcAppMenuItem
               v-if="item.isVisible === undefined || item.isVisible"
-              v-bind="item"
+              :component="item.component"
+              :icon="item.icon"
+              :children="item.children"
               :isVisible="item.isVisible as boolean"
               :title="item.title as string"
               @click="
@@ -81,24 +84,23 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import VcAppMenuItem from "./_internal/vc-app-menu-item/vc-app-menu-item.vue";
 import { VcContainer, VcIcon } from "./../../../../";
-import { IMenuItems } from "./../../../../../../core/types";
-import { IMenuClickEvent } from "./../../../../../../shared";
+import { BladeMenu, IBladeToolbar } from "./../../../../../../core/types";
 
 export interface Props {
-  items?: IMenuItems[];
-  mobileMenuItems?: IMenuItems[];
+  items?: BladeMenu[];
+  mobileMenuItems?: IBladeToolbar[];
   version: string;
 }
 
 export interface Emits {
-  (event: "item:click", { item }: IMenuClickEvent): void;
+  (event: "item:click", { item }: { item: BladeMenu }): void;
   (event: "version:click"): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   items: () => [],
   mobileMenuItems: () => [],
   version: "",
@@ -107,6 +109,10 @@ withDefaults(defineProps<Props>(), {
 defineEmits<Emits>();
 
 const isMobileVisible = ref(false);
+
+const isMenuVisible = computed(() => {
+  return props.items.some((item) => item.isVisible);
+});
 
 defineExpose({
   isMobileVisible,

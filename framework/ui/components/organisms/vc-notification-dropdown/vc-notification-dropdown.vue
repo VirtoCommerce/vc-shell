@@ -2,7 +2,7 @@
   <div
     class="tw-relative tw-flex tw-items-center tw-h-full"
     @click.stop="toggleNotificationsDrop"
-    v-click-outside="
+    v-on-click-outside="
       () => {
         isDropdownVisible = false;
       }
@@ -13,7 +13,7 @@
       :class="[
         'tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color:var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)]  tw-transition-[color]  tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]',
         {
-          'tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] tw-bg-white tw-z-[10000]':
+          'tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] [clip-path:inset(0px_-20px_0px_-20px)] tw-bg-white tw-z-[10001]':
             isDropdownVisible && !$isMobile.value,
         },
       ]"
@@ -31,14 +31,14 @@
     </div>
     <div
       v-if="$isMobile.value && isDropdownVisible"
-      class="tw-fixed tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-z-[9999] tw-bg-[#808c99] tw-opacity-60"
+      class="tw-fixed tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-z-[10000] tw-bg-[#808c99] tw-opacity-60"
       @click.stop="toggleNotificationsDrop"
     ></div>
     <div
-      class="tw-absolute tw-top-[var(--app-bar-height)] tw-z-[9999] tw-drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] tw-bg-white tw-rounded-b-[6px] tw-w-[439px] tw-max-h-[350px] tw-min-h-[50px] tw-right-0 tw-overflow-hidden tw-flex tw-flex-col"
+      class="tw-absolute tw-top-[var(--app-bar-height)] tw-z-[10000] tw-drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] tw-bg-white tw-rounded-b-[6px] tw-w-[439px] tw-max-h-[350px] tw-min-h-[50px] tw-right-0 tw-overflow-hidden tw-flex tw-flex-col"
       v-if="isDropdownVisible"
       :class="{
-        'tw-hidden !tw-fixed !tw-right-0 !tw-top-0 !tw-max-h-full !tw-max-w-[300px] !tw-w-full !tw-bottom-0 !tw-z-[9999] !tw-border-0':
+        'tw-hidden !tw-fixed !tw-right-0 !tw-top-0 !tw-max-h-full !tw-max-w-[300px] !tw-w-full !tw-bottom-0 !tw-z-[10000] !tw-border-0':
           $isMobile.value,
         '!tw-flex': $isMobile.value && isDropdownVisible,
       }"
@@ -83,19 +83,17 @@ import { ref } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { PushNotification } from "./../../../../core/api";
 import { VcCol, VcContainer, VcIcon } from "./../../";
-import { clickOutside as vClickOutside } from "./../../../../core/directives/";
+import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   title: string;
   isAccent?: boolean;
   notifications: PushNotification[];
   onOpen?: () => void;
-  onClick?: (message: PushNotification) => void;
+  onClick?: (notification: PushNotification) => void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  title: "",
-});
+const props = defineProps<Props>();
 
 const isDropdownVisible = ref(false);
 

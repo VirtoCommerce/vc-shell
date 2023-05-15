@@ -6,7 +6,7 @@
       'vc-gallery-item_hover': hover,
     }"
     @tap.stop="hover = !hover"
-    v-click-outside="onClose"
+    v-on-click-outside="onClose"
   >
     <VcImage
       aspect="1x1"
@@ -69,7 +69,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { clickOutside as vClickOutside } from "./../../../../../../core/directives";
+import { vOnClickOutside } from "@vueuse/components";
 import { IImage } from "./../../../../../../core/types";
 import { VcImage, VcIcon } from "./../../../../";
 

@@ -203,7 +203,7 @@
           v-if="isOpened"
           class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           ref="dropdownRef"
-          v-click-outside="closeDropdown"
+          v-on-click-outside="closeDropdown"
           :style="dropdownStyle"
         >
           <input
@@ -252,7 +252,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, toRefs, nextTick } from "vue";
-import { clickOutside as vClickOutside } from "./../../../../core/directives";
+import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";

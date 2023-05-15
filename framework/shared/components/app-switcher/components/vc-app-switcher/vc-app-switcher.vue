@@ -1,7 +1,7 @@
 <template>
   <div
     class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-mx-2 tw-shrink-0"
-    v-click-outside="onClose"
+    v-on-click-outside="onClose"
   >
     <button
       class="hover:[&>img] hover:[&_div]:tw-bg-[color:var(--app-bar-button-color-hover)]"
@@ -43,6 +43,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { AppDescriptor } from "../../../../../core/api";
+import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   appsList: AppDescriptor[];

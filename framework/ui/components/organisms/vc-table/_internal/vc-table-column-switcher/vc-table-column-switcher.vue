@@ -10,7 +10,7 @@
       <div
         v-if="isActive"
         ref="floatingDrop"
-        v-click-outside="close"
+        v-on-click-outside="close"
         :style="floatingDropStyle"
         class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-white tw-border tw-border-solid tw-border-[#e5e7eb] tw-w-max tw-right-0"
       >
@@ -38,7 +38,7 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import { ITableColumns } from "./../../../../../../core/types";
-import { clickOutside as vClickOutside } from "./../../../../../../core/directives";
+import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, flip, shift, autoUpdate } from "@floating-ui/vue";
 
 export interface Props {

@@ -78,7 +78,7 @@ const emit = defineEmits<Emits>();
 
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination
-let internalRules = unref(props.rules) || "";
+const internalRules = unref(props.rules) || "";
 const isDragging = ref(false);
 
 // Prepare field-level validation

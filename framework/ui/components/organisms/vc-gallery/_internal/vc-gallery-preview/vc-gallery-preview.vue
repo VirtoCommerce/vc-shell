@@ -60,13 +60,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, ComputedRef } from "vue";
 import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
 import { IImage } from "./../../../../../../core/types";
 
 export interface Props {
   images?: IImage[];
-  index: number;
+  index: number | ComputedRef<number>;
 }
 
 const props = withDefaults(defineProps<Props>(), {

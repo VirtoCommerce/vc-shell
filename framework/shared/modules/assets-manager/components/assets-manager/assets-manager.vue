@@ -149,9 +149,9 @@
 
 <script setup lang="ts">
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, shallowRef, unref, watch } from "vue";
+import { ref, computed, onMounted, unref, watch, markRaw } from "vue";
 import { useI18n } from "vue-i18n";
-import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
+import { IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
@@ -164,7 +164,7 @@ export interface Props {
     assets: Asset[];
     assetsEditHandler: (assets: Asset[]) => Asset[];
     assetsUploadHandler: (files: FileList) => Promise<Asset[]>;
-    assetsRemoveHandler: (assets: Asset[]) => Asset[];
+    assetsRemoveHandler: (assets: Asset[]) => Promise<Asset[]>;
     disabled: boolean;
   };
 }
@@ -172,7 +172,6 @@ export interface Props {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -194,6 +193,8 @@ const selectedItems = ref([]);
 const readonly = computed(() => props.options.disabled);
 let assetsCopy;
 const modified = ref(false);
+
+const { openBlade } = useBladeNavigation();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -218,9 +219,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "delete",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
-    clickHandler() {
+    async clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
-        defaultAssets.value = props.options.assetsRemoveHandler(selectedItems.value);
+        defaultAssets.value = await props.options.assetsRemoveHandler(selectedItems.value);
       }
     },
     disabled: computed(() => !selectedItems.value.length || readonly.value),
@@ -338,8 +339,8 @@ async function inputUpload(event: Event) {
 }
 
 function onItemClick(item: Asset) {
-  emit("open:blade", {
-    descendantBlade: shallowRef(Assets),
+  openBlade({
+    blade: markRaw(Assets),
     options: {
       asset: unref(item),
       disabled: readonly.value,
@@ -355,8 +356,8 @@ function onItemClick(item: Asset) {
           defaultAssets.value = props.options.assetsEditHandler(mutated);
         }
       },
-      assetRemoveHandler: (asset: Asset) => {
-        defaultAssets.value = props.options.assetsRemoveHandler([asset]);
+      assetRemoveHandler: async (asset: Asset) => {
+        defaultAssets.value = await props.options.assetsRemoveHandler([asset]);
       },
     },
   });
@@ -367,7 +368,7 @@ const onSelectionChanged = (items: Asset[]) => {
 };
 
 const actionBuilder = (): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   result.push({
     icon: "fas fa-edit",
@@ -382,8 +383,8 @@ const actionBuilder = (): IActionBuilderResult[] => {
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     variant: "danger",
     leftActions: true,
-    clickHandler(item: Asset) {
-      defaultAssets.value = props.options.assetsRemoveHandler([item]);
+    async clickHandler(item: Asset) {
+      defaultAssets.value = await props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];
     },
   });

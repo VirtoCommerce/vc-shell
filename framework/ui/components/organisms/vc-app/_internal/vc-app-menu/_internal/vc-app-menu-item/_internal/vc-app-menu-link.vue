@@ -2,8 +2,8 @@
   <div
     class="vc-app-menu-item"
     :class="[
-      { 'vc-app-menu-item_active': isActive && !Object.keys(children).length },
-      { 'vc-app-menu-item_no-hover': Object.keys(children).length },
+      { 'vc-app-menu-item_active': isActive && !children.length },
+      { 'vc-app-menu-item_no-hover': children.length },
     ]"
     @click="$emit('onClick')"
   >
@@ -31,18 +31,18 @@
         class="vc-app-menu-item__title-icon"
         icon="fas fa-chevron-down"
         size="xs"
-        v-if="Object.keys(children).length"
+        v-if="children.length"
       ></VcIcon>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { ExtendedComponent } from "./../../../../../../../../../shared";
+import { BladeMenu } from "./../../../../../../../../../core/types";
 import { VcIcon } from "./../../../../../../../";
 
 export interface Props {
   isActive?: boolean;
-  children?: ExtendedComponent;
+  children?: BladeMenu[];
   sticky?: boolean;
   icon: string;
   title: string;
@@ -53,7 +53,6 @@ export interface Emits {
 }
 
 withDefaults(defineProps<Props>(), {
-  children: () => ({}),
   sticky: true,
 });
 

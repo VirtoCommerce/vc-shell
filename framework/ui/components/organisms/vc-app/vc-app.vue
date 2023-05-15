@@ -49,16 +49,16 @@
         <slot name="bladeNavigation"></slot>
       </div>
 
-      <div v-if="$slots['passwordChange']">
-        <slot name="passwordChange"></slot>
+      <div v-if="$slots['modals']">
+        <slot name="modals"></slot>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, getCurrentInstance } from "vue";
-import { IMenuItems, IBladeToolbar } from "../../../../core/types";
+import { defineComponent, getCurrentInstance, markRaw } from "vue";
+import { BladeMenu, IBladeToolbar } from "../../../../core/types";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -68,12 +68,12 @@ export default defineComponent({
 <script lang="ts" setup>
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
-import { ExtendedComponent, IBladeRef, IMenuClickEvent, IOpenBlade } from "./../../../../shared";
+import { BladePageComponent, IBladeRef, useBladeNavigation } from "./../../../../shared";
 
 export interface Props {
-  pages?: ExtendedComponent[];
-  menuItems?: IMenuItems[];
-  mobileMenuItems?: IMenuItems[];
+  pages?: BladePageComponent[];
+  menuItems?: BladeMenu[];
+  mobileMenuItems?: IBladeToolbar[];
   toolbarItems?: IBladeToolbar[];
   isReady?: boolean;
   isAuthorized?: boolean;
@@ -85,7 +85,6 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "open", args: IOpenBlade): void;
   (event: "close", index: number): void;
   (event: "backlink:click", index: number): void;
   (event: "logo:click"): void;
@@ -100,18 +99,22 @@ withDefaults(defineProps<Props>(), {
   bladesRefs: () => [],
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 
 console.debug("vc-app: Init vc-app");
 
+const { openBlade } = useBladeNavigation();
+
 const instance = getCurrentInstance();
 
-const onMenuItemClick = function ({ item }: IMenuClickEvent) {
+const onMenuItemClick = function ({ item }: { item: BladeMenu }) {
   console.debug(`vc-app#onMenuItemClick() called.`);
   if (item.clickHandler && typeof item.clickHandler === "function") {
-    item.clickHandler(instance?.exposed as Record<string, unknown>);
+    item.clickHandler(instance?.exposed);
   } else {
-    emit("open", { parentBlade: item.component, id: 0 });
+    openBlade({
+      blade: markRaw(item.component),
+    });
   }
 };
 

@@ -61,21 +61,18 @@
 
 <script lang="ts" setup>
 import { onMounted, ref } from "vue";
-import { IBladeToolbar, IMenuItems } from "./../../../../../../../../core/types";
+import { BladeMenu } from "./../../../../../../../../core/types";
 import VcAppMenuLink from "./_internal/vc-app-menu-link.vue";
 import { useRoute } from "vue-router";
-import { ExtendedComponent } from "./../../../../../../../../shared";
+import { BladeConstructor } from "./../../../../../../../../shared";
 
 export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
-  component?: ExtendedComponent;
-  options?: Record<string, unknown>;
-  clickHandler?: () => void;
+  component?: BladeConstructor;
   icon?: string | (() => string);
   title?: string;
-  children?: IBladeToolbar[];
-  isCollapsed?: boolean;
+  children?: BladeMenu[];
 }
 
 export interface Emits {
@@ -85,7 +82,7 @@ export interface Emits {
     {
       item,
     }: {
-      item: IMenuItems;
+      item: BladeMenu;
     }
   ): void;
 }
@@ -93,10 +90,7 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   sticky: true,
   component: undefined,
-  options: () => ({}),
-  clickHandler: undefined,
   children: () => [],
-  isCollapsed: true,
 });
 
 const route = useRoute();

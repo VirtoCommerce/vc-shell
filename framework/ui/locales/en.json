@@ -1,28 +1,34 @@
 {
-  "COMPONENTS":{
-    "ORGANISMS":{
-      "VC_BLADE":{
+  "COMPONENTS": {
+    "ORGANISMS": {
+      "VC_BLADE": {
         "SEE_DETAILS": "See details",
-        "ERROR_POPUP":{
-          "TITLE":"Error details"
+        "ERROR_POPUP": {
+          "TITLE": "Error details"
         }
       },
-      "VC_TABLE":{
-        "ALL_SELECTED":"All items in this page are selected.",
-        "SELECT":"Select all items",
-        "ALL_BULK_SELECTED":"All items are selected.",
+      "VC_TABLE": {
+        "ALL_SELECTED": "All items in this page are selected.",
+        "SELECT": "Select all items",
+        "ALL_BULK_SELECTED": "All items are selected.",
         "CANCEL": "Cancel selection"
       },
-      "VC_NOTIFICATION_DROPDOWN":{
-        "EMPTY":"No notifications yet",
+      "VC_NOTIFICATION_DROPDOWN": {
+        "EMPTY": "No notifications yet",
         "IMPORT_PUSH": {
-          "PROFILE":"Profile:",
-          "ERRORS":"Errors"
+          "PROFILE": "Profile:",
+          "ERRORS": "Errors"
         },
-        "PRODUCT_PUSH":{
-          "PRODUCT":"Product",
-          "UPDATE":"status update",
-          "MORE_DETAILS":"Click the notification to see details"
+        "PRODUCT_PUSH": {
+          "PRODUCT": "Product",
+          "UPDATE": "status update",
+          "MORE_DETAILS": "Click the notification to see details"
+        }
+      },
+      "VC_POPUP": {
+        "TITLE": {
+          "CONFIRMATION": "Confirmation",
+          "ERROR": "Error"
         }
       }
     }

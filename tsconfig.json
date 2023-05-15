@@ -26,6 +26,9 @@
       ],
       "@vc-shell/api-client-generator": [
         "cli/api-client/src"
+      ],
+      "@vc-shell/import-module": [
+        "import-module/src"
       ]
     }
   },
@@ -38,6 +41,9 @@
     },
     {
       "path": "cli/api-client/"
+    },
+    {
+      "path": "import-module/"
     }
   ]
 }

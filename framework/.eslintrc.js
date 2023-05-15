@@ -8,5 +8,6 @@ module.exports = {
             },
         },
     },
+    parser: 'vue-eslint-parser',
     globals: { defineOptions: 'writable' },
 };

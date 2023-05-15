@@ -23,5 +23,7 @@
     "apps/vendor-portal/src/modules/orders/locales",
     "apps/vendor-portal/src/modules/rating/locales",
     "apps/vendor-portal/src/modules/settings/locales"
-  ]
+  ],
+  "i18n-ally.keystyle": "nested",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

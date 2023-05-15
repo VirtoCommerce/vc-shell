@@ -8,3 +8,4 @@ export * from "./useAsync";
 export * from "./useApiClient";
 export * from "./useLoading";
 export * from "./useErrorHandler";
+export * from "./useMenuComposer";

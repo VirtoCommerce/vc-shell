@@ -1,5 +1,11 @@
-import { ComputedRef } from "vue";
-import { IBladeElement, ExtendedComponent } from "./../../shared";
+import { Component, ComponentPublicInstance, ComputedRef, Ref } from "vue";
+import {
+  CoreBladeExposed,
+  BladeConstructor,
+  ExtractedBladeOptions,
+  ComponentInstanceConstructor,
+  BladeInstanceConstructor,
+} from "./../../shared";
 import { PushNotification } from "./../api";
 
 // Type instead of interface here is workaround for:
@@ -21,19 +27,6 @@ export type IValidationRules = {
   size?: number;
 };
 
-export interface IBladeToolbar {
-  id?: string;
-  icon?: string | (() => string);
-  title?: string | unknown;
-  isVisible?: boolean | unknown;
-  isAccent?: boolean | ComputedRef<boolean>;
-  component?: ExtendedComponent;
-  options?: Record<string, unknown>;
-  disabled?: boolean | ComputedRef<boolean>;
-  dropdownItems?: IBladeDropdownItem[];
-  clickHandler?(app?: Record<string, unknown> | IBladeElement): void;
-}
-
 export interface IBladeDropdownItem {
   id: string;
   title: string;
@@ -41,9 +34,51 @@ export interface IBladeDropdownItem {
   clickHandler?(): void;
 }
 
-export interface IMenuItems extends IBladeToolbar {
-  children?: IBladeToolbar[];
+export interface BladeMenu<T extends ComponentPublicInstance = ComponentPublicInstance> {
+  title?: string | Ref<string>;
+  icon?: string;
+  isVisible?: boolean | Ref<boolean>;
+  component?: BladeConstructor<T>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  clickHandler?(app?: Record<string, any> | CoreBladeExposed): void;
+  children?: BladeMenu<T>[];
+  options?: ExtractedBladeOptions<InstanceType<BladeConstructor<T>>["$props"], "options">;
 }
+
+export interface IBladeToolbar<T extends ComponentPublicInstance = ComponentPublicInstance>
+  extends Omit<BladeMenu, "children" | "icon" | "options" | "component"> {
+  id?: string;
+  icon?: string | (() => string);
+  isAccent?: boolean | ComputedRef<boolean>;
+  component?: ComponentInstanceConstructor<T>;
+  disabled?: boolean | ComputedRef<boolean>;
+  dropdownItems?: IBladeDropdownItem[];
+  options?: InstanceType<ComponentInstanceConstructor<T>>["$props"];
+}
+
+export type NavigationMenu<T> = T extends {
+  component?: infer C extends BladeInstanceConstructor;
+}
+  ? {
+      component?: C;
+      options?: ExtractedBladeOptions<InstanceType<C>["$props"], "options">;
+    } & BladeMenu
+  : T extends {
+      children?: infer P extends [] | readonly any[];
+    } & BladeMenu
+  ? {
+      children?: readonly [...{ [I in keyof P]: NavigationMenu<P[I]> }];
+    } & BladeMenu
+  : T & { component?: BladeInstanceConstructor };
+
+export type ToolbarMenu<T> = T extends {
+  component?: infer C extends ComponentInstanceConstructor;
+}
+  ? {
+      component?: C;
+      options?: InstanceType<C>["$props"];
+    } & IBladeToolbar
+  : T & { component?: ComponentInstanceConstructor };
 
 export interface IActionBuilderResult {
   icon: string;

@@ -86,16 +86,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, shallowRef, watch } from "vue";
+import { defineComponent, computed, onMounted, ref, markRaw } from "vue";
 
 export default defineComponent({
   url: "/import",
+  scope: {
+    notificationClick(notification: ImportPushNotification) {
+      if (notification.notifyType !== "ImportPushNotification") return;
+      return {
+        param: notification.profileId,
+        options: {
+          importJobId: notification.jobId,
+        },
+      };
+    },
+  },
 });
 </script>
 
 <script lang="ts" setup>
 import {
-  IBladeEvent,
   IBladeToolbar,
   ITableColumns,
   VcBlade,
@@ -106,33 +116,26 @@ import {
   VcCard,
   VcTable,
   usePermissions,
+  useBladeNavigation,
 } from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportRunHistory } from "../../../api_client/marketplacevendor";
+import { ImportPushNotification, ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 import { UserPermissions } from "../../../types";
 import { useI18n } from "vue-i18n";
-
-export type IBladeOptions = IBladeEvent & {
-  options?: {
-    importJobId?: string;
-    title?: string;
-  };
-};
 
 export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
   options?: {
-    importJobId?: string;
+    importJobId: string;
   };
 }
 
 export interface Emits {
-  (event: "open:blade", blade: IBladeOptions): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
@@ -143,6 +146,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 const { checkPermission } = usePermissions();
@@ -215,8 +220,21 @@ const columns = ref<ITableColumns[]>([
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
 onMounted(async () => {
+  if (props.param && props.options && props.options.importJobId) {
+    openBlade({
+      blade: markRaw(ImportNew),
+      param: props.param,
+      options: {
+        importJobId: props.options.importJobId,
+      },
+      onClose() {
+        selectedItemId.value = undefined;
+      },
+    });
+  }
+
   await reload();
-  if (props.param) {
+  if (props.param && !props.options) {
     selectedProfileId.value = props.param;
   }
   if (props.options && props.options.importJobId) {
@@ -235,8 +253,8 @@ async function reload() {
 function newProfile() {
   bladeWidth.value = 70;
 
-  emit("open:blade", {
-    descendantBlade: shallowRef(ImportProfileDetails),
+  openBlade({
+    blade: markRaw(ImportProfileDetails),
   });
 }
 
@@ -245,8 +263,8 @@ function openImporter(profileId: string) {
 
   const profile = importProfiles.value.find((profile) => profile.id === profileId);
 
-  emit("open:blade", {
-    descendantBlade: shallowRef(ImportNew),
+  openBlade({
+    blade: markRaw(ImportNew),
     param: profileId,
     options: {
       importJobId: profile && profile.inProgress ? profile.jobId : undefined,
@@ -263,8 +281,8 @@ function openImporter(profileId: string) {
 function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
 
-  emit("open:blade", {
-    descendantBlade: shallowRef(ImportNew),
+  openBlade({
+    blade: markRaw(ImportNew),
     param: item.profileId,
     options: {
       importJobId: item.jobId,

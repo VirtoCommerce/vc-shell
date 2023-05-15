@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, markRaw } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, ITableColumns } from "@vc-shell/framework";
+import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { useI18n } from "vue-i18n";
@@ -74,7 +74,6 @@ export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -84,7 +83,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-
+const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { searchQuery, loading, currentPage, pages, totalCount, fulfillmentCentersList, searchFulfillmentCenters } =
   useFulfillmentCenters();
@@ -107,8 +106,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TOOLBAR.ADD_FULFILLMENT_CENTER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("open:blade", {
-        descendantBlade: shallowRef(FulfillmentCenterDetails),
+      openBlade({
+        blade: markRaw(FulfillmentCenterDetails),
       });
     },
   },
@@ -177,8 +176,8 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: { id?: string }) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(FulfillmentCenterDetails),
+  openBlade({
+    blade: markRaw(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

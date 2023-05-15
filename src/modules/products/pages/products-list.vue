@@ -180,21 +180,49 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef, unref, inject } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch,
+  unref,
+  inject,
+  markRaw,
+  Ref,
+  ComputedRef,
+} from "vue";
 import { useI18n } from "vue-i18n";
+import { IProductPushNotification } from "./../../../types";
 
 export default defineComponent({
   url: "/products",
+  scope: {
+    notificationClick(notification: IProductPushNotification) {
+      if (notification.notifyType !== "OrderCreatedEventHandler") return;
+      return {
+        param: notification.productId,
+      };
+    },
+  },
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, useFunctions, IActionBuilderResult, ITableColumns } from "@vc-shell/framework";
+import {
+  IBladeToolbar,
+  useFunctions,
+  IActionBuilderResult,
+  ITableColumns,
+  useBladeNavigation,
+  usePopup,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
-import ProductsEdit from "./products-edit.vue";
+import { ProductsEdit } from "./";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 
@@ -209,7 +237,12 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "close:children"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
+}
+
+export interface Exposed {
+  reload: () => Promise<void>;
+  title: ComputedRef<string>;
+  test: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -220,9 +253,11 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { debounce } = useFunctions();
+const { openBlade } = useBladeNavigation();
+const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 
-const isDesktop = inject("isDesktop");
+const isDesktop = inject<Ref<boolean>>("isDesktop");
 
 const {
   products,
@@ -260,6 +295,17 @@ watch(sort, async (value) => {
 
 onMounted(async () => {
   selectedItemId.value = props.param;
+
+  if (props.param) {
+    openBlade({
+      blade: markRaw(ProductsEdit),
+      param: selectedItemId.value,
+      onClose() {
+        selectedItemId.value = undefined;
+      },
+    });
+  }
+
   await loadProducts({ sort: sort.value });
 });
 
@@ -296,8 +342,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     async clickHandler() {
-      emit("open:blade", {
-        descendantBlade: shallowRef(ProductsEdit),
+      openBlade({
+        blade: markRaw(ProductsEdit),
       });
     },
   },
@@ -316,7 +362,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       //TODO: replace to confirmation dialog from UI library
       if (
-        window.confirm(
+        await showConfirmation(
           unref(
             computed(() =>
               t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
@@ -388,8 +434,8 @@ const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);
 
 const onItemClick = (item: { id: string }) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(ProductsEdit),
+  openBlade({
+    blade: markRaw(ProductsEdit),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -441,7 +487,7 @@ const onSelectionChanged = (items: ISellerProduct[]) => {
 };
 
 const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   // const statuses =
   //   product.status?.split(",").map((item) => item.trim()) || [];
@@ -452,7 +498,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
           title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
           variant: "danger",
           clickHandler() {
-            alert("Unpublish");
+            showError("Unpublish");
           },
         });
       } else {
@@ -461,7 +507,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
           title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.PUBLISH")),
           variant: "success",
           clickHandler() {
-            alert("Publish");
+            showError("Publish");
           },
         });
       }*/
@@ -472,14 +518,14 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
             icon: "fas fa-clock",
             title: "Other action",
             clickHandler() {
-              alert("Other action");
+              showError("Other action");
             },
           },
           {
             icon: "fas fa-clock",
             title: "Other action2",
             clickHandler() {
-              alert("Other action");
+              showError("Other action");
             },
           },
         ]
@@ -505,7 +551,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
 async function removeProducts() {
   //TODO: replace to confirmation dialog from UI library
   if (
-    window.confirm(
+    await showConfirmation(
       t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
         count: selectedProductIds.value.length,
       })
@@ -528,8 +574,8 @@ async function resetSearch() {
   appliedFilter.value = {};
 }
 function addProduct() {
-  emit("open:blade", {
-    descendantBlade: shallowRef(ProductsEdit),
+  openBlade({
+    blade: markRaw(ProductsEdit),
   });
 }
 
@@ -571,8 +617,9 @@ function isItemSelected(status: string) {
   return filter.status?.some((x) => x === status);
 }
 
-defineExpose({
+defineExpose<Exposed>({
   reload,
   title,
+  test: "123",
 });
 </script>

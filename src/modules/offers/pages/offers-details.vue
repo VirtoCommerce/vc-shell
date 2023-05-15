@@ -457,7 +457,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, onMounted, onBeforeUpdate, nextTick, unref, watch, shallowRef } from "vue";
+import { computed, defineComponent, ref, onMounted, onBeforeUpdate, nextTick, unref, watch, markRaw } from "vue";
 
 export default defineComponent({
   url: "/offer",
@@ -467,12 +467,13 @@ export default defineComponent({
 <script lang="ts" setup>
 import {
   IParentCallArgs,
-  IBladeEvent,
   IBladeToolbar,
   useNotifications,
   notification,
   AssetsDetails,
   useUser,
+  useBladeNavigation,
+  usePopup,
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
@@ -482,7 +483,7 @@ import {
   InventoryInfo,
   PropertyDictionaryItem,
   PropertyValue,
-  SellerProduct,
+  ISellerProduct,
   Image,
   IImage,
 } from "../../../api_client/marketplacevendor";
@@ -493,21 +494,12 @@ import { useProduct } from "../../products";
 import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
 import { useI18n } from "vue-i18n";
 
-export interface IBladeOptions extends IBladeEvent {
-  options?: {
-    asset: Image;
-    images: Image[];
-    assetEditHandler: (remove: boolean, localImage: IImage) => void;
-    assetRemoveHandler: (image: Image) => void;
-  };
-}
-
 export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
   options?: {
-    sellerProduct?: SellerProduct;
+    sellerProduct: ISellerProduct;
   };
 }
 
@@ -516,7 +508,6 @@ export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -525,6 +516,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 
 const {
@@ -544,6 +536,7 @@ const {
 
 const { searchDictionaryItems } = useProduct();
 const { getAccessToken } = useUser();
+const { showError, showConfirmation } = usePopup();
 const { setFieldError } = useForm({
   validateOnMount: false,
 });
@@ -581,7 +574,7 @@ onMounted(async () => {
       offerDetails.value.sku = generateSku();
     }
 
-    let searchableProductId =
+    const searchableProductId =
       offer.value.productId ||
       offerDetails.value.productId ||
       props.options?.sellerProduct?.publishedProductDataId ||
@@ -699,7 +692,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         });
         emit("close:blade");
       } else {
-        alert(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
+        showError(unref(computed(() => t("OFFERS.PAGES.ALERTS.NOT_VALID"))));
       }
     },
     isVisible: true,
@@ -734,7 +727,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("OFFERS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     async clickHandler() {
-      if (window.confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.DELETE_OFFER"))))) {
+      if (await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.DELETE_OFFER"))))) {
         await deleteOffer({ id: props.param });
         emit("parent:call", {
           method: "reload",
@@ -758,7 +751,7 @@ const addEmptyInventory = async () => {
   offerDetails.value.inventory = [];
   await searchFulfillmentCenters({});
   fulfillmentCentersList.value.forEach((x) => {
-    let inventoryInfo = new InventoryInfo();
+    const inventoryInfo = new InventoryInfo();
     inventoryInfo.id = x.name;
     inventoryInfo.fulfillmentCenter = x;
     inventoryInfo.fulfillmentCenterId = x.id;
@@ -811,8 +804,8 @@ function generateSku(): string {
   return result;
 }
 async function showProductDetails(id: string) {
-  emit("open:blade", {
-    descendantBlade: shallowRef(ProductsEdit),
+  openBlade({
+    blade: markRaw(ProductsEdit),
     param: id,
   });
 }
@@ -936,29 +929,28 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
 
 async function onBeforeClose() {
   if (!isDisabled.value && modified.value) {
-    return confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 
 const onGalleryItemEdit = (item: Image) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(AssetsDetails),
+  openBlade({
+    blade: markRaw(AssetsDetails),
     options: {
       asset: item,
-      images: offerDetails.value.images,
       assetEditHandler: sortImage,
       assetRemoveHandler: onGalleryImageRemove,
     },
   });
 };
 
-function sortImage(remove = false, localImage: IImage) {
+function sortImage(localImage: IImage) {
   const images = offerDetails.value.images;
   const image = new Image(localImage);
   if (images.length) {
     const imageIndex = images.findIndex((img) => img.id === localImage.id);
 
-    remove ? images.splice(imageIndex, 1) : (images[imageIndex] = image);
+    images[imageIndex] = image;
 
     editImages(images);
   }
@@ -972,8 +964,8 @@ const onGallerySort = (images: Image[]) => {
   offerDetails.value.images = images;
 };
 
-const onGalleryImageRemove = (image: Image) => {
-  if (window.confirm(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
+const onGalleryImageRemove = async (image: Image) => {
+  if (await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
     const imageIndex = offerDetails.value.images.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;

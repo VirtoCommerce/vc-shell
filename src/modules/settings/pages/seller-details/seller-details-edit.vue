@@ -379,7 +379,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { useUser, useForm, IBladeToolbar } from "@vc-shell/framework";
+import { useUser, useForm, IBladeToolbar, usePopup } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
@@ -417,6 +417,7 @@ const {
   modified,
   loading,
 } = useSellerDetails();
+const { showError, showConfirmation } = usePopup();
 
 const { getAccessToken, user } = useUser();
 useForm({ validateOnMount: false });
@@ -456,7 +457,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           throw e;
         }
       } else {
-        alert(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.NOT_VALID"))));
+        showError(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.NOT_VALID"))));
       }
     },
   },
@@ -486,7 +487,7 @@ const logoHandler = computed(() =>
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 
@@ -521,8 +522,8 @@ async function onLogoUpload(files: FileList) {
   files = null;
 }
 
-function onLogoRemove() {
-  if (window.confirm(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.DELETE_CONFIRMATION"))))) {
+async function onLogoRemove() {
+  if (await showConfirmation(unref(computed(() => t("SETTINGS.SELLER_DETAILS.CARDS.ALERTS.DELETE_CONFIRMATION"))))) {
     sellerDetails.value.logo = undefined;
   }
 }

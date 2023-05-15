@@ -253,11 +253,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref, shallowRef } from "vue";
+import { defineComponent, computed, onMounted, ref, unref, markRaw } from "vue";
 
 export default defineComponent({
   url: "/product",
-  inheritAttrs: false,
 });
 </script>
 
@@ -265,10 +264,11 @@ export default defineComponent({
 import {
   useUser,
   IParentCallArgs,
-  IBladeEvent,
   IBladeToolbar,
   AssetsDetails,
   AssetsManager,
+  usePopup,
+  useBladeNavigation,
 } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
@@ -297,26 +297,11 @@ export interface Props {
   param?: string;
 }
 
-export type IBladeOptions = IBladeEvent & {
-  options: {
-    asset?: Image;
-    images?: Image[];
-    assets?: Asset[];
-    assetEditHandler?: (localImage: IImage) => void;
-    assetsEditHandler?: (assets: Asset[]) => Asset[];
-    assetsUploadHandler?: (files: FileList) => Promise<Asset[]>;
-    assetsRemoveHandler?: (assets: Asset[]) => Asset[];
-    assetRemoveHandler?: (localImage: IImage) => void;
-    sellerProduct?: ISellerProduct;
-  };
-};
-
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -345,6 +330,8 @@ const {
 
 const { searchOffers } = useOffers();
 const { getAccessToken, user } = useUser();
+const { showConfirmation, showError } = usePopup();
+const { openBlade } = useBladeNavigation();
 
 useForm({ validateOnMount: false });
 
@@ -450,7 +437,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("close:blade");
         }
       } else {
-        alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
+        showError(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
       }
     },
     disabled: computed(
@@ -476,7 +463,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("close:blade");
         }
       } else {
-        alert(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
+        showError(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
       }
     },
     disabled: computed(
@@ -504,7 +491,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: t("PRODUCTS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
     async clickHandler() {
-      if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT"))))) {
+      if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT")))) {
         await deleteProduct(props.param);
         emit("parent:call", {
           method: "reload",
@@ -564,11 +551,10 @@ const onGalleryUpload = async (files: FileList) => {
 };
 
 const onGalleryItemEdit = (item: Image) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(AssetsDetails),
+  openBlade({
+    blade: markRaw(AssetsDetails),
     options: {
       asset: item,
-      images: productDetails.value.images,
       assetEditHandler: editImage,
       assetRemoveHandler: removeImage,
     },
@@ -587,8 +573,8 @@ function editImage(localImage: IImage) {
   }
 }
 
-function removeImage(localImage: IImage) {
-  if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+async function removeImage(localImage: IImage) {
+  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
     const images = productDetails.value.images;
     if (images.length) {
       const imageIndex = images.findIndex((img) => img.id === localImage.id);
@@ -604,8 +590,8 @@ const editImages = (args: Image[]) => {
   productDetails.value.images = args;
 };
 
-const onGalleryImageRemove = (image: Image) => {
-  if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+const onGalleryImageRemove = async (image: Image) => {
+  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
     const imageIndex = productDetails.value.images.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;
@@ -660,8 +646,8 @@ const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
   files = null;
 };
 
-const onAssetsItemRemove = (assets: Asset[]): Asset[] => {
-  if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+const onAssetsItemRemove = async (assets: Asset[]): Promise<Asset[]> => {
+  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
     productDetails.value.assets = productDetails.value.assets.filter((asset) => !assets.includes(asset));
   }
   return productDetails.value.assets;
@@ -694,8 +680,8 @@ async function loadDictionaries(property: IProperty, keyword?: string, skip?: nu
 
 async function openOffers() {
   if (!isOffersOpened) {
-    emit("open:blade", {
-      descendantBlade: shallowRef(OffersList),
+    openBlade({
+      blade: markRaw(OffersList),
       options: {
         sellerProduct: productData.value,
       },
@@ -711,8 +697,8 @@ async function openOffers() {
 
 async function openAssets() {
   if (!isAssetsOpened) {
-    emit("open:blade", {
-      descendantBlade: shallowRef(AssetsManager),
+    openBlade({
+      blade: markRaw(AssetsManager),
       options: {
         assets: productDetails.value.assets,
         assetsEditHandler: onAssetsEdit,
@@ -732,7 +718,7 @@ async function openAssets() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION")));
   }
 }
 

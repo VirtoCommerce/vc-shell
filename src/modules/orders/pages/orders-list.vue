@@ -170,15 +170,31 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch, markRaw } from "vue";
+import { OrdersEdit } from "./";
+import { INewOrderPushNotification } from "./../../../types";
 
 export default defineComponent({
   url: "/orders",
+  scope: {
+    notificationClick(notification: INewOrderPushNotification) {
+      if (notification.notifyType !== "OrderCreatedEventHandler") return;
+      return {
+        param: notification.orderId,
+      };
+    },
+  },
 });
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, useFunctions, ITableColumns, IActionBuilderResult } from "@vc-shell/framework";
+import {
+  IBladeToolbar,
+  useFunctions,
+  ITableColumns,
+  IActionBuilderResult,
+  useBladeNavigation,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { CustomerOrder } from "../../../api_client/orders";
 import { useOrders } from "../composables";
@@ -194,7 +210,6 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "open:blade", blade: IBladeEvent): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "close:blade"): void;
@@ -207,6 +222,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const { openBlade } = useBladeNavigation();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();
 const { t } = useI18n({ useScope: "global" });
@@ -227,6 +243,12 @@ const applyFiltersReset = computed(() => {
 
 onMounted(async () => {
   selectedItemId.value = props.param;
+  if (props.param) {
+    openBlade({
+      blade: markRaw(OrdersEdit),
+      param: selectedItemId.value,
+    });
+  }
   await loadOrders();
 });
 
@@ -306,8 +328,8 @@ const empty = reactive({
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(OrdersDetails),
+  openBlade({
+    blade: markRaw(OrdersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -354,7 +376,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const actionBuilder = (item: CustomerOrder): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   if (item.status === "Paid" || item.status === "Unpaid") {
     result.push({

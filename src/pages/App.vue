@@ -16,7 +16,6 @@
     :pages="pages"
     :bladesRefs="bladesRefs"
     @backlink:click="closeBlade($event)"
-    @open="onOpen"
     @close="closeBlade($event)"
     @logo:click="openDashboard"
     v-else
@@ -38,7 +37,6 @@
       v-if="isAuthorized"
     >
       <VcBladeNavigation
-        @onOpen="openBlade($event.blade, $event.id)"
         @onClose="closeBlade($event)"
         @onParentCall="(e) => onParentCall(e.id, e.args)"
         :blades="blades"
@@ -48,60 +46,60 @@
       ></VcBladeNavigation>
     </template>
 
-    <template v-slot:passwordChange>
-      <change-password
-        v-if="isChangePasswordActive"
-        @close="isChangePasswordActive = false"
-      ></change-password>
+    <template v-slot:modals>
+      <VcPopupContainer />
     </template>
   </VcApp>
 </template>
 
 <script lang="ts" setup>
 import {
-  IBladeToolbar,
-  IMenuItems,
   useAppSwitcher,
   usePermissions,
   useSettings,
   useUser,
   useBladeNavigation,
-  IOpenBlade,
-  ExtendedComponent,
+  BladePageComponent,
   useNotifications,
   VcNotificationDropdown,
   notification,
   PushNotification,
+  usePopup,
+  useMenuComposer,
 } from "@vc-shell/framework";
-import { computed, inject, onMounted, reactive, ref, Ref, shallowRef, watch } from "vue";
+import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import ChangePassword from "../components/change-password.vue";
-import LanguageSelector from "../components/language-selector.vue";
-import UserDropdownButton from "../components/user-dropdown-button.vue";
-import { ImportProfileSelector, ImportNew } from "../modules/import";
+import { ChangePassword } from "../components/change-password";
+import { LanguageSelector } from "../components/language-selector";
+import { UserDropdownButton } from "../components/user-dropdown-button";
+import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
-import { OrdersList, OrdersEdit } from "../modules/orders";
-import { ProductsList, ProductsEdit } from "../modules/products";
+import { OrdersList } from "../modules/orders";
+import { ProductsList } from "../modules/products";
 import { MpProductsList } from "../modules/marketplace-products";
 import { ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { INewOrderPushNotification, IProductPushNotification, UserPermissions } from "../types";
+import { UserPermissions } from "../types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
-import { IImportPushNotification } from "./../api_client/marketplacevendor";
 
 const base = import.meta.env.APP_PLATFORM_URL;
+
+const { open } = usePopup({
+  component: ChangePassword,
+});
 
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, parentBladeOptions, parentBladeParam, openBlade, closeBlade, onParentCall } =
+const { blades, bladesRefs, parentBladeOptions, parentBladeParam, closeBlade, onParentCall, openBlade } =
   useBladeNavigation();
+const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 const { sellerDetails, getCurrentSeller } = useSellerDetails();
 const { moduleNotifications, notifications, markAsRead, loadFromHistory, markAllAsRead } =
@@ -110,8 +108,7 @@ const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
-const isChangePasswordActive = ref(false);
-const pages = inject<ExtendedComponent[]>("pages");
+const pages = inject<BladePageComponent[]>("pages");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
@@ -166,210 +163,198 @@ watch(
 
 console.debug(`Initializing App`);
 
-const toolbarItems = ref<IBladeToolbar[]>([
-  {
-    component: shallowRef(LanguageSelector),
-    options: {
-      value: computed(() => currentLocale.value),
-      title: computed(() => t("SHELL.TOOLBAR.LANGUAGE")),
-      languageItems: computed(() =>
-        availableLocales.map((locale: string) => ({
+const toolbarItems = computed(() =>
+  toolbarComposer([
+    {
+      component: markRaw(LanguageSelector),
+      options: {
+        value: currentLocale.value as string,
+        title: t("SHELL.TOOLBAR.LANGUAGE"),
+        languageItems: availableLocales.map((locale: string) => ({
           lang: locale,
           title: (getLocaleMessage(locale) as { language_name: string }).language_name,
           clickHandler(lang: string) {
             currentLocale.value = lang;
             localStorage.setItem("VC_LANGUAGE_SETTINGS", lang);
           },
-        }))
-      ),
-    },
-    isVisible: computed(() => {
-      return isDesktop.value ? isDesktop.value : isMobile.value ? route.path === "/" : false;
-    }),
-  },
-  {
-    isAccent: computed(() => notifications.value.some((item) => item.isNew)),
-    component: shallowRef(VcNotificationDropdown),
-    options: {
-      title: computed(() => t("SHELL.TOOLBAR.NOTIFICATIONS")),
-      notifications: computed(() => notifications.value),
-      onOpen() {
-        if (notifications.value.some((x) => x.isNew)) {
-          markAllAsRead();
-        }
+        })),
       },
-      async onClick(notification: PushNotification) {
-        if (notification) {
-          switch (notification.notifyType) {
-            case "ImportPushNotification":
-              openBlade({
-                parentBlade: shallowRef(ImportProfileSelector),
-                descendantBlade: shallowRef(ImportNew),
-                param: (notification as IImportPushNotification).profileId,
-                options: {
-                  importJobId: (notification as IImportPushNotification).jobId,
-                },
-              });
-              break;
-            case "PublicationRequestStatusChangedDomainEvent":
-              openBlade({
-                parentBlade: shallowRef(ProductsList),
-                descendantBlade: shallowRef(ProductsEdit),
-                param: (notification as IProductPushNotification).productId,
-              });
-              break;
-            case "OrderCreatedEventHandler":
-              openBlade({
-                parentBlade: shallowRef(OrdersList),
-                descendantBlade: shallowRef(OrdersEdit),
-                param: (notification as INewOrderPushNotification).orderId,
-              });
-              break;
+      isVisible: isDesktop.value ? isDesktop.value : isMobile.value ? route.path === "/" : false,
+    },
+    {
+      isAccent: notifications.value.some((item) => item.isNew),
+      component: markRaw(VcNotificationDropdown),
+      options: {
+        title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
+        notifications: notifications.value,
+        onOpen() {
+          if (notifications.value.some((x) => x.isNew)) {
+            markAllAsRead();
           }
-        }
+        },
+        async onClick(notification: PushNotification) {
+          if (notification) {
+            for (const page of pages) {
+              const pageNotificationClickFn = page.scope?.notificationClick;
+              if (pageNotificationClickFn && typeof pageNotificationClickFn === "function") {
+                const bladeData = pageNotificationClickFn(notification);
+
+                if (bladeData) {
+                  openBlade({
+                    ...bladeData,
+                    blade: page,
+                  });
+
+                  break;
+                }
+              }
+            }
+          }
+        },
       },
     },
-  },
-  {
-    component: shallowRef(UserDropdownButton),
-    options: {
-      avatar: avatarImage,
-      name: computed(() => user.value?.userName),
-      role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
-      menuItems: [
-        {
-          title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
-          clickHandler() {
-            isChangePasswordActive.value = true;
+    {
+      component: markRaw(UserDropdownButton),
+      options: {
+        avatar: avatarImage,
+        name: user.value?.userName,
+        role: user.value?.isAdministrator ? "Administrator" : "Seller account",
+        menuItems: [
+          {
+            title: t("SHELL.ACCOUNT.CHANGE_PASSWORD"),
+            clickHandler() {
+              open();
+            },
           },
+          {
+            title: t("SHELL.ACCOUNT.LOGOUT"),
+            clickHandler() {
+              closeBlade(0);
+              signOut();
+              router.push({ name: "Login" });
+            },
+          },
+        ],
+      },
+      isVisible: isDesktop.value,
+    },
+  ])
+);
+
+const mobileMenuItems = computed(() =>
+  toolbarComposer([
+    {
+      component: markRaw(UserDropdownButton),
+      options: {
+        avatar: avatarImage,
+        name: user.value?.userName,
+        role: user.value?.isAdministrator ? "Administrator" : "Seller account",
+      },
+      isVisible: isMobile.value,
+    },
+  ])
+);
+
+const menuItems = reactive(
+  navigationMenuComposer([
+    {
+      title: computed(() => t("SHELL.MENU.DASHBOARD")),
+      icon: "fas fa-home",
+      isVisible: true,
+      component: defineComponent({
+        url: "/",
+      }),
+      clickHandler() {
+        openDashboard();
+      },
+    },
+    {
+      title: computed(() => t("ORDERS.MENU.TITLE")),
+      icon: "fas fa-file-alt",
+      isVisible: true,
+      component: OrdersList,
+    },
+    {
+      title: computed(() => t("PRODUCTS.MENU.TITLE")),
+      icon: "fas fa-box-open",
+      isVisible: true,
+      children: [
+        {
+          title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
+          component: MpProductsList,
+          isVisible: computed(() => checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)),
         },
         {
-          title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-          clickHandler() {
-            closeBlade(0);
-            signOut();
-            router.push({ name: "Login" });
-          },
+          title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
+          component: ProductsList,
         },
       ],
     },
-    isVisible: isDesktop,
-  },
-]);
-
-const mobileMenuItems = ref<IBladeToolbar[]>([
-  {
-    component: shallowRef(UserDropdownButton),
-    options: {
-      avatar: avatarImage,
-      name: computed(() => user.value?.userName),
-      role: computed(() => (user.value?.isAdministrator ? "Administrator" : "Seller account")),
+    {
+      title: computed(() => t("OFFERS.MENU.TITLE")),
+      icon: "fas fa-file-invoice",
+      isVisible: true,
+      component: OffersList,
     },
-    isVisible: isMobile,
-  },
-]);
-
-const menuItems = reactive<IMenuItems[]>([
-  {
-    title: computed(() => t("SHELL.MENU.DASHBOARD")),
-    icon: "fas fa-home",
-    isVisible: true,
-    component: {
-      url: "/",
+    {
+      title: computed(() => t("IMPORT.MENU.TITLE")),
+      icon: "fas fa-file-import",
+      isVisible: true,
+      component: ImportProfileSelector,
     },
-    clickHandler() {
-      openDashboard();
+    {
+      title: computed(() => t("RATING.MENU.TITLE")),
+      icon: "fas fa-star",
+      isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
+      component: ReviewList,
     },
-  },
-  {
-    title: computed(() => t("ORDERS.MENU.TITLE")),
-    icon: "fas fa-file-alt",
-    isVisible: true,
-    component: shallowRef(OrdersList),
-  },
-  {
-    title: computed(() => t("PRODUCTS.MENU.TITLE")),
-    icon: "fas fa-box-open",
-    isVisible: true,
-    children: [
-      {
-        title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
-        component: shallowRef(MpProductsList),
-        options: {
-          readonly: true,
+    {
+      title: computed(() => t("SETTINGS.MENU.TITLE")),
+      icon: "fas fa-sliders-h",
+      isVisible: computed(() =>
+        checkPermission([
+          UserPermissions.SellerUsersManage,
+          UserPermissions.SellerDetailsEdit,
+          UserPermissions.ManageSellerFulfillmentCenters,
+        ])
+      ),
+      children: [
+        {
+          title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
+          component: TeamList,
+          isVisible: computed(() => checkPermission(UserPermissions.SellerUsersManage)),
         },
-        isVisible: computed(() => checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)),
-      },
-      {
-        title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
-        component: shallowRef(ProductsList),
-      },
-    ],
-  },
-  {
-    title: computed(() => t("OFFERS.MENU.TITLE")),
-    icon: "fas fa-file-invoice",
-    isVisible: true,
-    component: shallowRef(OffersList),
-  },
-  {
-    title: computed(() => t("IMPORT.MENU.TITLE")),
-    icon: "fas fa-file-import",
-    isVisible: true,
-    component: shallowRef(ImportProfileSelector),
-  },
-  {
-    title: computed(() => t("RATING.MENU.TITLE")),
-    icon: "fas fa-star",
-    isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
-    component: shallowRef(ReviewList),
-  },
-  {
-    title: computed(() => t("SETTINGS.MENU.TITLE")),
-    icon: "fas fa-sliders-h",
-    isVisible: computed(() =>
-      checkPermission([
-        UserPermissions.SellerUsersManage,
-        UserPermissions.SellerDetailsEdit,
-        UserPermissions.ManageSellerFulfillmentCenters,
-      ])
-    ),
-    children: [
-      {
-        title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
-        component: shallowRef(TeamList),
-        isVisible: computed(() => checkPermission(UserPermissions.SellerUsersManage)),
-      },
-      {
-        title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
-        component: shallowRef(FulfillmentCenters),
-        isVisible: computed(() => checkPermission(UserPermissions.ManageSellerFulfillmentCenters)),
-      },
-      {
-        title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
-        component: shallowRef(SellerDetails),
-        isVisible: computed(() => checkPermission(UserPermissions.SellerDetailsEdit)),
-      },
-    ],
-  },
-  {
-    title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
-    icon: "fas fa-key",
-    isVisible: isMobile,
-    clickHandler() {
-      isChangePasswordActive.value = true;
+        {
+          title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
+          component: FulfillmentCenters,
+          isVisible: computed(() => checkPermission(UserPermissions.ManageSellerFulfillmentCenters)),
+        },
+        {
+          title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
+          component: SellerDetails,
+          isVisible: computed(() => checkPermission(UserPermissions.SellerDetailsEdit)),
+        },
+      ],
     },
-  },
-  {
-    title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
-    icon: "fas fa-sign-out-alt",
-    isVisible: isMobile,
-    clickHandler() {
-      signOut();
-      router.push("/login");
+    {
+      title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
+      icon: "fas fa-key",
+      isVisible: isMobile,
+      clickHandler() {
+        open();
+      },
     },
-  },
-]);
+    {
+      title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
+      icon: "fas fa-sign-out-alt",
+      isVisible: isMobile,
+      clickHandler() {
+        signOut();
+        router.push("/login");
+      },
+    },
+  ])
+);
 
 function langInit() {
   const lang = localStorage.getItem("VC_LANGUAGE_SETTINGS");
@@ -379,10 +364,6 @@ function langInit() {
   } else {
     currentLocale.value = "en";
   }
-}
-
-function onOpen(args: IOpenBlade) {
-  openBlade({ parentBlade: args.parentBlade }, args.id);
 }
 
 const openDashboard = () => {

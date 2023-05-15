@@ -101,18 +101,6 @@
         </VcCard>
       </VcRow>
     </VcContainer>
-    <import-confirmation-popup
-      v-if="showConfirmation"
-      :title="$t('IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.TITLE')"
-      @close="showConfirmation = false"
-      @confirm="deleteProfile"
-    >
-      <template v-slot:description>
-        <p>
-          {{ $t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION") }}
-        </p>
-      </template>
-    </import-confirmation-popup>
   </VcBlade>
 </template>
 
@@ -135,8 +123,8 @@ import {
   VcRow,
   VcCol,
   VcDynamicProperty,
+  usePopup,
 } from "@vc-shell/framework";
-import ImportConfirmationPopup from "../components/ImportConfirmationPopup.vue";
 import useImport from "../composables/useImport";
 import { IDataImporter, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
@@ -166,6 +154,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 const {
   dataImporters,
@@ -184,7 +173,6 @@ const {
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
-const showConfirmation = ref(false);
 
 const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
@@ -229,8 +217,14 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.TOOLBAR.DELETE")),
     icon: "far fa-trash-alt",
     isVisible: computed(() => !!props.param),
-    clickHandler() {
-      showConfirmation.value = true;
+    async clickHandler() {
+      if (
+        await showConfirmation(
+          computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.CONFIRM_POPUP.DELETE_IMPORTER.DESCRIPTION"))
+        )
+      ) {
+        deleteProfile();
+      }
     },
   },
 ]);
@@ -273,7 +267,6 @@ function loadDictionaries(setting: ObjectSettingEntry) {
 }
 
 async function deleteProfile() {
-  showConfirmation.value = false;
   await deleteImportProfile({ id: props.param });
 
   emit("parent:call", {
@@ -284,7 +277,7 @@ async function deleteProfile() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(unref(computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(unref(computed(() => t("IMPORT.PAGES.PROFILE_DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

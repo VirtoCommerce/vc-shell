@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, markRaw } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -113,7 +113,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, ITableColumns } from "@vc-shell/framework";
+import { IBladeEvent, IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { useI18n } from "vue-i18n";
@@ -125,15 +125,8 @@ export interface Props {
   options?: Record<string, unknown>;
 }
 
-export type IBladeOptions = IBladeEvent & {
-  options?: {
-    user?: { id?: string };
-  };
-};
-
 export interface Emits {
   (event: "close:blade"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -143,7 +136,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-
+const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { getTeamMembers, searchQuery, loading, membersList, currentPage, pages, totalCount } = useTeamMembers();
 
@@ -180,8 +173,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("open:blade", {
-        descendantBlade: shallowRef(TeamMemberDetails),
+      openBlade({
+        blade: markRaw(TeamMemberDetails),
       });
     },
   },
@@ -271,8 +264,8 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: { id?: string }) => {
-  emit("open:blade", {
-    descendantBlade: shallowRef(TeamMemberDetails),
+  openBlade({
+    blade: markRaw(TeamMemberDetails),
     param: item.id,
     options: {
       user: item,

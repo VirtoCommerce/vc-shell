@@ -250,7 +250,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch, shallowRef } from "vue";
+import { defineComponent, computed, onMounted, ref, watch, markRaw } from "vue";
 import * as _ from "lodash-es";
 import ImportProfileDetails from "./import-profile-details.vue";
 
@@ -261,7 +261,6 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-  IBladeEvent,
   IParentCallArgs,
   moment,
   useUser,
@@ -280,6 +279,7 @@ import {
   usePermissions,
   useNotifications,
   notification,
+  useBladeNavigation,
 } from "@vc-shell/framework";
 import { INotificationActions, UserPermissions } from "../../../types";
 import useImport, { ExtProfile } from "../composables/useImport";
@@ -296,18 +296,11 @@ export interface Props {
   param?: string;
   options?: {
     importJobId: string;
-    title: string;
+    title?: string;
   };
 }
 
-export type IBladeOptions = IBladeEvent & {
-  options: {
-    importer: IDataImporter;
-  };
-};
-
 export interface Emits {
-  (event: "open:blade", blade: IBladeOptions): void;
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
@@ -328,6 +321,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 const { checkPermission } = usePermissions();
@@ -412,15 +407,15 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.EDIT")),
     icon: "fas fa-pencil-alt",
     clickHandler() {
-      emit("open:blade", {
-        descendantBlade: shallowRef(ImportProfileDetails),
+      openBlade({
+        blade: markRaw(ImportProfileDetails),
         options: {
           importer: profileDetails.value.importer,
         },
         param: profile.value.id,
       });
     },
-    isVisible: computed(() => checkPermission(UserPermissions.SellerImportProfilesEdit) && profile.value),
+    isVisible: computed(() => !!(checkPermission(UserPermissions.SellerImportProfilesEdit) && profile.value)),
     disabled: computed(() => importLoading.value || !profile.value.name),
   },
   {
@@ -463,7 +458,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
       if (historyItem.fileUrl) {
-        let correctedProfile = profile?.value;
+        const correctedProfile = profile?.value;
         correctedProfile.importFileUrl = historyItem.fileUrl;
         correctedProfile.inProgress = false;
         correctedProfile.jobId = null;

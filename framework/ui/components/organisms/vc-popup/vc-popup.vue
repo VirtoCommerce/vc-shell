@@ -5,7 +5,10 @@
   >
     <div class="vc-popup__wrapper">
       <div class="vc-popup__inner">
-        <div class="vc-popup__header">
+        <div
+          class="vc-popup__header"
+          :class="`vc-popup__header_${type}`"
+        >
           <div class="tw-truncate tw-grow tw-basis-0">
             <slot name="title">{{ title }}</slot>
           </div>
@@ -16,42 +19,67 @@
             @click="$emit('close')"
           ></VcIcon>
         </div>
-
-        <div class="vc-popup__content tw-grow tw-basis-0 tw-h-[calc(100%-44px)]">
-          <slot></slot>
-        </div>
+        <renderPopupType />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { h, useSlots } from "vue";
 import { VcIcon } from "./../../";
+import VcPopupWarning from "./_internal/vc-popup-warning/vc-popup-warning.vue";
+import VcPopupError from "./_internal/vc-popup-error/vc-popup-error.vue";
+
 export interface Props {
   title?: string;
   closable?: boolean;
   variant?: "small" | "medium" | "fullscreen";
+  type?: "default" | "error" | "warning" | "success";
 }
 
 export interface Emits {
   (event: "close"): void;
+  (event: "confirm"): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   closable: true,
   variant: "fullscreen",
+  type: "default",
 });
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
+
+const slots = useSlots();
+
+const renderPopupType = () => {
+  if (props.type === "error") {
+    return h(VcPopupError, { onClose: () => emit("close") }, () => slots.default && slots.default());
+  } else if (props.type === "warning") {
+    return h(
+      VcPopupWarning,
+      { onClose: () => emit("close"), onConfirm: () => emit("confirm") },
+      () => slots.default && slots.default()
+    );
+  }
+  return h(() => slots.default && slots.default());
+};
 </script>
 
 <style lang="scss">
+:root {
+  --popup-header-default-color: #eef5fa;
+  --popup-header-success-color: #87b563;
+  --popup-header-warning-color: #f89406;
+  --popup-header-error-color: #ef796f;
+}
 .vc-popup {
   @apply tw-fixed tw-top-0 tw-right-0 tw-bottom-0 tw-left-0 tw-z-[9999] tw-bg-[rgba(31,40,50,0.58)];
 
   &_small {
     .vc-popup__wrapper {
-      @apply tw-max-h-fit tw-items-center tw-flex tw-grow-0 tw-shrink-0 tw-basis-auto [flex-direction:inherit] tw-justify-center;
+      @apply tw-max-h-[50%] tw-items-center tw-flex tw-grow-0 tw-shrink-0 tw-basis-auto [flex-direction:inherit] tw-justify-center;
     }
 
     .vc-popup__inner {
@@ -80,7 +108,7 @@ defineEmits<Emits>();
   }
 
   &__inner {
-    @apply tw-grow tw-shrink tw-basis-auto tw-m-[40px] tw-box-border tw-bg-white tw-rounded-[5px] tw-overflow-hidden tw-relative tw-flex tw-flex-col tw-grow tw-basis-0;
+    @apply tw-shrink tw-m-[40px] tw-box-border tw-bg-white tw-rounded-[5px] tw-overflow-hidden tw-relative tw-flex tw-flex-col tw-grow tw-basis-0 tw-max-h-full tw-h-fit;
 
     .vc-app_phone & {
       @apply tw-m-0 tw-rounded-none;
@@ -88,7 +116,35 @@ defineEmits<Emits>();
   }
 
   &__header {
-    @apply tw-h-[44px] tw-px-4 tw-bg-[#eef5fa] tw-flex tw-shrink-0 tw-items-center;
+    @apply tw-h-[44px] tw-px-4 tw-bg-[var(--popup-header-default-color)] tw-flex tw-shrink-0 tw-items-center;
+
+    &_default {
+      @apply tw-bg-[var(--popup-header-default-color)];
+    }
+
+    &_error {
+      @apply tw-bg-[var(--popup-header-error-color)] tw-text-white;
+
+      .vc-popup__header-icon {
+        @apply tw-text-white;
+      }
+    }
+
+    &_warning {
+      @apply tw-bg-[var(--popup-header-warning-color)] tw-text-white;
+
+      .vc-popup__header-icon {
+        @apply tw-text-white;
+      }
+    }
+
+    &_success {
+      @apply tw-bg-[var(--popup-header-success-color)] tw-text-white;
+
+      .vc-popup__header-icon {
+        @apply tw-text-white;
+      }
+    }
 
     &-icon {
       @apply tw-cursor-pointer tw-text-[#a1c0d4];

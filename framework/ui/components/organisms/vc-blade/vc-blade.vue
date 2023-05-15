@@ -42,7 +42,7 @@
         />
         <div class="tw-line-clamp-1 tw-w-full tw-mx-2"><slot name="error"></slot></div>
         <VcButton
-          @click="toggleErrorPopup"
+          @click="open()"
           variant="onlytext"
           class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
           >{{ $t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
@@ -55,33 +55,15 @@
       class="tw-shrink-0"
       :items="toolbarItems"
     ></VcBladeToolbar>
-
-    <VcPopup
-      variant="medium"
-      :title="$t('COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE')"
-      @close="toggleErrorPopup"
-      v-if="isErrorPopupActive"
-    >
-      <div class="tw-p-5 tw-flex tw-flex-row tw-items-center tw-h-full">
-        <VcIcon
-          icon="fas fa-exclamation-circle"
-          size="xxl"
-          class="tw-text-[color:var(--blade-color-error)] tw-mr-3"
-        ></VcIcon>
-        <VcContainer no-padding>
-          <slot name="error"></slot>
-        </VcContainer>
-      </div>
-    </VcPopup>
-
     <slot></slot>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, useSlots, h, Fragment } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
-import { IBladeContainer } from "./../../../../shared";
+import { IBladeContainer, usePopup } from "./../../../../shared";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   inheritAttrs: false,
@@ -105,7 +87,6 @@ export interface Props {
   toolbarItems?: IBladeToolbar[];
   onClose?: () => void;
   blades?: IBladeContainer[];
-  // error?: string;
 }
 
 export interface Emits {
@@ -122,8 +103,24 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<Emits>();
+const { t } = useI18n({ useScope: "global" });
+const slots = useSlots();
+const errorSlot = computed(() => slots.error && slots.error());
 
-const isErrorPopupActive = ref(false);
+const { open } = usePopup({
+  component: VcPopup,
+  props: {
+    type: "error",
+    variant: "small",
+    title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
+  },
+  slots: {
+    default: h(
+      "div",
+      h(() => errorSlot.value)
+    ),
+  },
+});
 
 const isExpandable = computed(() => {
   if (!props.expandable) {
@@ -131,10 +128,6 @@ const isExpandable = computed(() => {
   }
   return props.blades?.length !== 0;
 });
-
-function toggleErrorPopup() {
-  isErrorPopupActive.value = !isErrorPopupActive.value;
-}
 </script>
 
 <style lang="scss">

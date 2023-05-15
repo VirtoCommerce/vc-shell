@@ -54,6 +54,13 @@
                 <template v-slot:item_items="itemData">
                   {{ calcQty(itemData.item.items as OrderLineItem[]) }}
                 </template>
+
+                <!-- Override status column template -->
+                <template v-slot:item_status="itemData">
+                  <VcStatus v-bind="statusStyle(itemData.item.status as string)">
+                    {{ itemData.item.status }}
+                  </VcStatus>
+                </template>
               </VcTable>
             </VcCard>
             <VcCard
@@ -233,11 +240,11 @@
 
 <script lang="ts" setup>
 import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
-import { computed, onMounted, ref, shallowRef, watch } from "vue";
+import { computed, onMounted, ref, watch, markRaw } from "vue";
 import { OrderLineItem } from "../api_client/orders";
-import { OffersDetails, OffersList, useOffers } from "../modules/offers";
-import { OrdersEdit, OrdersList, useOrders } from "../modules/orders";
-import { MpProductStatus, ProductsEdit, ProductsList, useProducts } from "../modules/products";
+import { OffersList, useOffers } from "../modules/offers";
+import { OrdersList, useOrders } from "../modules/orders";
+import { MpProductStatus, ProductsList, useProducts } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
 import { UserPermissions } from "../types";
 import { useI18n } from "vue-i18n";
@@ -359,6 +366,35 @@ const offersColumns = ref<ITableColumns[]>([
   },
 ]);
 
+const statusStyle = (status: string) => {
+  const result: {
+    outline: boolean;
+    variant: "success" | "danger" | "info";
+  } = {
+    outline: true,
+    variant: "info",
+  };
+
+  switch (status) {
+    case "Published":
+      result.outline = false;
+      result.variant = "success";
+      break;
+    case "New":
+      result.outline = false;
+      result.variant = "success";
+      break;
+    case "Cancelled":
+      result.outline = true;
+      result.variant = "danger";
+      break;
+    case "Shipped":
+      result.outline = true;
+      result.variant = "success";
+  }
+  return result;
+};
+
 watch(error, (newVal) => {
   if (newVal) {
     notification.error(newVal, {
@@ -380,55 +416,53 @@ function open(key: string): void {
   switch (key) {
     case "orders-list":
       openBlade({
-        parentBlade: shallowRef(OrdersList),
+        blade: markRaw(OrdersList),
       });
       break;
     case "products-list":
       openBlade({
-        parentBlade: shallowRef(ProductsList),
+        blade: markRaw(ProductsList),
       });
       break;
     case "products-add":
       openBlade({
-        parentBlade: shallowRef(ProductsList),
-        descendantBlade: shallowRef(ProductsEdit),
+        blade: markRaw(ProductsList),
+        // blade: markRaw(ProductsEdit),
       });
       break;
     case "offers-list":
       openBlade({
-        parentBlade: shallowRef(OffersList),
+        blade: markRaw(OffersList),
       });
       break;
     case "offers-add":
       openBlade({
-        parentBlade: shallowRef(OffersList),
-        descendantBlade: shallowRef(OffersDetails),
+        blade: markRaw(OffersList),
+        options: {
+          addOffer: true,
+        },
       });
-
       break;
   }
 }
 
 function ordersClick(item: { id: string }): void {
   openBlade({
-    parentBlade: shallowRef(OrdersList),
-    descendantBlade: shallowRef(OrdersEdit),
+    blade: markRaw(OrdersList),
     param: item.id,
   });
 }
 
 function productsClick(item: { id: string }): void {
   openBlade({
-    parentBlade: shallowRef(ProductsList),
-    descendantBlade: shallowRef(ProductsEdit),
+    blade: markRaw(ProductsList),
     param: item.id,
   });
 }
 
 function offersClick(item: { id: string }): void {
   openBlade({
-    parentBlade: shallowRef(OffersList),
-    descendantBlade: shallowRef(OffersDetails),
+    blade: markRaw(OffersList),
     param: item.id,
   });
 }

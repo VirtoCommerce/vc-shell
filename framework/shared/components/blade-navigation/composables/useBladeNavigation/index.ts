@@ -85,12 +85,16 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const caller = instance && instance.vnode.type;
 
     const bladeComponent = unref(blade);
-    const existingChild = findBlade(bladeComponent);
+    const callerIndex = navigationInstance.bladesRefs.value.findIndex((item) => {
+      return _.isEqual(item.blade.blade, caller);
+    });
+    const existingChild =
+      callerIndex >= 0 ? navigationInstance.bladesRefs.value[callerIndex + 1]?.blade.blade : undefined;
     const index = caller?.idx ? caller.idx : 0;
 
-    const initiator = caller?.url && navigationInstance.bladesRefs.value.find((x) => x.blade.blade.url === caller.url);
+    const initiator = caller?.url && navigationInstance.bladesRefs.value.find((x) => x.blade?.blade.url === caller.url);
 
-    if (!initiator) {
+    if (!initiator && bladeComponent.url) {
       await closeBlade(0);
 
       if (!isPrevented.value) {
@@ -199,10 +203,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
   function addEntryToLocation(params: string) {
     history.pushState({}, null, "#" + params);
     lastBladeUrl.value = params;
-  }
-
-  function findBlade(blade: BladeConstructor) {
-    return navigationInstance.blades.value.find((x) => _.isEqual(x.blade, blade));
   }
 
   async function clearParentData() {

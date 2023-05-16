@@ -4,13 +4,13 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -22,17 +22,17 @@
       :items="fulfillmentCentersList"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :totalCount="totalCount"
+      :current-page="currentPage"
+      :total-count="totalCount"
+      :header="false"
+      :selected-item-id="selectedItemId"
+      state-key="fulfillment_centers_list"
       @headerClick="onHeaderClick"
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
-      :header="false"
-      :selectedItemId="selectedItemId"
-      state-key="fulfillment_centers_list"
     >
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -82,7 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { searchQuery, loading, currentPage, pages, totalCount, fulfillmentCentersList, searchFulfillmentCenters } =

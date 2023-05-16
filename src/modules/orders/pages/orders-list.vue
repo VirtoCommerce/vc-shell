@@ -4,14 +4,14 @@
     :expanded="expanded"
     :closable="closable"
     width="30%"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -23,24 +23,24 @@
       :loading="loading"
       :columns="tableColumns"
       :items="orders"
-      :itemActionBuilder="actionBuilder"
-      :totalCount="totalCount"
+      :item-action-builder="actionBuilder"
+      :total-count="totalCount"
       :pages="pages"
       :sort="sort"
-      :searchValue="searchValue"
-      :activeFilterCount="activeFilterCount"
-      :selectedItemId="selectedItemId"
-      :currentPage="currentPage"
+      :search-value="searchValue"
+      :active-filter-count="activeFilterCount"
+      :selected-item-id="selectedItemId"
+      :current-page="currentPage"
+      state-key="orders_list"
       @search:change="onSearchList"
       @itemClick="onItemClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
       @headerClick="onHeaderClick"
       @selectionChanged="onSelectionChanged"
-      state-key="orders_list"
     >
       <!-- Filters -->
-      <template v-slot:filters="{ closePanel }">
+      <template #filters="{ closePanel }">
         <h2
           v-if="$isMobile.value"
           class="tw-my-4 tw-text-[19px] tw-font-bold"
@@ -55,10 +55,10 @@
               </div>
               <div>
                 <VcCheckbox
-                  class="tw-mb-2"
                   v-for="status in PaymentStatus"
                   :key="status"
-                  :modelValue="filter?.status === status"
+                  class="tw-mb-2"
+                  :model-value="filter?.status === status"
                   @update:modelValue="filter.status = $event ? status : undefined"
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS." + status.toUpperCase()) }}
                 </VcCheckbox>
@@ -73,13 +73,13 @@
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.START_DATE')"
                   type="date"
                   class="tw-mb-3"
-                  :modelValue="getFilterDate('startDate')"
+                  :model-value="getFilterDate('startDate')"
                   @update:modelValue="(e: string) => setFilterDate('startDate', e)"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
-                  :modelValue="getFilterDate('endDate')"
+                  :model-value="getFilterDate('endDate')"
                   @update:modelValue="(e: string) => setFilterDate('endDate', e)"
                 ></VcInput>
               </div>
@@ -91,13 +91,13 @@
                 <vc-button
                   outline
                   class="tw-mr-4"
-                  @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
+                  @click="resetFilters(closePanel)"
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS.RESET_FILTERS") }}</vc-button
                 >
                 <vc-button
-                  @click="applyFilters(closePanel)"
                   :disabled="applyFiltersDisable"
+                  @click="applyFilters(closePanel)"
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS.APPLY") }}</vc-button
                 >
               </div>
@@ -107,7 +107,7 @@
       </template>
 
       <!-- Not found template -->
-      <template v-slot:notfound>
+      <template #notfound>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -118,7 +118,7 @@
       </template>
 
       <!-- Empty template -->
-      <template v-slot:empty>
+      <template #empty>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -128,13 +128,13 @@
       </template>
 
       <!-- Override status column template -->
-      <template v-slot:item_status="itemData">
+      <template #item_status="itemData">
         <VcStatus v-bind="statusStyle(itemData.item.status as string)">
           {{ itemData.item.status }}
         </VcStatus>
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-p-3">
           <div class="tw-w-full tw-flex tw-justify-evenly">
             <div class="tw-grow tw-basis-0">
@@ -221,7 +221,7 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();

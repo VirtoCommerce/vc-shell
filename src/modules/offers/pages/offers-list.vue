@@ -4,14 +4,14 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -25,31 +25,31 @@
       :multiselect="true"
       :columns="tableColumns"
       :items="offers"
-      :itemActionBuilder="actionBuilder"
+      :item-action-builder="actionBuilder"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :searchValue="searchValue"
+      :current-page="currentPage"
+      :search-value="searchValue"
+      :search-placeholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
+      :total-count="totalCount"
+      :selected-item-id="selectedItemId"
+      state-key="offers_list"
       @search:change="onSearchList"
-      :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
-      :totalCount="totalCount"
-      :selectedItemId="selectedItemId"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
       @selectionChanged="onSelectionChanged"
-      state-key="offers_list"
     >
       <!-- Override sellerName column template -->
-      <template v-slot:item_name="itemData">
+      <template #item_name="itemData">
         <div class="tw-truncate">
           {{ itemData.item.name }}
         </div>
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-w-full tw-flex tw-justify-evenly">
             <VcImage
@@ -115,7 +115,6 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-  IBladeEvent,
   IBladeToolbar,
   IParentCallArgs,
   useFunctions,

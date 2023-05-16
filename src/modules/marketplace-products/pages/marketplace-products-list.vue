@@ -4,14 +4,14 @@
     :expanded="expanded"
     :closable="closable"
     width="50%"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -22,25 +22,25 @@
       :expanded="expanded"
       :columns="columns"
       :items="products"
-      :itemActionBuilder="actionBuilder"
+      :item-action-builder="actionBuilder"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :searchPlaceholder="$t('MP_PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('MP_PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
-      :searchValue="searchValue"
-      :activeFilterCount="activeFilterCount"
-      :selectedItemId="selectedItemId"
+      :current-page="currentPage"
+      :search-placeholder="$t('MP_PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('MP_PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :search-value="searchValue"
+      :active-filter-count="activeFilterCount"
+      :selected-item-id="selectedItemId"
+      :total-count="totalCount"
+      state-key="marketplace_products"
       @search:change="onSearchList"
-      :totalCount="totalCount"
       @itemClick="onItemClick"
       @headerClick="onHeaderClick"
       @paginationClick="onPaginationClick"
       @scroll:ptr="reload"
-      state-key="marketplace_products"
     >
       <!-- Not found template -->
-      <template v-slot:notfound>
+      <template #notfound>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -51,7 +51,7 @@
       </template>
 
       <!-- Empty template -->
-      <template v-slot:empty>
+      <template #empty>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -62,7 +62,7 @@
       </template>
 
       <!-- Override name column template -->
-      <template v-slot:item_name="itemData">
+      <template #item_name="itemData">
         <div class="tw-flex tw-flex-col">
           <div class="tw-truncate">
             {{ itemData.item.name }}
@@ -74,14 +74,14 @@
       </template>
 
       <!-- Override status column template -->
-      <template v-slot:item_status="itemData">
+      <template #item_status="itemData">
         <mp-product-status
           :status="itemData.item.status as string"
           class="tw-mb-1"
         />
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
           <VcImage
             class="tw-shrink-0"
@@ -177,7 +177,7 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 const { debounce } = useFunctions();
 const { t } = useI18n({ useScope: "global" });

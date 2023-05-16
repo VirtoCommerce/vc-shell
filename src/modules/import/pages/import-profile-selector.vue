@@ -3,44 +3,44 @@
     v-loading="loading"
     :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
     :width="bladeWidth + '%'"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <VcContainer class="import">
       <!-- Import profile widgets-->
       <div
-        class="tw-p-3"
         v-if="importProfiles && importProfiles.length"
+        class="tw-p-3"
       >
         <VcSlider
           :navigation="true"
           :overflow="true"
           :slides="importProfiles"
         >
-          <template v-slot:default="{ slide }">
+          <template #default="{ slide }">
             <div class="tw-relative">
               <VcStatus
+                v-if="slide.inProgress"
                 variant="success"
                 :outline="false"
                 class="tw-absolute tw-right-0 -tw-top-[10px]"
-                v-if="slide.inProgress"
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
                 class="tw-w-max"
-                @click="openImporter(slide.id)"
                 icon="fas fa-file-csv"
                 variant="widget"
                 :selected="selectedProfileId === slide.id"
+                @click="openImporter(slide.id)"
               >
                 {{ slide.name }}
                 <VcHint>{{ slide.dataImporterType }}</VcHint>
@@ -58,16 +58,16 @@
           :columns="columns"
           :items="importHistory"
           :header="false"
-          @itemClick="onItemClick"
-          :selectedItemId="selectedItemId"
-          :totalCount="totalHistoryCount"
+          :selected-item-id="selectedItemId"
+          :total-count="totalHistoryCount"
           :pages="historyPages"
-          :currentPage="currentPage"
-          @paginationClick="onPaginationClick"
+          :current-page="currentPage"
           state-key="import_profile_history"
+          @itemClick="onItemClick"
+          @paginationClick="onPaginationClick"
         >
           <!-- Override name column template -->
-          <template v-slot:item_name="itemData">
+          <template #item_name="itemData">
             <div class="tw-flex tw-flex-col">
               <div class="tw-truncate">
                 {{ itemData.item.name }}
@@ -76,7 +76,7 @@
           </template>
 
           <!-- Override finished column template -->
-          <template v-slot:item_finished="itemData">
+          <template #item_finished="itemData">
             <ImportStatus :item="itemData.item" />
           </template>
         </VcTable>
@@ -145,7 +145,7 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 
 const { openBlade } = useBladeNavigation();
 

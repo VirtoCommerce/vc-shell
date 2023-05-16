@@ -3,7 +3,7 @@
     v-loading="bladeLoading"
     :title="param && profileDetails?.name ? profileDetails.name : options.title"
     width="70%"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
     @close="$emit('close:blade')"
@@ -11,8 +11,8 @@
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -31,8 +31,8 @@
             >
               <!-- File upload -->
               <VcCol
-                class="tw-p-5"
                 v-if="!importStarted && !(uploadedFile && uploadedFile.url)"
+                class="tw-p-5"
               >
                 <VcRow class="tw-mb-4">
                   <a
@@ -47,32 +47,32 @@
                     <VcRow class="tw-mb-4">
                       <VcFileUpload
                         variant="file-upload"
-                        @upload="uploadCsv"
                         :notification="true"
                         accept="*.*"
                         :loading="fileLoading"
+                        @upload="uploadCsv"
                       ></VcFileUpload
                     ></VcRow>
                     <VcRow>
                       <Field
                         v-slot="{ field, errorMessage, handleChange, errors }"
-                        :modelValue="profile.importFileUrl"
+                        :model-value="profile.importFileUrl"
                         :label="$t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.TITLE')"
                         rules="url"
                         name="externalUrl"
                       >
                         <VcInput
                           v-bind="field"
-                          class="tw-grow tw-basis-0"
                           v-model="profile.importFileUrl"
-                          @update:modelValue="handleChange"
+                          class="tw-grow tw-basis-0"
                           :placeholder="$t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.PLACEHOLDER')"
                           required
                           clearable
                           :error="!!errors.length"
                           :error-message="errorMessage"
+                          @update:modelValue="handleChange"
                         >
-                          <template v-slot:append>
+                          <template #append>
                             <slot name="button">
                               <VcButton
                                 variant="primary"
@@ -93,10 +93,10 @@
               <VcCol v-else>
                 <VcRow v-if="uploadedFile && uploadedFile.url">
                   <import-upload-status
-                    :uploadActions="uploadActions"
-                    :uploadedFile="uploadedFile"
-                    :isUploaded="isValid"
-                    :isStarted="importStarted"
+                    :upload-actions="uploadActions"
+                    :uploaded-file="uploadedFile"
+                    :is-uploaded="isValid"
+                    :is-started="importStarted"
                     class="tw-p-5"
                   >
                   </import-upload-status>
@@ -104,16 +104,16 @@
                 <!-- Uploaded file import status -->
                 <VcCol v-if="importStarted">
                   <VcRow
-                    class="tw-relative tw-p-[40px] before:tw-content-[''] before:[background:linear-gradient(180deg,#ecf2f7_0%,rgba(236,242,246,0)_100%)] before:tw-left-0 before:tw-right-0 before:tw-absolute before:h-[21px] before:tw-top-0"
                     v-if="inProgress"
+                    class="tw-relative tw-p-[40px] before:tw-content-[''] before:[background:linear-gradient(180deg,#ecf2f7_0%,rgba(236,242,246,0)_100%)] before:tw-left-0 before:tw-right-0 before:tw-absolute before:h-[21px] before:tw-top-0"
                   >
                     <VcCol class="tw-text-[#a1c0d4]">
                       {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS") }}
                       <VcProgress
+                        :key="importStatus.progress"
                         class="tw-mt-3"
                         :value="importStatus.progress"
                         :variant="progressbarVariant"
-                        :key="importStatus.progress"
                       ></VcProgress>
                       <VcHint
                         v-if="importStatus.estimatingRemaining || importStatus.estimatedRemaining"
@@ -151,8 +151,8 @@
                 </VcCol>
               </VcCol>
               <VcHint
-                class="tw-p-3 import-new__error"
                 v-if="errorMessage"
+                class="tw-p-3 import-new__error"
               >
                 {{ errorMessage }}
               </VcHint>
@@ -171,8 +171,8 @@
         </div>
         <!-- Skipped details table -->
         <VcCol
-          class="tw-p-3"
           v-if="importStarted && reversedErrors.length"
+          class="tw-p-3"
         >
           <VcCard
             class="import-new__skipped"
@@ -188,7 +188,7 @@
               state-key="import_errors"
             >
               <!-- Override errors column template -->
-              <template v-slot:item_errors="itemData">
+              <template #item_errors="itemData">
                 <div class="tw-flex tw-flex-col">
                   <div class="tw-truncate">
                     {{ itemData.item }}
@@ -201,8 +201,8 @@
 
         <!-- History-->
         <VcCol
-          class="tw-p-3"
           v-if="!importStarted"
+          class="tw-p-3"
         >
           <VcCard
             :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
@@ -214,14 +214,14 @@
               :items="importHistory"
               :header="false"
               :loading="importLoading"
-              :totalCount="totalHistoryCount"
+              :total-count="totalHistoryCount"
               :pages="historyPages"
-              :currentPage="currentPage"
-              @paginationClick="onPaginationClick"
+              :current-page="currentPage"
               state-key="import_history"
+              @paginationClick="onPaginationClick"
             >
               <!-- Override name column template -->
-              <template v-slot:item_name="itemData">
+              <template #item_name="itemData">
                 <div class="tw-flex tw-flex-col">
                   <div class="tw-truncate">
                     {{ itemData.item.name }}
@@ -229,7 +229,7 @@
                 </div>
               </template>
               <!-- Override finished column template -->
-              <template v-slot:item_finished="itemData">
+              <template #item_finished="itemData">
                 <ImportStatus :item="itemData.item" />
               </template>
             </VcTable>
@@ -239,12 +239,12 @@
     </VcContainer>
     <ImportPopup
       v-if="importPreview"
-      @close="importPreview = false"
       :columns="popupColumns"
       :items="popupItems"
       :total="previewTotalNum"
-      @startImport="initializeImporting"
       :disabled="!!(importStatus && importStatus.jobId)"
+      @close="importPreview = false"
+      @startImport="initializeImporting"
     ></ImportPopup>
   </VcBlade>
 </template>
@@ -283,7 +283,7 @@ import {
 } from "@vc-shell/framework";
 import { INotificationActions, UserPermissions } from "../../../types";
 import useImport, { ExtProfile } from "../composables/useImport";
-import { IDataImporter, ImportDataPreview, ImportPushNotification } from "../../../api_client/marketplacevendor";
+import { ImportDataPreview, ImportPushNotification } from "../../../api_client/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";

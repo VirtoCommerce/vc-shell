@@ -14,53 +14,56 @@
         <VcInput
           class="tw-mb-4 tw-mt-1"
           :label="$t('SHELL.INVITATION.FIELDS.EMAIL.LABEL')"
-          :modelValue="userName"
+          :model-value="userName"
           name="username"
           disabled
         ></VcInput>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
           :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
-          :modelValue="form.password"
+          :model-value="form.password"
           rules="required"
           name="password"
         >
           <VcInput
             v-bind="field"
             ref="passwordField"
+            v-model="form.password"
             class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.INVITATION.FIELDS.PASSWORD.LABEL')"
             :placeholder="$t('SHELL.INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             :disabled="!form.tokenIsValid"
-            v-model="form.password"
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            required
             @update:modelValue="
               (e) => {
                 handleChange(e);
                 validate();
               }
             "
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            required
           ></VcInput>
         </Field>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
           :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
-          :modelValue="form.confirmPassword"
+          :model-value="form.confirmPassword"
           rules="required"
           name="confirm_password"
         >
           <VcInput
             v-bind="field"
             ref="confirmPasswordField"
+            v-model="form.confirmPassword"
             class="tw-mb-4"
             :label="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
-            v-model="form.confirmPassword"
             type="password"
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            required
             @update:modelValue="
               (e) => {
                 handleChange(e);
@@ -68,9 +71,6 @@
               }
             "
             @keyup.enter="acceptInvitation"
-            :error="!!errors.length"
-            :error-message="errorMessage"
-            required
           ></VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
@@ -88,10 +88,10 @@
         </div>
 
         <VcHint
-          class="tw-mt-3"
-          style="color: #f14e4e"
           v-for="error in form.errors"
           :key="error"
+          class="tw-mt-3"
+          style="color: #f14e4e"
         >
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.INVITATION.ERRORS.${error}`) }}
@@ -148,7 +148,7 @@ onMounted(async () => {
 
 const validate = async () => {
   if (form.tokenIsValid) {
-    var errors = (await validatePassword(form.password)).errors;
+    const errors = (await validatePassword(form.password)).errors;
     form.errors = errors.map((x) => x.code);
     if (form.confirmPassword && form.confirmPassword !== form.password) {
       form.errors.push("Repeat-password");
@@ -158,7 +158,7 @@ const validate = async () => {
 };
 
 const acceptInvitation = async () => {
-  var result = await resetPasswordByToken(props.userId, form.password, props.token);
+  const result = await resetPasswordByToken(props.userId, form.password, props.token);
   if (result.succeeded) {
     const result = await signIn(props.userName, form.password);
     if (result.succeeded) {

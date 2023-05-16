@@ -1,8 +1,8 @@
 <template>
   <VcBlade
+    v-loading="false"
     :title="title"
     width="30%"
-    v-loading="false"
     :expanded="expanded"
     :closable="closable"
     @close="$emit('close:blade')"
@@ -10,12 +10,12 @@
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
-    <template v-slot:actions>
+    <template #actions>
       <Status :review-status="customerReview.reviewStatus"></Status>
     </template>
     <VcContainer>
@@ -67,12 +67,12 @@
         <VcRow>
           <VcCol>
             <VcTextarea
+              v-model="customerReview.review"
               class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.LABEL')"
               :placeholder="$t('RATING.PAGES.REVIEW_DETAILS.FORM.REVIEW.PLACEHOLDER')"
               name="name"
               disabled
-              v-model="customerReview.review"
             >
             </VcTextarea>
           </VcCol>

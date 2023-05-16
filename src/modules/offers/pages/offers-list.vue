@@ -24,7 +24,7 @@
       class="tw-grow tw-basis-0"
       :multiselect="true"
       :columns="tableColumns"
-      :items="offers"
+      :items="(offers as unknown as IOfferUnwrappedPrice[])"
       :item-action-builder="actionBuilder"
       :sort="sort"
       :pages="pages"
@@ -36,11 +36,11 @@
       :selected-item-id="selectedItemId"
       state-key="offers_list"
       @search:change="onSearchList"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
-      @paginationClick="onPaginationClick"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
+      @pagination-click="onPaginationClick"
       @scroll:ptr="reload"
-      @selectionChanged="onSelectionChanged"
+      @selection-changed="onSelectionChanged"
     >
       <!-- Override sellerName column template -->
       <template #item_name="itemData">
@@ -83,13 +83,13 @@
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{ itemData.item.listPrice && (itemData.item.listPrice as number).toFixed(2) }}
+                {{ itemData.item.listPrice && itemData.item.listPrice.toFixed(2) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{ handleSalePrice(itemData.item.salePrice as number) }}
+                {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
@@ -149,6 +149,11 @@ export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
+}
+
+interface IOfferUnwrappedPrice extends IOffer {
+  listPrice: number;
+  salePrice: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -435,7 +440,7 @@ const onSelectionChanged = (items: IOffer[]) => {
   selectedOfferIds.value = items.map((item) => item.id);
 };
 
-const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[] => {
+const actionBuilder = (item: IOfferUnwrappedPrice): IActionBuilderResult[] => {
   const result = [];
 
   // if (item.status === "Published") {

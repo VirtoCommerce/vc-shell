@@ -69,7 +69,7 @@
                   clearable
                   :error="!!errors.length"
                   :error-message="errorMessage"
-                  @update:modelValue="handleChange"
+                  @update:model-value="handleChange"
                 ></VcInput>
               </Field>
               <Field
@@ -96,7 +96,7 @@
                   :error-message="errorMessage"
                   :clearable="false"
                   :emit-value="false"
-                  @update:modelValue="
+                  @update:model-value="
                     (e: Category) => {
                       handleChange(e.id);
                       setCategory(e);
@@ -151,7 +151,7 @@
                       clearable
                       :error="!!errors.length"
                       :error-message="errorMessage"
-                      @update:modelValue="handleChange"
+                      @update:model-value="handleChange"
                     ></VcInput>
                   </Field>
                   <Field
@@ -172,7 +172,7 @@
                       required
                       :error-message="errorMessage"
                       :assets-folder="productData.id || productData.categoryId"
-                      @update:modelValue="handleChange"
+                      @update:model-value="handleChange"
                     ></VcEditor>
                   </Field>
 

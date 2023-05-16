@@ -6,7 +6,7 @@
       :rating="rating"
       :variant="variant"
     >
-      <template v-slot:details>
+      <template #details>
         {{
           $t("RATING.RATING.REVIEWS", {
             count: reviewCount,

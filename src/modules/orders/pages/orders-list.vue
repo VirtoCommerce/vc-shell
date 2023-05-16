@@ -33,11 +33,11 @@
       :current-page="currentPage"
       state-key="orders_list"
       @search:change="onSearchList"
-      @itemClick="onItemClick"
-      @paginationClick="onPaginationClick"
+      @item-click="onItemClick"
+      @pagination-click="onPaginationClick"
       @scroll:ptr="reload"
-      @headerClick="onHeaderClick"
-      @selectionChanged="onSelectionChanged"
+      @header-click="onHeaderClick"
+      @selection-changed="onSelectionChanged"
     >
       <!-- Filters -->
       <template #filters="{ closePanel }">
@@ -59,7 +59,7 @@
                   :key="status"
                   class="tw-mb-2"
                   :model-value="filter?.status === status"
-                  @update:modelValue="filter.status = $event ? status : undefined"
+                  @update:model-value="filter.status = $event ? status : undefined"
                   >{{ $t("ORDERS.PAGES.LIST.FILTERS." + status.toUpperCase()) }}
                 </VcCheckbox>
               </div>
@@ -74,13 +74,13 @@
                   type="date"
                   class="tw-mb-3"
                   :model-value="getFilterDate('startDate')"
-                  @update:modelValue="(e: string) => setFilterDate('startDate', e)"
+                  @update:model-value="(e: string) => setFilterDate('startDate', e)"
                 ></VcInput>
                 <VcInput
                   :label="$t('ORDERS.PAGES.LIST.FILTERS.END_DATE')"
                   type="date"
                   :model-value="getFilterDate('endDate')"
-                  @update:modelValue="(e: string) => setFilterDate('endDate', e)"
+                  @update:model-value="(e: string) => setFilterDate('endDate', e)"
                 ></VcInput>
               </div>
             </VcCol>

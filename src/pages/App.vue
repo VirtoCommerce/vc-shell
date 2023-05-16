@@ -5,48 +5,48 @@
     class="app__loader"
   />
   <VcApp
-    :menuItems="menuItems"
-    :mobileMenuItems="mobileMenuItems"
-    :toolbarItems="toolbarItems"
-    :isReady="isReady"
-    :isAuthorized="isAuthorized"
+    v-else
+    :menu-items="menuItems"
+    :mobile-menu-items="mobileMenuItems"
+    :toolbar-items="toolbarItems"
+    :is-ready="isReady"
+    :is-authorized="isAuthorized"
     :logo="uiSettings.logo"
     :title="uiSettings.title"
     :version="version"
     :pages="pages"
-    :bladesRefs="bladesRefs"
+    :blades-refs="bladesRefs"
     @backlink:click="closeBlade($event)"
     @close="closeBlade($event)"
     @logo:click="openDashboard"
-    v-else
   >
     <!-- App Switcher -->
     <template
-      v-slot:appSwitcher
       v-if="appsList && appsList.length"
+      #appSwitcher
     >
       <VcAppSwitcher
-        :appsList="appsList"
+        :apps-list="appsList"
         :base="base"
-        @onClick="switchApp($event)"
+        @on-click="switchApp($event)"
       />
     </template>
 
     <template
-      v-slot:bladeNavigation
       v-if="isAuthorized"
+      #bladeNavigation
     >
       <VcBladeNavigation
-        @onClose="closeBlade($event)"
-        @onParentCall="(e) => onParentCall(e.id, e.args)"
-        :blades="blades"
-        :parentBladeOptions="parentBladeOptions"
-        :parentBladeParam="parentBladeParam"
         ref="bladeNavigationRefs"
+        :blades="blades"
+        :parent-blade-options="parentBladeOptions"
+        :parent-blade-param="parentBladeParam"
+        @on-close="closeBlade($event)"
+        @on-parent-call="(e) => onParentCall(e.id, e.args)"
       ></VcBladeNavigation>
     </template>
 
-    <template v-slot:modals>
+    <template #modals>
       <VcPopupContainer />
     </template>
   </VcApp>

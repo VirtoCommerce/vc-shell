@@ -1,17 +1,17 @@
 <template>
   <VcBlade
+    v-loading="loading"
     :title="title"
     width="30%"
-    v-loading="loading"
-    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -22,21 +22,21 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
-              :modelValue="userDetails.firstName"
+              :model-value="userDetails.firstName"
               name="name"
               rules="required"
             >
               <VcInput
                 v-bind="field"
+                v-model="userDetails.firstName"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')"
                 :disabled="isOwnerReadonly"
-                v-model="userDetails.firstName"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -46,21 +46,21 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
-              :modelValue="userDetails.lastName"
+              :model-value="userDetails.lastName"
               name="lastName"
               rules="required"
             >
               <VcInput
                 v-bind="field"
+                v-model="userDetails.lastName"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')"
                 :disabled="isOwnerReadonly"
-                v-model="userDetails.lastName"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -70,21 +70,21 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-              :modelValue="userDetails.email"
+              :model-value="userDetails.email"
               name="email"
               rules="required|email"
             >
               <VcInput
                 v-bind="field"
+                v-model="userDetails.email"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
                 :disabled="!!props.param"
-                v-model="userDetails.email"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -95,25 +95,25 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
-              :modelValue="userDetails.role"
+              :model-value="userDetails.role"
               name="role"
               rules="required"
             >
               <VcSelect
                 v-bind="field"
+                v-model="userDetails.role"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')"
                 :options="roles"
-                v-model="userDetails.role"
                 option-value="id"
                 option-label="name"
                 :disabled="isOwnerReadonly"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
                 :clearable="false"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -121,9 +121,9 @@
         <VcRow v-if="userDetails.id">
           <VcCol>
             <VcSwitch
+              v-model="isActive"
               class="tw-p-3"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
-              v-model="isActive"
               :true-value="false"
               :false-value="true"
               :disabled="isOwnerReadonly"

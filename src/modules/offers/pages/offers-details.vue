@@ -5,21 +5,21 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <!-- Blade contents -->
     <VcContainer
-      :no-padding="true"
       ref="container"
+      :no-padding="true"
     >
       <div class="offer-details__inner tw-grow tw-basis-0 tw-overflow-hidden">
         <div class="tw-p-4">
@@ -28,17 +28,17 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
-              :modelValue="offerDetails.productId"
+              :model-value="offerDetails.productId"
               name="product"
               rules="required"
             >
               <VcSelect
                 v-bind="field"
+                v-model="offerDetails.productId"
                 class="tw-mb-4"
                 :label="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.TITLE')"
                 required
                 searchable
-                v-model="offerDetails.productId"
                 :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.PRODUCT.PLACEHOLDER')"
                 :options="fetchProducts"
                 option-value="id"
@@ -46,15 +46,15 @@
                 :disabled="readonly"
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="
+                :clearable="false"
+                @update:model-value="
                   (e) => {
                     handleChange(e);
                     getProductItem();
                   }
                 "
-                :clearable="false"
               >
-                <template v-slot:selected-item="scope">
+                <template #selected-item="scope">
                   <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
                     <VcImage
                       class="tw-shrink-0"
@@ -72,8 +72,8 @@
                         {{ scope.opt.sku }}
                       </VcHint>
                       <div
-                        class="vc-link tw-mt-1"
                         v-if="scope.opt.sellerProductId"
+                        class="vc-link tw-mt-1"
                         @click.stop="showProductDetails(scope.opt.sellerProductId)"
                       >
                         {{ $t("OFFERS.PAGES.DETAILS.MORE_INFO") }}
@@ -81,7 +81,7 @@
                     </div>
                   </div>
                 </template>
-                <template v-slot:option="scope">
+                <template #option="scope">
                   <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
                     <VcImage
                       class="tw-shrink-0"
@@ -114,22 +114,22 @@
                   <Field
                     v-slot="{ field, errorMessage, handleChange, errors }"
                     :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
-                    :modelValue="offerDetails.sku"
+                    :model-value="offerDetails.sku"
                     rules="required|min:3"
                     name="sku"
                   >
                     <VcInput
                       v-bind="field"
+                      v-model="offerDetails.sku"
                       class="tw-grow tw-basis-0"
                       :label="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.TITLE')"
-                      v-model="offerDetails.sku"
-                      @update:modelValue="handleChange"
                       :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SKU.PLACEHOLDER')"
                       :disabled="readonly"
                       required
                       clearable
                       :error="!!errors.length"
                       :error-message="errorMessage"
+                      @update:model-value="handleChange"
                     ></VcInput>
                   </Field>
                 </div>
@@ -149,10 +149,10 @@
                   >
                     <!-- Always in stock -->
                     <VcCheckbox
-                      :modelValue="!offerDetails.trackInventory"
-                      @update:modelValue="offerDetails.trackInventory = !$event"
+                      :model-value="!offerDetails.trackInventory"
                       :disabled="readonly"
                       name="alwaysinstock"
+                      @update:model-value="offerDetails.trackInventory = !$event"
                     >
                       {{ $t("OFFERS.PAGES.DETAILS.FIELDS.ALWAYS_IN_STOCK.TITLE") }}
                     </VcCheckbox>
@@ -178,13 +178,13 @@
                     </VcRow>
                     <VcRow
                       v-for="(item, i) in offerDetails.inventory"
+                      :key="`${item.id}${i}`"
                       :class="[
                         {
                           'border tw-border-solid tw-border-[#e0e8ef] tw-box-border tw-rounded-[4px] tw-relative tw-p-2 tw-m-4':
                             $isMobile.value,
                         },
                       ]"
-                      :key="`${item.id}${i}`"
                     >
                       <VcCol size="2">
                         <div class="tw-flex">
@@ -199,14 +199,13 @@
                             <!-- TODO -->
                             <Field
                               v-slot="{ field, errorMessage, handleChange, errors }"
-                              :modelValue="item.inStockQuantity"
+                              :model-value="item.inStockQuantity"
                               :name="`availqty_${i}`"
                               rules="required|bigint"
                             >
                               <VcInput
                                 v-bind="field"
                                 v-model="item.inStockQuantity"
-                                @update:modelValue="handleChange"
                                 type="number"
                                 :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.AVAIL_QTY.PLACEHOLDER')"
                                 :disabled="readonly || !offerDetails.trackInventory"
@@ -214,6 +213,7 @@
                                 clearable
                                 :error="!!errors.length"
                                 :error-message="errorMessage"
+                                @update:model-value="handleChange"
                               ></VcInput>
                             </Field>
                           </VcCol>
@@ -226,16 +226,16 @@
             </VcCard>
 
             <VcCard
+              v-if="filteredProps"
               class="tw-mb-4"
               :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
-              v-if="filteredProps"
             >
               <div class="tw-p-4">
                 <VcDynamicProperty
                   v-for="property in filteredProps"
                   :key="property.id"
                   :property="property"
-                  :optionsGetter="loadDictionaries"
+                  :options-getter="loadDictionaries"
                   :getter="getPropertyValue"
                   :setter="setPropertyValue"
                   class="tw-mb-4"
@@ -248,7 +248,7 @@
               class="tw-mb-4"
               :header="$t('OFFERS.PAGES.DETAILS.FIELDS.PRICING.TITLE')"
             >
-              <template v-slot:actions>
+              <template #actions>
                 <VcButton
                   v-if="!readonly"
                   small
@@ -263,13 +263,13 @@
                   <VcRow
                     v-for="(item, i) in offerDetails.prices"
                     :ref="setPriceRefs"
+                    :key="`${item.id}${i}`"
                     :class="[
                       {
                         'border tw-border-solid tw-border-[#e0e8ef] tw-box-border tw-rounded-[4px] tw-relative tw-p-2 tw-m-4':
                           $isMobile.value,
                       },
                     ]"
-                    :key="`${item.id}${i}`"
                   >
                     <VcCol size="2">
                       <div class="tw-flex">
@@ -278,14 +278,13 @@
                           <Field
                             v-slot="{ errorMessage, handleChange, errors }"
                             :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
-                            :modelValue="item.listPrice"
+                            :model-value="item.listPrice"
                             :name="`listprice_${i}`"
                             rules="required"
                           >
                             <VcInputCurrency
                               v-model:modelValue.number="item.listPrice"
                               v-model:option="item.currency"
-                              @update:modelValue="handleChange"
                               :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                               :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
                               :disabled="readonly"
@@ -297,6 +296,7 @@
                               option-value="value"
                               option-label="title"
                               debounce="0"
+                              @update:model-value="handleChange"
                             ></VcInputCurrency>
                           </Field>
                         </VcCol>
@@ -324,14 +324,13 @@
                       <Field
                         v-slot="{ field, errorMessage, handleChange, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
-                        :modelValue="item.minQuantity"
+                        :model-value="item.minQuantity"
                         :name="`minqty_${i}`"
                         rules="required|bigint"
                       >
                         <VcInput
                           v-bind="field"
                           v-model.number="item.minQuantity"
-                          @update:modelValue="handleChange"
                           type="number"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.TITLE')"
                           :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.MIN_QTY.PLACEHOLDER')"
@@ -340,6 +339,7 @@
                           clearable
                           :error="!!errors.length"
                           :error-message="errorMessage"
+                          @update:model-value="handleChange"
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -364,8 +364,8 @@
                     </div>
                   </VcRow>
                   <VcHint
-                    class="tw-px-2 !tw-text-[#f14e4e]"
                     v-if="pricingEqual"
+                    class="tw-px-2 !tw-text-[#f14e4e]"
                   >
                     <!-- TODO: stylizing-->
                     {{ $t(`OFFERS.PAGES.DETAILS.FIELDS.PRICING.ERRORS.SIMILAR`) }}
@@ -387,20 +387,20 @@
                       <Field
                         v-slot="{ field, errorMessage, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
-                        :modelValue="getFilterDate('startDate')"
+                        :model-value="getFilterDate('startDate')"
                         name="startDate"
                       >
                         <VcInput
                           v-bind="field"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                           type="datetime-local"
-                          :modelValue="getFilterDate('startDate')"
-                          @update:modelValue="
-                            (e: string) => setFilterDate('startDate', e)
-                          "
+                          :model-value="getFilterDate('startDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
+                          @update:model-value="
+                            (e: string) => setFilterDate('startDate', e)
+                          "
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -408,7 +408,7 @@
                       <Field
                         v-slot="{ field, errorMessage, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
-                        :modelValue="getFilterDate('endDate')"
+                        :model-value="getFilterDate('endDate')"
                         name="endDate"
                         rules="after:@startDate"
                       >
@@ -416,11 +416,11 @@
                           v-bind="field"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                           type="datetime-local"
-                          :modelValue="getFilterDate('endDate')"
-                          @update:modelValue="(e: string) => setFilterDate('endDate', e)"
+                          :model-value="getFilterDate('endDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
+                          @update:model-value="(e: string) => setFilterDate('endDate', e)"
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -440,12 +440,12 @@
               <div class="tw-p-2">
                 <VcGallery
                   :images="offerDetails.images"
+                  :disabled="readonly"
+                  :multiple="true"
                   @upload="onGalleryUpload"
                   @item:edit="onGalleryItemEdit"
                   @item:remove="onGalleryImageRemove"
-                  :disabled="readonly"
                   @sort="onGallerySort"
-                  :multiple="true"
                 ></VcGallery>
               </div>
             </VcCard>

@@ -17,6 +17,7 @@ module.exports = {
     "@typescript-eslint/no-unused-vars": "warn",
     "vue/multi-word-component-names": 'off',
     "vue/require-default-prop": 'off',
-    "vue/no-v-html": 'off'
+    "vue/no-v-html": 'off',
+    "vue/no-template-shadow": "off"
   },
 };

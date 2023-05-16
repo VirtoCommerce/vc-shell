@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     :title="title"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     width="70%"
     :expanded="expanded"
     :closable="closable"
@@ -10,14 +10,14 @@
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <ReviewTable
       :expanded="expanded"
-      @itemClick="onItemClick"
+      @item-click="onItemClick"
     ></ReviewTable>
   </VcBlade>
 </template>

@@ -37,7 +37,7 @@
             :error="!!errors.length"
             :error-message="errorMessage"
             required
-            @update:modelValue="
+            @update:model-value="
               (e) => {
                 handleChange(e);
                 validate();
@@ -64,7 +64,7 @@
             :error="!!errors.length"
             :error-message="errorMessage"
             required
-            @update:modelValue="
+            @update:model-value="
               (e) => {
                 handleChange(e);
                 validate();

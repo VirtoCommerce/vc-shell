@@ -1,8 +1,8 @@
 <template>
   <VcContainer class="dashboard tw-w-full tw-h-full tw-box-border">
     <div
-      class="dashboard-header"
       v-if="$isDesktop.value"
+      class="dashboard-header"
     >
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>
@@ -19,7 +19,7 @@
               :header="$t('SHELL.DASHBOARD.ORDERS.TITLE')"
               icon="fas fa-file-alt"
             >
-              <template v-slot:actions>
+              <template #actions>
                 <vc-button
                   small
                   outline
@@ -35,11 +35,11 @@
                 :columns="ordersColumns"
                 :header="false"
                 :footer="false"
-                @itemClick="ordersClick"
                 state-key="dashboard_orders"
+                @item-click="ordersClick"
               >
                 <!-- Empty template -->
-                <template v-slot:empty>
+                <template #empty>
                   <div
                     class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
                   >
@@ -51,12 +51,12 @@
                 </template>
 
                 <!-- Override qty column template -->
-                <template v-slot:item_items="itemData">
+                <template #item_items="itemData">
                   {{ calcQty(itemData.item.items as OrderLineItem[]) }}
                 </template>
 
                 <!-- Override status column template -->
-                <template v-slot:item_status="itemData">
+                <template #item_status="itemData">
                   <VcStatus v-bind="statusStyle(itemData.item.status as string)">
                     {{ itemData.item.status }}
                   </VcStatus>
@@ -77,9 +77,9 @@
 
           <!-- Rating & Reviews block -->
           <VcCol
+            v-permissions="UserPermissions.ManageSellerReviews"
             size="4"
             class="tw-p-2"
-            v-permissions="UserPermissions.ManageSellerReviews"
           >
             <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
           </VcCol>
@@ -96,7 +96,7 @@
               :header="$t('SHELL.DASHBOARD.PRODUCTS.TITLE')"
               icon="fas fa-box-open"
             >
-              <template v-slot:actions>
+              <template #actions>
                 <vc-button
                   small
                   outline
@@ -112,11 +112,11 @@
                 :columns="productsColumns"
                 :header="false"
                 :footer="false"
-                @itemClick="productsClick"
                 state-key="dashboard_products"
+                @item-click="productsClick"
               >
                 <!-- Empty template -->
-                <template v-slot:empty>
+                <template #empty>
                   <div
                     class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
                   >
@@ -129,7 +129,7 @@
                 </template>
 
                 <!-- Override name column template -->
-                <template v-slot:item_name="itemData">
+                <template #item_name="itemData">
                   <div class="tw-flex tw-flex-col">
                     <div class="tw-truncate">
                       {{ itemData.item.name }}
@@ -141,7 +141,7 @@
                 </template>
 
                 <!-- Override status column template -->
-                <template v-slot:item_status="itemData">
+                <template #item_status="itemData">
                   <mp-product-status
                     :status="itemData.item.status as string"
                     class="tw-mb-1"
@@ -171,7 +171,7 @@
               :header="$t('SHELL.DASHBOARD.OFFERS.TITLE')"
               icon="fas fa-file-invoice"
             >
-              <template v-slot:actions>
+              <template #actions>
                 <vc-button
                   small
                   class="tw-mr-3"
@@ -195,11 +195,11 @@
                     :columns="offersColumns"
                     :header="false"
                     :footer="false"
-                    @itemClick="offersClick"
                     state-key="dashboard_offers"
+                    @item-click="offersClick"
                   >
                     <!-- Empty template -->
-                    <template v-slot:empty>
+                    <template #empty>
                       <div
                         class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5"
                       >
@@ -212,7 +212,7 @@
                     </template>
 
                     <!-- Override alwaysInStock column template -->
-                    <template v-slot:item_alwaysInStock="itemData">
+                    <template #item_alwaysInStock="itemData">
                       <div class="tw-flex tw-justify-center">
                         <VcStatusIcon :status="!itemData"></VcStatusIcon>
                       </div>

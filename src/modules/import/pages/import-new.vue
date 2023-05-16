@@ -70,7 +70,7 @@
                           clearable
                           :error="!!errors.length"
                           :error-message="errorMessage"
-                          @update:modelValue="handleChange"
+                          @update:model-value="handleChange"
                         >
                           <template #append>
                             <slot name="button">
@@ -218,13 +218,13 @@
               :pages="historyPages"
               :current-page="currentPage"
               state-key="import_history"
-              @paginationClick="onPaginationClick"
+              @pagination-click="onPaginationClick"
             >
               <!-- Override name column template -->
-              <template #item_name="itemData">
+              <template #item_profileName="itemData">
                 <div class="tw-flex tw-flex-col">
                   <div class="tw-truncate">
-                    {{ itemData.item.name }}
+                    {{ itemData.item.profileName }}
                   </div>
                 </div>
               </template>
@@ -244,7 +244,7 @@
       :total="previewTotalNum"
       :disabled="!!(importStatus && importStatus.jobId)"
       @close="importPreview = false"
-      @startImport="initializeImporting"
+      @start-import="initializeImporting"
     ></ImportPopup>
   </VcBlade>
 </template>

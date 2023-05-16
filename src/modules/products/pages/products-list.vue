@@ -4,14 +4,14 @@
     :expanded="expanded"
     :closable="closable"
     width="50%"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -23,27 +23,27 @@
       :expanded="expanded"
       :columns="tableColumns"
       :items="products"
-      :itemActionBuilder="actionBuilder"
+      :item-action-builder="actionBuilder"
       :multiselect="true"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :searchPlaceholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
-      :searchValue="searchValue"
-      :activeFilterCount="activeFilterCount"
-      :selectedItemId="selectedItemId"
-      @search:change="onSearchList"
-      :totalCount="totalCount"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
-      @paginationClick="onPaginationClick"
-      @scroll:ptr="reload"
-      @selectionChanged="onSelectionChanged"
+      :current-page="currentPage"
+      :search-placeholder="$t('PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :search-value="searchValue"
+      :active-filter-count="activeFilterCount"
+      :selected-item-id="selectedItemId"
+      :total-count="totalCount"
       state-key="products_list"
+      @search:change="onSearchList"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
+      @pagination-click="onPaginationClick"
+      @scroll:ptr="reload"
+      @selection-changed="onSelectionChanged"
     >
       <!-- Filters -->
-      <template v-slot:filters="{ closePanel }">
+      <template #filters="{ closePanel }">
         <h2 v-if="$isMobile.value">
           {{ $t("PRODUCTS.PAGES.LIST.FILTERS.TITLE") }}
         </h2>
@@ -58,8 +58,8 @@
                   v-for="status in SellerProductStatus"
                   :key="status"
                   class="tw-mb-2"
-                  :modelValue="isItemSelected(status)"
-                  @update:modelValue="selectFilterItem($event, status)"
+                  :model-value="isItemSelected(status)"
+                  @update:model-value="selectFilterItem($event, status)"
                   >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.STATUS." + status) }}</VcCheckbox
                 >
               </div>
@@ -71,13 +71,13 @@
                 <VcButton
                   outline
                   class="tw-mr-4"
-                  @click="resetFilters(closePanel)"
                   :disabled="applyFiltersReset"
+                  @click="resetFilters(closePanel)"
                   >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.RESET_FILTERS") }}</VcButton
                 >
                 <VcButton
-                  @click="applyFilters(closePanel)"
                   :disabled="applyFiltersDisable"
+                  @click="applyFilters(closePanel)"
                   >{{ $t("PRODUCTS.PAGES.LIST.FILTERS.APPLY") }}</VcButton
                 >
               </div>
@@ -87,7 +87,7 @@
       </template>
 
       <!-- Not found template -->
-      <template v-slot:notfound>
+      <template #notfound>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -98,7 +98,7 @@
       </template>
 
       <!-- Empty template -->
-      <template v-slot:empty>
+      <template #empty>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -109,7 +109,7 @@
       </template>
 
       <!-- Override name column template -->
-      <template v-slot:item_name="itemData">
+      <template #item_name="itemData">
         <div class="tw-flex tw-flex-col">
           <div class="tw-truncate">
             {{ itemData.item.name }}
@@ -121,14 +121,14 @@
       </template>
 
       <!-- Override status column template -->
-      <template v-slot:item_status="itemData">
+      <template #item_status="itemData">
         <mp-product-status
           :status="itemData.item.status"
           class="tw-mb-1"
         />
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
           <VcImage
             class="tw-shrink-0"

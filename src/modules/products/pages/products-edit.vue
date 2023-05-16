@@ -4,18 +4,18 @@
     :title="param ? productDetails?.name : $t('PRODUCTS.PAGES.DETAILS.TITLE')"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     width="50%"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template v-slot:actions>
+    <template #actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -29,11 +29,11 @@
         <div class="product-details__content">
           <div class="tw-p-4">
             <VcStatus
+              v-if="statusText && (product as ISellerProduct).status !== 'Published'"
               :outline="false"
               :extend="true"
               variant="light-danger"
               class="tw-w-full tw-box-border tw-mb-5"
-              v-if="statusText && (product as ISellerProduct).status !== 'Published'"
             >
               <div class="tw-flex tw-flex-row tw-items-center">
                 <VcIcon
@@ -51,17 +51,17 @@
             </VcStatus>
             <VcForm>
               <Field
+                v-slot="{ field, errorMessage, handleChange, errors }"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 name="name"
                 rules="required|min:3"
-                :modelValue="productDetails.name"
-                v-slot="{ field, errorMessage, handleChange, errors }"
+                :model-value="productDetails.name"
               >
                 <VcInput
                   v-bind="field"
+                  v-model="productDetails.name"
                   class="tw-mb-4"
                   :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                  v-model="productDetails.name"
                   :clearable="true"
                   :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="disabled"
@@ -69,16 +69,16 @@
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
-                  @update:modelValue="handleChange"
+                  @update:model-value="handleChange"
                 >
                 </VcInput>
               </Field>
               <Field
+                v-slot="{ field, errorMessage, handleChange, errors }"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 name="categoryId"
                 rules="required"
-                :modelValue="productDetails.categoryId"
-                v-slot="{ field, errorMessage, handleChange, errors }"
+                :model-value="productDetails.categoryId"
               >
                 <VcSelect
                   v-bind="field"
@@ -91,22 +91,22 @@
                   option-value="id"
                   option-label="name"
                   :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-                  @update:modelValue="
-                    (e: Category) => {
-                      handleChange(e.id);
-                      setCategory(e);
-                    }
-                  "
                   :disabled="disabled"
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
                   :clearable="false"
                   :emit-value="false"
+                  @update:model-value="
+                    (e: Category) => {
+                      handleChange(e.id);
+                      setCategory(e);
+                    }
+                  "
                 >
                   <template
                     v-for="item in ['option', 'selected-item']"
-                    v-slot:[item]="scope"
+                    #[item]="scope"
                     :key="item"
                   >
                     <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
@@ -124,25 +124,25 @@
                 </VcSelect>
               </Field>
               <VcCard
+                v-if="(product as ISellerProduct).id || currentCategory"
                 :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
-                v-if="(product as ISellerProduct).id || currentCategory"
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="tw-p-4">
                   <Field
+                    v-slot="{ field, errorMessage, handleChange, errors }"
                     :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                     name="gtin"
                     :rules="validateGtin"
-                    :modelValue="productDetails.gtin"
-                    v-slot="{ field, errorMessage, handleChange, errors }"
+                    :model-value="productDetails.gtin"
                   >
                     <VcInput
                       v-bind="field"
+                      v-model="productDetails.gtin"
                       class="tw-mb-4"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                      v-model="productDetails.gtin"
                       :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')"
                       :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
                       :disabled="disabled"
@@ -151,28 +151,28 @@
                       clearable
                       :error="!!errors.length"
                       :error-message="errorMessage"
-                      @update:modelValue="handleChange"
+                      @update:model-value="handleChange"
                     ></VcInput>
                   </Field>
                   <Field
+                    v-slot="{ field, errorMessage, handleChange }"
                     :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                     name="description"
                     rules="min:3|required"
-                    :modelValue="productDetails.description"
-                    v-slot="{ field, errorMessage, handleChange }"
+                    :model-value="productDetails.description"
                   >
                     <VcEditor
                       v-bind="field"
+                      v-model="productDetails.description"
                       class="tw-mb-4"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                      v-model="productDetails.description"
                       :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                       :disabled="disabled"
                       name="description"
                       required
                       :error-message="errorMessage"
-                      @update:modelValue="handleChange"
                       :assets-folder="productData.id || productData.categoryId"
+                      @update:model-value="handleChange"
                     ></VcEditor>
                   </Field>
 
@@ -180,12 +180,12 @@
                     v-for="property in filteredProps"
                     :key="property.id"
                     :property="property"
-                    :optionsGetter="loadDictionaries"
+                    :options-getter="loadDictionaries"
                     :getter="getPropertyValue"
                     :setter="setPropertyValue"
                     class="tw-mb-4"
                     :disabled="disabled"
-                    :displayedValueLabel="{
+                    :displayed-value-label="{
                       value: 'valueId',
                       label: 'value',
                     }"
@@ -205,23 +205,23 @@
                 <VcLoading :active="fileUploading"></VcLoading>
                 <div class="tw-p-2">
                   <Field
-                    name="gallery"
-                    :modelValue="productDetails.images"
                     v-slot="{ handleChange }"
+                    name="gallery"
+                    :model-value="productDetails.images"
                   >
                     <VcGallery
                       :images="productDetails.images"
+                      :disabled="disabled"
+                      :multiple="true"
                       @upload="onGalleryUpload"
                       @item:edit="onGalleryItemEdit"
                       @item:remove="onGalleryImageRemove"
-                      :disabled="disabled"
                       @sort="
                         (e) => {
                           handleChange(e);
                           editImages(e as Image[]);
                         }
                       "
-                      :multiple="true"
                     ></VcGallery>
                   </Field>
                 </div>

@@ -1,27 +1,27 @@
 <template>
   <VcBlade
+    v-loading="loading"
     :title="title"
     width="30%"
-    v-loading="loading"
-    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <VcContainer>
       <VcStatus
+        v-if="errorMessage"
         :outline="false"
         :extend="true"
         variant="light-danger"
         class="tw-w-full tw-box-border tw-mb-3"
-        v-if="errorMessage"
       >
         <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
@@ -45,18 +45,18 @@
               :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
               name="name"
               rules="required"
-              :modelValue="fulfillmentCenterDetails.name"
+              :model-value="fulfillmentCenterDetails.name"
             >
               <VcInput
                 v-bind="field"
+                v-model="fulfillmentCenterDetails.name"
                 class="tw-p-3"
                 :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
                 :placeholder="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
-                v-model="fulfillmentCenterDetails.name"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               >
               </VcInput>
             </Field>

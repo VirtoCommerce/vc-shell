@@ -27,9 +27,9 @@
       :header="false"
       :selected-item-id="selectedItemId"
       state-key="fulfillment_centers_list"
-      @headerClick="onHeaderClick"
-      @itemClick="onItemClick"
-      @paginationClick="onPaginationClick"
+      @header-click="onHeaderClick"
+      @item-click="onItemClick"
+      @pagination-click="onPaginationClick"
       @scroll:ptr="reload"
     >
       <template #mobile-item="itemData">

@@ -34,9 +34,9 @@
       :total-count="totalCount"
       state-key="marketplace_products"
       @search:change="onSearchList"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
-      @paginationClick="onPaginationClick"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
+      @pagination-click="onPaginationClick"
       @scroll:ptr="reload"
     >
       <!-- Not found template -->

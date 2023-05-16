@@ -63,14 +63,14 @@
           :pages="historyPages"
           :current-page="currentPage"
           state-key="import_profile_history"
-          @itemClick="onItemClick"
-          @paginationClick="onPaginationClick"
+          @item-click="onItemClick"
+          @pagination-click="onPaginationClick"
         >
           <!-- Override name column template -->
-          <template #item_name="itemData">
+          <template #item_profileName="itemData">
             <div class="tw-flex tw-flex-col">
               <div class="tw-truncate">
-                {{ itemData.item.name }}
+                {{ itemData.item.profileName }}
               </div>
             </div>
           </template>

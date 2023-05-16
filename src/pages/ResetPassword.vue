@@ -12,58 +12,58 @@
     >
       <VcForm>
         <Field
+          v-slot="{ field, errorMessage, handleChange, errors }"
           :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
           name="password"
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :modelValue="form.password"
+          :model-value="form.password"
           rules="required"
         >
           <VcInput
             v-bind="field"
             ref="passwordField"
+            v-model="form.password"
             class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
             :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             :disabled="!form.tokenIsValid"
-            v-model="form.password"
-            @update:modelValue="
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            @update:model-value="
               (e) => {
                 handleChange(e);
                 validate();
               }
             "
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
           />
         </Field>
         <Field
+          v-slot="{ field, errorMessage, handleChange, errors }"
           :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
           name="confirm_password"
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :modelValue="form.confirmPassword"
+          :model-value="form.confirmPassword"
           rules="required"
         >
           <VcInput
             v-bind="field"
             ref="confirmPasswordField"
+            v-model="form.confirmPassword"
             class="tw-mb-4"
             :label="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
-            v-model="form.confirmPassword"
             type="password"
-            @update:modelValue="
+            required
+            :error="!!errors.length"
+            :error-message="errorMessage"
+            @update:model-value="
               (e) => {
                 handleChange(e);
                 validate();
               }
             "
             @keyup.enter="resetPassword"
-            required
-            :error="!!errors.length"
-            :error-message="errorMessage"
           >
           </VcInput>
         </Field>
@@ -82,9 +82,9 @@
         </div>
 
         <VcHint
-          class="tw-mt-3 !tw-text-[#f14e4e]"
           v-for="error in form.errors"
           :key="error"
+          class="tw-mt-3 !tw-text-[#f14e4e]"
         >
           <!-- TODO: stylizing-->
           {{ $t(`SHELL.PASSWORDRESET.ERRORS.${error}`) }}

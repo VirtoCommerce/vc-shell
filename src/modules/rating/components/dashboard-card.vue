@@ -4,7 +4,7 @@
     :header="$t('RATING.DASHBOARD_CARD.TITLE')"
     icon="fas fa-star"
   >
-    <template v-slot:actions>
+    <template #actions>
       <div class="tw-flex tw-items-center">
         <div class="vc-card__title">
           <Rating
@@ -23,8 +23,8 @@
     <ReviewTable
       :expanded="false"
       :footer="false"
-      :pageSize="2"
-      @itemClick="onItemClick"
+      :page-size="2"
+      @item-click="onItemClick"
     ></ReviewTable>
   </VcCard>
   <VcCard

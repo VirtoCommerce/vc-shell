@@ -3,15 +3,15 @@
     :title="$t('ASSETS_MANAGER.TITLE')"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
+    :toolbar-items="bladeToolbar"
     width="70%"
+    @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -25,20 +25,20 @@
       <VcTable
         :columns="columns"
         :expanded="expanded"
-        stateKey="assets_manager"
-        :reorderableRows="!readonly"
+        state-key="assets_manager"
+        :reorderable-rows="!readonly"
         :items="defaultAssets"
         :header="false"
         :footer="false"
-        :itemActionBuilder="!readonly && actionBuilder"
+        :item-action-builder="!readonly && actionBuilder"
         :multiselect="!readonly"
         class="tw-h-full tw-w-full"
         @item-click="onItemClick"
         @row:reorder="sortAssets"
-        @selectionChanged="onSelectionChanged"
+        @selection-changed="onSelectionChanged"
       >
         <!-- Empty template -->
-        <template v-slot:empty>
+        <template #empty>
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
             <VcIcon
               icon="fas fa-cloud-upload-alt"
@@ -52,14 +52,14 @@
         </template>
 
         <!-- Override size column -->
-        <template v-slot:item_size="{ item }">
+        <template #item_size="{ item }">
           <div>
             {{ readableSize(item.size) }}
           </div>
         </template>
 
         <!-- Override url column -->
-        <template v-slot:item_url="{ item }">
+        <template #item_url="{ item }">
           <div class="tw-flex tw-items-center tw-justify-center">
             <template v-if="isImage(item.name)">
               <VcImage
@@ -80,14 +80,14 @@
         </template>
 
         <!-- Overide order column -->
-        <template v-slot:item_sortOrder="{ item }">
+        <template #item_sortOrder="{ item }">
           <div>
             {{ item.sortOrder }}
           </div>
         </template>
 
         <!-- Mobile -->
-        <template v-slot:mobile-item="{ item }">
+        <template #mobile-item="{ item }">
           <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
             <template v-if="isImage(item.name)">
               <VcImage
@@ -112,19 +112,19 @@
               </div>
               <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.SIZE") }}</VcHint>
+                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.SIZE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ readableSize(item.size) }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.CREATED_DATE") }}</VcHint>
+                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.CREATED_DATE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ item.createdDate && moment(item.createdDate).fromNow() }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.SORT_ORDER") }}</VcHint>
+                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.SORT_ORDER") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ item.sortOrder }}
                   </div>
@@ -140,9 +140,9 @@
       ref="uploader"
       type="file"
       hidden
-      @change="inputUpload"
       multiple
       name="assets_manager"
+      @change="inputUpload"
     />
   </VcBlade>
 </template>
@@ -172,6 +172,8 @@ export interface Props {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "collapse:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

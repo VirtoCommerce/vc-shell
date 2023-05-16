@@ -1,30 +1,30 @@
 <template>
   <ErrorInterceptor
-    capture
     v-slot="{ error, reset }"
+    capture
   >
     <router-view
-      @vue:before-unmount="reset"
-      v-slot="{ Component, route }: { Component: any, route: any }"
+      v-slot="{ Component }: { Component: any }"
       :key="route.path"
+      @vue:before-unmount="reset"
     >
       <component
         :is="Component"
-        :closable="false"
         v-show="$isMobile.value ? !blades.length : blades.length <= 1"
+        :key="route.path"
+        :ref="(el: CoreBladeExposed) => setParentRef(el, Component)"
+        :closable="false"
         :options="parentBladeOptions"
         :expanded="blades.length === 0"
         :maximized="findStateById(0)"
         :blades="blades"
         :param="resolveParam"
-        :key="route.path"
-        :ref="(el: CoreBladeExposed) => setParentRef(el, Component)"
         @expand:blade="handleMaximizeBlade(0, true)"
         @collapse:blade="handleMaximizeBlade(0, false)"
       >
         <template
-          v-slot:error
           v-if="error"
+          #error
           >{{ error }}</template
         >
       </component>
@@ -40,8 +40,9 @@
       capture
     >
       <component
-        v-show="i >= blades.length - ($isMobile.value ? 1 : 2)"
         :is="blade.blade"
+        v-show="i >= blades.length - ($isMobile.value ? 1 : 2)"
+        :ref="(el: CoreBladeExposed) => setBladesRef(el, blade)"
         :param="blade.param"
         :closable="i >= 0"
         :expanded="i === blades.length - 1"
@@ -52,11 +53,10 @@
         @parent:call="$emit('onParentCall', { id: i, args: $event })"
         @expand:blade="handleMaximizeBlade(blade.idx, true)"
         @collapse:blade="handleMaximizeBlade(blade.idx, false)"
-        :ref="(el: CoreBladeExposed) => setBladesRef(el, blade)"
       >
         <template
-          v-slot:error
           v-if="error"
+          #error
           >{{ error }}</template
         >
       </component>

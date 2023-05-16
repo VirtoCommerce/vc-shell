@@ -17,7 +17,7 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
       >
         <span v-html="tooltip"></span>
       </template>
@@ -31,12 +31,12 @@
       >
         <slot
           name="control"
-          :toggleHandler="toggleDropdown"
+          :toggle-handler="toggleDropdown"
         >
           <div class="tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full">
             <div
-              class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
               v-if="$slots['prepend']"
+              class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
             >
               <slot name="prepend"></slot>
             </div>
@@ -47,15 +47,15 @@
                 <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
                   <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3">
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
                       v-if="$slots['prepend-inner']"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
                     >
                       <slot name="prepend-inner"></slot>
                     </div>
                     <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate">
                       <div
-                        class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                         v-if="prefix"
+                        class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                       >
                         {{ prefix }}
                       </div>
@@ -72,10 +72,10 @@
                         <template v-else-if="selectedScope && selectedScope.length && hasValue">
                           <template v-if="$slots['selected-item']">
                             <slot
-                              name="selected-item"
                               v-for="(item, i) in selectedScope"
                               v-bind="item"
                               :key="i"
+                              name="selected-item"
                             ></slot>
                           </template>
                           <template v-else>
@@ -109,8 +109,8 @@
                         </template>
                       </div>
                       <div
-                        class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
                         v-if="suffix"
+                        class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
                       >
                         {{ suffix }}
                       </div>
@@ -126,15 +126,15 @@
                       </div>
                     </div>
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                       v-if="$slots['append-inner']"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                     >
                       <slot name="append-inner"></slot>
                     </div>
                     <!-- Loading-->
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
                       v-if="loading || listLoading"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
                     >
                       <VcIcon
                         icon="fas fa-spinner tw-animate-spin"
@@ -143,8 +143,8 @@
                     </div>
                     <!-- Select chevron-->
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                       v-if="!disabled"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                     >
                       <div
                         class="vc-select__chevron tw-cursor-pointer tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
@@ -167,8 +167,8 @@
                   <div v-if="error">
                     <slot name="error">
                       <VcHint
-                        class="tw-mt-1 tw-text-[color:var(--select-border-color-error)]"
                         v-if="errorMessage"
+                        class="tw-mt-1 tw-text-[color:var(--select-border-color-error)]"
                       >
                         {{ errorMessage }}
                       </VcHint>
@@ -177,8 +177,8 @@
                   <div v-else>
                     <slot name="hint">
                       <VcHint
-                        class="tw-text-[color:var(--select-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
                         v-if="hint"
+                        class="tw-text-[color:var(--select-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
                       >
                         {{ hint }}
                       </VcHint>
@@ -189,8 +189,8 @@
             </div>
 
             <div
-              class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
               v-if="$slots['append']"
+              class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
             >
               <slot name="append"></slot>
             </div>
@@ -201,9 +201,9 @@
       <teleport to="#app">
         <div
           v-if="isOpened"
-          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           ref="dropdownRef"
           v-on-click-outside="closeDropdown"
+          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           :style="dropdownStyle"
         >
           <input
@@ -214,8 +214,8 @@
           />
 
           <VcContainer
-            :no-padding="true"
             ref="root"
+            :no-padding="true"
           >
             <div
               v-if="!(optionsList && optionsList.length)"
@@ -226,12 +226,12 @@
               </slot>
             </div>
             <div
-              v-else
-              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
               v-for="(item, i) in optionScope"
+              v-else
               :key="i"
-              @click="item.toggleOption(item.opt)"
+              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
               :class="{ 'tw-bg-[#eff7fc]': item.selected }"
+              @click="item.toggleOption(item.opt)"
             >
               <slot
                 name="option"
@@ -240,8 +240,8 @@
               >
             </div>
             <span
-              ref="el"
               v-if="hasNextPage"
+              ref="el"
             ></span>
           </VcContainer>
         </div>

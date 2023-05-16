@@ -1,12 +1,12 @@
 <template>
   <div
+    v-if="isMenuVisible"
     class="tw-relative tw-w-[var(--app-menu-width)] tw-transition tw-duration-100 tw-pt-4"
     :class="{
       'vc-app-menu_mobile tw-hidden !tw-fixed !tw-left-0 !tw-top-0 !tw-w-full !tw-bottom-0 !tw-z-[9999]':
         $isMobile.value,
       '!tw-block': isMobileVisible,
     }"
-    v-if="isMenuVisible"
   >
     <!-- Show backdrop overlay on mobile devices -->
     <div
@@ -29,7 +29,7 @@
 
       <!-- Show scrollable area with menu items -->
       <VcContainer
-        :noPadding="true"
+        :no-padding="true"
         class="tw-grow tw-basis-0"
       >
         <div class="tw-gap-[5px] tw-flex tw-flex-col tw-px-4 tw-h-full">
@@ -39,8 +39,8 @@
           >
             <template v-if="item.isVisible === undefined || item.isVisible">
               <component
-                v-if="item.component"
                 :is="item.component"
+                v-if="item.component"
                 v-bind="item.options"
                 class="tw-p-0 tw-mb-2 tw-w-full tw-h-auto"
               ></component>
@@ -55,7 +55,7 @@
               :component="item.component"
               :icon="item.icon"
               :children="item.children"
-              :isVisible="item.isVisible as boolean"
+              :is-visible="item.isVisible as boolean"
               :title="item.title as string"
               @click="
                 () => {

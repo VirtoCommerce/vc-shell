@@ -1,11 +1,11 @@
 <template>
   <slot
     name="title"
-    v-bind:title="notification.title"
+    :title="notification.title"
   ></slot>
   <VcHint
-    class="tw-mb-1"
     v-if="notification.description"
+    class="tw-mb-1"
     >{{ notification.description }}</VcHint
   >
 </template>

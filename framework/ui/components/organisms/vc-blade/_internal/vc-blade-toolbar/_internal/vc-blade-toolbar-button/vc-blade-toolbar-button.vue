@@ -2,13 +2,13 @@
   <div
     class="vc-blade-toolbar-button"
     :class="{ 'vc-blade-toolbar-button_disabled': disabled || isWaiting }"
-    @click="onClick"
     :title="title as string"
+    @click="onClick"
   >
     <div ref="dropButtonRef">
       <div
-        class="vc-blade-toolbar-button__wrap"
         ref="bladeDropToggle"
+        class="vc-blade-toolbar-button__wrap"
       >
         <VcIcon
           class="vc-blade-toolbar-button__icon"
@@ -24,15 +24,15 @@
       </div>
       <teleport to="#app">
         <div
-          class="vc-blade-toolbar-button__dropdown"
           v-if="isDropActive"
           ref="bladeDropRef"
+          class="vc-blade-toolbar-button__dropdown"
           :style="dropStyle"
         >
           <div
-            class="vc-blade-toolbar-button__dropdown-item"
             v-for="(item, i) in dropdownItems"
             :key="i"
+            class="vc-blade-toolbar-button__dropdown-item"
             @click="handleDropItemClick(item)"
           >
             <VcIcon

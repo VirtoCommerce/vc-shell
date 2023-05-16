@@ -12,20 +12,20 @@
     <template v-if="(defaultImages && defaultImages.length) || !disabled">
       <div class="tw-flex tw-flex-wrap tw-relative">
         <div
-          class="tw-flex tw-flex-wrap tw-w-full"
           ref="galleryRef"
+          class="tw-flex tw-flex-wrap tw-w-full"
         >
           <VcGalleryItem
-            class="tw-m-2 vc-gallery__item"
             v-for="(image, i) in defaultImages"
             :key="`image_${i}`"
+            class="tw-m-2 vc-gallery__item"
             :image="image"
             :readonly="disabled"
+            :actions="itemActions"
+            :disable-drag="disableDrag"
             @preview="onPreviewClick(i)"
             @edit="$emit('item:edit', $event)"
             @remove="$emit('item:remove', $event)"
-            :actions="itemActions"
-            :disableDrag="disableDrag"
             @mousedown="onItemMouseDown"
             @dragstart="onItemDragStart($event, image)"
             @dragover="onItemDragOver"
@@ -36,11 +36,11 @@
             v-if="!disabled && !hideAfterUpload"
             class="tw-m-2"
             :icon="uploadIcon"
-            @upload="onUpload"
             :variant="variant"
             :multiple="multiple"
             :rules="rules"
             :name="name"
+            @upload="onUpload"
           ></VcFileUpload>
         </div>
         <div

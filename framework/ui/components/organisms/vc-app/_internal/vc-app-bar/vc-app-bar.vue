@@ -15,8 +15,8 @@
 
       <!-- Title -->
       <div
-        class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium"
         v-if="title"
+        class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium"
       >
         {{ title }}
       </div>
@@ -33,8 +33,8 @@
 
       <!-- Show back link when more than one blade is opened -->
       <VcLink
-        class="tw-ml-3"
         v-else-if="blades.length > 1"
+        class="tw-ml-3"
         @click="$emit('backlink:click')"
       >
         <VcIcon
@@ -57,10 +57,10 @@
         <template v-if="item.isVisible === undefined || item.isVisible">
           <!-- Draw custom component is it is passed -->
           <component
-            v-if="item.component"
             :is="item.component"
+            v-if="item.component"
             v-bind="item.options"
-            :isAccent="item.isAccent"
+            :is-accent="item.isAccent"
           ></component>
 
           <!-- Otherwise draw default toolbar button -->
@@ -108,9 +108,17 @@ export interface Props {
   title?: string;
 }
 
+export interface Emits {
+  (event: "logo:click"): void;
+  (event: "backlink:click"): void;
+  (event: "toolbarbutton:click"): void;
+  (event: "menubutton:click"): void;
+  (event: "button:click", item: IBladeToolbar): void;
+}
+
 defineProps<Props>();
 
-defineEmits(["logo:click", "backlink:click", "toolbarbutton:click", "menubutton:click"]);
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

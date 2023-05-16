@@ -19,7 +19,7 @@
           :notification="notification"
           :variant="current.styles.color"
         >
-          <template v-slot:title="{ title }">
+          <template #title="{ title }">
             <p
               class="tw-text-[color:var(--basic-black-color)] tw-text-xl tw-leading-[19px] tw-font-bold tw-m-0 tw-mb-1"
               :class="{ 'tw-mr-4': $isDesktop.value }"

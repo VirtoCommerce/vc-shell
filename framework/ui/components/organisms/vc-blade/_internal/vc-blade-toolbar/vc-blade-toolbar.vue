@@ -11,13 +11,13 @@
       >
         <VcBladeToolbarButton
           v-if="item.isVisible === undefined || item.isVisible"
-          :isExpanded="isExpanded"
+          :is-expanded="isExpanded"
           :icon="item.icon"
           :title="item.title"
           :options="item.options"
           :disabled="item.disabled as boolean"
-          :dropdownItems="item.dropdownItems"
-          :clickHandler="item.clickHandler"
+          :dropdown-items="item.dropdownItems"
+          :click-handler="item.clickHandler"
         />
       </template>
     </div>

@@ -22,13 +22,13 @@
         "framework"
       ],
       "@vc-shell/config-generator": [
-        "cli/config/src"
+        "cli/config"
       ],
       "@vc-shell/api-client-generator": [
-        "cli/api-client/src"
+        "cli/api-client"
       ],
       "@vc-shell/import-module": [
-        "import-module/src"
+        "import-module"
       ]
     }
   },

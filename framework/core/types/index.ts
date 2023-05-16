@@ -1,4 +1,4 @@
-import { Component, ComponentPublicInstance, ComputedRef, Ref } from "vue";
+import { ComponentPublicInstance, ComputedRef, Ref } from "vue";
 import {
   CoreBladeExposed,
   BladeConstructor,
@@ -64,6 +64,7 @@ export type NavigationMenu<T> = T extends {
       options?: ExtractedBladeOptions<InstanceType<C>["$props"], "options">;
     } & BladeMenu
   : T extends {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       children?: infer P extends [] | readonly any[];
     } & BladeMenu
   ? {

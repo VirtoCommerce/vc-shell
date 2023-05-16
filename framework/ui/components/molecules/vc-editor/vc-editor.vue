@@ -17,22 +17,22 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
         >{{ tooltip }}</template
       >
     </VcLabel>
 
     <!-- Editor field -->
     <QuillEditor
+      v-model:content="content"
       class="quill-editor tw-border tw-border-solid tw-border-[color:var(--editor-border-color)] tw-rounded-b-[var(--editor-border-radius)] tw-h-[200px]"
       :class="{ 'tw-bg-[#fafafa] tw-text-[#424242] tw-cursor-default': disabled }"
-      v-model:content="content"
       theme="snow"
       :toolbar="toolbar"
       :modules="modules"
       content-type="html"
-      @update:content="onInput"
       :read-only="disabled"
+      @update:content="onInput"
     />
     <slot
       v-if="errorMessage"

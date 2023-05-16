@@ -1,8 +1,8 @@
 <template>
   <div
+    :id="String(notificationId)"
     ref="nodeRef"
     class="vc-notification tw-flex tw-items-center tw-mt-1 tw-mb-3 tw-mx-2 tw-bg-[color:var(--notification-background)] tw-border tw-border-solid tw-border-[color:#eef0f2] tw-box-border tw-shadow-[2px_2px_11px_rgba(126,142,157,0.4)] tw-rounded-[var(--notification-border-radius)] tw-overflow-hidden tw-py-2 tw-px-4 tw-max-w-[600px] tw-justify-between"
-    :id="String(notificationId)"
     @mouseenter="onMouseEnter"
     @mouseleave="onMouseLeave"
   >

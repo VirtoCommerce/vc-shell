@@ -1,13 +1,13 @@
 <template>
   <div
-    class="tw-relative tw-flex tw-items-center tw-h-full"
-    @click.stop="toggleNotificationsDrop"
     v-on-click-outside="
       () => {
         isDropdownVisible = false;
       }
     "
+    class="tw-relative tw-flex tw-items-center tw-h-full"
     :title="title"
+    @click.stop="toggleNotificationsDrop"
   >
     <div
       :class="[
@@ -35,8 +35,8 @@
       @click.stop="toggleNotificationsDrop"
     ></div>
     <div
-      class="tw-absolute tw-top-[var(--app-bar-height)] tw-z-[10000] tw-drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] tw-bg-white tw-rounded-b-[6px] tw-w-[439px] tw-max-h-[350px] tw-min-h-[50px] tw-right-0 tw-overflow-hidden tw-flex tw-flex-col"
       v-if="isDropdownVisible"
+      class="tw-absolute tw-top-[var(--app-bar-height)] tw-z-[10000] tw-drop-shadow-[0px_4px_15px_rgba(43,67,84,0.15)] tw-bg-white tw-rounded-b-[6px] tw-w-[439px] tw-max-h-[350px] tw-min-h-[50px] tw-right-0 tw-overflow-hidden tw-flex tw-flex-col"
       :class="{
         'tw-hidden !tw-fixed !tw-right-0 !tw-top-0 !tw-max-h-full !tw-max-w-[300px] !tw-w-full !tw-bottom-0 !tw-z-[10000] !tw-border-0':
           $isMobile.value,
@@ -54,22 +54,22 @@
         ></VcIcon>
       </div>
       <VcContainer
-        :noPadding="true"
+        :no-padding="true"
         @click.stop
       >
         <VcCol v-if="notifications && notifications.length">
           <div
-            @click="handleClick(item)"
-            class="tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-cursor-pointer last-of-type:tw-border-b-0"
             v-for="item in notifications"
             :key="`notification_${item.id}`"
+            class="tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-cursor-pointer last-of-type:tw-border-b-0"
+            @click="handleClick(item)"
           >
             <NotificationItem :notification="item"></NotificationItem>
           </div>
         </VcCol>
         <div
-          class="tw-flex tw-justify-center tw-items-center tw-p-4"
           v-else
+          class="tw-flex tw-justify-center tw-items-center tw-p-4"
         >
           {{ $t("COMPONENTS.ORGANISMS.VC_NOTIFICATION_DROPDOWN.EMPTY") }}
         </div>

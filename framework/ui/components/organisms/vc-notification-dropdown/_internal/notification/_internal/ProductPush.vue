@@ -1,7 +1,7 @@
 <template>
   <slot
     name="title"
-    v-bind:title="notificationTitle"
+    :title="notificationTitle"
   ></slot>
   <VcHint
     class="tw-mb-1"

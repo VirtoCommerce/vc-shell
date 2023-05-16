@@ -1,11 +1,11 @@
 <template>
   <slot
     name="title"
-    v-bind:title="notification.title"
+    :title="notification.title"
   ></slot>
   <VcHint
-    class="tw-mb-1"
     v-if="notification.profileName"
+    class="tw-mb-1"
     >{{ $t("COMPONENTS.ORGANISMS.VC_NOTIFICATION_DROPDOWN.IMPORT_PUSH.PROFILE") }}
     <b>{{ notification.profileName }}</b></VcHint
   >

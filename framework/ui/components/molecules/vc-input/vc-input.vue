@@ -20,7 +20,7 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
         >{{ tooltip }}</template
       >
     </VcLabel>
@@ -28,8 +28,8 @@
     <div class="tw-flex tw-flex-nowrap tw-items-start">
       <div class="tw-relative tw-flex tw-flex-auto tw-text-left">
         <div
-          class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
           v-if="$slots['prepend']"
+          class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
         >
           <slot name="prepend"></slot>
         </div>
@@ -37,15 +37,15 @@
           <div class="vc-input__field-wrapper">
             <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full">
               <div
-                class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
                 v-if="$slots['prepend-inner']"
+                class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
               >
                 <slot name="prepend-inner"></slot>
               </div>
               <div class="vc-input__field">
                 <div
-                  class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                   v-if="prefix"
+                  class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                 >
                   {{ prefix }}
                 </div>
@@ -53,27 +53,27 @@
                   name="control"
                   :editable="disabled"
                   :focused="autofocus"
-                  :modelValue="temp"
-                  :emitValue="emitValue"
+                  :model-value="temp"
+                  :emit-value="emitValue"
                   :placeholder="placeholder"
                 >
                   <input
+                    ref="inputRef"
+                    v-model="temp"
                     :placeholder="placeholder"
                     :type="internalType"
-                    v-model="temp"
                     :disabled="disabled"
-                    @input="onInput"
-                    ref="inputRef"
                     :name="name"
                     :maxlength="maxlength"
                     :autofocus="autofocus"
                     :max="maxDate"
                     class="vc-input__input"
+                    @input="onInput"
                   />
                 </slot>
                 <div
-                  class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
                   v-if="suffix"
+                  class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
                 >
                   {{ suffix }}
                 </div>
@@ -89,8 +89,8 @@
                 </div>
 
                 <div
-                  class="vc-input__showhide"
                   v-if="type === 'password' && internalType === 'password'"
+                  class="vc-input__showhide"
                   @click="internalType = 'text'"
                 >
                   <VcIcon
@@ -100,8 +100,8 @@
                 </div>
 
                 <div
-                  class="vc-input__showhide"
                   v-if="type === 'password' && internalType === 'text'"
+                  class="vc-input__showhide"
                   @click="internalType = 'password'"
                 >
                   <VcIcon
@@ -112,14 +112,14 @@
               </div>
 
               <div
-                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                 v-if="$slots['append-inner']"
+                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
               >
                 <slot name="append-inner"></slot>
               </div>
               <div
-                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                 v-if="loading"
+                class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
               >
                 <VcIcon
                   icon="fas fa-spinner tw-animate-spin"
@@ -137,8 +137,8 @@
               <div v-if="error">
                 <slot name="error">
                   <VcHint
-                    class="vc-input__error"
                     v-if="errorMessage"
+                    class="vc-input__error"
                   >
                     {{ errorMessage }}
                   </VcHint>
@@ -147,8 +147,8 @@
               <div v-else>
                 <slot name="hint">
                   <VcHint
-                    class="vc-input__desc"
                     v-if="hint"
+                    class="vc-input__desc"
                   >
                     {{ hint }}
                   </VcHint>
@@ -159,8 +159,8 @@
         </div>
 
         <div
-          class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
           v-if="$slots['append']"
+          class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
         >
           <slot name="append"></slot>
         </div>

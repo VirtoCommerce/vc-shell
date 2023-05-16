@@ -16,15 +16,15 @@
       :logo="logo"
       :blades="bladesRefs"
       :buttons="toolbarItems"
+      :title="title"
       @toolbarbutton:click="onToolbarButtonClick"
       @menubutton:click="($refs.menu as Record<'isMobileVisible', boolean>).isMobileVisible = true"
       @backlink:click="$emit('backlink:click', bladesRefs.length - 2)"
       @logo:click="$emit('logo:click')"
-      :title="title"
     >
       <template
-        v-slot:appSwitcher
         v-if="$slots['appSwitcher']"
+        #appSwitcher
       >
         <slot name="appSwitcher"></slot>
       </template>
@@ -37,14 +37,14 @@
         class="tw-shrink-0"
         :items="menuItems"
         :version="version"
-        :mobileMenuItems="mobileMenuItems"
+        :mobile-menu-items="mobileMenuItems"
         @item:click="onMenuItemClick"
       ></VcAppMenu>
 
       <!-- Workspace blades -->
       <div
-        class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative"
         v-if="$slots['bladeNavigation']"
+        class="vc-app__workspace tw-px-2 tw-w-full tw-overflow-hidden !tw-flex tw-grow tw-basis-0 tw-relative"
       >
         <slot name="bladeNavigation"></slot>
       </div>

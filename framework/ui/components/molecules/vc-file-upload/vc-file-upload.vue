@@ -33,10 +33,10 @@
         ref="uploader"
         type="file"
         hidden
-        @change="upload"
         :accept="accept"
         :multiple="multiple"
         :name="name"
+        @change="upload"
       />
     </div>
     <slot

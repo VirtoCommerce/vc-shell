@@ -28,10 +28,10 @@
     <div class="vc-app-menu-item__title">
       {{ title }}
       <VcIcon
+        v-if="children.length"
         class="vc-app-menu-item__title-icon"
         icon="fas fa-chevron-down"
         size="xs"
-        v-if="children.length"
       ></VcIcon>
     </div>
   </div>

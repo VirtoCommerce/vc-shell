@@ -14,8 +14,8 @@
   >
     <!-- Init blade header -->
     <VcBladeHeader
-      class="tw-shrink-0"
       v-if="!$isMobile.value || closable"
+      class="tw-shrink-0"
       :maximized="maximized"
       :expandable="isExpandable"
       :closable="closable"
@@ -27,8 +27,8 @@
       @collapse="$emit('collapse')"
     >
       <template
-        v-slot:actions
         v-if="$slots['actions']"
+        #actions
       >
         <slot name="actions"></slot>
       </template>
@@ -42,9 +42,9 @@
         />
         <div class="tw-line-clamp-1 tw-w-full tw-mx-2"><slot name="error"></slot></div>
         <VcButton
-          @click="open()"
           variant="onlytext"
           class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
+          @click="open()"
           >{{ $t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
         >
       </div>
@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, useSlots, h, Fragment } from "vue";
+import { defineComponent, computed, useSlots, h } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { IBladeContainer, usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
@@ -73,7 +73,7 @@ export default defineComponent({
 <script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
-import { VcButton, VcIcon, VcPopup, VcContainer } from "./../../";
+import { VcButton, VcIcon, VcPopup } from "./../../";
 
 export interface Props {
   icon?: string;

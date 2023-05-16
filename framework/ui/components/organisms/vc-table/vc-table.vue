@@ -2,11 +2,11 @@
   <div class="tw-relative tw-overflow-hidden tw-flex tw-flex-col tw-grow tw-basis-0">
     <!-- Header slot with filter and searchbar -->
     <slot
-      name="header"
       v-if="
         ($slots['header'] || header) &&
         ((items && items.length) || searchValue || searchValue === '' || activeFilterCount)
       "
+      name="header"
     >
       <div class="tw-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4">
         <!-- Table filter mobile button -->
@@ -15,10 +15,10 @@
           class="tw-mr-3"
         >
           <VcTableFilter :counter="activeFilterCount">
-            <template v-slot:default="{ closePanel }">
+            <template #default="{ closePanel }">
               <slot
                 name="filters"
-                :closePanel="closePanel"
+                :close-panel="closePanel"
               ></slot>
             </template>
           </VcTableFilter>
@@ -30,8 +30,8 @@
           :placeholder="searchPlaceholder"
           clearable
           name="table_search"
-          :modelValue="searchValue"
-          @update:modelValue="$emit('search:change', $event)"
+          :model-value="searchValue"
+          @update:model-value="$emit('search:change', $event)"
         ></VcInput>
 
         <!-- Table filter desktop button -->
@@ -42,12 +42,12 @@
           <VcTableFilter
             :title="$t('Filters')"
             :counter="activeFilterCount"
-            :parentExpanded="expanded"
+            :parent-expanded="expanded"
           >
-            <template v-slot:default="{ closePanel }">
+            <template #default="{ closePanel }">
               <slot
                 name="filters"
-                :closePanel="closePanel"
+                :close-panel="closePanel"
               ></slot>
             </template>
           </VcTableFilter>
@@ -63,9 +63,9 @@
       <VcContainer
         v-if="items && items.length"
         ref="scrollContainer"
-        :noPadding="true"
+        :no-padding="true"
         class="tw-grow tw-basis-0"
-        :usePtr="!!$attrs['onScroll:ptr']"
+        :use-ptr="!!$attrs['onScroll:ptr']"
         @scroll:ptr="$emit('scroll:ptr')"
       >
         <!-- Mobile table view -->
@@ -75,10 +75,10 @@
               v-for="(item, i) in items"
               :key="i"
               :item="item"
-              :actionBuilder="itemActionBuilder"
+              :action-builder="itemActionBuilder"
+              :swiping-item="mobileSwipeItem"
               @click="$emit('itemClick', item)"
-              @swipeStart="handleSwipe"
-              :swipingItem="mobileSwipeItem"
+              @swipe-start="handleSwipe"
             >
               <slot
                 name="mobile-item"
@@ -118,8 +118,8 @@
                 </div>
               </th>
               <th
-                class="tw-h-[42px] tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
                 v-if="itemActionBuilder"
+                class="tw-h-[42px] tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-bg-[#f9f9f9] tw-m-w-[70px] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-z-[1]"
               >
                 <div class="tw-w-3 tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-flex tw-justify-end">
                   <div class="tw-w-px tw-bg-[#e5e7eb] tw-h-full"></div>
@@ -127,19 +127,19 @@
               </th>
               <th
                 v-for="item in filteredCols"
-                @mousedown="onColumnHeaderMouseDown"
-                @dragstart="onColumnHeaderDragStart($event, item)"
-                @dragover="onColumnHeaderDragOver"
-                @dragleave="onColumnHeaderDragLeave"
-                @drop="onColumnHeaderDrop($event, item)"
+                :id="item.id"
                 :key="item.id"
                 class="tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
                 :class="{
                   'tw-cursor-pointer tw-group': item.sortable,
                 }"
-                @click="handleHeaderClick(item)"
                 :style="{ maxWidth: item.width, width: item.width }"
-                :id="item.id"
+                @mousedown="onColumnHeaderMouseDown"
+                @dragstart="onColumnHeaderDragStart($event, item)"
+                @dragover="onColumnHeaderDragOver"
+                @dragleave="onColumnHeaderDragLeave"
+                @drop="onColumnHeaderDrop($event, item)"
+                @click="handleHeaderClick(item)"
               >
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3"
@@ -158,8 +158,8 @@
                     ></VcIcon>
                   </div>
                   <div
-                    class="tw-flex tw-flex-col tw-ml-1 tw-invisible group-hover:tw-visible"
                     v-else
+                    class="tw-flex tw-flex-col tw-ml-1 tw-invisible group-hover:tw-visible"
                   >
                     <VcIcon
                       size="xs"
@@ -183,8 +183,8 @@
                 class="tw-w-auto tw-h-[42px] tw-bg-[#f9f9f9] !tw-border-0 tw-shadow-[inset_0px_1px_0px_#eaedf3,_inset_0px_-1px_0px_#eaedf3] tw-box-border tw-sticky tw-top-0 tw-select-none tw-overflow-hidden tw-z-[1]"
               ></th>
               <div
-                class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0"
                 v-if="props.expanded"
+                class="tw-sticky tw-h-[42px] tw-z-[1] tw-right-0 tw-top-0 tw-table-cell tw-align-middle tw-w-0"
               >
                 <VcTableColumnSwitcher
                   :items="toggleCols"
@@ -202,8 +202,8 @@
             ></div>
           </thead>
           <div
-            class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
             v-if="bulkDelete && allSelected"
+            class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
           >
             <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
               <div>
@@ -255,28 +255,28 @@
               >
                 <div class="tw-flex tw-justify-center tw-items-center">
                   <VcCheckbox
-                    @update:model-value="rowCheckbox(item)"
                     :model-value="isSelected(item)"
+                    @update:model-value="rowCheckbox(item)"
                   ></VcCheckbox>
                 </div>
                 <div class="tw-w-px tw-top-0 tw-bottom-0 tw-absolute tw-right-0 tw-bg-[#e5e7eb]"></div>
               </td>
               <td
-                class="tw-box-border tw-overflow-visible tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-relative"
                 v-if="itemActionBuilder && typeof item === 'object'"
+                class="tw-box-border tw-overflow-visible tw-w-[21px] tw-max-w-[21px] tw-min-w-[21px] tw-relative"
                 @click.stop
               >
                 <div
                   class="vc-table__body-actions-container tw-relative tw-flex tw-justify-center tw-items-center tw-group"
                 >
                   <button
+                    :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     class="tw-text-[#41afe6] tw-cursor-pointer tw-border-none tw-bg-transparent disabled:tw-text-[gray] tw-w-full"
                     :class="{
                       'group-hover:tw-text-[#319ed4]': itemActions[itemIndex] && itemActions[itemIndex].length,
                     }"
-                    @click.stop="showActions(item, item.id)"
-                    :ref="(el: Element) => setActionToggleRefs(el, item.id)"
                     :disabled="!(itemActions[itemIndex] && itemActions[itemIndex].length)"
+                    @click.stop="showActions(item, item.id)"
                   >
                     <VcIcon
                       icon="fas fa-ellipsis-v"
@@ -284,11 +284,11 @@
                     />
                   </button>
                   <div
-                    class="vc-table__body-tooltip tw-bg-white tw-rounded-[4px] tw-p-[15px] tw-z-[1] tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)] tw-w-max"
                     v-show="selectedRow === item.id"
-                    @mouseleave="closeActions"
                     :ref="(el: Element) => setTooltipRefs(el, item.id)"
+                    class="vc-table__body-tooltip tw-bg-white tw-rounded-[4px] tw-p-[15px] tw-z-[1] tw-absolute tw-right-0 tw-drop-shadow-[1px_3px_14px_rgba(111,122,131,0.25)] tw-w-max"
                     :style="tooltipStyle"
+                    @mouseleave="closeActions"
                   >
                     <div
                       class="tw-flex tw-items-start tw-flex-col tw-text-[#3f3f3f] tw-font-normal not-italic tw-text-base tw-leading-[20px] tw-gap-[25px]"
@@ -314,9 +314,9 @@
                       </div>
                     </div>
                     <div
+                      :ref="(el: Element) => setTooltipArrowRefs(el, item.id)"
                       class="vc-table__body-tooltip-arrow"
                       :style="arrowStyle"
-                      :ref="(el: Element) => setTooltipArrowRefs(el, item.id)"
                     ></div>
                   </div>
                 </div>
@@ -398,8 +398,8 @@
 
     <!-- Table footer -->
     <slot
-      name="footer"
       v-if="($slots['footer'] || footer) && items && items.length"
+      name="footer"
     >
       <div
         class="tw-bg-[#fbfdfe] tw-border-t tw-border-solid tw-border-[#eaedf3] tw-flex-shrink-0 tw-flex tw-items-center tw-justify-between tw-p-4"
@@ -408,8 +408,8 @@
         <VcPagination
           :expanded="expanded"
           :pages="pages"
-          :currentPage="currentPage"
-          @itemClick="$emit('paginationClick', $event)"
+          :current-page="currentPage"
+          @item-click="$emit('paginationClick', $event)"
         ></VcPagination>
 
         <!-- Table counter -->
@@ -433,7 +433,6 @@ import { offset, flip, arrow, computePosition, ComputePositionReturn } from "@fl
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, useCurrentElement } from "@vueuse/core";
 import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton, VcLoading } from "./../../";
-import * as _ from "lodash-es";
 
 export interface StatusImage {
   image?: string;

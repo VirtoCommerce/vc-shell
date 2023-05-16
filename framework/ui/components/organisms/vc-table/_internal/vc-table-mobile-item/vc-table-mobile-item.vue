@@ -11,8 +11,8 @@
   >
     <!-- Left swipe actions-->
     <div
-      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
       v-if="leftSwipeActions && leftSwipeActions.length"
+      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
     >
       <div
         class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
@@ -33,8 +33,8 @@
 
     <!-- Item actions -->
     <div
-      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
       v-if="rightSwipeActions && rightSwipeActions.length"
+      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
     >
       <!-- First available action -->
       <div
@@ -73,8 +73,8 @@
 
         <!-- Actions popup -->
         <teleport
-          to="body"
           v-if="isActionsPopupVisible"
+          to="body"
         >
           <div
             class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[rgba(107,121,135,0.15)] tw-flex tw-items-center tw-justify-center tw-z-[99]"
@@ -132,6 +132,7 @@ export interface Props {
 
 export interface Emits {
   (event: "swipeStart", id: string): void;
+  (event: "click"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

@@ -16,7 +16,6 @@
     "isolatedModules": true,
     "useDefineForClassFields": true,
     "outDir": "dist",
-    "rootDir": "src",
     "strict": false,
     "composite": true,
     "lib": [
@@ -27,9 +26,10 @@
     ],
     "types": [
       "vite/client",
-      ]
+    ],
   },
   "include": [
+     "*.ts",
     "src/**/*.ts",
     "src/**/*.vue",
     "src/index.ts",
@@ -38,5 +38,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ]
+  ],
 }

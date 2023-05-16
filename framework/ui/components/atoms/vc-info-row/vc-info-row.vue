@@ -6,15 +6,15 @@
           <span>{{ label }}</span>
           <template
             v-if="tooltip"
-            v-slot:tooltip
+            #tooltip
             >{{ tooltip }}</template
           >
         </VcLabel>
       </VcCol>
       <VcCol size="2">
         <p
-          class="tw-m-0"
           v-if="type === 'default'"
+          class="tw-m-0"
         >
           {{ value }}
         </p>

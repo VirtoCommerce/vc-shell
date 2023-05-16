@@ -6,7 +6,7 @@ import VcImage from "../../atoms/vc-image/vc-image.vue";
 
 const meta: Meta<typeof VcTable> = {
   title: "organisms/VcTable",
-  component: VcTable,
+  // component: VcTable,
 };
 
 export default meta;

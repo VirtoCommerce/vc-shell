@@ -40,7 +40,7 @@
           class="tw-ml-3"
         >
           <VcTableFilter
-            :title="$t('Filters')"
+            :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.ALL_FILTERS')"
             :counter="activeFilterCount"
             :parent-expanded="expanded"
           >
@@ -421,8 +421,8 @@
     </slot>
   </div>
 </template>
-
-<script lang="ts" setup>
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+<script lang="ts" setup generic="T extends TableItem | string">
 import { computed, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref, onUpdated, onBeforeMount, nextTick } from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
@@ -442,80 +442,86 @@ export interface StatusImage {
 }
 
 export interface TableItem {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;
-  id?: string;
   actions?: IActionBuilderResult[];
 }
 
-export type TableItemType = TableItem | string;
+defineSlots<{
+  header: (props: any) => any;
+  filters: (args: { closePanel: () => void }) => any;
+  "mobile-item": (args: { item: T }) => any;
+  [key: `header_${string}`]: (props: any) => any;
+  [key: `item_${string}`]: (args: { item: T; cell: ITableColumns }) => any;
+  notfound: (props: any) => any;
+  empty: (props: any) => any;
+  footer: (props: any) => any;
+}>();
 
-export interface Props {
-  columns: ITableColumns[];
-  items: TableItemType[];
-  itemActionBuilder?: (item: TableItem) => IActionBuilderResult[];
-  sort?: string;
-  multiselect?: boolean;
-  expanded?: boolean;
-  totalLabel?: string;
-  totalCount?: number;
-  pages?: number;
-  currentPage?: number;
-  searchPlaceholder?: string;
-  searchValue?: string;
-  loading?: boolean;
-  empty?: StatusImage;
-  notfound?: StatusImage;
-  header?: boolean;
-  footer?: boolean;
-  activeFilterCount?: number;
-  selectedItemId?: string;
-  scrolling?: boolean;
-  resizableColumns?: boolean;
-  reorderableColumns?: boolean;
-  reorderableRows?: boolean;
-  stateKey: string;
-  bulkDelete?: boolean;
-}
-
-export interface Emits {
-  (event: "paginationClick", page: number): void;
-  (event: "selectionChanged", values: TableItemType[]): void;
-  (event: "search:change", value: string): void;
-  (event: "headerClick", value: Record<string, unknown>): void;
-  (event: "itemClick", item: TableItemType): void;
-  (event: "scroll:ptr"): void;
-  (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: TableItemType[] }): void;
-  (event: "bulk:delete"): void;
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  items: () => [],
-  totalLabel: "Totals:",
-  totalCount: 0,
-  pages: 0,
-  expanded: true,
-  currentPage: 0,
-  searchPlaceholder: "Search...",
-  empty: () => ({
-    text: "List is empty.",
-  }),
-  notfound: () => ({
-    text: "Nothing found.",
-  }),
-  header: true,
-  footer: true,
-  activeFilterCount: 0,
-  resizableColumns: true,
-  reorderableColumns: true,
-});
+const props = withDefaults(
+  defineProps<{
+    columns: ITableColumns[];
+    items: T[];
+    itemActionBuilder?: (item: T) => IActionBuilderResult[];
+    sort?: string;
+    multiselect?: boolean;
+    expanded?: boolean;
+    totalLabel?: string;
+    totalCount?: number;
+    pages?: number;
+    currentPage?: number;
+    searchPlaceholder?: string;
+    searchValue?: string;
+    loading?: boolean;
+    empty?: StatusImage;
+    notfound?: StatusImage;
+    header?: boolean;
+    footer?: boolean;
+    activeFilterCount?: number;
+    selectedItemId?: string;
+    scrolling?: boolean;
+    resizableColumns?: boolean;
+    reorderableColumns?: boolean;
+    reorderableRows?: boolean;
+    stateKey: string;
+    bulkDelete?: boolean;
+  }>(),
+  {
+    items: () => [],
+    totalLabel: "Totals:",
+    totalCount: 0,
+    pages: 0,
+    expanded: true,
+    currentPage: 0,
+    searchPlaceholder: "Search...",
+    empty: () => ({
+      text: "List is empty.",
+    }),
+    notfound: () => ({
+      text: "Nothing found.",
+    }),
+    header: true,
+    footer: true,
+    activeFilterCount: 0,
+    resizableColumns: true,
+    reorderableColumns: true,
+  }
+);
 
 interface ITableItemRef {
   element: Element;
   id: string;
 }
 
-const emit = defineEmits<Emits>();
+const emit = defineEmits<{
+  (event: "paginationClick", page: number): void;
+  (event: "selectionChanged", values: T[]): void;
+  (event: "search:change", value: string): void;
+  (event: "headerClick", value: Record<string, unknown>): void;
+  (event: "itemClick", item: T): void;
+  (event: "scroll:ptr"): void;
+  (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: T[] }): void;
+  (event: "bulk:delete"): void;
+}>();
 
 // template refs
 const tooltipRefs = ref<ITableItemRef[]>([]);
@@ -527,7 +533,7 @@ const tableRef = ref<HTMLElement | null>();
 let columnResizeListener = null;
 let columnResizeEndListener = null;
 
-const selection = ref<TableItemType[]>([]);
+const selection = ref<T[]>([]) as Ref<T[]>;
 const bulkSelected = ref(false);
 
 const selectedRow = ref<string>();
@@ -550,7 +556,7 @@ const draggedElement = ref<HTMLElement>();
 const dropPosition = ref();
 
 // row reordering variables
-const draggedRow = ref<TableItemType>();
+const draggedRow = ref<T>();
 const rowDragged = ref(false);
 const droppedRowIndex = ref<number>();
 const draggedRowIndex = ref<number>();
@@ -669,11 +675,11 @@ function handleBulkSelection() {
   emit("bulk:delete");
 }
 
-function isSelected(item: TableItemType) {
+function isSelected(item: T) {
   return selection.value.indexOf(item) > -1;
 }
 
-function rowCheckbox(item: TableItemType) {
+function rowCheckbox(item: T) {
   const clear = item;
   const index = selection.value.indexOf(clear);
   if (index > -1) {
@@ -710,28 +716,31 @@ function setTooltipArrowRefs(el: Element, id: string) {
   }
 }
 
-function showActions(item: TableItem, index: string) {
-  if (selectedRow.value) {
-    closeActions();
-    return;
-  }
-  selectedRow.value = item.id;
+function showActions(item: T, index: string) {
+  if (typeof item !== "string") {
+    if (selectedRow.value) {
+      closeActions();
+      return;
+    }
 
-  const toggleRef = actionToggleRefs.value.find((item) => item.id === index).element;
-  const tooltipRef = tooltipRefs.value.find((item) => item.id === index).element;
-  const tooltipArrowRef = tooltipArrowRefs.value.find((item) => item.id === index).element;
+    selectedRow.value = item.id;
 
-  if (toggleRef && tooltipRef && tooltipArrowRef) {
-    nextTick(() => {
-      computePosition(toggleRef, tooltipRef as HTMLElement, {
-        placement: "bottom",
-        middleware: [
-          flip({ fallbackPlacements: ["top", "bottom"] }),
-          offset({ crossAxis: 15, mainAxis: 15 }),
-          arrow({ element: tooltipArrowRef as HTMLElement }),
-        ],
-      }).then((item) => (tooltip.value = item));
-    });
+    const toggleRef = actionToggleRefs.value.find((item) => item.id === index).element;
+    const tooltipRef = tooltipRefs.value.find((item) => item.id === index).element;
+    const tooltipArrowRef = tooltipArrowRefs.value.find((item) => item.id === index).element;
+
+    if (toggleRef && tooltipRef && tooltipArrowRef) {
+      nextTick(() => {
+        computePosition(toggleRef, tooltipRef as HTMLElement, {
+          placement: "bottom",
+          middleware: [
+            flip({ fallbackPlacements: ["top", "bottom"] }),
+            offset({ crossAxis: 15, mainAxis: 15 }),
+            arrow({ element: tooltipArrowRef as HTMLElement }),
+          ],
+        }).then((item) => (tooltip.value = item));
+      });
+    }
   }
 }
 
@@ -757,12 +766,12 @@ const arrowStyle = computed(() => {
   };
 });
 
-async function calculateActions(items: TableItemType[]) {
+async function calculateActions(items: T[]) {
   if (typeof props.itemActionBuilder === "function") {
     const populatedItems = [];
     for (let index = 0; index < items.length; index++) {
       if (typeof items[index] === "object") {
-        const elementWithActions = await props.itemActionBuilder(items[index] as TableItem);
+        const elementWithActions = await props.itemActionBuilder(items[index]);
         populatedItems.push(elementWithActions);
       }
     }
@@ -1033,7 +1042,7 @@ function onRowMouseDown(event: MouseEvent & { currentTarget?: { draggable: boole
   }
 }
 
-function onRowDragStart(event: DragEvent, item: TableItem | string) {
+function onRowDragStart(event: DragEvent, item: T) {
   if (!props.reorderableRows) {
     return;
   }
@@ -1043,7 +1052,7 @@ function onRowDragStart(event: DragEvent, item: TableItem | string) {
   event.dataTransfer.setData("text", "row-reorder");
 }
 
-function onRowDragOver(event: DragEvent, item: TableItem | string) {
+function onRowDragOver(event: DragEvent, item: T) {
   if (!props.reorderableRows) {
     return;
   }
@@ -1116,7 +1125,7 @@ function onRowDrop(event: DragEvent) {
     emit("row:reorder", {
       dragIndex: draggedRowIndex.value,
       dropIndex: dropIndex,
-      value: processedItems as TableItemType[],
+      value: processedItems as T[],
     });
   }
 

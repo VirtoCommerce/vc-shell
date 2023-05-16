@@ -4427,9 +4427,9 @@ __metadata:
   linkType: hard
 
 "ace-builds@npm:^1.4.13":
-  version: 1.21.0
-  resolution: "ace-builds@npm:1.21.0"
-  checksum: fc70f8bb5d23ffed6a6b27c4518149aebd75659eab6d67d723863f84f4488942fcb407b4699048fb2a58a001659ff223786b9138c6e5d4a3464740644db571b0
+  version: 1.21.1
+  resolution: "ace-builds@npm:1.21.1"
+  checksum: 3b9df83a946fc36a3843bbd610f9e00ed349bcd1fcdcb4576835b9e05659c01dfbdc345284361043544b68b7c588e961a7a7e9415c4df7721ceded1d3e581b76
   languageName: node
   linkType: hard
 
@@ -13417,8 +13417,8 @@ __metadata:
   linkType: hard
 
 "vue-docgen-api@npm:^4.40.0":
-  version: 4.72.2
-  resolution: "vue-docgen-api@npm:4.72.2"
+  version: 4.72.3
+  resolution: "vue-docgen-api@npm:4.72.3"
   dependencies:
     "@babel/parser": ^7.21.4
     "@babel/types": ^7.21.4
@@ -13431,7 +13431,7 @@ __metadata:
     recast: ^0.23.1
     ts-map: ^1.0.3
     vue-inbrowser-compiler-independent-utils: ^4.69.0
-  checksum: b7035da4a69cf820ad1c6d44d41573f4d46d01fed5e448759c23767e6555daa94023b625e0d5a2c1d79a3ff64223f86beec68ae9217615ec8b853d04fd66122f
+  checksum: 1120cbb6f6b5b259026233097848e66dd659f15b23bd1e575c8da4e2fdb4bfcf7032a6c65498b0ae655ace071caa0d6460325ea51bc67dbb77b2fb7ef07e4f8a
   languageName: node
   linkType: hard
 

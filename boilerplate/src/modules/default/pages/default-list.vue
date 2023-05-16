@@ -4,14 +4,14 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -23,15 +23,15 @@
       class="tw-grow tw-basis-0"
       :multiselect="true"
       :columns="columns"
-      :itemActionBuilder="actionBuilder"
+      :item-action-builder="actionBuilder"
       :sort="sort"
-      :searchValue="searchValue"
-      :searchPlaceholder="$t('DEFAULT.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('DEFAULT.PAGES.LIST.TABLE.TOTALS')"
-      :selectedItemId="selectedItemId"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
+      :search-value="searchValue"
+      :search-placeholder="$t('DEFAULT.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('DEFAULT.PAGES.LIST.TABLE.TOTALS')"
+      :selected-item-id="selectedItemId"
       state-key="default_list"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
     >
     </VcTable>
   </VcBlade>
@@ -72,6 +72,7 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeEvent);
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

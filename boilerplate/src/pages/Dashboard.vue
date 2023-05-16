@@ -1,8 +1,8 @@
 <template>
   <VcContainer class="dashboard tw-w-full tw-h-full tw-box-border">
     <div
-      class="dashboard-header"
       v-if="$isDesktop.value"
+      class="dashboard-header"
     >
       {{ $t("SHELL.DASHBOARD.TITLE") }}
     </div>

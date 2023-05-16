@@ -1,11 +1,11 @@
 <template>
   <div
-    class="tw-relative"
     v-on-click-outside="
       () => {
         isDropActive = false;
       }
     "
+    class="tw-relative"
     :title="title"
     @click.stop="isDropActive = !isDropActive"
   >
@@ -24,13 +24,13 @@
       ></VcIcon>
     </div>
     <div
-      class="tw-absolute tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] tw-w-min tw-z-[10000]"
       v-if="isDropActive"
+      class="tw-absolute tw-right-0 tw-top-[var(--app-bar-height)] tw-bg-white tw-shadow-[0_-6px_6px_white,1px_1px_22px_rgba(126,142,157,0.2)] tw-w-min tw-z-[10000]"
     >
       <div
-        class="tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-white tw-cursor-pointer hover:tw-bg-[#eff7fc]"
         v-for="(lang, i) in languageItems"
         :key="i"
+        class="tw-p-3 tw-text-lg tw-text-black tw-border-l tw-border-solid tw-border-l-[#eef0f2] tw-border-b tw-border-b-[#eef0f2] tw-white tw-cursor-pointer hover:tw-bg-[#eff7fc]"
         @click="lang.hasOwnProperty('clickHandler') && lang.clickHandler(lang.lang)"
       >
         {{ lang.title }}

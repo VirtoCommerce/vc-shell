@@ -2,12 +2,12 @@
   <div class="tw-flex tw-flex-col tw-grow tw-basis-0">
     <div class="tw-flex tw-flex-row tw-items-center">
       <div
-        class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-success-img)]"
         v-if="isUploaded"
+        class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-success-img)]"
       ></div>
       <div
-        class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-error-img)]"
         v-else
+        class="tw-w-[30px] tw-h-[41px] tw-bg-center tw-bg-no-repeat tw-bg-[image:var(--file-upload-error-img)]"
       ></div>
       <div class="tw-flex tw-flex-col tw-grow tw-basis-0 tw-ml-3">
         <div class="tw-font-normal tw-text-lg">
@@ -17,18 +17,18 @@
       </div>
     </div>
     <div
-      class="tw-flex tw-flex-row tw-justify-between tw-mt-5"
       v-if="filteredActions && filteredActions.length"
+      class="tw-flex tw-flex-row tw-justify-between tw-mt-5"
     >
       <div>
         <VcButton
           v-for="(action, i) in filteredActions.slice(0, 1)"
           :key="i"
-          @click="action.clickHandler"
           :variant="action.variant"
           :outline="action.outline"
           :small="true"
           :disabled="action.disabled as boolean"
+          @click="action.clickHandler"
         >
           {{ action.name }}
         </VcButton>
@@ -37,12 +37,12 @@
         <VcButton
           v-for="(action, i) in filteredActions.slice(1, 3)"
           :key="i"
-          @click="action.clickHandler"
           :variant="action.variant"
           :outline="action.outline"
           :small="true"
           :disabled="action.disabled as boolean"
           class="tw-ml-3"
+          @click="action.clickHandler"
         >
           {{ action.name }}
         </VcButton>

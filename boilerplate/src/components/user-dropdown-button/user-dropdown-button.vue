@@ -1,12 +1,12 @@
 <template>
   <div
+    v-on-click-outside="onClose"
     class="user-dropdown-button"
     :class="{
       'user-dropdown-button_active': accountMenuVisible,
       'user-dropdown-button_no-pointer': $isMobile.value,
     }"
     @click.stop="toggleAccountMenuVisible"
-    v-on-click-outside="onClose"
   >
     <div
       class="user-dropdown-button__avatar"

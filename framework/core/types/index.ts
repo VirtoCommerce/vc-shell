@@ -81,12 +81,13 @@ export type ToolbarMenu<T> = T extends {
     } & IBladeToolbar
   : T & { component?: ComponentInstanceConstructor };
 
-export interface IActionBuilderResult {
+// eslint-disable-next-line @typescript-eslint/ban-types
+export interface IActionBuilderResult<T = {}> {
   icon: string;
   title: string;
   variant: string;
   leftActions?: boolean;
-  clickHandler(item?: { id?: string }): void;
+  clickHandler(item?: T): void;
 }
 
 export interface IImage {

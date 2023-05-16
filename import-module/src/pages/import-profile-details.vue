@@ -3,16 +3,16 @@
     v-loading="loading"
     :title="param && profileDetails ? profileDetails.name : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')"
     width="50%"
-    :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
+    :toolbar-items="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
+    @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -28,16 +28,16 @@
           >
             <VcInput
               v-bind="field"
+              v-model="profileDetails.name"
               class="tw-p-3"
               :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
               :placeholder="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER')"
               :clearable="true"
               :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP')"
-              v-model="profileDetails.name"
               :error="!!errors.length"
               :error-message="errorMessage"
               required
-              @update:modelValue="handleChange"
+              @update:model-value="handleChange"
             ></VcInput>
           </Field>
           <Field
@@ -49,6 +49,7 @@
           >
             <VcSelect
               v-bind="field"
+              v-model="profileDetails.dataImporterType"
               class="tw-p-3"
               :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
               :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
@@ -56,23 +57,22 @@
               :options="dataImporters"
               option-value="typeName"
               option-label="typeName"
-              v-model="profileDetails.dataImporterType"
-              @update:modelValue="
+              required
+              searchable
+              :clearable="false"
+              @update:model-value="
                 (e) => {
                   handleChange(e);
                   setImporter(e as string);
                 }
               "
-              required
-              searchable
-              :clearable="false"
             ></VcSelect>
           </Field>
         </VcCol>
       </VcRow>
       <VcRow
-        class="tw-p-3"
         v-if="profileDetails.dataImporterType"
+        class="tw-p-3"
       >
         <VcCard :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')">
           <VcRow>
@@ -93,7 +93,7 @@
                 :property="setting"
                 :getter="getSettingsValue"
                 :setter="setSettingsValue"
-                :optionsGetter="loadDictionaries"
+                :options-getter="loadDictionaries"
               >
               </VcDynamicProperty>
             </VcCol>

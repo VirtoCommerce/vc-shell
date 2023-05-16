@@ -1,4 +1,4 @@
-import { computed, getCurrentInstance, inject, Ref, ref, watch } from "vue";
+import { computed, Ref, ref, watch } from "vue";
 import {
   ImportClient,
   IDataImporter,
@@ -13,7 +13,7 @@ import {
   SearchImportRunHistoryCriteria,
   SearchImportRunHistoryResult,
 } from "./../../api-client/import";
-import { AuthApiBase, IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
+import { IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
 import * as _ from "lodash-es";
 
 export type INotificationHistory = ImportPushNotification | ImportRunHistory;

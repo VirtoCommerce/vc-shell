@@ -64,7 +64,10 @@
             class="tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-cursor-pointer last-of-type:tw-border-b-0"
             @click="handleClick(item)"
           >
-            <NotificationItem :notification="item"></NotificationItem>
+            <NotificationItem
+              :notification="item"
+              :templates="templates"
+            />
           </div>
         </VcCol>
         <div
@@ -79,16 +82,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, h } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { PushNotification } from "./../../../../core/api";
 import { VcCol, VcContainer, VcIcon } from "./../../";
 import { vOnClickOutside } from "@vueuse/components";
+import { NotificationTemplateConstructor } from "./../../../../core/types";
 
 export interface Props {
   title: string;
   isAccent?: boolean;
   notifications: PushNotification[];
+  templates: NotificationTemplateConstructor[];
   onOpen?: () => void;
   onClick?: (notification: PushNotification) => void;
 }
@@ -97,13 +102,6 @@ const props = defineProps<Props>();
 
 const isDropdownVisible = ref(false);
 
-function toggleNotificationsDrop() {
-  isDropdownVisible.value = !isDropdownVisible.value;
-  if (props.onOpen && typeof props.onOpen === "function") {
-    props.onOpen();
-  }
-}
-
 const handleClick = async (notification: PushNotification) => {
   isDropdownVisible.value = false;
 
@@ -111,6 +109,13 @@ const handleClick = async (notification: PushNotification) => {
     props.onClick(notification);
   }
 };
+
+function toggleNotificationsDrop() {
+  isDropdownVisible.value = !isDropdownVisible.value;
+  if (props.onOpen && typeof props.onOpen === "function") {
+    props.onOpen();
+  }
+}
 </script>
 
 <style lang="scss">

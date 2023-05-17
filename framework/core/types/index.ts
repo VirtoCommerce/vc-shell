@@ -6,7 +6,6 @@ import {
   ComponentInstanceConstructor,
   BladeInstanceConstructor,
 } from "./../../shared";
-import { PushNotification } from "./../api";
 
 // Type instead of interface here is workaround for:
 // https://github.com/microsoft/TypeScript/issues/15300
@@ -81,6 +80,8 @@ export type ToolbarMenu<T> = T extends {
     } & IBladeToolbar
   : T & { component?: ComponentInstanceConstructor };
 
+export type NotificationTemplateConstructor = ComponentInstanceConstructor & { notifyType: string };
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface IActionBuilderResult<T = {}> {
   icon: string;
@@ -148,14 +149,3 @@ export type ITableColumns = {
   align?: "start" | "end" | "center" | "between" | "around" | "evenly";
   visible?: boolean;
 };
-
-export interface IImportPush extends PushNotification {
-  profileName: string;
-  errors: Record<string, unknown>[];
-  finished: Date;
-}
-
-export interface IProductPush extends PushNotification {
-  productName: string;
-  newStatus: string;
-}

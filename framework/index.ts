@@ -57,6 +57,10 @@ export default {
     app.config.globalProperties.pages = [];
     app.provide("pages", app.config.globalProperties.pages);
 
+    // Notification templates
+    app.config.globalProperties.notificationTemplates = [];
+    app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
+
     // Shared module
     app.use(SharedModule);
 

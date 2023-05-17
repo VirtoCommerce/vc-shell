@@ -16,16 +16,7 @@
         "ALL_FILTERS": "Filters"
       },
       "VC_NOTIFICATION_DROPDOWN": {
-        "EMPTY": "No notifications yet",
-        "IMPORT_PUSH": {
-          "PROFILE": "Profile:",
-          "ERRORS": "Errors"
-        },
-        "PRODUCT_PUSH": {
-          "PRODUCT": "Product",
-          "UPDATE": "status update",
-          "MORE_DETAILS": "Click the notification to see details"
-        }
+        "EMPTY": "No notifications yet"
       },
       "VC_POPUP": {
         "TITLE": {

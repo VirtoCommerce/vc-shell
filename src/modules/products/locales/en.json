@@ -139,6 +139,11 @@
             "ASSETS":"Assets"
         }
       }
+    },
+    "PUSH": {
+      "PRODUCT": "Product",
+      "UPDATE": "status update",
+      "MORE_DETAILS": "Click the notification to see details"
     }
   }
 }

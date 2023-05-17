@@ -66,6 +66,7 @@ import {
   PushNotification,
   usePopup,
   useMenuComposer,
+  NotificationTemplateConstructor,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -109,6 +110,7 @@ const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const pages = inject<BladePageComponent[]>("pages");
+const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
@@ -187,6 +189,7 @@ const toolbarItems = computed(() =>
       options: {
         title: t("SHELL.TOOLBAR.NOTIFICATIONS"),
         notifications: notifications.value,
+        templates: notificationTemplates,
         onOpen() {
           if (notifications.value.some((x) => x.isNew)) {
             markAllAsRead();

@@ -563,7 +563,7 @@ watch(
         } else if (props.modelValue && typeof props.modelValue === "object") {
           return optionsList.value.includes(props.modelValue);
         } else {
-          return x[getOptionLabel.value(x)] === props.modelValue;
+          return x[props.optionLabel as string] === props.modelValue;
         }
       });
 
@@ -576,9 +576,9 @@ watch(
             undefined,
             Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results?.filter((x) => x[getOptionValue.value(x)] === props.modelValue);
+          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === props.modelValue);
         } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter((x) => x[getOptionValue.value(x)] === props.modelValue);
+          defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
         }
       }
     }

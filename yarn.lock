@@ -3957,7 +3957,6 @@ __metadata:
     sass: ^1.62.1
     swiper: ^6.8.4
     typescript: ^5.0.4
-    url-pattern: ^1.0.3
     vee-validate: ^4.9.3
     vite: ^4.3.6
     vue: ^3.3.2
@@ -8112,7 +8111,6 @@ __metadata:
     sass: ^1.62.1
     tailwindcss: ^3.3.2
     typescript: ^5.0.4
-    url-pattern: ^1.0.3
     vee-validate: ^4.9.3
     vite: ^4.3.6
     vite-plugin-checker: ^0.6.0

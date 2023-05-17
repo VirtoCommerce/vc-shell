@@ -3,7 +3,7 @@ import { VcSelect } from "./";
 
 const meta: Meta<typeof VcSelect> = {
   title: "molecules/VcSelect",
-  component: VcSelect,
+  // component: VcSelect,
 };
 
 export default meta;

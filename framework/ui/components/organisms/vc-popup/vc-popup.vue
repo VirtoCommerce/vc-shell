@@ -19,14 +19,28 @@
             @click="$emit('close')"
           ></VcIcon>
         </div>
-        <renderPopupType />
+        <template v-if="type === 'error'">
+          <VcPopupError @close="$emit('close')">
+            <slot></slot>
+          </VcPopupError>
+        </template>
+        <template v-if="type === 'warning'">
+          <VcPopupWarning
+            @close="$emit('close')"
+            @confirm="$emit('confirm')"
+          >
+            <slot></slot>
+          </VcPopupWarning>
+        </template>
+        <template v-else>
+          <slot></slot>
+        </template>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { h, useSlots } from "vue";
 import { VcIcon } from "./../../";
 import VcPopupWarning from "./_internal/vc-popup-warning/vc-popup-warning.vue";
 import VcPopupError from "./_internal/vc-popup-error/vc-popup-error.vue";
@@ -43,28 +57,13 @@ export interface Emits {
   (event: "confirm"): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   closable: true,
   variant: "fullscreen",
   type: "default",
 });
 
-const emit = defineEmits<Emits>();
-
-const slots = useSlots();
-
-const renderPopupType = () => {
-  if (props.type === "error") {
-    return h(VcPopupError, { onClose: () => emit("close") }, () => slots.default && slots.default());
-  } else if (props.type === "warning") {
-    return h(
-      VcPopupWarning,
-      { onClose: () => emit("close"), onConfirm: () => emit("confirm") },
-      () => slots.default && slots.default()
-    );
-  }
-  return h(() => slots.default && slots.default());
-};
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

@@ -1,7 +1,7 @@
 <template>
   <div class="tw-flex">
     <VcRow class="tw-justify-between tw-grow tw-basis-0">
-      <template v-if="templates && templates.length">
+      <template v-if="currentTemplate">
         <notificationTemplateRenderer />
       </template>
       <template v-else>
@@ -53,10 +53,10 @@ const pushTime = computed(() => {
   return moment(props.notification.created).locale(locale).format("L LT");
 });
 
+const currentTemplate = computed(() => props.templates?.find((x) => x?.notifyType === props.notification.notifyType));
+
 function notificationTemplateRenderer() {
-  const notificationTemplate = props.templates?.find(
-    (template) => template?.notifyType === props.notification.notifyType
-  );
+  const notificationTemplate = currentTemplate.value;
 
   return notificationTemplate && h(notificationTemplate, { notification: props.notification });
 }

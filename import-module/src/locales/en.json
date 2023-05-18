@@ -148,6 +148,10 @@
     },
     "CSV": {
       "DELIMITER": "Delimiter"
+    },
+    "PUSH": {
+      "PROFILE": "Profile:",
+      "ERRORS": "Errors"
     }
   },
   "VCMP": {

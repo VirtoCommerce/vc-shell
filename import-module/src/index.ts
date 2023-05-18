@@ -1,19 +1,11 @@
 import * as pages from "./pages";
 import * as locales from "./locales";
-import { createModule } from "@vc-shell/framework";
-import { App } from "vue";
+import * as notificationTemplates from "./components/notifications";
+import { createAppModule } from "@vc-shell/framework";
 
-export default {
-  install(app: App): void {
-    // Register pages
-    Object.entries(pages).forEach(([, page]) => {
-      app.config.globalProperties.pages?.push(page);
-    });
+const ImportModule = createAppModule(pages, locales, notificationTemplates);
 
-    const module = createModule(pages, locales);
-    module.install(app);
-  },
-};
+export default ImportModule;
 
 export * from "./pages";
 export * from "./components";

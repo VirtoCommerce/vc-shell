@@ -28,7 +28,7 @@
       <VcAppSwitcher
         :apps-list="appsList"
         :base="base"
-        @onClick="switchApp($event)"
+        @on-click="switchApp($event)"
       />
     </template>
 

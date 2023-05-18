@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/config-generator",
   "description": "Generate Vite configurations",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
-    "vite": "^4.3.6",
+    "vite": "^4.3.7",
     "vite-plugin-checker": "^0.6.0",
     "vite-plugin-mkcert": "^1.15.0",
-    "vue": "^3.3.2"
+    "vue": "^3.3.3"
   },
   "devDependencies": {
     "typescript": "^5.0.4"

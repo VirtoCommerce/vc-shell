@@ -93,7 +93,7 @@ export interface Props {
   title: string;
   isAccent?: boolean;
   notifications: PushNotification[];
-  templates: NotificationTemplateConstructor[];
+  templates?: NotificationTemplateConstructor[];
   onOpen?: () => void;
   onClick?: (notification: PushNotification) => void;
 }

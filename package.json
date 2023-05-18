@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.69",
+  "version": "1.0.70",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -70,11 +70,11 @@
     "storybook": "^7.0.12",
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
-    "vite": "^4.3.6",
+    "vite": "^4.3.7",
     "vite-plugin-checker": "^0.6.0",
     "vite-plugin-mkcert": "^1.15.0",
     "vite-plugin-pwa": "^0.14.7",
-    "vue": "^3.3.2",
+    "vue": "^3.3.3",
     "vue-eslint-parser": "^9.3.0",
     "vue-tsc": "^1.6.5"
   },

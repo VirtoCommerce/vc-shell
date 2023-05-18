@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.76",
+  "version": "1.0.77",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -25,7 +25,7 @@
     "@types/lodash-es": "^4.17.7",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
-    "@vc-shell/api-client-generator": "^1.0.69",
+    "@vc-shell/api-client-generator": "^1.0.70",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.3",
@@ -48,7 +48,7 @@
     "tailwindcss": "^3.3.2",
     "typescript": "^5.0.4",
     "url-pattern": "^1.0.3",
-    "vite": "^4.3.6",
+    "vite": "^4.3.7",
     "vite-plugin-checker": "^0.6.0",
     "vite-plugin-mkcert": "^1.15.0",
     "vite-plugin-pwa": "^0.14.7",
@@ -57,12 +57,12 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@vc-shell/config-generator": "^1.0.69",
-    "@vc-shell/framework": "^1.0.69",
+    "@vc-shell/config-generator": "^1.0.70",
+    "@vc-shell/framework": "^1.0.70",
     "moment": "^2.29.4",
     "roboto-fontface": "^0.10.0",
-    "vee-validate": "^4.9.3",
-    "vue": "^3.3.2",
+    "vee-validate": "^4.9.4",
+    "vue": "^3.3.3",
     "vue-router": "^4.2.0"
   },
   "lint-staged": {

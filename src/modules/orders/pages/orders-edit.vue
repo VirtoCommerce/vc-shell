@@ -5,14 +5,14 @@
     :expanded="expanded"
     :closable="closable"
     width="70%"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -70,9 +70,9 @@
           <VcCard :header="$t('ORDERS.PAGES.EDIT.BUYER_RECIPIENT.TITLE')">
             <VcCol class="tw-p-2">
               <VcCol
-                class="tw-p-2"
                 v-for="(item, i) in shippingInfo"
                 :key="`${item.label}_${i}`"
+                class="tw-p-2"
               >
                 <VcInfoRow
                   :label="item.label"
@@ -82,17 +82,17 @@
                   }"
                 />
                 <VcInfoRow
-                  :value="item.address"
                   v-if="item.address"
+                  :value="item.address"
                 />
                 <VcInfoRow
-                  :value="item.phone"
                   v-if="item.phone"
+                  :value="item.phone"
                 />
                 <VcInfoRow
+                  v-if="item.email"
                   :value="item.email"
                   type="email"
-                  v-if="item.email"
                 />
               </VcCol>
             </VcCol>
@@ -111,22 +111,22 @@
               :footer="false"
               state-key="orders_edit"
             >
-              <template v-slot:item_name="itemData">
+              <template #item_name="itemData">
                 <div class="tw-flex tw-flex-col">
                   <div>{{ itemData.item.name }}</div>
                   <VcHint class="tw-mt-1">{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.SKU") }}: {{ itemData.item.sku }}</VcHint>
                 </div>
               </template>
-              <template v-slot:item_quantity="itemData">
+              <template #item_quantity="itemData">
                 <div class="tw-flex tw-flex-col">
                   <div>{{ itemData.item.quantity }}</div>
                 </div>
               </template>
 
-              <template v-slot:item_fee="itemData">
+              <template #item_fee="itemData">
                 <div
-                  class="tw-flex tw-flex-col"
                   v-if="itemData.item.feeDetails.length"
+                  class="tw-flex tw-flex-col"
                 >
                   <div>{{ itemData.item.feeDetails[0].description }}</div>
                   <div>
@@ -140,7 +140,7 @@
                 </div>
               </template>
 
-              <template v-slot:mobile-item="itemData">
+              <template #mobile-item="itemData">
                 <div class="tw-py-3 tw-px-4">
                   <div class="tw-w-full tw-flex tw-justify-evenly">
                     <VcImage
@@ -180,8 +180,8 @@
                       </div>
                     </div>
                     <div
-                      class="tw-truncate tw-grow-[2] tw-basis-0"
                       v-if="itemData.item.feeDetails.length"
+                      class="tw-truncate tw-grow-[2] tw-basis-0"
                     >
                       <VcHint>{{ $t("ORDERS.PAGES.EDIT.ITEMS_LIST.COMMISSION") }}</VcHint>
 

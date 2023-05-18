@@ -4,14 +4,14 @@
     :expanded="expanded"
     :closable="closable"
     width="50%"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -22,25 +22,25 @@
       :expanded="expanded"
       :columns="columns"
       :items="products"
-      :itemActionBuilder="actionBuilder"
+      :item-action-builder="actionBuilder"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :searchPlaceholder="$t('MP_PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('MP_PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
-      :searchValue="searchValue"
-      :activeFilterCount="activeFilterCount"
-      :selectedItemId="selectedItemId"
-      @search:change="onSearchList"
-      :totalCount="totalCount"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
-      @paginationClick="onPaginationClick"
-      @scroll:ptr="reload"
+      :current-page="currentPage"
+      :search-placeholder="$t('MP_PRODUCTS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('MP_PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :search-value="searchValue"
+      :active-filter-count="activeFilterCount"
+      :selected-item-id="selectedItemId"
+      :total-count="totalCount"
       state-key="marketplace_products"
+      @search:change="onSearchList"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
+      @pagination-click="onPaginationClick"
+      @scroll:ptr="reload"
     >
       <!-- Not found template -->
-      <template v-slot:notfound>
+      <template #notfound>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -51,7 +51,7 @@
       </template>
 
       <!-- Empty template -->
-      <template v-slot:empty>
+      <template #empty>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <img :src="emptyImage" />
           <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -62,7 +62,7 @@
       </template>
 
       <!-- Override name column template -->
-      <template v-slot:item_name="itemData">
+      <template #item_name="itemData">
         <div class="tw-flex tw-flex-col">
           <div class="tw-truncate">
             {{ itemData.item.name }}
@@ -74,14 +74,14 @@
       </template>
 
       <!-- Override status column template -->
-      <template v-slot:item_status="itemData">
+      <template #item_status="itemData">
         <mp-product-status
           :status="itemData.item.status as string"
           class="tw-mb-1"
         />
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
           <VcImage
             class="tw-shrink-0"
@@ -133,7 +133,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, watch, shallowRef } from "vue";
+import { computed, defineComponent, onMounted, reactive, ref, watch, markRaw } from "vue";
 import { UserPermissions } from "../../../types";
 
 export default defineComponent({
@@ -143,12 +143,18 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, useFunctions, IActionBuilderResult, ITableColumns } from "@vc-shell/framework";
+import {
+  IBladeToolbar,
+  useFunctions,
+  IActionBuilderResult,
+  ITableColumns,
+  useBladeNavigation,
+} from "@vc-shell/framework";
 import moment from "moment";
 import { ISellerProduct } from "../../../api_client/marketplacevendor";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { useProducts } from "../composables";
-import MpProductsEdit from "./marketplace-products-edit.vue";
+import { MpProductsEdit } from "./";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
 import { useI18n } from "vue-i18n";
@@ -163,7 +169,6 @@ export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -172,7 +177,8 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
+const { openBlade } = useBladeNavigation();
 const { debounce } = useFunctions();
 const { t } = useI18n({ useScope: "global" });
 
@@ -195,6 +201,12 @@ watch(sort, async (value) => {
 
 onMounted(async () => {
   selectedItemId.value = props.param;
+  if (props.param) {
+    openBlade({
+      blade: markRaw(MpProductsEdit),
+      param: selectedItemId.value,
+    });
+  }
   await loadProducts({ sort: sort.value });
 });
 
@@ -230,8 +242,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("MP_PRODUCTS.PAGES.LIST.TOOLBAR.ADD")),
     icon: "fas fa-plus",
     async clickHandler() {
-      emit("open:blade", {
-        component: shallowRef(MpProductsEdit),
+      openBlade({
+        blade: markRaw(MpProductsEdit),
       });
     },
   },
@@ -302,8 +314,8 @@ const title = computed(() => t("MP_PRODUCTS.PAGES.LIST.TITLE"));
 const activeFilterCount = computed(() => Object.values(appliedFilter.value).filter((item) => !!item).length);
 
 const onItemClick = (item: { id: string }) => {
-  emit("open:blade", {
-    component: shallowRef(MpProductsEdit),
+  openBlade({
+    blade: markRaw(MpProductsEdit),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -351,7 +363,7 @@ const onPaginationClick = async (page: number) => {
 };
 
 const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   // const statuses =
   //   product.status?.split(",").map((item) => item.trim()) || [];
@@ -362,7 +374,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
           title: computed(() => t("MP_PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
           variant: "danger",
           clickHandler() {
-            alert("Unpublish");
+            showError("Unpublish");
           },
         });
       } else {
@@ -371,7 +383,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
           title: computed(() => t("MP_PRODUCTS.PAGES.LIST.ACTIONS.PUBLISH")),
           variant: "success",
           clickHandler() {
-            alert("Publish");
+            showError("Publish");
           },
         });
       }
@@ -382,7 +394,7 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
         variant: "danger",
         leftActions: true,
         clickHandler(item: ISellerProduct) {
-          if (window.confirm("Delete " + item.id)) {
+          if (await showConfirmation("Delete " + item.id)) {
           }
         },
       });*/
@@ -393,14 +405,14 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
             icon: "fas fa-clock",
             title: "Other action",
             clickHandler() {
-              alert("Other action");
+              showError("Other action");
             },
           },
           {
             icon: "fas fa-clock",
             title: "Other action2",
             clickHandler() {
-              alert("Other action");
+              showError("Other action");
             },
           },
         ]
@@ -421,8 +433,8 @@ async function resetSearch() {
 }
 
 function addProduct() {
-  emit("open:blade", {
-    component: shallowRef(MpProductsEdit),
+  openBlade({
+    blade: markRaw(MpProductsEdit),
   });
 }
 

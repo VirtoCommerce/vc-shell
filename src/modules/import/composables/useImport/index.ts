@@ -1,6 +1,5 @@
 import { computed, Ref, ref, watch } from "vue";
 import {
-  CreateProfileCommand,
   IDataImporter,
   ImportCancellationRequest,
   ImportDataPreview,
@@ -8,14 +7,14 @@ import {
   ImportPushNotification,
   PreviewDataQuery,
   RunImportCommand,
-  SearchImportProfilesHistoryQuery,
   SearchImportProfilesQuery,
-  SearchImportProfilesHistoryResult,
   UpdateProfileCommand,
   VcmpSellerImportClient,
   ImportRunHistory,
-  ISearchImportProfilesHistoryQuery,
   ObjectSettingEntry,
+  SearchImportRunHistoryQuery,
+  ISearchImportRunHistoryQuery,
+  SearchImportRunHistoryResult,
 } from "../../../../api_client/marketplacevendor";
 import { IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
 import * as _ from "lodash-es";
@@ -26,7 +25,7 @@ export interface IImportStatus {
   notification?: INotificationHistory;
   jobId?: string;
   inProgress: boolean;
-  progress: number;
+  progress?: number;
   estimatingRemaining?: boolean;
   estimatedRemaining?: string;
 }
@@ -47,7 +46,7 @@ export type ExtProfile = ImportProfile & {
   jobId?: string;
 };
 
-export interface ISearchProfile extends ISearchImportProfilesHistoryQuery {
+export interface ISearchProfile extends ISearchImportRunHistoryQuery {
   results?: ExtProfile[];
 }
 
@@ -72,7 +71,7 @@ interface IUseImport {
   startImport(extProfile: ExtProfile): Promise<void>;
   cancelImport(): Promise<void>;
   clearImport(): void;
-  fetchImportHistory(query?: ISearchImportProfilesHistoryQuery): void;
+  fetchImportHistory(query?: ISearchImportRunHistoryQuery): void;
   fetchImportProfiles(): void;
   loadImportProfile(args: { id: string }): void;
   createImportProfile(details: ImportProfile): void;
@@ -87,7 +86,7 @@ export default (): IUseImport => {
   const { getAccessToken, user } = useUser();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
-  const historySearchResult = ref<SearchImportProfilesHistoryResult>();
+  const historySearchResult = ref<SearchImportRunHistoryResult>();
   const profileSearchResult = ref<ISearchProfile>();
   const profile = ref<ExtProfile>(new ImportProfile() as ExtProfile);
   const profileDetails = ref<ImportProfile>(new ImportProfile({ settings: [new ObjectSettingEntry()] }));
@@ -96,7 +95,9 @@ export default (): IUseImport => {
   const modified = ref(false);
   const importStarted = ref(false);
   const currentPage = ref(1);
-  const importStatus = ref<IImportStatus>();
+  const importStatus = ref<IImportStatus>({
+    inProgress: false,
+  });
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
@@ -138,15 +139,15 @@ export default (): IUseImport => {
     { deep: true }
   );
 
-  async function fetchImportHistory(query?: ISearchImportProfilesHistoryQuery) {
+  async function fetchImportHistory(query?: ISearchImportRunHistoryQuery) {
     const client = await getApiClient();
     try {
       loading.value = true;
-      const historyQuery = new SearchImportProfilesHistoryQuery({
+      const historyQuery = new SearchImportRunHistoryQuery({
         ...(query || {}),
         take: 15,
       });
-      historySearchResult.value = await client.searchImportProfilesHistory(historyQuery);
+      historySearchResult.value = await client.searchImportRunHistory(historyQuery);
       currentPage.value = (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
     } catch (e) {
       console.error(e);
@@ -232,9 +233,9 @@ export default (): IUseImport => {
 
     try {
       loading.value = true;
-      const importDataQuery = new RunImportCommand({
-        importProfile: extProfile ? extProfile : profile.value,
-      });
+      const importProfile = new ImportProfile(extProfile ? extProfile : profile.value);
+      importProfile.onImportCompleted = undefined;
+      const importDataQuery = new RunImportCommand({ importProfile });
       const notification = await client.runImport(importDataQuery);
       importStarted.value = true;
       updateStatus(notification);
@@ -331,11 +332,9 @@ export default (): IUseImport => {
 
     newProfile.userName = user.value.userName;
     newProfile.userId = user.value.id;
-    const command = new CreateProfileCommand({
-      importProfile: new ImportProfile({
-        ...newProfile,
-        settings: newProfile.settings.map((setting) => new ObjectSettingEntry(setting)),
-      }),
+    const command = new ImportProfile({
+      ...newProfile,
+      settings: newProfile.settings.map((setting) => new ObjectSettingEntry(setting)),
     });
 
     try {

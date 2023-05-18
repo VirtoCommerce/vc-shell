@@ -1,3 +1,27 @@
+## [1.0.77](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.76...v1.0.77) (2023-05-18)
+
+
+### Bug Fixes
+
+* assetRemoveHandler added ([0daab1a](https://github.com/VirtoCommerce/vendor-portal/commit/0daab1a02c386457d1fcc57bab27232c5c7e5fd8))
+* assets methods moved to module, fixed assets blade opening ([7d0a933](https://github.com/VirtoCommerce/vendor-portal/commit/7d0a93332e77338dfd15acde8dccfc6c398798e6))
+* changed navigation props names ([d5d6ee3](https://github.com/VirtoCommerce/vendor-portal/commit/d5d6ee3cc60dd6cad7ce666cf0160ea35eb3ec00))
+* fixed api-generation script ([9b538f1](https://github.com/VirtoCommerce/vendor-portal/commit/9b538f155e86d3157c0af1f8d5450ac17c56e413))
+* other fixes and refactors ([36b489b](https://github.com/VirtoCommerce/vendor-portal/commit/36b489b4e0c67341fd2f0ea83dae3a9196ab8bbc))
+* updated exports ([0bdebff](https://github.com/VirtoCommerce/vendor-portal/commit/0bdebff83bea6b4ac052ad67ccdba97f03aebc31))
+
+
+### Features
+
+* eslint vue3-recommended ([5652ab6](https://github.com/VirtoCommerce/vendor-portal/commit/5652ab677ff45d1da9263eb70d09e5d4ba3c8fd0))
+* notification templates for products/orders ([7465bae](https://github.com/VirtoCommerce/vendor-portal/commit/7465bae5fdbe6c042341f4a30562e8129330515a))
+* push notifications template in modules ([dc40daa](https://github.com/VirtoCommerce/vendor-portal/commit/dc40daa4db10f4cb8454849bec2971a6bf4f8cc3))
+* refactored navi/popup/notifications ([9fd1981](https://github.com/VirtoCommerce/vendor-portal/commit/9fd19815d6893d6a0298bb9050b75dbf8cc2309c))
+* refactored notifications ([b1cd525](https://github.com/VirtoCommerce/vendor-portal/commit/b1cd5259c82c858f31cf92a8ea31209f532e1007))
+* vm-1154 order statuses coloring ([7a8cd7b](https://github.com/VirtoCommerce/vendor-portal/commit/7a8cd7b0940ad123e866dcc6942992fe77b995cb))
+
+
+
 ## [1.0.76](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.75...v1.0.76) (2023-04-26)
 
 

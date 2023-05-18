@@ -7,66 +7,66 @@
     <div class="tw-p-3">
       <VcForm>
         <Field
+          v-slot="{ field, errorMessage, errors }"
           :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
           name="current"
           rules="required|min:6"
-          :modelValue="form.currentPassword"
-          v-slot="{ field, errorMessage, errors }"
+          :model-value="form.currentPassword"
         >
           <VcInput
             v-bind="field"
             ref="passwordField"
+            v-model="form.currentPassword"
             class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
             type="password"
-            v-model="form.currentPassword"
-            @update:modelValue="validate"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
+            @update:model-value="validate"
           ></VcInput>
         </Field>
         <Field
+          v-slot="{ field, errorMessage, errors }"
           :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           name="new_pass"
           rules="required|min:6"
-          :modelValue="form.password"
-          v-slot="{ field, errorMessage, errors }"
+          :model-value="form.password"
         >
           <VcInput
             v-bind="field"
             ref="newPasswordField"
+            v-model="form.password"
             class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
             type="password"
-            @update:modelValue="validate"
-            v-model="form.password"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
+            @update:model-value="validate"
           ></VcInput>
         </Field>
         <Field
+          v-slot="{ field, errorMessage, errors }"
           :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
           name="confirm_pass"
           rules="required|min:6"
-          :modelValue="form.confirmPassword"
-          v-slot="{ field, errorMessage, errors }"
+          :model-value="form.confirmPassword"
         >
           <VcInput
             v-bind="field"
             ref="confirmPasswordField"
+            v-model="form.confirmPassword"
             class="tw-mb-4"
             :label="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
             :placeholder="$t('SHELL.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
-            @update:modelValue="validate"
             type="password"
-            v-model="form.confirmPassword"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
+            @update:model-value="validate"
           ></VcInput>
         </Field>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
@@ -92,9 +92,9 @@
         </div>
 
         <VcHint
-          class="tw-mt-3 !tw-text-[#f14e4e]"
           v-for="(err, i) in form.errors"
           :key="i"
+          class="tw-mt-3 !tw-text-[#f14e4e]"
         >
           <!-- TODO: stylizing-->
           {{ (err as IIdentityError).code ? $t(`SHELL.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err }}
@@ -135,8 +135,8 @@ const form = reactive<IChangePassForm>({
 });
 
 const isDisabled = computed(() => {
-    return !isDirty.value || !isValid.value;
-  });
+  return !isDirty.value || !isValid.value;
+});
 
 async function changePassword() {
   const result = await changeUserPassword(form.currentPassword, form.password);

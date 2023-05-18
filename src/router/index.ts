@@ -11,7 +11,7 @@ import App from "./../pages/App.vue";
 import { ImportNew, ImportProfileDetails, ImportProfileSelector } from "../modules/import";
 import { ReviewDetails, ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { usePermissions, useUser, ExtendedComponent } from "@vc-shell/framework";
+import { usePermissions, useUser, BladePageComponent, notification } from "@vc-shell/framework";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -181,7 +181,7 @@ let programmatic = false;
 });
 
 router.beforeEach((to, from, next) => {
-  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as ExtendedComponent;
+  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as BladePageComponent;
 
   if (from.name === undefined || programmatic) {
     if (ExtendedComponent && ExtendedComponent.permissions) {
@@ -192,7 +192,9 @@ router.beforeEach((to, from, next) => {
           next({ name: "Dashboard" });
         } else {
           // TODO temporary access alert
-          alert("Access restricted");
+          notification.error("Access restricted", {
+            timeout: 3000,
+          });
         }
       }
     } else {

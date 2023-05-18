@@ -1,27 +1,27 @@
 <template>
   <VcBlade
+    v-loading="loading"
     :title="title"
     width="30%"
-    v-loading="loading"
-    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <VcContainer>
       <VcStatus
+        v-if="errorMessage"
         :outline="false"
         :extend="true"
         variant="light-danger"
         class="tw-w-full tw-box-border tw-mb-3"
-        v-if="errorMessage"
       >
         <div class="tw-flex tw-flex-row tw-items-center">
           <VcIcon
@@ -45,18 +45,18 @@
               :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
               name="name"
               rules="required"
-              :modelValue="fulfillmentCenterDetails.name"
+              :model-value="fulfillmentCenterDetails.name"
             >
               <VcInput
                 v-bind="field"
+                v-model="fulfillmentCenterDetails.name"
                 class="tw-p-3"
                 :label="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.LABEL')"
                 :placeholder="$t('SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NAME.PLACEHOLDER')"
-                v-model="fulfillmentCenterDetails.name"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               >
               </VcInput>
             </Field>
@@ -65,18 +65,12 @@
       </VcForm>
     </VcContainer>
   </VcBlade>
-  <WarningPopup
-    v-if="deleteModal"
-    @close="deleteModal = false"
-    @delete="removeFulfillmentCenter"
-  ></WarningPopup>
 </template>
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, unref } from "vue";
-import { IBladeToolbar, IParentCallArgs } from "@vc-shell/framework";
+import { IBladeToolbar, IParentCallArgs, usePopup } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
-import WarningPopup from "../../components/WarningPopup.vue";
 import { Field, useIsFormValid, useIsFormDirty, useForm } from "vee-validate";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
@@ -101,6 +95,7 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 useForm({ validateOnMount: false });
 
+const { showError, showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 const {
   fulfillmentCenterDetails,
@@ -119,7 +114,6 @@ const title = computed(() =>
   props.param ? fulfillmentCenterDetails.value.name : t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TITLE")
 );
 
-const deleteModal = ref(false);
 const errorMessage = ref("");
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
@@ -141,7 +135,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         });
         emit("close:blade");
       } else {
-        alert(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NOT_VALID"))));
+        showError(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.FORM.NOT_VALID"))));
       }
     },
     isVisible: true,
@@ -161,8 +155,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "delete",
     title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.DETAILS.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
-    clickHandler() {
-      deleteModal.value = true;
+    async clickHandler() {
+      if (await showConfirmation(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.FC_DELETE")))) {
+        removeFulfillmentCenter();
+      }
     },
     isVisible: !!props.param,
     disabled: computed(() => true),
@@ -181,7 +177,6 @@ onMounted(async () => {
 
 async function removeFulfillmentCenter() {
   if (props.param) {
-    deleteModal.value = false;
     await deleteFulfillmentCenter({ id: props.param });
     emit("parent:call", {
       method: "reload",
@@ -192,7 +187,7 @@ async function removeFulfillmentCenter() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(unref(computed(() => t("SETTINGS.FULFILLMENT_CENTERS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

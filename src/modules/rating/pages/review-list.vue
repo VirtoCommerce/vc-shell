@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     :title="title"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     width="70%"
     :expanded="expanded"
     :closable="closable"
@@ -10,21 +10,21 @@
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <ReviewTable
       :expanded="expanded"
-      @itemClick="onItemClick"
+      @item-click="onItemClick"
     ></ReviewTable>
   </VcBlade>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, shallowRef } from "vue";
-import { VcBlade, IBladeEvent, IBladeToolbar } from "@vc-shell/framework";
+import { computed, defineComponent, ref, markRaw, onMounted } from "vue";
+import { IBladeToolbar, useBladeNavigation } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
@@ -43,27 +43,25 @@ export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
-}
-
-export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
-    review?: CustomerReview;
+  options?: {
+    review: CustomerReview;
   };
-};
+}
 
 export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
+
+const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 
@@ -74,6 +72,16 @@ const { loadReviews } = useReviews();
 // Blade
 
 const title = t("RATING.PAGES.REVIEW_LIST.TITLE");
+
+onMounted(() => {
+  if (props.param && props.options) {
+    openBlade({
+      blade: markRaw(ReviewDetails),
+      param: props.param,
+      options: props.options,
+    });
+  }
+});
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -87,10 +95,10 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
-  emit("open:blade", {
-    component: shallowRef(ReviewDetails),
+  openBlade({
+    blade: markRaw(ReviewDetails),
     param: item.id,
-    bladeOptions: {
+    options: {
       review: item,
     },
     onOpen: onSelect,

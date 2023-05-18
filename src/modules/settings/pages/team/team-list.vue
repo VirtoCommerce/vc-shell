@@ -4,13 +4,13 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -22,18 +22,18 @@
       :items="membersList"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :totalCount="totalCount"
-      @headerClick="onHeaderClick"
-      @itemClick="onItemClick"
-      @paginationClick="onPaginationClick"
-      @scroll:ptr="reload"
+      :current-page="currentPage"
+      :total-count="totalCount"
       :header="false"
-      :selectedItemId="selectedItemId"
+      :selected-item-id="selectedItemId"
       state-key="team_list"
+      @header-click="onHeaderClick"
+      @item-click="onItemClick"
+      @pagination-click="onPaginationClick"
+      @scroll:ptr="reload"
     >
       <!-- Override status column template -->
-      <template v-slot:item_isLockedOut="itemData">
+      <template #item_isLockedOut="itemData">
         <div class="tw-flex">
           <VcStatus
             :variant="itemData.item.isLockedOut ? 'danger' : 'success'"
@@ -48,11 +48,11 @@
       </template>
 
       <!-- Override role column template -->
-      <template v-slot:item_role="itemData">
+      <template #item_role="itemData">
         {{ roleName(itemData.item.role as string) }}
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -103,7 +103,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, markRaw } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -113,7 +113,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, ITableColumns } from "@vc-shell/framework";
+import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
 import TeamMemberDetails from "./team-member-details.vue";
 import { useI18n } from "vue-i18n";
@@ -125,15 +125,8 @@ export interface Props {
   options?: Record<string, unknown>;
 }
 
-export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
-    user?: { id?: string };
-  };
-};
-
 export interface Emits {
   (event: "close:blade"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -142,8 +135,8 @@ const props = withDefaults(defineProps<Props>(), {
   options: () => ({}),
 });
 
-const emit = defineEmits<Emits>();
-
+defineEmits<Emits>();
+const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { getTeamMembers, searchQuery, loading, membersList, currentPage, pages, totalCount } = useTeamMembers();
 
@@ -180,8 +173,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.TEAM.PAGES.LIST.TOOLBAR.ADD_MEMBER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("open:blade", {
-        component: shallowRef(TeamMemberDetails),
+      openBlade({
+        blade: markRaw(TeamMemberDetails),
       });
     },
   },
@@ -271,10 +264,10 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: { id?: string }) => {
-  emit("open:blade", {
-    component: shallowRef(TeamMemberDetails),
+  openBlade({
+    blade: markRaw(TeamMemberDetails),
     param: item.id,
-    bladeOptions: {
+    options: {
       user: item,
     },
     onOpen() {

@@ -7,20 +7,20 @@
     :header="false"
     :footer="footer"
     :items="reviews"
-    :selectedItemId="selectedItemId"
+    :selected-item-id="selectedItemId"
     :sort="sort"
     :pages="pages"
-    :currentPage="currentPage"
-    :totalLabel="$t('RATING.REVIEW_TABLE.TOTALS')"
-    :totalCount="totalCount"
-    @headerClick="onHeaderClick"
-    @itemClick="onItemClick"
-    @paginationClick="onPaginationClick"
-    @scroll:ptr="loadReviews"
+    :current-page="currentPage"
+    :total-label="$t('RATING.REVIEW_TABLE.TOTALS')"
+    :total-count="totalCount"
     state-key="review_table"
+    @header-click="onHeaderClick"
+    @item-click="onItemClick"
+    @pagination-click="onPaginationClick"
+    @scroll:ptr="loadReviews"
   >
     <!-- Empty -->
-    <template v-slot:empty>
+    <template #empty>
       <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center tw-p-5">
         <img :src="emptyImage" />
         <div class="tw-m-4 tw-text-xl tw-font-medium">
@@ -29,7 +29,7 @@
       </div>
     </template>
 
-    <template v-slot:mobile-item="{ item }">
+    <template #mobile-item="{ item }">
       <div class="tw-p-3">
         <div class="tw-w-full tw-flex tw-justify-evenly">
           <div class="tw-grow tw-basis-0">
@@ -71,12 +71,12 @@
     </template>
 
     <!-- Override rating column template -->
-    <template v-slot:item_rating="itemData">
+    <template #item_rating="itemData">
       <VcRating :rating="itemData.item.rating as number"></VcRating>
     </template>
 
     <!-- Override status column template -->
-    <template v-slot:item_status="itemData">
+    <template #item_status="itemData">
       <Status :review-status="itemData.item.reviewStatus as CustomerReviewReviewStatus"></Status>
     </template>
   </VcTable>

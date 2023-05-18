@@ -1,9 +1,9 @@
 <template>
   <VcPopup
     :title="$t('IMPORT.PAGES.IMPORTING.POPUP.TITLE')"
-    @close="$emit('close')"
     class="import-popup"
     variant="medium"
+    @close="$emit('close')"
   >
     <div class="tw-flex tw-flex-row tw-justify-between">
       <div class="tw-p-5 tw-flex tw-items-center">
@@ -35,8 +35,8 @@
         >{{ $t("IMPORT.PAGES.IMPORTING.POPUP.CANCEL") }}</VcButton
       >
       <VcButton
-        @click="$emit('startImport')"
         :disabled="disabled"
+        @click="$emit('startImport')"
         >{{ $t("IMPORT.PAGES.IMPORTING.POPUP.IMPORT") }}</VcButton
       >
     </div>
@@ -55,6 +55,7 @@ export interface Props {
 
 interface Emits {
   (event: "close"): void;
+  (event: "startImport"): void;
 }
 
 withDefaults(defineProps<Props>(), {

@@ -4,14 +4,14 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -24,32 +24,32 @@
       class="tw-grow tw-basis-0"
       :multiselect="true"
       :columns="tableColumns"
-      :items="offers"
-      :itemActionBuilder="actionBuilder"
+      :items="(offers as unknown as IOfferUnwrappedPrice[])"
+      :item-action-builder="actionBuilder"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :searchValue="searchValue"
-      @search:change="onSearchList"
-      :searchPlaceholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
-      :totalCount="totalCount"
-      :selectedItemId="selectedItemId"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
-      @paginationClick="onPaginationClick"
-      @scroll:ptr="reload"
-      @selectionChanged="onSelectionChanged"
+      :current-page="currentPage"
+      :search-value="searchValue"
+      :search-placeholder="$t('OFFERS.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
+      :total-count="totalCount"
+      :selected-item-id="selectedItemId"
       state-key="offers_list"
+      @search:change="onSearchList"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
+      @pagination-click="onPaginationClick"
+      @scroll:ptr="reload"
+      @selection-changed="onSelectionChanged"
     >
       <!-- Override sellerName column template -->
-      <template v-slot:item_name="itemData">
+      <template #item_name="itemData">
         <div class="tw-truncate">
           {{ itemData.item.name }}
         </div>
       </template>
 
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-w-full tw-flex tw-justify-evenly">
             <VcImage
@@ -83,13 +83,13 @@
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.LIST_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{ itemData.item.listPrice && (itemData.item.listPrice as number).toFixed(2) }}
+                {{ itemData.item.listPrice && itemData.item.listPrice.toFixed(2) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0 tw-mr-2">
               <VcHint>{{ $t("OFFERS.PAGES.LIST.MOBILE.SALE_PRICE") }}</VcHint>
               <div class="tw-truncate tw-mt-1">
-                {{ handleSalePrice(itemData.item.salePrice as number) }}
+                {{ handleSalePrice(itemData.item.salePrice) }}
               </div>
             </div>
             <div class="tw-truncate tw-grow-[2] tw-basis-0">
@@ -106,7 +106,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, onMounted, reactive, ref, unref, watch, shallowRef } from "vue";
+import { computed, defineComponent, inject, onMounted, reactive, ref, unref, watch, markRaw, Ref } from "vue";
 
 export default defineComponent({
   url: "/offers",
@@ -115,15 +115,18 @@ export default defineComponent({
 
 <script lang="ts" setup>
 import {
-  IBladeEvent,
   IBladeToolbar,
   IParentCallArgs,
   useFunctions,
   IActionBuilderResult,
   ITableColumns,
+  useNotifications,
+  notification,
+  useBladeNavigation,
+  usePopup,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { IOffer, SellerProduct } from "../../../api_client/marketplacevendor";
+import { IOffer, ISellerProduct } from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 // eslint-disable-next-line import/no-unresolved
@@ -135,23 +138,22 @@ export interface Props {
   closable?: boolean;
   param?: string;
   options?: {
-    sellerProduct?: SellerProduct;
+    sellerProduct?: ISellerProduct;
+    addOffer?: boolean;
   };
 }
-
-export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
-    sellerProduct?: SellerProduct;
-  };
-};
 
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:children"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
+}
+
+interface IOfferUnwrappedPrice extends IOffer {
+  listPrice: number;
+  salePrice: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -160,17 +162,34 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const { openBlade } = useBladeNavigation();
+const { showConfirmation } = usePopup();
 
 const { t } = useI18n({ useScope: "global" });
 const { debounce } = useFunctions();
 
 const { searchQuery, offers, totalCount, pages, currentPage, loadOffers, loading, deleteOffers } = useOffers();
+const { moduleNotifications, markAsRead } = useNotifications("OfferDeletedDomainEvent");
 
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref<string>();
 const selectedOfferIds = ref([]);
-const isDesktop = inject("isDesktop");
+const isDesktop = inject<Ref<boolean>>("isDesktop");
+
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      notification.success(message.title, {
+        onClose() {
+          markAsRead(message);
+        },
+      });
+    });
+  },
+  { deep: true }
+);
 
 watch(sort, async (value) => {
   await loadOffers({ ...searchQuery.value, sort: value });
@@ -178,6 +197,17 @@ watch(sort, async (value) => {
 
 onMounted(async () => {
   selectedItemId.value = props.param;
+  if (props.param) {
+    openBlade({
+      blade: markRaw(OffersDetails),
+      param: selectedItemId.value,
+    });
+  } else if (props.options.addOffer) {
+    openBlade({
+      blade: markRaw(OffersDetails),
+    });
+  }
+
   searchQuery.value.sellerProductId = props.options?.sellerProduct?.id;
   await loadOffers({ ...searchQuery.value, sort: sort.value });
 });
@@ -227,7 +257,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     async clickHandler() {
       //TODO: replace to confirmation dialog from UI library
       if (
-        window.confirm(
+        await showConfirmation(
           unref(
             computed(() =>
               t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
@@ -349,8 +379,8 @@ const notfound = reactive({
 const title = computed(() => t("OFFERS.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("open:blade", {
-    component: shallowRef(OffersDetails),
+  openBlade({
+    blade: markRaw(OffersDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;
@@ -391,9 +421,11 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const addOffer = () => {
-  emit("open:blade", {
-    component: shallowRef(OffersDetails),
-    bladeOptions: props.options,
+  openBlade({
+    blade: markRaw(OffersDetails),
+    options: {
+      sellerProduct: props.options.sellerProduct,
+    },
   });
 };
 
@@ -408,8 +440,8 @@ const onSelectionChanged = (items: IOffer[]) => {
   selectedOfferIds.value = items.map((item) => item.id);
 };
 
-const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[] => {
-  let result = [];
+const actionBuilder = (item: IOfferUnwrappedPrice): IActionBuilderResult[] => {
+  const result = [];
 
   // if (item.status === "Published") {
   //   result.push({
@@ -417,7 +449,7 @@ const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[
   //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
   //     variant: "danger",
   //     clickHandler() {
-  //       alert("Unpublish");
+  //       showError("Unpublish");
   //     },
   //   });
   // } else {
@@ -426,7 +458,7 @@ const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[
   //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
   //     variant: "success",
   //     clickHandler() {
-  //       alert("Publish");
+  //       showError("Publish");
   //     },
   //   });
   // }
@@ -451,7 +483,7 @@ const actionBuilder = (item: IOffer & { status: string }): IActionBuilderResult[
 async function removeOffers() {
   //TODO: replace to confirmation dialog from UI library
   if (
-    window.confirm(
+    await showConfirmation(
       t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
         count: selectedOfferIds.value.length,
       })

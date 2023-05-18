@@ -3,44 +3,44 @@
     v-loading="loading"
     :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
     :width="bladeWidth + '%'"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :closable="closable"
     :expanded="expanded"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <VcContainer class="import">
       <!-- Import profile widgets-->
       <div
-        class="tw-p-3"
         v-if="importProfiles && importProfiles.length"
+        class="tw-p-3"
       >
         <VcSlider
           :navigation="true"
           :overflow="true"
           :slides="importProfiles"
         >
-          <template v-slot:default="{ slide }">
+          <template #default="{ slide }">
             <div class="tw-relative">
               <VcStatus
+                v-if="slide.inProgress"
                 variant="success"
                 :outline="false"
                 class="tw-absolute tw-right-0 -tw-top-[10px]"
-                v-if="slide.inProgress"
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
                 class="tw-w-max"
-                @click="openImporter(slide.id)"
                 icon="fas fa-file-csv"
                 variant="widget"
                 :selected="selectedProfileId === slide.id"
+                @click="openImporter(slide.id)"
               >
                 {{ slide.name }}
                 <VcHint>{{ slide.dataImporterType }}</VcHint>
@@ -58,25 +58,25 @@
           :columns="columns"
           :items="importHistory"
           :header="false"
-          @itemClick="onItemClick"
-          :selectedItemId="selectedItemId"
-          :totalCount="totalHistoryCount"
+          :selected-item-id="selectedItemId"
+          :total-count="totalHistoryCount"
           :pages="historyPages"
-          :currentPage="currentPage"
-          @paginationClick="onPaginationClick"
+          :current-page="currentPage"
           state-key="import_profile_history"
+          @item-click="onItemClick"
+          @pagination-click="onPaginationClick"
         >
           <!-- Override name column template -->
-          <template v-slot:item_name="itemData">
+          <template #item_profileName="itemData">
             <div class="tw-flex tw-flex-col">
               <div class="tw-truncate">
-                {{ itemData.item.name }}
+                {{ itemData.item.profileName }}
               </div>
             </div>
           </template>
 
           <!-- Override finished column template -->
-          <template v-slot:item_finished="itemData">
+          <template #item_finished="itemData">
             <ImportStatus :item="itemData.item" />
           </template>
         </VcTable>
@@ -86,16 +86,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, shallowRef } from "vue";
+import { defineComponent, computed, onMounted, ref, markRaw } from "vue";
 
 export default defineComponent({
   url: "/import",
+  scope: {
+    notificationClick(notification: ImportPushNotification) {
+      if (notification.notifyType !== "ImportPushNotification") return;
+      return {
+        param: notification.profileId,
+        options: {
+          importJobId: notification.jobId,
+        },
+      };
+    },
+  },
 });
 </script>
 
 <script lang="ts" setup>
 import {
-  IBladeEvent,
   IBladeToolbar,
   ITableColumns,
   VcBlade,
@@ -106,33 +116,26 @@ import {
   VcCard,
   VcTable,
   usePermissions,
+  useBladeNavigation,
 } from "@vc-shell/framework";
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportRunHistory } from "../../../api_client/marketplacevendor";
+import { ImportPushNotification, ImportRunHistory } from "../../../api_client/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 import { UserPermissions } from "../../../types";
 import { useI18n } from "vue-i18n";
-
-export type IBladeOptions = IBladeEvent & {
-  bladeOptions?: {
-    importJobId?: string;
-    title?: string;
-  };
-};
 
 export interface Props {
   expanded: boolean;
   closable: boolean;
   param?: string;
   options?: {
-    importJobId?: string;
+    importJobId: string;
   };
 }
 
 export interface Emits {
-  (event: "open:blade", blade: IBladeOptions): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
@@ -142,10 +145,13 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
+
+const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 const { checkPermission } = usePermissions();
+
 const {
   importHistory,
   historyPages,
@@ -214,8 +220,21 @@ const columns = ref<ITableColumns[]>([
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
 onMounted(async () => {
+  if (props.param && props.options && props.options.importJobId) {
+    openBlade({
+      blade: markRaw(ImportNew),
+      param: props.param,
+      options: {
+        importJobId: props.options.importJobId,
+      },
+      onClose() {
+        selectedItemId.value = undefined;
+      },
+    });
+  }
+
   await reload();
-  if (props.param) {
+  if (props.param && !props.options) {
     selectedProfileId.value = props.param;
   }
   if (props.options && props.options.importJobId) {
@@ -234,8 +253,8 @@ async function reload() {
 function newProfile() {
   bladeWidth.value = 70;
 
-  emit("open:blade", {
-    component: shallowRef(ImportProfileDetails),
+  openBlade({
+    blade: markRaw(ImportProfileDetails),
   });
 }
 
@@ -244,10 +263,10 @@ function openImporter(profileId: string) {
 
   const profile = importProfiles.value.find((profile) => profile.id === profileId);
 
-  emit("open:blade", {
-    component: shallowRef(ImportNew),
+  openBlade({
+    blade: markRaw(ImportNew),
     param: profileId,
-    bladeOptions: {
+    options: {
       importJobId: profile && profile.inProgress ? profile.jobId : undefined,
     },
     onOpen() {
@@ -262,10 +281,10 @@ function openImporter(profileId: string) {
 function onItemClick(item: ImportRunHistory) {
   bladeWidth.value = 50;
 
-  emit("open:blade", {
-    component: shallowRef(ImportNew),
+  openBlade({
+    blade: markRaw(ImportNew),
     param: item.profileId,
-    bladeOptions: {
+    options: {
       importJobId: item.jobId,
       title: item.profileName,
     },

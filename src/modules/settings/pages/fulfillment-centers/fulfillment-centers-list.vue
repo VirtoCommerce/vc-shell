@@ -4,13 +4,13 @@
     width="70%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -22,17 +22,17 @@
       :items="fulfillmentCentersList"
       :sort="sort"
       :pages="pages"
-      :currentPage="currentPage"
-      :totalCount="totalCount"
-      @headerClick="onHeaderClick"
-      @itemClick="onItemClick"
-      @paginationClick="onPaginationClick"
-      @scroll:ptr="reload"
+      :current-page="currentPage"
+      :total-count="totalCount"
       :header="false"
-      :selectedItemId="selectedItemId"
+      :selected-item-id="selectedItemId"
       state-key="fulfillment_centers_list"
+      @header-click="onHeaderClick"
+      @item-click="onItemClick"
+      @pagination-click="onPaginationClick"
+      @scroll:ptr="reload"
     >
-      <template v-slot:mobile-item="itemData">
+      <template #mobile-item="itemData">
         <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-py-3 tw-px-4">
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, shallowRef } from "vue";
+import { defineComponent, ref, computed, watch, onMounted, markRaw } from "vue";
 import { UserPermissions } from "../../../../types";
 
 export default defineComponent({
@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <script lang="ts" setup>
-import { IBladeEvent, IBladeToolbar, ITableColumns } from "@vc-shell/framework";
+import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
 import { useI18n } from "vue-i18n";
@@ -74,7 +74,6 @@ export interface Emits {
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -83,8 +82,8 @@ const props = withDefaults(defineProps<Props>(), {
   param: undefined,
 });
 
-const emit = defineEmits<Emits>();
-
+defineEmits<Emits>();
+const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 const { searchQuery, loading, currentPage, pages, totalCount, fulfillmentCentersList, searchFulfillmentCenters } =
   useFulfillmentCenters();
@@ -107,8 +106,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("SETTINGS.FULFILLMENT_CENTERS.PAGES.LIST.TOOLBAR.ADD_FULFILLMENT_CENTER")),
     icon: "fas fa-plus",
     clickHandler() {
-      emit("open:blade", {
-        component: shallowRef(FulfillmentCenterDetails),
+      openBlade({
+        blade: markRaw(FulfillmentCenterDetails),
       });
     },
   },
@@ -177,8 +176,8 @@ const onPaginationClick = async (page: number) => {
 };
 
 const onItemClick = (item: { id?: string }) => {
-  emit("open:blade", {
-    component: shallowRef(FulfillmentCenterDetails),
+  openBlade({
+    blade: markRaw(FulfillmentCenterDetails),
     param: item.id,
     onOpen() {
       selectedItemId.value = item.id;

@@ -1,6 +1,5 @@
 import VirtoShellFramework, { notification } from "@vc-shell/framework";
 import { createApp } from "vue";
-import PushHub from "./config/push-hub";
 import ImportModule from "./modules/import";
 import OffersModule from "./modules/offers";
 import OrdersModule from "./modules/orders";
@@ -20,7 +19,6 @@ import "@vc-shell/framework/dist/index.css";
 
 const app = createApp(EmptyRouterView)
   .use(router)
-  .use(PushHub)
   .use(VirtoShellFramework)
   .use(OrdersModule)
   .use(ProductsModule)

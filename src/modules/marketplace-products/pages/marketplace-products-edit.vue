@@ -5,17 +5,17 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template v-slot:actions>
+    <template #actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -29,11 +29,11 @@
         <div class="product-details__content">
           <div class="tw-p-4">
             <VcStatus
+              v-if="statusText && (product as ISellerProduct).status !== 'Published'"
               :outline="false"
               :extend="true"
               variant="light-danger"
               class="tw-w-full tw-box-border tw-mb-5"
-              v-if="statusText && (product as ISellerProduct).status !== 'Published'"
             >
               <div class="tw-flex tw-flex-row tw-items-center">
                 <VcIcon
@@ -51,17 +51,17 @@
             </VcStatus>
             <VcForm>
               <Field
+                v-slot="{ field, errorMessage, handleChange, errors }"
                 :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 name="name"
                 rules="required|min:3"
-                :modelValue="productDetails.name"
-                v-slot="{ field, errorMessage, handleChange, errors }"
+                :model-value="productDetails.name"
               >
                 <VcInput
                   v-bind="field"
+                  v-model="productDetails.name"
                   class="tw-mb-4"
                   :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                  v-model="productDetails.name"
                   :placeholder="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="disabled"
                   maxlength="64"
@@ -69,15 +69,15 @@
                   clearable
                   :error="!!errors.length"
                   :error-message="errorMessage"
-                  @update:modelValue="handleChange"
+                  @update:model-value="handleChange"
                 ></VcInput>
               </Field>
               <Field
+                v-slot="{ field, errorMessage, handleChange, errors }"
                 :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TITLE')"
                 name="categoryId"
                 rules="required"
-                :modelValue="productDetails.categoryId"
-                v-slot="{ field, errorMessage, handleChange, errors }"
+                :model-value="productDetails.categoryId"
               >
                 <VcSelect
                   v-bind="field"
@@ -90,22 +90,22 @@
                   option-value="id"
                   option-label="name"
                   :tooltip="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.CATEGORY.TOOLTIP')"
-                  @update:modelValue="
-                    (e: Category) => {
-                      handleChange(e.id);
-                      setCategory(e);
-                    }
-                  "
                   :disabled="disabled"
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
                   :clearable="false"
                   :emit-value="false"
+                  @update:model-value="
+                    (e: Category) => {
+                      handleChange(e.id);
+                      setCategory(e);
+                    }
+                  "
                 >
                   <template
                     v-for="item in ['option', 'selected-item']"
-                    v-slot:[item]="scope"
+                    #[item]="scope"
                     :key="item"
                   >
                     <div class="tw-flex tw-items-center tw-py-2 tw-truncate">
@@ -124,25 +124,25 @@
               </Field>
 
               <VcCard
+                v-if="(product as ISellerProduct).id || currentCategory"
                 :header="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
                 is-collapsable
                 :is-collapsed="restoreCollapsed('product_properties')"
-                v-if="(product as ISellerProduct).id || currentCategory"
                 @state:collapsed="handleCollapsed('product_properties', $event)"
               >
                 <div class="tw-p-4">
                   <Field
+                    v-slot="{ field, errorMessage, handleChange, errors }"
                     :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
                     name="gtin"
                     :rules="validateGtin"
-                    :modelValue="productDetails.gtin"
-                    v-slot="{ field, errorMessage, handleChange, errors }"
+                    :model-value="productDetails.gtin"
                   >
                     <VcInput
                       v-bind="field"
+                      v-model="productDetails.gtin"
                       class="tw-mb-4"
                       :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TITLE')"
-                      v-model="productDetails.gtin"
                       :placeholder="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.PLACEHOLDER')"
                       :tooltip="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.GTIN.TOOLTIP')"
                       :disabled="disabled"
@@ -151,28 +151,28 @@
                       clearable
                       :error="!!errors.length"
                       :error-message="errorMessage"
-                      @update:modelValue="handleChange"
+                      @update:model-value="handleChange"
                     ></VcInput>
                   </Field>
                   <Field
+                    v-slot="{ field, errorMessage, handleChange }"
                     :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
                     name="description"
                     rules="min:3|required"
-                    :modelValue="productDetails.description"
-                    v-slot="{ field, errorMessage, handleChange }"
+                    :model-value="productDetails.description"
                   >
                     <VcEditor
                       v-bind="field"
+                      v-model="productDetails.description"
                       class="tw-mb-4"
                       :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                      v-model="productDetails.description"
                       :placeholder="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                       :disabled="disabled"
                       name="description"
                       required
                       :error-message="errorMessage"
-                      @update:modelValue="handleChange"
                       :assets-folder="productData.id || productData.categoryId"
+                      @update:model-value="handleChange"
                     ></VcEditor>
                   </Field>
 
@@ -180,12 +180,12 @@
                     v-for="property in filteredProps"
                     :key="property.id"
                     :property="property"
-                    :optionsGetter="loadDictionaries"
+                    :options-getter="loadDictionaries"
                     :getter="getPropertyValue"
                     :setter="setPropertyValue"
                     class="tw-mb-4"
                     :disabled="disabled"
-                    :displayedValueLabel="{
+                    :displayed-value-label="{
                       value: 'valueId',
                       label: 'value',
                     }"
@@ -205,23 +205,23 @@
                 <VcLoading :active="fileUploading"></VcLoading>
                 <div class="tw-p-2">
                   <Field
-                    name="gallery"
-                    :modelValue="productDetails.images"
                     v-slot="{ handleChange }"
+                    name="gallery"
+                    :model-value="productDetails.images"
                   >
                     <VcGallery
                       :images="productDetails.images"
+                      :disabled="disabled"
+                      :multiple="true"
                       @upload="onGalleryUpload"
                       @item:edit="onGalleryItemEdit"
                       @item:remove="onGalleryImageRemove"
-                      :disabled="disabled"
                       @sort="
                         (e) => {
                           handleChange(e);
                           editImages(e as Image[]);
                         }
                       "
-                      :multiple="true"
                     ></VcGallery>
                   </Field>
                 </div>
@@ -253,7 +253,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref, shallowRef } from "vue";
+import { defineComponent, computed, onMounted, ref, unref, markRaw } from "vue";
 
 export default defineComponent({
   url: "/mp-product",
@@ -264,10 +264,11 @@ export default defineComponent({
 import {
   useUser,
   IParentCallArgs,
-  IBladeEvent,
   IBladeToolbar,
   AssetsDetails,
   AssetsManager,
+  useBladeNavigation,
+  usePopup,
 } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
@@ -296,26 +297,11 @@ export interface Props {
   param?: string;
 }
 
-export type IBladeOptions = IBladeEvent & {
-  bladeOptions: {
-    asset?: Image;
-    images?: Image[];
-    assets?: Asset[];
-    assetEditHandler?: (localImage: IImage) => void;
-    assetsEditHandler?: (assets: Asset[]) => Asset[];
-    assetsUploadHandler?: (files: FileList) => Promise<Asset[]>;
-    assetsRemoveHandler?: (assets: Asset[]) => Asset[];
-    assetRemoveHandler?: (localImage: IImage) => void;
-    sellerProduct?: ISellerProduct;
-  };
-};
-
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
-  (event: "open:blade", blade: IBladeOptions): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -325,6 +311,9 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+const { openBlade } = useBladeNavigation();
+const { showConfirmation, showError } = usePopup();
 
 const { t } = useI18n({ useScope: "global" });
 const {
@@ -446,7 +435,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("close:blade");
         }
       } else {
-        alert(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
+        showError(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE.NOT_VALID"))));
       }
     },
     disabled: computed(
@@ -472,7 +461,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("close:blade");
         }
       } else {
-        alert(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
+        showError(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVEANDAPPROVE.NOT_VALID"))));
       }
     },
     disabled: computed(
@@ -545,11 +534,10 @@ const onGalleryUpload = async (files: FileList) => {
 };
 
 const onGalleryItemEdit = (item: Image) => {
-  emit("open:blade", {
-    component: shallowRef(AssetsDetails),
-    bladeOptions: {
+  openBlade({
+    blade: markRaw(AssetsDetails),
+    options: {
       asset: item,
-      images: productDetails.value.images,
       assetEditHandler: editImage,
       assetRemoveHandler: removeImage,
     },
@@ -568,8 +556,8 @@ function editImage(localImage: IImage) {
   }
 }
 
-function removeImage(localImage: IImage) {
-  if (window.confirm(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+async function removeImage(localImage: IImage) {
+  if (await showConfirmation(unref(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
     const images = productDetails.value.images;
     if (images.length) {
       const imageIndex = images.findIndex((img) => img.id === localImage.id);
@@ -585,8 +573,8 @@ const editImages = (args: Image[]) => {
   productDetails.value.images = args;
 };
 
-const onGalleryImageRemove = (image: Image) => {
-  if (window.confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+const onGalleryImageRemove = async (image: Image) => {
+  if (await showConfirmation(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
     const imageIndex = productDetails.value.images.findIndex((img) => {
       if (img.id && image.id) {
         return img.id === image.id;
@@ -641,8 +629,8 @@ const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
   files = null;
 };
 
-const onAssetsItemRemove = (assets: Asset[]): Asset[] => {
-  if (window.confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
+const onAssetsItemRemove = async (assets: Asset[]): Promise<Asset[]> => {
+  if (await showConfirmation(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION"))))) {
     assets.forEach((asset) => {
       const assetIndex = productDetails.value.assets.findIndex((asst) => {
         if (asst.id && asset.id) {
@@ -684,9 +672,9 @@ async function loadDictionaries(property: IProperty, keyword?: string, skip?: nu
 
 async function openOffers() {
   if (!isOffersOpened) {
-    emit("open:blade", {
-      component: shallowRef(OffersList),
-      bladeOptions: {
+    openBlade({
+      blade: markRaw(OffersList),
+      options: {
         sellerProduct: productData.value,
       },
       onOpen() {
@@ -701,9 +689,9 @@ async function openOffers() {
 
 async function openAssets() {
   if (!isAssetsOpened) {
-    emit("open:blade", {
-      component: shallowRef(AssetsManager),
-      bladeOptions: {
+    openBlade({
+      blade: markRaw(AssetsManager),
+      options: {
         assets: productDetails.value.assets,
         assetsEditHandler: onAssetsEdit,
         assetsUploadHandler: onAssetsUpload,
@@ -722,7 +710,7 @@ async function openAssets() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(unref(computed(() => t("MP_PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

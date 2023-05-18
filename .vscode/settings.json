@@ -1,10 +1,20 @@
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  },  
+  },
   "files.eol": "\r\n",
   "eslint.validate": [
     "vue",
     "javascript"
+  ],
+  "i18n-ally.localesPaths": [
+    "src/locales",
+    "src/modules/import/locales",
+    "src/modules/marketplace-products/locales",
+    "src/modules/offers/locales",
+    "src/modules/orders/locales",
+    "src/modules/products/locales",
+    "src/modules/rating/locales",
+    "src/modules/settings/locales"
   ]
 }

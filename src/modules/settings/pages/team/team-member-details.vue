@@ -1,63 +1,42 @@
 <template>
   <VcBlade
+    v-loading="loading"
     :title="title"
     width="30%"
-    v-loading="loading"
-    @close="$emit('close:blade')"
     :closable="closable"
     :expanded="expanded"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     :expandable="false"
+    @close="$emit('close:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
     <VcContainer>
-      <VcStatus
-        :outline="false"
-        :extend="true"
-        variant="light-danger"
-        class="tw-w-full tw-box-border tw-mb-3"
-        v-if="errorMessage"
-      >
-        <div class="tw-flex tw-flex-row tw-items-center">
-          <VcIcon
-            icon="fas fa-exclamation-circle"
-            class="tw-text-[#ff4a4a] tw-mr-3"
-            size="xxl"
-          ></VcIcon>
-          <div>
-            <div class="tw-font-bold">
-              {{ $t("SETTINGS.TEAM.PAGES.DETAILS.FORM.ERROR") }}
-            </div>
-            <div>{{ errorMessage }}</div>
-          </div>
-        </div>
-      </VcStatus>
       <VcForm>
         <VcRow>
           <VcCol>
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
-              :modelValue="userDetails.firstName"
+              :model-value="userDetails.firstName"
               name="name"
               rules="required"
             >
               <VcInput
                 v-bind="field"
+                v-model="userDetails.firstName"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.FIRST_NAME.PLACEHOLDER')"
                 :disabled="isOwnerReadonly"
-                v-model="userDetails.firstName"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -67,21 +46,21 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
-              :modelValue="userDetails.lastName"
+              :model-value="userDetails.lastName"
               name="lastName"
               rules="required"
             >
               <VcInput
                 v-bind="field"
+                v-model="userDetails.lastName"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.LAST_NAME.PLACEHOLDER')"
                 :disabled="isOwnerReadonly"
-                v-model="userDetails.lastName"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -91,21 +70,21 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
-              :modelValue="userDetails.email"
+              :model-value="userDetails.email"
               name="email"
               rules="required|email"
             >
               <VcInput
                 v-bind="field"
+                v-model="userDetails.email"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.EMAIL.PLACEHOLDER')"
                 :disabled="!!props.param"
-                v-model="userDetails.email"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -116,25 +95,25 @@
             <Field
               v-slot="{ field, errorMessage, handleChange, errors }"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
-              :modelValue="userDetails.role"
+              :model-value="userDetails.role"
               name="role"
               rules="required"
             >
               <VcSelect
                 v-bind="field"
+                v-model="userDetails.role"
                 class="tw-p-3"
                 :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.LABEL')"
                 :placeholder="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.ROLE.PLACEHOLDER')"
                 :options="roles"
-                v-model="userDetails.role"
                 option-value="id"
                 option-label="name"
                 :disabled="isOwnerReadonly"
                 required
                 :error="!!errors.length"
                 :error-message="errorMessage"
-                @update:modelValue="handleChange"
                 :clearable="false"
+                @update:model-value="handleChange"
               />
             </Field>
           </VcCol>
@@ -142,9 +121,9 @@
         <VcRow v-if="userDetails.id">
           <VcCol>
             <VcSwitch
+              v-model="isActive"
               class="tw-p-3"
               :label="$t('SETTINGS.TEAM.PAGES.DETAILS.FORM.IS_ACTIVE.LABEL')"
-              v-model="isActive"
               :true-value="false"
               :false-value="true"
               :disabled="isOwnerReadonly"
@@ -163,27 +142,14 @@
       </VcForm>
     </VcContainer>
   </VcBlade>
-  <ErrorPopup
-    v-if="isEmailExistsModal"
-    @close="isEmailExistsModal = false"
-    :email="userDetails.email"
-    :message="errorMessage"
-  ></ErrorPopup>
-  <WarningPopup
-    v-if="deleteModal"
-    @close="deleteModal = false"
-    @delete="removeUser"
-  ></WarningPopup>
 </template>
 
 <script lang="ts" setup>
 import { computed, ref, onMounted, unref } from "vue";
-import { useUser, IParentCallArgs, IBladeToolbar } from "@vc-shell/framework";
+import { useUser, IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
 import useTeamMembers from "../../composables/useTeamMembers";
-import ErrorPopup from "../../components/ErrorPopup.vue";
-import WarningPopup from "../../components/WarningPopup.vue";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
-import { SellerUser } from "../../../../api_client/marketplacevendor";
+import { ISellerUser } from "../../../../api_client/marketplacevendor";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -191,7 +157,7 @@ export interface Props {
   closable?: boolean;
   param?: string;
   options?: {
-    user?: SellerUser;
+    user: ISellerUser;
   };
 }
 
@@ -203,8 +169,6 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
-  param: undefined,
-  options: () => ({}),
 });
 
 const emit = defineEmits<Emits>();
@@ -225,14 +189,13 @@ const {
   sendTeamMemberInvitation,
 } = useTeamMembers();
 
+const { showError, showConfirmation } = usePopup();
+
 const title = computed(() =>
   props.param ? userDetails.value.firstName + " " + userDetails.value.lastName : t("SETTINGS.TEAM.PAGES.DETAILS.TITLE")
 );
 
-const isEmailExistsModal = ref(false);
-const deleteModal = ref(false);
 const sendInviteStatus = ref(false);
-const errorMessage = ref("");
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 
@@ -257,13 +220,13 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("close:blade");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
-            isEmailExistsModal.value = true;
+            showEmailExistsError();
           } else {
-            errorMessage.value = e.message;
+            throw new Error(e.message);
           }
         }
       } else {
-        alert(unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID"))));
+        showError(unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID"))));
       }
     },
     isVisible: !props.param,
@@ -283,11 +246,11 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           emit("close:blade");
         } catch (e) {
           if (e === "EMAIL_ALREADY_EXISTS") {
-            isEmailExistsModal.value = true;
+            showEmailExistsError();
           }
         }
       } else {
-        alert(unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID"))));
+        showError(unref(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.FORM.NOT_VALID"))));
       }
     },
     isVisible: !!props.param,
@@ -307,11 +270,13 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "delete",
     title: computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
-    clickHandler() {
-      deleteModal.value = true;
+    async clickHandler() {
+      if (await showConfirmation(computed(() => t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ALERT.MESSAGE.USER_DELETE")))) {
+        removeUser();
+      }
     },
     isVisible: !!props.param,
-    disabled: computed(() => isOwnerReadonly.value || user.value.userName === props.options.user.userName),
+    disabled: computed(() => isOwnerReadonly.value || user.value?.userName === props.options.user?.userName),
   },
   {
     id: "resend",
@@ -323,7 +288,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
           await sendTeamMemberInvitation({ id: props.options.user.id });
           emit("close:blade");
         } catch (e) {
-          errorMessage.value = e.message;
+          throw new Error(e.message);
         }
       }
     },
@@ -370,9 +335,16 @@ onMounted(async () => {
   }
 });
 
+function showEmailExistsError() {
+  showError(
+    t("SETTINGS.TEAM.PAGES.DETAILS.POPUP.ERROR.MESSAGE.USER_EXIST", {
+      email: userDetails.value.email,
+    })
+  );
+}
+
 async function removeUser() {
   if (props.param) {
-    deleteModal.value = false;
     await deleteTeamMember({ id: props.param });
     emit("parent:call", {
       method: "reload",
@@ -383,7 +355,7 @@ async function removeUser() {
 
 async function onBeforeClose() {
   if (modified.value) {
-    return confirm(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(unref(computed(() => t("SETTINGS.TEAM.ALERTS.CLOSE_CONFIRMATION"))));
   }
 }
 

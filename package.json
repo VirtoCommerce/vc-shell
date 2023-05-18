@@ -62,11 +62,11 @@
     "moment": "^2.29.4",
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.9.4",
-    "vue": "^3.3.3",
+    "vue": "^3.3.4",
     "vue-router": "^4.2.0"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.5.1"
 }

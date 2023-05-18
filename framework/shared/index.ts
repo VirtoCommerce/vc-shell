@@ -3,7 +3,7 @@ import { AssetsDetailsModule } from "./modules/assets";
 import { VcAppSwitcherComponent } from "./components/app-switcher";
 import { VcBladeNavigationComponent } from "./components/blade-navigation";
 import { AssetsManagerModule } from "./modules/assets-manager";
-import { VcNotificationComponent } from "./components/notifications";
+import { VcPopupHandler } from "./components/popup-handler";
 
 export const SharedModule = {
   install(app: App): void {
@@ -12,7 +12,7 @@ export const SharedModule = {
       .use(AssetsManagerModule)
       .use(VcBladeNavigationComponent)
       .use(VcAppSwitcherComponent)
-      .use(VcNotificationComponent);
+      .use(VcPopupHandler);
   },
 };
 
@@ -22,3 +22,5 @@ export * from "./modules/assets-manager";
 export * from "./components/app-switcher";
 export * from "./components/blade-navigation";
 export * from "./components/notifications";
+export * from "./components/error-interceptor";
+export * from "./components/popup-handler";

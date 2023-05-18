@@ -4,11 +4,17 @@
     width="50%"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template
+      v-if="$slots['error']"
+      #error
+    >
+      <slot name="error"></slot>
+    </template>
     <!-- Blade contents -->
     <VcTable
       :expanded="expanded"
@@ -17,22 +23,22 @@
       class="tw-grow tw-basis-0"
       :multiselect="true"
       :columns="columns"
-      :itemActionBuilder="actionBuilder"
+      :item-action-builder="actionBuilder"
       :sort="sort"
-      :searchValue="searchValue"
-      :searchPlaceholder="$t('DEFAULT.PAGES.LIST.SEARCH.PLACEHOLDER')"
-      :totalLabel="$t('DEFAULT.PAGES.LIST.TABLE.TOTALS')"
-      :selectedItemId="selectedItemId"
-      @itemClick="onItemClick"
-      @headerClick="onHeaderClick"
+      :search-value="searchValue"
+      :search-placeholder="$t('DEFAULT.PAGES.LIST.SEARCH.PLACEHOLDER')"
+      :total-label="$t('DEFAULT.PAGES.LIST.TABLE.TOTALS')"
+      :selected-item-id="selectedItemId"
       state-key="default_list"
+      @item-click="onItemClick"
+      @header-click="onHeaderClick"
     >
     </VcTable>
   </VcBlade>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, inject, reactive, ref, shallowRef } from "vue";
+import { computed, defineComponent, inject, reactive, ref, markRaw } from "vue";
 
 export default defineComponent({
   url: "/default",
@@ -45,13 +51,13 @@ import {
   IBladeToolbar,
   IParentCallArgs,
   useFunctions,
-  useI18n,
   IActionBuilderResult,
   ITableColumns,
 } from "@vc-shell/framework";
 import moment from "moment";
 // eslint-disable-next-line import/no-unresolved
 import emptyImage from "/assets/empty.png";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   expanded?: boolean;
@@ -66,6 +72,7 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeEvent);
+  (event: "close:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -75,7 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const { debounce } = useFunctions();
 
 const sort = ref("createdDate:DESC");
@@ -143,12 +150,12 @@ const columns = computed(() => {
 const title = computed(() => t("DEFAULT.PAGES.LIST.TITLE"));
 
 const onItemClick = (item: { id: string }) => {
-  emit("open:blade", {
-    component: shallowRef(),
-    param: item.id,
-    // onOpen() {},
-    // onClose() {},
-  });
+  // openBlade({
+  //   blade: markRaw(),
+  //   param: item.id,
+  // onOpen() {},
+  // onClose() {},
+  // });
 };
 
 const onHeaderClick = (item: ITableColumns) => {
@@ -181,7 +188,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const actionBuilder = (item: { status: string }): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   result.push({
     icon: "fas fa-trash",

@@ -15,8 +15,8 @@
 
       <!-- Title -->
       <div
-        class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium"
         v-if="title"
+        class="tw-text-[color:var(--app-bar-product-name-color)] tw-text-[length:var(--app-bar-product-name-size)] tw-font-medium"
       >
         {{ title }}
       </div>
@@ -33,8 +33,8 @@
 
       <!-- Show back link when more than one blade is opened -->
       <VcLink
-        class="tw-ml-3"
         v-else-if="blades.length > 1"
+        class="tw-ml-3"
         @click="$emit('backlink:click')"
       >
         <VcIcon
@@ -57,17 +57,16 @@
         <template v-if="item.isVisible === undefined || item.isVisible">
           <!-- Draw custom component is it is passed -->
           <component
-            v-if="item.component"
             :is="item.component"
-            v-bind="item.bladeOptions"
-            :isAccent="item.isAccent"
+            v-if="item.component"
+            v-bind="item.options"
+            :is-accent="item.isAccent"
           ></component>
 
           <!-- Otherwise draw default toolbar button -->
           <div
             v-else
             class="tw-relative tw-flex tw-items-center tw-justify-center tw-w-[var(--app-bar-button-width)] tw-border-l tw-border-solid tw-border-[color:var(--app-bar-button-border-color)] tw-cursor-pointer tw-text-[color: var(--app-bar-button-color)] tw-bg-[color:var(--app-bar-button-background-color)] tw-transition-[color] tw-duration-200 hover:tw-text-[color:var(--app-bar-button-color-hover)] hover:tw-bg-[color:var(--app-bar-button-background-color-hover)]"
-            :class="{ 'vc-app-bar__button_accent': item.isAccent }"
             :title="item.title as string"
             @click="$emit('button:click', item)"
           >
@@ -75,6 +74,12 @@
               :icon="typeof item.icon === 'function' ? item.icon() : item.icon"
               size="xl"
             ></VcIcon>
+            <div
+              :class="{
+                'tw-block tw-absolute tw-right-3 tw-top-[18px] tw-w-[7px] tw-h-[7px] tw-bg-[#ff4a4a] tw-rounded-full tw-z-[1]':
+                  item.isAccent,
+              }"
+            ></div>
           </div>
         </template>
       </template>
@@ -103,9 +108,17 @@ export interface Props {
   title?: string;
 }
 
+export interface Emits {
+  (event: "logo:click"): void;
+  (event: "backlink:click"): void;
+  (event: "toolbarbutton:click"): void;
+  (event: "menubutton:click"): void;
+  (event: "button:click", item: IBladeToolbar): void;
+}
+
 defineProps<Props>();
 
-defineEmits(["logo:click", "backlink:click", "toolbarbutton:click", "menubutton:click"]);
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">
@@ -120,13 +133,5 @@ defineEmits(["logo:click", "backlink:click", "toolbarbutton:click", "menubutton:
   --app-bar-button-background-color-hover: var(--app-bar-background-color);
   --app-bar-product-name-color: #34414f;
   --app-bar-product-name-size: 20px;
-}
-
-.vc-app-bar {
-  &__button {
-    &_accent:before {
-      @apply tw-content-[""] tw-block tw-absolute tw-right-3 tw-top-[18px] tw-w-[7px] tw-h-[7px] tw-bg-[#ff4a4a] tw-rounded-full tw-z-[1];
-    }
-  }
 }
 </style>

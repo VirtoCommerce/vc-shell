@@ -5,6 +5,7 @@ import { useBreakpoints } from "@vueuse/core";
 import Vue3TouchEvents from "vue3-touch-events";
 import { i18n } from "./core/plugins";
 import { SharedModule } from "./shared";
+import { signalR } from "./core/plugins/signalR";
 import * as componentLocales from "./ui/locales";
 
 import "normalize.css";
@@ -56,8 +57,15 @@ export default {
     app.config.globalProperties.pages = [];
     app.provide("pages", app.config.globalProperties.pages);
 
+    // Notification templates
+    app.config.globalProperties.notificationTemplates = [];
+    app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
+
     // Shared module
     app.use(SharedModule);
+
+    // SignalR
+    app.use(signalR);
   },
 };
 

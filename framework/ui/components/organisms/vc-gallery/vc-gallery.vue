@@ -12,20 +12,20 @@
     <template v-if="(defaultImages && defaultImages.length) || !disabled">
       <div class="tw-flex tw-flex-wrap tw-relative">
         <div
-          class="tw-flex tw-flex-wrap tw-w-full"
           ref="galleryRef"
+          class="tw-flex tw-flex-wrap tw-w-full"
         >
           <VcGalleryItem
-            class="tw-m-2 vc-gallery__item"
             v-for="(image, i) in defaultImages"
             :key="`image_${i}`"
+            class="tw-m-2 vc-gallery__item"
             :image="image"
             :readonly="disabled"
+            :actions="itemActions"
+            :disable-drag="disableDrag"
             @preview="onPreviewClick(i)"
             @edit="$emit('item:edit', $event)"
             @remove="$emit('item:remove', $event)"
-            :actions="itemActions"
-            :disableDrag="disableDrag"
             @mousedown="onItemMouseDown"
             @dragstart="onItemDragStart($event, image)"
             @dragover="onItemDragOver"
@@ -36,11 +36,11 @@
             v-if="!disabled && !hideAfterUpload"
             class="tw-m-2"
             :icon="uploadIcon"
-            @upload="onUpload"
             :variant="variant"
             :multiple="multiple"
             :rules="rules"
             :name="name"
+            @upload="onUpload"
           ></VcFileUpload>
         </div>
         <div
@@ -55,22 +55,16 @@
     >
       <VcHint>Gallery is empty</VcHint>
     </div>
-
-    <VcGalleryPreview
-      v-if="preview"
-      :images="images"
-      :index="previewImageIndex"
-      @close="preview = false"
-    ></VcGalleryPreview>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { IImage } from "../../../../core/types";
 import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
+import { usePopup } from "./../../../../shared/components/popup-handler/composables/usePopup";
 
 export interface Props {
   images?: IImage[];
@@ -116,7 +110,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const preview = ref(false);
 const previewImageIndex = ref<number>();
 
 const defaultImages = ref<IImage[]>([]);
@@ -125,6 +118,16 @@ const draggedElement = ref<HTMLElement>();
 const galleryRef = ref<HTMLElement>();
 const reorderGalleryRef = ref<HTMLElement>();
 const dropPosition = ref<number>();
+
+const currentIndex = computed(() => previewImageIndex.value);
+
+const { open } = usePopup({
+  component: VcGalleryPreview,
+  props: {
+    images: props.images,
+    index: currentIndex,
+  },
+});
 
 watch(
   () => props.images,
@@ -141,8 +144,9 @@ const onUpload = (files: FileList) => {
 };
 
 const onPreviewClick = (index: number) => {
-  preview.value = true;
   previewImageIndex.value = index;
+
+  open();
 };
 
 const updateOrder = () => {
@@ -171,19 +175,19 @@ function onItemDragStart(event: DragEvent, item: IImage) {
 }
 
 function onItemDragOver(event: DragEvent) {
-  let dropItem = findParentElement(event.target as HTMLElement);
+  const dropItem = findParentElement(event.target as HTMLElement);
 
   if (!props.disableDrag && !props.disabled && draggedItem.value && dropItem) {
     event.preventDefault();
 
-    let containerOffset = galleryRef.value.getBoundingClientRect();
-    let dropItemOffset = dropItem.getBoundingClientRect();
+    const containerOffset = galleryRef.value.getBoundingClientRect();
+    const dropItemOffset = dropItem.getBoundingClientRect();
 
     if (draggedElement.value !== dropItem) {
-      let elementStyle = getComputedStyle(dropItem);
+      const elementStyle = getComputedStyle(dropItem);
       const dropItemOffsetWidth = dropItem.offsetWidth + parseFloat(elementStyle.marginLeft);
-      let targetLeft = dropItemOffset.left - containerOffset.left;
-      let columnCenter = dropItemOffset.left + dropItemOffsetWidth / 2;
+      const targetLeft = dropItemOffset.left - containerOffset.left;
+      const columnCenter = dropItemOffset.left + dropItemOffsetWidth / 2;
 
       reorderGalleryRef.value.style.top = dropItemOffset.top - containerOffset.top + "px";
       reorderGalleryRef.value.style.height = dropItem.offsetHeight + "px";
@@ -213,8 +217,8 @@ function onItemDrop(event: DragEvent, item: IImage) {
   event.preventDefault();
 
   if (draggedItem.value) {
-    let dragIndex = defaultImages.value.indexOf(draggedItem.value);
-    let dropIndex = defaultImages.value.indexOf(item);
+    const dragIndex = defaultImages.value.indexOf(draggedItem.value);
+    const dropIndex = defaultImages.value.indexOf(item);
 
     let allowDrop = dragIndex !== dropIndex;
 

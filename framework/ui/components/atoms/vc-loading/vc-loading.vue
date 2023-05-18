@@ -11,9 +11,9 @@
       ></span>
       <div class="tw-translate-x-0 tw-mt-3 tw-ml-[31px] tw-animate-loadingMarkers">
         <span
-          class="tw-block tw-float-left tw-w-4 tw-h-4 tw-bg-[#319ed4] tw-rounded-full tw-ml-4"
           v-for="item in 3"
           :key="`marker_${item}`"
+          class="tw-block tw-float-left tw-w-4 tw-h-4 tw-bg-[#319ed4] tw-rounded-full tw-ml-4"
         ></span>
       </div>
     </div>

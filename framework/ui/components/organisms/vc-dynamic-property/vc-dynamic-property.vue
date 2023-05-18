@@ -4,7 +4,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :label="handleDisplayName || property.displayName"
     :name="property.displayName || property.name"
-    :modelValue="getter(property, true)"
+    :model-value="getter(property, true)"
     :rules="rules"
   >
     <VcSelect
@@ -12,13 +12,7 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName || property.displayName"
-      :modelValue="getter(property, true)"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e, items);
-        }
-      "
+      :model-value="getter(property, true)"
       :required="property.required || property.isRequired"
       :placeholder="handleDisplayName || property.defaultValue"
       :options="items"
@@ -26,6 +20,12 @@
       :option-label="handleDisplayProperty"
       :disabled="disabled"
       searchable
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e, items);
+        }
+      "
       @search="onSearch"
       @close="onClose"
     ></VcSelect>
@@ -37,7 +37,7 @@
     "
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
-    :modelValue="property.values"
+    :model-value="property.values"
     :label="handleDisplayName"
     :rules="rules"
   >
@@ -46,13 +46,7 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="property.values"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e);
-        }
-      "
+      :model-value="property.values"
       :required="property.required || property.isRequired"
       placeholder="Add value"
       :disabled="disabled"
@@ -62,6 +56,12 @@
       :display-value="displayedValueLabel.value"
       :multiple="true"
       :emit-value="false"
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e);
+        }
+      "
     ></VcSelect>
   </Field>
 
@@ -72,7 +72,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :label="handleDisplayName"
-    :modelValue="property.values"
+    :model-value="property.values"
     :rules="rules"
   >
     <VcSelect
@@ -80,13 +80,7 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="property.values"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e, items);
-        }
-      "
+      :model-value="property.values"
       :required="property.required || property.isRequired"
       placeholder="Add value"
       :disabled="disabled"
@@ -95,10 +89,16 @@
       option-value="id"
       :display-label="displayedValueLabel.label"
       :display-value="displayedValueLabel.value"
-      @search="onSearch"
-      @close="onClose"
       :multiple="property.multivalue"
       :emit-value="false"
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e, items);
+        }
+      "
+      @search="onSearch"
+      @close="onClose"
     ></VcSelect>
   </Field>
 
@@ -107,7 +107,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.displayName || property.name"
     :label="handleDisplayName || property.displayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcInput
@@ -115,17 +115,17 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName || property.displayName"
-      :modelValue="(getter(property) as string | number | Date)"
-      @update:modelValue="
+      :model-value="(getter(property) as string | number | Date)"
+      clearable
+      :required="property.required || property.isRequired"
+      :placeholder="handleDisplayName || 'Add value'"
+      :disabled="disabled"
+      @update:model-value="
         (e) => {
           handleChange(e);
           setter(property, e as Record<string, unknown> | string | number | boolean);
         }
       "
-      clearable
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || 'Add value'"
-      :disabled="disabled"
     ></VcInput>
   </Field>
 
@@ -133,20 +133,14 @@
     v-else-if="property.valueType === 'Number' && property.multivalue"
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
-    :modelValue="property.values"
+    :model-value="property.values"
     :label="handleDisplayName"
     :rules="rules"
   >
     <VcSelect
       v-bind="$attrs"
       :label="handleDisplayName"
-      :modelValue="property.values"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e);
-        }
-      "
+      :model-value="property.values"
       type="number"
       :required="property.required || property.isRequired"
       placeholder="Add value"
@@ -159,6 +153,12 @@
       :display-label="displayedValueLabel.label"
       :display-value="displayedValueLabel.value"
       multiple
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e);
+        }
+      "
     ></VcSelect>
   </Field>
 
@@ -167,7 +167,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :label="handleDisplayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcInput
@@ -175,18 +175,18 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="(getter(property) as string | number | Date)"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e as Record<string, unknown> | string | number | boolean);
-        }
-      "
+      :model-value="(getter(property) as string | number | Date)"
       clearable
       type="number"
       :required="property.required || property.isRequired"
       :placeholder="handleDisplayName || property.defaultValue"
       :disabled="disabled"
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e as Record<string, unknown> | string | number | boolean);
+        }
+      "
     ></VcInput>
   </Field>
 
@@ -195,7 +195,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :label="handleDisplayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcInput
@@ -203,19 +203,19 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="(getter(property) as string | number | Date)"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e as Record<string, unknown> | string | number | boolean);
-        }
-      "
+      :model-value="(getter(property) as string | number | Date)"
       clearable
       type="number"
       step="1"
       :required="property.required || property.isRequired"
       :placeholder="handleDisplayName || property.defaultValue"
       :disabled="disabled"
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e as Record<string, unknown> | string | number | boolean);
+        }
+      "
     ></VcInput>
   </Field>
 
@@ -224,7 +224,7 @@
     v-slot="{ errorMessage, handleChange, errors }"
     :name="property.name"
     :label="handleDisplayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcInput
@@ -232,17 +232,17 @@
       :error="!!errors.length"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="(getter(property) as string | number | Date)"
-      @update:modelValue="
+      :model-value="(getter(property) as string | number | Date)"
+      type="datetime-local"
+      :required="property.required || property.isRequired"
+      :placeholder="handleDisplayName || property.defaultValue"
+      :disabled="disabled"
+      @update:model-value="
         (e) => {
           handleChange(e);
           setter(property, e as Record<string, unknown> | string | number | boolean);
         }
       "
-      type="datetime-local"
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
-      :disabled="disabled"
     ></VcInput>
   </Field>
 
@@ -251,23 +251,23 @@
     v-slot="{ errorMessage, handleChange }"
     :name="property.name"
     :label="handleDisplayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcTextarea
       v-bind="$attrs"
       :error-message="errorMessage"
       :label="handleDisplayName"
-      :modelValue="getter(property) as string"
-      @update:modelValue="
+      :model-value="getter(property) as string"
+      :required="property.required || property.isRequired"
+      :placeholder="handleDisplayName || property.defaultValue"
+      :disabled="disabled"
+      @update:model-value="
         (e) => {
           handleChange(e);
           setter(property, e);
         }
       "
-      :required="property.required || property.isRequired"
-      :placeholder="handleDisplayName || property.defaultValue"
-      :disabled="disabled"
     ></VcTextarea>
   </Field>
 
@@ -276,22 +276,22 @@
     v-slot="{ errorMessage, handleChange }"
     :name="property.displayName || property.name"
     :label="handleDisplayName || property.displayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcCheckbox
       v-bind="$attrs"
       :error-message="errorMessage"
-      :modelValue="getter(property) as boolean"
-      @update:modelValue="
+      :model-value="getter(property) as boolean"
+      :required="property.required || property.isRequired"
+      :disabled="disabled"
+      :name="property.displayName || property.name"
+      @update:model-value="
         (e) => {
           handleChange(e);
           setter(property, e);
         }
       "
-      :required="property.required || property.isRequired"
-      :disabled="disabled"
-      :name="property.displayName || property.name"
     >
       {{ handleDisplayName || property.displayName }}
     </VcCheckbox>
@@ -302,24 +302,24 @@
     v-slot="{ errorMessage, handleChange }"
     :name="property.displayName || property.name"
     :label="handleDisplayName || property.displayName"
-    :modelValue="getter(property)"
+    :model-value="getter(property)"
     :rules="rules"
   >
     <VcCodeEditor
       v-bind="$attrs"
       :label="handleDisplayName || property.displayName"
-      :modelValue="(getter(property) as string | number | Date)"
-      @update:modelValue="
-        (e) => {
-          handleChange(e);
-          setter(property, e as Record<string, unknown> | string | number | boolean);
-        }
-      "
+      :model-value="(getter(property) as string | number | Date)"
       :required="property.required || property.isRequired"
       :placeholder="handleDisplayName || 'Add value'"
       :disabled="disabled"
       :name="property.displayName || property.name"
       :error-message="errorMessage"
+      @update:model-value="
+        (e) => {
+          handleChange(e);
+          setter(property, e as Record<string, unknown> | string | number | boolean);
+        }
+      "
     >
     </VcCodeEditor>
   </Field>

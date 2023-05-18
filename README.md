@@ -10,9 +10,9 @@ The project is originated to create a replacement of the current vc-platform man
 
 ## Tech stack
 
-- **lerna** (managing monorepo and its packages dependencies).
+- **Yarn berry** (managing monorepo and its packages dependencies).
 - **Vue 3** as background for our solution.
-- **webpack** based on `vue-cli-service` for easy build and deployment.
+- **Vite** for easy build and deployment.
 - **storybook** for interactive documentation.
 
 ## Demo
@@ -27,27 +27,17 @@ The project is originated to create a replacement of the current vc-platform man
 # this will also install and configure package dependencies and git hooks
 $ yarn
 
-# reinstall or refresh packages dependencies
-$ yarn bootstrap
-
 # build all packages
 $ yarn build
 
 # or one by one
-$ yarn build-framework:ui
-$ yarn build-framework:core
-$ yarn build-framework:api-client
-$ yarn build-apps:vendor-portal
+$ yarn build-framework
+$ yarn build-cli:config
+$ yarn build-cli:api-client
+$ yarn build-cli:import-module
 
-# generate all api clients (require .NET Core 6 on Mac OS or Linux)
-yarn generate-api-client
-
-# or one by one
+# generate api clients (require .NET Core 6 on Mac OS or Linux)
 yarn generate-api-client:api-client
-yarn generate-api-client:vendor-portal
-
-# start Vendor Portal with hot reload at localhost:8080
-$ yarn serve-apps:vendor-portal
 
 # run interactive documentation
 $ yarn storybook-serve

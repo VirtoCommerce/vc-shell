@@ -4,17 +4,7 @@
     "rootDir": ".",
     "outDir": "../dist/"
   },
-  "references": [
-    { "path": "../" }
-  ],
-  "include": [
-    "."
-  ],
-  "files": [
-    "templates/vite.application.appconfig.ts",
-    "templates/vite.library.appconfig.ts"
-  ],
-  "exclude": [
-    "templates/*.appconfig.ts",
-  ]
+  "include": ["."],
+  "files": ["templates/vite.application.appconfig.ts", "templates/vite.library.appconfig.ts"],
+  "exclude": ["templates/*.appconfig.ts"]
 }

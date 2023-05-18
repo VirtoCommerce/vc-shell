@@ -1,3 +1,41 @@
+## [1.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.69...v1.0.70) (2023-05-18)
+
+
+### Bug Fixes
+
+* blade navigation fix ([1a5ed69](https://github.com/VirtoCommerce/vc-shell/commit/1a5ed69640113e6b17acdbebafe65f4f4a33f75e))
+* notification template render condition ([3b5857f](https://github.com/VirtoCommerce/vc-shell/commit/3b5857fa22584a3717ef96b448da747f9a2f4613))
+* other fixes/refactors and types updated ([46ebd82](https://github.com/VirtoCommerce/vc-shell/commit/46ebd823234741b1e0f8c987b5bcdd65808dbd7a))
+* packages mistakes & yarn warnings ([fdc39d2](https://github.com/VirtoCommerce/vc-shell/commit/fdc39d2f25f5a75318c33c82c7eedc4ed479cc1d))
+
+
+* feat!: refactored blade navigation ([6fdd427](https://github.com/VirtoCommerce/vc-shell/commit/6fdd4273d3060a1c7eca955f4c3eba0f5d34905e))
+* feat!: navigation refactoring ([2421e50](https://github.com/VirtoCommerce/vc-shell/commit/2421e5057760f42ac491e2d236018d8e064fea78))
+
+
+### Features
+
+* eslint vue3-recommended/deps up ([b695f9b](https://github.com/VirtoCommerce/vc-shell/commit/b695f9b40e53ea73fdf0b672956e11c29f8c5de7))
+* make menu hidden if there is no items ([b704c12](https://github.com/VirtoCommerce/vc-shell/commit/b704c123fd34bc75cfd17ee7954383f48b2bdae0))
+* menu and toolbar composer for better typing ([a46dca9](https://github.com/VirtoCommerce/vc-shell/commit/a46dca9cf398a91d75f5114c5ab6ff9b0220123b))
+* notifications template ([1af7c34](https://github.com/VirtoCommerce/vc-shell/commit/1af7c34e228a8c7f8f0cdffd4edce4ff00b5882c))
+* popup handler/updated variant templates ([eae6366](https://github.com/VirtoCommerce/vc-shell/commit/eae6366839a2ab2e0c0dccfc14cf7c6bab5731f6))
+* refactored notifications ([84fda40](https://github.com/VirtoCommerce/vc-shell/commit/84fda4097a3afc7bb8e4a9f99da574885b872d7c))
+* transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
+* updated boilerplate ([9f686cc](https://github.com/VirtoCommerce/vc-shell/commit/9f686cca9361a1070b09d4763f6c5b3ace1a47ce))
+* v-click-outside changed to vueUse directive ([26d764f](https://github.com/VirtoCommerce/vc-shell/commit/26d764f83c9b53e667a85684b424a91de8e06a29))
+* vc-select generic component ([c71c8da](https://github.com/VirtoCommerce/vc-shell/commit/c71c8daead1ba5c5ece2a0eb4e15a52d01b1666e))
+* vc-select generic component ([17639b2](https://github.com/VirtoCommerce/vc-shell/commit/17639b21dbac0022876e81c955a7d072e733d57b))
+* vc-table refactored to generic component ([bcc8ea2](https://github.com/VirtoCommerce/vc-shell/commit/bcc8ea2777cec3b796373d2a34f2c2108f949f76))
+
+
+### BREAKING CHANGES
+
+* openBlade method has changed
+* changed navigation props names
+
+
+
 ## [1.0.68](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.67...v1.0.68) (2023-04-24)
 
 

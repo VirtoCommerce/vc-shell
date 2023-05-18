@@ -47,6 +47,8 @@ declare module "@vue/runtime-core" {
     VcLoginForm: (typeof VcShellComponents)["VcLoginForm"];
     VcPopup: (typeof VcShellComponents)["VcPopup"];
     VcTable: (typeof VcShellComponents)["VcTable"];
+    VcNotificationDropdown: (typeof VcShellComponents)["VcNotificationDropdown"];
+    VcNotificationTemplate: (typeof VcShellComponents)["VcNotificationTemplate"];
   }
 }
 

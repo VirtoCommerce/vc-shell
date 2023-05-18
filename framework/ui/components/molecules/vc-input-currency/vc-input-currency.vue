@@ -9,9 +9,9 @@
     :label="label"
     :required="required"
     :model-value="option"
-    @update:modelValue="$emit('update:option', $event)"
+    @update:model-value="$emit('update:option', $event)"
   >
-    <template v-slot:control="{ toggleHandler }">
+    <template #control="{ toggleHandler }">
       <VcInput
         :placeholder="placeholder"
         :model-value="modelValue"
@@ -28,12 +28,12 @@
         :maxlength="maxlength"
         :tooltip="tooltip"
         class="tw-w-full"
-        @update:modelValue="$emit('update:modelValue', +$event)"
+        @update:model-value="$emit('update:modelValue', +$event)"
       >
-        <template v-slot:append-inner>
+        <template #append-inner>
           <slot
             name="button"
-            :toggleHandler="toggleHandler"
+            :toggle-handler="toggleHandler"
           >
             <button
               class="tw-text-[#43b0e6] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
@@ -43,11 +43,11 @@
             </button>
           </slot>
         </template>
-        <template v-slot:control="{ placeholder }">
+        <template #control="{ placeholder: holder }">
           <input
-            type="text"
             ref="inputRef"
-            :placeholder="placeholder"
+            type="text"
+            :placeholder="holder"
           />
         </template>
       </VcInput>

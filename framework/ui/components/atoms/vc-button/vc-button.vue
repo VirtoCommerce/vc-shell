@@ -9,8 +9,8 @@
         'vc-button_selected': selected,
       },
     ]"
-    @click="onClick"
     :disabled="disabled"
+    @click="onClick"
   >
     <VcIcon
       v-if="icon"

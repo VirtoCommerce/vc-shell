@@ -1,17 +1,28 @@
 {
-  "COMPONENTS":{
-    "ORGANISMS":{
-      "VC_BLADE":{
+  "COMPONENTS": {
+    "ORGANISMS": {
+      "VC_BLADE": {
         "SEE_DETAILS": "See details",
-        "ERROR_POPUP":{
-          "TITLE":"Error details"
+        "ERROR_POPUP": {
+          "TITLE": "Error details"
         }
       },
-      "VC_TABLE":{
-        "ALL_SELECTED":"All items in this page are selected.",
-        "SELECT":"Select all items",
-        "ALL_BULK_SELECTED":"All items are selected.",
-        "CANCEL": "Cancel selection"
+      "VC_TABLE": {
+        "ALL_SELECTED": "All items in this page are selected.",
+        "SELECT": "Select all items",
+        "ALL_BULK_SELECTED": "All items are selected.",
+        "CANCEL": "Cancel selection",
+        "ALL_ACTIONS": "All actions",
+        "ALL_FILTERS": "Filters"
+      },
+      "VC_NOTIFICATION_DROPDOWN": {
+        "EMPTY": "No notifications yet"
+      },
+      "VC_POPUP": {
+        "TITLE": {
+          "CONFIRMATION": "Confirmation",
+          "ERROR": "Error"
+        }
       }
     }
   }

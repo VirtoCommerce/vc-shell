@@ -7,53 +7,53 @@
     <template v-if="isLogin">
       <VcForm @submit.prevent="login">
         <Field
+          v-slot="{ field, errorMessage, handleChange, errors }"
           :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
           name="username"
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :modelValue="form.username"
+          :model-value="form.username"
           rules="required"
         >
           <VcInput
             v-bind="field"
             ref="loginField"
+            v-model="form.username"
             class="tw-mb-4 tw-mt-1"
             :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
             :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
-            v-model="form.username"
-            @update:modelValue="handleChange"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
+            @update:model-value="handleChange"
           />
         </Field>
         <Field
+          v-slot="{ field, errorMessage, handleChange, errors }"
           :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
           name="password"
-          v-slot="{ field, errorMessage, handleChange, errors }"
-          :modelValue="form.password"
+          :model-value="form.password"
           rules="required"
         >
           <VcInput
             v-bind="field"
             ref="passwordField"
+            v-model="form.password"
             class="tw-mb-4"
             :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
             :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
-            v-model="form.password"
             type="password"
-            @keyup.enter="login"
-            @update:modelValue="handleChange"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
+            @keyup.enter="login"
+            @update:model-value="handleChange"
           />
         </Field>
 
         <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
           <VcButton
             variant="onlytext"
-            @click="togglePassRequest"
             type="button"
+            @click="togglePassRequest"
           >
             {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
@@ -77,24 +77,24 @@
       <template v-if="!forgotPasswordRequestSent">
         <VcForm @submit.prevent="forgot">
           <Field
+            v-slot="{ field, errorMessage, handleChange, errors }"
             :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             name="loginOrEmail"
-            v-slot="{ field, errorMessage, handleChange, errors }"
-            :modelValue="forgotPasswordForm.loginOrEmail"
+            :model-value="forgotPasswordForm.loginOrEmail"
             rules="required"
           >
             <VcInput
               v-bind="field"
               ref="forgotPasswordField"
+              v-model="forgotPasswordForm.loginOrEmail"
               class="tw-mb-4 tw-mt-1"
               :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
               :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
-              v-model="forgotPasswordForm.loginOrEmail"
               :hint="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
               required
               :error="!!errors.length"
               :error-message="errorMessage"
-              @update:modelValue="handleChange"
+              @update:model-value="handleChange"
             ></VcInput>
           </Field>
           <div class="tw-flex tw-justify-between tw-items-center tw-pt-2">
@@ -179,7 +179,7 @@ const customizationLoading = ref(false);
 onMounted(async () => {
   try {
     customizationLoading.value = true;
-    await getUiCustomizationSettings();
+    await getUiCustomizationSettings(import.meta.env.APP_PLATFORM_URL);
   } finally {
     customizationLoading.value = false;
   }

@@ -8,7 +8,7 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
       >
         <span v-html="tooltip"></span>
       </template>

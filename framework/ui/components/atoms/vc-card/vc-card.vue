@@ -4,8 +4,8 @@
     :class="[{ 'vc-card_collapsable': isCollapsable }, `vc-card_${variant}`]"
   >
     <div
-      class="vc-card__header"
       v-if="header"
+      class="vc-card__header"
       @click="onHeaderClick"
     >
       <VcIcon
@@ -30,8 +30,8 @@
     </div>
     <transition name="fade">
       <div
-        :class="[{ 'vc-flex': fill }, 'vc-card__body']"
         v-show="!isCollapsedInternal"
+        :class="[{ 'vc-flex': fill }, 'vc-card__body']"
       >
         <slot></slot>
       </div>

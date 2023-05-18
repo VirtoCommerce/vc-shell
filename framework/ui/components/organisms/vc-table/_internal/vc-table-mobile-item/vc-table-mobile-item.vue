@@ -11,8 +11,8 @@
   >
     <!-- Left swipe actions-->
     <div
-      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
       v-if="leftSwipeActions && leftSwipeActions.length"
+      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
     >
       <div
         class="tw-flex tw-grow tw-basis-[1] tw-flex-col tw-justify-center tw-items-center tw-text-white"
@@ -33,8 +33,8 @@
 
     <!-- Item actions -->
     <div
-      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
       v-if="rightSwipeActions && rightSwipeActions.length"
+      class="tw-flex-shrink-0 tw-w-[80px] tw-flex tw-flex-col [justify-content:stretch] tw-bg-[#a9bfd2]"
     >
       <!-- First available action -->
       <div
@@ -73,8 +73,8 @@
 
         <!-- Actions popup -->
         <teleport
-          to="body"
           v-if="isActionsPopupVisible"
+          to="body"
         >
           <div
             class="tw-absolute tw-left-0 tw-top-0 tw-right-0 tw-bottom-0 tw-bg-[rgba(107,121,135,0.15)] tw-flex tw-items-center tw-justify-center tw-z-[99]"
@@ -84,7 +84,7 @@
             >
               <div class="tw-flex tw-w-full tw-items-center">
                 <span class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]">
-                  {{ $t("All actions") }}
+                  {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_ACTIONS") }}
                 </span>
                 <VcIcon
                   class="tw-text-[#c2d7e4]"
@@ -118,27 +118,30 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" setup generic="T extends TableItem | string">
 import { computed, ref, watch } from "vue";
 import { IActionBuilderResult } from "./../../../../../../core/types";
 
-export interface Props {
-  item: {
-    id?: string;
-  };
-  actionBuilder?: (item: { id?: string }) => IActionBuilderResult[];
-  swipingItem?: string;
-}
-
 export interface Emits {
   (event: "swipeStart", id: string): void;
+  (event: "click"): void;
+}
+export interface TableItem {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [x: string]: any;
+  actions?: IActionBuilderResult[];
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  item: undefined,
-  actionBuilder: undefined,
-  swipingItem: null,
-});
+const props = withDefaults(
+  defineProps<{
+    item: T;
+    actionBuilder?: (item: T) => IActionBuilderResult[];
+    swipingItem?: string;
+  }>(),
+  {
+    swipingItem: null,
+  }
+);
 
 const emit = defineEmits<Emits>();
 const offsetX = ref(0);
@@ -154,7 +157,7 @@ const itemActions = ref([]);
 watch(
   () => props.swipingItem,
   (newVal) => {
-    if (newVal !== props.item.id) {
+    if (typeof props.item !== "string" && newVal !== props.item.id) {
       handleOffset();
     }
   }
@@ -183,7 +186,7 @@ function handleOffset() {
   }
 }
 
-async function touchStart(e: TouchEvent): Promise<void> {
+async function touchStart(e: TouchEvent) {
   startX.value = e.touches[0].clientX;
   startY.value = e.touches[0].clientY;
   startOffsetX.value = offsetX.value;
@@ -198,8 +201,8 @@ async function touchStart(e: TouchEvent): Promise<void> {
   }
 }
 
-function touchMove(e: TouchEvent): void {
-  emit("swipeStart", props.item.id);
+function touchMove(e: TouchEvent) {
+  if (typeof props.item !== "string") emit("swipeStart", props.item.id);
   if (itemActions.value && itemActions.value.length) {
     const deltaX = e.touches[0].clientX - startX.value;
     const deltaY = e.touches[0].clientY - startY.value;
@@ -221,7 +224,7 @@ function touchMove(e: TouchEvent): void {
   }
 }
 
-function touchEnd(): void {
+function touchEnd() {
   const absoluteOffsetX = Math.abs(offsetX.value);
   if (absoluteOffsetX < maxWidth) {
     offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;
@@ -232,7 +235,7 @@ function touchEnd(): void {
   isMoving.value = false;
 }
 
-function touchCancel(): void {
+function touchCancel() {
   const absoluteOffsetX = Math.abs(offsetX.value);
   if (absoluteOffsetX < maxWidth) {
     offsetX.value = absoluteOffsetX < maxWidth / 2 ? 0 : -maxWidth;

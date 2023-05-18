@@ -3,7 +3,7 @@
     :title="currentImage.title"
     @close="$emit('close')"
   >
-    <template v-slot:title>
+    <template #title>
       <div>
         <span>{{ currentImage.name }} (</span>
         <VcLink @click="copyLink(currentImage.url)">copy image link</VcLink>
@@ -60,14 +60,20 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, ComputedRef } from "vue";
 import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
 import { IImage } from "./../../../../../../core/types";
 
 export interface Props {
   images?: IImage[];
-  index: number;
+  index: number | ComputedRef<number>;
 }
+
+export interface Emits {
+  (event: "close"): void;
+}
+
+defineEmits<Emits>();
 
 const props = withDefaults(defineProps<Props>(), {
   images: () => [],

@@ -17,7 +17,7 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
       >
         <span v-html="tooltip"></span>
       </template>
@@ -31,12 +31,12 @@
       >
         <slot
           name="control"
-          :toggleHandler="toggleDropdown"
+          :toggle-handler="toggleDropdown"
         >
           <div class="tw-relative tw-flex tw-flex-auto tw-text-left tw-max-w-full">
             <div
-              class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
               v-if="$slots['prepend']"
+              class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
             >
               <slot name="prepend"></slot>
             </div>
@@ -47,15 +47,15 @@
                 <div class="tw-flex tw-flex-col tw-flex-nowrap tw-flex-auto tw-relative">
                   <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-px-3">
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
                       v-if="$slots['prepend-inner']"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pr-3"
                     >
                       <slot name="prepend-inner"></slot>
                     </div>
                     <div class="tw-flex tw-flex-nowrap tw-flex-auto tw-h-full tw-truncate">
                       <div
-                        class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                         v-if="prefix"
+                        class="tw-flex tw-items-center tw-flex-wrap tw-pr-3 tw-pointer-events-none"
                       >
                         {{ prefix }}
                       </div>
@@ -72,10 +72,10 @@
                         <template v-else-if="selectedScope && selectedScope.length && hasValue">
                           <template v-if="$slots['selected-item']">
                             <slot
-                              name="selected-item"
                               v-for="(item, i) in selectedScope"
                               v-bind="item"
                               :key="i"
+                              name="selected-item"
                             ></slot>
                           </template>
                           <template v-else>
@@ -109,8 +109,8 @@
                         </template>
                       </div>
                       <div
-                        class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
                         v-if="suffix"
+                        class="tw-flex tw-items-center tw-flex-wrap tw-pl-3 tw-pointer-events-none"
                       >
                         {{ suffix }}
                       </div>
@@ -126,15 +126,15 @@
                       </div>
                     </div>
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                       v-if="$slots['append-inner']"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                     >
                       <slot name="append-inner"></slot>
                     </div>
                     <!-- Loading-->
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
                       v-if="loading || listLoading"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3 tw-text-[color:var(--select-clear-color)]"
                     >
                       <VcIcon
                         icon="fas fa-spinner tw-animate-spin"
@@ -143,8 +143,8 @@
                     </div>
                     <!-- Select chevron-->
                     <div
-                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                       v-if="!disabled"
+                      class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
                     >
                       <div
                         class="vc-select__chevron tw-cursor-pointer tw-flex-nowrap tw-text-[color:var(--select-chevron-color)] hover:tw-text-[color:var(--select-chevron-color-hover)]"
@@ -167,8 +167,8 @@
                   <div v-if="error">
                     <slot name="error">
                       <VcHint
-                        class="tw-mt-1 tw-text-[color:var(--select-border-color-error)]"
                         v-if="errorMessage"
+                        class="tw-mt-1 tw-text-[color:var(--select-border-color-error)]"
                       >
                         {{ errorMessage }}
                       </VcHint>
@@ -177,8 +177,8 @@
                   <div v-else>
                     <slot name="hint">
                       <VcHint
-                        class="tw-text-[color:var(--select-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
                         v-if="hint"
+                        class="tw-text-[color:var(--select-placeholder-color)] tw-mt-1 tw-break-words tw-p-0"
                       >
                         {{ hint }}
                       </VcHint>
@@ -189,8 +189,8 @@
             </div>
 
             <div
-              class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
               v-if="$slots['append']"
+              class="tw-flex tw-items-center tw-flex-nowrap tw-pl-3"
             >
               <slot name="append"></slot>
             </div>
@@ -201,9 +201,9 @@
       <teleport to="#app">
         <div
           v-if="isOpened"
-          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           ref="dropdownRef"
-          v-click-outside="closeDropdown"
+          v-on-click-outside="closeDropdown"
+          class="tw-flex tw-flex-col tw-box-border tw-max-h-[300px] tw-h-auto tw-z-10 tw-overflow-hidden tw-absolute tw-bg-[color:var(--select-background-color)] tw-border tw-border-solid tw-border-[color:var(--select-border-color)] tw-border-t-[color:var(--select-background-color)] tw-rounded-b-[var(--select-border-radius)] tw-p-2"
           :style="dropdownStyle"
         >
           <input
@@ -214,8 +214,8 @@
           />
 
           <VcContainer
-            :no-padding="true"
             ref="root"
+            :no-padding="true"
           >
             <div
               v-if="!(optionsList && optionsList.length)"
@@ -226,12 +226,12 @@
               </slot>
             </div>
             <div
-              v-else
-              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
               v-for="(item, i) in optionScope"
+              v-else
               :key="i"
-              @click="item.toggleOption(item.opt)"
+              class="tw-flex tw-items-center tw-min-h-[36px] tw-my-1 tw-box-border tw-px-2 tw-rounded-[3px] tw-cursor-pointer hover:tw-bg-[#eff7fc]"
               :class="{ 'tw-bg-[#eff7fc]': item.selected }"
+              @click="item.toggleOption(item.opt)"
             >
               <slot
                 name="option"
@@ -240,8 +240,8 @@
               >
             </div>
             <span
-              ref="el"
               v-if="hasNextPage"
+              ref="el"
             ></span>
           </VcContainer>
         </div>
@@ -250,162 +250,16 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, computed, watch, toRefs, nextTick } from "vue";
-import { clickOutside as vClickOutside } from "./../../../../core/directives";
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+<script lang="ts" setup generic="T extends Record<string, any>, P extends {results?: T[]; totalCount?: number }">
+import { ref, computed, watch, toRefs, nextTick, Ref } from "vue";
+import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
 
-export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
-
-export interface Props {
-  /**
-   * Name of select
-   */
-  name?: string;
-  /**
-   * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  modelValue?: any;
-  /**
-   * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
-   * Default value: true
-   */
-  mapOptions?: boolean;
-  /**
-   * Does field have validation errors?
-   */
-  error?: boolean;
-  /**
-   * Validation error message (gets displayed only if 'error' is set to 'true')
-   */
-  errorMessage?: string;
-  /**
-   * Select label
-   */
-  label?: string;
-  /**
-   * Select description (hint) text below input component
-   */
-  hint?: string;
-  /**
-   * Prefix
-   */
-  prefix?: string;
-  /**
-   * Suffix
-   */
-  suffix?: string;
-  /**
-   * Signals the user a process is in progress by displaying a spinner
-   */
-  loading?: boolean;
-  /**
-   * Appends clearable icon when a value is set;
-   * When clicked, model becomes null
-   */
-  clearable?: boolean;
-  /**
-   * Put component in disabled mode
-   */
-  disabled?: boolean;
-  /**
-   * Allow multiple selection; Model must be Array
-   */
-  multiple?: boolean;
-  /**
-   * Available options that the user can select from.
-   * Default value: []
-   */
-  options?:
-    | ((
-        keyword?: string,
-        skip?: number,
-        ids?: string[]
-      ) => Promise<{
-        results?: object[];
-        totalCount?: number;
-      }>)
-    | unknown[];
-  /**
-   * Property of option which holds the 'value'
-   * Default value: id
-   * @param option The current option being processed
-   * @returns Value of the current option
-   */
-  optionValue?: OptionProp;
-  /**
-   * Property of option which holds the 'label'
-   * Default value: title
-   * @param option The current option being processed
-   * @returns Label of the current option
-   */
-  optionLabel?: OptionProp;
-  /**
-   * @requires optionValue
-   * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionValue**
-   *
-   * Property of option which holds the 'value'
-   * Default value: id
-   * @param option The current option being processed
-   * @returns Value of the current option
-   */
-  displayValue?: OptionProp;
-  /**
-   * @requires optionLabel
-   * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionLabel**
-   *
-   * Property of option which holds the 'label'
-   * Default value: title
-   * @param option The current option being processed
-   * @returns Label of the current option
-   */
-  displayLabel?: OptionProp;
-  /**
-   * Update model with the value of the selected option instead of the whole option
-   */
-  emitValue?: boolean;
-  /**
-   * Debounce the search input update with an amount of milliseconds
-   * Default value: 500
-   */
-  debounce?: number | string;
-  /**
-   * Input placeholder text
-   */
-  placeholder?: string;
-  /**
-   * Input tooltip information
-   */
-  tooltip?: string;
-  /**
-   * Input required state
-   */
-  required?: boolean;
-  /**
-   * Input search activation
-   */
-  searchable?: boolean;
-}
-
-export interface Emits {
-  /**
-   * Emitted when the component needs to change the model; Is also used by v-model
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (event: "update:modelValue", inputValue: any): void;
-  /**
-   * Emitted when user wants to filter a value
-   */
-  (event: "search", inputValue: string): void;
-  /**
-   * Emitted when the select options list is hidden
-   */
-  (event: "close"): void;
-}
+export type OptionProp<T> = ((option: T) => string) | string | undefined;
 
 type FloatingInstanceType = UseFloatingReturn & {
   middlewareData: {
@@ -418,20 +272,240 @@ type FloatingInstanceType = UseFloatingReturn & {
   };
 };
 
-const props = withDefaults(defineProps<Props>(), {
-  optionValue: "id",
-  optionLabel: "title",
-  debounce: 500,
-  clearable: true,
-  name: "Field",
-  autofocus: true,
-  emitValue: true,
-  mapOptions: true,
-  placeholder: "Click to select...",
-  options: () => [],
-});
+type Option = T | P["results"][number];
 
-const emit = defineEmits<Emits>();
+defineSlots<{
+  /**
+   * Custom select control
+   */
+  control: (scope: { toggleHandler: () => void }) => any;
+  /**
+   * Prepend inner field
+   */
+  "prepend-inner": (props: any) => any;
+  /**
+   * Append to inner field
+   */
+  "append-inner": (props: any) => any;
+  /**
+   * Prepend outer field
+   */
+  prepend: (props: any) => any;
+  /**
+   * Append outer field
+   */
+  append: (props: any) => any;
+  /**
+   * What should the menu display after filtering options and none are left to be displayed
+   * @param scope
+   */
+  "no-option": (props: any) => any;
+  /**
+   * Slot for errors
+   */
+  error: (props: any) => any;
+  /**
+   * Slot for hint text
+   */
+  hint: (props: any) => any;
+  /**
+   * Override default selection slot
+   * @param scope
+   */
+  "selected-item": (scope: {
+    /**
+     * Selection index
+     */
+    index: number;
+    /**
+     * Selected option -- its value is taken from model
+     */
+    opt: Option;
+    /**
+     * Always true -- passed as prop
+     */
+    selected: boolean;
+    /**
+     * Remove selected option located at specific index
+     * @param index Index at which to remove selection
+     */
+    removeAtIndex: (index: number) => void;
+  }) => any;
+  /**
+   * Override default selection slot;
+   */
+  option: (scope: {
+    /**
+     * Option index
+     */
+    index: number;
+    /**
+     * Option -- its value is taken from 'options' prop
+     */
+    opt: Option;
+    /**
+     * Is option selected
+     */
+    selected: boolean;
+    /**
+     * Add/remove option from model
+     * @param opt Option to add to model
+     */
+    toggleOption: (opt: any) => void;
+  }) => any;
+}>();
+
+const props = withDefaults(
+  defineProps<{
+    /**
+     * Name of select
+     */
+    name?: string;
+    /**
+     * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
+     */
+
+    modelValue?: any;
+    /**
+     * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
+     * Default value: true
+     */
+    mapOptions?: boolean;
+    /**
+     * Does field have validation errors?
+     */
+    error?: boolean;
+    /**
+     * Validation error message (gets displayed only if 'error' is set to 'true')
+     */
+    errorMessage?: string;
+    /**
+     * Select label
+     */
+    label?: string;
+    /**
+     * Select description (hint) text below input component
+     */
+    hint?: string;
+    /**
+     * Prefix
+     */
+    prefix?: string;
+    /**
+     * Suffix
+     */
+    suffix?: string;
+    /**
+     * Signals the user a process is in progress by displaying a spinner
+     */
+    loading?: boolean;
+    /**
+     * Appends clearable icon when a value is set;
+     * When clicked, model becomes null
+     */
+    clearable?: boolean;
+    /**
+     * Put component in disabled mode
+     */
+    disabled?: boolean;
+    /**
+     * Allow multiple selection; Model must be Array
+     */
+    multiple?: boolean;
+    /**
+     * Available options that the user can select from.
+     * Default value: []
+     */
+    options?: ((keyword?: string, skip?: number, ids?: string[]) => Promise<P>) | T[];
+    /**
+     * Property of option which holds the 'value'
+     * Default value: id
+     * @param option The current option being processed
+     * @returns Value of the current option
+     */
+    optionValue?: OptionProp<Option>;
+    /**
+     * Property of option which holds the 'label'
+     * Default value: title
+     * @param option The current option being processed
+     * @returns Label of the current option
+     */
+    optionLabel?: OptionProp<Option>;
+    /**
+     * @requires optionValue
+     * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionValue**
+     *
+     * Property of option which holds the 'value'
+     * Default value: id
+     * @param option The current option being processed
+     * @returns Value of the current option
+     */
+    displayValue?: OptionProp<Option>;
+    /**
+     * @requires optionLabel
+     * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionLabel**
+     *
+     * Property of option which holds the 'label'
+     * Default value: title
+     * @param option The current option being processed
+     * @returns Label of the current option
+     */
+    displayLabel?: OptionProp<Option>;
+    /**
+     * Update model with the value of the selected option instead of the whole option
+     */
+    emitValue?: boolean;
+    /**
+     * Debounce the search input update with an amount of milliseconds
+     * Default value: 500
+     */
+    debounce?: number | string;
+    /**
+     * Input placeholder text
+     */
+    placeholder?: string;
+    /**
+     * Input tooltip information
+     */
+    tooltip?: string;
+    /**
+     * Input required state
+     */
+    required?: boolean;
+    /**
+     * Input search activation
+     */
+    searchable?: boolean;
+  }>(),
+  {
+    optionValue: "id",
+    optionLabel: "title",
+    debounce: 500,
+    clearable: true,
+    name: "Field",
+    autofocus: true,
+    emitValue: true,
+    mapOptions: true,
+    placeholder: "Click to select...",
+    options: () => [],
+  }
+);
+
+const emit = defineEmits<{
+  /**
+   * Emitted when the component needs to change the model; Is also used by v-model
+   */
+
+  (event: "update:modelValue", inputValue: Option | string | (Option | string)[]): void;
+  /**
+   * Emitted when user wants to filter a value
+   */
+  (event: "search", inputValue: string): void;
+  /**
+   * Emitted when the select options list is hidden
+   */
+  (event: "close"): void;
+}>();
 
 const { modelValue, options } = toRefs(props);
 
@@ -446,19 +520,17 @@ const listLoading = ref(false);
 
 const filterString = ref();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const defaultValue = ref<any[]>([]);
+const defaultValue = ref<Option[]>([]) as Ref<Option[]>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const optionsList = ref<any[]>([]);
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const optionsTemp = ref<any[]>([]);
+const optionsList = ref<Option[]>([]) as Ref<Option[]>;
+
+const optionsTemp = ref<Option[]>([]) as Ref<Option[]>;
 
 const totalItems = ref();
 
 let emitValueFn;
 let emitTimer;
-let innerValueCache: Record<string, unknown>[] | string[];
+let innerValueCache: Option[];
 
 useIntersectionObserver(
   el,
@@ -504,9 +576,7 @@ watch(
             undefined,
             Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results?.filter(
-            (x) => x[props.optionValue as string] === props.modelValue
-          ) as unknown[];
+          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === props.modelValue);
         } else if (props.options && Array.isArray(props.options)) {
           defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
         }
@@ -523,7 +593,7 @@ watch(
       try {
         listLoading.value = true;
         const data = await props.options();
-        optionsList.value = data.results as unknown[];
+        optionsList.value = data.results;
         totalItems.value = data.totalCount;
       } finally {
         listLoading.value = false;
@@ -557,7 +627,7 @@ async function onLoadMore() {
     try {
       listLoading.value = true;
       const data = await props.options(filterString.value, optionsList.value.length);
-      optionsList.value.push(...(data.results as unknown[]));
+      optionsList.value.push(...data.results);
     } finally {
       listLoading.value = false;
     }
@@ -576,10 +646,10 @@ const getDisplayValue = computed(() => getPropValueFn(props.displayValue, "id"))
 
 const getDisplayLabel = computed(() => getPropValueFn(props.displayLabel, "title"));
 
-const innerValue = computed((): Record<string, unknown>[] | string[] => {
+const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
-  const val: Record<string, unknown>[] | string[] =
+  const val =
     props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
       ? props.multiple === true && Array.isArray(props.modelValue)
         ? props.modelValue
@@ -605,15 +675,23 @@ watch(
   { immediate: true }
 );
 
-const selectedScope = computed(() => {
-  return innerValue.value.map((opt, i) => ({
-    index: i,
-    opt,
-    selected: true,
-    toggleOption,
-    removeAtIndex,
-  }));
-});
+const selectedScope = computed(
+  (): {
+    index: number;
+    opt: Option;
+    selected: boolean;
+    toggleOption: (opt: Option) => void;
+    removeAtIndex: (index: number) => void;
+  }[] => {
+    return innerValue.value.map((opt: Option, i: number) => ({
+      index: i,
+      opt,
+      selected: true,
+      toggleOption,
+      removeAtIndex,
+    }));
+  }
+);
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 
@@ -641,24 +719,24 @@ const dropdownStyle = computed(() => {
   };
 });
 
-function getPropValueFn(propValue: OptionProp, defaultVal: OptionProp) {
+function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Option>): (opt: Option) => string {
   const val = propValue !== undefined ? propValue : defaultVal;
 
   return typeof val === "function"
     ? val
-    : (opt) => (opt !== null && typeof opt === "object" && (val as string) in opt ? opt[val as string] : opt);
+    : (opt: Option) => (opt !== null && typeof opt === "object" && val in opt ? opt[val] : opt);
 }
 
-function getOption(value: Record<string, unknown> | string, valueCache: Array<Record<string, unknown> | string>) {
+function getOption(value: Option, valueCache: Option[]) {
   const fn = (opt) => _.isEqual(getOptionValue.value(opt), value) || _.isEqual(getDisplayValue.value(opt), value);
   return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
-function fieldValueIsFilled(val: Record<string, unknown>[] | unknown[]) {
+function fieldValueIsFilled(val: Option[]) {
   return val !== undefined && val !== null && ("" + val).length > 0;
 }
 
-function getEmittingOptionValue(opt: Record<string, unknown>) {
+function getEmittingOptionValue(opt: Option) {
   return props.emitValue === true ? getOptionLabel.value(opt) : getOptionValue.value(opt);
 }
 
@@ -674,7 +752,7 @@ function removeAtIndex(index: number) {
   }
 }
 
-function isOptionSelected(opt: Record<string, unknown>) {
+function isOptionSelected(opt: Option) {
   const val = getOptionValue.value(opt) || getDisplayValue.value(opt);
 
   return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
@@ -689,9 +767,9 @@ function closeDropdown() {
 
 const onDropdownClose = async () => {
   if (props.options && typeof props.options === "function") {
-    optionsList.value = (await props.options()).results as unknown[];
+    optionsList.value = (await props.options()).results as Option[];
   } else {
-    optionsList.value = props.options as Record<string, unknown>[];
+    optionsList.value = props.options as Option[];
   }
 
   filterString.value = undefined;
@@ -744,7 +822,7 @@ function sameWidthChangeBorders() {
   };
 }
 
-function toggleOption(opt: { [x: string]: string }) {
+function toggleOption(opt: Option) {
   if (opt === void 0) {
     return;
   }
@@ -787,13 +865,13 @@ async function onSearch(value: string) {
   if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
-      optionsTemp.value = (await props.options(filterString.value)).results as unknown[];
+      optionsTemp.value = (await props.options(filterString.value)).results as Option[];
     } finally {
       listLoading.value = false;
     }
   } else {
     optionsTemp.value = optionsList.value.filter((x) => {
-      return x[props.optionLabel as string].toLowerCase().includes(filterString.value.toLowerCase());
+      return x[getOptionLabel.value(x)].toLowerCase().includes(filterString.value.toLowerCase());
     });
   }
 }

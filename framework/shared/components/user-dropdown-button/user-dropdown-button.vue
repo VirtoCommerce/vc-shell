@@ -48,8 +48,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { BladeMenu } from "@vc-shell/framework";
 import { vOnClickOutside } from "@vueuse/components";
+import { BladeMenu } from "./../../../core/types";
 
 export interface Props {
   avatar: string;
@@ -76,7 +76,7 @@ const onClose = () => {
 
 <style lang="scss">
 .user-dropdown-button {
-  @apply tw-w-[240px] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-divider-color)] tw-px-4 tw-mr-4 tw-cursor-pointer
+  @apply tw-w-[240px] tw-border-l tw-border-solid tw-border-l-[color:var(--app-bar-divider-color)] tw-px-4 tw-cursor-pointer
     tw-relative tw-flex tw-justify-between tw-items-center tw-h-full;
 
   &_no-pointer {

@@ -8,7 +8,7 @@
       <VcForm @submit.prevent="login">
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
+          :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
           name="username"
           :model-value="form.username"
           rules="required"
@@ -18,8 +18,8 @@
             ref="loginField"
             v-model="form.username"
             class="tw-mb-4 tw-mt-1"
-            :label="$t('SHELL.LOGIN.FIELDS.LOGIN.LABEL')"
-            :placeholder="$t('SHELL.LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+            :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
+            :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
@@ -28,7 +28,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
+          :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
           name="password"
           :model-value="form.password"
           rules="required"
@@ -38,8 +38,8 @@
             ref="passwordField"
             v-model="form.password"
             class="tw-mb-4"
-            :label="$t('SHELL.LOGIN.FIELDS.PASSWORD.LABEL')"
-            :placeholder="$t('SHELL.LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
+            :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
+            :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             required
             :error="!!errors.length"
@@ -55,7 +55,7 @@
             type="button"
             @click="togglePassRequest"
           >
-            {{ $t("SHELL.LOGIN.FORGOT_PASSWORD_BUTTON") }}
+            {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
@@ -68,7 +68,7 @@
             :disabled="loading || !isValid"
             @click="login"
           >
-            {{ $t("SHELL.LOGIN.BUTTON") }}
+            {{ $t("LOGIN.BUTTON") }}
           </vc-button>
         </div>
       </VcForm>
@@ -78,19 +78,19 @@
         <VcForm @submit.prevent="forgot">
           <Field
             v-slot="{ field, errorMessage, handleChange, errors }"
-            :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+            :label="$t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             name="loginOrEmail"
             :model-value="forgotPasswordForm.loginOrEmail"
-            rules="required"
+            rules="required|email"
           >
             <VcInput
               v-bind="field"
               ref="forgotPasswordField"
               v-model="forgotPasswordForm.loginOrEmail"
               class="tw-mb-4 tw-mt-1"
-              :label="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
-              :placeholder="$t('SHELL.LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
-              :hint="$t('SHELL.LOGIN.RESET_EMAIL_TEXT')"
+              :label="$t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+              :placeholder="$t('LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
+              :hint="$t('LOGIN.RESET_EMAIL_TEXT')"
               required
               :error="!!errors.length"
               :error-message="errorMessage"
@@ -103,21 +103,21 @@
               type="button"
               @click="togglePassRequest"
             >
-              {{ $t("SHELL.LOGIN.BACK_BUTTON") }}
+              {{ $t("LOGIN.BACK_BUTTON") }}
             </vc-button>
             <vc-button
               variant="primary"
               :disabled="loading || isDisabled"
               @click="forgot"
             >
-              {{ $t("SHELL.LOGIN.FORGOT_BUTTON") }}
+              {{ $t("LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>
         </VcForm>
       </template>
 
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
-        <div>{{ $t("SHELL.LOGIN.RESET_EMAIL_SENT") }}</div>
+        <div>{{ $t("LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
           <span
             v-if="$isDesktop.value"
@@ -128,7 +128,7 @@
             :disabled="loading"
             @click="togglePassRequest"
           >
-            {{ $t("SHELL.LOGIN.BUTTON_OK") }}
+            {{ $t("LOGIN.BUTTON_OK") }}
           </vc-button>
         </div>
       </template>
@@ -154,17 +154,21 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted } from "vue";
-import { useUser, useForm, SignInResults, RequestPasswordResult, useSettings } from "@vc-shell/framework";
-import { useLogin } from "../modules/login";
+import { ref, reactive, computed, onMounted, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
+import { useSettings, useUser } from "./../../../../../core/composables";
+import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
+import { CommonPageComposables } from "typings";
 
 const router = useRouter();
 const route = useRoute();
+
+console.log(router, route);
 useForm({ validateOnMount: false });
-const { logo, background, title } = route.meta as { logo: string; background: string; title: string };
+const { logo, background, title } = route?.meta as { logo: string; background: string; title: string };
 const { getUiCustomizationSettings, uiSettings } = useSettings();
+const { useLogin } = inject<CommonPageComposables>("commonPageComposables");
 
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });

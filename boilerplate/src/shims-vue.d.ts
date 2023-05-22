@@ -1,6 +1,6 @@
 /* eslint-disable */
-import { Ref } from "vue";
 import { CoreBladeAdditionalSettings } from "@vc-shell/framework";
+import { Ref } from "vue";
 
 declare module "*.vue" {
   import type { DefineComponent } from "vue";

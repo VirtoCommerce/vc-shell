@@ -1,13 +1,18 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import { usePermissions, useUser, ExtendedComponent } from "@vc-shell/framework";
+import {
+  usePermissions,
+  useUser,
+  BladePageComponent,
+  notification,
+  Login,
+  ResetPassword,
+  Invite,
+} from "@vc-shell/framework";
 
 /**
  * Pages
  */
 import Dashboard from "../pages/Dashboard.vue";
-import Invite from "../pages/Invite.vue";
-import ResetPassword from "../pages/ResetPassword.vue";
-import Login from "./../pages/Login.vue";
 import App from "./../pages/App.vue";
 
 /**
@@ -97,7 +102,7 @@ let programmatic = false;
 });
 
 router.beforeEach((to, from, next) => {
-  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as ExtendedComponent;
+  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as BladePageComponent;
 
   if (from.name === undefined || programmatic) {
     if (ExtendedComponent && ExtendedComponent.permissions) {
@@ -108,7 +113,7 @@ router.beforeEach((to, from, next) => {
           next({ name: "Dashboard" });
         } else {
           // TODO temporary access alert
-          alert("Access restricted");
+          notification.error("Access restricted");
         }
       }
     } else {

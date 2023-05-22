@@ -16,13 +16,18 @@
     "boilerplate/src/modules/default/locales",
     "framework/shared/modules/assets-manager/locales",
     "framework/shared/modules/assets/locales",
+    "framework/shared/locales",
+    "framework/shared/pages/InvitePage/locales",
+    "framework/shared/pages/LoginPage/locales",
+    "framework/shared/pages/ResetPasswordPage/locales",
     "apps/vendor-portal/src/modules/import/locales",
     "apps/vendor-portal/src/modules/marketplace-products/locales",
     "apps/vendor-portal/src/modules/offers/locales",
     "apps/vendor-portal/src/modules/products/locales",
     "apps/vendor-portal/src/modules/orders/locales",
     "apps/vendor-portal/src/modules/rating/locales",
-    "apps/vendor-portal/src/modules/settings/locales"
+    "apps/vendor-portal/src/modules/settings/locales",
+    "import-module/src/locales"
   ],
   "i18n-ally.keystyle": "nested",
   "typescript.tsdk": "node_modules/typescript/lib"

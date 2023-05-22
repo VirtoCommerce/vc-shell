@@ -1,7 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable */
 import { Ref } from "vue";
 import { Composer } from "vue-i18n";
+import { CoreBladeAdditionalSettings } from "./../shared/components/blade-navigation/types";
 
 declare module "*.vue" {
   import type { DefineComponent } from "vue";

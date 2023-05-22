@@ -1,6 +1,6 @@
 <template>
   <div
-    class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-pl-4"
+    class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-px-4"
   >
     <slot name="appSwitcher"></slot>
 

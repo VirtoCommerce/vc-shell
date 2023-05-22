@@ -8,7 +8,7 @@ const notificationsClient = new PushNotificationClient();
 interface INotifications {
   readonly notifications: ComputedRef<PushNotification[]>;
   readonly moduleNotifications: ComputedRef<PushNotification[]>;
-  loadFromHistory(take?: number): void;
+  loadFromHistory(take?: number): Promise<void>;
   addNotification(message: PushNotification): void;
   markAsRead(message: PushNotification): void;
   markAllAsRead(): void;

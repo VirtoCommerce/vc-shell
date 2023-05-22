@@ -1,0 +1,28 @@
+{
+  "PASSWORDRESET": {
+    "TITLE": "Password reset",
+    "FIELDS": {
+      "PASSWORD": {
+        "LABEL": "New password",
+        "PLACEHOLDER": "Enter password"
+      },
+      "CONFIRM_PASSWORD": {
+        "LABEL": "Confirm password",
+        "PLACEHOLDER": "Confirm password"
+      }
+    },
+    "SAVE_PASSWORD": "Save",
+    "ERRORS": {
+      "Repeat-password": "Passwords are not same",
+      "Invalid-token": "Token is invalid or expired",
+      "Password-too-weak": "New password does not comply one or more password security policies:",
+      "PasswordTooShort": "Passwords too short",
+      "PasswordRequiresUniqueChars": "Passwords must use different characters",
+      "PasswordRequiresLower": "Passwords must have at least one lowercase ('a'-'z')",
+      "PasswordRequiresUpper": "Passwords must have at least one uppercase ('A'-'Z')",
+      "PasswordRequiresDigit": "Passwords must have at least one digit ('0'-'9')",
+      "PasswordRequiresNonAlphanumeric": "Passwords must have at least one non alphanumeric character",
+      "recentPasswordUsed": "You have used this password in the past. Choose another one."
+    }
+  }
+}

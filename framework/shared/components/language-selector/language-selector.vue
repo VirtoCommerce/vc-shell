@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts" setup>
-import { VcIcon } from "@vc-shell/framework";
+import { VcIcon } from "./../../../ui/components";
 import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 

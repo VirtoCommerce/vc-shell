@@ -22,7 +22,8 @@
   },
   "dependencies": {
     "@vc-shell/framework": "^1.0.70",
-    "vue": "^3.3.3"
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.0"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"

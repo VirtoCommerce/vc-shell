@@ -63,12 +63,13 @@ import {
   VcNotificationDropdown,
   usePopup,
   useMenuComposer,
+  ChangePassword,
+  LanguageSelector,
+  UserDropdownButton,
+  pagesSymbol,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, markRaw, watch, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ChangePassword } from "../components/change-password";
-import { LanguageSelector } from "../components/language-selector";
-import { UserDropdownButton } from "../components/user-dropdown-button";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
@@ -96,7 +97,7 @@ const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
-const pages = inject<BladePageComponent[]>("pages");
+const pages = inject(pagesSymbol);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;

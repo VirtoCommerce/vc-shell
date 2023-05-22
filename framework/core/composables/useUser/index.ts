@@ -105,17 +105,18 @@ export function useUser(): IUseUser {
     const token = await getAccessToken();
     if (token) {
       securityClient.setAuthToken(token);
-      try {
-        loading.value = true;
-        user.value = await securityClient.getCurrentUser();
-        console.log("[userUsers]: an user details has been loaded", user.value);
-      } catch (e) {
-        console.dir(e);
-        //TODO: log error
-      } finally {
-        loading.value = false;
-      }
     }
+    try {
+      loading.value = true;
+      user.value = await securityClient.getCurrentUser();
+      console.log("[userUsers]: an user details has been loaded", user.value);
+    } catch (e) {
+      console.dir(e);
+      //TODO: log error
+    } finally {
+      loading.value = false;
+    }
+
     return { ...user.value } as UserDetail;
   }
 

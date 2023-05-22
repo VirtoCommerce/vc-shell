@@ -1,17 +1,22 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../pages/Dashboard.vue";
-import Invite from "../pages/Invite.vue";
-import ResetPassword from "../pages/ResetPassword.vue";
 import { OrdersEdit, OrdersList } from "../modules/orders";
 import { ProductsList, ProductsEdit } from "../modules/products";
 import { OffersDetails, OffersList } from "../modules/offers";
 import { MpProductsList, MpProductsEdit } from "../modules/marketplace-products";
-import Login from "./../pages/Login.vue";
 import App from "./../pages/App.vue";
 import { ImportNew, ImportProfileDetails, ImportProfileSelector } from "../modules/import";
 import { ReviewDetails, ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { usePermissions, useUser, BladePageComponent, notification } from "@vc-shell/framework";
+import {
+  usePermissions,
+  useUser,
+  BladePageComponent,
+  notification,
+  Invite,
+  Login,
+  ResetPassword,
+} from "@vc-shell/framework";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved

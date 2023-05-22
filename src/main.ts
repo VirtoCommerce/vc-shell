@@ -10,6 +10,7 @@ import MpProductsModule from "./modules/marketplace-products";
 import EmptyRouterView from "./pages/EmptyRouterView.vue";
 import { router } from "./router";
 import * as locales from "./locales";
+import { useLogin } from "./composables";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -19,7 +20,9 @@ import "@vc-shell/framework/dist/index.css";
 
 const app = createApp(EmptyRouterView)
   .use(router)
-  .use(VirtoShellFramework)
+  .use(VirtoShellFramework, {
+    useLogin,
+  })
   .use(OrdersModule)
   .use(ProductsModule)
   .use(MpProductsModule)

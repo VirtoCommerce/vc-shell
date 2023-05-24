@@ -1,6 +1,9 @@
 {
   "language_name": "English",
   "SHELL": {
+    "MENU": {
+      "DASHBOARD": "Home"
+    },
     "TOOLBAR": {
       "LOGIN": "Log In",
       "SETTINGS": "Settings",

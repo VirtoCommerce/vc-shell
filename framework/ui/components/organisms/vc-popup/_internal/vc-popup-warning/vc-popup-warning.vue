@@ -11,7 +11,7 @@
   <div class="tw-flex tw-my-4 tw-mx-5">
     <div class="tw-ml-auto">
       <VcButton
-        variant="onlytext"
+        text
         class="tw-mr-5 tw-text-[#FF4A4A]"
         @click="$emit('confirm')"
         >Confirm</VcButton

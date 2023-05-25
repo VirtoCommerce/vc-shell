@@ -75,7 +75,6 @@
             class="tw-grow tw-basis-0"
           ></span>
           <VcButton
-            variant="primary"
             :outline="true"
             class="tw-mr-3"
             @click="$emit('close')"
@@ -83,7 +82,6 @@
             {{ $t("COMPONENTS.CHANGE_PASSWORD.CANCEL") }}
           </VcButton>
           <VcButton
-            variant="primary"
             :disabled="loading || !form.isValid || isDisabled"
             @click="changePassword"
           >

@@ -62,7 +62,7 @@
                           icon="far fa-copy"
                           size="m"
                           class="tw-ml-2"
-                          variant="onlytext"
+                          text
                           title="Copy link"
                           @click="copyLink(defaultAsset.url)"
                         ></VcButton>

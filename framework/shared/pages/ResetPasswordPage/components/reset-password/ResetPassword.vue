@@ -73,7 +73,6 @@
             class="tw-grow tw-basis-0"
           ></span>
           <vc-button
-            variant="primary"
             :disabled="disableButton"
             @click="resetPassword"
           >

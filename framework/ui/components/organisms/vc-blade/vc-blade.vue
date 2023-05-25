@@ -42,7 +42,7 @@
         />
         <div class="tw-line-clamp-1 tw-w-full tw-mx-2"><slot name="error"></slot></div>
         <VcButton
-          variant="onlytext"
+          text
           class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
           @click="open()"
           >{{ $t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton

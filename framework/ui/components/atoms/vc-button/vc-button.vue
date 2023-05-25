@@ -1,20 +1,12 @@
 <template>
   <button
-    class="vc-button"
-    :class="[
-      `vc-button_${variant}`,
-      {
-        'vc-button_small': small,
-        'vc-button_outline': outline,
-        'vc-button_selected': selected,
-      },
-    ]"
+    :class="buttonClass"
     :disabled="disabled"
     @click="onClick"
   >
     <VcIcon
       v-if="icon"
-      class="vc-button__icon"
+      :class="['vc-button__icon', iconClass]"
       :icon="icon"
       :size="small ? 'xs' : 's'"
     ></VcIcon>
@@ -28,14 +20,18 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { VcIcon } from "./../vc-icon";
 export interface Props {
-  icon?: string | undefined;
-  variant?: "primary" | "secondary" | "special" | "danger" | "widget" | "onlytext";
-  disabled?: boolean | undefined;
-  small?: boolean | undefined;
-  outline?: boolean | undefined;
-  selected?: boolean | undefined;
+  icon?: string;
+  iconClass?: string;
+  variant?: "primary" | "warning" | "danger";
+  disabled?: boolean;
+  small?: boolean;
+  outline?: boolean;
+  selected?: boolean;
+  text?: boolean;
+  raised?: boolean;
 }
 
 export interface Emits {
@@ -51,6 +47,20 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+const buttonClass = computed(() => {
+  return [
+    "vc-button",
+    {
+      [`vc-button-${props.variant}`]: props.variant,
+      "vc-button_small": props.small,
+      "vc-button_outline": props.outline,
+      "vc-button_selected": props.selected,
+      "vc-button_text": props.text,
+      "vc-button_raised": props.raised,
+    },
+  ];
+});
+
 function onClick(e: Event): void {
   if (!props.disabled) {
     e.preventDefault();
@@ -61,147 +71,173 @@ function onClick(e: Event): void {
 
 <style lang="scss">
 :root {
-  --button-primary-background-color: #41afe6;
-  --button-primary-background-color-hover: #319ed4;
-  --button-primary-background-color-active: #319ed4;
-  --button-primary-background-color-disabled: #a9ddf6;
+  --button-primary-background-color: 65, 175, 230;
+  --button-primary-background-color-hover: 49, 158, 212;
+  --button-primary-background-color-disabled: 169, 221, 246;
+  --button-primary-text-color: 255, 255, 255;
+  --button-primary-text-color-outlined: var(--button-primary-background-color);
+  --button-primary-text-color-hover: var(--button-primary-background-color-hover);
 
-  --button-primary-text-color: #ffffff;
-  --button-primary-text-color-hover: #ffffff;
-  --button-primary-text-color-active: #ffffff;
-  --button-primary-text-color-disabled: #ffffff;
+  --button-warning-background-color: 248, 148, 6;
+  --button-warning-background-color-hover: 235, 139, 3;
+  --button-warning-background-color-disabled: 254, 212, 152;
+  --button-warning-text-color: 255, 255, 255;
+  --button-warning-text-color-outlined: var(--button-warning-background-color);
+  --button-warning-text-color-hover: var(--button-warning-background-color-hover);
 
-  --button-secondary-background-color: #ffffff;
-  --button-secondary-background-color-hover: #ffffff;
-  --button-secondary-background-color-active: #ffffff;
-  --button-secondary-background-color-disabled: #ffffff;
-
-  --button-secondary-border-color: #43b0e6;
-  --button-secondary-border-color-hover: #319ed4;
-  --button-secondary-border-color-active: #319ed4;
-  --button-secondary-border-color-disabled: #a9ddf6;
-
-  --button-secondary-text-color: #43b0e6;
-  --button-secondary-text-color-hover: #319ed4;
-  --button-secondary-text-color-active: #319ed4;
-  --button-secondary-text-color-disabled: #a9ddf6;
-
-  --button-special-background-color: #f89406;
-  --button-special-background-color-hover: #eb8b03;
-  --button-special-background-color-active: #eb8b03;
-  --button-special-background-color-disabled: #fed498;
-
-  --button-danger-background-color: #ff4a4a;
-  --button-danger-background-color-hover: #d73a3a;
-  --button-danger-background-color-active: #d73a3a;
-  --button-danger-background-color-disabled: #ff5e5e;
-
-  --button-special-text-color: #ffffff;
-  --button-special-text-color-hover: #ffffff;
-  --button-special-text-color-active: #ffffff;
-  --button-special-text-color-disabled: #ffffff;
-
-  --button-widget-background-color: #ffffff;
-  --button-widget-background-color-hover: #f2faff;
-  --button-widget-background-color-active: #eaf6ff;
-  --button-widget-background-color-disabled: #fafafa;
-
-  --button-widget-border-color: #eaedf3;
-  --button-widget-border-color-hover: #d3e2ec;
-  --button-widget-border-color-active: #deecf4;
+  --button-danger-background-color: 255, 74, 74;
+  --button-danger-background-color-hover: 215, 58, 58;
+  --button-danger-background-color-disabled: 255, 94, 94;
+  --button-danger-text-color: 255, 255, 255;
+  --button-danger-text-color-outlined: var(--button-danger-background-color);
+  --button-danger-text-color-hover: var(--button-danger-background-color-hover);
 
   --button-border-radius: 3px;
-  --button-padding: 14px;
-  --button-padding-small: 12px;
+  --button-padding-hor: 14px;
+  --button-padding-hor-small: 14px;
+  --button-padding-vert: 10px;
+  --button-padding-vert-small: 2px;
+
   --button-height: 36px;
   --button-height-small: 28px;
 }
 
-$variants: primary, secondary, special, danger, widget;
+$variants: primary, warning, danger;
 
 .vc-button {
-  @apply tw-inline-flex tw-items-center tw-font-medium tw-text-sm tw-cursor-pointer tw-box-border tw-transition  tw-duration-200 tw-rounded-[var(--button-border-radius)] tw-px-[var(--button-padding)] tw-h-[var(--button-height)];
-
   &__icon + &__title {
-    @apply tw-ml-2;
+    @apply tw-ml-2 tw-text-left;
   }
 
   @each $variant in $variants {
-    &_#{$variant} {
-      @apply tw-bg-[color:var(--button-#{$variant}-background-color)]
-      tw-text-left
-      tw-text-[color:var(--button-#{$variant}-text-color)]
-      tw-border tw-border-solid tw-border-[color:var(--button-#{$variant}-background-color)]
-      hover:tw-bg-[color:var(--button-#{$variant}-background-color-hover)]
-      hover:tw-text-[color:var(--button-#{$variant}-text-color-hover)]
-      hover:tw-border-[color:var(--button-#{$variant}-background-color-hover)]
-      focus:tw-bg-[color:var(--button-#{$variant}-background-color-active)]
-      focus:tw-text-[color:var(--button-#{$variant}-text-color-active)]
-      focus:tw-bg-[color:var(--button-#{$variant}-background-color-active)]
+    &.vc-button-#{$variant} {
+      @apply tw-inline-flex tw-items-center tw-font-medium tw-text-sm tw-cursor-pointer tw-box-border tw-transition tw-duration-200
+      tw-rounded-[var(--button-border-radius)] tw-px-[var(--button-padding-hor)] tw-py-[var(--button-padding-vert)]
+      tw-min-h-[var(--button-height)]
+      tw-bg-[color:rgb(var(--button-#{$variant}-background-color))]
+      tw-flex tw-justify-center
+      tw-text-[color:rgb(var(--button-#{$variant}-text-color))]
+      hover:tw-bg-[color:rgb(var(--button-#{$variant}-background-color-hover))]
+      focus:tw-bg-[color:rgb(var(--button-#{$variant}-background-color-hover))]
       disabled:tw-cursor-not-allowed
-      disabled:tw-bg-[color:var(--button-#{$variant}-background-color-disabled)]
-      disabled:tw-text-[color:var(--button-#{$variant}-text-color-disabled)]
-      disabled:tw-border-[color:var(--button-#{$variant}-background-color-disabled)];
-    }
-  }
+      disabled:tw-bg-[color:rgb(var(--button-#{$variant}-background-color-disabled))];
 
-  &_widget {
-    @apply tw-h-auto tw-border-[color:var(--button-widget-border-color)]
-    tw-shadow-[1px_4px_10px_rgba(197,206,214,0.24)]
-    tw-rounded-[4px]
-    tw-p-[15px]
-    hover:tw-bg-[color:var(--button-widget-background-color-hover)]
-    focus:tw-bg-[color:var(--button-widget-background-color-active)]
-    focus:tw-border-[color:var(--button-widget-border-color-active)]
-    disabled:tw-cursor-not-allowed
-    disabled:tw-bg-[color:var(--button-widget-background-color-disabled)]
-    disabled:tw-border-[color:var(--button-widget-background-color-disabled)];
+      &.vc-button_small {
+        @apply tw-py-[var(--button-padding-vert-small)] tw-min-h-[var(--button-height-small)] tw-px-[var(--button-padding-hor-small)] tw-font-normal tw-text-xs;
 
-    .vc-button__icon {
-      @apply tw-text-[30px] tw-text-[color:#a9bfd2];
-    }
-  }
+        .vc-button__icon + .vc-button__title {
+          @apply tw-ml-1;
+        }
+      }
 
-  &_small {
-    @apply tw-h-[var(--button-height-small)]
-      tw-px-[var(--button-padding-small)]
-      tw-font-normal
-      tw-text-xs;
+      &.vc-button_outline {
+        @apply tw-bg-transparent tw-border tw-border-[color:rgb(var(--button-#{$variant}-background-color))]
+        tw-text-[color:rgb(var(--button-#{$variant}-text-color-outlined))]
+        hover:tw-text-[color:rgb(var(--button-#{$variant}-text-color-hover))]
+        hover:tw-bg-transparent
+        hover:tw-border-[color:rgb(var(--button-#{$variant}-background-color-hover))]
+        disabled:tw-text-[color:rgba(var(--button-#{$variant}-text-color-hover),0.5)]
+        disabled:tw-border-[color:rgba(var(--button-#{$variant}-background-color),0.5)]
+        disabled:tw-bg-transparent;
+      }
 
-    .vc-button__icon + .vc-button__title {
-      @apply tw-ml-1;
-    }
-  }
+      &.vc-button_text {
+        @apply tw-border-none tw-bg-transparent tw-p-0
+        tw-text-[color:rgb(var(--button-#{$variant}-background-color))]
+        hover:tw-text-[color:rgb(var(--button-#{$variant}-background-color-hover))]
+        focus:tw-text-[color:rgb(var(--button-#{$variant}-background-color-hover))]
+        disabled:tw-text-[color:rgba(var(--button-#{$variant}-background-color),0.5)];
+      }
 
-  &_outline {
-    @apply tw-bg-transparent
-    tw-text-[color:var(--button-secondary-text-color)]
-    tw-border-[color:var(--button-secondary-border-color)]
-    hover:tw-text-[color:var(--button-secondary-text-color-hover)]
-    hover:tw-border-[color:var(--button-secondary-border-color-hover)]
-    hover:tw-bg-transparent
-    focus:tw-text-[color:var(--button-secondary-text-color-hover)]
-    focus:tw-border-[color:var(--button-secondary-border-color-active)]
-    focus:tw-bg-transparent
-    disabled:tw-cursor-not-allowed
-    disabled:tw-text-[color:var(--button-secondary-text-color-disabled)]
-    disabled:tw-border-[color:var(--button-secondary-border-color-disabled)]
-    disabled:tw-bg-transparent;
-  }
+      &.vc-button_raised {
+        @apply tw-shadow-[1px_4px_10px_rgba(197,206,214,0.24)] tw-px-[var(--button-padding-hor)] tw-py-[var(--button-padding-vert)];
 
-  &_onlytext {
-    @apply tw-text-[color:var(--button-secondary-text-color)]
-    tw-p-0 tw-border-none tw-bg-transparent tw-h-auto
-    hover:tw-bg-transparent
-    hover:tw-text-[color:var(--button-secondary-text-color-hover)]
-    focus:tw-bg-transparent
-    focus:tw-text-[color:var(--button-secondary-text-color-hover)];
-  }
+        &.vc-button_text:not(:disabled) {
+          &:hover,
+          &:focus {
+            @apply tw-bg-[color:rgba(var(--button-#{$variant}-background-color-hover),0.07)];
+          }
+        }
+      }
 
-  &_selected {
-    &.vc-button_widget {
-      @apply tw-bg-[color:var(--button-widget-background-color-hover)];
+      &.vc-button_selected {
+        @apply tw-bg-[color:rgb(var(--button-#{$variant}-background-color-hover))];
+
+        &.vc-button_text {
+          @apply tw-bg-[color:rgba(var(--button-#{$variant}-background-color-hover),0.07)];
+        }
+      }
     }
   }
 }
+
+// .vc-button-warning {
+//   @apply tw-bg-[color:rgb(var(--button-warning-background-color))]
+//   tw-text-[color:rgb(var(--button-warning-text-color))]
+//   hover:tw-bg-[color:rgb(var(--button-warning-background-color-hover))]
+//   focus:tw-bg-[color:rgb(var(--button-warning-background-color-hover))]
+//   disabled:tw-bg-[color:rgb(var(--button-warning-background-color-disabled))];
+
+//   &.vc-button_outline {
+//     @apply tw-bg-transparent tw-border tw-border-[color:rgb(var(--button-warning-background-color))]
+//     tw-text-[color:rgb(var(--button-warning-text-color-outlined))]
+//     hover:tw-text-[color:rgb(var(--button-warning-text-color-hover))]
+//     hover:tw-border-[color:rgb(var(--button-warning-background-color-hover))];
+//   }
+
+//   &.vc-button_text {
+//     @apply tw-text-[color:rgb(var(--button-warning-background-color))]
+//     tw-p-0 tw-border-none tw-bg-transparent
+//     hover:tw-text-[color:rgb(var(--button-warning-text-color-hover))]
+//     focus:tw-text-[color:rgb(var(--button-warning-text-color-hover))];
+
+//     &:hover,
+//     &:focus {
+//       @apply tw-bg-[color:rgba(var(--button-warning-background-color-hover),0.07)];
+//     }
+//   }
+
+//   &.vc-button_selected {
+//     @apply tw-bg-[color:rgb(var(--button-warning-background-color-hover))];
+
+//     &.vc-button_text {
+//       @apply tw-bg-[color:rgba(var(--button-warning-background-color-hover),0.07)];
+//     }
+//   }
+// }
+
+// .vc-button-danger {
+//   @apply tw-bg-[color:rgb(var(--button-danger-background-color))]
+//   tw-text-[color:rgb(var(--button-danger-text-color))]
+//   hover:tw-bg-[color:rgb(var(--button-danger-background-color-hover))]
+//   focus:tw-bg-[color:rgb(var(--button-danger-background-color-hover))]
+//   disabled:tw-bg-[color:rgb(var(--button-danger-background-color-disabled))];
+
+//   &.vc-button_outline {
+//     @apply tw-bg-transparent tw-border tw-border-[color:rgb(var(--button-danger-background-color))]
+//     tw-text-[color:rgb(var(--button-danger-text-color-outlined))]
+//     hover:tw-text-[color:rgb(var(--button-danger-text-color-hover))]
+//     hover:tw-border-[color:rgb(var(--button-danger-background-color-hover))];
+//   }
+
+//   &.vc-button_text {
+//     @apply tw-text-[color:rgb(var(--button-danger-background-color))]
+//     tw-p-0 tw-border-none tw-bg-transparent
+//     hover:tw-text-[color:rgb(var(--button-danger-text-color-hover))]
+//     focus:tw-text-[color:rgb(var(--button-danger-text-color-hover))];
+
+//     &:hover,
+//     &:focus {
+//       @apply tw-bg-[color:rgba(var(--button-danger-background-color-hover),0.07)];
+//     }
+//   }
+
+//   &.vc-button_selected {
+//     @apply tw-bg-[color:rgb(var(--button-danger-background-color-hover))];
+
+//     &.vc-button_text {
+//       @apply tw-bg-[color:rgba(var(--button-danger-background-color-hover),0.07)];
+//     }
+//   }
+// }
 </style>

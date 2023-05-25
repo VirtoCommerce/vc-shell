@@ -79,7 +79,6 @@
             class="tw-grow tw-basis-0"
           ></span>
           <vc-button
-            variant="primary"
             :disabled="loading || !form.isValid || !form.tokenIsValid"
             @click="acceptInvitation"
           >

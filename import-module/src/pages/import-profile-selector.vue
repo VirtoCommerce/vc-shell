@@ -36,13 +36,15 @@
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
-                class="tw-w-max"
+                class="tw-w-max tw-text-black"
                 icon="fas fa-file-csv"
-                variant="widget"
+                icon-class="tw-text-[30px] tw-text-[color:#a9bfd2]"
+                text
+                raised
                 :selected="selectedProfileId === slide.id"
                 @click="openImporter(slide.id)"
               >
-                {{ slide.name }}
+                <span class="tw-text-black">{{ slide.name }}</span>
                 <VcHint>{{ slide.dataImporterType }}</VcHint>
               </VcButton>
             </div>

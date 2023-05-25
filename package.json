@@ -63,10 +63,10 @@
     "roboto-fontface": "^0.10.0",
     "vee-validate": "^4.9.4",
     "vue": "^3.3.4",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "yarn": "^1.22.19"
   },
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
-  },
-  "packageManager": "yarn@3.5.1"
+  }
 }

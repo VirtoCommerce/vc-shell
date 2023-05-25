@@ -33,8 +33,5 @@
   "exclude": [
     "node_modules",
     "dist"
-  ],
-  "vueCompilerOptions": {
-    "experimentalRfc436": true
-  }
+  ]
 }

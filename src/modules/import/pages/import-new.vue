@@ -75,7 +75,6 @@
                           <template #append>
                             <slot name="button">
                               <VcButton
-                                variant="primary"
                                 :outline="true"
                                 @click="saveExternalUrl()"
                               >
@@ -605,7 +604,6 @@ const uploadActions = ref<INotificationActions[]>([
         throw e;
       }
     },
-    variant: "primary",
     outline: true,
     isVisible: computed(() => isValid.value && !importStarted.value),
   },
@@ -615,7 +613,6 @@ const uploadActions = ref<INotificationActions[]>([
       await start(null);
     },
     outline: false,
-    variant: "primary",
     isVisible: computed(() => isValid.value && !importStarted.value),
     disabled: computed(() => (importStatus.value && importStatus.value.inProgress) || importLoading.value),
   },

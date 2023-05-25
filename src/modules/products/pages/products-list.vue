@@ -122,10 +122,7 @@
 
       <!-- Override status column template -->
       <template #item_status="itemData">
-        <mp-product-status
-          :status="itemData.item.status"
-          class="tw-mb-1"
-        />
+        <mp-product-status :status="itemData.item.status" />
       </template>
 
       <template #mobile-item="itemData">

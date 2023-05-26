@@ -49,9 +49,9 @@
           />
         </Field>
 
-        <div class="tw-flex tw-justify-end tw-items-center tw-pt-2 tw-pb-3">
+        <div class="tw-flex tw-justify-end tw-items-center tw-pt-2">
           <VcButton
-            variant="onlytext"
+            text
             type="button"
             @click="togglePassRequest"
           >
@@ -59,19 +59,38 @@
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
-          <span
-            v-if="$isDesktop.value"
-            class="tw-grow tw-basis-0"
-          ></span>
           <vc-button
-            variant="primary"
             :disabled="loading || !isValid"
+            class="tw-w-28"
             @click="login"
           >
             {{ $t("LOGIN.BUTTON") }}
           </vc-button>
         </div>
       </VcForm>
+      <div
+        v-if="azureAdAuthAvailable && azureAdAuthCaption"
+        class="tw-mt-4"
+      >
+        <div
+          class="tw-flex tw-items-center tw-text-center tw-uppercase tw-text-[color:var(--separator-text)] before:tw-content-[''] before:tw-flex-1 before:tw-border-b before:tw-border-b-[color:var(--separator)] before:tw-mr-2 after:tw-content-[''] after:tw-flex-1 after:tw-border-b after:tw-border-b-[color:var(--separator)] after:tw-ml-2"
+        >
+          OR
+        </div>
+        <div class="tw-flex tw-justify-center tw-mt-4">
+          <VcButton
+            outline
+            @click="azureSignOn"
+            ><div class="tw-flex tw-flex-row tw-items-center">
+              <img
+                :src="AzureAdIcon"
+                alt="AzureAd"
+                class="tw-h-5 tw-mr-2"
+              />{{ azureAdAuthCaption }}
+            </div></VcButton
+          >
+        </div>
+      </div>
     </template>
     <template v-else>
       <template v-if="!forgotPasswordRequestSent">
@@ -99,14 +118,13 @@
           </Field>
           <div class="tw-flex tw-justify-between tw-items-center tw-pt-2">
             <vc-button
-              variant="secondary"
+              text
               type="button"
               @click="togglePassRequest"
             >
               {{ $t("LOGIN.BACK_BUTTON") }}
             </vc-button>
             <vc-button
-              variant="primary"
               :disabled="loading || isDisabled"
               @click="forgot"
             >
@@ -124,7 +142,6 @@
             class="tw-grow tw-basis-0"
           ></span>
           <vc-button
-            variant="primary"
             :disabled="loading"
             @click="togglePassRequest"
           >
@@ -160,11 +177,12 @@ import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
 import { CommonPageComposables } from "typings";
+import { asyncComputed } from "@vueuse/core";
+import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 
 const router = useRouter();
 const route = useRoute();
 
-console.log(router, route);
 useForm({ validateOnMount: false });
 const { logo, background, title } = route?.meta as { logo: string; background: string; title: string };
 const { getUiCustomizationSettings, uiSettings } = useSettings();
@@ -173,7 +191,7 @@ const { useLogin } = inject<CommonPageComposables>("commonPageComposables");
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading } = useUser();
+const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser();
 const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
@@ -199,6 +217,13 @@ const customization = computed(() => {
 
 const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
+});
+
+const azureAdAuthAvailable = asyncComputed(async () => {
+  return await isAzureAdAuthAvailable();
+});
+const azureAdAuthCaption = asyncComputed(async () => {
+  return await getAzureAdAuthCaption();
 });
 
 const form = reactive({
@@ -236,5 +261,17 @@ const togglePassRequest = () => {
   }
 };
 
+const azureSignOn = async () => {
+  await externalSignIn("AzureAD", import.meta.env.BASE_URL);
+  await loadUser();
+};
+
 console.debug("Init login-page");
 </script>
+
+<style lang="scss">
+:root {
+  --separator: #d3dbe9;
+  --separator-text: #83a3be;
+}
+</style>

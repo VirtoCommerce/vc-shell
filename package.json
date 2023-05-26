@@ -24,7 +24,7 @@
     "storybook-serve": "storybook dev .storybook/assets -p 6006"
   },
   "workspaces": [
-    "apps/vendor-portal",
+    "apps/*",
     "framework",
     "cli/*",
     "import-module"

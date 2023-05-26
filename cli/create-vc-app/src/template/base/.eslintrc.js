@@ -15,7 +15,6 @@ module.exports = {
   ],
   parser: "vue-eslint-parser",
   parserOptions: {
-    project: ["./tsconfig.json"],
     node: true,
   },
   settings: {

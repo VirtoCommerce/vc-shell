@@ -57,7 +57,7 @@
               aspect="1x1"
               size="s"
               :bordered="true"
-              :src="itemData.item.imgSrc as string"
+              :src="itemData.item.imgSrc"
             ></VcImage>
             <div class="tw-grow tw-basis-0 tw-ml-3">
               <div class="tw-font-bold tw-text-lg">

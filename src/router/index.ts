@@ -17,6 +17,7 @@ import {
   Login,
   ResetPassword,
 } from "@vc-shell/framework";
+import { useCookies } from "@vueuse/integrations/useCookies";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -216,8 +217,9 @@ async function checkAuth(to, from, next) {
   const { getAccessToken } = useUser();
 
   const token = await getAccessToken();
+  const azureAdCookie = useCookies([".AspNetCore.Identity.Application"]).get(".AspNetCore.Identity.Application");
 
-  if (!token && to.name !== "Login") {
+  if (!(token || azureAdCookie) && to.name !== "Login") {
     next({ name: "Login" });
   } else {
     next();

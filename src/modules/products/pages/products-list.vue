@@ -132,7 +132,7 @@
             aspect="1x1"
             size="m"
             :bordered="true"
-            :src="itemData.item.imgSrc as string"
+            :src="itemData.item.imgSrc"
           />
           <div class="tw-grow tw-basis-0 tw-ml-3">
             <div class="tw-font-bold tw-text-lg">
@@ -143,7 +143,7 @@
             <div class="tw-mt-2 tw-mb-3">
               <mp-product-status
                 class="tw-mt-3"
-                :status="itemData.item.status as string"
+                :status="itemData.item.status"
               />
             </div>
 
@@ -151,7 +151,7 @@
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{ itemData.item.productData && (itemData.item.productData as Record<"gtin", string>).gtin }}
+                  {{ itemData.item.productData && itemData.item.productData.gtin }}
                 </div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -164,7 +164,7 @@
                 <div class="tw-flex tw-flex-col tw-items-center">
                   <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
-                    <VcStatusIcon :status="itemData.item && itemData.item.isPublished as boolean"></VcStatusIcon>
+                    <VcStatusIcon :status="itemData.item && itemData.item.isPublished"></VcStatusIcon>
                   </div>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export default defineComponent({
   url: "/products",
   scope: {
     notificationClick(notification: IProductPushNotification) {
-      if (notification.notifyType !== "OrderCreatedEventHandler") return;
+      if (notification.notifyType !== "PublicationRequestStatusChangedDomainEvent") return;
       return {
         param: notification.productId,
       };

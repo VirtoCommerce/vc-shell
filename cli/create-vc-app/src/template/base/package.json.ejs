@@ -13,7 +13,7 @@
     "lint-staged": "lint-staged",
     "generate-api-client": "cross-env api-client-generator --color",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
-    "bump": "cross-env-shell 'f() { yarn version --deferred \"$@\" && yarn version apply && yarn changelog && git add . && yarn commit-release && yarn create:tag ; }; f'",
+    "bump": "cross-env-shell 'f() { yarn version --\"$@\" --no-commit-hooks --ignore-scripts --no-git-tag-version --yes && yarn changelog && git add . && yarn commit-release && yarn create:tag ; }; f'",
     "commit-release": "cross-env-shell 'git commit -m v$npm_package_version'",
     "create:tag": "PACKAGE_VERSION=$(cat package.json | grep \\\"version\\\" | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]') && git tag v$PACKAGE_VERSION && git push --tags"
   },

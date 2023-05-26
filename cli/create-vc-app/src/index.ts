@@ -85,7 +85,8 @@ async function create() {
           type: dir ? null : "text",
           message: "App name:",
           initial: defaultAppName,
-          onState: (state) => (dir = String(state.value).trim() || defaultAppName),
+          onState: (state) => (dir = toValidName(String(state.value).trim()) || defaultAppName),
+          format: (value) => toValidName(String(value).trim()),
         },
         {
           name: "packageName",
@@ -136,7 +137,7 @@ async function create() {
     process.exit(1);
   }
 
-  const { appName, packageName = appName ?? defaultAppName, dashboard, commonPages, bladeModuleStarter } = config;
+  const { dashboard, commonPages, bladeModuleStarter } = config;
 
   const root = path.join(cwd, dir);
 

@@ -1,5 +1,5 @@
 import { mergeProps } from "vue";
-import { NotificationOptions } from "../types";
+import { InternalNotificationOptions, NotificationOptions } from "../types";
 import { useContainer } from "../composables";
 
 const {
@@ -18,7 +18,7 @@ function checkPending(limit?: number) {
   return limitCount > 0 && visibleCount + pending.items.length >= limitCount;
 }
 
-function resolvePending(options: NotificationOptions) {
+function resolvePending(options: InternalNotificationOptions) {
   if (checkPending(options.limit)) {
     pending.items.push({
       notificationId: options.notificationId,
@@ -27,7 +27,7 @@ function resolvePending(options: NotificationOptions) {
   }
 }
 
-function showNotification(content: string, options: NotificationOptions) {
+function showNotification(content: string, options: InternalNotificationOptions) {
   options = mergeProps(defaultOptions as Record<string, unknown>, options as Record<string, unknown>);
 
   if (

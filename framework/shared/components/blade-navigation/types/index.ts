@@ -61,7 +61,7 @@ export type ExtractedBladeOptions<T, U extends keyof T> = T[U];
 export type BladeConstructor<T extends ComponentPublicInstance = ComponentPublicInstance> = BladeInstanceConstructor<T>;
 
 export interface IBladeEvent<T extends ComponentPublicInstance = ComponentPublicInstance> {
-  blade: BladeConstructor<T>;
+  blade?: BladeConstructor<T>;
   options?: ExtractedBladeOptions<InstanceType<BladeConstructor<T>>["$props"], "options">;
   param?: string;
   onOpen?: () => void;

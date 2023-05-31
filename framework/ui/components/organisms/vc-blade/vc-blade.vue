@@ -59,18 +59,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, useSlots, h } from "vue";
+<script lang="ts" setup>
+import { computed, useSlots, h } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { IBladeContainer, usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
-
-export default defineComponent({
-  inheritAttrs: false,
-});
-</script>
-
-<script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 import { VcButton, VcIcon, VcPopup } from "./../../";
@@ -94,6 +87,10 @@ export interface Emits {
   (event: "expand"): void;
   (event: "collapse"): void;
 }
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 const props = withDefaults(defineProps<Props>(), {
   width: "30%",

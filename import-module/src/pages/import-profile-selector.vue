@@ -87,26 +87,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, markRaw } from "vue";
-
-export default defineComponent({
-  url: "/import",
-  scope: {
-    notificationClick(notification: ImportPushNotification) {
-      if (notification.notifyType !== "ImportPushNotification") return;
-      return {
-        param: notification.profileId,
-        options: {
-          importJobId: notification.jobId,
-        },
-      };
-    },
-  },
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, onMounted, ref, markRaw } from "vue";
 import {
   IBladeToolbar,
   ITableColumns,
@@ -141,6 +123,21 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
+
+defineOptions({
+  url: "/import",
+  scope: {
+    notificationClick(notification: ImportPushNotification) {
+      if (notification.notifyType !== "ImportPushNotification") return;
+      return {
+        param: notification.profileId,
+        options: {
+          importJobId: notification.jobId,
+        },
+      };
+    },
+  },
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

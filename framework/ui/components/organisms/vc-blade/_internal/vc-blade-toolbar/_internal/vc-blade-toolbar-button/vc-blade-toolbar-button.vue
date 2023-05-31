@@ -47,15 +47,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, nextTick } from "vue";
-
-export default defineComponent({
-  inheritAttrs: false,
-});
-</script>
-
 <script lang="ts" setup>
+import { ref, computed, nextTick } from "vue";
 import { VcIcon } from "./../../../../../../";
 import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 import { IBladeDropdownItem } from "./../../../../../../../../core/types";
@@ -73,6 +66,10 @@ export interface Props {
 export interface Emits {
   (event: "click"): void;
 }
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 const props = withDefaults(defineProps<Props>(), {
   disabled: false,

@@ -56,16 +56,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, getCurrentInstance, markRaw } from "vue";
-import { BladeMenu, IBladeToolbar } from "../../../../core/types";
-
-export default defineComponent({
-  inheritAttrs: false,
-});
-</script>
-
 <script lang="ts" setup>
+import { getCurrentInstance, markRaw } from "vue";
+import { BladeMenu, IBladeToolbar } from "../../../../core/types";
 import VcAppBar from "./_internal/vc-app-bar/vc-app-bar.vue";
 import VcAppMenu from "./_internal/vc-app-menu/vc-app-menu.vue";
 import { BladePageComponent, IBladeRef, useBladeNavigation } from "./../../../../shared";
@@ -89,6 +82,10 @@ export interface Emits {
   (event: "backlink:click", index: number): void;
   (event: "logo:click"): void;
 }
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 withDefaults(defineProps<Props>(), {
   pages: () => [],

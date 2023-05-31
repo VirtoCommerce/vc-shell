@@ -1,0 +1,164 @@
+{
+  "IMPORT": {
+    "MENU": {
+      "TITLE": "Import"
+    },
+    "PAGES": {
+      "TITLE": "Import",
+      "TOOLBAR": {
+        "REFRESH": "Refresh",
+        "NEW_IMPORT": "New import",
+        "EDIT": "Edit",
+        "DELETE": "Delete"
+      },
+      "WIDGETS": {
+        "IN_PROGRESS": "In progress"
+      },
+      "TEMPLATE": {
+        "DOWNLOAD_TEMPLATE": "Download template",
+        "FOR_REFERENCE": "for a reference"
+      },
+      "LAST_EXECUTIONS": "Last executions",
+      "PROFILE_SELECTOR": {
+        "TITLE": "Import profiles",
+        "TOOLBAR": {
+          "ADD_PROFILE": "Add profile",
+          "REFRESH": "Refresh"
+        }
+      },
+      "PROFILE_DETAILS": {
+        "TITLE": "New import profile",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "CANCEL": "Cancel",
+          "DELETE": "Delete"
+        },
+        "IMPORT_INPUTS": {
+          "PROFILE_NAME": {
+            "TITLE": "Profile name",
+            "PLACEHOLDER": "Enter your profile name",
+            "TOOLTIP": "Initialize profile name"
+          },
+          "IMPORTER": {
+            "TITLE": "Importer",
+            "TOOLTIP": "Select importer type"
+          }
+        },
+        "PROFILE_SETTINGS": {
+          "TITLE": "Profile settings"
+        },
+        "CONFIRM_POPUP": {
+          "DELETE_IMPORTER": {
+            "TITLE": "Delete confirmation",
+            "DESCRIPTION": "Are you sure you want to delete the import profile?"
+          }
+        },
+        "ALERTS": {
+          "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?"
+        }
+      },
+      "PRODUCT_IMPORTER": {
+        "TITLE": "Product CSV importer",
+        "TOOLBAR": {
+          "EDIT": "Edit",
+          "CANCEL": "Cancel",
+          "NEW_RUN": "New run",
+          "RE_RUN": "Re-run"
+        },
+        "EXTERNAL_URL": {
+          "TITLE": "External URL",
+          "PLACEHOLDER": "or enter external URL",
+          "SAVE": "Save"
+        },
+        "FILE_UPLOAD": {
+          "TITLE": "File upload",
+          "TITLE_UPLOADED": "Uploaded",
+          "IMPORT_RESULTS": "Import results"
+        },
+        "UPLOAD_STATUS": {
+          "TITLE": "Upload status",
+          "LINES_FOUND": "lines found",
+          "NO_ERRORS": "No errors",
+          "IN_PROGRESS": "Import in progress",
+          "ESTIMATING": "Calculating remaining time...",
+          "ESTIMATED": "Estimated remaining time is ",
+          "STARTED_AT": "Started at",
+          "LINES_READ": "lines read",
+          "IMPORTED": "items imported",
+          "SKIPPED": "items skipped",
+          "CANCEL": "Cancel",
+          "Started at": "Started at",
+          "TABLE": {
+            "SKIPPED_DETAILS": "Skipped lines details",
+            "LINE": "Line",
+            "ERROR_DESC": "Error description",
+            "NO_ERRORS": "No errors found"
+          }
+        }
+      },
+      "ACTIONS": {
+        "UPLOADER": {
+          "TITLE": "Uploaded",
+          "ACTIONS": {
+            "USE_ANOTHER_ONE": "Use another one",
+            "PREVIEW": "Preview",
+            "START_IMPORT": "Start import",
+            "CANCEL_IMPORT": "Cancel"
+          }
+        }
+      },
+      "LIST": {
+        "TABLE": {
+          "HEADER": {
+            "PROFILE_NAME": "Profile name",
+            "STARTED_AT": "Started at",
+            "CREATED_BY": "Created by",
+            "STATUS": "Status",
+            "LINES_UPDATED": "Lines updated",
+            "ERROR_COUNT": "Errors count",
+            "DATE": "Date",
+            "REPORT_URL": "Errors report download Url"
+          },
+          "STATUSES": {
+            "COMPLETED": "Completed",
+            "COMPLETED_WITH_ERRORS": "Completed with errors",
+            "FAILED": "Failed",
+            "CANCELLED": "Cancelled"
+          }
+        },
+        "REPORT": {
+          "DOWNLOAD": "URL to download error report"
+        }
+      },
+      "IMPORTING": {
+        "POPUP": {
+          "TITLE": "Preview import lines (up to 10 lines)",
+          "DESCRIPTION": "Please use horizontal scroll to see all columns from the import preview",
+          "PREVIEW_COUNT": "Preview count",
+          "PREVIEW_OF": "of",
+          "CANCEL": "Cancel",
+          "IMPORT": "Import"
+        },
+        "CONFIRMATION_POPUP": {
+          "CONFIRMATION": "Are you sure you want to proceed?",
+          "YES": "Yes",
+          "NO": "No"
+        }
+      }
+    },
+    "CSV": {
+      "DELIMITER": "Delimiter"
+    },
+    "PUSH": {
+      "PROFILE": "Profile:",
+      "ERRORS": "Errors"
+    }
+  },
+  "VCMP": {
+    "IMPORT": {
+      "CSV": {
+        "CREATEDICTIONARYVALUES": "Create dictionary values"
+      }
+    }
+  }
+}

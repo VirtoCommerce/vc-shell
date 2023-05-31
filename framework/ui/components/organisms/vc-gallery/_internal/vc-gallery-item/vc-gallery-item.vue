@@ -1,12 +1,12 @@
 <template>
   <div
+    v-on-click-outside="onClose"
     class="vc-gallery-item"
     :class="{
       'vc-gallery-item_readonly': readonly,
       'vc-gallery-item_hover': hover,
     }"
     @tap.stop="hover = !hover"
-    v-click-outside="onClose"
   >
     <VcImage
       aspect="1x1"
@@ -30,9 +30,9 @@
       </div>
       <div class="tw-flex tw-grow tw-basis-0 tw-items-center tw-justify-around">
         <div
+          v-if="actions && actions.preview"
           class="vc-gallery-item__button"
           @click="$emit('preview', image)"
-          v-if="actions && actions.preview"
         >
           <VcIcon
             class="vc-gallery-item__button-icon"
@@ -69,7 +69,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import { clickOutside as vClickOutside } from "./../../../../../../core/directives";
+import { vOnClickOutside } from "@vueuse/components";
 import { IImage } from "./../../../../../../core/types";
 import { VcImage, VcIcon } from "./../../../../";
 

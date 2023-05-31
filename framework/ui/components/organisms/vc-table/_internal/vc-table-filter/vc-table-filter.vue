@@ -2,9 +2,9 @@
   <div class="tw-relative tw-overflow-visible">
     <!-- Filter button -->
     <div
+      ref="filterToggle"
       class="tw-rounded-[3px] tw-bg-[#43b0e6] tw-flex tw-items-center tw-px-[10px] tw-text-white tw-h-[38px] tw-box-border tw-cursor-pointer"
       @click="openPanel($isMobile.value)"
-      ref="filterToggle"
     >
       <VcIcon
         icon="fas fa-filter"
@@ -27,16 +27,16 @@
     <!-- Filter panel -->
     <teleport to="body">
       <div
+        v-if="isPanelVisible"
+        ref="filterPanel"
         :class="{
           'vc-table-filter__panel_mobile tw-fixed tw-left-0 tw-top-0 tw-w-full tw-bottom-0 tw-z-[9999] tw-bg-[rgba(128,140,153,0.6)] tw-shadow-none tw-rounded-none tw-max-h-full tw-max-w-full tw-min-w-full':
             $isMobile.value,
           'vc-table-filter__panel tw-absolute tw-max-h-[400px] tw-max-w-[800px] tw-min-w-[400px] tw-z-[100] tw-shadow-[1px_1px_11px_rgba(141,152,163,0.6)] tw-rounded-[3px] tw-overflow-hidden':
             !$isMobile.value,
         }"
-        v-if="isPanelVisible"
-        @click.self="closePanel"
-        ref="filterPanel"
         :style="filterStyle"
+        @click.self="closePanel"
       >
         <div
           class="vc-table-filter__panel-inner tw-bg-white tw-box-border tw-p-5 tw-flex tw-flex-col"
@@ -49,7 +49,7 @@
             @click="closePanel"
           />
 
-          <slot :closePanel="closePanel"></slot>
+          <slot :close-panel="closePanel"></slot>
         </div>
       </div>
     </teleport>

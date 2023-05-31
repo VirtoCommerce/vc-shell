@@ -18,8 +18,8 @@
         @mouseleave="tooltipVisible = false"
       ></VcIcon>
       <span
-        class="tw-absolute tw-z-10 tw-bg-white tw-border tw-border-solid tw-border-[color:#eef0f2] tw-shadow-[1px_1px_8px_rgba(126,142,157,0.25)] tw-rounded-[3px] tw-text-[color:#8e9daa] tw-font-normal tw-py-1 tw-px-2 tw-ml-4"
         v-if="tooltipVisible"
+        class="tw-absolute tw-z-10 tw-bg-white tw-border tw-border-solid tw-border-[color:#eef0f2] tw-shadow-[1px_1px_8px_rgba(126,142,157,0.25)] tw-rounded-[3px] tw-text-[color:#8e9daa] tw-font-normal tw-py-1 tw-px-2 tw-ml-4"
       >
         <slot name="tooltip"></slot>
       </span>

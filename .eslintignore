@@ -1,5 +1,9 @@
 node_modules
 dist
 apps/vendor-portal/dist
+apps/import-app/dist
 framework/dist
+import-module/dist
+cli/api-client/dist
+cli/config/dist
 api-client.ts

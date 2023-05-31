@@ -1,31 +1,30 @@
 <template>
   <ErrorInterceptor
-    capture
     v-slot="{ error, reset }"
+    capture
   >
     <router-view
-      @vnode-before-unmount="reset"
-      v-slot="{ Component, route }"
+      v-slot="{ Component }: { Component: any }"
       :key="route.path"
+      @vue:before-unmount="reset"
     >
       <component
         :is="Component"
-        :closable="false"
         v-show="$isMobile.value ? !blades.length : blades.length <= 1"
-        @open:blade="onBladeOpen($event, 0)"
+        :key="route.path"
+        :ref="(el: CoreBladeExposed) => setParentRef(el, Component)"
+        :closable="false"
         :options="parentBladeOptions"
         :expanded="blades.length === 0"
         :maximized="findStateById(0)"
         :blades="blades"
         :param="resolveParam"
-        :key="route.path"
-        :ref="(el: IBladeElement) => setParentRef(el, Component)"
         @expand:blade="handleMaximizeBlade(0, true)"
         @collapse:blade="handleMaximizeBlade(0, false)"
       >
         <template
-          v-slot:error
           v-if="error"
+          #error
           >{{ error }}</template
         >
       </component>
@@ -41,24 +40,23 @@
       capture
     >
       <component
+        :is="blade.blade"
         v-show="i >= blades.length - ($isMobile.value ? 1 : 2)"
-        :is="blade.component"
+        :ref="(el: CoreBladeExposed) => setBladesRef(el, blade)"
         :param="blade.param"
         :closable="i >= 0"
         :expanded="i === blades.length - 1"
         :maximized="findStateById(blade.idx)"
-        :options="blade.bladeOptions"
-        @open:blade="onBladeOpen($event, blade.idx)"
+        :options="blade.options"
         @close:blade="onBladeClose(i)"
         @close:children="$emit('onClose', i + 1)"
         @parent:call="$emit('onParentCall', { id: i, args: $event })"
         @expand:blade="handleMaximizeBlade(blade.idx, true)"
         @collapse:blade="handleMaximizeBlade(blade.idx, false)"
-        :ref="(el: IBladeElement) => setBladesRef(el, blade)"
       >
         <template
-          v-slot:error
           v-if="error"
+          #error
           >{{ error }}</template
         >
       </component>
@@ -69,8 +67,15 @@
 <script lang="ts" setup>
 import { computed, ref, VNode } from "vue";
 import { useRoute } from "vue-router";
-import { IBladeContainer, IBladeElement, IBladeEvent, IParentCallArgs, IBladeRef } from "./../../../../../shared";
-import { ErrorInterceptor } from "./../../../../../core/plugins/error-interceptor";
+import {
+  IBladeContainer,
+  CoreBladeExposed,
+  IBladeEvent,
+  IParentCallArgs,
+  IBladeRef,
+  BladeConstructor,
+} from "./../../../../../shared";
+import { ErrorInterceptor } from "./../../../error-interceptor";
 
 export interface Props {
   blades: IBladeContainer[];
@@ -89,17 +94,16 @@ const emit = defineEmits<Emits>();
 const props = withDefaults(defineProps<Props>(), {
   blades: () => [],
   parentBladeOptions: () => ({}),
-  parentBladeParam: undefined,
 });
 
 const route = useRoute();
 const bladesRefs = ref<IBladeRef[]>([]);
-const state = ref<(IBladeRef & { expanded: boolean })[]>([]);
+const state = ref<IBladeRef[]>([]);
 
 const visibleBlades = computed(() => bladesRefs.value.slice(-2));
 
 function handleMaximizeBlade(id: number, expand: boolean) {
-  state.value = visibleBlades.value?.map((x: IBladeRef & { expanded: boolean }) => {
+  state.value = visibleBlades.value?.map((x: IBladeRef) => {
     if (x.blade.idx === id) {
       x.expanded = expand;
     }
@@ -111,13 +115,13 @@ function findStateById(id: number) {
   return state.value?.find((item) => item.blade.idx === id)?.expanded;
 }
 
-function setParentRef(el: IBladeElement, bladeNode: VNode) {
+function setParentRef(el: CoreBladeExposed, bladeNode: VNode) {
   if (el && bladeNode) {
     bladesRefs.value = [
       {
         exposed: el,
         blade: {
-          component: bladeNode.type as VNode,
+          blade: bladeNode.type as BladeConstructor,
           param: bladeNode.props?.param as string,
           idx: 0,
         },
@@ -126,7 +130,7 @@ function setParentRef(el: IBladeElement, bladeNode: VNode) {
   }
 }
 
-function setBladesRef(el: IBladeElement, blade: IBladeContainer) {
+function setBladesRef(el: CoreBladeExposed, blade: IBladeContainer) {
   if (el && el !== null && blade) {
     const isExists = bladesRefs.value.some((item) => item.blade.idx === blade.idx);
     if (!isExists) {
@@ -137,11 +141,6 @@ function setBladesRef(el: IBladeElement, blade: IBladeContainer) {
 
 function onBladeClose(index: number) {
   emit("onClose", index);
-}
-
-function onBladeOpen(event: IBladeEvent, idx: number) {
-  state.value = [];
-  emit("onOpen", { blade: event, id: idx });
 }
 
 const resolveParam = computed(() => {

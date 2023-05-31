@@ -1,57 +1,80 @@
-import { Component, ComponentPublicInstance, VNode } from "vue";
-import { IMenuItems } from "../../../../core/types";
-import { NavigationFailure } from "vue-router";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { ComponentPublicInstance, VNode, ComponentInternalInstance, VNodeTypes, Ref } from "vue";
+import { PushNotification } from "./../../../../core/api";
 
-/* onParentCall event interface */
+export type BladeInstanceConstructor<T extends ComponentPublicInstance = any> = {
+  new (...args: any[]): T & { $: ComponentInternalInstance & { exposed: CoreBladeExposed & T["$"]["exposed"] } } & {
+    $props: T["$props"] & CoreBladeComponentProps;
+  };
+} & CoreBladeAdditionalSettings &
+  CoreBladeNavigationData;
+
+export type ComponentInstanceConstructor<T = any> = {
+  new (...args: any[]): T;
+};
+
+export type CoreBladeComponentProps = {
+  expanded?: boolean;
+  closable?: boolean;
+  param?: string;
+  options?: Record<string, any>;
+};
+
+export type BladePageComponent = BladeConstructor;
+
+export type CoreBladeAdditionalSettings = {
+  url?: string;
+  permissions?: string | string[];
+  scope?: {
+    notificationClick?: (notification: PushNotification | Record<string, any>) => IBladeEvent;
+  };
+};
+
+export type CoreBladeNavigationData = {
+  idx?: number;
+};
+
+export interface CoreBladeExposed {
+  title?: string;
+  notificationClick?: (notification: PushNotification) => IBladeEvent;
+  onBeforeClose?: () => Promise<boolean>;
+  reloadParent?: () => void;
+  reload?: () => void;
+}
+
 export interface IParentCallArgs {
   method: string;
   args?: unknown;
   callback?: (args: unknown) => void;
 }
 
-/* extended component */
-export type ExtendedComponent = (VNode | Component) & {
-  url?: string;
-  permissions?: string | string[];
-  idx?: number;
-};
-
-/* blade interface for navigation */
 export interface IBladeContainer extends IBladeEvent {
   idx?: number;
 }
 
-/* blade exposed methods */
-export interface IBladeElement extends ComponentPublicInstance {
-  onBeforeClose?: () => Promise<boolean>;
-  title?: string;
-  reloadParent?: () => void;
-  openDashboard?: () => void;
+export interface BladeComponentInternalInstance extends ComponentInternalInstance {
+  vnode: VNode & { type: VNodeTypes & CoreBladeAdditionalSettings & CoreBladeNavigationData };
 }
 
-/* emitted blade event */
-export interface IBladeEvent {
-  parentBlade?: ExtendedComponent;
-  component?: ExtendedComponent;
-  bladeOptions?: Record<string, unknown>;
+export type ExtractedBladeOptions<T, U extends keyof T> = T[U];
+
+export type BladeConstructor<T extends ComponentPublicInstance = ComponentPublicInstance> = BladeInstanceConstructor<T>;
+
+export interface IBladeEvent<T extends ComponentPublicInstance = ComponentPublicInstance> {
+  blade?: BladeConstructor<T>;
+  options?: ExtractedBladeOptions<InstanceType<BladeConstructor<T>>["$props"], "options">;
   param?: string;
   onOpen?: () => void;
   onClose?: () => void;
 }
 
-/* menu item event */
-export interface IMenuClickEvent {
-  item: IMenuItems;
-  navigationCb: () => Promise<void | NavigationFailure>;
-}
-
-/* openBlade args interface */
-export interface IOpenBlade extends IBladeEvent {
-  id?: number;
-  navigationCb?: () => Promise<void | NavigationFailure>;
-}
-
 export interface IBladeRef {
-  exposed: IBladeElement;
+  exposed: CoreBladeExposed;
   blade: IBladeContainer;
+  expanded?: boolean;
+}
+
+export interface BladeNavigationPlugin {
+  blades: Ref<IBladeContainer[]>;
+  bladesRefs: Ref<IBladeRef[]>;
 }

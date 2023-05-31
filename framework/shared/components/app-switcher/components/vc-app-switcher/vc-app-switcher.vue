@@ -1,7 +1,7 @@
 <template>
   <div
+    v-on-click-outside="onClose"
     class="tw-relative tw-h-full tw-flex tw-items-center tw-justify-center tw-mx-2 tw-shrink-0"
-    v-click-outside="onClose"
   >
     <button
       class="hover:[&>img] hover:[&_div]:tw-bg-[color:var(--app-bar-button-color-hover)]"
@@ -20,11 +20,11 @@
         <li
           v-for="item in appsList"
           :key="item.id"
-          @click="switchApp(item)"
           class="tw-flex tw-flex-row tw-items-center tw-cursor-pointer tw-group"
           :class="{
             '[&>p]:tw-font-extrabold': locationHandler(item.relativeUrl),
           }"
+          @click="switchApp(item)"
         >
           <img
             :src="imageUrl(item.iconUrl)"
@@ -43,6 +43,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { AppDescriptor } from "../../../../../core/api";
+import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   appsList: AppDescriptor[];

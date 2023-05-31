@@ -111,7 +111,7 @@ export function useUser(): IUseUser {
         console.log("[userUsers]: an user details has been loaded", user.value);
       } catch (e) {
         console.dir(e);
-        //TODO: log error
+        throw e;
       } finally {
         loading.value = false;
       }

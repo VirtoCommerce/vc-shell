@@ -1,6 +1,7 @@
 import { computed, Ref, ref } from "vue";
 import { AppDescriptor, AppsClient } from "../../../../../core/api";
 import { useUser, usePermissions } from "../../../../../core/composables";
+import { notification } from "./../../../notifications";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
@@ -36,8 +37,9 @@ export function useAppSwitcher(): IUseAppSwitcher {
         window.location.href = window.location.origin + app.relativeUrl;
       }
     } else {
-      // TODO temporary alert
-      alert("Access restricted");
+      notification.error("Access restricted", {
+        timeout: 3000,
+      });
     }
   }
 

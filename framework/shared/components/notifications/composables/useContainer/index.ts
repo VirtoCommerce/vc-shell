@@ -114,7 +114,7 @@ export function useContainer(): IUseContainer {
         nextTick(() => {
           notificationContainer.value?.push(options);
           if (options.onOpen && typeof options?.onOpen === "function") {
-            options.onOpen(options.payload ?? {});
+            options.onOpen(options.payload);
           }
         });
       }
@@ -136,7 +136,7 @@ export function useContainer(): IUseContainer {
 
           nextTick(() => {
             if (notification?.onClose && typeof notification?.onClose === "function") {
-              notification.onClose(notification.payload ?? {});
+              notification.onClose(notification.payload);
               notification = undefined;
             }
           });

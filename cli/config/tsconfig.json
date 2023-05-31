@@ -15,8 +15,8 @@
     "jsx": "preserve",
     "isolatedModules": true,
     "useDefineForClassFields": true,
-    "outDir": ".",
-    "rootDir": ".",
+    "outDir": "./dist",
+    "rootDir": "./",
     "strict": false,
     "composite": true,
     "lib": [

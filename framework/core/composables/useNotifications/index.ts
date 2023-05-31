@@ -1,25 +1,23 @@
 import { PushNotification, PushNotificationClient } from "./../../api";
 import { useUser } from "./../useUser";
-import { computed, ComputedRef, readonly, ref } from "vue";
+import { computed, ComputedRef, ref } from "vue";
 import * as _ from "lodash-es";
 
 const notificationsClient = new PushNotificationClient();
 
 interface INotifications {
-  readonly notifications: ComputedRef<Readonly<PushNotification[]>>;
-  readonly popupNotifications: ComputedRef<Readonly<PushNotification[]>>;
+  readonly notifications: ComputedRef<PushNotification[]>;
+  readonly moduleNotifications: ComputedRef<PushNotification[]>;
   loadFromHistory(take?: number): void;
   addNotification(message: PushNotification): void;
   markAsRead(message: PushNotification): void;
-  dismiss(message: PushNotification): void;
-  dismissAll(): void;
   markAllAsRead(): void;
 }
 
 const notifications = ref<PushNotification[]>([]);
-const popupNotifications = ref<PushNotification[]>([]);
+const pushNotifications = ref<PushNotification[]>([]);
 
-export function useNotifications(): INotifications {
+export function useNotifications(notifyType?: string | string[]): INotifications {
   const { getAccessToken } = useUser();
 
   async function loadFromHistory(take = 10) {
@@ -50,41 +48,30 @@ export function useNotifications(): INotifications {
 
   function addNotification(message: PushNotification) {
     if (message.notifyType !== "IndexProgressPushNotification") {
-      const existsNotification = notifications.value.find((x) => x.id == message.id);
-      const existPushNotification = popupNotifications.value.find((x) => x.id == message.id);
+      const existsNotification = notifications.value.find((x: PushNotification) => x.id == message.id);
+      const existPushNotification = pushNotifications.value.find((x) => x.id == message.id);
 
       if (existsNotification) {
         message.isNew = existsNotification.isNew;
         Object.assign(existsNotification, message);
       } else {
-        notifications.value.unshift(message);
+        notifications.value.push(new PushNotification(message));
       }
 
       if (existPushNotification) {
-        message.isNew = true;
+        message.isNew = existPushNotification.isNew;
         Object.assign(existPushNotification, message);
       } else {
-        popupNotifications.value.unshift(message);
+        pushNotifications.value.push(new PushNotification(message));
       }
     }
   }
 
   function markAsRead(message: PushNotification) {
-    const mes = popupNotifications.value.find((x) => x.id === message.id);
-    if (mes) {
-      mes.isNew = false;
-      _.remove(popupNotifications.value, (x) => x.id == message.id);
+    const exists = pushNotifications.value.find((x) => x.id === message.id);
+    if (exists) {
+      Object.assign(exists, { ...message, isNew: false });
     }
-  }
-
-  function dismiss(message: PushNotification) {
-    _.remove(popupNotifications.value, (x) => x.id == message.id);
-    _.remove(notifications.value, (x) => x.id == message.id);
-  }
-
-  function dismissAll() {
-    popupNotifications.value = [];
-    notifications.value = [];
   }
 
   async function markAllAsRead() {
@@ -106,13 +93,20 @@ export function useNotifications(): INotifications {
     }
   }
 
+  const moduleNotifications = computed(
+    () =>
+      (notifyType &&
+        pushNotifications.value.filter(
+          (item: PushNotification) => item.isNew && notifyType.includes(item.notifyType)
+        )) ??
+      []
+  );
+
   return {
-    notifications: computed(() => readonly(_.orderBy(notifications.value, ["created"], ["desc"]))),
-    popupNotifications: computed(() => readonly(popupNotifications.value)),
+    notifications: computed(() => _.orderBy(notifications.value, ["created"], ["desc"])),
+    moduleNotifications,
     loadFromHistory,
     addNotification,
-    dismissAll,
-    dismiss,
     markAsRead,
     markAllAsRead,
   };

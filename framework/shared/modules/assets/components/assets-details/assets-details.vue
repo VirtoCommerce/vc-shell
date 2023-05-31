@@ -4,14 +4,14 @@
     :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
+    :toolbar-items="bladeToolbar"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -63,8 +63,8 @@
                           size="m"
                           class="tw-ml-2"
                           variant="onlytext"
-                          @click="copyLink(defaultAsset.url)"
                           title="Copy link"
+                          @click="copyLink(defaultAsset.url)"
                         ></VcButton>
                       </div>
                     </VcCol>
@@ -73,39 +73,39 @@
               </VcRow>
 
               <Field
+                v-slot="{ errorMessage, handleChange, errors }"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 name="asset_name"
                 rules="required"
-                :modelValue="defaultAsset.name"
-                v-slot="{ errorMessage, handleChange, errors }"
+                :model-value="defaultAsset.name"
               >
                 <VcInput
+                  v-model="assetNameClean"
                   class="tw-mb-4"
                   :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
-                  v-model="assetNameClean"
-                  @update:modelValue="handleChange"
                   clearable
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
                   :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="readonly"
+                  @update:model-value="handleChange"
                 ></VcInput>
               </Field>
               <VcInput
+                v-if="assetType === 'Image'"
+                v-model="defaultAsset.altText"
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
-                v-model="defaultAsset.altText"
                 clearable
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
                 :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
-                v-if="assetType === 'Image'"
                 :disabled="readonly"
               ></VcInput>
               <VcTextarea
+                v-model="defaultAsset.description"
                 class="tw-mb-4"
                 :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                v-model="defaultAsset.description"
                 :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                 :disabled="readonly"
               ></VcTextarea>
@@ -139,6 +139,8 @@ export interface Props {
 
 export interface Emits {
   (event: "close:blade"): void;
+  (event: "expand:blade"): void;
+  (event: "collapse:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {

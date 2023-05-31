@@ -17,15 +17,15 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
         >{{ tooltip }}</template
       >
     </VcLabel>
 
     <!-- Editor field -->
     <v-ace-editor
-      class="tw-border tw-border-solid tw-border-[color:var(--code-editor-border-color)] tw-rounded-[var(--code-editor-border-radius)] tw-h-[200px]"
       v-model:value="content"
+      class="tw-border tw-border-solid tw-border-[color:var(--code-editor-border-color)] tw-rounded-[var(--code-editor-border-radius)] tw-h-[200px]"
       lang="html"
       theme="chrome"
       @input="onInput"
@@ -45,7 +45,7 @@
 import { VAceEditor } from "vue3-ace-editor";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/theme-chrome";
-import { ref, unref, watch, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { VcLabel, VcHint } from "./../../";
 
 export interface Props {

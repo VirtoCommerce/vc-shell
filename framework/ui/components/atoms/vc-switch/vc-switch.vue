@@ -20,8 +20,8 @@
         <span class="vc-switch__slider"></span>
       </label>
       <VcHint
-        class="tw-mt-2 tw-w-max"
         v-if="tooltip"
+        class="tw-mt-2 tw-w-max"
       >
         {{ tooltip }}
       </VcHint>

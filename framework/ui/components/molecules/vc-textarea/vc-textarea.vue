@@ -15,7 +15,7 @@
       <span>{{ label }}</span>
       <template
         v-if="tooltip"
-        v-slot:tooltip
+        #tooltip
       >
         <span v-html="tooltip"></span>
       </template>
@@ -28,8 +28,8 @@
         :placeholder="placeholder"
         :value="modelValue"
         :disabled="disabled"
-        @input="onInput"
         :maxlength="maxchars"
+        @input="onInput"
       ></textarea>
     </div>
 

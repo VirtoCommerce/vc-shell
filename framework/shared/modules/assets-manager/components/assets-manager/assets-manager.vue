@@ -3,15 +3,15 @@
     :title="$t('ASSETS_MANAGER.TITLE')"
     :expanded="expanded"
     :closable="closable"
-    :toolbarItems="bladeToolbar"
-    @close="$emit('close:blade')"
+    :toolbar-items="bladeToolbar"
     width="70%"
+    @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-slot:error
       v-if="$slots['error']"
+      #error
     >
       <slot name="error"></slot>
     </template>
@@ -25,20 +25,20 @@
       <VcTable
         :columns="columns"
         :expanded="expanded"
-        stateKey="assets_manager"
-        :reorderableRows="!readonly"
+        state-key="assets_manager"
+        :reorderable-rows="!readonly"
         :items="defaultAssets"
         :header="false"
         :footer="false"
-        :itemActionBuilder="!readonly && actionBuilder"
+        :item-action-builder="!readonly && actionBuilder"
         :multiselect="!readonly"
         class="tw-h-full tw-w-full"
         @item-click="onItemClick"
         @row:reorder="sortAssets"
-        @selectionChanged="onSelectionChanged"
+        @selection-changed="onSelectionChanged"
       >
         <!-- Empty template -->
-        <template v-slot:empty>
+        <template #empty>
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
             <VcIcon
               icon="fas fa-cloud-upload-alt"
@@ -52,14 +52,14 @@
         </template>
 
         <!-- Override size column -->
-        <template v-slot:item_size="{ item }">
+        <template #item_size="{ item }">
           <div>
             {{ readableSize(item.size) }}
           </div>
         </template>
 
         <!-- Override url column -->
-        <template v-slot:item_url="{ item }">
+        <template #item_url="{ item }">
           <div class="tw-flex tw-items-center tw-justify-center">
             <template v-if="isImage(item.name)">
               <VcImage
@@ -80,14 +80,14 @@
         </template>
 
         <!-- Overide order column -->
-        <template v-slot:item_sortOrder="{ item }">
+        <template #item_sortOrder="{ item }">
           <div>
             {{ item.sortOrder }}
           </div>
         </template>
 
         <!-- Mobile -->
-        <template v-slot:mobile-item="{ item }">
+        <template #mobile-item="{ item }">
           <div class="tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-p-3 tw-flex tw-flex-nowrap">
             <template v-if="isImage(item.name)">
               <VcImage
@@ -112,19 +112,19 @@
               </div>
               <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.SIZE") }}</VcHint>
+                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.SIZE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ readableSize(item.size) }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.CREATED_DATE") }}</VcHint>
+                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.CREATED_DATE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ item.createdDate && moment(item.createdDate).fromNow() }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.SORT_ORDER") }}</VcHint>
+                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.SORT_ORDER") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ item.sortOrder }}
                   </div>
@@ -140,18 +140,18 @@
       ref="uploader"
       type="file"
       hidden
-      @change="inputUpload"
       multiple
       name="assets_manager"
+      @change="inputUpload"
     />
   </VcBlade>
 </template>
 
 <script setup lang="ts">
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
-import { ref, computed, onMounted, shallowRef, unref, watch } from "vue";
+import { ref, computed, onMounted, unref, watch, markRaw } from "vue";
 import { useI18n } from "vue-i18n";
-import { IBladeEvent, IParentCallArgs } from "./../../../../../shared";
+import { IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
@@ -164,7 +164,7 @@ export interface Props {
     assets: Asset[];
     assetsEditHandler: (assets: Asset[]) => Asset[];
     assetsUploadHandler: (files: FileList) => Promise<Asset[]>;
-    assetsRemoveHandler: (assets: Asset[]) => Asset[];
+    assetsRemoveHandler: (assets: Asset[]) => Promise<Asset[]>;
     disabled: boolean;
   };
 }
@@ -172,7 +172,8 @@ export interface Props {
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
   (event: "close:blade"): void;
-  (event: "open:blade", blade: IBladeEvent): void;
+  (event: "expand:blade"): void;
+  (event: "collapse:blade"): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -194,6 +195,8 @@ const selectedItems = ref([]);
 const readonly = computed(() => props.options.disabled);
 let assetsCopy;
 const modified = ref(false);
+
+const { openBlade } = useBladeNavigation();
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -218,9 +221,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "delete",
     title: computed(() => t("ASSETS_MANAGER.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
-    clickHandler() {
+    async clickHandler() {
       if (props.options.assetsRemoveHandler && typeof props.options.assetsRemoveHandler === "function") {
-        defaultAssets.value = props.options.assetsRemoveHandler(selectedItems.value);
+        defaultAssets.value = await props.options.assetsRemoveHandler(selectedItems.value);
       }
     },
     disabled: computed(() => !selectedItems.value.length || readonly.value),
@@ -338,9 +341,9 @@ async function inputUpload(event: Event) {
 }
 
 function onItemClick(item: Asset) {
-  emit("open:blade", {
-    component: shallowRef(Assets),
-    bladeOptions: {
+  openBlade({
+    blade: markRaw(Assets),
+    options: {
       asset: unref(item),
       disabled: readonly.value,
       assetEditHandler: (asset: Asset) => {
@@ -355,8 +358,8 @@ function onItemClick(item: Asset) {
           defaultAssets.value = props.options.assetsEditHandler(mutated);
         }
       },
-      assetRemoveHandler: (asset: Asset) => {
-        defaultAssets.value = props.options.assetsRemoveHandler([asset]);
+      assetRemoveHandler: async (asset: Asset) => {
+        defaultAssets.value = await props.options.assetsRemoveHandler([asset]);
       },
     },
   });
@@ -367,7 +370,7 @@ const onSelectionChanged = (items: Asset[]) => {
 };
 
 const actionBuilder = (): IActionBuilderResult[] => {
-  let result = [];
+  const result = [];
 
   result.push({
     icon: "fas fa-edit",
@@ -382,8 +385,8 @@ const actionBuilder = (): IActionBuilderResult[] => {
     title: computed(() => t("ASSETS_MANAGER.TABLE.ACTIONS.DELETE")),
     variant: "danger",
     leftActions: true,
-    clickHandler(item: Asset) {
-      defaultAssets.value = props.options.assetsRemoveHandler([item]);
+    async clickHandler(item: Asset) {
+      defaultAssets.value = await props.options.assetsRemoveHandler([item]);
       selectedItems.value = [];
     },
   });

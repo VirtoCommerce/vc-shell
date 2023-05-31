@@ -17,7 +17,7 @@ export const createModule = (components: unknown, locales?: unknown) => ({
   },
 });
 
-export const createAppModule = (pages: unknown, locales?: unknown) => {
+export const createAppModule = (pages: unknown, locales?: unknown, notificationTemplates?: unknown) => {
   const module = createModule(pages, locales);
 
   return {
@@ -26,6 +26,13 @@ export const createAppModule = (pages: unknown, locales?: unknown) => {
       Object.entries(pages).forEach(([, page]) => {
         app.config.globalProperties.pages?.push(page);
       });
+
+      if (notificationTemplates) {
+        // Register notification templates
+        Object.entries(notificationTemplates).forEach(([, template]) => {
+          app.config.globalProperties.notificationTemplates?.push(template);
+        });
+      }
       module.install(app);
     },
   };

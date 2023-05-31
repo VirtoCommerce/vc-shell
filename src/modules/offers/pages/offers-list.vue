@@ -105,15 +105,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, inject, onMounted, reactive, ref, unref, watch, markRaw, Ref } from "vue";
-
-export default defineComponent({
-  url: "/offers",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, inject, onMounted, reactive, ref, unref, watch, markRaw, Ref } from "vue";
 import {
   IBladeToolbar,
   IParentCallArgs,
@@ -155,6 +148,10 @@ interface IOfferUnwrappedPrice extends IOffer {
   listPrice: number;
   salePrice: number;
 }
+
+defineOptions({
+  url: "/offers",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

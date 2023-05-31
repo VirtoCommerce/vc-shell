@@ -176,37 +176,10 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  unref,
-  inject,
-  markRaw,
-  Ref,
-  ComputedRef,
-} from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref, watch, unref, inject, markRaw, Ref, ComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { IProductPushNotification } from "./../../../types";
-
-export default defineComponent({
-  url: "/products",
-  scope: {
-    notificationClick(notification: IProductPushNotification) {
-      if (notification.notifyType !== "PublicationRequestStatusChangedDomainEvent") return;
-      return {
-        param: notification.productId,
-      };
-    },
-  },
-});
-</script>
-
-<script lang="ts" setup>
 import {
   IBladeToolbar,
   useFunctions,
@@ -241,6 +214,18 @@ export interface Exposed {
   title: ComputedRef<string>;
   test: string;
 }
+
+defineOptions({
+  url: "/products",
+  scope: {
+    notificationClick(notification: IProductPushNotification) {
+      if (notification.notifyType !== "PublicationRequestStatusChangedDomainEvent") return;
+      return {
+        param: notification.productId,
+      };
+    },
+  },
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

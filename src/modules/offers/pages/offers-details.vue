@@ -456,15 +456,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, onMounted, onBeforeUpdate, nextTick, unref, watch, markRaw } from "vue";
-
-export default defineComponent({
-  url: "/offer",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, ref, onMounted, onBeforeUpdate, nextTick, unref, watch, markRaw } from "vue";
 import {
   IParentCallArgs,
   IBladeToolbar,
@@ -509,6 +502,10 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
+
+defineOptions({
+  url: "/offer",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

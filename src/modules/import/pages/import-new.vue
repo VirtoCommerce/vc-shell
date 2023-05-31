@@ -248,17 +248,10 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch, markRaw } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, ref, watch, markRaw } from "vue";
 import * as _ from "lodash-es";
 import ImportProfileDetails from "./import-profile-details.vue";
-
-export default defineComponent({
-  url: "/importer",
-});
-</script>
-
-<script lang="ts" setup>
 import {
   IParentCallArgs,
   moment,
@@ -313,6 +306,10 @@ interface IImportBadges {
   title?: string | number;
   description?: string;
 }
+
+defineOptions({
+  url: "/importer",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

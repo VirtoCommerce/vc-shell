@@ -36,7 +36,6 @@
       :selected-item-id="selectedItemId"
       select-all
       state-key="offers_list"
-      bulk-delete
       @search:change="onSearchList"
       @item-click="onItemClick"
       @header-click="onHeaderClick"
@@ -46,7 +45,7 @@
       @select:all="selectAllOffers"
     >
       <!-- Override sellerName column template -->
-      <template #item-name="itemData">
+      <template #item_name="itemData">
         <div class="tw-truncate">
           {{ itemData.item.name }}
         </div>
@@ -264,25 +263,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
     async clickHandler() {
-      // // //TODO: replace to confirmation dialog from UI library
-      // // if (
-      // //   await showConfirmation(
-      // //     unref(
-      // //       computed(() =>
-      // //         t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
-      // //           count: selectedOfferIds.value.length,
-      // //         })
-      // //       )
-      // //     )
-      // //   )
-      // // ) {
-      // //   emit("close:children");
-      // //   await deleteOffers({ ids: selectedOfferIds.value });
-      // //   if (searchQuery.value.skip >= searchQuery.value.take) {
-      // //     searchQuery.value.skip -= searchQuery.value.take;
-      // //   }
-      // //   await reload();
-      // // }
       removeOffers();
     },
     disabled: computed(() => !selectedOfferIds.value?.length),
@@ -452,27 +432,6 @@ const onSelectionChanged = (items: IOffer[]) => {
 
 const actionBuilder = (): IActionBuilderResult[] => {
   const result = [];
-
-  // if (item.status === "Published") {
-  //   result.push({
-  //     icon: "fas fa-times",
-  //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.UNPUBLISH")),
-  //     variant: "danger",
-  //     clickHandler() {
-  //       showError("Unpublish");
-  //     },
-  //   });
-  // } else {
-  //   result.push({
-  //     icon: "fas fa-check",
-  //     title: computed(() => t("OFFERS.PAGES.LIST.TABLE.ACTIONS.PUBLISH")),
-  //     variant: "success",
-  //     clickHandler() {
-  //       showError("Publish");
-  //     },
-  //   });
-  // }
-
   result.push({
     icon: "fas fa-trash",
     title: "Delete",
@@ -491,18 +450,16 @@ const actionBuilder = (): IActionBuilderResult[] => {
 };
 
 async function removeOffers() {
-  //TODO: replace to confirmation dialog from UI library
   if (
     await showConfirmation(
       t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
         count: allSelected.value
-          ? t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL")
+          ? t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: totalCount.value })
           : selectedOfferIds.value.length,
       })
     )
   ) {
     emit("close:children");
-    // //await deleteOffers({ ids: selectedOfferIds.value });
     let command: IBulkOffersDeleteCommand;
     if (allSelected.value) {
       command = {

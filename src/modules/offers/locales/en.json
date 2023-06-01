@@ -54,7 +54,7 @@
         },
         "DELETE_SELECTED_CONFIRMATION": {
           "MESSAGE": "Are you sure you want to delete {count} selected offers?",
-          "ALL": "all"
+          "ALL": "all {totalCount}"
         }
       },
       "DETAILS": {

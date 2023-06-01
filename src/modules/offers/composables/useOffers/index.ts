@@ -19,7 +19,7 @@ interface IUseOffers {
   searchQuery: Ref<ISearchOffersQuery>;
   searchOffers: (query: ISearchOffersQuery) => Promise<SearchOffersResult>;
   loadOffers: (query: ISearchOffersQuery) => void;
-  deleteOffers: (command: IBulkOffersDeleteCommand) => void;
+  deleteOffers: (allSelected: boolean, offerIds: string[]) => void;
 }
 
 interface IUseOffersOptions {
@@ -74,14 +74,22 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     }
   }
 
-  async function deleteOffers(command: IBulkOffersDeleteCommand) {
-    console.info(`Delete offers ${command}`);
+  async function deleteOffers(allSelected: boolean, offerIds: string[]) {
+    console.info(`Delete offers`);
 
     const client = await getApiClient();
+    const command = new BulkOffersDeleteCommand({
+      query: new SearchOffersQuery(searchQuery.value),
+      offerIds: offerIds,
+      all: allSelected,
+    });
+    if (allSelected) {
+      command.offerIds = null;
+    }
 
     try {
       loading.value = true;
-      await client.bulkDeleteOffers(new BulkOffersDeleteCommand(command));
+      await client.bulkDeleteOffers(command);
     } catch (e) {
       console.error(e);
       throw e;

@@ -460,20 +460,7 @@ async function removeOffers() {
     )
   ) {
     emit("close:children");
-    let command: IBulkOffersDeleteCommand;
-    if (allSelected.value) {
-      command = {
-        query: new SearchOffersQuery(searchQuery.value),
-        offerIds: null,
-        all: true,
-      };
-    } else {
-      command = {
-        offerIds: selectedOfferIds.value,
-        all: false,
-      };
-    }
-    await deleteOffers(command);
+    await deleteOffers(allSelected.value, selectedOfferIds.value);
     if (searchQuery.value.skip >= searchQuery.value.take) {
       if (allSelected.value) {
         searchQuery.value.skip = 0;

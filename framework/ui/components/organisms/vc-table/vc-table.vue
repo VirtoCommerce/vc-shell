@@ -202,8 +202,8 @@
             ></div>
           </thead>
           <div
-            class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
             v-if="selectAll && showSelectionChoice"
+            class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
           >
             <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
               <div>
@@ -446,8 +446,6 @@ export interface TableItem {
   actions?: IActionBuilderResult[];
 }
 
-export type TableItemType = TableItem | string;
-
 defineSlots<{
   header: (props: any) => any;
   filters: (args: { closePanel: () => void }) => any;
@@ -462,8 +460,8 @@ defineSlots<{
 const props = withDefaults(
   defineProps<{
     columns: ITableColumns[];
-    items: TableItemType[];
-    itemActionBuilder?: (item: TableItem) => IActionBuilderResult[];
+    items: T[];
+    itemActionBuilder?: (item: T) => IActionBuilderResult[];
     sort?: string;
     multiselect?: boolean;
     expanded?: boolean;
@@ -517,13 +515,13 @@ interface ITableItemRef {
 const emit = defineEmits<{
   (event: "paginationClick", page: number): void;
   (event: "selectionChanged", values: T[]): void;
-  (event: "select:all", values: boolean): void;
   (event: "search:change", value: string): void;
   (event: "headerClick", value: Record<string, unknown>): void;
   (event: "itemClick", item: T): void;
   (event: "scroll:ptr"): void;
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: T[] }): void;
-}
+  (event: "select:all", values: boolean): void;
+}>();
 
 // template refs
 const tooltipRefs = ref<ITableItemRef[]>([]);
@@ -535,7 +533,7 @@ const tableRef = ref<HTMLElement | null>();
 let columnResizeListener = null;
 let columnResizeEndListener = null;
 
-const selection = ref<TableItemType[]>([]);
+const selection = ref<T[]>([]) as Ref<T[]>;
 const allSelected = ref(false);
 
 const selectedRow = ref<string>();
@@ -656,13 +654,6 @@ watch(
 );
 
 watch(
-  () => allSelected.value,
-  (newVal) => {
-    emit("select:all", newVal);
-  }
-);
-
-watch(
   () => props.columns,
   (newVal) => {
     defaultColumns.value = newVal;
@@ -674,11 +665,19 @@ watch(
   { deep: true, immediate: true }
 );
 
+watch(
+  () => allSelected.value,
+  (newVal) => {
+    emit("select:all", newVal);
+  }
+);
+
 function handleSelectAll() {
   allSelected.value = !allSelected.value;
 
   if (!allSelected.value) {
     selection.value = [];
+    return;
   }
 }
 

@@ -13,6 +13,7 @@
     "framework/ui/locales",
     "apps/vendor-portal/src/locales",
     "framework/core/plugins/i18n",
+    "framework/ui/locales",
     "boilerplate/src/modules/default/locales",
     "framework/shared/modules/assets-manager/locales",
     "framework/shared/modules/assets/locales",

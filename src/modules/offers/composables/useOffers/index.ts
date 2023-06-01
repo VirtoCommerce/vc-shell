@@ -1,5 +1,14 @@
 import { Ref, ref, computed } from "vue";
 import { useUser } from "@vc-shell/framework";
+import {
+  VcmpSellerCatalogClient,
+  IOffer,
+  ISearchOffersQuery,
+  SearchOffersQuery,
+  SearchOffersResult,
+  IBulkOffersDeleteCommand,
+  BulkOffersDeleteCommand,
+} from "../../../../api_client/marketplacevendor";
 
 interface IUseOffers {
   readonly offers: Ref<IOffer[]>;
@@ -10,21 +19,13 @@ interface IUseOffers {
   searchQuery: Ref<ISearchOffersQuery>;
   searchOffers: (query: ISearchOffersQuery) => Promise<SearchOffersResult>;
   loadOffers: (query: ISearchOffersQuery) => void;
-  deleteOffers: (args: { ids: string[] }) => void;
+  deleteOffers: (command: IBulkOffersDeleteCommand) => void;
 }
 
 interface IUseOffersOptions {
   pageSize?: number;
   sort?: string;
 }
-
-import {
-  VcmpSellerCatalogClient,
-  IOffer,
-  ISearchOffersQuery,
-  SearchOffersQuery,
-  SearchOffersResult,
-} from "../../../../api_client/marketplacevendor";
 
 export default (options?: IUseOffersOptions): IUseOffers => {
   const pageSize = options?.pageSize || 20;
@@ -73,14 +74,14 @@ export default (options?: IUseOffersOptions): IUseOffers => {
     }
   }
 
-  async function deleteOffers(args: { ids: string[] }) {
-    console.info(`Delete offers ${args}`);
+  async function deleteOffers(command: IBulkOffersDeleteCommand) {
+    console.info(`Delete offers ${command}`);
 
     const client = await getApiClient();
 
     try {
       loading.value = true;
-      await client.deleteOffers(args.ids);
+      await client.bulkDeleteOffers(new BulkOffersDeleteCommand(command));
     } catch (e) {
       console.error(e);
       throw e;

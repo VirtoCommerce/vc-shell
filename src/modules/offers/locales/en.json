@@ -52,7 +52,10 @@
           "SALE_PRICE": "Sale price",
           "CREATED": "Created"
         },
-        "DELETE_SELECTED_CONFIRMATION": "Are you sure you want to delete {count} selected offers?"
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected offers?",
+          "ALL": "all"
+        }
       },
       "DETAILS": {
         "TITLE": "Add offer",

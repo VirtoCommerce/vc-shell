@@ -22,7 +22,7 @@
       :empty="empty"
       :notfound="notfound"
       class="tw-grow tw-basis-0"
-      :multiselect="true"
+      multiselect
       :columns="tableColumns"
       :items="(offers as unknown as IOfferUnwrappedPrice[])"
       :item-action-builder="actionBuilder"
@@ -34,16 +34,19 @@
       :total-label="$t('OFFERS.PAGES.LIST.TABLE.TOTALS')"
       :total-count="totalCount"
       :selected-item-id="selectedItemId"
+      select-all
       state-key="offers_list"
+      bulk-delete
       @search:change="onSearchList"
       @item-click="onItemClick"
       @header-click="onHeaderClick"
       @pagination-click="onPaginationClick"
       @scroll:ptr="reload"
       @selection-changed="onSelectionChanged"
+      @select:all="selectAllOffers"
     >
       <!-- Override sellerName column template -->
-      <template #item_name="itemData">
+      <template #item-name="itemData">
         <div class="tw-truncate">
           {{ itemData.item.name }}
         </div>
@@ -126,7 +129,12 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { IOffer, ISellerProduct } from "../../../api_client/marketplacevendor";
+import {
+  IBulkOffersDeleteCommand,
+  IOffer,
+  ISellerProduct,
+  SearchOffersQuery,
+} from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 // eslint-disable-next-line import/no-unresolved
@@ -175,6 +183,7 @@ const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref<string>();
 const selectedOfferIds = ref([]);
+const allSelected = ref(false);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 
 watch(
@@ -255,25 +264,26 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("OFFERS.PAGES.LIST.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
     async clickHandler() {
-      //TODO: replace to confirmation dialog from UI library
-      if (
-        await showConfirmation(
-          unref(
-            computed(() =>
-              t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
-                count: selectedOfferIds.value.length,
-              })
-            )
-          )
-        )
-      ) {
-        emit("close:children");
-        await deleteOffers({ ids: selectedOfferIds.value });
-        if (searchQuery.value.skip >= searchQuery.value.take) {
-          searchQuery.value.skip -= searchQuery.value.take;
-        }
-        await reload();
-      }
+      // // //TODO: replace to confirmation dialog from UI library
+      // // if (
+      // //   await showConfirmation(
+      // //     unref(
+      // //       computed(() =>
+      // //         t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
+      // //           count: selectedOfferIds.value.length,
+      // //         })
+      // //       )
+      // //     )
+      // //   )
+      // // ) {
+      // //   emit("close:children");
+      // //   await deleteOffers({ ids: selectedOfferIds.value });
+      // //   if (searchQuery.value.skip >= searchQuery.value.take) {
+      // //     searchQuery.value.skip -= searchQuery.value.take;
+      // //   }
+      // //   await reload();
+      // // }
+      removeOffers();
     },
     disabled: computed(() => !selectedOfferIds.value?.length),
     isVisible: isDesktop,
@@ -440,7 +450,7 @@ const onSelectionChanged = (items: IOffer[]) => {
   selectedOfferIds.value = items.map((item) => item.id);
 };
 
-const actionBuilder = (item: IOfferUnwrappedPrice): IActionBuilderResult[] => {
+const actionBuilder = (): IActionBuilderResult[] => {
   const result = [];
 
   // if (item.status === "Published") {
@@ -484,15 +494,42 @@ async function removeOffers() {
   //TODO: replace to confirmation dialog from UI library
   if (
     await showConfirmation(
-      t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
-        count: selectedOfferIds.value.length,
+      t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
+        count: allSelected.value
+          ? t("OFFERS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL")
+          : selectedOfferIds.value.length,
       })
     )
   ) {
     emit("close:children");
-    await deleteOffers({ ids: selectedOfferIds.value });
+    // //await deleteOffers({ ids: selectedOfferIds.value });
+    let command: IBulkOffersDeleteCommand;
+    if (allSelected.value) {
+      command = {
+        query: new SearchOffersQuery(searchQuery.value),
+        offerIds: null,
+        all: true,
+      };
+    } else {
+      command = {
+        offerIds: selectedOfferIds.value,
+        all: false,
+      };
+    }
+    await deleteOffers(command);
+    if (searchQuery.value.skip >= searchQuery.value.take) {
+      if (allSelected.value) {
+        searchQuery.value.skip = 0;
+      } else {
+        searchQuery.value.skip -= searchQuery.value.take;
+      }
+    }
     await reload();
   }
+}
+
+async function selectAllOffers(all: boolean) {
+  allSelected.value = all;
 }
 
 function handleSalePrice(price: number | undefined) {

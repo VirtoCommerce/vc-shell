@@ -142,7 +142,7 @@ $variants: primary, warning, danger;
       }
 
       &.vc-button_text {
-        @apply tw-border-none tw-bg-transparent tw-p-0
+        @apply tw-border-none tw-bg-transparent tw-p-0 tw-min-h-0
         tw-text-[color:rgb(var(--button-#{$variant}-background-color))]
         hover:tw-text-[color:rgb(var(--button-#{$variant}-background-color-hover))]
         focus:tw-text-[color:rgb(var(--button-#{$variant}-background-color-hover))]
@@ -170,74 +170,4 @@ $variants: primary, warning, danger;
     }
   }
 }
-
-// .vc-button-warning {
-//   @apply tw-bg-[color:rgb(var(--button-warning-background-color))]
-//   tw-text-[color:rgb(var(--button-warning-text-color))]
-//   hover:tw-bg-[color:rgb(var(--button-warning-background-color-hover))]
-//   focus:tw-bg-[color:rgb(var(--button-warning-background-color-hover))]
-//   disabled:tw-bg-[color:rgb(var(--button-warning-background-color-disabled))];
-
-//   &.vc-button_outline {
-//     @apply tw-bg-transparent tw-border tw-border-[color:rgb(var(--button-warning-background-color))]
-//     tw-text-[color:rgb(var(--button-warning-text-color-outlined))]
-//     hover:tw-text-[color:rgb(var(--button-warning-text-color-hover))]
-//     hover:tw-border-[color:rgb(var(--button-warning-background-color-hover))];
-//   }
-
-//   &.vc-button_text {
-//     @apply tw-text-[color:rgb(var(--button-warning-background-color))]
-//     tw-p-0 tw-border-none tw-bg-transparent
-//     hover:tw-text-[color:rgb(var(--button-warning-text-color-hover))]
-//     focus:tw-text-[color:rgb(var(--button-warning-text-color-hover))];
-
-//     &:hover,
-//     &:focus {
-//       @apply tw-bg-[color:rgba(var(--button-warning-background-color-hover),0.07)];
-//     }
-//   }
-
-//   &.vc-button_selected {
-//     @apply tw-bg-[color:rgb(var(--button-warning-background-color-hover))];
-
-//     &.vc-button_text {
-//       @apply tw-bg-[color:rgba(var(--button-warning-background-color-hover),0.07)];
-//     }
-//   }
-// }
-
-// .vc-button-danger {
-//   @apply tw-bg-[color:rgb(var(--button-danger-background-color))]
-//   tw-text-[color:rgb(var(--button-danger-text-color))]
-//   hover:tw-bg-[color:rgb(var(--button-danger-background-color-hover))]
-//   focus:tw-bg-[color:rgb(var(--button-danger-background-color-hover))]
-//   disabled:tw-bg-[color:rgb(var(--button-danger-background-color-disabled))];
-
-//   &.vc-button_outline {
-//     @apply tw-bg-transparent tw-border tw-border-[color:rgb(var(--button-danger-background-color))]
-//     tw-text-[color:rgb(var(--button-danger-text-color-outlined))]
-//     hover:tw-text-[color:rgb(var(--button-danger-text-color-hover))]
-//     hover:tw-border-[color:rgb(var(--button-danger-background-color-hover))];
-//   }
-
-//   &.vc-button_text {
-//     @apply tw-text-[color:rgb(var(--button-danger-background-color))]
-//     tw-p-0 tw-border-none tw-bg-transparent
-//     hover:tw-text-[color:rgb(var(--button-danger-text-color-hover))]
-//     focus:tw-text-[color:rgb(var(--button-danger-text-color-hover))];
-
-//     &:hover,
-//     &:focus {
-//       @apply tw-bg-[color:rgba(var(--button-danger-background-color-hover),0.07)];
-//     }
-//   }
-
-//   &.vc-button_selected {
-//     @apply tw-bg-[color:rgb(var(--button-danger-background-color-hover))];
-
-//     &.vc-button_text {
-//       @apply tw-bg-[color:rgba(var(--button-danger-background-color-hover),0.07)];
-//     }
-//   }
-// }
 </style>

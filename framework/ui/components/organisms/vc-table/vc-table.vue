@@ -202,24 +202,24 @@
             ></div>
           </thead>
           <div
-            v-if="bulkDelete && allSelected"
+            v-if="selectAll && showSelectionChoice"
             class="tw-h-[60px] tw-bg-[#dfeef9] tw-w-full tw-absolute tw-flex"
           >
             <div class="tw-w-full tw-flex tw-items-center tw-justify-center">
               <div>
                 {{
-                  bulkSelected
-                    ? $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_BULK_SELECTED")
-                    : $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                  allSelected
+                    ? $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                    : $t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
                 }}
                 <VcButton
                   text
                   class="tw-text-[13px]"
-                  @click="handleBulkSelection"
+                  @click="handleSelectAll"
                   >{{
-                    bulkSelected
+                    allSelected
                       ? $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
-                      : $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT")
+                      : $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
                   }}</VcButton
                 >
               </div>
@@ -228,7 +228,7 @@
           <tbody
             v-if="items"
             class="vc-table__body"
-            :class="{ 'tw-translate-y-[60px]': bulkDelete && allSelected }"
+            :class="{ 'tw-translate-y-[60px]': selectAll && showSelectionChoice }"
           >
             <tr
               v-for="(item, itemIndex) in items"
@@ -483,7 +483,7 @@ const props = withDefaults(
     reorderableColumns?: boolean;
     reorderableRows?: boolean;
     stateKey: string;
-    bulkDelete?: boolean;
+    selectAll?: boolean;
   }>(),
   {
     items: () => [],
@@ -521,7 +521,7 @@ const emit = defineEmits<{
   (event: "itemClick", item: T): void;
   (event: "scroll:ptr"): void;
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: T[] }): void;
-  (event: "bulk:delete"): void;
+  (event: "select:all", values: boolean): void;
 }>();
 
 // template refs
@@ -535,7 +535,7 @@ let columnResizeListener = null;
 let columnResizeEndListener = null;
 
 const selection = ref<T[]>([]) as Ref<T[]>;
-const bulkSelected = ref(false);
+const allSelected = ref(false);
 
 const selectedRow = ref<string>();
 const tooltip = ref<ComputePositionReturn>();
@@ -620,6 +620,7 @@ const headerCheckbox = computed({
     }
 
     selection.value = _selected;
+    allSelected.value = false;
   },
 });
 
@@ -631,7 +632,7 @@ const filteredCols = computed(() => {
   });
 });
 
-const allSelected = computed(() => selection.value.length === props.items.length && props.pages > 1);
+const showSelectionChoice = computed(() => selection.value.length === props.items.length && props.pages > 1);
 
 watch(
   () => props.items,
@@ -665,15 +666,20 @@ watch(
   { deep: true, immediate: true }
 );
 
-function handleBulkSelection() {
-  bulkSelected.value = !bulkSelected.value;
+watch(
+  () => allSelected.value,
+  (newVal) => {
+    emit("select:all", newVal);
+  }
+);
 
-  if (!bulkSelected.value) {
+function handleSelectAll() {
+  allSelected.value = !allSelected.value;
+
+  if (!allSelected.value) {
     selection.value = [];
     return;
   }
-
-  emit("bulk:delete");
 }
 
 function isSelected(item: T) {

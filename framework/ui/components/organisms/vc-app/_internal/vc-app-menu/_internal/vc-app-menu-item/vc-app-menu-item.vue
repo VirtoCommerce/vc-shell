@@ -10,7 +10,7 @@
           :is-active="isExactActive"
           :children="children"
           :sticky="sticky"
-          :icon="icon as string"
+          :icon="icon"
           :title="title"
           @on-click="onMenuItemClick"
         />
@@ -20,7 +20,7 @@
       <vc-app-menu-link
         :children="children"
         :sticky="sticky"
-        :icon="icon as string"
+        :icon="icon"
         :title="title"
         @on-click="onMenuItemClick"
       />
@@ -70,7 +70,7 @@ export interface Props {
   sticky?: boolean;
   isVisible?: boolean;
   component?: BladeConstructor;
-  icon?: string | (() => string);
+  icon?: string;
   title?: string;
   children?: BladeMenu[];
 }
@@ -94,7 +94,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const route = useRoute();
-
 const emit = defineEmits<Emits>();
 
 const isOpened = ref(false);

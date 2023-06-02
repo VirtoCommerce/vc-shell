@@ -10,12 +10,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <!-- Blade contents -->
     <VcContainer
       ref="container"
@@ -502,7 +496,6 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
-
 defineOptions({
   url: "/offer",
 });

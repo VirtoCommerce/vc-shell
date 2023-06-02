@@ -8,12 +8,6 @@
     :expandable="false"
     @close="$emit('close:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcTable
       class="tw-grow tw-basis-0"
       :loading="loading"

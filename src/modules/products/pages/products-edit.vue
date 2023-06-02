@@ -13,12 +13,6 @@
     <template #actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
 
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
@@ -65,7 +59,7 @@
                   :clearable="true"
                   :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="disabled"
-                  maxlength="1024"
+                  maxlength="4000"
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
@@ -304,7 +298,6 @@ defineOptions({
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
-  param: undefined,
 });
 
 const emit = defineEmits<Emits>();

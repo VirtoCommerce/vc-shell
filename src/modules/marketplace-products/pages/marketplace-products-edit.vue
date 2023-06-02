@@ -13,12 +13,6 @@
     <template #actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
 
     <!-- Blade contents -->
     <VcContainer :no-padding="true">

@@ -7,12 +7,6 @@
     :closable="closable"
     :toolbar-items="bladeToolbar"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcContainer>
       <VcStatus
         v-if="errorMessage"

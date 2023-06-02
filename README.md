@@ -45,3 +45,10 @@ $ yarn storybook-serve
 # or build it
 $ yarn storybook-build
 ```
+
+#### Version bumping
+```bash
+$ yarn bump patch/minor/major
+```
+
+

@@ -9,12 +9,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <!-- Blade contents -->
     <div class="tw-flex tw-grow-1 tw-border-t tw-border-solid tw-border-t-[#eaedf3]">
       <div class="assets-details__content tw-grow tw-basis-0 tw-w-full">
@@ -62,7 +56,7 @@
                           icon="far fa-copy"
                           size="m"
                           class="tw-ml-2"
-                          variant="onlytext"
+                          text
                           title="Copy link"
                           @click="copyLink(defaultAsset.url)"
                         ></VcButton>

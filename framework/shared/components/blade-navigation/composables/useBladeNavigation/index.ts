@@ -37,7 +37,7 @@ interface IUseBladeNavigation {
     onOpen,
     onClose,
   }: IBladeEvent<Blade>) => void;
-  closeBlade: (index: number) => void;
+  closeBlade: (index: number) => Promise<boolean>;
   onParentCall: (index: number, args: IParentCallArgs) => void;
 }
 
@@ -55,7 +55,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
   const navigationInstance =
     (instance && inject<BladeNavigationPlugin>("bladeNavigationPlugin")) || bladeNavigationInstance;
 
-  const lastBladeUrl = ref();
   watch(
     navigationInstance.blades,
     (newVal) => {
@@ -104,16 +103,15 @@ export function useBladeNavigation(): IUseBladeNavigation {
         await router.push(bladeComponent.url);
       }
     } else {
-      let isPrevented;
       if (existingChild === undefined) {
         bladeComponent.idx = index ? index + 1 : 1;
       } else if (existingChild) {
-        isPrevented = await closeBlade(
+        await closeBlade(
           navigationInstance.blades.value.findIndex((x: IBladeContainer) => x.idx === existingChild.idx)
         );
         bladeComponent.idx = existingChild.idx;
       }
-      if (!isPrevented) {
+      if (!isPrevented.value) {
         await addBlade(bladeComponent, param, options, onOpen, onClose, index);
       }
     }
@@ -133,7 +131,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
           if (result === false) {
             isPrevented.value = true;
             console.debug(`[@vc-shell/framework#useBladeNavigation] - Navigation is prevented`);
-            return isPrevented;
+            return isPrevented.value;
           }
         }
       }
@@ -202,7 +200,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   function addEntryToLocation(params: string) {
     history.pushState({}, null, "#" + params);
-    lastBladeUrl.value = params;
   }
 
   async function clearParentData() {

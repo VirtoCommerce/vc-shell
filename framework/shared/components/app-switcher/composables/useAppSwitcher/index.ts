@@ -5,7 +5,7 @@ import { notification } from "./../../../notifications";
 
 interface IUseAppSwitcher {
   readonly appsList: Ref<AppDescriptor[]>;
-  getApps: () => void;
+  getApps: () => Promise<void>;
   switchApp: (app: AppDescriptor) => void;
 }
 

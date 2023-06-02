@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/ban-types */
 import { Ref } from "vue";
-import { CoreBladeAdditionalSettings } from "@vc-shell/framework";
 
 declare module "*.vue" {
   import type { DefineComponent } from "vue";
+  // eslint-disable-next-line @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
@@ -18,8 +15,6 @@ declare module "@vue/runtime-core" {
     $isDesktop: Ref<boolean>;
     $isTouch: boolean;
   }
-
-  interface ComponentOptionsBase extends CoreBladeAdditionalSettings {}
 }
 
 export {};

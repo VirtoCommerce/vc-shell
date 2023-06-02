@@ -6,4 +6,5 @@ framework/dist
 import-module/dist
 cli/api-client/dist
 cli/config/dist
+cli/create-vc-app/src/template
 api-client.ts

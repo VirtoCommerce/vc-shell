@@ -56,15 +56,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, watch, computed, nextTick } from "vue";
-
-export default defineComponent({
-  inheritAttrs: false,
-});
-</script>
-
 <script lang="ts" setup>
+import { ref, watch, computed, nextTick } from "vue";
 import { offset, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 
 export interface Props {
@@ -72,6 +65,10 @@ export interface Props {
   counter: number;
   parentExpanded?: boolean;
 }
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 const props = withDefaults(defineProps<Props>(), {
   title: undefined,

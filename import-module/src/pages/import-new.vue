@@ -10,12 +10,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcContainer class="import-new">
       <VcCol>
         <div class="tw-p-3">
@@ -75,7 +69,6 @@
                           <template #append>
                             <slot name="button">
                               <VcButton
-                                variant="primary"
                                 :outline="true"
                                 @click="saveExternalUrl()"
                               >
@@ -249,17 +242,10 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, watch, markRaw } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, ref, watch, markRaw } from "vue";
 import * as _ from "lodash-es";
 import ImportProfileDetails from "./import-profile-details.vue";
-
-export default defineComponent({
-  url: "/importer",
-});
-</script>
-
-<script lang="ts" setup>
 import {
   IParentCallArgs,
   moment,
@@ -314,6 +300,10 @@ interface IImportBadges {
   title?: string | number;
   description?: string;
 }
+
+defineOptions({
+  url: "/importer",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
@@ -605,7 +595,6 @@ const uploadActions = ref<INotificationActions[]>([
         throw e;
       }
     },
-    variant: "primary",
     outline: true,
     isVisible: computed(() => isValid.value && !importStarted.value),
   },
@@ -615,7 +604,6 @@ const uploadActions = ref<INotificationActions[]>([
       await start(null);
     },
     outline: false,
-    variant: "primary",
     isVisible: computed(() => isValid.value && !importStarted.value),
     disabled: computed(() => (importStatus.value && importStatus.value.inProgress) || importLoading.value),
   },

@@ -34,15 +34,15 @@
       </template>
     </VcBladeHeader>
 
-    <template v-if="$slots['error']">
+    <template v-if="error">
       <div class="tw-text-white tw-p-2 tw-flex tw-flex-row tw-items-center tw-bg-[color:var(--blade-color-error)]">
         <VcIcon
           size="s"
           icon="fas fa-exclamation-triangle"
         />
-        <div class="tw-line-clamp-1 tw-w-full tw-mx-2"><slot name="error"></slot></div>
+        <div class="tw-line-clamp-1 tw-w-full tw-mx-2">{{ error }}</div>
         <VcButton
-          variant="onlytext"
+          text
           class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
           @click="open()"
           >{{ $t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
@@ -59,18 +59,11 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, useSlots, h } from "vue";
+<script lang="ts" setup>
+import { computed, Ref, reactive, useAttrs, toRefs } from "vue";
 import { IBladeToolbar } from "../../../../core/types";
 import { IBladeContainer, usePopup } from "./../../../../shared";
 import { useI18n } from "vue-i18n";
-
-export default defineComponent({
-  inheritAttrs: false,
-});
-</script>
-
-<script lang="ts" setup>
 import VcBladeHeader from "./_internal/vc-blade-header/vc-blade-header.vue";
 import VcBladeToolbar from "./_internal/vc-blade-toolbar/vc-blade-toolbar.vue";
 import { VcButton, VcIcon, VcPopup } from "./../../";
@@ -81,12 +74,9 @@ export interface Props {
   subtitle?: string;
   width?: number | string;
   expanded?: boolean;
-  maximized?: boolean;
   expandable?: boolean;
   closable?: boolean;
   toolbarItems?: IBladeToolbar[];
-  onClose?: () => void;
-  blades?: IBladeContainer[];
 }
 
 export interface Emits {
@@ -94,6 +84,10 @@ export interface Emits {
   (event: "expand"): void;
   (event: "collapse"): void;
 }
+
+defineOptions({
+  inheritAttrs: false,
+});
 
 const props = withDefaults(defineProps<Props>(), {
   width: "30%",
@@ -103,9 +97,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<Emits>();
+const attrs = useAttrs();
+const { blades, maximized, error }: { blades?: Ref<IBladeContainer[]>; maximized?: Ref<boolean>; error?: Ref<string> } =
+  toRefs(reactive(attrs));
 const { t } = useI18n({ useScope: "global" });
-const slots = useSlots();
-const errorSlot = computed(() => slots.error && slots.error());
 
 const { open } = usePopup({
   component: VcPopup,
@@ -115,10 +110,7 @@ const { open } = usePopup({
     title: t("COMPONENTS.ORGANISMS.VC_BLADE.ERROR_POPUP.TITLE"),
   },
   slots: {
-    default: h(
-      "div",
-      h(() => errorSlot.value)
-    ),
+    default: computed(() => error.value),
   },
 });
 
@@ -126,7 +118,7 @@ const isExpandable = computed(() => {
   if (!props.expandable) {
     return props.expandable;
   }
-  return props.blades?.length !== 0;
+  return blades?.value && blades.value.length !== 0;
 });
 </script>
 

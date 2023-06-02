@@ -3,7 +3,7 @@ import * as fs from "fs";
 import { loadEnv, ProxyOptions, UserConfigExport } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "path";
-import checker from "vite-plugin-checker";
+import { checker } from "vite-plugin-checker";
 
 // Get actual package version from package.json
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");

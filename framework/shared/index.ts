@@ -4,9 +4,18 @@ import { VcAppSwitcherComponent } from "./components/app-switcher";
 import { VcBladeNavigationComponent } from "./components/blade-navigation";
 import { AssetsManagerModule } from "./modules/assets-manager";
 import { VcPopupHandler } from "./components/popup-handler";
+import * as locales from "./locales";
+import { i18n } from "./../core/plugins";
 
 export const SharedModule = {
   install(app: App): void {
+    // Load locales
+    if (locales) {
+      Object.entries(locales).forEach(([key, message]) => {
+        i18n.global.mergeLocaleMessage(key, message);
+      });
+    }
+
     app
       .use(AssetsDetailsModule)
       .use(AssetsManagerModule)
@@ -16,11 +25,6 @@ export const SharedModule = {
   },
 };
 
-export * from "./modules/assets";
-export * from "./modules/assets-manager";
-
-export * from "./components/app-switcher";
-export * from "./components/blade-navigation";
-export * from "./components/notifications";
-export * from "./components/error-interceptor";
-export * from "./components/popup-handler";
+export * from "./modules";
+export * from "./components";
+export * from "./pages";

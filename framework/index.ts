@@ -7,12 +7,17 @@ import { i18n } from "./core/plugins";
 import { SharedModule } from "./shared";
 import { signalR } from "./core/plugins/signalR";
 import * as componentLocales from "./ui/locales";
+import { notificationTemplatesSymbol, pagesSymbol } from "./injectionSymbols";
+import { CommonPageComposables } from "./typings";
+import { InvitePage } from "./shared/pages/InvitePage";
+import { LoginPage } from "./shared/pages/LoginPage";
+import { ResetPasswordPage } from "./shared/pages/ResetPasswordPage";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
 
 export default {
-  install(app: App): void {
+  install(app: App, config?: CommonPageComposables): void {
     app.use(i18n);
     // Left for backward compatibility
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
@@ -55,19 +60,28 @@ export default {
 
     // Pages
     app.config.globalProperties.pages = [];
-    app.provide("pages", app.config.globalProperties.pages);
+    app.provide(pagesSymbol, app.config.globalProperties.pages);
 
     // Notification templates
     app.config.globalProperties.notificationTemplates = [];
-    app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
+    app.provide(notificationTemplatesSymbol, app.config.globalProperties.notificationTemplates);
 
     // Shared module
     app.use(SharedModule);
 
     // SignalR
     app.use(signalR);
+
+    // Common pages
+    const commonPages = [InvitePage, LoginPage, ResetPasswordPage];
+
+    commonPages.forEach((page) => {
+      app.use(page, config);
+    });
   },
 };
+
+export * from "./injectionSymbols";
 
 export * from "./ui/components";
 // eslint-disable-next-line import/export

@@ -28,7 +28,15 @@ export default getLibraryConfiguration({
       formats: ["es"],
     },
     rollupOptions: {
-      external: ["vue", "vee-validate", "@vc-shell/config-generator", "@vc-shell/framework", "vue-i18n", "lodash-es"],
+      external: [
+        "vue",
+        "vue-router",
+        "vee-validate",
+        "@vc-shell/config-generator",
+        "@vc-shell/framework",
+        "vue-i18n",
+        "lodash-es",
+      ],
     },
   },
   envPrefix: "APP_",

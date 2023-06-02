@@ -39,7 +39,7 @@ export const Primary: Story = {
           "
     >
       <span class="tw-grow tw-basis-0"></span>
-      <vc-button variant="primary">
+      <vc-button >
         Submit
       </vc-button>
     </div>

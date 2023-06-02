@@ -1,3 +1,29 @@
+## [1.0.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.70...v1.0.71) (2023-06-02)
+
+
+### Bug Fixes
+
+* *ui* vc-button text style ([58545cc](https://github.com/VirtoCommerce/vc-shell/commit/58545cc7955549a877e48cb8451e751490c564b3))
+* *ui* vc-popup condition fix ([f0a3866](https://github.com/VirtoCommerce/vc-shell/commit/f0a3866325b12bf4fbc7d68eb83d1692d4cb7cca))
+* navigation prevention fix ([fd94904](https://github.com/VirtoCommerce/vc-shell/commit/fd94904dc94d076dd690c41c18417e5e80dd2cc5))
+* required blade in IBladeEvent interface ([b5197b2](https://github.com/VirtoCommerce/vc-shell/commit/b5197b26994291cb3cb8955626e7fff5154e2e73))
+
+
+### Features
+
+* azure active directory signin ([46cee05](https://github.com/VirtoCommerce/vc-shell/commit/46cee052064434bdd143d744ca7557f5c0fd7e84))
+* common pages moved to shell ([fca5967](https://github.com/VirtoCommerce/vc-shell/commit/fca5967bfa8fdfee09c043dfc565e8aa2534ada1))
+* error slot removed from blades ([9135daa](https://github.com/VirtoCommerce/vc-shell/commit/9135daa186236c6ee9b95ebe786b4fc532828bfb))
+* refactored vc-button ([b66d081](https://github.com/VirtoCommerce/vc-shell/commit/b66d081b79c32fd9a726bf686ec94070debd7f63))
+* select-all ([3e30fef](https://github.com/VirtoCommerce/vc-shell/commit/3e30fefb71f0e5319724f0487c4c01f049ae19ff))
+
+
+### Reverts
+
+* required blade in IBladeEvent ([61b1223](https://github.com/VirtoCommerce/vc-shell/commit/61b1223a3b4ce8a131a0ac58ec6c65ca18a053e8))
+
+
+
 ## [1.0.70](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.69...v1.0.70) (2023-05-18)
 
 
@@ -21,7 +47,6 @@
 * notifications template ([1af7c34](https://github.com/VirtoCommerce/vc-shell/commit/1af7c34e228a8c7f8f0cdffd4edce4ff00b5882c))
 * popup handler/updated variant templates ([eae6366](https://github.com/VirtoCommerce/vc-shell/commit/eae6366839a2ab2e0c0dccfc14cf7c6bab5731f6))
 * refactored notifications ([84fda40](https://github.com/VirtoCommerce/vc-shell/commit/84fda4097a3afc7bb8e4a9f99da574885b872d7c))
-* transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
 * updated boilerplate ([9f686cc](https://github.com/VirtoCommerce/vc-shell/commit/9f686cca9361a1070b09d4763f6c5b3ace1a47ce))
 * v-click-outside changed to vueUse directive ([26d764f](https://github.com/VirtoCommerce/vc-shell/commit/26d764f83c9b53e667a85684b424a91de8e06a29))
 * vc-select generic component ([c71c8da](https://github.com/VirtoCommerce/vc-shell/commit/c71c8daead1ba5c5ece2a0eb4e15a52d01b1666e))
@@ -33,6 +58,15 @@
 
 * openBlade method has changed
 * changed navigation props names
+
+
+
+## [1.0.69](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.68...v1.0.69) (2023-04-26)
+
+
+### Features
+
+* transition to yarn berry monorepo ([73a4da7](https://github.com/VirtoCommerce/vc-shell/commit/73a4da7905fffa030501175d76aeaa0f4caae99a))
 
 
 

@@ -1,3 +1,4 @@
+import { useRoute } from "vue-router";
 import { computed, Ref, ref, watch } from "vue";
 import {
   ImportClient,
@@ -81,6 +82,7 @@ interface IUseImport {
 export default (): IUseImport => {
   const { notifications } = useNotifications();
   const { getAccessToken, user } = useUser();
+  const route = useRoute();
   const loading = ref(false);
   const uploadedFile = ref<IUploadedFile>();
   const historySearchResult = ref<SearchImportRunHistoryResult>();
@@ -95,6 +97,7 @@ export default (): IUseImport => {
   const importStatus = ref<IImportStatus>({
     inProgress: false,
   });
+  const importUserId = route?.params?.userId as string;
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
@@ -143,6 +146,7 @@ export default (): IUseImport => {
       const historyQuery = new SearchImportRunHistoryCriteria({
         ...(query || {}),
         take: 15,
+        userId: importUserId,
       });
       historySearchResult.value = await client.searchImportRunHistory(historyQuery);
       currentPage.value = (historyQuery?.skip || 0) / Math.max(1, historyQuery?.take || 15) + 1;
@@ -198,8 +202,8 @@ export default (): IUseImport => {
 
     try {
       loading.value = true;
-      const profileQuery = new SearchImportProfilesCriteria();
-      profileSearchResult.value = (await client.searchImportProfiles(profileQuery)) as ISearchProfile;
+      const profileQuery = new SearchImportProfilesCriteria({ userId: importUserId });
+      profileSearchResult.value = await client.searchImportProfiles(profileQuery);
     } catch (e) {
       console.error(e);
       throw e;
@@ -215,6 +219,7 @@ export default (): IUseImport => {
       loading.value = true;
       const previewDataQuery = new ImportProfile({
         ...profile.value,
+        userId: importUserId,
       });
       return client.preview(previewDataQuery);
     } catch (e) {
@@ -231,7 +236,9 @@ export default (): IUseImport => {
     try {
       loading.value = true;
 
-      const importProfile = new ImportProfile(extProfile ? extProfile : profile.value);
+      const importProfile = new ImportProfile(
+        extProfile ? { ...extProfile, userId: importUserId } : { ...profile.value, userId: importUserId }
+      );
       importProfile.onImportCompleted = undefined;
       const notification = await client.runImport(importProfile);
 
@@ -309,6 +316,7 @@ export default (): IUseImport => {
 
     const command = new ImportProfile({
       ...updatedProfile,
+      userId: importUserId,
     });
 
     try {
@@ -331,6 +339,7 @@ export default (): IUseImport => {
     newProfile.userId = user.value.id;
     const command = new ImportProfile({
       ...newProfile,
+      userId: importUserId,
       settings: newProfile.settings.map((setting) => new ObjectSettingEntry(setting)),
     });
 

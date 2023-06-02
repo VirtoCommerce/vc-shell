@@ -9,12 +9,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcContainer class="import">
       <!-- Import profile widgets-->
       <div
@@ -36,13 +30,15 @@
                 >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
-                class="tw-w-max"
+                class="tw-w-max tw-text-black"
                 icon="fas fa-file-csv"
-                variant="widget"
+                icon-class="tw-text-[30px] tw-text-[color:#a9bfd2]"
+                text
+                raised
                 :selected="selectedProfileId === slide.id"
                 @click="openImporter(slide.id)"
               >
-                {{ slide.name }}
+                <span class="tw-text-black">{{ slide.name }}</span>
                 <VcHint>{{ slide.dataImporterType }}</VcHint>
               </VcButton>
             </div>
@@ -85,26 +81,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, markRaw } from "vue";
-
-export default defineComponent({
-  url: "/import",
-  scope: {
-    notificationClick(notification: ImportPushNotification) {
-      if (notification.notifyType !== "ImportPushNotification") return;
-      return {
-        param: notification.profileId,
-        options: {
-          importJobId: notification.jobId,
-        },
-      };
-    },
-  },
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, onMounted, ref, markRaw } from "vue";
 import {
   IBladeToolbar,
   ITableColumns,
@@ -139,6 +117,21 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
+
+defineOptions({
+  url: "/import",
+  scope: {
+    notificationClick(notification: ImportPushNotification) {
+      if (notification.notifyType !== "ImportPushNotification") return;
+      return {
+        param: notification.profileId,
+        options: {
+          importJobId: notification.jobId,
+        },
+      };
+    },
+  },
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

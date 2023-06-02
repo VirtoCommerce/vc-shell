@@ -27,6 +27,9 @@
       "@vc-shell/api-client-generator": [
         "cli/api-client"
       ],
+      "@vc-shell/create-app": [
+        "cli/create-vc-app"
+      ],
       "@vc-shell/import-module": [
         "import-module"
       ]
@@ -41,6 +44,9 @@
     },
     {
       "path": "cli/api-client/"
+    },
+    {
+      "path": "cli/create-vc-app/"
     },
     {
       "path": "import-module/"

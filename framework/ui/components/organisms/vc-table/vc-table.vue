@@ -213,7 +213,7 @@
                     : $t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
                 }}
                 <VcButton
-                  variant="onlytext"
+                  text
                   class="tw-text-[13px]"
                   @click="handleSelectAll"
                   >{{
@@ -492,6 +492,7 @@ const props = withDefaults(
     pages: 0,
     expanded: true,
     currentPage: 0,
+    selectedItemId: undefined,
     searchPlaceholder: "Search...",
     empty: () => ({
       text: "List is empty.",

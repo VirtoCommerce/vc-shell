@@ -231,10 +231,12 @@ const toolbarItems = computed(() =>
           },
           {
             title: t("SHELL.ACCOUNT.LOGOUT"),
-            clickHandler() {
-              closeBlade(0);
-              signOut();
-              router.push({ name: "Login" });
+            async clickHandler() {
+              const isPrevented = await closeBlade(0);
+              if (!isPrevented) {
+                signOut();
+                router.push({ name: "Login" });
+              }
             },
           },
         ],
@@ -351,9 +353,12 @@ const menuItems = reactive(
       title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
       icon: "fas fa-sign-out-alt",
       isVisible: isMobile,
-      clickHandler() {
-        signOut();
-        router.push("/login");
+      async clickHandler() {
+        const isPrevented = await closeBlade(0);
+        if (!isPrevented) {
+          signOut();
+          router.push({ name: "Login" });
+        }
       },
     },
   ])

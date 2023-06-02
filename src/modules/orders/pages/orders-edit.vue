@@ -10,12 +10,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcContainer>
       <VcRow>
         <VcCol
@@ -205,15 +199,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref } from "vue";
-
-export default defineComponent({
-  url: "/order",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, onMounted, ref } from "vue";
 import moment from "moment";
 import { useOrder, useOrders } from "../composables";
 import { IBladeToolbar, IParentCallArgs, ITableColumns, useLoading } from "@vc-shell/framework";
@@ -233,6 +220,10 @@ export interface Emits {
   (event: "expand:blade"): void;
   (event: "close:blade"): void;
 }
+
+defineOptions({
+  url: "/order",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

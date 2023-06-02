@@ -7,12 +7,6 @@
     :closable="closable"
     :toolbar-items="bladeToolbar"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcContainer>
       <VcStatus
         v-if="errorMessage"
@@ -368,21 +362,13 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, computed, unref } from "vue";
-import { UserPermissions } from "../../../../types";
-
-export default defineComponent({
-  url: "/seller-details-edit",
-  permissions: [UserPermissions.SellerDetailsEdit],
-});
-</script>
-
 <script lang="ts" setup>
-import { useUser, useForm, IBladeToolbar, usePopup } from "@vc-shell/framework";
+import { onMounted, ref, computed, unref } from "vue";
+import { UserPermissions } from "../../../../types";
+import { useUser, IBladeToolbar, usePopup } from "@vc-shell/framework";
 import useSellerDetails from "../../composables/useSellerDetails";
 import { Image } from "../../../../api_client/marketplacevendor";
-import { useIsFormValid, Field, useIsFormDirty } from "vee-validate";
+import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -394,6 +380,11 @@ export interface Props {
 export interface Emits {
   (event: "close:blade"): void;
 }
+
+defineOptions({
+  url: "/seller-details-edit",
+  permissions: [UserPermissions.SellerDetailsEdit],
+});
 
 withDefaults(defineProps<Props>(), {
   expanded: true,

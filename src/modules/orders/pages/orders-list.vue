@@ -9,12 +9,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <!-- Blade contents -->
     <VcTable
       class="tw-grow tw-basis-0"
@@ -169,25 +163,10 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, onMounted, reactive, ref, watch, markRaw } from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref, watch, markRaw } from "vue";
 import { OrdersEdit } from "./";
 import { INewOrderPushNotification } from "./../../../types";
-
-export default defineComponent({
-  url: "/orders",
-  scope: {
-    notificationClick(notification: INewOrderPushNotification) {
-      if (notification.notifyType !== "OrderCreatedEventHandler") return;
-      return {
-        param: notification.orderId,
-      };
-    },
-  },
-});
-</script>
-
-<script lang="ts" setup>
 import {
   IBladeToolbar,
   useFunctions,
@@ -218,10 +197,22 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
-  param: undefined,
 });
 
 defineEmits<Emits>();
+
+defineOptions({
+  url: "/orders",
+  scope: {
+    notificationClick(notification: INewOrderPushNotification) {
+      if (notification.notifyType !== "OrderCreatedEventHandler") return;
+      return {
+        param: notification.orderId,
+      };
+    },
+  },
+});
+
 const { openBlade } = useBladeNavigation();
 const { orders, loadOrders, loading, pages, currentPage, totalCount, changeOrderStatus, PaymentStatus } = useOrders();
 const { debounce } = useFunctions();

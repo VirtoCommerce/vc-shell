@@ -9,12 +9,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <!-- Blade contents -->
     <VcTable
       :loading="loading"
@@ -57,7 +51,7 @@
               aspect="1x1"
               size="s"
               :bordered="true"
-              :src="itemData.item.imgSrc as string"
+              :src="itemData.item.imgSrc"
             ></VcImage>
             <div class="tw-grow tw-basis-0 tw-ml-3">
               <div class="tw-font-bold tw-text-lg">
@@ -105,15 +99,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, inject, onMounted, reactive, ref, unref, watch, markRaw, Ref } from "vue";
-
-export default defineComponent({
-  url: "/offers",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, inject, onMounted, reactive, ref, unref, watch, markRaw, Ref } from "vue";
 import {
   IBladeToolbar,
   IParentCallArgs,
@@ -155,6 +142,10 @@ interface IOfferUnwrappedPrice extends IOffer {
   listPrice: number;
   salePrice: number;
 }
+
+defineOptions({
+  url: "/offers",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

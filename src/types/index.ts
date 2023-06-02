@@ -1,5 +1,5 @@
 import { ComputedRef } from "vue";
-import { PushNotification } from "@vc-shell/framework";
+import { PushNotification, VcButton } from "@vc-shell/framework";
 
 enum UserPermissions {
   SellerUsersManage = "seller:users:manage",
@@ -22,7 +22,7 @@ interface INotificationActions {
   name: string | ComputedRef<string>;
   clickHandler(): void;
   outline: boolean;
-  variant: "primary" | "secondary" | "special" | "danger" | "widget" | "onlytext" | undefined;
+  variant?: InstanceType<typeof VcButton>["$props"]["variant"];
   isVisible?: boolean | ComputedRef<boolean>;
   disabled?: boolean | ComputedRef<boolean>;
 }

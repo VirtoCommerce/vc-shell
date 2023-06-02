@@ -13,12 +13,6 @@
     <template #actions>
       <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
 
     <!-- Blade contents -->
     <VcContainer :no-padding="true">
@@ -252,15 +246,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref, markRaw } from "vue";
-
-export default defineComponent({
-  url: "/mp-product",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, onMounted, ref, unref, markRaw } from "vue";
 import {
   useUser,
   IParentCallArgs,
@@ -303,6 +290,10 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
+
+defineOptions({
+  url: "/mp-product",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

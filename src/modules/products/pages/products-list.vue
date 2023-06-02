@@ -9,13 +9,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
-
     <!-- Blade contents -->
     <VcTable
       class="tw-grow tw-basis-0"
@@ -122,10 +115,7 @@
 
       <!-- Override status column template -->
       <template #item_status="itemData">
-        <mp-product-status
-          :status="itemData.item.status"
-          class="tw-mb-1"
-        />
+        <mp-product-status :status="itemData.item.status" />
       </template>
 
       <template #mobile-item="itemData">
@@ -135,7 +125,7 @@
             aspect="1x1"
             size="m"
             :bordered="true"
-            :src="itemData.item.imgSrc as string"
+            :src="itemData.item.imgSrc"
           />
           <div class="tw-grow tw-basis-0 tw-ml-3">
             <div class="tw-font-bold tw-text-lg">
@@ -146,7 +136,7 @@
             <div class="tw-mt-2 tw-mb-3">
               <mp-product-status
                 class="tw-mt-3"
-                :status="itemData.item.status as string"
+                :status="itemData.item.status"
               />
             </div>
 
@@ -154,7 +144,7 @@
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
                 <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.EAN_GTIN") }}</VcHint>
                 <div class="tw-truncate tw-mt-1">
-                  {{ itemData.item.productData && (itemData.item.productData as Record<"gtin", string>).gtin }}
+                  {{ itemData.item.productData && itemData.item.productData.gtin }}
                 </div>
               </div>
               <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
@@ -167,7 +157,7 @@
                 <div class="tw-flex tw-flex-col tw-items-center">
                   <VcHint>{{ $t("PRODUCTS.PAGES.LIST.MOBILE.PUBLISHED") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
-                    <VcStatusIcon :status="itemData.item && itemData.item.isPublished as boolean"></VcStatusIcon>
+                    <VcStatusIcon :status="itemData.item && itemData.item.isPublished"></VcStatusIcon>
                   </div>
                 </div>
               </div>
@@ -179,37 +169,10 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watch,
-  unref,
-  inject,
-  markRaw,
-  Ref,
-  ComputedRef,
-} from "vue";
+<script lang="ts" setup>
+import { computed, onMounted, reactive, ref, watch, unref, inject, markRaw, Ref, ComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { IProductPushNotification } from "./../../../types";
-
-export default defineComponent({
-  url: "/products",
-  scope: {
-    notificationClick(notification: IProductPushNotification) {
-      if (notification.notifyType !== "OrderCreatedEventHandler") return;
-      return {
-        param: notification.productId,
-      };
-    },
-  },
-});
-</script>
-
-<script lang="ts" setup>
 import {
   IBladeToolbar,
   useFunctions,
@@ -244,6 +207,18 @@ export interface Exposed {
   title: ComputedRef<string>;
   test: string;
 }
+
+defineOptions({
+  url: "/products",
+  scope: {
+    notificationClick(notification: IProductPushNotification) {
+      if (notification.notifyType !== "PublicationRequestStatusChangedDomainEvent") return;
+      return {
+        param: notification.productId,
+      };
+    },
+  },
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

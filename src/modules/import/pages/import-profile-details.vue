@@ -10,12 +10,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcContainer>
       <VcRow>
         <VcCol>
@@ -104,15 +98,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, onMounted, ref, unref } from "vue";
-
-export default defineComponent({
-  url: "/import-profile-details",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, onMounted, ref, unref } from "vue";
 import {
   IParentCallArgs,
   IBladeToolbar,
@@ -145,6 +132,10 @@ export interface Emits {
   (event: "expand:blade"): void;
   (event: "parent:call", args: IParentCallArgs): void;
 }
+
+defineOptions({
+  url: "/import-profile-details",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

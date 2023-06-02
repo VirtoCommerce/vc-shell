@@ -8,12 +8,6 @@
     :expandable="false"
     @close="$emit('close:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <VcTable
       class="tw-grow tw-basis-0"
       :loading="loading"
@@ -48,17 +42,9 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref, computed, watch, onMounted, markRaw } from "vue";
-import { UserPermissions } from "../../../../types";
-
-export default defineComponent({
-  url: "/fulfillment-centers-list",
-  permissions: [UserPermissions.SellerDetailsEdit],
-});
-</script>
-
 <script lang="ts" setup>
+import { ref, computed, watch, onMounted, markRaw } from "vue";
+import { UserPermissions } from "../../../../types";
 import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";
@@ -75,6 +61,11 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
+
+defineOptions({
+  url: "/fulfillment-centers-list",
+  permissions: [UserPermissions.SellerDetailsEdit],
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

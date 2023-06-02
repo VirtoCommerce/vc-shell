@@ -1,17 +1,23 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Dashboard from "../pages/Dashboard.vue";
-import Invite from "../pages/Invite.vue";
-import ResetPassword from "../pages/ResetPassword.vue";
 import { OrdersEdit, OrdersList } from "../modules/orders";
 import { ProductsList, ProductsEdit } from "../modules/products";
 import { OffersDetails, OffersList } from "../modules/offers";
 import { MpProductsList, MpProductsEdit } from "../modules/marketplace-products";
-import Login from "./../pages/Login.vue";
 import App from "./../pages/App.vue";
 import { ImportNew, ImportProfileDetails, ImportProfileSelector } from "../modules/import";
 import { ReviewDetails, ReviewList } from "../modules/rating";
 import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { usePermissions, useUser, BladePageComponent, notification } from "@vc-shell/framework";
+import {
+  usePermissions,
+  useUser,
+  BladePageComponent,
+  notification,
+  Invite,
+  Login,
+  ResetPassword,
+} from "@vc-shell/framework";
+import { useCookies } from "@vueuse/integrations/useCookies";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -34,7 +40,6 @@ const routes: RouteRecordRaw[] = [
       {
         name: "Offers",
         path: "offers",
-        props: true,
         component: OffersList,
       },
       {
@@ -46,7 +51,6 @@ const routes: RouteRecordRaw[] = [
       {
         name: "Products",
         path: "products",
-        props: true,
         component: ProductsList,
       },
       {
@@ -58,7 +62,6 @@ const routes: RouteRecordRaw[] = [
       {
         name: "MpProducts",
         path: "mp-products",
-        props: true,
         component: MpProductsList,
       },
       {
@@ -71,7 +74,6 @@ const routes: RouteRecordRaw[] = [
         name: "Orders",
         path: "orders",
         component: OrdersList,
-        props: true,
       },
       {
         name: "OrderDetails",
@@ -83,7 +85,6 @@ const routes: RouteRecordRaw[] = [
         name: "Import",
         path: "import",
         component: ImportProfileSelector,
-        props: true,
       },
       {
         name: "ImportProfileDetails",
@@ -101,31 +102,26 @@ const routes: RouteRecordRaw[] = [
         name: "Reviews",
         path: "reviews",
         component: ReviewList,
-        props: true,
       },
       {
         name: "ReviewDetails",
         path: "review-details",
         component: ReviewDetails,
-        props: true,
       },
       {
         name: "SellerDetailsEdit",
         path: "seller-details-edit",
         component: SellerDetails,
-        props: true,
       },
       {
         name: "FulfillmentCentersList",
         path: "fulfillment-centers-list",
         component: FulfillmentCenters,
-        props: true,
       },
       {
         name: "Team",
         path: "team",
         component: TeamList,
-        props: true,
       },
     ],
     beforeEnter: [checkAuth],
@@ -134,11 +130,11 @@ const routes: RouteRecordRaw[] = [
     path: "/login",
     name: "Login",
     component: Login,
-    meta: {
+    props: () => ({
       logo: whiteLogoImage,
       background: bgImage,
       title: "Vendor Portal",
-    },
+    }),
   },
   {
     name: "invite",
@@ -191,7 +187,6 @@ router.beforeEach((to, from, next) => {
         if (!from.matched.length) {
           next({ name: "Dashboard" });
         } else {
-          // TODO temporary access alert
           notification.error("Access restricted", {
             timeout: 3000,
           });
@@ -211,8 +206,9 @@ async function checkAuth(to, from, next) {
   const { getAccessToken } = useUser();
 
   const token = await getAccessToken();
+  const azureAdCookie = useCookies([".AspNetCore.Identity.Application"]).get(".AspNetCore.Identity.Application");
 
-  if (!token && to.name !== "Login") {
+  if (!(token || azureAdCookie) && to.name !== "Login") {
     next({ name: "Login" });
   } else {
     next();

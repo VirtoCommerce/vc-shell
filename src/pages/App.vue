@@ -59,20 +59,20 @@ import {
   useSettings,
   useUser,
   useBladeNavigation,
-  BladePageComponent,
   useNotifications,
   VcNotificationDropdown,
   notification,
   PushNotification,
   usePopup,
   useMenuComposer,
-  NotificationTemplateConstructor,
+  ChangePassword,
+  LanguageSelector,
+  UserDropdownButton,
+  pagesSymbol,
+  notificationTemplatesSymbol,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ChangePassword } from "../components/change-password";
-import { LanguageSelector } from "../components/language-selector";
-import { UserDropdownButton } from "../components/user-dropdown-button";
 import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
 import { OrdersList } from "../modules/orders";
@@ -109,8 +109,8 @@ const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
-const pages = inject<BladePageComponent[]>("pages");
-const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
+const pages = inject(pagesSymbol);
+const notificationTemplates = inject(notificationTemplatesSymbol);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
@@ -369,13 +369,13 @@ function langInit() {
   }
 }
 
-const openDashboard = () => {
+const openDashboard = async () => {
   console.debug(`openDashboard() called.`);
 
   // Close all opened pages with onBeforeClose callback
-  closeBlade(0);
+  const isPrevented = await closeBlade(0);
 
-  router.push("/");
+  !isPrevented && router.push("/");
 };
 
 async function customizationHandler() {

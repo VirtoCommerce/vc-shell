@@ -9,12 +9,6 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
-    <template
-      v-if="$slots['error']"
-      #error
-    >
-      <slot name="error"></slot>
-    </template>
     <ReviewTable
       :expanded="expanded"
       @item-click="onItemClick"
@@ -22,21 +16,14 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref, markRaw, onMounted } from "vue";
+<script lang="ts" setup>
+import { computed, ref, markRaw, onMounted } from "vue";
 import { IBladeToolbar, useBladeNavigation } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 import { useI18n } from "vue-i18n";
-
-export default defineComponent({
-  url: "/reviews",
-});
-</script>
-
-<script lang="ts" setup>
 // Page
 
 export interface Props {
@@ -53,6 +40,10 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
 }
+
+defineOptions({
+  url: "/reviews",
+});
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

@@ -7,9 +7,10 @@ import ProductsModule from "./modules/products";
 import RatingModule from "./modules/rating";
 import SettingsModule from "./modules/settings";
 import MpProductsModule from "./modules/marketplace-products";
-import EmptyRouterView from "./pages/EmptyRouterView.vue";
 import { router } from "./router";
 import * as locales from "./locales";
+import { useLogin } from "./composables";
+import { RouterView } from "vue-router";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -17,9 +18,11 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 
-const app = createApp(EmptyRouterView)
+const app = createApp(RouterView)
   .use(router)
-  .use(VirtoShellFramework)
+  .use(VirtoShellFramework, {
+    useLogin,
+  })
   .use(OrdersModule)
   .use(ProductsModule)
   .use(MpProductsModule)

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { IBladeEvent, PushNotification, CoreBladeAdditionalSettings } from "@vc-shell/framework";
+import { CoreBladeAdditionalSettings } from "@vc-shell/framework";
 import { Ref } from "vue";
 
 declare module "*.vue" {

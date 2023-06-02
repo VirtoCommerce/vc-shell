@@ -172,7 +172,7 @@
 
 <script lang="ts" setup>
 import { ref, reactive, computed, onMounted, inject } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
@@ -180,11 +180,17 @@ import { CommonPageComposables } from "typings";
 import { asyncComputed } from "@vueuse/core";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 
+export interface Props {
+  logo: string;
+  background: string;
+  title: string;
+}
+
+const props = defineProps<Props>();
+
 const router = useRouter();
-const route = useRoute();
 
 useForm({ validateOnMount: false });
-const { logo, background, title } = route?.meta as { logo: string; background: string; title: string };
 const { getUiCustomizationSettings, uiSettings } = useSettings();
 const { useLogin } = inject<CommonPageComposables>("commonPageComposables");
 
@@ -210,7 +216,7 @@ onMounted(async () => {
 const customization = computed(() => {
   return (
     !customizationLoading.value && {
-      logo: uiSettings.value?.logo || logo,
+      logo: uiSettings.value?.logo || props.logo,
     }
   );
 });

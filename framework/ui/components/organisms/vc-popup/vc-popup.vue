@@ -24,7 +24,7 @@
             <slot></slot>
           </VcPopupError>
         </template>
-        <template v-if="type === 'warning'">
+        <template v-else-if="type === 'warning'">
           <VcPopupWarning
             @close="$emit('close')"
             @confirm="$emit('confirm')"

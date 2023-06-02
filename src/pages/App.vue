@@ -369,13 +369,13 @@ function langInit() {
   }
 }
 
-const openDashboard = () => {
+const openDashboard = async () => {
   console.debug(`openDashboard() called.`);
 
   // Close all opened pages with onBeforeClose callback
-  closeBlade(0);
+  const isPrevented = await closeBlade(0);
 
-  router.push("/");
+  !isPrevented && router.push("/");
 };
 
 async function customizationHandler() {

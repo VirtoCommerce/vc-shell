@@ -40,7 +40,6 @@ const routes: RouteRecordRaw[] = [
       {
         name: "Offers",
         path: "offers",
-        props: true,
         component: OffersList,
       },
       {
@@ -52,7 +51,6 @@ const routes: RouteRecordRaw[] = [
       {
         name: "Products",
         path: "products",
-        props: true,
         component: ProductsList,
       },
       {
@@ -64,7 +62,6 @@ const routes: RouteRecordRaw[] = [
       {
         name: "MpProducts",
         path: "mp-products",
-        props: true,
         component: MpProductsList,
       },
       {
@@ -77,7 +74,6 @@ const routes: RouteRecordRaw[] = [
         name: "Orders",
         path: "orders",
         component: OrdersList,
-        props: true,
       },
       {
         name: "OrderDetails",
@@ -89,7 +85,6 @@ const routes: RouteRecordRaw[] = [
         name: "Import",
         path: "import",
         component: ImportProfileSelector,
-        props: true,
       },
       {
         name: "ImportProfileDetails",
@@ -107,31 +102,26 @@ const routes: RouteRecordRaw[] = [
         name: "Reviews",
         path: "reviews",
         component: ReviewList,
-        props: true,
       },
       {
         name: "ReviewDetails",
         path: "review-details",
         component: ReviewDetails,
-        props: true,
       },
       {
         name: "SellerDetailsEdit",
         path: "seller-details-edit",
         component: SellerDetails,
-        props: true,
       },
       {
         name: "FulfillmentCentersList",
         path: "fulfillment-centers-list",
         component: FulfillmentCenters,
-        props: true,
       },
       {
         name: "Team",
         path: "team",
         component: TeamList,
-        props: true,
       },
     ],
     beforeEnter: [checkAuth],
@@ -140,11 +130,11 @@ const routes: RouteRecordRaw[] = [
     path: "/login",
     name: "Login",
     component: Login,
-    meta: {
+    props: () => ({
       logo: whiteLogoImage,
       background: bgImage,
       title: "Vendor Portal",
-    },
+    }),
   },
   {
     name: "invite",
@@ -197,7 +187,6 @@ router.beforeEach((to, from, next) => {
         if (!from.matched.length) {
           next({ name: "Dashboard" });
         } else {
-          // TODO temporary access alert
           notification.error("Access restricted", {
             timeout: 3000,
           });

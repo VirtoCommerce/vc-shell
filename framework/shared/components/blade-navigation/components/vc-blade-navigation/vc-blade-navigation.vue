@@ -4,7 +4,7 @@
     capture
   >
     <router-view
-      v-slot="{ Component }: { Component: any }"
+      v-slot="{ Component }"
       :key="route.path"
       @vue:before-unmount="reset"
     >
@@ -19,14 +19,10 @@
         :maximized="findStateById(0)"
         :blades="blades"
         :param="resolveParam"
+        :error="error"
         @expand:blade="handleMaximizeBlade(0, true)"
         @collapse:blade="handleMaximizeBlade(0, false)"
       >
-        <template
-          v-if="error"
-          #error
-          >{{ error }}</template
-        >
       </component>
     </router-view>
   </ErrorInterceptor>
@@ -48,17 +44,14 @@
         :expanded="i === blades.length - 1"
         :maximized="findStateById(blade.idx)"
         :options="blade.options"
+        :error="error"
+        :blades="blades"
         @close:blade="onBladeClose(i)"
         @close:children="$emit('onClose', i + 1)"
         @parent:call="$emit('onParentCall', { id: i, args: $event })"
         @expand:blade="handleMaximizeBlade(blade.idx, true)"
         @collapse:blade="handleMaximizeBlade(blade.idx, false)"
       >
-        <template
-          v-if="error"
-          #error
-          >{{ error }}</template
-        >
       </component>
     </ErrorInterceptor>
   </template>

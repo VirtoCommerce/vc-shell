@@ -16,5 +16,6 @@
     "src/modules/products/locales",
     "src/modules/rating/locales",
     "src/modules/settings/locales"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

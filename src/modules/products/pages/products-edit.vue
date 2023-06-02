@@ -59,7 +59,7 @@
                   :clearable="true"
                   :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="disabled"
-                  maxlength="4000"
+                  maxlength="1024"
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"

@@ -20,7 +20,9 @@
     :blades-refs="bladesRefs"
     @backlink:click="closeBlade($event)"
     @close="closeBlade($event)"
+    <% if(dashboard === true) { -%>
     @logo:click="openDashboard"
+    <% } -%>
   >
     <!-- App Switcher -->
     <template
@@ -75,6 +77,9 @@ import { useRoute, useRouter } from "vue-router";
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
+<% if(dashboard === true) { -%>
+import Dashboard from "./Dashboard.vue";
+<% } -%>
 import { useI18n } from "vue-i18n";
 <% if(bladeModuleStarter === true) { -%>
 import { DefaultList } from "./../modules/default";
@@ -214,17 +219,14 @@ const mobileMenuItems = computed(() =>
 
 const menuItems = reactive(
   navigationMenuComposer([
+    <% if(dashboard === true) { -%>
     {
       title: computed(() => t("SHELL.MENU.DASHBOARD")),
       icon: "fas fa-home",
       isVisible: true,
-      component: defineComponent({
-        url: "/",
-      }),
-      clickHandler() {
-        openDashboard();
-      },
+      component: Dashboard,
     },
+    <% } -%>
     {
       title: computed(() => t("SHELL.ACCOUNT.CHANGE_PASSWORD")),
       icon: "fas fa-key",
@@ -264,15 +266,16 @@ function langInit() {
     currentLocale.value = "en";
   }
 }
-
+<% if(dashboard === true) { -%>
 const openDashboard = () => {
   console.debug(`openDashboard() called.`);
 
-  // Close all opened pages with onBeforeClose callback
-  closeBlade(0);
+   // Close all opened pages with onBeforeClose callback
+  const isPrevented = await closeBlade(0);
 
-  router.push("/");
+  !isPrevented && router.push("/");
 };
+<% } -%>
 
 async function customizationHandler() {
   await getUiCustomizationSettings(base);

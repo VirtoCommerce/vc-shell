@@ -232,8 +232,15 @@ const applyFiltersReset = computed(() => {
   return !activeFilters.length;
 });
 
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
+
 onMounted(async () => {
-  selectedItemId.value = props.param;
   if (props.param) {
     openBlade({
       blade: markRaw(OrdersEdit),

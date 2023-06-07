@@ -39,10 +39,11 @@
       <VcBladeNavigation
         ref="bladeNavigationRefs"
         :blades="blades"
-        :parent-blade-options="parentBladeOptions"
-        :parent-blade-param="parentBladeParam"
+        :workspace-options="workspaceOptions"
+        :workspace-param="workspaceParam"
         @on-close="closeBlade($event)"
         @on-parent-call="(e) => onParentCall(e.id, e.args)"
+        @vue:mounted="resolveLastBlade(pages)"
       ></VcBladeNavigation>
     </template>
 
@@ -68,8 +69,8 @@ import {
   ChangePassword,
   LanguageSelector,
   UserDropdownButton,
-  pagesSymbol,
-  notificationTemplatesSymbol,
+  BladePageComponent,
+  NotificationTemplateConstructor,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -98,7 +99,7 @@ const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n
 const { user, loadUser, signOut } = useUser();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, parentBladeOptions, parentBladeParam, closeBlade, onParentCall, openBlade } =
+const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, openBlade, resolveLastBlade } =
   useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
@@ -109,8 +110,8 @@ const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
-const pages = inject(pagesSymbol);
-const notificationTemplates = inject(notificationTemplatesSymbol);
+const pages = inject<BladePageComponent[]>("pages");
+const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
@@ -203,10 +204,13 @@ const toolbarItems = computed(() =>
                 const bladeData = pageNotificationClickFn(notification);
 
                 if (bladeData) {
-                  openBlade({
-                    ...bladeData,
-                    blade: page,
-                  });
+                  openBlade(
+                    {
+                      ...bladeData,
+                      blade: page,
+                    },
+                    true
+                  );
 
                   break;
                 }

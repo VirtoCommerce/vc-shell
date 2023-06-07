@@ -19,17 +19,17 @@ import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 
 const app = createApp(RouterView)
-  .use(router)
   .use(VirtoShellFramework, {
     useLogin,
   })
-  .use(OrdersModule)
-  .use(ProductsModule)
-  .use(MpProductsModule)
-  .use(OffersModule)
-  .use(ImportModule)
-  .use(RatingModule)
-  .use(SettingsModule);
+  .use(OrdersModule, { router })
+  .use(ProductsModule, { router })
+  .use(MpProductsModule, { router })
+  .use(OffersModule, { router })
+  .use(ImportModule, { router })
+  .use(RatingModule, { router })
+  .use(SettingsModule, { router })
+  .use(router);
 
 Object.entries(locales).forEach(([key, message]) => {
   app.config.globalProperties.$mergeLocaleMessage(key, message);

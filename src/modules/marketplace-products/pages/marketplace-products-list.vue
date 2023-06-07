@@ -190,8 +190,15 @@ watch(sort, async (value) => {
   await loadProducts({ ...searchQuery.value, sort: value });
 });
 
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
+
 onMounted(async () => {
-  selectedItemId.value = props.param;
   if (props.param) {
     openBlade({
       blade: markRaw(MpProductsEdit),

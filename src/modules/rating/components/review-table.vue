@@ -38,14 +38,14 @@
             </div>
           </div>
           <div>
-            <Status :review-status="item.reviewStatus as CustomerReviewReviewStatus"></Status>
+            <Status :review-status="item.reviewStatus"></Status>
           </div>
         </div>
         <div>
           <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>Rating</VcHint>
-              <VcRating :rating="item.rating as number"></VcRating>
+              <VcRating :rating="item.rating"></VcRating>
             </div>
             <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
               <VcHint>Created date</VcHint>
@@ -72,12 +72,12 @@
 
     <!-- Override rating column template -->
     <template #item_rating="itemData">
-      <VcRating :rating="itemData.item.rating as number"></VcRating>
+      <VcRating :rating="itemData.item.rating"></VcRating>
     </template>
 
     <!-- Override status column template -->
     <template #item_status="itemData">
-      <Status :review-status="itemData.item.reviewStatus as CustomerReviewReviewStatus"></Status>
+      <Status :review-status="itemData.item.reviewStatus"></Status>
     </template>
   </VcTable>
 </template>
@@ -85,7 +85,7 @@
 <script lang="ts" setup>
 import { VcRating, VcTable, ITableColumns } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch } from "vue";
-import { CustomerReview, CustomerReviewReviewStatus } from "../../../api_client/marketplacevendor";
+import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 // eslint-disable-next-line import/no-unresolved
@@ -110,16 +110,10 @@ export interface Emits {
 const props = withDefaults(defineProps<Props>(), { footer: true });
 
 const emit = defineEmits<Emits>();
-
-onMounted(async () => {
-  selectedItemId.value = props.param;
-  await loadReviews();
-});
-
 const { t } = useI18n({ useScope: "global" });
 
 // Data
-
+const selectedItemId = ref();
 const { loading, reviews, totalCount, pages, currentPage, sort, loadReviews } = useReviews({
   pageSize: props.pageSize,
   sort: props.sort,
@@ -170,12 +164,22 @@ const tableColumns = ref<ITableColumns[]>([
   },
 ]);
 
+onMounted(async () => {
+  await loadReviews();
+});
+
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
+
 watch(sort, async (value) => {
   sort.value = value;
   await loadReviews();
 });
-
-const selectedItemId = ref();
 
 const onHeaderClick = (item: ITableColumns) => {
   const sortOptions = ["DESC", "ASC", ""];

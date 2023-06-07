@@ -102,7 +102,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, onMounted, reactive, ref, unref, watch, markRaw, Ref } from "vue";
+import { computed, inject, onMounted, reactive, ref, watch, markRaw, Ref } from "vue";
 import {
   IBladeToolbar,
   IParentCallArgs,
@@ -115,12 +115,7 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import moment from "moment";
-import {
-  IBulkOffersDeleteCommand,
-  IOffer,
-  ISellerProduct,
-  SearchOffersQuery,
-} from "../../../api_client/marketplacevendor";
+import { IOffer, ISellerProduct } from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 // eslint-disable-next-line import/no-unresolved
@@ -194,14 +189,21 @@ watch(sort, async (value) => {
   await loadOffers({ ...searchQuery.value, sort: value });
 });
 
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
+
 onMounted(async () => {
-  selectedItemId.value = props.param;
   if (props.param) {
     openBlade({
       blade: markRaw(OffersDetails),
       param: selectedItemId.value,
     });
-  } else if (props.options.addOffer) {
+  } else if (props.options?.addOffer) {
     openBlade({
       blade: markRaw(OffersDetails),
     });

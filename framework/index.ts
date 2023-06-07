@@ -7,7 +7,6 @@ import { i18n } from "./core/plugins";
 import { SharedModule } from "./shared";
 import { signalR } from "./core/plugins/signalR";
 import * as componentLocales from "./ui/locales";
-import { notificationTemplatesSymbol, pagesSymbol } from "./injectionSymbols";
 import { CommonPageComposables } from "./typings";
 import { InvitePage } from "./shared/pages/InvitePage";
 import { LoginPage } from "./shared/pages/LoginPage";
@@ -60,11 +59,11 @@ export default {
 
     // Pages
     app.config.globalProperties.pages = [];
-    app.provide(pagesSymbol, app.config.globalProperties.pages);
+    app.provide("pages", app.config.globalProperties.pages);
 
     // Notification templates
     app.config.globalProperties.notificationTemplates = [];
-    app.provide(notificationTemplatesSymbol, app.config.globalProperties.notificationTemplates);
+    app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
 
     // Shared module
     app.use(SharedModule);
@@ -80,8 +79,6 @@ export default {
     });
   },
 };
-
-export * from "./injectionSymbols";
 
 export * from "./ui/components";
 // eslint-disable-next-line import/export

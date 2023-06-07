@@ -1,5 +1,8 @@
 import { App } from "vue";
 import { i18n } from "./../i18n";
+import { Router } from "vue-router";
+import { BladeConstructor } from "./../../../shared/components/blade-navigation/types";
+import { kebabToPascal } from "./../../utilities";
 
 export const createModule = (components: unknown, locales?: unknown) => ({
   install(app: App): void {
@@ -21,10 +24,22 @@ export const createAppModule = (pages: unknown, locales?: unknown, notificationT
   const module = createModule(pages, locales);
 
   return {
-    install(app: App): void {
+    install(app: App, options: { router: Router }): void {
+      const { router } = options;
       // Register pages
-      Object.entries(pages).forEach(([, page]) => {
+      Object.entries(pages).forEach(([, page]: [string, BladeConstructor]) => {
         app.config.globalProperties.pages?.push(page);
+
+        // Dynamically add pages to vue router
+        if (page.url) {
+          const mainRouteName = router.getRoutes().find((r) => r.meta?.root)?.name;
+
+          router.addRoute(mainRouteName, {
+            name: kebabToPascal(page.url.substring(1)),
+            path: page.url.substring(1),
+            component: page,
+          });
+        }
       });
 
       if (notificationTemplates) {

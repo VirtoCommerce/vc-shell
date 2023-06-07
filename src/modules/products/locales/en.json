@@ -79,8 +79,10 @@
           "PUBLISH": "Publish",
           "DELETE": "Delete"
         },
-        "DELETE_SELECTED_CONFIRMATION": "Are you sure you want to delete {count} selected products?"
-      },
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected products?",
+          "ALL": "all {totalCount}"
+        }      },
       "DETAILS": {
         "TITLE": "Add product",
         "TOOLBAR": {

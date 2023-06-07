@@ -14,11 +14,11 @@
         :key="route.path"
         :ref="(el: CoreBladeExposed) => setParentRef(el, Component)"
         :closable="false"
-        :options="parentBladeOptions"
+        :options="workspaceOptions"
         :expanded="blades.length === 0"
         :maximized="findStateById(0)"
         :blades="blades"
-        :param="resolveParam"
+        :param="workspaceParam"
         :error="error"
         @expand:blade="handleMaximizeBlade(0, true)"
         @collapse:blade="handleMaximizeBlade(0, false)"
@@ -72,8 +72,8 @@ import { ErrorInterceptor } from "./../../../error-interceptor";
 
 export interface Props {
   blades: IBladeContainer[];
-  parentBladeOptions: Record<string, unknown>;
-  parentBladeParam?: string | undefined;
+  workspaceOptions?: Record<string, unknown>;
+  workspaceParam?: string;
 }
 
 export interface Emits {
@@ -84,9 +84,9 @@ export interface Emits {
 
 const emit = defineEmits<Emits>();
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   blades: () => [],
-  parentBladeOptions: () => ({}),
+  workspaceOptions: () => ({}),
 });
 
 const route = useRoute();
@@ -135,10 +135,6 @@ function setBladesRef(el: CoreBladeExposed, blade: IBladeContainer) {
 function onBladeClose(index: number) {
   emit("onClose", index);
 }
-
-const resolveParam = computed(() => {
-  return props.parentBladeParam ? props.parentBladeParam : route.params.param;
-});
 
 defineExpose({
   bladesRefs,

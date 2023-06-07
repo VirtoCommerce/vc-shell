@@ -109,9 +109,12 @@ const onMenuItemClick = function ({ item }: { item: BladeMenu }) {
   if (item.clickHandler && typeof item.clickHandler === "function") {
     item.clickHandler(instance?.exposed);
   } else {
-    openBlade({
-      blade: markRaw(item.component),
-    });
+    openBlade(
+      {
+        blade: markRaw(item.component),
+      },
+      true
+    );
   }
 };
 

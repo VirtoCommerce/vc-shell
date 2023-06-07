@@ -1,6 +1,7 @@
 <template>
   <div
     class="tw-relative tw-flex tw-items-center tw-content-between tw-h-[var(--app-bar-height)] tw-bg-[color:var(--app-bar-background-color)] tw-px-4"
+    :class="{ '!tw-pr-0 !tw-pl-[10px]': $isMobile.value }"
   >
     <slot name="appSwitcher"></slot>
 

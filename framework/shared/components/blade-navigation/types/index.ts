@@ -23,7 +23,7 @@ export type CoreBladeComponentProps = {
 export type BladePageComponent = BladeConstructor;
 
 export type CoreBladeAdditionalSettings = {
-  url?: string;
+  url?: `/${string}`;
   permissions?: string | string[];
   scope?: {
     notificationClick?: (notification: PushNotification | Record<string, any>) => IBladeEvent;

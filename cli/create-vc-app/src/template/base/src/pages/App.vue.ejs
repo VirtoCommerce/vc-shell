@@ -47,6 +47,7 @@
         :parent-blade-param="parentBladeParam"
         @on-close="closeBlade($event)"
         @on-parent-call="(e) => onParentCall(e.id, e.args)"
+        @vue:mounted="resolveLastBlade(pages)"
       ></VcBladeNavigation>
     </template>
 
@@ -69,7 +70,7 @@ import {
   ChangePassword,
   LanguageSelector,
   UserDropdownButton,
-  pagesSymbol,
+  BladePageComponent
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, markRaw, watch, defineComponent } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -93,7 +94,7 @@ const { open } = usePopup({
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, signOut } = useUser();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, parentBladeOptions, parentBladeParam, closeBlade, onParentCall } = useBladeNavigation();
+const { blades, bladesRefs, parentBladeOptions, parentBladeParam, closeBlade, onParentCall, resolveLastBlade } = useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 
@@ -102,7 +103,7 @@ const route = useRoute();
 const router = useRouter();
 const isAuthorized = ref(true);
 const isReady = ref(false);
-const pages = inject(pagesSymbol);
+const pages = inject<BladePageComponent[]>("pages");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
@@ -121,14 +122,6 @@ onMounted(async () => {
     throw e;
   }
 });
-
-// watch(
-//   user,
-//   (value) => {
-//     isAuthorized.value = !!value?.userName;
-//   },
-//   { immediate: true }
-// );
 
 watch(
   () => bladeNavigationRefs.value?.bladesRefs,
@@ -226,7 +219,12 @@ const menuItems = reactive(
       title: computed(() => t("SHELL.MENU.DASHBOARD")),
       icon: "fas fa-home",
       isVisible: true,
-      component: Dashboard,
+      component: defineComponent({
+        url: "/",
+      }),
+      clickHandler() {
+        openDashboard();
+      },
     },
     <% } -%>
     {

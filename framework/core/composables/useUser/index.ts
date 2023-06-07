@@ -156,8 +156,8 @@ export function useUser(): IUseUser {
 
   async function getAccessToken(): Promise<string | null> {
     console.debug(`[@vc-shell/framework#useUser:getAccessToken] - Entry point`);
-    if (!authData.value) {
-      authData.value = readAuthData();
+    if (!authData.value || Object.keys(authData.value).length === 0) {
+      authData.value = await readAuthData();
     }
 
     if (authData.value && Date.now() >= (authData.value.expiresAt ?? 0)) {
@@ -166,6 +166,7 @@ export function useUser(): IUseUser {
         authData.value.refreshToken ?? "",
         {}
       );
+
       console.log("[useUser]: an access token is expired, using refresh token to receive a new");
       try {
         const newToken = await token.refresh();
@@ -190,8 +191,8 @@ export function useUser(): IUseUser {
   function storeAuthData(authData: AuthData) {
     localStorage.setItem(VC_AUTH_DATA_KEY, JSON.stringify({ ...(authData || {}) }));
   }
-  function readAuthData(): AuthData {
-    return JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) || "{}") as AuthData;
+  async function readAuthData(): Promise<AuthData> {
+    return (await JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) || "{}")) as AuthData;
   }
 
   function addOffsetToCurrentDate(offsetInSeconds: number): number {

@@ -1,10 +1,5 @@
-import {
-  createRouter,
-  createWebHashHistory,
-  NavigationGuardNext,
-  RouteLocationNormalized,
-  RouteRecordRaw,
-} from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { inject } from "vue";
 import Dashboard from "../pages/Dashboard.vue";
 import App from "./../pages/App.vue";
 import {
@@ -22,7 +17,6 @@ import { useCookies } from "@vueuse/integrations/useCookies";
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
 import bgImage from "/assets/background.jpg";
-import { inject } from "vue";
 
 const routes: RouteRecordRaw[] = [
   {

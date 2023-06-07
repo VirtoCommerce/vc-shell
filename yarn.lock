@@ -4404,6 +4404,7 @@ __metadata:
     sass: ^1.62.1
     swiper: ^6.8.4
     typescript: ^5.0.4
+    url-pattern: ^1.0.3
     vee-validate: ^4.9.3
     vite: ^4.3.9
     vue: ^3.3.4
@@ -5106,9 +5107,8 @@ __metadata:
     roboto-fontface: ^0.10.0
     sass: ^1.62.1
     tailwindcss: ^3.3.2
-    typescript: ^5.0.4
+    typescript: ~5.0.4
     universal-cookie: ^4.0.4
-    url-pattern: ^1.0.3
     vee-validate: ^4.9.4
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
@@ -13404,7 +13404,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.4 || ^5.0.0, typescript@npm:^5.0.4":
+"typescript@npm:^4.6.4 || ^5.0.0, typescript@npm:^5.0.4, typescript@npm:~5.0.4":
   version: 5.0.4
   resolution: "typescript@npm:5.0.4"
   bin:
@@ -13414,7 +13414,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.4 || ^5.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@^4.6.4 || ^5.0.0#~builtin<compat/typescript>, typescript@patch:typescript@^5.0.4#~builtin<compat/typescript>, typescript@patch:typescript@~5.0.4#~builtin<compat/typescript>":
   version: 5.0.4
   resolution: "typescript@patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=85af82"
   bin:

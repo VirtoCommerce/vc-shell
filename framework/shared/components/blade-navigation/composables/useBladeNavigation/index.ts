@@ -111,7 +111,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       workspaceOptions.value = unref(options);
       workspaceParam.value = unref(param);
 
-      await router.push(bladeComponent.url);
+      await router.replace(bladeComponent.url);
     }
   }
 
@@ -238,7 +238,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
   }
 
   function addEntryToLocation(params: string) {
-    history.pushState({}, null, "#" + params);
+    history.replaceState({}, null, "#" + params);
   }
 
   async function clearParentData() {

@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="bladeLoading"
-    :title="param && profileDetails?.name ? profileDetails.name : options.title"
+    :title="param && profileDetails?.name ? profileDetails.name : options?.title"
     width="70%"
     :toolbar-items="bladeToolbar"
     :closable="closable"

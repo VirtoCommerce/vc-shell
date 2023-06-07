@@ -1,14 +1,17 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { inject } from "vue";
 import {
   usePermissions,
   useUser,
   BladePageComponent,
   notification,
+  useBladeNavigation,
   <% if(commonPages === true) { -%>
   Login,
   ResetPassword,
   Invite,
   <% } -%>} from "@vc-shell/framework";
+  import { useCookies } from "@vueuse/integrations/useCookies";
 
 /**
  * Pages
@@ -17,13 +20,6 @@ import {
 import Dashboard from "../pages/Dashboard.vue";
 <% } -%>
 import App from "./../pages/App.vue";
-
-<% if(bladeModuleStarter === true) { -%>
-/**
- * Modules
- */
-import { DefaultList } from "../modules/default";
-<% } -%>
 
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
@@ -37,6 +33,9 @@ const routes: RouteRecordRaw[] = [
     path: "/",
     component: App,
     name: "App",
+    meta: {
+      root: true,
+    },
     children: [
     <% if(dashboard === true) { -%>
       {
@@ -46,22 +45,7 @@ const routes: RouteRecordRaw[] = [
         component: Dashboard,
       },
     <% } -%>
-
-    <% if(bladeModuleStarter === true) { -%>
-      /**
-       * Modules routes
-       */
-      {
-        name: "<%= bladeModuleName %>",
-        path: "<%= bladeModuleName.toLowerCase() %>",
-        props: true,
-        component: DefaultList,
-      },
-    <% } -%>
     ],
-    <% if(commonPages === true) { -%>
-    // beforeEnter: [checkAuth],
-    <% } -%>
   },
   <% if(commonPages === true) { -%>
   {
@@ -97,7 +81,12 @@ const routes: RouteRecordRaw[] = [
   <% } -%>
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/",
+    component: App,
+    beforeEnter: (to) => {
+      const { resolveUnknownRoutes } = useBladeNavigation();
+
+      return resolveUnknownRoutes(to);
+    },
   },
 ];
 
@@ -106,54 +95,53 @@ export const router = createRouter({
   routes,
 });
 
-let programmatic = false;
-["push", "replace", "go", "back", "forward"].forEach((methodName) => {
-  const method = router[methodName];
-  router[methodName] = (...args) => {
-    programmatic = true;
-    method.apply(router, args);
-  };
-});
+router.beforeEach(async (to, from) => {
+  const { fetchUserPermissions, checkPermission } = usePermissions();
+  const { resolveBlades } = useBladeNavigation();
+  const { getAccessToken } = useUser();
 
-router.beforeEach((to, from, next) => {
-  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as BladePageComponent;
+  const pages = inject<BladePageComponent[]>("pages");
 
-  if (from.name === undefined || programmatic) {
-    if (ExtendedComponent && ExtendedComponent.permissions) {
-      if (checkPermission(ExtendedComponent.permissions)) {
-        next();
-      } else {
-        if (!from.matched.length) {
-          <% if(dashboard === true) { -%>
-          next({ name: "Dashboard" });
-          <% } else { -%>
-          next({ name: "App" });
-          <% } -%>
-        } else {
-          // TODO temporary access alert
-          notification.error("Access restricted");
-        }
-      }
-    } else {
-      next();
+  const resolvedBladeUrl = resolveBlades(to);
+
+  try {
+    const token = await getAccessToken();
+    <% if(commonPages === true) { -%>
+    const azureAdCookie = useCookies([".AspNetCore.Identity.Application"]).get(".AspNetCore.Identity.Application");
+
+    // Fetching permissions if not any
+    if (token) await fetchUserPermissions();
+    <% } -%>
+
+    const component = pages.find((blade) => blade?.url === to.path);
+
+    <% if(commonPages === true && bladeModuleStarter === true) { -%>
+    const hasAccess = checkPermission(component?.permissions);
+
+    if (!(token || azureAdCookie) && to.name !== "Login") {
+      return { name: "Login" };
+    } else if (hasAccess && to.name !== "Login") {
+      return resolvedBladeUrl ? resolvedBladeUrl : true;
+    } else if (!hasAccess) {
+      notification.error("Access restricted", {
+        timeout: 3000,
+      });
+      return from.path;
     }
-  } else {
-    // do not route if user clicks back/forward button in browser
-    next(false);
+    <% } -%>
+
+    <% if(commonPages === true && bladeModuleStarter === false) { -%>
+      if (!(token || azureAdCookie) && to.name !== "Login") {
+        return { name: "Login" };
+      }
+    <% } -%>
+
+    <% if(commonPages === false && bladeModuleStarter === true) { -%>
+      return resolvedBladeUrl ? resolvedBladeUrl : true;
+    <% } -%>
+
+  } catch (e) {
+    throw new Error(e.message);
   }
-  programmatic = false;
 });
 
-<% if(commonPages === true) { -%>
-// async function checkAuth(to, from, next) {
-//   const { getAccessToken } = useUser();
-//
-//   const token = await getAccessToken();
-//
-//   if (!token && to.name !== "Login") {
-//     next({ name: "Login" });
-//   } else {
-//     next();
-//   }
-// }
-<% } -%>

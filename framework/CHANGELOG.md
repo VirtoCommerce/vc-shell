@@ -1,3 +1,19 @@
+## [1.0.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.71...v1.0.72) (2023-06-07)
+
+
+### Bug Fixes
+
+* authData length check ([bd04284](https://github.com/VirtoCommerce/vc-shell/commit/bd04284fd91887a41ba99f52bd37d844a13c2e8a))
+* vc-app-bar mobile styles ([75955d4](https://github.com/VirtoCommerce/vc-shell/commit/75955d4cb9692a3430395f8dbf5943b5c2eb8f36))
+* vc-select dropdown closing ([ecde06f](https://github.com/VirtoCommerce/vc-shell/commit/ecde06ffd679d06f7d8f75304437510f4e46063c))
+
+
+### Features
+
+* blade nav last state, permissions ([d98144a](https://github.com/VirtoCommerce/vc-shell/commit/d98144a2e5f2b4241543f7624fc7d811aa3f951f))
+
+
+
 ## [1.0.71](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.70...v1.0.71) (2023-06-02)
 
 

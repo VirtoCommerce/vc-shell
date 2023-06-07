@@ -115,12 +115,7 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import moment from "moment";
-import {
-  IBulkOffersDeleteCommand,
-  IOffer,
-  ISellerProduct,
-  SearchOffersQuery,
-} from "../../../api_client/marketplacevendor";
+import { IOffer, ISellerProduct } from "../../../api_client/marketplacevendor";
 import { useOffers } from "../composables";
 import OffersDetails from "./offers-details.vue";
 // eslint-disable-next-line import/no-unresolved

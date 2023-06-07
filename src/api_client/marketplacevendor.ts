@@ -994,6 +994,46 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
      * @param body (optional) 
      * @return Success
      */
+    bulkDeleteProducts(body?: BulkProductsDeleteCommand | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/products/bulk";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json-patch+json",
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processBulkDeleteProducts(_response);
+        });
+    }
+
+    protected processBulkDeleteProducts(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
     createNewPublicationRequest(body?: CreateNewPublicationRequestCommand | undefined): Promise<ProductPublicationRequest> {
         let url_ = this.baseUrl + "/api/vcmp/seller/products/requests/new";
         url_ = url_.replace(/[?&]$/, "");
@@ -4072,6 +4112,66 @@ export interface IBulkOffersDeleteCommand {
     sellerName?: string | undefined;
     offerIds?: string[] | undefined;
     query?: SearchOffersQuery | undefined;
+    all?: boolean;
+}
+
+export class BulkProductsDeleteCommand implements IBulkProductsDeleteCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    productIds?: string[] | undefined;
+    query?: SearchProductsQuery | undefined;
+    all?: boolean;
+
+    constructor(data?: IBulkProductsDeleteCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.sellerId = _data["sellerId"];
+            this.sellerName = _data["sellerName"];
+            if (Array.isArray(_data["productIds"])) {
+                this.productIds = [] as any;
+                for (let item of _data["productIds"])
+                    this.productIds!.push(item);
+            }
+            this.query = _data["query"] ? SearchProductsQuery.fromJS(_data["query"]) : <any>undefined;
+            this.all = _data["all"];
+        }
+    }
+
+    static fromJS(data: any): BulkProductsDeleteCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new BulkProductsDeleteCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["sellerId"] = this.sellerId;
+        data["sellerName"] = this.sellerName;
+        if (Array.isArray(this.productIds)) {
+            data["productIds"] = [];
+            for (let item of this.productIds)
+                data["productIds"].push(item);
+        }
+        data["query"] = this.query ? this.query.toJSON() : <any>undefined;
+        data["all"] = this.all;
+        return data;
+    }
+}
+
+export interface IBulkProductsDeleteCommand {
+    sellerId?: string | undefined;
+    sellerName?: string | undefined;
+    productIds?: string[] | undefined;
+    query?: SearchProductsQuery | undefined;
     all?: boolean;
 }
 
@@ -14470,6 +14570,7 @@ export class SearchOffersQuery implements ISearchOffersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     sellerProductId?: string | undefined;
+    sellerProductIds?: string[] | undefined;
     outerIds?: string[] | undefined;
     productId?: string | undefined;
     skus?: string[] | undefined;
@@ -14503,6 +14604,11 @@ export class SearchOffersQuery implements ISearchOffersQuery {
             this.sellerId = _data["sellerId"];
             this.sellerName = _data["sellerName"];
             this.sellerProductId = _data["sellerProductId"];
+            if (Array.isArray(_data["sellerProductIds"])) {
+                this.sellerProductIds = [] as any;
+                for (let item of _data["sellerProductIds"])
+                    this.sellerProductIds!.push(item);
+            }
             if (Array.isArray(_data["outerIds"])) {
                 this.outerIds = [] as any;
                 for (let item of _data["outerIds"])
@@ -14552,6 +14658,11 @@ export class SearchOffersQuery implements ISearchOffersQuery {
         data["sellerId"] = this.sellerId;
         data["sellerName"] = this.sellerName;
         data["sellerProductId"] = this.sellerProductId;
+        if (Array.isArray(this.sellerProductIds)) {
+            data["sellerProductIds"] = [];
+            for (let item of this.sellerProductIds)
+                data["sellerProductIds"].push(item);
+        }
         if (Array.isArray(this.outerIds)) {
             data["outerIds"] = [];
             for (let item of this.outerIds)
@@ -14594,6 +14705,7 @@ export interface ISearchOffersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     sellerProductId?: string | undefined;
+    sellerProductIds?: string[] | undefined;
     outerIds?: string[] | undefined;
     productId?: string | undefined;
     skus?: string[] | undefined;

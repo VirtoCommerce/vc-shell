@@ -8,6 +8,7 @@ import {
   SearchProductsQuery,
   SearchProductsResult,
   SellerProductStatus,
+  BulkProductsDeleteCommand,
 } from "../../../../api_client/marketplacevendor";
 
 type SellerProductStatusApproveExcluded = {
@@ -22,7 +23,7 @@ interface IUseProducts {
   searchQuery: Ref<ISearchProductsQuery>;
   currentPage: Ref<number>;
   loadProducts: (query: ISearchProductsQuery) => void;
-  deleteProducts: (ids: string[]) => Promise<void>;
+  deleteProducts: (allSelected: boolean, productIds: string[]) => Promise<void>;
   SellerProductStatus: Ref<SellerProductStatusApproveExcluded>;
   exportCategories: () => void;
 }
@@ -112,13 +113,22 @@ export default (options?: IUseProductOptions): IUseProducts => {
     }
   }
 
-  async function deleteProducts(ids: string[]) {
-    console.info("delete products", ids);
+  async function deleteProducts(allSelected: boolean, productIds: string[]) {
+    console.info("Delete products");
 
     const client = await getApiClient();
+    const command = new BulkProductsDeleteCommand({
+      query: new SearchProductsQuery(searchQuery.value),
+      productIds: productIds,
+      all: allSelected,
+    });
+    if (allSelected) {
+      command.productIds = null;
+    }
+
     try {
       loading.value = true;
-      await client.deleteProducts(ids);
+      await client.bulkDeleteProducts(command);
     } catch (e) {
       console.error(e);
       throw e;

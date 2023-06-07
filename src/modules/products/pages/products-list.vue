@@ -17,7 +17,7 @@
       :columns="tableColumns"
       :items="products"
       :item-action-builder="actionBuilder"
-      :multiselect="true"
+      multiselect
       :sort="sort"
       :pages="pages"
       :current-page="currentPage"
@@ -27,6 +27,7 @@
       :active-filter-count="activeFilterCount"
       :selected-item-id="selectedItemId"
       :total-count="totalCount"
+      select-all
       state-key="products_list"
       @search:change="onSearchList"
       @item-click="onItemClick"
@@ -34,6 +35,7 @@
       @pagination-click="onPaginationClick"
       @scroll:ptr="reload"
       @selection-changed="onSelectionChanged"
+      @select:all="selectAllProducts"
     >
       <!-- Filters -->
       <template #filters="{ closePanel }">
@@ -170,7 +172,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch, unref, inject, markRaw, Ref, ComputedRef } from "vue";
+import { computed, onMounted, reactive, ref, watch, inject, markRaw, Ref, ComputedRef } from "vue";
 import { useI18n } from "vue-i18n";
 import { IProductPushNotification } from "./../../../types";
 import {
@@ -248,6 +250,7 @@ const appliedFilter = ref({});
 const sort = ref("createdDate:DESC");
 const searchValue = ref();
 const selectedItemId = ref();
+const allSelected = ref(false);
 const selectedProductIds = ref([]);
 const applyFiltersDisable = computed(() => {
   const activeFilters = Object.values(filter).filter((x) => x !== undefined && Array.isArray(x) && !!x.length);
@@ -335,25 +338,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("PRODUCTS.PAGES.LIST.TOOLBAR.DELETE")),
     icon: "fas fa-trash",
     async clickHandler() {
-      //TODO: replace to confirmation dialog from UI library
-      if (
-        await showConfirmation(
-          unref(
-            computed(() =>
-              t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
-                count: selectedProductIds.value.length,
-              })
-            )
-          )
-        )
-      ) {
-        emit("close:children");
-        await deleteProducts(selectedProductIds.value);
-        if (searchQuery.value.skip >= searchQuery.value.take) {
-          searchQuery.value.skip -= searchQuery.value.take;
-        }
-        await reload();
-      }
+      removeProducts();
     },
     disabled: computed(() => !selectedProductIds.value?.length),
     isVisible: isDesktop,
@@ -461,50 +446,8 @@ const onSelectionChanged = (items: ISellerProduct[]) => {
   selectedProductIds.value = items.map((item) => item.id);
 };
 
-const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
+const actionBuilder = (): IActionBuilderResult[] => {
   const result = [];
-
-  // const statuses =
-  //   product.status?.split(",").map((item) => item.trim()) || [];
-
-  /*if (statuses.includes("Published")) {
-        result.push({
-          icon: "fas fa-times",
-          title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.UNPUBLISH")),
-          variant: "danger",
-          clickHandler() {
-            showError("Unpublish");
-          },
-        });
-      } else {
-        result.push({
-          icon: "fas fa-check",
-          title: computed(() => t("PRODUCTS.PAGES.LIST.ACTIONS.PUBLISH")),
-          variant: "success",
-          clickHandler() {
-            showError("Publish");
-          },
-        });
-      }*/
-
-  /*result.push(
-        ...[
-          {
-            icon: "fas fa-clock",
-            title: "Other action",
-            clickHandler() {
-              showError("Other action");
-            },
-          },
-          {
-            icon: "fas fa-clock",
-            title: "Other action2",
-            clickHandler() {
-              showError("Other action");
-            },
-          },
-        ]
-      );*/
 
   result.push({
     icon: "fas fa-trash",
@@ -524,18 +467,30 @@ const actionBuilder = (product: ISellerProduct): IActionBuilderResult[] => {
 };
 
 async function removeProducts() {
-  //TODO: replace to confirmation dialog from UI library
   if (
     await showConfirmation(
-      t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION", {
-        count: selectedProductIds.value.length,
+      t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
+        count: allSelected.value
+          ? t("PRODUCTS.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: totalCount.value })
+          : selectedProductIds.value.length,
       })
     )
   ) {
     emit("close:children");
-    await deleteProducts(selectedProductIds.value);
+    await deleteProducts(allSelected.value, selectedProductIds.value);
+    if (searchQuery.value.skip >= searchQuery.value.take) {
+      if (allSelected.value) {
+        searchQuery.value.skip = 0;
+      } else {
+        searchQuery.value.skip -= searchQuery.value.take;
+      }
+    }
     await reload();
   }
+}
+
+async function selectAllProducts(all: boolean) {
+  allSelected.value = all;
 }
 
 async function resetSearch() {

@@ -3,9 +3,23 @@
 
 ### Bug Fixes
 
+* prevent signout on blade changes ([42d0c68](https://github.com/VirtoCommerce/vendor-portal/commit/42d0c68d7a51b2c79e2c29aea3e0ee59f45f9aee))
+
+
+### Features
+
+* improved blade-nav ([cc323cf](https://github.com/VirtoCommerce/vendor-portal/commit/cc323cfc3b2bd366c21480cc303a353500803d78))
+* products bulk delete ([092882f](https://github.com/VirtoCommerce/vendor-portal/commit/092882f31011356b4ed988775e3c97005a46822d))
+
+
+
+## [1.0.78](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.77...v1.0.78) (2023-06-02)
+
+
+### Bug Fixes
+
 * navigation prevention ([21b85a7](https://github.com/VirtoCommerce/vendor-portal/commit/21b85a7589d1206d68e63a29c31f8f6fa9880ae1))
 * package.json ([8bcd38c](https://github.com/VirtoCommerce/vendor-portal/commit/8bcd38cdf43d74fbec564dad9db33a6141571200))
-* prevent signout on blade changes ([42d0c68](https://github.com/VirtoCommerce/vendor-portal/commit/42d0c68d7a51b2c79e2c29aea3e0ee59f45f9aee))
 * small fixes ([227ccb5](https://github.com/VirtoCommerce/vendor-portal/commit/227ccb524e4c6ee52cf304e3f04aafbe047ff548))
 
 
@@ -14,9 +28,7 @@
 * azure active directory signin ([203dde7](https://github.com/VirtoCommerce/vendor-portal/commit/203dde7d63042d35586f09b3e5f252f8c4f39f6f))
 * common pages moved to shell ([564ac86](https://github.com/VirtoCommerce/vendor-portal/commit/564ac862bed3e914e0612961652e4f91b557990c))
 * error slot removed from blades ([cafdedf](https://github.com/VirtoCommerce/vendor-portal/commit/cafdedfe55ad17fe07eaea3555014b35b37d46e6))
-* improved blade-nav ([cc323cf](https://github.com/VirtoCommerce/vendor-portal/commit/cc323cfc3b2bd366c21480cc303a353500803d78))
 * login page props ([3936440](https://github.com/VirtoCommerce/vendor-portal/commit/3936440bd0ddead717f1b66948117a8880dd543d))
-* products bulk delete ([092882f](https://github.com/VirtoCommerce/vendor-portal/commit/092882f31011356b4ed988775e3c97005a46822d))
 * vm-1131 offers bulk delete ([573d018](https://github.com/VirtoCommerce/vendor-portal/commit/573d01889a9f013e93e1282626c63e3433c22eb1))
 
 

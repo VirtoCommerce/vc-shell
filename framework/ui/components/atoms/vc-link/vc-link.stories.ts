@@ -18,7 +18,6 @@ export const Primary: Story = {
     template: '<vc-link v-bind="args">This is a link</vc-link>',
   }),
   args: {
-    to: undefined,
     active: false,
     disabled: false,
   },

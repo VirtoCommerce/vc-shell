@@ -60,7 +60,7 @@
     "@vc-shell/config-generator": "^1.0.72",
     "@vitejs/plugin-vue": "^4.2.3",
     "sass": "^1.62.1",
-    "typescript": "^5.0.4",
+    "typescript": "~5.0.4",
     "vite": "^4.3.9",
     "vue-tsc": "^1.6.5"
   },

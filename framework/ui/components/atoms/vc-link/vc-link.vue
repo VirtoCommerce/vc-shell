@@ -6,7 +6,7 @@
       'tw-cursor-not-allowed tw-text-[color:var(--link-text-color-disabled)] hover:tw-text-[color:var(--link-text-color-disabled)] tw-no-underline':
         disabled,
     }"
-    @click="onClick"
+    @click="onClickFn"
   >
     <slot></slot>
   </div>
@@ -26,7 +26,7 @@ export interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-function onClick(): void {
+function onClickFn(): void {
   if (!props.disabled) {
     emit("click");
   }

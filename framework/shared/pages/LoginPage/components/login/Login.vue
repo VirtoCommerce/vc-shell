@@ -176,7 +176,7 @@ import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
-import { CommonPageComposables } from "typings";
+import { CommonPageComposables } from "./../../../../../typings";
 import { asyncComputed } from "@vueuse/core";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 

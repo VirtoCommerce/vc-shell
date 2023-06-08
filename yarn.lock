@@ -2276,6 +2276,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fortawesome/fontawesome-free@npm:^5.15.3":
+  version: 5.15.4
+  resolution: "@fortawesome/fontawesome-free@npm:5.15.4"
+  checksum: 32281c3df4075290d9a96dfc22f72fadb3da7055d4117e48d34046b8c98032a55fa260ae351b0af5d6f6fb57a2f5d79a4abe52af456da35195f7cb7dda27b4a2
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.1.3":
   version: 1.1.3
   resolution: "@gar/promisify@npm:1.1.3"
@@ -3836,6 +3843,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cookie@npm:^0.3.3":
+  version: 0.3.3
+  resolution: "@types/cookie@npm:0.3.3"
+  checksum: 450c930d792a4fd5a93645b4123f02596368f904dbb1fe6fbb5043bce8f6ecf877a08511c6ba11c8e28168f62bc278e68d214f002fab927c9056c0bc69f21370
+  languageName: node
+  linkType: hard
+
 "@types/detect-port@npm:^1.3.0":
   version: 1.3.3
   resolution: "@types/detect-port@npm:1.3.3"
@@ -4192,7 +4206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.59.1, @typescript-eslint/eslint-plugin@npm:^5.59.7":
+"@typescript-eslint/eslint-plugin@npm:^5.59.1, @typescript-eslint/eslint-plugin@npm:^5.59.6, @typescript-eslint/eslint-plugin@npm:^5.59.7":
   version: 5.59.9
   resolution: "@typescript-eslint/eslint-plugin@npm:5.59.9"
   dependencies:
@@ -4216,7 +4230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.59.1, @typescript-eslint/parser@npm:^5.59.7":
+"@typescript-eslint/parser@npm:^5.59.1, @typescript-eslint/parser@npm:^5.59.6, @typescript-eslint/parser@npm:^5.59.7":
   version: 5.59.9
   resolution: "@typescript-eslint/parser@npm:5.59.9"
   dependencies:
@@ -5047,6 +5061,59 @@ __metadata:
   checksum: d4b1653fc60b6465b982bf5a88b12051ed2d807d70609386a809306e1c636496f53522d61fa30f9f98c71aaae34f34e1651889cf17d81a44e3dafd2859d495ad
   languageName: node
   linkType: hard
+
+"app-vendor-portal@workspace:apps/vendor-portal":
+  version: 0.0.0-use.local
+  resolution: "app-vendor-portal@workspace:apps/vendor-portal"
+  dependencies:
+    "@commitlint/cli": ^17.6.3
+    "@commitlint/config-conventional": ^17.6.3
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@rollup/plugin-typescript": ^11.1.1
+    "@types/lodash-es": ^4.17.7
+    "@typescript-eslint/eslint-plugin": ^5.59.6
+    "@typescript-eslint/parser": ^5.59.6
+    "@vc-shell/api-client-generator": ^1.0.72
+    "@vc-shell/config-generator": ^1.0.72
+    "@vc-shell/framework": ^1.0.72
+    "@vitejs/plugin-vue": ^4.2.3
+    "@vue/eslint-config-prettier": ^7.1.0
+    "@vue/eslint-config-typescript": ^11.0.3
+    "@vueuse/core": ^10.1.2
+    "@vueuse/integrations": ^10.1.2
+    autoprefixer: ^10.4.14
+    buffer-esm: ^1.2.0
+    conventional-changelog-cli: ^2.2.2
+    cross-env: ^7.0.3
+    eslint: ^8.41.0
+    eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-import: ^2.27.5
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-vue: ^9.14.1
+    husky: ^8.0.3
+    lint-staged: ^13.2.2
+    lodash-es: ^4.17.21
+    moment: ^2.29.4
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.62.1
+    tailwindcss: ^3.3.2
+    typescript: ~5.0.4
+    universal-cookie: ^4.0.4
+    vee-validate: ^4.9.4
+    vite: ^4.3.9
+    vite-plugin-checker: ^0.6.0
+    vite-plugin-mkcert: ^1.15.0
+    vite-plugin-pwa: ^0.14.7
+    vue: ^3.3.4
+    vue-eslint-parser: ^9.3.0
+    vue-router: ^4.2.1
+    vue-tsc: ^1.6.5
+    yarn: ^1.22.19
+  languageName: unknown
+  linkType: soft
 
 "aproba@npm:^1.0.3 || ^2.0.0":
   version: 2.0.0
@@ -6340,6 +6407,13 @@ __metadata:
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
   checksum: 1f4bd2ca5765f8c9689a7e8954183f5332139eb72b6ff783d8947032ec1fdf43109852c178e21a953a30c0dd42257828185be01b49d1eb1a67fd054ca588a180
+  languageName: node
+  linkType: hard
+
+"cookie@npm:^0.4.0":
+  version: 0.4.2
+  resolution: "cookie@npm:0.4.2"
+  checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
   languageName: node
   linkType: hard
 
@@ -11980,6 +12054,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"roboto-fontface@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "roboto-fontface@npm:0.10.0"
+  checksum: 58749bb49133974aa72d79ab1928d5d0aa1df162daab7398cbceeadc1508d222054d2e81d41ab548361a785c5cd2da97159544c3acecc8a180030c91b504be3b
+  languageName: node
+  linkType: hard
+
 "rollup-plugin-terser@npm:^7.0.0":
   version: 7.0.2
   resolution: "rollup-plugin-terser@npm:7.0.2"
@@ -13479,6 +13560,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"universal-cookie@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "universal-cookie@npm:4.0.4"
+  dependencies:
+    "@types/cookie": ^0.3.3
+    cookie: ^0.4.0
+  checksum: bb2bafa7eb7e213e5448924329572dd1a913be00e23906189be2a0dc889b0eea1750f9c33462fc1c911d89092dbd82f6e220c2d61c4057bb3f69e7665d9d8ddf
+  languageName: node
+  linkType: hard
+
 "universal-user-agent@npm:^6.0.0":
   version: 6.0.0
   resolution: "universal-user-agent@npm:6.0.0"
@@ -13663,7 +13754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vee-validate@npm:^4.9.3, vee-validate@npm:^4.9.6":
+"vee-validate@npm:^4.9.3, vee-validate@npm:^4.9.4, vee-validate@npm:^4.9.6":
   version: 4.9.6
   resolution: "vee-validate@npm:4.9.6"
   dependencies:
@@ -14572,6 +14663,16 @@ __metadata:
     y18n: ^5.0.5
     yargs-parser: ^21.1.1
   checksum: 73b572e863aa4a8cbef323dd911d79d193b772defd5a51aab0aca2d446655216f5002c42c5306033968193bdbf892a7a4c110b0d77954a7fdf563e653967b56a
+  languageName: node
+  linkType: hard
+
+"yarn@npm:^1.22.19":
+  version: 1.22.19
+  resolution: "yarn@npm:1.22.19"
+  bin:
+    yarn: bin/yarn.js
+    yarnpkg: bin/yarn.js
+  checksum: b43d2cc5fee7e933beb12a8aee7dfceca9e9ef2dd17c5d04d15a12ab7bec5f5744ea34a07b86e013da7f291a18c4e1ad8f70e150f5ed2f4666e6723c7f0a8452
   languageName: node
   linkType: hard
 

@@ -251,7 +251,7 @@
 </template>
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T extends Record<string, any>, P extends {results?: T[]; totalCount?: number }">
+<script lang="ts" setup generic="T, P extends {results?: T[]; totalCount?: number }">
 import { ref, computed, watch, toRefs, nextTick, Ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
@@ -272,7 +272,7 @@ type FloatingInstanceType = UseFloatingReturn & {
   };
 };
 
-type Option = T | P["results"][number];
+type Option = T & P["results"][number];
 
 defineSlots<{
   /**

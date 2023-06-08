@@ -204,12 +204,6 @@ export interface Emits {
   (event: "close:children"): void;
 }
 
-export interface Exposed {
-  reload: () => Promise<void>;
-  title: ComputedRef<string>;
-  test: string;
-}
-
 defineOptions({
   url: "/products",
   scope: {
@@ -271,9 +265,15 @@ watch(sort, async (value) => {
   await loadProducts({ ...searchQuery.value, sort: value });
 });
 
-onMounted(async () => {
-  selectedItemId.value = props.param;
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
 
+onMounted(async () => {
   if (props.param) {
     openBlade({
       blade: markRaw(ProductsEdit),
@@ -547,9 +547,8 @@ function isItemSelected(status: string) {
   return filter.status?.some((x) => x === status);
 }
 
-defineExpose<Exposed>({
+defineExpose({
   reload,
   title,
-  test: "123",
 });
 </script>

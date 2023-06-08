@@ -1,13 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { inject } from "vue";
 import Dashboard from "../pages/Dashboard.vue";
-import { OrdersEdit, OrdersList } from "../modules/orders";
-import { ProductsList, ProductsEdit } from "../modules/products";
-import { OffersDetails, OffersList } from "../modules/offers";
-import { MpProductsList, MpProductsEdit } from "../modules/marketplace-products";
 import App from "./../pages/App.vue";
-import { ImportNew, ImportProfileDetails, ImportProfileSelector } from "../modules/import";
-import { ReviewDetails, ReviewList } from "../modules/rating";
-import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
 import {
   usePermissions,
   useUser,
@@ -16,6 +10,7 @@ import {
   Invite,
   Login,
   ResetPassword,
+  useBladeNavigation,
 } from "@vc-shell/framework";
 import { useCookies } from "@vueuse/integrations/useCookies";
 // eslint-disable-next-line import/no-unresolved
@@ -23,13 +18,14 @@ import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
 import bgImage from "/assets/background.jpg";
 
-const { checkPermission } = usePermissions();
-
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: App,
     name: "App",
+    meta: {
+      root: true,
+    },
     children: [
       {
         name: "Dashboard",
@@ -37,98 +33,11 @@ const routes: RouteRecordRaw[] = [
         alias: "/",
         component: Dashboard,
       },
-      {
-        name: "Offers",
-        path: "offers",
-        component: OffersList,
-      },
-      {
-        name: "OfferDetails",
-        path: "offer/:param?",
-        props: true,
-        component: OffersDetails,
-      },
-      {
-        name: "Products",
-        path: "products",
-        component: ProductsList,
-      },
-      {
-        name: "ProductsEdit",
-        path: "product/:param?",
-        component: ProductsEdit,
-        props: true,
-      },
-      {
-        name: "MpProducts",
-        path: "mp-products",
-        component: MpProductsList,
-      },
-      {
-        name: "MpProductsEdit",
-        path: "mp-product/:param?",
-        component: MpProductsEdit,
-        props: true,
-      },
-      {
-        name: "Orders",
-        path: "orders",
-        component: OrdersList,
-      },
-      {
-        name: "OrderDetails",
-        path: "order/:param?",
-        props: true,
-        component: OrdersEdit,
-      },
-      {
-        name: "Import",
-        path: "import",
-        component: ImportProfileSelector,
-      },
-      {
-        name: "ImportProfileDetails",
-        path: "import-profile-details/:param?",
-        component: ImportProfileDetails,
-        props: true,
-      },
-      {
-        name: "Importer",
-        path: "importer/:param?",
-        component: ImportNew,
-        props: true,
-      },
-      {
-        name: "Reviews",
-        path: "reviews",
-        component: ReviewList,
-      },
-      {
-        name: "ReviewDetails",
-        path: "review-details",
-        component: ReviewDetails,
-      },
-      {
-        name: "SellerDetailsEdit",
-        path: "seller-details-edit",
-        component: SellerDetails,
-      },
-      {
-        name: "FulfillmentCentersList",
-        path: "fulfillment-centers-list",
-        component: FulfillmentCenters,
-      },
-      {
-        name: "Team",
-        path: "team",
-        component: TeamList,
-      },
     ],
-    beforeEnter: [checkAuth],
   },
   {
-    path: "/login",
     name: "Login",
+    path: "/login",
     component: Login,
     props: () => ({
       logo: whiteLogoImage,
@@ -137,7 +46,7 @@ const routes: RouteRecordRaw[] = [
     }),
   },
   {
-    name: "invite",
+    name: "Invite",
     path: "/invite",
     component: Invite,
     props: (route) => ({
@@ -147,7 +56,7 @@ const routes: RouteRecordRaw[] = [
     }),
   },
   {
-    name: "resetpassword",
+    name: "ResetPassword",
     path: "/resetpassword",
     component: ResetPassword,
     props: (route) => ({
@@ -158,7 +67,12 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/:pathMatch(.*)*",
-    redirect: "/",
+    component: App,
+    beforeEnter: (to) => {
+      const { resolveUnknownRoutes } = useBladeNavigation();
+
+      return resolveUnknownRoutes(to);
+    },
   },
 ];
 
@@ -167,50 +81,37 @@ export const router = createRouter({
   routes,
 });
 
-let programmatic = false;
-["push", "replace", "go", "back", "forward"].forEach((methodName) => {
-  const method = router[methodName];
-  router[methodName] = (...args) => {
-    programmatic = true;
-    method.apply(router, args);
-  };
-});
-
-router.beforeEach((to, from, next) => {
-  const ExtendedComponent = to.matched[to.matched.length - 1]?.components?.default as BladePageComponent;
-
-  if (from.name === undefined || programmatic) {
-    if (ExtendedComponent && ExtendedComponent.permissions) {
-      if (checkPermission(ExtendedComponent.permissions)) {
-        next();
-      } else {
-        if (!from.matched.length) {
-          next({ name: "Dashboard" });
-        } else {
-          notification.error("Access restricted", {
-            timeout: 3000,
-          });
-        }
-      }
-    } else {
-      next();
-    }
-  } else {
-    // do not route if user clicks back/forward button in browser
-    next(false);
-  }
-  programmatic = false;
-});
-
-async function checkAuth(to, from, next) {
+router.beforeEach(async (to, from) => {
+  const { fetchUserPermissions, checkPermission } = usePermissions();
+  const { resolveBlades } = useBladeNavigation();
   const { getAccessToken } = useUser();
 
-  const token = await getAccessToken();
-  const azureAdCookie = useCookies([".AspNetCore.Identity.Application"]).get(".AspNetCore.Identity.Application");
+  const pages = inject<BladePageComponent[]>("pages");
 
-  if (!(token || azureAdCookie) && to.name !== "Login") {
-    next({ name: "Login" });
-  } else {
-    next();
+  const resolvedBladeUrl = resolveBlades(to);
+
+  try {
+    const token = await getAccessToken();
+    const azureAdCookie = useCookies([".AspNetCore.Identity.Application"]).get(".AspNetCore.Identity.Application");
+
+    // Fetching permissions if not any
+    if (token) await fetchUserPermissions();
+
+    const component = pages.find((blade) => blade?.url === to.path);
+
+    const hasAccess = checkPermission(component?.permissions);
+
+    if (!(token || azureAdCookie) && to.name !== "Login") {
+      return { name: "Login" };
+    } else if (hasAccess && to.name !== "Login") {
+      return resolvedBladeUrl ? resolvedBladeUrl : true;
+    } else if (!hasAccess) {
+      notification.error("Access restricted", {
+        timeout: 3000,
+      });
+      return from.path;
+    }
+  } catch (e) {
+    throw new Error(e.message);
   }
-}
+});

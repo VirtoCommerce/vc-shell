@@ -412,56 +412,79 @@ onMounted(async () => {
 function open(key: string): void {
   switch (key) {
     case "orders-list":
-      openBlade({
-        blade: markRaw(OrdersList),
-      });
+      openBlade(
+        {
+          blade: markRaw(OrdersList),
+        },
+        true
+      );
       break;
     case "products-list":
-      openBlade({
-        blade: markRaw(ProductsList),
-      });
+      openBlade(
+        {
+          blade: markRaw(ProductsList),
+        },
+        true
+      );
       break;
     case "products-add":
-      openBlade({
-        blade: markRaw(ProductsList),
-        // blade: markRaw(ProductsEdit),
-      });
+      openBlade(
+        {
+          blade: markRaw(ProductsList),
+        },
+        true
+      );
       break;
     case "offers-list":
-      openBlade({
-        blade: markRaw(OffersList),
-      });
+      openBlade(
+        {
+          blade: markRaw(OffersList),
+        },
+        true
+      );
       break;
     case "offers-add":
-      openBlade({
-        blade: markRaw(OffersList),
-        options: {
-          addOffer: true,
+      openBlade(
+        {
+          blade: markRaw(OffersList),
+          options: {
+            addOffer: true,
+          },
         },
-      });
+        true
+      );
       break;
   }
 }
 
 function ordersClick(item: { id: string }): void {
-  openBlade({
-    blade: markRaw(OrdersList),
-    param: item.id,
-  });
+  openBlade(
+    {
+      blade: markRaw(OrdersList),
+      param: item.id,
+    },
+    true
+  );
 }
 
 function productsClick(item: { id: string }): void {
-  openBlade({
-    blade: markRaw(ProductsList),
-    param: item.id,
-  });
+  openBlade(
+    {
+      blade: markRaw(ProductsList),
+      param: item.id,
+    },
+    true
+  );
 }
 
 function offersClick(item: { id: string }): void {
-  openBlade({
-    blade: markRaw(OffersList),
-    param: item.id,
-  });
+  openBlade(
+    {
+      blade: markRaw(OffersList),
+      param: item.id,
+    },
+    true
+  );
 }
 
 function calcQty(items: OrderLineItem[]) {

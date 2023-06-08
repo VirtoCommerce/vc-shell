@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="bladeLoading"
-    :title="param && profileDetails?.name ? profileDetails.name : options.title"
+    :title="param && profileDetails?.name ? profileDetails.name : options?.title"
     width="70%"
     :toolbar-items="bladeToolbar"
     :closable="closable"
@@ -446,7 +446,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("IMPORT.PAGES.PRODUCT_IMPORTER.TOOLBAR.RE_RUN")),
     icon: "fas fa-sync",
     async clickHandler() {
-      const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
+      const historyItem =
+        importHistory.value && importHistory.value.find((x) => x.jobId === props.options?.importJobId);
       if (historyItem.fileUrl) {
         const correctedProfile = profile?.value;
         correctedProfile.importFileUrl = historyItem.fileUrl;
@@ -456,7 +457,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       }
     },
     disabled: computed(() => {
-      const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
+      const historyItem =
+        importHistory.value && importHistory.value.find((x) => x.jobId === props.options?.importJobId);
       return !(historyItem?.finished && historyItem.fileUrl != null);
     }),
     isVisible: computed(() => !!(importStatus.value && profile.value.name)),
@@ -661,11 +663,11 @@ onMounted(async () => {
     await loadImportProfile({ id: props.param });
     await fetchImportHistory({
       profileId: props.param,
-      jobId: props.options.importJobId,
+      jobId: props.options?.importJobId,
     });
   }
-  if (props.options && props.options.importJobId) {
-    const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options.importJobId);
+  if (props.options && props.options?.importJobId) {
+    const historyItem = importHistory.value && importHistory.value.find((x) => x.jobId === props.options?.importJobId);
     if (historyItem) {
       updateStatus(historyItem);
     } else {

@@ -117,8 +117,15 @@ watch(sort, async (value) => {
   await searchFulfillmentCenters({ ...searchQuery.value, sort: value });
 });
 
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
+
 onMounted(async () => {
-  selectedItemId.value = props.param;
   await reload();
 });
 

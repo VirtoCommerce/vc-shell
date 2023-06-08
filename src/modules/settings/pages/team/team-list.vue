@@ -205,8 +205,15 @@ watch(sort, async (value) => {
   await getTeamMembers({ ...searchQuery.value, sort: value });
 });
 
+watch(
+  () => props.param,
+  () => {
+    selectedItemId.value = props.param;
+  },
+  { immediate: true }
+);
+
 onMounted(async () => {
-  selectedItemId.value = props.param;
   await reload();
 });
 

@@ -1,3 +1,12 @@
+## [1.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.72...v1.0.73) (2023-06-08)
+
+
+### Bug Fixes
+
+* vc-select generic ([8aca326](https://github.com/VirtoCommerce/vc-shell/commit/8aca3260cc1d5912f5c8063314d820b14078373e))
+
+
+
 ## [1.0.72](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.71...v1.0.72) (2023-06-07)
 
 

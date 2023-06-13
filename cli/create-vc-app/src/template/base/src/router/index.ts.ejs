@@ -26,8 +26,6 @@ import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
 import bgImage from "/assets/background.jpg";
 
-const { checkPermission } = usePermissions();
-
 const routes: RouteRecordRaw[] = [
   {
     path: "/",
@@ -52,11 +50,11 @@ const routes: RouteRecordRaw[] = [
     path: "/login",
     name: "Login",
     component: Login,
-    meta: {
+    props: () => ({
       logo: whiteLogoImage,
       background: bgImage,
-      title: "Vendor Portal",
-    },
+      title: "<%= appName %>",
+    }),
   },
   {
     name: "invite",

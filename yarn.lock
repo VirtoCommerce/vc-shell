@@ -3748,6 +3748,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@symbot91/create-vc-app@workspace:cli/create-vc-app":
+  version: 0.0.0-use.local
+  resolution: "@symbot91/create-vc-app@workspace:cli/create-vc-app"
+  dependencies:
+    "@types/minimist": ^1.2.2
+    "@types/prompts": ^2.4.4
+    chalk: ^2.4.2
+    copyfiles: ^2.4.1
+    cross-env: ^7.0.3
+    ejs: ^3.1.9
+    minimist: ^1.2.8
+    prompts: ^2.4.2
+    tslib: ^2.5.3
+    typescript: ~5.0.4
+  bin:
+    create-vc-app: ./dist/index.js
+  languageName: unknown
+  linkType: soft
+
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -4350,24 +4369,6 @@ __metadata:
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
     vue: ^3.3.4
-  languageName: unknown
-  linkType: soft
-
-"@vc-shell/create-vc-app@workspace:cli/create-vc-app":
-  version: 0.0.0-use.local
-  resolution: "@vc-shell/create-vc-app@workspace:cli/create-vc-app"
-  dependencies:
-    "@types/minimist": ^1.2.2
-    "@types/prompts": ^2.4.4
-    chalk: ^2.4.2
-    copyfiles: ^2.4.1
-    cross-env: ^7.0.3
-    ejs: ^3.1.9
-    minimist: ^1.2.8
-    prompts: ^2.4.2
-    typescript: ~5.0.4
-  bin:
-    create-vc-app: ./dist/index.js
   languageName: unknown
   linkType: soft
 
@@ -13295,7 +13296,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.5.0":
+"tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.4.0, tslib@npm:^2.5.0, tslib@npm:^2.5.3":
   version: 2.5.3
   resolution: "tslib@npm:2.5.3"
   checksum: 88902b309afaf83259131c1e13da1dceb0ad1682a213143a1346a649143924d78cf3760c448b84d796938fd76127183894f8d85cbb3bf9c4fddbfcc140c0003c

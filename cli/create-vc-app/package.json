@@ -4,7 +4,8 @@
   "version": "1.0.73",
   "bin": "./dist/index.js",
   "files": [
-    "src/template"
+    "src/template",
+    "dist"
   ],
   "scripts": {
     "build": "tsc -p src && yarn postbuild",
@@ -21,7 +22,8 @@
     "chalk": "^2.4.2",
     "ejs": "^3.1.9",
     "minimist": "^1.2.8",
-    "prompts": "^2.4.2"
+    "prompts": "^2.4.2",
+    "tslib": "^2.5.3"
   },
   "publishConfig": {
     "access": "public",

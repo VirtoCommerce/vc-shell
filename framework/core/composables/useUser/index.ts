@@ -60,14 +60,6 @@ interface IUseUser {
 }
 
 export function useUser(): IUseUser {
-  // const instance = getCurrentInstance();
-  // if (instance) {
-  //   onUnmounted(() => {
-  //     console.error("UNREGISTET");
-  //     unregister();
-  //   });
-  // }
-
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
     try {
@@ -273,7 +265,6 @@ export function useUser(): IUseUser {
     try {
       const fetchResult = await fetch(import.meta.env.APP_PLATFORM_URL + "externalsignin/providers", {
         method: "GET",
-        mode: "no-cors",
       });
 
       const response = await fetchResult.text();

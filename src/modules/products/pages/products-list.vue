@@ -388,6 +388,13 @@ const tableColumns = ref<ITableColumns[]>([
     width: "180px",
     alwaysVisible: true,
   },
+  {
+    id: "productType",
+    field: "productData.productType",
+    title: computed(() => t("PRODUCTS.PAGES.LIST.TABLE.HEADER.PRODUCT_TYPE")),
+    width: "180px",
+    alwaysVisible: false,
+  },
 ]);
 
 const title = computed(() => t("PRODUCTS.PAGES.LIST.TITLE"));

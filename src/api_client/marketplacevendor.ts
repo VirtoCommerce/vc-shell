@@ -4061,6 +4061,7 @@ export class BulkOffersDeleteCommand implements IBulkOffersDeleteCommand {
     offerIds?: string[] | undefined;
     query?: SearchOffersQuery | undefined;
     all?: boolean;
+    pushNotification?: SellerPushNotification | undefined;
 
     constructor(data?: IBulkOffersDeleteCommand) {
         if (data) {
@@ -4082,6 +4083,7 @@ export class BulkOffersDeleteCommand implements IBulkOffersDeleteCommand {
             }
             this.query = _data["query"] ? SearchOffersQuery.fromJS(_data["query"]) : <any>undefined;
             this.all = _data["all"];
+            this.pushNotification = _data["pushNotification"] ? SellerPushNotification.fromJS(_data["pushNotification"]) : <any>undefined;
         }
     }
 
@@ -4103,6 +4105,7 @@ export class BulkOffersDeleteCommand implements IBulkOffersDeleteCommand {
         }
         data["query"] = this.query ? this.query.toJSON() : <any>undefined;
         data["all"] = this.all;
+        data["pushNotification"] = this.pushNotification ? this.pushNotification.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -4113,6 +4116,7 @@ export interface IBulkOffersDeleteCommand {
     offerIds?: string[] | undefined;
     query?: SearchOffersQuery | undefined;
     all?: boolean;
+    pushNotification?: SellerPushNotification | undefined;
 }
 
 export class BulkProductsDeleteCommand implements IBulkProductsDeleteCommand {
@@ -12217,6 +12221,7 @@ export class ProductDetails implements IProductDetails {
     gtin?: string | undefined;
     categoryId?: string | undefined;
     outerId?: string | undefined;
+    productType?: string | undefined;
     properties?: Property[] | undefined;
     images?: Image[] | undefined;
     assets?: Asset[] | undefined;
@@ -12238,6 +12243,7 @@ export class ProductDetails implements IProductDetails {
             this.gtin = _data["gtin"];
             this.categoryId = _data["categoryId"];
             this.outerId = _data["outerId"];
+            this.productType = _data["productType"];
             if (Array.isArray(_data["properties"])) {
                 this.properties = [] as any;
                 for (let item of _data["properties"])
@@ -12271,6 +12277,7 @@ export class ProductDetails implements IProductDetails {
         data["gtin"] = this.gtin;
         data["categoryId"] = this.categoryId;
         data["outerId"] = this.outerId;
+        data["productType"] = this.productType;
         if (Array.isArray(this.properties)) {
             data["properties"] = [];
             for (let item of this.properties)
@@ -12297,6 +12304,7 @@ export interface IProductDetails {
     gtin?: string | undefined;
     categoryId?: string | undefined;
     outerId?: string | undefined;
+    productType?: string | undefined;
     properties?: Property[] | undefined;
     images?: Image[] | undefined;
     assets?: Asset[] | undefined;
@@ -16456,6 +16464,74 @@ export enum SellerProductStatus {
     RequiresChanges = "RequiresChanges",
     Rejected = "Rejected",
     Approved = "Approved",
+}
+
+export class SellerPushNotification implements ISellerPushNotification {
+    serverId?: string | undefined;
+    creator?: string | undefined;
+    created?: Date;
+    isNew?: boolean;
+    notifyType?: string | undefined;
+    description?: string | undefined;
+    title?: string | undefined;
+    repeatCount?: number;
+    id?: string | undefined;
+
+    constructor(data?: ISellerPushNotification) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.serverId = _data["serverId"];
+            this.creator = _data["creator"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.isNew = _data["isNew"];
+            this.notifyType = _data["notifyType"];
+            this.description = _data["description"];
+            this.title = _data["title"];
+            this.repeatCount = _data["repeatCount"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): SellerPushNotification {
+        data = typeof data === 'object' ? data : {};
+        let result = new SellerPushNotification();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["serverId"] = this.serverId;
+        data["creator"] = this.creator;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["isNew"] = this.isNew;
+        data["notifyType"] = this.notifyType;
+        data["description"] = this.description;
+        data["title"] = this.title;
+        data["repeatCount"] = this.repeatCount;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ISellerPushNotification {
+    serverId?: string | undefined;
+    creator?: string | undefined;
+    created?: Date;
+    isNew?: boolean;
+    notifyType?: string | undefined;
+    description?: string | undefined;
+    title?: string | undefined;
+    repeatCount?: number;
+    id?: string | undefined;
 }
 
 export class SellerRating implements ISellerRating {

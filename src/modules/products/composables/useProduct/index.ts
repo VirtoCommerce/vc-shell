@@ -110,6 +110,7 @@ export default (): IUseProduct => {
         gtin: product.value.productData?.gtin,
         properties: product.value.productData?.properties,
         description: product.value.productData?.reviews[0]?.content,
+        productType: product.value.productData?.productType,
       };
       productDetailsCopy = _.cloneDeep(productDetails.value);
     } catch (e) {

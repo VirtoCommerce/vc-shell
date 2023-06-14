@@ -34,7 +34,8 @@
             "CREATED_DATE": "Created Date",
             "STATUS": "Status",
             "GTIN": "Code",
-            "PUBLISHED": "Published"
+            "PUBLISHED": "Published",
+            "PRODUCT_TYPE": "Product type"
           }
         },
         "FILTERS": {
@@ -126,6 +127,13 @@
           },
           "IMAGES": {
             "TITLE": "Images"
+          },
+          "PRODUCT_TYPE": {
+            "TITLE": "Product type",
+            "PLACEHOLDER": "Select product type",
+            "TOOLTIP": "Product type: Physical or Digital",
+            "PHYSICAL":"Physical",
+            "DIGITAL":"Digital"
           }
         },
         "ERRORS": {

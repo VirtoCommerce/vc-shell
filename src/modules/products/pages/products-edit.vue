@@ -11,7 +11,20 @@
     @collapse="$emit('collapse:blade')"
   >
     <template #actions>
-      <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
+      <div class="tw-flex tw-flex-row tw-items-center">
+        <div
+          v-if="productDetails.productType == 'Digital'"
+          class="vc-status vc-status_info vc-status_outline"
+        >
+          {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL") }}
+        </div>
+        <div
+          v-if="(product as ISellerProduct).status !== 'Published'"
+          class="tw-ml-4"
+        >
+          <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
+        </div>
+      </div>
     </template>
 
     <!-- Blade contents -->
@@ -44,6 +57,38 @@
               </div>
             </VcStatus>
             <VcForm>
+              <Field
+                v-if="!(product as ISellerProduct).id"
+                v-slot="{ field, errorMessage, handleChange, errors }"
+                :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
+                name="productType"
+                :model-value="productDetails.productType"
+              >
+                <VcSelect
+                  v-bind="field"
+                  name="productType"
+                  class="tw-mb-4"
+                  :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
+                  :model-value="productDetails.productType"
+                  :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PLACEHOLDER')"
+                  :options="productTypeOptions"
+                  option-value="value"
+                  option-label="label"
+                  :tooltip="$t('PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TOOLTIP')"
+                  :disabled="disabled"
+                  required
+                  :error="!!errors.length"
+                  :error-message="errorMessage"
+                  :clearable="false"
+                  @update:model-value="
+                    (e: string) => {
+                      handleChange(e);
+                      setProductType(e);
+                    }
+                  "
+                >
+                </VcSelect>
+              </Field>
               <Field
                 v-slot="{ field, errorMessage, handleChange, errors }"
                 :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
@@ -357,6 +402,17 @@ const validateGtin = [
   async (value: string): Promise<string | boolean> => await validate("gtin", value),
 ];
 
+const productTypeOptions = [
+  {
+    label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PHYSICAL"),
+    value: "Physical",
+  },
+  {
+    label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL"),
+    value: "Digital",
+  },
+];
+
 const validate = _.debounce(
   async (fieldName: string, value: string): Promise<string | boolean> => {
     const sellerProduct = {
@@ -647,6 +703,10 @@ const onAssetsEdit = (assets: Asset[]): Asset[] => {
   productDetails.value.assets = assets.map((item) => new Asset(item));
 
   return productDetails.value.assets;
+};
+
+const setProductType = (productType: string) => {
+  productDetails.value.productType = productType;
 };
 
 const setCategory = async (selectedCategory: Category) => {

@@ -1,3 +1,12 @@
+## [1.0.81](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.80...v1.0.81) (2023-06-14)
+
+
+### Features
+
+* vm-1158 digital product ([c94f65d](https://github.com/VirtoCommerce/vendor-portal/commit/c94f65d69b968d648d332aeb21f92abaf9313be9))
+
+
+
 ## [1.0.80](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.79...v1.0.80) (2023-06-08)
 
 

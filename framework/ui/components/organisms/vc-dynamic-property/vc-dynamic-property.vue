@@ -141,7 +141,6 @@
       v-bind="$attrs"
       :label="handleDisplayName"
       :model-value="property.values"
-      type="number"
       :required="property.required || property.isRequired"
       placeholder="Add value"
       :disabled="disabled"

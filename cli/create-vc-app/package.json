@@ -9,13 +9,14 @@
   ],
   "scripts": {
     "build": "tsc -p src && yarn postbuild",
-    "postbuild": "cross-env-shell 'cp -R src/template dist/'"
+    "postbuild": "shx cp -R src/template dist/"
   },
   "devDependencies": {
     "@types/minimist": "^1.2.2",
     "@types/prompts": "^2.4.4",
     "copyfiles": "^2.4.1",
     "cross-env": "^7.0.3",
+    "shx": "^0.3.4",
     "typescript": "~5.0.4"
   },
   "dependencies": {

@@ -31,15 +31,8 @@
   </VcBlade>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, inject, reactive, ref, markRaw } from "vue";
-
-export default defineComponent({
-  url: "/<%= bladeModuleName.toLowerCase() %>",
-});
-</script>
-
 <script lang="ts" setup>
+import { computed, inject, reactive, ref, markRaw } from "vue";
 import {
   IBladeEvent,
   IBladeToolbar,
@@ -62,12 +55,15 @@ export interface Props {
 
 export interface Emits {
   (event: "parent:call", args: IParentCallArgs): void;
-  (event: "close:children"): void;
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "open:blade", blade: IBladeEvent);
   (event: "close:blade"): void;
 }
+
+defineOptions({
+  url: "/<%= bladeModuleName.toLowerCase() %>",
+})
 
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,

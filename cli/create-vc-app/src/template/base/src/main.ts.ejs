@@ -17,12 +17,13 @@ import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 
 const app = createApp(RouterView)
-<% if(bladeModuleStarter === true) { -%>
-.use(Default, { router })
-<% } -%>
 .use(VirtoShellFramework<% if(commonPages === true) { -%>, {
   useLogin,
 }<% } -%>)
+<% if(bladeModuleStarter === true) { -%>
+.use(Default, { router })
+<% } -%>
+
 .use(router)
 
 Object.entries(locales).forEach(([key, message]) => {

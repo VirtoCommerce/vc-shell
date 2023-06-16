@@ -3748,25 +3748,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@symbot91/create-vc-app@workspace:cli/create-vc-app":
-  version: 0.0.0-use.local
-  resolution: "@symbot91/create-vc-app@workspace:cli/create-vc-app"
-  dependencies:
-    "@types/minimist": ^1.2.2
-    "@types/prompts": ^2.4.4
-    chalk: ^2.4.2
-    copyfiles: ^2.4.1
-    cross-env: ^7.0.3
-    ejs: ^3.1.9
-    minimist: ^1.2.8
-    prompts: ^2.4.2
-    tslib: ^2.5.3
-    typescript: ~5.0.4
-  bin:
-    create-vc-app: ./dist/index.js
-  languageName: unknown
-  linkType: soft
-
 "@tootallnate/once@npm:2":
   version: 2.0.0
   resolution: "@tootallnate/once@npm:2.0.0"
@@ -4369,6 +4350,26 @@ __metadata:
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
     vue: ^3.3.4
+  languageName: unknown
+  linkType: soft
+
+"@vc-shell/create-vc-app@workspace:cli/create-vc-app":
+  version: 0.0.0-use.local
+  resolution: "@vc-shell/create-vc-app@workspace:cli/create-vc-app"
+  dependencies:
+    "@types/minimist": ^1.2.2
+    "@types/prompts": ^2.4.4
+    chalk: ^2.4.2
+    copyfiles: ^2.4.1
+    cross-env: ^7.0.3
+    ejs: ^3.1.9
+    minimist: ^1.2.8
+    prompts: ^2.4.2
+    shx: ^0.3.4
+    tslib: ^2.5.3
+    typescript: ~5.0.4
+  bin:
+    create-vc-app: ./dist/index.js
   languageName: unknown
   linkType: soft
 
@@ -10109,7 +10110,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.2.0, minimist@npm:^1.2.5, minimist@npm:^1.2.6, minimist@npm:^1.2.8":
+"minimist@npm:^1.2.0, minimist@npm:^1.2.3, minimist@npm:^1.2.5, minimist@npm:^1.2.6, minimist@npm:^1.2.8":
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
@@ -10275,6 +10276,59 @@ __metadata:
   checksum: f2357f906e0160b7df0179c77838cf859f3ca23cb74eca7c043b9fc9e1e416d91497c80fbe2f3c9aeb003c14ad15857fc4e94f1631e8a6695b07e4135626d305
   languageName: node
   linkType: hard
+
+"my-application@workspace:apps/my-application":
+  version: 0.0.0-use.local
+  resolution: "my-application@workspace:apps/my-application"
+  dependencies:
+    "@commitlint/cli": ^17.6.3
+    "@commitlint/config-conventional": ^17.6.3
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@rollup/plugin-typescript": ^11.1.1
+    "@types/lodash-es": ^4.17.7
+    "@typescript-eslint/eslint-plugin": ^5.59.7
+    "@typescript-eslint/parser": ^5.59.7
+    "@vc-shell/api-client-generator": ^1.0.73
+    "@vc-shell/config-generator": ^1.0.73
+    "@vc-shell/framework": ^1.0.73
+    "@vitejs/plugin-vue": ^4.2.3
+    "@vue/eslint-config-prettier": ^7.1.0
+    "@vue/eslint-config-typescript": ^11.0.3
+    "@vueuse/core": ^10.1.2
+    "@vueuse/integrations": ^10.1.2
+    autoprefixer: ^10.4.14
+    buffer-esm: ^1.2.0
+    conventional-changelog-cli: ^2.2.2
+    cross-env: ^7.0.3
+    eslint: ^8.41.0
+    eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-import: ^2.27.5
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-vue: ^9.14.1
+    husky: ^8.0.3
+    lint-staged: ^13.2.2
+    lodash-es: ^4.17.21
+    moment: ^2.29.4
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.62.1
+    tailwindcss: ^3.3.2
+    typescript: ~5.0.4
+    universal-cookie: ^4.0.4
+    vee-validate: ^4.9.4
+    vite: ^4.3.9
+    vite-plugin-checker: ^0.6.0
+    vite-plugin-mkcert: ^1.15.0
+    vite-plugin-pwa: ^0.14.7
+    vue: ^3.3.4
+    vue-eslint-parser: ^9.3.0
+    vue-router: ^4.2.1
+    vue-tsc: ^1.6.5
+    yarn: ^1.22.19
+  languageName: unknown
+  linkType: soft
 
 "mz@npm:^2.7.0":
   version: 2.7.0
@@ -12363,6 +12417,18 @@ __metadata:
   bin:
     shjs: bin/shjs
   checksum: 7babc46f732a98f4c054ec1f048b55b9149b98aa2da32f6cf9844c434b43c6251efebd6eec120937bd0999e13811ebd45efe17410edb3ca938f82f9381302748
+  languageName: node
+  linkType: hard
+
+"shx@npm:^0.3.4":
+  version: 0.3.4
+  resolution: "shx@npm:0.3.4"
+  dependencies:
+    minimist: ^1.2.3
+    shelljs: ^0.8.5
+  bin:
+    shx: lib/cli.js
+  checksum: 0aa168bfddc11e3fe8943cce2e0d2d8514a560bd58cf2b835b4351ba03f46068f7d88286c2627f4b85604e81952154c43746369fb3f0d60df0e3b511f465e5b8
   languageName: node
   linkType: hard
 

@@ -4,7 +4,7 @@
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
-    "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ../ && yarn && yarn run build",
+    "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ./vendor-portal && shx rm yarn.lock && cd ../../ && yarn && yarn run build",
     "postinstall": "husky install",
     "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework}' npm publish",
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}'",
@@ -68,6 +68,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.62.1",
+    "shx": "^0.3.4",
     "storybook": "^7.0.17",
     "tailwindcss": "^3.3.2",
     "typescript": "~5.0.4",

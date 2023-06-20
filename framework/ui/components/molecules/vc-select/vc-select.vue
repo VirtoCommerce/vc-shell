@@ -483,7 +483,6 @@ const props = withDefaults(
     debounce: 500,
     clearable: true,
     name: "Field",
-    autofocus: true,
     emitValue: true,
     mapOptions: true,
     placeholder: "Click to select...",

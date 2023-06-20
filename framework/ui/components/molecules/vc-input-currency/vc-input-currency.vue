@@ -4,7 +4,6 @@
     :option-label="optionLabel"
     :option-value="optionValue"
     :searchable="true"
-    :autofocus="true"
     :debounce="debounce"
     :label="label"
     :required="required"

@@ -49,7 +49,10 @@
           />
         </Field>
 
-        <div class="tw-flex tw-justify-end tw-items-center tw-pt-2">
+        <div
+          v-if="forgotPassword"
+          class="tw-flex tw-justify-end tw-items-center tw-pt-2"
+        >
           <VcButton
             text
             type="button"
@@ -125,7 +128,7 @@
               {{ $t("LOGIN.BACK_BUTTON") }}
             </vc-button>
             <vc-button
-              :disabled="loading || isDisabled"
+              :disabled="loading || isDisabled || loadingForgotPassword"
               @click="forgot"
             >
               {{ $t("LOGIN.FORGOT_BUTTON") }}
@@ -192,17 +195,27 @@ const router = useRouter();
 
 useForm({ validateOnMount: false });
 const { getUiCustomizationSettings, uiSettings } = useSettings();
-const { useLogin } = inject<CommonPageComposables>("commonPageComposables");
+let useLogin;
+const injected = inject<CommonPageComposables>("commonPageComposables");
+if (injected) {
+  useLogin = injected?.useLogin;
+}
 
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser();
-const { forgotPassword } = useLogin();
+let forgotPassword;
+if (useLogin) {
+  const { forgotPassword: forgot } = useLogin();
+  forgotPassword = forgot;
+}
+
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const customizationLoading = ref(false);
+const loadingForgotPassword = ref(false);
 
 onMounted(async () => {
   try {
@@ -252,9 +265,14 @@ const login = async () => {
 };
 
 const forgot = async () => {
-  if (isValid.value) {
-    await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
-    forgotPasswordRequestSent.value = true;
+  if (isValid.value && forgotPassword) {
+    try {
+      loadingForgotPassword.value = true;
+      await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
+      forgotPasswordRequestSent.value = true;
+    } finally {
+      loadingForgotPassword.value = false;
+    }
   }
 };
 

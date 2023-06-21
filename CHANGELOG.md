@@ -1,3 +1,12 @@
+## [1.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.74...v1.0.75) (2023-06-21)
+
+
+### Bug Fixes
+
+* forgotPassword condition ([428a339](https://github.com/VirtoCommerce/vc-shell/commit/428a33950bd2aa43b04a5112682032e6fddd7d2e))
+
+
+
 ## [1.0.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.73...v1.0.74) (2023-06-21)
 
 

@@ -49,7 +49,10 @@
           />
         </Field>
 
-        <div class="tw-flex tw-justify-end tw-items-center tw-pt-2">
+        <div
+          v-if="forgotPassword"
+          class="tw-flex tw-justify-end tw-items-center tw-pt-2"
+        >
           <VcButton
             text
             type="button"
@@ -198,7 +201,12 @@ const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
 const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser();
-const { forgotPassword } = useLogin();
+let forgotPassword;
+if (useLogin) {
+  const { forgotPassword: forgot } = useLogin();
+  forgotPassword = forgot;
+}
+
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
@@ -252,7 +260,7 @@ const login = async () => {
 };
 
 const forgot = async () => {
-  if (isValid.value) {
+  if (isValid.value && forgotPassword) {
     await forgotPassword({ loginOrEmail: forgotPasswordForm.loginOrEmail });
     forgotPasswordRequestSent.value = true;
   }

@@ -197,7 +197,9 @@ const { useLogin } = inject<CommonPageComposables>("commonPageComposables");
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser();
+const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser(
+  import.meta.env.APP_PLATFORM_URL
+);
 const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();

@@ -1,3 +1,12 @@
+## [1.0.82](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.81...v1.0.82) (2023-06-21)
+
+
+### Bug Fixes
+
+* pass platformUrl to shell ([90207cb](https://github.com/VirtoCommerce/vendor-portal/commit/90207cb412caf3b4d367d2ad55c16ae4debdda26))
+
+
+
 ## [1.0.81](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.80...v1.0.81) (2023-06-14)
 
 

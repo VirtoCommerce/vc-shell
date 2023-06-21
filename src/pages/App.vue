@@ -27,7 +27,6 @@
     >
       <VcAppSwitcher
         :apps-list="appsList"
-        :base="base"
         @on-click="switchApp($event)"
       />
     </template>
@@ -88,8 +87,6 @@ import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
-
-const base = import.meta.env.APP_PLATFORM_URL;
 
 const { open } = usePopup({
   component: ChangePassword,
@@ -389,7 +386,7 @@ const openDashboard = async () => {
 
 async function customizationHandler() {
   await getCurrentSeller();
-  await getUiCustomizationSettings(base);
+  await getUiCustomizationSettings();
 
   if (sellerDetails.value.logo) {
     applySettings({ logo: sellerDetails.value.logo });

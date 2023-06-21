@@ -1,3 +1,12 @@
+## [1.0.74](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.73...v1.0.74) (2023-06-21)
+
+
+### Bug Fixes
+
+* pass platformUrl to shell ([6265790](https://github.com/VirtoCommerce/vc-shell/commit/62657901ae6738883ed785e4f54507db85ba7d66))
+
+
+
 ## [1.0.73](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.72...v1.0.73) (2023-06-08)
 
 

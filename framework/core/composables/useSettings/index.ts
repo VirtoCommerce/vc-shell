@@ -1,5 +1,5 @@
 import { useUser } from "./../useUser";
-import { computed, Ref, ref } from "vue";
+import { computed, inject, Ref, ref } from "vue";
 import { SettingClient } from "./../../api";
 
 interface IUISetting {
@@ -10,7 +10,7 @@ interface IUISetting {
 
 interface IUseSettings {
   readonly uiSettings: Ref<IUISetting>;
-  getUiCustomizationSettings: (base: string) => void;
+  getUiCustomizationSettings: () => void;
   applySettings: (args: { logo?: string; title?: string }) => void;
 }
 
@@ -20,6 +20,7 @@ const uiSettings = ref<IUISetting>({
 });
 export function useSettings(): IUseSettings {
   const { getAccessToken } = useUser();
+  const base = inject("platformUrl");
 
   async function getApiClient() {
     const client = new SettingClient();
@@ -27,7 +28,7 @@ export function useSettings(): IUseSettings {
     return client;
   }
 
-  async function getUiCustomizationSettings(base: string) {
+  async function getUiCustomizationSettings() {
     const client = await getApiClient();
 
     try {

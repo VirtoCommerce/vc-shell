@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/framework",
-  "version": "1.0.73",
+  "version": "1.0.74",
   "main": "./dist/framework.mjs",
   "module": "./dist/framework.mjs",
   "types": "./dist/index.d.ts",
@@ -56,13 +56,13 @@
     "whatwg-fetch": "^3.6.2"
   },
   "devDependencies": {
-    "@vc-shell/api-client-generator": "^1.0.73",
-    "@vc-shell/config-generator": "^1.0.73",
+    "@vc-shell/api-client-generator": "^1.0.74",
+    "@vc-shell/config-generator": "^1.0.74",
     "@vitejs/plugin-vue": "^4.2.3",
     "sass": "^1.62.1",
     "typescript": "~5.0.4",
     "vite": "^4.3.9",
-    "vue-tsc": "^1.6.5"
+    "vue-tsc": "~1.6.5"
   },
   "publishConfig": {
     "access": "public",

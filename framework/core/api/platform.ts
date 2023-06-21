@@ -103,7 +103,7 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 
     /**
-     * @param authenticationType (optional) 
+     * @param authenticationType (optional)
      * @return Success
      */
     signIn(authenticationType?: string | undefined): Promise<void> {
@@ -143,7 +143,7 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 
     /**
-     * @param authenticationType (optional) 
+     * @param authenticationType (optional)
      * @return Success
      */
     signOut(authenticationType?: string | undefined): Promise<void> {
@@ -183,7 +183,7 @@ export class ExternalSignInClient extends AuthApiBase {
     }
 
     /**
-     * @param returnUrl (optional) 
+     * @param returnUrl (optional)
      * @return Success
      */
     signInCallback(returnUrl?: string | undefined): Promise<void> {
@@ -328,7 +328,7 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param scope (optional) 
+     * @param scope (optional)
      * @return Success
      */
     forceChanges(scope?: string | undefined): Promise<void> {
@@ -419,7 +419,7 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param scope (optional) 
+     * @param scope (optional)
      * @return Success
      */
     getLastModifiedDate(scope?: string | undefined): Promise<LastModifiedResponse> {
@@ -463,7 +463,7 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     getChangedEntities(body?: ChangedEntitiesRequest | undefined): Promise<ChangedEntitiesResponse> {
@@ -507,7 +507,7 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     resetChangedEntities(body?: string[] | undefined): Promise<void> {
@@ -555,7 +555,7 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchChanges(body?: ChangeLogSearchCriteria | undefined): Promise<ChangeLogSearchResult> {
@@ -607,8 +607,8 @@ export class ChangeLogClient extends AuthApiBase {
     }
 
     /**
-     * @param start (optional) 
-     * @param end (optional) 
+     * @param start (optional)
+     * @param end (optional)
      * @return Success
      */
     searchTypeChangeHistory(type: string, start?: Date | undefined, end?: Date | undefined): Promise<OperationLog[]> {
@@ -845,7 +845,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchDynamicProperties(body?: DynamicPropertySearchCriteria | undefined): Promise<DynamicPropertySearchResult> {
@@ -897,7 +897,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createProperty(body?: DynamicProperty | undefined): Promise<DynamicProperty> {
@@ -949,7 +949,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateProperty(body?: DynamicProperty | undefined): Promise<void> {
@@ -997,7 +997,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param propertyIds (optional) 
+     * @param propertyIds (optional)
      * @return Success
      */
     deleteProperty(propertyIds?: string[] | undefined): Promise<void> {
@@ -1096,7 +1096,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchDictionaryItems(body?: DynamicPropertyDictionaryItemSearchCriteria | undefined): Promise<DynamicPropertyDictionaryItemSearchResult> {
@@ -1148,7 +1148,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     saveDictionaryItems(body?: DynamicPropertyDictionaryItem[] | undefined): Promise<void> {
@@ -1196,7 +1196,7 @@ export class DynamicPropertiesClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteDictionaryItem(ids?: string[] | undefined): Promise<void> {
@@ -1415,7 +1415,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     getDependingModules(body?: ModuleDescriptor[] | undefined): Promise<ModuleDescriptor[]> {
@@ -1474,7 +1474,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     getMissingDependencies(body?: ModuleDescriptor[] | undefined): Promise<ModuleDescriptor[]> {
@@ -1580,7 +1580,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     installModules(body?: ModuleDescriptor[] | undefined): Promise<ModulePushNotification> {
@@ -1632,7 +1632,7 @@ export class ModulesClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     uninstallModule(body?: ModuleDescriptor[] | undefined): Promise<ModulePushNotification> {
@@ -1833,7 +1833,7 @@ export class OAuthAppsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     save(body?: OpenIddictApplicationDescriptor | undefined): Promise<OpenIddictApplicationDescriptor> {
@@ -1885,7 +1885,7 @@ export class OAuthAppsClient extends AuthApiBase {
     }
 
     /**
-     * @param clientIds (optional) 
+     * @param clientIds (optional)
      * @return Success
      */
     delete(clientIds?: string[] | undefined): Promise<void> {
@@ -1933,7 +1933,7 @@ export class OAuthAppsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     search(body?: OAuthAppSearchCriteria | undefined): Promise<OAuthAppSearchResult> {
@@ -1997,7 +1997,7 @@ export class PushNotificationClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchPushNotification(body?: PushNotificationSearchCriteria | undefined): Promise<PushNotificationSearchResult> {
@@ -2108,7 +2108,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     login(body?: LoginRequest | undefined): Promise<SignInResult> {
@@ -2350,7 +2350,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchRoles(body?: RoleSearchCriteria | undefined): Promise<RoleSearchResult> {
@@ -2452,7 +2452,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteRoles(ids?: string[] | undefined): Promise<void> {
@@ -2500,7 +2500,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateRole(body?: Role | undefined): Promise<SecurityResult> {
@@ -2552,7 +2552,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchUsers(body?: UserSearchCriteria | undefined): Promise<UserSearchResult> {
@@ -2807,7 +2807,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     create(body?: ApplicationUser | undefined): Promise<SecurityResult> {
@@ -2859,7 +2859,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changeCurrentUserPassword(body?: ChangePasswordRequest | undefined): Promise<SecurityResult> {
@@ -2915,7 +2915,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     changePassword(userName: string, body?: ChangePasswordRequest | undefined): Promise<SecurityResult> {
@@ -2974,7 +2974,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     resetPassword(userName: string, body?: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
@@ -3029,7 +3029,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     resetPasswordByToken(userId: string, body?: ResetPasswordConfirmRequest | undefined): Promise<SecurityResult> {
@@ -3076,7 +3076,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validatePasswordResetToken(userId: string, body?: ValidatePasswordResetTokenRequest | undefined): Promise<boolean> {
@@ -3112,7 +3112,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -3162,7 +3162,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validatePassword(body?: string | undefined): Promise<IdentityResult> {
@@ -3206,7 +3206,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     validateUserPassword(body?: ChangePasswordRequest | undefined): Promise<IdentityResult> {
@@ -3258,7 +3258,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     update(body?: ApplicationUser | undefined): Promise<SecurityResult> {
@@ -3310,7 +3310,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param names (optional) 
+     * @param names (optional)
      * @return Success
      */
     delete(names?: string[] | undefined): Promise<void> {
@@ -3612,7 +3612,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     saveUserApiKey(body?: UserApiKey | undefined): Promise<UserApiKey[]> {
@@ -3671,7 +3671,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateUserApiKey(body?: UserApiKey | undefined): Promise<UserApiKey[]> {
@@ -3730,7 +3730,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteUserApiKeys(ids?: string[] | undefined): Promise<UserApiKey[]> {
@@ -3870,7 +3870,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     confirmEmail(userId: string, body?: ConfirmEmailRequest | undefined): Promise<SecurityResult> {
@@ -3925,7 +3925,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param newEmail (optional) 
+     * @param newEmail (optional)
      * @return Success
      */
     generateChangeEmailToken(userId: string, newEmail?: string | undefined): Promise<string> {
@@ -3961,7 +3961,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4012,7 +4012,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4063,7 +4063,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4083,8 +4083,8 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param tokenProvider (optional) 
-     * @param purpose (optional) 
+     * @param tokenProvider (optional)
+     * @param purpose (optional)
      * @return Success
      */
     generateUserToken(userId: string, tokenProvider?: string | undefined, purpose?: string | undefined): Promise<string> {
@@ -4124,7 +4124,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4144,7 +4144,7 @@ export class SecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     verifyUserToken(userId: string, body?: VerifyTokenRequest | undefined): Promise<boolean> {
@@ -4180,7 +4180,7 @@ export class SecurityClient extends AuthApiBase {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
                 result200 = resultData200 !== undefined ? resultData200 : <any>null;
-    
+
             return result200;
             });
         } else if (status === 401) {
@@ -4259,7 +4259,7 @@ export class SettingClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     update(body?: ObjectSettingEntry[] | undefined): Promise<void> {

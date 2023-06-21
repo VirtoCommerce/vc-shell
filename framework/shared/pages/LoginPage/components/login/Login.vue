@@ -207,7 +207,7 @@ const customizationLoading = ref(false);
 onMounted(async () => {
   try {
     customizationLoading.value = true;
-    await getUiCustomizationSettings(import.meta.env.APP_PLATFORM_URL);
+    await getUiCustomizationSettings();
   } finally {
     customizationLoading.value = false;
   }
@@ -268,7 +268,7 @@ const togglePassRequest = () => {
 };
 
 const azureSignOn = async () => {
-  await externalSignIn("AzureAD", import.meta.env.BASE_URL);
+  await externalSignIn("AzureAD", window.location.origin);
   await loadUser();
 };
 

@@ -41,13 +41,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { inject, ref } from "vue";
 import { AppDescriptor } from "../../../../../core/api";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {
   appsList: AppDescriptor[];
-  base: string;
 }
 
 interface Emits {
@@ -59,10 +58,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+const base = inject<string>("platformUrl");
 
 const isVisible = ref(false);
 
-const imageUrl = (url: string) => props.base.replace(/\/+$/, "") + url;
+const imageUrl = (url: string) => base.replace(/\/+$/, "") + url;
 
 const locationHandler = (url: string) => {
   const cleanUrl = window.location.pathname.replace(/\/+$/, "");

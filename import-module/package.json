@@ -19,7 +19,7 @@
     "cross-env": "^7.0.3",
     "typescript": "~5.0.4",
     "vite": "^4.3.9",
-    "vue-tsc": "^1.6.5"
+    "vue-tsc": "~1.6.5"
   },
   "dependencies": {
     "@vc-shell/framework": "^1.0.73",

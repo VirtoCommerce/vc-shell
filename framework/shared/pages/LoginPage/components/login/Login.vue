@@ -197,9 +197,7 @@ const { useLogin } = inject<CommonPageComposables>("commonPageComposables");
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser(
-  import.meta.env.APP_PLATFORM_URL
-);
+const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser();
 const { forgotPassword } = useLogin();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
@@ -209,7 +207,7 @@ const customizationLoading = ref(false);
 onMounted(async () => {
   try {
     customizationLoading.value = true;
-    await getUiCustomizationSettings(import.meta.env.APP_PLATFORM_URL);
+    await getUiCustomizationSettings();
   } finally {
     customizationLoading.value = false;
   }
@@ -270,7 +268,7 @@ const togglePassRequest = () => {
 };
 
 const azureSignOn = async () => {
-  await externalSignIn("AzureAD", import.meta.env.BASE_URL);
+  await externalSignIn("AzureAD", window.location.origin);
   await loadUser();
 };
 

@@ -59,7 +59,7 @@ interface IUseUser {
   getAzureAdAuthCaption: () => Promise<string>;
 }
 
-export function useUser(base: string): IUseUser {
+export function useUser(): IUseUser {
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
     try {
@@ -263,7 +263,7 @@ export function useUser(base: string): IUseUser {
   async function getExternalLoginProviders(): Promise<LoginProviders[]> {
     let result = null as LoginProviders[];
     try {
-      const fetchResult = await fetch(base + "externalsignin/providers", {
+      const fetchResult = await fetch("externalsignin/providers", {
         method: "GET",
       });
 
@@ -283,7 +283,7 @@ export function useUser(base: string): IUseUser {
   async function externalSignIn(authenticationType?: string | undefined, returnUrl?: string | undefined) {
     activeAuthenticationType.value = authenticationType;
     try {
-      let url_ = base + "externalsignin?";
+      let url_ = "externalsignin?";
       if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
       else {
         if (authenticationType !== undefined)
@@ -305,7 +305,7 @@ export function useUser(base: string): IUseUser {
 
   async function externalSignOut(authenticationType?: string | undefined): Promise<void> {
     try {
-      let url_ = base + "externalsignin/signout?";
+      let url_ = "externalsignin/signout?";
       if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
       else {
         if (authenticationType !== undefined)

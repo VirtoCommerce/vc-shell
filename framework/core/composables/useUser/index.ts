@@ -1,4 +1,4 @@
-import { computed, Ref, ref, ComputedRef, onUnmounted, getCurrentInstance } from "vue";
+import { computed, Ref, ref, ComputedRef, onUnmounted, getCurrentInstance, inject } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
@@ -60,6 +60,7 @@ interface IUseUser {
 }
 
 export function useUser(): IUseUser {
+  const base = inject("platformUrl");
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
     try {
@@ -263,7 +264,7 @@ export function useUser(): IUseUser {
   async function getExternalLoginProviders(): Promise<LoginProviders[]> {
     let result = null as LoginProviders[];
     try {
-      const fetchResult = await fetch("externalsignin/providers", {
+      const fetchResult = await fetch(base + "externalsignin/providers", {
         method: "GET",
       });
 
@@ -283,7 +284,7 @@ export function useUser(): IUseUser {
   async function externalSignIn(authenticationType?: string | undefined, returnUrl?: string | undefined) {
     activeAuthenticationType.value = authenticationType;
     try {
-      let url_ = "externalsignin?";
+      let url_ = base + "externalsignin?";
       if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
       else {
         if (authenticationType !== undefined)
@@ -305,7 +306,7 @@ export function useUser(): IUseUser {
 
   async function externalSignOut(authenticationType?: string | undefined): Promise<void> {
     try {
-      let url_ = "externalsignin/signout?";
+      let url_ = base + "externalsignin/signout?";
       if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
       else {
         if (authenticationType !== undefined)

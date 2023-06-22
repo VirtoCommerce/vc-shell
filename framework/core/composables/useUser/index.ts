@@ -66,7 +66,7 @@ export function useUser(): IUseUser {
   watch(
     () => isExternalSignedIn,
     (newVal) => {
-      if (newVal) {
+      if (newVal.value) {
         initInterceptor();
       } else {
         fetchIntercept.clear();

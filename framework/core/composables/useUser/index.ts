@@ -1,4 +1,4 @@
-import { computed, Ref, ref, ComputedRef, onUnmounted, getCurrentInstance, inject } from "vue";
+import { computed, Ref, ref, ComputedRef, onUnmounted, getCurrentInstance, inject, watch } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
@@ -11,6 +11,7 @@ import {
 import { AuthData, RequestPasswordResult, SignInResults } from "./../../types";
 import * as _ from "lodash-es";
 import fetchIntercept from "fetch-intercept";
+import { useLocalStorage } from "@vueuse/core";
 //The Platform Manager uses the same key to store authorization data in the
 //local storage, so we can exchange authorization data between the Platform Manager
 //and the user application that is hosted in the same domain as the sub application.
@@ -23,7 +24,6 @@ const authClient = new ClientOAuth2({
   accessTokenUri: `/connect/token`,
   scopes: ["offline_access"],
 });
-const isExternalSignedIn = ref(false);
 const activeAuthenticationType = ref();
 const securityClient = new SecurityClient();
 
@@ -61,6 +61,20 @@ interface IUseUser {
 
 export function useUser(): IUseUser {
   const base = inject("platformUrl");
+  const isExternalSignedIn = useLocalStorage("VC_EXTERNAL_LOGIN", false);
+
+  watch(
+    () => isExternalSignedIn,
+    (newVal) => {
+      if (newVal) {
+        initInterceptor();
+      } else {
+        fetchIntercept.clear();
+      }
+    },
+    { immediate: true }
+  );
+
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
     try {
@@ -110,8 +124,8 @@ export function useUser(): IUseUser {
       console.log("[useUser]: an access token has been obtained successfully", authData.value);
 
       storeAuthData(authData.value);
-      await loadUser();
     }
+    await loadUser();
     return { succeeded: true };
   }
 
@@ -133,17 +147,19 @@ export function useUser(): IUseUser {
     const token = await getAccessToken();
     if (token) {
       securityClient.setAuthToken(token);
-      try {
-        loading.value = true;
-        user.value = await securityClient.getCurrentUser();
-        console.log("[useUser]: an user details has been loaded", user.value);
-      } catch (e) {
-        console.dir(e);
-        throw e;
-      } finally {
-        loading.value = false;
-      }
     }
+
+    try {
+      loading.value = true;
+      user.value = await securityClient.getCurrentUser();
+      console.log("[useUser]: an user details has been loaded", user.value);
+    } catch (e) {
+      console.dir(e);
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+
     return { ...user.value } as UserDetail;
   }
 
@@ -293,7 +309,6 @@ export function useUser(): IUseUser {
       }
       url_ = url_.replace(/[?&]$/, "");
       isExternalSignedIn.value = true;
-      initInterceptor();
 
       window.location.href = url_;
     } catch (e) {
@@ -318,8 +333,6 @@ export function useUser(): IUseUser {
         method: "GET",
         headers: {},
       });
-
-      fetchIntercept.clear();
     } catch (e) {
       console.error(e);
 
@@ -350,6 +363,7 @@ export function useUser(): IUseUser {
   /* Intercepting requests to explicitly remove auth token when we use AzureAd authentication */
   function initInterceptor() {
     console.log("[@vc-shell/framework#useUser:initInterceptor]: Entry point");
+    // store external login in localStorage
     return fetchIntercept.register({
       request: function (_url, config) {
         if (isExternalSignedIn.value) {

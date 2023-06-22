@@ -316,7 +316,6 @@ export function useUser(): IUseUser {
 
       await fetch(url_, {
         method: "GET",
-        mode: "no-cors",
         headers: {},
       });
 

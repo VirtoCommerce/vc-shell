@@ -1,3 +1,13 @@
+## [1.0.76](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.75...v1.0.76) (2023-06-22)
+
+
+### Bug Fixes
+
+* azure login ([bd2d822](https://github.com/VirtoCommerce/vc-shell/commit/bd2d8221f0e3a286fa944da4c7be7eda81786588))
+* base app path ([146b01b](https://github.com/VirtoCommerce/vc-shell/commit/146b01b2e9001ab170dce1c4758d46761ab5e21f))
+
+
+
 ## [1.0.75](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.74...v1.0.75) (2023-06-21)
 
 

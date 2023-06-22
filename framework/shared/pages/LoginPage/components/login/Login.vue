@@ -286,7 +286,7 @@ const togglePassRequest = () => {
 };
 
 const azureSignOn = async () => {
-  await externalSignIn("AzureAD", import.meta.env.BASE_URL);
+  await externalSignIn("AzureAD", window.location.origin + window.location.pathname);
   await loadUser();
 };
 

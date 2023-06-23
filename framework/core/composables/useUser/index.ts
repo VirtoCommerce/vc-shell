@@ -124,6 +124,7 @@ export function useUser(): IUseUser {
       console.log("[useUser]: an access token has been obtained successfully", authData.value);
 
       storeAuthData(authData.value);
+      isExternalSignedIn.value = false;
     }
     await loadUser();
     return { succeeded: true };

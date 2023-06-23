@@ -48,7 +48,7 @@ interface IUseUser {
 }
 
 export function useUser(): IUseUser {
-  const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", null);
+  const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", { providerType: null });
 
   const isAuthenticated = async () => {
     return !!((externalSignInStorage.value && externalSignInStorage.value.providerType) ?? (await getAccessToken()));
@@ -113,7 +113,6 @@ export function useUser(): IUseUser {
 
     if (externalSignInStorage.value && externalSignInStorage.value.providerType) {
       externalSignOut(externalSignInStorage.value.providerType);
-      storeAuthData({});
       externalSignInStorage.value = null;
     } else {
       user.value = undefined;

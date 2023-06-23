@@ -72,7 +72,7 @@
         </div>
       </VcForm>
       <div
-        v-if="azureAdAuthAvailable && azureAdAuthCaption"
+        v-if="loginProviders && loginProviders.length"
         class="tw-mt-4"
       >
         <div
@@ -80,16 +80,18 @@
         >
           OR
         </div>
-        <div class="tw-flex tw-justify-center tw-mt-4">
+        <div class="tw-flex tw-justify-center tw-mt-4 tw-flex-wrap tw-gap-2">
           <VcButton
+            v-for="external in loginProviders"
+            :key="external.authenticationType"
             outline
-            @click="azureSignOn"
+            @click="externalSignOn(external.authenticationType)"
             ><div class="tw-flex tw-flex-row tw-items-center">
               <img
-                :src="AzureAdIcon"
-                alt="AzureAd"
+                :src="externalAuthIcon(external.authenticationType)"
+                :alt="external.authenticationType"
                 class="tw-h-5 tw-mr-2"
-              />{{ azureAdAuthCaption }}
+              />{{ external.displayName }}
             </div></VcButton
           >
         </div>
@@ -180,8 +182,8 @@ import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
 import { CommonPageComposables } from "./../../../../../typings";
-import { asyncComputed } from "@vueuse/core";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
+import { ExternalSignInProviderInfo } from "./../../../../../core/api";
 
 export interface Props {
   logo: string;
@@ -197,34 +199,41 @@ useForm({ validateOnMount: false });
 const { getUiCustomizationSettings, uiSettings } = useSettings();
 let useLogin;
 const injected = inject<CommonPageComposables>("commonPageComposables");
-if (injected) {
-  useLogin = injected?.useLogin;
-}
-
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, loadUser, externalSignIn, isAzureAdAuthAvailable, getAzureAdAuthCaption } = useUser();
-let forgotPassword;
-if (useLogin) {
-  const { forgotPassword: forgot } = useLogin();
-  forgotPassword = forgot;
-}
-
+const { signIn, loading, externalSignIn, getExternalLoginProviders } = useUser();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const customizationLoading = ref(false);
 const loadingForgotPassword = ref(false);
+const loginProviders = ref<ExternalSignInProviderInfo[]>();
+let forgotPassword;
+
+if (injected) {
+  useLogin = injected?.useLogin;
+
+  if (useLogin) {
+    const { forgotPassword: forgot } = useLogin();
+    forgotPassword = forgot;
+  }
+}
 
 onMounted(async () => {
   try {
     customizationLoading.value = true;
+    loginProviders.value = await getExternalLoginProviders();
     await getUiCustomizationSettings();
   } finally {
     customizationLoading.value = false;
   }
 });
+
+const externalAuthIcon = (authenticationType: string) => {
+  if (authenticationType === "AzureAD") return AzureAdIcon;
+  else return;
+};
 
 const customization = computed(() => {
   return (
@@ -236,13 +245,6 @@ const customization = computed(() => {
 
 const isDisabled = computed(() => {
   return !isDirty.value || !isValid.value;
-});
-
-const azureAdAuthAvailable = asyncComputed(async () => {
-  return await isAzureAdAuthAvailable();
-});
-const azureAdAuthCaption = asyncComputed(async () => {
-  return await getAzureAdAuthCaption();
 });
 
 const form = reactive({
@@ -285,9 +287,8 @@ const togglePassRequest = () => {
   }
 };
 
-const azureSignOn = async () => {
-  await externalSignIn("AzureAD", window.location.pathname);
-  await loadUser();
+const externalSignOn = async (authenticationType: string) => {
+  await externalSignIn(authenticationType, window.location.pathname);
 };
 
 console.debug("Init login-page");

@@ -3843,13 +3843,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie@npm:^0.3.3":
-  version: 0.3.3
-  resolution: "@types/cookie@npm:0.3.3"
-  checksum: 450c930d792a4fd5a93645b4123f02596368f904dbb1fe6fbb5043bce8f6ecf877a08511c6ba11c8e28168f62bc278e68d214f002fab927c9056c0bc69f21370
-  languageName: node
-  linkType: hard
-
 "@types/detect-port@npm:^1.3.0":
   version: 1.3.3
   resolution: "@types/detect-port@npm:1.3.3"
@@ -4511,7 +4504,6 @@ __metadata:
     "@vueuse/integrations": ^10.1.2
     buffer-esm: ^1.2.0
     client-oauth2: ^4.3.3
-    fetch-intercept: ^2.4.0
     moment: ^2.29.4
     normalize.css: ^8.0.1
     querystring-es3: ^0.2.1
@@ -5225,7 +5217,6 @@ __metadata:
     sass: ^1.62.1
     tailwindcss: ^3.3.2
     typescript: ~5.0.4
-    universal-cookie: ^4.0.4
     vee-validate: ^4.9.4
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
@@ -6534,13 +6525,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cookie@npm:^0.4.0":
-  version: 0.4.2
-  resolution: "cookie@npm:0.4.2"
-  checksum: a00833c998bedf8e787b4c342defe5fa419abd96b32f4464f718b91022586b8f1bafbddd499288e75c037642493c83083da426c6a9080d309e3bd90fd11baa9b
-  languageName: node
-  linkType: hard
-
 "copyfiles@npm:^2.4.1":
   version: 2.4.1
   resolution: "copyfiles@npm:2.4.1"
@@ -7804,13 +7788,6 @@ __metadata:
     set-cookie-parser: ^2.4.8
     tough-cookie: ^4.0.0
   checksum: d9d6b1e1ef75c0c72258edbf6fe4f7f39e36b17d0f52c37cc2f9fffe97a36134f43fefcaaff5ab78055e481e2929e626e158e381b91b1f11c8f85caf10b271aa
-  languageName: node
-  linkType: hard
-
-"fetch-intercept@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "fetch-intercept@npm:2.4.0"
-  checksum: f89c9b40fdc4695e065b55c27f1f93dacb1a1dcdb36d19267d6b1671304598d144c407a22d33d96e82a05df3f0578020a57760a8dd57f0b851715e0fa1c965c5
   languageName: node
   linkType: hard
 
@@ -13693,16 +13670,6 @@ __metadata:
     unist-util-is: ^4.0.0
     unist-util-visit-parents: ^3.0.0
   checksum: 1fe19d500e212128f96d8c3cfa3312846e586b797748a1fd195fe6479f06bc90a6f6904deb08eefc00dd58e83a1c8a32fb8677252d2273ad7a5e624525b69b8f
-  languageName: node
-  linkType: hard
-
-"universal-cookie@npm:^4.0.4":
-  version: 4.0.4
-  resolution: "universal-cookie@npm:4.0.4"
-  dependencies:
-    "@types/cookie": ^0.3.3
-    cookie: ^0.4.0
-  checksum: bb2bafa7eb7e213e5448924329572dd1a913be00e23906189be2a0dc889b0eea1750f9c33462fc1c911d89092dbd82f6e220c2d61c4057bb3f69e7665d9d8ddf
   languageName: node
   linkType: hard
 

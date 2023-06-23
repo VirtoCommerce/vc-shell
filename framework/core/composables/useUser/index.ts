@@ -1,4 +1,4 @@
-import { computed, Ref, ref, ComputedRef, onUnmounted, getCurrentInstance, inject, watch } from "vue";
+import { computed, Ref, ref, ComputedRef } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
@@ -7,10 +7,12 @@ import {
   SecurityResult,
   ValidatePasswordResetTokenRequest,
   IdentityResult,
+  ExternalSignInClient,
+  ChangePasswordRequest,
+  LoginType,
+  ExternalSignInProviderInfo,
 } from "./../../api";
 import { AuthData, RequestPasswordResult, SignInResults } from "./../../types";
-import * as _ from "lodash-es";
-import fetchIntercept from "fetch-intercept";
 import { useLocalStorage } from "@vueuse/core";
 //The Platform Manager uses the same key to store authorization data in the
 //local storage, so we can exchange authorization data between the Platform Manager
@@ -24,24 +26,12 @@ const authClient = new ClientOAuth2({
   accessTokenUri: `/connect/token`,
   scopes: ["offline_access"],
 });
-const activeAuthenticationType = ref();
 const securityClient = new SecurityClient();
-
-export interface LoginTypes {
-  enabled?: boolean;
-  hasLoginForm?: boolean;
-  authenticationType?: string;
-  priority?: number;
-}
-export interface LoginProviders {
-  authenticationType?: string;
-  displayName?: string;
-}
+const externalSecurityClient = new ExternalSignInClient();
 
 interface IUseUser {
   user: ComputedRef<UserDetail | null>;
   loading: ComputedRef<boolean>;
-  isExternalSignedIn: Ref<boolean>;
   getAccessToken: () => Promise<string | null>;
   loadUser: () => Promise<UserDetail>;
   signIn: (username: string, password: string) => Promise<SignInResults>;
@@ -51,29 +41,18 @@ interface IUseUser {
   resetPasswordByToken: (userId: string, password: string, token: string) => Promise<SecurityResult>;
   requestPasswordReset: (loginOrEmail: string) => Promise<RequestPasswordResult>;
   changeUserPassword: (oldPassword: string, newPassword: string) => Promise<SecurityResult>;
-  getExternalLoginProviders: () => Promise<LoginProviders[]>;
+  getExternalLoginProviders: () => Promise<ExternalSignInProviderInfo[]>;
   externalSignIn: (authenticationType?: string | undefined, returnUrl?: string | undefined) => void;
-  externalSignOut: (authenticationType?: string | undefined) => void;
-  getLoginTypes: () => Promise<LoginTypes[]>;
-  isAzureAdAuthAvailable: () => Promise<boolean>;
-  getAzureAdAuthCaption: () => Promise<string>;
+  getLoginType: () => Promise<LoginType[]>;
+  isAuthenticated: () => Promise<boolean>;
 }
 
 export function useUser(): IUseUser {
-  const base = inject("platformUrl");
-  const isExternalSignedIn = useLocalStorage("VC_EXTERNAL_LOGIN", false);
+  const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", null);
 
-  watch(
-    () => isExternalSignedIn,
-    (newVal) => {
-      if (newVal.value) {
-        initInterceptor();
-      } else {
-        fetchIntercept.clear();
-      }
-    },
-    { immediate: true }
-  );
+  const isAuthenticated = async () => {
+    return !!((externalSignInStorage.value && externalSignInStorage.value.providerType) ?? (await getAccessToken()));
+  };
 
   async function validateToken(userId: string, token: string): Promise<boolean> {
     let result = false;
@@ -124,7 +103,6 @@ export function useUser(): IUseUser {
       console.log("[useUser]: an access token has been obtained successfully", authData.value);
 
       storeAuthData(authData.value);
-      isExternalSignedIn.value = false;
     }
     await loadUser();
     return { succeeded: true };
@@ -133,13 +111,14 @@ export function useUser(): IUseUser {
   async function signOut(): Promise<void> {
     console.debug(`[@vc-shell/framework#useUser:signOut] - Entry point`);
 
-    if (!isExternalSignedIn.value) {
+    if (externalSignInStorage.value && externalSignInStorage.value.providerType) {
+      externalSignOut(externalSignInStorage.value.providerType);
+      storeAuthData({});
+      externalSignInStorage.value = null;
+    } else {
       user.value = undefined;
       authData.value = undefined;
       storeAuthData({});
-    } else {
-      externalSignOut(activeAuthenticationType.value);
-      activeAuthenticationType.value = undefined;
     }
   }
 
@@ -201,6 +180,7 @@ export function useUser(): IUseUser {
   function storeAuthData(authData: AuthData) {
     localStorage.setItem(VC_AUTH_DATA_KEY, JSON.stringify({ ...(authData || {}) }));
   }
+
   async function readAuthData(): Promise<AuthData> {
     return (await JSON.parse(localStorage.getItem(VC_AUTH_DATA_KEY) || "{}")) as AuthData;
   }
@@ -226,27 +206,15 @@ export function useUser(): IUseUser {
     const token = await getAccessToken();
     let result;
 
-    // TODO it's temporary workaround to get valid errors
     if (token) {
       try {
         loading.value = true;
-        const res = await fetch("/api/platform/security/currentuser/changepassword", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json-patch+json",
-            Accept: "text/plain",
-            authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            oldPassword,
-            newPassword,
-          }),
+        const command = new ChangePasswordRequest({
+          oldPassword,
+          newPassword,
         });
-        if (res.status !== 500) {
-          result = await res.text().then((response) => {
-            return JSON.parse(response);
-          });
-        }
+
+        result = await securityClient.changeCurrentUserPassword(command);
       } catch (e) {
         return { succeeded: false, errors: [e.message] } as SecurityResult;
       } finally {
@@ -254,54 +222,42 @@ export function useUser(): IUseUser {
       }
     }
 
-    return result as SecurityResult;
+    return result;
   }
 
-  async function getLoginTypes(): Promise<LoginTypes[]> {
-    let result = null as LoginTypes[];
+  async function getLoginType(): Promise<LoginType[]> {
+    let result = null as LoginType[];
     try {
-      const fetchResult = await fetch("/api/platform/security/logintypes", {
-        method: "GET",
-        headers: {},
-      });
-
-      const response = await fetchResult.text();
-      if (response && response.trim()) {
-        result = JSON.parse(response) as LoginTypes[];
-      }
+      result = await securityClient.getLoginTypes();
     } catch (e) {
       console.error(e);
-
       throw e;
     }
 
     return result;
   }
 
-  async function getExternalLoginProviders(): Promise<LoginProviders[]> {
-    let result = null as LoginProviders[];
+  async function getExternalLoginProviders(): Promise<ExternalSignInProviderInfo[]> {
+    let result = null as ExternalSignInProviderInfo[];
     try {
-      const fetchResult = await fetch(base + "externalsignin/providers", {
-        method: "GET",
-      });
-
-      const response = await fetchResult.text();
-      if (response && response.trim()) {
-        result = JSON.parse(response) as LoginProviders[];
-      }
+      result = await externalSecurityClient.getExternalLoginProviders();
     } catch (e) {
       console.error(e);
-
-      throw e;
     }
 
     return result;
   }
 
-  async function externalSignIn(authenticationType?: string | undefined, returnUrl?: string | undefined) {
-    activeAuthenticationType.value = authenticationType;
+  async function externalSignIn(authenticationType: string | undefined, returnUrl: string | undefined) {
     try {
-      let url_ = base + "externalsignin?";
+      let url_ = "externalsignin?";
+
+      const signInData = {
+        providerType: authenticationType,
+      };
+
+      externalSignInStorage.value = signInData;
+
       if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
       else {
         if (authenticationType !== undefined)
@@ -309,78 +265,29 @@ export function useUser(): IUseUser {
         if (returnUrl !== undefined) url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
       }
       url_ = url_.replace(/[?&]$/, "");
-      isExternalSignedIn.value = true;
 
       window.location.href = url_;
     } catch (e) {
-      isExternalSignedIn.value = false;
       console.error(e);
 
       throw e;
     }
   }
 
-  async function externalSignOut(authenticationType?: string | undefined): Promise<void> {
+  async function externalSignOut(authenticationType: string | undefined): Promise<void> {
     try {
-      let url_ = base + "externalsignin/signout?";
-      if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
-      else {
-        if (authenticationType !== undefined)
-          url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
-      }
-      url_ = url_.replace(/[?&]$/, "");
-
-      await fetch(url_, {
-        method: "GET",
-        headers: {},
-      });
+      const url = "externalsignin/signout?authenticationType=" + authenticationType;
+      window.location.href = url;
     } catch (e) {
       console.error(e);
-
       throw e;
     }
-    isExternalSignedIn.value = false;
-  }
-
-  async function isAzureAdAuthAvailable(): Promise<boolean> {
-    const loginTypes = await getLoginTypes();
-    if (loginTypes) {
-      return (
-        loginTypes.filter((x) => x.authenticationType === "AzureAD").length > 0 &&
-        loginTypes.find((x) => x.authenticationType === "AzureAD").enabled
-      );
-    }
-    return false;
-  }
-
-  async function getAzureAdAuthCaption(): Promise<string> {
-    const loginProviders = await getExternalLoginProviders();
-    if (loginProviders) {
-      return loginProviders.find((x) => x.authenticationType === "AzureAD").displayName;
-    }
-    return null;
-  }
-
-  /* Intercepting requests to explicitly remove auth token when we use AzureAd authentication */
-  function initInterceptor() {
-    console.log("[@vc-shell/framework#useUser:initInterceptor]: Entry point");
-    // store external login in localStorage
-    return fetchIntercept.register({
-      request: function (_url, config) {
-        if (isExternalSignedIn.value) {
-          const edited = _.omit(config.headers, "authorization");
-          config.headers = edited;
-        }
-
-        return [_url, config];
-      },
-    });
   }
 
   return {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
-    isExternalSignedIn,
+    isAuthenticated,
     getAccessToken,
     loadUser,
     signIn,
@@ -392,9 +299,6 @@ export function useUser(): IUseUser {
     changeUserPassword,
     getExternalLoginProviders,
     externalSignIn,
-    externalSignOut,
-    getLoginTypes,
-    isAzureAdAuthAvailable,
-    getAzureAdAuthCaption,
+    getLoginType,
   };
 }

@@ -1,3 +1,12 @@
+## [1.0.93](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.92...v1.0.93) (2023-06-23)
+
+
+### Bug Fixes
+
+* reviews permission fix ([5024973](https://github.com/VirtoCommerce/vendor-portal/commit/502497313fa8ec4624a10ceab0d856d271816548))
+
+
+
 ## [1.0.92](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.91...v1.0.92) (2023-06-23)
 
 

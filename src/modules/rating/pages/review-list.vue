@@ -24,6 +24,7 @@ import { CustomerReview } from "../../../api_client/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 import { useI18n } from "vue-i18n";
+import { UserPermissions } from "./../../../types";
 // Page
 
 export interface Props {
@@ -43,6 +44,7 @@ export interface Emits {
 
 defineOptions({
   url: "/reviews",
+  permissions: UserPermissions.ManageSellerReviews,
 });
 
 const props = withDefaults(defineProps<Props>(), {

@@ -77,7 +77,7 @@
 
           <!-- Rating & Reviews block -->
           <VcCol
-            v-permissions="UserPermissions.ManageSellerReviews"
+            v-if="$hasAccess(UserPermissions.ManageSellerReviews)"
             size="4"
             class="tw-p-2"
           >
@@ -243,8 +243,8 @@ import { OffersList, useOffers } from "../modules/offers";
 import { OrdersList, useOrders } from "../modules/orders";
 import { MpProductStatus, ProductsList, useProducts } from "../modules/products";
 import { RatingDashboardCard } from "../modules/rating";
-import { UserPermissions } from "../types";
 import { useI18n } from "vue-i18n";
+import { UserPermissions } from "./../types";
 
 const { t } = useI18n({ useScope: "global" });
 const { products, loadProducts, loading: productsLoading } = useProducts();

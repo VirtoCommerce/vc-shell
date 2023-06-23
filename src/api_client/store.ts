@@ -22,7 +22,9 @@ export class AuthApiBase {
   }
 
   protected transformOptions(options: any): Promise<any> {
-    options.headers['authorization'] =  `Bearer ${this.authToken}`;
+    if (this.authToken) {
+      options.headers['authorization'] =  `Bearer ${this.authToken}`;
+    }
     return Promise.resolve(options);
   }
 }
@@ -39,7 +41,7 @@ export class StoreModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchStores(body?: StoreSearchCriteria | undefined): Promise<StoreSearchResult> {
@@ -141,7 +143,7 @@ export class StoreModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createStore(body?: Store | undefined): Promise<Store> {
@@ -193,7 +195,7 @@ export class StoreModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateStore(body?: Store | undefined): Promise<void> {
@@ -241,7 +243,7 @@ export class StoreModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteStore(ids?: string[] | undefined): Promise<void> {
@@ -289,7 +291,7 @@ export class StoreModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     sendDynamicNotificationAnStoreEmail(body?: SendDynamicNotificationRequest | undefined): Promise<void> {

@@ -22,7 +22,9 @@ export class AuthApiBase {
   }
 
   protected transformOptions(options: any): Promise<any> {
-    options.headers['authorization'] =  `Bearer ${this.authToken}`;
+    if (this.authToken) {
+      options.headers['authorization'] =  `Bearer ${this.authToken}`;
+    }
     return Promise.resolve(options);
   }
 }
@@ -39,7 +41,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchCustomerOrder(body?: CustomerOrderSearchCriteria | undefined): Promise<CustomerOrderSearchResult> {
@@ -91,7 +93,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param respGroup (optional) 
+     * @param respGroup (optional)
      * @return Success
      */
     getByNumber(number: string, respGroup?: string | undefined): Promise<CustomerOrder> {
@@ -146,7 +148,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param respGroup (optional) 
+     * @param respGroup (optional)
      * @return Success
      */
     getById(id: string, respGroup?: string | undefined): Promise<CustomerOrder> {
@@ -201,7 +203,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     calculateTotals(body?: CustomerOrder | undefined): Promise<CustomerOrder> {
@@ -253,7 +255,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     processOrderPayments(orderId: string, paymentId: string, body?: BankCardInfo | undefined): Promise<ProcessPaymentRequestResult> {
@@ -361,7 +363,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createOrder(body?: CustomerOrder | undefined): Promise<CustomerOrder> {
@@ -413,7 +415,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateOrder(body?: CustomerOrder | undefined): Promise<void> {
@@ -461,7 +463,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteOrdersByIds(ids?: string[] | undefined): Promise<void> {
@@ -609,8 +611,8 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param start (optional) 
-     * @param end (optional) 
+     * @param start (optional)
+     * @param end (optional)
      * @return Success
      */
     getDashboardStatistics(start?: Date | undefined, end?: Date | undefined): Promise<DashboardStatisticsResult> {
@@ -666,7 +668,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     postProcessPayment(body?: PaymentCallbackParameters | undefined): Promise<PostProcessPaymentRequestResult> {
@@ -829,7 +831,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOrderChanges(body?: CustomerOrderHistorySearchCriteria | undefined): Promise<ChangeLogSearchResult> {
@@ -924,7 +926,7 @@ export class OrderModuleClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchCustomerOrderIndexed(body?: CustomerOrderIndexedSearchCriteria | undefined): Promise<CustomerOrderSearchResult> {
@@ -988,7 +990,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     searchOrderPayments(body?: PaymentSearchCriteria | undefined): Promise<PaymentSearchResult> {
@@ -1040,7 +1042,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param respGroup (optional) 
+     * @param respGroup (optional)
      * @return Success
      */
     getById(id: string, respGroup?: string | undefined): Promise<PaymentIn> {
@@ -1095,7 +1097,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     createPayment(body?: PaymentIn | undefined): Promise<CustomerOrder> {
@@ -1147,7 +1149,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updatePayment(body?: PaymentIn | undefined): Promise<CustomerOrder> {
@@ -1199,7 +1201,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional) 
+     * @param ids (optional)
      * @return Success
      */
     deleteOrderPaymentsByIds(ids?: string[] | undefined): Promise<void> {
@@ -1247,7 +1249,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     capturePayment(body?: CaptureOrderPaymentRequest | undefined): Promise<void> {
@@ -1295,7 +1297,7 @@ export class OrderModulePaymentsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     refundPayment(body?: RefundOrderPaymentRequest | undefined): Promise<void> {
@@ -1355,7 +1357,7 @@ export class OrderModuleShipmentsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional) 
+     * @param body (optional)
      * @return Success
      */
     updateShipment(body?: OrderShipment | undefined): Promise<void> {

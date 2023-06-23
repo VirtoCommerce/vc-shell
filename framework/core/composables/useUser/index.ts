@@ -114,7 +114,7 @@ export function useUser(): IUseUser {
     console.debug(`[@vc-shell/framework#useUser:signOut] - Entry point`);
 
     if (externalSignInStorage.value && externalSignInStorage.value.providerType) {
-      externalSignOut(externalSignInStorage.value.providerType, window.location.pathname);
+      externalSignOut(externalSignInStorage.value.providerType);
     } else {
       user.value = undefined;
       authData.value = undefined;
@@ -274,21 +274,11 @@ export function useUser(): IUseUser {
     }
   }
 
-  async function externalSignOut(authenticationType: string, returnUrl: string): Promise<void> {
+  async function externalSignOut(authenticationType: string): Promise<void> {
     try {
-      let url_ = base + "externalsignin/signout?";
+      externalSecurityClient.signOut(authenticationType);
 
       externalSignInStorage.value = null;
-
-      if (authenticationType === null) throw new Error("The parameter 'authenticationType' cannot be null.");
-      else {
-        if (authenticationType !== undefined)
-          url_ += "authenticationType=" + encodeURIComponent("" + authenticationType) + "&";
-        if (returnUrl !== undefined) url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&";
-      }
-      url_ = url_.replace(/[?&]$/, "");
-
-      window.location.href = url_;
     } catch (e) {
       console.error(e);
       throw e;

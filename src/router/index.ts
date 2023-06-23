@@ -12,7 +12,6 @@ import {
   ResetPassword,
   useBladeNavigation,
 } from "@vc-shell/framework";
-import { useCookies } from "@vueuse/integrations/useCookies";
 // eslint-disable-next-line import/no-unresolved
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
@@ -84,34 +83,31 @@ export const router = createRouter({
 router.beforeEach(async (to, from) => {
   const { fetchUserPermissions, checkPermission } = usePermissions();
   const { resolveBlades } = useBladeNavigation();
-  const { getAccessToken } = useUser();
-
+  const { isAuthenticated } = useUser();
   const pages = inject<BladePageComponent[]>("pages");
-
   const resolvedBladeUrl = resolveBlades(to);
 
-  try {
-    const token = await getAccessToken();
-    const azureAdCookie = useCookies([".AspNetCore.Identity.Application"]).get(".AspNetCore.Identity.Application");
+  if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
+    try {
+      // Fetch permissions if not any
+      await fetchUserPermissions();
 
-    // Fetching permissions if not any
-    if (token) await fetchUserPermissions();
+      const component = pages.find((blade) => blade?.url === to.path);
 
-    const component = pages.find((blade) => blade?.url === to.path);
+      const hasAccess = checkPermission(component?.permissions);
 
-    const hasAccess = checkPermission(component?.permissions);
-
-    if (!(token || azureAdCookie) && to.name !== "Login") {
+      if (!(await isAuthenticated()) && to.name !== "Login") {
+        return { name: "Login" };
+      } else if (hasAccess && to.name !== "Login") {
+        return resolvedBladeUrl ? resolvedBladeUrl : true;
+      } else if (!hasAccess) {
+        notification.error("Access restricted", {
+          timeout: 3000,
+        });
+        return from.path;
+      }
+    } catch (e) {
       return { name: "Login" };
-    } else if (hasAccess && to.name !== "Login") {
-      return resolvedBladeUrl ? resolvedBladeUrl : true;
-    } else if (!hasAccess) {
-      notification.error("Access restricted", {
-        timeout: 3000,
-      });
-      return from.path;
     }
-  } catch (e) {
-    throw new Error(e.message);
-  }
+  } else return true;
 });

@@ -18,6 +18,7 @@ declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
     /** @deprecated use `i18n.mergeLocaleMessage` from `import { i18n } "@vc-shell/framework"` */
     $mergeLocaleMessage: Composer<{}, {}, {}, string, never, string>["mergeLocaleMessage"];
+    $hasAccess: (permissions: string | string[]) => boolean;
     $isPhone: Ref<boolean>;
     $isTablet: Ref<boolean>;
     $isMobile: Ref<boolean>;

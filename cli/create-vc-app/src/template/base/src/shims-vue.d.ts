@@ -10,6 +10,7 @@ declare module "*.vue" {
 
 declare module "@vue/runtime-core" {
   interface ComponentCustomProperties {
+    $hasAccess: (permissions: string | string[]) => boolean;
     $isPhone: Ref<boolean>;
     $isTablet: Ref<boolean>;
     $isMobile: Ref<boolean>;

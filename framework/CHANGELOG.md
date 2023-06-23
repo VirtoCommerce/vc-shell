@@ -1,3 +1,12 @@
+## [1.0.85](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.84...v1.0.85) (2023-06-23)
+
+
+### Bug Fixes
+
+* check permissions plugin ([cc65272](https://github.com/VirtoCommerce/vc-shell/commit/cc65272d933e29f427b1403df2bdd627b15dd1e6))
+
+
+
 ## [1.0.84](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.83...v1.0.84) (2023-06-23)
 
 

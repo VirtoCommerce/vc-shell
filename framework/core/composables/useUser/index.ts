@@ -1,4 +1,4 @@
-import { computed, Ref, ref, ComputedRef } from "vue";
+import { computed, Ref, ref, ComputedRef, getCurrentInstance, inject } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
@@ -48,6 +48,8 @@ interface IUseUser {
 }
 
 export function useUser(): IUseUser {
+  const instance = getCurrentInstance();
+  const base = instance && inject("platformUrl");
   const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", { providerType: null });
 
   const isAuthenticated = async () => {
@@ -249,7 +251,7 @@ export function useUser(): IUseUser {
 
   async function externalSignIn(authenticationType: string | undefined, returnUrl: string | undefined) {
     try {
-      let url_ = "externalsignin?";
+      let url_ = base + "externalsignin?";
 
       const signInData = {
         providerType: authenticationType,
@@ -275,7 +277,7 @@ export function useUser(): IUseUser {
 
   async function externalSignOut(authenticationType: string | undefined): Promise<void> {
     try {
-      const url = "externalsignin/signout?authenticationType=" + authenticationType;
+      const url = base + "externalsignin/signout?authenticationType=" + authenticationType;
       window.location.href = url;
     } catch (e) {
       console.error(e);

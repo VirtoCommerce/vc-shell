@@ -72,6 +72,7 @@ export interface IBladeRef {
   exposed: CoreBladeExposed;
   blade: IBladeContainer;
   expanded?: boolean;
+  active?: boolean;
 }
 
 export interface BladeNavigationPlugin {

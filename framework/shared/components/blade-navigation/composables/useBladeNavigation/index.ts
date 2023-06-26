@@ -39,6 +39,7 @@ interface IUseBladeNavigation {
   readonly workspaceParam: Ref<string>;
   readonly lastBladeData: Ref<BladeData>;
   bladesRefs: Ref<IBladeRef[]>;
+  activeBlade: Ref<IBladeContainer>;
   openBlade: <Blade extends ComponentPublicInstance = ComponentPublicInstance>(
     { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
     isWorkspace?: boolean
@@ -59,7 +60,7 @@ interface IUseBladeNavigation {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const workspaceOptions: Ref<Record<string, any>> = ref();
 const workspaceParam: Ref<string> = ref();
-
+const activeBlade = ref();
 const lastBladeData = useLocalStorage<BladeData>("VC_BLADE_DATA", {});
 
 export function useBladeNavigation(): IUseBladeNavigation {
@@ -124,34 +125,38 @@ export function useBladeNavigation(): IUseBladeNavigation {
       return;
     }
 
-    // caller blade component from instance
-    const instanceComponent = instance && instance.vnode.type;
+    // caller blade component
+    const instanceComponent =
+      navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade ??
+      (instance && instance.vnode.type);
 
-    // Caller blade index in blades array
-    const callerIndex = navigationInstance.bladesRefs.value.findIndex((item) => {
-      return _.isEqual(item.blade.blade, instanceComponent);
-    });
+    if (instanceComponent) {
+      // Caller blade index in blades array
+      const callerIndex = navigationInstance.bladesRefs.value.findIndex((item) => {
+        return _.isEqual(item.blade.blade, instanceComponent);
+      });
 
-    // Trying to determine if the calling blade already has a child in order to replace it
-    const isBladeAlreadyExist =
-      callerIndex >= 0 ? navigationInstance.bladesRefs.value[callerIndex + 1]?.blade.blade : undefined;
+      // Trying to determine if the calling blade already has a child in order to replace it
+      const isBladeAlreadyExist =
+        callerIndex >= 0 ? navigationInstance.bladesRefs.value[callerIndex + 1]?.blade.blade : undefined;
 
-    // Blade we want to open
-    const bladeComponent = unref(blade);
+      // Blade we want to open
+      const bladeComponent = unref(blade);
 
-    // Check if caller blade has idx
-    const index = instanceComponent?.idx ? instanceComponent.idx : 0;
+      // Check if caller blade has idx
+      const index = instanceComponent?.idx ? instanceComponent.idx : 0;
 
-    if (isBladeAlreadyExist === undefined) {
-      bladeComponent.idx = index ? index + 1 : 1;
-    } else if (isBladeAlreadyExist) {
-      await closeBlade(
-        navigationInstance.blades.value.findIndex((x: IBladeContainer) => x.idx === isBladeAlreadyExist.idx)
-      );
-      bladeComponent.idx = isBladeAlreadyExist.idx;
-    }
-    if (!isPrevented.value) {
-      await addBlade(bladeComponent, param, options, onOpen, onClose, index);
+      if (isBladeAlreadyExist === undefined) {
+        bladeComponent.idx = index ? index + 1 : 1;
+      } else if (isBladeAlreadyExist) {
+        await closeBlade(
+          navigationInstance.blades.value.findIndex((x: IBladeContainer) => x.idx === isBladeAlreadyExist.idx)
+        );
+        bladeComponent.idx = isBladeAlreadyExist.idx;
+      }
+      if (!isPrevented.value) {
+        await addBlade(bladeComponent, param, options, onOpen, onClose, index);
+      }
     }
   }
 
@@ -296,6 +301,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     workspaceOptions: computed(() => workspaceOptions.value),
     workspaceParam: computed(() => workspaceParam.value),
     lastBladeData: computed(() => lastBladeData.value),
+    activeBlade,
     bladesRefs: navigationInstance.bladesRefs,
     openBlade,
     closeBlade,

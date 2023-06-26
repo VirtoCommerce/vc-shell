@@ -1,3 +1,12 @@
+## [1.0.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.86...v1.0.87) (2023-06-26)
+
+
+### Bug Fixes
+
+* navigation exact blade ([7a20053](https://github.com/VirtoCommerce/vc-shell/commit/7a20053705a5e98eeb9bdf3768ab45be113ba66a))
+
+
+
 ## [1.0.86](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.85...v1.0.86) (2023-06-23)
 
 

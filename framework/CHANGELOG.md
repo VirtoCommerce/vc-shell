@@ -1,3 +1,13 @@
+## [1.0.88](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.87...v1.0.88) (2023-06-27)
+
+
+### Bug Fixes
+
+* azure ([419830f](https://github.com/VirtoCommerce/vc-shell/commit/419830f01ea3e8d0c93779ebfb8725a7af551e9e))
+* vc-select search ([3aaf55e](https://github.com/VirtoCommerce/vc-shell/commit/3aaf55ec5fb0b6a311f332ab5b0d4e3a227e525d))
+
+
+
 ## [1.0.87](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.86...v1.0.87) (2023-06-26)
 
 

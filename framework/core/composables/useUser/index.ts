@@ -27,7 +27,6 @@ const authClient = new ClientOAuth2({
   scopes: ["offline_access"],
 });
 const securityClient = new SecurityClient();
-const externalSecurityClient = new ExternalSignInClient();
 
 interface IUseUser {
   user: ComputedRef<UserDetail | null>;
@@ -49,7 +48,8 @@ interface IUseUser {
 
 export function useUser(): IUseUser {
   const instance = getCurrentInstance();
-  const base = instance && inject("platformUrl");
+  const base = instance && inject<string>("platformUrl");
+  const externalSecurityClient = new ExternalSignInClient(base);
   const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", { providerType: null });
 
   const isAuthenticated = async () => {

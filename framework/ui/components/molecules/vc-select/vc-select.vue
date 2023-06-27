@@ -870,7 +870,7 @@ async function onSearch(value: string) {
     }
   } else {
     optionsTemp.value = optionsList.value.filter((x) => {
-      return x[getOptionLabel.value(x)].toLowerCase().includes(filterString.value.toLowerCase());
+      return x[props.optionLabel as string].toLowerCase().includes(filterString.value.toLowerCase());
     });
   }
 }

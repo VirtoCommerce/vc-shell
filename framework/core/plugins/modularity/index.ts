@@ -24,21 +24,29 @@ export const createAppModule = (pages: unknown, locales?: unknown, notificationT
   const module = createModule(pages, locales);
 
   return {
-    install(app: App, options: { router: Router }): void {
-      const { router } = options;
+    install(app: App, options?: { router: Router }): void {
+      let routerInstance;
+
+      if (options && options.router) {
+        const { router } = options;
+        routerInstance = router;
+      }
+
       // Register pages
       Object.entries(pages).forEach(([, page]: [string, BladeConstructor]) => {
         app.config.globalProperties.pages?.push(page);
 
         // Dynamically add pages to vue router
         if (page.url) {
-          const mainRouteName = router.getRoutes().find((r) => r.meta?.root)?.name;
+          const mainRouteName = routerInstance.getRoutes().find((r) => r.meta?.root)?.name;
 
-          router.addRoute(mainRouteName, {
-            name: kebabToPascal(page.url.substring(1)),
-            path: page.url.substring(1),
-            component: page,
-          });
+          if (routerInstance) {
+            routerInstance.addRoute(mainRouteName, {
+              name: kebabToPascal(page.url.substring(1)),
+              path: page.url.substring(1),
+              component: page,
+            });
+          }
         }
       });
 

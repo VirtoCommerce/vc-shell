@@ -9,6 +9,7 @@ import {
   markRaw,
   inject,
   nextTick,
+  warn,
 } from "vue";
 import * as _ from "lodash-es";
 import { useRouter, RouteLocationNormalized } from "vue-router";
@@ -55,6 +56,7 @@ interface IUseBladeNavigation {
   resolveBlades: (to: RouteLocationNormalized) => string;
   resolveLastBlade: (pages: BladePageComponent[]) => void;
   resolveUnknownRoutes: (to: RouteLocationNormalized) => string;
+  resolveBladeByName: (name: string) => BladeConstructor;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -120,6 +122,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
     { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
     isWorkspace = false
   ) {
+    if (!blade) {
+      throw new Error("You should pass blade component as openBlade argument");
+    }
     if (isWorkspace) {
       openWorkspace({ blade, param, options });
       return;
@@ -296,6 +301,18 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  function resolveBladeByName(name: string) {
+    if (!instance) {
+      warn("resolveComponentByName can only be used in setup().");
+      return;
+    }
+    if (!name) {
+      throw new Error("blade name is required");
+    }
+    const components = instance && instance.appContext.components;
+    return components[name] as BladeConstructor;
+  }
+
   return {
     blades: computed(() => navigationInstance.blades.value),
     workspaceOptions: computed(() => workspaceOptions.value),
@@ -309,5 +326,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
     resolveBlades,
     resolveUnknownRoutes,
     resolveLastBlade,
+    resolveBladeByName,
   };
 }

@@ -87,11 +87,12 @@ import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
+import useDynamicModule from "./../modules/dynamic/composables/useDynamicModule";
 
 const { open } = usePopup({
   component: ChangePassword,
 });
-
+const { registerModule, items } = useDynamicModule();
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
 const { checkPermission } = usePermissions();
@@ -114,8 +115,12 @@ const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 const bladeNavigationRefs = ref();
 
+console.log(pages);
+
 onMounted(async () => {
   try {
+    registerModule();
+
     await loadUser();
     await getApps();
     langInit();
@@ -314,6 +319,7 @@ const menuItems = reactive(
       isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
       component: ReviewList,
     },
+    items(),
     {
       title: computed(() => t("SETTINGS.MENU.TITLE")),
       icon: "fas fa-sliders-h",

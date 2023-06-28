@@ -70,7 +70,6 @@ defineOptions({
 const props = withDefaults(defineProps<Props>(), {
   expanded: true,
   closable: true,
-  param: "ed486cdc-b0d1-44ac-8868-b7596e06f37e",
 });
 
 defineEmits<Emits>();

@@ -42,7 +42,7 @@
           icon="fas fa-chevron-left"
           size="s"
         ></VcIcon>
-        <span class="tw-ml-2 tw-text-lg">{{ $t("Back") }}</span>
+        <span class="tw-ml-2 tw-text-lg">{{ t("COMPONENTS.ORGANISMS.VC_APP.INTERNAL.VC_APP_BAR.BACK") }}</span>
       </VcLink>
     </template>
 
@@ -98,6 +98,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useI18n } from "vue-i18n";
 import { VcIcon, VcLink } from "./../../../../";
 import { IBladeToolbar } from "./../../../../../../core/types";
 import { IBladeRef } from "./../../../../../../shared";
@@ -120,6 +121,8 @@ export interface Emits {
 defineProps<Props>();
 
 defineEmits<Emits>();
+
+const { t } = useI18n({ useScope: "global" });
 </script>
 
 <style lang="scss">

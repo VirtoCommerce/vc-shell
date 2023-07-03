@@ -12,17 +12,20 @@
     <VcButton
       class="tw-ml-auto"
       @click="$emit('close')"
-      >OK</VcButton
+      >{{ t("COMPONENTS.ORGANISMS.VC_POPUP.OK") }}</VcButton
     >
   </div>
 </template>
 
 <script setup lang="ts">
 import { VcButton } from "./../../../../";
+import { useI18n } from "vue-i18n";
 
 export interface Emits {
   (event: "close"): void;
 }
 
 defineEmits<Emits>();
+
+const { t } = useI18n({ useScope: "global" });
 </script>

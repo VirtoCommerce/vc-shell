@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading"
-    :title="param && profileDetails ? profileDetails.name : $t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')"
+    :title="param && profileDetails ? profileDetails.name : t('IMPORT.PAGES.PROFILE_DETAILS.TITLE')"
     width="50%"
     :toolbar-items="bladeToolbar"
     :closable="closable"
@@ -15,7 +15,7 @@
         <VcCol>
           <Field
             v-slot="{ field, errorMessage, handleChange, errors }"
-            :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
+            :label="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
             rules="required"
             name="profile_name"
             :model-value="profileDetails.name"
@@ -24,10 +24,10 @@
               v-bind="field"
               v-model="profileDetails.name"
               class="tw-p-3"
-              :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
-              :placeholder="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER')"
+              :label="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TITLE')"
+              :placeholder="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.PLACEHOLDER')"
               :clearable="true"
-              :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP')"
+              :tooltip="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.PROFILE_NAME.TOOLTIP')"
               :error="!!errors.length"
               :error-message="errorMessage"
               required
@@ -36,7 +36,7 @@
           </Field>
           <Field
             v-slot="{ field, handleChange }"
-            :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
+            :label="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
             rules="required"
             name="importer"
             :model-value="profileDetails.dataImporterType"
@@ -45,8 +45,8 @@
               v-bind="field"
               v-model="profileDetails.dataImporterType"
               class="tw-p-3"
-              :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
-              :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
+              :label="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
+              :tooltip="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
               name="importer"
               :options="dataImporters"
               option-value="typeName"
@@ -68,16 +68,16 @@
         v-if="profileDetails.dataImporterType"
         class="tw-p-3"
       >
-        <VcCard :header="$t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')">
+        <VcCard :header="t('IMPORT.PAGES.PROFILE_DETAILS.PROFILE_SETTINGS.TITLE')">
           <VcRow>
             <VcCol>
               <div class="tw-p-4">
                 <a
                   class="vc-link"
                   :href="sampleTemplateUrl"
-                  >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
+                  >{{ t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
                 >
-                {{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
+                {{ t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
               </div>
 
               <VcDynamicProperty

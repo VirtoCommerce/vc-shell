@@ -67,7 +67,8 @@
                           v-if="!hasValue"
                           class="tw-text-[#a5a5a5]"
                         >
-                          {{ placeholder }}
+                          <template v-if="placeholder">{{ placeholder }}</template>
+                          <template v-else>{{ t("COMPONENTS.MOLECULES.VC_SELECT.CLICK_TO_SELECT") }}</template>
                         </div>
                         <template v-else-if="selectedScope && selectedScope.length && hasValue">
                           <template v-if="$slots['selected-item']">
@@ -258,6 +259,7 @@ import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 import { VcLabel, VcContainer, VcHint, VcIcon } from "./../../";
+import { useI18n } from "vue-i18n";
 
 export type OptionProp<T> = ((option: T) => string) | string | undefined;
 
@@ -485,7 +487,6 @@ const props = withDefaults(
     name: "Field",
     emitValue: true,
     mapOptions: true,
-    placeholder: "Click to select...",
     options: () => [],
   }
 );
@@ -505,6 +506,8 @@ const emit = defineEmits<{
    */
   (event: "close"): void;
 }>();
+
+const { t } = useI18n({ useScope: "global" });
 
 const { modelValue, options } = toRefs(props);
 

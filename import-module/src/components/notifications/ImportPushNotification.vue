@@ -7,10 +7,10 @@
     <VcHint
       v-if="notification.profileName"
       class="tw-mb-1"
-      >{{ $t("IMPORT.PUSH.PROFILE") }} <b>{{ notification.profileName }}</b></VcHint
+      >{{ t("IMPORT.PUSH.PROFILE") }} <b>{{ notification.profileName }}</b></VcHint
     >
     <div v-if="notification.errors && notification.errors.length">
-      <VcHint> {{ $t("IMPORT.PUSH.ERRORS") }}: {{ notification.errors && notification.errors.length }}</VcHint>
+      <VcHint> {{ t("IMPORT.PUSH.ERRORS") }}: {{ notification.errors && notification.errors.length }}</VcHint>
     </div>
   </VcNotificationTemplate>
 </template>
@@ -18,6 +18,8 @@
 <script lang="ts" setup>
 import { ImportPushNotification } from "./../../api-client/import";
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+
 export interface Props {
   notification: ImportPushNotification;
 }
@@ -28,7 +30,7 @@ defineOptions({
   inheritAttrs: false,
   notifyType: "ImportPushNotification",
 });
-
+const { t } = useI18n({ useScope: "global" });
 const notificationStyle = computed(() => ({
   color: computed(() => {
     const notification = props.notification;

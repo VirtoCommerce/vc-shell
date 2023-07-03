@@ -45,7 +45,7 @@
           text
           class="tw-shrink-0 tw-opacity-80 tw-text-white hover:!tw-opacity-100 hover:!tw-text-white"
           @click="open()"
-          >{{ $t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
+          >{{ t("COMPONENTS.ORGANISMS.VC_BLADE.SEE_DETAILS") }}</VcButton
         >
       </div>
     </template>

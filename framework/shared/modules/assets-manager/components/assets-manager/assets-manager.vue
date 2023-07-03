@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    :title="$t('ASSETS_MANAGER.TITLE')"
+    :title="t('ASSETS_MANAGER.TITLE')"
     :expanded="expanded"
     :closable="closable"
     :toolbar-items="bladeToolbar"
@@ -39,9 +39,9 @@
               class="tw-text-[100px] tw-text-[#41afe6]"
             ></VcIcon>
             <div class="tw-m-4 tw-text-xl tw-font-medium">
-              {{ $t("ASSETS_MANAGER.EMPTY.NO_ASSETS") }}
+              {{ t("ASSETS_MANAGER.EMPTY.NO_ASSETS") }}
             </div>
-            <VcButton @click="toggleUploader">{{ $t("ASSETS_MANAGER.EMPTY.UPLOAD") }}</VcButton>
+            <VcButton @click="toggleUploader">{{ t("ASSETS_MANAGER.EMPTY.UPLOAD") }}</VcButton>
           </div>
         </template>
 
@@ -106,19 +106,19 @@
               </div>
               <div class="tw-mt-3 tw-w-full tw-flex tw-justify-between">
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.SIZE") }}</VcHint>
+                  <VcHint>{{ t("ASSETS_MANAGER.TABLE.HEADER.SIZE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ readableSize(item.size) }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.CREATED_DATE") }}</VcHint>
+                  <VcHint>{{ t("ASSETS_MANAGER.TABLE.HEADER.CREATED_DATE") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ item.createdDate && moment(item.createdDate).fromNow() }}
                   </div>
                 </div>
                 <div class="tw-truncate tw-grow tw-basis-0 tw-mr-2">
-                  <VcHint>{{ $t("ASSETS_MANAGER.TABLE.HEADER.SORT_ORDER") }}</VcHint>
+                  <VcHint>{{ t("ASSETS_MANAGER.TABLE.HEADER.SORT_ORDER") }}</VcHint>
                   <div class="tw-truncate tw-mt-1">
                     {{ item.sortOrder }}
                   </div>
@@ -178,7 +178,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 
 const defaultAssets = ref<Asset[]>([]);
 

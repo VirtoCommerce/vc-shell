@@ -381,7 +381,7 @@ const props = withDefaults(defineProps<Props>(), {
   culture: "en-US",
 });
 
-const { locale, te, t } = useI18n();
+const { locale, te, t } = useI18n({ useScope: "global" });
 
 const rules: IValidationRules = {};
 const items = ref<PropertyItem[]>([]);

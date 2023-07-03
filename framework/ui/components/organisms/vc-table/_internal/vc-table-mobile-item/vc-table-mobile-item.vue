@@ -84,7 +84,7 @@
             >
               <div class="tw-flex tw-w-full tw-items-center">
                 <span class="tw-grow tw-text-[#2e3d4e] tw-text-[19px] tw-font-semibold tw-tracking-[-0.01em]">
-                  {{ $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_ACTIONS") }}
+                  {{ t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_ACTIONS") }}
                 </span>
                 <VcIcon
                   class="tw-text-[#c2d7e4]"
@@ -121,6 +121,7 @@
 <script lang="ts" setup generic="T extends TableItem | string">
 import { computed, ref, watch } from "vue";
 import { IActionBuilderResult } from "./../../../../../../core/types";
+import { useI18n } from "vue-i18n";
 
 export interface Emits {
   (event: "swipeStart", id: string): void;
@@ -144,6 +145,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<Emits>();
+const { t } = useI18n({ useScope: "global" });
 const offsetX = ref(0);
 const startX = ref(0);
 const startY = ref(0);

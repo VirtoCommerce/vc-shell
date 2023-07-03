@@ -8,7 +8,7 @@
       <VcForm @submit.prevent="login">
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
+          :label="t('LOGIN.FIELDS.LOGIN.LABEL')"
           name="username"
           :model-value="form.username"
           rules="required"
@@ -18,8 +18,8 @@
             ref="loginField"
             v-model="form.username"
             class="tw-mb-4 tw-mt-1"
-            :label="$t('LOGIN.FIELDS.LOGIN.LABEL')"
-            :placeholder="$t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
+            :label="t('LOGIN.FIELDS.LOGIN.LABEL')"
+            :placeholder="t('LOGIN.FIELDS.LOGIN.PLACEHOLDER')"
             required
             :error="!!errors.length"
             :error-message="errorMessage"
@@ -28,7 +28,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
+          :label="t('LOGIN.FIELDS.PASSWORD.LABEL')"
           name="password"
           :model-value="form.password"
           rules="required"
@@ -38,8 +38,8 @@
             ref="passwordField"
             v-model="form.password"
             class="tw-mb-4"
-            :label="$t('LOGIN.FIELDS.PASSWORD.LABEL')"
-            :placeholder="$t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
+            :label="t('LOGIN.FIELDS.PASSWORD.LABEL')"
+            :placeholder="t('LOGIN.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             required
             :error="!!errors.length"
@@ -58,7 +58,7 @@
             type="button"
             @click="togglePassRequest"
           >
-            {{ $t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
+            {{ t("LOGIN.FORGOT_PASSWORD_BUTTON") }}
           </VcButton>
         </div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
@@ -67,7 +67,7 @@
             class="tw-w-28"
             @click="login"
           >
-            {{ $t("LOGIN.BUTTON") }}
+            {{ t("LOGIN.BUTTON") }}
           </vc-button>
         </div>
       </VcForm>
@@ -102,7 +102,7 @@
         <VcForm @submit.prevent="forgot">
           <Field
             v-slot="{ field, errorMessage, handleChange, errors }"
-            :label="$t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+            :label="t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
             name="loginOrEmail"
             :model-value="forgotPasswordForm.loginOrEmail"
             rules="required|email"
@@ -112,9 +112,9 @@
               ref="forgotPasswordField"
               v-model="forgotPasswordForm.loginOrEmail"
               class="tw-mb-4 tw-mt-1"
-              :label="$t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
-              :placeholder="$t('LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
-              :hint="$t('LOGIN.RESET_EMAIL_TEXT')"
+              :label="t('LOGIN.FIELDS.FORGOT_PASSWORD.LABEL')"
+              :placeholder="t('LOGIN.FIELDS.FORGOT_PASSWORD.PLACEHOLDER')"
+              :hint="t('LOGIN.RESET_EMAIL_TEXT')"
               required
               :error="!!errors.length"
               :error-message="errorMessage"
@@ -127,20 +127,20 @@
               type="button"
               @click="togglePassRequest"
             >
-              {{ $t("LOGIN.BACK_BUTTON") }}
+              {{ t("LOGIN.BACK_BUTTON") }}
             </vc-button>
             <vc-button
               :disabled="loading || isDisabled || loadingForgotPassword"
               @click="forgot"
             >
-              {{ $t("LOGIN.FORGOT_BUTTON") }}
+              {{ t("LOGIN.FORGOT_BUTTON") }}
             </vc-button>
           </div>
         </VcForm>
       </template>
 
       <template v-if="requestPassResult.succeeded && forgotPasswordRequestSent">
-        <div>{{ $t("LOGIN.RESET_EMAIL_SENT") }}</div>
+        <div>{{ t("LOGIN.RESET_EMAIL_SENT") }}</div>
         <div class="tw-flex tw-justify-center tw-items-center tw-pt-2">
           <span
             v-if="$isDesktop.value"
@@ -150,7 +150,7 @@
             :disabled="loading"
             @click="togglePassRequest"
           >
-            {{ $t("LOGIN.BUTTON_OK") }}
+            {{ t("LOGIN.BUTTON_OK") }}
           </vc-button>
         </div>
       </template>
@@ -184,6 +184,7 @@ import { RequestPasswordResult, SignInResults } from "./../../../../../core/type
 import { CommonPageComposables } from "./../../../../../typings";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 import { ExternalSignInProviderInfo } from "./../../../../../core/api";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   logo: string;
@@ -197,6 +198,7 @@ const router = useRouter();
 
 useForm({ validateOnMount: false });
 const { getUiCustomizationSettings, uiSettings } = useSettings();
+const { t } = useI18n({ useScope: "global" });
 let useLogin;
 const injected = inject<CommonPageComposables>("commonPageComposables");
 const signInResult = ref<SignInResults>({ succeeded: true });

@@ -53,7 +53,7 @@
       v-else
       class="tw-flex tw-justify-center tw-p-5"
     >
-      <VcHint>Gallery is empty</VcHint>
+      <VcHint>{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.GALLERY_IS_EMPTY") }}</VcHint>
     </div>
   </div>
 </template>
@@ -65,6 +65,7 @@ import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
 import VcGalleryPreview from "./_internal/vc-gallery-preview/vc-gallery-preview.vue";
 import { usePopup } from "./../../../../shared/components/popup-handler/composables/usePopup";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   images?: IImage[];
@@ -109,7 +110,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
-
+const { t } = useI18n({ useScope: "global" });
 const previewImageIndex = ref<number>();
 
 const defaultImages = ref<IImage[]>([]);

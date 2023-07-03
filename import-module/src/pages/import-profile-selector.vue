@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     v-loading="loading"
-    :title="$t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
+    :title="t('IMPORT.PAGES.PROFILE_SELECTOR.TITLE')"
     :width="bladeWidth + '%'"
     :toolbar-items="bladeToolbar"
     :closable="closable"
@@ -27,7 +27,7 @@
                 variant="success"
                 :outline="false"
                 class="tw-absolute tw-right-0 -tw-top-[10px]"
-                >{{ $t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
+                >{{ t("IMPORT.PAGES.WIDGETS.IN_PROGRESS") }}</VcStatus
               >
               <VcButton
                 class="tw-w-max tw-text-black"
@@ -46,7 +46,7 @@
         </VcSlider>
       </div>
       <VcCard
-        :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
+        :header="t('IMPORT.PAGES.LAST_EXECUTIONS')"
         class="import__archive tw-m-3"
       >
         <VcTable

@@ -24,9 +24,10 @@
       ></VcIcon>
 
       <div class="tw-text-[#9db0be] tw-text-center tw-text-lg tw-leading-lg tw-mt-4">
-        <span>Drag and drop file here or</span>&nbsp;
+        <span>{{ t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.DRAG_HERE") }}</span
+        >&nbsp;
         <br />
-        <VcLink @click="toggleUploader">browse your files</VcLink>
+        <VcLink @click="toggleUploader">{{ t("COMPONENTS.MOLECULES.VC_FILE_UPLOAD.BROWSE") }}</VcLink>
       </div>
 
       <input
@@ -54,6 +55,7 @@
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
 import { VcLoading, VcIcon, VcLink, VcHint } from "./../../";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   variant?: "gallery" | "file-upload";
@@ -75,6 +77,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+const { t } = useI18n({ useScope: "global" });
 
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination

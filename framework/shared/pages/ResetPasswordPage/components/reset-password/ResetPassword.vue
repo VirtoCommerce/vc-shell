@@ -8,12 +8,12 @@
     <VcLoginForm
       logo="/assets/logo-white.svg"
       background="/assets/background.jpg"
-      :title="$t('PASSWORDRESET.TITLE')"
+      :title="t('PASSWORDRESET.TITLE')"
     >
       <VcForm>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
+          :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
           name="password"
           :model-value="form.password"
           rules="required"
@@ -23,8 +23,8 @@
             ref="passwordField"
             v-model="form.password"
             class="tw-mb-4 tw-mt-1"
-            :label="$t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
-            :placeholder="$t('PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
+            :label="t('PASSWORDRESET.FIELDS.PASSWORD.LABEL')"
+            :placeholder="t('PASSWORDRESET.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             :disabled="!form.tokenIsValid"
             required
@@ -40,7 +40,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
+          :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
           name="confirm_password"
           :model-value="form.confirmPassword"
           rules="required"
@@ -50,8 +50,8 @@
             ref="confirmPasswordField"
             v-model="form.confirmPassword"
             class="tw-mb-4"
-            :label="$t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="$t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
+            :label="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.LABEL')"
+            :placeholder="t('PASSWORDRESET.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
             type="password"
             required
@@ -76,7 +76,7 @@
             :disabled="disableButton"
             @click="resetPassword"
           >
-            {{ $t("PASSWORDRESET.SAVE_PASSWORD") }}
+            {{ t("PASSWORDRESET.SAVE_PASSWORD") }}
           </vc-button>
         </div>
 
@@ -86,7 +86,7 @@
           class="tw-mt-3 !tw-text-[#f14e4e]"
         >
           <!-- TODO: stylizing-->
-          {{ $t(`PASSWORDRESET.ERRORS.${error}`) }}
+          {{ t(`PASSWORDRESET.ERRORS.${error}`) }}
         </VcHint>
       </VcForm>
     </VcLoginForm>
@@ -98,6 +98,7 @@ import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { Field, useForm } from "vee-validate";
 import { useUser } from "./../../../../../core/composables";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps({
   userId: {
@@ -115,6 +116,7 @@ const props = defineProps({
 });
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
+const { t } = useI18n({ useScope: "global" });
 const { validate: veeValidate } = useForm({ validateOnMount: false });
 
 const form = reactive({

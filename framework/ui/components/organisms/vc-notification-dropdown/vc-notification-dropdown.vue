@@ -74,7 +74,7 @@
           v-else
           class="tw-flex tw-justify-center tw-items-center tw-p-4"
         >
-          {{ $t("COMPONENTS.ORGANISMS.VC_NOTIFICATION_DROPDOWN.EMPTY") }}
+          {{ t("COMPONENTS.ORGANISMS.VC_NOTIFICATION_DROPDOWN.EMPTY") }}
         </div>
       </VcContainer>
     </div>
@@ -82,12 +82,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, h } from "vue";
+import { ref } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
 import { PushNotification } from "./../../../../core/api";
 import { VcCol, VcContainer, VcIcon } from "./../../";
 import { vOnClickOutside } from "@vueuse/components";
 import { NotificationTemplateConstructor } from "./../../../../core/types";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   title: string;
@@ -99,7 +100,7 @@ export interface Props {
 }
 
 const props = defineProps<Props>();
-
+const { t } = useI18n({ useScope: "global" });
 const isDropdownVisible = ref(false);
 
 const handleClick = async (notification: PushNotification) => {

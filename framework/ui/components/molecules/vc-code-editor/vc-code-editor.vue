@@ -55,7 +55,6 @@ export interface Props {
   disabled?: boolean;
   label?: string;
   tooltip?: string;
-  name?: string;
   errorMessage?: string;
 }
 
@@ -65,7 +64,6 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
-  name: "Field",
 });
 
 const emit = defineEmits<Emits>();

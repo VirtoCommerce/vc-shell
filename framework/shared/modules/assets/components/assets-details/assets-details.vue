@@ -1,7 +1,7 @@
 <template>
   <VcBlade
     :title="options?.asset?.name"
-    :subtitle="$t('ASSETS.PAGES.DETAILS.SUBTITLE')"
+    :subtitle="t('ASSETS.PAGES.DETAILS.SUBTITLE')"
     :expanded="expanded"
     :closable="closable"
     :toolbar-items="bladeToolbar"
@@ -33,17 +33,17 @@
                 <VcCol class="tw-ml-6">
                   <VcCol>
                     <VcCol>
-                      <VcLabel>{{ $t("ASSETS.PAGES.DETAILS.FIELDS.SIZE") }}</VcLabel>
+                      <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.SIZE") }}</VcLabel>
                       <VcHint class="tw-text-s">{{ readableSize(defaultAsset.size) }}</VcHint>
                     </VcCol>
                     <VcCol>
-                      <VcLabel>{{ $t("ASSETS.PAGES.DETAILS.FIELDS.CREATED_DATE") }}</VcLabel>
+                      <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.CREATED_DATE") }}</VcLabel>
                       <VcHint class="tw-text-s">{{
                         (defaultAsset.createdDate && moment(defaultAsset.createdDate).fromNow()) || "N/A"
                       }}</VcHint>
                     </VcCol>
                     <VcCol class="tw-w-full">
-                      <VcLabel>{{ $t("ASSETS.PAGES.DETAILS.FIELDS.URL") }}</VcLabel>
+                      <VcLabel>{{ t("ASSETS.PAGES.DETAILS.FIELDS.URL") }}</VcLabel>
                       <div class="tw-flex tw-flex-row tw-justify-stretch tw-truncate">
                         <div class="tw-truncate">
                           <VcLink
@@ -57,7 +57,7 @@
                           size="m"
                           class="tw-ml-2"
                           text
-                          title="Copy link"
+                          :title="t('ASSETS.PAGES.DETAILS.FIELDS.COPY')"
                           @click="copyLink(defaultAsset.url)"
                         ></VcButton>
                       </div>
@@ -68,7 +68,7 @@
 
               <Field
                 v-slot="{ errorMessage, handleChange, errors }"
-                :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                :label="t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                 name="asset_name"
                 rules="required"
                 :model-value="defaultAsset.name"
@@ -76,12 +76,12 @@
                 <VcInput
                   v-model="assetNameClean"
                   class="tw-mb-4"
-                  :label="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
+                  :label="t('ASSETS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
                   clearable
                   required
                   :error="!!errors.length"
                   :error-message="errorMessage"
-                  :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
+                  :placeholder="t('ASSETS.PAGES.DETAILS.FIELDS.NAME.PLACEHOLDER')"
                   :disabled="readonly"
                   @update:model-value="handleChange"
                 ></VcInput>
@@ -90,17 +90,17 @@
                 v-if="assetType === 'Image'"
                 v-model="defaultAsset.altText"
                 class="tw-mb-4"
-                :label="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
+                :label="t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TITLE')"
                 clearable
-                :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
-                :tooltip="$t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
+                :placeholder="t('ASSETS.PAGES.DETAILS.FIELDS.ALT.PLACEHOLDER')"
+                :tooltip="t('ASSETS.PAGES.DETAILS.FIELDS.ALT.TOOLTIP')"
                 :disabled="readonly"
               ></VcInput>
               <VcTextarea
                 v-model="defaultAsset.description"
                 class="tw-mb-4"
-                :label="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                :placeholder="$t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
+                :label="t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
+                :placeholder="t('ASSETS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
                 :disabled="readonly"
               ></VcTextarea>
             </VcForm>
@@ -146,7 +146,7 @@ const emit = defineEmits<Emits>();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
-const { t } = useI18n();
+const { t } = useI18n({ useScope: "global" });
 const defaultAsset = ref<Asset>({ ...props.options?.asset });
 
 const readonly = computed(() => props.options.disabled);

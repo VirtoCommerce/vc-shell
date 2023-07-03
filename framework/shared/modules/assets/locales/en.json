@@ -11,6 +11,7 @@
           "SIZE": "Size",
           "CREATED_DATE": "Created date",
           "URL": "Url",
+          "COPY":"Copy link",
           "NAME": {
             "TITLE": "Asset name",
             "PLACEHOLDER": "Enter asset name"

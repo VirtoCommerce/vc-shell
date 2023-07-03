@@ -1,6 +1,6 @@
 <template>
   <VcStatus v-bind="statusStyles">
-    {{ $t(`IMPORT.PAGES.LIST.TABLE.STATUSES.${camelToSnake(statusText).toUpperCase()}`) }}</VcStatus
+    {{ t(`IMPORT.PAGES.LIST.TABLE.STATUSES.${camelToSnake(statusText).toUpperCase()}`) }}</VcStatus
   >
 </template>
 
@@ -8,6 +8,7 @@
 import { computed } from "vue";
 import { IImportRunHistory } from "./../api-client/import";
 import { camelToSnake } from "@vc-shell/framework";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   item: IImportRunHistory;
@@ -16,6 +17,8 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   item: undefined,
 });
+
+const { t } = useI18n({ useScope: "global" });
 
 const statusStyles = computed(
   (): {

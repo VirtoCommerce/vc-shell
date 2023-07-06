@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      GH_TOKEN: ${{ secrets.REPO_TOKEN }}
 
     steps:
 

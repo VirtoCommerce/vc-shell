@@ -1,0 +1,34 @@
+# v2.0.0
+name: Vendor Portal CI
+
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '.github/**'
+      - 'docs/**'
+      - 'build/**'
+      - 'README.md'
+      - 'LICENSE'
+    branches:
+      [master, dev]
+  pull_request:
+    branches:
+      [master, dev]
+    paths-ignore:
+      - 'docs/**'
+      - 'build/**'
+      - 'README.md'
+      - 'LICENSE'
+
+jobs:
+  CI:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Build VirtoCommerce.MarketplaceVendor
+        run: |
+          gh workflow run module-ci.yml -R VirtoCommerce/vc-module-marketplace-vendor
+    env:
+      GH_TOKEN: ${{ secrets.REPO_TOKEN }}

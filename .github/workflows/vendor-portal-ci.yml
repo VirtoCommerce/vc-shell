@@ -10,7 +10,7 @@ on:
       - 'docs/**'
       - 'build/**'
       - 'README.md'
-      - 'LICENSE'
+      - 'LICENSEs'
     branches:
       [master, dev]
   pull_request:
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     env:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
 

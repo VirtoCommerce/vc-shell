@@ -1,7 +1,6 @@
 # v2.0.0
 name: Vendor Portal CI
 
-
 on:
   workflow_dispatch:
   push:
@@ -12,15 +11,7 @@ on:
       - 'README.md'
       - 'LICENSEs'
     branches:
-      [master, dev]
-  pull_request:
-    branches:
-      [master, dev]
-    paths-ignore:
-      - 'docs/**'
-      - 'build/**'
-      - 'README.md'
-      - 'LICENSE'
+      [dev]
 
 jobs:
   CI:

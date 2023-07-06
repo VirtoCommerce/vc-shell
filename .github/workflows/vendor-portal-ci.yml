@@ -33,4 +33,4 @@ jobs:
 
       - name: Build VirtoCommerce.MarketplaceVendor
         run: |
-          gh workflow run main.yml -repo VirtoCommerce/vc-module-marketplace-vendor --ref ${{ github.ref }}
+          gh workflow run main.yml --repo VirtoCommerce/vc-module-marketplace-vendor --ref ${{ github.ref }}

@@ -29,7 +29,7 @@
 <script lang="ts" setup>
 import { computed, h } from "vue";
 import moment from "moment";
-import { PushNotification } from "./../../../../../../core/api";
+import { PushNotification } from "./../../../../../../core/api/platform";
 import { VcRow, VcNotificationTemplate } from "./../../../../";
 import { NotificationTemplateConstructor } from "./../../../../../../core/types";
 

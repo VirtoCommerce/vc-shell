@@ -183,7 +183,7 @@ import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
 import { CommonPageComposables } from "./../../../../../typings";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
-import { ExternalSignInProviderInfo } from "./../../../../../core/api";
+import { ExternalSignInProviderInfo } from "./../../../../../core/api/platform";
 
 export interface Props {
   logo: string;

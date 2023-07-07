@@ -108,7 +108,7 @@
 import { nextTick, reactive, computed } from "vue";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "./../../../ui/components";
-import { IIdentityError } from "./../../../core/api";
+import { IIdentityError } from "./../../../core/api/platform";
 import { useUser } from "./../../../core/composables/useUser";
 
 interface IChangePassForm {

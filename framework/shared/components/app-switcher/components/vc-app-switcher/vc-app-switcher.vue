@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import { inject, ref } from "vue";
-import { AppDescriptor } from "../../../../../core/api";
+import { AppDescriptor } from "../../../../../core/api/platform";
 import { vOnClickOutside } from "@vueuse/components";
 
 export interface Props {

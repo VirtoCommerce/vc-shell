@@ -286,7 +286,7 @@
                               :clearable="false"
                               :error="!!errors.length"
                               :error-message="errorMessage"
-                              :options="currencyList"
+                              :options="currencies"
                               option-value="value"
                               option-label="title"
                               debounce="0"
@@ -303,7 +303,7 @@
                             :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.SALE_PRICE.PLACEHOLDER')"
                             :disabled="readonly"
                             :clearable="false"
-                            :options="currencyList"
+                            :options="currencies"
                             option-value="value"
                             option-label="title"
                             debounce="0"
@@ -478,7 +478,7 @@ import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import moment from "moment/moment";
 import { useProduct } from "../../products";
-import useFulfillmentCenters from "../../settings/composables/useFulfillmentCenters";
+import { useFulfillmentCenters, useMarketplaceSettings } from "../../settings";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -513,13 +513,11 @@ const {
   createOffer,
   updateOffer,
   offerDetails,
-  currencyList,
   fetchProducts,
   offer,
   loadOffer,
   loading,
   modified,
-  getCurrencies,
   makeCopy,
   deleteOffer,
 } = useOffer();
@@ -550,10 +548,12 @@ const filteredProps = computed(() => {
 
 const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
+const { currencies, loadSettings } = useMarketplaceSettings();
+
 onMounted(async () => {
   try {
     offerLoading.value = true;
-    await getCurrencies();
+    await loadSettings();
     if (props.param) {
       await loadOffer({ id: props.param });
     } else {

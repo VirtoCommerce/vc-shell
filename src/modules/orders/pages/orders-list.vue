@@ -175,7 +175,7 @@ import {
   useBladeNavigation,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { CustomerOrder } from "../../../api_client/orders";
+import { CustomerOrder } from "../../../api_client/marketplacevendor";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
 // eslint-disable-next-line import/no-unresolved

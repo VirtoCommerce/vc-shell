@@ -17,10 +17,10 @@
             <VcCard
               :header="
                 importStarted
-                  ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.IMPORT_RESULTS')
+                  ? t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.IMPORT_RESULTS')
                   : uploadedFile && uploadedFile.url
-                  ? $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED')
-                  : $t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE')
+                  ? t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE_UPLOADED')
+                  : t('IMPORT.PAGES.PRODUCT_IMPORTER.FILE_UPLOAD.TITLE')
               "
             >
               <!-- File upload -->
@@ -32,9 +32,9 @@
                   <a
                     class="vc-link"
                     :href="sampleTemplateUrl"
-                    >{{ $t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
+                    >{{ t("IMPORT.PAGES.TEMPLATE.DOWNLOAD_TEMPLATE") }}</a
                   >
-                  &nbsp;{{ $t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
+                  &nbsp;{{ t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
                 </VcRow>
                 <VcRow>
                   <VcCol>
@@ -51,7 +51,7 @@
                       <Field
                         v-slot="{ field, errorMessage, handleChange, errors }"
                         :model-value="profile.importFileUrl"
-                        :label="$t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.TITLE')"
+                        :label="t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.TITLE')"
                         rules="url"
                         name="externalUrl"
                       >
@@ -59,7 +59,7 @@
                           v-bind="field"
                           v-model="profile.importFileUrl"
                           class="tw-grow tw-basis-0"
-                          :placeholder="$t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.PLACEHOLDER')"
+                          :placeholder="t('IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.PLACEHOLDER')"
                           required
                           clearable
                           :error="!!errors.length"
@@ -72,7 +72,7 @@
                                 :outline="true"
                                 @click="saveExternalUrl()"
                               >
-                                {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.SAVE") }}
+                                {{ t("IMPORT.PAGES.PRODUCT_IMPORTER.EXTERNAL_URL.SAVE") }}
                               </VcButton>
                             </slot>
                           </template>
@@ -101,7 +101,7 @@
                     class="tw-relative tw-p-[40px] before:tw-content-[''] before:[background:linear-gradient(180deg,#ecf2f7_0%,rgba(236,242,246,0)_100%)] before:tw-left-0 before:tw-right-0 before:tw-absolute before:h-[21px] before:tw-top-0"
                   >
                     <VcCol class="tw-text-[#a1c0d4]">
-                      {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS") }}
+                      {{ t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.IN_PROGRESS") }}
                       <VcProgress
                         :key="importStatus.progress"
                         class="tw-mt-3"
@@ -113,10 +113,10 @@
                         class="tw-py-3"
                       >
                         <template v-if="importStatus.estimatingRemaining">
-                          {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATING") }}
+                          {{ t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATING") }}
                         </template>
                         <template v-else>
-                          {{ $t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATED") }}
+                          {{ t("IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.ESTIMATED") }}
                           {{ estimatedRemaining }}
                         </template>
                       </VcHint>
@@ -151,7 +151,7 @@
               </VcHint>
               <div v-if="reportUrl && reportUrl != 'DefaultDataReporter'">
                 <VcHint class="tw-p-3 import-new__history"
-                  >{{ $t("IMPORT.PAGES.LIST.REPORT.DOWNLOAD") }}
+                  >{{ t("IMPORT.PAGES.LIST.REPORT.DOWNLOAD") }}
                   <a
                     class="vc-link"
                     :href="reportUrl"
@@ -171,7 +171,7 @@
             class="import-new__skipped"
             :fill="true"
             :variant="skippedColorVariant"
-            :header="$t('IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.SKIPPED_DETAILS')"
+            :header="t('IMPORT.PAGES.PRODUCT_IMPORTER.UPLOAD_STATUS.TABLE.SKIPPED_DETAILS')"
           >
             <VcTable
               :columns="skippedColumns"
@@ -198,7 +198,7 @@
           class="tw-p-3"
         >
           <VcCard
-            :header="$t('IMPORT.PAGES.LAST_EXECUTIONS')"
+            :header="t('IMPORT.PAGES.LAST_EXECUTIONS')"
             :fill="true"
             class="import-new__history"
           >

@@ -1,6 +1,35 @@
 {
   "COMPONENTS": {
+    "MOLECULES": {
+      "VC_SELECT": {
+        "CLICK_TO_SELECT": "Click to select..."
+      },
+      "VC_FILE_UPLOAD":{
+        "DRAG_HERE": "Drag and drop file here or",
+        "BROWSE":"browse your files"
+      }
+    },
     "ORGANISMS": {
+      "VC_GALLERY":{
+        "INTERNAL": {
+          "VC_GALLERY_ITEM":{
+            "FULLSCREEN":"Fullscreen",
+            "EDIT":"Edit",
+            "DELETE":"Delete"
+          },
+          "VC_GALLERY_PREVIEW":{
+            "COPY_IMAGE_LINK": "copy image link"
+          }
+        },
+        "GALLERY_IS_EMPTY": "Gallery is empty"
+      },
+      "VC_APP": {
+        "INTERNAL":{
+          "VC_APP_BAR": {
+            "BACK":"Back"
+          }
+        }
+      },
       "VC_BLADE": {
         "SEE_DETAILS": "See details",
         "ERROR_POPUP": {
@@ -19,6 +48,9 @@
         "EMPTY": "No notifications yet"
       },
       "VC_POPUP": {
+        "OK":"OK",
+        "CONFIRM":"Confirm",
+        "CANCEL":"Cancel",
         "TITLE": {
           "CONFIRMATION": "Confirmation",
           "ERROR": "Error"

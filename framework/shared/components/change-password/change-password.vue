@@ -1,14 +1,14 @@
 <template>
   <VcPopup
     variant="small"
-    :title="$t('COMPONENTS.CHANGE_PASSWORD.TITLE')"
+    :title="t('COMPONENTS.CHANGE_PASSWORD.TITLE')"
     @close="$emit('close')"
   >
     <div class="tw-p-3">
       <VcForm>
         <Field
           v-slot="{ field, errorMessage, errors }"
-          :label="$t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
+          :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
           name="current"
           rules="required|min:6"
           :model-value="form.currentPassword"
@@ -18,8 +18,8 @@
             ref="passwordField"
             v-model="form.currentPassword"
             class="tw-mb-4 tw-mt-1"
-            :label="$t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
-            :placeholder="$t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
+            :label="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.LABEL')"
+            :placeholder="t('COMPONENTS.CHANGE_PASSWORD.CURRENT_PASSWORD.PLACEHOLDER')"
             type="password"
             required
             :error="!!errors.length"
@@ -29,7 +29,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, errors }"
-          :label="$t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
+          :label="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
           name="new_pass"
           rules="required|min:6"
           :model-value="form.password"
@@ -39,8 +39,8 @@
             ref="newPasswordField"
             v-model="form.password"
             class="tw-mb-4 tw-mt-1"
-            :label="$t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
-            :placeholder="$t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
+            :label="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.LABEL')"
+            :placeholder="t('COMPONENTS.CHANGE_PASSWORD.NEW_PASSWORD.PLACEHOLDER')"
             type="password"
             required
             :error="!!errors.length"
@@ -50,7 +50,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, errors }"
-          :label="$t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
+          :label="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
           name="confirm_pass"
           rules="required|min:6"
           :model-value="form.confirmPassword"
@@ -60,8 +60,8 @@
             ref="confirmPasswordField"
             v-model="form.confirmPassword"
             class="tw-mb-4"
-            :label="$t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="$t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
+            :label="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.LABEL')"
+            :placeholder="t('COMPONENTS.CHANGE_PASSWORD.CONFIRM_PASSWORD.PLACEHOLDER')"
             type="password"
             required
             :error="!!errors.length"
@@ -79,13 +79,13 @@
             class="tw-mr-3"
             @click="$emit('close')"
           >
-            {{ $t("COMPONENTS.CHANGE_PASSWORD.CANCEL") }}
+            {{ t("COMPONENTS.CHANGE_PASSWORD.CANCEL") }}
           </VcButton>
           <VcButton
             :disabled="loading || !form.isValid || isDisabled"
             @click="changePassword"
           >
-            {{ $t("COMPONENTS.CHANGE_PASSWORD.SAVE") }}
+            {{ t("COMPONENTS.CHANGE_PASSWORD.SAVE") }}
           </VcButton>
         </div>
 
@@ -96,7 +96,7 @@
         >
           <!-- TODO: stylizing-->
           {{
-            (err as IIdentityError).code ? $t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err
+            (err as IIdentityError).code ? t(`COMPONENTS.CHANGE_PASSWORD.ERRORS.${(err as IIdentityError).code}`) : err
           }}
         </VcHint>
       </VcForm>
@@ -110,6 +110,7 @@ import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { VcInput, VcHint, VcButton, VcPopup, VcForm } from "./../../../ui/components";
 import { IIdentityError } from "./../../../core/api/platform";
 import { useUser } from "./../../../core/composables/useUser";
+import { useI18n } from "vue-i18n";
 
 interface IChangePassForm {
   isValid: boolean;
@@ -124,6 +125,7 @@ interface Emits {
 }
 
 const emit = defineEmits<Emits>();
+const { t } = useI18n({ useScope: "global" });
 const { changeUserPassword, loading, validatePassword } = useUser();
 useForm({ validateOnMount: false });
 const isValid = useIsFormValid();

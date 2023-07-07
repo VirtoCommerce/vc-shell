@@ -8,19 +8,19 @@
     <VcLoginForm
       logo="/assets/logo-white.svg"
       background="/assets/background.jpg"
-      :title="$t('INVITATION.TITLE')"
+      :title="t('INVITATION.TITLE')"
     >
       <VcForm>
         <VcInput
           class="tw-mb-4 tw-mt-1"
-          :label="$t('INVITATION.FIELDS.EMAIL.LABEL')"
+          :label="t('INVITATION.FIELDS.EMAIL.LABEL')"
           :model-value="userName"
           name="username"
           disabled
         ></VcInput>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('INVITATION.FIELDS.PASSWORD.LABEL')"
+          :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
           :model-value="form.password"
           rules="required"
           name="password"
@@ -30,8 +30,8 @@
             ref="passwordField"
             v-model="form.password"
             class="tw-mb-4 tw-mt-1"
-            :label="$t('INVITATION.FIELDS.PASSWORD.LABEL')"
-            :placeholder="$t('INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
+            :label="t('INVITATION.FIELDS.PASSWORD.LABEL')"
+            :placeholder="t('INVITATION.FIELDS.PASSWORD.PLACEHOLDER')"
             type="password"
             :disabled="!form.tokenIsValid"
             :error="!!errors.length"
@@ -47,7 +47,7 @@
         </Field>
         <Field
           v-slot="{ field, errorMessage, handleChange, errors }"
-          :label="$t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
+          :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
           :model-value="form.confirmPassword"
           rules="required"
           name="confirm_password"
@@ -57,8 +57,8 @@
             ref="confirmPasswordField"
             v-model="form.confirmPassword"
             class="tw-mb-4"
-            :label="$t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
-            :placeholder="$t('INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
+            :label="t('INVITATION.FIELDS.CONFIRM_PASSWORD.LABEL')"
+            :placeholder="t('INVITATION.FIELDS.CONFIRM_PASSWORD.PLACEHOLDER')"
             :disabled="!form.tokenIsValid"
             type="password"
             :error="!!errors.length"
@@ -82,7 +82,7 @@
             :disabled="loading || !form.isValid || !form.tokenIsValid"
             @click="acceptInvitation"
           >
-            {{ $t("INVITATION.ACCEPT_INVITATION") }}
+            {{ t("INVITATION.ACCEPT_INVITATION") }}
           </vc-button>
         </div>
 
@@ -93,7 +93,7 @@
           style="color: #f14e4e"
         >
           <!-- TODO: stylizing-->
-          {{ $t(`INVITATION.ERRORS.${error}`) }}
+          {{ t(`INVITATION.ERRORS.${error}`) }}
         </VcHint>
       </VcForm>
     </VcLoginForm>
@@ -105,6 +105,7 @@ import { reactive, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useUser } from "./../../../../../core/composables";
+import { useI18n } from "vue-i18n";
 
 useForm({ validateOnMount: false });
 
@@ -124,6 +125,7 @@ const props = defineProps({
 });
 const { validateToken, validatePassword, resetPasswordByToken, signIn, loading } = useUser();
 const router = useRouter();
+const { t } = useI18n({ useScope: "global" });
 const isFormValid = useIsFormValid();
 const isDirty = useIsFormDirty();
 const form = reactive({

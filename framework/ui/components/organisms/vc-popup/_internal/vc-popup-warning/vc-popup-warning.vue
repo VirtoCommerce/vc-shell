@@ -14,14 +14,15 @@
         text
         class="tw-mr-5 tw-text-[#FF4A4A]"
         @click="$emit('confirm')"
-        >Confirm</VcButton
+        >{{ t("COMPONENTS.ORGANISMS.VC_POPUP.CONFIRM") }}</VcButton
       >
-      <VcButton @click="$emit('close')">Cancel</VcButton>
+      <VcButton @click="$emit('close')">{{ t("COMPONENTS.ORGANISMS.VC_POPUP.CANCEL") }}</VcButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { VcButton } from "./../../../../";
 
 export interface Emits {
@@ -30,4 +31,6 @@ export interface Emits {
 }
 
 defineEmits<Emits>();
+
+const { t } = useI18n({ useScope: "global" });
 </script>

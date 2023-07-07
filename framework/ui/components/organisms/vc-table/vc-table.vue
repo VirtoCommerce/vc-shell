@@ -40,7 +40,7 @@
           class="tw-ml-3"
         >
           <VcTableFilter
-            :title="$t('COMPONENTS.ORGANISMS.VC_TABLE.ALL_FILTERS')"
+            :title="t('COMPONENTS.ORGANISMS.VC_TABLE.ALL_FILTERS')"
             :counter="activeFilterCount"
             :parent-expanded="expanded"
           >
@@ -209,8 +209,8 @@
               <div>
                 {{
                   allSelected
-                    ? $t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
-                    : $t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
+                    ? t("COMPONENTS.ORGANISMS.VC_TABLE.ALL_SELECTED")
+                    : t("COMPONENTS.ORGANISMS.VC_TABLE.CURRENT_PAGE_SELECTED")
                 }}
                 <VcButton
                   text
@@ -218,8 +218,8 @@
                   @click="handleSelectAll"
                   >{{
                     allSelected
-                      ? $t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
-                      : $t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
+                      ? t("COMPONENTS.ORGANISMS.VC_TABLE.CANCEL")
+                      : t("COMPONENTS.ORGANISMS.VC_TABLE.SELECT_ALL")
                   }}</VcButton
                 >
               </div>
@@ -433,6 +433,7 @@ import { offset, flip, arrow, computePosition, ComputePositionReturn } from "@fl
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, useCurrentElement } from "@vueuse/core";
 import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton, VcLoading } from "./../../";
+import { useI18n } from "vue-i18n";
 
 export interface StatusImage {
   image?: string;
@@ -523,6 +524,8 @@ const emit = defineEmits<{
   (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: T[] }): void;
   (event: "select:all", values: boolean): void;
 }>();
+
+const { t } = useI18n({ useScope: "global" });
 
 // template refs
 const tooltipRefs = ref<ITableItemRef[]>([]);

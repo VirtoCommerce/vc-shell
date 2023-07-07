@@ -38,7 +38,7 @@
             class="vc-gallery-item__button-icon"
             icon="fas fa-eye"
           ></VcIcon>
-          <div class="tw-mt-2">Fullscreen</div>
+          <div class="tw-mt-2">{{ t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.FULLSCREEN") }}</div>
         </div>
         <div
           v-if="!readonly && actions && actions.edit"
@@ -49,7 +49,7 @@
             class="vc-gallery-item__button-icon"
             icon="fas fa-pen"
           ></VcIcon>
-          <div class="tw-mt-2">Edit</div>
+          <div class="tw-mt-2">{{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.EDIT") }}</div>
         </div>
         <div
           v-if="!readonly && actions && actions.remove"
@@ -60,7 +60,7 @@
             class="vc-gallery-item__button-icon"
             icon="fas fa-trash"
           ></VcIcon>
-          <div class="tw-mt-2">Delete</div>
+          <div class="tw-mt-2">{{ $t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_ITEM.DELETE") }}</div>
         </div>
       </div>
     </div>
@@ -72,6 +72,7 @@ import { ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { IImage } from "./../../../../../../core/types";
 import { VcImage, VcIcon } from "./../../../../";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   image: IImage;
@@ -99,7 +100,7 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineEmits(["preview", "edit", "remove"]);
-
+const { t } = useI18n({ useScope: "global" });
 const hover = ref(false);
 
 function onClose() {

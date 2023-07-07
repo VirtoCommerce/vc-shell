@@ -6,7 +6,9 @@
     <template #title>
       <div>
         <span>{{ currentImage.name }} (</span>
-        <VcLink @click="copyLink(currentImage.url)">copy image link</VcLink>
+        <VcLink @click="copyLink(currentImage.url)">{{
+          t("COMPONENTS.ORGANISMS.VC_GALLERY.INTERNAL.VC_GALLERY_PREVIEW.COPY_IMAGE_LINK")
+        }}</VcLink>
         <span>)</span>
       </div>
     </template>
@@ -63,6 +65,7 @@
 import { computed, ref, ComputedRef } from "vue";
 import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
 import { IImage } from "./../../../../../../core/types";
+import { useI18n } from "vue-i18n";
 
 export interface Props {
   images?: IImage[];
@@ -79,7 +82,7 @@ const props = withDefaults(defineProps<Props>(), {
   images: () => [],
   index: 0,
 });
-
+const { t } = useI18n({ useScope: "global" });
 const localIndex = ref(props.index);
 const currentImage = computed(() => props.images[localIndex.value]);
 

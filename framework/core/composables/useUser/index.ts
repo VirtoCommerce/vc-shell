@@ -11,7 +11,7 @@ import {
   ChangePasswordRequest,
   LoginType,
   ExternalSignInProviderInfo,
-} from "./../../api";
+} from "./../../api/platform";
 import { AuthData, RequestPasswordResult, SignInResults } from "./../../types";
 import { useLocalStorage } from "@vueuse/core";
 //The Platform Manager uses the same key to store authorization data in the

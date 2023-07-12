@@ -1,6 +1,6 @@
 import { useUser } from "./../useUser";
 import { computed, inject, Ref, ref } from "vue";
-import { SettingClient } from "./../../api";
+import { SettingClient } from "./../../api/platform";
 
 interface IUISetting {
   contrast_logo?: string;

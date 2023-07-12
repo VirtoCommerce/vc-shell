@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentPublicInstance, VNode, ComponentInternalInstance, VNodeTypes, Ref } from "vue";
-import { PushNotification } from "./../../../../core/api";
+import { PushNotification } from "./../../../../core/api/platform";
 
 export type BladeInstanceConstructor<T extends ComponentPublicInstance = any> = {
   new (...args: any[]): T & { $: ComponentInternalInstance & { exposed: CoreBladeExposed & T["$"]["exposed"] } } & {

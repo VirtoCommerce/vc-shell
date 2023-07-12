@@ -84,7 +84,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import NotificationItem from "./_internal/notification/notification.vue";
-import { PushNotification } from "./../../../../core/api";
+import { PushNotification } from "./../../../../core/api/platform";
 import { VcCol, VcContainer, VcIcon } from "./../../";
 import { vOnClickOutside } from "@vueuse/components";
 import { NotificationTemplateConstructor } from "./../../../../core/types";

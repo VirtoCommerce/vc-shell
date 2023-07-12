@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.88",
+  "version": "1.0.92",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -19,7 +19,7 @@
     "build-cli:config": "yarn workspace @vc-shell/config-generator run build",
     "build-cli:api-client": "yarn workspace @vc-shell/api-client-generator run build",
     "build-cli:create-vc-app": "yarn workspace @vc-shell/create-vc-app run build",
-    "generate-api-client:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color",
+    "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
     "storybook-serve": "storybook dev .storybook/assets -p 6006"
   },

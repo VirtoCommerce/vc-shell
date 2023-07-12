@@ -1,5 +1,5 @@
 import { HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
-import { PushNotification } from "../../api";
+import { PushNotification } from "../../api/platform";
 import { useNotifications } from "./../../composables/useNotifications";
 
 const { addNotification } = useNotifications();

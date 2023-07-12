@@ -20,7 +20,7 @@ export type IValidationRules = {
   max?: number;
   regex?: RegExp;
   min_value?: number;
-  max_value: number;
+  max_value?: number;
   after?: string;
   maxdimensions?: [string | number, string | number];
   size?: number;

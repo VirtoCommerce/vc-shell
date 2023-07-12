@@ -90,7 +90,7 @@ export * from "./core/composables";
 export * from "./core/directives";
 export * from "./core/types";
 export * from "./core/plugins";
-export * from "./core/api";
+export * from "./core/api/platform";
 export * from "./core/utilities";
 
 export * from "./shared";

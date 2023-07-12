@@ -73,6 +73,7 @@ const { getAccessToken } = useUser();
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: null,
+  disabled: false,
 });
 
 const emit = defineEmits<Emits>();

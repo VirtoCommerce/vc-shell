@@ -234,19 +234,20 @@ const applyFiltersReset = computed(() => {
 
 watch(
   () => props.param,
-  () => {
-    selectedItemId.value = props.param;
+  (newVal) => {
+    if (newVal) {
+      selectedItemId.value = newVal;
+
+      openBlade({
+        blade: markRaw(OrdersEdit),
+        param: newVal,
+      });
+    }
   },
   { immediate: true }
 );
 
 onMounted(async () => {
-  if (props.param) {
-    openBlade({
-      blade: markRaw(OrdersEdit),
-      param: selectedItemId.value,
-    });
-  }
   await loadOrders();
 });
 

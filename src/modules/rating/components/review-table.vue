@@ -101,10 +101,11 @@ export interface Props {
   pageSize?: number;
   sort?: string;
   param?: string;
+  selectedItemId?: string;
 }
 
 export interface Emits {
-  (event: "itemClick", item: CustomerReview, onSelect: () => void, onDeselect: () => void): void;
+  (event: "itemClick", item: CustomerReview): void;
 }
 
 const props = withDefaults(defineProps<Props>(), { footer: true });
@@ -113,7 +114,6 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 
 // Data
-const selectedItemId = ref();
 const { loading, reviews, totalCount, pages, currentPage, sort, loadReviews } = useReviews({
   pageSize: props.pageSize,
   sort: props.sort,
@@ -168,14 +168,6 @@ onMounted(async () => {
   await loadReviews();
 });
 
-watch(
-  () => props.param,
-  () => {
-    selectedItemId.value = props.param;
-  },
-  { immediate: true }
-);
-
 watch(sort, async (value) => {
   sort.value = value;
   await loadReviews();
@@ -211,16 +203,7 @@ const onHeaderClick = (item: ITableColumns) => {
 };
 
 const onItemClick = (item: CustomerReview) => {
-  emit(
-    "itemClick",
-    item,
-    () => {
-      selectedItemId.value = item.id;
-    },
-    () => {
-      selectedItemId.value = undefined;
-    }
-  );
+  emit("itemClick", item);
 };
 
 const onPaginationClick = async (page: number) => {

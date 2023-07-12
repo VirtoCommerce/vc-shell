@@ -191,24 +191,26 @@ watch(sort, async (value) => {
 
 watch(
   () => props.param,
-  () => {
-    selectedItemId.value = props.param;
+  (newVal) => {
+    if (newVal) {
+      selectedItemId.value = newVal;
+
+      if (props.param) {
+        openBlade({
+          blade: markRaw(OffersDetails),
+          param: newVal,
+        });
+      } else if (props.options?.addOffer) {
+        openBlade({
+          blade: markRaw(OffersDetails),
+        });
+      }
+    }
   },
   { immediate: true }
 );
 
 onMounted(async () => {
-  if (props.param) {
-    openBlade({
-      blade: markRaw(OffersDetails),
-      param: selectedItemId.value,
-    });
-  } else if (props.options?.addOffer) {
-    openBlade({
-      blade: markRaw(OffersDetails),
-    });
-  }
-
   searchQuery.value.sellerProductId = props.options?.sellerProduct?.id;
   await loadOffers({ ...searchQuery.value, sort: sort.value });
 });

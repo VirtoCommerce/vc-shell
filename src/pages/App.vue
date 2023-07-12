@@ -199,7 +199,6 @@ const toolbarItems = computed(() =>
               const pageNotificationClickFn = page.scope?.notificationClick;
               if (pageNotificationClickFn && typeof pageNotificationClickFn === "function") {
                 const bladeData = pageNotificationClickFn(notification);
-
                 if (bladeData) {
                   openBlade(
                     {

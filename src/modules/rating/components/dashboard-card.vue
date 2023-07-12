@@ -51,7 +51,7 @@ import { markRaw } from "vue";
 // Component
 
 export interface Props {
-  openPage: (page: IBladeEvent) => void;
+  openPage: (page: IBladeEvent, isWorkspace?: boolean) => void;
 }
 
 const props = defineProps<Props>();
@@ -59,20 +59,26 @@ const props = defineProps<Props>();
 // Card
 
 const openAllReviews = () => {
-  props.openPage({
-    blade: ReviewList,
-  });
+  props.openPage(
+    {
+      blade: ReviewList,
+    },
+    true
+  );
 };
 
 const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
-  props.openPage({
-    blade: markRaw(ReviewList),
-    param: item.id,
-    options: {
-      review: item,
+  props.openPage(
+    {
+      blade: markRaw(ReviewList),
+      param: item.id,
+      options: {
+        review: item,
+      },
+      onOpen: onSelect,
+      onClose: onDeselect,
     },
-    onOpen: onSelect,
-    onClose: onDeselect,
-  });
+    true
+  );
 };
 </script>

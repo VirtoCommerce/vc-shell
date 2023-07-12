@@ -267,23 +267,23 @@ watch(sort, async (value) => {
 
 watch(
   () => props.param,
-  () => {
-    selectedItemId.value = props.param;
+  (newVal) => {
+    if (newVal) {
+      selectedItemId.value = newVal;
+
+      openBlade({
+        blade: markRaw(ProductsEdit),
+        param: newVal,
+        onClose() {
+          selectedItemId.value = undefined;
+        },
+      });
+    }
   },
   { immediate: true }
 );
 
 onMounted(async () => {
-  if (props.param) {
-    openBlade({
-      blade: markRaw(ProductsEdit),
-      param: selectedItemId.value,
-      onClose() {
-        selectedItemId.value = undefined;
-      },
-    });
-  }
-
   await loadProducts({ sort: sort.value });
 });
 

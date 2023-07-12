@@ -82,21 +82,18 @@ export function useBladeNavigation(): IUseBladeNavigation {
         const lastBlade = newVal[newVal.length - 1];
 
         if (workspace && workspace.blade.url) {
+          let url: string;
           if (lastBlade && lastBlade.blade.url) {
-            const url = urlPattern.stringify({
+            url = urlPattern.stringify({
               workspace: workspace?.blade.url.substring(1),
               blade: lastBlade?.blade.url.substring(1),
               param: lastBlade?.param,
             });
-
-            addEntryToLocation(url);
           } else {
-            const url = workspace?.blade.url;
-            if (url) {
-              clearParentData();
-              addEntryToLocation(url);
-            }
+            url = workspace?.blade.url;
           }
+
+          if (url) addEntryToLocation(url);
         }
       }
     },
@@ -112,6 +109,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       workspaceOptions.value = unref(options);
       workspaceParam.value = unref(param);
 
+      await nextTick();
       await router.replace(bladeComponent.url);
     }
   }
@@ -124,6 +122,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
       openWorkspace({ blade, param, options });
       return;
     }
+
+    clearParentData();
 
     // caller blade component
     const instanceComponent =

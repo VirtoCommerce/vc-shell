@@ -50,6 +50,7 @@
         <VcRow>
           <VcCol size="2">
             <VcRating
+              v-if="customerReview.rating"
               class="tw-p-3"
               :label="$t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.LABEL')"
               :placeholder="$t('RATING.PAGES.REVIEW_DETAILS.FORM.RATING.PLACEHOLDER')"

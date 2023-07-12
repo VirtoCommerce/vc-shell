@@ -175,7 +175,7 @@ import {
   useBladeNavigation,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { CustomerOrder } from "../../../api_client/orders";
+import { CustomerOrder } from "../../../api_client/marketplacevendor";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
 // eslint-disable-next-line import/no-unresolved
@@ -234,19 +234,20 @@ const applyFiltersReset = computed(() => {
 
 watch(
   () => props.param,
-  () => {
-    selectedItemId.value = props.param;
+  (newVal) => {
+    if (newVal) {
+      selectedItemId.value = newVal;
+
+      openBlade({
+        blade: markRaw(OrdersEdit),
+        param: newVal,
+      });
+    }
   },
   { immediate: true }
 );
 
 onMounted(async () => {
-  if (props.param) {
-    openBlade({
-      blade: markRaw(OrdersEdit),
-      param: selectedItemId.value,
-    });
-  }
   await loadOrders();
 });
 

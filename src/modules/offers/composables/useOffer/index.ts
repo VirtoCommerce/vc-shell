@@ -14,7 +14,6 @@ import {
   Property,
   PropertyValue,
 } from "../../../../api_client/marketplacevendor";
-import { StoreModuleClient } from "../../../../api_client/store";
 import * as _ from "lodash-es";
 
 export type TextOfferDetails = IOfferDetails & {
@@ -28,7 +27,6 @@ export type TextOfferDetails = IOfferDetails & {
 
 interface IUseOffer {
   offer: Ref<IOffer>;
-  currencyList: Ref<{ title: string; value: string }[]>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
   offerDetails: Ref<TextOfferDetails>;
@@ -37,24 +35,14 @@ interface IUseOffer {
   createOffer: (details: TextOfferDetails) => void;
   updateOffer: (details: TextOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
-  getCurrencies: () => void;
   makeCopy: () => void;
 }
 
-interface IStoreSettings {
-  availCurencies: string[];
-  masterCatalogId: string;
-  vendorPortalUrl: string;
-  storeId: string;
-}
-
 export default (): IUseOffer => {
-  const { user, getAccessToken } = useUser();
+  const { user } = useUser();
   const offer = ref<IOffer>({});
   const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
   const offerDetailsCopy: Ref<TextOfferDetails> = ref();
-  const storeSettings = ref<IStoreSettings>();
-  const currencyList = ref([]);
   const modified = ref(false);
 
   const loading = ref(false);
@@ -177,36 +165,8 @@ export default (): IUseOffer => {
     }
   }
 
-  async function getCurrencies() {
-    const token = await getAccessToken();
-    const client = new StoreModuleClient();
-    client.setAuthToken(await getAccessToken());
-
-    if (token) {
-      try {
-        const result = await fetch("/api/vcmp/settings", {
-          method: "GET",
-          headers: {},
-        });
-
-        await result.text().then((response) => {
-          storeSettings.value = JSON.parse(response);
-        });
-
-        currencyList.value = storeSettings.value.availCurencies?.map((currency) => ({
-          title: currency,
-          value: currency,
-        }));
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
-    }
-  }
-
   return {
     offer: computed(() => offer.value),
-    currencyList: computed(() => currencyList.value),
     loading: computed(() => loading.value),
     modified: computed(() => modified.value),
     offerDetails,
@@ -215,7 +175,6 @@ export default (): IUseOffer => {
     updateOffer,
     fetchProducts,
     deleteOffer,
-    getCurrencies,
     makeCopy,
   };
 };

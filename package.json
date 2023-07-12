@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.96",
+  "version": "1.0.102",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -12,7 +12,7 @@
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint --fix '*.{ts,vue}'",
     "lint-staged": "lint-staged",
-    "generate-api-client": "cross-env api-client-generator --color",
+    "generate:api-client": "cross-env api-client-generator --color",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "bump": "cross-env-shell 'f() { yarn version --\"$@\" --no-commit-hooks --ignore-scripts --no-git-tag-version --yes && yarn changelog && git add . && yarn commit-release && yarn create:tag ; }; f'",
     "commit-release": "cross-env-shell 'git commit -m v$npm_package_version'",
@@ -25,7 +25,7 @@
     "@types/lodash-es": "^4.17.7",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
-    "@vc-shell/api-client-generator": "^1.0.88",
+    "@vc-shell/api-client-generator": "^1.0.92",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.3",
@@ -56,8 +56,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@vc-shell/config-generator": "^1.0.88",
-    "@vc-shell/framework": "^1.0.88",
+    "@vc-shell/config-generator": "^1.0.92",
+    "@vc-shell/framework": "^1.0.92",
     "@vueuse/core": "^10.1.2",
     "@vueuse/integrations": "^10.1.2",
     "moment": "^2.29.4",

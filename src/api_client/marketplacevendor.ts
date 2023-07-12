@@ -25,7 +25,6 @@ export class AuthApiBase {
     if (this.authToken) {
       options.headers['authorization'] =  `Bearer ${this.authToken}`;
     }
-
     return Promise.resolve(options);
   }
 }
@@ -44,7 +43,7 @@ export class VcmpCommonClient extends AuthApiBase {
     /**
      * @return Success
      */
-    getVcmpSettings(): Promise<MarketplaceOptions> {
+    getVcmpSettings(): Promise<MarketplaceSettings> {
         let url_ = this.baseUrl + "/api/vcmp/settings";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -62,14 +61,14 @@ export class VcmpCommonClient extends AuthApiBase {
         });
     }
 
-    protected processGetVcmpSettings(response: Response): Promise<MarketplaceOptions> {
+    protected processGetVcmpSettings(response: Response): Promise<MarketplaceSettings> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = MarketplaceOptions.fromJS(resultData200);
+            result200 = MarketplaceSettings.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -77,7 +76,7 @@ export class VcmpCommonClient extends AuthApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<MarketplaceOptions>(null as any);
+        return Promise.resolve<MarketplaceSettings>(null as any);
     }
 }
 
@@ -190,7 +189,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createFee(body?: CreateFeeCommand | undefined): Promise<CommissionFee> {
@@ -242,7 +241,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateFee(body?: UpdateFeeCommand | undefined): Promise<CommissionFee> {
@@ -294,7 +293,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteFee(ids?: string[] | undefined): Promise<void> {
@@ -342,7 +341,7 @@ export class VcmpFeeClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchFee(body?: SearchCommissionFeesQuery | undefined): Promise<SearchCommissionFeesResult> {
@@ -406,7 +405,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     massChangeProductsStatus(status: string, body?: SearchProductsQuery | undefined): Promise<void> {
@@ -457,7 +456,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     changeProductStatus(body?: ChangeRequestStatusCommand | undefined): Promise<void> {
@@ -505,7 +504,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchCategories(body?: SearchCategoriesQuery | undefined): Promise<CategorySearchResult> {
@@ -549,7 +548,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateProduct(body?: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
@@ -600,7 +599,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createSellerCategories(body?: CreateSellerCategoriesCommand | undefined): Promise<void> {
@@ -648,7 +647,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     deleteSellerCategories(body?: DeleteSellerCategoriesCommand | undefined): Promise<void> {
@@ -696,7 +695,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     exportSellerCategories(body?: RunCategoriesExportCommand | undefined): Promise<void> {
@@ -736,7 +735,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchProducts(body?: SearchProductsQuery | undefined): Promise<SearchProductsResult> {
@@ -780,7 +779,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchPropertyDictionaryItems(body?: PropertyDictionaryItemSearchCriteria | undefined): Promise<PropertyDictionaryItemSearchResult> {
@@ -866,7 +865,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewProduct(body?: CreateNewProductCommand | undefined): Promise<SellerProduct> {
@@ -910,7 +909,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateProductDetails(body?: UpdateProductDetailsCommand | undefined): Promise<SellerProduct> {
@@ -954,7 +953,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteProducts(ids?: string[] | undefined): Promise<void> {
@@ -994,7 +993,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     bulkDeleteProducts(body?: BulkProductsDeleteCommand | undefined): Promise<void> {
@@ -1034,7 +1033,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewPublicationRequest(body?: CreateNewPublicationRequestCommand | undefined): Promise<ProductPublicationRequest> {
@@ -1120,7 +1119,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchOffers(body?: SearchOffersQuery | undefined): Promise<SearchOffersResult> {
@@ -1248,7 +1247,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchOfferProducts(body?: SearchProductsForNewOfferQuery | undefined): Promise<SearchOfferProductsResult> {
@@ -1292,7 +1291,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewOffer(body?: CreateNewOfferCommand | undefined): Promise<Offer> {
@@ -1336,7 +1335,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     changeOfferState(body?: ChangeOfferStateCommand | undefined): Promise<Offer> {
@@ -1380,7 +1379,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateOffer(body?: UpdateOfferCommand | undefined): Promise<Offer> {
@@ -1424,7 +1423,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteOffers(ids?: string[] | undefined): Promise<void> {
@@ -1464,7 +1463,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     bulkDeleteOffers(body?: BulkOffersDeleteCommand | undefined): Promise<void> {
@@ -1504,7 +1503,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchFulfillmentCenters(body?: SearchFulfillmentCentersQuery | undefined): Promise<SearchFulfillmentCentersResult> {
@@ -1590,7 +1589,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateFulfillmentCenter(body?: UpdateFulfillmentCenterCommand | undefined): Promise<FulfillmentCenter> {
@@ -1634,7 +1633,7 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteFulfillmentCenter(ids?: string[] | undefined): Promise<void> {
@@ -1686,7 +1685,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     runImport(body?: RunImportCommand | undefined): Promise<ImportPushNotification> {
@@ -1730,7 +1729,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     cancelJob(body?: ImportCancellationRequest | undefined): Promise<void> {
@@ -1778,7 +1777,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     preview(body?: PreviewDataQuery | undefined): Promise<ImportDataPreview> {
@@ -1926,7 +1925,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createImportProfile(body?: ImportProfile | undefined): Promise<ImportProfile> {
@@ -1970,7 +1969,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateImportProfile(body?: UpdateProfileCommand | undefined): Promise<ImportProfile> {
@@ -2014,8 +2013,8 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param id (optional)
-     * @param ids (optional)
+     * @param id (optional) 
+     * @param ids (optional) 
      * @return Success
      */
     deleteProfile(id?: string | undefined, ids?: string[] | undefined): Promise<void> {
@@ -2059,7 +2058,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchImportProfiles(body?: SearchImportProfilesQuery | undefined): Promise<SearchImportProfilesResult> {
@@ -2103,7 +2102,7 @@ export class VcmpSellerImportClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchImportRunHistory(body?: SearchImportRunHistoryQuery | undefined): Promise<SearchImportRunHistoryResult> {
@@ -2236,7 +2235,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchOrders(body?: SearchOrdersQuery | undefined): Promise<CustomerOrderSearchResult> {
@@ -2280,7 +2279,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateOrderStatus(body?: ChangeOrderStatusCommand | undefined): Promise<void> {
@@ -2320,7 +2319,7 @@ export class VcmpSellerOrdersClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     fulfill(body?: FulfillOrderCommand | undefined): Promise<void> {
@@ -2411,7 +2410,7 @@ export class VcmpSellerRatingAndReviewsClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchCustomerReviews(body?: SearchCustomerReviewsQuery | undefined): Promise<SearchCustomerReviewsResult> {
@@ -2467,7 +2466,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param memberId (optional)
+     * @param memberId (optional) 
      * @return Success
      */
     sendInvitation(memberId?: string | undefined): Promise<void> {
@@ -2507,7 +2506,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     sendUserInvitation(body?: SendSellerUserInvitationCommand | undefined): Promise<void> {
@@ -2547,7 +2546,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateSeller(body?: ValidateProductQuery | undefined): Promise<ValidationFailure[]> {
@@ -2645,7 +2644,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteSellers(ids?: string[] | undefined): Promise<void> {
@@ -2735,7 +2734,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createSeller(body?: CreateSellerCommand | undefined): Promise<void> {
@@ -2783,7 +2782,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateSeller(body?: UpdateSellerCommand | undefined): Promise<void> {
@@ -2823,7 +2822,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchSellers(body?: SearchSellersQuery | undefined): Promise<SearchSellersResult> {
@@ -2875,7 +2874,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createSellerUser(body?: CreateSellerUserCommand | undefined): Promise<SellerUser> {
@@ -2919,7 +2918,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateUser(body?: ValidateSellerUserQuery | undefined): Promise<ValidationFailure[]> {
@@ -2970,7 +2969,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     updateSellerUser(body?: UpdateSellerUserCommand | undefined): Promise<SellerUser> {
@@ -3014,7 +3013,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param ids (optional)
+     * @param ids (optional) 
      * @return Success
      */
     deleteSellerUsers(ids?: string[] | undefined): Promise<void> {
@@ -3054,7 +3053,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchSellerUsers(body?: SearchSellerUsersQuery | undefined): Promise<SearchSellerUsersResult> {
@@ -3098,7 +3097,7 @@ export class VcmpSellerSecurityClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     forgotPassword(body?: ForgotPasswordCommand | undefined): Promise<void> {
@@ -3150,7 +3149,7 @@ export class VcmpSmClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     search(body?: SearchStateMachineDefinitionsQuery | undefined): Promise<SearchStateMachineDefinitionsResult> {
@@ -3202,7 +3201,7 @@ export class VcmpSmClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     createNewDefinition(body?: CreateStateMachineDefinitionCommand | undefined): Promise<StateMachineDefinition> {
@@ -3304,7 +3303,7 @@ export class VcmpSmClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     validateDefinition(body?: StateMachineDefinition | undefined): Promise<StateMachineDefinition> {
@@ -3356,7 +3355,7 @@ export class VcmpSmClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     searchInstance(body?: SearchStateMachineInstancesQuery | undefined): Promise<SearchStateMachineInstancesResult> {
@@ -3458,8 +3457,8 @@ export class VcmpSmClient extends AuthApiBase {
     }
 
     /**
-     * @param instanceId (optional)
-     * @param body (optional)
+     * @param instanceId (optional) 
+     * @param body (optional) 
      * @return Success
      */
     createNewInstance(definitionId: string, instanceId?: string | undefined, body?: IHasDynamicProperties | undefined): Promise<StateMachineInstance> {
@@ -3586,7 +3585,7 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     runSynchronization(body?: SyncContext | undefined): Promise<SyncPushNotification> {
@@ -3638,7 +3637,7 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 
     /**
-     * @param body (optional)
+     * @param body (optional) 
      * @return Success
      */
     cancelJob(body?: SyncJobCancellationRequest | undefined): Promise<void> {
@@ -4196,50 +4195,319 @@ export enum CancelledState {
     Completed = "Completed",
 }
 
+export class Capture implements ICapture {
+    objectType?: string | undefined;
+    amount?: number;
+    vendorId?: string | undefined;
+    transactionId?: string | undefined;
+    customerOrderId?: string | undefined;
+    paymentId?: string | undefined;
+    items?: CaptureItem[] | undefined;
+    operationType?: string | undefined;
+    parentOperationId?: string | undefined;
+    number?: string | undefined;
+    isApproved?: boolean;
+    status?: string | undefined;
+    comment?: string | undefined;
+    currency?: string | undefined;
+    sum?: number;
+    outerId?: string | undefined;
+    /** For system use to handle canellation flow */
+    cancelledState?: CaptureCancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
+    isCancelled?: boolean;
+    cancelledDate?: Date | undefined;
+    cancelReason?: string | undefined;
+    dynamicProperties?: DynamicObjectProperty[] | undefined;
+    operationsLog?: OperationLog[] | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+
+    constructor(data?: ICapture) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.objectType = _data["objectType"];
+            this.amount = _data["amount"];
+            this.vendorId = _data["vendorId"];
+            this.transactionId = _data["transactionId"];
+            this.customerOrderId = _data["customerOrderId"];
+            this.paymentId = _data["paymentId"];
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(CaptureItem.fromJS(item));
+            }
+            this.operationType = _data["operationType"];
+            this.parentOperationId = _data["parentOperationId"];
+            this.number = _data["number"];
+            this.isApproved = _data["isApproved"];
+            this.status = _data["status"];
+            this.comment = _data["comment"];
+            this.currency = _data["currency"];
+            this.sum = _data["sum"];
+            this.outerId = _data["outerId"];
+            this.cancelledState = _data["cancelledState"];
+            this.isCancelled = _data["isCancelled"];
+            this.cancelledDate = _data["cancelledDate"] ? new Date(_data["cancelledDate"].toString()) : <any>undefined;
+            this.cancelReason = _data["cancelReason"];
+            if (Array.isArray(_data["dynamicProperties"])) {
+                this.dynamicProperties = [] as any;
+                for (let item of _data["dynamicProperties"])
+                    this.dynamicProperties!.push(DynamicObjectProperty.fromJS(item));
+            }
+            if (Array.isArray(_data["operationsLog"])) {
+                this.operationsLog = [] as any;
+                for (let item of _data["operationsLog"])
+                    this.operationsLog!.push(OperationLog.fromJS(item));
+            }
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): Capture {
+        data = typeof data === 'object' ? data : {};
+        let result = new Capture();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["objectType"] = this.objectType;
+        data["amount"] = this.amount;
+        data["vendorId"] = this.vendorId;
+        data["transactionId"] = this.transactionId;
+        data["customerOrderId"] = this.customerOrderId;
+        data["paymentId"] = this.paymentId;
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["operationType"] = this.operationType;
+        data["parentOperationId"] = this.parentOperationId;
+        data["number"] = this.number;
+        data["isApproved"] = this.isApproved;
+        data["status"] = this.status;
+        data["comment"] = this.comment;
+        data["currency"] = this.currency;
+        data["sum"] = this.sum;
+        data["outerId"] = this.outerId;
+        data["cancelledState"] = this.cancelledState;
+        data["isCancelled"] = this.isCancelled;
+        data["cancelledDate"] = this.cancelledDate ? this.cancelledDate.toISOString() : <any>undefined;
+        data["cancelReason"] = this.cancelReason;
+        if (Array.isArray(this.dynamicProperties)) {
+            data["dynamicProperties"] = [];
+            for (let item of this.dynamicProperties)
+                data["dynamicProperties"].push(item.toJSON());
+        }
+        if (Array.isArray(this.operationsLog)) {
+            data["operationsLog"] = [];
+            for (let item of this.operationsLog)
+                data["operationsLog"].push(item.toJSON());
+        }
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICapture {
+    objectType?: string | undefined;
+    amount?: number;
+    vendorId?: string | undefined;
+    transactionId?: string | undefined;
+    customerOrderId?: string | undefined;
+    paymentId?: string | undefined;
+    items?: CaptureItem[] | undefined;
+    operationType?: string | undefined;
+    parentOperationId?: string | undefined;
+    number?: string | undefined;
+    isApproved?: boolean;
+    status?: string | undefined;
+    comment?: string | undefined;
+    currency?: string | undefined;
+    sum?: number;
+    outerId?: string | undefined;
+    /** For system use to handle canellation flow */
+    cancelledState?: CaptureCancelledState;
+    /** Used by payment provides to indicate that cancellation operation has completed */
+    isCancelled?: boolean;
+    cancelledDate?: Date | undefined;
+    cancelReason?: string | undefined;
+    dynamicProperties?: DynamicObjectProperty[] | undefined;
+    operationsLog?: OperationLog[] | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+}
+
+export class CaptureItem implements ICaptureItem {
+    quantity?: number;
+    lineItemId?: string | undefined;
+    lineItem?: OrderLineItem | undefined;
+    captureId?: string | undefined;
+    outerId?: string | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+
+    constructor(data?: ICaptureItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.quantity = _data["quantity"];
+            this.lineItemId = _data["lineItemId"];
+            this.lineItem = _data["lineItem"] ? OrderLineItem.fromJS(_data["lineItem"]) : <any>undefined;
+            this.captureId = _data["captureId"];
+            this.outerId = _data["outerId"];
+            this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
+            this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
+            this.createdBy = _data["createdBy"];
+            this.modifiedBy = _data["modifiedBy"];
+            this.id = _data["id"];
+        }
+    }
+
+    static fromJS(data: any): CaptureItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new CaptureItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["quantity"] = this.quantity;
+        data["lineItemId"] = this.lineItemId;
+        data["lineItem"] = this.lineItem ? this.lineItem.toJSON() : <any>undefined;
+        data["captureId"] = this.captureId;
+        data["outerId"] = this.outerId;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
+        data["createdBy"] = this.createdBy;
+        data["modifiedBy"] = this.modifiedBy;
+        data["id"] = this.id;
+        return data;
+    }
+}
+
+export interface ICaptureItem {
+    quantity?: number;
+    lineItemId?: string | undefined;
+    lineItem?: OrderLineItem | undefined;
+    captureId?: string | undefined;
+    outerId?: string | undefined;
+    createdDate?: Date;
+    modifiedDate?: Date | undefined;
+    createdBy?: string | undefined;
+    modifiedBy?: string | undefined;
+    id?: string | undefined;
+}
+
 export class CatalogProduct implements ICatalogProduct {
-    /** SKU code */
+    /** The type of product. Can be "Physical", "Digital", etc. */
+    productType?: string | undefined;
+    /** The Stock Keeping Unit (SKU) code for the product. */
     code?: string | undefined;
+    /** The manufacturer's part number for the product. */
     manufacturerPartNumber?: string | undefined;
-    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
+    /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
+    /** The name of the product. */
     name?: string | undefined;
+    /** The ID of the catalog to which this product belongs. */
     catalogId?: string | undefined;
+    /** The ID of the category to which this product belongs. */
     categoryId?: string | undefined;
     /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     readonly outline?: string | undefined;
     /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     readonly path?: string | undefined;
     readonly titularItemId?: string | undefined;
+    /** The ID of the main product associated with this product variation. */
     mainProductId?: string | undefined;
-    isBuyable?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently sold out. */
     isActive?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently ouf of stock. */
+    isBuyable?: boolean | undefined;
+    /** Indicates whether the inventory service is tracking the availability of this product.
+If set to false, the product is considered in stock without any inventory limitations. */
     trackInventory?: boolean | undefined;
+    /** The date and time when the product was last indexed for search. */
     indexingDate?: Date | undefined;
+    /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
     maxQuantity?: number | undefined;
+    /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
     minQuantity?: number | undefined;
-    /** Can be Physical, Digital or Subscription. */
-    productType?: string | undefined;
+    /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
+    startDate?: Date;
+    /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
+    endDate?: Date | undefined;
+    /** The type of package for this product, which determines the product's specific dimensions. */
     packageType?: string | undefined;
+    /** The unit of measurement for the product's weight. */
     weightUnit?: string | undefined;
+    /** The weight of the product, in the unit specified by the WeightUnit property. */
     weight?: number | undefined;
+    /** The unit of measurement for the product's height, length, and width. */
     measureUnit?: string | undefined;
+    /** The height of the product, in the unit specified by the MeasureUnit property. */
     height?: number | undefined;
+    /** The length of the product, in the unit specified by the MeasureUnit property. */
     length?: number | undefined;
+    /** The width of the product, in the unit specified by the MeasureUnit property. */
     width?: number | undefined;
     enableReview?: boolean | undefined;
-    /** re-downloads limit */
+    /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
     maxNumberOfDownload?: number | undefined;
+    /** The date and time when the download link or access to the product will expire. */
     downloadExpiration?: Date | undefined;
-    /** DownloadType: {Standard Product, Software, Music} */
+    /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
     downloadType?: string | undefined;
+    /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
     hasUserAgreement?: boolean | undefined;
+    /** Specifies the type of shipping option available for the product. */
     shippingType?: string | undefined;
+    /** Specifies the type of tax applied to the product. */
     taxType?: string | undefined;
+    /** ID of the vendor associated with the product. */
     vendor?: string | undefined;
-    startDate?: Date;
-    endDate?: Date | undefined;
-    /** Product order position in catalog */
+    /** Indicates the position of the product in the catalog for ordering purposes. */
     priority?: number;
+    /** An external identifier for the product that can be used for integration with external systems. */
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
@@ -4276,6 +4544,7 @@ export class CatalogProduct implements ICatalogProduct {
 
     init(_data?: any) {
         if (_data) {
+            this.productType = _data["productType"];
             this.code = _data["code"];
             this.manufacturerPartNumber = _data["manufacturerPartNumber"];
             this.gtin = _data["gtin"];
@@ -4286,13 +4555,14 @@ export class CatalogProduct implements ICatalogProduct {
             (<any>this).path = _data["path"];
             (<any>this).titularItemId = _data["titularItemId"];
             this.mainProductId = _data["mainProductId"];
-            this.isBuyable = _data["isBuyable"];
             this.isActive = _data["isActive"];
+            this.isBuyable = _data["isBuyable"];
             this.trackInventory = _data["trackInventory"];
             this.indexingDate = _data["indexingDate"] ? new Date(_data["indexingDate"].toString()) : <any>undefined;
             this.maxQuantity = _data["maxQuantity"];
             this.minQuantity = _data["minQuantity"];
-            this.productType = _data["productType"];
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.packageType = _data["packageType"];
             this.weightUnit = _data["weightUnit"];
             this.weight = _data["weight"];
@@ -4308,8 +4578,6 @@ export class CatalogProduct implements ICatalogProduct {
             this.shippingType = _data["shippingType"];
             this.taxType = _data["taxType"];
             this.vendor = _data["vendor"];
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.priority = _data["priority"];
             this.outerId = _data["outerId"];
             if (Array.isArray(_data["properties"])) {
@@ -4392,6 +4660,7 @@ export class CatalogProduct implements ICatalogProduct {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["productType"] = this.productType;
         data["code"] = this.code;
         data["manufacturerPartNumber"] = this.manufacturerPartNumber;
         data["gtin"] = this.gtin;
@@ -4402,13 +4671,14 @@ export class CatalogProduct implements ICatalogProduct {
         data["path"] = this.path;
         data["titularItemId"] = this.titularItemId;
         data["mainProductId"] = this.mainProductId;
-        data["isBuyable"] = this.isBuyable;
         data["isActive"] = this.isActive;
+        data["isBuyable"] = this.isBuyable;
         data["trackInventory"] = this.trackInventory;
         data["indexingDate"] = this.indexingDate ? this.indexingDate.toISOString() : <any>undefined;
         data["maxQuantity"] = this.maxQuantity;
         data["minQuantity"] = this.minQuantity;
-        data["productType"] = this.productType;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["packageType"] = this.packageType;
         data["weightUnit"] = this.weightUnit;
         data["weight"] = this.weight;
@@ -4424,8 +4694,6 @@ export class CatalogProduct implements ICatalogProduct {
         data["shippingType"] = this.shippingType;
         data["taxType"] = this.taxType;
         data["vendor"] = this.vendor;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["priority"] = this.priority;
         data["outerId"] = this.outerId;
         if (Array.isArray(this.properties)) {
@@ -4501,49 +4769,78 @@ export class CatalogProduct implements ICatalogProduct {
 }
 
 export interface ICatalogProduct {
-    /** SKU code */
+    /** The type of product. Can be "Physical", "Digital", etc. */
+    productType?: string | undefined;
+    /** The Stock Keeping Unit (SKU) code for the product. */
     code?: string | undefined;
+    /** The manufacturer's part number for the product. */
     manufacturerPartNumber?: string | undefined;
-    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
+    /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
+    /** The name of the product. */
     name?: string | undefined;
+    /** The ID of the catalog to which this product belongs. */
     catalogId?: string | undefined;
+    /** The ID of the category to which this product belongs. */
     categoryId?: string | undefined;
     /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     outline?: string | undefined;
     /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     path?: string | undefined;
     titularItemId?: string | undefined;
+    /** The ID of the main product associated with this product variation. */
     mainProductId?: string | undefined;
-    isBuyable?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently sold out. */
     isActive?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently ouf of stock. */
+    isBuyable?: boolean | undefined;
+    /** Indicates whether the inventory service is tracking the availability of this product.
+If set to false, the product is considered in stock without any inventory limitations. */
     trackInventory?: boolean | undefined;
+    /** The date and time when the product was last indexed for search. */
     indexingDate?: Date | undefined;
+    /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
     maxQuantity?: number | undefined;
+    /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
     minQuantity?: number | undefined;
-    /** Can be Physical, Digital or Subscription. */
-    productType?: string | undefined;
+    /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
+    startDate?: Date;
+    /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
+    endDate?: Date | undefined;
+    /** The type of package for this product, which determines the product's specific dimensions. */
     packageType?: string | undefined;
+    /** The unit of measurement for the product's weight. */
     weightUnit?: string | undefined;
+    /** The weight of the product, in the unit specified by the WeightUnit property. */
     weight?: number | undefined;
+    /** The unit of measurement for the product's height, length, and width. */
     measureUnit?: string | undefined;
+    /** The height of the product, in the unit specified by the MeasureUnit property. */
     height?: number | undefined;
+    /** The length of the product, in the unit specified by the MeasureUnit property. */
     length?: number | undefined;
+    /** The width of the product, in the unit specified by the MeasureUnit property. */
     width?: number | undefined;
     enableReview?: boolean | undefined;
-    /** re-downloads limit */
+    /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
     maxNumberOfDownload?: number | undefined;
+    /** The date and time when the download link or access to the product will expire. */
     downloadExpiration?: Date | undefined;
-    /** DownloadType: {Standard Product, Software, Music} */
+    /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
     downloadType?: string | undefined;
+    /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
     hasUserAgreement?: boolean | undefined;
+    /** Specifies the type of shipping option available for the product. */
     shippingType?: string | undefined;
+    /** Specifies the type of tax applied to the product. */
     taxType?: string | undefined;
+    /** ID of the vendor associated with the product. */
     vendor?: string | undefined;
-    startDate?: Date;
-    endDate?: Date | undefined;
-    /** Product order position in catalog */
+    /** Indicates the position of the product in the catalog for ordering purposes. */
     priority?: number;
+    /** An external identifier for the product that can be used for integration with external systems. */
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
@@ -4860,7 +5157,6 @@ export class CategoryLink implements ICategoryLink {
     priority?: number;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
-    category?: Category | undefined;
     /** Gets the Id of either target Catetory or Catalog */
     readonly targetId?: string | undefined;
     /** Gets the name of either target Catetory or Catalog */
@@ -4883,7 +5179,6 @@ export class CategoryLink implements ICategoryLink {
             this.priority = _data["priority"];
             this.catalogId = _data["catalogId"];
             this.categoryId = _data["categoryId"];
-            this.category = _data["category"] ? Category.fromJS(_data["category"]) : <any>undefined;
             (<any>this).targetId = _data["targetId"];
             (<any>this).name = _data["name"];
         }
@@ -4904,7 +5199,6 @@ export class CategoryLink implements ICategoryLink {
         data["priority"] = this.priority;
         data["catalogId"] = this.catalogId;
         data["categoryId"] = this.categoryId;
-        data["category"] = this.category ? this.category.toJSON() : <any>undefined;
         data["targetId"] = this.targetId;
         data["name"] = this.name;
         return data;
@@ -4921,7 +5215,6 @@ export interface ICategoryLink {
     priority?: number;
     catalogId?: string | undefined;
     categoryId?: string | undefined;
-    category?: Category | undefined;
     /** Gets the Id of either target Catetory or Catalog */
     targetId?: string | undefined;
     /** Gets the name of either target Catetory or Catalog */
@@ -4937,15 +5230,11 @@ export class CategorySearchCriteria implements ICategorySearchCriteria {
     outerIds?: string[] | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -5062,15 +5351,11 @@ export interface ICategorySearchCriteria {
     outerIds?: string[] | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -6277,6 +6562,7 @@ export interface ICustomerAddress {
 }
 
 export class CustomerOrder implements ICustomerOrder {
+    rowVersion?: string | undefined;
     customerId?: string | undefined;
     customerName?: string | undefined;
     channelId?: string | undefined;
@@ -6304,7 +6590,7 @@ export class CustomerOrder implements ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account.
+Therefore, the discount will not be taking tax into account. 
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -6405,6 +6691,7 @@ For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% d
 
     init(_data?: any) {
         if (_data) {
+            this.rowVersion = _data["rowVersion"];
             this.customerId = _data["customerId"];
             this.customerName = _data["customerName"];
             this.channelId = _data["channelId"];
@@ -6533,6 +6820,7 @@ For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% d
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["rowVersion"] = this.rowVersion;
         data["customerId"] = this.customerId;
         data["customerName"] = this.customerName;
         data["channelId"] = this.channelId;
@@ -6654,6 +6942,7 @@ For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% d
 }
 
 export interface ICustomerOrder {
+    rowVersion?: string | undefined;
     customerId?: string | undefined;
     customerName?: string | undefined;
     channelId?: string | undefined;
@@ -6681,7 +6970,7 @@ export interface ICustomerOrder {
     feeDetails?: FeeDetail[] | undefined;
     discounts?: Discount[] | undefined;
     /** When a discount is applied to the order, the tax calculation has already been applied and is shown in the tax field.
-Therefore, the discount will not be taking tax into account.
+Therefore, the discount will not be taking tax into account. 
 For instance, if the cart subtotal is $100, and the tax subtotal is $15, a 10% discount will yield a total of $105 ($100 subtotal – $10 discount + $15 tax). */
     discountAmount?: number;
     taxDetails?: TaxDetail[] | undefined;
@@ -7189,20 +7478,14 @@ export class DynamicObjectProperty implements IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
-    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
-    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
-    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
-    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
-    /** The storage property type */
     valueType?: DynamicObjectPropertyValueType;
-    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -7291,20 +7574,14 @@ export interface IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
-    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
-    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
-    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
-    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
-    /** The storage property type */
     valueType?: DynamicObjectPropertyValueType;
-    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -7314,7 +7591,6 @@ export interface IDynamicObjectProperty {
 }
 
 export class DynamicPropertyName implements IDynamicPropertyName {
-    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 
@@ -7350,7 +7626,6 @@ export class DynamicPropertyName implements IDynamicPropertyName {
 }
 
 export interface IDynamicPropertyName {
-    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 }
@@ -8495,11 +8770,13 @@ export class ImportProfile implements IImportProfile {
     userName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     readonly typeName?: string | undefined;
+    profileType?: string | undefined;
     importFileUrl?: string | undefined;
     importReportUrl?: string | undefined;
     importReporterType?: string | undefined;
     previewObjectCount?: number;
     onImportCompleted?: Action | undefined;
+    onImportCompletedAsync?: TaskFunc | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -8527,11 +8804,13 @@ export class ImportProfile implements IImportProfile {
                     this.settings!.push(ObjectSettingEntry.fromJS(item));
             }
             (<any>this).typeName = _data["typeName"];
+            this.profileType = _data["profileType"];
             this.importFileUrl = _data["importFileUrl"];
             this.importReportUrl = _data["importReportUrl"];
             this.importReporterType = _data["importReporterType"];
             this.previewObjectCount = _data["previewObjectCount"];
             this.onImportCompleted = _data["onImportCompleted"] ? Action.fromJS(_data["onImportCompleted"]) : <any>undefined;
+            this.onImportCompletedAsync = _data["onImportCompletedAsync"] ? TaskFunc.fromJS(_data["onImportCompletedAsync"]) : <any>undefined;
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -8559,11 +8838,13 @@ export class ImportProfile implements IImportProfile {
                 data["settings"].push(item.toJSON());
         }
         data["typeName"] = this.typeName;
+        data["profileType"] = this.profileType;
         data["importFileUrl"] = this.importFileUrl;
         data["importReportUrl"] = this.importReportUrl;
         data["importReporterType"] = this.importReporterType;
         data["previewObjectCount"] = this.previewObjectCount;
         data["onImportCompleted"] = this.onImportCompleted ? this.onImportCompleted.toJSON() : <any>undefined;
+        data["onImportCompletedAsync"] = this.onImportCompletedAsync ? this.onImportCompletedAsync.toJSON() : <any>undefined;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -8580,11 +8861,13 @@ export interface IImportProfile {
     userName?: string | undefined;
     settings?: ObjectSettingEntry[] | undefined;
     typeName?: string | undefined;
+    profileType?: string | undefined;
     importFileUrl?: string | undefined;
     importReportUrl?: string | undefined;
     importReporterType?: string | undefined;
     previewObjectCount?: number;
     onImportCompleted?: Action | undefined;
+    onImportCompletedAsync?: TaskFunc | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -9206,13 +9489,16 @@ export interface IISyncClient {
     lastSyncError?: string | undefined;
 }
 
-export class MarketplaceOptions implements IMarketplaceOptions {
+export class MarketplaceSettings implements IMarketplaceSettings {
+    defaultCurrency?: string | undefined;
+    currencies?: string[] | undefined;
+    defaultLanguage?: string | undefined;
+    languages?: string[] | undefined;
     masterCatalogId!: string;
-    vendorPortalUrl?: string | undefined;
-    availCurencies?: string[] | undefined;
     storeId!: string;
+    vendorPortalUrl?: string | undefined;
 
-    constructor(data?: IMarketplaceOptions) {
+    constructor(data?: IMarketplaceSettings) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -9223,43 +9509,60 @@ export class MarketplaceOptions implements IMarketplaceOptions {
 
     init(_data?: any) {
         if (_data) {
-            this.masterCatalogId = _data["masterCatalogId"];
-            this.vendorPortalUrl = _data["vendorPortalUrl"];
-            if (Array.isArray(_data["availCurencies"])) {
-                this.availCurencies = [] as any;
-                for (let item of _data["availCurencies"])
-                    this.availCurencies!.push(item);
+            this.defaultCurrency = _data["defaultCurrency"];
+            if (Array.isArray(_data["currencies"])) {
+                this.currencies = [] as any;
+                for (let item of _data["currencies"])
+                    this.currencies!.push(item);
             }
+            this.defaultLanguage = _data["defaultLanguage"];
+            if (Array.isArray(_data["languages"])) {
+                this.languages = [] as any;
+                for (let item of _data["languages"])
+                    this.languages!.push(item);
+            }
+            this.masterCatalogId = _data["masterCatalogId"];
             this.storeId = _data["storeId"];
+            this.vendorPortalUrl = _data["vendorPortalUrl"];
         }
     }
 
-    static fromJS(data: any): MarketplaceOptions {
+    static fromJS(data: any): MarketplaceSettings {
         data = typeof data === 'object' ? data : {};
-        let result = new MarketplaceOptions();
+        let result = new MarketplaceSettings();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["masterCatalogId"] = this.masterCatalogId;
-        data["vendorPortalUrl"] = this.vendorPortalUrl;
-        if (Array.isArray(this.availCurencies)) {
-            data["availCurencies"] = [];
-            for (let item of this.availCurencies)
-                data["availCurencies"].push(item);
+        data["defaultCurrency"] = this.defaultCurrency;
+        if (Array.isArray(this.currencies)) {
+            data["currencies"] = [];
+            for (let item of this.currencies)
+                data["currencies"].push(item);
         }
+        data["defaultLanguage"] = this.defaultLanguage;
+        if (Array.isArray(this.languages)) {
+            data["languages"] = [];
+            for (let item of this.languages)
+                data["languages"].push(item);
+        }
+        data["masterCatalogId"] = this.masterCatalogId;
         data["storeId"] = this.storeId;
+        data["vendorPortalUrl"] = this.vendorPortalUrl;
         return data;
     }
 }
 
-export interface IMarketplaceOptions {
+export interface IMarketplaceSettings {
+    defaultCurrency?: string | undefined;
+    currencies?: string[] | undefined;
+    defaultLanguage?: string | undefined;
+    languages?: string[] | undefined;
     masterCatalogId: string;
-    vendorPortalUrl?: string | undefined;
-    availCurencies?: string[] | undefined;
     storeId: string;
+    vendorPortalUrl?: string | undefined;
 }
 
 export class MemberInfo implements IMemberInfo {
@@ -9687,30 +9990,21 @@ export interface IModuleHandle {
 
 export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
-    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
-    /** Flag indicates the this setting is read only and can't be changed */
     isReadOnly?: boolean;
     value?: any | undefined;
     id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
-    /** The module id which setting belong to */
     moduleId?: string | undefined;
-    /** Setting group name */
     groupName?: string | undefined;
-    /** Setting name */
     name?: string | undefined;
-    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: ObjectSettingEntryValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: IObjectSettingEntry) {
@@ -9784,30 +10078,21 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
 
 export interface IObjectSettingEntry {
     itHasValues?: boolean;
-    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
-    /** Flag indicates the this setting is read only and can't be changed */
     isReadOnly?: boolean;
     value?: any | undefined;
     id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
-    /** The module id which setting belong to */
     moduleId?: string | undefined;
-    /** Setting group name */
     groupName?: string | undefined;
-    /** Setting name */
     name?: string | undefined;
-    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: ObjectSettingEntryValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 
@@ -10484,6 +10769,7 @@ export class OrderLineItem implements IOrderLineItem {
     categoryId?: string | undefined;
     name?: string | undefined;
     comment?: string | undefined;
+    status?: string | undefined;
     imageUrl?: string | undefined;
     isGift?: boolean | undefined;
     shippingMethodCode?: string | undefined;
@@ -10549,6 +10835,7 @@ export class OrderLineItem implements IOrderLineItem {
             this.categoryId = _data["categoryId"];
             this.name = _data["name"];
             this.comment = _data["comment"];
+            this.status = _data["status"];
             this.imageUrl = _data["imageUrl"];
             this.isGift = _data["isGift"];
             this.shippingMethodCode = _data["shippingMethodCode"];
@@ -10630,6 +10917,7 @@ export class OrderLineItem implements IOrderLineItem {
         data["categoryId"] = this.categoryId;
         data["name"] = this.name;
         data["comment"] = this.comment;
+        data["status"] = this.status;
         data["imageUrl"] = this.imageUrl;
         data["isGift"] = this.isGift;
         data["shippingMethodCode"] = this.shippingMethodCode;
@@ -10710,6 +10998,7 @@ export interface IOrderLineItem {
     categoryId?: string | undefined;
     name?: string | undefined;
     comment?: string | undefined;
+    status?: string | undefined;
     imageUrl?: string | undefined;
     isGift?: boolean | undefined;
     shippingMethodCode?: string | undefined;
@@ -11412,7 +11701,7 @@ export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived.
+    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -11504,7 +11793,7 @@ export interface IPaymentGatewayTransaction {
     responseCode?: string | undefined;
     /** Gateway IP address */
     gatewayIpAddress?: string | undefined;
-    /** The type of payment interaction.The payment can be Capture or CheckReceived.
+    /** The type of payment interaction.The payment can be Capture or CheckReceived. 
 The value also includes customer payment interactions such as Website, Call, Store, or Unknown. */
     type?: string | undefined;
     /** "Active", "Expired", and "Inactive" or other */
@@ -11552,6 +11841,7 @@ export class PaymentIn implements IPaymentIn {
     discounts?: Discount[] | undefined;
     transactions?: PaymentGatewayTransaction[] | undefined;
     refunds?: Refund[] | undefined;
+    captures?: Capture[] | undefined;
     operationType?: string | undefined;
     parentOperationId?: string | undefined;
     number?: string | undefined;
@@ -11636,6 +11926,11 @@ export class PaymentIn implements IPaymentIn {
                 this.refunds = [] as any;
                 for (let item of _data["refunds"])
                     this.refunds!.push(Refund.fromJS(item));
+            }
+            if (Array.isArray(_data["captures"])) {
+                this.captures = [] as any;
+                for (let item of _data["captures"])
+                    this.captures!.push(Capture.fromJS(item));
             }
             this.operationType = _data["operationType"];
             this.parentOperationId = _data["parentOperationId"];
@@ -11728,6 +12023,11 @@ export class PaymentIn implements IPaymentIn {
             for (let item of this.refunds)
                 data["refunds"].push(item.toJSON());
         }
+        if (Array.isArray(this.captures)) {
+            data["captures"] = [];
+            for (let item of this.captures)
+                data["captures"].push(item.toJSON());
+        }
         data["operationType"] = this.operationType;
         data["parentOperationId"] = this.parentOperationId;
         data["number"] = this.number;
@@ -11795,6 +12095,7 @@ export interface IPaymentIn {
     discounts?: Discount[] | undefined;
     transactions?: PaymentGatewayTransaction[] | undefined;
     refunds?: Refund[] | undefined;
+    captures?: Capture[] | undefined;
     operationType?: string | undefined;
     parentOperationId?: string | undefined;
     number?: string | undefined;
@@ -12764,15 +13065,11 @@ export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionary
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -12877,15 +13174,11 @@ export interface IPropertyDictionaryItemSearchCriteria {
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -13172,6 +13465,7 @@ export class Refund implements IRefund {
     reasonMessage?: string | undefined;
     rejectReasonMessage?: string | undefined;
     vendorId?: string | undefined;
+    transactionId?: string | undefined;
     customerOrderId?: string | undefined;
     paymentId?: string | undefined;
     items?: RefundItem[] | undefined;
@@ -13216,6 +13510,7 @@ export class Refund implements IRefund {
             this.reasonMessage = _data["reasonMessage"];
             this.rejectReasonMessage = _data["rejectReasonMessage"];
             this.vendorId = _data["vendorId"];
+            this.transactionId = _data["transactionId"];
             this.customerOrderId = _data["customerOrderId"];
             this.paymentId = _data["paymentId"];
             if (Array.isArray(_data["items"])) {
@@ -13270,6 +13565,7 @@ export class Refund implements IRefund {
         data["reasonMessage"] = this.reasonMessage;
         data["rejectReasonMessage"] = this.rejectReasonMessage;
         data["vendorId"] = this.vendorId;
+        data["transactionId"] = this.transactionId;
         data["customerOrderId"] = this.customerOrderId;
         data["paymentId"] = this.paymentId;
         if (Array.isArray(this.items)) {
@@ -13317,6 +13613,7 @@ export interface IRefund {
     reasonMessage?: string | undefined;
     rejectReasonMessage?: string | undefined;
     vendorId?: string | undefined;
+    transactionId?: string | undefined;
     customerOrderId?: string | undefined;
     paymentId?: string | undefined;
     items?: RefundItem[] | undefined;
@@ -13578,15 +13875,11 @@ export class SearchCategoriesQuery implements ISearchCategoriesQuery {
     sellerName?: string | undefined;
     sellerId?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -13677,15 +13970,11 @@ export interface ISearchCategoriesQuery {
     sellerName?: string | undefined;
     sellerId?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -13698,15 +13987,11 @@ export class SearchCommissionFeesQuery implements ISearchCommissionFeesQuery {
     isDefault?: boolean | undefined;
     isActive?: boolean | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -13797,15 +14082,11 @@ export interface ISearchCommissionFeesQuery {
     isDefault?: boolean | undefined;
     isActive?: boolean | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -13865,15 +14146,11 @@ export class SearchCustomerReviewsQuery implements ISearchCustomerReviewsQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -13961,15 +14238,11 @@ export interface ISearchCustomerReviewsQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14029,15 +14302,11 @@ export class SearchFulfillmentCentersQuery implements ISearchFulfillmentCentersQ
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14125,15 +14394,11 @@ export interface ISearchFulfillmentCentersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14194,15 +14459,11 @@ export class SearchImportProfilesQuery implements ISearchImportProfilesQuery {
     sellerName?: string | undefined;
     name?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14293,15 +14554,11 @@ export interface ISearchImportProfilesQuery {
     sellerName?: string | undefined;
     name?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14363,15 +14620,11 @@ export class SearchImportRunHistoryQuery implements ISearchImportRunHistoryQuery
     profileId?: string | undefined;
     jobId?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14465,15 +14718,11 @@ export interface ISearchImportRunHistoryQuery {
     profileId?: string | undefined;
     jobId?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14586,15 +14835,11 @@ export class SearchOffersQuery implements ISearchOffersQuery {
     productId?: string | undefined;
     skus?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14721,15 +14966,11 @@ export interface ISearchOffersQuery {
     productId?: string | undefined;
     skus?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14799,6 +15040,8 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
     operationId?: string | undefined;
     customerId?: string | undefined;
     customerIds?: string[] | undefined;
+    organizationId?: string | undefined;
+    organizationIds?: string[] | undefined;
     ids?: string[] | undefined;
     hasParentOperation?: boolean | undefined;
     parentOperationId?: string | undefined;
@@ -14813,15 +15056,11 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14855,6 +15094,12 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
                 this.customerIds = [] as any;
                 for (let item of _data["customerIds"])
                     this.customerIds!.push(item);
+            }
+            this.organizationId = _data["organizationId"];
+            if (Array.isArray(_data["organizationIds"])) {
+                this.organizationIds = [] as any;
+                for (let item of _data["organizationIds"])
+                    this.organizationIds!.push(item);
             }
             if (Array.isArray(_data["ids"])) {
                 this.ids = [] as any;
@@ -14935,6 +15180,12 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
             for (let item of this.customerIds)
                 data["customerIds"].push(item);
         }
+        data["organizationId"] = this.organizationId;
+        if (Array.isArray(this.organizationIds)) {
+            data["organizationIds"] = [];
+            for (let item of this.organizationIds)
+                data["organizationIds"].push(item);
+        }
         if (Array.isArray(this.ids)) {
             data["ids"] = [];
             for (let item of this.ids)
@@ -15003,6 +15254,8 @@ export interface ISearchOrdersQuery {
     operationId?: string | undefined;
     customerId?: string | undefined;
     customerIds?: string[] | undefined;
+    organizationId?: string | undefined;
+    organizationIds?: string[] | undefined;
     ids?: string[] | undefined;
     hasParentOperation?: boolean | undefined;
     parentOperationId?: string | undefined;
@@ -15017,15 +15270,11 @@ export interface ISearchOrdersQuery {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15038,15 +15287,11 @@ export class SearchProductsForNewOfferQuery implements ISearchProductsForNewOffe
     sellerName?: string | undefined;
     searchFromSellerOnly?: boolean;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15137,15 +15382,11 @@ export interface ISearchProductsForNewOfferQuery {
     sellerName?: string | undefined;
     searchFromSellerOnly?: boolean;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15167,15 +15408,11 @@ export class SearchProductsQuery implements ISearchProductsQuery {
     isPublished?: boolean | undefined;
     outerIds?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15333,15 +15570,11 @@ export interface ISearchProductsQuery {
     isPublished?: boolean | undefined;
     outerIds?: string[] | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15399,15 +15632,11 @@ export interface ISearchProductsResult {
 
 export class SearchSellersQuery implements ISearchSellersQuery {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15489,15 +15718,11 @@ export class SearchSellersQuery implements ISearchSellersQuery {
 
 export interface ISearchSellersQuery {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15557,15 +15782,11 @@ export class SearchSellerUsersQuery implements ISearchSellerUsersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15653,15 +15874,11 @@ export interface ISearchSellerUsersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15719,15 +15936,11 @@ export interface ISearchSellerUsersResult {
 
 export class SearchStateMachineDefinitionsQuery implements ISearchStateMachineDefinitionsQuery {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15809,15 +16022,11 @@ export class SearchStateMachineDefinitionsQuery implements ISearchStateMachineDe
 
 export interface ISearchStateMachineDefinitionsQuery {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15875,15 +16084,11 @@ export interface ISearchStateMachineDefinitionsResult {
 
 export class SearchStateMachineInstancesQuery implements ISearchStateMachineInstancesQuery {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15965,15 +16170,11 @@ export class SearchStateMachineInstancesQuery implements ISearchStateMachineInst
 
 export interface ISearchStateMachineInstancesQuery {
     responseGroup?: string | undefined;
-    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
-    /** Search phrase */
     keyword?: string | undefined;
-    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
-    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -16877,26 +17078,18 @@ export interface ISeoInfo {
     id?: string | undefined;
 }
 
-/** Represent setting meta description */
 export class SettingDescriptor implements ISettingDescriptor {
     id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
-    /** The module id which setting belong to */
     moduleId?: string | undefined;
-    /** Setting group name */
     groupName?: string | undefined;
-    /** Setting name */
     name?: string | undefined;
-    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingDescriptorValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: ISettingDescriptor) {
@@ -16958,26 +17151,18 @@ export class SettingDescriptor implements ISettingDescriptor {
     }
 }
 
-/** Represent setting meta description */
 export interface ISettingDescriptor {
     id?: string | undefined;
-    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
-    /** The module id which setting belong to */
     moduleId?: string | undefined;
-    /** Setting group name */
     groupName?: string | undefined;
-    /** Setting name */
     name?: string | undefined;
-    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
-    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingDescriptorValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
-    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 
@@ -17824,6 +18009,46 @@ export interface ISyncPushNotification {
     id?: string | undefined;
 }
 
+export class TaskFunc implements ITaskFunc {
+    readonly target?: any | undefined;
+    readonly method?: MethodInfo | undefined;
+
+    constructor(data?: ITaskFunc) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            (<any>this).target = _data["target"];
+            (<any>this).method = _data["method"] ? MethodInfo.fromJS(_data["method"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): TaskFunc {
+        data = typeof data === 'object' ? data : {};
+        let result = new TaskFunc();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["target"] = this.target;
+        data["method"] = this.method ? this.method.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface ITaskFunc {
+    target?: any | undefined;
+    method?: MethodInfo | undefined;
+}
+
 export class TaxDetail implements ITaxDetail {
     rate?: number;
     amount?: number;
@@ -18376,49 +18601,78 @@ export interface IValidationFailure {
 }
 
 export class Variation implements IVariation {
-    /** SKU code */
+    /** The type of product. Can be "Physical", "Digital", etc. */
+    productType?: string | undefined;
+    /** The Stock Keeping Unit (SKU) code for the product. */
     code?: string | undefined;
+    /** The manufacturer's part number for the product. */
     manufacturerPartNumber?: string | undefined;
-    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
+    /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
+    /** The name of the product. */
     name?: string | undefined;
+    /** The ID of the catalog to which this product belongs. */
     catalogId?: string | undefined;
+    /** The ID of the category to which this product belongs. */
     categoryId?: string | undefined;
     /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     readonly outline?: string | undefined;
     /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     readonly path?: string | undefined;
     readonly titularItemId?: string | undefined;
+    /** The ID of the main product associated with this product variation. */
     mainProductId?: string | undefined;
-    isBuyable?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently sold out. */
     isActive?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently ouf of stock. */
+    isBuyable?: boolean | undefined;
+    /** Indicates whether the inventory service is tracking the availability of this product.
+If set to false, the product is considered in stock without any inventory limitations. */
     trackInventory?: boolean | undefined;
+    /** The date and time when the product was last indexed for search. */
     indexingDate?: Date | undefined;
+    /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
     maxQuantity?: number | undefined;
+    /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
     minQuantity?: number | undefined;
-    /** Can be Physical, Digital or Subscription. */
-    productType?: string | undefined;
+    /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
+    startDate?: Date;
+    /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
+    endDate?: Date | undefined;
+    /** The type of package for this product, which determines the product's specific dimensions. */
     packageType?: string | undefined;
+    /** The unit of measurement for the product's weight. */
     weightUnit?: string | undefined;
+    /** The weight of the product, in the unit specified by the WeightUnit property. */
     weight?: number | undefined;
+    /** The unit of measurement for the product's height, length, and width. */
     measureUnit?: string | undefined;
+    /** The height of the product, in the unit specified by the MeasureUnit property. */
     height?: number | undefined;
+    /** The length of the product, in the unit specified by the MeasureUnit property. */
     length?: number | undefined;
+    /** The width of the product, in the unit specified by the MeasureUnit property. */
     width?: number | undefined;
     enableReview?: boolean | undefined;
-    /** re-downloads limit */
+    /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
     maxNumberOfDownload?: number | undefined;
+    /** The date and time when the download link or access to the product will expire. */
     downloadExpiration?: Date | undefined;
-    /** DownloadType: {Standard Product, Software, Music} */
+    /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
     downloadType?: string | undefined;
+    /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
     hasUserAgreement?: boolean | undefined;
+    /** Specifies the type of shipping option available for the product. */
     shippingType?: string | undefined;
+    /** Specifies the type of tax applied to the product. */
     taxType?: string | undefined;
+    /** ID of the vendor associated with the product. */
     vendor?: string | undefined;
-    startDate?: Date;
-    endDate?: Date | undefined;
-    /** Product order position in catalog */
+    /** Indicates the position of the product in the catalog for ordering purposes. */
     priority?: number;
+    /** An external identifier for the product that can be used for integration with external systems. */
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
@@ -18455,6 +18709,7 @@ export class Variation implements IVariation {
 
     init(_data?: any) {
         if (_data) {
+            this.productType = _data["productType"];
             this.code = _data["code"];
             this.manufacturerPartNumber = _data["manufacturerPartNumber"];
             this.gtin = _data["gtin"];
@@ -18465,13 +18720,14 @@ export class Variation implements IVariation {
             (<any>this).path = _data["path"];
             (<any>this).titularItemId = _data["titularItemId"];
             this.mainProductId = _data["mainProductId"];
-            this.isBuyable = _data["isBuyable"];
             this.isActive = _data["isActive"];
+            this.isBuyable = _data["isBuyable"];
             this.trackInventory = _data["trackInventory"];
             this.indexingDate = _data["indexingDate"] ? new Date(_data["indexingDate"].toString()) : <any>undefined;
             this.maxQuantity = _data["maxQuantity"];
             this.minQuantity = _data["minQuantity"];
-            this.productType = _data["productType"];
+            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
+            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.packageType = _data["packageType"];
             this.weightUnit = _data["weightUnit"];
             this.weight = _data["weight"];
@@ -18487,8 +18743,6 @@ export class Variation implements IVariation {
             this.shippingType = _data["shippingType"];
             this.taxType = _data["taxType"];
             this.vendor = _data["vendor"];
-            this.startDate = _data["startDate"] ? new Date(_data["startDate"].toString()) : <any>undefined;
-            this.endDate = _data["endDate"] ? new Date(_data["endDate"].toString()) : <any>undefined;
             this.priority = _data["priority"];
             this.outerId = _data["outerId"];
             if (Array.isArray(_data["properties"])) {
@@ -18571,6 +18825,7 @@ export class Variation implements IVariation {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["productType"] = this.productType;
         data["code"] = this.code;
         data["manufacturerPartNumber"] = this.manufacturerPartNumber;
         data["gtin"] = this.gtin;
@@ -18581,13 +18836,14 @@ export class Variation implements IVariation {
         data["path"] = this.path;
         data["titularItemId"] = this.titularItemId;
         data["mainProductId"] = this.mainProductId;
-        data["isBuyable"] = this.isBuyable;
         data["isActive"] = this.isActive;
+        data["isBuyable"] = this.isBuyable;
         data["trackInventory"] = this.trackInventory;
         data["indexingDate"] = this.indexingDate ? this.indexingDate.toISOString() : <any>undefined;
         data["maxQuantity"] = this.maxQuantity;
         data["minQuantity"] = this.minQuantity;
-        data["productType"] = this.productType;
+        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
+        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["packageType"] = this.packageType;
         data["weightUnit"] = this.weightUnit;
         data["weight"] = this.weight;
@@ -18603,8 +18859,6 @@ export class Variation implements IVariation {
         data["shippingType"] = this.shippingType;
         data["taxType"] = this.taxType;
         data["vendor"] = this.vendor;
-        data["startDate"] = this.startDate ? this.startDate.toISOString() : <any>undefined;
-        data["endDate"] = this.endDate ? this.endDate.toISOString() : <any>undefined;
         data["priority"] = this.priority;
         data["outerId"] = this.outerId;
         if (Array.isArray(this.properties)) {
@@ -18680,49 +18934,78 @@ export class Variation implements IVariation {
 }
 
 export interface IVariation {
-    /** SKU code */
+    /** The type of product. Can be "Physical", "Digital", etc. */
+    productType?: string | undefined;
+    /** The Stock Keeping Unit (SKU) code for the product. */
     code?: string | undefined;
+    /** The manufacturer's part number for the product. */
     manufacturerPartNumber?: string | undefined;
-    /** Global Trade Item Number (GTIN). These identifiers include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
+    /** The Global Trade Item Number (GTIN) for the product. This can include UPC (in North America), EAN (in Europe), JAN (in Japan), and ISBN (for books). */
     gtin?: string | undefined;
+    /** The name of the product. */
     name?: string | undefined;
+    /** The ID of the catalog to which this product belongs. */
     catalogId?: string | undefined;
+    /** The ID of the category to which this product belongs. */
     categoryId?: string | undefined;
     /** Product outline in physical catalog (all parent categories ids concatenated. E.g. (1/21/344)) */
     outline?: string | undefined;
     /** Product path in physical catalog (all parent categories names concatenated. E.g. (parent1/parent2)) */
     path?: string | undefined;
     titularItemId?: string | undefined;
+    /** The ID of the main product associated with this product variation. */
     mainProductId?: string | undefined;
-    isBuyable?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently sold out. */
     isActive?: boolean | undefined;
+    /** Specifies whether the product is currently visible on the store for customers to view and purchase.
+If set to false, the product is currently ouf of stock. */
+    isBuyable?: boolean | undefined;
+    /** Indicates whether the inventory service is tracking the availability of this product.
+If set to false, the product is considered in stock without any inventory limitations. */
     trackInventory?: boolean | undefined;
+    /** The date and time when the product was last indexed for search. */
     indexingDate?: Date | undefined;
+    /** The maximum quantity of the product that can be purchased in a single order. A value of 0 indicates that there are no limitations on the maximum quantity. */
     maxQuantity?: number | undefined;
+    /** The minimum quantity of the product that must be purchased in a single order. A value of 0 indicates that there are no limitations on the minimum quantity. */
     minQuantity?: number | undefined;
-    /** Can be Physical, Digital or Subscription. */
-    productType?: string | undefined;
+    /** First listed date and time. If you do not specify an end date, the product will be active until you deactivate it.If you do not specify an end date, the product will be active until you deactivate it.If you do not specify a start date, the product will become active immediately once you save it. */
+    startDate?: Date;
+    /** Listing expires on the specific date and time. If you do not specify an end date, the product will be active until you deactivate it. */
+    endDate?: Date | undefined;
+    /** The type of package for this product, which determines the product's specific dimensions. */
     packageType?: string | undefined;
+    /** The unit of measurement for the product's weight. */
     weightUnit?: string | undefined;
+    /** The weight of the product, in the unit specified by the WeightUnit property. */
     weight?: number | undefined;
+    /** The unit of measurement for the product's height, length, and width. */
     measureUnit?: string | undefined;
+    /** The height of the product, in the unit specified by the MeasureUnit property. */
     height?: number | undefined;
+    /** The length of the product, in the unit specified by the MeasureUnit property. */
     length?: number | undefined;
+    /** The width of the product, in the unit specified by the MeasureUnit property. */
     width?: number | undefined;
     enableReview?: boolean | undefined;
-    /** re-downloads limit */
+    /** The maximum number of times the product can be downloaded. A value of 0 indicates no limit. */
     maxNumberOfDownload?: number | undefined;
+    /** The date and time when the download link or access to the product will expire. */
     downloadExpiration?: Date | undefined;
-    /** DownloadType: {Standard Product, Software, Music} */
+    /** The type of product download. Valid values include: "Standard Product", "Software", and "Music". */
     downloadType?: string | undefined;
+    /** Indicates whether the product requires the user to agree to any terms or conditions before downloading. */
     hasUserAgreement?: boolean | undefined;
+    /** Specifies the type of shipping option available for the product. */
     shippingType?: string | undefined;
+    /** Specifies the type of tax applied to the product. */
     taxType?: string | undefined;
+    /** ID of the vendor associated with the product. */
     vendor?: string | undefined;
-    startDate?: Date;
-    endDate?: Date | undefined;
-    /** Product order position in catalog */
+    /** Indicates the position of the product in the catalog for ordering purposes. */
     priority?: number;
+    /** An external identifier for the product that can be used for integration with external systems. */
     outerId?: string | undefined;
     properties?: Property[] | undefined;
     excludedProperties?: ExcludedProperty[] | undefined;
@@ -18753,6 +19036,12 @@ export enum AssemblySecurityRuleSet {
     None = "None",
     Level1 = "Level1",
     Level2 = "Level2",
+}
+
+export enum CaptureCancelledState {
+    Undefined = "Undefined",
+    Requested = "Requested",
+    Completed = "Completed",
 }
 
 export enum ChangeRequestStatusCommandNewStatus {

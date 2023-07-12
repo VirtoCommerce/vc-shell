@@ -11,13 +11,14 @@
   >
     <ReviewTable
       :expanded="expanded"
+      :selected-item-id="selectedItemId"
       @item-click="onItemClick"
     ></ReviewTable>
   </VcBlade>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, markRaw, onMounted } from "vue";
+import { computed, ref, markRaw, onMounted, watch } from "vue";
 import { IBladeToolbar, useBladeNavigation } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
 import { CustomerReview } from "../../../api_client/marketplacevendor";
@@ -66,15 +67,17 @@ const { loadReviews } = useReviews();
 
 const title = t("RATING.PAGES.REVIEW_LIST.TITLE");
 
-onMounted(() => {
-  if (props.param && props.options) {
-    openBlade({
-      blade: markRaw(ReviewDetails),
-      param: props.param,
-      options: props.options,
-    });
-  }
-});
+const selectedItemId = ref();
+
+watch(
+  () => props.param,
+  (newVal) => {
+    if (newVal && props.options) {
+      onItemClick(props.options.review);
+    }
+  },
+  { immediate: true }
+);
 
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
@@ -87,17 +90,21 @@ const bladeToolbar = ref<IBladeToolbar[]>([
   },
 ]);
 
-const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
+function onItemClick(item: CustomerReview) {
   openBlade({
     blade: markRaw(ReviewDetails),
     param: item.id,
     options: {
       review: item,
     },
-    onOpen: onSelect,
-    onClose: onDeselect,
+    onOpen: () => {
+      selectedItemId.value = item.id;
+    },
+    onClose: () => {
+      selectedItemId.value = undefined;
+    },
   });
-};
+}
 
 defineExpose({
   title,

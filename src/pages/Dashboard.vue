@@ -238,7 +238,7 @@
 <script lang="ts" setup>
 import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch, markRaw } from "vue";
-import { OrderLineItem } from "../api_client/orders";
+import { OrderLineItem } from "../api_client/marketplacevendor";
 import { OffersList, useOffers } from "../modules/offers";
 import { OrdersList, useOrders } from "../modules/orders";
 import { MpProductStatus, ProductsList, useProducts } from "../modules/products";

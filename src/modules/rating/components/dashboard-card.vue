@@ -67,7 +67,7 @@ const openAllReviews = () => {
   );
 };
 
-const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () => void) => {
+const onItemClick = (item: CustomerReview) => {
   props.openPage(
     {
       blade: markRaw(ReviewList),
@@ -75,8 +75,6 @@ const onItemClick = (item: CustomerReview, onSelect: () => void, onDeselect: () 
       options: {
         review: item,
       },
-      onOpen: onSelect,
-      onClose: onDeselect,
     },
     true
   );

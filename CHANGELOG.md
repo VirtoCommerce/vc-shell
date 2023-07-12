@@ -1,3 +1,12 @@
+## [1.0.90](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.89...v1.0.90) (2023-07-12)
+
+
+### Bug Fixes
+
+* editor update on status change/val rule fix ([ad269a4](https://github.com/VirtoCommerce/vc-shell/commit/ad269a4a74a5d5539aa08d353367b11ecbf6b99b))
+
+
+
 ## [1.0.89](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.88...v1.0.89) (2023-07-07)
 
 

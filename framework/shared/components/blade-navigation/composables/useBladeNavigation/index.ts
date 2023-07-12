@@ -104,6 +104,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   async function openWorkspace({ blade, param, options }: IBladeEvent) {
     await closeBlade(0);
+    clearParentData();
 
     const bladeComponent = unref(blade);
 

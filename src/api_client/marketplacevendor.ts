@@ -1671,6 +1671,52 @@ export class VcmpSellerCatalogClient extends AuthApiBase {
         }
         return Promise.resolve<void>(null as any);
     }
+
+    /**
+     * @return Success
+     */
+    getAvailableLanguages(): Promise<string[]> {
+        let url_ = this.baseUrl + "/api/vcmp/seller/languages";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processGetAvailableLanguages(_response);
+        });
+    }
+
+    protected processGetAvailableLanguages(response: Response): Promise<string[]> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = <any>null;
+            }
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<string[]>(null as any);
+    }
 }
 
 export class VcmpSellerImportClient extends AuthApiBase {
@@ -3739,188 +3785,12 @@ export class VcmpSyncClient extends AuthApiBase {
     }
 }
 
-export class Action implements IAction {
-    readonly target?: any | undefined;
-    readonly method?: MethodInfo | undefined;
-
-    constructor(data?: IAction) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).target = _data["target"];
-            (<any>this).method = _data["method"] ? MethodInfo.fromJS(_data["method"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): Action {
-        data = typeof data === 'object' ? data : {};
-        let result = new Action();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["target"] = this.target;
-        data["method"] = this.method ? this.method.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface IAction {
-    target?: any | undefined;
-    method?: MethodInfo | undefined;
-}
-
 export enum AddressType {
     Undefined = "Undefined",
     Billing = "Billing",
     Shipping = "Shipping",
     BillingAndShipping = "BillingAndShipping",
     Pickup = "Pickup",
-}
-
-export class Assembly implements IAssembly {
-    readonly definedTypes?: string[] | undefined;
-    readonly exportedTypes?: string[] | undefined;
-    readonly codeBase?: string | undefined;
-    readonly entryPoint?: MethodInfo | undefined;
-    readonly fullName?: string | undefined;
-    readonly imageRuntimeVersion?: string | undefined;
-    readonly isDynamic?: boolean;
-    readonly location?: string | undefined;
-    readonly reflectionOnly?: boolean;
-    readonly isCollectible?: boolean;
-    readonly isFullyTrusted?: boolean;
-    readonly customAttributes?: CustomAttributeData[] | undefined;
-    readonly escapedCodeBase?: string | undefined;
-    readonly manifestModule?: Module | undefined;
-    readonly modules?: Module[] | undefined;
-    readonly globalAssemblyCache?: boolean;
-    readonly hostContext?: number;
-    readonly securityRuleSet?: AssemblySecurityRuleSet;
-
-    constructor(data?: IAssembly) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["definedTypes"])) {
-                (<any>this).definedTypes = [] as any;
-                for (let item of _data["definedTypes"])
-                    (<any>this).definedTypes!.push(item);
-            }
-            if (Array.isArray(_data["exportedTypes"])) {
-                (<any>this).exportedTypes = [] as any;
-                for (let item of _data["exportedTypes"])
-                    (<any>this).exportedTypes!.push(item);
-            }
-            (<any>this).codeBase = _data["codeBase"];
-            (<any>this).entryPoint = _data["entryPoint"] ? MethodInfo.fromJS(_data["entryPoint"]) : <any>undefined;
-            (<any>this).fullName = _data["fullName"];
-            (<any>this).imageRuntimeVersion = _data["imageRuntimeVersion"];
-            (<any>this).isDynamic = _data["isDynamic"];
-            (<any>this).location = _data["location"];
-            (<any>this).reflectionOnly = _data["reflectionOnly"];
-            (<any>this).isCollectible = _data["isCollectible"];
-            (<any>this).isFullyTrusted = _data["isFullyTrusted"];
-            if (Array.isArray(_data["customAttributes"])) {
-                (<any>this).customAttributes = [] as any;
-                for (let item of _data["customAttributes"])
-                    (<any>this).customAttributes!.push(CustomAttributeData.fromJS(item));
-            }
-            (<any>this).escapedCodeBase = _data["escapedCodeBase"];
-            (<any>this).manifestModule = _data["manifestModule"] ? Module.fromJS(_data["manifestModule"]) : <any>undefined;
-            if (Array.isArray(_data["modules"])) {
-                (<any>this).modules = [] as any;
-                for (let item of _data["modules"])
-                    (<any>this).modules!.push(Module.fromJS(item));
-            }
-            (<any>this).globalAssemblyCache = _data["globalAssemblyCache"];
-            (<any>this).hostContext = _data["hostContext"];
-            (<any>this).securityRuleSet = _data["securityRuleSet"];
-        }
-    }
-
-    static fromJS(data: any): Assembly {
-        data = typeof data === 'object' ? data : {};
-        let result = new Assembly();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.definedTypes)) {
-            data["definedTypes"] = [];
-            for (let item of this.definedTypes)
-                data["definedTypes"].push(item);
-        }
-        if (Array.isArray(this.exportedTypes)) {
-            data["exportedTypes"] = [];
-            for (let item of this.exportedTypes)
-                data["exportedTypes"].push(item);
-        }
-        data["codeBase"] = this.codeBase;
-        data["entryPoint"] = this.entryPoint ? this.entryPoint.toJSON() : <any>undefined;
-        data["fullName"] = this.fullName;
-        data["imageRuntimeVersion"] = this.imageRuntimeVersion;
-        data["isDynamic"] = this.isDynamic;
-        data["location"] = this.location;
-        data["reflectionOnly"] = this.reflectionOnly;
-        data["isCollectible"] = this.isCollectible;
-        data["isFullyTrusted"] = this.isFullyTrusted;
-        if (Array.isArray(this.customAttributes)) {
-            data["customAttributes"] = [];
-            for (let item of this.customAttributes)
-                data["customAttributes"].push(item.toJSON());
-        }
-        data["escapedCodeBase"] = this.escapedCodeBase;
-        data["manifestModule"] = this.manifestModule ? this.manifestModule.toJSON() : <any>undefined;
-        if (Array.isArray(this.modules)) {
-            data["modules"] = [];
-            for (let item of this.modules)
-                data["modules"].push(item.toJSON());
-        }
-        data["globalAssemblyCache"] = this.globalAssemblyCache;
-        data["hostContext"] = this.hostContext;
-        data["securityRuleSet"] = this.securityRuleSet;
-        return data;
-    }
-}
-
-export interface IAssembly {
-    definedTypes?: string[] | undefined;
-    exportedTypes?: string[] | undefined;
-    codeBase?: string | undefined;
-    entryPoint?: MethodInfo | undefined;
-    fullName?: string | undefined;
-    imageRuntimeVersion?: string | undefined;
-    isDynamic?: boolean;
-    location?: string | undefined;
-    reflectionOnly?: boolean;
-    isCollectible?: boolean;
-    isFullyTrusted?: boolean;
-    customAttributes?: CustomAttributeData[] | undefined;
-    escapedCodeBase?: string | undefined;
-    manifestModule?: Module | undefined;
-    modules?: Module[] | undefined;
-    globalAssemblyCache?: boolean;
-    hostContext?: number;
-    securityRuleSet?: AssemblySecurityRuleSet;
 }
 
 export class Asset implements IAsset {
@@ -4179,14 +4049,6 @@ export interface IBulkProductsDeleteCommand {
     productIds?: string[] | undefined;
     query?: SearchProductsQuery | undefined;
     all?: boolean;
-}
-
-export enum CallingConventions {
-    Standard = "Standard",
-    VarArgs = "VarArgs",
-    Any = "Any",
-    HasThis = "HasThis",
-    ExplicitThis = "ExplicitThis",
 }
 
 export enum CancelledState {
@@ -5230,11 +5092,15 @@ export class CategorySearchCriteria implements ICategorySearchCriteria {
     outerIds?: string[] | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -5351,11 +5217,15 @@ export interface ICategorySearchCriteria {
     outerIds?: string[] | undefined;
     searchOnlyInRoot?: boolean;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -5713,174 +5583,6 @@ export interface ICommissionFeeDetails {
     isDefault?: boolean;
     isActive?: boolean;
     expressionTree?: DynamicCommissionFeeTree | undefined;
-}
-
-export class ConstructorInfo implements IConstructorInfo {
-    readonly memberType?: ConstructorInfoMemberType;
-    readonly attributes?: ConstructorInfoAttributes;
-    readonly methodImplementationFlags?: ConstructorInfoMethodImplementationFlags;
-    readonly callingConvention?: ConstructorInfoCallingConvention;
-    readonly isAbstract?: boolean;
-    readonly isConstructor?: boolean;
-    readonly isFinal?: boolean;
-    readonly isHideBySig?: boolean;
-    readonly isSpecialName?: boolean;
-    readonly isStatic?: boolean;
-    readonly isVirtual?: boolean;
-    readonly isAssembly?: boolean;
-    readonly isFamily?: boolean;
-    readonly isFamilyAndAssembly?: boolean;
-    readonly isFamilyOrAssembly?: boolean;
-    readonly isPrivate?: boolean;
-    readonly isPublic?: boolean;
-    readonly isConstructedGenericMethod?: boolean;
-    readonly isGenericMethod?: boolean;
-    readonly isGenericMethodDefinition?: boolean;
-    readonly containsGenericParameters?: boolean;
-    readonly methodHandle?: RuntimeMethodHandle;
-    readonly isSecurityCritical?: boolean;
-    readonly isSecuritySafeCritical?: boolean;
-    readonly isSecurityTransparent?: boolean;
-    readonly name?: string | undefined;
-    readonly declaringType?: string | undefined;
-    readonly reflectedType?: string | undefined;
-    readonly module?: Module | undefined;
-    readonly customAttributes?: CustomAttributeData[] | undefined;
-    readonly isCollectible?: boolean;
-    readonly metadataToken?: number;
-
-    constructor(data?: IConstructorInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).memberType = _data["memberType"];
-            (<any>this).attributes = _data["attributes"];
-            (<any>this).methodImplementationFlags = _data["methodImplementationFlags"];
-            (<any>this).callingConvention = _data["callingConvention"];
-            (<any>this).isAbstract = _data["isAbstract"];
-            (<any>this).isConstructor = _data["isConstructor"];
-            (<any>this).isFinal = _data["isFinal"];
-            (<any>this).isHideBySig = _data["isHideBySig"];
-            (<any>this).isSpecialName = _data["isSpecialName"];
-            (<any>this).isStatic = _data["isStatic"];
-            (<any>this).isVirtual = _data["isVirtual"];
-            (<any>this).isAssembly = _data["isAssembly"];
-            (<any>this).isFamily = _data["isFamily"];
-            (<any>this).isFamilyAndAssembly = _data["isFamilyAndAssembly"];
-            (<any>this).isFamilyOrAssembly = _data["isFamilyOrAssembly"];
-            (<any>this).isPrivate = _data["isPrivate"];
-            (<any>this).isPublic = _data["isPublic"];
-            (<any>this).isConstructedGenericMethod = _data["isConstructedGenericMethod"];
-            (<any>this).isGenericMethod = _data["isGenericMethod"];
-            (<any>this).isGenericMethodDefinition = _data["isGenericMethodDefinition"];
-            (<any>this).containsGenericParameters = _data["containsGenericParameters"];
-            (<any>this).methodHandle = _data["methodHandle"] ? RuntimeMethodHandle.fromJS(_data["methodHandle"]) : <any>undefined;
-            (<any>this).isSecurityCritical = _data["isSecurityCritical"];
-            (<any>this).isSecuritySafeCritical = _data["isSecuritySafeCritical"];
-            (<any>this).isSecurityTransparent = _data["isSecurityTransparent"];
-            (<any>this).name = _data["name"];
-            (<any>this).declaringType = _data["declaringType"];
-            (<any>this).reflectedType = _data["reflectedType"];
-            (<any>this).module = _data["module"] ? Module.fromJS(_data["module"]) : <any>undefined;
-            if (Array.isArray(_data["customAttributes"])) {
-                (<any>this).customAttributes = [] as any;
-                for (let item of _data["customAttributes"])
-                    (<any>this).customAttributes!.push(CustomAttributeData.fromJS(item));
-            }
-            (<any>this).isCollectible = _data["isCollectible"];
-            (<any>this).metadataToken = _data["metadataToken"];
-        }
-    }
-
-    static fromJS(data: any): ConstructorInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new ConstructorInfo();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["memberType"] = this.memberType;
-        data["attributes"] = this.attributes;
-        data["methodImplementationFlags"] = this.methodImplementationFlags;
-        data["callingConvention"] = this.callingConvention;
-        data["isAbstract"] = this.isAbstract;
-        data["isConstructor"] = this.isConstructor;
-        data["isFinal"] = this.isFinal;
-        data["isHideBySig"] = this.isHideBySig;
-        data["isSpecialName"] = this.isSpecialName;
-        data["isStatic"] = this.isStatic;
-        data["isVirtual"] = this.isVirtual;
-        data["isAssembly"] = this.isAssembly;
-        data["isFamily"] = this.isFamily;
-        data["isFamilyAndAssembly"] = this.isFamilyAndAssembly;
-        data["isFamilyOrAssembly"] = this.isFamilyOrAssembly;
-        data["isPrivate"] = this.isPrivate;
-        data["isPublic"] = this.isPublic;
-        data["isConstructedGenericMethod"] = this.isConstructedGenericMethod;
-        data["isGenericMethod"] = this.isGenericMethod;
-        data["isGenericMethodDefinition"] = this.isGenericMethodDefinition;
-        data["containsGenericParameters"] = this.containsGenericParameters;
-        data["methodHandle"] = this.methodHandle ? this.methodHandle.toJSON() : <any>undefined;
-        data["isSecurityCritical"] = this.isSecurityCritical;
-        data["isSecuritySafeCritical"] = this.isSecuritySafeCritical;
-        data["isSecurityTransparent"] = this.isSecurityTransparent;
-        data["name"] = this.name;
-        data["declaringType"] = this.declaringType;
-        data["reflectedType"] = this.reflectedType;
-        data["module"] = this.module ? this.module.toJSON() : <any>undefined;
-        if (Array.isArray(this.customAttributes)) {
-            data["customAttributes"] = [];
-            for (let item of this.customAttributes)
-                data["customAttributes"].push(item.toJSON());
-        }
-        data["isCollectible"] = this.isCollectible;
-        data["metadataToken"] = this.metadataToken;
-        return data;
-    }
-}
-
-export interface IConstructorInfo {
-    memberType?: ConstructorInfoMemberType;
-    attributes?: ConstructorInfoAttributes;
-    methodImplementationFlags?: ConstructorInfoMethodImplementationFlags;
-    callingConvention?: ConstructorInfoCallingConvention;
-    isAbstract?: boolean;
-    isConstructor?: boolean;
-    isFinal?: boolean;
-    isHideBySig?: boolean;
-    isSpecialName?: boolean;
-    isStatic?: boolean;
-    isVirtual?: boolean;
-    isAssembly?: boolean;
-    isFamily?: boolean;
-    isFamilyAndAssembly?: boolean;
-    isFamilyOrAssembly?: boolean;
-    isPrivate?: boolean;
-    isPublic?: boolean;
-    isConstructedGenericMethod?: boolean;
-    isGenericMethod?: boolean;
-    isGenericMethodDefinition?: boolean;
-    containsGenericParameters?: boolean;
-    methodHandle?: RuntimeMethodHandle;
-    isSecurityCritical?: boolean;
-    isSecuritySafeCritical?: boolean;
-    isSecurityTransparent?: boolean;
-    name?: string | undefined;
-    declaringType?: string | undefined;
-    reflectedType?: string | undefined;
-    module?: Module | undefined;
-    customAttributes?: CustomAttributeData[] | undefined;
-    isCollectible?: boolean;
-    metadataToken?: number;
 }
 
 export class CreateFeeCommand implements ICreateFeeCommand {
@@ -6291,158 +5993,6 @@ export class CreateStateMachineDefinitionCommand implements ICreateStateMachineD
 
 export interface ICreateStateMachineDefinitionCommand {
     definition?: StateMachineDefinition | undefined;
-}
-
-export class CustomAttributeData implements ICustomAttributeData {
-    readonly attributeType?: string | undefined;
-    readonly constructor_?: ConstructorInfo | undefined;
-    readonly constructorArguments?: CustomAttributeTypedArgument[] | undefined;
-    readonly namedArguments?: CustomAttributeNamedArgument[] | undefined;
-
-    constructor(data?: ICustomAttributeData) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).attributeType = _data["attributeType"];
-            (<any>this).constructor_ = _data["constructor"] ? ConstructorInfo.fromJS(_data["constructor"]) : <any>undefined;
-            if (Array.isArray(_data["constructorArguments"])) {
-                (<any>this).constructorArguments = [] as any;
-                for (let item of _data["constructorArguments"])
-                    (<any>this).constructorArguments!.push(CustomAttributeTypedArgument.fromJS(item));
-            }
-            if (Array.isArray(_data["namedArguments"])) {
-                (<any>this).namedArguments = [] as any;
-                for (let item of _data["namedArguments"])
-                    (<any>this).namedArguments!.push(CustomAttributeNamedArgument.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CustomAttributeData {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomAttributeData();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["attributeType"] = this.attributeType;
-        data["constructor"] = this.constructor_ ? this.constructor_.toJSON() : <any>undefined;
-        if (Array.isArray(this.constructorArguments)) {
-            data["constructorArguments"] = [];
-            for (let item of this.constructorArguments)
-                data["constructorArguments"].push(item.toJSON());
-        }
-        if (Array.isArray(this.namedArguments)) {
-            data["namedArguments"] = [];
-            for (let item of this.namedArguments)
-                data["namedArguments"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ICustomAttributeData {
-    attributeType?: string | undefined;
-    constructor_?: ConstructorInfo | undefined;
-    constructorArguments?: CustomAttributeTypedArgument[] | undefined;
-    namedArguments?: CustomAttributeNamedArgument[] | undefined;
-}
-
-export class CustomAttributeNamedArgument implements ICustomAttributeNamedArgument {
-    memberInfo?: MemberInfo | undefined;
-    readonly typedValue?: CustomAttributeTypedArgument;
-    readonly memberName?: string | undefined;
-    readonly isField?: boolean;
-
-    constructor(data?: ICustomAttributeNamedArgument) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.memberInfo = _data["memberInfo"] ? MemberInfo.fromJS(_data["memberInfo"]) : <any>undefined;
-            (<any>this).typedValue = _data["typedValue"] ? CustomAttributeTypedArgument.fromJS(_data["typedValue"]) : <any>undefined;
-            (<any>this).memberName = _data["memberName"];
-            (<any>this).isField = _data["isField"];
-        }
-    }
-
-    static fromJS(data: any): CustomAttributeNamedArgument {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomAttributeNamedArgument();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["memberInfo"] = this.memberInfo ? this.memberInfo.toJSON() : <any>undefined;
-        data["typedValue"] = this.typedValue ? this.typedValue.toJSON() : <any>undefined;
-        data["memberName"] = this.memberName;
-        data["isField"] = this.isField;
-        return data;
-    }
-}
-
-export interface ICustomAttributeNamedArgument {
-    memberInfo?: MemberInfo | undefined;
-    typedValue?: CustomAttributeTypedArgument;
-    memberName?: string | undefined;
-    isField?: boolean;
-}
-
-export class CustomAttributeTypedArgument implements ICustomAttributeTypedArgument {
-    argumentType?: string | undefined;
-    value?: any | undefined;
-
-    constructor(data?: ICustomAttributeTypedArgument) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.argumentType = _data["argumentType"];
-            this.value = _data["value"];
-        }
-    }
-
-    static fromJS(data: any): CustomAttributeTypedArgument {
-        data = typeof data === 'object' ? data : {};
-        let result = new CustomAttributeTypedArgument();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["argumentType"] = this.argumentType;
-        data["value"] = this.value;
-        return data;
-    }
-}
-
-export interface ICustomAttributeTypedArgument {
-    argumentType?: string | undefined;
-    value?: any | undefined;
 }
 
 export class CustomerAddress implements ICustomerAddress {
@@ -7478,14 +7028,20 @@ export class DynamicObjectProperty implements IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
+    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
+    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
+    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
+    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
+    /** The storage property type */
     valueType?: DynamicObjectPropertyValueType;
+    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -7574,14 +7130,20 @@ export interface IDynamicObjectProperty {
     objectId?: string | undefined;
     values?: DynamicPropertyObjectValue[] | undefined;
     name?: string | undefined;
+    /** dynamic property description */
     description?: string | undefined;
     objectType?: string | undefined;
+    /** Defines whether a property supports multiple values. */
     isArray?: boolean;
+    /** Dictionary has a predefined set of values. User can select one or more of them and cannot enter arbitrary values. */
     isDictionary?: boolean;
+    /** For multilingual properties user can enter different values for each of registered languages. */
     isMultilingual?: boolean;
     isRequired?: boolean;
     displayOrder?: number | undefined;
+    /** The storage property type */
     valueType?: DynamicObjectPropertyValueType;
+    /** Property names for different languages. */
     displayNames?: DynamicPropertyName[] | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
@@ -7591,6 +7153,7 @@ export interface IDynamicObjectProperty {
 }
 
 export class DynamicPropertyName implements IDynamicPropertyName {
+    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 
@@ -7626,6 +7189,7 @@ export class DynamicPropertyName implements IDynamicPropertyName {
 }
 
 export interface IDynamicPropertyName {
+    /** Language ID, e.g. en-US. */
     locale?: string | undefined;
     name?: string | undefined;
 }
@@ -8349,36 +7913,6 @@ export interface IIConditionTree {
     children?: IConditionTree[] | undefined;
 }
 
-export class ICustomAttributeProvider implements IICustomAttributeProvider {
-
-    constructor(data?: IICustomAttributeProvider) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-    }
-
-    static fromJS(data: any): ICustomAttributeProvider {
-        data = typeof data === 'object' ? data : {};
-        let result = new ICustomAttributeProvider();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        return data;
-    }
-}
-
-export interface IICustomAttributeProvider {
-}
-
 export class IDataImporter implements IIDataImporter {
     readonly typeName?: string | undefined;
     readonly metadata?: { [key: string]: string; } | undefined;
@@ -8775,8 +8309,6 @@ export class ImportProfile implements IImportProfile {
     importReportUrl?: string | undefined;
     importReporterType?: string | undefined;
     previewObjectCount?: number;
-    onImportCompleted?: Action | undefined;
-    onImportCompletedAsync?: TaskFunc | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -8809,8 +8341,6 @@ export class ImportProfile implements IImportProfile {
             this.importReportUrl = _data["importReportUrl"];
             this.importReporterType = _data["importReporterType"];
             this.previewObjectCount = _data["previewObjectCount"];
-            this.onImportCompleted = _data["onImportCompleted"] ? Action.fromJS(_data["onImportCompleted"]) : <any>undefined;
-            this.onImportCompletedAsync = _data["onImportCompletedAsync"] ? TaskFunc.fromJS(_data["onImportCompletedAsync"]) : <any>undefined;
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -8843,8 +8373,6 @@ export class ImportProfile implements IImportProfile {
         data["importReportUrl"] = this.importReportUrl;
         data["importReporterType"] = this.importReporterType;
         data["previewObjectCount"] = this.previewObjectCount;
-        data["onImportCompleted"] = this.onImportCompleted ? this.onImportCompleted.toJSON() : <any>undefined;
-        data["onImportCompletedAsync"] = this.onImportCompletedAsync ? this.onImportCompletedAsync.toJSON() : <any>undefined;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -8866,8 +8394,6 @@ export interface IImportProfile {
     importReportUrl?: string | undefined;
     importReporterType?: string | undefined;
     previewObjectCount?: number;
-    onImportCompleted?: Action | undefined;
-    onImportCompletedAsync?: TaskFunc | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -9363,12 +8889,12 @@ export enum InventoryStatus {
 
 export class IOperation implements IIOperation {
     operationType?: string | undefined;
+    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
-    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 
@@ -9384,12 +8910,12 @@ export class IOperation implements IIOperation {
     init(_data?: any) {
         if (_data) {
             this.operationType = _data["operationType"];
+            this.parentOperationId = _data["parentOperationId"];
             this.number = _data["number"];
             this.isApproved = _data["isApproved"];
             this.status = _data["status"];
             this.comment = _data["comment"];
             this.currency = _data["currency"];
-            this.parentOperationId = _data["parentOperationId"];
             if (Array.isArray(_data["childrenOperations"])) {
                 this.childrenOperations = [] as any;
                 for (let item of _data["childrenOperations"])
@@ -9409,12 +8935,12 @@ export class IOperation implements IIOperation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["operationType"] = this.operationType;
+        data["parentOperationId"] = this.parentOperationId;
         data["number"] = this.number;
         data["isApproved"] = this.isApproved;
         data["status"] = this.status;
         data["comment"] = this.comment;
         data["currency"] = this.currency;
-        data["parentOperationId"] = this.parentOperationId;
         if (Array.isArray(this.childrenOperations)) {
             data["childrenOperations"] = [];
             for (let item of this.childrenOperations)
@@ -9427,12 +8953,12 @@ export class IOperation implements IIOperation {
 
 export interface IIOperation {
     operationType?: string | undefined;
+    parentOperationId?: string | undefined;
     number?: string | undefined;
     isApproved?: boolean;
     status?: string | undefined;
     comment?: string | undefined;
     currency?: string | undefined;
-    parentOperationId?: string | undefined;
     childrenOperations?: IOperation[] | undefined;
     id?: string | undefined;
 }
@@ -9565,446 +9091,32 @@ export interface IMarketplaceSettings {
     vendorPortalUrl?: string | undefined;
 }
 
-export class MemberInfo implements IMemberInfo {
-    readonly memberType?: MemberInfoMemberType;
-    readonly name?: string | undefined;
-    readonly declaringType?: string | undefined;
-    readonly reflectedType?: string | undefined;
-    readonly module?: Module | undefined;
-    readonly customAttributes?: CustomAttributeData[] | undefined;
-    readonly isCollectible?: boolean;
-    readonly metadataToken?: number;
-
-    constructor(data?: IMemberInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).memberType = _data["memberType"];
-            (<any>this).name = _data["name"];
-            (<any>this).declaringType = _data["declaringType"];
-            (<any>this).reflectedType = _data["reflectedType"];
-            (<any>this).module = _data["module"] ? Module.fromJS(_data["module"]) : <any>undefined;
-            if (Array.isArray(_data["customAttributes"])) {
-                (<any>this).customAttributes = [] as any;
-                for (let item of _data["customAttributes"])
-                    (<any>this).customAttributes!.push(CustomAttributeData.fromJS(item));
-            }
-            (<any>this).isCollectible = _data["isCollectible"];
-            (<any>this).metadataToken = _data["metadataToken"];
-        }
-    }
-
-    static fromJS(data: any): MemberInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new MemberInfo();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["memberType"] = this.memberType;
-        data["name"] = this.name;
-        data["declaringType"] = this.declaringType;
-        data["reflectedType"] = this.reflectedType;
-        data["module"] = this.module ? this.module.toJSON() : <any>undefined;
-        if (Array.isArray(this.customAttributes)) {
-            data["customAttributes"] = [];
-            for (let item of this.customAttributes)
-                data["customAttributes"].push(item.toJSON());
-        }
-        data["isCollectible"] = this.isCollectible;
-        data["metadataToken"] = this.metadataToken;
-        return data;
-    }
-}
-
-export interface IMemberInfo {
-    memberType?: MemberInfoMemberType;
-    name?: string | undefined;
-    declaringType?: string | undefined;
-    reflectedType?: string | undefined;
-    module?: Module | undefined;
-    customAttributes?: CustomAttributeData[] | undefined;
-    isCollectible?: boolean;
-    metadataToken?: number;
-}
-
-export enum MemberTypes {
-    Constructor = "Constructor",
-    Event = "Event",
-    Field = "Field",
-    Method = "Method",
-    Property = "Property",
-    TypeInfo = "TypeInfo",
-    Custom = "Custom",
-    NestedType = "NestedType",
-    All = "All",
-}
-
-export enum MethodAttributes {
-    ReuseSlot = "ReuseSlot",
-    PrivateScope = "PrivateScope",
-    Private = "Private",
-    FamANDAssem = "FamANDAssem",
-    Assembly = "Assembly",
-    Family = "Family",
-    FamORAssem = "FamORAssem",
-    Public = "Public",
-    MemberAccessMask = "MemberAccessMask",
-    UnmanagedExport = "UnmanagedExport",
-    Static = "Static",
-    Final = "Final",
-    Virtual = "Virtual",
-    HideBySig = "HideBySig",
-    NewSlot = "NewSlot",
-    VtableLayoutMask = "VtableLayoutMask",
-    CheckAccessOnOverride = "CheckAccessOnOverride",
-    Abstract = "Abstract",
-    SpecialName = "SpecialName",
-    RTSpecialName = "RTSpecialName",
-    PinvokeImpl = "PinvokeImpl",
-    HasSecurity = "HasSecurity",
-    RequireSecObject = "RequireSecObject",
-    ReservedMask = "ReservedMask",
-}
-
-export enum MethodImplAttributes {
-    IL = "IL",
-    Managed = "Managed",
-    Native = "Native",
-    OPTIL = "OPTIL",
-    Runtime = "Runtime",
-    CodeTypeMask = "CodeTypeMask",
-    Unmanaged = "Unmanaged",
-    ManagedMask = "ManagedMask",
-    NoInlining = "NoInlining",
-    ForwardRef = "ForwardRef",
-    Synchronized = "Synchronized",
-    NoOptimization = "NoOptimization",
-    PreserveSig = "PreserveSig",
-    AggressiveInlining = "AggressiveInlining",
-    AggressiveOptimization = "AggressiveOptimization",
-    InternalCall = "InternalCall",
-    MaxMethodImplVal = "MaxMethodImplVal",
-}
-
-export class MethodInfo implements IMethodInfo {
-    readonly memberType?: MethodInfoMemberType;
-    readonly returnParameter?: ParameterInfo | undefined;
-    readonly returnType?: string | undefined;
-    readonly returnTypeCustomAttributes?: ICustomAttributeProvider | undefined;
-    readonly attributes?: MethodInfoAttributes;
-    readonly methodImplementationFlags?: MethodInfoMethodImplementationFlags;
-    readonly callingConvention?: MethodInfoCallingConvention;
-    readonly isAbstract?: boolean;
-    readonly isConstructor?: boolean;
-    readonly isFinal?: boolean;
-    readonly isHideBySig?: boolean;
-    readonly isSpecialName?: boolean;
-    readonly isStatic?: boolean;
-    readonly isVirtual?: boolean;
-    readonly isAssembly?: boolean;
-    readonly isFamily?: boolean;
-    readonly isFamilyAndAssembly?: boolean;
-    readonly isFamilyOrAssembly?: boolean;
-    readonly isPrivate?: boolean;
-    readonly isPublic?: boolean;
-    readonly isConstructedGenericMethod?: boolean;
-    readonly isGenericMethod?: boolean;
-    readonly isGenericMethodDefinition?: boolean;
-    readonly containsGenericParameters?: boolean;
-    readonly methodHandle?: RuntimeMethodHandle;
-    readonly isSecurityCritical?: boolean;
-    readonly isSecuritySafeCritical?: boolean;
-    readonly isSecurityTransparent?: boolean;
-    readonly name?: string | undefined;
-    readonly declaringType?: string | undefined;
-    readonly reflectedType?: string | undefined;
-    readonly module?: Module | undefined;
-    readonly customAttributes?: CustomAttributeData[] | undefined;
-    readonly isCollectible?: boolean;
-    readonly metadataToken?: number;
-
-    constructor(data?: IMethodInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).memberType = _data["memberType"];
-            (<any>this).returnParameter = _data["returnParameter"] ? ParameterInfo.fromJS(_data["returnParameter"]) : <any>undefined;
-            (<any>this).returnType = _data["returnType"];
-            (<any>this).returnTypeCustomAttributes = _data["returnTypeCustomAttributes"] ? ICustomAttributeProvider.fromJS(_data["returnTypeCustomAttributes"]) : <any>undefined;
-            (<any>this).attributes = _data["attributes"];
-            (<any>this).methodImplementationFlags = _data["methodImplementationFlags"];
-            (<any>this).callingConvention = _data["callingConvention"];
-            (<any>this).isAbstract = _data["isAbstract"];
-            (<any>this).isConstructor = _data["isConstructor"];
-            (<any>this).isFinal = _data["isFinal"];
-            (<any>this).isHideBySig = _data["isHideBySig"];
-            (<any>this).isSpecialName = _data["isSpecialName"];
-            (<any>this).isStatic = _data["isStatic"];
-            (<any>this).isVirtual = _data["isVirtual"];
-            (<any>this).isAssembly = _data["isAssembly"];
-            (<any>this).isFamily = _data["isFamily"];
-            (<any>this).isFamilyAndAssembly = _data["isFamilyAndAssembly"];
-            (<any>this).isFamilyOrAssembly = _data["isFamilyOrAssembly"];
-            (<any>this).isPrivate = _data["isPrivate"];
-            (<any>this).isPublic = _data["isPublic"];
-            (<any>this).isConstructedGenericMethod = _data["isConstructedGenericMethod"];
-            (<any>this).isGenericMethod = _data["isGenericMethod"];
-            (<any>this).isGenericMethodDefinition = _data["isGenericMethodDefinition"];
-            (<any>this).containsGenericParameters = _data["containsGenericParameters"];
-            (<any>this).methodHandle = _data["methodHandle"] ? RuntimeMethodHandle.fromJS(_data["methodHandle"]) : <any>undefined;
-            (<any>this).isSecurityCritical = _data["isSecurityCritical"];
-            (<any>this).isSecuritySafeCritical = _data["isSecuritySafeCritical"];
-            (<any>this).isSecurityTransparent = _data["isSecurityTransparent"];
-            (<any>this).name = _data["name"];
-            (<any>this).declaringType = _data["declaringType"];
-            (<any>this).reflectedType = _data["reflectedType"];
-            (<any>this).module = _data["module"] ? Module.fromJS(_data["module"]) : <any>undefined;
-            if (Array.isArray(_data["customAttributes"])) {
-                (<any>this).customAttributes = [] as any;
-                for (let item of _data["customAttributes"])
-                    (<any>this).customAttributes!.push(CustomAttributeData.fromJS(item));
-            }
-            (<any>this).isCollectible = _data["isCollectible"];
-            (<any>this).metadataToken = _data["metadataToken"];
-        }
-    }
-
-    static fromJS(data: any): MethodInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new MethodInfo();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["memberType"] = this.memberType;
-        data["returnParameter"] = this.returnParameter ? this.returnParameter.toJSON() : <any>undefined;
-        data["returnType"] = this.returnType;
-        data["returnTypeCustomAttributes"] = this.returnTypeCustomAttributes ? this.returnTypeCustomAttributes.toJSON() : <any>undefined;
-        data["attributes"] = this.attributes;
-        data["methodImplementationFlags"] = this.methodImplementationFlags;
-        data["callingConvention"] = this.callingConvention;
-        data["isAbstract"] = this.isAbstract;
-        data["isConstructor"] = this.isConstructor;
-        data["isFinal"] = this.isFinal;
-        data["isHideBySig"] = this.isHideBySig;
-        data["isSpecialName"] = this.isSpecialName;
-        data["isStatic"] = this.isStatic;
-        data["isVirtual"] = this.isVirtual;
-        data["isAssembly"] = this.isAssembly;
-        data["isFamily"] = this.isFamily;
-        data["isFamilyAndAssembly"] = this.isFamilyAndAssembly;
-        data["isFamilyOrAssembly"] = this.isFamilyOrAssembly;
-        data["isPrivate"] = this.isPrivate;
-        data["isPublic"] = this.isPublic;
-        data["isConstructedGenericMethod"] = this.isConstructedGenericMethod;
-        data["isGenericMethod"] = this.isGenericMethod;
-        data["isGenericMethodDefinition"] = this.isGenericMethodDefinition;
-        data["containsGenericParameters"] = this.containsGenericParameters;
-        data["methodHandle"] = this.methodHandle ? this.methodHandle.toJSON() : <any>undefined;
-        data["isSecurityCritical"] = this.isSecurityCritical;
-        data["isSecuritySafeCritical"] = this.isSecuritySafeCritical;
-        data["isSecurityTransparent"] = this.isSecurityTransparent;
-        data["name"] = this.name;
-        data["declaringType"] = this.declaringType;
-        data["reflectedType"] = this.reflectedType;
-        data["module"] = this.module ? this.module.toJSON() : <any>undefined;
-        if (Array.isArray(this.customAttributes)) {
-            data["customAttributes"] = [];
-            for (let item of this.customAttributes)
-                data["customAttributes"].push(item.toJSON());
-        }
-        data["isCollectible"] = this.isCollectible;
-        data["metadataToken"] = this.metadataToken;
-        return data;
-    }
-}
-
-export interface IMethodInfo {
-    memberType?: MethodInfoMemberType;
-    returnParameter?: ParameterInfo | undefined;
-    returnType?: string | undefined;
-    returnTypeCustomAttributes?: ICustomAttributeProvider | undefined;
-    attributes?: MethodInfoAttributes;
-    methodImplementationFlags?: MethodInfoMethodImplementationFlags;
-    callingConvention?: MethodInfoCallingConvention;
-    isAbstract?: boolean;
-    isConstructor?: boolean;
-    isFinal?: boolean;
-    isHideBySig?: boolean;
-    isSpecialName?: boolean;
-    isStatic?: boolean;
-    isVirtual?: boolean;
-    isAssembly?: boolean;
-    isFamily?: boolean;
-    isFamilyAndAssembly?: boolean;
-    isFamilyOrAssembly?: boolean;
-    isPrivate?: boolean;
-    isPublic?: boolean;
-    isConstructedGenericMethod?: boolean;
-    isGenericMethod?: boolean;
-    isGenericMethodDefinition?: boolean;
-    containsGenericParameters?: boolean;
-    methodHandle?: RuntimeMethodHandle;
-    isSecurityCritical?: boolean;
-    isSecuritySafeCritical?: boolean;
-    isSecurityTransparent?: boolean;
-    name?: string | undefined;
-    declaringType?: string | undefined;
-    reflectedType?: string | undefined;
-    module?: Module | undefined;
-    customAttributes?: CustomAttributeData[] | undefined;
-    isCollectible?: boolean;
-    metadataToken?: number;
-}
-
-export class Module implements IModule {
-    readonly assembly?: Assembly | undefined;
-    readonly fullyQualifiedName?: string | undefined;
-    readonly name?: string | undefined;
-    readonly mdStreamVersion?: number;
-    readonly moduleVersionId?: string;
-    readonly scopeName?: string | undefined;
-    readonly moduleHandle?: ModuleHandle;
-    readonly customAttributes?: CustomAttributeData[] | undefined;
-    readonly metadataToken?: number;
-
-    constructor(data?: IModule) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).assembly = _data["assembly"] ? Assembly.fromJS(_data["assembly"]) : <any>undefined;
-            (<any>this).fullyQualifiedName = _data["fullyQualifiedName"];
-            (<any>this).name = _data["name"];
-            (<any>this).mdStreamVersion = _data["mdStreamVersion"];
-            (<any>this).moduleVersionId = _data["moduleVersionId"];
-            (<any>this).scopeName = _data["scopeName"];
-            (<any>this).moduleHandle = _data["moduleHandle"] ? ModuleHandle.fromJS(_data["moduleHandle"]) : <any>undefined;
-            if (Array.isArray(_data["customAttributes"])) {
-                (<any>this).customAttributes = [] as any;
-                for (let item of _data["customAttributes"])
-                    (<any>this).customAttributes!.push(CustomAttributeData.fromJS(item));
-            }
-            (<any>this).metadataToken = _data["metadataToken"];
-        }
-    }
-
-    static fromJS(data: any): Module {
-        data = typeof data === 'object' ? data : {};
-        let result = new Module();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["assembly"] = this.assembly ? this.assembly.toJSON() : <any>undefined;
-        data["fullyQualifiedName"] = this.fullyQualifiedName;
-        data["name"] = this.name;
-        data["mdStreamVersion"] = this.mdStreamVersion;
-        data["moduleVersionId"] = this.moduleVersionId;
-        data["scopeName"] = this.scopeName;
-        data["moduleHandle"] = this.moduleHandle ? this.moduleHandle.toJSON() : <any>undefined;
-        if (Array.isArray(this.customAttributes)) {
-            data["customAttributes"] = [];
-            for (let item of this.customAttributes)
-                data["customAttributes"].push(item.toJSON());
-        }
-        data["metadataToken"] = this.metadataToken;
-        return data;
-    }
-}
-
-export interface IModule {
-    assembly?: Assembly | undefined;
-    fullyQualifiedName?: string | undefined;
-    name?: string | undefined;
-    mdStreamVersion?: number;
-    moduleVersionId?: string;
-    scopeName?: string | undefined;
-    moduleHandle?: ModuleHandle;
-    customAttributes?: CustomAttributeData[] | undefined;
-    metadataToken?: number;
-}
-
-export class ModuleHandle implements IModuleHandle {
-    readonly mdStreamVersion?: number;
-
-    constructor(data?: IModuleHandle) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).mdStreamVersion = _data["mdStreamVersion"];
-        }
-    }
-
-    static fromJS(data: any): ModuleHandle {
-        data = typeof data === 'object' ? data : {};
-        let result = new ModuleHandle();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["mdStreamVersion"] = this.mdStreamVersion;
-        return data;
-    }
-}
-
-export interface IModuleHandle {
-    mdStreamVersion?: number;
-}
-
 export class ObjectSettingEntry implements IObjectSettingEntry {
     readonly itHasValues?: boolean;
+    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
+    /** Flag indicates the this setting is read only and can't be changed */
     isReadOnly?: boolean;
     value?: any | undefined;
     id?: string | undefined;
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: ObjectSettingEntryValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: IObjectSettingEntry) {
@@ -10078,21 +9190,30 @@ export class ObjectSettingEntry implements IObjectSettingEntry {
 
 export interface IObjectSettingEntry {
     itHasValues?: boolean;
+    /** Setting may belong to any object in system */
     objectId?: string | undefined;
     objectType?: string | undefined;
+    /** Flag indicates the this setting is read only and can't be changed */
     isReadOnly?: boolean;
     value?: any | undefined;
     id?: string | undefined;
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: ObjectSettingEntryValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 
@@ -11570,120 +10691,6 @@ export interface IOutlineItem {
     hasVirtualParent?: boolean;
 }
 
-export enum ParameterAttributes {
-    None = "None",
-    In = "In",
-    Out = "Out",
-    Lcid = "Lcid",
-    Retval = "Retval",
-    Optional = "Optional",
-    HasDefault = "HasDefault",
-    HasFieldMarshal = "HasFieldMarshal",
-    Reserved3 = "Reserved3",
-    Reserved4 = "Reserved4",
-    ReservedMask = "ReservedMask",
-}
-
-export class ParameterInfo implements IParameterInfo {
-    readonly attributes?: ParameterInfoAttributes;
-    readonly member?: MemberInfo | undefined;
-    readonly name?: string | undefined;
-    readonly parameterType?: string | undefined;
-    readonly position?: number;
-    readonly isIn?: boolean;
-    readonly isLcid?: boolean;
-    readonly isOptional?: boolean;
-    readonly isOut?: boolean;
-    readonly isRetval?: boolean;
-    readonly defaultValue?: any | undefined;
-    readonly rawDefaultValue?: any | undefined;
-    readonly hasDefaultValue?: boolean;
-    readonly customAttributes?: CustomAttributeData[] | undefined;
-    readonly metadataToken?: number;
-
-    constructor(data?: IParameterInfo) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).attributes = _data["attributes"];
-            (<any>this).member = _data["member"] ? MemberInfo.fromJS(_data["member"]) : <any>undefined;
-            (<any>this).name = _data["name"];
-            (<any>this).parameterType = _data["parameterType"];
-            (<any>this).position = _data["position"];
-            (<any>this).isIn = _data["isIn"];
-            (<any>this).isLcid = _data["isLcid"];
-            (<any>this).isOptional = _data["isOptional"];
-            (<any>this).isOut = _data["isOut"];
-            (<any>this).isRetval = _data["isRetval"];
-            (<any>this).defaultValue = _data["defaultValue"];
-            (<any>this).rawDefaultValue = _data["rawDefaultValue"];
-            (<any>this).hasDefaultValue = _data["hasDefaultValue"];
-            if (Array.isArray(_data["customAttributes"])) {
-                (<any>this).customAttributes = [] as any;
-                for (let item of _data["customAttributes"])
-                    (<any>this).customAttributes!.push(CustomAttributeData.fromJS(item));
-            }
-            (<any>this).metadataToken = _data["metadataToken"];
-        }
-    }
-
-    static fromJS(data: any): ParameterInfo {
-        data = typeof data === 'object' ? data : {};
-        let result = new ParameterInfo();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["attributes"] = this.attributes;
-        data["member"] = this.member ? this.member.toJSON() : <any>undefined;
-        data["name"] = this.name;
-        data["parameterType"] = this.parameterType;
-        data["position"] = this.position;
-        data["isIn"] = this.isIn;
-        data["isLcid"] = this.isLcid;
-        data["isOptional"] = this.isOptional;
-        data["isOut"] = this.isOut;
-        data["isRetval"] = this.isRetval;
-        data["defaultValue"] = this.defaultValue;
-        data["rawDefaultValue"] = this.rawDefaultValue;
-        data["hasDefaultValue"] = this.hasDefaultValue;
-        if (Array.isArray(this.customAttributes)) {
-            data["customAttributes"] = [];
-            for (let item of this.customAttributes)
-                data["customAttributes"].push(item.toJSON());
-        }
-        data["metadataToken"] = this.metadataToken;
-        return data;
-    }
-}
-
-export interface IParameterInfo {
-    attributes?: ParameterInfoAttributes;
-    member?: MemberInfo | undefined;
-    name?: string | undefined;
-    parameterType?: string | undefined;
-    position?: number;
-    isIn?: boolean;
-    isLcid?: boolean;
-    isOptional?: boolean;
-    isOut?: boolean;
-    isRetval?: boolean;
-    defaultValue?: any | undefined;
-    rawDefaultValue?: any | undefined;
-    hasDefaultValue?: boolean;
-    customAttributes?: CustomAttributeData[] | undefined;
-    metadataToken?: number;
-}
-
 export class PaymentGatewayTransaction implements IPaymentGatewayTransaction {
     amount?: number;
     currencyCode?: string | undefined;
@@ -12520,7 +11527,7 @@ Is a primary key of associated object */
 
 export class ProductDetails implements IProductDetails {
     name?: string | undefined;
-    description?: string | undefined;
+    descriptions?: EditorialReview[] | undefined;
     code?: string | undefined;
     gtin?: string | undefined;
     categoryId?: string | undefined;
@@ -12542,7 +11549,11 @@ export class ProductDetails implements IProductDetails {
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
-            this.description = _data["description"];
+            if (Array.isArray(_data["descriptions"])) {
+                this.descriptions = [] as any;
+                for (let item of _data["descriptions"])
+                    this.descriptions!.push(EditorialReview.fromJS(item));
+            }
             this.code = _data["code"];
             this.gtin = _data["gtin"];
             this.categoryId = _data["categoryId"];
@@ -12576,7 +11587,11 @@ export class ProductDetails implements IProductDetails {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["name"] = this.name;
-        data["description"] = this.description;
+        if (Array.isArray(this.descriptions)) {
+            data["descriptions"] = [];
+            for (let item of this.descriptions)
+                data["descriptions"].push(item.toJSON());
+        }
         data["code"] = this.code;
         data["gtin"] = this.gtin;
         data["categoryId"] = this.categoryId;
@@ -12603,7 +11618,7 @@ export class ProductDetails implements IProductDetails {
 
 export interface IProductDetails {
     name?: string | undefined;
-    description?: string | undefined;
+    descriptions?: EditorialReview[] | undefined;
     code?: string | undefined;
     gtin?: string | undefined;
     categoryId?: string | undefined;
@@ -13065,11 +12080,15 @@ export class PropertyDictionaryItemSearchCriteria implements IPropertyDictionary
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -13174,11 +12193,15 @@ export interface IPropertyDictionaryItemSearchCriteria {
     propertyIds?: string[] | undefined;
     catalogIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -13834,52 +12857,20 @@ export interface IRunImportCommand {
     importProfile?: ImportProfile | undefined;
 }
 
-export class RuntimeMethodHandle implements IRuntimeMethodHandle {
-    readonly value?: any;
-
-    constructor(data?: IRuntimeMethodHandle) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).value = _data["value"];
-        }
-    }
-
-    static fromJS(data: any): RuntimeMethodHandle {
-        data = typeof data === 'object' ? data : {};
-        let result = new RuntimeMethodHandle();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["value"] = this.value;
-        return data;
-    }
-}
-
-export interface IRuntimeMethodHandle {
-    value?: any;
-}
-
 export class SearchCategoriesQuery implements ISearchCategoriesQuery {
     storeId?: string | undefined;
     sellerName?: string | undefined;
     sellerId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -13970,11 +12961,15 @@ export interface ISearchCategoriesQuery {
     sellerName?: string | undefined;
     sellerId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -13987,11 +12982,15 @@ export class SearchCommissionFeesQuery implements ISearchCommissionFeesQuery {
     isDefault?: boolean | undefined;
     isActive?: boolean | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14082,11 +13081,15 @@ export interface ISearchCommissionFeesQuery {
     isDefault?: boolean | undefined;
     isActive?: boolean | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14146,11 +13149,15 @@ export class SearchCustomerReviewsQuery implements ISearchCustomerReviewsQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14238,11 +13245,15 @@ export interface ISearchCustomerReviewsQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14302,11 +13313,15 @@ export class SearchFulfillmentCentersQuery implements ISearchFulfillmentCentersQ
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14394,11 +13409,15 @@ export interface ISearchFulfillmentCentersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14459,11 +13478,15 @@ export class SearchImportProfilesQuery implements ISearchImportProfilesQuery {
     sellerName?: string | undefined;
     name?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14554,11 +13577,15 @@ export interface ISearchImportProfilesQuery {
     sellerName?: string | undefined;
     name?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14620,11 +13647,15 @@ export class SearchImportRunHistoryQuery implements ISearchImportRunHistoryQuery
     profileId?: string | undefined;
     jobId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14718,11 +13749,15 @@ export interface ISearchImportRunHistoryQuery {
     profileId?: string | undefined;
     jobId?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -14835,11 +13870,15 @@ export class SearchOffersQuery implements ISearchOffersQuery {
     productId?: string | undefined;
     skus?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -14966,11 +14005,15 @@ export interface ISearchOffersQuery {
     productId?: string | undefined;
     skus?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15056,11 +14099,15 @@ export class SearchOrdersQuery implements ISearchOrdersQuery {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15270,11 +14317,15 @@ export interface ISearchOrdersQuery {
     startDate?: Date | undefined;
     endDate?: Date | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15287,11 +14338,15 @@ export class SearchProductsForNewOfferQuery implements ISearchProductsForNewOffe
     sellerName?: string | undefined;
     searchFromSellerOnly?: boolean;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15382,11 +14437,15 @@ export interface ISearchProductsForNewOfferQuery {
     sellerName?: string | undefined;
     searchFromSellerOnly?: boolean;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15408,11 +14467,15 @@ export class SearchProductsQuery implements ISearchProductsQuery {
     isPublished?: boolean | undefined;
     outerIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15570,11 +14633,15 @@ export interface ISearchProductsQuery {
     isPublished?: boolean | undefined;
     outerIds?: string[] | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15632,11 +14699,15 @@ export interface ISearchProductsResult {
 
 export class SearchSellersQuery implements ISearchSellersQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15718,11 +14789,15 @@ export class SearchSellersQuery implements ISearchSellersQuery {
 
 export interface ISearchSellersQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15782,11 +14857,15 @@ export class SearchSellerUsersQuery implements ISearchSellerUsersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -15874,11 +14953,15 @@ export interface ISearchSellerUsersQuery {
     sellerId?: string | undefined;
     sellerName?: string | undefined;
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -15936,11 +15019,15 @@ export interface ISearchSellerUsersResult {
 
 export class SearchStateMachineDefinitionsQuery implements ISearchStateMachineDefinitionsQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -16022,11 +15109,15 @@ export class SearchStateMachineDefinitionsQuery implements ISearchStateMachineDe
 
 export interface ISearchStateMachineDefinitionsQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -16084,11 +15175,15 @@ export interface ISearchStateMachineDefinitionsResult {
 
 export class SearchStateMachineInstancesQuery implements ISearchStateMachineInstancesQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     readonly sortInfos?: SortInfo[] | undefined;
@@ -16170,11 +15265,15 @@ export class SearchStateMachineInstancesQuery implements ISearchStateMachineInst
 
 export interface ISearchStateMachineInstancesQuery {
     responseGroup?: string | undefined;
+    /** Search object type */
     objectType?: string | undefined;
     objectTypes?: string[] | undefined;
     objectIds?: string[] | undefined;
+    /** Search phrase */
     keyword?: string | undefined;
+    /** Property is left for backward compatibility */
     searchPhrase?: string | undefined;
+    /** Search phrase language */
     languageCode?: string | undefined;
     sort?: string | undefined;
     sortInfos?: SortInfo[] | undefined;
@@ -16228,12 +15327,6 @@ export class SearchStateMachineInstancesResult implements ISearchStateMachineIns
 export interface ISearchStateMachineInstancesResult {
     totalCount?: number;
     results?: StateMachineInstance[] | undefined;
-}
-
-export enum SecurityRuleSet {
-    None = "None",
-    Level1 = "Level1",
-    Level2 = "Level2",
 }
 
 export class Seller implements ISeller {
@@ -17078,18 +16171,26 @@ export interface ISeoInfo {
     id?: string | undefined;
 }
 
+/** Represent setting meta description */
 export class SettingDescriptor implements ISettingDescriptor {
     id?: string | undefined;
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingDescriptorValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 
     constructor(data?: ISettingDescriptor) {
@@ -17151,18 +16252,26 @@ export class SettingDescriptor implements ISettingDescriptor {
     }
 }
 
+/** Represent setting meta description */
 export interface ISettingDescriptor {
     id?: string | undefined;
+    /** The flag indicates that you need to restart the application to apply this setting changes. */
     restartRequired?: boolean;
+    /** The module id which setting belong to */
     moduleId?: string | undefined;
+    /** Setting group name */
     groupName?: string | undefined;
+    /** Setting name */
     name?: string | undefined;
+    /** Display setting name */
     displayName?: string | undefined;
     isRequired?: boolean;
+    /** Flag indicates that this setting doesn't need to be displayed on the UI */
     isHidden?: boolean;
     valueType?: SettingDescriptorValueType;
     allowedValues?: any[] | undefined;
     defaultValue?: any | undefined;
+    /** The flag indicates what current setting is just editable dictionary and hasn't any concrete value */
     isDictionary?: boolean;
 }
 
@@ -18007,46 +17116,6 @@ export interface ISyncPushNotification {
     title?: string | undefined;
     repeatCount?: number;
     id?: string | undefined;
-}
-
-export class TaskFunc implements ITaskFunc {
-    readonly target?: any | undefined;
-    readonly method?: MethodInfo | undefined;
-
-    constructor(data?: ITaskFunc) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            (<any>this).target = _data["target"];
-            (<any>this).method = _data["method"] ? MethodInfo.fromJS(_data["method"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): TaskFunc {
-        data = typeof data === 'object' ? data : {};
-        let result = new TaskFunc();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["target"] = this.target;
-        data["method"] = this.method ? this.method.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ITaskFunc {
-    target?: any | undefined;
-    method?: MethodInfo | undefined;
 }
 
 export class TaxDetail implements ITaxDetail {
@@ -19032,12 +18101,6 @@ If set to false, the product is considered in stock without any inventory limita
     id?: string | undefined;
 }
 
-export enum AssemblySecurityRuleSet {
-    None = "None",
-    Level1 = "Level1",
-    Level2 = "Level2",
-}
-
 export enum CaptureCancelledState {
     Undefined = "Undefined",
     Requested = "Requested",
@@ -19070,73 +18133,6 @@ export enum CommissionFeeDetailsType {
 export enum CommissionFeeDetailsCalculationType {
     Fixed = "Fixed",
     Percent = "Percent",
-}
-
-export enum ConstructorInfoMemberType {
-    Constructor = "Constructor",
-    Event = "Event",
-    Field = "Field",
-    Method = "Method",
-    Property = "Property",
-    TypeInfo = "TypeInfo",
-    Custom = "Custom",
-    NestedType = "NestedType",
-    All = "All",
-}
-
-export enum ConstructorInfoAttributes {
-    ReuseSlot = "ReuseSlot",
-    PrivateScope = "PrivateScope",
-    Private = "Private",
-    FamANDAssem = "FamANDAssem",
-    Assembly = "Assembly",
-    Family = "Family",
-    FamORAssem = "FamORAssem",
-    Public = "Public",
-    MemberAccessMask = "MemberAccessMask",
-    UnmanagedExport = "UnmanagedExport",
-    Static = "Static",
-    Final = "Final",
-    Virtual = "Virtual",
-    HideBySig = "HideBySig",
-    NewSlot = "NewSlot",
-    VtableLayoutMask = "VtableLayoutMask",
-    CheckAccessOnOverride = "CheckAccessOnOverride",
-    Abstract = "Abstract",
-    SpecialName = "SpecialName",
-    RTSpecialName = "RTSpecialName",
-    PinvokeImpl = "PinvokeImpl",
-    HasSecurity = "HasSecurity",
-    RequireSecObject = "RequireSecObject",
-    ReservedMask = "ReservedMask",
-}
-
-export enum ConstructorInfoMethodImplementationFlags {
-    IL = "IL",
-    Managed = "Managed",
-    Native = "Native",
-    OPTIL = "OPTIL",
-    Runtime = "Runtime",
-    CodeTypeMask = "CodeTypeMask",
-    Unmanaged = "Unmanaged",
-    ManagedMask = "ManagedMask",
-    NoInlining = "NoInlining",
-    ForwardRef = "ForwardRef",
-    Synchronized = "Synchronized",
-    NoOptimization = "NoOptimization",
-    PreserveSig = "PreserveSig",
-    AggressiveInlining = "AggressiveInlining",
-    AggressiveOptimization = "AggressiveOptimization",
-    InternalCall = "InternalCall",
-    MaxMethodImplVal = "MaxMethodImplVal",
-}
-
-export enum ConstructorInfoCallingConvention {
-    Standard = "Standard",
-    VarArgs = "VarArgs",
-    Any = "Any",
-    HasThis = "HasThis",
-    ExplicitThis = "ExplicitThis",
 }
 
 export enum CustomerAddressAddressType {
@@ -19207,85 +18203,6 @@ export enum InventoryInfoStatus {
     Ignored = "Ignored",
 }
 
-export enum MemberInfoMemberType {
-    Constructor = "Constructor",
-    Event = "Event",
-    Field = "Field",
-    Method = "Method",
-    Property = "Property",
-    TypeInfo = "TypeInfo",
-    Custom = "Custom",
-    NestedType = "NestedType",
-    All = "All",
-}
-
-export enum MethodInfoMemberType {
-    Constructor = "Constructor",
-    Event = "Event",
-    Field = "Field",
-    Method = "Method",
-    Property = "Property",
-    TypeInfo = "TypeInfo",
-    Custom = "Custom",
-    NestedType = "NestedType",
-    All = "All",
-}
-
-export enum MethodInfoAttributes {
-    ReuseSlot = "ReuseSlot",
-    PrivateScope = "PrivateScope",
-    Private = "Private",
-    FamANDAssem = "FamANDAssem",
-    Assembly = "Assembly",
-    Family = "Family",
-    FamORAssem = "FamORAssem",
-    Public = "Public",
-    MemberAccessMask = "MemberAccessMask",
-    UnmanagedExport = "UnmanagedExport",
-    Static = "Static",
-    Final = "Final",
-    Virtual = "Virtual",
-    HideBySig = "HideBySig",
-    NewSlot = "NewSlot",
-    VtableLayoutMask = "VtableLayoutMask",
-    CheckAccessOnOverride = "CheckAccessOnOverride",
-    Abstract = "Abstract",
-    SpecialName = "SpecialName",
-    RTSpecialName = "RTSpecialName",
-    PinvokeImpl = "PinvokeImpl",
-    HasSecurity = "HasSecurity",
-    RequireSecObject = "RequireSecObject",
-    ReservedMask = "ReservedMask",
-}
-
-export enum MethodInfoMethodImplementationFlags {
-    IL = "IL",
-    Managed = "Managed",
-    Native = "Native",
-    OPTIL = "OPTIL",
-    Runtime = "Runtime",
-    CodeTypeMask = "CodeTypeMask",
-    Unmanaged = "Unmanaged",
-    ManagedMask = "ManagedMask",
-    NoInlining = "NoInlining",
-    ForwardRef = "ForwardRef",
-    Synchronized = "Synchronized",
-    NoOptimization = "NoOptimization",
-    PreserveSig = "PreserveSig",
-    AggressiveInlining = "AggressiveInlining",
-    AggressiveOptimization = "AggressiveOptimization",
-    InternalCall = "InternalCall",
-    MaxMethodImplVal = "MaxMethodImplVal",
-}
-
-export enum MethodInfoCallingConvention {
-    Standard = "Standard",
-    VarArgs = "VarArgs",
-    Any = "Any",
-    HasThis = "HasThis",
-    ExplicitThis = "ExplicitThis",
-}
-
 export enum ObjectSettingEntryValueType {
     ShortText = "ShortText",
     LongText = "LongText",
@@ -19318,20 +18235,6 @@ export enum OrderShipmentCancelledState {
     Undefined = "Undefined",
     Requested = "Requested",
     Completed = "Completed",
-}
-
-export enum ParameterInfoAttributes {
-    None = "None",
-    In = "In",
-    Out = "Out",
-    Lcid = "Lcid",
-    Retval = "Retval",
-    Optional = "Optional",
-    HasDefault = "HasDefault",
-    HasFieldMarshal = "HasFieldMarshal",
-    Reserved3 = "Reserved3",
-    Reserved4 = "Reserved4",
-    ReservedMask = "ReservedMask",
 }
 
 export enum PaymentInPaymentStatus {

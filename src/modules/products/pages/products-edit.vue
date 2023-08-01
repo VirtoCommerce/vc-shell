@@ -12,6 +12,25 @@
   >
     <template #actions>
       <div class="tw-flex tw-flex-row tw-items-center">
+        <div class="vc-status vc-status_info vc-status_outline">
+          <VcSelect
+            name="currentLocale"
+            class="tw-mb-4"
+            :model-value="currentLocale"
+            :options="localesOptions"
+            option-value="value"
+            option-label="label"
+            :disabled="disabled"
+            required
+            :clearable="false"
+            @update:model-value="
+              (e: string) => {
+                setLocale(e);
+              }
+            "
+          >
+          </VcSelect>
+        </div>
         <div
           v-if="productDetails.productType == 'Digital'"
           class="vc-status vc-status_info vc-status_outline"
@@ -193,27 +212,41 @@
                       @update:model-value="handleChange"
                     ></VcInput>
                   </Field>
-                  <Field
-                    v-slot="{ field, errorMessage, handleChange }"
-                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                    name="description"
-                    rules="min:3|required"
-                    :model-value="productDetails.description"
+                  <div
+                    v-for="(lang, index) in localesOptions"
+                    :key="index"
                   >
-                    <VcEditor
-                      v-bind="field"
-                      v-model="productDetails.description"
-                      class="tw-mb-4"
+                    <Field
+                      v-if="lang.value == currentLocale"
+                      v-slot="{ field, errorMessage, handleChange }"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                      :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
-                      :disabled="disabled"
                       name="description"
-                      required
-                      :error-message="errorMessage"
-                      :assets-folder="productData.id || productData.categoryId"
-                      @update:model-value="handleChange"
-                    ></VcEditor>
-                  </Field>
+                      rules="min:3|required"
+                      :model-value="productDetails.descriptions.find((x) => x.languageCode == currentLocale)"
+                    >
+                      <VcEditor
+                        v-bind="field"
+                        v-model="productDetails.descriptions.find((x) => x.languageCode == currentLocale).content"
+                        class="tw-mb-4"
+                        :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
+                        :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
+                        :disabled="disabled"
+                        name="description"
+                        required
+                        :error-message="errorMessage"
+                        :assets-folder="productData.id || productData.categoryId"
+                        :languages="languages"
+                        :current-language="currentLocale"
+                        :multilanguage="true"
+                        @update:model-value="handleChange"
+                        @update:current-language="
+                          (e: string) => {
+                            setLocale(e);
+                          }
+                        "
+                      ></VcEditor>
+                    </Field>
+                  </div>
 
                   <VcDynamicProperty
                     v-for="property in filteredProps"
@@ -319,6 +352,7 @@ import {
   Property,
   PropertyValue,
   PropertyDictionaryItem,
+  EditorialReview,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
@@ -361,6 +395,7 @@ const {
   revertStagedChanges,
   searchDictionaryItems,
   deleteProduct,
+  getLanguages,
 } = useProduct();
 
 const { searchOffers } = useOffers();
@@ -413,6 +448,14 @@ const productTypeOptions = [
   },
 ];
 
+let languages: string[];
+let localesOptions;
+const currentLocale = ref("en-US");
+
+const setLocale = (locale: string) => {
+  currentLocale.value = locale;
+};
+
 const validate = _.debounce(
   async (fieldName: string, value: string): Promise<string | boolean> => {
     const sellerProduct = {
@@ -438,6 +481,9 @@ const validate = _.debounce(
 );
 
 const reload = async (fullReload: boolean) => {
+  languages = await getLanguages();
+  localesOptions = languages.map((x) => ({ label: t(`PRODUCTS.PAGES.DETAILS.LANGUAGES.${x}`), value: x }));
+
   if (!modified.value && fullReload) {
     try {
       productLoading.value = true;
@@ -457,6 +503,17 @@ const reload = async (fullReload: boolean) => {
         sellerProductId: props.param,
       })
     )?.totalCount;
+  } else {
+    productDetails.value.descriptions = productDetails.value.descriptions.concat(
+      languages.map(
+        (x) =>
+          new EditorialReview({
+            languageCode: x,
+            content: "",
+            reviewType: "QuickReview",
+          })
+      )
+    );
   }
 };
 

@@ -12,10 +12,9 @@
   >
     <template #actions>
       <div class="tw-flex tw-flex-row tw-items-center">
-        <div class="vc-status vc-status_info vc-status_outline">
+        <div class="vc-status">
           <VcSelect
             name="currentLocale"
-            class="tw-mb-4"
             :model-value="currentLocale"
             :options="localesOptions"
             option-value="value"
@@ -33,7 +32,7 @@
         </div>
         <div
           v-if="productDetails.productType == 'Digital'"
-          class="vc-status vc-status_info vc-status_outline"
+          class="vc-status vc-status_info vc-status_outline tw-ml-4"
         >
           {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL") }}
         </div>

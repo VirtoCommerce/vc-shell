@@ -11,26 +11,32 @@
     @collapse="$emit('collapse:blade')"
   >
     <template #actions>
-      <div class="vc-status vc-status_info vc-status_outline">
-        <VcSelect
-          name="currentLocale"
-          class="tw-mb-4"
-          :model-value="currentLocale"
-          :options="localesOptions"
-          option-value="value"
-          option-label="label"
-          :disabled="disabled"
-          required
-          :clearable="false"
-          @update:model-value="
+      <div class="tw-flex tw-flex-row tw-items-center">
+        <div class="vc-status">
+          <VcSelect
+            name="currentLocale"
+            :model-value="currentLocale"
+            :options="localesOptions"
+            option-value="value"
+            option-label="label"
+            :disabled="disabled"
+            required
+            :clearable="false"
+            @update:model-value="
               (e: string) => {
                 setLocale(e);
               }
             "
+          >
+          </VcSelect>
+        </div>
+        <div
+          v-if="(product as ISellerProduct).status !== 'Published'"
+          class="tw-ml-4"
         >
-        </VcSelect>
+          <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
+        </div>
       </div>
-      <mp-product-status :status="(product as ISellerProduct).status"></mp-product-status>
     </template>
 
     <!-- Blade contents -->

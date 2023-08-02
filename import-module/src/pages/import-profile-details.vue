@@ -80,7 +80,7 @@
                 {{ t("IMPORT.PAGES.TEMPLATE.FOR_REFERENCE") }}
               </div>
 
-              <VcDynamicProperty
+              <!-- <VcDynamicProperty
                 v-for="(setting, i) in profileDetails.settings"
                 :key="`${profileDetails.id}_${i}`"
                 class="tw-px-4 tw-pb-4"
@@ -89,7 +89,7 @@
                 :setter="setSettingsValue"
                 :options-getter="loadDictionaries"
               >
-              </VcDynamicProperty>
+              </VcDynamicProperty> -->
             </VcCol>
           </VcRow>
         </VcCard>

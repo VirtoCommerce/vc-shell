@@ -73,7 +73,7 @@ interface IUseImport {
   clearImport(): void;
   fetchImportHistory(query?: ISearchImportRunHistoryQuery): void;
   fetchImportProfiles(): void;
-  loadImportProfile(args: { id: string }): void;
+  loadImportProfile(args: { id: string }): Promise<void>;
   createImportProfile(details: ImportProfile): void;
   updateImportProfile(details: ImportProfile): void;
   deleteImportProfile(args: { id: string }): void;

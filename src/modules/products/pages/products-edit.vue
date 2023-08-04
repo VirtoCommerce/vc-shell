@@ -251,15 +251,20 @@
                     v-for="property in filteredProps"
                     :key="property.id"
                     :property="property"
+                    :model-value="getPropertyValue(property)"
                     :options-getter="loadDictionaries"
-                    :getter="getPropertyValue"
-                    :setter="setPropertyValue"
-                    class="tw-mb-4"
-                    :disabled="disabled"
-                    :displayed-value-label="{
-                      value: 'valueId',
-                      label: 'value',
+                    :required="property.required"
+                    :multivalue="property.multivalue"
+                    :value-type="property.valueType"
+                    :dictionary="property.dictionary"
+                    :name="property.name"
+                    :rules="{
+                      min: property.validationRule?.charCountMin,
+                      max: property.validationRule?.charCountMax,
+                      regex: property.validationRule?.regExp,
                     }"
+                    :display-names="property.displayNames"
+                    @update:model-value="setPropertyValue"
                   >
                   </VcDynamicProperty>
                 </div>
@@ -843,47 +848,45 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
   };
 }
 
-function setPropertyValue(
-  property: IProperty,
-  value: IPropertyValue | IPropertyValue[],
-  dictionary?: PropertyDictionaryItem[]
-) {
-  if (value && typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
-    if (dictionary && dictionary.length) {
-      property.values = (value as IPropertyValue[]).map((item) => {
-        if (dictionary.includes(item as PropertyDictionaryItem)) {
-          const handledValue = handleDictionaryValue(property, item.id, dictionary);
+function setPropertyValue(data: {
+  property: Property;
+  value: string | IPropertyValue[];
+  dictionary?: PropertyDictionaryItem[];
+}) {
+  const { property, value, dictionary } = data;
 
-          return new PropertyValue(handledValue);
-        }
-        return item as PropertyValue;
-      });
-    } else {
-      property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));
-    }
+  let mutatedProperty: PropertyValue[];
+  if (dictionary && dictionary.length) {
+    mutatedProperty = Array.isArray(value)
+      ? value.map((item) => {
+          if (dictionary.find((x) => x.id === item.id)) {
+            const handledValue = handleDictionaryValue(property, item.id, dictionary);
+
+            return new PropertyValue(handledValue);
+          } else return new PropertyValue(item);
+        })
+      : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
   } else {
-    if (dictionary && dictionary.length) {
-      const handledValue = handleDictionaryValue(property, value as string, dictionary);
-      property.values[0] = new PropertyValue({
-        ...handledValue,
-        isInherited: false,
-      });
-    } else {
-      if (property.values[0]) {
-        property.values[0].value = value;
-      } else {
-        property.values[0] = new PropertyValue({
-          value,
-          isInherited: false,
-        });
-      }
-    }
+    mutatedProperty = Array.isArray(value)
+      ? value.map((item) => new PropertyValue(item))
+      : property.values[0]
+      ? [Object.assign(property.values[0], { value: value })]
+      : [new PropertyValue({ value: value, isInherited: false })];
   }
+
+  productDetails.value.properties.forEach((prop) => {
+    if (prop.id === property.id) {
+      prop.values = mutatedProperty;
+    }
+  });
 }
 
-function getPropertyValue(property: IProperty, isDictionary?: boolean): Record<string, unknown> {
-  if (isDictionary) {
-    return property.values[0] && (property.values[0].valueId as unknown as Record<string, unknown>);
+function getPropertyValue(property: Property) {
+  if (property.multivalue) {
+    return property.values;
+  }
+  if (property.dictionary) {
+    return property.values[0] && property.values[0].valueId;
   }
   return property.values[0] && property.values[0].value;
 }

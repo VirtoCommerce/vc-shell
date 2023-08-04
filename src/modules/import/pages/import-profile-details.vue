@@ -85,9 +85,15 @@
                 :key="`${profileDetails.id}_${i}`"
                 class="tw-px-4 tw-pb-4"
                 :property="setting"
-                :getter="getSettingsValue"
-                :setter="setSettingsValue"
+                :dictionary="setting.isDictionary"
+                :disabled="setting.isReadOnly"
+                :name="setting.name"
                 :options-getter="loadDictionaries"
+                :model-value="setting.value"
+                :required="setting.isRequired"
+                :value-type="setting.valueType"
+                :placeholder="setting.defaultValue"
+                @update:model-value="setSettingsValue"
               >
               </VcDynamicProperty>
             </VcCol>
@@ -240,12 +246,16 @@ onMounted(async () => {
   }
 });
 
-function getSettingsValue(setting: ObjectSettingEntry) {
-  return setting.value;
-}
+function setSettingsValue(data: { property: ObjectSettingEntry; value: string | boolean }) {
+  const { property, value } = data;
 
-function setSettingsValue(setting: ObjectSettingEntry, value: string | boolean) {
-  setting.value = value;
+  const mutatedSetting = new ObjectSettingEntry({ ...property, value });
+
+  profileDetails.value.settings.forEach((x) => {
+    if (x.id === property.id) {
+      Object.assign(x, mutatedSetting);
+    }
+  });
 }
 
 function loadDictionaries(setting: ObjectSettingEntry) {

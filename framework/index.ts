@@ -1,4 +1,4 @@
-import { App } from "vue";
+import { App, Component } from "vue";
 import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
@@ -30,7 +30,7 @@ export default {
 
     // Register exported components
     Object.entries(components).forEach(([name, component]) => {
-      app.component(name, component);
+      app.component(name, component as Component);
     });
 
     // Register exported directives

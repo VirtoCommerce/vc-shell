@@ -13,6 +13,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="true"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -63,10 +65,13 @@ export interface Props {
   tooltip?: string;
   errorMessage?: string;
   assetsFolder: string;
+  //languages?: string[];
+  currentLanguage?: string;
 }
 
 export interface Emits {
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
+  //(event: "update:currentLanguage", value: string): void;
 }
 
 const { getAccessToken } = useUser();
@@ -79,19 +84,27 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>();
 
 const content = ref();
-const toolbar = [
-  { header: 1 },
-  { header: 2 },
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "link",
-  "image",
-  "blockquote",
-  { list: "ordered" },
-  { list: "bullet" },
-];
+const toolbar = {
+  container: [
+    { header: 1 },
+    { header: 2 },
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "link",
+    "image",
+    "blockquote",
+    { list: "ordered" },
+    { list: "bullet" },
+    //{ language: [props.currentLanguage, ...props.languages.filter((lang) => lang !== props.currentLanguage)] },
+  ],
+  handlers: {
+    // language: function (value: string) {
+    //   emit("update:currentLanguage", value);
+    // },
+  },
+};
 
 const modules = {
   name: "imageUploader",
@@ -175,5 +188,13 @@ function isQuillEmpty(value: string) {
       hover:tw-bg-[color:var(--editor-scroll-color-hover)];
     }
   }
+}
+
+.ql-language.ql-picker .ql-picker-label:before {
+  padding-right: 18px;
+  content: attr(data-value);
+}
+.ql-language.ql-picker .ql-picker-item:before {
+  content: attr(data-value);
 }
 </style>

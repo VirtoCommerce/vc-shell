@@ -14,7 +14,7 @@
       :error-message="errorMessage"
       :label="computedProperty.displayName"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :options="items"
       :option-value="computedProperty.optionValue"
       :option-label="computedProperty.optionLabel"
@@ -155,7 +155,7 @@
       clearable
       type="number"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcInput>
   </Field>
@@ -178,7 +178,7 @@
       type="number"
       step="1"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcInput>
   </Field>
@@ -199,7 +199,7 @@
       :label="computedProperty.displayName"
       type="datetime-local"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcInput>
   </Field>
@@ -218,7 +218,7 @@
       :error-message="errorMessage"
       :label="computedProperty.displayName"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcTextarea>
   </Field>
@@ -261,11 +261,11 @@ const props = withDefaults(
   defineProps<{
     property: T;
     modelValue: any;
-    optionsGetter: (property: T, keyword?: string) => Promise<unknown[]>;
+    optionsGetter: (property: T, keyword?: string) => Promise<unknown[]> | unknown[];
     required: boolean;
-    multivalue: boolean;
+    multivalue?: boolean;
     valueType: string;
-    dictionary: boolean;
+    dictionary?: boolean;
     name: string;
     optionsValue?: string;
     optionsLabel?: string;
@@ -279,6 +279,7 @@ const props = withDefaults(
       regex: string;
     };
     disabled?: boolean;
+    placeholder?: string;
   }>(),
   {
     optionsValue: "id",
@@ -300,19 +301,19 @@ const computedProperty = computed(() => {
   if (props.required) {
     rules["required"] = true;
   }
-  if (props.rules.min) {
+  if (props.rules?.min) {
     rules["min"] = Number(props.rules.min);
   }
-  if (props.rules.max) {
+  if (props.rules?.max) {
     rules["max"] = Number(props.rules.max);
   }
-  if (props.rules.regex) {
+  if (props.rules?.regex) {
     rules["regex"] = new RegExp(props.rules.regex);
   }
 
-  const propertyDisplayName = props.displayNames?.find((displayName) =>
-    displayName.languageCode?.startsWith(locale.value as string)
-  )?.name;
+  const propertyDisplayName =
+    props.displayNames?.find((displayName) => displayName.languageCode?.startsWith(locale.value as string))?.name ||
+    props.name;
   const propertyDisplayNameLocalized =
     propertyDisplayName && te(propertyDisplayName.toUpperCase())
       ? t(propertyDisplayName.toUpperCase())
@@ -324,10 +325,11 @@ const computedProperty = computed(() => {
     dictionary: props.dictionary || false,
     multivalue: props.multivalue || false,
     name: props.name,
-    displayName: propertyDisplayNameLocalized || props.name, //|| setting?.displayName || setting?.defaultValue,
+    displayName: propertyDisplayNameLocalized, //|| setting?.displayName || setting?.defaultValue,
     optionValue: props.optionsValue,
     optionLabel: props.optionsLabel,
     required: props.required,
+    placeholder: props.placeholder || propertyDisplayNameLocalized,
   };
 });
 

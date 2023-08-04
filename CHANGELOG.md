@@ -1,3 +1,12 @@
+## [1.0.104](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.103...v1.0.104) (2023-08-04)
+
+
+### Bug Fixes
+
+* dynamic properties fix ([731cef7](https://github.com/VirtoCommerce/vendor-portal/commit/731cef75a878cdcfd514ab3717de293ed34e4642))
+
+
+
 ## [1.0.103](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.102...v1.0.103) (2023-08-04)
 
 

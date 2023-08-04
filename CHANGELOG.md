@@ -1,4 +1,17 @@
-## [1.0.93](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.92...v1.0.93) (2023-08-04)
+## [1.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.92...v1.0.94) (2023-08-04)
+
+
+### Bug Fixes
+
+* component registration ([07f829f](https://github.com/VirtoCommerce/vc-shell/commit/07f829f731b9a84b1b223b98a97ac299814ea62c))
+* dynamic properties fix ([1f2738a](https://github.com/VirtoCommerce/vc-shell/commit/1f2738a95c1da6fc83ea9086aafab935f4f79bfe))
+* temporary ([65d7a58](https://github.com/VirtoCommerce/vc-shell/commit/65d7a58e159a4f5a06581710156a533790437f4b))
+
+
+### Features
+
+* mltilang label, remove mltilang in vc-editor ([f3411bd](https://github.com/VirtoCommerce/vc-shell/commit/f3411bdde6bb61751a89ffa253c038aadfe22e36))
+* vc-editor multilang ([b494b9c](https://github.com/VirtoCommerce/vc-shell/commit/b494b9c3439e2d52d4be80616712b86b8126f799))
 
 
 

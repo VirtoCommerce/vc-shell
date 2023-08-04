@@ -1,7 +1,7 @@
 {
   "name": "@vc-shell/create-vc-app",
   "description": "Application scaffolding",
-  "version": "1.0.92",
+  "version": "1.0.93",
   "bin": "./dist/index.js",
   "files": [
     "src/template",

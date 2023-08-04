@@ -1,3 +1,13 @@
+## [1.0.103](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.102...v1.0.103) (2023-08-04)
+
+
+### Features
+
+* multilang description in products ([4e71ade](https://github.com/VirtoCommerce/vendor-portal/commit/4e71adeee75adb0c11ce86787effbc5294dda3fe))
+* styles for lang selector ([7f98409](https://github.com/VirtoCommerce/vendor-portal/commit/7f984099417015c709044bf4ffac8c3d19b49ea4))
+
+
+
 ## [1.0.102](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.101...v1.0.102) (2023-07-12)
 
 

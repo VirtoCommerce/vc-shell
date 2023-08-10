@@ -250,6 +250,7 @@
                   <VcDynamicProperty
                     v-for="property in filteredProps"
                     :key="property.id"
+                    class="tw-pb-2"
                     :property="property"
                     :model-value="getPropertyValue(property)"
                     :options-getter="loadDictionaries"

@@ -66,6 +66,7 @@ export interface IBladeEvent<T extends ComponentPublicInstance = ComponentPublic
   param?: string;
   onOpen?: () => void;
   onClose?: () => void;
+  model?: any;
 }
 
 export interface IBladeRef {

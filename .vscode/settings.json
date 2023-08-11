@@ -26,8 +26,12 @@
     "apps/vendor-portal/src/modules/orders/locales",
     "apps/vendor-portal/src/modules/rating/locales",
     "apps/vendor-portal/src/modules/settings/locales",
+    "apps/vendor-portal/src/modules/dynamic/locales",
     "import-module/src/locales"
   ],
   "i18n-ally.keystyle": "nested",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": [
+    "GTIN"
+  ]
 }

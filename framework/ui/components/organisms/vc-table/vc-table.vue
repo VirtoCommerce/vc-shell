@@ -57,7 +57,7 @@
 
     <div class="tw-flex tw-relative tw-overflow-hidden tw-grow">
       <!-- Table loading overlay -->
-      <VcLoading :active="loading"></VcLoading>
+      <VcLoading :active="unref(loading)"></VcLoading>
 
       <!-- Table scroll container -->
       <VcContainer
@@ -325,7 +325,7 @@
               <td
                 v-for="cell in filteredCols"
                 :key="`${(typeof item === 'object' && 'id' in item && item.id) || itemIndex}_${cell.id}`"
-                class="tw-box-border tw-overflow-hidden tw-px-3 tw-truncate"
+                class="tw-box-border tw-overflow-hidden tw-px-3 [&~:not(.vc-image)]:tw-truncate"
                 :class="cell.class"
                 :style="{ maxWidth: cell.width, width: cell.width }"
               >
@@ -423,7 +423,19 @@
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T extends TableItem | string">
-import { computed, ref, watch, onBeforeUpdate, onBeforeUnmount, Ref, onUpdated, onBeforeMount, nextTick } from "vue";
+import {
+  unref,
+  computed,
+  ref,
+  watch,
+  onBeforeUpdate,
+  onBeforeUnmount,
+  Ref,
+  onUpdated,
+  onBeforeMount,
+  nextTick,
+  MaybeRef,
+} from "vue";
 import VcTableCounter from "./_internal/vc-table-counter/vc-table-counter.vue";
 import VcTableFilter from "./_internal/vc-table-filter/vc-table-filter.vue";
 import VcTableMobileItem from "./_internal/vc-table-mobile-item/vc-table-mobile-item.vue";
@@ -472,7 +484,7 @@ const props = withDefaults(
     currentPage?: number;
     searchPlaceholder?: string;
     searchValue?: string;
-    loading?: boolean;
+    loading?: MaybeRef<boolean>;
     empty?: StatusImage;
     notfound?: StatusImage;
     header?: boolean;
@@ -515,14 +527,15 @@ interface ITableItemRef {
 }
 
 const emit = defineEmits<{
-  (event: "paginationClick", page: number): void;
-  (event: "selectionChanged", values: T[]): void;
-  (event: "search:change", value: string): void;
-  (event: "headerClick", value: Record<string, unknown>): void;
-  (event: "itemClick", item: T): void;
-  (event: "scroll:ptr"): void;
-  (event: "row:reorder", args: { dragIndex: number; dropIndex: number; value: T[] }): void;
-  (event: "select:all", values: boolean): void;
+  paginationClick: [page: number];
+  selectionChanged: [values: T[]];
+  "search:change": [value: string];
+  headerClick;
+  value: [Record<string, unknown>];
+  itemClick: [item: T];
+  "scroll:ptr": [];
+  "row:reorder": [args: { dragIndex: number; dropIndex: number; value: T[] }];
+  "select:all": [values: boolean];
 }>();
 
 const { t } = useI18n({ useScope: "global" });

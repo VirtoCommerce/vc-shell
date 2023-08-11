@@ -50,19 +50,19 @@
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { useUser } from "./../../../../core/composables";
-import { ref, unref, watch } from "vue";
+import { MaybeRef, ref, unref, watch } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "./../../";
 
 export interface Props {
   placeholder?: string;
-  modelValue?: string | number | Date;
+  modelValue?: MaybeRef<string | number | Date>;
   required?: boolean;
   disabled?: boolean;
   label?: string;
   tooltip?: string;
   errorMessage?: string;
-  assetsFolder: string;
+  assetsFolder: MaybeRef<string>;
 }
 
 export interface Emits {

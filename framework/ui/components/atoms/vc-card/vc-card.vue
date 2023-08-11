@@ -38,7 +38,7 @@
     </transition>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon } from "./../vc-icon";
 import { ref } from "vue";
@@ -62,6 +62,11 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  default: (props?: any) => any;
+  actions: (props?: any) => any;
+}>();
 
 const isCollapsedInternal = ref(props.isCollapsed);
 

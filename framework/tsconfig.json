@@ -42,7 +42,7 @@
     "shared/**/*.vue",
     "shared/**/*.ts",
     "shared/**/*.json"
-  ],
+, "ui/core/controls/models.ts"  ],
   "exclude": [
     "node_modules",
     "dist"

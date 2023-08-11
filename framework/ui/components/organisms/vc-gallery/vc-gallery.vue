@@ -24,8 +24,8 @@
             :actions="itemActions"
             :disable-drag="disableDrag"
             @preview="onPreviewClick(i)"
-            @edit="$emit('item:edit', $event)"
-            @remove="$emit('item:remove', $event)"
+            @edit="$emit('edit', $event)"
+            @remove="$emit('remove', $event)"
             @mousedown="onItemMouseDown"
             @dragstart="onItemDragStart($event, image)"
             @dragover="onItemDragOver"
@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { MaybeRef, computed, ref, unref, watch } from "vue";
 import { IImage } from "../../../../core/types";
 import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
@@ -68,7 +68,7 @@ import { usePopup } from "./../../../../shared/components/popup-handler/composab
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: IImage[];
+  images?: MaybeRef<IImage[]>;
   disabled?: boolean;
   required?: boolean;
   label?: string;
@@ -92,8 +92,8 @@ export interface Props {
 export interface Emits {
   (event: "upload", files: FileList): void;
   (event: "sort", sorted: IImage[]): void;
-  (event: "item:edit", image: IImage): void;
-  (event: "item:remove", image: IImage): void;
+  (event: "edit", image: IImage): void;
+  (event: "remove", image: IImage): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,7 +113,7 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 const previewImageIndex = ref<number>();
 
-const defaultImages = ref<IImage[]>([]);
+const defaultImages = ref<MaybeRef<IImage[]>>([]);
 const draggedItem = ref<IImage>();
 const draggedElement = ref<HTMLElement>();
 const galleryRef = ref<HTMLElement>();
@@ -125,7 +125,7 @@ const currentIndex = computed(() => previewImageIndex.value);
 const { open } = usePopup({
   component: VcGalleryPreview,
   props: {
-    images: props.images,
+    images: computed(() => unref(props.images)),
     index: currentIndex,
   },
 });
@@ -133,7 +133,7 @@ const { open } = usePopup({
 watch(
   () => props.images,
   (newVal) => {
-    defaultImages.value = newVal;
+    defaultImages.value = unref(newVal);
   },
   { deep: true, immediate: true }
 );

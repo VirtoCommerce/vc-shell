@@ -3,13 +3,22 @@
     class="vc-checkbox"
     :class="{ 'vc-checkbox_disabled': disabled }"
   >
+    <!-- Input label -->
+    <VcLabel
+      v-if="label"
+      class="tw-mb-2"
+      :required="required"
+    >
+      <span>{{ label }}</span>
+    </VcLabel>
     <label class="vc-checkbox__label">
       <input
+        v-model="value"
         type="checkbox"
         class="vc-checkbox__input"
-        :checked="modelValue"
         :disabled="disabled"
-        @change="onChange"
+        :true-value="trueValue"
+        :false-value="falseValue"
       />
       <span class="vc-checkbox__checkmark"></span>
       <span
@@ -19,7 +28,7 @@
         <slot></slot>
       </span>
       <span
-        v-if="required"
+        v-if="!label && required"
         class="tw-text-[color:var(--checkbox-required-color)] tw-ml-1"
         >*</span
       >
@@ -35,28 +44,41 @@
     </slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
+import { MaybeRef, computed, unref } from "vue";
 import { VcHint } from "./../vc-hint";
 export interface Props {
-  modelValue?: boolean;
+  modelValue?: MaybeRef<boolean>;
   disabled?: boolean;
   required?: boolean;
   name?: string;
   errorMessage?: string;
+  trueValue?: boolean;
+  falseValue?: boolean;
+  label?: string;
 }
 
 export interface Emits {
   (event: "update:modelValue", value: boolean): void;
 }
 
-withDefaults(defineProps<Props>(), { name: "Field" });
+const props = withDefaults(defineProps<Props>(), { name: "Field", trueValue: true, falseValue: false });
 const emit = defineEmits<Emits>();
 
-function onChange(e: Event) {
-  const newValue = (e.target as HTMLInputElement).checked;
-  emit("update:modelValue", newValue);
-}
+defineSlots<{
+  default: (props: any) => any;
+  error: (props: any) => any;
+}>();
+
+const value = computed({
+  get() {
+    return unref(props.modelValue);
+  },
+  set(newValue: boolean) {
+    emit("update:modelValue", newValue);
+  },
+});
 </script>
 
 <style lang="scss">

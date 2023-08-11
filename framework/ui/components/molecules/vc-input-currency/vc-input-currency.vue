@@ -13,7 +13,6 @@
     <template #control="{ toggleHandler }">
       <VcInput
         :placeholder="placeholder"
-        :model-value="modelValue"
         :hint="hint"
         :clearable="clearable"
         :prefix="prefix"
@@ -27,7 +26,7 @@
         :maxlength="maxlength"
         :tooltip="tooltip"
         class="tw-w-full"
-        @update:model-value="$emit('update:modelValue', +$event)"
+        type="number"
       >
         <template #append-inner>
           <slot
@@ -38,7 +37,7 @@
               class="tw-text-[#43b0e6] tw-not-italic tw-font-medium tw-text-[13px] tw-leading-[20px] tw-cursor-pointer"
               @click.stop.prevent="toggleHandler"
             >
-              {{ option }}
+              {{ unref(option) }}
             </button>
           </slot>
         </template>
@@ -56,7 +55,7 @@
 
 <script lang="ts" setup>
 import { useCurrencyInput, CurrencyDisplay } from "vue-currency-input";
-import { watch } from "vue";
+import { MaybeRef, unref, watch } from "vue";
 import { VcSelect, VcInput } from "./../../";
 
 export type OptionProp = ((option: string | Record<string, unknown>) => string) | string | undefined;
@@ -65,7 +64,7 @@ export interface Props {
   /**
    * Model of the currency component; Use with a listener for 'update:price' event OR use v-model:price directive
    */
-  modelValue: string | number | Date | null;
+  modelValue: MaybeRef<number | null | undefined>;
   /**
    * Input label text
    */
@@ -136,7 +135,7 @@ export interface Props {
   /**
    * Option label
    */
-  option?: string;
+  option?: MaybeRef<string>;
   /**
    * Available options that the user can select from.
    * Default value: []
@@ -159,7 +158,7 @@ export interface Props {
 }
 
 export interface Emits {
-  (event: "update:modelValue", value: string | number | null): void;
+  (event: "update:model-value", value: string | number | null): void;
   (event: "update:option", value: string | number | null): void;
   (event: "change", value: string | number | null): void;
 }
@@ -168,15 +167,17 @@ const props = withDefaults(defineProps<Props>(), {
   debounce: 0,
 });
 
-defineEmits<Emits>();
+const emit = defineEmits<Emits>();
 
-const { inputRef, setOptions } = useCurrencyInput({
-  locale: navigator.language,
-  currency: props.option || "USD",
-  autoSign: false,
-  currencyDisplay: CurrencyDisplay.hidden,
-  hideGroupingSeparatorOnFocus: false,
-});
+const { inputRef, setOptions, numberValue } = useCurrencyInput(
+  {
+    locale: navigator.language,
+    currency: unref(props.option) || "USD",
+    currencyDisplay: CurrencyDisplay.hidden,
+    hideGroupingSeparatorOnFocus: false,
+  },
+  false
+);
 
 // Change currency settings
 watch(
@@ -184,11 +185,14 @@ watch(
   (newVal) => {
     setOptions({
       locale: navigator.language,
-      currency: newVal as string,
-      autoSign: false,
+      currency: unref(newVal),
       currencyDisplay: CurrencyDisplay.hidden,
       hideGroupingSeparatorOnFocus: false,
     });
   }
 );
+
+watch(numberValue, (value) => {
+  emit("update:model-value", value);
+});
 </script>

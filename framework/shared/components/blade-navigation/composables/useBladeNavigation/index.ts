@@ -104,7 +104,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
   async function openWorkspace({ blade, param, options }: IBladeEvent) {
     await closeBlade(0);
-    clearParentData();
 
     const bladeComponent = unref(blade);
 
@@ -209,8 +208,26 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
 
     if (blade && checkPermission(blade.permissions)) {
+      // const routerRoutes = router.getRoutes();
+
+      // const selectedRoute = routerRoutes.find((r) => {
+      //   return r.path === blade.url;
+      // });
+
+      // const selectedRouteProps = selectedRoute?.props;
+      // console.log(selectedRouteProps);
+
+      // const test = () => {
+      //   const t = selectedRouteProps?.default;
+      //   console.log(t);
+      //   if (t && typeof t === "function") {
+      //     return t();
+      //   }
+      //   return {};
+      // };
       navigationInstance.blades.value.push({
         blade: markRaw(blade),
+        // ...test(),
         options,
         param,
         onOpen,
@@ -310,17 +327,19 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (!name) {
       throw new Error("blade name is required");
     }
+
+    console.log(instance.appContext.components);
     const components = instance && instance.appContext.components;
     return components[name] as BladeConstructor;
   }
 
   return {
-    blades: computed(() => navigationInstance.blades.value),
+    blades: computed(() => navigationInstance?.blades.value),
     workspaceOptions: computed(() => workspaceOptions.value),
     workspaceParam: computed(() => workspaceParam.value),
     lastBladeData: computed(() => lastBladeData.value),
     activeBlade,
-    bladesRefs: navigationInstance.bladesRefs,
+    bladesRefs: navigationInstance?.bladesRefs,
     openBlade,
     closeBlade,
     onParentCall,

@@ -56,6 +56,7 @@
         :options="blade.options"
         :error="error"
         :blades="blades"
+        :model="blade.model"
         @close:blade="onBladeClose(i)"
         @close:children="$emit('onClose', i + 1)"
         @parent:call="$emit('onParentCall', { id: i, args: $event })"

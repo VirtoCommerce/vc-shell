@@ -47,7 +47,6 @@
               class="tw-p-3"
               :label="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
               :tooltip="t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
-              name="importer"
               :options="dataImporters"
               option-value="typeName"
               option-label="typeName"

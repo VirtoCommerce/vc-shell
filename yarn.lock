@@ -4424,7 +4424,7 @@ __metadata:
     vee-validate: ^4.9.3
     vite: ^4.3.9
     vue: ^3.3.4
-    vue-currency-input: ~2.5.1
+    vue-currency-input: ^3.0.5
     vue-i18n: ^9.2.2
     vue-router: ^4.2.1
     vue-tsc: ~1.6.5
@@ -13999,18 +13999,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vue-currency-input@npm:~2.5.1":
-  version: 2.5.1
-  resolution: "vue-currency-input@npm:2.5.1"
-  dependencies:
-    vue-demi: ^0.12.1
+"vue-currency-input@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "vue-currency-input@npm:3.0.5"
   peerDependencies:
-    "@vue/composition-api": ^1.4.0
-    vue: ^2.6 || ^3.0.0
-  peerDependenciesMeta:
-    "@vue/composition-api":
-      optional: true
-  checksum: 412818ad912a054eec5fe4180f7a7d880ce3285d516830107cd486f0947ed6b084175dbeafa1d5bca4b2961f304e80c5a9478ca623d6d3c93d3250f9549dd564
+    vue: ^2.7 || ^3.0.0
+  checksum: f912454cf11ffa595db99712f61b26a63067f5aabd92facccf2ccdbe703cad01bfe94dc21e33d3ed92801c05024ad0fc448f4a9191160b7dd781810af2813ba4
   languageName: node
   linkType: hard
 
@@ -14027,22 +14021,6 @@ __metadata:
     vue-demi-fix: bin/vue-demi-fix.js
     vue-demi-switch: bin/vue-demi-switch.js
   checksum: ff44b9372b8224590514252a2f73363cced6062205f9628a6b130dccb80e2023d55cd9d1da94aeb68d5539b7ea9eedcecf88ab281a3a9ff48b8db4c5366b9643
-  languageName: node
-  linkType: hard
-
-"vue-demi@npm:^0.12.1":
-  version: 0.12.5
-  resolution: "vue-demi@npm:0.12.5"
-  peerDependencies:
-    "@vue/composition-api": ^1.0.0-rc.1
-    vue: ^3.0.0-0 || ^2.6.0
-  peerDependenciesMeta:
-    "@vue/composition-api":
-      optional: true
-  bin:
-    vue-demi-fix: bin/vue-demi-fix.js
-    vue-demi-switch: bin/vue-demi-switch.js
-  checksum: 40a0470caea8312e0d4df2541f141c36c768dfc7f2f7d41f0f28ba29df11d3119e2f09b94c815f13b7c7f3f45dbc247b0e9e0c02a1800e2823e241c1d771e39b
   languageName: node
   linkType: hard
 

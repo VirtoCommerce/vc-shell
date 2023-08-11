@@ -91,7 +91,7 @@
                                   <div
                                     class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                   >
-                                    <span>{{ getDisplayLabel(item.opt) }}</span>
+                                    <span>{{ getOptionLabel(item.opt) }}</span>
                                     <VcIcon
                                       v-if="!disabled"
                                       class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
@@ -253,7 +253,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends {results?: T[]; totalCount?: number }">
-import { ref, computed, watch, toRefs, nextTick, Ref } from "vue";
+import { ref, computed, watch, nextTick, Ref, MaybeRef, unref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -360,14 +360,10 @@ defineSlots<{
 const props = withDefaults(
   defineProps<{
     /**
-     * Name of select
-     */
-    name?: string;
-    /**
      * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
      */
 
-    modelValue?: any;
+    modelValue?: MaybeRef<any>;
     /**
      * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
      * Default value: true
@@ -434,26 +430,6 @@ const props = withDefaults(
      */
     optionLabel?: OptionProp<Option>;
     /**
-     * @requires optionValue
-     * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionValue**
-     *
-     * Property of option which holds the 'value'
-     * Default value: id
-     * @param option The current option being processed
-     * @returns Value of the current option
-     */
-    displayValue?: OptionProp<Option>;
-    /**
-     * @requires optionLabel
-     * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionLabel**
-     *
-     * Property of option which holds the 'label'
-     * Default value: title
-     * @param option The current option being processed
-     * @returns Label of the current option
-     */
-    displayLabel?: OptionProp<Option>;
-    /**
      * Update model with the value of the selected option instead of the whole option
      */
     emitValue?: boolean;
@@ -484,7 +460,6 @@ const props = withDefaults(
     optionLabel: "title",
     debounce: 500,
     clearable: true,
-    name: "Field",
     emitValue: true,
     mapOptions: true,
     options: () => [],
@@ -496,20 +471,23 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  (event: "update:modelValue", inputValue: Option | string | (Option | string)[]): void;
+  "update:modelValue": [inputValue: Option | string | (Option | string)[]];
   /**
    * Emitted when user wants to filter a value
    */
-  (event: "search", inputValue: string): void;
+  search: [inputValue: string];
   /**
    * Emitted when the select options list is hidden
    */
-  (event: "close"): void;
+  close: [];
 }>();
 
 const { t } = useI18n({ useScope: "global" });
 
-const { modelValue, options } = toRefs(props);
+// const { modelValue, options } = toRefs(props);
+
+const modelValue = computed(() => unref(props.modelValue));
+const options = computed(() => unref(props.options));
 
 const isOpened = ref(false);
 
@@ -560,27 +538,27 @@ watch(
   async (newVal, oldVal) => {
     if (newVal && !oldVal) {
       const initial = optionsList.value.filter((x) => {
-        if (props.modelValue && Array.isArray(props.modelValue)) {
-          return _.intersection(optionsList.value, props.modelValue);
-        } else if (props.modelValue && typeof props.modelValue === "object") {
-          return optionsList.value.includes(props.modelValue);
+        if (modelValue.value && Array.isArray(modelValue.value)) {
+          return _.intersection(optionsList.value, modelValue.value);
+        } else if (modelValue.value && typeof modelValue.value === "object") {
+          return optionsList.value.includes(modelValue.value);
         } else {
-          return x[props.optionLabel as string] === props.modelValue;
+          return x[props.optionLabel as string] === modelValue.value;
         }
       });
 
       if (initial && initial.length) {
         defaultValue.value = initial;
       } else {
-        if (props.options && typeof props.options === "function") {
-          const data = await props.options(
+        if (options.value && typeof options.value === "function") {
+          const data = await options.value(
             undefined,
             undefined,
-            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
+            Array.isArray(modelValue.value) ? modelValue.value : [modelValue.value]
           );
-          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === props.modelValue);
-        } else if (props.options && Array.isArray(props.options)) {
-          defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
+          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === modelValue.value);
+        } else if (options.value && Array.isArray(options.value)) {
+          defaultValue.value = options.value.filter((x) => x[props.optionValue as string] === modelValue.value);
         }
       }
     }
@@ -591,17 +569,17 @@ watch(
 watch(
   options,
   async () => {
-    if (props.options && typeof props.options === "function") {
+    if (options.value && typeof options.value === "function") {
       try {
         listLoading.value = true;
-        const data = await props.options();
+        const data = await options.value();
         optionsList.value = data.results;
         totalItems.value = data.totalCount;
       } finally {
         listLoading.value = false;
       }
-    } else if (props.options && Array.isArray(props.options)) {
-      optionsList.value = props.options;
+    } else if (options.value && Array.isArray(options.value)) {
+      optionsList.value = options.value;
     }
   },
   { immediate: true }
@@ -625,10 +603,10 @@ watch(
 );
 
 async function onLoadMore() {
-  if (props.options && typeof props.options === "function") {
+  if (options.value && typeof options.value === "function") {
     try {
       listLoading.value = true;
-      const data = await props.options(filterString.value, optionsList.value.length);
+      const data = await options.value(filterString.value, optionsList.value.length);
       optionsList.value.push(...data.results);
     } finally {
       listLoading.value = false;
@@ -644,18 +622,14 @@ const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
 
 const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
 
-const getDisplayValue = computed(() => getPropValueFn(props.displayValue, "id"));
-
-const getDisplayLabel = computed(() => getPropValueFn(props.displayLabel, "title"));
-
 const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
   const val =
-    props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
-      ? props.multiple === true && Array.isArray(props.modelValue)
-        ? props.modelValue
-        : [props.modelValue]
+    modelValue.value !== undefined && (modelValue.value !== null || mapNull === true)
+      ? props.multiple === true && Array.isArray(modelValue.value)
+        ? modelValue.value
+        : [modelValue.value]
       : [];
 
   if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
@@ -663,7 +637,7 @@ const innerValue = computed((): Option[] => {
 
     const values = val.map((v) => getOption(v, cache));
 
-    return props.modelValue === null && mapNull === true ? values.filter((v) => v !== null) : values;
+    return modelValue.value === null && mapNull === true ? values.filter((v) => v !== null) : values;
   }
 
   return val;
@@ -697,9 +671,7 @@ const selectedScope = computed(
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 
-const innerOptionsValue = computed(() =>
-  innerValue.value.map((opt) => getOptionValue.value(opt) || getDisplayValue.value(opt))
-);
+const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt)));
 
 const optionScope = computed(() => {
   return optionsTemp.value.map((opt, i) => {
@@ -707,7 +679,7 @@ const optionScope = computed(() => {
       index: i,
       opt,
       selected: isOptionSelected(opt) === true,
-      label: getOptionLabel.value(opt) || getDisplayLabel.value(opt),
+      label: getOptionLabel.value(opt),
       toggleOption,
     };
   });
@@ -730,7 +702,7 @@ function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Op
 }
 
 function getOption(value: Option, valueCache: Option[]) {
-  const fn = (opt) => _.isEqual(getOptionValue.value(opt), value) || _.isEqual(getDisplayValue.value(opt), value);
+  const fn = (opt) => _.isEqual(getOptionValue.value(opt), value);
   return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
@@ -739,13 +711,13 @@ function fieldValueIsFilled(val: Option[]) {
 }
 
 function getEmittingOptionValue(opt: Option) {
-  return props.emitValue === true ? getOptionLabel.value(opt) : getOptionValue.value(opt);
+  return getOptionLabel.value(opt);
 }
 
 function removeAtIndex(index: number) {
   if (index > -1 && index < innerValue.value.length) {
     if (props.multiple === true) {
-      const model = props.modelValue.slice();
+      const model = modelValue.value.slice();
       model.splice(index, 1);
       emit("update:modelValue", model);
     } else {
@@ -755,7 +727,7 @@ function removeAtIndex(index: number) {
 }
 
 function isOptionSelected(opt: Option) {
-  const val = getOptionValue.value(opt) || getDisplayValue.value(opt);
+  const val = getOptionValue.value(opt);
 
   return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
 }
@@ -768,10 +740,10 @@ function closeDropdown() {
 }
 
 const onDropdownClose = async () => {
-  if (props.options && typeof props.options === "function") {
-    optionsList.value = (await props.options()).results as Option[];
+  if (options.value && typeof options.value === "function") {
+    optionsList.value = (await options.value()).results as Option[];
   } else {
-    optionsList.value = props.options as Option[];
+    optionsList.value = options.value as Option[];
   }
 
   filterString.value = undefined;
@@ -829,7 +801,7 @@ function toggleOption(opt: Option) {
     return;
   }
 
-  const optValue = getOptionValue.value(opt) || getDisplayValue.value(opt);
+  const optValue = getOptionValue.value(opt);
 
   if (props.multiple !== true) {
     if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {
@@ -845,7 +817,7 @@ function toggleOption(opt: Option) {
     return;
   }
 
-  const model = props.modelValue.slice();
+  const model = modelValue.value.slice();
   const index = innerOptionsValue.value.findIndex((v) => _.isEqual(v, optValue));
 
   if (index > -1) {
@@ -864,10 +836,10 @@ function toggleOption(opt: Option) {
 
 async function onSearch(value: string) {
   filterString.value = value;
-  if (props.options && typeof props.options === "function") {
+  if (options.value && typeof options.value === "function") {
     try {
       listLoading.value = true;
-      optionsTemp.value = (await props.options(filterString.value)).results as Option[];
+      optionsTemp.value = (await options.value(filterString.value)).results as Option[];
     } finally {
       listLoading.value = false;
     }

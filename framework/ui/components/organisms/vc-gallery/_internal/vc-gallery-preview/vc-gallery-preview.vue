@@ -1,6 +1,7 @@
 <template>
   <VcPopup
-    :title="currentImage.title"
+    v-if="currentImage"
+    :title="currentImage?.title"
     @close="$emit('close')"
   >
     <template #title>
@@ -29,7 +30,7 @@
           ></VcIcon>
         </div>
         <div
-          v-if="localIndex < images.length - 1"
+          v-if="localIndex < unref(images).length - 1"
           class="tw-absolute tw-top-2/4 -tw-mt-9 tw-h-[72px] tw-w-[72px] tw-flex tw-items-center tw-justify-center tw-rounded-full tw-bg-[#f1f6fa] tw-cursor-pointer tw-text-[#a1c0d4] [--icon-size-xl: 36px] hover:tw-shadow-[0_0_20px_rgba(31,40,50,0.15)] tw-right-[25px]"
           @click="localIndex++"
         >
@@ -41,7 +42,7 @@
       </div>
       <div class="tw-p-4 tw-pb-[40px] tw-max-w-full tw-overflow-x-auto tw-box-border tw-shrink tw-flex">
         <div
-          v-for="(item, i) in images"
+          v-for="(item, i) in unref(images)"
           :key="i"
           class="tw-m-1 tw-opacity-60"
           :class="{
@@ -62,13 +63,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, ComputedRef } from "vue";
+import { computed, ref, ComputedRef, MaybeRef, unref } from "vue";
 import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
 import { IImage } from "./../../../../../../core/types";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: IImage[];
+  images?: MaybeRef<IImage[]>;
   index: number | ComputedRef<number>;
 }
 
@@ -84,7 +85,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const { t } = useI18n({ useScope: "global" });
 const localIndex = ref(props.index);
-const currentImage = computed(() => props.images[localIndex.value]);
+const currentImage = computed(() => {
+  if (unref(props.images) && unref(props.images).length) {
+    return unref(props.images)[localIndex.value];
+  }
+  return undefined;
+});
 
 const copyLink = (link: string) => {
   if (link.charAt(0) === "/") {

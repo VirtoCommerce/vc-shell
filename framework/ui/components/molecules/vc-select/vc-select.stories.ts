@@ -11,7 +11,7 @@ type Story = StoryObj<typeof VcSelect>;
 
 export const Primary: Story = {
   render: (args) => ({
-    components: { VcSelect },
+    // components: { VcSelect },
     setup() {
       return { args };
     },

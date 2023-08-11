@@ -3,6 +3,7 @@ import { NotificationOptions } from "../../types";
 import { NotificationContainer } from "../../components";
 import { useInstance } from "../useInstance";
 import * as _ from "lodash-es";
+import { generateId } from "../../../../../core/utilities";
 
 interface PendingNotification {
   notificationId: string | number;
@@ -104,10 +105,6 @@ export function useContainer(): IUseContainer {
     });
   }
 
-  function generateNotificationId() {
-    return Math.random().toString(36).substring(2, 9);
-  }
-
   const actions = {
     add(options: NotificationOptions) {
       if (!notificationContainer.value.find((item) => item.notificationId === options.notificationId)) {
@@ -185,6 +182,6 @@ export function useContainer(): IUseContainer {
     getAllNotifications,
     appendInstance,
     getNotification,
-    generateNotificationId,
+    generateNotificationId: generateId,
   };
 }

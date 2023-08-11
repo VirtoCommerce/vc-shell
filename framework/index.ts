@@ -1,4 +1,4 @@
-import { App } from "vue";
+import { App, Component } from "vue";
 import * as components from "./ui/components";
 import * as directives from "./core/directives";
 import { useBreakpoints } from "@vueuse/core";
@@ -30,7 +30,7 @@ export default {
 
     // Register exported components
     Object.entries(components).forEach(([name, component]) => {
-      app.component(name, component);
+      app.component(name, component as Component);
     });
 
     // Register exported directives
@@ -59,6 +59,10 @@ export default {
     // Pages
     app.config.globalProperties.pages = [];
     app.provide("pages", app.config.globalProperties.pages);
+
+    // Routes
+    app.config.globalProperties.bladeRoutes = [];
+    app.provide("bladeRoutes", app.config.globalProperties.bladeRoutes);
 
     // Notification templates
     app.config.globalProperties.notificationTemplates = [];

@@ -38,6 +38,7 @@ declare module "@vue/runtime-core" {
     VcSelect: (typeof VcShellComponents)["VcSelect"];
     VcSlider: (typeof VcShellComponents)["VcSlider"];
     VcTextarea: (typeof VcShellComponents)["VcTextarea"];
+    VcMultivalue: (typeof VcShellComponents)["VcMultivalue"];
 
     // organisms
     VcApp: (typeof VcShellComponents)["VcApp"];

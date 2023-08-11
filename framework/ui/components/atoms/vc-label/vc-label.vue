@@ -26,7 +26,7 @@
     </span>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
 import { ref } from "vue";
@@ -39,6 +39,11 @@ export interface Props {
 withDefaults(defineProps<Props>(), {
   tooltipIcon: "fas fa-info-circle",
 });
+
+defineSlots<{
+  default: (props: any) => any;
+  tooltip?: (props: any) => any;
+}>();
 
 const tooltipVisible = ref(false);
 </script>

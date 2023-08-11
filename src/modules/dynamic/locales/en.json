@@ -1,0 +1,16 @@
+{
+  "DYNAMIC":{
+    "PAGES": {
+      "LIST": {
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected items?",
+          "ALL": "all {totalCount}"
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No items found.",
+          "RESET": "Reset search"
+        }
+      }
+    }
+  }
+}

@@ -71,7 +71,7 @@ import {
   BladePageComponent,
   NotificationTemplateConstructor,
 } from "@vc-shell/framework";
-import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent } from "vue";
+import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ImportProfileSelector } from "../modules/import";
 import { OffersList } from "../modules/offers";
@@ -88,11 +88,13 @@ import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
 import useDynamicModule from "./../modules/dynamic/composables/useDynamicModule";
+import DynamicBladeList from "../modules/dynamic/pages/dynamic-blade-list.vue";
 
 const { open } = usePopup({
   component: ChangePassword,
 });
-const { registerModule, items } = useDynamicModule();
+
+const { dynamicModuleItems } = useDynamicModule();
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
 const { checkPermission } = usePermissions();
@@ -109,18 +111,16 @@ const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const pages = inject<BladePageComponent[]>("pages");
+const internalRoutes = inject("bladeRoutes");
+provide("internalRoutes", internalRoutes);
 const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
 const version = import.meta.env.PACKAGE_VERSION;
 const bladeNavigationRefs = ref();
 
-console.log(pages);
-
 onMounted(async () => {
   try {
-    registerModule();
-
     await loadUser();
     await getApps();
     langInit();
@@ -204,6 +204,7 @@ const toolbarItems = computed(() =>
               const pageNotificationClickFn = page.scope?.notificationClick;
               if (pageNotificationClickFn && typeof pageNotificationClickFn === "function") {
                 const bladeData = pageNotificationClickFn(notification);
+                console.log(bladeData);
                 if (bladeData) {
                   openBlade(
                     {
@@ -318,7 +319,7 @@ const menuItems = reactive(
       isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
       component: ReviewList,
     },
-    items(),
+    ...dynamicModuleItems.value,
     {
       title: computed(() => t("SETTINGS.MENU.TITLE")),
       icon: "fas fa-sliders-h",

@@ -1,0 +1,92 @@
+{
+  "settings": {
+    "url": "/product-j",
+    "titleTemplate": "Product details",
+    "moduleName": "Product details",
+    "icon": "fas fa-file-alt",
+    "composable": "useProduct",
+    "toolbar": []
+  },
+  "content": [
+    {
+      "type": "form",
+      "children": [
+        {
+          "type": "input",
+          "label": "Name",
+          "property": "name",
+          "name": "name",
+          "rules": {
+            "required": true
+          }
+        },
+        {
+          "type": "select",
+          "label": "Test select",
+          "property": "categoryId",
+          "name": "categoryId",
+          "optionValue": "id",
+          "optionLabel": "name",
+          "rules": {
+            "required": true
+          }
+        },
+        {
+          "type": "card",
+          "label": "Properties",
+          "children": [
+            {
+              "type": "input",
+              "label": "GTIN",
+              "name": "gtin",
+              "property": "gtin",
+              "rules": {
+                "required": true
+              }
+            },
+            {
+              "type": "editor",
+              "label": "Description",
+              "name": "description",
+              "property": "description",
+              "rules": {
+                "required": true
+              }
+            },
+            {
+              "type": "dynamic-properties",
+              "label": "Dynamic",
+              "property": "properties",
+              "exclude": ["Category", "Variation"]
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "label": "Gallery",
+          "children": [
+            {
+              "type": "gallery",
+              "property": "images"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "widgets",
+      "children": [
+        {
+          "label": "Offers",
+          "icon": "fas fa-tags",
+          "navigate": "OffersList"
+        },
+        {
+          "label": "Assets",
+          "icon": "far fa-file",
+          "navigate": "AssetsManager"
+        }
+      ]
+    }
+  ]
+}

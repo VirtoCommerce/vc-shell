@@ -66,7 +66,6 @@
               >
                 <VcSelect
                   v-bind="field"
-                  name="productType"
                   class="tw-mb-4"
                   :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
                   :model-value="productDetails.productType"
@@ -219,15 +218,21 @@
                     v-for="property in filteredProps"
                     :key="property.id"
                     :property="property"
+                    :model-value="getPropertyValue(property)"
                     :options-getter="loadDictionaries"
-                    :getter="getPropertyValue"
-                    :setter="setPropertyValue"
-                    class="tw-mb-4"
-                    :disabled="disabled"
-                    :displayed-value-label="{
-                      value: 'valueId',
-                      label: 'value',
+                    :required="property.required"
+                    :multivalue="property.multivalue"
+                    :value-type="property.valueType"
+                    :dictionary="property.dictionary"
+                    :name="property.name"
+                    :rules="{
+                      min: property.validationRule?.charCountMin,
+                      max: property.validationRule?.charCountMax,
+                      regex: property.validationRule?.regExp,
                     }"
+                    :display-names="property.displayNames"
+                    class="tw-mb-4"
+                    @update:model-value="setPropertyValue"
                   >
                   </VcDynamicProperty>
                 </div>
@@ -241,7 +246,7 @@
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
-                <VcLoading :active="fileUploading"></VcLoading>
+                <VcLoading :active="unref(imageHandlers.loading)"></VcLoading>
                 <div class="tw-p-2">
                   <Field
                     v-slot="{ handleChange }"
@@ -252,9 +257,9 @@
                       :images="productDetails.images"
                       :disabled="disabled"
                       :multiple="true"
-                      @upload="onGalleryUpload"
-                      @item:edit="onGalleryItemEdit"
-                      @item:remove="onGalleryImageRemove"
+                      @upload="imageHandlers.upload"
+                      @edit="onGalleryItemEdit"
+                      @remove="imageHandlers.remove"
                       @sort="
                         (e) => {
                           handleChange(e);
@@ -292,7 +297,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, unref, markRaw } from "vue";
+import { computed, onMounted, ref, unref, markRaw, reactive } from "vue";
 import {
   useUser,
   IParentCallArgs,
@@ -301,6 +306,8 @@ import {
   AssetsManager,
   usePopup,
   useBladeNavigation,
+  useAssets,
+  DynamicObjectProperty,
 } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
@@ -311,7 +318,6 @@ import * as _ from "lodash-es";
 import {
   IImage,
   IProperty,
-  IPropertyValue,
   ISellerProduct,
   Category,
   Image,
@@ -319,6 +325,8 @@ import {
   Property,
   PropertyValue,
   PropertyDictionaryItem,
+  IAsset,
+  IPropertyValue,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
@@ -373,16 +381,30 @@ useForm({ validateOnMount: false });
 const isValid = useIsFormValid();
 const offersCount = ref(0);
 const productLoading = ref(false);
-const fileUploading = ref(false);
-const fileAssetUploading = ref(false);
 let isOffersOpened = false;
 let isAssetsOpened = false;
 const categoryLoading = ref(false);
 const currentCategory = ref<Category>();
 
+const imageHandlers = imageHandler();
+const assetHandlers = assetsHandler();
+
 const filterTypes = ["Category", "Variation"];
 
-const filteredProps = computed(() => productDetails.value.properties.filter((x) => !filterTypes.includes(x.type)));
+const filteredProps = computed(() =>
+  productDetails.value.properties.filter((x) => {
+    return !filterTypes.includes(x.type);
+  })
+);
+
+// function updateProperty(property: Property) {
+//   productDetails.value.properties.forEach((prop) => {
+//     if (prop.id === property.id) {
+//       console.log(_.cloneDeep(prop));
+//       Object.assign(prop, property);
+//     }
+//   });
+// }
 
 const product = computed(() => (props.param ? productData.value : productDetails.value));
 
@@ -413,7 +435,7 @@ const productTypeOptions = [
   },
 ];
 
-const validate = _.debounce(
+const validate = _.throttle(
   async (fieldName: string, value: string): Promise<string | boolean> => {
     const sellerProduct = {
       ...product.value,
@@ -556,153 +578,8 @@ const statusText = computed(() => {
   return null;
 });
 
-const onGalleryUpload = async (files: FileList) => {
-  try {
-    fileUploading.value = true;
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData();
-      formData.append("file", files[i]);
-      const authToken = await getAccessToken();
-      const result = await fetch(
-        `/api/assets?folderUrl=/catalog/${productData.value.id || productData.value.categoryId}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const response = await result.json();
-      if (response?.length) {
-        const image = new Image(response[0]);
-        image.createdDate = new Date();
-        if (productDetails.value.images && productDetails.value.images.length) {
-          const lastImageSortOrder = productDetails.value.images[productDetails.value.images.length - 1].sortOrder;
-          image.sortOrder = lastImageSortOrder + 1;
-        } else {
-          image.sortOrder = 0;
-        }
-        productDetails.value.images.push(image);
-      }
-    }
-  } catch (e) {
-    console.log(e);
-    throw e;
-  } finally {
-    fileUploading.value = false;
-  }
-
-  files = null;
-};
-
-const onGalleryItemEdit = (item: Image) => {
-  openBlade({
-    blade: markRaw(AssetsDetails),
-    options: {
-      asset: item,
-      assetEditHandler: editImage,
-      assetRemoveHandler: removeImage,
-    },
-  });
-};
-
-function editImage(localImage: IImage) {
-  const images = productDetails.value.images;
-  const image = new Image(localImage);
-  if (images.length) {
-    const imageIndex = images.findIndex((img) => img.id === localImage.id);
-
-    images[imageIndex] = image;
-
-    editImages(images);
-  }
-}
-
-async function removeImage(localImage: IImage) {
-  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
-    const images = productDetails.value.images;
-    if (images.length) {
-      const imageIndex = images.findIndex((img) => img.id === localImage.id);
-
-      images.splice(imageIndex, 1);
-
-      editImages(images);
-    }
-  }
-}
-
 const editImages = (args: Image[]) => {
   productDetails.value.images = args;
-};
-
-const onGalleryImageRemove = async (image: Image) => {
-  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
-    const imageIndex = productDetails.value.images.findIndex((img) => {
-      if (img.id && image.id) {
-        return img.id === image.id;
-      } else {
-        return img.url === image.url;
-      }
-    });
-    productDetails.value.images.splice(imageIndex, 1);
-  }
-};
-
-const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
-  try {
-    fileAssetUploading.value = true;
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData();
-      formData.append("file", files[i]);
-      const authToken = await getAccessToken();
-      const result = await fetch(
-        `/api/assets?folderUrl=/catalog/${productData.value.id || productData.value.categoryId}`,
-        {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      const response = await result.json();
-      if (response?.length) {
-        const asset = new Asset(response[0]);
-        asset.createdDate = new Date();
-        asset.size = files[i].size;
-
-        if (productDetails.value.assets && productDetails.value.assets.length) {
-          const lastAssetSortOrder = productDetails.value.assets[productDetails.value.assets.length - 1].sortOrder;
-          asset.sortOrder = lastAssetSortOrder + 1;
-        } else {
-          asset.sortOrder = 0;
-        }
-        productDetails.value.assets.push(asset);
-        return productDetails.value.assets;
-      }
-    }
-  } catch (e) {
-    console.log(e);
-    throw e;
-  } finally {
-    fileAssetUploading.value = false;
-  }
-
-  files = null;
-};
-
-const onAssetsItemRemove = async (assets: Asset[]): Promise<Asset[]> => {
-  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
-    productDetails.value.assets = productDetails.value.assets.filter((asset) => !assets.includes(asset));
-  }
-  return productDetails.value.assets;
-};
-
-const onAssetsEdit = (assets: Asset[]): Asset[] => {
-  productDetails.value.assets = assets.map((item) => new Asset(item));
-
-  return productDetails.value.assets;
 };
 
 const setProductType = (productType: string) => {
@@ -724,8 +601,8 @@ const setCategory = async (selectedCategory: Category) => {
   });
 };
 
-async function loadDictionaries(property: IProperty, keyword?: string, skip?: number) {
-  return await searchDictionaryItems([property.id], keyword, skip);
+async function loadDictionaries(property: Property, keyword?: string) {
+  return await searchDictionaryItems([property.id], keyword);
 }
 
 async function openOffers() {
@@ -745,15 +622,26 @@ async function openOffers() {
   }
 }
 
-async function openAssets() {
+function onGalleryItemEdit(item: Image) {
+  openBlade({
+    blade: markRaw(AssetsDetails),
+    options: {
+      asset: item,
+      assetEditHandler: imageHandlers.edit,
+      assetRemoveHandler: imageHandlers.remove,
+    },
+  });
+}
+
+function openAssets() {
   if (!isAssetsOpened) {
     openBlade({
       blade: markRaw(AssetsManager),
       options: {
         assets: productDetails.value.assets,
-        assetsEditHandler: onAssetsEdit,
-        assetsUploadHandler: onAssetsUpload,
-        assetsRemoveHandler: onAssetsItemRemove,
+        assetsEditHandler: assetHandlers.edit,
+        assetsUploadHandler: assetHandlers.upload,
+        assetsRemoveHandler: assetHandlers.remove,
         disabled: assetsDisabled.value,
       },
       onOpen() {
@@ -764,6 +652,64 @@ async function openAssets() {
       },
     });
   }
+}
+
+function assetsHandler() {
+  const { editBulk, upload, removeBulk, loading } = useAssets(Asset);
+  return {
+    loading: computed(() => loading.value),
+    edit(assets: IAsset[]) {
+      productDetails.value.assets = editBulk(assets);
+      return productDetails.value.assets;
+    },
+    async upload(files: FileList) {
+      productDetails.value.assets = await upload(
+        files,
+        productDetails.value.assets,
+        productData.value.id || productData.value.categoryId
+      );
+      files = null;
+
+      return productDetails.value.assets;
+    },
+    async remove(assets: Asset[]) {
+      if (
+        await showConfirmation(
+          computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: assets.length }))
+        )
+      ) {
+        productDetails.value.assets = await removeBulk(productDetails.value.assets, assets);
+      }
+      return productDetails.value.assets;
+    },
+  };
+}
+
+function imageHandler() {
+  const { edit, remove, upload, loading } = useAssets(Image);
+  return {
+    loading: computed(() => loading.value),
+    edit(image: IImage) {
+      productDetails.value.images = edit(productDetails.value.images, image);
+    },
+    async upload(files: FileList) {
+      productDetails.value.images = await upload(
+        files,
+        productDetails.value.images,
+        productData.value.id || productData.value.categoryId
+      );
+
+      files = null;
+
+      return productDetails.value.images;
+    },
+    async remove(image: IImage) {
+      if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
+        productDetails.value.images = await remove(productDetails.value.images, image);
+      }
+      return productDetails.value.images;
+    },
+  };
 }
 
 async function onBeforeClose() {
@@ -787,47 +733,46 @@ function handleDictionaryValue(property: IProperty, valueId: string, dictionary:
   };
 }
 
-function setPropertyValue(
-  property: IProperty,
-  value: IPropertyValue | IPropertyValue[],
-  dictionary?: PropertyDictionaryItem[]
-) {
-  if (value && typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
-    if (dictionary && dictionary.length) {
-      property.values = (value as IPropertyValue[]).map((item) => {
-        if (dictionary.includes(item as PropertyDictionaryItem)) {
-          const handledValue = handleDictionaryValue(property, item.id, dictionary);
+function setPropertyValue(data: {
+  property: Property;
+  value: string | IPropertyValue[];
+  dictionary?: PropertyDictionaryItem[];
+}) {
+  const { property, value, dictionary } = data;
 
-          return new PropertyValue(handledValue);
-        }
-        return item as PropertyValue;
-      });
-    } else {
-      property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));
-    }
+  let mutatedProperty: PropertyValue[];
+  if (dictionary && dictionary.length) {
+    mutatedProperty = Array.isArray(value)
+      ? value.map((item) => {
+          if (dictionary.find((x) => x.id === item.id)) {
+            const handledValue = handleDictionaryValue(property, item.id, dictionary);
+
+            return new PropertyValue(handledValue);
+          } else return new PropertyValue(item);
+        })
+      : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
   } else {
-    if (dictionary && dictionary.length) {
-      const handledValue = handleDictionaryValue(property, value as string, dictionary);
-      property.values[0] = new PropertyValue({
-        ...handledValue,
-        isInherited: false,
-      });
-    } else {
-      if (property.values[0]) {
-        property.values[0].value = value;
-      } else {
-        property.values[0] = new PropertyValue({
-          value,
-          isInherited: false,
-        });
-      }
-    }
+    mutatedProperty = Array.isArray(value)
+      ? value.map((item) => new PropertyValue(item))
+      : property.values[0]
+      ? [Object.assign(property.values[0], { value: value })]
+      : [new PropertyValue({ value: value, isInherited: false })];
   }
+
+  productDetails.value.properties.forEach((prop) => {
+    if (prop.id === property.id) {
+      console.log(mutatedProperty);
+      prop.values = mutatedProperty;
+    }
+  });
 }
 
-function getPropertyValue(property: IProperty, isDictionary?: boolean): Record<string, unknown> {
-  if (isDictionary) {
-    return property.values[0] && (property.values[0].valueId as unknown as Record<string, unknown>);
+function getPropertyValue(property: Property) {
+  if (property.multivalue) {
+    return property.values;
+  }
+  if (property.dictionary) {
+    return property.values[0] && property.values[0].valueId;
   }
   return property.values[0] && property.values[0].value;
 }

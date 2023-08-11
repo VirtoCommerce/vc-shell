@@ -1,15 +1,14 @@
 {
   "settings": {
-    "url": "/test-list",
-    "titleTemplate": "Test list blade",
-    "moduleName": "Test module",
+    "url": "/products-j",
+    "titleTemplate": "Products",
+    "moduleName": "Products",
+    "composable": "useProducts",
     "icon": "fas fa-file-alt",
-    "endpoint": "/api/vcmp/seller/products",
     "toolbar": [
       {
-        "id": "save",
-        "title": "Save",
-        "icon": "fas fa-save"
+        "id": "add",
+        "title": "Add (Optional)"
       }
     ]
   },
@@ -25,21 +24,25 @@
         {
           "id": "name",
           "title": "Name",
+          "sortable": true,
           "alwaysVisible": true
         },
         {
           "id": "createdDate",
           "title": "Created date",
+          "sortable": true,
           "type": "date-ago"
         },
         {
           "id": "isPublished",
           "title": "Is published",
+          "sortable": true,
           "type": "status-icon"
         },
         {
           "id": "status",
           "title": "Status",
+          "sortable": true,
           "alwaysVisible": true
         },
         {

@@ -1,0 +1,77 @@
+{
+  "settings": {
+    "url": "/offers-j",
+    "titleTemplate": "Offers",
+    "moduleName": "Offers",
+    "composable": "useOffers",
+    "icon": "fas fa-file-alt",
+    "toolbar": [
+      {
+        "id": "add",
+        "title": "Add (Optional)"
+      }
+    ]
+  },
+  "content": [
+    {
+      "type": "grid",
+      "columns": [
+        {
+          "id": "imgSrc",
+          "title": "Pic",
+          "type": "image",
+          "alwaysVisible": true
+        },
+        {
+          "id": "name",
+          "title": "Name",
+          "sortable": true,
+          "alwaysVisible": true
+        },
+        {
+          "id": "createdDate",
+          "title": "Created date",
+          "sortable": true,
+          "type": "date-ago"
+        },
+        {
+          "id": "sku",
+          "title": "SKU#",
+          "sortable": true,
+          "alwaysVisible": true
+        },
+        {
+          "id": "isActive",
+          "title": "Enabled",
+          "sortable": true,
+          "alwaysVisible": true,
+          "type": "status-icon"
+        },
+        {
+          "id": "prices.salePrice",
+          "title": "Sale price",
+          "sortable": true,
+          "type": "money"
+        },
+        {
+          "id": "minQuantity",
+          "title": "Min quantity",
+          "sortable": true,
+          "type": "number"
+        },
+        {
+          "id": "inStockQuantity",
+          "title": "Initial quantity",
+          "sortable": true,
+          "type": "number"
+        },
+        {
+          "id": "availQuantity",
+          "title": "Current quantity",
+          "sortable": true,
+          "type": "number"
+        }
+      ]
+    }
+  ]
+}

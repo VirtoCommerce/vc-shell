@@ -1,5 +1,5 @@
-import { computed, Ref, ref, watch } from "vue";
-import { useUser } from "@vc-shell/framework";
+import { computed, Ref, ref, unref, watch } from "vue";
+import { useUser, useAssets } from "@vc-shell/framework";
 import * as _ from "lodash-es";
 
 import {
@@ -18,15 +18,19 @@ import {
   ValidationFailure,
   SearchCategoriesQuery,
   CategorySearchResult,
+  Asset,
+  IAsset,
+  Image,
+  IImage,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
-  product: Ref<ISellerProduct>;
+  product: Ref<SellerProduct>;
   productDetails: Ref<IProductDetails>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
   fetchCategories: (keyword?: string, skip?: number, ids?: string[]) => Promise<CategorySearchResult>;
-  loadProduct: (args: { id: string }) => void;
+  loadProduct: (args: { id: string }) => Promise<void>;
   validateProduct: (product: ISellerProduct) => Promise<ValidationFailure[]>;
   createProduct: (details: IProductDetails) => void;
   updateProductDetails: (productId: string, details: IProductDetails, sendToAprove?: boolean) => void;
@@ -36,12 +40,14 @@ interface IUseProduct {
 }
 
 export default (): IUseProduct => {
-  const product = ref<ISellerProduct>({
-    productData: {
-      reviews: [],
-      images: [],
-    } as CatalogProduct,
-  });
+  const product = ref<SellerProduct>(
+    new SellerProduct({
+      productData: new CatalogProduct({
+        reviews: [],
+        images: [],
+      }),
+    })
+  );
   const productDetails = ref<IProductDetails>(
     new ProductDetails({
       images: [],
@@ -54,6 +60,7 @@ export default (): IUseProduct => {
   watch(
     () => productDetails,
     (state) => {
+      console.log(productDetailsCopy, state.value, "modified");
       modified.value = !_.isEqual(productDetailsCopy, state.value);
     },
     { deep: true }
@@ -100,7 +107,8 @@ export default (): IUseProduct => {
 
     try {
       loading.value = true;
-      product.value = await client.getProductById(args.id);
+      const res = await client.getProductById(args.id);
+      product.value = new SellerProduct(res);
       //TODO: use mapping insead this ugly assignments
       productDetails.value = {
         name: product.value.name,

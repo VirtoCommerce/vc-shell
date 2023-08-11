@@ -22,10 +22,10 @@ interface IUseProducts {
   readonly loading: Ref<boolean>;
   searchQuery: Ref<ISearchProductsQuery>;
   currentPage: Ref<number>;
-  loadProducts: (query: ISearchProductsQuery) => void;
+  loadProducts: (query: ISearchProductsQuery) => Promise<void>;
   deleteProducts: (allSelected: boolean, productIds: string[]) => Promise<void>;
   SellerProductStatus: Ref<SellerProductStatusApproveExcluded>;
-  exportCategories: () => void;
+  exportCategories: () => Promise<void>;
 }
 
 interface IUseProductOptions {

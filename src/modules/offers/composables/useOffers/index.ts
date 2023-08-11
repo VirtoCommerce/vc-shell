@@ -6,11 +6,10 @@ import {
   ISearchOffersQuery,
   SearchOffersQuery,
   SearchOffersResult,
-  IBulkOffersDeleteCommand,
   BulkOffersDeleteCommand,
 } from "../../../../api_client/marketplacevendor";
 
-interface IUseOffers {
+export interface IUseOffers {
   readonly offers: Ref<IOffer[]>;
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
@@ -18,8 +17,8 @@ interface IUseOffers {
   readonly currentPage: Ref<number>;
   searchQuery: Ref<ISearchOffersQuery>;
   searchOffers: (query: ISearchOffersQuery) => Promise<SearchOffersResult>;
-  loadOffers: (query: ISearchOffersQuery) => void;
-  deleteOffers: (allSelected: boolean, offerIds: string[]) => void;
+  loadOffers: (query: ISearchOffersQuery) => Promise<void>;
+  deleteOffers: (allSelected: boolean, offerIds: string[]) => Promise<void>;
 }
 
 interface IUseOffersOptions {

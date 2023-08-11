@@ -1,5 +1,5 @@
-import { computed, Ref, ref, watch } from "vue";
-import { useUser } from "@vc-shell/framework";
+import { computed, Ref, ref, unref, watch } from "vue";
+import { useAssets, useUser } from "@vc-shell/framework";
 
 import {
   CreateNewOfferCommand,
@@ -13,8 +13,13 @@ import {
   VcmpSellerCatalogClient,
   Property,
   PropertyValue,
+  PropertyDictionaryItem,
+  OfferPrice,
+  InventoryInfo,
 } from "../../../../api_client/marketplacevendor";
 import * as _ from "lodash-es";
+import { useProduct } from "../../../../modules/products";
+import { useFulfillmentCenters } from "../../../settings";
 
 export type TextOfferDetails = IOfferDetails & {
   product?: IOfferProduct;
@@ -36,10 +41,17 @@ interface IUseOffer {
   updateOffer: (details: TextOfferDetails) => void;
   deleteOffer: (args: { id: string }) => void;
   makeCopy: () => void;
+  searchDictionaryItems: (propertyIds: string[], keyword?: string, skip?: number) => Promise<PropertyDictionaryItem[]>;
+  addPrice: () => void;
+  removePrice: (idx: number) => void;
+  trackInventory: () => void;
+  onMountedHook: () => void;
 }
 
 export default (): IUseOffer => {
   const { user } = useUser();
+  const { searchDictionaryItems } = useProduct();
+  const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
   const offer = ref<IOffer>({});
   const offerDetails = ref<TextOfferDetails>({} as TextOfferDetails);
   const offerDetailsCopy: Ref<TextOfferDetails> = ref();
@@ -165,6 +177,65 @@ export default (): IUseOffer => {
     }
   }
 
+  function addPrice() {
+    if (!offerDetails.value.prices) {
+      offerDetails.value.prices = [];
+    }
+    offerDetails.value.prices.push(
+      new OfferPrice({
+        currency: "USD",
+        listPrice: null,
+        minQuantity: null,
+      })
+    );
+  }
+
+  function removePrice(idx: number) {
+    if (offerDetails.value.prices && offerDetails.value.prices.length > 1) offerDetails.value.prices.splice(idx, 1);
+  }
+
+  function trackInventory() {
+    return !offerDetails.value.trackInventory;
+  }
+
+  async function addEmptyInventory() {
+    offerDetails.value.inventory = [];
+    await searchFulfillmentCenters({});
+    fulfillmentCentersList.value.forEach((x) => {
+      const inventoryInfo = new InventoryInfo();
+      inventoryInfo.id = x.name;
+      inventoryInfo.fulfillmentCenter = x;
+      inventoryInfo.fulfillmentCenterId = x.id;
+      inventoryInfo.fulfillmentCenterName = x.name;
+      inventoryInfo.inStockQuantity = 0;
+      inventoryInfo.createdDate = new Date();
+      offerDetails.value.inventory.push(inventoryInfo);
+    });
+  }
+
+  function generateSku(): string {
+    // XXX(letter)-XXXXXXXX(number).
+    const letterPart = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const digitPart = "1234567890";
+    let result = "";
+    for (let i = 0; i < 3; i++) {
+      result += letterPart[Math.floor(Math.random() * letterPart.length)];
+    }
+    result += "-";
+    for (let i = 0; i < 8; i++) {
+      result += digitPart[Math.floor(Math.random() * digitPart.length)];
+    }
+    return result;
+  }
+
+  async function onMountedHook() {
+    offerDetails.value.trackInventory = true;
+    await addEmptyInventory();
+    addPrice();
+    makeCopy();
+    offerDetails.value.sku = generateSku();
+  }
+
   return {
     offer: computed(() => offer.value),
     loading: computed(() => loading.value),
@@ -176,5 +247,10 @@ export default (): IUseOffer => {
     fetchProducts,
     deleteOffer,
     makeCopy,
+    searchDictionaryItems,
+    addPrice,
+    removePrice,
+    trackInventory,
+    onMountedHook,
   };
 };

@@ -1,4 +1,4 @@
-import { ComputedRef } from "vue";
+import { ComputedRef, Ref } from "vue";
 import { PushNotification, VcButton } from "@vc-shell/framework";
 
 enum UserPermissions {

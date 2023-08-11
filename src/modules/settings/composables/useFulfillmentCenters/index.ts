@@ -21,7 +21,7 @@ interface IUseFulfillmentCenters {
   fulfillmentCenterDetails: Ref<FulfillmentCenter>;
   fulfillmentCenterDetailsCopy: Ref<FulfillmentCenter>;
   searchQuery: Ref<ISearchFulfillmentCentersQuery>;
-  searchFulfillmentCenters: (query: ISearchFulfillmentCentersQuery) => void;
+  searchFulfillmentCenters: (query: ISearchFulfillmentCentersQuery) => Promise<void>;
   getFulfillmentCenter: (id: string) => void;
   updateFulfillmentCenter: (details: IFulfillmentCenter) => void;
   deleteFulfillmentCenter: (args: { id: string }) => void;

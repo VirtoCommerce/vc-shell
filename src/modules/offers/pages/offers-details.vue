@@ -68,7 +68,7 @@
                       <div
                         v-if="scope.opt.sellerProductId"
                         class="vc-link tw-mt-1"
-                        @click.stop="showProductDetails(scope.opt.sellerProductId)"
+                        @click.stop="showofferDetails(scope.opt.sellerProductId)"
                       >
                         {{ $t("OFFERS.PAGES.DETAILS.MORE_INFO") }}
                       </div>
@@ -225,7 +225,7 @@
               :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
             >
               <div class="tw-p-4">
-                <VcDynamicProperty
+                <!-- <VcDynamicProperty
                   v-for="property in filteredProps"
                   :key="property.id"
                   :property="property"
@@ -234,7 +234,7 @@
                   :setter="setPropertyValue"
                   class="tw-mb-4"
                 >
-                </VcDynamicProperty>
+                </VcDynamicProperty> -->
               </div>
             </VcCard>
 
@@ -277,7 +277,7 @@
                             rules="required"
                           >
                             <VcInputCurrency
-                              v-model:modelValue.number="item.listPrice"
+                              v-model:modelValue="item.listPrice"
                               v-model:option="item.currency"
                               :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                               :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
@@ -289,7 +289,6 @@
                               :options="currencies"
                               option-value="value"
                               option-label="title"
-                              debounce="0"
                               @update:model-value="handleChange"
                             ></VcInputCurrency>
                           </Field>
@@ -306,7 +305,6 @@
                             :options="currencies"
                             option-value="value"
                             option-label="title"
-                            debounce="0"
                             :name="`saleprice_${i}`"
                           ></VcInputCurrency>
                         </VcCol>
@@ -344,17 +342,16 @@
                       style="flex-basis: 20px"
                       :class="{
                         'offer-details__pricing-delete-btn': $isMobile.value,
-                        'tw-p-2 tw-mt-[22px]': !$isMobile.value,
+                        'tw-p-2 tw-mt-[22px] tw-flex tw-items-center': !$isMobile.value,
                       }"
                     >
-                      <VcIcon
-                        :class="[
-                          { 'tw-pt-4': !$isMobile.value },
-                          'tw-text-[#41afe6] tw-cursor-pointer hover:tw-text-[#319ed4]',
-                        ]"
+                      <VcButton
+                        :class="[{ 'tw-pt-4': !$isMobile.value }]"
+                        :text="true"
+                        icon-size="m"
                         icon="fas fa-times-circle"
                         @click="removePrice(i)"
-                      ></VcIcon>
+                      ></VcButton>
                     </div>
                   </VcRow>
                   <VcHint
@@ -381,20 +378,17 @@
                       <Field
                         v-slot="{ field, errorMessage, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
-                        :model-value="getFilterDate('startDate')"
+                        :model-value="offerDetails.startDate"
                         name="startDate"
                       >
                         <VcInput
                           v-bind="field"
+                          v-model="offerDetails.startDate"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                           type="datetime-local"
-                          :model-value="getFilterDate('startDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
-                          @update:model-value="
-                            (e: string) => setFilterDate('startDate', e)
-                          "
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -402,19 +396,18 @@
                       <Field
                         v-slot="{ field, errorMessage, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
-                        :model-value="getFilterDate('endDate')"
+                        :model-value="offerDetails.endDate"
                         name="endDate"
                         rules="after:@startDate"
                       >
                         <VcInput
                           v-bind="field"
+                          v-model="offerDetails.endDate"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                           type="datetime-local"
-                          :model-value="getFilterDate('endDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
-                          @update:model-value="(e: string) => setFilterDate('endDate', e)"
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -430,15 +423,15 @@
               :is-collapsed="restoreCollapsed('offer_gallery')"
               @state:collapsed="handleCollapsed('offer_gallery', $event)"
             >
-              <VcLoading :active="imageUploading"></VcLoading>
+              <VcLoading :active="unref(imageHandlers.loading)"></VcLoading>
               <div class="tw-p-2">
                 <VcGallery
                   :images="offerDetails.images"
                   :disabled="readonly"
                   :multiple="true"
-                  @upload="onGalleryUpload"
-                  @item:edit="onGalleryItemEdit"
-                  @item:remove="onGalleryImageRemove"
+                  @upload="imageHandlers.upload"
+                  @edit="onGalleryItemEdit"
+                  @remove="imageHandlers.remove"
                   @sort="onGallerySort"
                 ></VcGallery>
               </div>
@@ -461,6 +454,7 @@ import {
   useUser,
   useBladeNavigation,
   usePopup,
+  useAssets,
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
 import {
@@ -520,10 +514,9 @@ const {
   modified,
   makeCopy,
   deleteOffer,
+  searchDictionaryItems,
 } = useOffer();
 
-const { searchDictionaryItems } = useProduct();
-const { getAccessToken } = useUser();
 const { showError, showConfirmation } = usePopup();
 const { setFieldError } = useForm({
   validateOnMount: false,
@@ -538,7 +531,6 @@ const offerLoading = ref(false);
 const productLoading = ref(false);
 const pricingEqual = ref(false);
 const duplicates = ref([]);
-const imageUploading = ref(false);
 
 const filterTypes = ["Variation"];
 
@@ -549,6 +541,8 @@ const filteredProps = computed(() => {
 const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
 const { currencies, loadSettings } = useMarketplaceSettings();
+
+const imageHandlers = imageHandler();
 
 onMounted(async () => {
   try {
@@ -793,7 +787,8 @@ function generateSku(): string {
   }
   return result;
 }
-async function showProductDetails(id: string) {
+
+async function showofferDetails(id: string) {
   openBlade({
     blade: markRaw(ProductsEdit),
     param: id,
@@ -928,80 +923,41 @@ const onGalleryItemEdit = (item: Image) => {
     blade: markRaw(AssetsDetails),
     options: {
       asset: item,
-      assetEditHandler: sortImage,
-      assetRemoveHandler: onGalleryImageRemove,
+      assetEditHandler: imageHandlers.edit,
+      assetRemoveHandler: imageHandlers.remove,
     },
   });
 };
 
-function sortImage(localImage: IImage) {
-  const images = offerDetails.value.images;
-  const image = new Image(localImage);
-  if (images.length) {
-    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+function imageHandler() {
+  const { edit, remove, upload, loading } = useAssets(Image);
+  return {
+    loading: computed(() => loading.value),
+    edit(image: IImage) {
+      offerDetails.value.images = edit(offerDetails.value.images, image);
+    },
+    async upload(files: FileList) {
+      offerDetails.value.images = await upload(
+        files,
+        offerDetails.value.images,
+        offer.value.id || offer.value.categoryId
+      );
 
-    images[imageIndex] = image;
+      files = null;
 
-    editImages(images);
-  }
+      return offerDetails.value.images;
+    },
+    async remove(image: IImage) {
+      if (await showConfirmation(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION")))) {
+        offerDetails.value.images = await remove(offerDetails.value.images, image);
+      }
+      return offerDetails.value.images;
+    },
+  };
 }
-
-const editImages = (args: Image[]) => {
-  offerDetails.value.images = args;
-};
 
 const onGallerySort = (images: Image[]) => {
   offerDetails.value.images = images;
-};
-
-const onGalleryImageRemove = async (image: Image) => {
-  if (await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
-    const imageIndex = offerDetails.value.images.findIndex((img) => {
-      if (img.id && image.id) {
-        return img.id === image.id;
-      } else {
-        return img.url === image.url;
-      }
-    });
-    offerDetails.value.images.splice(imageIndex, 1);
-  }
-};
-
-const onGalleryUpload = async (files: FileList) => {
-  try {
-    imageUploading.value = true;
-    for (let i = 0; i < files.length; i++) {
-      const formData = new FormData();
-      formData.append("file", files[i]);
-      const authToken = await getAccessToken();
-      const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      const response = await result.json();
-      if (response?.length) {
-        const image = new Image(response[0]);
-        image.createdDate = new Date();
-        if (offerDetails.value.images && offerDetails.value.images.length) {
-          const lastImageSortOrder = offerDetails.value.images[offerDetails.value.images.length - 1].sortOrder;
-          image.sortOrder = lastImageSortOrder + 1;
-        } else {
-          image.sortOrder = 0;
-        }
-        offerDetails.value.images.push(image);
-      }
-    }
-  } catch (e) {
-    console.log(e);
-    throw e;
-  } finally {
-    imageUploading.value = false;
-  }
-
-  files = null;
 };
 
 defineExpose({

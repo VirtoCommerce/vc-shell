@@ -144,6 +144,11 @@
           "IMAGES": {
             "TITLE": "Offer image"
           }
+        },
+        "LANGUAGES":{
+          "en-US": "English",
+          "de-DE": "German",
+          "fr-FR": "French"
         }
       },
       "ALERTS": {

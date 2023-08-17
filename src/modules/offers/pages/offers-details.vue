@@ -10,6 +10,28 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template #actions>
+      <div class="tw-flex tw-flex-row tw-items-center">
+        <div class="vc-status">
+          <VcSelect
+            name="currentLocale"
+            :model-value="currentLocale"
+            :options="localesOptions"
+            option-value="value"
+            option-label="label"
+            required
+            :clearable="false"
+            @update:model-value="
+              (e: string) => {
+                setLocale(e);
+              }
+            "
+          >
+          </VcSelect>
+        </div>
+      </div>
+    </template>
+
     <!-- Blade contents -->
     <VcContainer
       ref="container"
@@ -225,27 +247,62 @@
               :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
             >
               <div class="tw-p-4">
-                <VcDynamicProperty
+                <div
                   v-for="property in filteredProps"
                   :key="property.id"
-                  :property="property"
-                  :model-value="getPropertyValue(property)"
-                  :options-getter="loadDictionaries"
-                  :required="property.required"
-                  :multivalue="property.multivalue"
-                  :value-type="property.valueType"
-                  :dictionary="property.dictionary"
-                  :name="property.name"
-                  :rules="{
-                    min: property.validationRule?.charCountMin,
-                    max: property.validationRule?.charCountMax,
-                    regex: property.validationRule?.regExp,
-                  }"
-                  :display-names="property.displayNames"
-                  class="tw-mb-4"
-                  @update:model-value="setPropertyValue"
                 >
-                </VcDynamicProperty>
+                  <div v-if="property.multilanguage">
+                    <div
+                      v-for="lang in localesOptions"
+                      :key="lang"
+                    >
+                      <VcDynamicProperty
+                        v-if="lang.value == currentLocale"
+                        class="tw-pb-4"
+                        :property="property"
+                        :model-value="getPropertyValue(property, currentLocale)"
+                        :options-getter="loadDictionaries"
+                        :required="property.required"
+                        :multivalue="property.multivalue"
+                        :multilanguage="true"
+                        :current-language="lang.value"
+                        :value-type="property.valueType"
+                        :dictionary="property.dictionary"
+                        :name="property.name"
+                        :rules="{
+                          min: property.validationRule?.charCountMin,
+                          max: property.validationRule?.charCountMax,
+                          regex: property.validationRule?.regExp,
+                        }"
+                        :display-names="property.displayNames"
+                        @update:model-value="setPropertyValue"
+                      >
+                      </VcDynamicProperty>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <VcDynamicProperty
+                      class="tw-pb-4"
+                      :property="property"
+                      :model-value="getPropertyValue(property, currentLocale)"
+                      :options-getter="loadDictionaries"
+                      :required="property.required"
+                      :multivalue="property.multivalue"
+                      :multilanguage="false"
+                      :value-type="property.valueType"
+                      :dictionary="property.dictionary"
+                      :name="property.name"
+                      :rules="{
+                        min: property.validationRule?.charCountMin,
+                        max: property.validationRule?.charCountMax,
+                        regex: property.validationRule?.regExp,
+                      }"
+                      :display-names="property.displayNames"
+                      @update:model-value="setPropertyValue"
+                    >
+                    </VcDynamicProperty>
+                  </div>
+                </div>
               </div>
             </VcCard>
 
@@ -485,6 +542,7 @@ import {
   Image,
   IImage,
   Property,
+  PropertyValueValueType,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
@@ -534,7 +592,7 @@ const {
   deleteOffer,
 } = useOffer();
 
-const { searchDictionaryItems } = useProduct();
+const { searchDictionaryItems, getLanguages } = useProduct();
 const { getAccessToken } = useUser();
 const { showError, showConfirmation } = usePopup();
 const { setFieldError } = useForm({
@@ -562,9 +620,20 @@ const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCente
 
 const { currencies, loadSettings } = useMarketplaceSettings();
 
+let languages: string[];
+let localesOptions;
+const currentLocale = ref("en-US");
+
+const setLocale = (locale: string) => {
+  currentLocale.value = locale;
+};
+
 onMounted(async () => {
   try {
     offerLoading.value = true;
+    languages = await getLanguages();
+    localesOptions = languages.map((x) => ({ label: t(`OFFERS.PAGES.DETAILS.LANGUAGES.${x}`), value: x }));
+
     await loadSettings();
     if (props.param) {
       await loadOffer({ id: props.param });
@@ -864,28 +933,90 @@ function getProductItem() {
   }
 }
 
-async function loadDictionaries(property: IProperty, keyword?: string, skip?: number) {
-  return await searchDictionaryItems([property.id], keyword, skip);
+async function loadDictionaries(property: IProperty, keyword?: string, locale?: string) {
+  let dictionaryItems = await searchDictionaryItems([property.id], keyword, 0);
+  if (locale) {
+    dictionaryItems = dictionaryItems.map((x) =>
+      Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale).value })
+    );
+  }
+  return dictionaryItems;
+}
+
+function handleDictionaryValue(
+  property: IProperty,
+  valueId: string,
+  dictionary: PropertyDictionaryItem[],
+  locale?: string
+) {
+  let valueValue;
+  const dictionaryItem = dictionary.find((x) => x.id === valueId);
+  if (!dictionaryItem) {
+    return undefined;
+  }
+
+  if (dictionaryItem["value"]) {
+    valueValue = dictionaryItem["value"];
+  } else {
+    valueValue = dictionaryItem.alias;
+  }
+
+  return {
+    propertyId: dictionaryItem.propertyId,
+    alias: dictionaryItem.alias,
+    languageCode: locale,
+    value: valueValue,
+    valueId: valueId,
+  };
 }
 
 function setPropertyValue(data: {
   property: Property;
   value: string | IPropertyValue[];
   dictionary?: PropertyDictionaryItem[];
+  locale?: string;
 }) {
-  const { property, value, dictionary } = data;
-  if (value) {
-    let mutatedProperty: PropertyValue[];
-    if (dictionary && dictionary.length) {
+  const { property, value, dictionary, locale } = data;
+
+  let mutatedProperty: PropertyValue[];
+  if (dictionary && dictionary.length) {
+    if (property.multilanguage) {
+      if (Array.isArray(value)) {
+        mutatedProperty = value.map((item) => {
+          if (dictionary.find((x) => x.id === item.valueId)) {
+            return new PropertyValue(handleDictionaryValue(property, item.valueId, dictionary, locale));
+          } else {
+            return new PropertyValue(item);
+          }
+        });
+      } else {
+        mutatedProperty = [new PropertyValue(handleDictionaryValue(property, value, dictionary, locale))];
+      }
+    } else {
       mutatedProperty = Array.isArray(value)
         ? value.map((item) => {
             if (dictionary.find((x) => x.id === item.id)) {
               const handledValue = handleDictionaryValue(property, item.id, dictionary);
-
               return new PropertyValue(handledValue);
             } else return new PropertyValue(item);
           })
         : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
+    }
+  } else {
+    if (property.multilanguage) {
+      if (Array.isArray(value)) {
+        mutatedProperty = [
+          ...property.values.filter((x) => x.languageCode !== locale),
+          ...value.map((item) => new PropertyValue(item)),
+        ];
+      } else {
+        if (property.values.find((x) => x.languageCode == locale)) {
+          property.values.find((x) => x.languageCode == locale).value = value;
+          mutatedProperty = property.values;
+        } else {
+          mutatedProperty = [new PropertyValue({ value: value, isInherited: false, languageCode: locale })];
+        }
+      }
     } else {
       mutatedProperty = Array.isArray(value)
         ? value.map((item) => new PropertyValue(item))
@@ -893,46 +1024,46 @@ function setPropertyValue(data: {
         ? [Object.assign(property.values[0], { value: value })]
         : [new PropertyValue({ value: value, isInherited: false })];
     }
-
-    offerDetails.value.properties.forEach((prop) => {
-      if (prop.id === property.id) {
-        console.log(mutatedProperty);
-        prop.values = mutatedProperty;
-      }
-    });
-  } else {
-    offerDetails.value.properties = offerDetails.value.properties.map((x) => {
-      if (x.id === property.id) {
-        x.values = [];
-      }
-      return x;
-    });
   }
+
+  offerDetails.value.properties.forEach((prop) => {
+    if (prop.id === property.id) {
+      prop.values = mutatedProperty;
+    }
+  });
 }
 
-function getPropertyValue(property: Property) {
-  if (property.multivalue) {
-    return property.values;
-  }
-  if (property.dictionary) {
-    return property.values[0] && property.values[0].valueId;
-  }
-  return property.values[0] && property.values[0].value;
-}
+function getPropertyValue(property: Property, locale: string) {
+  if (property.multilanguage) {
+    if (property.multivalue) {
+      return property.values.filter((x) => x.languageCode == locale);
+    } else if (property.values.find((x) => x.languageCode == locale) == undefined) {
+      property.values.push(
+        new PropertyValue({
+          propertyName: property.name,
+          propertyId: property.id,
+          languageCode: locale,
+          valueType: property.valueType as unknown as PropertyValueValueType,
+        })
+      );
+    }
 
-function handleDictionaryValue(property: IProperty, valueId: string, dictionary: PropertyDictionaryItem[]) {
-  let valueName;
-  const dictionaryItem = dictionary.find((x) => x.id === valueId);
-  if (dictionaryItem) {
-    valueName = dictionaryItem.alias;
+    if (property.dictionary) {
+      return (
+        property.values.find((x) => x.languageCode == locale) &&
+        property.values.find((x) => x.languageCode == locale).valueId
+      );
+    }
+    return property.values.find((x) => x.languageCode == locale).value;
   } else {
-    valueName = property.name;
+    if (property.multivalue) {
+      return property.values;
+    }
+    if (property.dictionary) {
+      return property.values[0] && property.values[0].valueId;
+    }
+    return property.values[0] && property.values[0].value;
   }
-
-  return {
-    value: valueName,
-    valueId,
-  };
 }
 
 async function onBeforeClose() {

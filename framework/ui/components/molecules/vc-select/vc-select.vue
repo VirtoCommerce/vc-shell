@@ -13,6 +13,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -478,6 +480,8 @@ const props = withDefaults(
      * Input search activation
      */
     searchable?: boolean;
+    multilanguage?: boolean;
+    currentLanguage?: string;
   }>(),
   {
     optionValue: "id",

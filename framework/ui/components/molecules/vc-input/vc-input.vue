@@ -16,6 +16,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -249,6 +251,14 @@ export interface Props {
    * Input required state
    */
   required?: boolean;
+  /**
+   * Input multilanguage state
+   */
+  multilanguage?: boolean;
+  /**
+   * Input current language
+   */
+  currentLanguage?: string;
 }
 
 export interface Emits {

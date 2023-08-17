@@ -85,7 +85,6 @@ router.beforeEach(async (to, from) => {
   const { resolveBlades } = useBladeNavigation();
   const { isAuthenticated } = useUser();
   const pages = inject<BladePageComponent[]>("pages");
-  const resolvedBladeUrl = resolveBlades(to);
 
   if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
     try {
@@ -99,6 +98,7 @@ router.beforeEach(async (to, from) => {
       if (!(await isAuthenticated()) && to.name !== "Login") {
         return { name: "Login" };
       } else if (hasAccess && to.name !== "Login") {
+        const resolvedBladeUrl = resolveBlades(to);
         return resolvedBladeUrl ? resolvedBladeUrl : true;
       } else if (!hasAccess) {
         notification.error("Access restricted", {

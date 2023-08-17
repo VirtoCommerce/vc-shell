@@ -20,6 +20,8 @@
       :option-label="computedProperty.optionLabel"
       :disabled="disabled"
       searchable
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
       @search="onSearch"
       @close="onClose"
     ></VcSelect>
@@ -44,6 +46,8 @@
       :required="computedProperty.required"
       placeholder="Add value"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     ></VcMultivalue>
   </Field>
 
@@ -64,10 +68,13 @@
       :required="computedProperty.required"
       placeholder="Add value"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
       :options="items"
-      option-label="alias"
+      :option-label="multilanguage ? 'value' : 'alias'"
       option-value="id"
       :multivalue="computedProperty.multivalue"
+      :emit-label="multilanguage ? 'value' : 'alias'"
       @search="onSearch"
       @close="onClose"
     ></VcMultivalue>
@@ -91,6 +98,8 @@
       :required="computedProperty.required"
       :placeholder="computedProperty.displayName || 'Add value'"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     ></VcInput>
   </Field>
 
@@ -220,6 +229,8 @@
       :required="computedProperty.required"
       :placeholder="computedProperty.placeholder"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     ></VcTextarea>
   </Field>
 
@@ -261,9 +272,11 @@ const props = withDefaults(
   defineProps<{
     property: T;
     modelValue: any;
-    optionsGetter: (property: T, keyword?: string) => Promise<unknown[]> | unknown[];
+    optionsGetter: (property: T, keyword?: string, locale?: string) => Promise<unknown[]> | unknown[];
     required: boolean;
     multivalue?: boolean;
+    multilanguage?: boolean;
+    currentLanguage?: string;
     valueType: string;
     dictionary?: boolean;
     name: string;
@@ -283,13 +296,15 @@ const props = withDefaults(
   }>(),
   {
     optionsValue: "id",
-    optionsLabel: "alias",
+    optionsLabel: "value",
     disabled: false,
   }
 );
 
 const emit = defineEmits<{
-  "update:model-value": [data: { readonly property: T; readonly value: any; readonly dictionary?: any[] }];
+  "update:model-value": [
+    data: { readonly property: T; readonly value: any; readonly dictionary?: any[]; readonly locale?: string }
+  ];
 }>();
 
 const { locale, te, t } = useI18n({ useScope: "global" });
@@ -319,6 +334,8 @@ const computedProperty = computed(() => {
       ? t(propertyDisplayName.toUpperCase())
       : propertyDisplayName;
 
+  const optionLabelField = props.multilanguage ? "value" : "alias";
+
   return {
     rules,
     valueType: props.valueType,
@@ -327,7 +344,7 @@ const computedProperty = computed(() => {
     name: props.name,
     displayName: propertyDisplayNameLocalized, //|| setting?.displayName || setting?.defaultValue,
     optionValue: props.optionsValue,
-    optionLabel: props.optionsLabel,
+    optionLabel: optionLabelField,
     required: props.required,
     placeholder: props.placeholder || propertyDisplayNameLocalized,
   };
@@ -338,25 +355,30 @@ const value = computed({
     return props.modelValue;
   },
   set(newValue) {
-    emit("update:model-value", { property: props.property, value: newValue, dictionary: items.value });
+    emit("update:model-value", {
+      property: props.property,
+      value: newValue,
+      dictionary: items.value,
+      locale: props.currentLanguage,
+    });
   },
 });
 
 onMounted(async () => {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property);
+    items.value = await props.optionsGetter(props.property, null, props.currentLanguage);
   }
 });
 
 async function onSearch(keyword: string) {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property, keyword);
+    items.value = await props.optionsGetter(props.property, keyword, props.currentLanguage);
   }
 }
 
 async function onClose() {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property);
+    items.value = await props.optionsGetter(props.property, null, props.currentLanguage);
   }
 }
 </script>

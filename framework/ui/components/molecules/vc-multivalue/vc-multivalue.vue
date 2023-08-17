@@ -15,6 +15,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -31,10 +33,13 @@
     >
       <div
         v-for="(item, i) in modelValue"
-        :key="`${item.id}_${generateId()}`"
+        :key="`${item?.id}_${generateId()}`"
         class="vc-multivalue__field-value-wrapper"
       >
-        <div class="vc-multivalue__field-value">
+        <div
+          v-if="item"
+          class="vc-multivalue__field-value"
+        >
           <span class="tw-truncate">{{
             type === "number" ? Number(item[props.emitLabel]).toFixed(3) : item[props.emitLabel]
           }}</span>
@@ -113,7 +118,7 @@
   </div>
 </template>
 
-<script lang="ts" setup generic="T extends {id?: string; alias?: string}">
+<script lang="ts" setup generic="T extends {id?: string; alias?: string, languageCode?: string, value?:string}">
 import { unref, nextTick, ref, computed } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { useFloating, UseFloatingReturn, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
@@ -136,6 +141,8 @@ export interface Props<T> {
   multivalue?: boolean;
   error?: boolean;
   errorMessage?: string;
+  multilanguage?: boolean;
+  currentLanguage?: string;
 }
 
 export interface Emits<T> {
@@ -203,7 +210,10 @@ const slicedDictionary = computed(() => {
 // Handle input event to propertly validate value and emit changes
 function onInput(e: KeyboardEvent) {
   const newValue = (e.target as HTMLInputElement).value;
-  emit("update:model-value", [...props.modelValue, { [props.emitLabel]: newValue } as T]);
+  emit("update:model-value", [
+    ...props.modelValue,
+    { [props.emitLabel]: newValue, languageCode: props.currentLanguage } as T,
+  ]);
   value.value = undefined;
 }
 

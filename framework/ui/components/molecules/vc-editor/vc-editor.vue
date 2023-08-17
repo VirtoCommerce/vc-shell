@@ -13,7 +13,7 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
-      :multilanguage="true"
+      :multilanguage="multilanguage"
       :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
@@ -65,13 +65,12 @@ export interface Props {
   tooltip?: string;
   errorMessage?: string;
   assetsFolder: string;
-  //languages?: string[];
+  multilanguage?: boolean;
   currentLanguage?: string;
 }
 
 export interface Emits {
   (event: "update:modelValue", value: string | number | Date | null | undefined): void;
-  //(event: "update:currentLanguage", value: string): void;
 }
 
 const { getAccessToken } = useUser();
@@ -97,13 +96,8 @@ const toolbar = {
     "blockquote",
     { list: "ordered" },
     { list: "bullet" },
-    //{ language: [props.currentLanguage, ...props.languages.filter((lang) => lang !== props.currentLanguage)] },
   ],
-  handlers: {
-    // language: function (value: string) {
-    //   emit("update:currentLanguage", value);
-    // },
-  },
+  handlers: {},
 };
 
 const modules = {

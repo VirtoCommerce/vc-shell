@@ -329,7 +329,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, unref, markRaw } from "vue";
+import { computed, onMounted, ref, unref, markRaw, watch } from "vue";
 import {
   useUser,
   IParentCallArgs,
@@ -358,6 +358,7 @@ import {
   PropertyDictionaryItem,
   EditorialReview,
   PropertyValueValueType,
+  IProductDetails,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
@@ -395,7 +396,6 @@ const {
   product: productData,
   productDetails,
   loading,
-  modified,
   validateProduct,
   loadProduct,
   createProduct,
@@ -418,6 +418,8 @@ let isOffersOpened = false;
 let isAssetsOpened = false;
 const categoryLoading = ref(false);
 const currentCategory = ref<Category>();
+let productDetailsCopy: IProductDetails;
+const modified = ref(false);
 
 const filterTypes = ["Category", "Variation"];
 
@@ -448,6 +450,16 @@ const currentLocale = ref("en-US");
 const setLocale = (locale: string) => {
   currentLocale.value = locale;
 };
+
+watch(
+  () => productDetails,
+  (state) => {
+    if (productDetailsCopy) {
+      modified.value = !_.isEqual(productDetailsCopy, state.value);
+    }
+  },
+  { deep: true }
+);
 
 const validate = _.debounce(
   async (fieldName: string, value: string): Promise<string | boolean> => {
@@ -508,6 +520,7 @@ const reload = async (fullReload: boolean) => {
       )
     );
   }
+  productDetailsCopy = _.cloneDeep(productDetails.value);
 };
 
 onMounted(async () => {
@@ -526,6 +539,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         } else {
           await createProduct(productDetails.value);
         }
+        productDetailsCopy = _.cloneDeep(productDetails.value);
+        modified.value = false;
         emit("parent:call", {
           method: "reload",
         });

@@ -531,6 +531,7 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
+import * as _ from "lodash-es";
 import {
   IProperty,
   IPropertyValue,
@@ -543,6 +544,7 @@ import {
   IImage,
   Property,
   PropertyValueValueType,
+  IOfferDetails,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
@@ -579,18 +581,8 @@ const emit = defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 
-const {
-  createOffer,
-  updateOffer,
-  offerDetails,
-  fetchProducts,
-  offer,
-  loadOffer,
-  loading,
-  modified,
-  makeCopy,
-  deleteOffer,
-} = useOffer();
+const { createOffer, updateOffer, offerDetails, fetchProducts, offer, loadOffer, loading, makeCopy, deleteOffer } =
+  useOffer();
 
 const { searchDictionaryItems, getLanguages } = useProduct();
 const { getAccessToken } = useUser();
@@ -610,6 +602,9 @@ const pricingEqual = ref(false);
 const duplicates = ref([]);
 const imageUploading = ref(false);
 
+let offerDetailsCopy: IOfferDetails;
+const modified = ref(false);
+
 const filterTypes = ["Variation"];
 
 const filteredProps = computed(() => {
@@ -627,6 +622,16 @@ const currentLocale = ref("en-US");
 const setLocale = (locale: string) => {
   currentLocale.value = locale;
 };
+
+watch(
+  () => offerDetails,
+  (state) => {
+    if (offerDetailsCopy) {
+      modified.value = !_.isEqual(offerDetailsCopy, state.value);
+    }
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   try {
@@ -653,6 +658,7 @@ onMounted(async () => {
     if (searchableProductId) {
       await setProductItem(searchableProductId);
     }
+    offerDetailsCopy = _.cloneDeep(offerDetails.value);
   } finally {
     offerLoading.value = false;
   }
@@ -758,6 +764,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             ...offerDetails.value,
           });
         }
+        offerDetailsCopy = _.cloneDeep(offerDetails.value);
+        modified.value = false;
         emit("parent:call", {
           method: "reload",
         });

@@ -945,7 +945,7 @@ async function loadDictionaries(property: IProperty, keyword?: string, locale?: 
   let dictionaryItems = await searchDictionaryItems([property.id], keyword, 0);
   if (locale) {
     dictionaryItems = dictionaryItems.map((x) =>
-      Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale).value })
+      Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias })
     );
   }
   return dictionaryItems;

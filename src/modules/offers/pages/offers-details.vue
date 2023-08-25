@@ -637,7 +637,7 @@ onMounted(async () => {
   try {
     offerLoading.value = true;
     languages = await getLanguages();
-    localesOptions = languages.map((x) => ({ label: t(`OFFERS.PAGES.DETAILS.LANGUAGES.${x}`), value: x }));
+    localesOptions = languages.map((x) => ({ label: t(`OFFERS.PAGES.DETAILS.LANGUAGES.${x}`, x), value: x }));
 
     await loadSettings();
     if (props.param) {

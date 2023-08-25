@@ -534,7 +534,7 @@ const validate = _.debounce(
 
 const reload = async (fullReload: boolean) => {
   languages = await getLanguages();
-  localesOptions = languages.map((x) => ({ label: t(`PRODUCTS.PAGES.DETAILS.LANGUAGES.${x}`), value: x }));
+  localesOptions = languages.map((x) => ({ label: t(`PRODUCTS.PAGES.DETAILS.LANGUAGES.${x}`, x), value: x }));
 
   if (!modified.value && fullReload) {
     try {

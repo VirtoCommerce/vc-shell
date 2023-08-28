@@ -1,3 +1,20 @@
+## [1.0.106](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.104...v1.0.106) (2023-08-28)
+
+
+### Bug Fixes
+
+* dynamic prop in products padding ([3169f9e](https://github.com/VirtoCommerce/vendor-portal/commit/3169f9ef43c90e966ee5c88f42865f3ec8666b2a))
+
+
+### Features
+
+* multilanguage properties ([a5f7469](https://github.com/VirtoCommerce/vendor-portal/commit/a5f746950df03c2dcfff485c2606ec184256375f))
+* product and offer modified ([4763c28](https://github.com/VirtoCommerce/vendor-portal/commit/4763c28c2efec87280413363124e3e0e43e19e04))
+* vm-874 locale code without translation ([0590f20](https://github.com/VirtoCommerce/vendor-portal/commit/0590f20e4bd9e47a6d34876d9ca64a1ec3d08b1a))
+* vm-874 nullref in dict locale ([fe9aaf4](https://github.com/VirtoCommerce/vendor-portal/commit/fe9aaf4dfb18ac0aac64d2df4cad88fd926d6c9d))
+
+
+
 ## [1.0.104](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.103...v1.0.104) (2023-08-04)
 
 

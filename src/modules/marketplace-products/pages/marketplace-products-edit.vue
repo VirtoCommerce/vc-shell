@@ -779,7 +779,7 @@ const setCategory = async (selectedCategory: Category) => {
   });
 };
 
-async function loadDictionaries(property: IProperty, keyword?: string, locale?: string) {
+async function loadDictionaries(property: Property, keyword?: string, locale?: string) {
   let dictionaryItems = await searchDictionaryItems([property.id], keyword, 0);
   if (locale) {
     dictionaryItems = dictionaryItems.map((x) =>

@@ -1,3 +1,12 @@
+## [1.0.95](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.94...v1.0.95) (2023-08-28)
+
+
+### Features
+
+* controls for multilang properties ([b07940d](https://github.com/VirtoCommerce/vc-shell/commit/b07940d02f97387929c0081b033f87185fa375b9))
+
+
+
 ## [1.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.92...v1.0.94) (2023-08-04)
 
 

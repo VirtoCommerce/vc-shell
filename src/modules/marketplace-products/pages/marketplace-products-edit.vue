@@ -31,6 +31,12 @@
           </VcSelect>
         </div>
         <div
+          v-if="productDetails.productType == 'Digital'"
+          class="vc-status vc-status_info vc-status_outline tw-ml-4"
+        >
+          {{ $t("MP_PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL") }}
+        </div>
+        <div
           v-if="(product as ISellerProduct).status !== 'Published'"
           class="tw-ml-4"
         >
@@ -69,6 +75,38 @@
               </div>
             </VcStatus>
             <VcForm>
+              <Field
+                v-if="!(product as ISellerProduct).id"
+                v-slot="{ field, errorMessage, handleChange, errors }"
+                :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
+                name="productType"
+                :model-value="productDetails.productType"
+              >
+                <VcSelect
+                  v-bind="field"
+                  name="productType"
+                  class="tw-mb-4"
+                  :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TITLE')"
+                  :model-value="productDetails.productType"
+                  :placeholder="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PLACEHOLDER')"
+                  :options="productTypeOptions"
+                  option-value="value"
+                  option-label="label"
+                  :tooltip="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.TOOLTIP')"
+                  :disabled="disabled"
+                  required
+                  :error="!!errors.length"
+                  :error-message="errorMessage"
+                  :clearable="false"
+                  @update:model-value="
+                    (e: string) => {
+                      handleChange(e);
+                      setProductType(e);
+                    }
+                  "
+                >
+                </VcSelect>
+              </Field>
               <Field
                 v-slot="{ field, errorMessage, handleChange, errors }"
                 :label="$t('MP_PRODUCTS.PAGES.DETAILS.FIELDS.NAME.TITLE')"
@@ -362,6 +400,7 @@ import {
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
+import { useMarketplaceSettings } from "../../settings";
 
 export interface Props {
   expanded?: boolean;
@@ -390,6 +429,7 @@ const emit = defineEmits<Emits>();
 
 const { openBlade } = useBladeNavigation();
 const { showConfirmation, showError } = usePopup();
+const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
 
 const { t } = useI18n({ useScope: "global" });
 const {
@@ -443,6 +483,8 @@ const validateGtin = [
   async (value: string): Promise<string | boolean> => await validate("gtin", value),
 ];
 
+let productTypeOptions;
+
 let languages: string[];
 let localesOptions;
 const currentLocale = ref("en-US");
@@ -492,8 +534,17 @@ const reload = async (fullReload: boolean) => {
   if (!modified.value && fullReload) {
     try {
       productLoading.value = true;
+
+      await loadSettings();
+      productTypeOptions = productTypes.value?.map((x) => ({
+        label: t(`PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
+        value: x,
+      }));
+
       if (props.param) {
         await loadProduct({ id: props.param });
+      } else {
+        productDetails.value.productType = defaultProductType.value;
       }
     } finally {
       productLoading.value = false;
@@ -762,6 +813,10 @@ const onAssetsEdit = (assets: Asset[]): Asset[] => {
   productDetails.value.assets = assets.map((item) => new Asset(item));
 
   return productDetails.value.assets;
+};
+
+const setProductType = (productType: string) => {
+  productDetails.value.productType = productType;
 };
 
 const setCategory = async (selectedCategory: Category) => {

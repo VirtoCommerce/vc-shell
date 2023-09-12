@@ -397,6 +397,7 @@ import {
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
+import { useMarketplaceSettings } from "../../settings";
 
 export interface Props {
   expanded?: boolean;
@@ -442,6 +443,7 @@ const { searchOffers } = useOffers();
 const { getAccessToken, user } = useUser();
 const { showConfirmation, showError } = usePopup();
 const { openBlade } = useBladeNavigation();
+const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
 
 useForm({ validateOnMount: false });
 
@@ -479,16 +481,7 @@ const validateGtin = [
   async (value: string): Promise<string | boolean> => await validate("gtin", value),
 ];
 
-const productTypeOptions = [
-  {
-    label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PHYSICAL"),
-    value: "Physical",
-  },
-  {
-    label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL"),
-    value: "Digital",
-  },
-];
+let productTypeOptions;
 
 let languages: string[];
 let localesOptions;
@@ -539,8 +532,17 @@ const reload = async (fullReload: boolean) => {
   if (!modified.value && fullReload) {
     try {
       productLoading.value = true;
+
+      await loadSettings();
+      productTypeOptions = productTypes.value?.map((x) => ({
+        label: t(`PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
+        value: x,
+      }));
+
       if (props.param) {
         await loadProduct({ id: props.param });
+      } else {
+        productDetails.value.productType = defaultProductType.value;
       }
     } finally {
       productLoading.value = false;

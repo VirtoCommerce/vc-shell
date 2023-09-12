@@ -121,6 +121,13 @@
           },
           "ASSETS": {
             "TITLE": "Assets"
+          },
+          "PRODUCT_TYPE": {
+            "TITLE": "Product type",
+            "PLACEHOLDER": "Select product type",
+            "TOOLTIP": "Product type: Physical or Digital",
+            "PHYSICAL":"Physical",
+            "DIGITAL":"Digital"
           }
         },
         "ERRORS": {

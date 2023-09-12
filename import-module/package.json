@@ -11,7 +11,7 @@
   ],
   "exports": {
     ".": {
-      "import": "./dist/framework.mjs",
+      "import": "./dist/import-module.mjs",
       "types": "./dist/src/index.d.ts"
     },
     "./dist/index.css": "./dist/index.css",
@@ -40,5 +40,8 @@
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
   },
-  "packageManager": "yarn@3.5.1"
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

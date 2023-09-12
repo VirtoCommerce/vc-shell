@@ -4389,6 +4389,7 @@ If set to false, the product is considered in stock without any inventory limita
     outlines?: Outline[] | undefined;
     /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
+    readonly parentCategoryIsActive?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -4505,6 +4506,7 @@ If set to false, the product is considered in stock without any inventory limita
                     this.outlines!.push(Outline.fromJS(item));
             }
             (<any>this).isInherited = _data["isInherited"];
+            (<any>this).parentCategoryIsActive = _data["parentCategoryIsActive"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -4621,6 +4623,7 @@ If set to false, the product is considered in stock without any inventory limita
                 data["outlines"].push(item.toJSON());
         }
         data["isInherited"] = this.isInherited;
+        data["parentCategoryIsActive"] = this.parentCategoryIsActive;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -4722,6 +4725,7 @@ If set to false, the product is considered in stock without any inventory limita
     outlines?: Outline[] | undefined;
     /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
+    parentCategoryIsActive?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -4758,6 +4762,7 @@ export class Category implements ICategory {
     outlines?: Outline[] | undefined;
     /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
+    readonly parentIsActive?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -4827,6 +4832,7 @@ export class Category implements ICategory {
                     this.outlines!.push(Outline.fromJS(item));
             }
             (<any>this).isInherited = _data["isInherited"];
+            (<any>this).parentIsActive = _data["parentIsActive"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -4896,6 +4902,7 @@ export class Category implements ICategory {
                 data["outlines"].push(item.toJSON());
         }
         data["isInherited"] = this.isInherited;
+        data["parentIsActive"] = this.parentIsActive;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -4934,6 +4941,7 @@ export interface ICategory {
     outlines?: Outline[] | undefined;
     /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
+    parentIsActive?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -9020,6 +9028,8 @@ export class MarketplaceSettings implements IMarketplaceSettings {
     currencies?: string[] | undefined;
     defaultLanguage?: string | undefined;
     languages?: string[] | undefined;
+    defaultProductType?: string | undefined;
+    productTypes?: string[] | undefined;
     masterCatalogId!: string;
     storeId!: string;
     vendorPortalUrl?: string | undefined;
@@ -9046,6 +9056,12 @@ export class MarketplaceSettings implements IMarketplaceSettings {
                 this.languages = [] as any;
                 for (let item of _data["languages"])
                     this.languages!.push(item);
+            }
+            this.defaultProductType = _data["defaultProductType"];
+            if (Array.isArray(_data["productTypes"])) {
+                this.productTypes = [] as any;
+                for (let item of _data["productTypes"])
+                    this.productTypes!.push(item);
             }
             this.masterCatalogId = _data["masterCatalogId"];
             this.storeId = _data["storeId"];
@@ -9074,6 +9090,12 @@ export class MarketplaceSettings implements IMarketplaceSettings {
             for (let item of this.languages)
                 data["languages"].push(item);
         }
+        data["defaultProductType"] = this.defaultProductType;
+        if (Array.isArray(this.productTypes)) {
+            data["productTypes"] = [];
+            for (let item of this.productTypes)
+                data["productTypes"].push(item);
+        }
         data["masterCatalogId"] = this.masterCatalogId;
         data["storeId"] = this.storeId;
         data["vendorPortalUrl"] = this.vendorPortalUrl;
@@ -9086,6 +9108,8 @@ export interface IMarketplaceSettings {
     currencies?: string[] | undefined;
     defaultLanguage?: string | undefined;
     languages?: string[] | undefined;
+    defaultProductType?: string | undefined;
+    productTypes?: string[] | undefined;
     masterCatalogId: string;
     storeId: string;
     vendorPortalUrl?: string | undefined;
@@ -10505,6 +10529,7 @@ export class OrderShipmentItem implements IOrderShipmentItem {
     barCode?: string | undefined;
     quantity?: number;
     outerId?: string | undefined;
+    status?: string | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -10527,6 +10552,7 @@ export class OrderShipmentItem implements IOrderShipmentItem {
             this.barCode = _data["barCode"];
             this.quantity = _data["quantity"];
             this.outerId = _data["outerId"];
+            this.status = _data["status"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -10549,6 +10575,7 @@ export class OrderShipmentItem implements IOrderShipmentItem {
         data["barCode"] = this.barCode;
         data["quantity"] = this.quantity;
         data["outerId"] = this.outerId;
+        data["status"] = this.status;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -10564,6 +10591,7 @@ export interface IOrderShipmentItem {
     barCode?: string | undefined;
     quantity?: number;
     outerId?: string | undefined;
+    status?: string | undefined;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -11134,6 +11162,7 @@ export class PaymentMethod implements IPaymentMethod {
     isActive?: boolean;
     priority?: number;
     isAvailableForPartial?: boolean;
+    allowDeferredPayment?: boolean;
     currency?: string | undefined;
     price?: number;
     readonly priceWithTax?: number;
@@ -11170,6 +11199,7 @@ export class PaymentMethod implements IPaymentMethod {
             this.isActive = _data["isActive"];
             this.priority = _data["priority"];
             this.isAvailableForPartial = _data["isAvailableForPartial"];
+            this.allowDeferredPayment = _data["allowDeferredPayment"];
             this.currency = _data["currency"];
             this.price = _data["price"];
             (<any>this).priceWithTax = _data["priceWithTax"];
@@ -11214,6 +11244,7 @@ export class PaymentMethod implements IPaymentMethod {
         data["isActive"] = this.isActive;
         data["priority"] = this.priority;
         data["isAvailableForPartial"] = this.isAvailableForPartial;
+        data["allowDeferredPayment"] = this.allowDeferredPayment;
         data["currency"] = this.currency;
         data["price"] = this.price;
         data["priceWithTax"] = this.priceWithTax;
@@ -11251,6 +11282,7 @@ export interface IPaymentMethod {
     isActive?: boolean;
     priority?: number;
     isAvailableForPartial?: boolean;
+    allowDeferredPayment?: boolean;
     currency?: string | undefined;
     price?: number;
     priceWithTax?: number;
@@ -11528,6 +11560,7 @@ Is a primary key of associated object */
 export class ProductDetails implements IProductDetails {
     name?: string | undefined;
     descriptions?: EditorialReview[] | undefined;
+    readonly description?: string | undefined;
     code?: string | undefined;
     gtin?: string | undefined;
     categoryId?: string | undefined;
@@ -11554,6 +11587,7 @@ export class ProductDetails implements IProductDetails {
                 for (let item of _data["descriptions"])
                     this.descriptions!.push(EditorialReview.fromJS(item));
             }
+            (<any>this).description = _data["description"];
             this.code = _data["code"];
             this.gtin = _data["gtin"];
             this.categoryId = _data["categoryId"];
@@ -11592,6 +11626,7 @@ export class ProductDetails implements IProductDetails {
             for (let item of this.descriptions)
                 data["descriptions"].push(item.toJSON());
         }
+        data["description"] = this.description;
         data["code"] = this.code;
         data["gtin"] = this.gtin;
         data["categoryId"] = this.categoryId;
@@ -11619,6 +11654,7 @@ export class ProductDetails implements IProductDetails {
 export interface IProductDetails {
     name?: string | undefined;
     descriptions?: EditorialReview[] | undefined;
+    description?: string | undefined;
     code?: string | undefined;
     gtin?: string | undefined;
     categoryId?: string | undefined;
@@ -16391,7 +16427,8 @@ export interface IShipmentPackage {
 
 export class ShippingMethod implements IShippingMethod {
     code?: string | undefined;
-    readonly name?: string | undefined;
+    name?: string | undefined;
+    description?: string | undefined;
     logoUrl?: string | undefined;
     isActive?: boolean;
     priority?: number;
@@ -16413,7 +16450,8 @@ export class ShippingMethod implements IShippingMethod {
     init(_data?: any) {
         if (_data) {
             this.code = _data["code"];
-            (<any>this).name = _data["name"];
+            this.name = _data["name"];
+            this.description = _data["description"];
             this.logoUrl = _data["logoUrl"];
             this.isActive = _data["isActive"];
             this.priority = _data["priority"];
@@ -16440,6 +16478,7 @@ export class ShippingMethod implements IShippingMethod {
         data = typeof data === 'object' ? data : {};
         data["code"] = this.code;
         data["name"] = this.name;
+        data["description"] = this.description;
         data["logoUrl"] = this.logoUrl;
         data["isActive"] = this.isActive;
         data["priority"] = this.priority;
@@ -16459,6 +16498,7 @@ export class ShippingMethod implements IShippingMethod {
 export interface IShippingMethod {
     code?: string | undefined;
     name?: string | undefined;
+    description?: string | undefined;
     logoUrl?: string | undefined;
     isActive?: boolean;
     priority?: number;
@@ -17761,6 +17801,7 @@ If set to false, the product is considered in stock without any inventory limita
     outlines?: Outline[] | undefined;
     /** System flag used to mark that object was inherited from other */
     readonly isInherited?: boolean;
+    readonly parentCategoryIsActive?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;
@@ -17877,6 +17918,7 @@ If set to false, the product is considered in stock without any inventory limita
                     this.outlines!.push(Outline.fromJS(item));
             }
             (<any>this).isInherited = _data["isInherited"];
+            (<any>this).parentCategoryIsActive = _data["parentCategoryIsActive"];
             this.createdDate = _data["createdDate"] ? new Date(_data["createdDate"].toString()) : <any>undefined;
             this.modifiedDate = _data["modifiedDate"] ? new Date(_data["modifiedDate"].toString()) : <any>undefined;
             this.createdBy = _data["createdBy"];
@@ -17993,6 +18035,7 @@ If set to false, the product is considered in stock without any inventory limita
                 data["outlines"].push(item.toJSON());
         }
         data["isInherited"] = this.isInherited;
+        data["parentCategoryIsActive"] = this.parentCategoryIsActive;
         data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
         data["modifiedDate"] = this.modifiedDate ? this.modifiedDate.toISOString() : <any>undefined;
         data["createdBy"] = this.createdBy;
@@ -18094,6 +18137,7 @@ If set to false, the product is considered in stock without any inventory limita
     outlines?: Outline[] | undefined;
     /** System flag used to mark that object was inherited from other */
     isInherited?: boolean;
+    parentCategoryIsActive?: boolean;
     createdDate?: Date;
     modifiedDate?: Date | undefined;
     createdBy?: string | undefined;

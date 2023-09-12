@@ -25,9 +25,6 @@ export type BladePageComponent = BladeConstructor;
 export type CoreBladeAdditionalSettings = {
   url?: `/${string}`;
   permissions?: string | string[];
-  scope?: {
-    notificationClick?: (notification: PushNotification | Record<string, any>) => IBladeEvent;
-  };
 };
 
 export type CoreBladeNavigationData = {
@@ -36,7 +33,6 @@ export type CoreBladeNavigationData = {
 
 export interface CoreBladeExposed {
   title?: string;
-  notificationClick?: (notification: PushNotification) => IBladeEvent;
   onBeforeClose?: () => Promise<boolean>;
   reloadParent?: () => void;
   reload?: () => void;

@@ -3,34 +3,43 @@
     :color="notificationStyle.color.value"
     :title="notification.title"
     :icon="notificationStyle.icon"
+    @click="onClick"
   >
     <VcHint
       v-if="notification.profileName"
       class="tw-mb-1"
-      >{{ t("IMPORT.PUSH.PROFILE") }} <b>{{ notification.profileName }}</b></VcHint
+      >{{ $t("IMPORT.PUSH.PROFILE") }} <b>{{ notification.profileName }}</b></VcHint
     >
     <div v-if="notification.errors && notification.errors.length">
-      <VcHint> {{ t("IMPORT.PUSH.ERRORS") }}: {{ notification.errors && notification.errors.length }}</VcHint>
+      <VcHint> {{ $t("IMPORT.PUSH.ERRORS") }}: {{ notification.errors && notification.errors.length }}</VcHint>
     </div>
   </VcNotificationTemplate>
 </template>
 
 <script lang="ts" setup>
+import { useBladeNavigation } from "@vc-shell/framework";
 import { ImportPushNotification } from "./../../api-client/import";
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
 
 export interface Props {
   notification: ImportPushNotification;
 }
 
+export interface Emits {
+  (event: "notificationClick"): void;
+}
+
 const props = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 defineOptions({
   inheritAttrs: false,
   notifyType: "ImportPushNotification",
 });
-const { t } = useI18n({ useScope: "global" });
+
+const { openBlade, resolveBladeByName } = useBladeNavigation();
+
 const notificationStyle = computed(() => ({
   color: computed(() => {
     const notification = props.notification;
@@ -42,4 +51,17 @@ const notificationStyle = computed(() => ({
   }),
   icon: "fas fa-download",
 }));
+
+function onClick() {
+  if (props.notification.notifyType === "ImportPushNotification") {
+    emit("notificationClick");
+    openBlade({
+      blade: resolveBladeByName("ImportProfileSelector"),
+      param: props.notification.profileId,
+      options: {
+        importJobId: props.notification.jobId,
+      },
+    });
+  }
+}
 </script>

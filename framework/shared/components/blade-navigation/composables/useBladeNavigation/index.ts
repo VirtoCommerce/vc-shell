@@ -9,6 +9,7 @@ import {
   markRaw,
   inject,
   nextTick,
+  warn,
 } from "vue";
 import * as _ from "lodash-es";
 import { useRouter, RouteLocationNormalized } from "vue-router";
@@ -55,6 +56,7 @@ interface IUseBladeNavigation {
   resolveBlades: (to: RouteLocationNormalized) => string;
   resolveLastBlade: (pages: BladePageComponent[]) => void;
   resolveUnknownRoutes: (to: RouteLocationNormalized) => string;
+  resolveBladeByName: (name: string) => BladeConstructor;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -118,6 +120,9 @@ export function useBladeNavigation(): IUseBladeNavigation {
     { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
     isWorkspace = false
   ) {
+    if (!blade) {
+      throw new Error("You should pass blade component as openBlade argument");
+    }
     if (isWorkspace) {
       openWorkspace({ blade, param, options });
       return;
@@ -205,6 +210,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (blade && checkPermission(blade.permissions)) {
       navigationInstance.blades.value.push({
         blade: markRaw(blade),
+        ...resolveDynamicProps(blade),
         options,
         param,
         onOpen,
@@ -220,6 +226,21 @@ export function useBladeNavigation(): IUseBladeNavigation {
         timeout: 3000,
       });
     }
+  }
+
+  function resolveDynamicProps(blade: BladeConstructor) {
+    const routerRoutes = router.getRoutes();
+
+    const selectedRoute = routerRoutes.find((r) => r.path === blade.url);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const selectedRouteProps = selectedRoute?.props as Record<string, () => any>;
+
+    if (selectedRouteProps && "default" in selectedRouteProps && typeof selectedRouteProps.default === "function") {
+      return selectedRouteProps.default();
+    }
+
+    return {};
   }
 
   async function onParentCall(index: number, args: IParentCallArgs) {
@@ -296,18 +317,33 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  function resolveBladeByName(name: string) {
+    if (!instance) {
+      warn("resolveComponentByName can only be used in setup().");
+      return;
+    }
+    if (!name) {
+      throw new Error("blade name is required");
+    }
+
+    console.log(instance.appContext.components);
+    const components = instance && instance.appContext.components;
+    return components[name] as BladeConstructor;
+  }
+
   return {
-    blades: computed(() => navigationInstance.blades.value),
+    blades: computed(() => navigationInstance?.blades.value),
     workspaceOptions: computed(() => workspaceOptions.value),
     workspaceParam: computed(() => workspaceParam.value),
     lastBladeData: computed(() => lastBladeData.value),
     activeBlade,
-    bladesRefs: navigationInstance.bladesRefs,
+    bladesRefs: navigationInstance?.bladesRefs,
     openBlade,
     closeBlade,
     onParentCall,
     resolveBlades,
     resolveUnknownRoutes,
     resolveLastBlade,
+    resolveBladeByName,
   };
 }

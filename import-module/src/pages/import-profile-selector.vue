@@ -99,7 +99,7 @@ import {
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportRunHistory, ImportPushNotification } from "./../api-client/import";
+import { ImportRunHistory } from "./../api-client/import";
 import ImportStatus from "../components/ImportStatus.vue";
 import { UserPermissions } from "./../types";
 import { useI18n } from "vue-i18n";
@@ -120,17 +120,6 @@ export interface Emits {
 
 defineOptions({
   url: "/import",
-  scope: {
-    notificationClick(notification: ImportPushNotification) {
-      if (notification.notifyType !== "ImportPushNotification") return;
-      return {
-        param: notification.profileId,
-        options: {
-          importJobId: notification.jobId,
-        },
-      };
-    },
-  },
 });
 
 const props = withDefaults(defineProps<Props>(), {

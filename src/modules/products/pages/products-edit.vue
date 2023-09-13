@@ -638,6 +638,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       await revertStagedChanges(productData.value.id);
+      productDetailsCopy = _.cloneDeep(productDetails.value);
+      modified.value = false;
       emit("parent:call", {
         method: "reload",
       });

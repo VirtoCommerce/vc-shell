@@ -78,10 +78,13 @@ const notificationStyle = computed(() => ({
 function onClick() {
   if (props.notification.notifyType === "PublicationRequestStatusChangedDomainEvent") {
     emit("notificationClick");
-    openBlade({
-      blade: resolveBladeByName("ProductsList"),
-      param: props.notification.productId,
-    });
+    openBlade(
+      {
+        blade: resolveBladeByName("ProductsList"),
+        param: props.notification.productId,
+      },
+      true
+    );
   }
 }
 </script>

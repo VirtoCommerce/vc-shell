@@ -3,6 +3,7 @@
     :color="notificationStyle.color.value"
     :title="notification.title"
     :icon="notificationStyle.icon"
+    @click="onClick"
   >
     <VcHint
       v-if="notification.profileName"
@@ -16,18 +17,28 @@
 </template>
 
 <script lang="ts" setup>
+import { useBladeNavigation } from "@vc-shell/framework";
 import { ImportPushNotification } from "./../../../../api_client/marketplacevendor";
 import { computed } from "vue";
+
 export interface Props {
   notification: ImportPushNotification;
 }
 
+export interface Emits {
+  (event: "notificationClick"): void;
+}
+
 const props = defineProps<Props>();
+
+const emit = defineEmits<Emits>();
 
 defineOptions({
   inheritAttrs: false,
   notifyType: "ImportPushNotification",
 });
+
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const notificationStyle = computed(() => ({
   color: computed(() => {
@@ -40,4 +51,17 @@ const notificationStyle = computed(() => ({
   }),
   icon: "fas fa-download",
 }));
+
+function onClick() {
+  if (props.notification.notifyType === "ImportPushNotification") {
+    emit("notificationClick");
+    openBlade({
+      blade: resolveBladeByName("ImportProfileSelector"),
+      param: props.notification.profileId,
+      options: {
+        importJobId: props.notification.jobId,
+      },
+    });
+  }
+}
 </script>

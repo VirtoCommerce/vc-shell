@@ -62,7 +62,6 @@ import {
   useNotifications,
   VcNotificationDropdown,
   notification,
-  PushNotification,
   usePopup,
   useMenuComposer,
   ChangePassword,
@@ -96,7 +95,7 @@ const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n
 const { user, loadUser, signOut } = useUser();
 const { checkPermission } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, openBlade, resolveLastBlade } =
+const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, resolveLastBlade } =
   useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
@@ -191,27 +190,6 @@ const toolbarItems = computed(() =>
         onOpen() {
           if (notifications.value.some((x) => x.isNew)) {
             markAllAsRead();
-          }
-        },
-        async onClick(notification: PushNotification) {
-          if (notification) {
-            for (const page of pages) {
-              const pageNotificationClickFn = page.scope?.notificationClick;
-              if (pageNotificationClickFn && typeof pageNotificationClickFn === "function") {
-                const bladeData = pageNotificationClickFn(notification);
-                if (bladeData) {
-                  openBlade(
-                    {
-                      ...bladeData,
-                      blade: page,
-                    },
-                    true
-                  );
-
-                  break;
-                }
-              }
-            }
           }
         },
       },

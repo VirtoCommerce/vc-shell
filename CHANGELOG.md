@@ -1,3 +1,13 @@
+## [1.0.107](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.106...v1.0.107) (2023-09-12)
+
+
+### Features
+
+* link to import template file ([b1e2fda](https://github.com/VirtoCommerce/vendor-portal/commit/b1e2fdad8a701ba03b6d66b2a50ef5c5c6bc6147))
+* vm-1188 product types ([3d7cb04](https://github.com/VirtoCommerce/vendor-portal/commit/3d7cb04aee559f192799a647f44a00db96c90079))
+
+
+
 ## [1.0.106](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.104...v1.0.106) (2023-08-28)
 
 

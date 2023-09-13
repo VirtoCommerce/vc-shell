@@ -3,6 +3,7 @@
     :color="notificationStyle.color.value"
     :title="notificationTitle"
     :icon="notificationStyle.icon"
+    @click="onClick"
   >
     <VcHint
       class="tw-mb-1"
@@ -13,6 +14,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useBladeNavigation } from "@vc-shell/framework";
 import { IProductPushNotification } from "./../../../../types";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
@@ -22,15 +24,23 @@ export interface Props {
   variant: string;
 }
 
+export interface Emits {
+  (event: "notificationClick"): void;
+}
+
 const props = withDefaults(defineProps<Props>(), {
   notification: undefined,
   variant: "#A9BCCD",
 });
 
+const emit = defineEmits<Emits>();
+
 defineOptions({
   inheritAttrs: false,
   notifyType: "PublicationRequestStatusChangedDomainEvent",
 });
+
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
 
@@ -64,4 +74,14 @@ const notificationStyle = computed(() => ({
   }),
   icon: "fas fa-box-open",
 }));
+
+function onClick() {
+  if (props.notification.notifyType === "PublicationRequestStatusChangedDomainEvent") {
+    emit("notificationClick");
+    openBlade({
+      blade: resolveBladeByName("ProductsList"),
+      param: props.notification.productId,
+    });
+  }
+}
 </script>

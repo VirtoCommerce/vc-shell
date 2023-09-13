@@ -120,17 +120,6 @@ export interface Emits {
 
 defineOptions({
   url: "/import",
-  scope: {
-    notificationClick(notification: ImportPushNotification) {
-      if (notification.notifyType !== "ImportPushNotification") return;
-      return {
-        param: notification.profileId,
-        options: {
-          importJobId: notification.jobId,
-        },
-      };
-    },
-  },
 });
 
 const props = withDefaults(defineProps<Props>(), {

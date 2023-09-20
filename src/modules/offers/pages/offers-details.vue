@@ -613,7 +613,7 @@ const filteredProps = computed(() => {
 
 const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
-const { currencies, loadSettings } = useMarketplaceSettings();
+const { currencies, loadSettings, defaultCurrency } = useMarketplaceSettings();
 
 let languages: string[];
 let localesOptions;
@@ -847,7 +847,7 @@ function addPrice(scroll = false) {
   }
   offerDetails.value.prices.push(
     new OfferPrice({
-      currency: "USD",
+      currency: defaultCurrency.value.value,
       listPrice: null,
       minQuantity: null,
     })

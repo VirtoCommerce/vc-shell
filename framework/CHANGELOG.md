@@ -1,3 +1,12 @@
+## [1.0.98](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.97...v1.0.98) (2023-09-21)
+
+
+### Bug Fixes
+
+* decode image url ([8ce7dbf](https://github.com/VirtoCommerce/vc-shell/commit/8ce7dbfeb9c8c675fe971a134736743357cdc9b7))
+
+
+
 ## [1.0.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.96...v1.0.97) (2023-09-12)
 
 

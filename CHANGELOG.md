@@ -1,10 +1,17 @@
-## [1.0.107](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.106...v1.0.107) (2023-09-12)
+## [1.0.108](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.106...v1.0.108) (2023-09-21)
+
+
+### Bug Fixes
+
+* *offers-details* added defaultCurrency ([21b6ddb](https://github.com/VirtoCommerce/vendor-portal/commit/21b6ddbb3f34cbd950e16ab7399d9376765a1492))
+* notificationClick navigation fix ([b63120b](https://github.com/VirtoCommerce/vendor-portal/commit/b63120b84b22b2e4c6b45c5700a2fea032ab6eae))
 
 
 ### Features
 
 * link to import template file ([b1e2fda](https://github.com/VirtoCommerce/vendor-portal/commit/b1e2fdad8a701ba03b6d66b2a50ef5c5c6bc6147))
 * vm-1188 product types ([3d7cb04](https://github.com/VirtoCommerce/vendor-portal/commit/3d7cb04aee559f192799a647f44a00db96c90079))
+* vm-1211 revert and save button ([2b9cfc3](https://github.com/VirtoCommerce/vendor-portal/commit/2b9cfc3d0c8166dbc4863369fd5de9aab5e70803))
 
 
 

@@ -102,6 +102,8 @@ const upload = async (event: Event) => {
     const target = event.target as HTMLInputElement;
     const fileList = target.files;
 
+    console.log(fileList);
+
     if (fileList && fileList.length) {
       emit("upload", fileList);
     }

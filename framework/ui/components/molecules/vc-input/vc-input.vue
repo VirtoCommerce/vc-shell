@@ -368,6 +368,8 @@ function emitValue(val: string) {
       let value;
       if (internalType.value === "datetime-local") {
         value = moment(val).toDate();
+      } else if (internalType.value === "number") {
+        value = +val;
       } else {
         value = val;
       }

@@ -38,9 +38,15 @@ export interface Props {
   templates: NotificationTemplateConstructor[];
 }
 
+export interface Emits {
+  (event: "onClick"): void;
+}
+
 const props = withDefaults(defineProps<Props>(), {
   notification: undefined,
 });
+
+const emit = defineEmits<Emits>();
 
 const locale = window.navigator.language;
 
@@ -58,6 +64,9 @@ const currentTemplate = computed(() => props.templates?.find((x) => x?.notifyTyp
 function notificationTemplateRenderer() {
   const notificationTemplate = currentTemplate.value;
 
-  return notificationTemplate && h(notificationTemplate, { notification: props.notification });
+  return (
+    notificationTemplate &&
+    h(notificationTemplate, { notification: props.notification, onNotificationClick: () => emit("onClick") })
+  );
 }
 </script>

@@ -25,7 +25,7 @@ import {
   notification,
   BladePageComponent,
 } from "../../../..";
-import { bladeNavigationInstance } from "./../../plugin";
+import { bladeNavigationInstance } from "../../plugin";
 import pattern from "url-pattern";
 import { useLocalStorage } from "@vueuse/core";
 
@@ -64,6 +64,7 @@ const workspaceOptions: Ref<Record<string, any>> = ref();
 const workspaceParam: Ref<string> = ref();
 const activeBlade = ref();
 const lastBladeData = useLocalStorage<BladeData>("VC_BLADE_DATA", {});
+// const resolvedLastBlade = ref<BladePageComponent>();
 
 export function useBladeNavigation(): IUseBladeNavigation {
   const router = useRouter();
@@ -116,6 +117,18 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
   }
 
+  function isBladeComponent(
+    component: Omit<BladeComponentInternalInstance["vnode"]["type"], "__isFragment"> | BladeConstructor
+  ) {
+    if (!instance) {
+      warn("isBladeComponent can only be used in setup().");
+      return;
+    }
+    const foundComponent = _.find(instance.appContext.components, component);
+
+    return foundComponent && "isBladeComponent" in foundComponent && !!foundComponent.isBladeComponent;
+  }
+
   async function openBlade<Blade extends ComponentPublicInstance>(
     { blade, param, options, onOpen, onClose }: IBladeEvent<Blade>,
     isWorkspace = false
@@ -130,10 +143,15 @@ export function useBladeNavigation(): IUseBladeNavigation {
 
     clearParentData();
 
+    console.log(instance);
     // caller blade component
-    const instanceComponent =
-      navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade ??
-      (instance && instance.vnode.type);
+    const instanceComponent = isBladeComponent(instance.vnode.type)
+      ? instance.vnode.type
+      : navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade
+      ? navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade
+      : instance.vnode.type;
+
+    console.log("instanceComponent", instanceComponent);
 
     if (instanceComponent) {
       // Caller blade index in blades array
@@ -208,26 +226,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
     }
 
     if (blade && checkPermission(blade.permissions)) {
-      // const routerRoutes = router.getRoutes();
-
-      // const selectedRoute = routerRoutes.find((r) => {
-      //   return r.path === blade.url;
-      // });
-
-      // const selectedRouteProps = selectedRoute?.props;
-      // console.log(selectedRouteProps);
-
-      // const test = () => {
-      //   const t = selectedRouteProps?.default;
-      //   console.log(t);
-      //   if (t && typeof t === "function") {
-      //     return t();
-      //   }
-      //   return {};
-      // };
       navigationInstance.blades.value.push({
         blade: markRaw(blade),
-        // ...test(),
         options,
         param,
         onOpen,
@@ -314,9 +314,18 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (lastBladeData.value?.blade) {
       const blade = pages?.find((b) => b.url === lastBladeData.value?.blade);
       setParentData({ param: lastBladeData.value?.param });
-      openBlade({ blade, param: lastBladeData.value?.param });
-      clearSavedBladeData();
+
+      if (!isBladeAlreadyOpened({ blade, param: lastBladeData.value?.param })) {
+        openBlade({ blade, param: lastBladeData.value?.param });
+        clearSavedBladeData();
+      }
     }
+  }
+
+  function isBladeAlreadyOpened(args: { blade: BladePageComponent; param?: string }) {
+    return navigationInstance?.blades.value.some((x) => {
+      return x.blade === args.blade && x.param === args.param;
+    });
   }
 
   function resolveBladeByName(name: string) {
@@ -327,8 +336,6 @@ export function useBladeNavigation(): IUseBladeNavigation {
     if (!name) {
       throw new Error("blade name is required");
     }
-
-    console.log(instance.appContext.components);
     const components = instance && instance.appContext.components;
     return components[name] as BladeConstructor;
   }

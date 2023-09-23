@@ -80,7 +80,9 @@ export type ToolbarMenu<T> = T extends {
     } & IBladeToolbar
   : T & { component?: ComponentInstanceConstructor };
 
-export type NotificationTemplateConstructor = ComponentInstanceConstructor & { notifyType: string };
+export type NotificationTemplateConstructor = ComponentInstanceConstructor & {
+  notifyType: string;
+};
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export interface IActionBuilderResult<T = {}> {

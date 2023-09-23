@@ -1,6 +1,6 @@
 <template>
   <div
-    class="vc-widget"
+    class="vc-widget tw-relative"
     :class="{ 'vc-widget_disabled': disabled }"
     @click="onClick"
   >

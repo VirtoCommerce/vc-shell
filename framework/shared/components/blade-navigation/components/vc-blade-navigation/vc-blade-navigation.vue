@@ -56,7 +56,6 @@
         :options="blade.options"
         :error="error"
         :blades="blades"
-        :model="blade.model"
         @close:blade="onBladeClose(i)"
         @close:children="$emit('onClose', i + 1)"
         @parent:call="$emit('onParentCall', { id: i, args: $event })"
@@ -104,9 +103,9 @@ withDefaults(defineProps<Props>(), {
   blades: () => [],
   workspaceOptions: () => ({}),
 });
-
 const route = useRoute();
 const bladesRefs = ref<IBladeRef[]>([]);
+
 const state = ref<IBladeRef[]>([]);
 
 const visibleBlades = computed(() => bladesRefs.value.slice(-2));
@@ -157,7 +156,7 @@ function setBladesRef(el: CoreBladeExposed, blade: IBladeContainer) {
   if (el && el !== null && blade) {
     const isExists = bladesRefs.value.some((item) => item.blade.idx === blade.idx);
     if (!isExists) {
-      bladesRefs.value.push({ active: _.isEqual(activeBlade.value, blade), exposed: el, blade });
+      bladesRefs.value.push({ active: _.isEqual(activeBlade.value, blade.blade), exposed: el, blade });
     }
   }
 }

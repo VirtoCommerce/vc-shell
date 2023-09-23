@@ -14,12 +14,14 @@
       :error-message="errorMessage"
       :label="computedProperty.displayName"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :options="items"
       :option-value="computedProperty.optionValue"
       :option-label="computedProperty.optionLabel"
       :disabled="disabled"
       searchable
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
       @search="onSearch"
       @close="onClose"
     ></VcSelect>
@@ -44,6 +46,8 @@
       :required="computedProperty.required"
       placeholder="Add value"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     ></VcMultivalue>
   </Field>
 
@@ -64,10 +68,13 @@
       :required="computedProperty.required"
       placeholder="Add value"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
       :options="items"
-      option-label="alias"
+      :option-label="multilanguage ? 'value' : 'alias'"
       option-value="id"
       :multivalue="computedProperty.multivalue"
+      :emit-label="multilanguage ? 'value' : 'alias'"
       @search="onSearch"
       @close="onClose"
     ></VcMultivalue>
@@ -91,6 +98,8 @@
       :required="computedProperty.required"
       :placeholder="computedProperty.displayName || 'Add value'"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     ></VcInput>
   </Field>
 
@@ -155,7 +164,7 @@
       clearable
       type="number"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcInput>
   </Field>
@@ -178,7 +187,7 @@
       type="number"
       step="1"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcInput>
   </Field>
@@ -199,7 +208,7 @@
       :label="computedProperty.displayName"
       type="datetime-local"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
     ></VcInput>
   </Field>
@@ -218,8 +227,10 @@
       :error-message="errorMessage"
       :label="computedProperty.displayName"
       :required="computedProperty.required"
-      :placeholder="computedProperty.displayName"
+      :placeholder="computedProperty.placeholder"
       :disabled="disabled"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     ></VcTextarea>
   </Field>
 
@@ -244,7 +255,7 @@
   </Field>
 </template>
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T, D">
+<script lang="ts" setup generic="T">
 import { ref, onMounted, computed } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
@@ -261,11 +272,13 @@ const props = withDefaults(
   defineProps<{
     property: T;
     modelValue: any;
-    optionsGetter: (property: T, keyword?: string) => Promise<D[]>;
+    optionsGetter: (property: T, keyword?: string, locale?: string) => Promise<any[]> | any[];
     required: boolean;
-    multivalue: boolean;
+    multivalue?: boolean;
+    multilanguage?: boolean;
+    currentLanguage?: string;
     valueType: string;
-    dictionary: boolean;
+    dictionary?: boolean;
     name: string;
     optionsValue?: string;
     optionsLabel?: string;
@@ -279,16 +292,19 @@ const props = withDefaults(
       regex: string;
     };
     disabled?: boolean;
+    placeholder?: string;
   }>(),
   {
     optionsValue: "id",
-    optionsLabel: "alias",
+    optionsLabel: "value",
     disabled: false,
   }
 );
 
 const emit = defineEmits<{
-  "update:model-value": [data: { readonly property: T; readonly value: any; readonly dictionary?: D[] }];
+  "update:model-value": [
+    data: { readonly property: T; readonly value: any; readonly dictionary?: any[]; readonly locale?: string }
+  ];
 }>();
 
 const { locale, te, t } = useI18n({ useScope: "global" });
@@ -300,23 +316,25 @@ const computedProperty = computed(() => {
   if (props.required) {
     rules["required"] = true;
   }
-  if (props.rules.min) {
+  if (props.rules?.min) {
     rules["min"] = Number(props.rules.min);
   }
-  if (props.rules.max) {
+  if (props.rules?.max) {
     rules["max"] = Number(props.rules.max);
   }
-  if (props.rules.regex) {
+  if (props.rules?.regex) {
     rules["regex"] = new RegExp(props.rules.regex);
   }
 
-  const propertyDisplayName = props.displayNames?.find((displayName) =>
-    displayName.languageCode?.startsWith(locale.value as string)
-  )?.name;
+  const propertyDisplayName =
+    props.displayNames?.find((displayName) => displayName.languageCode?.startsWith(locale.value as string))?.name ||
+    props.name;
   const propertyDisplayNameLocalized =
     propertyDisplayName && te(propertyDisplayName.toUpperCase())
       ? t(propertyDisplayName.toUpperCase())
       : propertyDisplayName;
+
+  const optionLabelField = props.multilanguage ? "value" : "alias";
 
   return {
     rules,
@@ -324,10 +342,11 @@ const computedProperty = computed(() => {
     dictionary: props.dictionary || false,
     multivalue: props.multivalue || false,
     name: props.name,
-    displayName: propertyDisplayNameLocalized || props.name, //|| setting?.displayName || setting?.defaultValue,
+    displayName: propertyDisplayNameLocalized, //|| setting?.displayName || setting?.defaultValue,
     optionValue: props.optionsValue,
-    optionLabel: props.optionsLabel,
+    optionLabel: optionLabelField,
     required: props.required,
+    placeholder: props.placeholder || propertyDisplayNameLocalized,
   };
 });
 
@@ -336,25 +355,30 @@ const value = computed({
     return props.modelValue;
   },
   set(newValue) {
-    emit("update:model-value", { property: props.property, value: newValue, dictionary: items.value });
+    emit("update:model-value", {
+      property: props.property,
+      value: newValue,
+      dictionary: items.value,
+      locale: props.currentLanguage,
+    });
   },
 });
 
 onMounted(async () => {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property);
+    items.value = await props.optionsGetter(props.property, null, props.currentLanguage);
   }
 });
 
 async function onSearch(keyword: string) {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property, keyword);
+    items.value = await props.optionsGetter(props.property, keyword, props.currentLanguage);
   }
 }
 
 async function onClose() {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property);
+    items.value = await props.optionsGetter(props.property, null, props.currentLanguage);
   }
 }
 </script>

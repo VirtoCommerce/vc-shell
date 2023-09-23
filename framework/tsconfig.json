@@ -38,11 +38,15 @@
     "ui/types/*.ts",
     "ui/locales/*.ts",
     "ui/locales/*.json",
+    "ui/core/controls/models.ts",
 
     "shared/**/*.vue",
     "shared/**/*.ts",
-    "shared/**/*.json"
-, "ui/core/controls/models.ts"  ],
+    "shared/**/*.json",
+    "shared/modules/dynamic/**/*.vue",
+    "shared/modules/dynamic/*.ts",
+    "shared/modules/dynamic/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "dist"

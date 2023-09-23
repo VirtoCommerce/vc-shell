@@ -145,11 +145,11 @@
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
 import { ref, computed, onMounted, unref, watch, markRaw } from "vue";
 import { useI18n } from "vue-i18n";
-import { IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
 import * as _ from "lodash-es";
+import { IParentCallArgs, useBladeNavigation } from "../../../../components";
 
 export interface Props {
   expanded?: boolean;

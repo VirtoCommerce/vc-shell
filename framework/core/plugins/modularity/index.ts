@@ -4,11 +4,11 @@ import { Router } from "vue-router";
 import { BladeConstructor } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
 
-export const createModule = (components: unknown, locales?: unknown) => ({
+export const createModule = (components: unknown, locales?: unknown, isBladeComponent?: boolean) => ({
   install(app: App): void {
     // Register components
     Object.entries(components).forEach(([componentName, component]) => {
-      app.component(componentName, component);
+      app.component(componentName, isBladeComponent ? { ...component, isBladeComponent: true } : component);
     });
 
     // Load locales
@@ -23,9 +23,10 @@ export const createModule = (components: unknown, locales?: unknown) => ({
 export const createAppModule = (
   pages: { [key: string]: BladeConstructor },
   locales?: { [key: string]: object },
-  notificationTemplates?: { [key: string]: Component }
+  notificationTemplates?: { [key: string]: Component },
+  moduleComponents?: { [key: string]: Component }
 ) => {
-  const module = createModule(pages, locales);
+  const module = createModule(pages, locales, true);
 
   return {
     install(app: App, options?: { router: Router }): void {
@@ -66,6 +67,14 @@ export const createAppModule = (
           app.config.globalProperties.notificationTemplates?.push(template);
         });
       }
+
+      if (moduleComponents) {
+        // Register module components globally
+        Object.entries(moduleComponents).forEach(([name, component]) => {
+          app.component(name, component);
+        });
+      }
+
       module.install(app);
     },
   };

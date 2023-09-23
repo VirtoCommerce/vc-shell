@@ -1,5 +1,6 @@
 import { Ref, computed, ref } from "vue";
 import { useUser } from "../useUser";
+import * as _ from "lodash-es";
 
 interface GenericAsset {
   createdDate?: Date;
@@ -25,7 +26,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
   const loading = ref(false);
 
   async function upload(files: FileList, assetArr: T[], uploadCatalog: string) {
-    const assetArrCopy = [...assetArr];
+    const assetArrCopy = _.cloneDeep(assetArr) || [];
     try {
       loading.value = true;
       for (let i = 0; i < files.length; i++) {
@@ -67,7 +68,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
   }
 
   function edit(assetsArr: T[], asset: A) {
-    const assets = [...assetsArr];
+    const assets = _.cloneDeep(assetsArr) || [];
     const image = new assetFactory(asset);
     if (assets.length) {
       const imageIndex = assets.findIndex((img) => img.id === asset.id);
@@ -83,7 +84,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
   }
 
   async function remove(assetArr: T[], asset: A) {
-    const assetArrCopy = [...assetArr];
+    const assetArrCopy = _.cloneDeep(assetArr) || [];
 
     if (assetArrCopy && assetArrCopy.length) {
       const imageIndex = assetArr.findIndex((img) => {
@@ -100,7 +101,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
   }
 
   async function removeBulk(assetArr: T[], assetsArrEdited: T[]) {
-    let assetArrCopy = [...assetArr];
+    let assetArrCopy = _.cloneDeep(assetArr) || [];
 
     if (assetArrCopy && assetArrCopy.length) {
       assetArrCopy = assetArrCopy?.filter((asset) => !assetsArrEdited.includes(asset));

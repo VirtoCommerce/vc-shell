@@ -5,7 +5,7 @@ export const handleOverrides = (overrides, schemaCopy: { [key: string]: DynamicS
   let schema = _.cloneDeep(schemaCopy);
   // UPSERT
   if (overrides.upsert && overrides.upsert.length > 0) {
-    schema = upsertHelper(overrides, schema);
+    schema = upsertHelper(overrides, schemaCopy);
   }
 
   // REMOVE
@@ -31,11 +31,13 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
       }) => {
         const valueByPath = _.get(clonedSchema, path);
 
+        console.log("valueByPath", valueByPath);
+
         if (Array.isArray(valueByPath) && valueByPath.length) {
           const findIndex = _.findIndex(valueByPath, { id: value.id });
 
-          const valueByPathSlice = valueByPath.slice();
-          const spliced = valueByPathSlice.splice(findIndex >= 0 ? findIndex : index, findIndex >= 0 ? 1 : 0, value);
+          const spliced = valueByPath /* @ts-ignore */
+            .toSpliced(findIndex >= 0 ? findIndex : index, findIndex >= 0 ? 1 : 0, value);
           _.set(clonedSchema, path, spliced);
         }
 

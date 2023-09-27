@@ -63,24 +63,21 @@ const register = (
   }
 
   if (json.settings.permissions) {
-    bladeComponent.permissions = "test";
+    bladeComponent.permissions = json.settings.permissions;
   }
 
   const defineBladeComponent = defineComponent({
     ...bladeComponent,
     name: bladeName,
-    setup(props, ctx) {
-      return {
-        ...(bladeComponent as DefineComponent).setup(
-          reactiveComputed(() => ({
-            ...props,
-            model: json,
-            composables: args.composables,
-          })),
-          reactiveComputed(() => ctx)
-        ),
-      };
-    },
+    setup: (props, ctx) =>
+      (bladeComponent as DefineComponent).setup(
+        reactiveComputed(() => ({
+          ...props,
+          model: json,
+          composables: args.composables,
+        })),
+        reactiveComputed(() => ctx)
+      ),
   });
 
   const module = createAppModuleWrapper({

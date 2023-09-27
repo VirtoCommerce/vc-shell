@@ -10,12 +10,12 @@
     @collapse="$emit('collapse:blade')"
   >
     <div
+      v-loading="loading"
       class="tw-relative tw-h-full"
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
     >
-      <VcLoading :active="loading"></VcLoading>
       <VcTable
         :columns="columns"
         :expanded="expanded"
@@ -340,7 +340,7 @@ function onItemClick(item: Asset) {
     options: {
       asset: unref(item),
       disabled: readonly.value,
-      assetEditHandler: (asset: Asset) => {
+      assetEditHandler: async (asset: Asset) => {
         const mutated = defaultAssets.value.map((x) => {
           if (x.id === asset.id || x.url === asset.url) {
             return asset;

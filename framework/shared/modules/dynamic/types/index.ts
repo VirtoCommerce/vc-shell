@@ -7,12 +7,21 @@ export type Composable<T> = T[keyof T];
 export type DynamicSchema = DynamicGridSchema | DynamicDetailsSchema;
 
 export interface DynamicGridSchema {
+  /**
+   * @description Blade settings
+   */
   settings: SettingsSchema;
   content: [ListContentSchema];
 }
 
 export interface DynamicDetailsSchema {
+  /**
+   * @description Blade settings
+   */
   settings: SettingsSchema;
+  /**
+   * @description Blade content
+   */
   content: [FormContentSchema, WidgetsSchema?];
 }
 
@@ -30,18 +39,44 @@ export interface SettingsDetails extends SettingsBase {
 }
 
 export interface SettingsBase {
+  /**
+   * @description Blade url
+   */
   url?: string;
+  /**
+   * @description Locale key for VueI18n locale files
+   */
   localeKey: string;
+  /**
+   * @description Required component name
+   */
   name: string;
+  /**
+   * @description Blade default header title
+   */
   titleTemplate: string;
+  /**
+   * @description Composable to use at {@link SettingsBase.model } blade component view
+   */
   composable: string;
+  /**
+   * @description Toolbar items array
+   * @default 'save', 'delete' in {@link SettingsDetails}
+   * @default 'refresh', 'add' in {@link SettingsWorkspace}
+   */
   toolbar: {
     id: string;
     title: string;
     icon: string;
     method: string;
   }[];
+  /**
+   * @description Blade component view model
+   */
   model: string;
+  /**
+   * @description Blade permissions
+   */
   permissions?: string | string[];
 }
 

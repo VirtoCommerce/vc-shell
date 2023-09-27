@@ -1,4 +1,4 @@
-import { Ref, computed, ref } from "vue";
+import { Ref, computed, ref, toRaw } from "vue";
 import { useUser } from "../useUser";
 import * as _ from "lodash-es";
 
@@ -12,7 +12,7 @@ interface GenericAsset {
 interface IUseAssets<T, A> {
   loading: Ref<boolean>;
   upload: (files: FileList, assetArr: T[], uploadCatalog: string) => Promise<T[]>;
-  edit: (assetsArr: T[], asset: A) => T[];
+  edit: (assetsArr: T[], asset: A) => Promise<T[]>;
   editBulk: (assets: A[]) => T[];
   remove: (assetArr: T[], asset: A) => Promise<T[]>;
   removeBulk: (assetArr: T[], assetsArrEdited: T[]) => Promise<T[]>;
@@ -57,8 +57,8 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
 
           assetArrCopy.push(asset);
         }
-        return assetArrCopy;
       }
+      return assetArrCopy;
     } catch (e) {
       console.log(e);
       throw e;
@@ -67,7 +67,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
     }
   }
 
-  function edit(assetsArr: T[], asset: A) {
+  async function edit(assetsArr: T[], asset: A) {
     const assets = _.cloneDeep(assetsArr) || [];
     const image = new assetFactory(asset);
     if (assets.length) {
@@ -95,19 +95,16 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
         }
       });
       assetArrCopy.splice(imageIndex, 1);
-
-      return assetArrCopy;
     }
+    return assetArrCopy;
   }
 
   async function removeBulk(assetArr: T[], assetsArrEdited: T[]) {
     let assetArrCopy = _.cloneDeep(assetArr) || [];
-
     if (assetArrCopy && assetArrCopy.length) {
-      assetArrCopy = assetArrCopy?.filter((asset) => !assetsArrEdited.includes(asset));
-
-      return assetArrCopy;
+      assetArrCopy = _.differenceWith(assetArr, assetsArrEdited, (x, y) => _.isEqual({ ...x }, { ...y }));
     }
+    return assetArrCopy;
   }
 
   return {

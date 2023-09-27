@@ -81,7 +81,7 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       saveChanges,
       remove,
       loading,
-      item: computed(() => item.value),
+      item,
       validationState,
     };
   };

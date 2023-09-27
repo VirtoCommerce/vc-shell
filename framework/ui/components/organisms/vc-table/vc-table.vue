@@ -55,10 +55,10 @@
       </div>
     </slot>
 
-    <div class="tw-flex tw-relative tw-overflow-hidden tw-grow">
-      <!-- Table loading overlay -->
-      <VcLoading :active="unref(loading)"></VcLoading>
-
+    <div
+      v-loading="unref(loading)"
+      class="tw-flex tw-relative tw-overflow-hidden tw-grow"
+    >
       <!-- Table scroll container -->
       <VcContainer
         v-if="items && items.length"
@@ -444,7 +444,7 @@ import VcTableColumnSwitcher from "./_internal/vc-table-column-switcher/vc-table
 import { offset, flip, arrow, computePosition, ComputePositionReturn } from "@floating-ui/vue";
 import { IActionBuilderResult, ITableColumns } from "./../../../../core/types";
 import { useLocalStorage, useCurrentElement } from "@vueuse/core";
-import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton, VcLoading } from "./../../";
+import { VcContainer, VcInput, VcCheckbox, VcIcon, VcPagination, VcButton } from "./../../";
 import { useI18n } from "vue-i18n";
 
 export interface StatusImage {
@@ -529,7 +529,7 @@ interface ITableItemRef {
 const emit = defineEmits<{
   paginationClick: [page: number];
   selectionChanged: [values: T[]];
-  "search:change": [value: string];
+  "search:change": [value: string | number | Date];
   headerClick;
   value: [Record<string, unknown>];
   itemClick: [item: T];

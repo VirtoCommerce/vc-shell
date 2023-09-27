@@ -9,7 +9,7 @@ export default getApplicationConfiguration({
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],
       manifest: {
-        name: "vc-app",
+        name: "vc-app-extend",
         theme_color: "#319ED4",
         display: "fullscreen",
         start_url: "/index.html",
@@ -42,11 +42,9 @@ export default getApplicationConfiguration({
     splitVendorChunkPlugin(),
   ],
   optimizeDeps: {
-    include: mode === "development" ? ["ace-builds", "client-oauth2", "quill-delta", "quill", "url-pattern"] : [],
-  },
-  build: {
-    rollupOptions: {
-      external: ["./src/modules"],
-    },
+    include:
+      mode === "development"
+        ? ["ace-builds", "client-oauth2", "quill-delta", "quill", "url-pattern", "vee-validate"]
+        : [],
   },
 });

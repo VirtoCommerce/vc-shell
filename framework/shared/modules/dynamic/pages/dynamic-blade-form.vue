@@ -1,6 +1,6 @@
 <template>
   <VcBlade
-    v-loading="loading || widgetLoading"
+    v-loading="loading"
     :expanded="expanded"
     :closable="closable"
     width="50%"
@@ -140,6 +140,10 @@ const props = withDefaults(defineProps<Props>(), {
   closable: true,
 });
 
+defineOptions({
+  isBladeComponent: true,
+});
+
 const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -173,8 +177,6 @@ const bladeContext = ref({
 });
 
 const isReady = ref(false);
-
-const widgetLoading = ref(false);
 
 const generatedControls = ref<VNode[]>([]);
 
@@ -342,7 +344,7 @@ const fieldMap = {
             fields: dynamicProps.value.map((prop) => {
               return DynamicProperties({
                 props: {
-                  disabled: "disabled" in scope && scope.disabled,
+                  disabled: "disabled" in scope && unref(scope.disabled),
                   property: prop,
                   modelValue: computed(() => getPropertyValue(prop, currentLocale.value)),
                   optionsGetter: loadDictionaries,
@@ -422,7 +424,7 @@ function fieldHelper(field: ControlSchema, parentId: string | number, context?: 
   const baseProps: IControlBaseProps = {
     key: `${parentId}-${field.id}`,
     label: field.label ? unref(unwrapInterpolation(field.label, context)) : undefined,
-    disabled: ("disabled" in scope && scope.disabled) || disabledHandler("disabled" in field && field.disabled),
+    disabled: ("disabled" in scope && unref(scope.disabled)) || disabledHandler("disabled" in field && field.disabled),
     name: field.name,
     rules: field.rules,
     placeholder: field.label,
@@ -675,7 +677,7 @@ const toolbarMethods = _.merge(
           emit("close:blade");
         }
       },
-      disabled: computed(() => "disabled" in scope && scope["disabled"]),
+      disabled: computed(() => "disabled" in scope && unref(scope.disabled)),
     },
   }),
   ref(scope)
@@ -881,8 +883,8 @@ function imageHandler() {
   return {
     loading: computed(() => loading.value),
 
-    edit(image: IImage) {
-      item.value.images = edit(item.value.images, image);
+    async edit(image: IImage) {
+      item.value.images = await edit(item.value.images, image);
     },
     async upload(files: FileList) {
       item.value.images = await upload(files, item.value.images, item.value.id || item.value.categoryId);

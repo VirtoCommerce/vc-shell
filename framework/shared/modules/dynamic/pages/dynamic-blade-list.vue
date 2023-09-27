@@ -128,6 +128,11 @@ const { t } = useI18n({ useScope: "global" });
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
 const emit = defineEmits<Emits>();
+
+defineOptions({
+  isBladeComponent: true,
+});
+
 const settings = computed(() => props.model?.settings);
 const title = computed(() => settings.value?.titleTemplate);
 const allSelected = ref(false);

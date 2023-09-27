@@ -1,15 +1,46 @@
 import { DynamicGridSchema } from "@vc-shell/framework";
 
 export const grid: DynamicGridSchema = {
+  /**
+   * @description Blade settings
+   */
   settings: {
+    /**
+     * @description Blade url
+     */
     url: "/team-j",
+    /**
+     * @description Required component name
+     */
     name: "TeamJ",
+    /**
+     * @description Blade component view model
+     */
     model: "DynamicBladeList",
+    /**
+     * @description Locale key for VueI18n locale files
+     */
     localeKey: "Team",
+    /**
+     * @description Blade default header title
+     */
     titleTemplate: "My Team",
+    /**
+     * @description Module name which must be specified in only one schema in module and is used for display in the navigation menu
+     */
     moduleName: "My Team",
+    /**
+     * @description Module icon for navigation menu
+     */
     icon: "fas fa-file-alt",
+    /**
+     * @description Composable to use at {@link grid.settings.model } blade component view
+     */
     composable: "useTeamList",
+    /**
+     * @description Toolbar items array
+     * @default 'refresh', 'add' in {@link SettingsWorkspace}
+     */
     toolbar: [
       {
         id: "refresh",
@@ -25,7 +56,13 @@ export const grid: DynamicGridSchema = {
       },
     ],
   },
+  /**
+   * @description Blade content
+   */
   content: [
+    /**
+     * @description Required block of type 'grid' for table component visualization
+     */
     {
       id: "teamGrid",
       type: "grid",

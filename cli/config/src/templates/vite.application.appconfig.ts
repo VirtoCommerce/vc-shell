@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "fs";
-import { loadEnv, ProxyOptions, UserConfigExport } from "vite";
+import { loadEnv, ProxyOptions, UserConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "path";
 import { checker } from "vite-plugin-checker";
@@ -75,7 +75,7 @@ export default {
     ..._define,
 
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
-    "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL}"`,
+    "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL ? process.env.APP_PLATFORM_URL : "/"}"`,
     "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
     "import.meta.env.APP_LOG_LEVEL": `"${process.env.APP_LOG_LEVEL}"`,
     "import.meta.env.APP_BASE_PATH": `"${process.env.APP_BASE_PATH}"`,
@@ -112,4 +112,4 @@ export default {
     sourcemap: mode === "development",
     emptyOutDir: true,
   },
-} as UserConfigExport;
+} as UserConfig;

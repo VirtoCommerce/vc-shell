@@ -17,8 +17,8 @@
   },
   "peerDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@vc-shell/config-generator": "^1.0.96",
-    "@vc-shell/framework": "^1.0.96",
+    "@vc-shell/config-generator": "^1.0.100",
+    "@vc-shell/framework": "^1.0.100",
     "@vueuse/core": "^10.1.2",
     "@vueuse/integrations": "^10.1.2",
     "moment": "^2.29.4",

@@ -1,3 +1,59 @@
+## [1.0.100](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.99...v1.0.100) (2023-09-22)
+
+
+
+## [1.0.99](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.98...v1.0.99) (2023-09-22)
+
+
+### Bug Fixes
+
+* encode/decode image url ([d0b32b1](https://github.com/VirtoCommerce/vc-shell/commit/d0b32b1d46a58eb3814ce0086244375df90c5f24))
+
+
+
+## [1.0.98](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.97...v1.0.98) (2023-09-21)
+
+
+### Bug Fixes
+
+* decode image url ([8ce7dbf](https://github.com/VirtoCommerce/vc-shell/commit/8ce7dbfeb9c8c675fe971a134736743357cdc9b7))
+
+
+
+## [1.0.97](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.96...v1.0.97) (2023-09-12)
+
+
+
+## [1.0.96](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.95...v1.0.96) (2023-08-28)
+
+
+
+## [1.0.95](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.94...v1.0.95) (2023-08-28)
+
+
+### Features
+
+* controls for multilang properties ([b07940d](https://github.com/VirtoCommerce/vc-shell/commit/b07940d02f97387929c0081b033f87185fa375b9))
+
+
+
+## [1.0.94](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.92...v1.0.94) (2023-08-04)
+
+
+### Bug Fixes
+
+* component registration ([07f829f](https://github.com/VirtoCommerce/vc-shell/commit/07f829f731b9a84b1b223b98a97ac299814ea62c))
+* dynamic properties fix ([1f2738a](https://github.com/VirtoCommerce/vc-shell/commit/1f2738a95c1da6fc83ea9086aafab935f4f79bfe))
+* temporary ([65d7a58](https://github.com/VirtoCommerce/vc-shell/commit/65d7a58e159a4f5a06581710156a533790437f4b))
+
+
+### Features
+
+* mltilang label, remove mltilang in vc-editor ([f3411bd](https://github.com/VirtoCommerce/vc-shell/commit/f3411bdde6bb61751a89ffa253c038aadfe22e36))
+* vc-editor multilang ([b494b9c](https://github.com/VirtoCommerce/vc-shell/commit/b494b9c3439e2d52d4be80616712b86b8126f799))
+
+
+
 ## [1.0.92](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.91...v1.0.92) (2023-07-12)
 
 

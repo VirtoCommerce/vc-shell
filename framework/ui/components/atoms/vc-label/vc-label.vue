@@ -1,11 +1,17 @@
 <template>
-  <div class="tw-flex tw-flex-nowrap tw-font-bold">
+  <div class="tw-flex tw-flex-nowrap tw-font-bold tw-relative">
     <span><slot></slot></span>
     <span
       v-if="required"
       class="tw-text-[color:var(--label-required-color)] tw-ml-1"
       >*</span
     >
+    <span
+      v-if="multilanguage"
+      class="tw-text-[color:var(--app-menu-item-icon-color)] tw-absolute tw-right-0"
+    >
+      {{ currentLanguage }}
+    </span>
     <span
       v-if="$slots['tooltip']"
       class="tw-grow tw-basis-0 tw-ml-1"
@@ -26,7 +32,7 @@
     </span>
   </div>
 </template>
-<!-- eslint-disable @typescript-eslint/no-explicit-any -->
+
 <script lang="ts" setup>
 import { VcIcon } from "./../../../components";
 import { ref } from "vue";
@@ -34,6 +40,8 @@ import { ref } from "vue";
 export interface Props {
   required?: boolean;
   tooltipIcon?: string;
+  multilanguage?: boolean;
+  currentLanguage?: string;
 }
 
 withDefaults(defineProps<Props>(), {

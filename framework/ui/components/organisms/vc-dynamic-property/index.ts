@@ -1,3 +1,1 @@
-import _DynamicProperty from "./vc-dynamic-property.vue";
-
-export const VcDynamicProperty = _DynamicProperty;
+export { default as VcDynamicProperty } from "./vc-dynamic-property.vue";

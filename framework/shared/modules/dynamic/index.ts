@@ -114,7 +114,6 @@ export const createDynamicAppModule = (args: {
   locales?: { [key: string]: object };
   notificationTemplates?: { [key: string]: Component };
 }) => {
-  console.log("composables", args.composables);
   const moduleInitializer = _.findKey(args.schema, (o) => "moduleName" in o.settings && o.settings.moduleName);
   const everyHasModel = _.every(Object.values(args.schema), (o) => o.settings.model);
 

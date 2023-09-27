@@ -13,6 +13,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -253,7 +255,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends {results?: T[]; totalCount?: number }">
-import { ref, computed, watch, nextTick, Ref, MaybeRef, unref } from "vue";
+import { ref, computed, watch, nextTick, Ref, toRefs, MaybeRef, unref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -360,10 +362,14 @@ defineSlots<{
 const props = withDefaults(
   defineProps<{
     /**
+     * Name of select
+     */
+    name?: string;
+    /**
      * Model of the component; Must be Array if using 'multiple' prop; Use this property with a listener for 'update:modelValue' event OR use v-model directive
      */
 
-    modelValue?: MaybeRef<any>;
+    modelValue?: any;
     /**
      * Try to map labels of model from 'options' Array; If you are using emit-value you will probably need to use map-options to display the label text in the select field rather than the value;
      * Default value: true
@@ -454,12 +460,15 @@ const props = withDefaults(
      * Input search activation
      */
     searchable?: boolean;
+    multilanguage?: boolean;
+    currentLanguage?: string;
   }>(),
   {
     optionValue: "id",
     optionLabel: "title",
     debounce: 500,
     clearable: true,
+    name: "Field",
     emitValue: true,
     mapOptions: true,
     options: () => [],
@@ -484,10 +493,7 @@ const emit = defineEmits<{
 
 const { t } = useI18n({ useScope: "global" });
 
-// const { modelValue, options } = toRefs(props);
-
-const modelValue = computed(() => unref(props.modelValue));
-const options = computed(() => unref(props.options));
+const { modelValue, options } = toRefs(props);
 
 const isOpened = ref(false);
 
@@ -538,27 +544,27 @@ watch(
   async (newVal, oldVal) => {
     if (newVal && !oldVal) {
       const initial = optionsList.value.filter((x) => {
-        if (modelValue.value && Array.isArray(modelValue.value)) {
-          return _.intersection(optionsList.value, modelValue.value);
-        } else if (modelValue.value && typeof modelValue.value === "object") {
-          return optionsList.value.includes(modelValue.value);
+        if (props.modelValue && Array.isArray(props.modelValue)) {
+          return _.intersection(optionsList.value, props.modelValue);
+        } else if (props.modelValue && typeof props.modelValue === "object") {
+          return optionsList.value.includes(props.modelValue);
         } else {
-          return x[props.optionLabel as string] === modelValue.value;
+          return x[props.optionLabel as string] === props.modelValue;
         }
       });
 
       if (initial && initial.length) {
         defaultValue.value = initial;
       } else {
-        if (options.value && typeof options.value === "function") {
-          const data = await options.value(
+        if (props.options && typeof props.options === "function") {
+          const data = await props.options(
             undefined,
             undefined,
-            Array.isArray(modelValue.value) ? modelValue.value : [modelValue.value]
+            Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
           );
-          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === modelValue.value);
-        } else if (options.value && Array.isArray(options.value)) {
-          defaultValue.value = options.value.filter((x) => x[props.optionValue as string] === modelValue.value);
+          defaultValue.value = data.results?.filter((x) => x[props.optionValue as string] === props.modelValue);
+        } else if (props.options && Array.isArray(props.options)) {
+          defaultValue.value = props.options.filter((x) => x[props.optionValue as string] === props.modelValue);
         }
       }
     }
@@ -569,17 +575,17 @@ watch(
 watch(
   options,
   async () => {
-    if (options.value && typeof options.value === "function") {
+    if (props.options && typeof props.options === "function") {
       try {
         listLoading.value = true;
-        const data = await options.value();
+        const data = await props.options();
         optionsList.value = data.results;
         totalItems.value = data.totalCount;
       } finally {
         listLoading.value = false;
       }
-    } else if (options.value && Array.isArray(options.value)) {
-      optionsList.value = options.value;
+    } else if (props.options && Array.isArray(props.options)) {
+      optionsList.value = props.options;
     }
   },
   { immediate: true }
@@ -603,10 +609,10 @@ watch(
 );
 
 async function onLoadMore() {
-  if (options.value && typeof options.value === "function") {
+  if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
-      const data = await options.value(filterString.value, optionsList.value.length);
+      const data = await props.options(filterString.value, optionsList.value.length);
       optionsList.value.push(...data.results);
     } finally {
       listLoading.value = false;
@@ -626,10 +632,10 @@ const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
   const val =
-    modelValue.value !== undefined && (modelValue.value !== null || mapNull === true)
-      ? props.multiple === true && Array.isArray(modelValue.value)
-        ? modelValue.value
-        : [modelValue.value]
+    props.modelValue !== undefined && (props.modelValue !== null || mapNull === true)
+      ? props.multiple === true && Array.isArray(props.modelValue)
+        ? props.modelValue
+        : [props.modelValue]
       : [];
 
   if (props.mapOptions === true && Array.isArray(optionsList.value) === true) {
@@ -637,7 +643,7 @@ const innerValue = computed((): Option[] => {
 
     const values = val.map((v) => getOption(v, cache));
 
-    return modelValue.value === null && mapNull === true ? values.filter((v) => v !== null) : values;
+    return props.modelValue === null && mapNull === true ? values.filter((v) => v !== null) : values;
   }
 
   return val;
@@ -717,7 +723,7 @@ function getEmittingOptionValue(opt: Option) {
 function removeAtIndex(index: number) {
   if (index > -1 && index < innerValue.value.length) {
     if (props.multiple === true) {
-      const model = modelValue.value.slice();
+      const model = props.modelValue.slice();
       model.splice(index, 1);
       emit("update:modelValue", model);
     } else {
@@ -740,10 +746,10 @@ function closeDropdown() {
 }
 
 const onDropdownClose = async () => {
-  if (options.value && typeof options.value === "function") {
-    optionsList.value = (await options.value()).results as Option[];
+  if (props.options && typeof props.options === "function") {
+    optionsList.value = (await props.options()).results as Option[];
   } else {
-    optionsList.value = options.value as Option[];
+    optionsList.value = props.options as Option[];
   }
 
   filterString.value = undefined;
@@ -817,7 +823,7 @@ function toggleOption(opt: Option) {
     return;
   }
 
-  const model = modelValue.value.slice();
+  const model = props.modelValue.slice();
   const index = innerOptionsValue.value.findIndex((v) => _.isEqual(v, optValue));
 
   if (index > -1) {
@@ -836,10 +842,10 @@ function toggleOption(opt: Option) {
 
 async function onSearch(value: string) {
   filterString.value = value;
-  if (options.value && typeof options.value === "function") {
+  if (props.options && typeof props.options === "function") {
     try {
       listLoading.value = true;
-      optionsTemp.value = (await options.value(filterString.value)).results as Option[];
+      optionsTemp.value = (await props.options(filterString.value)).results as Option[];
     } finally {
       listLoading.value = false;
     }

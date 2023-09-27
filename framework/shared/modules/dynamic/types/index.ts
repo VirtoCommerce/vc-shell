@@ -27,11 +27,11 @@ export interface SettingsDetails extends SettingsBase {
   status?: {
     component: string;
   };
-  multilanguage?: boolean;
 }
 
 export interface SettingsBase {
   url?: string;
+  localeKey: string;
   name: string;
   titleTemplate: string;
   composable: string;
@@ -58,6 +58,9 @@ export interface ListContentSchema extends SchemaBase {
     type?: string;
     customTemplate?: GridTemplateOverride;
   })[];
+  mobileTemplate?: {
+    component: string;
+  };
 }
 
 export interface FormContentSchema extends SchemaBase {
@@ -86,6 +89,9 @@ export interface SchemaBase {
   rules?: RulesBase;
   placeholder?: string;
   disabled?: { method: string };
+  tooltip?: string;
+  visibility?: VisibilityOptions;
+  multilanguage?: boolean;
 }
 
 export interface SelectSchema extends SchemaBase {
@@ -93,8 +99,6 @@ export interface SelectSchema extends SchemaBase {
   optionValue: string;
   optionLabel: string;
   method: string;
-  tooltip?: string;
-  visibility?: VisibilityOptions;
   customTemplate?: {
     component: string;
   };
@@ -208,9 +212,11 @@ export interface OverridesUpsert extends OverridesReplace {
 
 export interface OverridesReplace {
   path: string;
-  value: ControlSchema;
+  value: ControlSchema | SettingsSchema["toolbar"][number];
+  name: string;
 }
 
 export interface OverridesRemove {
   path: string;
+  name: string;
 }

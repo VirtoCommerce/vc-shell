@@ -11,11 +11,19 @@
     @collapse="$emit('collapse:blade')"
   >
     <template
-      v-if="bladeOptions?.status"
+      v-if="bladeOptions"
       #actions
     >
-      <component :is="bladeOptions.status" />
+      <div class="tw-flex tw-flex-row tw-items-center tw-gap-3">
+        <template
+          v-for="(value, key, index) in bladeOptions"
+          :key="`blade-actions-slot-${key}-${index}`"
+        >
+          <component :is="value" />
+        </template>
+      </div>
     </template>
+
     <VcContainer :no-padding="true">
       <div
         v-if="isReady"
@@ -36,7 +44,7 @@
           >
             <component
               :is="item"
-              v-model="context"
+              v-model="bladeContext"
             ></component>
           </div>
         </div>
@@ -62,6 +70,7 @@ import {
   ref,
   Ref,
   resolveComponent,
+  toRef,
   toValue,
   unref,
   VNode,
@@ -99,16 +108,14 @@ import {
   IControlBaseProps,
   IFieldset,
 } from "../components/models";
-import { reactify, useArrayFilter } from "@vueuse/core";
+import { reactify, reactiveComputed, useArrayFilter } from "@vueuse/core";
 import * as _ from "lodash-es";
 import { UseDynamicProperties } from "../factories/base/useDynamicPropertiesFactory";
-import { UseMultilanguage } from "../factories/base/useMultilanguageFactory";
 import { useAssets } from "../../../../core/composables/useAssets";
 import { IBladeToolbar } from "../../../../core/types";
 import { generateId } from "../../../../core/utilities";
-
 import { AssetsDetails, IParentCallArgs, useBladeNavigation, usePopup } from "../../../index";
-import { VcButton, VcCol, VcRow, VcSelect } from "../../../../ui/components";
+import { VcButton, VcCol, VcRow } from "../../../../ui/components";
 
 interface Props {
   expanded?: boolean;
@@ -143,13 +150,18 @@ const { showConfirmation } = usePopup();
 const isMobile = inject<Ref<boolean>>("isMobile");
 const useDynamicProperties = inject<() => UseDynamicProperties<any, any>>("useDynamicProperties");
 
-const useMultilanguage = inject<() => UseMultilanguage>("useMultilanguage");
+let dynamicProperties;
+if (useDynamicProperties && typeof useDynamicProperties === "function") {
+  dynamicProperties = useDynamicProperties();
+}
+
+const isAnyControlMultilanguage = ref(false);
 
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables[
   props.model?.settings?.composable
 ]({ emit, props });
 
-const context = reactive({
+const bladeContext = ref({
   loading,
   item,
   validationState,
@@ -166,15 +178,9 @@ const widgetLoading = ref(false);
 
 const generatedControls = ref<VNode[]>([]);
 
-let languages: string[];
-let localesOptions;
-const currentLocale = ref("en-US");
-
-const setLocale = (locale: string) => {
-  currentLocale.value = locale;
-};
-
 const imageHandlers = imageHandler();
+
+const settings = computed(() => props.model?.settings);
 
 const form = computed(() => props.model.content.find((x) => x.type === "form"));
 
@@ -184,41 +190,35 @@ const bladeStatus = computed(() => {
   if ("status" in props.model.settings && props.model.settings.status) {
     if (!("component" in props.model.settings.status))
       throw new Error(`Component is required in status: ${props.model.settings.status}`);
-    return reactive(h(resolveComponent(props.model.settings.status.component), { context }));
+    return reactive(h(resolveComponent(props.model.settings.status.component), { context: bladeContext.value }));
   }
 
   return null;
 });
 
-const bladeMultilanguage = computed(() => {
-  if ("multilanguage" in props.model.settings && props.model.settings.multilanguage) {
-    return reactive(
-      h(VcSelect as any, {
-        name: "currentLocale",
-        modelValue: currentLocale,
-        options: localesOptions,
-        optionValue: "value",
-        optionLabel: "label",
-        disabled: "disabled",
-        required: true,
-        clearable: false,
-        "onUpdate:modelValue": (e: string) => {
-          setLocale(e);
-        },
-      })
-    );
+const bladeMultilanguage = reactiveComputed(() => {
+  if ("multilanguage" in scope && scope.multilanguage) {
+    if (!("component" in scope.multilanguage)) {
+      throw new Error(`Component is required in multilanguage: ${scope.multilanguage}`);
+    }
+    return {
+      component: scope.multilanguage.component,
+      currentLocale: scope.multilanguage.currentLocale,
+    };
   }
 
-  return null;
+  return {};
 });
+
+const currentLocale = toRef(bladeMultilanguage, "currentLocale");
 
 const bladeWidgets = computed(() => {
   return widgets.value?.children?.map((x) => resolveComponent(x));
 });
 
 const bladeOptions = reactive({
+  multilanguage: bladeMultilanguage.component,
   status: bladeStatus,
-  multilanguage: bladeMultilanguage,
 });
 function callMethod({ method, arg }) {
   scope[method](arg);
@@ -246,8 +246,10 @@ const fieldMap = {
         optionLabel: element.optionLabel,
         emitValue: true,
         options: scope[element.method],
+        currentLanguage: currentLocale,
       },
       options: baseOptions,
+
       slots: element.customTemplate && {
         "selected-item": (scope) => h(resolveComponent(element.customTemplate.component), { context: scope }),
         option: (scope) => h(resolveComponent(element.customTemplate.component), { context: scope }),
@@ -258,6 +260,7 @@ const fieldMap = {
       props: {
         ...baseProps,
         type: element.variant,
+        currentLanguage: currentLocale,
       },
       options: baseOptions,
     }),
@@ -332,7 +335,6 @@ const fieldMap = {
   },
   "dynamic-properties": (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) => {
     const dynamicProps = filteredProps(element.property, { include: element?.include, exclude: element?.exclude });
-
     if (dynamicProps?.value && useDynamicProperties && typeof useDynamicProperties === "function") {
       return {
         content: [
@@ -342,7 +344,7 @@ const fieldMap = {
                 props: {
                   disabled: "disabled" in scope && scope.disabled,
                   property: prop,
-                  modelValue: getPropertyValue(prop, currentLocale.value),
+                  modelValue: computed(() => getPropertyValue(prop, currentLocale.value)),
                   optionsGetter: loadDictionaries,
                   "onUpdate:model-value": setPropertyValue,
                   required: prop.required,
@@ -358,6 +360,8 @@ const fieldMap = {
                   },
                   displayNames: prop.displayNames,
                   classNames: "tw-p-2",
+                  key: prop.id,
+                  currentLanguage: currentLocale,
                 },
                 options: baseOptions,
               });
@@ -401,6 +405,7 @@ const fieldMap = {
     EditorField({
       props: {
         ...baseProps,
+        currentLanguage: currentLocale,
         assetsFolder: element.id || element.categoryId,
       },
       options: baseOptions,
@@ -410,22 +415,27 @@ const fieldMap = {
 function fieldHelper(field: ControlSchema, parentId: string | number, context?: any) {
   if (!field) return false;
 
+  if (field.multilanguage) {
+    isAnyControlMultilanguage.value = true;
+  }
+
   const baseProps: IControlBaseProps = {
     key: `${parentId}-${field.id}`,
-    label: field["label"] ? unref(unwrapInterpolation(field["label"], context)) : undefined,
+    label: field.label ? unref(unwrapInterpolation(field.label, context)) : undefined,
     disabled: ("disabled" in scope && scope.disabled) || disabledHandler("disabled" in field && field.disabled),
-    name: field["name"],
-    rules: field["rules"],
-    placeholder: field["label"],
-    required: field["rules"]?.required,
+    name: field.name,
+    rules: field.rules,
+    placeholder: field.label,
+    required: field.rules?.required,
     classNames: "tw-p-2",
-    modelValue: getModel(field["property"], context),
-    "onUpdate:modelValue": (e) => setModel({ property: field["property"], value: e, context }),
-    tooltip: field["tooltip"],
+    modelValue: getModel(field.property, context),
+    "onUpdate:modelValue": (e) => setModel({ property: field.property, value: e, context }),
+    tooltip: field.tooltip,
+    multilanguage: field.multilanguage,
   };
 
   const baseOptions = {
-    visibility: field["visibility"]?.method ? toValue(scope[field["visibility"]?.method]) : true,
+    visibility: field.visibility?.method ? toValue(scope[field.visibility?.method]) : true,
   };
 
   return {
@@ -464,6 +474,9 @@ function fieldValidation(args: {
       rules: unref(props).rules,
       modelValue: unref(props.modelValue),
       label: unref(props).label,
+      key: unref(props).multilanguage
+        ? `${String(unref(props).key)}_${unrefNested(props).currentLanguage}`
+        : String(unref(props).key),
     },
     {
       default: ({ errorMessage, errors, handleChange }) =>
@@ -502,7 +515,7 @@ function renderFieldset(args: { content: IFieldset[] }) {
   const unreffed = unref(content);
 
   return unreffed.map(({ columns, fields, remove }, index, arr) => {
-    const divideByCols = _.chunk(Object.values(fields), columns || 1);
+    const divideByCols = _.chunk(Object.values(unref(fields)), columns || 1);
 
     return h(
       "div",
@@ -550,7 +563,7 @@ function renderCard(args: { component; props; slots; children; options }) {
     component,
     { header, class: classNames, key },
     {
-      default: () => h("div", { class: { "tw-p-2": true, ...props.classNames } }, children.map(helperCreateComponent)),
+      default: () => h("div", { class: { "tw-p-2": true, ...props.classNames } }, children?.map(helperCreateComponent)),
       actions: () => {
         const elem = slots?.actions();
         if (elem) {
@@ -632,38 +645,40 @@ function unwrapInterpolation(property: string, context: typeof item.value) {
   return property;
 }
 
-const toolbarMethods = ref(
-  _.merge(
-    {},
-    {
-      saveChanges: {
-        async clickHandler() {
-          await saveChanges(item.value);
+const toolbarMethods = _.merge(
+  ref({}),
+  ref({
+    saveChanges: {
+      async clickHandler() {
+        await saveChanges(item.value);
 
+        emit("parent:call", {
+          method: "reload",
+        });
+        if (!props.param) {
+          emit("close:blade");
+        }
+      },
+      disabled: computed(() => !validationState.value.validated),
+    },
+    remove: {
+      async clickHandler() {
+        if (
+          await showConfirmation(
+            computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_PRODUCT`))
+          )
+        ) {
+          await remove({ id: props.param });
           emit("parent:call", {
             method: "reload",
           });
-          if (!props.param) {
-            emit("close:blade");
-          }
-        },
-        disabled: computed(() => !validationState.value.validated),
+          emit("close:blade");
+        }
       },
-      remove: {
-        async clickHandler() {
-          if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_PRODUCT")))) {
-            await remove({ id: props.param });
-            emit("parent:call", {
-              method: "reload",
-            });
-            emit("close:blade");
-          }
-        },
-        // disabled: computed(() => disabled.value),
-      },
+      disabled: computed(() => "disabled" in scope && scope["disabled"]),
     },
-    scope
-  )
+  }),
+  ref(scope)
 );
 
 const toolbarComputed = computed((): IBladeToolbar[] => {
@@ -687,17 +702,8 @@ const toolbarComputed = computed((): IBladeToolbar[] => {
 });
 
 onMounted(async () => {
-  if (useMultilanguage && typeof useMultilanguage === "function") {
-    languages = await useMultilanguage().getLanguages();
-    localesOptions = languages.map((x) => ({ label: t(`OFFERS.PAGES.DETAILS.LANGUAGES.${x}`, x), value: x }));
-  }
-
   if (props.param) {
     await load({ id: props.param });
-
-    if (widgets.value) {
-      // await createWidgets();
-    }
   }
 
   buildForm(form.value.children as ControlSchema[]);
@@ -768,7 +774,7 @@ function handleDictionaryValue(
 }
 
 async function loadDictionaries(property: Property, keyword?: string, locale?: string) {
-  let dictionaryItems = await useDynamicProperties().searchDictionaryItems({
+  let dictionaryItems = await dynamicProperties?.searchDictionaryItems({
     propertyIds: [property.id],
     keyword,
     skip: 0,
@@ -781,13 +787,12 @@ async function loadDictionaries(property: Property, keyword?: string, locale?: s
   return dictionaryItems;
 }
 
-function disabledHandler(disabled: { method?: string; inverted?: boolean } | boolean) {
+function disabledHandler(disabled: { method?: string } | boolean): boolean {
   if (!disabled) return false;
-  if (typeof disabled === "boolean") {
-    return disabled;
-  } else if (typeof scope[disabled.method] === "function") {
-    return scope[disabled.method]();
-  }
+  if (typeof disabled === "boolean") return disabled;
+  else if (typeof scope[disabled.method] === "function") return scope[disabled.method]();
+  else if (unref(scope[disabled.method])) return unref(scope[disabled.method]);
+  return false;
 }
 
 function setPropertyValue(data: {
@@ -868,7 +873,7 @@ function setModel(args: {
 }) {
   const { property, value, option, context = item.value } = args;
 
-  context[property] = option ? value[option] : value;
+  _.set(context, property, option ? value[option] : value);
 }
 
 function imageHandler() {
@@ -887,7 +892,11 @@ function imageHandler() {
       return item.value.images;
     },
     async remove(image: IImage) {
-      if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
+      if (
+        await showConfirmation(
+          computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION`))
+        )
+      ) {
         item.value.images = await remove(item.value.images, image);
       }
       return item.value.images;
@@ -912,7 +921,9 @@ function editImages(args: Image[]) {
 
 async function onBeforeClose() {
   if (validationState.value.modified) {
-    return await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.CLOSE_CONFIRMATION"))));
+    return await showConfirmation(
+      unref(computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)))
+    );
   }
 }
 

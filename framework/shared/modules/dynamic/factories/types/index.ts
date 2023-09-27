@@ -13,6 +13,7 @@ export interface IPagination {
 export interface IValidationState<Item> {
   valid: boolean;
   dirty: boolean;
+  disabled: boolean;
   modified: boolean;
   validated: boolean;
   setFieldError: (field: string, message: string | string[]) => void;

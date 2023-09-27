@@ -23,7 +23,7 @@
       :current-page="pagination?.currentPage"
       :search-value="searchValue"
       :selected-item-id="selectedItemId"
-      :total-label="$t('PRODUCTS.PAGES.LIST.TABLE.TOTALS')"
+      :total-label="$t(`${settings.localeKey.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
       :total-count="pagination?.totalCount"
       :active-filter-count="activeFilterCount"
       @item-click="onItemClick"
@@ -32,6 +32,7 @@
       @header-click="onHeaderClick"
       @load:change="onSearchList"
       @scroll:ptr="reload"
+      @search:change="onSearchList"
     >
       <template
         v-if="isFilterVisible"
@@ -44,9 +45,11 @@
       <template #notfound>
         <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
           <div class="tw-m-4 tw-text-xl tw-font-medium">
-            {{ $t("DYNAMIC.PAGES.LIST.NOT_FOUND.EMPTY") }}
+            {{ $t(`${settings.localeKey.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
           </div>
-          <VcButton @click="resetSearch">{{ $t("DYNAMIC.PAGES.LIST.NOT_FOUND.RESET") }}</VcButton>
+          <VcButton @click="resetSearch">{{
+            $t(`${settings.localeKey.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.RESET`)
+          }}</VcButton>
         </div>
       </template>
 
@@ -61,12 +64,36 @@
           :context="itemData"
         />
       </template>
+
+      <!-- Override table mobile view -->
+
+      <template
+        v-if="bladeOptions.mobileView"
+        #mobile-item="itemData"
+      >
+        <component
+          :is="bladeOptions.mobileView"
+          :context="itemData"
+        ></component>
+      </template>
     </VcTable>
   </VcBlade>
 </template>
 <script setup lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Ref, computed, inject, onMounted, reactive, ref, resolveComponent, shallowRef, unref, watch } from "vue";
+import {
+  Ref,
+  VNode,
+  computed,
+  inject,
+  onMounted,
+  reactive,
+  ref,
+  resolveComponent,
+  shallowRef,
+  unref,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema } from "../types";
 import useFilterBuilder from "../composables/useFilterBuilder";
@@ -101,7 +128,8 @@ const { t } = useI18n({ useScope: "global" });
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
 const emit = defineEmits<Emits>();
-const title = computed(() => props.model?.settings.titleTemplate);
+const settings = computed(() => props.model?.settings);
+const title = computed(() => settings.value?.titleTemplate);
 const allSelected = ref(false);
 const searchValue = ref();
 const selectedItemId = ref();
@@ -122,6 +150,7 @@ const bladeOptions = reactive({
   tableData,
   table,
   templateOverrideComponents: templateOverrideComponents(),
+  mobileView: mobileViewComponent(),
 });
 
 const { load, remove, items, loading, pagination, query, scope } = props.composables[props.model?.settings?.composable](
@@ -137,32 +166,30 @@ const { filterComponent, activeFilterCount, isFilterVisible } = useFilterBuilder
   load,
 });
 
-const toolbarMethods = ref(
-  _.merge(
-    {},
-    {
-      openAddBlade: {
-        async clickHandler() {
-          if ("openDetailsBlade" in scope && scope.openDetailsBlade && typeof scope.openDetailsBlade === "function") {
-            scope.openDetailsBlade();
-          }
-        },
-      },
-      refresh: {
-        async clickHandler() {
-          await reload();
-        },
-      },
-      removeItems: {
-        async clickHandler() {
-          removeItems();
-        },
-        disabled: computed(() => !selectedIds.value?.length),
-        isVisible: isDesktop.value,
+const toolbarMethods = _.merge(
+  ref({}),
+  ref({
+    openAddBlade: {
+      async clickHandler() {
+        if ("openDetailsBlade" in scope && scope.openDetailsBlade && typeof scope.openDetailsBlade === "function") {
+          scope.openDetailsBlade();
+        }
       },
     },
-    scope
-  )
+    refresh: {
+      async clickHandler() {
+        await reload();
+      },
+    },
+    removeItems: {
+      async clickHandler() {
+        removeItems();
+      },
+      disabled: computed(() => !selectedIds.value?.length),
+      isVisible: isDesktop.value,
+    },
+  }),
+  ref(scope)
 );
 
 const toolbarComputed = computed((): IBladeToolbar[] => {
@@ -238,9 +265,11 @@ const onSelectionChanged = (i: typeof items) => {
 async function removeItems() {
   if (
     await showConfirmation(
-      t("DYNAMIC.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE", {
+      t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE`, {
         count: allSelected.value
-          ? t("DYNAMIC.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL", { totalCount: pagination.value.totalCount })
+          ? t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`, {
+              totalCount: pagination.value.totalCount,
+            })
           : selectedIds.value.length,
       })
     )
@@ -324,7 +353,7 @@ async function resetSearch() {
   });
 }
 
-function templateOverrideComponents() {
+function templateOverrideComponents(): Record<string, VNode> {
   return {
     ...table.value.columns?.reduce((acc, curr) => {
       if ("customTemplate" in curr) {
@@ -343,6 +372,15 @@ function templateOverrideComponents() {
       return acc;
     }, {}),
   };
+}
+
+function mobileViewComponent() {
+  const componentName = tableData.value.mobileTemplate?.component;
+  if (componentName) {
+    const component = resolveComponent(componentName);
+
+    if (component && typeof component !== "string") return shallowRef(component);
+  }
 }
 
 defineExpose({

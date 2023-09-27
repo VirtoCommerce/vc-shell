@@ -49,15 +49,17 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
 
     const loading = useLoading(itemLoading, manageLoading, removeLoading);
 
-    const validationState = computed(() => ({
-      dirty: isDirty.value,
-      valid: isFormValid.value,
-      modified: isModified.value,
-      disabled: isDisabled.value,
-      validated: !isDisabled.value && isModified.value,
-      setFieldError,
-      resetModified,
-    }));
+    const validationState = computed(
+      (): IValidationState<Item> => ({
+        dirty: isDirty.value,
+        valid: isFormValid.value,
+        modified: isModified.value,
+        disabled: isDisabled.value,
+        validated: !isDisabled.value && isModified.value,
+        setFieldError,
+        resetModified,
+      })
+    );
 
     watch(
       [() => item, () => itemTemp],

@@ -16,6 +16,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -178,7 +180,7 @@ export interface Props {
   /**
    * Model of the component; Use with a listener for 'update:model-value' event OR use v-model directive
    */
-  modelValue?: MaybeRef<string | number | Date | null | undefined>;
+  modelValue?: string | number | Date | null | undefined;
   /**
    * Input label text
    */
@@ -250,6 +252,14 @@ export interface Props {
    * Input required state
    */
   required?: boolean;
+  /**
+   * Input multilanguage state
+   */
+  multilanguage?: boolean;
+  /**
+   * Input current language
+   */
+  currentLanguage?: string;
 }
 
 export interface Emits {

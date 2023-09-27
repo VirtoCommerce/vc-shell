@@ -12,27 +12,25 @@ export interface UseDynamicPropertiesFactoryParams<Query, DictionaryItems> {
 }
 
 export interface UseDynamicProperties<Query, DictionaryItems> {
-  searchDictionaryItems: AsyncAction<Query, any>;
+  searchDictionaryItems: AsyncAction<Query, DictionaryItems>;
   loading: ComputedRef<boolean>;
-  dictionaryItems: ComputedRef<DictionaryItems>;
 }
 
 export function useDynamicPropertiesFactory<Query, DictionaryItems>(
   factoryParams: UseDynamicPropertiesFactoryParams<Query, DictionaryItems>
 ) {
   return function useDynamicProperties(): UseDynamicProperties<Query, DictionaryItems> {
-    const searchResult = ref<ISearchResult<DictionaryItems>>();
-
-    const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<Query, any>(async (args) => {
-      searchResult.value = await factoryParams.searchDictionaryItems(args);
-    });
+    const { loading: dictionaryItemsLoading, action: searchDictionaryItems } = useAsync<Query, DictionaryItems>(
+      async (args) => {
+        return (await factoryParams.searchDictionaryItems(args)).results;
+      }
+    );
 
     const loading = useLoading(dictionaryItemsLoading);
 
     return {
       loading,
       searchDictionaryItems,
-      dictionaryItems: computed(() => searchResult.value?.results),
     };
   };
 }

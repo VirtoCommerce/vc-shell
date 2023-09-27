@@ -13,6 +13,8 @@
       v-if="label"
       class="tw-mb-2"
       :required="required"
+      :multilanguage="multilanguage"
+      :current-language="currentLanguage"
     >
       <span>{{ label }}</span>
       <template
@@ -50,19 +52,21 @@
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { useUser } from "./../../../../core/composables";
-import { MaybeRef, ref, unref, watch } from "vue";
+import { ref, unref, watch } from "vue";
 import ImageUploader from "quill-image-uploader";
 import { VcLabel, VcHint } from "./../../";
 
 export interface Props {
   placeholder?: string;
-  modelValue?: MaybeRef<string | number | Date>;
+  modelValue?: string | number | Date;
   required?: boolean;
   disabled?: boolean;
   label?: string;
   tooltip?: string;
   errorMessage?: string;
-  assetsFolder: MaybeRef<string>;
+  assetsFolder: string;
+  multilanguage?: boolean;
+  currentLanguage?: string;
 }
 
 export interface Emits {
@@ -78,20 +82,28 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineSlots<{
+  default: (props: any) => any;
+  error?: (props: any) => any;
+}>();
+
 const content = ref();
-const toolbar = [
-  { header: 1 },
-  { header: 2 },
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "link",
-  "image",
-  "blockquote",
-  { list: "ordered" },
-  { list: "bullet" },
-];
+const toolbar = {
+  container: [
+    { header: 1 },
+    { header: 2 },
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "link",
+    "image",
+    "blockquote",
+    { list: "ordered" },
+    { list: "bullet" },
+  ],
+  handlers: {},
+};
 
 const modules = {
   name: "imageUploader",
@@ -175,5 +187,13 @@ function isQuillEmpty(value: string) {
       hover:tw-bg-[color:var(--editor-scroll-color-hover)];
     }
   }
+}
+
+.ql-language.ql-picker .ql-picker-label:before {
+  padding-right: 18px;
+  content: attr(data-value);
+}
+.ql-language.ql-picker .ql-picker-item:before {
+  content: attr(data-value);
 }
 </style>

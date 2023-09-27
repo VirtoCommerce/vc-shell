@@ -4532,7 +4532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@^1.0.92, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.88, @vc-shell/api-client-generator@^1.0.92, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -4545,7 +4545,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.92, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.88, @vc-shell/config-generator@^1.0.92, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -4578,7 +4578,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.92, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.88, @vc-shell/framework@^1.0.92, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -13661,21 +13661,21 @@ __metadata:
 
 "typescript@patch:typescript@^4.6.4 || ^5.0.0#~builtin<compat/typescript>":
   version: 5.2.2
-  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=85af82"
+  resolution: "typescript@patch:typescript@npm%3A5.2.2#~builtin<compat/typescript>::version=5.2.2&hash=f3b441"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 07106822b4305de3f22835cbba949a2b35451cad50888759b6818421290ff95d522b38ef7919e70fb381c5fe9c1c643d7dea22c8b31652a717ddbd57b7f4d554
+  checksum: 0f4da2f15e6f1245e49db15801dbee52f2bbfb267e1c39225afdab5afee1a72839cd86000e65ee9d7e4dfaff12239d28beaf5ee431357fcced15fb08583d72ca
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@~5.0.4#~builtin<compat/typescript>":
   version: 5.0.4
-  resolution: "typescript@patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=85af82"
+  resolution: "typescript@patch:typescript@npm%3A5.0.4#~builtin<compat/typescript>::version=5.0.4&hash=b5f058"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: bb309d320c59a26565fb3793dba550576ab861018ff3fd1b7fccabbe46ae4a35546bc45f342c0a0b6f265c801ccdf64ffd68f548f117ceb7f0eac4b805cd52a9
+  checksum: d26b6ba97b6d163c55dbdffd9bbb4c211667ebebc743accfeb2c8c0154aace7afd097b51165a72a5bad2cf65a4612259344ff60f8e642362aa1695c760d303ac
   languageName: node
   linkType: hard
 
@@ -14000,6 +14000,134 @@ __metadata:
   checksum: ae0123222c6df65b437669d63dfa8c36cee20a504101b2fcd97b8bf76f91259c17f9f2b4d70a1e3c6bbcee7f51b28392833adb6b2770b23b01abec84e369660b
   languageName: node
   linkType: hard
+
+"vc-app-extend@workspace:sample/vc-app-extend":
+  version: 0.0.0-use.local
+  resolution: "vc-app-extend@workspace:sample/vc-app-extend"
+  dependencies:
+    "@commitlint/cli": ^17.6.3
+    "@commitlint/config-conventional": ^17.6.3
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@rollup/plugin-typescript": ^11.1.1
+    "@types/lodash-es": ^4.17.7
+    "@typescript-eslint/eslint-plugin": ^5.59.7
+    "@typescript-eslint/parser": ^5.59.7
+    "@vc-shell/api-client-generator": ^1.0.88
+    "@vc-shell/config-generator": ^1.0.88
+    "@vc-shell/framework": ^1.0.88
+    "@vitejs/plugin-vue": ^4.2.3
+    "@vue/eslint-config-prettier": ^7.1.0
+    "@vue/eslint-config-typescript": ^11.0.3
+    "@vueuse/core": ^10.1.2
+    "@vueuse/integrations": ^10.1.2
+    autoprefixer: ^10.4.14
+    buffer-esm: ^1.2.0
+    conventional-changelog-cli: ^2.2.2
+    cross-env: ^7.0.3
+    eslint: ^8.41.0
+    eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-import: ^2.27.5
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-vue: ^9.14.1
+    husky: ^8.0.3
+    lint-staged: ^13.2.2
+    lodash-es: ^4.17.21
+    moment: ^2.29.4
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.62.1
+    tailwindcss: ^3.3.2
+    typescript: ~5.0.4
+    vc-sample-modules: "link:../vc-app/dist"
+    vee-validate: ^4.9.4
+    vite: ^4.3.9
+    vite-plugin-checker: ^0.6.0
+    vite-plugin-mkcert: ^1.15.0
+    vite-plugin-pwa: ^0.14.7
+    vue: ^3.3.4
+    vue-eslint-parser: ^9.3.0
+    vue-router: ^4.2.1
+    vue-tsc: ~1.6.5
+    yarn: ^1.22.19
+  languageName: unknown
+  linkType: soft
+
+"vc-app@workspace:sample/vc-app":
+  version: 0.0.0-use.local
+  resolution: "vc-app@workspace:sample/vc-app"
+  dependencies:
+    "@commitlint/cli": ^17.6.3
+    "@commitlint/config-conventional": ^17.6.3
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@rollup/plugin-typescript": ^11.1.1
+    "@types/lodash-es": ^4.17.7
+    "@typescript-eslint/eslint-plugin": ^5.59.7
+    "@typescript-eslint/parser": ^5.59.7
+    "@vc-shell/api-client-generator": ^1.0.88
+    "@vc-shell/config-generator": ^1.0.88
+    "@vc-shell/framework": ^1.0.88
+    "@vitejs/plugin-vue": ^4.2.3
+    "@vue/eslint-config-prettier": ^7.1.0
+    "@vue/eslint-config-typescript": ^11.0.3
+    "@vueuse/core": ^10.1.2
+    "@vueuse/integrations": ^10.1.2
+    autoprefixer: ^10.4.14
+    buffer-esm: ^1.2.0
+    conventional-changelog-cli: ^2.2.2
+    cross-env: ^7.0.3
+    eslint: ^8.41.0
+    eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-import: ^2.27.5
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-vue: ^9.14.1
+    husky: ^8.0.3
+    lint-staged: ^13.2.2
+    lodash-es: ^4.17.21
+    moment: ^2.29.4
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.62.1
+    tailwindcss: ^3.3.2
+    typescript: ~5.0.4
+    vee-validate: ^4.9.4
+    vite: ^4.3.9
+    vite-plugin-checker: ^0.6.0
+    vite-plugin-mkcert: ^1.15.0
+    vite-plugin-pwa: ^0.14.7
+    vue: ^3.3.4
+    vue-eslint-parser: ^9.3.0
+    vue-router: ^4.2.1
+    vue-tsc: ~1.6.5
+    yarn: ^1.22.19
+  languageName: unknown
+  linkType: soft
+
+"vc-sample-modules@link:../vc-app/dist::locator=vc-app-extend%40workspace%3Asample%2Fvc-app-extend":
+  version: 0.0.0-use.local
+  resolution: "vc-sample-modules@link:../vc-app/dist::locator=vc-app-extend%40workspace%3Asample%2Fvc-app-extend"
+  languageName: node
+  linkType: soft
+
+"vc-sample-modules@workspace:sample/vc-app/dist":
+  version: 0.0.0-use.local
+  resolution: "vc-sample-modules@workspace:sample/vc-app/dist"
+  peerDependencies:
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@vc-shell/config-generator": ^1.0.96
+    "@vc-shell/framework": ^1.0.96
+    "@vueuse/core": ^10.1.2
+    "@vueuse/integrations": ^10.1.2
+    moment: ^2.29.4
+    roboto-fontface: ^0.10.0
+    vee-validate: ^4.9.4
+    vue: ^3.3.4
+    vue-router: ^4.2.1
+  languageName: unknown
+  linkType: soft
 
 "vee-validate@npm:4.11.6, vee-validate@npm:^4.9.3, vee-validate@npm:^4.9.4":
   version: 4.11.6

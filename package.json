@@ -21,13 +21,17 @@
     "build-cli:create-vc-app": "yarn workspace @vc-shell/create-vc-app run build",
     "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
-    "storybook-serve": "storybook dev .storybook/assets -p 6006"
+    "storybook-serve": "storybook dev .storybook/assets -p 6006",
+    "build:sample-modules": "yarn workspace vc-app run build:modules-library",
+    "serve:sample-extended": "yarn workspace vc-app-extend run serve"
   },
   "workspaces": [
     "apps/*",
     "framework",
     "cli/*",
-    "import-module"
+    "import-module",
+    "sample/*",
+    "sample/vc-app/dist"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",
@@ -83,5 +87,5 @@
   "lint-staged": {
     "*.{js,ts,vue}": "eslint --fix"
   },
-  "packageManager": "yarn@3.5.0"
+  "packageManager": "yarn@3.6.3"
 }

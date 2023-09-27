@@ -1,0 +1,71 @@
+# OS Specific
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE Specific
+nbproject
+.~lock.*
+.buildpath
+.idea
+.project
+.settings
+composer.lock
+*.sublime-workspace
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Project Specific
+node_modules
+*.log
+/lib
+tmp
+.changelog
+coverage/
+.nyc_output/
+.eslintcache
+
+# local env files
+.env.local
+.env.*.local
+
+# compiled output
+dist/
+storybook-static
+*.tsbuildinfo
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Visual Studio 2015/2017 cache/options directory
+.vs/*
+
+# Temporary
+package-lock.json
+
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

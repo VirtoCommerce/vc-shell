@@ -1,0 +1,25 @@
+# v2.0.0
+name: Vendor Portal CI
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '.github/**'
+      - '.deployment/**'
+      - 'docs/**'
+      - 'README.md'
+      - 'LICENSE'
+    branches: [ main ]
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Repository Dispatch
+      uses: peter-evans/repository-dispatch@v2
+      with:
+        token: ${{ secrets.REPO_TOKEN }}
+        repository: VirtoCommerce/vc-module-marketplace-vendor
+        event-type: ci

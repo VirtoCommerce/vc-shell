@@ -1,3 +1,12 @@
+## [1.0.101](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.100...v1.0.101) (2023-09-28)
+
+
+### Features
+
+* client and composables for import-module ([282829b](https://github.com/VirtoCommerce/vc-shell/commit/282829b641435cda01ca6d93ed2f16bb680a4ae6))
+
+
+
 ## [1.0.100](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.99...v1.0.100) (2023-09-22)
 
 

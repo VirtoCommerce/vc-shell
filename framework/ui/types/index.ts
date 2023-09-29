@@ -1,7 +1,7 @@
 import * as VcShellComponents from "./../components";
 
 // Declare all components globally
-declare module "@vue/runtime-core" {
+declare module "vue" {
   export interface GlobalComponents {
     // atoms
     VcBadge: (typeof VcShellComponents)["VcBadge"];

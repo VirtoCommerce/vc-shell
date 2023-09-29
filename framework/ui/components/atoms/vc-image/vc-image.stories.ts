@@ -28,7 +28,7 @@ export const Primary: Story = {
     template: '<div style="width: 400px"><vc-image v-bind="args"></vc-image></div>',
   }),
   args: {
-    aspect: "1x1",
+    aspect: "1/1",
     rounded: false,
     clickable: false,
     src: "https://placekitten.com/800/600",

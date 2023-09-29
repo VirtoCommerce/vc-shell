@@ -10,7 +10,7 @@
   >
     <div
       class="user-dropdown-button__avatar"
-      :style="{ 'background-image': `url(${avatar})` }"
+      :style="imageHandler"
     ></div>
     <div class="tw-grow tw-basis-0 tw-ml-3 tw-overflow-hidden">
       <div class="user-dropdown-button__name tw-truncate">
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import { BladeMenu } from "./../../../core/types";
 
@@ -59,6 +59,13 @@ export interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   menuItems: () => [],
+});
+
+const imageHandler = computed(() => {
+  if (props.avatar) {
+    return `background-image: url(${CSS.escape(props.avatar)})`;
+  }
+  return undefined;
 });
 
 const accountMenuVisible = ref(false);

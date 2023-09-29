@@ -1,6 +1,7 @@
 <template>
   <VcPopup
-    :title="currentImage.title"
+    v-if="currentImage"
+    :title="currentImage?.title"
     @close="$emit('close')"
   >
     <template #title>
@@ -16,7 +17,7 @@
       <div class="tw-box-border p-5 tw-grow tw-basis-0 tw-w-full">
         <div
           class="bg-contain tw-bg-no-repeat tw-bg-center tw-w-full tw-h-full tw-box-border"
-          :style="{ backgroundImage: 'url(' + currentImage.url + ')' }"
+          :style="imageHandler"
         ></div>
         <div
           v-if="localIndex > 0"
@@ -62,14 +63,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, ComputedRef } from "vue";
+import { computed, ref } from "vue";
 import { VcPopup, VcLink, VcIcon, VcImage } from "../../../../";
 import { IImage } from "./../../../../../../core/types";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
   images?: IImage[];
-  index: number | ComputedRef<number>;
+  index: number;
 }
 
 export interface Emits {
@@ -84,6 +85,14 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const { t } = useI18n({ useScope: "global" });
 const localIndex = ref(props.index);
+
+const imageHandler = computed(() => {
+  if (currentImage.value.url) {
+    return `background-image: url(${CSS.escape(currentImage.value.url)})`;
+  }
+  return undefined;
+});
+
 const currentImage = computed(() => props.images[localIndex.value]);
 
 const copyLink = (link: string) => {

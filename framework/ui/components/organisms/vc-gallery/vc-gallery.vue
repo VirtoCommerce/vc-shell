@@ -122,13 +122,15 @@ const dropPosition = ref<number>();
 
 const currentIndex = computed(() => previewImageIndex.value);
 
-const { open } = usePopup({
-  component: VcGalleryPreview,
-  props: {
-    images: props.images,
-    index: currentIndex,
-  },
-});
+const { open } = usePopup(
+  computed(() => ({
+    component: VcGalleryPreview,
+    props: {
+      images: props.images,
+      index: currentIndex.value,
+    },
+  }))
+);
 
 watch(
   () => props.images,

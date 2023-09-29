@@ -4470,7 +4470,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@^1.0.101, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.100, @vc-shell/api-client-generator@^1.0.101, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -4483,7 +4483,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.101, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.100, @vc-shell/config-generator@^1.0.101, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -4516,7 +4516,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.101, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.100, @vc-shell/framework@^1.0.101, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5209,9 +5209,9 @@ __metadata:
     "@types/lodash-es": ^4.17.7
     "@typescript-eslint/eslint-plugin": ^5.59.6
     "@typescript-eslint/parser": ^5.59.6
-    "@vc-shell/api-client-generator": ^1.0.101
-    "@vc-shell/config-generator": ^1.0.101
-    "@vc-shell/framework": ^1.0.101
+    "@vc-shell/api-client-generator": ^1.0.100
+    "@vc-shell/config-generator": ^1.0.100
+    "@vc-shell/framework": ^1.0.100
     "@vitejs/plugin-vue": ^4.2.3
     "@vue/eslint-config-prettier": ^7.1.0
     "@vue/eslint-config-typescript": ^11.0.3
@@ -13546,10 +13546,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"type-fest@npm:^4.0.0":
-  version: 4.1.0
-  resolution: "type-fest@npm:4.1.0"
-  checksum: a9cfa9b70abaa96d7e80709aeb2197a372c2caa54d134afdb8ae955de9457aba04a71d17d68dccbb745c96f4c5bfd372da1222d8b44d70f4809074620016507c
+"type-fest@npm:^4.3.1":
+  version: 4.3.2
+  resolution: "type-fest@npm:4.3.2"
+  checksum: 8ba1b3d43e24888052d8c8859ae9b53124f8200c05808ec9247917ac3441612a7b36bf148a5b14150ef73ce7bad3cdca65ae923d37d2ae466c2b814d369fb975
   languageName: node
   linkType: hard
 
@@ -13932,14 +13932,14 @@ __metadata:
   linkType: hard
 
 "vee-validate@npm:^4.9.4":
-  version: 4.11.1
-  resolution: "vee-validate@npm:4.11.1"
+  version: 4.11.7
+  resolution: "vee-validate@npm:4.11.7"
   dependencies:
     "@vue/devtools-api": ^6.5.0
-    type-fest: ^4.0.0
+    type-fest: ^4.3.1
   peerDependencies:
     vue: ^3.3.4
-  checksum: 45eb4029af8198de0b11fb5c7e5753ab52f58db9bbcc8f3f01c9bc5b5926549f3a5bfdd082f60a604a8dccdc11188ca36bd1c7da24fd0453ba1b71881f8d8508
+  checksum: fab2d5daaf336f35be63bac3c0ebdcc95b4552f509cfa6391726808dac5b710ebe02a9fbc5973421f08af2ef66fdc53de29c318e44d680539c952b025d8529de
   languageName: node
   linkType: hard
 

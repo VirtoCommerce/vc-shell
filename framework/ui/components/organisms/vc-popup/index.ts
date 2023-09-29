@@ -1,10 +1,3 @@
-import { VNode } from "vue";
-import _Popup from "./vc-popup.vue";
+import VcPopup from "./vc-popup.vue";
 
-export const VcPopup = _Popup as typeof _Popup & {
-  new (): {
-    $slots: {
-      default: () => VNode[];
-    };
-  };
-};
+export { VcPopup };

@@ -1,3 +1,12 @@
+## [1.0.102](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.101...v1.0.102) (2023-09-29)
+
+
+### Bug Fixes
+
+* escape images url ([7bc4f95](https://github.com/VirtoCommerce/vc-shell/commit/7bc4f95a6718300d0fa158d17c08ef6bc3b61429))
+
+
+
 ## [1.0.101](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.100...v1.0.101) (2023-09-28)
 
 

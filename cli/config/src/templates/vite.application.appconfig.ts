@@ -75,7 +75,7 @@ export default {
     ..._define,
 
     "import.meta.env.PACKAGE_VERSION": `"${version}"`,
-    "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL ? process.env.APP_PLATFORM_URL : "/"}"`,
+    "import.meta.env.APP_PLATFORM_URL": `"${process.env.APP_PLATFORM_URL ? process.env.APP_PLATFORM_URL : ""}"`,
     "import.meta.env.APP_LOG_ENABLED": `"${process.env.APP_LOG_ENABLED}"`,
     "import.meta.env.APP_LOG_LEVEL": `"${process.env.APP_LOG_LEVEL}"`,
     "import.meta.env.APP_BASE_PATH": `"${process.env.APP_BASE_PATH}"`,

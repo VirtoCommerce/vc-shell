@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.102",
+  "version": "1.0.103",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {

@@ -146,9 +146,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
     // caller blade component
     const instanceComponent = isBladeComponent(instance.vnode.type)
       ? instance.vnode.type
-      : navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade
-      ? navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade
-      : instance.vnode.type;
+      : navigationInstance.bladesRefs.value.find((item) => item.active)?.blade?.blade;
 
     if (instanceComponent) {
       // Caller blade index in blades array

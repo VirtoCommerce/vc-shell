@@ -34,12 +34,12 @@ import { VcIcon } from "./../vc-icon";
 import { computed } from "vue";
 
 export interface Props {
-  aspect?: string;
+  aspect?: "1x1" | "16x9" | "4x3" | "3x2";
   rounded?: boolean;
   bordered?: boolean;
   clickable?: boolean;
   src?: string;
-  size?: "auto" | "1x1" | "16x9" | "4x3" | "3x2" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
+  size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
   background?: "cover" | "contain" | "auto";
 }
 

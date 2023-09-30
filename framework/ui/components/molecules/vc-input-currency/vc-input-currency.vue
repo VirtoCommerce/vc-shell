@@ -64,7 +64,7 @@ export interface Props {
   /**
    * Model of the currency component; Use with a listener for 'update:price' event OR use v-model:price directive
    */
-  modelValue: MaybeRef<number | null | undefined>;
+  modelValue: number | null | undefined;
   /**
    * Input label text
    */
@@ -135,7 +135,7 @@ export interface Props {
   /**
    * Option label
    */
-  option?: MaybeRef<string>;
+  option?: string;
   /**
    * Available options that the user can select from.
    * Default value: []
@@ -159,7 +159,7 @@ export interface Props {
 
 export interface Emits {
   (event: "update:model-value", value: string | number | null): void;
-  (event: "update:option", value: string | number | null): void;
+  (event: "update:option", value: unknown): void;
   (event: "change", value: string | number | null): void;
 }
 
@@ -172,7 +172,7 @@ const emit = defineEmits<Emits>();
 const { inputRef, setOptions, numberValue } = useCurrencyInput(
   {
     locale: navigator.language,
-    currency: unref(props.option) || "USD",
+    currency: props.option || "USD",
     currencyDisplay: CurrencyDisplay.hidden,
     hideGroupingSeparatorOnFocus: false,
   },
@@ -185,7 +185,7 @@ watch(
   (newVal) => {
     setOptions({
       locale: navigator.language,
-      currency: unref(newVal),
+      currency: newVal,
       currencyDisplay: CurrencyDisplay.hidden,
       hideGroupingSeparatorOnFocus: false,
     });

@@ -80,6 +80,8 @@ const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
 
+// TODO refactor component and remove field-level validation
+
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination
 const internalRules = unref(props.rules) || "";
@@ -101,8 +103,6 @@ const upload = async (event: Event) => {
   if (isValid.valid) {
     const target = event.target as HTMLInputElement;
     const fileList = target.files;
-
-    console.log(fileList);
 
     if (fileList && fileList.length) {
       emit("upload", fileList);

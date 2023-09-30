@@ -17,7 +17,9 @@ export interface IValidationState<Item> {
   modified: boolean;
   validated: boolean;
   setFieldError: (field: string, message: string | string[]) => void;
+  setErrors: (fields: Record<string, string>) => void;
   resetModified: (data: Item, updateInitial?: boolean) => void;
+  validate: () => Promise<{ valid: boolean; errors: Record<string, string> }>;
 }
 
 export type CustomQuery = { ids: string[] | null; allSelected?: boolean };

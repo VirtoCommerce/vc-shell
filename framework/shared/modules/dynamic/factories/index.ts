@@ -1,6 +1,6 @@
-export { useDetailsFactory } from "./base/useDetailsFactory";
+export { useDetailsFactory, type UseDetails } from "./base/useDetailsFactory";
 export { useDynamicPropertiesFactory } from "./base/useDynamicPropertiesFactory";
-export { useListFactory } from "./base/useListFactory";
+export { useListFactory, type UseList } from "./base/useListFactory";
 export { useMultilanguageFactory } from "./base/useMultilanguageFactory";
 
 export * from "./types";

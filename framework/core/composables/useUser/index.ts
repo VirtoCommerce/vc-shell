@@ -159,7 +159,7 @@ export function useUser(): IUseUser {
       console.log("[useUser]: an access token is expired, using refresh token to receive a new");
       try {
         const newToken = await token.refresh();
-        console.log("newToken", newToken);
+        // console.log("newToken", newToken);
         if (newToken) {
           authData.value = {
             ...authData.value,

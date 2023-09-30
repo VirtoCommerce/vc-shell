@@ -14,16 +14,38 @@ import {
 // while it satisfies requirements
 export type IValidationRules = {
   required?: boolean;
-  numberic?: boolean;
+  numeric?: boolean;
   email?: boolean;
   min?: number;
   max?: number;
   regex?: RegExp;
   min_value?: number;
   max_value?: number;
-  after?: string;
   maxdimensions?: [string | number, string | number];
   size?: number;
+  alpha?: boolean;
+  alpha_dash?: boolean;
+  alpha_num?: boolean;
+  alpha_spaces?: boolean;
+  between?: [number, number] | { min: number; max: number };
+  confirmed?: `@${string}`;
+  digits?: number;
+  dimensions?: [number, number] | { width: number; height: number };
+  not_one_of?: [number, number];
+  ext?: string[];
+  image?: boolean;
+  integer?: boolean;
+  is?: string;
+  is_not?: string;
+  length?: number;
+  mimes?: string[];
+  one_of?: number[];
+  url?: string;
+  mindimensions?: [number, number] | { width: number; height: number };
+  fileWeight?: number;
+  before?: `@${string}`;
+  after?: `@${string}`;
+  bigint?: boolean;
 };
 
 export interface IBladeDropdownItem {

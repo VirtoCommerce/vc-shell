@@ -86,7 +86,7 @@ import {
   PropertyValue,
   PropertyValueValueType,
 } from "../../../../core/api/catalog";
-import { Field } from "vee-validate";
+import { Field, validate } from "vee-validate";
 import {
   Button,
   CardCollection,
@@ -114,7 +114,7 @@ import { UseDynamicProperties } from "../factories/base/useDynamicPropertiesFact
 import { useAssets } from "../../../../core/composables/useAssets";
 import { IBladeToolbar } from "../../../../core/types";
 import { generateId } from "../../../../core/utilities";
-import { AssetsDetails, IParentCallArgs, useBladeNavigation, usePopup } from "../../../index";
+import { AssetsDetails, IParentCallArgs, useBladeNavigation, UseDetails, usePopup } from "../../../index";
 import { VcButton, VcCol, VcRow } from "../../../../ui/components";
 
 interface Props {
@@ -163,7 +163,7 @@ const isAnyControlMultilanguage = ref(false);
 
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables[
   props.model?.settings?.composable
-]({ emit, props });
+]({ emit, props }) as UseDetails<any> & { bladeTitle: string; scope: Record<string, any> };
 
 const bladeContext = ref({
   loading,
@@ -249,13 +249,18 @@ const fieldMap = {
         emitValue: true,
         options: scope[element.method],
         currentLanguage: currentLocale,
+        classNames: "tw-mb-4",
+        clearable: element.clearable || false,
       },
       options: baseOptions,
 
-      slots: element.customTemplate && {
-        "selected-item": (scope) => h(resolveComponent(element.customTemplate.component), { context: scope }),
-        option: (scope) => h(resolveComponent(element.customTemplate.component), { context: scope }),
-      },
+      slots:
+        element.customTemplate &&
+        ["selected-item", "option"].reduce((obj, slot) => {
+          obj[slot] = (scope) =>
+            h(resolveComponent(element.customTemplate.component), { context: scope, slotName: slot });
+          return obj;
+        }, {}),
     }),
   input: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) =>
     InputField({
@@ -263,6 +268,8 @@ const fieldMap = {
         ...baseProps,
         type: element.variant,
         currentLanguage: currentLocale,
+        classNames: "tw-mb-4",
+        clearable: element.clearable || false,
       },
       options: baseOptions,
     }),
@@ -274,9 +281,11 @@ const fieldMap = {
         optionLabel: element.optionLabel,
         optionValue: element.optionValue,
         options: scope["currencies"],
-        "onUpdate:option": (e) => {
+        "onUpdate:option": (e: any) => {
           setModel({ value: e, property: element.optionProperty, context });
         },
+        classNames: "tw-mb-4",
+        clearable: element.clearable || false,
       },
       options: baseOptions,
     });
@@ -286,7 +295,7 @@ const fieldMap = {
       props: {
         ...baseProps,
         header: element.label,
-        classNames: "tw-my-4",
+        classNames: "tw-mb-4",
       },
       options: baseOptions,
 
@@ -303,6 +312,7 @@ const fieldMap = {
         ...baseProps,
         trueValue: element.trueValue,
         falseValue: element.falseValue,
+        classNames: "tw-mb-4",
       },
       options: baseOptions,
       slots: {
@@ -313,10 +323,10 @@ const fieldMap = {
     const { modelValue } = baseProps;
 
     const massFieldSet = computed(() => {
-      const createFieldSet = (index: string | number, context?: any) =>
+      const createFieldSet = (id: string | number, context?: any) =>
         Fieldset({
           columns: element.columns,
-          fields: element.fields.map((child, i) => helper(child, `fieldset-${i}-${index}`, context)),
+          fields: element.fields.map((child, i) => helper(child, `fieldset-${child.id}-${id}`, context)),
           property: element.property,
           remove: element.remove,
         });
@@ -325,7 +335,7 @@ const fieldMap = {
         return (toValue(modelValue) || [])
           ?.map((i) => toValue(i))
           .map((field, index) => {
-            return createFieldSet(index, field);
+            return createFieldSet(field.id, field);
           });
       }
       return [createFieldSet(element.id)];
@@ -337,11 +347,16 @@ const fieldMap = {
   },
   "dynamic-properties": (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) => {
     const dynamicProps = filteredProps(element.property, { include: element?.include, exclude: element?.exclude });
-    if (dynamicProps?.value && useDynamicProperties && typeof useDynamicProperties === "function") {
+    if (
+      dynamicProps?.value &&
+      dynamicProps?.value.length &&
+      useDynamicProperties &&
+      typeof useDynamicProperties === "function"
+    ) {
       return {
         content: [
           {
-            fields: dynamicProps.value.map((prop) => {
+            fields: dynamicProps.value.map((prop, index, arr) => {
               return DynamicProperties({
                 props: {
                   disabled: "disabled" in scope && unref(scope.disabled),
@@ -361,7 +376,7 @@ const fieldMap = {
                     regex: prop.validationRule?.regExp,
                   },
                   displayNames: prop.displayNames,
-                  classNames: "tw-p-2",
+                  classNames: "tw-pb-4",
                   key: prop.id,
                   currentLanguage: currentLocale,
                 },
@@ -394,6 +409,7 @@ const fieldMap = {
     Gallery({
       props: {
         ...baseProps,
+        loading: imageHandlers.loading,
         images: baseProps.modelValue,
         multiple: true,
         onUpload: imageHandlers.upload,
@@ -409,6 +425,7 @@ const fieldMap = {
         ...baseProps,
         currentLanguage: currentLocale,
         assetsFolder: element.id || element.categoryId,
+        classNames: "tw-mb-4",
       },
       options: baseOptions,
     }),
@@ -427,9 +444,8 @@ function fieldHelper(field: ControlSchema, parentId: string | number, context?: 
     disabled: ("disabled" in scope && unref(scope.disabled)) || disabledHandler("disabled" in field && field.disabled),
     name: field.name,
     rules: field.rules,
-    placeholder: field.label,
+    placeholder: field.placeholder,
     required: field.rules?.required,
-    classNames: "tw-p-2",
     modelValue: getModel(field.property, context),
     "onUpdate:modelValue": (e) => setModel({ property: field.property, value: e, context }),
     tooltip: field.tooltip,
@@ -440,11 +456,18 @@ function fieldHelper(field: ControlSchema, parentId: string | number, context?: 
     visibility: field.visibility?.method ? toValue(scope[field.visibility?.method]) : true,
   };
 
-  return {
-    ...fieldMap[field.type](baseProps, baseOptions, field, context, fieldHelper),
-    id: parentId,
-    children: (field["children"] || []).map((child, i) => fieldHelper(child, `${parentId}-${i}`, context)),
-  };
+  if (field["children"]) {
+    return {
+      ...fieldMap[field.type](baseProps, baseOptions, field, context, fieldHelper),
+      id: parentId,
+      children: (field["children"] || []).map((child) => fieldHelper(child, `${parentId}-${child.id}`, context)),
+    };
+  } else {
+    return {
+      ...fieldMap[field.type](baseProps, baseOptions, field, context, fieldHelper),
+      id: parentId,
+    };
+  }
 }
 
 function unrefNested<T>(field: T) {
@@ -466,19 +489,23 @@ function fieldValidation(args: {
   slots: ControlTypeWithSlots["slots"];
   options: ControlType["options"];
   rows?: number;
+  index?: number;
 }) {
-  const { component, props, slots, options, rows } = unrefNested(args);
+  const { component, props, slots, options, rows, index } = unrefNested(args);
   if (!(options && "visibility" in options && options.visibility)) return h("div");
+  const unrefProps = unrefNested(props);
+  const fieldKey = unref(props).multilanguage
+    ? `${String(unrefProps.key)}_${unrefProps.currentLanguage}`
+    : String(unrefProps.key);
+
   return h(
     Field,
     {
-      name: rows > 1 ? unref(props)?.name + generateId() : unref(props)?.name,
-      rules: unref(props).rules,
+      name: rows > 1 && index >= 0 ? unrefProps?.name + "_" + index : unrefProps?.name,
+      rules: unrefProps.rules,
       modelValue: unref(props.modelValue),
-      label: unref(props).label,
-      key: unref(props).multilanguage
-        ? `${String(unref(props).key)}_${unrefNested(props).currentLanguage}`
-        : String(unref(props).key),
+      label: unrefProps.label,
+      key: fieldKey,
     },
     {
       default: ({ errorMessage, errors, handleChange }) =>
@@ -493,6 +520,7 @@ function fieldValidation(args: {
             error: !!errors.length,
             errorMessage,
             class: props.classNames,
+            key: fieldKey + "_control",
           },
           { ...slots }
         ),
@@ -515,66 +543,84 @@ function renderFieldset(args: { content: IFieldset[] }) {
   const { content } = unrefNested(args);
 
   const unreffed = unref(content);
-
   return unreffed.map(({ columns, fields, remove }, index, arr) => {
     const divideByCols = _.chunk(Object.values(unref(fields)), columns || 1);
 
-    return h(
-      "div",
-      divideByCols.map((itemsArr, colIndex) => {
-        return h(
-          VcRow,
-          {
-            key: `col-${colIndex}-${index}`,
-            class: {
-              "tw-relative": true,
+    return h("div", { class: "tw-flex tw-row tw-relative" }, [
+      h("div", { class: "tw-flex-1" }, [
+        divideByCols.map((itemsArr, colIndex, colArr) => {
+          return h(
+            VcRow,
+            {
+              key: `col-${colIndex}-${index}`,
+              class: {
+                "tw-relative": true,
+                "tw-gap-4": true,
+              },
             },
-          },
-          () => [
-            ...itemsArr.map((item, itemIndex) => {
-              return h(VcCol, { key: `item-${itemIndex}-${colIndex}-${index}` }, () =>
-                helperCreateComponent({ ...(item as any), rows: unreffed.length })
-              );
-            }),
-            unref(remove)
-              ? h(VcButton, {
-                  iconSize: "m",
-                  icon: "fas fa-times-circle",
-                  text: true,
-                  class: {
-                    "tw-m-2": true,
-                    "tw-absolute tw-top-0 tw-right-0": isMobile.value,
-                    "!tw-hidden": arr.length === 1,
-                  },
-                  onClick: () => callMethod({ method: unref(remove)?.method, arg: index }),
-                })
-              : undefined,
-          ]
-        );
-      })
-    );
+            () => [
+              ...itemsArr.map((item, itemIndex) => {
+                return h(VcCol, { key: `item-${itemIndex}-${colIndex}-${index}` }, () =>
+                  helperCreateComponent({ ...(item as any), rows: unreffed.length, index })
+                );
+              }),
+            ]
+          );
+        }),
+      ]),
+      unref(remove)
+        ? h(VcButton, {
+            iconSize: "m",
+            icon: "fas fa-times-circle",
+            text: true,
+            class: {
+              "tw-m-2": !isMobile.value,
+              "tw-absolute tw-top-0 tw-right-0": isMobile.value,
+              "!tw-hidden": arr.length === 1,
+            },
+            onClick: () => callMethod({ method: unref(remove)?.method, arg: index }),
+          })
+        : undefined,
+    ]);
   });
 }
 
-function renderCard(args: { component; props; slots; children; options }) {
+function modelHasContent(arr: any[]) {
+  return arr.some((x) => x.children || x.content || x.component);
+}
+
+function renderCard(args: {
+  component: GeneratedModel["component"];
+  props: GeneratedModel["props"];
+  children?: GeneratedModel["children"];
+  options: GeneratedModel["options"];
+  slots?: ControlTypeWithSlots["slots"];
+}) {
   const { component, props, slots, children } = unrefNested(args);
 
   const { header, classNames, key } = props;
 
-  return h(
-    component,
-    { header, class: classNames, key },
-    {
-      default: () => h("div", { class: { "tw-p-2": true, ...props.classNames } }, children?.map(helperCreateComponent)),
-      actions: () => {
-        const elem = slots?.actions();
-        if (elem) {
-          return helperCreateComponent(elem);
+  return modelHasContent(children)
+    ? h(
+        component as any,
+        { header, key, class: classNames },
+        {
+          default: () =>
+            h(
+              "div",
+              { class: { "tw-p-4": true } },
+              children?.map((child) => helperCreateComponent({ ...child }))
+            ),
+          actions: () => {
+            const elem = "actions" in slots && slots?.actions();
+            if (elem) {
+              return helperCreateComponent(elem);
+            }
+            return undefined;
+          },
         }
-        return undefined;
-      },
-    }
-  );
+      )
+    : h("div");
 }
 
 function fieldHelperCreateField(field: GeneratedModel) {
@@ -588,7 +634,10 @@ function getFields(children: GeneratedModel[] = []): VNode[] {
 }
 
 function buildForm(items: ControlSchema[]) {
-  const createdModel: GeneratedModel[] = items.reduce((arr, field, index) => [...arr, fieldHelper(field, index)], []);
+  const createdModel: GeneratedModel[] = items.reduce(
+    (arr: GeneratedModel[], field, index): GeneratedModel[] => [...arr, fieldHelper(field, field.id)],
+    []
+  );
   const createdUi = getFields(createdModel);
   generatedControls.value = createdUi;
 }
@@ -601,14 +650,16 @@ function helperCreateComponent({
   slots,
   rows,
   options,
+  index,
 }: {
   component: GeneratedModel["component"];
   props: GeneratedModel["props"];
   children?: GeneratedModel["children"];
   content?: GeneratedModel["content"];
-  slots: ControlTypeWithSlots["slots"];
+  slots?: ControlTypeWithSlots["slots"];
   rows?: number;
   options: GeneratedModel["options"];
+  index?: number;
 }) {
   const rules = _.get(props, "rules");
   const noValidation = _.get(options, "noValidation");
@@ -622,13 +673,15 @@ function helperCreateComponent({
     return renderCard({ component, props, slots, children, options });
   }
 
-  if (!noValidation && isRulesExist) {
-    return fieldValidation({ component, props, slots, rows, options });
+  if (!noValidation && isRulesExist && !(children && children.length)) {
+    return fieldValidation({ component, props, slots, rows, options, index });
   }
 
-  if (!isRulesExist || noValidation) {
+  if ((!isRulesExist || noValidation) && !(children && children.length)) {
     return fieldNoValidation({ component, props, slots, options });
   }
+
+  return h("div");
 }
 
 function create() {
@@ -885,11 +938,13 @@ function imageHandler() {
 
     async edit(image: IImage) {
       item.value.images = await edit(item.value.images, image);
+      await validateForm();
     },
     async upload(files: FileList) {
       item.value.images = await upload(files, item.value.images, item.value.id || item.value.categoryId);
 
       files = null;
+      await validateForm();
 
       return item.value.images;
     },
@@ -900,6 +955,7 @@ function imageHandler() {
         )
       ) {
         item.value.images = await remove(item.value.images, image);
+        await validateForm();
       }
       return item.value.images;
     },
@@ -927,6 +983,10 @@ async function onBeforeClose() {
       unref(computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)))
     );
   }
+}
+
+async function validateForm() {
+  await validationState.value.validate();
 }
 
 defineExpose({

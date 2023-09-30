@@ -7,7 +7,6 @@
         'vc-input_clearable': clearable,
         'vc-input_error': error,
         'vc-input_disabled': disabled,
-        'tw-pb-[20px]': error || hint,
       },
     ]"
   >
@@ -131,33 +130,32 @@
               </div>
             </div>
           </div>
-          <div class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]">
-            <Transition
-              name="slide-up"
-              mode="out-in"
-            >
-              <div v-if="error">
-                <slot name="error">
-                  <VcHint
-                    v-if="errorMessage"
-                    class="vc-input__error"
-                  >
-                    {{ errorMessage }}
-                  </VcHint>
-                </slot>
-              </div>
-              <div v-else>
-                <slot name="hint">
-                  <VcHint
-                    v-if="hint"
-                    class="vc-input__desc"
-                  >
-                    {{ hint }}
-                  </VcHint>
-                </slot>
-              </div>
-            </Transition>
-          </div>
+
+          <Transition
+            name="slide-up"
+            mode="out-in"
+          >
+            <div v-if="error">
+              <slot name="error">
+                <VcHint
+                  v-if="errorMessage"
+                  class="vc-input__error"
+                >
+                  {{ errorMessage }}
+                </VcHint>
+              </slot>
+            </div>
+            <div v-else>
+              <slot name="hint">
+                <VcHint
+                  v-if="hint"
+                  class="vc-input__desc"
+                >
+                  {{ hint }}
+                </VcHint>
+              </slot>
+            </div>
+          </Transition>
         </div>
 
         <div
@@ -342,10 +340,11 @@ const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefi
 
 const rawModel = computed(() => unref(props.modelValue));
 const mutatedModel = ref();
+
 watch(
   () => rawModel.value,
   (newVal) => {
-    if (internalType.value === "datetime-local") {
+    if (internalType.value === "datetime-local" || internalType.value === "date") {
       if (newVal instanceof Date && !isNaN(newVal.valueOf())) {
         mutatedModel.value = moment(newVal).format("YYYY-MM-DDTHH:mm");
       } else {
@@ -376,7 +375,7 @@ function emitValue(val: string) {
   emitValueFn = () => {
     if (mutatedModel.value !== val) {
       let value;
-      if (internalType.value === "datetime-local") {
+      if (internalType.value === "datetime-local" || internalType.value === "date") {
         value = moment(val).toDate();
       } else if (internalType.value === "number") {
         value = +val;

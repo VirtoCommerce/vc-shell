@@ -40,6 +40,7 @@
             :multiple="multiple"
             :rules="rules"
             :name="name"
+            :loading="loading"
             @upload="onUpload"
           ></VcFileUpload>
         </div>
@@ -87,6 +88,7 @@ export interface Props {
   hideAfterUpload?: boolean;
   rules?: string | Record<string, unknown>;
   name?: string;
+  loading?: boolean;
 }
 
 export interface Emits {

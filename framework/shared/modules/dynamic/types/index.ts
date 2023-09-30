@@ -1,4 +1,5 @@
-import { ITableColumns } from "../../../../core/types";
+import { ITableColumns, IValidationRules } from "../../../../core/types";
+import * as AllRules from "@vee-validate/rules";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
@@ -110,18 +111,12 @@ export interface GridTemplateOverride {
 export interface VisibilityOptions {
   method: string;
 }
-
-export interface RulesBase {
-  [x: string]: boolean | string;
-  required?: boolean;
-}
-
 export interface SchemaBase {
   id: string;
   label?: string;
   property?: string;
   name?: string;
-  rules?: RulesBase;
+  rules?: IValidationRules;
   placeholder?: string;
   disabled?: { method: string };
   tooltip?: string;
@@ -137,11 +132,13 @@ export interface SelectSchema extends SchemaBase {
   customTemplate?: {
     component: string;
   };
+  clearable?: boolean;
 }
 
 export interface InputSchema extends SchemaBase {
   type: "input";
   variant?: "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local";
+  clearable?: boolean;
 }
 
 export interface InputCurrencySchema extends SchemaBase {
@@ -149,6 +146,7 @@ export interface InputCurrencySchema extends SchemaBase {
   optionProperty: string;
   optionValue?: string;
   optionLabel?: string;
+  clearable?: boolean;
 }
 
 export interface EditorSchema extends SchemaBase {

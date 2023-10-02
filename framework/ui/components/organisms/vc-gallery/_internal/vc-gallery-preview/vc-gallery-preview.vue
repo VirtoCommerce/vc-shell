@@ -88,7 +88,7 @@ const localIndex = ref(props.index);
 
 const imageHandler = computed(() => {
   if (currentImage.value.url) {
-    return `background-image: url(${CSS.escape(currentImage.value.url)})`;
+    return `background: url(${CSS.escape(currentImage.value.url)}) center / contain no-repeat`;
   }
   return undefined;
 });

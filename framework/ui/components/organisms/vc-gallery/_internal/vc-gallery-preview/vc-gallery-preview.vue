@@ -52,6 +52,7 @@
           <VcImage
             :src="item.url"
             size="xl"
+            background="contain"
             :bordered="true"
             :clickable="true"
             @click="localIndex = i"

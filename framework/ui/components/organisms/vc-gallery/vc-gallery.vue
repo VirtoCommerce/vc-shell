@@ -69,7 +69,7 @@ import { usePopup } from "./../../../../shared/components/popup-handler/composab
 import { useI18n } from "vue-i18n";
 
 export interface Props {
-  images?: MaybeRef<IImage[]>;
+  images?: IImage[];
   disabled?: boolean;
   required?: boolean;
   label?: string;
@@ -124,13 +124,15 @@ const dropPosition = ref<number>();
 
 const currentIndex = computed(() => previewImageIndex.value);
 
-const { open } = usePopup({
-  component: VcGalleryPreview,
-  props: {
-    images: computed(() => unref(props.images)),
-    index: currentIndex,
-  },
-});
+const { open } = usePopup(
+  computed(() => ({
+    component: VcGalleryPreview,
+    props: {
+      images: props.images,
+      index: currentIndex.value,
+    },
+  }))
+);
 
 watch(
   () => props.images,

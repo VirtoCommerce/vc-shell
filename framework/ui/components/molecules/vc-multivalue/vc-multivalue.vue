@@ -344,8 +344,8 @@ function onSearch(event: InputEvent) {
 
   &__search {
     @apply tw-w-full tw-box-border tw-border tw-border-solid tw-border-[#eaecf2]
-    tw-rounded-[4px] tw-h-8 tw-leading-[32px]
-    tw-outline-none tw-mb-3 tw-px-2;
+      tw-rounded-[4px] tw-h-8 tw-leading-[32px]
+      tw-outline-none tw-mb-3 tw-px-2;
   }
 
   &__item {
@@ -366,7 +366,7 @@ function onSearch(event: InputEvent) {
 
   &__field {
     @apply tw-border-none tw-outline-none tw-h-[var(--multivalue-height)]
-    tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)];
+      tw-min-w-[120px] tw-box-border placeholder:tw-text-[color:var(--multivalue-placeholder-color)];
 
     &::-webkit-input-placeholder {
       @apply tw-text-[color:var(--multivalue-placeholder-color)];
@@ -386,7 +386,7 @@ function onSearch(event: InputEvent) {
 
     &-value {
       @apply tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px]
-      tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
+        tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2 tw-max-w-[150px];
 
       &-clear {
         @apply tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer;

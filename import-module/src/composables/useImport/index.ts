@@ -13,6 +13,8 @@ import {
   ISearchImportRunHistoryCriteria,
   SearchImportRunHistoryCriteria,
   SearchImportRunHistoryResult,
+  OrganizationInfo,
+  OrganizationClient,
 } from "./../../api-client/import";
 import { IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
 import * as _ from "lodash-es";
@@ -97,7 +99,6 @@ export default (): IUseImport => {
   const importStatus = ref<IImportStatus>({
     inProgress: false,
   });
-  const importUserId = route?.params?.userId as string;
 
   //subscribe to pushnotifcation and update the import progress status
   watch(
@@ -140,6 +141,7 @@ export default (): IUseImport => {
   );
 
   async function fetchImportHistory(query?: ISearchImportRunHistoryCriteria) {
+    const importUserId = await GetSellerId();
     const client = await getApiClient();
     try {
       loading.value = true;
@@ -181,6 +183,12 @@ export default (): IUseImport => {
     return client;
   }
 
+  async function getOrgApiClient() {
+    const client = new OrganizationClient();
+    client.setAuthToken(await getAccessToken());
+    return client;
+  }
+
   async function fetchDataImporters() {
     const client = await getApiClient();
     try {
@@ -198,6 +206,7 @@ export default (): IUseImport => {
   }
 
   async function fetchImportProfiles() {
+    const importUserId = await GetSellerId();
     const client = await getApiClient();
 
     try {
@@ -213,6 +222,7 @@ export default (): IUseImport => {
   }
 
   async function previewData() {
+    const importUserId = await GetSellerId();
     const client = await getApiClient();
 
     try {
@@ -235,11 +245,7 @@ export default (): IUseImport => {
 
     try {
       loading.value = true;
-
-      const importProfile = new ImportProfile(
-        extProfile ? { ...extProfile, userId: importUserId } : { ...profile.value, userId: importUserId }
-      );
-      importProfile.onImportCompleted = undefined;
+      const importProfile = new ImportProfile(extProfile ? extProfile : profile.value);
       const notification = await client.runImport(importProfile);
 
       importStarted.value = true;
@@ -312,6 +318,7 @@ export default (): IUseImport => {
   }
 
   async function updateImportProfile(updatedProfile: ImportProfile) {
+    const importUserId = await GetSellerId();
     const client = await getApiClient();
 
     const command = new ImportProfile({
@@ -333,10 +340,11 @@ export default (): IUseImport => {
   }
 
   async function createImportProfile(newProfile: ImportProfile) {
+    const importUserId = await GetSellerId();
     const client = await getApiClient();
 
     newProfile.userName = user.value.userName;
-    newProfile.userId = user.value.id;
+    newProfile.userId = importUserId; //user.value.id;
     const command = new ImportProfile({
       ...newProfile,
       userId: importUserId,
@@ -378,6 +386,28 @@ export default (): IUseImport => {
       updateStatus(job);
       importStarted.value = true;
     }
+  }
+
+  async function getCurrentOrganization(): Promise<OrganizationInfo> {
+    const organizationDetails: Ref<OrganizationInfo> = ref();
+    try {
+      const client = await getOrgApiClient();
+      organizationDetails.value = await client.getOrganizationInfo();
+    } catch (e) {
+      console.error(e);
+      throw e;
+    }
+
+    return organizationDetails.value;
+  }
+
+  async function GetSellerId(): Promise<string> {
+    let result = route?.params?.userId as string;
+    if (!result || result === "") {
+      result = (await getCurrentOrganization())?.organizationId;
+    }
+
+    return result;
   }
 
   return {

@@ -4622,6 +4622,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vc-shell/import-module@workspace:import-module"
   dependencies:
+    "@vc-shell/api-client-generator": ^1.0.103
+    "@vc-shell/config-generator": ^1.0.103
+    "@vc-shell/framework": ^1.0.103
     "@vc-shell/api-client-generator": ^1.0.100
     "@vc-shell/config-generator": ^1.0.100
     "@vc-shell/framework": ^1.0.100

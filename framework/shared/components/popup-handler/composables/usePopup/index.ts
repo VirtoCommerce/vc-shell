@@ -1,5 +1,5 @@
 import { VcPopup } from "./../../../../../ui/components";
-import { markRaw, getCurrentInstance, inject, reactive, shallowRef, nextTick, Ref } from "vue";
+import { markRaw, getCurrentInstance, inject, reactive, shallowRef, nextTick, Ref, watch, MaybeRef, unref } from "vue";
 import { UsePopupInternal, UsePopupProps } from "./../../types";
 import { popupPluginInstance } from "./../../plugin";
 import { useI18n } from "vue-i18n";
@@ -11,11 +11,19 @@ interface IUsePopup {
   showError(message: string | Ref<string>): void;
 }
 
-export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: UsePopupProps<T>): IUsePopup {
+export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: MaybeRef<UsePopupProps<T>>): IUsePopup {
   const { t } = useI18n({ useScope: "global" });
   const instance = getCurrentInstance();
   const popupInstance = (instance && inject("popupPlugin")) || popupPluginInstance;
-  const rawPopup = createInstance(props);
+  let rawPopup = createInstance(unref(props));
+
+  watch(
+    () => props,
+    (newVal) => {
+      rawPopup = createInstance(unref(newVal));
+    },
+    { deep: true }
+  );
 
   async function open(customInstance?: UsePopupProps<unknown>) {
     let activeInstance;

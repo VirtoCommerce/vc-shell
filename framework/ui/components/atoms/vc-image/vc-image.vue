@@ -57,7 +57,7 @@ const emit = defineEmits<Emits>();
 
 const imageHandler = computed(() => {
   if (props.src) {
-    return `background: url(${encodeURI(decodeURI(props.src))}) center / ${props.background} no-repeat`;
+    return `background: url(${CSS.escape(props.src)}) center / ${props.background} no-repeat`;
   }
   return undefined;
 });

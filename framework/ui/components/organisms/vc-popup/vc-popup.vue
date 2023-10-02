@@ -64,6 +64,11 @@ withDefaults(defineProps<Props>(), {
 });
 
 defineEmits<Emits>();
+
+defineSlots<{
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  default: (props: any) => any;
+}>();
 </script>
 
 <style lang="scss">

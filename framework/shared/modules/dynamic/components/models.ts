@@ -132,23 +132,3 @@ export type IFieldset = {
   remove?: { method?: string };
   fields?: ControlType[];
 };
-
-export interface GeneratedModel {
-  children?: GeneratedModel[];
-  component: ControlType["component"];
-  id: number | string;
-  options: IControlBaseOptions;
-  props: (
-    | ISelectField
-    | IInputField
-    | ICardCollection
-    | IEditorField
-    | IGallery
-    | IDynamicProperties
-    | ICheckbox
-    | IButton
-    | IInputCurrency
-  )["props"];
-  slots?: ControlTypeWithSlots["slots"];
-  content?: { fields: ControlType[] }[];
-}

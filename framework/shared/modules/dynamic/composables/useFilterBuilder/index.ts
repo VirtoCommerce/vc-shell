@@ -1,4 +1,18 @@
-import { h, ref, computed, MaybeRef, unref, Component, onMounted, reactive } from "vue";
+import {
+  h,
+  ref,
+  computed,
+  MaybeRef,
+  unref,
+  Component,
+  onMounted,
+  reactive,
+  RendererElement,
+  RendererNode,
+  VNode,
+  ComputedRef,
+  readonly,
+} from "vue";
 import * as _ from "lodash-es";
 import { Checkbox, InputField } from "../../components/factories";
 import { AsyncAction } from "../../../../../core/composables";
@@ -25,7 +39,23 @@ interface Data {
   }[];
 }
 
-export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAction<Query> }) => {
+export interface UseFilterBuilder {
+  filterComponent: (slotMethods: { close: () => void }) => VNode<
+    RendererNode,
+    RendererElement,
+    {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      [key: string]: any;
+    }
+  >;
+  activeFilterCount: ComputedRef<number>;
+  isFilterVisible: ComputedRef<boolean>;
+  reset: () => Promise<void>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly filter: Record<string, any>;
+}
+
+export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAction<Query> }): UseFilterBuilder => {
   const _search = args.load;
   const _data = args.data;
 
@@ -39,7 +69,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
 
   const disable = computed(() => !Object.keys(filter).length || _.some(filter, _.isEmpty));
 
-  const reset = computed(() => !Object.keys(appliedFilter.value).length || _.some(appliedFilter.value, _.isEmpty));
+  const disabled = computed(() => !Object.keys(appliedFilter.value).length || _.some(appliedFilter.value, _.isEmpty));
 
   onMounted(() => createFilterControls());
 
@@ -137,12 +167,13 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
 
   async function resetFilters(filterHandlerFn: () => void) {
     filterHandlerFn();
-    Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+
+    await reset();
+
     await _search({
       ...unref(args.query),
       ...filter,
     });
-    appliedFilter.value = {};
   }
 
   function render(slotMethods: { close: () => void }) {
@@ -172,7 +203,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
               {
                 outline: true,
                 class: "tw-mr-4",
-                disabled: reset.value,
+                disabled: disabled.value,
                 onClick: () => resetFilters(slotMethods.close),
               },
               () => "Reset"
@@ -188,9 +219,17 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
     ]);
   }
 
+  async function reset() {
+    Object.keys(filter).forEach((key: string) => (filter[key] = undefined));
+
+    appliedFilter.value = {};
+  }
+
   return {
     filterComponent: render,
     activeFilterCount,
+    filter: readonly(filter),
     isFilterVisible: computed(() => isFilterVisible.value),
+    reset,
   };
 };

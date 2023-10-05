@@ -23,7 +23,7 @@
       :current-page="pagination?.currentPage"
       :search-value="searchValue"
       :selected-item-id="selectedItemId"
-      :total-label="$t(`${settings.localeKey.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
+      :total-label="$t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.TABLE.TOTALS`)"
       :total-count="pagination?.totalCount"
       :active-filter-count="activeFilterCount"
       @item-click="onItemClick"
@@ -43,14 +43,38 @@
 
       <!-- Not found template -->
       <template #notfound>
-        <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
-          <div class="tw-m-4 tw-text-xl tw-font-medium">
-            {{ $t(`${settings.localeKey.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
+        <template v-if="bladeOptions.notFound">
+          <component
+            :is="bladeOptions.notFound"
+            @reset="resetSearch"
+          ></component>
+        </template>
+        <template v-else>
+          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
+            <div class="tw-m-4 tw-text-xl tw-font-medium">
+              {{ $t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.EMPTY`) }}
+            </div>
+            <VcButton
+              v-if="isFilterVisible"
+              @click="resetSearch"
+              >{{ $t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.RESET`) }}</VcButton
+            >
           </div>
-          <VcButton @click="resetSearch">{{
-            $t(`${settings.localeKey.trim().toUpperCase()}.PAGES.LIST.NOT_FOUND.RESET`)
-          }}</VcButton>
-        </div>
+        </template>
+      </template>
+
+      <!-- Empty template -->
+      <template #empty>
+        <template v-if="bladeOptions.empty">
+          <component :is="bladeOptions.empty"></component>
+        </template>
+        <template v-else>
+          <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
+            <div class="tw-m-4 tw-text-xl tw-font-medium">
+              {{ $t(`${settings.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.EMPTY.NO_ITEMS`) }}
+            </div>
+          </div>
+        </template>
       </template>
 
       <!-- Override table templates-->
@@ -156,6 +180,8 @@ const bladeOptions = reactive({
   table,
   templateOverrideComponents: templateOverrideComponents(),
   mobileView: mobileViewComponent(),
+  notFound: notFoundComponent(),
+  empty: emptyComponent(),
 });
 
 const { load, remove, items, loading, pagination, query, scope } = props.composables[props.model?.settings?.composable](
@@ -165,7 +191,13 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
   }
 );
 
-const { filterComponent, activeFilterCount, isFilterVisible } = useFilterBuilder({
+const {
+  filterComponent,
+  activeFilterCount,
+  isFilterVisible,
+  reset: resetFilters,
+  filter,
+} = useFilterBuilder({
   data: bladeOptions.tableData?.filter,
   query,
   load,
@@ -270,9 +302,9 @@ const onSelectionChanged = (i: typeof items) => {
 async function removeItems() {
   if (
     await showConfirmation(
-      t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE`, {
+      t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.MESSAGE`, {
         count: allSelected.value
-          ? t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`, {
+          ? t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.LIST.DELETE_SELECTED_CONFIRMATION.ALL`, {
               totalCount: pagination.value.totalCount,
             })
           : selectedIds.value.length,
@@ -352,8 +384,10 @@ const onSearchList = debounce(async (keyword: string) => {
 
 async function resetSearch() {
   searchValue.value = "";
+  await resetFilters();
   await load({
     ...query.value,
+    ...filter,
     keyword: "",
   });
 }
@@ -381,6 +415,24 @@ function templateOverrideComponents(): Record<string, VNode> {
 
 function mobileViewComponent() {
   const componentName = tableData.value.mobileTemplate?.component;
+  if (componentName) {
+    const component = resolveComponent(componentName);
+
+    if (component && typeof component !== "string") return shallowRef(component);
+  }
+}
+
+function notFoundComponent() {
+  const componentName = tableData.value.notFoundTemplate?.component;
+  if (componentName) {
+    const component = resolveComponent(componentName);
+
+    if (component && typeof component !== "string") return shallowRef(component);
+  }
+}
+
+function emptyComponent() {
+  const componentName = tableData.value.emptyTemplate?.component;
   if (componentName) {
     const component = resolveComponent(componentName);
 

@@ -35,6 +35,7 @@
       :modules="modules"
       content-type="html"
       :read-only="disabled"
+      :placeholder="placeholder"
       @update:content="onInput"
     />
     <slot
@@ -185,6 +186,16 @@ function isQuillEmpty(value: string) {
       tw-rounded-[calc(var(--editor-scroll-width)/2)]
       tw-overflow-x-hidden
       hover:tw-bg-[color:var(--editor-scroll-color-hover)];
+    }
+
+    &.ql-blank:before {
+      color: var(--textarea-placeholder-color);
+      content: attr(data-placeholder);
+      font-style: inherit;
+      left: 15px;
+      pointer-events: none;
+      position: absolute;
+      right: 15px;
     }
   }
 }

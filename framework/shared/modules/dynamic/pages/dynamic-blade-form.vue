@@ -31,7 +31,13 @@
       >
         <div class="item-details__content">
           <VcForm class="tw-grow tw-p-4">
-            <create></create>
+            <SchemaRender
+              :model-value="item"
+              :ui-schema="form.children"
+              :context="bladeContext"
+              :current-locale="currentLocale"
+              @update:model-value="set"
+            ></SchemaRender>
           </VcForm>
         </div>
         <div
@@ -57,65 +63,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useI18n } from "vue-i18n";
 import {
-  ComponentPublicInstance,
   computed,
-  ComputedRef,
   h,
-  inject,
-  markRaw,
-  mergeProps,
   nextTick,
   onMounted,
   reactive,
   ref,
-  Ref,
   resolveComponent,
   toRef,
-  toValue,
   unref,
-  VNode,
-  VNodeProps,
+  watch,
+  watchEffect,
 } from "vue";
-import {
-  IImage,
-  Image,
-  IProperty,
-  IPropertyValue,
-  Property,
-  PropertyDictionaryItem,
-  PropertyValue,
-  PropertyValueValueType,
-} from "../../../../core/api/catalog";
-import { Field, validate } from "vee-validate";
-import {
-  Button,
-  CardCollection,
-  Checkbox,
-  DynamicProperties,
-  EditorField,
-  Fieldset,
-  Gallery,
-  InputCurrency,
-  InputField,
-  SelectField,
-} from "../components/factories";
-import { ControlSchema, DynamicDetailsSchema } from "../types";
-import {
-  ControlType,
-  ControlTypeWithSlots,
-  GeneratedModel,
-  IControlBaseOptions,
-  IControlBaseProps,
-  IFieldset,
-} from "../components/models";
-import { reactify, reactiveComputed, useArrayFilter } from "@vueuse/core";
+import { DynamicDetailsSchema, FormContentSchema } from "../types";
+import { reactiveComputed } from "@vueuse/core";
 import * as _ from "lodash-es";
-import { UseDynamicProperties } from "../factories/base/useDynamicPropertiesFactory";
-import { useAssets } from "../../../../core/composables/useAssets";
 import { IBladeToolbar } from "../../../../core/types";
-import { generateId } from "../../../../core/utilities";
-import { AssetsDetails, IParentCallArgs, useBladeNavigation, UseDetails, usePopup } from "../../../index";
-import { VcButton, VcCol, VcRow } from "../../../../ui/components";
+import { IParentCallArgs, UseDetails, usePopup } from "../../../index";
+import SchemaRender from "../components/SchemaRender";
 
 interface Props {
   expanded?: boolean;
@@ -148,22 +113,19 @@ const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
 
-const { openBlade } = useBladeNavigation();
 const { showConfirmation } = usePopup();
-
-const isMobile = inject<Ref<boolean>>("isMobile");
-const useDynamicProperties = inject<() => UseDynamicProperties<any, any>>("useDynamicProperties");
-
-let dynamicProperties;
-if (useDynamicProperties && typeof useDynamicProperties === "function") {
-  dynamicProperties = useDynamicProperties();
-}
-
-const isAnyControlMultilanguage = ref(false);
 
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables[
   props.model?.settings?.composable
 ]({ emit, props }) as UseDetails<any> & { bladeTitle: string; scope: Record<string, any> };
+
+const isReady = ref(false);
+
+const settings = computed(() => props.model?.settings);
+
+const form = computed((): FormContentSchema => props.model.content.find((x) => x.type === "form") as FormContentSchema);
+
+const widgets = computed(() => props.model.content.find((x) => x.type === "widgets"));
 
 const bladeContext = ref({
   loading,
@@ -174,19 +136,12 @@ const bladeContext = ref({
   remove,
   saveChanges,
   bladeTitle,
+  settings,
 });
 
-const isReady = ref(false);
-
-const generatedControls = ref<VNode[]>([]);
-
-const imageHandlers = imageHandler();
-
-const settings = computed(() => props.model?.settings);
-
-const form = computed(() => props.model.content.find((x) => x.type === "form"));
-
-const widgets = computed(() => props.model.content.find((x) => x.type === "widgets"));
+const set = (e) => {
+  Object.assign(item.value, e);
+};
 
 const bladeStatus = computed(() => {
   if ("status" in props.model.settings && props.model.settings.status) {
@@ -199,13 +154,13 @@ const bladeStatus = computed(() => {
 });
 
 const bladeMultilanguage = reactiveComputed(() => {
-  if ("multilanguage" in scope && scope.multilanguage) {
-    if (!("component" in scope.multilanguage)) {
-      throw new Error(`Component is required in multilanguage: ${scope.multilanguage}`);
+  if ("multilanguage" in unref(scope) && unref(scope).multilanguage) {
+    if (!("component" in unref(scope).multilanguage)) {
+      throw new Error(`Component is required in multilanguage: ${unref(scope).multilanguage}`);
     }
     return {
-      component: scope.multilanguage.component,
-      currentLocale: scope.multilanguage.currentLocale,
+      component: unref(scope).multilanguage.component,
+      currentLocale: unref(scope).multilanguage.currentLocale,
     };
   }
 
@@ -222,483 +177,6 @@ const bladeOptions = reactive({
   multilanguage: bladeMultilanguage.component,
   status: bladeStatus,
 });
-function callMethod({ method, arg }) {
-  scope[method](arg);
-}
-
-const filteredProps = (prop: string, { include, exclude }) => {
-  const item: ComputedRef<Property[]> = getModel(prop);
-
-  if (unref(item)) {
-    return useArrayFilter(item, (x) => {
-      if (include) return include?.includes(x.type);
-      if (exclude) return !exclude?.includes(x.type);
-      else return true;
-    });
-  }
-  return null;
-};
-
-const fieldMap = {
-  select: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) =>
-    SelectField({
-      props: {
-        ...baseProps,
-        optionValue: element.optionValue,
-        optionLabel: element.optionLabel,
-        emitValue: true,
-        options: scope[element.method],
-        currentLanguage: currentLocale,
-        classNames: "tw-mb-4",
-        clearable: element.clearable || false,
-      },
-      options: baseOptions,
-
-      slots:
-        element.customTemplate &&
-        ["selected-item", "option"].reduce((obj, slot) => {
-          obj[slot] = (scope) =>
-            h(resolveComponent(element.customTemplate.component), { context: scope, slotName: slot });
-          return obj;
-        }, {}),
-    }),
-  input: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) =>
-    InputField({
-      props: {
-        ...baseProps,
-        type: element.variant,
-        currentLanguage: currentLocale,
-        classNames: "tw-mb-4",
-        clearable: element.clearable || false,
-      },
-      options: baseOptions,
-    }),
-  "input-currency": (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element, context) => {
-    return InputCurrency({
-      props: {
-        ...baseProps,
-        option: getModel(element.optionProperty, context),
-        optionLabel: element.optionLabel,
-        optionValue: element.optionValue,
-        options: scope["currencies"],
-        "onUpdate:option": (e: any) => {
-          setModel({ value: e, property: element.optionProperty, context });
-        },
-        classNames: "tw-mb-4",
-        clearable: element.clearable || false,
-      },
-      options: baseOptions,
-    });
-  },
-  card: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element, context, helper) =>
-    CardCollection({
-      props: {
-        ...baseProps,
-        header: element.label,
-        classNames: "tw-mb-4",
-      },
-      options: baseOptions,
-
-      slots: {
-        actions: () => {
-          const elem = helper(element.action, `${element.id}`);
-          return elem;
-        },
-      },
-    }),
-  checkbox: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) =>
-    Checkbox({
-      props: {
-        ...baseProps,
-        trueValue: element.trueValue,
-        falseValue: element.falseValue,
-        classNames: "tw-mb-4",
-      },
-      options: baseOptions,
-      slots: {
-        default: () => element.content,
-      },
-    }),
-  fieldset: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element, context, helper) => {
-    const { modelValue } = baseProps;
-
-    const massFieldSet = computed(() => {
-      const createFieldSet = (id: string | number, context?: any) =>
-        Fieldset({
-          columns: element.columns,
-          fields: element.fields.map((child, i) => helper(child, `fieldset-${child.id}-${id}`, context)),
-          property: element.property,
-          remove: element.remove,
-        });
-
-      if (element.property) {
-        return (toValue(modelValue) || [])
-          ?.map((i) => toValue(i))
-          .map((field, index) => {
-            return createFieldSet(field.id, field);
-          });
-      }
-      return [createFieldSet(element.id)];
-    });
-
-    return {
-      content: massFieldSet,
-    };
-  },
-  "dynamic-properties": (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) => {
-    const dynamicProps = filteredProps(element.property, { include: element?.include, exclude: element?.exclude });
-    if (
-      dynamicProps?.value &&
-      dynamicProps?.value.length &&
-      useDynamicProperties &&
-      typeof useDynamicProperties === "function"
-    ) {
-      return {
-        content: [
-          {
-            fields: dynamicProps.value.map((prop, index, arr) => {
-              return DynamicProperties({
-                props: {
-                  disabled: "disabled" in scope && unref(scope.disabled),
-                  property: prop,
-                  modelValue: computed(() => getPropertyValue(prop, currentLocale.value)),
-                  optionsGetter: loadDictionaries,
-                  "onUpdate:model-value": setPropertyValue,
-                  required: prop.required,
-                  multivalue: prop.multivalue,
-                  multilanguage: prop.multilanguage,
-                  valueType: prop.valueType,
-                  dictionary: prop.dictionary,
-                  name: prop.name,
-                  rules: {
-                    min: prop.validationRule?.charCountMin,
-                    max: prop.validationRule?.charCountMax,
-                    regex: prop.validationRule?.regExp,
-                  },
-                  displayNames: prop.displayNames,
-                  classNames: "tw-pb-4",
-                  key: prop.id,
-                  currentLanguage: currentLocale,
-                },
-                options: baseOptions,
-              });
-            }),
-          },
-        ],
-      };
-    }
-  },
-  button: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) =>
-    Button({
-      props: {
-        ...baseProps,
-        small: element.small,
-        icon: element?.icon,
-        iconSize: element?.iconSize,
-        text: element?.text,
-        onClick: () => {
-          scope[element.method]();
-        },
-      },
-      options: baseOptions,
-      slots: {
-        default: () => element.content,
-      },
-    }),
-  gallery: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions) =>
-    Gallery({
-      props: {
-        ...baseProps,
-        loading: imageHandlers.loading,
-        images: baseProps.modelValue,
-        multiple: true,
-        onUpload: imageHandlers.upload,
-        onRemove: imageHandlers.remove,
-        onEdit: onGalleryItemEdit,
-        onSort: editImages,
-      },
-      options: baseOptions,
-    }),
-  editor: (baseProps: IControlBaseProps, baseOptions: IControlBaseOptions, element) =>
-    EditorField({
-      props: {
-        ...baseProps,
-        currentLanguage: currentLocale,
-        assetsFolder: element.id || element.categoryId,
-        classNames: "tw-mb-4",
-      },
-      options: baseOptions,
-    }),
-};
-
-function fieldHelper(field: ControlSchema, parentId: string | number, context?: any) {
-  if (!field) return false;
-
-  if (field.multilanguage) {
-    isAnyControlMultilanguage.value = true;
-  }
-
-  const baseProps: IControlBaseProps = {
-    key: `${parentId}-${field.id}`,
-    label: field.label ? unref(unwrapInterpolation(field.label, context)) : undefined,
-    disabled: ("disabled" in scope && unref(scope.disabled)) || disabledHandler("disabled" in field && field.disabled),
-    name: field.name,
-    rules: field.rules,
-    placeholder: field.placeholder,
-    required: field.rules?.required,
-    modelValue: getModel(field.property, context),
-    "onUpdate:modelValue": (e) => setModel({ property: field.property, value: e, context }),
-    tooltip: field.tooltip,
-    multilanguage: field.multilanguage,
-  };
-
-  const baseOptions = {
-    visibility: field.visibility?.method ? toValue(scope[field.visibility?.method]) : true,
-  };
-
-  if (field["children"]) {
-    return {
-      ...fieldMap[field.type](baseProps, baseOptions, field, context, fieldHelper),
-      id: parentId,
-      children: (field["children"] || []).map((child) => fieldHelper(child, `${parentId}-${child.id}`, context)),
-    };
-  } else {
-    return {
-      ...fieldMap[field.type](baseProps, baseOptions, field, context, fieldHelper),
-      id: parentId,
-    };
-  }
-}
-
-function unrefNested<T>(field: T) {
-  const unreffedProps = {} as T;
-
-  if (field) {
-    Object.keys(field).forEach((key) => {
-      unreffedProps[key] = unref(field[key]);
-    });
-
-    return unreffedProps;
-  }
-  return field;
-}
-
-function fieldValidation(args: {
-  component: ControlType["component"];
-  props: ControlType["props"];
-  slots: ControlTypeWithSlots["slots"];
-  options: ControlType["options"];
-  rows?: number;
-  index?: number;
-}) {
-  const { component, props, slots, options, rows, index } = unrefNested(args);
-  if (!(options && "visibility" in options && options.visibility)) return h("div");
-  const unrefProps = unrefNested(props);
-  const fieldKey = unref(props).multilanguage
-    ? `${String(unrefProps.key)}_${unrefProps.currentLanguage}`
-    : String(unrefProps.key);
-
-  return h(
-    Field,
-    {
-      name: rows > 1 && index >= 0 ? unrefProps?.name + "_" + index : unrefProps?.name,
-      rules: unrefProps.rules,
-      modelValue: unref(props.modelValue),
-      label: unrefProps.label,
-      key: fieldKey,
-    },
-    {
-      default: ({ errorMessage, errors, handleChange }) =>
-        h(
-          component as unknown as ComponentPublicInstance,
-          {
-            ...mergeProps(unrefNested(props) as VNodeProps, {
-              "onUpdate:modelValue": (e) => {
-                handleChange(e);
-              },
-            }),
-            error: !!errors.length,
-            errorMessage,
-            class: props.classNames,
-            key: fieldKey + "_control",
-          },
-          { ...slots }
-        ),
-    }
-  );
-}
-
-function fieldNoValidation(args: {
-  component: ControlType["component"];
-  props: ControlType["props"];
-  slots: ControlTypeWithSlots["slots"];
-  options: ControlType["options"];
-}) {
-  const { component, props, slots, options } = unrefNested(args);
-  if (!(options && "visibility" in options && options.visibility)) return h("div");
-  return h(component as any, { ...unrefNested(props), class: props?.classNames }, slots);
-}
-
-function renderFieldset(args: { content: IFieldset[] }) {
-  const { content } = unrefNested(args);
-
-  const unreffed = unref(content);
-  return unreffed.map(({ columns, fields, remove }, index, arr) => {
-    const divideByCols = _.chunk(Object.values(unref(fields)), columns || 1);
-
-    return h("div", { class: "tw-flex tw-row tw-relative" }, [
-      h("div", { class: "tw-flex-1" }, [
-        divideByCols.map((itemsArr, colIndex, colArr) => {
-          return h(
-            VcRow,
-            {
-              key: `col-${colIndex}-${index}`,
-              class: {
-                "tw-relative": true,
-                "tw-gap-4": true,
-              },
-            },
-            () => [
-              ...itemsArr.map((item, itemIndex) => {
-                return h(VcCol, { key: `item-${itemIndex}-${colIndex}-${index}` }, () =>
-                  helperCreateComponent({ ...(item as any), rows: unreffed.length, index })
-                );
-              }),
-            ]
-          );
-        }),
-      ]),
-      unref(remove)
-        ? h(VcButton, {
-            iconSize: "m",
-            icon: "fas fa-times-circle",
-            text: true,
-            class: {
-              "tw-m-2": !isMobile.value,
-              "tw-absolute tw-top-0 tw-right-0": isMobile.value,
-              "!tw-hidden": arr.length === 1,
-            },
-            onClick: () => callMethod({ method: unref(remove)?.method, arg: index }),
-          })
-        : undefined,
-    ]);
-  });
-}
-
-function modelHasContent(arr: any[]) {
-  return arr.some((x) => x.children || x.content || x.component);
-}
-
-function renderCard(args: {
-  component: GeneratedModel["component"];
-  props: GeneratedModel["props"];
-  children?: GeneratedModel["children"];
-  options: GeneratedModel["options"];
-  slots?: ControlTypeWithSlots["slots"];
-}) {
-  const { component, props, slots, children } = unrefNested(args);
-
-  const { header, classNames, key } = props;
-
-  return modelHasContent(children)
-    ? h(
-        component as any,
-        { header, key, class: classNames },
-        {
-          default: () =>
-            h(
-              "div",
-              { class: { "tw-p-4": true } },
-              children?.map((child) => helperCreateComponent({ ...child }))
-            ),
-          actions: () => {
-            const elem = "actions" in slots && slots?.actions();
-            if (elem) {
-              return helperCreateComponent(elem);
-            }
-            return undefined;
-          },
-        }
-      )
-    : h("div");
-}
-
-function fieldHelperCreateField(field: GeneratedModel) {
-  const { component, props, children = [], content = [], slots = undefined, options = {} } = field;
-
-  return helperCreateComponent({ component, props, children, content, slots, options });
-}
-
-function getFields(children: GeneratedModel[] = []): VNode[] {
-  return children.reduce((children, field): VNode[] => [...children, fieldHelperCreateField(field)], []);
-}
-
-function buildForm(items: ControlSchema[]) {
-  const createdModel: GeneratedModel[] = items.reduce(
-    (arr: GeneratedModel[], field, index): GeneratedModel[] => [...arr, fieldHelper(field, field.id)],
-    []
-  );
-  const createdUi = getFields(createdModel);
-  generatedControls.value = createdUi;
-}
-
-function helperCreateComponent({
-  component,
-  props,
-  children,
-  content,
-  slots,
-  rows,
-  options,
-  index,
-}: {
-  component: GeneratedModel["component"];
-  props: GeneratedModel["props"];
-  children?: GeneratedModel["children"];
-  content?: GeneratedModel["content"];
-  slots?: ControlTypeWithSlots["slots"];
-  rows?: number;
-  options: GeneratedModel["options"];
-  index?: number;
-}) {
-  const rules = _.get(props, "rules");
-  const noValidation = _.get(options, "noValidation");
-  const isRulesExist = rules && Object.keys(rules).length;
-
-  if (content && unref(content) && unref(content).length) {
-    return renderFieldset({ content });
-  }
-
-  if (children && children.length) {
-    return renderCard({ component, props, slots, children, options });
-  }
-
-  if (!noValidation && isRulesExist && !(children && children.length)) {
-    return fieldValidation({ component, props, slots, rows, options, index });
-  }
-
-  if ((!isRulesExist || noValidation) && !(children && children.length)) {
-    return fieldNoValidation({ component, props, slots, options });
-  }
-
-  return h("div");
-}
-
-function create() {
-  return h("div", generatedControls.value);
-}
-
-function unwrapInterpolation(property: string, context: typeof item.value) {
-  const pattern = /{(.*)}/g;
-
-  const match = property.match(pattern);
-
-  if (match) {
-    return getModel(property.replace(/{|}/g, ""), context);
-  }
-
-  return property;
-}
 
 const toolbarMethods = _.merge(
   ref({}),
@@ -720,7 +198,7 @@ const toolbarMethods = _.merge(
       async clickHandler() {
         if (
           await showConfirmation(
-            computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_PRODUCT`))
+            computed(() => t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE`))
           )
         ) {
           await remove({ id: props.param });
@@ -761,232 +239,19 @@ onMounted(async () => {
     await load({ id: props.param });
   }
 
-  buildForm(form.value.children as ControlSchema[]);
-
-  nextTick(() => {
+  await nextTick(() => {
     isReady.value = true;
   });
 });
 
-function getPropertyValue(property: Property, locale: string) {
-  if (property.multilanguage) {
-    if (property.multivalue) {
-      return property.values.filter((x) => x.languageCode == locale);
-    } else if (property.values.find((x) => x.languageCode == locale) == undefined) {
-      property.values.push(
-        new PropertyValue({
-          propertyName: property.name,
-          propertyId: property.id,
-          languageCode: locale,
-          valueType: property.valueType as unknown as PropertyValueValueType,
-        })
-      );
-    }
-
-    if (property.dictionary) {
-      return (
-        property.values.find((x) => x.languageCode == locale) &&
-        property.values.find((x) => x.languageCode == locale).valueId
-      );
-    }
-    return property.values.find((x) => x.languageCode == locale).value;
-  } else {
-    if (property.multivalue) {
-      return property.values;
-    }
-    if (property.dictionary) {
-      return property.values[0] && property.values[0].valueId;
-    }
-    return property.values[0] && property.values[0].value;
-  }
-}
-
-function handleDictionaryValue(
-  property: IProperty,
-  valueId: string,
-  dictionary: PropertyDictionaryItem[],
-  locale?: string
-) {
-  let valueValue;
-  const dictionaryItem = dictionary.find((x) => x.id === valueId);
-  if (!dictionaryItem) {
-    return undefined;
-  }
-
-  if (dictionaryItem["value"]) {
-    valueValue = dictionaryItem["value"];
-  } else {
-    valueValue = dictionaryItem.alias;
-  }
-
-  return {
-    propertyId: dictionaryItem.propertyId,
-    alias: dictionaryItem.alias,
-    languageCode: locale,
-    value: valueValue,
-    valueId: valueId,
-  };
-}
-
-async function loadDictionaries(property: Property, keyword?: string, locale?: string) {
-  let dictionaryItems = await dynamicProperties?.searchDictionaryItems({
-    propertyIds: [property.id],
-    keyword,
-    skip: 0,
-  });
-  if (locale) {
-    dictionaryItems = dictionaryItems.map((x) =>
-      Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias })
-    );
-  }
-  return dictionaryItems;
-}
-
-function disabledHandler(disabled: { method?: string } | boolean): boolean {
-  if (!disabled) return false;
-  if (typeof disabled === "boolean") return disabled;
-  else if (typeof scope[disabled.method] === "function") return scope[disabled.method]();
-  else if (unref(scope[disabled.method])) return unref(scope[disabled.method]);
-  return false;
-}
-
-function setPropertyValue(data: {
-  property: Property;
-  value: string | IPropertyValue[];
-  dictionary?: PropertyDictionaryItem[];
-  locale?: string;
-}) {
-  const { property, value, dictionary, locale } = data;
-
-  let mutatedProperty: PropertyValue[];
-  if (dictionary && dictionary.length) {
-    if (property.multilanguage) {
-      if (Array.isArray(value)) {
-        mutatedProperty = value.map((item) => {
-          if (dictionary.find((x) => x.id === item.valueId)) {
-            return new PropertyValue(handleDictionaryValue(property, item.valueId, dictionary, locale));
-          } else {
-            return new PropertyValue(item);
-          }
-        });
-      } else {
-        mutatedProperty = [new PropertyValue(handleDictionaryValue(property, value, dictionary, locale))];
-      }
-    } else {
-      mutatedProperty = Array.isArray(value)
-        ? value.map((item) => {
-            if (dictionary.find((x) => x.id === item.id)) {
-              const handledValue = handleDictionaryValue(property, item.id, dictionary);
-              return new PropertyValue(handledValue);
-            } else return new PropertyValue(item);
-          })
-        : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
-    }
-  } else {
-    if (property.multilanguage) {
-      if (Array.isArray(value)) {
-        mutatedProperty = [
-          ...property.values.filter((x) => x.languageCode !== locale),
-          ...value.map((item) => new PropertyValue(item)),
-        ];
-      } else {
-        if (property.values.find((x) => x.languageCode == locale)) {
-          property.values.find((x) => x.languageCode == locale).value = value;
-          mutatedProperty = property.values;
-        } else {
-          mutatedProperty = [new PropertyValue({ value: value, isInherited: false, languageCode: locale })];
-        }
-      }
-    } else {
-      mutatedProperty = Array.isArray(value)
-        ? value.map((item) => new PropertyValue(item))
-        : property.values[0]
-        ? [Object.assign(property.values[0], { value: value })]
-        : [new PropertyValue({ value: value, isInherited: false })];
-    }
-  }
-
-  item.value.properties.forEach((prop) => {
-    if (prop.id === property.id) {
-      prop.values = mutatedProperty;
-    }
-  });
-}
-
-const getModel = reactify((property: string, context = item.value) => {
-  if (property && unref(context)) {
-    return _.get(unref(context), property);
-  }
-  return null;
-});
-
-function setModel(args: {
-  property: string;
-  value: string | number | Record<string, unknown>;
-  option?: string;
-  context: unknown;
-}) {
-  const { property, value, option, context = item.value } = args;
-
-  _.set(context, property, option ? value[option] : value);
-}
-
-function imageHandler() {
-  const { edit, remove, upload, loading } = useAssets(Image);
-  return {
-    loading: computed(() => loading.value),
-
-    async edit(image: IImage) {
-      item.value.images = await edit(item.value.images, image);
-      await validateForm();
-    },
-    async upload(files: FileList) {
-      item.value.images = await upload(files, item.value.images, item.value.id || item.value.categoryId);
-
-      files = null;
-      await validateForm();
-
-      return item.value.images;
-    },
-    async remove(image: IImage) {
-      if (
-        await showConfirmation(
-          computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION`))
-        )
-      ) {
-        item.value.images = await remove(item.value.images, image);
-        await validateForm();
-      }
-      return item.value.images;
-    },
-  };
-}
-
-function onGalleryItemEdit(item: Image) {
-  openBlade({
-    blade: markRaw(AssetsDetails),
-    options: {
-      asset: item,
-      assetEditHandler: imageHandlers.edit,
-      assetRemoveHandler: imageHandlers.remove,
-    },
-  });
-}
-
-function editImages(args: Image[]) {
-  item.value.images = args;
-}
-
 async function onBeforeClose() {
   if (validationState.value.modified) {
     return await showConfirmation(
-      unref(computed(() => t(`${settings.value.localeKey.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`)))
+      unref(
+        computed(() => t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`))
+      )
     );
   }
-}
-
-async function validateForm() {
-  await validationState.value.validate();
 }
 
 defineExpose({

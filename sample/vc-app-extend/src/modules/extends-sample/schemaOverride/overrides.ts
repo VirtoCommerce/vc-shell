@@ -45,7 +45,7 @@ export const overrides: OverridesSchema = {
         id: "extendCard",
         type: "card",
         label: "Extended card",
-        children: [
+        fields: [
           {
             id: "personSurname",
             type: "input",

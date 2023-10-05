@@ -1,5 +1,7 @@
-import * as SampleModule from "./sample";
+import * as SampleTeam from "./sample";
+import * as Team from "./legacy-sample";
 
 export default {
-  SampleModule,
+  SampleTeam,
+  Team,
 };

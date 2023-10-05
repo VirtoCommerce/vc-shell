@@ -75,6 +75,7 @@ import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
 import { useI18n } from "vue-i18n";
+import TeamList from "./../modules/legacy-sample/pages/team-list.vue";
 
 const { open } = usePopup({
   component: ChangePassword,
@@ -214,6 +215,11 @@ const menuItems = reactive(
       },
     },
     ...dynamicModuleItems.value,
+    {
+      title: "Legacy",
+      icon: "fas fa-star",
+      component: TeamList,
+    },
     {
       title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),
       icon: "fas fa-sign-out-alt",

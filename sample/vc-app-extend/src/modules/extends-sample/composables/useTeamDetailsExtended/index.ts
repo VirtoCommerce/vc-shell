@@ -6,7 +6,7 @@ export const useTeamDetailsExtended = (args: {
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
 }) => {
   const { load, saveChanges, remove, loading, item, validationState, scope, bladeTitle } =
-    module.SampleModule.composables.useTeamDetails(args);
+    module.SampleTeam.composables.useTeamDetails(args);
 
   function customMethod() {
     alert("Toolbar button clicked!");

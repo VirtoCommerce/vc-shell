@@ -112,13 +112,13 @@ export const createDynamicAppModule = (args: {
   notificationTemplates?: { [key: string]: Component };
 }) => {
   const moduleInitializer = _.findKey(args.schema, (o) => "moduleName" in o.settings && o.settings.moduleName);
-  const everyHasModel = _.every(Object.values(args.schema), (o) => o.settings.model);
+  const everyHasTemplate = _.every(Object.values(args.schema), (o) => o.settings.template);
 
-  if (!everyHasModel) handleError("model", args.schema, "must be included in 'settings' of every file");
+  if (!everyHasTemplate) handleError("template", args.schema, "must be included in 'settings' of every file");
   if (!moduleInitializer)
     handleError("moduleName", args.schema, "must be included in one of this files to initialize the module");
 
-  if (moduleInitializer && everyHasModel) {
+  if (moduleInitializer && everyHasTemplate) {
     let schemaCopy = _.cloneDeep({ ...args.schema });
 
     if (args.overrides) {
@@ -137,7 +137,7 @@ export const createDynamicAppModule = (args: {
           const blade = register(
             {
               app,
-              component: bladePages[JsonSchema.settings.model],
+              component: bladePages[JsonSchema.settings.template],
               composables: { ...args.composables },
               json: JsonSchema,
               options,

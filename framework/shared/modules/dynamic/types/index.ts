@@ -1,5 +1,7 @@
+import { VcButton, VcInput } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import * as AllRules from "@vee-validate/rules";
+import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
 
@@ -47,7 +49,7 @@ export interface SettingsBase {
   /**
    * @description Locale key for VueI18n locale files
    */
-  localeKey: string;
+  localizationPrefix: string;
   /**
    * @description Required component name
    */
@@ -72,9 +74,9 @@ export interface SettingsBase {
     method: string;
   }[];
   /**
-   * @description Blade component view model
+   * @description Blade component view template
    */
-  model: string;
+  template: string;
   /**
    * @description Blade permissions
    */
@@ -95,6 +97,12 @@ export interface ListContentSchema extends SchemaBase {
     customTemplate?: GridTemplateOverride;
   })[];
   mobileTemplate?: {
+    component: string;
+  };
+  notFoundTemplate?: {
+    component: string;
+  };
+  emptyTemplate?: {
     component: string;
   };
 }
@@ -122,22 +130,24 @@ export interface SchemaBase {
   tooltip?: string;
   visibility?: VisibilityOptions;
   multilanguage?: boolean;
+  updateMethod?: string;
 }
 
 export interface SelectSchema extends SchemaBase {
   type: "select";
   optionValue: string;
   optionLabel: string;
-  method: string;
+  optionsMethod: string;
   customTemplate?: {
     component: string;
   };
   clearable?: boolean;
+  emitValue?: boolean;
 }
 
 export interface InputSchema extends SchemaBase {
   type: "input";
-  variant?: "text" | "password" | "email" | "tel" | "number" | "url" | "time" | "date" | "datetime-local";
+  variant?: ComponentProps<typeof VcInput>["type"];
   clearable?: boolean;
 }
 
@@ -161,12 +171,14 @@ export interface DynamicPropertiesSchema extends SchemaBase {
 
 export interface GallerySchema extends SchemaBase {
   type: "gallery";
+  uploadFolder: string;
 }
 
 export interface CardSchema extends SchemaBase {
   type: "card";
-  children: ControlSchema[];
+  fields: ControlSchema[];
   action?: ButtonSchema & { method: string };
+  collapsible?: boolean;
 }
 
 export interface WidgetsSchema extends SchemaBase {
@@ -194,6 +206,10 @@ export interface ButtonSchema extends SchemaBase {
   type: "button";
   content: string;
   small?: boolean;
+  icon?: string;
+  iconSize?: ComponentProps<typeof VcButton>["iconSize"];
+  text?: boolean;
+  method?: string;
 }
 
 export type ControlSchema =

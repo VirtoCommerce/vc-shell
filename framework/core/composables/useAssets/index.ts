@@ -1,4 +1,4 @@
-import { Ref, computed, ref, toRaw } from "vue";
+import { Ref, computed, ref } from "vue";
 import { useUser } from "../useUser";
 import * as _ from "lodash-es";
 
@@ -11,7 +11,7 @@ interface GenericAsset {
 
 interface IUseAssets<T, A> {
   loading: Ref<boolean>;
-  upload: (files: FileList, assetArr: T[], uploadCatalog: string) => Promise<T[]>;
+  upload: (files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder: string) => Promise<T[]>;
   edit: (assetsArr: T[], asset: A) => Promise<T[]>;
   editBulk: (assets: A[]) => T[];
   remove: (assetArr: T[], asset: A) => Promise<T[]>;
@@ -25,7 +25,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
 
   const loading = ref(false);
 
-  async function upload(files: FileList, assetArr: T[], uploadCatalog: string) {
+  async function upload(files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder = "catalog") {
     const assetArrCopy = _.cloneDeep(assetArr) || [];
     try {
       loading.value = true;
@@ -33,7 +33,7 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
         const formData = new FormData();
         formData.append("file", files[i]);
         const authToken = await getAccessToken();
-        const result = await fetch(`/api/assets?folderUrl=/catalog/${uploadCatalog}`, {
+        const result = await fetch(`/api/assets?folderUrl=/${uploadFolder}/${uploadCatalog}`, {
           method: "POST",
           body: formData,
           headers: {

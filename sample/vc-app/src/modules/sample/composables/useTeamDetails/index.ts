@@ -62,6 +62,7 @@ export const useTeamDetails = (args: {
       },
     ],
     disableOnUser: computed(() => !!userDetails.value.id),
+    sampleButtonClick: () => alert("Click!"),
   };
 
   onMounted(() => {

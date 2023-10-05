@@ -1,4 +1,4 @@
-import * as schema from "./schema";
+import * as schema from "./pages";
 import * as composables from "./composables";
 import * as locales from "./locales";
 import * as components from "./components";

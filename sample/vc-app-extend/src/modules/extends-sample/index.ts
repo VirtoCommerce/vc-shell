@@ -4,12 +4,12 @@ import overrides from "./schemaOverride";
 import { useTeamDetailsExtended } from "./composables";
 
 export default createDynamicAppModule({
-  schema: module.SampleModule.schema,
+  schema: module.SampleTeam.schema,
   composables: {
     useTeamDetails: useTeamDetailsExtended,
-    useTeamList: module.SampleModule.composables.useTeamList,
+    useTeamList: module.SampleTeam.composables.useTeamList,
   },
-  locales: module.SampleModule.locales,
-  moduleComponents: module.SampleModule.components,
+  locales: module.SampleTeam.locales,
+  moduleComponents: module.SampleTeam.components,
   overrides,
 });

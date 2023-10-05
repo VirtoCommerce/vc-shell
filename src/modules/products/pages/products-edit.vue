@@ -350,6 +350,14 @@
           >
           </VcWidget>
           <VcWidget
+            icon="fas fa-film"
+            :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.VIDEOS')"
+            :value="videosCount"
+            :disabled="disabled"
+            @click="openVideos"
+          >
+          </VcWidget>
+          <VcWidget
             icon="far fa-file"
             :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
             :value="assetsCount"
@@ -377,8 +385,10 @@ import {
 import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
 import { useOffers } from "../../offers/composables";
+import { useVideos } from "../../videos/composables";
 import MpProductStatus from "../components/MpProductStatus.vue";
 import { OffersList } from "../../offers";
+import { VideosList } from "../../videos";
 import * as _ from "lodash-es";
 import {
   IImage,
@@ -440,6 +450,7 @@ const {
 } = useProduct();
 
 const { searchOffers } = useOffers();
+const { searchVideos } = useVideos();
 const { getAccessToken, user } = useUser();
 const { showConfirmation, showError } = usePopup();
 const { openBlade } = useBladeNavigation();
@@ -449,10 +460,12 @@ useForm({ validateOnMount: false });
 
 const isValid = useIsFormValid();
 const offersCount = ref(0);
+const videosCount = ref(0);
 const productLoading = ref(false);
 const fileUploading = ref(false);
 const fileAssetUploading = ref(false);
 let isOffersOpened = false;
+let isVideosOpened = false;
 let isAssetsOpened = false;
 const categoryLoading = ref(false);
 const currentCategory = ref<Category>();
@@ -549,12 +562,20 @@ const reload = async (fullReload: boolean) => {
       categoryLoading.value = false;
     }
   }
-  //Load offers count to populate widget
+  //Load offers and videos count to populate widget
   if (props.param) {
     offersCount.value = (
       await searchOffers({
         take: 0,
         sellerProductId: props.param,
+      })
+    )?.totalCount;
+    videosCount.value = (
+      await searchVideos({
+        take: 0,
+        ownerIds: productData.value.publishedProductDataId
+          ? [productData.value.publishedProductDataId]
+          : [productData.value.stagedProductDataId],
       })
     )?.totalCount;
   } else {
@@ -867,6 +888,21 @@ async function openOffers() {
   }
 }
 
+async function openVideos() {
+  if (!isVideosOpened) {
+    openBlade({
+      blade: markRaw(VideosList),
+      param: productData.value?.publishedProductDataId ?? productData.value?.stagedProductDataId,
+      onOpen() {
+        isVideosOpened = true;
+      },
+      onClose() {
+        isVideosOpened = false;
+      },
+    });
+  }
+}
+
 async function openAssets() {
   if (!isAssetsOpened) {
     openBlade({
@@ -1028,6 +1064,7 @@ function restoreCollapsed(key: string): boolean {
 defineExpose({
   editImages,
   onBeforeClose,
+  reload,
 });
 </script>
 

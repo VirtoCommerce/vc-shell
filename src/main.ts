@@ -7,6 +7,7 @@ import ProductsModule from "./modules/products";
 import RatingModule from "./modules/rating";
 import SettingsModule from "./modules/settings";
 import MpProductsModule from "./modules/marketplace-products";
+import VideosModule from "./modules/videos";
 import { router } from "./router";
 import * as locales from "./locales";
 import { useLogin } from "./composables";
@@ -29,6 +30,7 @@ const app = createApp(RouterView)
   .use(ImportModule, { router })
   .use(RatingModule, { router })
   .use(SettingsModule, { router })
+  .use(VideosModule, { router })
   .use(router);
 
 Object.entries(locales).forEach(([key, message]) => {

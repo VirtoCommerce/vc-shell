@@ -11,9 +11,10 @@ import {
   h,
   Fragment,
   VNode,
+  defineComponent,
 } from "vue";
 import { ControlSchema } from "../types";
-import { GeneratedModel, IControlBaseProps } from "./models";
+import { IControlBaseProps } from "./models";
 import * as _ from "lodash-es";
 import { reactify } from "@vueuse/core";
 import FIELD_MAP from "./FIELD_MAP";
@@ -39,7 +40,7 @@ const schemeRenderProps = {
   },
 };
 
-export default {
+export default defineComponent({
   name: "SchemaRender",
   props: schemeRenderProps,
   emits: ["update:modelValue"],
@@ -175,4 +176,4 @@ export default {
         props.uiSchema.reduce((arr, field): VNode[] => [...arr, fieldHelper(field, field.id)], [])
       );
   },
-};
+});

@@ -299,7 +299,7 @@ const reload = async () => {
 const bladeToolbar = ref<IBladeToolbar[]>([
   {
     id: "save",
-    title: computed(() => t("PRODUCTS.PAGES.DETAILS.TOOLBAR.SAVE")),
+    title: computed(() => t("VIDEOS.PAGES.DETAILS.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
       await saveVideo(videoDetails.value);

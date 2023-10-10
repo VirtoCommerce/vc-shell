@@ -17,7 +17,7 @@
 
     <div
       :class="[
-        `vc-video_${aspect}`,
+        `vc-video_auto`,
         {
           'tw-rounded-full tw-pb-[var(--video-padding-bottom-1x1)]': rounded,
           'tw-rounded-[3px] tw-border tw-border-solid tw-border-[color:#efefef]': bordered,
@@ -56,12 +56,11 @@ import { VcIcon, VcLabel } from "./../../";
 export interface Props {
   label?: string;
   tooltip?: string;
-  aspect?: string;
   rounded?: boolean;
   bordered?: boolean;
   clickable?: boolean;
   source?: string;
-  size?: "auto" | "1x1" | "16x9" | "4x3" | "3x2" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
+  size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
   background?: "cover" | "contain" | "auto";
 }
 
@@ -70,7 +69,6 @@ export interface Emits {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  aspect: "1x1",
   size: "auto",
   background: "cover",
 });
@@ -88,23 +86,10 @@ const emit = defineEmits<Emits>();
   --image-size-xxl: 145px;
 }
 
-$aspects: (
-  1x1: 100%,
-  16x9: 56.25%,
-  4x3: 75%,
-  3x2: 66.66%,
-);
-
 $paddings: xs, s, m, l, xl, xxl;
 
 .vc-video {
   @apply tw-inline-block tw-relative;
-
-  @each $name, $aspect in $aspects {
-    &_#{$name} {
-      @apply tw-pb-[#{$aspect}];
-    }
-  }
 
   @each $padding in $paddings {
     &_#{$padding} {

@@ -172,7 +172,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, watch, inject, markRaw, Ref, ComputedRef } from "vue";
+import { computed, onMounted, reactive, ref, watch, inject, markRaw, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IProductPushNotification } from "./../../../types";
 import {

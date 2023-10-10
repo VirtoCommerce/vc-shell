@@ -12,9 +12,26 @@
   >
     <template #actions>
       <div class="tw-flex tw-flex-row tw-items-center">
+        <div class="vc-status">
+          <VcSelect
+            :model-value="currentLocale"
+            :options="localesOptions"
+            option-value="value"
+            option-label="label"
+            :disabled="disabled"
+            required
+            :clearable="false"
+            @update:model-value="
+              (e: string) => {
+                setLocale(e);
+              }
+            "
+          >
+          </VcSelect>
+        </div>
         <div
           v-if="productDetails.productType == 'Digital'"
-          class="vc-status vc-status_info vc-status_outline"
+          class="vc-status vc-status_info vc-status_outline tw-ml-4"
         >
           {{ $t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL") }}
         </div>
@@ -192,49 +209,94 @@
                       @update:model-value="handleChange"
                     ></VcInput>
                   </Field>
-                  <Field
-                    v-slot="{ field, errorMessage, handleChange }"
-                    :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                    name="description"
-                    rules="min:3|required"
-                    :model-value="productDetails.description"
+                  <div
+                    v-for="(lang, index) in localesOptions"
+                    :key="index"
                   >
-                    <VcEditor
-                      v-bind="field"
-                      v-model="productDetails.description"
-                      class="tw-mb-4"
+                    <Field
+                      v-if="lang.value == currentLocale"
+                      v-slot="{ field, errorMessage, handleChange }"
                       :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
-                      :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
-                      :disabled="disabled"
                       name="description"
-                      required
-                      :error-message="errorMessage"
-                      :assets-folder="productData.id || productData.categoryId"
-                      @update:model-value="handleChange"
-                    ></VcEditor>
-                  </Field>
-
-                  <VcDynamicProperty
+                      rules="min:3|required"
+                      :model-value="productDetails.descriptions.find((x) => x.languageCode == currentLocale)"
+                    >
+                      <VcEditor
+                        v-bind="field"
+                        v-model="productDetails.descriptions.find((x) => x.languageCode == currentLocale).content"
+                        class="tw-mb-4"
+                        :label="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.TITLE')"
+                        :placeholder="$t('PRODUCTS.PAGES.DETAILS.FIELDS.DESCRIPTION.PLACEHOLDER')"
+                        :disabled="disabled"
+                        name="description"
+                        required
+                        :error-message="errorMessage"
+                        :assets-folder="productData.id || productData.categoryId"
+                        :languages="languages"
+                        :multilanguage="true"
+                        :current-language="currentLocale"
+                        @update:model-value="handleChange"
+                      ></VcEditor>
+                    </Field>
+                  </div>
+                  <div
                     v-for="property in filteredProps"
                     :key="property.id"
-                    :property="property"
-                    :model-value="getPropertyValue(property)"
-                    :options-getter="loadDictionaries"
-                    :required="property.required"
-                    :multivalue="property.multivalue"
-                    :value-type="property.valueType"
-                    :dictionary="property.dictionary"
-                    :name="property.name"
-                    :rules="{
-                      min: property.validationRule?.charCountMin,
-                      max: property.validationRule?.charCountMax,
-                      regex: property.validationRule?.regExp,
-                    }"
-                    :display-names="property.displayNames"
-                    class="tw-mb-4"
-                    @update:model-value="setPropertyValue"
                   >
-                  </VcDynamicProperty>
+                    <div v-if="property.multilanguage">
+                      <div
+                        v-for="lang in localesOptions"
+                        :key="lang"
+                      >
+                        <VcDynamicProperty
+                          v-if="lang.value == currentLocale"
+                          class="tw-pb-4"
+                          :property="property"
+                          :model-value="getPropertyValue(property, currentLocale)"
+                          :options-getter="loadDictionaries"
+                          :required="property.required"
+                          :multivalue="property.multivalue"
+                          :multilanguage="true"
+                          :current-language="lang.value"
+                          :value-type="property.valueType"
+                          :dictionary="property.dictionary"
+                          :name="property.name"
+                          :rules="{
+                            min: property.validationRule?.charCountMin,
+                            max: property.validationRule?.charCountMax,
+                            regex: property.validationRule?.regExp,
+                          }"
+                          :display-names="property.displayNames"
+                          :disabled="disabled"
+                          @update:model-value="setPropertyValue"
+                        >
+                        </VcDynamicProperty>
+                      </div>
+                    </div>
+                    <div v-else>
+                      <VcDynamicProperty
+                        class="tw-pb-4"
+                        :property="property"
+                        :model-value="getPropertyValue(property, currentLocale)"
+                        :options-getter="loadDictionaries"
+                        :required="property.required"
+                        :multivalue="property.multivalue"
+                        :multilanguage="false"
+                        :value-type="property.valueType"
+                        :dictionary="property.dictionary"
+                        :name="property.name"
+                        :rules="{
+                          min: property.validationRule?.charCountMin,
+                          max: property.validationRule?.charCountMax,
+                          regex: property.validationRule?.regExp,
+                        }"
+                        :display-names="property.displayNames"
+                        :disabled="disabled"
+                        @update:model-value="setPropertyValue"
+                      >
+                      </VcDynamicProperty>
+                    </div>
+                  </div>
                 </div>
               </VcCard>
 
@@ -246,7 +308,7 @@
                 :is-collapsed="restoreCollapsed('product_gallery')"
                 @state:collapsed="handleCollapsed('product_gallery', $event)"
               >
-                <VcLoading :active="unref(imageHandlers.loading)"></VcLoading>
+                <VcLoading :active="fileUploading"></VcLoading>
                 <div class="tw-p-2">
                   <Field
                     v-slot="{ handleChange }"
@@ -257,9 +319,9 @@
                       :images="productDetails.images"
                       :disabled="disabled"
                       :multiple="true"
-                      @upload="imageHandlers.upload"
-                      @edit="onGalleryItemEdit"
-                      @remove="imageHandlers.remove"
+                      @upload="onGalleryUpload"
+                      @item:edit="onGalleryItemEdit"
+                      @item:remove="onGalleryImageRemove"
                       @sort="
                         (e) => {
                           handleChange(e);
@@ -297,7 +359,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, unref, markRaw, reactive } from "vue";
+import { computed, onMounted, ref, unref, markRaw, watch } from "vue";
 import {
   useUser,
   IParentCallArgs,
@@ -306,8 +368,6 @@ import {
   AssetsManager,
   usePopup,
   useBladeNavigation,
-  useAssets,
-  DynamicObjectProperty,
 } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useProduct } from "../composables";
@@ -318,6 +378,7 @@ import * as _ from "lodash-es";
 import {
   IImage,
   IProperty,
+  IPropertyValue,
   ISellerProduct,
   Category,
   Image,
@@ -325,11 +386,13 @@ import {
   Property,
   PropertyValue,
   PropertyDictionaryItem,
-  IAsset,
-  IPropertyValue,
+  EditorialReview,
+  PropertyValueValueType,
+  IProductDetails,
 } from "../../../api_client/marketplacevendor";
 import { useIsFormValid, Field, useForm } from "vee-validate";
 import { min, required } from "@vee-validate/rules";
+import { useMarketplaceSettings } from "../../settings";
 
 export interface Props {
   expanded?: boolean;
@@ -360,7 +423,6 @@ const {
   product: productData,
   productDetails,
   loading,
-  modified,
   validateProduct,
   loadProduct,
   createProduct,
@@ -369,42 +431,32 @@ const {
   revertStagedChanges,
   searchDictionaryItems,
   deleteProduct,
+  getLanguages,
 } = useProduct();
 
 const { searchOffers } = useOffers();
 const { getAccessToken, user } = useUser();
 const { showConfirmation, showError } = usePopup();
 const { openBlade } = useBladeNavigation();
+const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
 
 useForm({ validateOnMount: false });
 
 const isValid = useIsFormValid();
 const offersCount = ref(0);
 const productLoading = ref(false);
+const fileUploading = ref(false);
+const fileAssetUploading = ref(false);
 let isOffersOpened = false;
 let isAssetsOpened = false;
 const categoryLoading = ref(false);
 const currentCategory = ref<Category>();
-
-const imageHandlers = imageHandler();
-const assetHandlers = assetsHandler();
+let productDetailsCopy: IProductDetails;
+const modified = ref(false);
 
 const filterTypes = ["Category", "Variation"];
 
-const filteredProps = computed(() =>
-  productDetails.value.properties.filter((x) => {
-    return !filterTypes.includes(x.type);
-  })
-);
-
-// function updateProperty(property: Property) {
-//   productDetails.value.properties.forEach((prop) => {
-//     if (prop.id === property.id) {
-//       console.log(_.cloneDeep(prop));
-//       Object.assign(prop, property);
-//     }
-//   });
-// }
+const filteredProps = computed(() => productDetails.value.properties.filter((x) => !filterTypes.includes(x.type)));
 
 const product = computed(() => (props.param ? productData.value : productDetails.value));
 
@@ -424,18 +476,27 @@ const validateGtin = [
   async (value: string): Promise<string | boolean> => await validate("gtin", value),
 ];
 
-const productTypeOptions = [
-  {
-    label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PHYSICAL"),
-    value: "Physical",
-  },
-  {
-    label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL"),
-    value: "Digital",
-  },
-];
+let productTypeOptions;
 
-const validate = _.throttle(
+let languages: string[];
+let localesOptions;
+const currentLocale = ref("en-US");
+
+const setLocale = (locale: string) => {
+  currentLocale.value = locale;
+};
+
+watch(
+  () => productDetails,
+  (state) => {
+    if (productDetailsCopy) {
+      modified.value = !_.isEqual(productDetailsCopy, state.value);
+    }
+  },
+  { deep: true }
+);
+
+const validate = _.debounce(
   async (fieldName: string, value: string): Promise<string | boolean> => {
     const sellerProduct = {
       ...product.value,
@@ -460,11 +521,23 @@ const validate = _.throttle(
 );
 
 const reload = async (fullReload: boolean) => {
+  languages = await getLanguages();
+  localesOptions = languages.map((x) => ({ label: t(`PRODUCTS.PAGES.DETAILS.LANGUAGES.${x}`, x), value: x }));
+
   if (!modified.value && fullReload) {
     try {
       productLoading.value = true;
+
+      await loadSettings();
+      productTypeOptions = productTypes.value?.map((x) => ({
+        label: t(`PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
+        value: x,
+      }));
+
       if (props.param) {
         await loadProduct({ id: props.param });
+      } else {
+        productDetails.value.productType = defaultProductType.value;
       }
     } finally {
       productLoading.value = false;
@@ -479,7 +552,19 @@ const reload = async (fullReload: boolean) => {
         sellerProductId: props.param,
       })
     )?.totalCount;
+  } else {
+    productDetails.value.descriptions = productDetails.value.descriptions.concat(
+      languages.map(
+        (x) =>
+          new EditorialReview({
+            languageCode: x,
+            content: "",
+            reviewType: "QuickReview",
+          })
+      )
+    );
   }
+  productDetailsCopy = _.cloneDeep(productDetails.value);
 };
 
 onMounted(async () => {
@@ -498,6 +583,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         } else {
           await createProduct(productDetails.value);
         }
+        productDetailsCopy = _.cloneDeep(productDetails.value);
+        modified.value = false;
         emit("parent:call", {
           method: "reload",
         });
@@ -546,6 +633,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     isVisible: computed(() => !!props.param),
     async clickHandler() {
       await revertStagedChanges(productData.value.id);
+      productDetailsCopy = _.cloneDeep(productDetails.value);
+      modified.value = false;
       emit("parent:call", {
         method: "reload",
       });
@@ -578,8 +667,153 @@ const statusText = computed(() => {
   return null;
 });
 
+const onGalleryUpload = async (files: FileList) => {
+  try {
+    fileUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(
+        `/api/assets?folderUrl=/catalog/${productData.value.id || productData.value.categoryId}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        image.createdDate = new Date();
+        if (productDetails.value.images && productDetails.value.images.length) {
+          const lastImageSortOrder = productDetails.value.images[productDetails.value.images.length - 1].sortOrder;
+          image.sortOrder = lastImageSortOrder + 1;
+        } else {
+          image.sortOrder = 0;
+        }
+        productDetails.value.images.push(image);
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  } finally {
+    fileUploading.value = false;
+  }
+
+  files = null;
+};
+
+const onGalleryItemEdit = (item: Image) => {
+  openBlade({
+    blade: markRaw(AssetsDetails),
+    options: {
+      asset: item,
+      assetEditHandler: editImage,
+      assetRemoveHandler: removeImage,
+    },
+  });
+};
+
+async function editImage(localImage: IImage) {
+  const images = productDetails.value.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+    images[imageIndex] = image;
+
+    editImages(images);
+  }
+}
+
+async function removeImage(localImage: IImage) {
+  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
+    const images = productDetails.value.images;
+    if (images.length) {
+      const imageIndex = images.findIndex((img) => img.id === localImage.id);
+
+      images.splice(imageIndex, 1);
+
+      editImages(images);
+    }
+  }
+}
+
 const editImages = (args: Image[]) => {
   productDetails.value.images = args;
+};
+
+const onGalleryImageRemove = async (image: Image) => {
+  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
+    const imageIndex = productDetails.value.images.findIndex((img) => {
+      if (img.id && image.id) {
+        return img.id === image.id;
+      } else {
+        return img.url === image.url;
+      }
+    });
+    productDetails.value.images.splice(imageIndex, 1);
+  }
+};
+
+const onAssetsUpload = async (files: FileList): Promise<Asset[]> => {
+  try {
+    fileAssetUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(
+        `/api/assets?folderUrl=/catalog/${productData.value.id || productData.value.categoryId}`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+      const response = await result.json();
+      if (response?.length) {
+        const asset = new Asset(response[0]);
+        asset.createdDate = new Date();
+        asset.size = files[i].size;
+
+        if (productDetails.value.assets && productDetails.value.assets.length) {
+          const lastAssetSortOrder = productDetails.value.assets[productDetails.value.assets.length - 1].sortOrder;
+          asset.sortOrder = lastAssetSortOrder + 1;
+        } else {
+          asset.sortOrder = 0;
+        }
+        productDetails.value.assets.push(asset);
+        return productDetails.value.assets;
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  } finally {
+    fileAssetUploading.value = false;
+  }
+
+  files = null;
+};
+
+const onAssetsItemRemove = async (assets: Asset[]): Promise<Asset[]> => {
+  if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
+    productDetails.value.assets = productDetails.value.assets.filter((asset) => !assets.includes(asset));
+  }
+  return productDetails.value.assets;
+};
+
+const onAssetsEdit = (assets: Asset[]): Asset[] => {
+  productDetails.value.assets = assets.map((item) => new Asset(item));
+
+  return productDetails.value.assets;
 };
 
 const setProductType = (productType: string) => {
@@ -601,8 +835,14 @@ const setCategory = async (selectedCategory: Category) => {
   });
 };
 
-async function loadDictionaries(property: Property, keyword?: string) {
-  return await searchDictionaryItems([property.id], keyword);
+async function loadDictionaries(property: Property, keyword?: string, locale?: string) {
+  let dictionaryItems = await searchDictionaryItems([property.id], keyword, 0);
+  if (locale) {
+    dictionaryItems = dictionaryItems.map((x) =>
+      Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias })
+    );
+  }
+  return dictionaryItems;
 }
 
 async function openOffers() {
@@ -622,26 +862,15 @@ async function openOffers() {
   }
 }
 
-function onGalleryItemEdit(item: Image) {
-  openBlade({
-    blade: markRaw(AssetsDetails),
-    options: {
-      asset: item,
-      assetEditHandler: imageHandlers.edit,
-      assetRemoveHandler: imageHandlers.remove,
-    },
-  });
-}
-
-function openAssets() {
+async function openAssets() {
   if (!isAssetsOpened) {
     openBlade({
       blade: markRaw(AssetsManager),
       options: {
         assets: productDetails.value.assets,
-        assetsEditHandler: assetHandlers.edit,
-        assetsUploadHandler: assetHandlers.upload,
-        assetsRemoveHandler: assetHandlers.remove,
+        assetsEditHandler: onAssetsEdit,
+        assetsUploadHandler: onAssetsUpload,
+        assetsRemoveHandler: onAssetsItemRemove,
         disabled: assetsDisabled.value,
       },
       onOpen() {
@@ -654,82 +883,36 @@ function openAssets() {
   }
 }
 
-function assetsHandler() {
-  const { editBulk, upload, removeBulk, loading } = useAssets(Asset);
-  return {
-    loading: computed(() => loading.value),
-    edit(assets: IAsset[]) {
-      productDetails.value.assets = editBulk(assets);
-      return productDetails.value.assets;
-    },
-    async upload(files: FileList) {
-      productDetails.value.assets = await upload(
-        files,
-        productDetails.value.assets,
-        productData.value.id || productData.value.categoryId
-      );
-      files = null;
-
-      return productDetails.value.assets;
-    },
-    async remove(assets: Asset[]) {
-      if (
-        await showConfirmation(
-          computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION_ASSET", { count: assets.length }))
-        )
-      ) {
-        productDetails.value.assets = await removeBulk(productDetails.value.assets, assets);
-      }
-      return productDetails.value.assets;
-    },
-  };
-}
-
-function imageHandler() {
-  const { edit, remove, upload, loading } = useAssets(Image);
-  return {
-    loading: computed(() => loading.value),
-    edit(image: IImage) {
-      productDetails.value.images = edit(productDetails.value.images, image);
-    },
-    async upload(files: FileList) {
-      productDetails.value.images = await upload(
-        files,
-        productDetails.value.images,
-        productData.value.id || productData.value.categoryId
-      );
-
-      files = null;
-
-      return productDetails.value.images;
-    },
-    async remove(image: IImage) {
-      if (await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.DELETE_CONFIRMATION")))) {
-        productDetails.value.images = await remove(productDetails.value.images, image);
-      }
-      return productDetails.value.images;
-    },
-  };
-}
-
 async function onBeforeClose() {
   if (modified.value) {
     return await showConfirmation(computed(() => t("PRODUCTS.PAGES.DETAILS.ALERTS.CLOSE_CONFIRMATION")));
   }
 }
 
-function handleDictionaryValue(property: IProperty, valueId: string, dictionary: PropertyDictionaryItem[]) {
-  let valueName;
+function handleDictionaryValue(
+  property: IProperty,
+  valueId: string,
+  dictionary: PropertyDictionaryItem[],
+  locale?: string
+) {
+  let valueValue;
   const dictionaryItem = dictionary.find((x) => x.id === valueId);
-  if (dictionaryItem) {
-    valueName = dictionaryItem.alias;
+  if (!dictionaryItem) {
+    return undefined;
+  }
+
+  if (dictionaryItem["value"]) {
+    valueValue = dictionaryItem["value"];
   } else {
-    valueName = property.name;
+    valueValue = dictionaryItem.alias;
   }
 
   return {
-    value: valueName,
-    valueId,
+    propertyId: dictionaryItem.propertyId,
+    alias: dictionaryItem.alias,
+    languageCode: locale,
+    value: valueValue,
+    valueId: valueId,
   };
 }
 
@@ -737,44 +920,96 @@ function setPropertyValue(data: {
   property: Property;
   value: string | IPropertyValue[];
   dictionary?: PropertyDictionaryItem[];
+  locale?: string;
 }) {
-  const { property, value, dictionary } = data;
+  const { property, value, dictionary, locale } = data;
 
   let mutatedProperty: PropertyValue[];
   if (dictionary && dictionary.length) {
-    mutatedProperty = Array.isArray(value)
-      ? value.map((item) => {
-          if (dictionary.find((x) => x.id === item.id)) {
-            const handledValue = handleDictionaryValue(property, item.id, dictionary);
-
-            return new PropertyValue(handledValue);
-          } else return new PropertyValue(item);
-        })
-      : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
+    if (property.multilanguage) {
+      if (Array.isArray(value)) {
+        mutatedProperty = value.map((item) => {
+          if (dictionary.find((x) => x.id === item.valueId)) {
+            return new PropertyValue(handleDictionaryValue(property, item.valueId, dictionary, locale));
+          } else {
+            return new PropertyValue(item);
+          }
+        });
+      } else {
+        mutatedProperty = [new PropertyValue(handleDictionaryValue(property, value, dictionary, locale))];
+      }
+    } else {
+      mutatedProperty = Array.isArray(value)
+        ? value.map((item) => {
+            if (dictionary.find((x) => x.id === item.id)) {
+              const handledValue = handleDictionaryValue(property, item.id, dictionary);
+              return new PropertyValue(handledValue);
+            } else return new PropertyValue(item);
+          })
+        : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
+    }
   } else {
-    mutatedProperty = Array.isArray(value)
-      ? value.map((item) => new PropertyValue(item))
-      : property.values[0]
-      ? [Object.assign(property.values[0], { value: value })]
-      : [new PropertyValue({ value: value, isInherited: false })];
+    if (property.multilanguage) {
+      if (Array.isArray(value)) {
+        mutatedProperty = [
+          ...property.values.filter((x) => x.languageCode !== locale),
+          ...value.map((item) => new PropertyValue(item)),
+        ];
+      } else {
+        if (property.values.find((x) => x.languageCode == locale)) {
+          property.values.find((x) => x.languageCode == locale).value = value;
+          mutatedProperty = property.values;
+        } else {
+          mutatedProperty = [new PropertyValue({ value: value, isInherited: false, languageCode: locale })];
+        }
+      }
+    } else {
+      mutatedProperty = Array.isArray(value)
+        ? value.map((item) => new PropertyValue(item))
+        : property.values[0]
+        ? [Object.assign(property.values[0], { value: value })]
+        : [new PropertyValue({ value: value, isInherited: false })];
+    }
   }
 
   productDetails.value.properties.forEach((prop) => {
     if (prop.id === property.id) {
-      console.log(mutatedProperty);
       prop.values = mutatedProperty;
     }
   });
 }
 
-function getPropertyValue(property: Property) {
-  if (property.multivalue) {
-    return property.values;
+function getPropertyValue(property: Property, locale: string) {
+  if (property.multilanguage) {
+    if (property.multivalue) {
+      return property.values.filter((x) => x.languageCode == locale);
+    } else if (property.values.find((x) => x.languageCode == locale) == undefined) {
+      property.values.push(
+        new PropertyValue({
+          propertyName: property.name,
+          propertyId: property.id,
+          languageCode: locale,
+          valueType: property.valueType as unknown as PropertyValueValueType,
+        })
+      );
+    }
+
+    if (property.dictionary) {
+      return (
+        property.values.find((x) => x.languageCode == locale) &&
+        property.values.find((x) => x.languageCode == locale).valueId
+      );
+    }
+    return property.values.find((x) => x.languageCode == locale).value;
+  } else {
+    if (property.multivalue) {
+      return property.values;
+    }
+    if (property.dictionary) {
+      return property.values[0] && property.values[0].valueId;
+    }
+    return property.values[0] && property.values[0].value;
   }
-  if (property.dictionary) {
-    return property.values[0] && property.values[0].valueId;
-  }
-  return property.values[0] && property.values[0].value;
 }
 
 function handleCollapsed(key: string, value: boolean): void {

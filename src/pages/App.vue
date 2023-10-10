@@ -70,6 +70,7 @@ import {
   UserDropdownButton,
   BladePageComponent,
   NotificationTemplateConstructor,
+  useDynamicMenu,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -87,17 +88,15 @@ import avatarImage from "/assets/avatar.jpg";
 import logoImage from "/assets/logo.svg";
 import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
-import useDynamicModule from "./../modules/dynamic/composables/useDynamicModule";
-import DynamicBladeList from "../modules/dynamic/pages/dynamic-blade-list.vue";
 
 const { open } = usePopup({
   component: ChangePassword,
 });
 
-const { dynamicModuleItems } = useDynamicModule();
+const { dynamicModuleItems } = useDynamicMenu();
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
-const { user, loadUser, signOut } = useUser();
-const { checkPermission } = usePermissions();
+const { user, signOut, isAdministrator } = useUser();
+const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, openBlade, resolveLastBlade } =
   useBladeNavigation();
@@ -121,17 +120,18 @@ const bladeNavigationRefs = ref();
 
 onMounted(async () => {
   try {
-    await loadUser();
-    await getApps();
-    langInit();
-    await customizationHandler();
-    await loadFromHistory();
+    if (isAuthorized.value) {
+      await getApps();
+      langInit();
+      await loadFromHistory();
 
-    isReady.value = true;
-  } catch (e) {
-    if (!isAuthorized.value) {
-      router.push("/login");
+      await customizationHandler();
+
+      isReady.value = true;
     }
+  } catch (e) {
+    router.push("/login");
+
     throw e;
   }
 });
@@ -198,28 +198,6 @@ const toolbarItems = computed(() =>
             markAllAsRead();
           }
         },
-        async onClick(notification: PushNotification) {
-          if (notification) {
-            for (const page of pages) {
-              const pageNotificationClickFn = page.scope?.notificationClick;
-              if (pageNotificationClickFn && typeof pageNotificationClickFn === "function") {
-                const bladeData = pageNotificationClickFn(notification);
-                console.log(bladeData);
-                if (bladeData) {
-                  openBlade(
-                    {
-                      ...bladeData,
-                      blade: page,
-                    },
-                    true
-                  );
-
-                  break;
-                }
-              }
-            }
-          }
-        },
       },
     },
     {
@@ -265,7 +243,7 @@ const mobileMenuItems = computed(() =>
     },
   ])
 );
-
+const { resolveBladeByName } = useBladeNavigation();
 const menuItems = reactive(
   navigationMenuComposer([
     {
@@ -293,11 +271,11 @@ const menuItems = reactive(
         {
           title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
           component: MpProductsList,
-          isVisible: computed(() => checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)),
+          isVisible: computed(() => hasAccess(UserPermissions.SellerProductsSearchFromAllSellers)),
         },
         {
           title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
-          component: ProductsList,
+          component: resolveBladeByName("ProductsList"),
         },
       ],
     },
@@ -316,15 +294,20 @@ const menuItems = reactive(
     {
       title: computed(() => t("RATING.MENU.TITLE")),
       icon: "fas fa-star",
-      isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
+      isVisible: computed(() => hasAccess(UserPermissions.ManageSellerReviews)),
       component: ReviewList,
     },
-    ...dynamicModuleItems.value,
+    {
+      title: "Dynamic",
+      icon: "fas fa-arrows-alt",
+      isVisible: true,
+      children: dynamicModuleItems.value,
+    },
     {
       title: computed(() => t("SETTINGS.MENU.TITLE")),
       icon: "fas fa-sliders-h",
       isVisible: computed(() =>
-        checkPermission([
+        hasAccess([
           UserPermissions.SellerUsersManage,
           UserPermissions.SellerDetailsEdit,
           UserPermissions.ManageSellerFulfillmentCenters,
@@ -334,17 +317,17 @@ const menuItems = reactive(
         {
           title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
           component: TeamList,
-          isVisible: computed(() => checkPermission(UserPermissions.SellerUsersManage)),
+          isVisible: computed(() => hasAccess(UserPermissions.SellerUsersManage)),
         },
         {
           title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
           component: FulfillmentCenters,
-          isVisible: computed(() => checkPermission(UserPermissions.ManageSellerFulfillmentCenters)),
+          isVisible: computed(() => hasAccess(UserPermissions.ManageSellerFulfillmentCenters)),
         },
         {
           title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
           component: SellerDetails,
-          isVisible: computed(() => checkPermission(UserPermissions.SellerDetailsEdit)),
+          isVisible: computed(() => hasAccess(UserPermissions.SellerDetailsEdit)),
         },
       ],
     },
@@ -391,19 +374,21 @@ const openDashboard = async () => {
 };
 
 async function customizationHandler() {
-  await getCurrentSeller();
+  if (!isAdministrator.value) {
+    await getCurrentSeller();
+  }
   await getUiCustomizationSettings();
 
   if (sellerDetails.value.logo) {
     applySettings({ logo: sellerDetails.value.logo });
-  } else if (!uiSettings.value.logo) {
+  } else {
     applySettings({ logo: logoImage });
   }
 
   if (sellerDetails.value.name) {
     applySettings({ title: sellerDetails.value.name });
-  } else if (!uiSettings.value.title) {
-    applySettings({ title: undefined });
+  } else {
+    applySettings({ title: "Vendor Portal" });
   }
 }
 </script>

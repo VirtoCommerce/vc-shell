@@ -1,5 +1,13 @@
 {
   "language_name": "English",
+  "LANGUAGES": {
+    "en-US": "English",
+    "de-DE": "German",
+    "fr-FR": "French",
+    "ar-EG": "Arabic (Egypt)",
+    "ar-AE": "Arabic (UAE)",
+    "tt-RU": "Tatar (Russia)"
+  },
   "SHELL": {
     "MENU": {
       "DASHBOARD": "Home"

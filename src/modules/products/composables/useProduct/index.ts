@@ -1,5 +1,5 @@
-import { computed, Ref, ref, unref, watch } from "vue";
-import { useUser, useAssets } from "@vc-shell/framework";
+import { computed, Ref, ref, watch } from "vue";
+import { useUser } from "@vc-shell/framework";
 import * as _ from "lodash-es";
 
 import {
@@ -18,39 +18,36 @@ import {
   ValidationFailure,
   SearchCategoriesQuery,
   CategorySearchResult,
-  Asset,
-  IAsset,
-  Image,
-  IImage,
+  EditorialReview,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
-  product: Ref<SellerProduct>;
+  product: Ref<ISellerProduct>;
   productDetails: Ref<IProductDetails>;
   loading: Ref<boolean>;
   modified: Ref<boolean>;
   fetchCategories: (keyword?: string, skip?: number, ids?: string[]) => Promise<CategorySearchResult>;
-  loadProduct: (args: { id: string }) => Promise<void>;
+  loadProduct: (args: { id: string }) => void;
   validateProduct: (product: ISellerProduct) => Promise<ValidationFailure[]>;
   createProduct: (details: IProductDetails) => void;
   updateProductDetails: (productId: string, details: IProductDetails, sendToAprove?: boolean) => void;
   revertStagedChanges: (productId: string) => void;
   searchDictionaryItems: (propertyIds: string[], keyword?: string, skip?: number) => Promise<PropertyDictionaryItem[]>;
   deleteProduct: (id: string) => Promise<void>;
+  getLanguages: () => Promise<string[]>;
 }
 
 export default (): IUseProduct => {
-  const product = ref<SellerProduct>(
-    new SellerProduct({
-      productData: new CatalogProduct({
-        reviews: [],
-        images: [],
-      }),
-    })
-  );
+  const product = ref<ISellerProduct>({
+    productData: {
+      reviews: [],
+      images: [],
+    } as CatalogProduct,
+  });
   const productDetails = ref<IProductDetails>(
     new ProductDetails({
       images: [],
+      descriptions: [],
     })
   );
   let productDetailsCopy: IProductDetails;
@@ -60,7 +57,6 @@ export default (): IUseProduct => {
   watch(
     () => productDetails,
     (state) => {
-      console.log(productDetailsCopy, state.value, "modified");
       modified.value = !_.isEqual(productDetailsCopy, state.value);
     },
     { deep: true }
@@ -107,8 +103,7 @@ export default (): IUseProduct => {
 
     try {
       loading.value = true;
-      const res = await client.getProductById(args.id);
-      product.value = new SellerProduct(res);
+      product.value = await client.getProductById(args.id);
       //TODO: use mapping insead this ugly assignments
       productDetails.value = {
         name: product.value.name,
@@ -117,9 +112,25 @@ export default (): IUseProduct => {
         categoryId: product.value.categoryId,
         gtin: product.value.productData?.gtin,
         properties: product.value.productData?.properties,
-        description: product.value.productData?.reviews[0]?.content,
+        descriptions: product.value.productData?.reviews?.filter((x) => x.reviewType == "QuickReview"),
         productType: product.value.productData?.productType,
       };
+
+      const languages = await client.getAvailableLanguages();
+      const notReviewedLangs = languages.filter((x) =>
+        productDetails.value.descriptions.every((d) => d.languageCode !== x)
+      );
+      productDetails.value.descriptions = productDetails.value.descriptions.concat(
+        notReviewedLangs.map(
+          (x) =>
+            new EditorialReview({
+              languageCode: x,
+              content: "",
+              reviewType: "QuickReview",
+            })
+        )
+      );
+
       productDetailsCopy = _.cloneDeep(productDetails.value);
     } catch (e) {
       console.error(e);
@@ -224,6 +235,17 @@ export default (): IUseProduct => {
     }
   }
 
+  async function getLanguages() {
+    console.info("get languages");
+    const client = await getApiClient();
+    try {
+      return await client.getAvailableLanguages();
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  }
+
   return {
     product: computed(() => product.value),
     productDetails,
@@ -237,5 +259,6 @@ export default (): IUseProduct => {
     revertStagedChanges,
     searchDictionaryItems,
     deleteProduct,
+    getLanguages,
   };
 };

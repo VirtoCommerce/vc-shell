@@ -13,6 +13,8 @@ export interface IUseSettings {
   defaultLanguage: Ref<string>;
   languages: Ref<string[]>;
   currentLanguage: Ref<string>;
+  defaultProductType: Ref<string>;
+  productTypes: Ref<string[]>;
   loadSettings: () => Promise<void>;
 }
 
@@ -25,6 +27,8 @@ export default (): IUseSettings => {
   const defaultLanguage = ref<string>();
   const languages = ref<string[]>([]);
   const currentLanguage = ref<string>();
+  const defaultProductType = ref<string>();
+  const productTypes = ref<string[]>([]);
 
   async function loadSettings() {
     const token = await getAccessToken();
@@ -50,6 +54,9 @@ export default (): IUseSettings => {
         if (!currentLanguage.value) {
           currentLanguage.value = defaultLanguage.value;
         }
+
+        defaultProductType.value = settings.value.defaultProductType;
+        productTypes.value = settings.value.productTypes;
       } catch (e) {
         console.error(e);
         throw e;
@@ -63,6 +70,8 @@ export default (): IUseSettings => {
     defaultLanguage,
     languages,
     currentLanguage,
+    defaultProductType,
+    productTypes,
     loadSettings,
   };
 };

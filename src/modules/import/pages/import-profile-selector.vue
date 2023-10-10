@@ -143,7 +143,7 @@ defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
-const { checkPermission } = usePermissions();
+const { hasAccess } = usePermissions();
 
 const {
   importHistory,
@@ -175,7 +175,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       newProfile();
     },
-    isVisible: computed(() => checkPermission(UserPermissions.SellerImportProfilesEdit)),
+    isVisible: computed(() => hasAccess(UserPermissions.SellerImportProfilesEdit)),
   },
 ]);
 const columns = ref<ITableColumns[]>([

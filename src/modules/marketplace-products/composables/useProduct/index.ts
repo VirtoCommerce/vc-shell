@@ -18,6 +18,7 @@ import {
   ValidationFailure,
   SearchCategoriesQuery,
   CategorySearchResult,
+  EditorialReview,
 } from "../../../../api_client/marketplacevendor";
 
 interface IUseProduct {
@@ -32,6 +33,7 @@ interface IUseProduct {
   updateProductDetails: (productId: string, details: IProductDetails, sendToAprove?: boolean) => void;
   revertStagedChanges: (productId: string) => void;
   searchDictionaryItems: (propertyIds: string[], keyword?: string, skip?: number) => Promise<PropertyDictionaryItem[]>;
+  getLanguages: () => Promise<string[]>;
 }
 
 export default (): IUseProduct => {
@@ -46,6 +48,7 @@ export default (): IUseProduct => {
     new ProductDetails({
       images: [],
       assets: [],
+      descriptions: [],
     })
   );
   let productDetailsCopy: IProductDetails;
@@ -110,8 +113,24 @@ export default (): IUseProduct => {
         categoryId: product.value.categoryId,
         gtin: product.value.productData?.gtin,
         properties: product.value.productData?.properties,
-        description: product.value.productData?.reviews[0]?.content,
+        descriptions: product.value.productData?.reviews,
       };
+
+      const languages = await client.getAvailableLanguages();
+      const notReviewedLangs = languages.filter((x) =>
+        productDetails.value.descriptions.every((d) => d.languageCode !== x)
+      );
+      productDetails.value.descriptions = productDetails.value.descriptions.concat(
+        notReviewedLangs.map(
+          (x) =>
+            new EditorialReview({
+              languageCode: x,
+              content: "",
+              reviewType: "QuickReview",
+            })
+        )
+      );
+
       productDetailsCopy = _.cloneDeep(productDetails.value);
     } catch (e) {
       console.error(e);
@@ -201,6 +220,17 @@ export default (): IUseProduct => {
     }
   }
 
+  async function getLanguages() {
+    console.info("get languages");
+    const client = await getApiClient();
+    try {
+      return await client.getAvailableLanguages();
+    } catch (e) {
+      console.error(e);
+      return [];
+    }
+  }
+
   return {
     product: computed(() => product.value),
     productDetails,
@@ -213,5 +243,6 @@ export default (): IUseProduct => {
     createProduct,
     revertStagedChanges,
     searchDictionaryItems,
+    getLanguages,
   };
 };

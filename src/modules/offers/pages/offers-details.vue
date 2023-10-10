@@ -10,6 +10,27 @@
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
   >
+    <template #actions>
+      <div class="tw-flex tw-flex-row tw-items-center">
+        <div class="vc-status">
+          <VcSelect
+            :model-value="currentLocale"
+            :options="localesOptions"
+            option-value="value"
+            option-label="label"
+            required
+            :clearable="false"
+            @update:model-value="
+              (e: string) => {
+                setLocale(e);
+              }
+            "
+          >
+          </VcSelect>
+        </div>
+      </div>
+    </template>
+
     <!-- Blade contents -->
     <VcContainer
       ref="container"
@@ -68,7 +89,7 @@
                       <div
                         v-if="scope.opt.sellerProductId"
                         class="vc-link tw-mt-1"
-                        @click.stop="showofferDetails(scope.opt.sellerProductId)"
+                        @click.stop="showProductDetails(scope.opt.sellerProductId)"
                       >
                         {{ $t("OFFERS.PAGES.DETAILS.MORE_INFO") }}
                       </div>
@@ -195,7 +216,7 @@
                               v-slot="{ field, errorMessage, handleChange, errors }"
                               :model-value="item.inStockQuantity"
                               :name="`availqty_${i}`"
-                              rules="required|bigint"
+                              rules="required|bigint|min_value:0"
                             >
                               <VcInput
                                 v-bind="field"
@@ -225,16 +246,62 @@
               :header="$t('PRODUCTS.PAGES.DETAILS.FIELDS.TITLE')"
             >
               <div class="tw-p-4">
-                <!-- <VcDynamicProperty
+                <div
                   v-for="property in filteredProps"
                   :key="property.id"
-                  :property="property"
-                  :options-getter="loadDictionaries"
-                  :getter="getPropertyValue"
-                  :setter="setPropertyValue"
-                  class="tw-mb-4"
                 >
-                </VcDynamicProperty> -->
+                  <div v-if="property.multilanguage">
+                    <div
+                      v-for="lang in localesOptions"
+                      :key="lang"
+                    >
+                      <VcDynamicProperty
+                        v-if="lang.value == currentLocale"
+                        class="tw-pb-4"
+                        :property="property"
+                        :model-value="getPropertyValue(property, currentLocale)"
+                        :options-getter="loadDictionaries"
+                        :required="property.required"
+                        :multivalue="property.multivalue"
+                        :multilanguage="true"
+                        :current-language="lang.value"
+                        :value-type="property.valueType"
+                        :dictionary="property.dictionary"
+                        :name="property.name"
+                        :rules="{
+                          min: property.validationRule?.charCountMin,
+                          max: property.validationRule?.charCountMax,
+                          regex: property.validationRule?.regExp,
+                        }"
+                        :display-names="property.displayNames"
+                        @update:model-value="setPropertyValue"
+                      >
+                      </VcDynamicProperty>
+                    </div>
+                  </div>
+                  <div v-else>
+                    <VcDynamicProperty
+                      class="tw-pb-4"
+                      :property="property"
+                      :model-value="getPropertyValue(property, currentLocale)"
+                      :options-getter="loadDictionaries"
+                      :required="property.required"
+                      :multivalue="property.multivalue"
+                      :multilanguage="false"
+                      :value-type="property.valueType"
+                      :dictionary="property.dictionary"
+                      :name="property.name"
+                      :rules="{
+                        min: property.validationRule?.charCountMin,
+                        max: property.validationRule?.charCountMax,
+                        regex: property.validationRule?.regExp,
+                      }"
+                      :display-names="property.displayNames"
+                      @update:model-value="setPropertyValue"
+                    >
+                    </VcDynamicProperty>
+                  </div>
+                </div>
               </div>
             </VcCard>
 
@@ -277,7 +344,7 @@
                             rules="required"
                           >
                             <VcInputCurrency
-                              v-model:modelValue="item.listPrice"
+                              v-model:modelValue.number="item.listPrice"
                               v-model:option="item.currency"
                               :label="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.TITLE')"
                               :placeholder="$t('OFFERS.PAGES.DETAILS.FIELDS.LIST_PRICE.PLACEHOLDER')"
@@ -289,6 +356,7 @@
                               :options="currencies"
                               option-value="value"
                               option-label="title"
+                              debounce="0"
                               @update:model-value="handleChange"
                             ></VcInputCurrency>
                           </Field>
@@ -305,6 +373,7 @@
                             :options="currencies"
                             option-value="value"
                             option-label="title"
+                            debounce="0"
                             :name="`saleprice_${i}`"
                           ></VcInputCurrency>
                         </VcCol>
@@ -342,16 +411,17 @@
                       style="flex-basis: 20px"
                       :class="{
                         'offer-details__pricing-delete-btn': $isMobile.value,
-                        'tw-p-2 tw-mt-[22px] tw-flex tw-items-center': !$isMobile.value,
+                        'tw-p-2 tw-mt-[22px]': !$isMobile.value,
                       }"
                     >
-                      <VcButton
-                        :class="[{ 'tw-pt-4': !$isMobile.value }]"
-                        :text="true"
-                        icon-size="m"
+                      <VcIcon
+                        :class="[
+                          { 'tw-pt-4': !$isMobile.value },
+                          'tw-text-[#41afe6] tw-cursor-pointer hover:tw-text-[#319ed4]',
+                        ]"
                         icon="fas fa-times-circle"
                         @click="removePrice(i)"
-                      ></VcButton>
+                      ></VcIcon>
                     </div>
                   </VcRow>
                   <VcHint
@@ -378,17 +448,20 @@
                       <Field
                         v-slot="{ field, errorMessage, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
-                        :model-value="offerDetails.startDate"
+                        :model-value="getFilterDate('startDate')"
                         name="startDate"
                       >
                         <VcInput
                           v-bind="field"
-                          v-model="offerDetails.startDate"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_FROM')"
                           type="datetime-local"
+                          :model-value="getFilterDate('startDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
+                          @update:model-value="
+                            (e: string) => setFilterDate('startDate', e)
+                          "
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -396,18 +469,19 @@
                       <Field
                         v-slot="{ field, errorMessage, errors }"
                         :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
-                        :model-value="offerDetails.endDate"
+                        :model-value="getFilterDate('endDate')"
                         name="endDate"
                         rules="after:@startDate"
                       >
                         <VcInput
                           v-bind="field"
-                          v-model="offerDetails.endDate"
                           :label="$t('OFFERS.PAGES.DETAILS.FIELDS.DATES.VALID_TO')"
                           type="datetime-local"
+                          :model-value="getFilterDate('endDate')"
                           :disabled="readonly"
                           :error="!!errors.length"
                           :error-message="errorMessage"
+                          @update:model-value="(e: string) => setFilterDate('endDate', e)"
                         ></VcInput>
                       </Field>
                     </VcCol>
@@ -423,15 +497,15 @@
               :is-collapsed="restoreCollapsed('offer_gallery')"
               @state:collapsed="handleCollapsed('offer_gallery', $event)"
             >
-              <VcLoading :active="unref(imageHandlers.loading)"></VcLoading>
+              <VcLoading :active="imageUploading"></VcLoading>
               <div class="tw-p-2">
                 <VcGallery
                   :images="offerDetails.images"
                   :disabled="readonly"
                   :multiple="true"
-                  @upload="imageHandlers.upload"
-                  @edit="onGalleryItemEdit"
-                  @remove="imageHandlers.remove"
+                  @upload="onGalleryUpload"
+                  @item:edit="onGalleryItemEdit"
+                  @item:remove="onGalleryImageRemove"
                   @sort="onGallerySort"
                 ></VcGallery>
               </div>
@@ -454,9 +528,9 @@ import {
   useUser,
   useBladeNavigation,
   usePopup,
-  useAssets,
 } from "@vc-shell/framework";
 import { useOffer } from "../composables";
+import * as _ from "lodash-es";
 import {
   IProperty,
   IPropertyValue,
@@ -467,6 +541,9 @@ import {
   ISellerProduct,
   Image,
   IImage,
+  Property,
+  PropertyValueValueType,
+  IOfferDetails,
 } from "../../../api_client/marketplacevendor";
 import ProductsEdit from "../../products/pages/products-edit.vue";
 import { Form, useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
@@ -503,20 +580,11 @@ const emit = defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 const { t } = useI18n({ useScope: "global" });
 
-const {
-  createOffer,
-  updateOffer,
-  offerDetails,
-  fetchProducts,
-  offer,
-  loadOffer,
-  loading,
-  modified,
-  makeCopy,
-  deleteOffer,
-  searchDictionaryItems,
-} = useOffer();
+const { createOffer, updateOffer, offerDetails, fetchProducts, offer, loadOffer, loading, makeCopy, deleteOffer } =
+  useOffer();
 
+const { searchDictionaryItems, getLanguages } = useProduct();
+const { getAccessToken } = useUser();
 const { showError, showConfirmation } = usePopup();
 const { setFieldError } = useForm({
   validateOnMount: false,
@@ -531,6 +599,10 @@ const offerLoading = ref(false);
 const productLoading = ref(false);
 const pricingEqual = ref(false);
 const duplicates = ref([]);
+const imageUploading = ref(false);
+
+let offerDetailsCopy: IOfferDetails;
+const modified = ref(false);
 
 const filterTypes = ["Variation"];
 
@@ -540,13 +612,32 @@ const filteredProps = computed(() => {
 
 const { fulfillmentCentersList, searchFulfillmentCenters } = useFulfillmentCenters();
 
-const { currencies, loadSettings } = useMarketplaceSettings();
+const { currencies, loadSettings, defaultCurrency } = useMarketplaceSettings();
 
-const imageHandlers = imageHandler();
+let languages: string[];
+let localesOptions;
+const currentLocale = ref("en-US");
+
+const setLocale = (locale: string) => {
+  currentLocale.value = locale;
+};
+
+watch(
+  () => offerDetails,
+  (state) => {
+    if (offerDetailsCopy) {
+      modified.value = !_.isEqual(offerDetailsCopy, state.value);
+    }
+  },
+  { deep: true }
+);
 
 onMounted(async () => {
   try {
     offerLoading.value = true;
+    languages = await getLanguages();
+    localesOptions = languages.map((x) => ({ label: t(`OFFERS.PAGES.DETAILS.LANGUAGES.${x}`, x), value: x }));
+
     await loadSettings();
     if (props.param) {
       await loadOffer({ id: props.param });
@@ -566,6 +657,7 @@ onMounted(async () => {
     if (searchableProductId) {
       await setProductItem(searchableProductId);
     }
+    offerDetailsCopy = _.cloneDeep(offerDetails.value);
   } finally {
     offerLoading.value = false;
   }
@@ -671,6 +763,8 @@ const bladeToolbar = ref<IBladeToolbar[]>([
             ...offerDetails.value,
           });
         }
+        offerDetailsCopy = _.cloneDeep(offerDetails.value);
+        modified.value = false;
         emit("parent:call", {
           method: "reload",
         });
@@ -752,7 +846,7 @@ function addPrice(scroll = false) {
   }
   offerDetails.value.prices.push(
     new OfferPrice({
-      currency: "USD",
+      currency: defaultCurrency.value.value,
       listPrice: null,
       minQuantity: null,
     })
@@ -787,8 +881,7 @@ function generateSku(): string {
   }
   return result;
 }
-
-async function showofferDetails(id: string) {
+async function showProductDetails(id: string) {
   openBlade({
     blade: markRaw(ProductsEdit),
     param: id,
@@ -847,69 +940,137 @@ function getProductItem() {
   }
 }
 
-async function loadDictionaries(property: IProperty, keyword?: string, skip?: number) {
-  return await searchDictionaryItems([property.id], keyword, skip);
-}
-
-function setPropertyValue(property: IProperty, value: IPropertyValue, dictionary?: PropertyDictionaryItem[]) {
-  if (value) {
-    if (typeof value === "object" && Object.prototype.hasOwnProperty.call(value, "length")) {
-      if (dictionary && dictionary.length) {
-        property.values = (value as IPropertyValue[]).map((item) => {
-          const handledValue = handleDictionaryValue(property, item.valueId, dictionary);
-          return new PropertyValue(handledValue);
-        });
-      } else {
-        property.values = (value as IPropertyValue[]).map((item) => new PropertyValue(item));
-      }
-    } else {
-      if (dictionary && dictionary.length) {
-        const handledValue = handleDictionaryValue(property, value as string, dictionary);
-        property.values[0] = new PropertyValue({
-          ...handledValue,
-          isInherited: false,
-        });
-      } else {
-        if (property.values[0]) {
-          property.values[0].value = value;
-        } else {
-          property.values[0] = new PropertyValue({
-            value,
-            isInherited: false,
-          });
-        }
-      }
-    }
-  } else {
-    offerDetails.value.properties = offerDetails.value.properties.map((x) => {
-      if (x.id === property.id) {
-        x.values = [];
-      }
-      return x;
-    });
+async function loadDictionaries(property: IProperty, keyword?: string, locale?: string) {
+  let dictionaryItems = await searchDictionaryItems([property.id], keyword, 0);
+  if (locale) {
+    dictionaryItems = dictionaryItems.map((x) =>
+      Object.assign(x, { value: x.localizedValues.find((v) => v.languageCode == locale)?.value ?? x.alias })
+    );
   }
+  return dictionaryItems;
 }
 
-function getPropertyValue(property: IProperty, isDictionary?: boolean): Record<string, unknown> {
-  if (isDictionary) {
-    return property.values[0] && (property.values[0].valueId as unknown as Record<string, unknown>);
-  }
-  return property.values[0] && property.values[0].value;
-}
-
-function handleDictionaryValue(property: IProperty, valueId: string, dictionary: PropertyDictionaryItem[]) {
-  let valueName;
+function handleDictionaryValue(
+  property: IProperty,
+  valueId: string,
+  dictionary: PropertyDictionaryItem[],
+  locale?: string
+) {
+  let valueValue;
   const dictionaryItem = dictionary.find((x) => x.id === valueId);
-  if (dictionaryItem) {
-    valueName = dictionaryItem.alias;
+  if (!dictionaryItem) {
+    return undefined;
+  }
+
+  if (dictionaryItem["value"]) {
+    valueValue = dictionaryItem["value"];
   } else {
-    valueName = property.name;
+    valueValue = dictionaryItem.alias;
   }
 
   return {
-    value: valueName,
-    valueId,
+    propertyId: dictionaryItem.propertyId,
+    alias: dictionaryItem.alias,
+    languageCode: locale,
+    value: valueValue,
+    valueId: valueId,
   };
+}
+
+function setPropertyValue(data: {
+  property: Property;
+  value: string | IPropertyValue[];
+  dictionary?: PropertyDictionaryItem[];
+  locale?: string;
+}) {
+  const { property, value, dictionary, locale } = data;
+
+  let mutatedProperty: PropertyValue[];
+  if (dictionary && dictionary.length) {
+    if (property.multilanguage) {
+      if (Array.isArray(value)) {
+        mutatedProperty = value.map((item) => {
+          if (dictionary.find((x) => x.id === item.valueId)) {
+            return new PropertyValue(handleDictionaryValue(property, item.valueId, dictionary, locale));
+          } else {
+            return new PropertyValue(item);
+          }
+        });
+      } else {
+        mutatedProperty = [new PropertyValue(handleDictionaryValue(property, value, dictionary, locale))];
+      }
+    } else {
+      mutatedProperty = Array.isArray(value)
+        ? value.map((item) => {
+            if (dictionary.find((x) => x.id === item.id)) {
+              const handledValue = handleDictionaryValue(property, item.id, dictionary);
+              return new PropertyValue(handledValue);
+            } else return new PropertyValue(item);
+          })
+        : [new PropertyValue(handleDictionaryValue(property, value, dictionary))];
+    }
+  } else {
+    if (property.multilanguage) {
+      if (Array.isArray(value)) {
+        mutatedProperty = [
+          ...property.values.filter((x) => x.languageCode !== locale),
+          ...value.map((item) => new PropertyValue(item)),
+        ];
+      } else {
+        if (property.values.find((x) => x.languageCode == locale)) {
+          property.values.find((x) => x.languageCode == locale).value = value;
+          mutatedProperty = property.values;
+        } else {
+          mutatedProperty = [new PropertyValue({ value: value, isInherited: false, languageCode: locale })];
+        }
+      }
+    } else {
+      mutatedProperty = Array.isArray(value)
+        ? value.map((item) => new PropertyValue(item))
+        : property.values[0]
+        ? [Object.assign(property.values[0], { value: value })]
+        : [new PropertyValue({ value: value, isInherited: false })];
+    }
+  }
+
+  offerDetails.value.properties.forEach((prop) => {
+    if (prop.id === property.id) {
+      prop.values = mutatedProperty;
+    }
+  });
+}
+
+function getPropertyValue(property: Property, locale: string) {
+  if (property.multilanguage) {
+    if (property.multivalue) {
+      return property.values.filter((x) => x.languageCode == locale);
+    } else if (property.values.find((x) => x.languageCode == locale) == undefined) {
+      property.values.push(
+        new PropertyValue({
+          propertyName: property.name,
+          propertyId: property.id,
+          languageCode: locale,
+          valueType: property.valueType as unknown as PropertyValueValueType,
+        })
+      );
+    }
+
+    if (property.dictionary) {
+      return (
+        property.values.find((x) => x.languageCode == locale) &&
+        property.values.find((x) => x.languageCode == locale).valueId
+      );
+    }
+    return property.values.find((x) => x.languageCode == locale).value;
+  } else {
+    if (property.multivalue) {
+      return property.values;
+    }
+    if (property.dictionary) {
+      return property.values[0] && property.values[0].valueId;
+    }
+    return property.values[0] && property.values[0].value;
+  }
 }
 
 async function onBeforeClose() {
@@ -923,41 +1084,80 @@ const onGalleryItemEdit = (item: Image) => {
     blade: markRaw(AssetsDetails),
     options: {
       asset: item,
-      assetEditHandler: imageHandlers.edit,
-      assetRemoveHandler: imageHandlers.remove,
+      assetEditHandler: sortImage,
+      assetRemoveHandler: onGalleryImageRemove,
     },
   });
 };
 
-function imageHandler() {
-  const { edit, remove, upload, loading } = useAssets(Image);
-  return {
-    loading: computed(() => loading.value),
-    edit(image: IImage) {
-      offerDetails.value.images = edit(offerDetails.value.images, image);
-    },
-    async upload(files: FileList) {
-      offerDetails.value.images = await upload(
-        files,
-        offerDetails.value.images,
-        offer.value.id || offer.value.categoryId
-      );
+async function sortImage(localImage: IImage) {
+  const images = offerDetails.value.images;
+  const image = new Image(localImage);
+  if (images.length) {
+    const imageIndex = images.findIndex((img) => img.id === localImage.id);
 
-      files = null;
+    images[imageIndex] = image;
 
-      return offerDetails.value.images;
-    },
-    async remove(image: IImage) {
-      if (await showConfirmation(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION")))) {
-        offerDetails.value.images = await remove(offerDetails.value.images, image);
-      }
-      return offerDetails.value.images;
-    },
-  };
+    editImages(images);
+  }
 }
+
+const editImages = (args: Image[]) => {
+  offerDetails.value.images = args;
+};
 
 const onGallerySort = (images: Image[]) => {
   offerDetails.value.images = images;
+};
+
+const onGalleryImageRemove = async (image: Image) => {
+  if (await showConfirmation(unref(computed(() => t("OFFERS.PAGES.ALERTS.IMAGE_DELETE_CONFIRMATION"))))) {
+    const imageIndex = offerDetails.value.images.findIndex((img) => {
+      if (img.id && image.id) {
+        return img.id === image.id;
+      } else {
+        return img.url === image.url;
+      }
+    });
+    offerDetails.value.images.splice(imageIndex, 1);
+  }
+};
+
+const onGalleryUpload = async (files: FileList) => {
+  try {
+    imageUploading.value = true;
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append("file", files[i]);
+      const authToken = await getAccessToken();
+      const result = await fetch(`/api/assets?folderUrl=/offers/${offerDetails.value.id}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      const response = await result.json();
+      if (response?.length) {
+        const image = new Image(response[0]);
+        image.createdDate = new Date();
+        if (offerDetails.value.images && offerDetails.value.images.length) {
+          const lastImageSortOrder = offerDetails.value.images[offerDetails.value.images.length - 1].sortOrder;
+          image.sortOrder = lastImageSortOrder + 1;
+        } else {
+          image.sortOrder = 0;
+        }
+        offerDetails.value.images.push(image);
+      }
+    }
+  } catch (e) {
+    console.log(e);
+    throw e;
+  } finally {
+    imageUploading.value = false;
+  }
+
+  files = null;
 };
 
 defineExpose({

@@ -234,7 +234,6 @@ export default (): IUseImport => {
     try {
       loading.value = true;
       const importProfile = new ImportProfile(extProfile ? extProfile : profile.value);
-      importProfile.onImportCompleted = undefined;
       const importDataQuery = new RunImportCommand({ importProfile });
       const notification = await client.runImport(importDataQuery);
       importStarted.value = true;

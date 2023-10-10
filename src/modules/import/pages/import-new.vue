@@ -315,7 +315,7 @@ const emit = defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
-const { checkPermission } = usePermissions();
+const { hasAccess } = usePermissions();
 const { getAccessToken } = useUser();
 const {
   loading: importLoading,
@@ -405,7 +405,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         param: profile.value.id,
       });
     },
-    isVisible: computed(() => !!(checkPermission(UserPermissions.SellerImportProfilesEdit) && profile.value)),
+    isVisible: computed(() => !!(hasAccess(UserPermissions.SellerImportProfilesEdit) && profile.value)),
     disabled: computed(() => importLoading.value || !profile.value.name),
   },
   {

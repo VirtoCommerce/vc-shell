@@ -223,7 +223,7 @@ intersectionWith } from 'lodash-es'; import { Video } from '@vc-shell/framework/
 import { computed, ref, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
-import { IVideo, VideoCreateRequest } from "@vc-shell/framework/core/api/catalog";
+import { IVideo, VideoCreateRequest } from "../../../api_client/catalog";
 import { useVideo, useVideos } from "../composables";
 import * as _ from "lodash-es";
 import { Field } from "vee-validate";

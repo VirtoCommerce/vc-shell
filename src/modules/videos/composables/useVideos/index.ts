@@ -7,7 +7,7 @@ import {
   IVideoSearchCriteria,
   VideoSearchCriteria,
   VideoSearchResult,
-} from "@vc-shell/framework/core/api/catalog";
+} from "../../../../api_client/catalog";
 
 interface IUseVideos {
   readonly videos: Ref<IVideo[]>;

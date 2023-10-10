@@ -1,6 +1,6 @@
 import { Ref, ref, computed } from "vue";
 import { useUser } from "@vc-shell/framework";
-import { CatalogModuleVideosClient, IVideo, Video, VideoCreateRequest } from "@vc-shell/framework/core/api/catalog";
+import { CatalogModuleVideosClient, IVideo, Video, VideoCreateRequest } from "../../../../api_client/catalog";
 
 interface IUseVideo {
   readonly video: Ref<IVideo>;

@@ -125,7 +125,6 @@ export interface Emits {
 
 defineOptions({
   url: "/videos",
-  scope: {},
 });
 
 const props = withDefaults(defineProps<Props>(), {
@@ -139,20 +138,13 @@ const { openBlade } = useBladeNavigation();
 const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 
-const isDesktop = inject<Ref<boolean>>("isDesktop");
+const { videos, totalCount, pages, currentPage, sort, searchVideos, saveVideos, deleteVideos, loading } = useVideos();
 
-const { videos, totalCount, pages, currentPage, searchVideos, saveVideos, deleteVideos, loading } = useVideos();
-
-const sort = ref("sortOrder:ASC");
 const searchValue = ref();
 const selectedItemId = ref();
 const selectedVideosIds = ref([]);
 const defaultVideos = ref<IVideo[]>();
 const modified = ref(false);
-
-watch(sort, async (value) => {
-  await searchVideos({ ownerIds: [value], sort: value });
-});
 
 watch(
   () => defaultVideos.value,
@@ -208,7 +200,6 @@ const bladeToolbar = ref<IBladeToolbar[]>([
       await deleteSelectedVideos();
     },
     disabled: computed(() => !selectedVideosIds.value?.length),
-    isVisible: isDesktop,
   },
 ]);
 

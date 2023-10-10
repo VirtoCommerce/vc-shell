@@ -1,11 +1,13 @@
-import { Ref, ref, computed } from "vue";
+import { Ref, ref, computed, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
 import { CatalogModuleVideosClient, IVideo, Video, VideoCreateRequest } from "../../../../api_client/catalog";
+import * as _ from "lodash-es";
 
 interface IUseVideo {
   readonly video: Ref<IVideo>;
   readonly loading: Ref<boolean>;
   readonly videoLoadedWithoutErrors: Ref<boolean>;
+  readonly modified: Ref<boolean>;
   createVideo: (command: VideoCreateRequest) => Promise<IVideo>;
   saveVideo: (videoItem: IVideo) => void;
 }
@@ -14,6 +16,16 @@ export default (): IUseVideo => {
   const video = ref<IVideo>();
   const loading = ref(false);
   const videoLoadedWithoutErrors = ref(true);
+  const modified = ref(false);
+  let videoDetailsCopy: IVideo;
+
+  watch(
+    () => video,
+    (state) => {
+      modified.value = !_.isEqual(videoDetailsCopy, state.value);
+    },
+    { deep: true }
+  );
 
   async function getApiClient(): Promise<CatalogModuleVideosClient> {
     const { getAccessToken } = useUser();
@@ -30,6 +42,7 @@ export default (): IUseVideo => {
       video.value = await client.createVideo(command as VideoCreateRequest);
       video.value.uploadDate = new Date();
       videoLoadedWithoutErrors.value = true;
+      videoDetailsCopy = _.cloneDeep(video.value);
     } catch (e) {
       videoLoadedWithoutErrors.value = false;
       console.error(e);
@@ -58,6 +71,7 @@ export default (): IUseVideo => {
     video: computed(() => video.value),
     loading: computed(() => loading.value),
     videoLoadedWithoutErrors: computed(() => videoLoadedWithoutErrors.value),
+    modified: computed(() => modified.value),
     createVideo,
     saveVideo,
   };

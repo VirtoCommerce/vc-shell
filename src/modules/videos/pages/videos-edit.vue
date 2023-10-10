@@ -1,5 +1,3 @@
-import { computed } from 'vue'; import { PropertyDisplayName } from 'src/api_client/marketplacevendor'; import {
-intersectionWith } from 'lodash-es'; import { Video } from '@vc-shell/framework/core/api/catalog';
 <template>
   <VcBlade
     v-loading="videoLoading"
@@ -220,12 +218,11 @@ intersectionWith } from 'lodash-es'; import { Video } from '@vc-shell/framework/
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
 import { IVideo, VideoCreateRequest } from "../../../api_client/catalog";
 import { useVideo, useVideos } from "../composables";
-import * as _ from "lodash-es";
 import { Field } from "vee-validate";
 import moment from "moment/moment";
 
@@ -258,7 +255,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
-const { createVideo, saveVideo, videoLoadedWithoutErrors } = useVideo();
+const { createVideo, saveVideo, videoLoadedWithoutErrors, modified } = useVideo();
 const { deleteVideos } = useVideos();
 const { showConfirmation } = usePopup();
 
@@ -269,16 +266,6 @@ const isNew = ref(true);
 const productId = ref<string>();
 const videoUrl = ref<string>();
 const newVideoLoaded = ref(false);
-let videoDetailsCopy: IVideo;
-const modified = ref(false);
-
-watch(
-  () => videoDetails,
-  (state) => {
-    modified.value = !_.isEqual(videoDetailsCopy, state.value);
-  },
-  { deep: true }
-);
 
 onMounted(async () => {
   await reload();
@@ -290,7 +277,6 @@ const reload = async () => {
     videoDetails.value = props.options?.video;
     isNew.value = props.options?.isNew;
     productId.value = props.options?.productId;
-    videoDetailsCopy = _.cloneDeep(videoDetails.value);
   } finally {
     videoLoading.value = false;
   }

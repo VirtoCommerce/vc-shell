@@ -1,4 +1,4 @@
-import { Ref, ref, computed } from "vue";
+import { Ref, ref, computed, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
 import {
   CatalogModuleVideosClient,
@@ -14,6 +14,7 @@ interface IUseVideos {
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
   readonly loading: Ref<boolean>;
+  readonly sort: Ref<string>;
   searchQuery: Ref<IVideoSearchCriteria>;
   currentPage: Ref<number>;
   searchVideos: (query: IVideoSearchCriteria) => Promise<VideoSearchResult>;
@@ -36,6 +37,11 @@ export default (options?: IUseVideosOptions): IUseVideos => {
   });
   const searchResult = ref<VideoSearchResult>();
   const loading = ref(false);
+  const sort = ref("sortOrder:ASC");
+
+  watch(sort, async (value) => {
+    await searchVideos({ ownerIds: [value], sort: value });
+  });
 
   async function getApiClient(): Promise<CatalogModuleVideosClient> {
     const { getAccessToken } = useUser();
@@ -97,6 +103,7 @@ export default (options?: IUseVideosOptions): IUseVideos => {
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
     currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     loading: computed(() => loading.value),
+    sort: computed(() => sort.value),
     searchQuery,
     searchVideos,
     saveVideos,

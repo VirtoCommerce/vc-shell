@@ -84,7 +84,7 @@ const { open } = usePopup({
 const { dynamicModuleItems } = useDynamicMenu();
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
-const { checkPermission } = usePermissions();
+const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, resolveLastBlade } =
   useBladeNavigation();

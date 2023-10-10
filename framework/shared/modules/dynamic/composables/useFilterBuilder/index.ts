@@ -131,7 +131,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
           default: () => currC.displayName,
         },
         options: {
-          visibility: true,
+          visibility: computed(() => true),
         },
       });
 
@@ -149,7 +149,7 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
         "onUpdate:modelValue": (e) => (filter[control.field] = e),
       },
       options: {
-        visibility: true,
+        visibility: computed(() => true),
       },
     });
   }

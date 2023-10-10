@@ -1,47 +1,50 @@
-import { reactiveComputed } from "@vueuse/core";
-import { getCurrentInstance, h, unref } from "vue";
+import { Component, ExtractPropTypes, h, unref } from "vue";
 import { InputCurrency } from "../factories";
 import componentProps from "./props";
-import { unrefNested } from "../../helpers/unrefNested";
 import ValidationField from "./ValidationField";
+import { getModel } from "../../helpers/getters";
+import { setModel } from "../../helpers/setters";
+import { InputCurrencySchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
 
 export default {
   name: "InputCurrency",
   props: componentProps,
-  setup(props) {
-    const field = reactiveComputed(() =>
-      InputCurrency({
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: InputCurrencySchema }) {
+    return () => {
+      const field = InputCurrency({
         props: {
           ...props.baseProps,
-          option: props.getModel(props.element.optionProperty, props.fieldContext),
+
+          option: getModel(props.element.optionProperty, props.fieldContext).value,
           optionLabel: props.element.optionLabel,
           optionValue: props.element.optionValue,
-          options: unref(props.scope)["currencies"],
-          "onUpdate:option": (e: any) => {
-            props.setModel({ value: e, property: props.element.optionProperty, context: props.fieldContext });
+          options: unref(props.bladeContext.scope)["currencies"],
+          "onUpdate:option": (e: string | number | Record<string, unknown>) => {
+            setModel({ value: e, property: props.element.optionProperty, context: props.fieldContext });
           },
-          classNames: "tw-mb-4",
           clearable: props.element.clearable || false,
         },
         options: props.baseOptions,
-      })
-    );
+      });
+      const render = h(field.component as Component, field.props);
 
-    if (field.props.rules) {
-      return () =>
-        h(
-          ValidationField,
-          {
-            props: unrefNested(field.props),
-            options: unrefNested(field.options),
-            index: props.elIndex,
-            rows: props.rows,
-            key: `${String(field.props.key)}_validation`,
-          },
-          () => h(field.component as any, unrefNested(field.props))
-        );
-    } else {
-      return () => h(field.component as any, unrefNested(field.props));
-    }
+      if (field.props.rules) {
+        return props.baseOptions.visibility
+          ? h(
+              ValidationField,
+              {
+                props: field.props,
+                index: props.elIndex,
+                rows: props.rows,
+                key: `${String(field.props.key)}_validation`,
+              },
+              () => render
+            )
+          : null;
+      } else {
+        return props.baseOptions.visibility ? render : null;
+      }
+    };
   },
 };

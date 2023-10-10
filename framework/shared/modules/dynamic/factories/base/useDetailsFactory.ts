@@ -1,22 +1,14 @@
-import { ComputedRef, computed, ref, Ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import * as _ from "lodash-es";
 import { useForm, useIsFormDirty, useIsFormValid } from "vee-validate";
-import { AsyncAction, useAsync, useLoading } from "../../../../../core/composables";
-import { ItemId, IValidationState } from "../types";
+import { useAsync, useLoading } from "../../../../../core/composables";
+import type { ItemId, IValidationState, UseDetails } from "../types";
+import { createUnrefFn } from "@vueuse/core";
 
 export interface UseDetailsFactoryParams<Item> {
   load: (args: ItemId) => Promise<Item>;
   saveChanges: (details: Item) => Promise<Item>;
   remove: (args: ItemId) => Promise<void>;
-}
-
-export interface UseDetails<Item> {
-  load: AsyncAction<ItemId>;
-  saveChanges: AsyncAction<Item>;
-  remove: AsyncAction<ItemId>;
-  loading: ComputedRef<boolean>;
-  item: Ref<Item>;
-  validationState: ComputedRef<IValidationState<Item>>;
 }
 
 export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<Item>) => {
@@ -71,12 +63,13 @@ export const useDetailsFactory = <Item>(factoryParams: UseDetailsFactoryParams<I
       { deep: true }
     );
 
-    function resetModified(data: Item, updateInitial = false) {
+    const resetModified = createUnrefFn((data: Item, updateInitial = false) => {
       if (updateInitial) {
         item.value = data;
       }
+
       itemTemp.value = _.cloneDeep(data);
-    }
+    });
 
     return {
       load,

@@ -5,7 +5,7 @@
     :closable="closable"
     width="50%"
     :toolbar-items="toolbarComputed"
-    :title="bladeTitle"
+    :title="title"
     @close="$emit('close:blade')"
     @expand="$emit('expand:blade')"
     @collapse="$emit('collapse:blade')"
@@ -26,17 +26,16 @@
 
     <VcContainer :no-padding="true">
       <div
-        v-if="isReady"
+        v-if="isReady && item && Object.keys(item)"
         class="item-details__inner"
       >
         <div class="item-details__content">
           <VcForm class="tw-grow tw-p-4">
             <SchemaRender
-              :model-value="item"
+              v-model="item"
               :ui-schema="form.children"
               :context="bladeContext"
-              :current-locale="currentLocale"
-              @update:model-value="set"
+              :current-locale="scope.multilanguage?.currentLocale"
             ></SchemaRender>
           </VcForm>
         </div>
@@ -62,25 +61,14 @@
 <script lang="ts" setup>
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useI18n } from "vue-i18n";
-import {
-  computed,
-  h,
-  nextTick,
-  onMounted,
-  reactive,
-  ref,
-  resolveComponent,
-  toRef,
-  unref,
-  watch,
-  watchEffect,
-} from "vue";
+import { computed, h, nextTick, reactive, ref, resolveComponent, toValue, unref, watch, onBeforeMount } from "vue";
 import { DynamicDetailsSchema, FormContentSchema } from "../types";
 import { reactiveComputed } from "@vueuse/core";
 import * as _ from "lodash-es";
 import { IBladeToolbar } from "../../../../core/types";
-import { IParentCallArgs, UseDetails, usePopup } from "../../../index";
+import { BladeContext, DetailsBaseBladeScope, IParentCallArgs, UseDetails, usePopup } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
+import { VcSelect } from "../../../../ui/components";
 
 interface Props {
   expanded?: boolean;
@@ -117,17 +105,32 @@ const { showConfirmation } = usePopup();
 
 const { loading, item, validationState, scope, load, remove, saveChanges, bladeTitle } = props.composables[
   props.model?.settings?.composable
-]({ emit, props }) as UseDetails<any> & { bladeTitle: string; scope: Record<string, any> };
+]({ emit, props }) as UseDetails<Record<string, any>, DetailsBaseBladeScope>;
 
+const title = ref();
 const isReady = ref(false);
+
+const unwatchTitle = watch(
+  () => bladeTitle.value,
+  (newVal) => {
+    if (newVal) {
+      title.value = newVal;
+
+      nextTick(() => unwatchTitle());
+    }
+  },
+  { immediate: true }
+);
 
 const settings = computed(() => props.model?.settings);
 
-const form = computed((): FormContentSchema => props.model.content.find((x) => x.type === "form") as FormContentSchema);
+const form = computed(
+  (): FormContentSchema => props.model?.content.find((x) => x.type === "form") as FormContentSchema
+);
 
 const widgets = computed(() => props.model.content.find((x) => x.type === "widgets"));
 
-const bladeContext = ref({
+const bladeContext = ref<BladeContext>({
   loading,
   item,
   validationState,
@@ -138,10 +141,6 @@ const bladeContext = ref({
   bladeTitle,
   settings,
 });
-
-const set = (e) => {
-  Object.assign(item.value, e);
-};
 
 const bladeStatus = computed(() => {
   if ("status" in props.model.settings && props.model.settings.status) {
@@ -154,20 +153,28 @@ const bladeStatus = computed(() => {
 });
 
 const bladeMultilanguage = reactiveComputed(() => {
-  if ("multilanguage" in unref(scope) && unref(scope).multilanguage) {
-    if (!("component" in unref(scope).multilanguage)) {
-      throw new Error(`Component is required in multilanguage: ${unref(scope).multilanguage}`);
-    }
+  if ("multilanguage" in toValue(scope) && toValue(scope).multilanguage) {
     return {
-      component: unref(scope).multilanguage.component,
-      currentLocale: unref(scope).multilanguage.currentLocale,
+      component: () =>
+        h(VcSelect as any, {
+          name: "currentLocale",
+          modelValue: toValue(scope).multilanguage.currentLocale,
+          options: toValue(scope).multilanguage.localesOptions,
+          optionValue: "value",
+          optionLabel: "label",
+          disabled: "disabled" in toValue(scope) && toValue(scope).disabled,
+          required: true,
+          clearable: false,
+          "onUpdate:modelValue": (e: string) => {
+            toValue(scope).multilanguage.setLocale(e);
+          },
+        }),
+      currentLocale: toValue(scope).multilanguage.currentLocale,
     };
   }
 
   return {};
 });
-
-const currentLocale = toRef(bladeMultilanguage, "currentLocale");
 
 const bladeWidgets = computed(() => {
   return widgets.value?.children?.map((x) => resolveComponent(x));
@@ -198,24 +205,26 @@ const toolbarMethods = _.merge(
       async clickHandler() {
         if (
           await showConfirmation(
-            computed(() => t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE`))
+            computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.DETAILS.ALERTS.DELETE`))
           )
         ) {
-          await remove({ id: props.param });
-          emit("parent:call", {
-            method: "reload",
-          });
-          emit("close:blade");
+          if (props.param) {
+            await remove({ id: props.param });
+            emit("parent:call", {
+              method: "reload",
+            });
+            emit("close:blade");
+          }
         }
       },
-      disabled: computed(() => "disabled" in scope && unref(scope.disabled)),
+      disabled: computed(() => toValue(scope)?.disabled),
     },
   }),
-  ref(scope)
+  ref(toValue(scope)?.toolbarOverrides)
 );
 
 const toolbarComputed = computed((): IBladeToolbar[] => {
-  return props.model.settings.toolbar.reduce((acc, curr) => {
+  return props.model?.settings.toolbar.reduce((acc, curr) => {
     const toolbarItemCtx = toolbarMethods.value[curr.method];
 
     if (toolbarItemCtx) {
@@ -234,7 +243,7 @@ const toolbarComputed = computed((): IBladeToolbar[] => {
   }, []);
 });
 
-onMounted(async () => {
+onBeforeMount(async () => {
   if (props.param) {
     await load({ id: props.param });
   }
@@ -248,7 +257,7 @@ async function onBeforeClose() {
   if (validationState.value.modified) {
     return await showConfirmation(
       unref(
-        computed(() => t(`${settings.value.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`))
+        computed(() => t(`${settings.value?.localizationPrefix.trim().toUpperCase()}.PAGES.ALERTS.CLOSE_CONFIRMATION`))
       )
     );
   }

@@ -69,7 +69,7 @@ const lastBladeData = useLocalStorage<BladeData>("VC_BLADE_DATA", {});
 export function useBladeNavigation(): IUseBladeNavigation {
   const router = useRouter();
   const urlPattern = new pattern("(/:workspace(/:blade(/:param)))");
-  const { checkPermission } = usePermissions();
+  const { hasAccess } = usePermissions();
   const isPrevented = ref(false);
   const routes = router.getRoutes();
 
@@ -220,7 +220,7 @@ export function useBladeNavigation(): IUseBladeNavigation {
       await closeBlade(index);
     }
 
-    if (blade && checkPermission(blade.permissions)) {
+    if (blade && hasAccess(blade.permissions)) {
       navigationInstance.blades.value.push({
         blade: markRaw(blade),
         options,

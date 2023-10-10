@@ -24,14 +24,10 @@ import {
   IInputCurrency,
   IFieldset,
   IControlBaseOptions,
-} from "./models";
+} from "../types/models";
 
-export const ControlBase = ({
-  visibility = undefined,
-  noValidation = false,
-}: IControlBaseOptions): IControlBaseOptions => ({
+export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
   visibility,
-  noValidation,
 });
 
 export const ControlBaseProps = ({
@@ -100,9 +96,9 @@ export const DynamicProperties = ({ props, options }: Partial<IDynamicProperties
   component: markRaw(VcDynamicProperty) as any,
   props: {
     ...props,
-    ...(ControlBaseProps(props) as IDynamicProperties["props"]),
+    ...ControlBaseProps(props),
   },
-  options: ControlBase({ ...options, noValidation: true }),
+  options: ControlBase(options),
 });
 
 export const EditorField = ({ props, options }: Partial<IEditorField>): IEditorField => ({
@@ -139,7 +135,7 @@ export const Button = ({ props, options, slots }: Partial<IButton>): IButton => 
     ...ControlBaseProps(props),
     ...props,
   },
-  options: ControlBase({ ...options, noValidation: true }),
+  options: ControlBase(options),
   slots,
 });
 

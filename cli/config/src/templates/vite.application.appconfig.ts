@@ -59,7 +59,7 @@ const aliasResolver = () => {
 export default {
   mode,
   resolve: {
-    preserveSymlinks: true,
+    // preserveSymlinks: true,
     alias: Object.assign({ querystring: "querystring-es3", "safe-buffer": "buffer-esm" }, aliasResolver()),
   },
   envPrefix: "APP_",

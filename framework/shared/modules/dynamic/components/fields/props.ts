@@ -1,29 +1,28 @@
-import { ComputedRef, PropType, Ref, VNode } from "vue";
+import { ComputedRef, PropType, UnwrapNestedRefs, VNodeArrayChildren } from "vue";
+import { BladeContext } from "../../factories";
+import { IControlBaseOptions, IControlBaseProps } from "../../types/models";
+import { ControlSchema } from "../../types";
 
 export default {
   baseProps: {
-    type: Object,
-    default: () => ({}),
+    type: Object as PropType<UnwrapNestedRefs<IControlBaseProps>>,
+    default: () => ({} as IControlBaseProps),
   },
   baseOptions: {
-    type: Object,
-    default: () => ({}),
+    type: Object as PropType<UnwrapNestedRefs<IControlBaseOptions>>,
+    default: () => ({} as IControlBaseOptions),
   },
   element: {
-    type: Object,
-    default: () => ({}),
+    type: Object as PropType<ControlSchema>,
+    default: () => ({} as ControlSchema),
   },
   bladeContext: {
-    type: Object,
-    default: () => ({}),
-  },
-  scope: {
-    type: Object,
-    default: () => ({}),
+    type: Object as PropType<UnwrapNestedRefs<BladeContext>>,
+    default: () => ({} as BladeContext),
   },
   fields: {
-    // type: Array as PropType<VNode[]>,
-    default: () => [],
+    type: Object as PropType<ComputedRef<VNodeArrayChildren>>,
+    default: () => ({} as ComputedRef<VNodeArrayChildren>),
   },
   formData: {
     type: Object,
@@ -33,21 +32,12 @@ export default {
     type: Object,
     default: undefined,
   },
-  fieldHelper: {
-    type: Function,
-    default: () => ({}),
-  },
-  setModel: {
-    type: Function,
-    default: () => ({}),
-  },
-  getModel: {
+  nodeBuilder: {
     type: Function,
     default: () => ({}),
   },
   currentLocale: {
-    type: Object as PropType<string>,
-    default: "",
+    type: String,
   },
   elIndex: {
     type: Number,

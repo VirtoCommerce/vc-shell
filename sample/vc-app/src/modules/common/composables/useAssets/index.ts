@@ -1,26 +1,11 @@
 import { Ref, computed, ref } from "vue";
-import { useUser } from "../useUser";
 import * as _ from "lodash-es";
+import { AssetsHandler, useUser } from "@vc-shell/framework";
+import { Asset, Image } from "./../../../../api_client/marketplacevendor";
 
-interface GenericAsset {
-  createdDate?: Date;
-  sortOrder?: number;
-  id?: string;
-  url?: string;
-}
-
-interface IUseAssets<T, A> {
-  loading: Ref<boolean>;
-  upload: (files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder: string) => Promise<T[]>;
-  edit: (assetsArr: T[], asset: A) => Promise<T[]>;
-  editBulk: (assets: A[]) => T[];
-  remove: (assetArr: T[], asset: A) => Promise<T[]>;
-  removeBulk: (assetArr: T[], assetsArrEdited: T[]) => Promise<T[]>;
-}
-
-export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetFactory: {
+export function useAssets<T extends Asset | Image, A extends Asset | Image>(assetFactory: {
   new (data?: A): T;
-}): IUseAssets<T, A> {
+}): AssetsHandler<T, A> {
   const { getAccessToken } = useUser();
 
   const loading = ref(false);
@@ -49,8 +34,8 @@ export function useAssets<T extends GenericAsset, A extends GenericAsset>(assetF
             asset.size = files[i].size;
           }
           if (assetArrCopy && assetArrCopy.length) {
-            const lastImageSortOrder = assetArrCopy[assetArrCopy.length - 1].sortOrder;
-            asset.sortOrder = lastImageSortOrder + 1;
+            const lastItemSortOrder = assetArrCopy[assetArrCopy.length - 1].sortOrder;
+            asset.sortOrder = lastItemSortOrder + 1;
           } else {
             asset.sortOrder = 0;
           }

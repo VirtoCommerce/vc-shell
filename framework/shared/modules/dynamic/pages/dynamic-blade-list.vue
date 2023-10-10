@@ -115,6 +115,7 @@ import {
   ref,
   resolveComponent,
   shallowRef,
+  toValue,
   unref,
   watch,
 } from "vue";
@@ -124,7 +125,8 @@ import useFilterBuilder from "../composables/useFilterBuilder";
 import * as _ from "lodash-es";
 import { useFunctions } from "../../../../core/composables";
 import { IBladeToolbar, ITableColumns } from "../../../../core/types";
-import { usePopup } from "../../../index";
+import { DetailsBaseBladeScope, UseList, usePopup } from "../../../index";
+import { UnwrapRef } from "vue";
 
 export interface Props {
   expanded?: boolean;
@@ -189,7 +191,7 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
     emit,
     props,
   }
-);
+) as UseList<Record<string, any>[], Record<string, any>, DetailsBaseBladeScope>;
 
 const {
   filterComponent,
@@ -208,8 +210,12 @@ const toolbarMethods = _.merge(
   ref({
     openAddBlade: {
       async clickHandler() {
-        if ("openDetailsBlade" in scope && scope.openDetailsBlade && typeof scope.openDetailsBlade === "function") {
-          scope.openDetailsBlade();
+        if (
+          "openDetailsBlade" in toValue(scope) &&
+          toValue(scope).openDetailsBlade &&
+          typeof toValue(scope).openDetailsBlade === "function"
+        ) {
+          toValue(scope).openDetailsBlade();
         }
       },
     },
@@ -226,7 +232,7 @@ const toolbarMethods = _.merge(
       isVisible: isDesktop.value,
     },
   }),
-  ref(scope)
+  ref(toValue(scope))
 );
 
 const toolbarComputed = computed((): IBladeToolbar[] => {
@@ -261,8 +267,12 @@ watch(
   () => props.param,
   (newVal) => {
     if (newVal) {
-      if ("openDetailsBlade" in scope && scope.openDetailsBlade && typeof scope.openDetailsBlade === "function") {
-        scope.openDetailsBlade({
+      if (
+        "openDetailsBlade" in toValue(scope) &&
+        toValue(scope).openDetailsBlade &&
+        typeof toValue(scope).openDetailsBlade === "function"
+      ) {
+        toValue(scope).openDetailsBlade({
           param: newVal,
           onOpen() {
             selectedItemId.value = newVal;
@@ -278,8 +288,12 @@ watch(
 );
 
 const onItemClick = (item: { id: string }) => {
-  if ("openDetailsBlade" in scope && scope.openDetailsBlade && typeof scope.openDetailsBlade === "function") {
-    scope.openDetailsBlade({
+  if (
+    "openDetailsBlade" in toValue(scope) &&
+    toValue(scope).openDetailsBlade &&
+    typeof toValue(scope).openDetailsBlade === "function"
+  ) {
+    toValue(scope).openDetailsBlade({
       param: item.id,
       onOpen() {
         selectedItemId.value = item.id;
@@ -291,7 +305,7 @@ const onItemClick = (item: { id: string }) => {
   }
 };
 
-const onSelectionChanged = (i: typeof items) => {
+const onSelectionChanged = (i: UnwrapRef<typeof items>) => {
   const item = unref(i)
     .map((item) => item.id)
     .filter((x): x is string => x !== null);

@@ -1,47 +1,55 @@
-import { computed, h, markRaw, ref, unref, watch } from "vue";
+import { ExtractPropTypes, computed, h, markRaw, reactive, ref, toRefs, toValue, watch } from "vue";
 import { Gallery } from "../factories";
 import componentProps from "./props";
-import { useAssets } from "../../../../../core/composables";
 import { IImage } from "../../../../../core/types";
-
-import { Image } from "./../../../../../core/api/catalog";
 import { useBladeNavigation, usePopup } from "./../../../../components";
 import { useI18n } from "vue-i18n";
 import { AssetsDetails } from "../../../assets";
-import { reactiveComputed } from "@vueuse/core";
 import * as _ from "lodash-es";
+import { GallerySchema } from "../../types";
+import { unrefNested } from "./../../helpers/unrefNested";
+import { setModel } from "../../helpers/setters";
 
 export default {
   name: "GalleryField",
   props: componentProps,
-  setup(props, ctx) {
-    const internalModel = ref();
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: GallerySchema }, ctx) {
+    if (!_.has(props.bladeContext.scope, "assetsHandler.images")) {
+      throw new Error(
+        `There is no assetsHandler.images config provided in blade scope: ${JSON.stringify(
+          props.bladeContext.scope,
+          null,
+          2
+        )}`
+      );
+    }
 
-    watch(
-      () => props.formData,
-      (newVal) => {
-        if (!_.isEqual(internalModel.value, newVal)) {
-          internalModel.value = newVal;
-        }
-      },
-      { deep: true, immediate: true }
-    );
     const { showConfirmation } = usePopup();
     const { t } = useI18n({ useScope: "global" });
     const { openBlade } = useBladeNavigation();
 
-    const imageHandlers = imageHandler();
-    function imageHandler() {
-      const { edit, remove, upload, loading } = useAssets(Image);
-      return {
-        loading: computed(() => loading.value),
+    const { edit, remove, upload, loading } = toRefs(props.bladeContext.scope.assetsHandler.images);
+    const internalModel = ref();
 
+    watch(
+      () => props.fieldContext,
+      (newVal) => {
+        if (!_.isEqual(internalModel.value, newVal)) {
+          internalModel.value = _.cloneDeep(newVal);
+        }
+      },
+      { deep: true, immediate: true }
+    );
+
+    return () => {
+      const imageHandlers = {
+        loading,
         async edit(image: IImage) {
-          internalModel.value.images = await edit(props.formData[props.element.property], image);
-          await editImages(internalModel.value.images);
+          internalModel.value[props.element.property] = await edit.value(props.formData[props.element.property], image);
+          await editImages(internalModel.value[props.element.property]);
         },
         async upload(files: FileList) {
-          internalModel.value.images = await upload(
+          internalModel.value[props.element.property] = await upload.value(
             files,
             props.formData[props.element.property],
             props.formData.id || props.formData.categoryId,
@@ -50,9 +58,9 @@ export default {
 
           files = null;
 
-          await editImages(internalModel.value.images);
+          await editImages(internalModel.value[props.element.property]);
 
-          return internalModel.value.images;
+          return internalModel.value[props.element.property];
         },
         async remove(image: IImage) {
           if (
@@ -66,33 +74,34 @@ export default {
               )
             )
           ) {
-            internalModel.value.images = await remove(props.formData[props.element.property], image);
-            await editImages(internalModel.value.images);
+            internalModel.value[props.element.property] = await remove.value(
+              props.formData[props.element.property],
+              image
+            );
+            await editImages(internalModel.value[props.element.property]);
           }
-          return internalModel.value.images;
+          return internalModel.value[props.element.property];
         },
       };
-    }
 
-    function onGalleryItemEdit(item: Image) {
-      openBlade({
-        blade: markRaw(AssetsDetails),
-        options: {
-          asset: item,
-          assetEditHandler: imageHandlers.edit,
-          assetRemoveHandler: imageHandlers.remove,
-        },
-      });
-    }
+      function onGalleryItemEdit(item: IImage) {
+        openBlade({
+          blade: markRaw(AssetsDetails),
+          options: {
+            asset: item,
+            assetEditHandler: imageHandlers.edit,
+            assetRemoveHandler: imageHandlers.remove,
+          },
+        });
+      }
 
-    async function editImages(args: Image[]) {
-      internalModel.value.images = args;
-      ctx.emit("change", internalModel.value);
-      await props.bladeContext.validationState.validate();
-    }
+      async function editImages(args: IImage[]) {
+        internalModel.value[props.element.property] = args;
+        setModel({ property: props.element.property, value: args, context: props.fieldContext });
+        await props.bladeContext.validationState.validate();
+      }
 
-    const field = reactiveComputed(() =>
-      Gallery({
+      const field = Gallery({
         props: {
           ...props.baseProps,
           loading: imageHandlers.loading,
@@ -104,9 +113,9 @@ export default {
           onSort: editImages,
         },
         options: props.baseOptions,
-      })
-    );
+      });
 
-    return () => h(field.component, field.props);
+      return props.baseOptions.visibility ? h(field.component, unrefNested(field.props)) : null;
+    };
   },
 };

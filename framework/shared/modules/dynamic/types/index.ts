@@ -1,6 +1,5 @@
 import { VcButton, VcInput } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
-import * as AllRules from "@vee-validate/rules";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
 export type KeysOfUnion<T> = T extends T ? keyof T : never;
@@ -130,7 +129,7 @@ export interface SchemaBase {
   tooltip?: string;
   visibility?: VisibilityOptions;
   multilanguage?: boolean;
-  updateMethod?: string;
+  update?: { method: string };
 }
 
 export interface SelectSchema extends SchemaBase {
@@ -222,6 +221,7 @@ export type ControlSchema =
   | WidgetsSchema
   | CheckboxSchema
   | FieldsetSchema
+  | ButtonSchema
   | InputCurrencySchema;
 
 interface FilterBase {

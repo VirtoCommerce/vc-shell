@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComputedRef, Ref, computed, ref } from "vue";
-import { CustomQuery } from "../types";
+import { CustomQuery, UseList } from "../types";
 import { AsyncAction, useAsync, useLoading } from "../../../../../core/composables";
 
 interface ISearchResult<T> {
@@ -23,20 +23,6 @@ export interface IQuery {
 
 export interface IUseListOptions extends Pick<IQuery, "sort"> {
   pageSize?: number;
-}
-
-export interface UseList<Items, Query> {
-  items: ComputedRef<Items>;
-  query: Ref<Query>;
-  loading: ComputedRef<boolean>;
-  pagination: ComputedRef<{
-    currentPage: number;
-    totalCount: number;
-    pageSize: number;
-    pages: number;
-  }>;
-  load: AsyncAction<Query>;
-  remove: AsyncAction<CustomQuery>;
 }
 
 export const useListFactory = <Items extends Record<string, any>[], Query extends IQuery>(

@@ -115,6 +115,15 @@ export interface IActionBuilderResult<T = {}> {
   clickHandler(item?: T): void;
 }
 
+export interface AssetsHandler<T, A> {
+  loading: Ref<boolean>;
+  upload: (files: FileList, assetArr: T[], uploadCatalog: string, uploadFolder: string) => Promise<T[]>;
+  edit: (assetsArr: T[], asset: A) => Promise<T[]>;
+  editBulk: (assets: A[]) => T[];
+  remove: (assetArr: T[], asset: A) => Promise<T[]>;
+  removeBulk: (assetArr: T[], assetsArrEdited: T[]) => Promise<T[]>;
+}
+
 export interface IImage {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [x: string]: any;

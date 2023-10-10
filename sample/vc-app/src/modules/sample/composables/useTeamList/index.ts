@@ -1,18 +1,33 @@
-import { useApiClient, useBladeNavigation, useListFactory, DynamicBladeList } from "@vc-shell/framework";
-import { SearchSellerUsersQuery, VcmpSellerSecurityClient } from "../../../../api_client/marketplacevendor";
+import {
+  useApiClient,
+  useBladeNavigation,
+  useListFactory,
+  DynamicBladeList,
+  ListBaseBladeScope,
+  UseList,
+} from "@vc-shell/framework";
+import {
+  ISearchSellerUsersQuery,
+  SearchSellerUsersQuery,
+  SellerUser,
+  VcmpSellerSecurityClient,
+} from "../../../../api_client/marketplacevendor";
+import { computed, ref } from "vue";
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface TeamListBladeScope extends ListBaseBladeScope {}
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
-const client = getApiClient();
 
 export const useTeamList = (args: {
   props: InstanceType<typeof DynamicBladeList>["$props"];
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
-}) => {
+}): UseList<SellerUser[], ISearchSellerUsersQuery, TeamListBladeScope> => {
   const factory = useListFactory({
     load: async (query) => {
       const command = new SearchSellerUsersQuery(query);
 
-      return (await client).searchSellerUsers(command);
+      return (await getApiClient()).searchSellerUsers(command);
     },
   });
 
@@ -26,14 +41,16 @@ export const useTeamList = (args: {
     });
   }
 
+  const scope = ref<TeamListBladeScope>({
+    openDetailsBlade,
+  });
+
   return {
     load,
     loading,
     items,
     query,
     pagination,
-    scope: {
-      openDetailsBlade,
-    },
+    scope: computed(() => scope.value),
   };
 };

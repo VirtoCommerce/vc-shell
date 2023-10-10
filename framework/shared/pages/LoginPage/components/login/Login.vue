@@ -176,12 +176,11 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, computed, onMounted, inject } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useIsFormValid, Field, useIsFormDirty, useForm } from "vee-validate";
 import { useSettings, useUser } from "./../../../../../core/composables";
 import { RequestPasswordResult, SignInResults } from "./../../../../../core/types";
-import { CommonPageComposables } from "./../../../../../typings";
 import AzureAdIcon from "./../../../../../assets/img/AzureAd.svg";
 import { ExternalSignInProviderInfo } from "./../../../../../core/api/platform";
 import { useI18n } from "vue-i18n";
@@ -190,6 +189,7 @@ export interface Props {
   logo: string;
   background: string;
   title: string;
+  composable?: () => { forgotPassword: (args: { loginOrEmail: string }) => Promise<void> };
 }
 
 const props = defineProps<Props>();
@@ -200,11 +200,10 @@ useForm({ validateOnMount: false });
 const { getUiCustomizationSettings, uiSettings } = useSettings();
 const { t } = useI18n({ useScope: "global" });
 let useLogin;
-const injected = inject<CommonPageComposables>("commonPageComposables");
 const signInResult = ref<SignInResults>({ succeeded: true });
 const requestPassResult = ref<RequestPasswordResult>({ succeeded: true });
 const forgotPasswordRequestSent = ref(false);
-const { signIn, loading, externalSignIn, getExternalLoginProviders } = useUser();
+const { signIn, loading, externalSignIn, getExternalLoginProviders, isAuthenticated } = useUser();
 const isLogin = ref(true);
 const isValid = useIsFormValid();
 const isDirty = useIsFormDirty();
@@ -213,8 +212,8 @@ const loadingForgotPassword = ref(false);
 const loginProviders = ref<ExternalSignInProviderInfo[]>();
 let forgotPassword;
 
-if (injected) {
-  useLogin = injected?.useLogin;
+if (props.composable && typeof props.composable === "function") {
+  useLogin = props.composable;
 
   if (useLogin) {
     const { forgotPassword: forgot } = useLogin();

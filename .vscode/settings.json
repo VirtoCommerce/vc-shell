@@ -40,6 +40,7 @@
   ],
   "i18n-ally.keystyle": "nested",
   "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "relative",
   "cSpell.words": [
     "GTIN",
     "Vcmp"

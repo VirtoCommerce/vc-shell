@@ -3,8 +3,8 @@ import { App } from "vue";
 
 export const permissions = {
   install(app: App) {
-    const { checkPermission } = usePermissions();
-    app.config.globalProperties.$hasAccess = checkPermission;
-    app.provide("$hasAccess", checkPermission);
+    const { hasAccess } = usePermissions();
+    app.config.globalProperties.$hasAccess = hasAccess;
+    app.provide("$hasAccess", hasAccess);
   },
 };

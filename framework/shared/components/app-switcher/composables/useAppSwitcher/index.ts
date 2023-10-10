@@ -10,7 +10,7 @@ interface IUseAppSwitcher {
 }
 
 export function useAppSwitcher(): IUseAppSwitcher {
-  const { checkPermission } = usePermissions();
+  const { hasAccess } = usePermissions();
   const appsList = ref<AppDescriptor[]>([]);
 
   async function getApiClient(): Promise<AppsClient> {
@@ -32,7 +32,7 @@ export function useAppSwitcher(): IUseAppSwitcher {
   }
 
   function switchApp(app: AppDescriptor) {
-    if (checkPermission(app.permission)) {
+    if (hasAccess(app.permission)) {
       if (app.relativeUrl) {
         window.location.href = window.location.origin + app.relativeUrl;
       }

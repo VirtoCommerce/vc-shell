@@ -1,28 +1,18 @@
-import { Ref, ref } from "vue";
+import { Ref, onMounted, ref } from "vue";
 import { useUser } from "./../useUser";
 
 interface IUsePermissions {
-  checkPermission(permissions: string | string[]): boolean;
-  fetchUserPermissions(): Promise<void>;
+  hasAccess(permissions: string | string[]): boolean;
 }
 const userPermissions: Ref<string[]> = ref([]);
 export function usePermissions(): IUsePermissions {
-  const { user, loadUser } = useUser();
+  const { user } = useUser();
 
-  async function fetchUserPermissions() {
-    if (user.value?.permissions) {
-      userPermissions.value = user.value?.permissions;
-    } else {
-      try {
-        const userData = await loadUser();
-        userPermissions.value = userData.permissions;
-      } catch (e) {
-        throw new Error("Unable to load user permissions");
-      }
-    }
+  if (user.value) {
+    userPermissions.value = user.value?.permissions;
   }
 
-  function checkPermission(permissions: string | string[] | undefined) {
+  function hasAccess(permissions: string | string[] | undefined) {
     if (!permissions) {
       return true;
     } else if (permissions || (permissions && permissions instanceof Array)) {
@@ -39,7 +29,6 @@ export function usePermissions(): IUsePermissions {
   }
 
   return {
-    checkPermission,
-    fetchUserPermissions,
+    hasAccess,
   };
 }

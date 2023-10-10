@@ -1,262 +1,197 @@
 <template>
   <Field
-    v-if="computedProperty.dictionary && !computedProperty.multivalue"
     v-slot="{ errorMessage, errors }"
+    :key="computedProperty.key"
     :label="computedProperty.displayName"
     :name="computedProperty.name"
     :model-value="value"
     :rules="computedProperty.rules"
   >
-    <VcSelect
-      v-bind="$attrs"
-      v-model="value"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      :required="computedProperty.required"
-      :placeholder="computedProperty.placeholder"
-      :options="items"
-      :option-value="computedProperty.optionValue"
-      :option-label="computedProperty.optionLabel"
-      :disabled="disabled"
-      searchable
-      :multilanguage="multilanguage"
-      :current-language="currentLanguage"
-      @search="onSearch"
-      @close="onClose"
-    ></VcSelect>
-  </Field>
-  <Field
-    v-else-if="
-      computedProperty.valueType === 'ShortText' && computedProperty.multivalue && !computedProperty.dictionary
-    "
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :model-value="value"
-    :label="computedProperty.displayName"
-    :rules="computedProperty.rules"
-  >
-    <VcMultivalue
-      v-bind="$attrs"
-      v-model="value"
-      :name="computedProperty.name"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      :required="computedProperty.required"
-      placeholder="Add value"
-      :disabled="disabled"
-      :multilanguage="multilanguage"
-      :current-language="currentLanguage"
-    ></VcMultivalue>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'ShortText' && computedProperty.multivalue && computedProperty.dictionary"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcMultivalue
-      v-bind="$attrs"
-      v-model="value"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      :required="computedProperty.required"
-      placeholder="Add value"
-      :disabled="disabled"
-      :multilanguage="multilanguage"
-      :current-language="currentLanguage"
-      :options="items"
-      :option-label="multilanguage ? 'value' : 'alias'"
-      option-value="id"
-      :multivalue="computedProperty.multivalue"
-      :emit-label="multilanguage ? 'value' : 'alias'"
-      @search="onSearch"
-      @close="onClose"
-    ></VcMultivalue>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'ShortText'"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcInput
-      v-bind="$attrs"
-      v-model="value"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      clearable
-      :required="computedProperty.required"
-      :placeholder="computedProperty.displayName || 'Add value'"
-      :disabled="disabled"
-      :multilanguage="multilanguage"
-      :current-language="currentLanguage"
-    ></VcInput>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'Number' && computedProperty.multivalue"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :model-value="value"
-    :label="computedProperty.displayName"
-    :rules="computedProperty.rules"
-  >
-    <VcMultivalue
-      v-bind="$attrs"
-      v-model="value"
-      :label="computedProperty.displayName"
-      :required="computedProperty.required"
-      placeholder="Add value"
-      :disabled="disabled"
-      type="number"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :options="items"
-    ></VcMultivalue>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'Integer' && computedProperty.multivalue"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :model-value="value"
-    :label="computedProperty.displayName"
-    :rules="computedProperty.rules"
-  >
-    <VcMultivalue
-      v-bind="$attrs"
-      v-model="value"
-      :label="computedProperty.displayName"
-      :required="computedProperty.required"
-      placeholder="Add value"
-      :disabled="disabled"
-      type="number"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :options="items"
-    ></VcMultivalue>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'Number'"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcInput
-      v-bind="$attrs"
-      v-model="value"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      clearable
-      type="number"
-      :required="computedProperty.required"
-      :placeholder="computedProperty.placeholder"
-      :disabled="disabled"
-    ></VcInput>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'Integer'"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcInput
-      v-bind="$attrs"
-      v-model="value"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      clearable
-      type="number"
-      step="1"
-      :required="computedProperty.required"
-      :placeholder="computedProperty.placeholder"
-      :disabled="disabled"
-    ></VcInput>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'DateTime'"
-    v-slot="{ errorMessage, errors }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcInput
-      v-bind="$attrs"
-      v-model="value"
-      :error="!!errors.length"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      type="datetime-local"
-      :required="computedProperty.required"
-      :placeholder="computedProperty.placeholder"
-      :disabled="disabled"
-    ></VcInput>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'LongText'"
-    v-slot="{ errorMessage }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcTextarea
-      v-bind="$attrs"
-      v-model="value"
-      :error-message="errorMessage"
-      :label="computedProperty.displayName"
-      :required="computedProperty.required"
-      :placeholder="computedProperty.placeholder"
-      :disabled="disabled"
-      :multilanguage="multilanguage"
-      :current-language="currentLanguage"
-    ></VcTextarea>
-  </Field>
-
-  <Field
-    v-else-if="computedProperty.valueType === 'Boolean'"
-    v-slot="{ errorMessage }"
-    :name="computedProperty.name"
-    :label="computedProperty.displayName"
-    :model-value="value"
-    :rules="computedProperty.rules"
-  >
-    <VcCheckbox
-      v-bind="$attrs"
-      v-model="value"
-      :error-message="errorMessage"
-      :required="computedProperty.required"
-      :disabled="disabled"
-      :name="computedProperty.name"
+    <template v-if="computedProperty.dictionary && !computedProperty.multivalue">
+      <VcSelect
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        :placeholder="computedProperty.placeholder"
+        :options="items"
+        :option-value="computedProperty.optionValue"
+        :option-label="computedProperty.optionLabel"
+        :disabled="disabled"
+        searchable
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        :loading="loading"
+        @search="onSearch"
+        @close="onClose"
+      ></VcSelect>
+    </template>
+    <template
+      v-else-if="
+        computedProperty.valueType === 'ShortText' && computedProperty.multivalue && !computedProperty.dictionary
+      "
     >
-      {{ computedProperty.displayName }}
-    </VcCheckbox>
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        :name="computedProperty.name"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        placeholder="Add value"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+      ></VcMultivalue>
+    </template>
+    <template
+      v-else-if="
+        computedProperty.valueType === 'ShortText' && computedProperty.multivalue && computedProperty.dictionary
+      "
+    >
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        placeholder="Add value"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        :options="items"
+        :option-label="multilanguage ? 'value' : 'alias'"
+        option-value="id"
+        :multivalue="computedProperty.multivalue"
+        :emit-label="multilanguage ? 'value' : 'alias'"
+        @search="onSearch"
+        @close="onClose"
+      ></VcMultivalue>
+    </template>
+    <template v-else-if="computedProperty.valueType === 'ShortText'">
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        clearable
+        :required="computedProperty.required"
+        :placeholder="computedProperty.displayName || 'Add value'"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+        :loading="loading"
+      ></VcInput>
+    </template>
+    <template v-else-if="computedProperty.valueType === 'Number' && computedProperty.multivalue">
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        placeholder="Add value"
+        :disabled="disabled"
+        type="number"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :options="items"
+      ></VcMultivalue>
+    </template>
+    <template v-else-if="computedProperty.valueType === 'Integer' && computedProperty.multivalue">
+      <VcMultivalue
+        v-bind="$attrs"
+        v-model="value"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        placeholder="Add value"
+        :disabled="disabled"
+        type="number"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :options="items"
+      ></VcMultivalue>
+    </template>
+    <template v-else-if="computedProperty.valueType === 'Number'">
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        clearable
+        type="number"
+        :required="computedProperty.required"
+        :placeholder="computedProperty.placeholder"
+        :disabled="disabled"
+        :loading="loading"
+      ></VcInput>
+    </template>
+    <template v-else-if="computedProperty.valueType === 'Integer'">
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        clearable
+        type="number"
+        step="1"
+        :required="computedProperty.required"
+        :placeholder="computedProperty.placeholder"
+        :disabled="disabled"
+        :loading="loading"
+      ></VcInput>
+    </template>
+    <template v-else-if="computedProperty.valueType === 'DateTime'">
+      <VcInput
+        v-bind="$attrs"
+        v-model="value"
+        :error="!!errors.length"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        type="datetime-local"
+        :required="computedProperty.required"
+        :placeholder="computedProperty.placeholder"
+        :disabled="disabled"
+        :loading="loading"
+      ></VcInput
+    ></template>
+    <template v-else-if="computedProperty.valueType === 'LongText'">
+      <VcTextarea
+        v-bind="$attrs"
+        v-model="value"
+        :error-message="errorMessage"
+        :label="computedProperty.displayName"
+        :required="computedProperty.required"
+        :placeholder="computedProperty.placeholder"
+        :disabled="disabled"
+        :multilanguage="multilanguage"
+        :current-language="currentLanguage"
+      ></VcTextarea
+    ></template>
+    <template v-else-if="computedProperty.valueType === 'Boolean'">
+      <VcCheckbox
+        v-bind="$attrs"
+        v-model="value"
+        :error-message="errorMessage"
+        :required="computedProperty.required"
+        :disabled="disabled"
+        :name="computedProperty.name"
+      >
+        {{ computedProperty.displayName }}
+      </VcCheckbox>
+    </template>
   </Field>
 </template>
+
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
-<script lang="ts" setup generic="T">
-import { ref, onMounted, computed } from "vue";
+<script lang="ts" setup generic="T extends {[x:string]: any; id?: string}">
+import { ref, onMounted, computed, watch } from "vue";
 import { Field } from "vee-validate";
 import { useI18n } from "vue-i18n";
 import { VcSelect, VcInput, VcTextarea, VcCheckbox } from "./../../";
@@ -310,6 +245,7 @@ const emit = defineEmits<{
 const { locale, te, t } = useI18n({ useScope: "global" });
 
 const items = ref([]);
+const loading = ref(false);
 
 const computedProperty = computed(() => {
   const rules: IValidationRules = {};
@@ -341,8 +277,9 @@ const computedProperty = computed(() => {
     valueType: props.valueType,
     dictionary: props.dictionary || false,
     multivalue: props.multivalue || false,
-    name: props.name,
-    displayName: propertyDisplayNameLocalized, //|| setting?.displayName || setting?.defaultValue,
+    name: props.multilanguage ? props.name + "_" + props.currentLanguage : props.name,
+    key: props.multilanguage ? props.property.id + "_" + props.currentLanguage : props.property.id,
+    displayName: propertyDisplayNameLocalized,
     optionValue: props.optionsValue,
     optionLabel: optionLabelField,
     required: props.required,
@@ -365,20 +302,25 @@ const value = computed({
 });
 
 onMounted(async () => {
-  if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property, null, props.currentLanguage);
-  }
+  await getOptions();
 });
 
-async function onSearch(keyword: string) {
+async function getOptions(keyword = null) {
   if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property, keyword, props.currentLanguage);
+    try {
+      loading.value = true;
+      items.value = await props.optionsGetter(props.property, keyword, props.currentLanguage);
+    } finally {
+      loading.value = false;
+    }
   }
 }
 
+async function onSearch(keyword: string) {
+  getOptions(keyword);
+}
+
 async function onClose() {
-  if (props.optionsGetter) {
-    items.value = await props.optionsGetter(props.property, null, props.currentLanguage);
-  }
+  getOptions();
 }
 </script>

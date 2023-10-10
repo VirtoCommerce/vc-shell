@@ -31,6 +31,7 @@ const securityClient = new SecurityClient();
 interface IUseUser {
   user: ComputedRef<UserDetail | null>;
   loading: ComputedRef<boolean>;
+  isAdministrator: ComputedRef<boolean>;
   getAccessToken: () => Promise<string | null>;
   loadUser: () => Promise<UserDetail>;
   signIn: (username: string, password: string) => Promise<SignInResults>;
@@ -127,17 +128,17 @@ export function useUser(): IUseUser {
     const token = await getAccessToken();
     if (token) {
       securityClient.setAuthToken(token);
-    }
 
-    try {
-      loading.value = true;
-      user.value = await securityClient.getCurrentUser();
-      console.log("[useUser]: an user details has been loaded", user.value);
-    } catch (e) {
-      console.dir(e);
-      throw e;
-    } finally {
-      loading.value = false;
+      try {
+        loading.value = true;
+        user.value = await securityClient.getCurrentUser();
+        console.log("[useUser]: an user details has been loaded", user.value);
+      } catch (e) {
+        console.dir(e);
+        throw e;
+      } finally {
+        loading.value = false;
+      }
     }
 
     return { ...user.value } as UserDetail;
@@ -159,7 +160,6 @@ export function useUser(): IUseUser {
       console.log("[useUser]: an access token is expired, using refresh token to receive a new");
       try {
         const newToken = await token.refresh();
-        // console.log("newToken", newToken);
         if (newToken) {
           authData.value = {
             ...authData.value,
@@ -289,6 +289,7 @@ export function useUser(): IUseUser {
   return {
     user: computed(() => user.value),
     loading: computed(() => loading.value),
+    isAdministrator: computed(() => user.value.isAdministrator),
     isAuthenticated,
     getAccessToken,
     loadUser,

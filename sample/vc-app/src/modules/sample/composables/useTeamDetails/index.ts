@@ -1,4 +1,10 @@
-import { useApiClient, useDetailsFactory, DynamicBladeForm } from "@vc-shell/framework";
+import {
+  useApiClient,
+  useDetailsFactory,
+  DynamicBladeForm,
+  DetailsBaseBladeScope,
+  UseDetails,
+} from "@vc-shell/framework";
 import {
   CreateSellerUserCommand,
   ISellerUserDetails,
@@ -8,49 +14,45 @@ import {
   UpdateSellerUserCommand,
   VcmpSellerSecurityClient,
 } from "../../../../api_client/marketplacevendor";
-import { computed, onMounted } from "vue";
+import { ComputedRef, computed, onMounted, reactive, ref } from "vue";
+
+export interface TeamDetailsScope extends DetailsBaseBladeScope {
+  roles: { id: string; name: string }[];
+  disableOnUser: ComputedRef<boolean>;
+  sampleButtonClick: () => void;
+}
 
 const { getApiClient } = useApiClient(VcmpSellerSecurityClient);
-const client = getApiClient();
 
 export const useTeamDetails = (args: {
   props: InstanceType<typeof DynamicBladeForm>["$props"];
   emit: InstanceType<typeof DynamicBladeForm>["$emit"];
-}) => {
-  const factory = useDetailsFactory({
+}): UseDetails<SellerUser, TeamDetailsScope> => {
+  const factory = useDetailsFactory<SellerUser>({
     load: async ({ id }) => {
       const command = new SearchSellerUsersQuery({ objectIds: [id] });
 
-      return (await client).searchSellerUsers(command).then((res) => res.results.find((x) => x.id === id));
+      return (await getApiClient()).searchSellerUsers(command).then((res) => res.results.find((x) => x.id === id));
     },
     saveChanges: async (details) => {
       return details.id
-        ? (await client).updateSellerUser(
+        ? (await getApiClient()).updateSellerUser(
             new UpdateSellerUserCommand({
               sellerId: details.sellerId,
               sellerUserId: details.id,
               userDetails: new SellerUserDetails(details as ISellerUserDetails),
             })
           )
-        : (await client).createSellerUser(
+        : (await getApiClient()).createSellerUser(
             new CreateSellerUserCommand({ userDetails: new SellerUserDetails(details as ISellerUserDetails) })
           );
     },
-    remove: async ({ id }) => (await client).deleteSellerUsers([id]),
+    remove: async ({ id }) => (await getApiClient()).deleteSellerUsers([id]),
   });
 
   const { load, saveChanges, remove, loading, item, validationState } = factory();
 
-  const userDetails = computed({
-    get() {
-      return item.value || new SellerUser();
-    },
-    set(value) {
-      item.value = value;
-    },
-  });
-
-  const scope = {
+  const scope = ref<TeamDetailsScope>({
     roles: [
       {
         id: "vcmp-admin-role",
@@ -61,13 +63,13 @@ export const useTeamDetails = (args: {
         name: "Agent",
       },
     ],
-    disableOnUser: computed(() => !!userDetails.value.id),
+    disableOnUser: computed(() => !!item.value?.id),
     sampleButtonClick: () => alert("Click!"),
-  };
+  });
 
   onMounted(() => {
     if (!args.props.param) {
-      validationState.value.resetModified(userDetails.value, true);
+      validationState.value.resetModified(reactive(new SellerUser()), true);
     }
   });
 
@@ -76,12 +78,12 @@ export const useTeamDetails = (args: {
     saveChanges,
     remove,
     loading,
-    item: userDetails,
+    item,
     validationState,
-    scope,
+    scope: computed(() => scope.value),
     bladeTitle: computed(() =>
-      args.props.param && userDetails.value.firstName && userDetails.value.lastName
-        ? userDetails.value.firstName + " " + userDetails.value.lastName
+      args.props.param && item.value?.firstName && item.value?.lastName
+        ? item.value?.firstName + " " + item.value?.lastName
         : "New member"
     ),
   };

@@ -1,24 +1,25 @@
-import { reactiveComputed } from "@vueuse/core";
-import { h, resolveComponent, mergeProps } from "vue";
+import { h, resolveComponent, mergeProps, ExtractPropTypes, Component } from "vue";
 import { SelectField } from "../factories";
 import componentProps from "./props";
-import { unrefNested } from "../../helpers/unrefNested";
 import ValidationField from "./ValidationField";
+import { SelectSchema } from "../../types";
+import { unrefNested } from "../../helpers/unrefNested";
+import { getModel } from "../../helpers/getters";
 
 export default {
   name: "SelectField",
   props: componentProps,
-  setup(props) {
-    const field = reactiveComputed(() =>
-      SelectField({
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: SelectSchema }) {
+    return () => {
+      const field = SelectField({
         props: {
           ...props.baseProps,
+
           optionValue: props.element.optionValue,
           optionLabel: props.element.optionLabel,
           emitValue: props.element.emitValue,
-          options: props.scope[props.element.optionsMethod],
+          options: props.bladeContext.scope[props.element.optionsMethod],
           currentLanguage: props.currentLocale,
-          classNames: "tw-mb-4",
           clearable: props.element.clearable || false,
         },
         options: props.baseOptions,
@@ -30,47 +31,26 @@ export default {
               h(resolveComponent(props.element.customTemplate.component), { context: scope, slotName: slot });
             return obj;
           }, {}),
-      })
-    );
+      });
 
-    if (field.props.rules) {
-      return () =>
-        h(
-          ValidationField,
-          {
-            props: unrefNested(field.props),
-            options: unrefNested(field.options),
-            slots: unrefNested(field.slots),
-            index: props.elIndex,
-            rows: props.rows,
-          },
-          () =>
-            h(
-              field.component as any,
-              mergeProps(unrefNested(field.props), {
-                "onUpdate:modelValue": (e) =>
-                  props.element.updateMethod &&
-                  props.element.updateMethod in props.scope &&
-                  typeof props.scope[props.element.updateMethod] === "function"
-                    ? props.scope[props.element.updateMethod](e)
-                    : undefined,
-              })
+      const render = h(field.component as unknown as Component, field.props, field.slots);
+
+      if (field.props.rules) {
+        return props.baseOptions.visibility
+          ? h(
+              ValidationField,
+              {
+                props: field.props,
+                index: props.elIndex,
+                rows: props.rows,
+                key: `${String(field.props.key)}_validation`,
+              },
+              () => render
             )
-        );
-    } else {
-      return () =>
-        h(
-          field.component as any,
-          mergeProps(unrefNested(field.props), {
-            "onUpdate:modelValue": (e) =>
-              props.element.updateMethod &&
-              props.element.updateMethod in props.scope &&
-              typeof props.scope[props.element.updateMethod] === "function"
-                ? props.scope[props.element.updateMethod](e)
-                : undefined,
-          }),
-          field.slots
-        );
-    }
+          : null;
+      } else {
+        return props.baseOptions.visibility ? render : null;
+      }
+    };
   },
 };

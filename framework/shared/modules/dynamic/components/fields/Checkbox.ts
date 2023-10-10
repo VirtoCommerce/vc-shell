@@ -1,44 +1,45 @@
-import { reactiveComputed } from "@vueuse/core";
 import { ExtractPropTypes, h } from "vue";
 import { Checkbox } from "../factories";
 import componentProps from "./props";
-import { unrefNested } from "../../helpers/unrefNested";
 import ValidationField from "./ValidationField";
+import { CheckboxSchema } from "../../types";
 
 export default {
   name: "Checkbox",
   props: componentProps,
-  setup(props: ExtractPropTypes<typeof componentProps>) {
-    const field = reactiveComputed(() =>
-      Checkbox({
+  setup(props: ExtractPropTypes<typeof componentProps> & { element: CheckboxSchema }) {
+    return () => {
+      const field = Checkbox({
         props: {
           ...props.baseProps,
+
           trueValue: props.element.trueValue,
           falseValue: props.element.falseValue,
-          classNames: "tw-mb-4",
         },
         options: props.baseOptions,
         slots: {
           default: () => props.element.content,
         },
-      })
-    );
+      });
 
-    if (field.props.rules) {
-      return () =>
-        h(
-          ValidationField,
-          {
-            props: unrefNested(field.props),
-            options: unrefNested(field.options),
-            slots: unrefNested(field.slots),
-            index: props.elIndex,
-            rows: props.rows,
-          },
-          () => h(field.component, field.props)
-        );
-    } else {
-      return () => h(field.component, field.props, field.slots);
-    }
+      const render = h(field.component, field.props, field.slots);
+
+      if (field.props.rules) {
+        return props.baseOptions.visibility
+          ? h(
+              ValidationField,
+              {
+                props: field.props,
+                slots: field.slots,
+                index: props.elIndex,
+                rows: props.rows,
+              },
+              () => render
+            )
+          : null;
+      } else {
+        return props.baseOptions.visibility ? render : null;
+      }
+    };
   },
 };

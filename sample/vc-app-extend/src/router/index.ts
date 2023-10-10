@@ -20,6 +20,7 @@ import App from "./../pages/App.vue";
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
 import bgImage from "/assets/background.jpg";
+import { useLogin } from "../composables";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -36,6 +37,7 @@ const routes: RouteRecordRaw[] = [
     name: "Login",
     component: Login,
     props: () => ({
+      composable: useLogin,
       logo: whiteLogoImage,
       background: bgImage,
       title: "vc-app",
@@ -78,7 +80,7 @@ export const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  const { fetchUserPermissions, checkPermission } = usePermissions();
+  const { hasAccess: _hasAccess } = usePermissions();
   const { resolveBlades } = useBladeNavigation();
   const { isAuthenticated } = useUser();
   const pages = inject<BladePageComponent[]>("pages");
@@ -86,12 +88,9 @@ router.beforeEach(async (to, from) => {
 
   if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
     try {
-      // Fetch permissions if not any
-      await fetchUserPermissions();
-
       const component = pages.find((blade) => blade?.url === to.path);
 
-      const hasAccess = checkPermission(component?.permissions);
+      const hasAccess = _hasAccess(component?.permissions);
 
       if (!(await isAuthenticated()) && to.name !== "Login") {
         return { name: "Login" };

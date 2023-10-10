@@ -1,3 +1,4 @@
+import { ComputedRef, Raw } from "vue";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   VcButton,
@@ -10,7 +11,6 @@ import {
   VcInputCurrency,
   VcSelect,
 } from "../../../../ui/components";
-import { Raw } from "vue";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
 type FromGenericEventsToProps<T extends Record<string, any>> = T extends Record<string, any>
@@ -67,12 +67,7 @@ export type WithRequiredProperty<Type, Key extends keyof Type> = Type & {
 };
 
 export interface IControlBaseOptions {
-  visibility?:
-    | {
-        method?: string;
-      }
-    | boolean;
-  noValidation?: boolean;
+  visibility?: ComputedRef<boolean>;
 }
 
 export type ISelectField = {

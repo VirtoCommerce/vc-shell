@@ -1,56 +1,53 @@
-import { VNodeProps, computed, h, mergeProps, unref, useSlots } from "vue";
-import componentProps from "./props";
+import { computed, h, unref, useSlots, defineComponent } from "vue";
 import { unrefNested } from "../../helpers/unrefNested";
 import { Field } from "vee-validate";
+import { reactify } from "@vueuse/core";
 
-export default {
+const validationFieldProps = {
+  props: Object,
+  index: Number,
+  rows: Number,
+};
+
+export default defineComponent({
   name: "ValidationField",
-  props: {
-    props: Object,
-    options: Object,
-    slots: Object,
-    index: Number,
-    rows: Number,
-  },
+  props: validationFieldProps,
   setup(props) {
     const slots = useSlots();
     const fieldKey = computed(() =>
       unref(props.props).multilanguage
-        ? `${String(props.props.key)}_${props.props.currentLanguage}`
+        ? `${String(props.props.key)}_${unref(props.props.currentLanguage)}`
         : String(props.props.key)
     );
 
+    const fieldNameLang = reactify((name) => {
+      return props.props.multilanguage ? name + "_" + props.props.currentLanguage : name;
+    });
+
     return () =>
       h(
-        Field as any,
+        Field,
         {
           rules: props.props.rules,
-          modelValue: unref(props.props.modelValue),
+          modelValue: props.props.modelValue,
           label: props.props.label,
           key: fieldKey.value,
-          name: props.rows > 1 && props.index >= 0 ? props.props?.name + "_" + props.index : props.props?.name,
+          name: fieldNameLang(
+            props.rows > 1 && props.index >= 0 ? props.props?.name + "_" + props.index : props.props?.name
+          ).value,
         },
         {
-          default: ({ errorMessage, errors, handleChange }) => {
+          default: ({ errorMessage, errors }) => {
             return slots.default().map((slot) =>
-              h(
-                slot,
-                {
-                  ...mergeProps(unrefNested(props.props) as VNodeProps, {
-                    "onUpdate:modelValue": (e) => {
-                      handleChange(e);
-                    },
-                  }),
-                  error: !!errors.length,
-                  errorMessage,
-                  class: props.classNames,
-                  key: fieldKey.value + "_control",
-                },
-                props.slots
-              )
+              h(slot, {
+                ...props.props,
+                error: !!errors.length,
+                errorMessage,
+                key: fieldKey.value + "_control",
+              })
             );
           },
         }
       );
   },
-};
+});

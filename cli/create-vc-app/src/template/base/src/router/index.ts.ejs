@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 <% if(commonPages === true || bladeModuleStarter === true) { -%>
 import { inject } from "vue";
+import { useLogin } from "../composables";
 <% } -%>
 import {
   usePermissions,
@@ -13,7 +14,6 @@ import {
   ResetPassword,
   Invite,
   <% } -%>} from "@vc-shell/framework";
-  import { useCookies } from "@vueuse/integrations/useCookies";
 
 /**
  * Pages
@@ -53,6 +53,7 @@ const routes: RouteRecordRaw[] = [
     name: "Login",
     component: Login,
     props: () => ({
+      composable: useLogin,
       logo: whiteLogoImage,
       background: bgImage,
       title: "<%= appName %>",
@@ -97,7 +98,7 @@ export const router = createRouter({
 
 <% if(commonPages === true || bladeModuleStarter === true) { -%>
 router.beforeEach(async (to, from) => {
-  const { fetchUserPermissions, checkPermission } = usePermissions();
+  const { hasAccess } = usePermissions();
   const { resolveBlades } = useBladeNavigation();
   const { isAuthenticated } = useUser();
   const pages = inject<BladePageComponent[]>("pages");
@@ -105,16 +106,13 @@ router.beforeEach(async (to, from) => {
   <% if(commonPages === true) { -%>
   if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
     try {
-      // Fetch permissions if not any
-      await fetchUserPermissions();
-
       const component = pages.find((blade) => blade?.url === to.path);
 
-      const hasAccess = checkPermission(component?.permissions);
+      const _hasAccess = hasAccess(component?.permissions);
 
       if (!(await isAuthenticated()) && to.name !== "Login") {
         return { name: "Login" };
-      } else if (hasAccess && to.name !== "Login") {
+      } else if (_hasAccess && to.name !== "Login") {
         const resolvedBladeUrl = resolveBlades(to);
         return resolvedBladeUrl ? resolvedBladeUrl : true;
       } else if (!hasAccess) {

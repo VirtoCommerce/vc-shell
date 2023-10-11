@@ -118,15 +118,15 @@ import {
   toValue,
   unref,
   watch,
+  UnwrapRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema } from "../types";
-import useFilterBuilder from "../composables/useFilterBuilder";
+import { useFilterBuilder } from "../composables";
 import * as _ from "lodash-es";
 import { useFunctions } from "../../../../core/composables";
 import { IBladeToolbar, ITableColumns } from "../../../../core/types";
 import { DetailsBaseBladeScope, UseList, usePopup } from "../../../index";
-import { UnwrapRef } from "vue";
 
 export interface Props {
   expanded?: boolean;

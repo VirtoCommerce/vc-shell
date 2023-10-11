@@ -1,1 +1,1 @@
-export { default as useDynamicMenu } from "./useDynamicMenu";
+export { default as useFilterBuilder } from "./useFilterBuilder";

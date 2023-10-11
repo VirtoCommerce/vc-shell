@@ -6,7 +6,7 @@
     <slot></slot>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 export interface Props {
   variant?: "info" | "warning" | "danger" | "success" | "light-danger";
@@ -18,6 +18,10 @@ withDefaults(defineProps<Props>(), {
   variant: "info",
   outline: true,
 });
+
+defineSlots<{
+  default: (props?: any) => any;
+}>();
 </script>
 
 <style lang="scss">

@@ -4532,7 +4532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@^1.0.100, @vc-shell/api-client-generator@^1.0.105, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.100, @vc-shell/api-client-generator@^1.0.105, @vc-shell/api-client-generator@^1.0.88, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -4545,7 +4545,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.100, @vc-shell/config-generator@^1.0.105, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.100, @vc-shell/config-generator@^1.0.105, @vc-shell/config-generator@^1.0.88, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -4578,7 +4578,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.100, @vc-shell/framework@^1.0.105, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.100, @vc-shell/framework@^1.0.105, @vc-shell/framework@^1.0.88, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
@@ -5299,9 +5299,9 @@ __metadata:
     "@types/lodash-es": ^4.17.7
     "@typescript-eslint/eslint-plugin": ^5.59.6
     "@typescript-eslint/parser": ^5.59.6
-    "@vc-shell/api-client-generator": ^1.0.100
-    "@vc-shell/config-generator": ^1.0.100
-    "@vc-shell/framework": ^1.0.100
+    "@vc-shell/api-client-generator": ^1.0.105
+    "@vc-shell/config-generator": ^1.0.105
+    "@vc-shell/framework": ^1.0.105
     "@vitejs/plugin-vue": ^4.2.3
     "@vue/eslint-config-prettier": ^7.1.0
     "@vue/eslint-config-typescript": ^11.0.3
@@ -14034,6 +14034,58 @@ __metadata:
     tailwindcss: ^3.3.2
     typescript: ~5.0.4
     vc-sample-modules: "link:../vc-app/dist"
+    vee-validate: ^4.9.4
+    vite: ^4.3.9
+    vite-plugin-checker: ^0.6.0
+    vite-plugin-mkcert: ^1.15.0
+    vite-plugin-pwa: ^0.14.7
+    vue: ^3.3.4
+    vue-eslint-parser: ^9.3.0
+    vue-router: ^4.2.1
+    vue-tsc: ~1.6.5
+    yarn: ^1.22.19
+  languageName: unknown
+  linkType: soft
+
+"vc-app3@workspace:apps/vc-app3":
+  version: 0.0.0-use.local
+  resolution: "vc-app3@workspace:apps/vc-app3"
+  dependencies:
+    "@commitlint/cli": ^17.6.3
+    "@commitlint/config-conventional": ^17.6.3
+    "@fortawesome/fontawesome-free": ^5.15.3
+    "@rollup/plugin-typescript": ^11.1.1
+    "@types/lodash-es": ^4.17.7
+    "@typescript-eslint/eslint-plugin": ^5.59.7
+    "@typescript-eslint/parser": ^5.59.7
+    "@vc-shell/api-client-generator": ^1.0.88
+    "@vc-shell/config-generator": ^1.0.88
+    "@vc-shell/framework": ^1.0.88
+    "@vitejs/plugin-vue": ^4.2.3
+    "@vue/eslint-config-prettier": ^7.1.0
+    "@vue/eslint-config-typescript": ^11.0.3
+    "@vueuse/core": ^10.1.2
+    "@vueuse/integrations": ^10.1.2
+    autoprefixer: ^10.4.14
+    buffer-esm: ^1.2.0
+    conventional-changelog-cli: ^2.2.2
+    cross-env: ^7.0.3
+    eslint: ^8.41.0
+    eslint-import-resolver-typescript: ^3.5.5
+    eslint-plugin-import: ^2.27.5
+    eslint-plugin-prettier: ^4.2.1
+    eslint-plugin-vue: ^9.14.1
+    husky: ^8.0.3
+    lint-staged: ^13.2.2
+    lodash-es: ^4.17.21
+    moment: ^2.29.4
+    postcss: ^8.4.23
+    prettier: ^2.8.8
+    querystring-es3: ^0.2.1
+    roboto-fontface: ^0.10.0
+    sass: ^1.62.1
+    tailwindcss: ^3.3.2
+    typescript: ~5.0.4
     vee-validate: ^4.9.4
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0

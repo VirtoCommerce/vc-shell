@@ -8,7 +8,6 @@ export const grid: DynamicGridSchema = {
     localizationPrefix: "Team",
     titleTemplate: "My Team",
     moduleName: "My Team",
-    icon: "fas fa-file-alt",
     composable: "useTeamList",
     toolbar: [
       {
@@ -31,6 +30,9 @@ export const grid: DynamicGridSchema = {
       type: "grid",
       header: false,
       multiselect: false,
+      mobileTemplate: {
+        component: "TeamGridMobileView",
+      },
       columns: [
         {
           id: "firstName",

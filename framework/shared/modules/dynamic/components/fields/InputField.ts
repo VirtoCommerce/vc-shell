@@ -3,8 +3,6 @@ import { InputField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { InputSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
-import { getModel } from "../../helpers/getters";
 
 export default {
   name: "InputField",

@@ -2,7 +2,6 @@
 import { Router } from "vue-router";
 import * as pages from "./pages";
 import { App, Component, DefineComponent, defineComponent } from "vue";
-import { useDynamicMenu } from "./composables";
 import { DynamicSchema, OverridesSchema } from "./types";
 import * as _ from "lodash-es";
 import { handleOverrides } from "./helpers/override";
@@ -10,14 +9,13 @@ import { reactiveComputed } from "@vueuse/core";
 import { kebabToPascal } from "../../../core/utilities";
 import { BladeConstructor } from "../../index";
 import { createAppModule } from "../../../core/plugins";
+import { BladeMenu, NavigationMenu } from "../../../core/types";
 
 interface Registered {
   component: BladeConstructor;
   name: string;
   model: DynamicSchema;
 }
-
-const { createMenuItem } = useDynamicMenu();
 
 const createAppModuleWrapper = (args: {
   bladeName: string;
@@ -103,9 +101,10 @@ const handleError = (errorKey: string, schema: { [key: string]: DynamicSchema },
   );
 };
 
-export const createDynamicAppModule = (args: {
+export const createDynamicAppModule = <T extends BladeMenu>(args: {
   schema: { [key: string]: DynamicSchema };
   composables: any;
+  menuConfig?: { [I in keyof T]: NavigationMenu<T[I]> };
   overrides?: OverridesSchema;
   moduleComponents?: { [key: string]: Component };
   locales?: { [key: string]: object };
@@ -147,12 +146,6 @@ export const createDynamicAppModule = (args: {
 
           if (!blade) {
             return;
-          }
-
-          if (JsonName === moduleInitializer) {
-            if (blade.name) {
-              createMenuItem(blade.component, blade.model);
-            }
           }
         });
       },

@@ -66,7 +66,6 @@ import {
   LanguageSelector,
   UserDropdownButton,
   BladePageComponent,
-  useDynamicMenu,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, markRaw, watch, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -81,13 +80,20 @@ const { open } = usePopup({
   component: ChangePassword,
 });
 
-const { dynamicModuleItems } = useDynamicMenu();
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, loadUser, signOut } = useUser();
 const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, resolveLastBlade } =
-  useBladeNavigation();
+const {
+  blades,
+  bladesRefs,
+  workspaceOptions,
+  workspaceParam,
+  closeBlade,
+  onParentCall,
+  resolveLastBlade,
+  resolveBladeByName,
+} = useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
 
@@ -214,10 +220,16 @@ const menuItems = reactive(
         open();
       },
     },
-    ...dynamicModuleItems.value,
+    {
+      title: "Dynamic",
+      icon: "fas fa-star",
+      isVisible: true,
+      component: resolveBladeByName("TeamJ"),
+    },
     {
       title: "Legacy",
       icon: "fas fa-star",
+      isVisible: true,
       component: TeamList,
     },
     {

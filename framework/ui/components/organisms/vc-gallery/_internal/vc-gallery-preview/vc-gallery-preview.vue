@@ -52,6 +52,7 @@
           <VcImage
             :src="item.url"
             size="xl"
+            background="contain"
             :bordered="true"
             :clickable="true"
             @click="localIndex = i"
@@ -88,7 +89,7 @@ const localIndex = ref(props.index);
 
 const imageHandler = computed(() => {
   if (currentImage.value.url) {
-    return `background-image: url(${CSS.escape(currentImage.value.url)})`;
+    return `background: url(${CSS.escape(currentImage.value.url)}) center / contain no-repeat`;
   }
   return undefined;
 });

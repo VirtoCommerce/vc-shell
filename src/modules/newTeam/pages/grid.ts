@@ -8,7 +8,6 @@ export const grid: DynamicGridSchema = {
     localizationPrefix: "Team",
     titleTemplate: "My Team",
     moduleName: "My Team",
-    icon: "fas fa-file-alt",
     composable: "useTeamList",
     toolbar: [
       {

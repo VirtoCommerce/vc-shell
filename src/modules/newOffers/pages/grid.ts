@@ -9,7 +9,6 @@ export const grid: DynamicGridSchema = {
     moduleName: "Offers",
     composable: "useOffersList",
     template: "DynamicBladeList",
-    icon: "fas fa-file-alt",
     toolbar: [
       {
         id: "refresh",

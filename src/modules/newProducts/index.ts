@@ -11,6 +11,10 @@ export default createDynamicAppModule({
   moduleComponents: components,
   overrides,
   locales,
+  menuConfig: {
+    title: "Test menu",
+    isVisible: true,
+  },
 });
 
 export * from "./components";

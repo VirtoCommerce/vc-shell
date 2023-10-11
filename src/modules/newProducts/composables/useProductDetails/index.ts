@@ -28,7 +28,7 @@ import {
   useUser,
   DetailsBaseBladeScope,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef, toValue, onBeforeMount, nextTick } from "vue";
+import { ref, computed, reactive, onMounted, ComputedRef, toValue, onBeforeMount, nextTick, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage, useAssets } from "../../../common";
 import { min, required } from "@vee-validate/rules";
@@ -45,6 +45,7 @@ export interface ProductDetailsScope extends DetailsBaseBladeScope {
   galleryVisibility: ComputedRef<boolean>;
   productTypeDisabled: ComputedRef<boolean>;
   propertiesCardVisibility: ComputedRef<boolean>;
+  statusText: ComputedRef<string | null>;
   setCategory: (selectedCategory: Category) => Promise<void>;
   assetsHandler: { images: ReturnType<typeof useAssets> };
   toolbarOverrides: {
@@ -101,18 +102,20 @@ export const useProductDetails = (args: {
 
   // const assetsDisabled = computed(() => disabled.value || item.value.createdBy !== user.value?.userName);
 
-  // const statusText = computed(() => {
-  //   if (item.value.publicationRequests && item.value.publicationRequests.length) {
-  //     return _.orderBy(item.value.publicationRequests, ["createdDate"], ["desc"])[0].comment;
-  //   }
-  //   return null;
-  // });
+  const declineReasonVisibility = computed(() => statusText.value && item.value?.status !== "Published");
+  const statusText = computed(() => {
+    if (item.value?.publicationRequests && item.value?.publicationRequests.length) {
+      return _.orderBy(item.value.publicationRequests, ["createdDate"], ["desc"])[0].comment;
+    }
+    return null;
+  });
 
   const bladeTitle = computed(() => (args.props.param ? item.value?.name : t("PRODUCTS.PAGES.DETAILS.TITLE")));
 
   const getMappedDetails = reactify((details: ISellerProduct & IProductDetails) => {
     if (details) {
       return reactive({
+        publicationRequests: details.publicationRequests,
         canBeModified: details.canBeModified,
         createdBy: "createdBy" in details && details.createdBy,
         hasStagedChanges: details.hasStagedChanges,
@@ -262,6 +265,8 @@ export const useProductDetails = (args: {
     productTypeOptions,
     validateGtin,
     setCategory,
+    declineReasonVisibility,
+    statusText,
     propertiesCardVisibility: computed(() => !!item.value?.id || !!currentCategory.value),
     galleryVisibility: computed(() => !!item.value?.categoryId),
     productTypeDisabled: computed(() => !!item.value?.id),

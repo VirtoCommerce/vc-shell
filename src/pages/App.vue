@@ -69,7 +69,6 @@ import {
   UserDropdownButton,
   BladePageComponent,
   NotificationTemplateConstructor,
-  useDynamicMenu,
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -92,7 +91,6 @@ const { open } = usePopup({
   component: ChangePassword,
 });
 
-const { dynamicModuleItems } = useDynamicMenu();
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
 const { user, signOut, isAdministrator } = useUser();
 const { hasAccess } = usePermissions();
@@ -300,7 +298,21 @@ const menuItems = reactive(
       title: "Dynamic",
       icon: "fas fa-arrows-alt",
       isVisible: true,
-      children: dynamicModuleItems.value,
+      children: [
+        {
+          title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
+          component: resolveBladeByName("ProductsJ"),
+        },
+        {
+          title: computed(() => t("OFFERS.MENU.TITLE")),
+          component: resolveBladeByName("OffersJ"),
+        },
+        {
+          title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
+          component: resolveBladeByName("TeamJ"),
+          isVisible: computed(() => hasAccess(UserPermissions.SellerUsersManage)),
+        },
+      ],
     },
     {
       title: computed(() => t("SETTINGS.MENU.TITLE")),

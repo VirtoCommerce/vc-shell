@@ -8,13 +8,14 @@ import {
   VideoSearchCriteria,
   VideoSearchResult,
 } from "../../../../api_client/catalog";
+import * as _ from "lodash-es";
 
 interface IUseVideos {
   readonly videos: Ref<IVideo[]>;
   readonly totalCount: Ref<number>;
   readonly pages: Ref<number>;
   readonly loading: Ref<boolean>;
-  readonly sort: Ref<string>;
+  readonly modified: Ref<boolean>;
   searchQuery: Ref<IVideoSearchCriteria>;
   currentPage: Ref<number>;
   searchVideos: (query: IVideoSearchCriteria) => Promise<VideoSearchResult>;
@@ -36,12 +37,18 @@ export default (options?: IUseVideosOptions): IUseVideos => {
     keyword: options?.keyword,
   });
   const searchResult = ref<VideoSearchResult>();
+  const videos = ref<IVideo[]>();
   const loading = ref(false);
-  const sort = ref("sortOrder:ASC");
+  const modified = ref(false);
+  let videosCopy: IVideo[];
 
-  watch(sort, async (value) => {
-    await searchVideos({ ownerIds: [value], sort: value });
-  });
+  watch(
+    () => videos.value,
+    (newVal) => {
+      modified.value = !_.isEqual(newVal, videosCopy);
+    },
+    { deep: true }
+  );
 
   async function getApiClient(): Promise<CatalogModuleVideosClient> {
     const { getAccessToken } = useUser();
@@ -59,7 +66,8 @@ export default (options?: IUseVideosOptions): IUseVideos => {
       searchResult.value = await client.searchVideos({
         ...searchQuery.value,
       } as VideoSearchCriteria);
-
+      videos.value = searchResult.value?.results;
+      videosCopy = _.cloneDeep(videos.value);
       return searchResult.value;
     } catch (e) {
       console.error(e);
@@ -98,12 +106,12 @@ export default (options?: IUseVideosOptions): IUseVideos => {
   }
 
   return {
-    videos: computed(() => searchResult.value?.results),
+    videos: computed(() => videos.value),
     totalCount: computed(() => searchResult.value?.totalCount),
     pages: computed(() => Math.ceil(searchResult.value?.totalCount / pageSize)),
     currentPage: computed(() => (searchQuery.value?.skip || 0) / Math.max(1, pageSize) + 1),
     loading: computed(() => loading.value),
-    sort: computed(() => sort.value),
+    modified: computed(() => modified.value),
     searchQuery,
     searchVideos,
     saveVideos,

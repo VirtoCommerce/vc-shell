@@ -16,7 +16,7 @@
       :expanded="expanded"
       :columns="tableColumns"
       :header="false"
-      :items="defaultVideos"
+      :items="sortedVideos"
       :item-action-builder="actionBuilder"
       multiselect
       :sort="sort"
@@ -93,7 +93,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch, inject, markRaw, Ref } from "vue";
+import { computed, onMounted, ref, markRaw, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   IBladeToolbar,
@@ -138,21 +138,18 @@ const { openBlade } = useBladeNavigation();
 const { showConfirmation } = usePopup();
 const { t } = useI18n({ useScope: "global" });
 
-const { videos, totalCount, pages, currentPage, sort, searchVideos, saveVideos, deleteVideos, loading } = useVideos();
+const { videos, totalCount, pages, currentPage, searchVideos, saveVideos, deleteVideos, loading, modified } =
+  useVideos();
 
 const searchValue = ref();
 const selectedItemId = ref();
 const selectedVideosIds = ref([]);
-const defaultVideos = ref<IVideo[]>();
-const modified = ref(false);
+const sort = ref("sortOrder:ASC");
+const sortedVideos = ref<IVideo[]>();
 
-watch(
-  () => defaultVideos.value,
-  (newVal) => {
-    modified.value = !_.isEqual(newVal, videos.value);
-  },
-  { deep: true }
-);
+watch(sort, async (value) => {
+  await searchVideos({ ownerIds: [props.param ?? ""], sort: value });
+});
 
 onMounted(async () => {
   await reload();
@@ -166,7 +163,7 @@ const reload = async () => {
     skip: (currentPage.value - 1) * 20,
     sort: sort.value,
   });
-  defaultVideos.value = videos.value;
+  sortedVideos.value = videos.value;
   emit("parent:call", {
     method: "reload",
     args: true,
@@ -179,7 +176,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     title: computed(() => t("VIDEOS.PAGES.LIST.TOOLBAR.SAVE")),
     icon: "fas fa-save",
     async clickHandler() {
-      await saveVideos(defaultVideos.value);
+      await saveVideos(videos.value);
       await reload();
     },
     disabled: computed(() => !modified.value),
@@ -293,7 +290,8 @@ function sortVideos(event: { dragIndex: number; dropIndex: number; value: IVideo
       item.sortOrder = index;
       return item;
     });
-    defaultVideos.value = sorted;
+    sortedVideos.value = sorted;
+    videos.value = sortedVideos.value;
   }
 }
 

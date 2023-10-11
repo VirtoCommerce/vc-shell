@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, VNode } from "vue";
+import { computed, ref, VNode, nextTick } from "vue";
 import type { Component } from "vue";
 import { useRoute } from "vue-router";
 import {
@@ -136,19 +136,21 @@ function findStateById(id: number) {
   return state.value?.find((item) => item.blade.idx === id)?.expanded;
 }
 
-function setParentRef(el: CoreBladeExposed, bladeNode: VNode) {
+async function setParentRef(el: CoreBladeExposed, bladeNode: VNode) {
   if (el && bladeNode) {
-    bladesRefs.value = [
-      {
-        active: _.isEqual(activeBlade.value, bladeNode.type),
-        exposed: el,
-        blade: {
-          blade: bladeNode.type as BladeConstructor,
-          param: bladeNode.props?.param as string,
-          idx: 0,
+    await nextTick(() => {
+      bladesRefs.value = [
+        {
+          active: _.isEqual(activeBlade.value, bladeNode.type),
+          exposed: el,
+          blade: {
+            blade: bladeNode.type as BladeConstructor,
+            param: bladeNode.props?.param as string,
+            idx: 0,
+          },
         },
-      },
-    ];
+      ];
+    });
   }
 }
 

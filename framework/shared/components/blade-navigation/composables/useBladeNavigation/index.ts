@@ -109,11 +109,12 @@ export function useBladeNavigation(): IUseBladeNavigation {
     const bladeComponent = unref(blade);
 
     if (!isPrevented.value) {
-      workspaceOptions.value = unref(options);
-      workspaceParam.value = unref(param);
-
-      await nextTick();
       await router.replace(bladeComponent.url);
+
+      await nextTick(() => {
+        workspaceOptions.value = unref(options);
+        workspaceParam.value = unref(param);
+      });
     }
   }
 
@@ -140,6 +141,8 @@ export function useBladeNavigation(): IUseBladeNavigation {
       openWorkspace({ blade, param, options });
       return;
     }
+
+    await nextTick();
 
     clearParentData();
 

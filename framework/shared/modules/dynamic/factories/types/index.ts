@@ -71,6 +71,7 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
     languages: Ref<string[]>;
     setLocale: (locale: string) => void;
     localesOptions: Ref<{ label: string; value: string }[]>;
+    getLanguages: AsyncAction<void, void>;
   };
   dynamicProperties?: {
     loading: ComputedRef<boolean>;

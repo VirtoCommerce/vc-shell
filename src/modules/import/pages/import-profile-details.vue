@@ -226,7 +226,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
 ]);
 
 const sampleTemplateUrl = computed(() => {
-  const importer = dataImporters.value.find((x) => x.typeName === profileDetails.value.typeName);
+  const importer = dataImporters.value.find((x) => x.typeName === profileDetails.value.dataImporterType);
   return profile.value.importer
     ? profile.value.importer.metadata && profile.value.importer.metadata.sampleCsvUrl
     : importer

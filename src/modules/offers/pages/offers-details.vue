@@ -14,6 +14,7 @@
       <div class="tw-flex tw-flex-row tw-items-center">
         <div class="vc-status">
           <VcSelect
+            name="currentLocale"
             :model-value="currentLocale"
             :options="localesOptions"
             option-value="value"

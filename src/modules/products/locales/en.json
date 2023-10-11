@@ -146,8 +146,7 @@
         },
         "WIDGETS": {
             "OFFERS":"Offers",
-            "ASSETS":"Assets",
-            "VIDEOS": "Videos"
+            "ASSETS":"Assets"
         },
         "LANGUAGES":{
           "en-US": "English",

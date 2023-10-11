@@ -14,6 +14,7 @@
       <div class="tw-flex tw-flex-row tw-items-center">
         <div class="vc-status">
           <VcSelect
+            name="currentLocale"
             :model-value="currentLocale"
             :options="localesOptions"
             option-value="value"
@@ -236,6 +237,11 @@
                         :multilanguage="true"
                         :current-language="currentLocale"
                         @update:model-value="handleChange"
+                        @update:current-language="
+                          (e: string) => {
+                            setLocale(e);
+                          }
+                        "
                       ></VcEditor>
                     </Field>
                   </div>
@@ -267,7 +273,6 @@
                             regex: property.validationRule?.regExp,
                           }"
                           :display-names="property.displayNames"
-                          :disabled="disabled"
                           @update:model-value="setPropertyValue"
                         >
                         </VcDynamicProperty>
@@ -291,7 +296,6 @@
                           regex: property.validationRule?.regExp,
                         }"
                         :display-names="property.displayNames"
-                        :disabled="disabled"
                         @update:model-value="setPropertyValue"
                       >
                       </VcDynamicProperty>

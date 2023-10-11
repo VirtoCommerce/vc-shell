@@ -1,3 +1,76 @@
+## [1.0.114](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.113...v1.0.114) (2023-10-02)
+
+
+
+## [1.0.113](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.112...v1.0.113) (2023-10-02)
+
+
+
+## [1.0.112](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.110...v1.0.112) (2023-09-29)
+
+
+
+## [1.0.110](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.109...v1.0.110) (2023-09-22)
+
+
+
+## [1.0.109](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.108...v1.0.109) (2023-09-22)
+
+
+
+## [1.0.108](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.106...v1.0.108) (2023-09-21)
+
+
+### Bug Fixes
+
+* *offers-details* added defaultCurrency ([21b6ddb](https://github.com/VirtoCommerce/vendor-portal/commit/21b6ddbb3f34cbd950e16ab7399d9376765a1492))
+* notificationClick navigation fix ([b63120b](https://github.com/VirtoCommerce/vendor-portal/commit/b63120b84b22b2e4c6b45c5700a2fea032ab6eae))
+
+
+### Features
+
+* link to import template file ([b1e2fda](https://github.com/VirtoCommerce/vendor-portal/commit/b1e2fdad8a701ba03b6d66b2a50ef5c5c6bc6147))
+* vm-1188 product types ([3d7cb04](https://github.com/VirtoCommerce/vendor-portal/commit/3d7cb04aee559f192799a647f44a00db96c90079))
+* vm-1211 revert and save button ([2b9cfc3](https://github.com/VirtoCommerce/vendor-portal/commit/2b9cfc3d0c8166dbc4863369fd5de9aab5e70803))
+
+
+
+## [1.0.106](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.104...v1.0.106) (2023-08-28)
+
+
+### Bug Fixes
+
+* dynamic prop in products padding ([3169f9e](https://github.com/VirtoCommerce/vendor-portal/commit/3169f9ef43c90e966ee5c88f42865f3ec8666b2a))
+
+
+### Features
+
+* multilanguage properties ([a5f7469](https://github.com/VirtoCommerce/vendor-portal/commit/a5f746950df03c2dcfff485c2606ec184256375f))
+* product and offer modified ([4763c28](https://github.com/VirtoCommerce/vendor-portal/commit/4763c28c2efec87280413363124e3e0e43e19e04))
+* vm-874 locale code without translation ([0590f20](https://github.com/VirtoCommerce/vendor-portal/commit/0590f20e4bd9e47a6d34876d9ca64a1ec3d08b1a))
+* vm-874 nullref in dict locale ([fe9aaf4](https://github.com/VirtoCommerce/vendor-portal/commit/fe9aaf4dfb18ac0aac64d2df4cad88fd926d6c9d))
+
+
+
+## [1.0.104](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.103...v1.0.104) (2023-08-04)
+
+
+### Bug Fixes
+
+* dynamic properties fix ([731cef7](https://github.com/VirtoCommerce/vendor-portal/commit/731cef75a878cdcfd514ab3717de293ed34e4642))
+
+
+
+## [1.0.103](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.102...v1.0.103) (2023-08-04)
+
+
+### Features
+
+* multilang description in products ([4e71ade](https://github.com/VirtoCommerce/vendor-portal/commit/4e71adeee75adb0c11ce86787effbc5294dda3fe))
+* styles for lang selector ([7f98409](https://github.com/VirtoCommerce/vendor-portal/commit/7f984099417015c709044bf4ffac8c3d19b49ea4))
+
+
+
 ## [1.0.102](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.101...v1.0.102) (2023-07-12)
 
 

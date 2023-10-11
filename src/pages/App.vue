@@ -62,7 +62,6 @@ import {
   useNotifications,
   VcNotificationDropdown,
   notification,
-  PushNotification,
   usePopup,
   useMenuComposer,
   ChangePassword,
@@ -98,7 +97,7 @@ const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n
 const { user, signOut, isAdministrator } = useUser();
 const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
-const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, openBlade, resolveLastBlade } =
+const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, resolveLastBlade } =
   useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();

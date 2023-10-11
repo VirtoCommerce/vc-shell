@@ -55,13 +55,16 @@ const notificationStyle = computed(() => ({
 function onClick() {
   if (props.notification.notifyType === "ImportPushNotification") {
     emit("notificationClick");
-    openBlade({
-      blade: resolveBladeByName("ImportProfileSelector"),
-      param: props.notification.profileId,
-      options: {
-        importJobId: props.notification.jobId,
+    openBlade(
+      {
+        blade: resolveBladeByName("ImportProfileSelector"),
+        param: props.notification.profileId,
+        options: {
+          importJobId: props.notification.jobId,
+        },
       },
-    });
+      true
+    );
   }
 }
 </script>

@@ -44,6 +44,23 @@ export const details: DynamicDetailsSchema = {
       type: "form",
       children: [
         {
+          id: "declineStatus",
+          type: "status",
+          outline: false,
+          extend: true,
+          variant: "light-danger",
+          icon: "fas fa-exclamation-circle",
+          iconSize: "xxl",
+          title: "Decline reason",
+          iconVariant: "danger",
+          content: {
+            method: "statusText",
+          },
+          visibility: {
+            method: "declineReasonVisibility",
+          },
+        },
+        {
           id: "productTypeSelect",
           type: "select",
           label: "Product type",

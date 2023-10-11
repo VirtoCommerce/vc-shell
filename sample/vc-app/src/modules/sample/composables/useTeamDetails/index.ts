@@ -8,6 +8,7 @@ import {
 import {
   CreateSellerUserCommand,
   ISellerUserDetails,
+  Image,
   SearchSellerUsersQuery,
   SellerUser,
   SellerUserDetails,
@@ -15,6 +16,7 @@ import {
   VcmpSellerSecurityClient,
 } from "../../../../api_client/marketplacevendor";
 import { ComputedRef, computed, onMounted, reactive, ref } from "vue";
+import { useAssets } from "../../../common";
 
 export interface TeamDetailsScope extends DetailsBaseBladeScope {
   roles: { id: string; name: string }[];
@@ -65,6 +67,9 @@ export const useTeamDetails = (args: {
     ],
     disableOnUser: computed(() => !!item.value?.id),
     sampleButtonClick: () => alert("Click!"),
+    assetsHandler: {
+      images: useAssets(Image),
+    },
   });
 
   onMounted(() => {

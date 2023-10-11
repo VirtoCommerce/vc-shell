@@ -8,6 +8,7 @@ import DynamicProperty from "./fields/DynamicProperty";
 import EditorField from "./fields/EditorField";
 import GalleryField from "./fields/GalleryField";
 import Button from "./fields/Button";
+import StatusField from "./fields/StatusField";
 
 const FIELD_MAP = {
   select: SelectField,
@@ -20,6 +21,7 @@ const FIELD_MAP = {
   editor: EditorField,
   gallery: GalleryField,
   button: Button,
+  status: StatusField,
 };
 
 export default FIELD_MAP;

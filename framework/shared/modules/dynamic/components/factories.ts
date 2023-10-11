@@ -10,6 +10,7 @@ import {
   VcInput,
   VcInputCurrency,
   VcSelect,
+  VcStatus,
 } from "../../../../ui/components";
 import {
   IControlBaseProps,
@@ -24,6 +25,7 @@ import {
   IInputCurrency,
   IFieldset,
   IControlBaseOptions,
+  IStatusField,
 } from "../types/models";
 
 export const ControlBase = ({ visibility = undefined }: IControlBaseOptions): IControlBaseOptions => ({
@@ -56,6 +58,16 @@ export const ControlBaseProps = ({
 
 export const SelectField = ({ props, slots, options }: Partial<ISelectField>): ISelectField => ({
   component: markRaw(VcSelect) as any,
+  props: {
+    ...ControlBaseProps(props),
+    ...props,
+  },
+  options: ControlBase(options),
+  slots,
+});
+
+export const StatusField = ({ props, slots, options }: Partial<IStatusField>): IStatusField => ({
+  component: markRaw(VcStatus),
   props: {
     ...ControlBaseProps(props),
     ...props,

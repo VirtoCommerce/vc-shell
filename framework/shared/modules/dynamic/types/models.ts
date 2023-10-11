@@ -10,6 +10,7 @@ import {
   VcInput,
   VcInputCurrency,
   VcSelect,
+  VcStatus,
 } from "../../../../ui/components";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -42,9 +43,13 @@ export type ControlType =
   | IDynamicProperties
   | ICheckbox
   | IButton
-  | IInputCurrency;
+  | IInputCurrency
+  | IStatusField;
 
-export type ControlTypeWithSlots = Extract<ControlType, ISelectField | ICardCollection | ICheckbox | IButton>;
+export type ControlTypeWithSlots = Extract<
+  ControlType,
+  ISelectField | ICardCollection | ICheckbox | IButton | IStatusField
+>;
 export type ControlTypeCtr = Extract<ControlType, ISelectField | IInputField | IInputCurrency | IEditorField>;
 
 export interface IControlBaseProps {
@@ -75,6 +80,12 @@ export type ISelectField = {
   slots?: Partial<ComponentSlots<typeof VcSelect>>;
   options: IControlBaseOptions;
 } & FieldOpts<typeof VcSelect>;
+
+export type IStatusField = {
+  props: ComponentProps<typeof VcStatus> & IControlBaseOptions;
+  slots?: Partial<Pick<ComponentSlots<typeof VcButton>, "default">>;
+  options: IControlBaseOptions;
+} & FieldOpts<typeof VcStatus>;
 
 export type IInputField = {
   props: ComponentProps<typeof VcInput> | IControlBaseProps;

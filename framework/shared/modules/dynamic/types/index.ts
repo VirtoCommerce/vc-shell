@@ -1,4 +1,4 @@
-import { VcButton, VcInput } from "./../../../../ui/components";
+import { VcButton, VcIcon, VcInput, VcStatus } from "./../../../../ui/components";
 import { ITableColumns, IValidationRules } from "../../../../core/types";
 import type { ComponentProps, ComponentEmit, ComponentSlots } from "vue-component-type-helpers";
 
@@ -31,7 +31,6 @@ export type SettingsSchema = SettingsWorkspace | SettingsDetails;
 
 export interface SettingsWorkspace extends SettingsBase {
   moduleName: string;
-  icon: string;
 }
 
 export interface SettingsDetails extends SettingsBase {
@@ -150,6 +149,20 @@ export interface InputSchema extends SchemaBase {
   clearable?: boolean;
 }
 
+export interface StatusSchema extends SchemaBase {
+  type: "status";
+  outline?: boolean;
+  extend?: boolean;
+  variant?: ComponentProps<typeof VcStatus>["variant"];
+  icon?: string;
+  iconSize?: ComponentProps<typeof VcIcon>["size"];
+  iconVariant?: ComponentProps<typeof VcIcon>["variant"];
+  title?: string;
+  content: {
+    method: string;
+  };
+}
+
 export interface InputCurrencySchema extends SchemaBase {
   type: "input-currency";
   optionProperty: string;
@@ -206,7 +219,7 @@ export interface ButtonSchema extends SchemaBase {
   content: string;
   small?: boolean;
   icon?: string;
-  iconSize?: ComponentProps<typeof VcButton>["iconSize"];
+  iconSize?: ComponentProps<typeof VcIcon>["size"];
   text?: boolean;
   method?: string;
 }
@@ -222,7 +235,8 @@ export type ControlSchema =
   | CheckboxSchema
   | FieldsetSchema
   | ButtonSchema
-  | InputCurrencySchema;
+  | InputCurrencySchema
+  | StatusSchema;
 
 interface FilterBase {
   columns: {

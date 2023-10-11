@@ -28,7 +28,7 @@ import {
   useUser,
   DetailsBaseBladeScope,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef, toValue } from "vue";
+import { ref, computed, reactive, onMounted, ComputedRef, toValue, onBeforeMount, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage, useAssets } from "../../../common";
 import { min, required } from "@vee-validate/rules";
@@ -80,8 +80,6 @@ export const useProductDetails = (args: {
 
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
 
-  const { user } = useUser();
-
   const { t } = useI18n({ useScope: "global" });
 
   const disabled = computed(() => args.props.param && !item.value?.canBeModified);
@@ -99,7 +97,7 @@ export const useProductDetails = (args: {
   ];
   const currentCategory = ref<Category>();
 
-  const { currentLocale, languages } = useMultilanguage();
+  const { currentLocale, languages, getLanguages, loading: languagesLoading } = useMultilanguage();
 
   // const assetsDisabled = computed(() => disabled.value || item.value.createdBy !== user.value?.userName);
 
@@ -127,7 +125,14 @@ export const useProductDetails = (args: {
         gtin: details.productData?.gtin,
         properties: details.productData?.properties,
         descriptions: details.descriptions,
-        description: useArrayFind(details.descriptions, (x) => x.languageCode == currentLocale.value),
+        description: computed({
+          get() {
+            return useArrayFind(details.descriptions, (x) => x.languageCode == currentLocale.value).value.content;
+          },
+          set(value) {
+            useArrayFind(details.descriptions, (x) => x.languageCode == currentLocale.value).value.content = value;
+          },
+        }),
         productType: details.productData?.productType,
         status: details.status,
       });
@@ -313,8 +318,25 @@ export const useProductDetails = (args: {
   });
 
   onMounted(async () => {
+    await getLanguages();
+
     if (!args.props.param) {
-      validationState.value.resetModified(reactive(new SellerProduct()), true);
+      item.value = reactive(new SellerProduct());
+
+      item.value = Object.assign(item.value, { descriptions: [] });
+
+      item.value.descriptions = item.value.descriptions.concat(
+        languages.value.map(
+          (x) =>
+            new EditorialReview({
+              languageCode: x,
+              content: "",
+              reviewType: "QuickReview",
+            })
+        )
+      );
+
+      validationState.value.resetModified(getMappedDetails(item), true);
     }
   });
 
@@ -325,7 +347,7 @@ export const useProductDetails = (args: {
     scope: computed(() => scope.value),
     item,
     validationState,
-    loading: useLoading(loading, revertLoading),
+    loading: useLoading(loading, revertLoading, languagesLoading),
     bladeTitle,
   };
 };

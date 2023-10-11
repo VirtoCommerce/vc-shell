@@ -118,7 +118,7 @@ export const details: DynamicDetailsSchema = {
               type: "editor",
               label: "Description",
               name: "description",
-              property: "description.content",
+              property: "description",
               placeholder: "Enter product description",
               multilanguage: true,
               rules: {

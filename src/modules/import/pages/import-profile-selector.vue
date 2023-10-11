@@ -82,7 +82,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, markRaw } from "vue";
+import { computed, onMounted, ref, markRaw, watch } from "vue";
 import {
   IBladeToolbar,
   ITableColumns,
@@ -201,20 +201,28 @@ const columns = ref<ITableColumns[]>([
 
 const title = computed(() => t("IMPORT.PAGES.PROFILE_SELECTOR.TITLE"));
 
-onMounted(async () => {
-  if (props.param && props.options && props.options.importJobId) {
-    openBlade({
-      blade: markRaw(ImportNew),
-      param: props.param,
-      options: {
-        importJobId: props.options.importJobId,
-      },
-      onClose() {
-        selectedItemId.value = undefined;
-      },
-    });
-  }
+watch(
+  () => props.param,
+  (newVal) => {
+    if (newVal && props.options && props.options.importJobId) {
+      selectedItemId.value = newVal;
 
+      openBlade({
+        blade: markRaw(ImportNew),
+        param: props.param,
+        options: {
+          importJobId: props.options.importJobId,
+        },
+        onClose() {
+          selectedItemId.value = undefined;
+        },
+      });
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(async () => {
   await reload();
   if (props.param && !props.options) {
     selectedProfileId.value = props.param;

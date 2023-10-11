@@ -61,7 +61,6 @@ export interface Props {
   clickable?: boolean;
   source?: string;
   size?: "auto" | "xs" | "s" | "m" | "l" | "xl" | "xxl";
-  background?: "cover" | "contain" | "auto";
 }
 
 export interface Emits {
@@ -70,7 +69,6 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   size: "auto",
-  background: "cover",
 });
 
 const emit = defineEmits<Emits>();

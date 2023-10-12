@@ -362,18 +362,20 @@ const openDashboard = async () => {
 };
 
 async function customizationHandler() {
-  await getCurrentSeller();
+  if (!user.value.isAdministrator) {
+    await getCurrentSeller();
+  }
   await getUiCustomizationSettings();
 
   if (sellerDetails.value.logo) {
     applySettings({ logo: sellerDetails.value.logo });
-  } else if (!uiSettings.value.logo) {
+  } else {
     applySettings({ logo: logoImage });
   }
 
   if (sellerDetails.value.name) {
     applySettings({ title: sellerDetails.value.name });
-  } else if (!uiSettings.value.title) {
+  } else {
     applySettings({ title: undefined });
   }
 }

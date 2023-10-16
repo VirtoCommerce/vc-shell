@@ -1,4 +1,4 @@
-import { LibraryOptions, UserConfigExport } from "vite";
+import { LibraryOptions, UserConfig } from "vite";
 
 export default {
   build: {
@@ -7,4 +7,4 @@ export default {
       formats: ["es"],
     } as LibraryOptions,
   },
-} as UserConfigExport;
+} as UserConfig;

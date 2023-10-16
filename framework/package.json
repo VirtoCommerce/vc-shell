@@ -36,6 +36,7 @@
     "@vueuse/components": "^10.1.2",
     "@vueuse/core": "^10.1.2",
     "@vueuse/integrations": "^10.1.2",
+    "ace-builds": "^1.27.0",
     "buffer-esm": "^1.2.0",
     "client-oauth2": "^4.3.3",
     "moment": "^2.29.4",

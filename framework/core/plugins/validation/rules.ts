@@ -1,5 +1,6 @@
 import { defineRule } from "vee-validate";
-import AllRules from "@vee-validate/rules";
+/*eslint import/namespace: ['error', { allowComputed: true }]*/
+import * as AllRules from "@vee-validate/rules";
 
 Object.keys(AllRules).forEach((rule) => {
   defineRule(rule, AllRules[rule]);
@@ -84,20 +85,35 @@ export const fileWeight = (file: HTMLInputElement, [size]: [number]) => {
 defineRule("fileWeight", fileWeight);
 
 const compare = (
-  value: string,
-  [target]: string[],
+  value: string | Date,
+  [target]: string[] | Date[],
   comparer: (first: number, second: number) => boolean,
   errorMessage: string
 ): boolean | string => {
   // The field is empty so it should pass
-  if (!value || !value.length) {
+  if (!value || (typeof value == "string" && !value.length)) {
     return true;
   }
 
-  const first_date = new Date(value);
-  const second_date = new Date(target);
+  let first_date;
+  let second_date;
+  if (value instanceof Date) {
+    first_date = value;
+  }
 
-  if (first_date.getTime() > 0 && second_date.getTime() > 0) {
+  if (target instanceof Date) {
+    second_date = target;
+  }
+
+  if (typeof value === "string") {
+    first_date = new Date(value);
+  }
+
+  if (typeof target === "string") {
+    second_date = new Date(target);
+  }
+
+  if (first_date?.getTime() > 0 && second_date?.getTime() > 0) {
     if (comparer(second_date.getTime(), first_date.getTime())) {
       return errorMessage;
     }
@@ -114,6 +130,7 @@ defineRule("before", before);
 // after
 export const after = (value: string, [target]: string[]) =>
   compare(value, [target], (first, second) => first > second, "End date must be later than start date");
+
 defineRule("after", after);
 
 export const bigInt = (value: string) => {

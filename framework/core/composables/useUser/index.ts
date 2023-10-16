@@ -47,8 +47,7 @@ interface IUseUser {
 }
 
 export function useUser(): IUseUser {
-  const instance = getCurrentInstance();
-  const base = instance && inject<string>("platformUrl");
+  const base = window.location.origin + "/";
   const externalSecurityClient = new ExternalSignInClient(base);
   const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", { providerType: null });
 

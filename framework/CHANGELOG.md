@@ -1,3 +1,22 @@
+## [1.0.109](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.108...v1.0.109) (2023-10-13)
+
+
+
+## [1.0.108](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.107...v1.0.108) (2023-10-13)
+
+
+
+## [1.0.107](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.106...v1.0.107) (2023-10-12)
+
+
+
+## [1.0.106](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.105...v1.0.106) (2023-10-12)
+
+
+
+## [1.0.105](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.104...v1.0.105) (2023-10-02)
+
+
 ## [1.0.104](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.103...v1.0.104) (2023-10-16)
 
 
@@ -11,7 +30,6 @@
 ### Features
 
 * vm-1215 vc-video ([52680f6](https://github.com/VirtoCommerce/vc-shell/commit/52680f6f2bd649d7226818f6432e605502ab9eab))
-
 
 
 ## [1.0.103](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.102...v1.0.103) (2023-09-29)

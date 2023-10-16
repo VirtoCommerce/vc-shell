@@ -1,6 +1,6 @@
 {
   "name": "app-vendor-portal",
-  "version": "1.0.110",
+  "version": "1.0.111",
   "private": true,
   "scripts": {
     "postinstall": "husky install",
@@ -25,7 +25,7 @@
     "@types/lodash-es": "^4.17.7",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
-    "@vc-shell/api-client-generator": "^1.0.100",
+    "@vc-shell/api-client-generator": "^1.0.104",
     "@vitejs/plugin-vue": "^4.2.3",
     "@vue/eslint-config-prettier": "^7.1.0",
     "@vue/eslint-config-typescript": "^11.0.3",
@@ -56,8 +56,8 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.3",
-    "@vc-shell/config-generator": "^1.0.100",
-    "@vc-shell/framework": "^1.0.100",
+    "@vc-shell/config-generator": "^1.0.104",
+    "@vc-shell/framework": "^1.0.104",
     "@vueuse/core": "^10.1.2",
     "@vueuse/integrations": "^10.1.2",
     "moment": "^2.29.4",

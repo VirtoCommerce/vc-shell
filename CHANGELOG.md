@@ -1,3 +1,20 @@
+## [1.0.119](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.118...v1.0.119) (2023-10-16)
+
+
+### Bug Fixes
+
+* catalog.ts moved to vendor-portal ([07bd7fc](https://github.com/VirtoCommerce/vendor-portal/commit/07bd7fc58e2a8f4bc7779b014a0e119fb9f6b8dd))
+* code review improvements ([99154fa](https://github.com/VirtoCommerce/vendor-portal/commit/99154fa686a585f66a59337e831c93d22e3fd094))
+* code review improvements ([91f969e](https://github.com/VirtoCommerce/vendor-portal/commit/91f969e011870d013a786209b6be62383dd73fce))
+* lost localization ([7919436](https://github.com/VirtoCommerce/vendor-portal/commit/79194361633ecfa1ccdc8de09dc5864cb0ed6628))
+
+
+### Features
+
+* vm-1215 video in products ([7df87d9](https://github.com/VirtoCommerce/vendor-portal/commit/7df87d901e86c76dee9f212ce3fba8e8894dd009))
+
+
+
 ## [1.0.118](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.117...v1.0.118) (2023-10-13)
 
 
@@ -24,21 +41,6 @@
 
 ## [1.0.112](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.110...v1.0.112) (2023-09-29)
 
-
-## [1.0.111](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.110...v1.0.111) (2023-10-16)
-
-
-### Bug Fixes
-
-* catalog.ts moved to vendor-portal ([07bd7fc](https://github.com/VirtoCommerce/vendor-portal/commit/07bd7fc58e2a8f4bc7779b014a0e119fb9f6b8dd))
-* code review improvements ([99154fa](https://github.com/VirtoCommerce/vendor-portal/commit/99154fa686a585f66a59337e831c93d22e3fd094))
-* code review improvements ([91f969e](https://github.com/VirtoCommerce/vendor-portal/commit/91f969e011870d013a786209b6be62383dd73fce))
-* lost localization ([7919436](https://github.com/VirtoCommerce/vendor-portal/commit/79194361633ecfa1ccdc8de09dc5864cb0ed6628))
-
-
-### Features
-
-* vm-1215 video in products ([7df87d9](https://github.com/VirtoCommerce/vendor-portal/commit/7df87d901e86c76dee9f212ce3fba8e8894dd009))
 
 
 ## [1.0.110](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.109...v1.0.110) (2023-09-22)

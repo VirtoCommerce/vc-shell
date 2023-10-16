@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "fs";
-import { loadEnv, ProxyOptions, UserConfigExport } from "vite";
+import { loadEnv, ProxyOptions, UserConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "path";
 import { checker } from "vite-plugin-checker";
@@ -112,4 +112,4 @@ export default {
     sourcemap: mode === "development",
     emptyOutDir: true,
   },
-} as UserConfigExport;
+} as UserConfig;

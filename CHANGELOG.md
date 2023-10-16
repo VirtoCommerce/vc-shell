@@ -1,3 +1,30 @@
+## [1.0.118](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.117...v1.0.118) (2023-10-13)
+
+
+
+## [1.0.117](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.116...v1.0.117) (2023-10-13)
+
+
+
+## [1.0.116](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.115...v1.0.116) (2023-10-12)
+
+
+
+## [1.0.115](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.114...v1.0.115) (2023-10-12)
+
+
+
+## [1.0.114](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.113...v1.0.114) (2023-10-02)
+
+
+
+## [1.0.113](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.112...v1.0.113) (2023-10-02)
+
+
+
+## [1.0.112](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.110...v1.0.112) (2023-09-29)
+
+
 ## [1.0.111](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.110...v1.0.111) (2023-10-16)
 
 
@@ -12,7 +39,6 @@
 ### Features
 
 * vm-1215 video in products ([7df87d9](https://github.com/VirtoCommerce/vendor-portal/commit/7df87d901e86c76dee9f212ce3fba8e8894dd009))
-
 
 
 ## [1.0.110](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.109...v1.0.110) (2023-09-22)

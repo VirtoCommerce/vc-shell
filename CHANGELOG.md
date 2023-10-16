@@ -1,3 +1,19 @@
+## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
+
+
+### Bug Fixes
+
+* code review improvements ([5c6c6dc](https://github.com/VirtoCommerce/vc-shell/commit/5c6c6dc7a60c1212e4c23e0ddbbc42611f16303b))
+* code review improvements ([5453ba0](https://github.com/VirtoCommerce/vc-shell/commit/5453ba0388a51b2946408b980e119a0ad20f7647))
+* delete index.ts from framework api ([8cc2fee](https://github.com/VirtoCommerce/vc-shell/commit/8cc2feef30ac38bcf229234456cac78c8e23f158))
+
+
+### Features
+
+* vm-1215 vc-video ([52680f6](https://github.com/VirtoCommerce/vc-shell/commit/52680f6f2bd649d7226818f6432e605502ab9eab))
+
+
+
 ## [1.0.109](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.108...v1.0.109) (2023-10-13)
 
 

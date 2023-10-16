@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 export interface Props {
   icon?: string;
-  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl";
+  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
 }
 
 withDefaults(defineProps<Props>(), {
@@ -22,9 +22,10 @@ withDefaults(defineProps<Props>(), {
   --icon-size-l: 20px;
   --icon-size-xl: 22px;
   --icon-size-xxl: 30px;
+  --icon-size-xxxl: 64px;
 }
 
-$sizes: xs, s, m, l, xl, xxl;
+$sizes: xs, s, m, l, xl, xxl, xxxl;
 
 .vc-icon {
   @each $size in $sizes {

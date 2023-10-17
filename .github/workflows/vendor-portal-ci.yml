@@ -19,8 +19,17 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
+
+      - name: Add auth token
+        shell: bash
+        working-directory: "src/vendor-portal"
+        run: |
+          yarn config set --json npmRegistries '{ "//registry.npmjs.org": { "npmAuthToken": "'"${NPM_TOKEN}"'" } }' && cat .yarnrc.yml
+        env:
+          NPM_TOKEN: ${{ env.NPM_TOKEN }}
 
       - name: Build VirtoCommerce.MarketplaceVendor
         run: |

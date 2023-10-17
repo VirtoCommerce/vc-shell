@@ -1,6 +1,6 @@
 {
   "name": "vc-vendor-portal-modules",
-  "version": "1.0.106",
+  "version": "1.0.110",
   "module": "./dist/index.mjs",
   "types": "./dist/types/index.d.ts",
   "files": [
@@ -14,7 +14,7 @@
     }
   },
   "peerDependencies": {
-    "vc-vendor-portal-api": "*"
+    "vc-vendor-portal-api": "^1.0.110"
   },
   "scripts": {
     "publish": "npm publish"

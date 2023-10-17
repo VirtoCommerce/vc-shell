@@ -48,6 +48,11 @@ withDefaults(defineProps<Props>(), {
   tooltipIcon: "fas fa-info-circle",
 });
 
+defineSlots<{
+  default: (props: any) => any;
+  tooltip?: (props: any) => any;
+}>();
+
 const tooltipVisible = ref(false);
 </script>
 

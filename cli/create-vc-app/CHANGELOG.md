@@ -1,3 +1,12 @@
+## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
+
+
+### Features
+
+* dynamic modules ([ed4af3a](https://github.com/VirtoCommerce/vc-shell/commit/ed4af3ad65e47b0d633d6e2eb23e9c90d73ff50d))
+
+
+
 ## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
 
 

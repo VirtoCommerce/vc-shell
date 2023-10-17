@@ -62,11 +62,11 @@
             v-for="item in notifications"
             :key="`notification_${item.id}`"
             class="tw-py-[18px] tw-px-[15px] tw-border-b tw-border-solid tw-border-b-[#e3e7ec] tw-cursor-pointer last-of-type:tw-border-b-0"
-            @click="handleClick(item)"
           >
             <NotificationItem
               :notification="item"
               :templates="templates"
+              @on-click="() => (isDropdownVisible = false)"
             />
           </div>
         </VcCol>
@@ -96,20 +96,11 @@ export interface Props {
   notifications: PushNotification[];
   templates?: NotificationTemplateConstructor[];
   onOpen?: () => void;
-  onClick?: (notification: PushNotification) => void;
 }
 
 const props = defineProps<Props>();
 const { t } = useI18n({ useScope: "global" });
 const isDropdownVisible = ref(false);
-
-const handleClick = async (notification: PushNotification) => {
-  isDropdownVisible.value = false;
-
-  if (props.onClick && typeof props.onClick === "function") {
-    props.onClick(notification);
-  }
-};
 
 function toggleNotificationsDrop() {
   isDropdownVisible.value = !isDropdownVisible.value;

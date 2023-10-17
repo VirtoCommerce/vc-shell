@@ -7,7 +7,6 @@
         'vc-input_clearable': clearable,
         'vc-input_error': error,
         'vc-input_disabled': disabled,
-        'tw-pb-[20px]': error || hint,
       },
     ]"
   >
@@ -80,7 +79,7 @@
                   {{ suffix }}
                 </div>
                 <div
-                  v-if="clearable && modelValue && !disabled && type !== 'password'"
+                  v-if="clearable && mutatedModel && !disabled && type !== 'password'"
                   class="vc-input__clear"
                   @click="onReset"
                 >
@@ -131,33 +130,32 @@
               </div>
             </div>
           </div>
-          <div class="tw-absolute tw-translate-y-full tw-left-0 tw-right-0 tw-bottom-0 tw-min-h-[20px]">
-            <Transition
-              name="slide-up"
-              mode="out-in"
-            >
-              <div v-if="error">
-                <slot name="error">
-                  <VcHint
-                    v-if="errorMessage"
-                    class="vc-input__error"
-                  >
-                    {{ errorMessage }}
-                  </VcHint>
-                </slot>
-              </div>
-              <div v-else>
-                <slot name="hint">
-                  <VcHint
-                    v-if="hint"
-                    class="vc-input__desc"
-                  >
-                    {{ hint }}
-                  </VcHint>
-                </slot>
-              </div>
-            </Transition>
-          </div>
+
+          <Transition
+            name="slide-up"
+            mode="out-in"
+          >
+            <div v-if="error">
+              <slot name="error">
+                <VcHint
+                  v-if="errorMessage"
+                  class="vc-input__error"
+                >
+                  {{ errorMessage }}
+                </VcHint>
+              </slot>
+            </div>
+            <div v-else>
+              <slot name="hint">
+                <VcHint
+                  v-if="hint"
+                  class="vc-input__desc"
+                >
+                  {{ hint }}
+                </VcHint>
+              </slot>
+            </div>
+          </Transition>
         </div>
 
         <div
@@ -170,10 +168,11 @@
     </div>
   </div>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
-import { computed, ref, unref, watch } from "vue";
+import { computed, ref, unref, watch, MaybeRef } from "vue";
 import { VcLabel, VcIcon, VcHint } from "./../../";
+import moment from "moment";
 
 export interface Props {
   /**
@@ -276,6 +275,60 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emits>();
 
+defineSlots<{
+  /**
+   * Slot for controls
+   * @param scope
+   */
+  control: (scope: {
+    /**
+     * Field is editable
+     */
+    editable: boolean;
+    /**
+     * Field has focus
+     */
+    focused: boolean;
+    /**
+     * Field's value
+     */
+    modelValue: string | number | Date | null;
+    /**
+     * Function that emits an @input event in the context of the field
+     * @param value Value to be emitted
+     */
+    emitValue: (value: string | number | Date | null) => void;
+    /**
+     * Field placeholder text
+     */
+    placeholder: string | undefined;
+  }) => any;
+  /**
+   * Prepend outer field
+   */
+  prepend: (props: any) => any;
+  /**
+   * Prepend inner field
+   */
+  "prepend-inner": (props: any) => any;
+  /**
+   * Append to inner field
+   */
+  "append-inner": (props: any) => any;
+  /**
+   * Append outer field
+   */
+  append: (props: any) => any;
+  /**
+   * Slot for errors
+   */
+  error: (props: any) => any;
+  /**
+   * Slot for hint text
+   */
+  hint: (props: any) => any;
+}>();
+
 let emitTimer;
 let emitValueFn;
 const temp = ref();
@@ -285,11 +338,24 @@ const internalType = ref(unref(props.type));
 
 const maxDate = computed(() => (props.type === "date" && "9999-12-31") || undefined);
 
+const rawModel = computed(() => unref(props.modelValue));
+const mutatedModel = ref();
+
 watch(
-  () => props.modelValue,
-  () => {
-    if (temp.value !== props.modelValue) {
-      temp.value = props.modelValue;
+  () => rawModel.value,
+  (newVal) => {
+    if (internalType.value === "datetime-local" || internalType.value === "date") {
+      if (newVal instanceof Date && !isNaN(newVal.valueOf())) {
+        mutatedModel.value = moment(newVal).format("YYYY-MM-DDTHH:mm");
+      } else {
+        mutatedModel.value = undefined;
+      }
+    } else {
+      mutatedModel.value = newVal;
+    }
+
+    if (temp.value !== mutatedModel.value) {
+      temp.value = mutatedModel.value;
     }
   },
   { immediate: true }
@@ -307,8 +373,17 @@ function onInput(e: Event) {
 
 function emitValue(val: string) {
   emitValueFn = () => {
-    if (props.modelValue !== val) {
-      emit("update:modelValue", val);
+    if (mutatedModel.value !== val) {
+      let value;
+      if (internalType.value === "datetime-local" || internalType.value === "date") {
+        value = moment(val).toDate();
+      } else if (internalType.value === "number") {
+        value = +val;
+      } else {
+        value = val;
+      }
+
+      emit("update:modelValue", value);
     }
     emitValueFn = undefined;
   };

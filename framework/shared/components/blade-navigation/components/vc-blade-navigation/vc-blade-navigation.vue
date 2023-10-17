@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, VNode } from "vue";
+import { computed, ref, VNode, nextTick } from "vue";
 import type { Component } from "vue";
 import { useRoute } from "vue-router";
 import {
@@ -103,9 +103,9 @@ withDefaults(defineProps<Props>(), {
   blades: () => [],
   workspaceOptions: () => ({}),
 });
-
 const route = useRoute();
 const bladesRefs = ref<IBladeRef[]>([]);
+
 const state = ref<IBladeRef[]>([]);
 
 const visibleBlades = computed(() => bladesRefs.value.slice(-2));
@@ -136,19 +136,21 @@ function findStateById(id: number) {
   return state.value?.find((item) => item.blade.idx === id)?.expanded;
 }
 
-function setParentRef(el: CoreBladeExposed, bladeNode: VNode) {
+async function setParentRef(el: CoreBladeExposed, bladeNode: VNode) {
   if (el && bladeNode) {
-    bladesRefs.value = [
-      {
-        active: _.isEqual(activeBlade.value, bladeNode.type),
-        exposed: el,
-        blade: {
-          blade: bladeNode.type as BladeConstructor,
-          param: bladeNode.props?.param as string,
-          idx: 0,
+    await nextTick(() => {
+      bladesRefs.value = [
+        {
+          active: _.isEqual(activeBlade.value, bladeNode.type),
+          exposed: el,
+          blade: {
+            blade: bladeNode.type as BladeConstructor,
+            param: bladeNode.props?.param as string,
+            idx: 0,
+          },
         },
-      },
-    ];
+      ];
+    });
   }
 }
 
@@ -156,7 +158,7 @@ function setBladesRef(el: CoreBladeExposed, blade: IBladeContainer) {
   if (el && el !== null && blade) {
     const isExists = bladesRefs.value.some((item) => item.blade.idx === blade.idx);
     if (!isExists) {
-      bladesRefs.value.push({ active: _.isEqual(activeBlade.value, blade), exposed: el, blade });
+      bladesRefs.value.push({ active: _.isEqual(activeBlade.value, blade.blade), exposed: el, blade });
     }
   }
 }

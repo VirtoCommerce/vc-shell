@@ -8,7 +8,7 @@
       v-if="icon"
       :class="['vc-button__icon', iconClass]"
       :icon="icon"
-      :size="small ? 'xs' : 's'"
+      :size="small ? 'xs' : iconSize"
     ></VcIcon>
     <span
       v-if="$slots['default']"
@@ -18,13 +18,14 @@
     </span>
   </button>
 </template>
-
+<!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup>
 import { computed } from "vue";
 import { VcIcon } from "./../vc-icon";
 export interface Props {
   icon?: string;
   iconClass?: string;
+  iconSize?: InstanceType<typeof VcIcon>["$props"]["size"];
   variant?: "primary" | "warning" | "danger";
   disabled?: boolean;
   small?: boolean;
@@ -43,9 +44,14 @@ export interface Emits {
 
 const props = withDefaults(defineProps<Props>(), {
   variant: "primary",
+  iconSize: "s",
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  default: (props?: any) => any;
+}>();
 
 const buttonClass = computed(() => {
   return [

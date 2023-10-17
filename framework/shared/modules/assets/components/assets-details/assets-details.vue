@@ -126,8 +126,8 @@ export interface Props {
   options?: {
     asset: Asset;
     disabled?: boolean;
-    assetEditHandler?: (defaultAsset: Asset) => void;
-    assetRemoveHandler?: (defaultAsset: Asset) => void;
+    assetEditHandler?: (defaultAsset: Asset) => Promise<void>;
+    assetRemoveHandler?: (defaultAsset: Asset) => Promise<void>;
   };
 }
 
@@ -170,9 +170,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "save",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.SAVE"),
     icon: "fas fa-save",
-    clickHandler() {
+    async clickHandler() {
       if (props.options?.assetEditHandler && typeof props.options?.assetEditHandler === "function") {
-        props.options?.assetEditHandler(defaultAsset.value);
+        await props.options?.assetEditHandler(defaultAsset.value);
         emit("close:blade");
       }
     },
@@ -182,9 +182,9 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     id: "delete",
     title: t("ASSETS.PAGES.DETAILS.TOOLBAR.DELETE"),
     icon: "fas fa-trash",
-    clickHandler() {
+    async clickHandler() {
       if (props.options?.assetRemoveHandler && typeof props.options?.assetRemoveHandler === "function") {
-        props.options?.assetRemoveHandler(defaultAsset.value);
+        await props.options?.assetRemoveHandler(defaultAsset.value);
         emit("close:blade");
       }
     },

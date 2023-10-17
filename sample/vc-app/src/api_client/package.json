@@ -1,0 +1,23 @@
+{
+  "name": "vc-marketplacevendor-api",
+  "version": "1.0.110",
+  "module": "./dist/marketplacevendor.js",
+  "types": "./dist/types/marketplacevendor.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/marketplacevendor.js",
+      "types": "./dist/types/marketplacevendor.d.ts"
+    }
+  },
+  "scripts": {
+    "publish": "npm publish"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

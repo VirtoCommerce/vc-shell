@@ -1,6 +1,6 @@
 import vue from "@vitejs/plugin-vue";
 import * as fs from "fs";
-import { loadEnv, ProxyOptions, UserConfig } from "vite";
+import { loadEnv, ProxyOptions, UserConfig, searchForWorkspaceRoot } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import path from "path";
 import { checker } from "vite-plugin-checker";
@@ -34,6 +34,10 @@ const getProxy = (target: ProxyOptions["target"], options: Omit<ProxyOptions, "t
   };
 };
 
+const workspaceRoot = isMonorepo
+  ? searchForWorkspaceRoot(path.resolve(process.cwd(), "./../../framework/package.json"))
+  : searchForWorkspaceRoot(process.cwd());
+
 const aliasResolver = () => {
   if (isMonorepo) {
     if (mode === "development") {
@@ -59,7 +63,6 @@ const aliasResolver = () => {
 export default {
   mode,
   resolve: {
-    preserveSymlinks: true,
     alias: Object.assign({ querystring: "querystring-es3", "safe-buffer": "buffer-esm" }, aliasResolver()),
   },
   envPrefix: "APP_",
@@ -85,6 +88,12 @@ export default {
     __VUE_I18N_LEGACY_API__: false,
   },
   server: {
+    fs: {
+      allow: [
+        // search up for workspace root
+        workspaceRoot,
+      ],
+    },
     watch: {
       ignored: ["!**/node_modules/@vc-shell/**"],
     },
@@ -102,6 +111,7 @@ export default {
     },
   },
   optimizeDeps: {
+    exclude: ["@vc-shell/*"],
     esbuildOptions: {
       target: ["es2020", "safari14"],
     },

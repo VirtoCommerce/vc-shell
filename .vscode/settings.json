@@ -1,6 +1,6 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "source.fixAll.eslint": "explicit"
   },
   "files.eol": "\r\n",
   "eslint.validate": [
@@ -16,6 +16,7 @@
     "framework/shared/modules/assets-manager/locales",
     "framework/shared/modules/assets/locales",
     "framework/shared/locales",
+    "framework/shared/modules/dynamic/locales",
     "framework/shared/pages/InvitePage/locales",
     "framework/shared/pages/LoginPage/locales",
     "framework/shared/pages/ResetPasswordPage/locales",
@@ -26,8 +27,23 @@
     "apps/vendor-portal/src/modules/orders/locales",
     "apps/vendor-portal/src/modules/rating/locales",
     "apps/vendor-portal/src/modules/settings/locales",
-    "import-module/src/locales"
+    "apps/vendor-portal/src/modules/dynamic/locales",
+    "import-module/src/locales",
+    "sample/vc-app/src/locales",
+    "sample/vc-app-extend/src/locales",
+    "apps/vendor-portal/src/modules/newOffers/locales",
+    "apps/vendor-portal/src/modules/newProducts/locales",
+    "apps/vendor-portal/src/modules/newTeam/locales",
+    "sample/vc-app/src/modules/sample/locales",
+    "cli/create-vc-app/src/template/base/src/locales",
+    "cli/create-vc-app/src/template/code/blade/src/modules/default/locales",
+    "sample/vc-app/src/modules/legacy-sample/locales"
   ],
   "i18n-ally.keystyle": "nested",
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "cSpell.words": [
+    "GTIN",
+    "Vcmp"
+  ]
 }

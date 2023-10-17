@@ -1,7 +1,7 @@
 import applicationConfiguration from "./templates/vite.application.appconfig";
 import libraryConfiguration from "./templates/vite.library.appconfig";
 import fs from "fs";
-import { mergeConfig, UserConfig, UserConfigExport } from "vite";
+import { mergeConfig, UserConfig } from "vite";
 
 const packageJson = fs.readFileSync(process.cwd() + "/package.json");
 const name = JSON.parse(packageJson.toString()).name;

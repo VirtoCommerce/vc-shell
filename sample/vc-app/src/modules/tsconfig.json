@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist/types",
+    "sourceMap": true,
+    "importHelpers": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "target": "esnext",
+    "jsx": "preserve",
+    "isolatedModules": true,
+    "useDefineForClassFields": true,
+    "outDir": "dist",
+    "strict": false,
+    "composite": true,
+    "rootDir": "./",
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+    ],
+    "types": [
+      "vite/client",
+      "../shims-vue.d.ts"
+    ],
+  },
+  "files": [
+    "package.json",
+  ],
+  "include": [
+    "index.ts", "**/*.ts", "**/*.vue", "**/*.json"
+  ],
+  "exclude": [
+    "dist"
+  ],
+}

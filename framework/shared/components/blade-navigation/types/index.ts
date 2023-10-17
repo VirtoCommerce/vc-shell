@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ComponentPublicInstance, VNode, ComponentInternalInstance, VNodeTypes, Ref } from "vue";
-import { PushNotification } from "./../../../../core/api/platform";
 
-export type BladeInstanceConstructor<T extends ComponentPublicInstance = any> = {
+export type BladeInstanceConstructor<T extends ComponentPublicInstance = ComponentPublicInstance> = {
   new (...args: any[]): T & { $: ComponentInternalInstance & { exposed: CoreBladeExposed & T["$"]["exposed"] } } & {
     $props: T["$props"] & CoreBladeComponentProps;
   };
-} & CoreBladeAdditionalSettings &
+} & CoreComponentData &
+  CoreBladeAdditionalSettings &
   CoreBladeNavigationData;
 
 export type ComponentInstanceConstructor<T = any> = {
@@ -21,6 +21,10 @@ export type CoreBladeComponentProps = {
 };
 
 export type BladePageComponent = BladeConstructor;
+
+export type CoreComponentData = {
+  isBladeComponent?: boolean;
+};
 
 export type CoreBladeAdditionalSettings = {
   url?: `/${string}`;

@@ -1,11 +1,12 @@
 <template>
-  <i :class="`vc-icon vc-icon_${size} ${(icon as string).toLowerCase()}`" />
+  <i :class="`vc-icon vc-icon_${size} vc-icon_${variant} ${(icon as string).toLowerCase()}`" />
 </template>
 
 <script lang="ts" setup>
 export interface Props {
   icon?: string;
   size?: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
+  variant?: "warning" | "danger" | "success";
 }
 
 withDefaults(defineProps<Props>(), {
@@ -23,14 +24,25 @@ withDefaults(defineProps<Props>(), {
   --icon-size-xl: 22px;
   --icon-size-xxl: 30px;
   --icon-size-xxxl: 64px;
+
+  --icon-color-success: #99c17a;
+  --icon-color-danger: #f34747;
+  --icon-color-warning: #f89406;
 }
 
 $sizes: xs, s, m, l, xl, xxl, xxxl;
+$variants: warning, danger, success;
 
 .vc-icon {
   @each $size in $sizes {
     &_#{$size} {
       @apply tw-text-[length:var(--icon-size-#{$size})];
+    }
+  }
+
+  @each $variant in $variants {
+    &_#{$variant} {
+      @apply tw-text-[color:var(--icon-color-#{$variant})];
     }
   }
 }

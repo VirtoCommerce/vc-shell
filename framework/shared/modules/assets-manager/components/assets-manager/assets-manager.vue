@@ -10,12 +10,12 @@
     @collapse="$emit('collapse:blade')"
   >
     <div
+      v-loading="loading"
       class="tw-relative tw-h-full"
       @dragover.prevent.stop="dragOver"
       @dragleave.prevent="dragLeave"
       @drop.prevent.stop="onDrop"
     >
-      <VcLoading :active="loading"></VcLoading>
       <VcTable
         :columns="columns"
         :expanded="expanded"
@@ -145,11 +145,11 @@
 import { Asset, IActionBuilderResult, IBladeToolbar, ITableColumns } from "../../../../../core/types";
 import { ref, computed, onMounted, unref, watch, markRaw } from "vue";
 import { useI18n } from "vue-i18n";
-import { IParentCallArgs, useBladeNavigation } from "./../../../../../shared";
 import moment from "moment";
 import Assets from "./../../../assets/components/assets-details/assets-details.vue";
 import { isImage, getFileThumbnail, readableSize } from "./../../../../utilities/assets";
 import * as _ from "lodash-es";
+import { IParentCallArgs, useBladeNavigation } from "../../../../components";
 
 export interface Props {
   expanded?: boolean;
@@ -340,7 +340,7 @@ function onItemClick(item: Asset) {
     options: {
       asset: unref(item),
       disabled: readonly.value,
-      assetEditHandler: (asset: Asset) => {
+      assetEditHandler: async (asset: Asset) => {
         const mutated = defaultAssets.value.map((x) => {
           if (x.id === asset.id || x.url === asset.url) {
             return asset;

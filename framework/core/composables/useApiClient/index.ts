@@ -1,6 +1,6 @@
 import { useUser } from "../useUser";
 
-interface IAuthApiBase {
+export interface IAuthApiBase {
   authToken: string;
   setAuthToken(token: string);
   getBaseUrl(defaultUrl: string, baseUrl: string);

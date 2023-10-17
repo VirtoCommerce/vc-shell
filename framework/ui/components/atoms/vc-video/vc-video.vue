@@ -67,11 +67,11 @@ export interface Emits {
   (event: "click"): void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   size: "auto",
 });
 
-const emit = defineEmits<Emits>();
+defineEmits<Emits>();
 </script>
 
 <style lang="scss">

@@ -13,7 +13,7 @@ type Story = StoryObj<typeof VcInputCurrency>;
 
 export const Primary: Story = {
   render: (args) => ({
-    components: { VcInputCurrency, VcSelect, VcInput },
+    // components: { VcInputCurrency, VcSelect, VcInput },
     setup() {
       const price = ref(0);
       const option = ref("USD");

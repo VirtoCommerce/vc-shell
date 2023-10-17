@@ -24,8 +24,8 @@
             :actions="itemActions"
             :disable-drag="disableDrag"
             @preview="onPreviewClick(i)"
-            @edit="$emit('item:edit', $event)"
-            @remove="$emit('item:remove', $event)"
+            @edit="$emit('edit', $event)"
+            @remove="$emit('remove', $event)"
             @mousedown="onItemMouseDown"
             @dragstart="onItemDragStart($event, image)"
             @dragover="onItemDragOver"
@@ -40,6 +40,7 @@
             :multiple="multiple"
             :rules="rules"
             :name="name"
+            :loading="loading"
             @upload="onUpload"
           ></VcFileUpload>
         </div>
@@ -59,7 +60,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { MaybeRef, computed, ref, unref, watch } from "vue";
 import { IImage } from "../../../../core/types";
 import { VcLabel, VcFileUpload, VcHint } from "./../../";
 import VcGalleryItem from "./_internal/vc-gallery-item/vc-gallery-item.vue";
@@ -87,13 +88,14 @@ export interface Props {
   hideAfterUpload?: boolean;
   rules?: string | Record<string, unknown>;
   name?: string;
+  loading?: boolean;
 }
 
 export interface Emits {
   (event: "upload", files: FileList): void;
   (event: "sort", sorted: IImage[]): void;
-  (event: "item:edit", image: IImage): void;
-  (event: "item:remove", image: IImage): void;
+  (event: "edit", image: IImage): void;
+  (event: "remove", image: IImage): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -113,7 +115,7 @@ const emit = defineEmits<Emits>();
 const { t } = useI18n({ useScope: "global" });
 const previewImageIndex = ref<number>();
 
-const defaultImages = ref<IImage[]>([]);
+const defaultImages = ref<MaybeRef<IImage[]>>([]);
 const draggedItem = ref<IImage>();
 const draggedElement = ref<HTMLElement>();
 const galleryRef = ref<HTMLElement>();
@@ -135,7 +137,7 @@ const { open } = usePopup(
 watch(
   () => props.images,
   (newVal) => {
-    defaultImages.value = newVal;
+    defaultImages.value = unref(newVal);
   },
   { deep: true, immediate: true }
 );

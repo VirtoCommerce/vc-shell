@@ -93,7 +93,7 @@
                                   <div
                                     class="tw-bg-[#fbfdfe] tw-border tw-border-solid tw-border-[color:#bdd1df] tw-rounded-[2px] tw-flex tw-items-center tw-h-[28px] tw-box-border tw-px-2"
                                   >
-                                    <span>{{ getDisplayLabel(item.opt) }}</span>
+                                    <span>{{ getOptionLabel(item.opt) }}</span>
                                     <VcIcon
                                       v-if="!disabled"
                                       class="tw-text-[#a9bfd2] tw-ml-2 tw-cursor-pointer hover:tw-text-[color:var(--select-clear-color-hover)]"
@@ -255,7 +255,7 @@
 
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <script lang="ts" setup generic="T, P extends {results?: T[]; totalCount?: number }">
-import { ref, computed, watch, toRefs, nextTick, Ref } from "vue";
+import { ref, computed, watch, nextTick, Ref, toRefs, MaybeRef, unref } from "vue";
 import { vOnClickOutside } from "@vueuse/components";
 import * as _ from "lodash-es";
 import { useIntersectionObserver } from "@vueuse/core";
@@ -436,26 +436,6 @@ const props = withDefaults(
      */
     optionLabel?: OptionProp<Option>;
     /**
-     * @requires optionValue
-     * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionValue**
-     *
-     * Property of option which holds the 'value'
-     * Default value: id
-     * @param option The current option being processed
-     * @returns Value of the current option
-     */
-    displayValue?: OptionProp<Option>;
-    /**
-     * @requires optionLabel
-     * @description Similar to optionValue, but used only for displaying selection result in rare cases. **Can't be used without optionLabel**
-     *
-     * Property of option which holds the 'label'
-     * Default value: title
-     * @param option The current option being processed
-     * @returns Label of the current option
-     */
-    displayLabel?: OptionProp<Option>;
-    /**
      * Update model with the value of the selected option instead of the whole option
      */
     emitValue?: boolean;
@@ -500,15 +480,15 @@ const emit = defineEmits<{
    * Emitted when the component needs to change the model; Is also used by v-model
    */
 
-  (event: "update:modelValue", inputValue: Option | string | (Option | string)[]): void;
+  "update:modelValue": [inputValue: Option | string | (Option | string)[]];
   /**
    * Emitted when user wants to filter a value
    */
-  (event: "search", inputValue: string): void;
+  search: [inputValue: string];
   /**
    * Emitted when the select options list is hidden
    */
-  (event: "close"): void;
+  close: [];
 }>();
 
 const { t } = useI18n({ useScope: "global" });
@@ -648,10 +628,6 @@ const getOptionValue = computed(() => getPropValueFn(props.optionValue, "id"));
 
 const getOptionLabel = computed(() => getPropValueFn(props.optionLabel, "title"));
 
-const getDisplayValue = computed(() => getPropValueFn(props.displayValue, "id"));
-
-const getDisplayLabel = computed(() => getPropValueFn(props.displayLabel, "title"));
-
 const innerValue = computed((): Option[] => {
   const mapNull = props.mapOptions === true && props.multiple !== true;
 
@@ -701,9 +677,7 @@ const selectedScope = computed(
 
 const hasValue = computed(() => fieldValueIsFilled(innerValue.value));
 
-const innerOptionsValue = computed(() =>
-  innerValue.value.map((opt) => getOptionValue.value(opt) || getDisplayValue.value(opt))
-);
+const innerOptionsValue = computed(() => innerValue.value.map((opt) => getOptionValue.value(opt)));
 
 const optionScope = computed(() => {
   return optionsTemp.value.map((opt, i) => {
@@ -711,7 +685,7 @@ const optionScope = computed(() => {
       index: i,
       opt,
       selected: isOptionSelected(opt) === true,
-      label: getOptionLabel.value(opt) || getDisplayLabel.value(opt),
+      label: getOptionLabel.value(opt),
       toggleOption,
     };
   });
@@ -734,7 +708,7 @@ function getPropValueFn(propValue: OptionProp<Option>, defaultVal: OptionProp<Op
 }
 
 function getOption(value: Option, valueCache: Option[]) {
-  const fn = (opt) => _.isEqual(getOptionValue.value(opt), value) || _.isEqual(getDisplayValue.value(opt), value);
+  const fn = (opt) => _.isEqual(getOptionValue.value(opt), value);
   return defaultValue.value.find(fn) || optionsList.value.find(fn) || valueCache.find(fn) || value;
 }
 
@@ -743,7 +717,7 @@ function fieldValueIsFilled(val: Option[]) {
 }
 
 function getEmittingOptionValue(opt: Option) {
-  return props.emitValue === true ? getOptionLabel.value(opt) : getOptionValue.value(opt);
+  return getOptionLabel.value(opt);
 }
 
 function removeAtIndex(index: number) {
@@ -759,7 +733,7 @@ function removeAtIndex(index: number) {
 }
 
 function isOptionSelected(opt: Option) {
-  const val = getOptionValue.value(opt) || getDisplayValue.value(opt);
+  const val = getOptionValue.value(opt);
 
   return innerOptionsValue.value.find((v) => _.isEqual(v, val)) !== void 0;
 }
@@ -833,7 +807,7 @@ function toggleOption(opt: Option) {
     return;
   }
 
-  const optValue = getOptionValue.value(opt) || getDisplayValue.value(opt);
+  const optValue = getOptionValue.value(opt);
 
   if (props.multiple !== true) {
     if (innerValue.value.length === 0 || _.isEqual(getOptionValue.value(innerValue.value[0]), optValue) !== true) {

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 
 import { VcTable } from "./";
-import VcHint from "../../atoms/vc-hint/vc-hint.vue";
-import VcImage from "../../atoms/vc-image/vc-image.vue";
+// import VcHint from "../../atoms/vc-hint/vc-hint.vue";
+// import VcImage from "../../atoms/vc-image/vc-image.vue";
 
 const meta: Meta<typeof VcTable> = {
   title: "organisms/VcTable",
@@ -14,7 +14,7 @@ type Story = StoryObj<typeof VcTable>;
 
 export const Primary: Story = {
   render: (args) => ({
-    components: { VcTable, VcHint, VcImage },
+    // components: { VcTable, VcHint, VcImage },
     setup() {
       return { args };
     },

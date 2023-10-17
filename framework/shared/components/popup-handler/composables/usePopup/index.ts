@@ -28,11 +28,9 @@ export function usePopup<T = InstanceType<typeof VcPopup>["$props"]>(props?: May
   async function open(customInstance?: UsePopupProps<unknown>) {
     let activeInstance;
     await nextTick();
-    console.log("popupInstance", popupInstance);
     if (popupInstance) {
       activeInstance = popupInstance;
     }
-    console.log("activeInstance", activeInstance);
 
     activeInstance.popups.push(rawPopup || customInstance);
   }

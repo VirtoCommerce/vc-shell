@@ -1,6 +1,7 @@
 <template>
   <div class="tw-flex tw-flex-col tw-flex-1">
     <div
+      v-loading="loading"
       class="vc-file-upload tw-relative tw-h-[155px] tw-box-border tw-border tw-border-dashed tw-border-[#c8dbea] tw-rounded-[6px] tw-p-4 tw-flex tw-flex-col tw-items-center tw-justify-center"
       :class="[
         `vc-file-upload_${variant}`,
@@ -16,7 +17,6 @@
       @dragenter.stop.prevent
       @dragleave.stop.prevent="dragLeave"
     >
-      <VcLoading :active="loading"></VcLoading>
       <VcIcon
         class="tw-text-[#c8dbea]"
         icon="fas fa-cloud-upload-alt"
@@ -54,7 +54,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, unref } from "vue";
 import { useField } from "vee-validate";
-import { VcLoading, VcIcon, VcLink, VcHint } from "./../../";
+import { VcIcon, VcLink, VcHint } from "./../../";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -80,6 +80,8 @@ const emit = defineEmits<Emits>();
 
 const { t } = useI18n({ useScope: "global" });
 
+// TODO refactor component and remove field-level validation
+
 const instance = getCurrentInstance();
 // Prepare validation rules using required and rules props combination
 const internalRules = unref(props.rules) || "";
@@ -101,8 +103,6 @@ const upload = async (event: Event) => {
   if (isValid.valid) {
     const target = event.target as HTMLInputElement;
     const fileList = target.files;
-
-    console.log(fileList);
 
     if (fileList && fileList.length) {
       emit("upload", fileList);

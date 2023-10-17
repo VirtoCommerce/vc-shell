@@ -1,14 +1,14 @@
-import { App } from "vue";
+import { App, Component } from "vue";
 import { i18n } from "./../i18n";
 import { Router } from "vue-router";
 import { BladeConstructor } from "./../../../shared/components/blade-navigation/types";
 import { kebabToPascal } from "./../../utilities";
 
-export const createModule = (components: unknown, locales?: unknown) => ({
+export const createModule = (components: unknown, locales?: unknown, isBladeComponent?: boolean) => ({
   install(app: App): void {
     // Register components
     Object.entries(components).forEach(([componentName, component]) => {
-      app.component(componentName, component);
+      app.component(componentName, isBladeComponent ? { ...component, isBladeComponent: true } : component);
     });
 
     // Load locales
@@ -20,25 +20,44 @@ export const createModule = (components: unknown, locales?: unknown) => ({
   },
 });
 
-export const createAppModule = (pages: unknown, locales?: unknown, notificationTemplates?: unknown) => {
-  const module = createModule(pages, locales);
+export const createAppModule = (
+  pages: { [key: string]: BladeConstructor },
+  locales?: { [key: string]: object },
+  notificationTemplates?: { [key: string]: Component },
+  moduleComponents?: { [key: string]: Component }
+) => {
+  const module = createModule(pages, locales, true);
 
   return {
-    install(app: App, options: { router: Router }): void {
-      const { router } = options;
+    install(app: App, options?: { router: Router }): void {
+      let routerInstance: Router;
+
+      if (options && options.router) {
+        const { router } = options;
+        routerInstance = router;
+      }
+
       // Register pages
-      Object.entries(pages).forEach(([, page]: [string, BladeConstructor]) => {
+      Object.entries(pages).forEach(([key, page]) => {
         app.config.globalProperties.pages?.push(page);
+
+        app.config.globalProperties.bladeRoutes?.push({
+          component: page,
+          route: page.url,
+          name: key,
+        });
 
         // Dynamically add pages to vue router
         if (page.url) {
-          const mainRouteName = router.getRoutes().find((r) => r.meta?.root)?.name;
+          const mainRouteName = routerInstance.getRoutes().find((r) => r.meta?.root)?.name;
 
-          router.addRoute(mainRouteName, {
-            name: kebabToPascal(page.url.substring(1)),
-            path: page.url.substring(1),
-            component: page,
-          });
+          if (routerInstance && mainRouteName) {
+            routerInstance.addRoute(mainRouteName, {
+              name: kebabToPascal(page.url.substring(1)),
+              path: page.url.substring(1),
+              component: page,
+            });
+          }
         }
       });
 
@@ -48,6 +67,14 @@ export const createAppModule = (pages: unknown, locales?: unknown, notificationT
           app.config.globalProperties.notificationTemplates?.push(template);
         });
       }
+
+      if (moduleComponents) {
+        // Register module components globally
+        Object.entries(moduleComponents).forEach(([name, component]) => {
+          app.component(name, component);
+        });
+      }
+
       module.install(app);
     },
   };

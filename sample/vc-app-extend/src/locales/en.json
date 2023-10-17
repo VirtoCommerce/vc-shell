@@ -1,0 +1,23 @@
+{
+  "language_name": "English",
+  "SHELL": {
+    "ACCOUNT": {
+      "CHANGE_PASSWORD": "Change password",
+      "PROFILE": "Profile",
+      "LOGOUT": "Log Out"
+    },
+    "MENU": {
+      "DASHBOARD": "Home"
+    },
+    "TOOLBAR": {
+      "LOGIN": "Log In",
+      "SETTINGS": "Settings",
+      "HELP": "Help",
+      "NOTIFICATIONS": "Notifications",
+      "LANGUAGE": "Language selector"
+    },
+    "DASHBOARD": {
+      "TITLE": "Dashboard"
+    }
+  }
+}

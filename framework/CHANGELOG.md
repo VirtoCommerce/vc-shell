@@ -1,3 +1,22 @@
+## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
+
+
+### Bug Fixes
+
+* open blade on mount fix in import-module ([6644e03](https://github.com/VirtoCommerce/vc-shell/commit/6644e03bcac5b1298db160f3b749c8a44bb8c9c7))
+* override ts-ignore toSpliced ([c360888](https://github.com/VirtoCommerce/vc-shell/commit/c3608889c4bc987f475f9d25a9149aad4b59bac6))
+
+
+### Features
+
+* dynamic app modules samples ([2af411f](https://github.com/VirtoCommerce/vc-shell/commit/2af411fb14c61d9e98da4612057fd157263de397))
+* dynamic modules ([ed4af3a](https://github.com/VirtoCommerce/vc-shell/commit/ed4af3ad65e47b0d633d6e2eb23e9c90d73ff50d))
+* dynamic modules ([200dcde](https://github.com/VirtoCommerce/vc-shell/commit/200dcde3d127f45267f2d259967839d11ea5d01e))
+* improved createAppModule ([3752415](https://github.com/VirtoCommerce/vc-shell/commit/3752415eeae183b8dcfe3f23e47f3bcb07faf136))
+* status type dynamic component ([95f0472](https://github.com/VirtoCommerce/vc-shell/commit/95f0472cd79cb117a94fe467cf4094cdff29373e))
+
+
+
 ## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
 
 

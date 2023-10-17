@@ -6,16 +6,13 @@ import Vue3TouchEvents from "vue3-touch-events";
 import { i18n, permissions, signalR } from "./core/plugins";
 import { SharedModule } from "./shared";
 import * as componentLocales from "./ui/locales";
-import { CommonPageComposables } from "./typings";
-import { InvitePage } from "./shared/pages/InvitePage";
-import { LoginPage } from "./shared/pages/LoginPage";
-import { ResetPasswordPage } from "./shared/pages/ResetPasswordPage";
+import * as sharedPages from "./shared/pages/plugin";
 
 import "normalize.css";
 import "./assets/styles/index.scss";
 
 export default {
-  install(app: App, config?: CommonPageComposables): void {
+  install(app: App): void {
     app.use(i18n);
     // Left for backward compatibility
     app.config.globalProperties.$mergeLocaleMessage = i18n.global.mergeLocaleMessage;
@@ -60,6 +57,10 @@ export default {
     app.config.globalProperties.pages = [];
     app.provide("pages", app.config.globalProperties.pages);
 
+    // Routes
+    app.config.globalProperties.bladeRoutes = [];
+    app.provide("bladeRoutes", app.config.globalProperties.bladeRoutes);
+
     // Notification templates
     app.config.globalProperties.notificationTemplates = [];
     app.provide("notificationTemplates", app.config.globalProperties.notificationTemplates);
@@ -74,10 +75,8 @@ export default {
     app.use(permissions);
 
     // Common pages
-    const commonPages = [InvitePage, LoginPage, ResetPasswordPage];
-
-    commonPages.forEach((page) => {
-      app.use(page, config);
+    Object.values(sharedPages).forEach((page) => {
+      app.use(page);
     });
   },
 };

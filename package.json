@@ -1,6 +1,6 @@
 {
   "name": "@vc-shell/root",
-  "version": "1.0.110",
+  "version": "1.0.111",
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
@@ -29,8 +29,7 @@
     "apps/*",
     "framework",
     "cli/*",
-    "import-module",
-    "sample/*"
+    "import-module"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",

@@ -1,3 +1,18 @@
+## [1.0.111](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.110...v1.0.111) (2023-10-17)
+
+
+### Bug Fixes
+
+* open blade on mount fix in import-module ([6644e03](https://github.com/VirtoCommerce/vc-shell/commit/6644e03bcac5b1298db160f3b749c8a44bb8c9c7))
+
+
+### Features
+
+* dynamic modules ([ed4af3a](https://github.com/VirtoCommerce/vc-shell/commit/ed4af3ad65e47b0d633d6e2eb23e9c90d73ff50d))
+* dynamic modules ([200dcde](https://github.com/VirtoCommerce/vc-shell/commit/200dcde3d127f45267f2d259967839d11ea5d01e))
+
+
+
 ## [1.0.110](https://github.com/VirtoCommerce/vc-shell/compare/v1.0.109...v1.0.110) (2023-10-16)
 
 

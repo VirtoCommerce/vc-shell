@@ -1,3 +1,18 @@
+## [1.0.120](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.119...v1.0.120) (2023-10-17)
+
+
+### Bug Fixes
+
+* description fix in dynamic products ([d27d631](https://github.com/VirtoCommerce/vendor-portal/commit/d27d631d4b492fc24b747c65f3f815cbaa495ef4))
+
+
+### Features
+
+* decline status in dynamic product details ([14e9f86](https://github.com/VirtoCommerce/vendor-portal/commit/14e9f866cf3a7e93c602261e0c91a75d1d5f22d4))
+* dynamic modules ([af6ad03](https://github.com/VirtoCommerce/vendor-portal/commit/af6ad032c711903bcadbcbc9f9c2d7ea006e86eb))
+
+
+
 ## [1.0.119](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.118...v1.0.119) (2023-10-16)
 
 

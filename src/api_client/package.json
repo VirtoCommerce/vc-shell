@@ -1,6 +1,6 @@
 {
   "name": "vc-vendor-portal-api",
-  "version": "1.0.110",
+  "version": "1.0.111",
   "files": [
     "dist",
     "package.json"

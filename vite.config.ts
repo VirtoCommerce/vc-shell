@@ -55,7 +55,7 @@ export default getApplicationConfiguration({
   optimizeDeps: {
     include:
       mode === "development"
-        ? ["ace-builds", "client-oauth2", "quill-delta", "quill", "url-pattern", "vee-validate"]
+        ? ["ace-builds", "client-oauth2", "quill-delta", "quill", "url-pattern", "vee-validate", "moment"]
         : [],
   },
 });

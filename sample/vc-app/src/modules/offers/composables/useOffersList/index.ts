@@ -45,7 +45,7 @@ export const useOffersList = (args: {
 
   function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
     openBlade({
-      blade: resolveBladeByName("OfferJ"),
+      blade: resolveBladeByName("Offer"),
       options: {
         sellerProduct: args.props.options.sellerProduct,
       },

@@ -3,7 +3,7 @@ import { OverridesSchema } from "@vc-shell/framework";
 export const overrides: OverridesSchema = {
   upsert: [
     {
-      id: "OfferJ",
+      id: "Offer",
       path: "content[0].children[1].fields",
       index: 0,
       value: {

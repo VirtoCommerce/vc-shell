@@ -1,2 +1,3 @@
-import { useMultilanguage, useDynamicProperties, useAssets } from "./composables";
-export { useDynamicProperties, useMultilanguage, useAssets };
+export { useDynamicProperties } from "./composables/useDynamicProperties";
+export { useMultilanguage } from "./composables/useMultilanguage";
+export { useAssets } from "./composables/useAssets";

@@ -32,18 +32,18 @@
             "LIST_PRICE": "List price",
             "MIN_QTY": "Min quantity"
           },
-          "EMPTY": {
-            "TITLE": "There are no offers yet",
-            "ACTION": "Add offer"
-          },
-          "NOT_FOUND": {
-            "TITLE": "No offers found.",
-            "ACTION": "Reset search"
-          },
           "ACTIONS": {
             "UNPUBLISH": "Unpublish",
             "PUBLISH": "Publish"
           }
+        },
+        "NOT_FOUND": {
+          "EMPTY": "No offers found.",
+          "RESET": "Reset search"
+        },
+        "EMPTY": {
+          "NO_ITEMS": "There are no offers yet",
+          "ADD": "Add offer"
         },
         "MOBILE": {
           "SKU": "SKU",

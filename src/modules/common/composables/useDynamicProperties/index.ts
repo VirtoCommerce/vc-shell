@@ -10,7 +10,7 @@ import {
   PropertyValue,
   PropertyValueValueType,
   VcmpSellerCatalogClient,
-} from "../../../../api_client/marketplacevendor";
+} from "vc-vendor-portal-api/marketplacevendor";
 import * as _ from "lodash-es";
 
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);

@@ -81,7 +81,7 @@
             size="4"
             class="tw-p-2"
           >
-            <RatingDashboardCard :open-page="openBlade"></RatingDashboardCard>
+            <modules.Rating.RatingDashboardCard :open-page="openBlade"></modules.Rating.RatingDashboardCard>
           </VcCol>
         </VcRow>
 
@@ -142,7 +142,7 @@
 
                 <!-- Override status column template -->
                 <template #item_status="itemData">
-                  <mp-product-status :status="itemData.item.status as string" />
+                  <mp-product-status :context="{ item: { status: itemData.item.status } }" />
                 </template>
               </VcTable>
             </VcCard>
@@ -238,20 +238,21 @@
 <script lang="ts" setup>
 import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch, markRaw } from "vue";
-import { OrderLineItem } from "../api_client/marketplacevendor";
-import { OffersList, useOffers } from "../modules/offers";
-import { OrdersList, useOrders } from "../modules/orders";
-import { MpProductStatus, ProductsList, useProducts } from "../modules/products";
-import { RatingDashboardCard } from "../modules/rating";
+import { Offer, OrderLineItem, SellerProduct } from "vc-vendor-portal-api/marketplacevendor";
 import { useI18n } from "vue-i18n";
-import { UserPermissions } from "./../types";
+import { default as modules, UserPermissions } from "vc-vendor-portal-modules";
+import { CustomerOrder } from "vc-vendor-portal-api/orders";
 
 const { t } = useI18n({ useScope: "global" });
-const { products, loadProducts, loading: productsLoading } = useProducts();
-const { orders, loadOrders, loading: ordersLoading } = useOrders();
-const { offers, loadOffers, loading: offersLoading } = useOffers();
+const {
+  items: products,
+  load: loadProducts,
+  loading: productsLoading,
+} = modules.Products.composables.useProductsList(undefined);
+const { orders, loadOrders, loading: ordersLoading } = modules.Orders.useOrders();
+const { items: offers, load: loadOffers, loading: offersLoading } = modules.Offers.composables.useOffersList(undefined);
 
-const { openBlade } = useBladeNavigation();
+const { openBlade, resolveBladeByName } = useBladeNavigation();
 const { error, reset } = useErrorHandler(true);
 
 const productsColumns = ref<ITableColumns[]>([
@@ -414,7 +415,7 @@ function open(key: string): void {
     case "orders-list":
       openBlade(
         {
-          blade: markRaw(OrdersList),
+          blade: resolveBladeByName("OrdersList"),
         },
         true
       );
@@ -422,7 +423,7 @@ function open(key: string): void {
     case "products-list":
       openBlade(
         {
-          blade: markRaw(ProductsList),
+          blade: resolveBladeByName("ProductsJ"),
         },
         true
       );
@@ -430,7 +431,7 @@ function open(key: string): void {
     case "products-add":
       openBlade(
         {
-          blade: markRaw(ProductsList),
+          blade: resolveBladeByName("ProductsJ"),
         },
         true
       );
@@ -438,7 +439,7 @@ function open(key: string): void {
     case "offers-list":
       openBlade(
         {
-          blade: markRaw(OffersList),
+          blade: resolveBladeByName("OffersJ"),
         },
         true
       );
@@ -446,7 +447,7 @@ function open(key: string): void {
     case "offers-add":
       openBlade(
         {
-          blade: markRaw(OffersList),
+          blade: resolveBladeByName("OffersJ"),
           options: {
             addOffer: true,
           },
@@ -457,30 +458,30 @@ function open(key: string): void {
   }
 }
 
-function ordersClick(item: { id: string }): void {
+function ordersClick(item: CustomerOrder): void {
   openBlade(
     {
-      blade: markRaw(OrdersList),
+      blade: resolveBladeByName("OrdersJ"),
       param: item.id,
     },
     true
   );
 }
 
-function productsClick(item: { id: string }): void {
+function productsClick(item: SellerProduct): void {
   openBlade(
     {
-      blade: markRaw(ProductsList),
+      blade: resolveBladeByName("ProductsJ"),
       param: item.id,
     },
     true
   );
 }
 
-function offersClick(item: { id: string }): void {
+function offersClick(item: Offer): void {
   openBlade(
     {
-      blade: markRaw(OffersList),
+      blade: resolveBladeByName("OffersJ"),
       param: item.id,
     },
     true

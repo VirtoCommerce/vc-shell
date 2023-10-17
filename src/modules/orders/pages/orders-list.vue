@@ -166,16 +166,16 @@
 <script lang="ts" setup>
 import { computed, onMounted, reactive, ref, watch, markRaw } from "vue";
 import { OrdersEdit } from "./";
-import { INewOrderPushNotification } from "./../../../types";
 import {
   IBladeToolbar,
   useFunctions,
   ITableColumns,
   IActionBuilderResult,
   useBladeNavigation,
+  PushNotification,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { CustomerOrder } from "../../../api_client/marketplacevendor";
+import { CustomerOrder } from "vc-vendor-portal-api/marketplacevendor";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
 // eslint-disable-next-line import/no-unresolved
@@ -192,6 +192,10 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "close:blade"): void;
+}
+
+interface INewOrderPushNotification extends PushNotification {
+  orderId?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -326,7 +330,7 @@ const empty = reactive({
 
 const title = computed(() => t("ORDERS.PAGES.LIST.TITLE"));
 
-const onItemClick = (item: { id: string }) => {
+const onItemClick = (item: CustomerOrder) => {
   openBlade({
     blade: markRaw(OrdersDetails),
     param: item.id,

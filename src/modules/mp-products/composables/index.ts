@@ -1,0 +1,1 @@
+export { useProductsListExtended } from "./useProductsList";

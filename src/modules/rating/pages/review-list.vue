@@ -21,11 +21,11 @@
 import { computed, ref, markRaw, onMounted, watch } from "vue";
 import { IBladeToolbar, useBladeNavigation } from "@vc-shell/framework";
 import { ReviewDetails } from ".";
-import { CustomerReview } from "../../../api_client/marketplacevendor";
+import { CustomerReview } from "vc-vendor-portal-api/marketplacevendor";
 import { ReviewTable } from "../components";
 import { useReviews } from "../composables";
 import { useI18n } from "vue-i18n";
-import { UserPermissions } from "./../../../types";
+import { UserPermissions } from "./../../types";
 // Page
 
 export interface Props {

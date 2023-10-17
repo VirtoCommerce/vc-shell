@@ -1,19 +1,10 @@
 import VirtoShellFramework, { notification, useUser } from "@vc-shell/framework";
 import { createApp } from "vue";
-import ImportModule from "./modules/import";
-import OffersModule from "./modules/offers";
-import OrdersModule from "./modules/orders";
-import ProductsModule from "./modules/products";
-import RatingModule from "./modules/rating";
-import SettingsModule from "./modules/settings";
-import MpProductsModule from "./modules/marketplace-products";
+import * as modules from "vc-vendor-portal-modules";
+// import ImportModule from "@vc-shell/import-module";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
-
-import newProducts from "./modules/newProducts";
-import newOffers from "./modules/newOffers";
-import newTeam from "./modules/newTeam";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -26,19 +17,15 @@ async function startApp() {
 
   await loadUser();
 
-  const app = createApp(RouterView)
-    .use(VirtoShellFramework)
-    .use(OrdersModule, { router })
-    .use(ProductsModule, { router })
-    .use(MpProductsModule, { router })
-    .use(OffersModule, { router })
-    .use(ImportModule, { router })
-    .use(RatingModule, { router })
-    .use(SettingsModule, { router })
-    .use(newProducts, { router })
-    .use(newOffers, { router })
-    .use(newTeam, { router })
-    .use(router);
+  const app = createApp(RouterView).use(VirtoShellFramework);
+
+  Object.values(modules.default).forEach((module) => {
+    app.use(module.default, { router });
+  });
+
+  // app.use(ImportModule, { router });
+
+  app.use(router);
 
   Object.entries(locales).forEach(([key, message]) => {
     app.config.globalProperties.$mergeLocaleMessage(key, message);

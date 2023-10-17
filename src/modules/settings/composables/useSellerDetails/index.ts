@@ -8,7 +8,7 @@ import {
   SellerDetails,
   UpdateSellerCommand,
   VcmpSellerSecurityClient,
-} from "../../../../api_client/marketplacevendor";
+} from "vc-vendor-portal-api/marketplacevendor";
 import * as _ from "lodash-es";
 
 interface ILocation {

@@ -7,7 +7,7 @@ import {
   VcmpSellerRatingAndReviewsClient,
   ICustomerReview,
   ISearchCustomerReviewsQuery,
-} from "../../../../api_client/marketplacevendor";
+} from "vc-vendor-portal-api/marketplacevendor";
 
 interface IUseReviewsOptions {
   pageSize?: number;

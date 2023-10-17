@@ -6,7 +6,7 @@ import {
   StateMachineInstance,
   ISearchStateMachineInstancesQuery,
   SearchStateMachineInstancesQuery,
-} from "../../../../api_client/marketplacevendor";
+} from "vc-vendor-portal-api/marketplacevendor";
 
 interface IUseStateMachines {
   readonly stateMachine: Ref<StateMachineInstance>;

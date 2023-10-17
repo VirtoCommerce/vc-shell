@@ -1,13 +1,14 @@
 import { computed, Ref, ref } from "vue";
 import { AsyncAction, useApiClient, useAsync, useLoading } from "@vc-shell/framework";
-import { OrderModuleClient } from "../../../../api_client/orders";
-import {
-  VcmpSellerOrdersClient,
-  CustomerOrder,
-  OrderAddressAddressType,
-} from "../../../../api_client/marketplacevendor";
-
-import { IShippingInfo } from "../../../../types";
+import { OrderModuleClient } from "vc-vendor-portal-api/orders";
+import { VcmpSellerOrdersClient, CustomerOrder, OrderAddressAddressType } from "vc-vendor-portal-api/marketplacevendor";
+interface IShippingInfo {
+  label: string;
+  name?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+}
 
 export interface GetOrderByIdPayload {
   id: string;

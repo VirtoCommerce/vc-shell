@@ -72,19 +72,13 @@ import {
 } from "@vc-shell/framework";
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ImportProfileSelector } from "../modules/import";
-import { OffersList } from "../modules/offers";
-import { OrdersList } from "../modules/orders";
-import { ProductsList } from "../modules/products";
-import { MpProductsList } from "../modules/marketplace-products";
-import { ReviewList } from "../modules/rating";
-import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { UserPermissions } from "../types";
+// import { ImportProfileSelector } from "../modules/import";
+import * as modules from "vc-vendor-portal-modules";
+import { UserPermissions } from "./../modules/types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
-import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
 
 const { open } = usePopup({
@@ -99,7 +93,7 @@ const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onPare
   useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
-const { sellerDetails, getCurrentSeller } = useSellerDetails();
+const { sellerDetails, getCurrentSeller } = modules.default.Settings.UseSellerDetails();
 const { moduleNotifications, notifications, markAsRead, loadFromHistory, markAllAsRead } =
   useNotifications("OrderCreatedEventHandler");
 const route = useRoute();
@@ -258,7 +252,7 @@ const menuItems = reactive(
       title: computed(() => t("ORDERS.MENU.TITLE")),
       icon: "fas fa-file-alt",
       isVisible: true,
-      component: OrdersList,
+      component: modules.default.Orders.OrdersList,
     },
     {
       title: computed(() => t("PRODUCTS.MENU.TITLE")),
@@ -267,12 +261,12 @@ const menuItems = reactive(
       children: [
         {
           title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
-          component: MpProductsList,
+          component: resolveBladeByName("MpProducts"),
           isVisible: computed(() => hasAccess(UserPermissions.SellerProductsSearchFromAllSellers)),
         },
         {
           title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
-          component: resolveBladeByName("ProductsList"),
+          component: resolveBladeByName("ProductsJ"),
         },
       ],
     },
@@ -280,39 +274,19 @@ const menuItems = reactive(
       title: computed(() => t("OFFERS.MENU.TITLE")),
       icon: "fas fa-file-invoice",
       isVisible: true,
-      component: OffersList,
+      component: resolveBladeByName("OffersJ"),
     },
     {
       title: computed(() => t("IMPORT.MENU.TITLE")),
       icon: "fas fa-file-import",
       isVisible: true,
-      component: ImportProfileSelector,
+      component: resolveBladeByName("ImportProfileSelector"),
     },
     {
       title: computed(() => t("RATING.MENU.TITLE")),
       icon: "fas fa-star",
       isVisible: computed(() => hasAccess(UserPermissions.ManageSellerReviews)),
-      component: ReviewList,
-    },
-    {
-      title: "Dynamic",
-      icon: "fas fa-arrows-alt",
-      isVisible: true,
-      children: [
-        {
-          title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
-          component: resolveBladeByName("ProductsJ"),
-        },
-        {
-          title: computed(() => t("OFFERS.MENU.TITLE")),
-          component: resolveBladeByName("OffersJ"),
-        },
-        {
-          title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
-          component: resolveBladeByName("TeamJ"),
-          isVisible: computed(() => hasAccess(UserPermissions.SellerUsersManage)),
-        },
-      ],
+      component: modules.default.Rating.ReviewList,
     },
     {
       title: computed(() => t("SETTINGS.MENU.TITLE")),
@@ -327,17 +301,17 @@ const menuItems = reactive(
       children: [
         {
           title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
-          component: TeamList,
+          component: modules.default.Settings.TeamList,
           isVisible: computed(() => hasAccess(UserPermissions.SellerUsersManage)),
         },
         {
           title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
-          component: FulfillmentCenters,
+          component: modules.default.Settings.FulfillmentCenters,
           isVisible: computed(() => hasAccess(UserPermissions.ManageSellerFulfillmentCenters)),
         },
         {
           title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
-          component: SellerDetails,
+          component: modules.default.Settings.SellerDetails,
           isVisible: computed(() => hasAccess(UserPermissions.SellerDetailsEdit)),
         },
       ],

@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { INotificationActions } from "../../../types";
+import { INotificationActions } from "../types";
 
 export interface Props {
   uploadActions: INotificationActions[];

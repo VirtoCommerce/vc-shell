@@ -67,7 +67,7 @@
           "RESET": "Reset search"
         },
         "EMPTY": {
-          "NO_PRODUCTS": "There are no products yet",
+          "NO_ITEMS": "There are no products yet",
           "ADD": "Add product"
         },
         "MOBILE": {
@@ -142,19 +142,22 @@
         "ALERTS": {
           "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?",
           "DELETE_CONFIRMATION": "Are you sure you want to delete this image?",
-          "DELETE_PRODUCT": "Are you sure you want to delete this product?"
+          "DELETE": "Are you sure you want to delete this product?",
+          "DELETE_CONFIRMATION_ASSET": "Are you sure you want to delete {count} selected assets?"
         },
         "WIDGETS": {
             "OFFERS":"Offers",
             "ASSETS":"Assets"
-        },
-        "LANGUAGES":{
-          "en-US": "English",
-          "de-DE": "German",
-          "fr-FR": "French"
         }
+      },
+      "ALERTS": {
+        "NOT_VALID": "Form is not valid.\nPlease, check highlighted fields.",
+        "IMAGE_DELETE_CONFIRMATION": "Are you sure you want to delete this image?",
+        "CLOSE_CONFIRMATION": "You have unsaved changes\nClose anyway?",
+        "DELETE_OFFER": "Are you sure you want to delete this offer?"
       }
     },
+
     "PUSH": {
       "PRODUCT": "Product",
       "UPDATE": "status update",

@@ -7,7 +7,7 @@ import {
   ISearchOrdersQuery,
   CustomerOrder,
   ChangeOrderStatusCommand,
-} from "../../../../api_client/marketplacevendor";
+} from "vc-vendor-portal-api/marketplacevendor";
 
 interface IPaymentStatus {
   [key: string]: string;

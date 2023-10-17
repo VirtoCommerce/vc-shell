@@ -221,7 +221,7 @@
 import { computed, ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { IParentCallArgs, IBladeToolbar, usePopup } from "@vc-shell/framework";
-import { IVideo, VideoCreateRequest } from "../../../api_client/catalog";
+import { IVideo, VideoCreateRequest } from "vc-vendor-portal-api/catalog";
 import { useVideo, useVideos } from "../composables";
 import { Field } from "vee-validate";
 import moment from "moment/moment";

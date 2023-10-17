@@ -7,7 +7,7 @@ import {
   IVideoSearchCriteria,
   VideoSearchCriteria,
   VideoSearchResult,
-} from "../../../../api_client/catalog";
+} from "vc-vendor-portal-api/catalog";
 import * as _ from "lodash-es";
 
 interface IUseVideos {

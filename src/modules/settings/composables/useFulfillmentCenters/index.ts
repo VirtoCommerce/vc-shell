@@ -7,7 +7,7 @@ import {
   SearchFulfillmentCentersResult,
   UpdateFulfillmentCenterCommand,
   VcmpSellerCatalogClient,
-} from "../../../../api_client/marketplacevendor";
+} from "vc-vendor-portal-api/marketplacevendor";
 import { computed, Ref, ref, watch } from "vue";
 import * as _ from "lodash-es";
 

@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { IBladeEvent, VcButton, VcCard } from "@vc-shell/framework";
-import { CustomerReview } from "../../../api_client/marketplacevendor";
+import { CustomerReview } from "vc-vendor-portal-api/marketplacevendor";
 import { Rating, ReviewTable } from "../components";
 import { ReviewList } from "../pages";
 import { markRaw } from "vue";

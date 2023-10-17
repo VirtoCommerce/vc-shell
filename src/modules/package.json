@@ -1,0 +1,26 @@
+{
+  "name": "vc-vendor-portal-modules",
+  "version": "1.0.111",
+  "module": "./dist/index.mjs",
+  "types": "./dist/types/index.d.ts",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "peerDependencies": {
+    "vc-vendor-portal-api": "^1.0.111"
+  },
+  "scripts": {
+    "publish": "npm publish"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

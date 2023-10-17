@@ -1,16 +1,9 @@
-import VirtoShellFramework, { notification } from "@vc-shell/framework";
+import VirtoShellFramework, { notification, useUser } from "@vc-shell/framework";
 import { createApp } from "vue";
-import ImportModule from "./modules/import";
-import OffersModule from "./modules/offers";
-import OrdersModule from "./modules/orders";
-import ProductsModule from "./modules/products";
-import RatingModule from "./modules/rating";
-import SettingsModule from "./modules/settings";
-import MpProductsModule from "./modules/marketplace-products";
-import VideosModule from "./modules/videos";
+import * as modules from "vc-vendor-portal-modules";
+// import ImportModule from "@vc-shell/import-module";
 import { router } from "./router";
 import * as locales from "./locales";
-import { useLogin } from "./composables";
 import { RouterView } from "vue-router";
 
 // Load required CSS
@@ -19,30 +12,36 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "@vc-shell/framework/dist/index.css";
 
-const app = createApp(RouterView)
-  .use(VirtoShellFramework, {
-    useLogin,
-  })
-  .use(OrdersModule, { router })
-  .use(ProductsModule, { router })
-  .use(MpProductsModule, { router })
-  .use(OffersModule, { router })
-  .use(ImportModule, { router })
-  .use(RatingModule, { router })
-  .use(SettingsModule, { router })
-  .use(VideosModule, { router })
-  .use(router);
+async function startApp() {
+  const { loadUser } = useUser();
 
-Object.entries(locales).forEach(([key, message]) => {
-  app.config.globalProperties.$mergeLocaleMessage(key, message);
-});
+  await loadUser();
 
-app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
+  const app = createApp(RouterView).use(VirtoShellFramework);
 
-app.config.errorHandler = (err) => {
-  notification.error(err.toString(), {
-    timeout: 5000,
+  Object.values(modules.default).forEach((module) => {
+    app.use(module.default, { router });
   });
-};
 
-app.mount("#app");
+  // app.use(ImportModule, { router });
+
+  app.use(router);
+
+  Object.entries(locales).forEach(([key, message]) => {
+    app.config.globalProperties.$mergeLocaleMessage(key, message);
+  });
+
+  app.provide("platformUrl", import.meta.env.APP_PLATFORM_URL);
+
+  app.config.errorHandler = (err) => {
+    notification.error(err.toString(), {
+      timeout: 5000,
+    });
+  };
+
+  await router.isReady();
+
+  app.mount("#app");
+}
+
+startApp();

@@ -99,9 +99,9 @@ import {
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportPushNotification, ImportRunHistory } from "../../../api_client/marketplacevendor";
+import { ImportPushNotification, ImportRunHistory } from "vc-vendor-portal-api/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
-import { UserPermissions } from "../../../types";
+import { UserPermissions } from "../../types";
 import { useI18n } from "vue-i18n";
 
 export interface Props {
@@ -132,7 +132,7 @@ defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
-const { checkPermission } = usePermissions();
+const { hasAccess } = usePermissions();
 
 const {
   importHistory,
@@ -164,7 +164,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
     clickHandler() {
       newProfile();
     },
-    isVisible: computed(() => checkPermission(UserPermissions.SellerImportProfilesEdit)),
+    isVisible: computed(() => hasAccess(UserPermissions.SellerImportProfilesEdit)),
   },
 ]);
 const columns = ref<ITableColumns[]>([

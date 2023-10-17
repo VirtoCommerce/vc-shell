@@ -80,7 +80,7 @@
 <script lang="ts" setup>
 import moment from "moment";
 import { computed, onMounted } from "vue";
-import { CustomerReview } from "../../../api_client/marketplacevendor";
+import { CustomerReview } from "vc-vendor-portal-api/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 import { useI18n } from "vue-i18n";

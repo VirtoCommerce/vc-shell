@@ -14,8 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useBladeNavigation } from "@vc-shell/framework";
-import { IProductPushNotification } from "./../../../../types";
+import { PushNotification, useBladeNavigation } from "@vc-shell/framework";
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -26,6 +25,13 @@ export interface Props {
 
 export interface Emits {
   (event: "notificationClick"): void;
+}
+
+interface IProductPushNotification extends PushNotification {
+  profileName?: string;
+  newStatus?: string;
+  productId?: string;
+  productName?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {

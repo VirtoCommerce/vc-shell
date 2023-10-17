@@ -1,26 +1,37 @@
 <template>
   <div>
     <VcStatus
-      v-bind="statusStyles[status]"
-      v-for="(status, i) in statuses"
+      v-for="(value, i) in statuses"
+      v-bind="statusStyles[value]"
+      :key="`${value}_${i}`"
       :class="[$attrs.class, { 'tw-mr-1': i < statuses.length - 1 }]"
-      :key="`${status}_${i}`"
-      >{{ $t(`PRODUCTS.STATUSES.${camelToSnake(status).toUpperCase()}`) }}</VcStatus
+      >{{ $t(`PRODUCTS.STATUSES.${camelToSnake(value).toUpperCase()}`) }}</VcStatus
     >
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, toRefs, unref } from "vue";
 import { camelToSnake } from "@vc-shell/framework";
+import { ISellerProduct, SellerProductStatus2 } from "vc-vendor-portal-api/marketplacevendor";
 
 export interface Props {
-  status: string;
+  context: {
+    item: ISellerProduct;
+  };
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  status: "None",
+  context: () => ({
+    item: {
+      status: SellerProductStatus2.None,
+    },
+  }),
 });
+
+const { context } = toRefs(props);
+
+const itemStatus = computed(() => context.value?.item?.status);
 
 const statusStyles = {
   RequestChanges: {
@@ -49,8 +60,8 @@ const statusStyles = {
   },
 };
 const statuses = computed(() =>
-  props.status
-    .split(",")
+  itemStatus.value
+    ?.split(",")
     .map((item) => {
       return item.trim();
     })

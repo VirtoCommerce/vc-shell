@@ -24,14 +24,26 @@
     ],
     "types": [
       "vite/client",
-      ]
+      ],
+    "paths": {
+      "vc-vendor-portal-modules": ["src/modules"],
+      "vc-vendor-portal-api": ["src/api_client"]
+    }
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.vue"
+    "./src/**/*.ts",
+    "./src/**/*.vue"
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+  ],
+   "references": [
+    {
+      "path": "./src/modules/tsconfig.json"
+    },
+    {
+      "path": "./src/api_client/tsconfig.json"
+    }
   ]
 }

@@ -1,0 +1,39 @@
+{
+  "name": "vc-vendor-portal-api",
+  "version": "1.0.111",
+  "files": [
+    "dist",
+    "package.json"
+  ],
+  "typesVersions": {
+    "*": {
+      "marketplacevendor": [
+        "./dist/types/marketplacevendor.d.ts"
+      ],
+      "orders": [
+        "./dist/types/orders.d.ts"
+      ],
+      "catalog": [
+        "./dist/types/catalog.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    "./marketplacevendor": {
+      "import": "./dist/marketplacevendor.js"
+    },
+    "./orders": {
+      "import": "./dist/orders.js"
+    },
+    "./catalog": {
+      "import": "./dist/catalog.js"
+    }
+  },
+  "scripts": {
+    "publish": "npm publish"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

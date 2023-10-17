@@ -13,7 +13,7 @@ module.exports = {
     "@vue/prettier",
     "@vue/eslint-config-typescript/recommended",
   ],
-  parser: "vue-eslint-parser",
+  parser: "@typescript-eslint/parser",
   parserOptions: {
     node: true,
   },
@@ -23,7 +23,7 @@ module.exports = {
     },
     "import/resolver": {
       typescript: {
-        project: ["./tsconfig.json"],
+        project: ["./tsconfig.json", "./src/api_client/tsconfig.json", "./src/modules/tsconfig.json"],
       },
     },
   },

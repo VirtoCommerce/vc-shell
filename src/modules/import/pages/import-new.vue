@@ -243,7 +243,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref, watch, markRaw } from "vue";
+import { computed, onMounted, ref, watch, markRaw, ComputedRef } from "vue";
 import * as _ from "lodash-es";
 import ImportProfileDetails from "./import-profile-details.vue";
 import {
@@ -266,10 +266,11 @@ import {
   useNotifications,
   notification,
   useBladeNavigation,
+  VcButton,
 } from "@vc-shell/framework";
-import { INotificationActions, UserPermissions } from "../../../types";
+import { UserPermissions } from "../../types";
 import useImport, { ExtProfile } from "../composables/useImport";
-import { ImportDataPreview, ImportPushNotification } from "../../../api_client/marketplacevendor";
+import { ImportDataPreview, ImportPushNotification } from "vc-vendor-portal-api/marketplacevendor";
 import ImportPopup from "../components/ImportPopup.vue";
 import ImportUploadStatus from "../components/ImportUploadStatus.vue";
 import ImportStatus from "../components/ImportStatus.vue";
@@ -291,6 +292,15 @@ export interface Emits {
   (event: "collapse:blade"): void;
   (event: "expand:blade"): void;
   (event: "parent:call", args: IParentCallArgs): void;
+}
+
+interface INotificationActions {
+  name: string | ComputedRef<string>;
+  clickHandler(): void;
+  outline: boolean;
+  variant?: InstanceType<typeof VcButton>["$props"]["variant"];
+  isVisible?: boolean | ComputedRef<boolean>;
+  disabled?: boolean | ComputedRef<boolean>;
 }
 
 interface IImportBadges {
@@ -315,7 +325,7 @@ const emit = defineEmits<Emits>();
 const { openBlade } = useBladeNavigation();
 
 const { t } = useI18n({ useScope: "global" });
-const { checkPermission } = usePermissions();
+const { hasAccess } = usePermissions();
 const { getAccessToken } = useUser();
 const {
   loading: importLoading,
@@ -405,7 +415,7 @@ const bladeToolbar = ref<IBladeToolbar[]>([
         param: profile.value.id,
       });
     },
-    isVisible: computed(() => !!(checkPermission(UserPermissions.SellerImportProfilesEdit) && profile.value)),
+    isVisible: computed(() => !!(hasAccess(UserPermissions.SellerImportProfilesEdit) && profile.value)),
     disabled: computed(() => importLoading.value || !profile.value.name),
   },
   {

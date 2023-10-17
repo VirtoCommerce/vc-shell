@@ -1,5 +1,4 @@
-import _OffersList from "./offers-list.vue";
-import _OffersDetails from "./offers-details.vue";
+import { grid as offersList } from "./grid";
+import { details as offersDetails } from "./details";
 
-export const OffersList = _OffersList as typeof _OffersList;
-export const OffersDetails = _OffersDetails as typeof _OffersDetails;
+export { offersList, offersDetails };

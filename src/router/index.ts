@@ -16,6 +16,7 @@ import {
 import whiteLogoImage from "/assets/logo-white.svg";
 // eslint-disable-next-line import/no-unresolved
 import bgImage from "/assets/background.jpg";
+import { useLogin } from "../composables";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -39,6 +40,7 @@ const routes: RouteRecordRaw[] = [
     path: "/login",
     component: Login,
     props: () => ({
+      composable: useLogin,
       logo: whiteLogoImage,
       background: bgImage,
       title: "Vendor Portal",
@@ -81,26 +83,23 @@ export const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-  const { fetchUserPermissions, checkPermission } = usePermissions();
+  const { hasAccess } = usePermissions();
   const { resolveBlades } = useBladeNavigation();
   const { isAuthenticated } = useUser();
   const pages = inject<BladePageComponent[]>("pages");
 
   if (to.name !== "Login" && to.name !== "ResetPassword" && to.name !== "Invite") {
     try {
-      // Fetch permissions if not any
-      await fetchUserPermissions();
-
       const component = pages.find((blade) => blade?.url === to.path);
 
-      const hasAccess = checkPermission(component?.permissions);
+      const _hasAccess = hasAccess(component?.permissions);
 
       if (!(await isAuthenticated()) && to.name !== "Login") {
         return { name: "Login" };
-      } else if (hasAccess && to.name !== "Login") {
+      } else if (_hasAccess && to.name !== "Login") {
         const resolvedBladeUrl = resolveBlades(to);
         return resolvedBladeUrl ? resolvedBladeUrl : true;
-      } else if (!hasAccess) {
+      } else if (!_hasAccess) {
         notification.error("Access restricted", {
           timeout: 3000,
         });

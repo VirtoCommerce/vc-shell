@@ -47,7 +47,6 @@
               class="tw-p-3"
               :label="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TITLE')"
               :tooltip="$t('IMPORT.PAGES.PROFILE_DETAILS.IMPORT_INPUTS.IMPORTER.TOOLTIP')"
-              name="importer"
               :options="dataImporters"
               option-value="typeName"
               option-label="typeName"
@@ -119,7 +118,7 @@ import {
   usePopup,
 } from "@vc-shell/framework";
 import useImport from "../composables/useImport";
-import { IDataImporter, ObjectSettingEntry } from "../../../api_client/marketplacevendor";
+import { IDataImporter, ObjectSettingEntry } from "vc-vendor-portal-api/marketplacevendor";
 import { useIsFormValid, Field, useForm, useIsFormDirty } from "vee-validate";
 import { useI18n } from "vue-i18n";
 

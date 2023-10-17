@@ -1,2 +1,2 @@
-export { default as useProducts } from "./useProducts";
-export { default as useProduct } from "./useProduct";
+export { useProductDetails } from "./useProductDetails";
+export { useProductsList } from "./useProductsList";

@@ -70,21 +70,15 @@ import {
   BladePageComponent,
   NotificationTemplateConstructor,
 } from "@vc-shell/framework";
-import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent } from "vue";
+import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { ImportProfileSelector } from "../modules/import";
-import { OffersList } from "../modules/offers";
-import { OrdersList } from "../modules/orders";
-import { ProductsList } from "../modules/products";
-import { MpProductsList } from "../modules/marketplace-products";
-import { ReviewList } from "../modules/rating";
-import { SellerDetails, TeamList, FulfillmentCenters } from "../modules/settings";
-import { UserPermissions } from "../types";
+// import { ImportProfileSelector } from "../modules/import";
+import * as modules from "vc-vendor-portal-modules";
+import { UserPermissions } from "./../modules/types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";
 // eslint-disable-next-line import/no-unresolved
 import logoImage from "/assets/logo.svg";
-import useSellerDetails from "../modules/settings/composables/useSellerDetails";
 import { useI18n } from "vue-i18n";
 
 const { open } = usePopup({
@@ -92,14 +86,14 @@ const { open } = usePopup({
 });
 
 const { t, locale: currentLocale, availableLocales, getLocaleMessage } = useI18n({ useScope: "global" });
-const { user, loadUser, signOut } = useUser();
-const { checkPermission } = usePermissions();
+const { user, signOut, isAdministrator } = useUser();
+const { hasAccess } = usePermissions();
 const { getUiCustomizationSettings, uiSettings, applySettings } = useSettings();
 const { blades, bladesRefs, workspaceOptions, workspaceParam, closeBlade, onParentCall, resolveLastBlade } =
   useBladeNavigation();
 const { navigationMenuComposer, toolbarComposer } = useMenuComposer();
 const { appsList, switchApp, getApps } = useAppSwitcher();
-const { sellerDetails, getCurrentSeller } = useSellerDetails();
+const { sellerDetails, getCurrentSeller } = modules.default.Settings.UseSellerDetails();
 const { moduleNotifications, notifications, markAsRead, loadFromHistory, markAllAsRead } =
   useNotifications("OrderCreatedEventHandler");
 const route = useRoute();
@@ -107,6 +101,8 @@ const router = useRouter();
 const isAuthorized = ref(false);
 const isReady = ref(false);
 const pages = inject<BladePageComponent[]>("pages");
+const internalRoutes = inject("bladeRoutes");
+provide("internalRoutes", internalRoutes);
 const notificationTemplates = inject<NotificationTemplateConstructor[]>("notificationTemplates");
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 const isMobile = inject<Ref<boolean>>("isMobile");
@@ -115,17 +111,18 @@ const bladeNavigationRefs = ref();
 
 onMounted(async () => {
   try {
-    await loadUser();
-    await getApps();
-    langInit();
-    await customizationHandler();
-    await loadFromHistory();
+    if (isAuthorized.value) {
+      await getApps();
+      langInit();
+      await loadFromHistory();
 
-    isReady.value = true;
-  } catch (e) {
-    if (!isAuthorized.value) {
-      router.push("/login");
+      await customizationHandler();
+
+      isReady.value = true;
     }
+  } catch (e) {
+    router.push("/login");
+
     throw e;
   }
 });
@@ -237,7 +234,7 @@ const mobileMenuItems = computed(() =>
     },
   ])
 );
-
+const { resolveBladeByName } = useBladeNavigation();
 const menuItems = reactive(
   navigationMenuComposer([
     {
@@ -255,7 +252,7 @@ const menuItems = reactive(
       title: computed(() => t("ORDERS.MENU.TITLE")),
       icon: "fas fa-file-alt",
       isVisible: true,
-      component: OrdersList,
+      component: modules.default.Orders.OrdersList,
     },
     {
       title: computed(() => t("PRODUCTS.MENU.TITLE")),
@@ -264,12 +261,12 @@ const menuItems = reactive(
       children: [
         {
           title: computed(() => t("PRODUCTS.MENU.MARKETPLACE_PRODUCTS")),
-          component: MpProductsList,
-          isVisible: computed(() => checkPermission(UserPermissions.SellerProductsSearchFromAllSellers)),
+          component: resolveBladeByName("MpProducts"),
+          isVisible: computed(() => hasAccess(UserPermissions.SellerProductsSearchFromAllSellers)),
         },
         {
           title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
-          component: ProductsList,
+          component: resolveBladeByName("Products"),
         },
       ],
     },
@@ -277,25 +274,25 @@ const menuItems = reactive(
       title: computed(() => t("OFFERS.MENU.TITLE")),
       icon: "fas fa-file-invoice",
       isVisible: true,
-      component: OffersList,
+      component: resolveBladeByName("Offers"),
     },
     {
       title: computed(() => t("IMPORT.MENU.TITLE")),
       icon: "fas fa-file-import",
       isVisible: true,
-      component: ImportProfileSelector,
+      component: resolveBladeByName("ImportProfileSelector"),
     },
     {
       title: computed(() => t("RATING.MENU.TITLE")),
       icon: "fas fa-star",
-      isVisible: computed(() => checkPermission(UserPermissions.ManageSellerReviews)),
-      component: ReviewList,
+      isVisible: computed(() => hasAccess(UserPermissions.ManageSellerReviews)),
+      component: modules.default.Rating.ReviewList,
     },
     {
       title: computed(() => t("SETTINGS.MENU.TITLE")),
       icon: "fas fa-sliders-h",
       isVisible: computed(() =>
-        checkPermission([
+        hasAccess([
           UserPermissions.SellerUsersManage,
           UserPermissions.SellerDetailsEdit,
           UserPermissions.ManageSellerFulfillmentCenters,
@@ -304,18 +301,18 @@ const menuItems = reactive(
       children: [
         {
           title: computed(() => t("SETTINGS.MENU.MY_TEAM")),
-          component: TeamList,
-          isVisible: computed(() => checkPermission(UserPermissions.SellerUsersManage)),
+          component: modules.default.Settings.TeamList,
+          isVisible: computed(() => hasAccess(UserPermissions.SellerUsersManage)),
         },
         {
           title: computed(() => t("SETTINGS.MENU.FULFILLMENT_CENTERS")),
-          component: FulfillmentCenters,
-          isVisible: computed(() => checkPermission(UserPermissions.ManageSellerFulfillmentCenters)),
+          component: modules.default.Settings.FulfillmentCenters,
+          isVisible: computed(() => hasAccess(UserPermissions.ManageSellerFulfillmentCenters)),
         },
         {
           title: computed(() => t("SETTINGS.MENU.SELLER_DETAILS")),
-          component: SellerDetails,
-          isVisible: computed(() => checkPermission(UserPermissions.SellerDetailsEdit)),
+          component: modules.default.Settings.SellerDetails,
+          isVisible: computed(() => hasAccess(UserPermissions.SellerDetailsEdit)),
         },
       ],
     },
@@ -362,7 +359,7 @@ const openDashboard = async () => {
 };
 
 async function customizationHandler() {
-  if (!user.value.isAdministrator) {
+  if (!isAdministrator.value) {
     await getCurrentSeller();
   }
   await getUiCustomizationSettings();
@@ -376,7 +373,7 @@ async function customizationHandler() {
   if (sellerDetails.value.name) {
     applySettings({ title: sellerDetails.value.name });
   } else {
-    applySettings({ title: undefined });
+    applySettings({ title: "Vendor Portal" });
   }
 }
 </script>

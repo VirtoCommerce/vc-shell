@@ -44,7 +44,7 @@
 
 <script lang="ts" setup>
 import { ref, computed, watch, onMounted, markRaw } from "vue";
-import { UserPermissions } from "../../../../types";
+import { UserPermissions } from "../../../types";
 import { IBladeToolbar, ITableColumns, useBladeNavigation } from "@vc-shell/framework";
 import useFulfillmentCenters from "../../composables/useFulfillmentCenters";
 import FulfillmentCenterDetails from "./fulfillment-center-details.vue";

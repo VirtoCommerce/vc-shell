@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Router } from "vue-router";
 import * as pages from "./pages";
 import { App, Component, DefineComponent, defineComponent } from "vue";
 import { DynamicSchema, OverridesSchema } from "./types";
@@ -39,9 +38,9 @@ const register = (
   args: {
     app: App;
     component: BladeConstructor;
-    composables: any;
+    composables: { [key: string]: (...args: any[]) => any };
     json: DynamicSchema;
-    options?: { router: Router };
+    options?: { router: any };
   },
   appModuleContent: {
     locales?: { [key: string]: object };
@@ -53,7 +52,7 @@ const register = (
   const bladeComponent = _.cloneDeep(component);
   let rawUrl: `/${string}`;
 
-  const bladeName = kebabToPascal(json.settings.name);
+  const bladeName = kebabToPascal(json.settings.id);
 
   if (json.settings.url) {
     rawUrl = json.settings.url as `/${string}`;
@@ -103,19 +102,23 @@ const handleError = (errorKey: string, schema: { [key: string]: DynamicSchema },
 
 export const createDynamicAppModule = <T extends BladeMenu>(args: {
   schema: { [key: string]: DynamicSchema };
-  composables: any;
+  composables: { [key: string]: (...args: any[]) => any };
   menuConfig?: { [I in keyof T]: NavigationMenu<T[I]> };
   overrides?: OverridesSchema;
   moduleComponents?: { [key: string]: Component };
   locales?: { [key: string]: object };
   notificationTemplates?: { [key: string]: Component };
 }) => {
-  const moduleInitializer = _.findKey(args.schema, (o) => "moduleName" in o.settings && o.settings.moduleName);
-  const everyHasTemplate = _.every(Object.values(args.schema), (o) => o.settings.template);
+  const moduleInitializer = _.findKey(args.schema, (o) => "isWorkspace" in o.settings && o.settings.isWorkspace);
+  const everyHasTemplate = _.every(Object.values(args.schema), (o) => o.settings.component);
 
-  if (!everyHasTemplate) handleError("template", args.schema, "must be included in 'settings' of every file");
+  if (!everyHasTemplate) handleError("component", args.schema, "must be included in 'settings' of every file");
   if (!moduleInitializer)
-    handleError("moduleName", args.schema, "must be included in one of this files to initialize the module");
+    handleError(
+      "isWorkspace",
+      args.schema,
+      "must be included in one of this files to initialize module workspace blade"
+    );
 
   if (moduleInitializer && everyHasTemplate) {
     let schemaCopy = _.cloneDeep({ ...args.schema });
@@ -125,7 +128,7 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
     }
 
     return {
-      install(app: App, options: { router }) {
+      install(app: App, options: { router: any }) {
         const bladePages = { ...pages };
         const appModuleContent = {
           locales: args?.locales,
@@ -136,7 +139,7 @@ export const createDynamicAppModule = <T extends BladeMenu>(args: {
           const blade = register(
             {
               app,
-              component: bladePages[JsonSchema.settings.template],
+              component: bladePages[JsonSchema.settings.component],
               composables: { ...args.composables },
               json: JsonSchema,
               options,

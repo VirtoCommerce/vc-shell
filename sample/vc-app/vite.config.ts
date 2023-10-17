@@ -5,6 +5,13 @@ import { splitVendorChunkPlugin } from "vite";
 const mode = process.env.APP_ENV as string;
 
 export default getApplicationConfiguration({
+  resolve: {
+    alias: {
+      "vc-sample-modules": mode === "development" ? "src/modules/index.ts" : "vc-sample-modules",
+      "vc-marketplacevendor-api":
+        mode === "development" ? "src/api_client/marketplacevendor.ts" : "vc-marketplacevendor-api",
+    },
+  },
   plugins: [
     VitePWA({
       includeAssets: ["favicon.ico", "apple-touch-icon.png"],

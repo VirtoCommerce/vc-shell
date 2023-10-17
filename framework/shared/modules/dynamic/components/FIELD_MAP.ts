@@ -11,17 +11,17 @@ import Button from "./fields/Button";
 import StatusField from "./fields/StatusField";
 
 const FIELD_MAP = {
-  select: SelectField,
-  card: Card,
-  input: InputField,
-  fieldset: Fieldset,
-  "input-currency": InputCurrency,
-  checkbox: Checkbox,
-  "dynamic-properties": DynamicProperty,
-  editor: EditorField,
-  gallery: GalleryField,
-  button: Button,
-  status: StatusField,
+  "vc-select": SelectField,
+  "vc-card": Card,
+  "vc-input": InputField,
+  "vc-fieldset": Fieldset,
+  "vc-input-currency": InputCurrency,
+  "vc-checkbox": Checkbox,
+  "vc-dynamic-properties": DynamicProperty,
+  "vc-editor": EditorField,
+  "vc-gallery": GalleryField,
+  "vc-button": Button,
+  "vc-status": StatusField,
 };
 
 export default FIELD_MAP;

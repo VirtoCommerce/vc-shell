@@ -14,7 +14,6 @@ export default {
       const field = SelectField({
         props: {
           ...props.baseProps,
-
           optionValue: props.element.optionValue,
           optionLabel: props.element.optionLabel,
           emitValue: props.element.emitValue,

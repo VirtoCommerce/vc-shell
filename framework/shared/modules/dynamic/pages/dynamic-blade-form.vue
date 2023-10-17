@@ -61,14 +61,27 @@
 <script lang="ts" setup>
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useI18n } from "vue-i18n";
-import { computed, h, nextTick, reactive, ref, resolveComponent, toValue, unref, watch, onBeforeMount } from "vue";
+import {
+  computed,
+  h,
+  nextTick,
+  reactive,
+  ref,
+  resolveComponent,
+  toValue,
+  unref,
+  watch,
+  onBeforeMount,
+  UnwrapRef,
+} from "vue";
 import { DynamicDetailsSchema, FormContentSchema } from "../types";
 import { reactiveComputed } from "@vueuse/core";
 import * as _ from "lodash-es";
 import { IBladeToolbar } from "../../../../core/types";
-import { BladeContext, DetailsBaseBladeScope, IParentCallArgs, UseDetails, usePopup } from "../../../index";
+import { DetailsBladeContext, DetailsBaseBladeScope, IParentCallArgs, UseDetails, usePopup } from "../../../index";
 import SchemaRender from "../components/SchemaRender";
 import { VcSelect } from "../../../../ui/components";
+import { toolbarReducer } from "../helpers/toolbarReducer";
 
 interface Props {
   expanded?: boolean;
@@ -125,12 +138,12 @@ const unwatchTitle = watch(
 const settings = computed(() => props.model?.settings);
 
 const form = computed(
-  (): FormContentSchema => props.model?.content.find((x) => x.type === "form") as FormContentSchema
+  (): FormContentSchema => props.model?.content.find((x) => x.component === "vc-form") as FormContentSchema
 );
 
-const widgets = computed(() => props.model.content.find((x) => x.type === "widgets"));
+const widgets = computed(() => props.model.content.find((x) => x.component === "vc-widgets"));
 
-const bladeContext = ref<BladeContext>({
+const bladeContext = ref<DetailsBladeContext>({
   loading,
   item,
   validationState,
@@ -185,9 +198,9 @@ const bladeOptions = reactive({
   status: bladeStatus,
 });
 
-const toolbarMethods = _.merge(
-  ref({}),
-  ref({
+const toolbarComputed = toolbarReducer({
+  defaultToolbarSchema: settings.value.toolbar,
+  defaultToolbarBindings: {
     saveChanges: {
       async clickHandler() {
         await saveChanges(item.value);
@@ -219,28 +232,9 @@ const toolbarMethods = _.merge(
       },
       disabled: computed(() => toValue(scope)?.disabled),
     },
-  }),
-  ref(toValue(scope)?.toolbarOverrides)
-);
-
-const toolbarComputed = computed((): IBladeToolbar[] => {
-  return props.model?.settings.toolbar.reduce((acc, curr) => {
-    const toolbarItemCtx = toolbarMethods.value[curr.method];
-
-    if (toolbarItemCtx) {
-      const context =
-        typeof toolbarItemCtx === "function"
-          ? { clickHandler: async () => await toolbarItemCtx() }
-          : { ...toolbarItemCtx };
-
-      acc.push({
-        ...curr,
-        ...context,
-      });
-    }
-
-    return acc;
-  }, []);
+  },
+  customToolbarConfig: toValue(scope)?.toolbarOverrides,
+  context: bladeContext.value,
 });
 
 onBeforeMount(async () => {

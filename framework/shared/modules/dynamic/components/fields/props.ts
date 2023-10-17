@@ -1,5 +1,5 @@
 import { ComputedRef, PropType, UnwrapNestedRefs, VNodeArrayChildren } from "vue";
-import { BladeContext } from "../../factories";
+import { DetailsBladeContext } from "../../factories";
 import { IControlBaseOptions, IControlBaseProps } from "../../types/models";
 import { ControlSchema } from "../../types";
 
@@ -17,8 +17,8 @@ export default {
     default: () => ({} as ControlSchema),
   },
   bladeContext: {
-    type: Object as PropType<UnwrapNestedRefs<BladeContext>>,
-    default: () => ({} as BladeContext),
+    type: Object as PropType<UnwrapNestedRefs<DetailsBladeContext>>,
+    default: () => ({} as DetailsBladeContext),
   },
   fields: {
     type: Object as PropType<ComputedRef<VNodeArrayChildren>>,

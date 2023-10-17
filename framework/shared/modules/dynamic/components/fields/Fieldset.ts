@@ -66,10 +66,6 @@ export default {
                       },
                       onClick: () => {
                         props.bladeContext.scope[props.element.remove?.method](index);
-
-                        nextTick(() => {
-                          props.bladeContext.validationState.validate();
-                        });
                       },
                     })
                   : undefined,

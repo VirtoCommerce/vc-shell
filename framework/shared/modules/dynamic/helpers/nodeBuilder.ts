@@ -5,10 +5,13 @@ import { IControlBaseProps, IControlBaseOptions } from "../types/models";
 import { getModel } from "./getters";
 import { setModel } from "./setters";
 import { unwrapInterpolation } from "./unwrapInterpolation";
-import { BladeContext } from "../factories";
+import { DetailsBladeContext } from "../factories";
 import * as _ from "lodash-es";
 
-function disabledHandler(disabled: { method?: string } | boolean, context: UnwrapNestedRefs<BladeContext>): boolean {
+function disabledHandler(
+  disabled: { method?: string } | boolean,
+  context: UnwrapNestedRefs<DetailsBladeContext>
+): boolean {
   if (!disabled) return false;
   if (typeof disabled === "boolean") return disabled;
   else if (typeof context.scope[disabled.method] === "function") return context.scope[disabled.method]();
@@ -16,7 +19,7 @@ function disabledHandler(disabled: { method?: string } | boolean, context: Unwra
   return false;
 }
 
-function nodeBuilder<Context, BContext extends UnwrapNestedRefs<BladeContext>, FormData>(args: {
+function nodeBuilder<Context, BContext extends UnwrapNestedRefs<DetailsBladeContext>, FormData>(args: {
   controlSchema: ControlSchema;
   parentId: string | number;
   internalContext: Context;
@@ -28,12 +31,12 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<BladeContext>, F
   if (!controlSchema) return false;
 
   const baseProps = reactive<IControlBaseProps>({
-    key: `${parentId}-${controlSchema.id}`,
+    key: `${parentId}`,
     label: controlSchema.label ? unref(unwrapInterpolation(controlSchema.label, internalContext)) : undefined,
     disabled:
       ("disabled" in bladeContext.scope && bladeContext.scope.disabled) ||
       disabledHandler("disabled" in controlSchema && controlSchema.disabled, bladeContext),
-    name: controlSchema.name,
+    name: controlSchema.id,
     rules: controlSchema.rules,
     placeholder: controlSchema.placeholder,
     required: controlSchema.rules?.required,
@@ -58,7 +61,7 @@ function nodeBuilder<Context, BContext extends UnwrapNestedRefs<BladeContext>, F
     ),
   });
 
-  const component = FIELD_MAP[controlSchema.type];
+  const component = FIELD_MAP[controlSchema.component];
 
   const fieldsHandler = computed(() => {
     if (!("fields" in controlSchema)) return null;

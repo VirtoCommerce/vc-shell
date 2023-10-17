@@ -30,7 +30,7 @@ export interface DynamicDetailsSchema {
 export type SettingsSchema = SettingsWorkspace | SettingsDetails;
 
 export interface SettingsWorkspace extends SettingsBase {
-  moduleName: string;
+  isWorkspace: boolean;
 }
 
 export interface SettingsDetails extends SettingsBase {
@@ -49,9 +49,9 @@ export interface SettingsBase {
    */
   localizationPrefix: string;
   /**
-   * @description Required component name
+   * @description Required component id
    */
-  name: string;
+  id: string;
   /**
    * @description Blade default header title
    */
@@ -72,9 +72,9 @@ export interface SettingsBase {
     method: string;
   }[];
   /**
-   * @description Blade component view template
+   * @description Blade component
    */
-  template: string;
+  component: string;
   /**
    * @description Blade permissions
    */
@@ -82,8 +82,8 @@ export interface SettingsBase {
 }
 
 export interface ListContentSchema extends SchemaBase {
-  type: "grid";
-  filter?: FilterCheckbox | FilterDateInput;
+  component: "vc-table";
+  filter?: FilterSchema;
   multiselect?: boolean;
   header?: boolean;
   columns?: (ITableColumns & {
@@ -106,7 +106,7 @@ export interface ListContentSchema extends SchemaBase {
 }
 
 export interface FormContentSchema extends SchemaBase {
-  type: "form";
+  component: "vc-form";
   children: ControlSchema[];
 }
 
@@ -121,7 +121,6 @@ export interface SchemaBase {
   id: string;
   label?: string;
   property?: string;
-  name?: string;
   rules?: IValidationRules;
   placeholder?: string;
   disabled?: { method: string };
@@ -132,7 +131,7 @@ export interface SchemaBase {
 }
 
 export interface SelectSchema extends SchemaBase {
-  type: "select";
+  component: "vc-select";
   optionValue: string;
   optionLabel: string;
   optionsMethod: string;
@@ -144,13 +143,13 @@ export interface SelectSchema extends SchemaBase {
 }
 
 export interface InputSchema extends SchemaBase {
-  type: "input";
+  component: "vc-input";
   variant?: ComponentProps<typeof VcInput>["type"];
   clearable?: boolean;
 }
 
 export interface StatusSchema extends SchemaBase {
-  type: "status";
+  component: "vc-status";
   outline?: boolean;
   extend?: boolean;
   variant?: ComponentProps<typeof VcStatus>["variant"];
@@ -164,7 +163,7 @@ export interface StatusSchema extends SchemaBase {
 }
 
 export interface InputCurrencySchema extends SchemaBase {
-  type: "input-currency";
+  component: "vc-input-currency";
   optionProperty: string;
   optionValue?: string;
   optionLabel?: string;
@@ -172,41 +171,41 @@ export interface InputCurrencySchema extends SchemaBase {
 }
 
 export interface EditorSchema extends SchemaBase {
-  type: "editor";
+  component: "vc-editor";
 }
 
 export interface DynamicPropertiesSchema extends SchemaBase {
-  type: "dynamic-properties";
+  component: "vc-dynamic-properties";
   exclude?: string[];
   include?: string[];
 }
 
 export interface GallerySchema extends SchemaBase {
-  type: "gallery";
+  component: "vc-gallery";
   uploadFolder: string;
 }
 
 export interface CardSchema extends SchemaBase {
-  type: "card";
+  component: "vc-card";
   fields: ControlSchema[];
   action?: ButtonSchema & { method: string };
   collapsible?: boolean;
 }
 
 export interface WidgetsSchema extends SchemaBase {
-  type: "widgets";
+  component: "vc-widgets";
   children: string[];
 }
 
 export interface CheckboxSchema extends SchemaBase {
-  type: "checkbox";
+  component: "vc-checkbox";
   content: string;
   trueValue?: boolean;
   falseValue?: boolean;
 }
 
 export interface FieldsetSchema extends SchemaBase {
-  type: "fieldset";
+  component: "vc-fieldset";
   columns?: number;
   fields: Exclude<ControlSchema[], FieldsetSchema>;
   remove?: {
@@ -215,7 +214,7 @@ export interface FieldsetSchema extends SchemaBase {
 }
 
 export interface ButtonSchema extends SchemaBase {
-  type: "button";
+  component: "vc-button";
   content: string;
   small?: boolean;
   icon?: string;
@@ -238,17 +237,17 @@ export type ControlSchema =
   | InputCurrencySchema
   | StatusSchema;
 
-interface FilterBase {
+export interface FilterBase {
   columns: {
     title: string;
     controls: {
       field: string;
-      type: string;
+      component: InputSchema["component"] | CheckboxSchema["component"];
     }[];
   }[];
 }
 
-type FilterCheckbox = FilterBase & {
+export type FilterCheckbox = FilterBase & {
   columns: {
     controls: {
       data?: { value: string; displayName: string }[];
@@ -256,13 +255,15 @@ type FilterCheckbox = FilterBase & {
   }[];
 };
 
-type FilterDateInput = FilterBase & {
+export type FilterDateInput = FilterBase & {
   columns: {
     controls: {
       label?: string;
     }[];
   }[];
 };
+
+export type FilterSchema = FilterCheckbox | FilterDateInput;
 
 export interface OverridesSchema {
   upsert?: (OverridesUpsert | OverridesReplace)[];
@@ -275,11 +276,12 @@ export interface OverridesUpsert extends OverridesReplace {
 
 export interface OverridesReplace {
   path: string;
-  value: ControlSchema | SettingsSchema["toolbar"][number];
-  name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  value: ControlSchema | SettingsSchema["toolbar"][number] | string | boolean;
+  id: string;
 }
 
 export interface OverridesRemove {
   path: string;
-  name: string;
+  id: string;
 }

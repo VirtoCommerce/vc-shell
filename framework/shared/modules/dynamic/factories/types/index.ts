@@ -39,7 +39,7 @@ export interface UseDetails<Item, Scope extends DetailsBaseBladeScope = DetailsB
   bladeTitle?: ComputedRef<string>;
 }
 
-export interface UseList<Items, Query, Scope extends DetailsBaseBladeScope = DetailsBaseBladeScope> {
+export interface UseList<Items, Query, Scope extends ListBaseBladeScope = ListBaseBladeScope> {
   items: ComputedRef<Items>;
   query: Ref<Query>;
   loading: ComputedRef<boolean>;
@@ -51,12 +51,12 @@ export interface UseList<Items, Query, Scope extends DetailsBaseBladeScope = Det
   }>;
   load: AsyncAction<Query>;
   remove?: AsyncAction<CustomQuery>;
-  scope?: ComputedRef<Scope>;
+  scope?: ComputedRef<UnwrapNestedRefs<Scope>>;
 }
 
-interface BaseBladeScope {
+export interface BaseBladeScope {
   [x: string]: any;
-  toolbarOverrides?: { [x: string]: any };
+  toolbarOverrides?: { [x: string]: IBladeToolbar } | ((...args: any[]) => any);
 }
 
 export interface ListBaseBladeScope extends BaseBladeScope {
@@ -94,6 +94,10 @@ export interface DetailsBaseBladeScope extends BaseBladeScope {
   };
 }
 
-export interface BladeContext extends UseDetails<Record<string, any>, DetailsBaseBladeScope> {
+export interface DetailsBladeContext extends UseDetails<Record<string, any>, DetailsBaseBladeScope> {
+  settings: ComputedRef<SettingsSchema>;
+}
+
+export interface ListBladeContext extends UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope> {
   settings: ComputedRef<SettingsSchema>;
 }

@@ -40,6 +40,7 @@ coverage/
 dist/
 storybook-static
 *.tsbuildinfo
+/dist/
 
 # IDEs and editors
 /.idea

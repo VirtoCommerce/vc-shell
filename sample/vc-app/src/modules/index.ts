@@ -1,7 +1,5 @@
-import * as SampleTeam from "./sample";
-import * as Team from "./legacy-sample";
+import * as Offers from "./offers";
 
 export default {
-  SampleTeam,
-  Team,
+  Offers,
 };

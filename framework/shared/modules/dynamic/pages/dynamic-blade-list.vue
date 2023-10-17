@@ -126,7 +126,8 @@ import { useFilterBuilder } from "../composables";
 import * as _ from "lodash-es";
 import { useFunctions } from "../../../../core/composables";
 import { IBladeToolbar, ITableColumns } from "../../../../core/types";
-import { DetailsBaseBladeScope, UseList, usePopup } from "../../../index";
+import { ListBladeContext, UseList, usePopup, ListBaseBladeScope } from "../../../index";
+import { toolbarReducer } from "../helpers/toolbarReducer";
 
 export interface Props {
   expanded?: boolean;
@@ -168,7 +169,7 @@ const sort = ref("createdDate:DESC");
 const selectedIds = ref<string[]>([]);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
 
-const tableData = computed(() => props.model?.content.find((type: ListContentSchema) => type.type === "grid"));
+const tableData = computed(() => props.model?.content.find((type: ListContentSchema) => type.component === "vc-table"));
 const table = computed(() => {
   const tableScope = {
     columns: tableData.value?.columns,
@@ -181,9 +182,9 @@ const bladeOptions = reactive({
   tableData,
   table,
   templateOverrideComponents: templateOverrideComponents(),
-  mobileView: mobileViewComponent(),
-  notFound: notFoundComponent(),
-  empty: emptyComponent(),
+  mobileView: resolveTemplateComponent("mobileTemplate"),
+  notFound: resolveTemplateComponent("notFoundTemplate"),
+  empty: resolveTemplateComponent("emptyTemplate"),
 });
 
 const { load, remove, items, loading, pagination, query, scope } = props.composables[props.model?.settings?.composable](
@@ -191,7 +192,7 @@ const { load, remove, items, loading, pagination, query, scope } = props.composa
     emit,
     props,
   }
-) as UseList<Record<string, any>[], Record<string, any>, DetailsBaseBladeScope>;
+) as UseList<Record<string, any>[], Record<string, any>, ListBaseBladeScope>;
 
 const {
   filterComponent,
@@ -205,9 +206,20 @@ const {
   load,
 });
 
-const toolbarMethods = _.merge(
-  ref({}),
-  ref({
+const bladeContext = ref<ListBladeContext>({
+  load,
+  remove,
+  items,
+  loading,
+  pagination,
+  query,
+  scope,
+  settings,
+});
+
+const toolbarComputed = toolbarReducer({
+  defaultToolbarSchema: settings.value.toolbar,
+  defaultToolbarBindings: {
     openAddBlade: {
       async clickHandler() {
         if (
@@ -231,28 +243,9 @@ const toolbarMethods = _.merge(
       disabled: computed(() => !selectedIds.value?.length),
       isVisible: isDesktop.value,
     },
-  }),
-  ref(toValue(scope))
-);
-
-const toolbarComputed = computed((): IBladeToolbar[] => {
-  return props.model.settings.toolbar.reduce((acc, curr) => {
-    const toolbarItemCtx = toolbarMethods.value[curr.method];
-
-    if (toolbarItemCtx) {
-      const context =
-        typeof toolbarItemCtx === "function"
-          ? { clickHandler: async () => await toolbarItemCtx() }
-          : { ...toolbarItemCtx };
-
-      acc.push({
-        ...curr,
-        ...context,
-      });
-    }
-
-    return acc;
-  }, []);
+  },
+  customToolbarConfig: toValue(scope)?.toolbarOverrides,
+  context: bladeContext.value,
 });
 
 onMounted(async () => {
@@ -427,26 +420,9 @@ function templateOverrideComponents(): Record<string, VNode> {
   };
 }
 
-function mobileViewComponent() {
-  const componentName = tableData.value.mobileTemplate?.component;
-  if (componentName) {
-    const component = resolveComponent(componentName);
-
-    if (component && typeof component !== "string") return shallowRef(component);
-  }
-}
-
-function notFoundComponent() {
-  const componentName = tableData.value.notFoundTemplate?.component;
-  if (componentName) {
-    const component = resolveComponent(componentName);
-
-    if (component && typeof component !== "string") return shallowRef(component);
-  }
-}
-
-function emptyComponent() {
-  const componentName = tableData.value.emptyTemplate?.component;
+function resolveTemplateComponent(name: string) {
+  if (!tableData.value) return;
+  const componentName = tableData[name]?.component;
   if (componentName) {
     const component = resolveComponent(componentName);
 

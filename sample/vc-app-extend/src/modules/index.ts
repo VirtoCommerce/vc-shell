@@ -1,2 +1,2 @@
-import ExtendedModule from "./extends-sample";
-export { ExtendedModule };
+import ExtendedOffers from "./offers-extend";
+export { ExtendedOffers };

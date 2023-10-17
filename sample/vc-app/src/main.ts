@@ -3,8 +3,7 @@ import { createApp } from "vue";
 import { router } from "./router";
 import * as locales from "./locales";
 import { RouterView } from "vue-router";
-import { useLogin } from "./composables";
-import modules from "./modules";
+import modules from "vc-sample-modules";
 
 // Load required CSS
 import "./styles/index.scss";
@@ -20,9 +19,7 @@ async function startApp() {
   const app = createApp(RouterView);
   app.use(VirtoShellFramework);
 
-  Object.values(modules).forEach((module) => {
-    app.use(module.default, { router });
-  });
+  app.use(modules.Offers.default, { router });
 
   app.use(router);
 

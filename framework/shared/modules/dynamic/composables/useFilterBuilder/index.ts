@@ -20,7 +20,7 @@ import { VcButton, VcCol, VcContainer, VcRow } from "../../../../../ui/component
 
 interface RawControl {
   field: string;
-  type: string;
+  component: string;
   label?: string;
   data?: { value: string; displayName: string }[];
 }
@@ -98,13 +98,13 @@ export default <Query>(args: { data: Data; query: MaybeRef<Query>; load: AsyncAc
     }
     controls.value = _data.columns.map((item): Control => {
       const ctr = item.controls.reduce((obj, control) => {
-        if (control.type === "checkbox") {
+        if (control.component === "vc-checkbox") {
           const filterData = control.data;
           const fields = createCheckboxFromData(filterData, control);
 
           obj = fields;
         }
-        if (control.type === "input") {
+        if (control.component === "vc-input") {
           obj[control.field] = createInput(control);
         }
 

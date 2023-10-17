@@ -18,20 +18,17 @@
     "outDir": "dist",
     "rootDir": "src",
     "strict": false,
-    "lib": [
-      "esnext",
-      "dom"
-    ],
-    "types": [
-      "vite/client",
-      ]
+    "lib": ["esnext", "dom"],
+    "types": ["vite/client"],
+    "paths": {
+      "vc-marketplacevendor-api": ["src/api_client"]
+    }
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.vue",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
+  "include": ["src/**/*.ts", "src/**/*.vue"],
+  "exclude": ["node_modules", "dist", "src/modules"],
+  "references": [
+    {
+      "path": "src/api_client"
+    }
   ]
 }

@@ -15,7 +15,6 @@ export default {
       const field = InputCurrency({
         props: {
           ...props.baseProps,
-
           option: getModel(props.element.optionProperty, props.fieldContext).value,
           optionLabel: props.element.optionLabel,
           optionValue: props.element.optionValue,

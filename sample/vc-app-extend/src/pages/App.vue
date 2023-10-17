@@ -217,11 +217,17 @@ const menuItems = reactive(
         open();
       },
     },
+    // {
+    //   title: "Dynamic Extended",
+    //   icon: "fas fa-star",
+    //   isVisible: true,
+    //   component: resolveBladeByName("TeamJ"),
+    // },
     {
-      title: "Dynamic Extended",
-      icon: "fas fa-star",
+      title: "Offers",
+      icon: "fas fa-file-invoice",
       isVisible: true,
-      component: resolveBladeByName("TeamJ"),
+      component: resolveBladeByName("OffersJ"),
     },
     {
       title: computed(() => t("SHELL.ACCOUNT.LOGOUT")),

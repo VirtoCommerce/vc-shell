@@ -12,7 +12,6 @@ export default {
       const field = Checkbox({
         props: {
           ...props.baseProps,
-
           trueValue: props.element.trueValue,
           falseValue: props.element.falseValue,
         },

@@ -2,12 +2,12 @@
 import { PropType, ref, toRefs, watch, ExtractPropTypes, h, VNode, defineComponent, UnwrapNestedRefs } from "vue";
 import { ControlSchema } from "../types";
 import * as _ from "lodash-es";
-import { BladeContext } from "../factories/types";
+import { DetailsBladeContext } from "../factories/types";
 import { nodeBuilder } from "../helpers/nodeBuilder";
 
 const schemeRenderProps = {
   context: {
-    type: Object as PropType<UnwrapNestedRefs<BladeContext>>,
+    type: Object as PropType<UnwrapNestedRefs<DetailsBladeContext>>,
     default: () => ({}),
   },
   modelValue: {

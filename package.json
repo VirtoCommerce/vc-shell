@@ -11,7 +11,7 @@
     "build:app": "cross-env APP_ENV=production vite build",
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types",
     "build:api": "tsc -p ./src/api_client",
-    "publish": "yarn workspaces foreach -v --from '{vc-vendor-portal-modules,vc-vendor-portal-api/marketplacevendor}' npm publish",
+    "publish": "yarn workspaces foreach -v --from '{vc-vendor-portal-modules,vc-vendor-portal-api}' npm publish",
     "build:modules-library": "yarn build:modules && yarn build:types-modules",
     "build:modules": "vite build --config ./src/modules/vite.config.ts",
     "build:types-modules": "vue-tsc --declaration --emitDeclarationOnly --p ./src/modules/tsconfig.json --outDir ./src/modules/dist/types",

@@ -1,7 +1,6 @@
 {
   "name": "vc-vendor-portal-api",
   "version": "1.0.106",
-  "type": "module",
   "files": [
     "dist",
     "package.json"
@@ -20,13 +19,13 @@
     }
   },
   "exports": {
-    "marketplacevendor": {
+    "./marketplacevendor": {
       "import": "./dist/marketplacevendor.js"
     },
-    "orders": {
+    "./orders": {
       "import": "./dist/orders.js"
     },
-    "catalog": {
+    "./catalog": {
       "import": "./dist/catalog.js"
     }
   },

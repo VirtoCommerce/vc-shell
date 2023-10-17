@@ -27,7 +27,7 @@
       ],
     "paths": {
       "vc-vendor-portal-modules": ["src/modules"],
-      "vc-vendor-portal-api/marketplacevendor": ["src/api_client"]
+      "vc-vendor-portal-api": ["src/api_client"]
     }
   },
   "include": [

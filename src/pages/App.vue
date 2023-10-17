@@ -266,7 +266,7 @@ const menuItems = reactive(
         },
         {
           title: computed(() => t("PRODUCTS.MENU.MY_PRODUCTS")),
-          component: resolveBladeByName("ProductsJ"),
+          component: resolveBladeByName("Products"),
         },
       ],
     },
@@ -274,7 +274,7 @@ const menuItems = reactive(
       title: computed(() => t("OFFERS.MENU.TITLE")),
       icon: "fas fa-file-invoice",
       isVisible: true,
-      component: resolveBladeByName("OffersJ"),
+      component: resolveBladeByName("Offers"),
     },
     {
       title: computed(() => t("IMPORT.MENU.TITLE")),

@@ -13,6 +13,9 @@
       ],
       "orders": [
         "./dist/types/orders.d.ts"
+      ],
+      "catalog": [
+        "./dist/types/catalog.d.ts"
       ]
     }
   },
@@ -22,6 +25,9 @@
     },
     "orders": {
       "import": "./dist/orders.js"
+    },
+    "catalog": {
+      "import": "./dist/catalog.js"
     }
   },
   "scripts": {

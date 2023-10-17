@@ -17,6 +17,7 @@ export default {
         "vue-router",
         "vc-vendor-portal-api/marketplacevendor",
         "vc-vendor-portal-api/orders",
+        "vc-vendor-portal-api/catalog",
         "vee-validate",
         "vue-i18n",
         "moment",

@@ -2,8 +2,8 @@ import { DynamicDetailsSchema } from "@vc-shell/framework";
 
 export const details: DynamicDetailsSchema = {
   settings: {
-    url: "/product-j",
-    id: "ProductJ",
+    url: "/product",
+    id: "Product",
     titleTemplate: "Product details",
     localizationPrefix: "Products",
     composable: "useProductDetails",
@@ -167,7 +167,7 @@ export const details: DynamicDetailsSchema = {
     {
       id: "productWidgets",
       component: "vc-widgets",
-      children: ["OffersWidget", "AssetsWidget"],
+      children: ["OffersWidget", "VideosWidget", "AssetsWidget"],
     },
   ],
 };

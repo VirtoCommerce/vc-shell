@@ -3,7 +3,7 @@ import { DynamicDetailsSchema } from "@vc-shell/framework";
 export const details: DynamicDetailsSchema = {
   settings: {
     url: "/offer-j",
-    id: "OfferJ",
+    id: "Offer",
     localizationPrefix: "Offers",
     titleTemplate: "Offer details",
     composable: "useOfferDetails",

@@ -21,6 +21,7 @@ export interface OffersListScope extends ListBaseBladeScope {}
 const { getApiClient } = useApiClient(VcmpSellerCatalogClient);
 
 export const useOffersList = (args: {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   props: InstanceType<typeof DynamicBladeList>["$props"] & { options: { sellerProduct: any } };
   emit: InstanceType<typeof DynamicBladeList>["$emit"];
 }): UseList<Offer[], ISearchOffersQuery, OffersListScope> => {
@@ -45,7 +46,7 @@ export const useOffersList = (args: {
 
   function openDetailsBlade(data?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
     openBlade({
-      blade: resolveBladeByName("OfferJ"),
+      blade: resolveBladeByName("Offer"),
       options: {
         sellerProduct: args.props.options.sellerProduct,
       },

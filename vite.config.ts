@@ -12,6 +12,8 @@ export default getApplicationConfiguration({
         mode === "development" ? "src/api_client/orders.ts" : "vc-vendor-portal-api/orders",
       "vc-vendor-portal-api/marketplacevendor":
         mode === "development" ? "src/api_client/marketplacevendor.ts" : "vc-vendor-portal-api/marketplacevendor",
+      "vc-vendor-portal-api/catalog":
+        mode === "development" ? "src/api_client/catalog.ts" : "vc-vendor-portal-api/catalog",
     },
   },
   plugins: [

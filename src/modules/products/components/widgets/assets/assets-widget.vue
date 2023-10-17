@@ -2,7 +2,7 @@
   <VcWidget
     v-bind="props"
     :value="count"
-    title="Assets"
+    :title="$t('PRODUCTS.PAGES.DETAILS.WIDGETS.ASSETS')"
     icon="far fa-file"
     @click="clickHandler"
   >

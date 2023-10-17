@@ -423,7 +423,7 @@ function open(key: string): void {
     case "products-list":
       openBlade(
         {
-          blade: resolveBladeByName("ProductsJ"),
+          blade: resolveBladeByName("Products"),
         },
         true
       );
@@ -431,7 +431,7 @@ function open(key: string): void {
     case "products-add":
       openBlade(
         {
-          blade: resolveBladeByName("ProductsJ"),
+          blade: resolveBladeByName("Products"),
         },
         true
       );
@@ -439,7 +439,7 @@ function open(key: string): void {
     case "offers-list":
       openBlade(
         {
-          blade: resolveBladeByName("OffersJ"),
+          blade: resolveBladeByName("Offers"),
         },
         true
       );
@@ -447,7 +447,7 @@ function open(key: string): void {
     case "offers-add":
       openBlade(
         {
-          blade: resolveBladeByName("OffersJ"),
+          blade: resolveBladeByName("Offers"),
           options: {
             addOffer: true,
           },
@@ -471,7 +471,7 @@ function ordersClick(item: CustomerOrder): void {
 function productsClick(item: SellerProduct): void {
   openBlade(
     {
-      blade: resolveBladeByName("ProductsJ"),
+      blade: resolveBladeByName("Products"),
       param: item.id,
     },
     true
@@ -481,7 +481,7 @@ function productsClick(item: SellerProduct): void {
 function offersClick(item: Offer): void {
   openBlade(
     {
-      blade: resolveBladeByName("OffersJ"),
+      blade: resolveBladeByName("Offers"),
       param: item.id,
     },
     true

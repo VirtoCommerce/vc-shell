@@ -40,7 +40,7 @@ const { openBlade, resolveBladeByName } = useBladeNavigation();
 
 async function showProductDetails(id: string) {
   openBlade({
-    blade: resolveBladeByName("ProductJ"),
+    blade: resolveBladeByName("Product"),
     param: id,
   });
 }

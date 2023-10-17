@@ -90,7 +90,7 @@ export const useProductsList = (args: {
 
   function openDetailsBlade(args?: Omit<Parameters<typeof openBlade>["0"], "blade">) {
     openBlade({
-      blade: resolveBladeByName("ProductJ"),
+      blade: resolveBladeByName("Product"),
       ...args,
     });
   }

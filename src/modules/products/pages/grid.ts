@@ -2,8 +2,8 @@ import { DynamicGridSchema } from "@vc-shell/framework";
 
 export const grid: DynamicGridSchema = {
   settings: {
-    url: "/products-j",
-    id: "ProductsJ",
+    url: "/products",
+    id: "Products",
     titleTemplate: "Products",
     localizationPrefix: "Products",
     isWorkspace: true,

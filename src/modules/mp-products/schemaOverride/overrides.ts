@@ -3,58 +3,58 @@ import { OverridesSchema } from "@vc-shell/framework";
 export const overrides: OverridesSchema = {
   upsert: [
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "settings.url",
       value: "/mp-products",
     },
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "settings.id",
       value: "MpProducts",
     },
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "settings.titleTemplate",
       value: "Marketplace Products",
     },
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "content[0].multiselect",
       value: false,
     },
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "settings.permissions",
       value: "seller:products:search_from_all_sellers",
     },
     {
-      id: "ProductJ",
+      id: "Product",
       path: "settings.url",
       value: "/mp-product",
     },
     {
-      id: "ProductJ",
+      id: "Product",
       path: "settings.id",
       value: "MpProduct",
     },
     {
-      id: "ProductJ",
+      id: "Product",
       path: "settings.titleTemplate",
       value: "Marketplace Product",
     },
     {
-      id: "ProductJ",
+      id: "Product",
       path: "settings.permissions",
       value: "seller:products:search_from_all_sellers",
     },
   ],
   remove: [
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "settings.toolbar[3]",
     },
     {
-      id: "ProductsJ",
+      id: "Products",
       path: "content[0].filter",
     },
   ],

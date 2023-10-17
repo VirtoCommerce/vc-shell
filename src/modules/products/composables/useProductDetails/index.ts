@@ -126,6 +126,8 @@ export const useProductDetails = (args: {
         gtin: details.productData?.gtin,
         properties: details.productData?.properties,
         descriptions: details.descriptions,
+        publishedProductDataId: details.publishedProductDataId,
+        stagedProductDataId: details.stagedProductDataId,
         description: computed({
           get() {
             return useArrayFind(details.descriptions, (x) => x.languageCode == currentLocale.value).value.content;

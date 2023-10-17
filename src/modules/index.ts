@@ -5,6 +5,7 @@ import * as Settings from "./settings";
 import * as Products from "./products";
 import * as MarketplaceProducts from "./mp-products";
 import * as Import from "./import";
+import * as Videos from "./videos";
 
 export default {
   Offers,
@@ -14,6 +15,7 @@ export default {
   Products,
   MarketplaceProducts,
   Import,
+  Videos,
 };
 
 export * from "./types";

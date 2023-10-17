@@ -1,0 +1,85 @@
+{
+  "VIDEOS": {
+    "PAGES": {
+      "LIST": {
+        "TITLE": "Product videos",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "ADD": "Add video",
+          "DELETE": "Delete selected"
+        },
+        "EMPTY": {
+          "ADD": "Add video",
+          "NO_VIDEOS": "Product has no videos yet"
+        },
+        "SEARCH": {
+          "PLACEHOLDER": "Search"
+        },
+        "TABLE": {
+          "HEADER": {
+            "THUMBNAIL": "Thumbnail",
+            "NAME": "Name",
+            "DURATION": "Duration",
+            "SORT_ORDER": "Sort order",
+            "CREATED_DATE": "Created date"
+          },
+          "TOTALS": "Total"
+        },
+        "MOBILE": {
+          "CREATED": "Created"
+        },
+        "DELETE_SELECTED_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete {count} selected videos?"
+        },
+        "ACTIONS": {
+          "DELETE": "Delete video"
+        }
+      },
+      "DETAILS": {
+        "TITLE": "Video details",
+        "TOOLBAR": {
+          "SAVE": "Save",
+          "DELETE": "Delete video"
+        },
+        "FIELDS": {
+          "ADD": {
+            "TITLE": "Video URL",
+            "PLACEHOLDER": "Enter video URL",
+            "HINT": "Enter full URL to the video you like to attach to the product, e.g. https://www.youtube.com/watch?v=xyz",
+            "ADD_BUTTON": "Preview"
+          },
+          "DURATION": {
+            "TITLE": "Length"
+          },
+          "CREATED_DATE": {
+            "TITLE": "Created date"
+          },
+          "CONTENT_URL": {
+            "TITLE": "Video Url"
+          },
+          "EMBED_URL": {
+            "TITLE": "Embedded Url"
+          },
+          "THUMBNAIL_URL": {
+            "TITLE": "Thumbnail Url"
+          },
+          "NAME": {
+            "TITLE": "Name",
+            "PLACEHOLDER": "Name"
+          },
+          "DESCRIPTION": {
+            "TITLE": "Description",
+            "PLACEHOLDER": "Description"
+          },
+          "PREVIEW": {
+            "TITLE": "Preview"
+          },
+          "COPY": "Copy link"
+        },
+        "DELETE_CONFIRMATION": {
+          "MESSAGE": "Are you sure you want to delete this video?"
+        }
+      }
+    }
+  }
+}

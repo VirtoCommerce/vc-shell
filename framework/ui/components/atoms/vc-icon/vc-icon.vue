@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 export interface Props {
   icon?: string;
-  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl";
+  size?: "xs" | "s" | "m" | "l" | "xl" | "xxl" | "xxxl";
   variant?: "warning" | "danger" | "success";
 }
 
@@ -23,13 +23,14 @@ withDefaults(defineProps<Props>(), {
   --icon-size-l: 20px;
   --icon-size-xl: 22px;
   --icon-size-xxl: 30px;
+  --icon-size-xxxl: 64px;
 
   --icon-color-success: #99c17a;
   --icon-color-danger: #f34747;
   --icon-color-warning: #f89406;
 }
 
-$sizes: xs, s, m, l, xl, xxl;
+$sizes: xs, s, m, l, xl, xxl, xxxl;
 $variants: warning, danger, success;
 
 .vc-icon {

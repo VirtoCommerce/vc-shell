@@ -1,4 +1,4 @@
-import { computed, Ref, ref, ComputedRef, getCurrentInstance, inject } from "vue";
+import { computed, Ref, ref, ComputedRef } from "vue";
 import ClientOAuth2 from "client-oauth2";
 import {
   UserDetail,
@@ -48,8 +48,7 @@ interface IUseUser {
 }
 
 export function useUser(): IUseUser {
-  const instance = getCurrentInstance();
-  const base = instance && inject<string>("platformUrl");
+  const base = window.location.origin + "/";
   const externalSecurityClient = new ExternalSignInClient(base);
   const externalSignInStorage = useLocalStorage<{ providerType: string }>("externalSignIn", { providerType: null });
 

@@ -4533,7 +4533,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vc-shell/api-client-generator@^1.0.105, @vc-shell/api-client-generator@workspace:cli/api-client":
+"@vc-shell/api-client-generator@^1.0.105, @vc-shell/api-client-generator@^1.0.110, @vc-shell/api-client-generator@workspace:cli/api-client":
   version: 0.0.0-use.local
   resolution: "@vc-shell/api-client-generator@workspace:cli/api-client"
   dependencies:
@@ -4546,7 +4546,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/config-generator@^1.0.105, @vc-shell/config-generator@workspace:cli/config":
+"@vc-shell/config-generator@^1.0.105, @vc-shell/config-generator@^1.0.110, @vc-shell/config-generator@workspace:cli/config":
   version: 0.0.0-use.local
   resolution: "@vc-shell/config-generator@workspace:cli/config"
   dependencies:
@@ -4579,14 +4579,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@vc-shell/framework@^1.0.105, @vc-shell/framework@workspace:framework":
+"@vc-shell/framework@^1.0.105, @vc-shell/framework@^1.0.110, @vc-shell/framework@workspace:framework":
   version: 0.0.0-use.local
   resolution: "@vc-shell/framework@workspace:framework"
   dependencies:
     "@floating-ui/vue": ^1.0.0
     "@microsoft/signalr": ^7.0.5
-    "@vc-shell/api-client-generator": ^1.0.105
-    "@vc-shell/config-generator": ^1.0.105
+    "@vc-shell/api-client-generator": ^1.0.110
+    "@vc-shell/config-generator": ^1.0.110
     "@vee-validate/i18n": ^4.9.4
     "@vee-validate/rules": ^4.9.4
     "@vitejs/plugin-vue": ^4.2.3
@@ -4623,9 +4623,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@vc-shell/import-module@workspace:import-module"
   dependencies:
-    "@vc-shell/api-client-generator": ^1.0.105
-    "@vc-shell/config-generator": ^1.0.105
-    "@vc-shell/framework": ^1.0.105
+    "@vc-shell/api-client-generator": ^1.0.110
+    "@vc-shell/config-generator": ^1.0.110
+    "@vc-shell/framework": ^1.0.110
     cross-env: ^7.0.3
     typescript: ~5.0.4
     vite: ^4.3.9
@@ -7085,9 +7085,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.4.535":
-  version: 1.4.554
-  resolution: "electron-to-chromium@npm:1.4.554"
-  checksum: cbac43c50b43777327f4a7bf149ee3088c1da8b91bbcd80f78d2cc77bc52763f6d0941574499239d9caefd3430d3093f865e5f1093371418f7d6b70301eeae9b
+  version: 1.4.556
+  resolution: "electron-to-chromium@npm:1.4.556"
+  checksum: 8c9aa48776d80c23d8709dcd4342f1b18ca5b63bdb233fb6913f0db7b382d69afa84d5f08ead84bde6378a6a7ab3d1127f7cb6f4d0642fa625e96de6559dc1d7
   languageName: node
   linkType: hard
 

@@ -25,6 +25,7 @@ jobs:
 
       - name: Add auth token
         shell: bash
+        working-directory: "vendor-portal"
         run: |
           yarn config set --json npmRegistries '{ "//registry.npmjs.org": { "npmAuthToken": "'"${NPM_TOKEN}"'" } }' && cat .yarnrc.yml
         env:

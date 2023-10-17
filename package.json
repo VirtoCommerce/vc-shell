@@ -29,8 +29,7 @@
     "apps/*",
     "framework",
     "cli/*",
-    "import-module",
-    "sample/*"
+    "import-module"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",

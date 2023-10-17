@@ -3,7 +3,6 @@
   "version": "1.0.119",
   "private": true,
   "scripts": {
-    "postinstall": "husky install",
     "bootstrap": "yarn build:api && yarn build:modules-library",
     "serve": "cross-env APP_ENV=development vite --force",
     "preview": "vite preview",

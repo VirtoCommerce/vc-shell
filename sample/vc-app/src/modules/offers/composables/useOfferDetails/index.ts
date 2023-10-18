@@ -248,17 +248,11 @@ export const useOfferDetails = (args: {
       offerLoading.value = true;
       await loadSettings();
       if (!args.props.param) {
-        // validationState.value.resetModified(ref(new Offer({ inventory: [], prices: [] })), true);
         item.value = reactive(new Offer());
-        // await nextTick(async () => {
-        console.log(item.value, "test");
         item.value.trackInventory = true;
         item.value.sku = generateSku();
         await addEmptyInventory();
         await addPrice();
-        // });
-
-        console.log(item.value);
       }
 
       const resolveId = (value: string) =>

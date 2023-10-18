@@ -4,7 +4,6 @@
   "private": true,
   "repository": "https://github.com/VirtoCommerce/vc-shell",
   "scripts": {
-    "vendor-portal-app-init": "mkdir apps && cd apps && git clone https://github.com/VirtoCommerce/vendor-portal.git && cd ./vendor-portal && shx rm yarn.lock && cd ../../ && yarn && yarn run build",
     "postinstall": "husky install",
     "publish": "yarn workspaces foreach -v --from '{@vc-shell/config-generator,@vc-shell/api-client-generator,@vc-shell/framework,@vc-shell/create-vc-app,@vc-shell/import-module}' npm publish",
     "lint": "eslint --fix 'framework/**/*.{ts,vue}' 'import-module/**/*.{ts,vue}'",
@@ -21,15 +20,14 @@
     "build-cli:create-vc-app": "yarn workspace @vc-shell/create-vc-app run build",
     "generate:api-client": "yarn workspace @vc-shell/framework exec cross-env api-client-generator --stream --no-prefix --color",
     "storybook-build": "cross-env APP_ENV=production storybook build -s .storybook/assets",
-    "storybook-serve": "storybook dev .storybook/assets -p 6006",
-    "build:sample-modules": "yarn workspace vc-app run build:modules-library",
-    "serve:sample-extended": "yarn workspace vc-app-extend run serve"
+    "storybook-serve": "storybook dev .storybook/assets -p 6006"
   },
   "workspaces": [
     "apps/*",
     "framework",
     "cli/*",
-    "import-module"
+    "import-module",
+    "sample/*"
   ],
   "devDependencies": {
     "@commitlint/cli": "^17.6.3",

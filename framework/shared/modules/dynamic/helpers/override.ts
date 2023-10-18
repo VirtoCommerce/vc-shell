@@ -27,12 +27,10 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
           index,
           path,
           value,
-          id: overrideId,
         }: {
           index: OverridesUpsert["index"];
           path: OverridesUpsert["path"];
           value: OverridesUpsert["value"];
-          id: OverridesUpsert["id"];
         }) => {
           const valueByPath = _.get(clonedSchema, path);
           if (Array.isArray(valueByPath) && valueByPath.length && typeof value === "object") {
@@ -57,7 +55,7 @@ const removeHelper = (overrides, schemaCopy: { [key: string]: DynamicSchema }) =
     const clonedSchema = _.cloneDeep(schema);
     overrides.remove
       .filter((x) => clonedSchema.settings.id === x.id)
-      .forEach(({ path, id: overrideId }) => {
+      .forEach(({ path }) => {
         if (path) {
           const parentPath = path.slice(0, path.lastIndexOf("["));
           _.unset(clonedSchema, path);

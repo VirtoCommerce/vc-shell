@@ -143,7 +143,7 @@
               >
                 <div
                   class="tw-flex tw-items-center tw-flex-nowrap tw-truncate tw-px-3"
-                  :class="tableAlignment[item.align as string]"
+                  :class="tableAlignment[item.align]"
                 >
                   <div class="tw-truncate">
                     <slot :name="`header_${item.id}`">{{ item.title }}</slot>

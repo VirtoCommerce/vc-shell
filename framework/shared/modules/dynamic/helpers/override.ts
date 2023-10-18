@@ -27,10 +27,12 @@ const upsertHelper = (overrides: OverridesSchema, schemaCopy: { [key: string]: D
           index,
           path,
           value,
+          id,
         }: {
           index: OverridesUpsert["index"];
           path: OverridesUpsert["path"];
           value: OverridesUpsert["value"];
+          id: OverridesUpsert["id"];
         }) => {
           const valueByPath = _.get(clonedSchema, path);
           if (Array.isArray(valueByPath) && valueByPath.length && typeof value === "object") {

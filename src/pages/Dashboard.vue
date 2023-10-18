@@ -238,10 +238,10 @@
 <script lang="ts" setup>
 import { useBladeNavigation, ITableColumns, notification, useErrorHandler } from "@vc-shell/framework";
 import { computed, onMounted, ref, watch, markRaw } from "vue";
-import { Offer, OrderLineItem, SellerProduct } from "vc-vendor-portal-api/marketplacevendor";
+import { Offer, OrderLineItem, SellerProduct } from "vcmp-vendor-portal-api/marketplacevendor";
 import { useI18n } from "vue-i18n";
-import { default as modules, UserPermissions } from "vc-vendor-portal-modules";
-import { CustomerOrder } from "vc-vendor-portal-api/orders";
+import { default as modules, UserPermissions } from "vcmp-vendor-portal-modules";
+import { CustomerOrder } from "vcmp-vendor-portal-api/orders";
 
 const { t } = useI18n({ useScope: "global" });
 const {

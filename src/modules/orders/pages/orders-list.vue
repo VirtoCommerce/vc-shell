@@ -175,7 +175,7 @@ import {
   PushNotification,
 } from "@vc-shell/framework";
 import moment from "moment";
-import { CustomerOrder } from "vc-vendor-portal-api/marketplacevendor";
+import { CustomerOrder } from "vcmp-vendor-portal-api/marketplacevendor";
 import { useOrders } from "../composables";
 import OrdersDetails from "./orders-edit.vue";
 // eslint-disable-next-line import/no-unresolved

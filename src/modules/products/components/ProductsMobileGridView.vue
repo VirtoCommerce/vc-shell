@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { ISellerProduct } from "vc-vendor-portal-api/marketplacevendor";
+import { ISellerProduct } from "vcmp-vendor-portal-api/marketplacevendor";
 import moment from "moment";
 import MpProductStatus from "./MpProductStatus.vue";
 

@@ -13,7 +13,11 @@
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
 import { UnwrapNestedRefs, onMounted, ref } from "vue";
-import { VcmpSellerCatalogClient, ISearchOffersQuery, SearchOffersQuery } from "vc-vendor-portal-api/marketplacevendor";
+import {
+  VcmpSellerCatalogClient,
+  ISearchOffersQuery,
+  SearchOffersQuery,
+} from "vcmp-vendor-portal-api/marketplacevendor";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

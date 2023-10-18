@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { VcWidget, useApiClient, useAsync, useBladeNavigation } from "@vc-shell/framework";
 import { UnwrapNestedRefs, onMounted, ref } from "vue";
-import { CatalogModuleVideosClient, IVideoSearchCriteria, VideoSearchCriteria } from "vc-vendor-portal-api/catalog";
+import { CatalogModuleVideosClient, IVideoSearchCriteria, VideoSearchCriteria } from "vcmp-vendor-portal-api/catalog";
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

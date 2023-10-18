@@ -1,5 +1,5 @@
 import { useUser } from "@vc-shell/framework";
-import { VcmpSellerRatingAndReviewsClient } from "vc-vendor-portal-api/marketplacevendor";
+import { VcmpSellerRatingAndReviewsClient } from "vcmp-vendor-portal-api/marketplacevendor";
 import { ref, Ref } from "vue";
 
 interface IUseRating {

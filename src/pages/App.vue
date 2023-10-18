@@ -73,7 +73,7 @@ import {
 import { computed, inject, onMounted, reactive, ref, Ref, watch, markRaw, defineComponent, provide } from "vue";
 import { useRoute, useRouter } from "vue-router";
 // import { ImportProfileSelector } from "../modules/import";
-import * as modules from "vc-vendor-portal-modules";
+import * as modules from "vcmp-vendor-portal-modules";
 import { UserPermissions } from "./../modules/types";
 // eslint-disable-next-line import/no-unresolved
 import avatarImage from "/assets/avatar.jpg";

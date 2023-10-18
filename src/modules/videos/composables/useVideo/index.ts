@@ -1,6 +1,6 @@
 import { Ref, ref, computed, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
-import { CatalogModuleVideosClient, IVideo, Video, VideoCreateRequest } from "vc-vendor-portal-api/catalog";
+import { CatalogModuleVideosClient, IVideo, Video, VideoCreateRequest } from "vcmp-vendor-portal-api/catalog";
 import * as _ from "lodash-es";
 
 interface IUseVideo {

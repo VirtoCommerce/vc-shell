@@ -206,7 +206,7 @@ import { useOrder, useOrders } from "../composables";
 import { IBladeToolbar, IParentCallArgs, ITableColumns, useLoading } from "@vc-shell/framework";
 import { useI18n } from "vue-i18n";
 import { useStateMachines } from "../../state-machines/composables";
-import { StateMachineInstance } from "vc-vendor-portal-api/marketplacevendor";
+import { StateMachineInstance } from "vcmp-vendor-portal-api/marketplacevendor";
 
 export interface Props {
   expanded?: boolean;

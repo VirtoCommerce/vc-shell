@@ -99,7 +99,7 @@ import {
 import useImport from "../composables/useImport";
 import ImportProfileDetails from "./import-profile-details.vue";
 import ImportNew from "./import-new.vue";
-import { ImportPushNotification, ImportRunHistory } from "vc-vendor-portal-api/marketplacevendor";
+import { ImportPushNotification, ImportRunHistory } from "vcmp-vendor-portal-api/marketplacevendor";
 import ImportStatus from "../components/ImportStatus.vue";
 import { UserPermissions } from "../../types";
 import { useI18n } from "vue-i18n";

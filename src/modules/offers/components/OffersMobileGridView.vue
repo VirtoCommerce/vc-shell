@@ -52,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { IOffer } from "vc-vendor-portal-api/marketplacevendor";
+import { IOffer } from "vcmp-vendor-portal-api/marketplacevendor";
 import moment from "moment";
 
 export interface Props {

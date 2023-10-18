@@ -10,7 +10,7 @@
 <script lang="ts" setup>
 import { VcStatus } from "@vc-shell/framework";
 import { computed } from "vue";
-import { CustomerReviewReviewStatus } from "vc-vendor-portal-api/marketplacevendor";
+import { CustomerReviewReviewStatus } from "vcmp-vendor-portal-api/marketplacevendor";
 
 export interface Props {
   reviewStatus?: CustomerReviewReviewStatus;

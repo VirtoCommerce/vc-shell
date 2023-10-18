@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { computed, toRefs, unref } from "vue";
 import { camelToSnake } from "@vc-shell/framework";
-import { ISellerProduct, SellerProductStatus2 } from "vc-vendor-portal-api/marketplacevendor";
+import { ISellerProduct, SellerProductStatus2 } from "vcmp-vendor-portal-api/marketplacevendor";
 
 export interface Props {
   context: {

@@ -15,7 +15,7 @@ import {
   SearchImportRunHistoryQuery,
   ISearchImportRunHistoryQuery,
   SearchImportRunHistoryResult,
-} from "vc-vendor-portal-api/marketplacevendor";
+} from "vcmp-vendor-portal-api/marketplacevendor";
 import { IObjectSettingEntry, useNotifications, useUser } from "@vc-shell/framework";
 import * as _ from "lodash-es";
 

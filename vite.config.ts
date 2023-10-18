@@ -7,13 +7,13 @@ const mode = process.env.APP_ENV as string;
 export default getApplicationConfiguration({
   resolve: {
     alias: {
-      "vc-vendor-portal-modules": mode === "development" ? "src/modules/index.ts" : "vc-vendor-portal-modules",
-      "vc-vendor-portal-api/orders":
-        mode === "development" ? "src/api_client/orders.ts" : "vc-vendor-portal-api/orders",
-      "vc-vendor-portal-api/marketplacevendor":
-        mode === "development" ? "src/api_client/marketplacevendor.ts" : "vc-vendor-portal-api/marketplacevendor",
-      "vc-vendor-portal-api/catalog":
-        mode === "development" ? "src/api_client/catalog.ts" : "vc-vendor-portal-api/catalog",
+      "vcmp-vendor-portal-modules": mode === "development" ? "src/modules/index.ts" : "vcmp-vendor-portal-modules",
+      "vcmp-vendor-portal-api/orders":
+        mode === "development" ? "src/api_client/orders.ts" : "vcmp-vendor-portal-api/orders",
+      "vcmp-vendor-portal-api/marketplacevendor":
+        mode === "development" ? "src/api_client/marketplacevendor.ts" : "vcmp-vendor-portal-api/marketplacevendor",
+      "vcmp-vendor-portal-api/catalog":
+        mode === "development" ? "src/api_client/catalog.ts" : "vcmp-vendor-portal-api/catalog",
     },
   },
   plugins: [

@@ -26,8 +26,8 @@
       "vite/client",
       ],
     "paths": {
-      "vc-vendor-portal-modules": ["src/modules"],
-      "vc-vendor-portal-api": ["src/api_client"]
+      "vcmp-vendor-portal-modules": ["src/modules"],
+      "vcmp-vendor-portal-api": ["src/api_client"]
     }
   },
   "include": [

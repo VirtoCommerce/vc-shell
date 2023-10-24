@@ -1,4 +1,13 @@
-## [1.0.111](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.119...v1.0.111) (2023-10-17)
+## [1.0.112](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.120...v1.0.112) (2023-10-24)
+
+
+### Bug Fixes
+
+* dynamic templates and fixes vm-1222 ([be667b4](https://github.com/VirtoCommerce/vendor-portal/commit/be667b46c32ed19593561599f7a06f545088a0c3))
+
+
+
+## [1.0.120](https://github.com/VirtoCommerce/vendor-portal/compare/v1.0.119...v1.0.120) (2023-10-17)
 
 
 ### Bug Fixes

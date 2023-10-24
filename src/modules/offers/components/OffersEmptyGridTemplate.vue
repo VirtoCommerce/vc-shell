@@ -2,9 +2,9 @@
   <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
     <img :src="emptyImage" />
     <div class="tw-m-4 tw-text-xl tw-font-medium">
-      {{ $t("PRODUCTS.PAGES.LIST.EMPTY.NO_ITEMS") }}
+      {{ $t("OFFERS.PAGES.LIST.EMPTY.NO_ITEMS") }}
     </div>
-    <VcButton @click="$emit('add')">{{ $t("PRODUCTS.PAGES.LIST.EMPTY.ADD") }}</VcButton>
+    <VcButton @click="$emit('add')">{{ $t("OFFERS.PAGES.LIST.EMPTY.ADD") }}</VcButton>
   </div>
 </template>
 

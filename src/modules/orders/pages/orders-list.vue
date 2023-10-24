@@ -207,14 +207,14 @@ defineEmits<Emits>();
 
 defineOptions({
   url: "/orders",
-  scope: {
-    notificationClick(notification: INewOrderPushNotification) {
-      if (notification.notifyType !== "OrderCreatedEventHandler") return;
-      return {
-        param: notification.orderId,
-      };
-    },
-  },
+  // scope: {
+  //   notificationClick(notification: INewOrderPushNotification) {
+  //     if (notification.notifyType !== "OrderCreatedEventHandler") return;
+  //     return {
+  //       param: notification.orderId,
+  //     };
+  //   },
+  // },
 });
 
 const { openBlade } = useBladeNavigation();

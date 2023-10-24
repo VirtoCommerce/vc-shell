@@ -27,10 +27,11 @@ import {
   useDetailsFactory,
   DetailsBaseBladeScope,
 } from "@vc-shell/framework";
-import { ref, computed, reactive, onMounted, ComputedRef } from "vue";
+import { ref, computed, reactive, onMounted, ComputedRef, Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useDynamicProperties, useMultilanguage, useAssets } from "../../../common";
 import * as _ from "lodash-es";
+import { useMarketplaceSettings } from "../../../settings";
 
 export interface IProductType {
   label: string;
@@ -39,7 +40,7 @@ export interface IProductType {
 
 export interface ProductDetailsScope extends DetailsBaseBladeScope {
   fetchCategories: (keyword?: string, skip?: number, ids?: string[]) => Promise<CategorySearchResult>;
-  productTypeOptions: IProductType[];
+  productTypeOptions: Ref<IProductType[]>;
   galleryVisibility: ComputedRef<boolean>;
   productTypeDisabled: ComputedRef<boolean>;
   propertiesCardVisibility: ComputedRef<boolean>;
@@ -78,22 +79,14 @@ export const useProductDetails = (args: {
   });
 
   const { load, saveChanges, remove, loading, item, validationState } = detailsFactory();
+  const { defaultProductType, productTypes, loadSettings } = useMarketplaceSettings();
 
   const { t } = useI18n({ useScope: "global" });
 
   const disabled = computed(() => args.props.param && !item.value?.canBeModified);
 
   const revertLoading = ref(false);
-  const productTypeOptions: IProductType[] = [
-    {
-      label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.PHYSICAL"),
-      value: "Physical",
-    },
-    {
-      label: t("PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.DIGITAL"),
-      value: "Digital",
-    },
-  ];
+  const productTypeOptions = ref<IProductType[]>([]);
   const currentCategory = ref<Category>();
 
   const { currentLocale, languages, getLanguages, loading: languagesLoading } = useMultilanguage();
@@ -324,6 +317,12 @@ export const useProductDetails = (args: {
 
   onMounted(async () => {
     await getLanguages();
+    await loadSettings();
+
+    productTypeOptions.value = productTypes.value?.map((x) => ({
+      label: t(`PRODUCTS.PAGES.DETAILS.FIELDS.PRODUCT_TYPE.${x}`, x),
+      value: x,
+    }));
 
     if (!args.props.param) {
       item.value = reactive(new SellerProduct());
@@ -340,6 +339,8 @@ export const useProductDetails = (args: {
             })
         )
       );
+
+      item.value.productData = new ProductDetails({ productType: defaultProductType.value });
 
       validationState.value.resetModified(getMappedDetails(item), true);
     }

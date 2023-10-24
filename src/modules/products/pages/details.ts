@@ -96,6 +96,7 @@ export const details: DynamicDetailsSchema = {
           optionsMethod: "fetchCategories",
           update: { method: "setCategory" },
           emitValue: false,
+          searchable: true,
           rules: {
             required: true,
           },

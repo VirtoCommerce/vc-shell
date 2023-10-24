@@ -89,7 +89,7 @@ import { CustomerReview } from "vcmp-vendor-portal-api/marketplacevendor";
 import { Status } from "../components";
 import { useReviews } from "../composables";
 // eslint-disable-next-line import/no-unresolved
-import emptyImage from "/assets/empty.png";
+import emptyImage from "./../../../../public/assets/empty.png";
 import moment from "moment";
 import { useI18n } from "vue-i18n";
 

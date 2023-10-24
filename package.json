@@ -72,8 +72,8 @@
     "@vueuse/integrations": "^10.1.2",
     "moment": "^2.29.4",
     "roboto-fontface": "^0.10.0",
-    "vcmp-vendor-portal-api": "^1.0.112",
-    "vcmp-vendor-portal-modules": "^1.0.112",
+    "vcmp-vendor-portal-api": "^1.0.121",
+    "vcmp-vendor-portal-modules": "^1.0.121",
     "vee-validate": "^4.9.4",
     "vue": "^3.3.4",
     "vue-router": "^4.2.1"

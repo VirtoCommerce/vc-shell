@@ -35,7 +35,6 @@
       :modules="modules"
       content-type="html"
       :read-only="disabled"
-      :placeholder="placeholder"
       @update:content="onInput"
     />
     <slot

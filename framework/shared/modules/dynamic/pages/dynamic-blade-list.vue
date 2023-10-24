@@ -66,7 +66,10 @@
       <!-- Empty template -->
       <template #empty>
         <template v-if="bladeOptions.empty">
-          <component :is="bladeOptions.empty"></component>
+          <component
+            :is="bladeOptions.empty"
+            @add="openDetailsBlade"
+          ></component>
         </template>
         <template v-else>
           <div class="tw-w-full tw-h-full tw-box-border tw-flex tw-flex-col tw-items-center tw-justify-center">
@@ -123,11 +126,11 @@ import {
 import { useI18n } from "vue-i18n";
 import { DynamicGridSchema, ListContentSchema } from "../types";
 import { useFilterBuilder } from "../composables";
-import * as _ from "lodash-es";
-import { useFunctions } from "../../../../core/composables";
-import { IBladeToolbar, ITableColumns } from "../../../../core/types";
-import { ListBladeContext, UseList, usePopup, ListBaseBladeScope } from "../../../index";
+import { useFunctions, useNotifications } from "../../../../core/composables";
+import { ITableColumns } from "../../../../core/types";
 import { toolbarReducer } from "../helpers/toolbarReducer";
+import { notification, usePopup } from "../../../components";
+import { ListBaseBladeScope, ListBladeContext, UseList } from "../factories/types";
 
 export interface Props {
   expanded?: boolean;
@@ -154,6 +157,7 @@ const props = withDefaults(defineProps<Props>(), {
 const { t } = useI18n({ useScope: "global" });
 const { showConfirmation } = usePopup();
 const { debounce } = useFunctions();
+
 const emit = defineEmits<Emits>();
 
 defineOptions({
@@ -168,6 +172,22 @@ const selectedItemId = ref();
 const sort = ref("createdDate:DESC");
 const selectedIds = ref<string[]>([]);
 const isDesktop = inject<Ref<boolean>>("isDesktop");
+
+const { moduleNotifications, markAsRead } = useNotifications(settings.value.pushNotificationType);
+
+watch(
+  moduleNotifications,
+  (newVal) => {
+    newVal.forEach((message) => {
+      notification.success(message.title, {
+        onClose() {
+          markAsRead(message);
+        },
+      });
+    });
+  },
+  { deep: true }
+);
 
 const tableData = computed(() => props.model?.content.find((type: ListContentSchema) => type.component === "vc-table"));
 const table = computed(() => {
@@ -279,6 +299,16 @@ watch(
   },
   { immediate: true }
 );
+
+const openDetailsBlade = () => {
+  if (
+    "openDetailsBlade" in toValue(scope) &&
+    toValue(scope).openDetailsBlade &&
+    typeof toValue(scope).openDetailsBlade === "function"
+  ) {
+    toValue(scope).openDetailsBlade();
+  }
+};
 
 const onItemClick = (item: { id: string }) => {
   if (
@@ -422,7 +452,7 @@ function templateOverrideComponents(): Record<string, VNode> {
 
 function resolveTemplateComponent(name: string) {
   if (!tableData.value) return;
-  const componentName = tableData[name]?.component;
+  const componentName = tableData.value[name]?.component;
   if (componentName) {
     const component = resolveComponent(componentName);
 

@@ -14029,7 +14029,7 @@ __metadata:
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
-    vite-plugin-pwa: ^0.14.7
+    vite-plugin-pwa: ^0.16.5
     vue: ^3.3.4
     vue-eslint-parser: ^9.3.0
     vue-router: ^4.2.1
@@ -14082,7 +14082,7 @@ __metadata:
     vite: ^4.3.9
     vite-plugin-checker: ^0.6.0
     vite-plugin-mkcert: ^1.15.0
-    vite-plugin-pwa: ^0.14.7
+    vite-plugin-pwa: ^0.16.5
     vue: ^3.3.4
     vue-eslint-parser: ^9.3.0
     vue-router: ^4.2.1

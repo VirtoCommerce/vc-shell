@@ -1,10 +1,8 @@
-import { h, resolveComponent, mergeProps, ExtractPropTypes, Component } from "vue";
+import { h, resolveComponent, ExtractPropTypes, Component } from "vue";
 import { SelectField } from "../factories";
 import componentProps from "./props";
 import ValidationField from "./ValidationField";
 import { SelectSchema } from "../../types";
-import { unrefNested } from "../../helpers/unrefNested";
-import { getModel } from "../../helpers/getters";
 
 export default {
   name: "SelectField",
@@ -20,6 +18,7 @@ export default {
           options: props.bladeContext.scope[props.element.optionsMethod],
           currentLanguage: props.currentLocale,
           clearable: props.element.clearable || false,
+          searchable: props.element.searchable || false,
         },
         options: props.baseOptions,
 

@@ -79,6 +79,7 @@ export interface SettingsBase {
    * @description Blade permissions
    */
   permissions?: string | string[];
+  pushNotificationType?: string | string[];
 }
 
 export interface ListContentSchema extends SchemaBase {
@@ -140,6 +141,7 @@ export interface SelectSchema extends SchemaBase {
   };
   clearable?: boolean;
   emitValue?: boolean;
+  searchable?: boolean;
 }
 
 export interface InputSchema extends SchemaBase {

@@ -1,6 +1,6 @@
 {
   "name": "vc-marketplacevendor-api",
-  "version": "1.0.110",
+  "version": "1.0.111",
   "module": "./dist/marketplacevendor.js",
   "types": "./dist/types/marketplacevendor.d.ts",
   "files": [

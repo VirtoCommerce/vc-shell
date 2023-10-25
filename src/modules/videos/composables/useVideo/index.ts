@@ -1,6 +1,7 @@
 import { Ref, ref, computed, watch } from "vue";
 import { useUser } from "@vc-shell/framework";
-import { CatalogModuleVideosClient, IVideo, Video, VideoCreateRequest } from "vcmp-vendor-portal-api/catalog";
+import { IVideo, Video } from "vcmp-vendor-portal-api/catalog";
+import { VcmpSellerCatalogClient, CreateVideoCommand } from "vcmp-vendor-portal-api/marketplacevendor";
 import * as _ from "lodash-es";
 
 interface IUseVideo {
@@ -8,7 +9,7 @@ interface IUseVideo {
   readonly loading: Ref<boolean>;
   readonly videoLoadedWithoutErrors: Ref<boolean>;
   readonly modified: Ref<boolean>;
-  createVideo: (command: VideoCreateRequest) => Promise<IVideo>;
+  createVideo: (command: CreateVideoCommand) => Promise<IVideo>;
   saveVideo: (videoItem: IVideo) => void;
 }
 
@@ -27,19 +28,19 @@ export default (): IUseVideo => {
     { deep: true }
   );
 
-  async function getApiClient(): Promise<CatalogModuleVideosClient> {
+  async function getApiClient(): Promise<VcmpSellerCatalogClient> {
     const { getAccessToken } = useUser();
-    const client = new CatalogModuleVideosClient();
+    const client = new VcmpSellerCatalogClient();
     client.setAuthToken(await getAccessToken());
     return client;
   }
 
-  async function createVideo(command: VideoCreateRequest): Promise<IVideo> {
+  async function createVideo(command: CreateVideoCommand): Promise<IVideo> {
     console.info(`Create video from url ${command?.contentUrl} for product ${command?.ownerId}`);
     const client = await getApiClient();
     try {
       loading.value = true;
-      video.value = await client.createVideo(command as VideoCreateRequest);
+      video.value = await client.createVideo(command as CreateVideoCommand);
       video.value.uploadDate = new Date();
       videoLoadedWithoutErrors.value = true;
       videoDetailsCopy = _.cloneDeep(video.value);
